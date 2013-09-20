@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Reuters 1987 News Dataset</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+		<link rel="stylesheet" type="text/css" href="./keshif.css"/>
+
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+
+<script type="text/javascript">
+
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height($(window).height()-45);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').height($(window).height()-45);
+        $('#chart_div4').width ($(window).width()*0.9);
+        whiz.updateLayout();
+    });
+
+    var newsCol,peopleCol,topicsCol;
+
+	whiz.init({
+        chartTitle: "Reuters 1987 News Dataset",
+        domID : "#chart_div4",
+        itemName : "News stories",
+        categoryTextWidth:150,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
+            sheets : [ 
+                {name:"News"},
+                {name:"People"},
+                {name:"Topics", id:"Code"} 
+            ]
+        },
+        loadedCb: function(){
+            newsCol = whiz.dt_ColNames.News;
+            peopleCol = whiz.dt_ColNames.People;
+            topicsCol = whiz.dt_ColNames.Topics;
+            whiz.cellToArray(whiz.dt.News, [newsCol.people, newsCol.places, newsCol.topics], /\b,/, false);
+        },
+        charts:[
+            {
+                chartTitle: "Category",
+                tableName: "Topics",
+                generateRows: true,
+                itemMapFunc : function(news){
+                    var topics = news.data[newsCol.topics];
+                    var cats= {};
+                    for(var i=0; i<topics.length; i++){
+                        var t=topics[i];
+                        var tDt=whiz.dt_id.Topics[t];
+                        if(tDt) cats[tDt.data[1]] = true;
+                    }
+                    var toRet=[]
+                    for(c in cats){
+                        toRet.push(c);
+                    }
+                    return toRet;
+                },
+                itemXPos : function(news){ return news.data[newsCol.time]; },
+                filter: { rowConj: 'about' },
+                timeTitle: "Publish Date"
+            },{
+                chartTitle: "Topic",
+                itemMapFunc : function(news){ return news.data[newsCol.topics]; },
+                filter: { rowConj: 'about' }
+            },{
+                chartTitle: "Country",
+                itemMapFunc : function(news){return news.data[newsCol.places]; },
+                rowLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "People",
+                itemMapFunc : function(news){return news.data[newsCol.people]; },
+                rowLabelText: function(d) { return whiz.dt_id.People[d.data[1]].data[peopleCol.Name]; },
+                rowTitleText: function(d) { 
+                    var p = whiz.dt_id.People[d.data[1]];
+                    return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
+                },
+                filter: { rowConj: 'about' }
+            }
+        ],
+        list:{
+            columns : [
+                {   name: 'Date',
+                    width: 70,
+                    value: function(news){ return news.data[newsCol.time]; },
+                    value_type : 'date',
+                    label: function(d){ 
+                        var date=d.data[newsCol.time];
+                        return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
+                    }
+                }
+            ],
+            textSearch : function (news) { return news.data[newsCol.title]; },
+            contentFunc : function(news){
+                var j;
+                var str=news.data[newsCol.title].replace("<","&lt;").replace(">","&gt;");
+                var cats = news.data[newsCol.topics];
+                if(cats.length>0){
+                    str+="<div class=\"iteminfo iteminfo_1\"> Topics: ";
+                    for(j=0; j<cats.length; j++){
+                        str+=cats[j];
+                        if(j!==cats.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                var ctrs = news.data[newsCol.places];
+                if(ctrs.length>0){
+                    str+="<div class=\"iteminfo iteminfo_1\"> Countries: ";
+                    for(j=0; j<ctrs.length; j++){
+                        str+=capitaliseFirstLetter(ctrs[j]);
+                        if(j!==ctrs.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                return str;
+            }
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>

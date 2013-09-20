@@ -1,0 +1,1264 @@
+/*********************************
+
+whiz library
+
+Copyright (c) 2013, Mehmet Adil Yalcin
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the University of Maryland nor the names of its contributors 
+  may not be used to endorse or promote products derived from this software 
+  without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL MICHAEL BOSTOCK BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+************************************ */
+
+ .whizHost{
+    border: solid 1px lightgray;
+}
+.whizHost:hover{
+    box-shadow: 0px 0px 4px gray;
+}
+.whizHost:focus{
+    outline: none;
+}
+
+.whiz {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+
+
+
+
+.whiz div.leftBlockBackground{
+    position: absolute;
+    left: 0px;
+    background-image: linear-gradient(right, 
+        rgba(243, 243, 243, 0) 0%, 
+        rgba(243, 243, 243, 1) 5%, 
+        rgba(243, 243, 243, 1) 60%, 
+        rgba(243, 243, 243, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(243, 243, 243, 0) 0%, 
+        rgba(243, 243, 243, 1) 5%, 
+        rgba(243, 243, 243, 1) 60%, 
+        rgba(243, 243, 243, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(243, 243, 243, 0) 0%, 
+        rgba(243, 243, 243, 1) 5%, 
+        rgba(243, 243, 243, 1) 60%, 
+        rgba(243, 243, 243, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(243, 243, 243, 0) 0%, 
+        rgba(243, 243, 243, 1) 5%, 
+        rgba(243, 243, 243, 1) 60%, 
+        rgba(243, 243, 243, 0) 100%);
+    z-index: -20;
+    min-height: 100%;
+}
+.whiz div.leftBlockAdjustSize{
+    position: absolute;
+    width:6px;
+    margin-left: -10px;
+    border-bottom: solid 1px lightgray;
+    border-top: solid 1px lightgray;
+/*    
+    min-height: 100%; 
+    margin-left: -13px;
+    z-index: -2; 
+*/
+    cursor: col-resize;
+    background-image: linear-gradient(right, 
+        rgba(230, 230, 230, 0) 0%, 
+        rgba(230, 230, 230, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(230, 230, 230, 1) 60%, 
+        rgba(230, 230, 230, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(230, 230, 230, 0) 0%, 
+        rgba(230, 230, 230, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(230, 230, 230, 1) 60%, 
+        rgba(230, 230, 230, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(230, 230, 230, 0) 0%, 
+        rgba(230, 230, 230, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(230, 230, 230, 1) 60%, 
+        rgba(230, 230, 230, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(230, 230, 230, 0) 0%, 
+        rgba(230, 230, 230, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(230, 230, 230, 1) 60%, 
+        rgba(230, 230, 230, 0) 100%);
+}
+.whiz div.leftBlockAdjustSize:hover{
+/*    background-color: rgba(155, 151, 133, 0.2);
+    border: dashed 1px rgb(187, 172, 123);*/
+    border-bottom: solid 1px gray;
+    border-top: solid 1px gray;
+    background-image: linear-gradient(right, 
+        rgba(150, 150, 150, 0) 0%, 
+        rgba(150, 150, 150, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(150, 150, 150, 1) 60%, 
+        rgba(150, 150, 150, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(150, 150, 150, 0) 0%, 
+        rgba(150, 150, 150, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(150, 150, 150, 1) 60%, 
+        rgba(150, 150, 150, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(150, 150, 150, 0) 0%, 
+        rgba(150, 150, 150, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(150, 150, 150, 1) 60%, 
+        rgba(150, 150, 150, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(150, 150, 150, 0) 0%, 
+        rgba(150, 150, 150, 1) 40%, 
+        rgba(101, 101, 101, 1) 50%, 
+        rgba(150, 150, 150, 1) 60%, 
+        rgba(150, 150, 150, 0) 100%);
+}
+.whiz div.chartAboveSeparator{
+    position: relative;
+    background-image: linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 1) 5%, 
+        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 1) 5%, 
+        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 1) 5%, 
+        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 1) 5%, 
+        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 0) 100%);
+    height: 1px;
+    top: -1px;
+    margin-bottom: -2px;
+    pointer-events: all;
+/*    cursor: ns-resize;*/
+}
+
+.whiz rect.selection_bar {
+	fill: #788890;
+	fill-opacity: 0;
+	cursor: col-resize;
+    stroke-width:1.5;
+    pointer-events: none;
+}
+.whiz rect.selection_bar:hover {
+	stroke: orangered;
+}
+.whiz .whizChart[filtered_time=true] rect.selection_bar{
+    fill-opacity: 0.5;
+    pointer-events: auto;
+}
+.whiz g.x_axis text{
+	font-size: 0.7em;
+    font-weight: 300;
+}
+.whiz g.timeAxisGroup text{
+	font-size: 0.8em;
+    text-shadow: 1px 1px white;
+    font-weight: 300;
+}
+.whiz g.timeAxisGroup line{
+	opacity: 1;
+	stroke-width: 2;
+	stroke: rgb(22, 16, 16);
+}
+.whiz g.timeAxisGroup line.minor{
+	stroke-width: 1;
+	stroke: rgb(256, 0, 0);
+}
+
+.whiz g.timeAxisGroup .filter_handle path{
+	fill: #CFDADF;
+	stroke: #788890;
+	cursor: pointer;
+	stroke-width: 2;
+}
+.whiz g.timeAxisGroup .filter_handle path:hover{
+    stroke: orangered;
+}
+
+.whiz g.timeAxisGroup g.filter_handle line{
+	stroke: gray;
+	stroke-width: 1;
+    display:none;
+/*	stroke-dasharray: 3,2;*/
+}
+.whiz g.timeAxisGroup g.filter_handle[filtered=true] line{
+    display:block;
+}
+
+
+.whiz g.row rect.total {
+	fill-opacity:0.2;
+}
+.whiz g.row rect.total {
+	cursor: pointer;
+}
+.whiz g.row rect.active {
+    pointer-events: none;
+}/*
+.whiz g.row rect.timeBar.total {
+    pointer-events: none;
+}
+.whiz g.row rect.timeBar.active {
+	cursor: pointer;
+}*/
+.whiz g.row g[highlight=true] rect.total{
+	stroke-width: 2;
+	stroke: orangered;
+}
+/*
+.whiz g.row g[highlight=true] rect.timeBar.active{
+	stroke-width: 2;
+	stroke: orangered;
+}*/
+
+.whiz g.row rect.timeBar {
+	fill: #E0E7EB;
+}
+.whiz g.row rect.rowBar {
+	fill: #8699A8;
+}
+.whiz g.row rect.timeBar.total{
+	fill-opacity:0.35;
+}
+
+.whiz .headerHTML {
+    pointer-events:none;
+}
+.whiz .headerGroup span.leftHeader {
+    display: inline-block;
+    float: left;
+    pointer-events: all;
+}
+.whiz .headerGroup span.showFilterText{
+    display: inline-block;
+    float: left;
+    pointer-events: all;
+}
+.whiz .headerGroup span.header_label {
+	font-size: 1.0em;
+	font-weight: 700;
+	cursor: default;
+    text-anchor: end;
+    float:right;
+    cursor: default;
+}
+.whiz div.whizChart[collapsed=true] .headerGroup span.header_label {
+    cursor: pointer;
+}
+.whiz .headerGroup span.header_label_arrow{
+    font-size: 0.7em;
+    display: block;
+    float: right;
+    cursor: pointer;
+    vertical-align: baseline;
+    line-height: 18px;
+}
+.whiz .headerGroup span.rightHeader span.header_label_arrow{
+    float: left;
+}
+.whiz div.whizChart[collapsed=true]  .headerGroup span.header_label_up{
+    display: none;
+}
+.whiz div.whizChart[collapsed=false] .headerGroup span.header_label_down{
+    display: none;
+}
+.whiz div.whizChart[collapsed=true] span {
+    color: gray;
+}
+
+.whiz g.barChart.revert g.headerGroup span.header_label {
+    text-anchor: start;
+}
+.whiz g.headerGroup text.barInfo {
+	font-size: 0.7em;
+	cursor: default;
+    fill:gray;
+    text-anchor: start;
+    font-style: italic;
+    font-weight:300;
+}
+.whizHost[hidebars=true] .whiz g.headerGroup text.barInfo {
+    display: none;
+}
+.whiz div.whizChart[collapsed=true] g.headerGroup text.barInfo{
+    display: none;
+}
+.whiz g.barChart.revert g.headerGroup text.barInfo {
+    text-anchor: end;
+}
+.whiz line.row_separator {
+    stroke-width:1;
+    stroke-linecap: round;
+    stroke: rgb(131, 131, 131);
+    display:none;
+}
+.whizHost[hidebaraxis=true] svg>g.x_axis{
+    display:none;
+}
+
+
+.whiz div.whizChart[collapsed=true] g.scrollGroup{
+    display: none;
+}
+.whiz g.scrollGroup g path.top_arrow{
+	pointer-events:none;
+	fill:#AAAAAA;
+}
+.whiz g.scrollGroup g:hover path.top_arrow{
+	fill: #cb5454;
+}
+
+.whiz g.scrollGroup rect.background{
+	fill:white;
+	stroke:rgb(202, 202, 202);
+	stroke-width:1;
+	stroke-opacity:1;
+}
+.whiz g.scrollGroup:hover rect.background{
+	stroke:gray;
+}
+.whiz g.scrollGroup rect.background_fill{
+    opacity: 1;
+    fill:white;
+    cursor: pointer;
+}
+
+.whiz g.scrollGroup rect.handle{
+	fill:#999999;
+	stroke:gray;
+	stroke-width:0.5;
+	fill-opacity:0.2;
+	stroke-opacity:0.2;
+	cursor: pointer;
+}
+.whiz g.scrollGroup rect.handle[selected=true]{
+	stroke:#444444;
+	stroke-width:1;
+}
+
+.whiz g.scrollGroup text.row_number{
+    font-size: 0.7em;
+    display:none;
+    text-anchor:end;
+    fill: #cb5454;;
+    cursor:default;
+    pointer-events:none;
+    text-shadow: 1px 1px rgb(219, 219, 219);
+}
+.whiz g.scrollGroup:hover text.row_number{
+    display:block;
+}
+
+.whiz .key_label_2 {
+	font-size: 0.8em;
+}
+
+.whiz .key_label_3{
+	font-size: 0.8em;
+	text-anchor: end;
+}
+
+.whiz .timeDot{
+	stroke: #eee;
+	cursor: pointer;
+	fill: #616F7A;
+}
+.whiz .timeDot[display=true] {
+/*    pointer-events: none; */
+}
+.whiz .timeDot[display=false] {
+	fill: #CCCCCC;
+    pointer-events: none;
+}
+.whiz .timeDot[display=true]:hover {
+	stroke: orangered;
+	stroke-width:2;
+}
+.whiz .timeDot[highlight=true] {
+    stroke: #c32c2c;
+    stroke-width:2;
+}
+
+.whiz div.whizChart[collapsed=true] g.barGroup_Top {
+    display:none;
+}
+.whiz div.whizChart[collapsed=true] g.timeAxisGroup {
+    display:none;
+}
+.whiz div.whizChart span.sortOptionSelect_Label{
+    float: right;
+    font-size: 0.8em;
+    font-weight: 300;
+    padding-top: 4px;
+    cursor: default;
+    pointer-events:none;
+}
+.whiz div.whizChart[collapsed=true] span.sortOptionSelect_Label {
+    display:none;
+}
+.whiz div.whizChart select.sortOptionSelect{
+    float:right;
+    font-size:0.7em;
+    pointer-events:all;
+    clear:right;
+}
+.whiz div.whizChart[collapsed=true] select.sortOptionSelect{
+    display: none;
+}
+
+.whiz select.listSortOptionSelect{
+    position:absolute;
+    bottom:0px;
+}
+
+.whiz div.whizChart g.row text.item_count {
+	font-size: 0.7em;
+	cursor: pointer;
+}
+
+.whiz div.whizChart g.row text.row_label {
+	font-size: 0.8em;
+	cursor: pointer;
+	text-anchor: end;
+    font-weight:300;
+}
+.whiz div.whizChart[filtered_row=true] g.row[selected=false] text{
+    fill:gray;
+}
+.whiz div.whizChart[filtered_row=true] g.row[selected=true] text{
+	font-weight: 700;
+	fill: #c32c2c;
+}
+.whiz div.whizChart g.row g[highlight=true] text{
+    fill: orangered !important;
+}
+.whiz div.whizChart g.row[itemhighlight=true] g text{
+    fill: #c32c2c !important;
+}
+
+.filter_handle rect.filter_nonselected{
+	fill: gray;
+	opacity: 0.06;
+}
+
+.whiz div.whizChart[collapsed=true] g.x_axis{
+    display: none;
+}
+.whiz g.x_axis line{
+	opacity: 1;
+	stroke-width: 0.7;
+	stroke-dasharray:3,3;
+	stroke: rgb(180, 180, 180);
+    pointer-events:none;
+}
+.whiz g.x_axis line.minor{
+	stroke-width: 1;
+	stroke: rgb(160, 160, 160);
+}
+.whiz div.whizChart[collapsed=true] g.resort_button{
+    display: none !important ;
+}
+.whiz g.resort_button rect{
+	cursor: pointer;
+	fill-opacity: 0;
+}
+.whiz g.resort_button path{
+	pointer-events:none;
+	fill:#949494;
+}
+.whiz g.resort_button:hover path{
+	fill:#cb5454;
+}
+
+.whiz g.row line.row_bar_line{
+	stroke-width: 0.7;
+    pointer-events: none;
+}
+.whiz g[highlight=true] .row_bar_line{
+	stroke: orangered;
+	stroke-dasharray: none;
+}
+.whiz g rect.helphelp{
+	stroke: #B1B79C;
+}
+
+
+.whiz g.top_arrow{
+    display: none;
+}
+.whiz g.top_arrow rect{
+    opacity: 0;
+    cursor: pointer;
+}
+
+.whiz div.barChartMainInfo{
+    position: absolute;
+    font-size: 0.8em;
+    color: gray;
+    cursor: default;
+    display:none;
+}
+.whiz div.barChartMainInfo .refreshbarscales{
+    cursor:pointer;
+    display: none;
+}
+.whiz div.barChartMainInfo .refreshbarscales:hover{
+    color:#cb5454;
+}
+.whizHost[hidebars=true] .whiz div.barChartMainInfo{
+    display:none;
+}
+
+
+div.whiz{
+    float:left;
+    display:inline-block;
+/*    background-image: linear-gradient(#eee .1em, transparent .1em);
+    background-size: 100% 18px;*/
+}
+div.whiz.layout_header{
+    width:100%;
+    height: 21px;
+    margin-bottom: 3px;
+    font-weight: 700;
+    font-size: 1.05em;
+    text-shadow: 1px 1px 2px white;
+
+    text-align: center;
+    background-image: linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+    background-image: -o-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+    background-image: -moz-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+    background-image: -webkit-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+    background-image: -ms-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+    border-bottom: solid 1px #c6bb9e;
+    box-shadow: 0px 0px 10px #b7aa88;
+}
+div.whiz.layout_top{
+    display:block;
+}
+div.whiz.layout_left{
+    clear:left; 
+}
+div.whiz.layout_background{
+    position: absolute;
+    min-height: 100%;
+    left: 0px;
+}
+
+
+.whiz div.listChart{
+    display:inline-block;
+}
+
+.whiz .listDiv {
+    clear:left;
+    box-shadow: 2px 2px 2px rgb(150, 134, 73);
+    margin: 0px 0px 6px 6px;
+/*    display:none;*/
+}
+
+.whiz div.listItemGroup {
+    overflow-y:scroll;
+    width: calc(100% - 2px);
+    border-left: solid 2px rgb(233, 227, 205);
+}
+
+
+.whiz div.listItem {
+	clear:left;
+    cursor:default;
+    overflow: hidden;
+    float: none;
+}
+/*
+div.listItem:nth-child(even) {
+    background-color:#f5f5f5;
+}
+*/
+div.listItem:hover{
+    background-color:#EEEEEE;
+}
+
+
+div.listItem div.listcell{
+    padding-top: 3px;
+}
+
+div.listItem div{
+	float:left;
+}
+
+div.listItem div.itemNo{
+	position: relative;
+	padding-left:10px;
+	display:block;
+	width:12px;
+	color:white;
+}
+
+div.listItem div.icon{
+	position: relative;
+	display:inline-block;
+	width:28px;
+}
+
+div.listItem div.icon a{
+	color:white;
+}
+div.listDiv div.listsortcolumn{
+	padding-right:3px;
+    padding-left:2px;
+	display:inline-block; 
+	font-size: 0.8em;
+    margin : auto; 
+    text-align: center;
+    font-weight: 700;
+}
+div.listDiv div.listsortcolumn_0{
+    font-weight:bold;
+}
+
+div.listItem div.iteminfo{
+    float:none;
+    clear: left;
+    font-weight:normal;
+    text-indent: -1em;
+    padding-left: 1em;
+    margin-bottom: 2px;
+}
+
+
+div.listItem .iteminfo_0{
+    font-size:1.0em;
+    font-weight:bold;
+	color: black;
+}
+
+div.listItem .iteminfo_1{
+    font-size:0.9em;
+	color: #555555;
+}
+div.listItem .iteminfo_2{
+    font-size:0.8em;
+	color: #555555;
+    font-style:italic;
+    font-weight:300;
+}
+div.listItem .iteminfo_3{
+    font-size:0.8em;
+	color: rgb(167, 31, 31);
+    font-style:italic;
+    font-weight:300;
+}
+
+div.listItem div.content{
+    border: solid 0px lightgray;
+    position: relative;
+}
+div.listItem div.iteminfo_0 a{
+	color: #222222;
+}
+
+
+div.group_col0{
+    border-top: double 4px gray;
+}
+div.group_col1{
+    border-top: double 4px lightgray;
+}
+div.group_col2{
+    border-top: solid 1px lightgray;
+}
+
+/* makes mouse higlight possible */
+div.listItem div.groupMe{
+    overflow: hidden;
+    float: none;
+}
+
+div.listHeader {
+	font-weight: bold;
+	color: black;
+	padding: 0px 5px 0px 2px;
+    min-height: 22px;
+    
+    background-image: linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgba(233, 227, 205,1) 30%, rgba(233, 227, 205,0) 100%); //* uses rgba */
+    background-image: -ms-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
+}
+
+div.listHeader div.topRow {
+    min-height: 22px;
+}
+
+div.listHeader span.filter-blocks{
+	font-size: 0.9em;
+    float: left;
+    padding-left: 215px;
+    display: inline-block;
+}
+
+div.listHeader span.filter-block-clear{
+    font-style: italic;
+    background-color: rgba(212, 224, 228,0.7) !important;
+    border-radius: 8px !important;
+}
+div.listHeader span.filter-block-clear span.filter_reset{
+    border-radius: 8px !important;
+    left: 2px;
+    background-color: rgba(107, 120, 124, 1);
+}
+div.listHeader span.filter-block-clear:hover{
+    cursor: pointer;
+}
+div.listHeader span.filter-block-clear:hover span.filter_reset{
+    box-shadow: inset 1px 1px 1px rgb(78, 71, 43);
+    font-weight:500;
+}
+
+div.listHeader span.filter-block{
+    display: inline-block;
+    cursor:default;
+    color: rgb(37, 33, 18);
+    font-weight: 300;
+    border: 1px rgb(104, 91, 43) solid;
+    box-shadow: 1px 1px 1px rgb(78, 71, 43);
+    margin-right: 5px;
+    background-color: rgba(238, 235, 224,0.1);
+    padding: 0px 1px 0px 2px;
+    margin-top: 2px;
+/*    border-radius: 8px; */
+}
+div.listHeader span.filter-block b{
+    font-weight: 700;
+}
+div.listHeader span.filter-block[filtered=false]{
+	display: none;
+}/*
+div.listHeader span.filter-block[filtered=true]{
+}*/
+div.listHeader span.filter_item{
+}
+div.listHeader span.filter_conj{
+}
+
+div.listHeader span.filter-separator{
+	padding-left:10px;
+	padding-right:5px;
+	display:block;
+	float: left;
+}
+
+div.listHeader span.bigTextSearch_wrap {
+    position: relative;
+}
+div.listHeader span.bigTextSearch_wrap span {
+    position: absolute;
+    display: none;
+    top: 3px;
+    right: 0px;
+    width: 16px;
+    height: 16px;
+    background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -690px;
+    cursor: pointer;
+}
+div.listHeader span.bigTextSearch_wrap span:hover {
+    background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -665px;
+}
+div.listHeader input.bigTextSearch{
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #cb5454;
+    padding-right:2px;
+    background-color:rgba(244, 244, 244,0);
+    pointer-events: all;
+    border-width:0px;
+    border-bottom: dashed 1px #cb5454;
+}
+div.listHeader input.bigTextSearch:focus{
+    outline-color: gray;
+    outline-width: 4px;
+}
+div.listHeader input.bigTextSearch:hover{
+    border: solid 1px #cb5454;
+    background-color: white;
+    padding: 0px 0px 1px 0px;
+}
+.whiz div.listHeader ::-webkit-input-placeholder { 
+    color: #cb5454;
+    font-weight: 300;
+}
+
+div.listHeader span.filter_reset{
+	cursor: pointer;
+    font-weight: 300;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+/*    border-radius: 10px; */
+    box-shadow: 1px 1px 1px rgb(78, 71, 43);
+    text-align: center;
+    font-size: 0.8em;
+    background-color: rgb(124, 122, 113);
+    color: rgb(238, 235, 224);
+    position: relative;
+    left: 1px;
+    float: right;
+}
+div.listHeader span.filter_reset:hover{
+    box-shadow: inset 1px 1px 1px rgb(78, 71, 43);
+    font-weight:500;
+}
+div.listHeader div.listColumnRow{
+	font: 500 100% Arial,sans-serif;
+    font-size: 0.9em;
+    display: inline-block;
+    clear: left;
+    position: relative;
+    min-height: 20px;
+}
+
+div.listHeader span.listheader_itemName{
+    font-size: 1.1em;
+    text-shadow: 1px 1px lightgray;
+    float:left;
+}
+div.listHeader span.listheader_count_bar{
+    background-color: rgb(132, 147, 160);
+    position: absolute;
+    right: 0px;
+    height: 2px;
+    top: 19px;
+}
+div.listHeader span.listheader_count_wrap{
+    display: inline-block;
+    float: left;
+    position:relative;
+}
+div.listHeader span.listheader_count{
+    font-size: 1.1em;
+    text-shadow: 1px 1px lightgray;
+    float:right;
+    margin-right: 4px;
+}
+div.listHeader div.listColumnRow div.listcell{
+    position:absolute;
+}
+div.listHeader div.listColumnRow div.list-sort-option{
+	font-weight: 500;
+	cursor: move;
+    background-color:white;
+	padding: 1px 5px 1px 5px;
+	box-shadow: 1px 1px 1px #474940;
+	display: inline-block;
+    width:calc(100% - 10px);
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	/* Required to make elements draggable in old WebKit */
+	-khtml-user-drag: element;
+	-webkit-user-drag: element;
+}
+div.listHeader div.listColumnRow div.list-sort-option:hover{
+	box-shadow: 2px 2px 2px #474940;
+}
+div.listHeader div.listColumnRow div.list-sort-option.drag_source{
+	background-color:#d3e6c9;
+}
+div.listHeader div.listColumnRow div.list-sort-option.drag_over{
+	border: solid 1px #000;
+	padding: 0px 4px 0px 4px; /* remove padding 1 pixel because of border  */
+	box-shadow: 2px 2px 2px #474940;
+	background-color:#e5b2b2;
+}
+
+span.sort_column_remove{
+	cursor: pointer;
+	font-weight: 500;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border-radius: 10px;
+	box-shadow: inset 1px 1px 1px #474940;
+	text-align: center;
+	font-size: 0.9em;
+	background-color: #E5E9D6;
+	color: black;
+	position: relative;
+	top: -2px;
+	margin-left: 2px;
+}
+span.sort_column_remove:hover{
+	box-shadow: 2px 2px 2px #474940;
+}
+
+
+
+div.chartInfo{
+    position:absolute;
+}
+img.datasource{
+    height:14px;
+    cursor:pointer;
+    float:right;
+ 	box-shadow: 1px 1px 1px #474940;
+    border: solid 1px black;
+    background-color:white;
+}
+img.datasource:hover{
+ 	box-shadow: inset 1px 1px 1px #474940;
+}
+
+div.credits{
+	cursor: pointer;
+	font-weight: 500;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border-radius: 10px;
+	box-shadow: 1px 1px 1px #474940;
+	text-align: center;
+	font-size: 0.9em;
+	background-color: white;
+	color: black;
+	position: relative;
+	margin-left: 4px;
+	margin-right: 12px;
+    float:right;
+    font-weight: bolder;
+    font-style:italic;
+}
+div.credits:hover{
+	box-shadow: inset 1px 1px 1px #474940;
+    background-color: #EEEEEE;
+}
+
+.whiz div.whizChart g.row rect.rowSelectBackground{
+    opacity:0;
+    pointer-events: none;
+}
+.whiz div.whizChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
+	opacity:1;
+}
+.whiz div.whizChart g.row rect.rowSelectBackground_ClickArea{
+    opacity:0;
+    pointer-events: all;
+    cursor: pointer;
+}
+.whiz div.whizChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
+    pointer-events: all;
+}
+
+
+.whiz div.whizChart input.chartRowLabelSearch::-webkit-input-placeholder { 
+    text-align:right; 
+    font-weight: 500;
+    color: #cb5454;
+}
+.whiz div.whizChart input.chartRowLabelSearch:focus::-webkit-input-placeholder { 
+    color: #F3CDCD;
+}
+/*
+.whiz g.barChart.revert ::-webkit-input-placeholder { 
+    text-align:left;
+}*/
+
+.whiz div.chartClearFilterButton{
+	cursor: pointer;
+    font-weight: 500;
+    font-size: 0.7em;
+    width: 14px;
+    height: 14px;
+    box-shadow: 1px 1px 1px #474940;
+    text-align: center;
+    font-size: 0.7em;
+    background-color: rgb(247, 247, 247);
+    color: black;
+    display: none;
+    border: solid 1px gray;
+    pointer-events:all;
+}
+.whiz div.chartClearFilterButton:hover{
+	font-weight:700;
+	box-shadow: inset 1px 1px 1px #474940;
+    color: #cb5454;
+}
+.whiz div.chartClearFilterButton.rowFilter{
+    float: right;
+    margin: 1px 5px 0px 0px;
+}
+.whiz div.chartClearFilterButton.rangeFilter{
+    float: right;
+    margin: 1px 5px 0px 0px;
+}
+.whiz div.chartClearFilterButton.timeFilter{
+    float: left;
+    margin: 1px 0px 0px 5px;
+}
+.whiz div.whizChart[filtered_row=true] div.chartClearFilterButton.rowFilter{
+    display:inline-block;
+}
+.whiz div.whizChart[filtered_time=true] div.chartClearFilterButton.timeFilter{
+    display:inline-block;
+}
+.whiz div.whizChart[filtered_range=true] div.chartClearFilterButton.rangeFilter{
+    display:inline-block;
+}
+
+.whiz img.chartRowLabelSearch{
+    float: right;
+    clear: right;
+    padding-top: 3px;
+}
+.whiz div.whizChart input.chartRowLabelSearch{
+    float: right;
+    text-align: right;
+    font-size: 0.7em;
+    font-weight: 700;
+    border-width: 0px;
+    padding: 1px 4px 1px 1px;
+    border-width:0px;
+    color: #cb5454;
+    background-color:rgba(244, 244, 244,0);
+    pointer-events: all;
+/*    border-bottom: dashed 1px #cb5454; */
+}
+.whiz div.whizChart input.chartRowLabelSearch:focus{
+    outline-color: gray;
+    outline-width: 4px;
+}
+
+.whiz div.whizChart input.chartRowLabelSearch:hover{
+    border: solid 1px #cb5454;
+    padding: 0px 3px 0px 0px;
+    background-color: white;
+}
+
+div.whizChart{
+    display:inline-block;
+    float:right;
+    clear:right;
+/*    border-top: solid 1px lightgray;
+    margin-top: -3px;
+    padding-top: 2px;*/
+}
+
+
+
+.whiz g.scrollGroup text.scroll_display_more{
+    font-size: 0.7em;
+    font-style:italic;
+    cursor: pointer;
+    fill: gray;
+    opacity:1;
+    text-anchor:end;
+}
+.whiz g.barChart.revert g.scrollGroup text.scroll_display_more{
+    text-anchor:start;
+}
+
+.whiz g.scrollGroup text.scroll_display_more[highlight=true]{
+    fill: #cb5454;
+}
+
+.whiz text.textButton{
+    cursor:pointer;
+}
+
+div.listColumnRow div.listcell{
+    float:left;
+}
+
+
+/**************************************************************************
+ * Info popup
+ ************************************************************************** */
+ /* http://codepen.io/collection/nLcqo */
+
+.white-popup {
+    position: relative;
+    background: #FFF;
+    padding: 20px;
+    width: auto;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+/* fade animation */
+.mfp-fade.mfp-bg {
+    opacity: 0;
+    -webkit-transition: all 0.15s ease-out;
+    -moz-transition: all 0.15s ease-out;
+    transition: all 0.15s ease-out;
+}
+.mfp-fade.mfp-bg.mfp-ready {
+    opacity: 0.8;
+}
+.mfp-fade.mfp-bg.mfp-removing {
+    opacity: 0;
+}
+.mfp-fade.mfp-wrap .mfp-content {
+    opacity: 0;
+    -webkit-transition: all 0.15s ease-out;
+    -moz-transition: all 0.15s ease-out;
+    transition: all 0.15s ease-out;
+}
+.mfp-fade.mfp-wrap.mfp-ready .mfp-content {
+    opacity: 1;
+}
+.mfp-fade.mfp-wrap.mfp-removing .mfp-content {
+    opacity: 0;
+}
+
+/* 3d animation */
+.mfp-3d-unfold .mfp-content {
+    -webkit-perspective: 2000px;
+}
+/* start state */
+.mfp-3d-unfold .mfp-with-anim {
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    -webkit-transform-style: preserve-3d;
+    -webkit-transform: rotateY(-60deg);
+}
+.mfp-3d-unfold.mfp-bg {
+    opacity: 0;
+    transition: all 0.5s;
+}
+/* animate in */
+.mfp-3d-unfold.mfp-ready .mfp-with-anim {
+    opacity: 1;
+    -webkit-transform: rotateY(0deg);
+}
+.mfp-3d-unfold.mfp-ready.mfp-bg {
+    opacity: 0.8;
+}
+  
+/* animate out */
+.mfp-3d-unfold.mfp-removing .mfp-with-anim {
+    -webkit-transform: rotateY(60deg);
+    opacity: 0;
+}
+.mfp-3d-unfold.mfp-removing.mfp-bg {
+    opacity: 0;
+}
+
+
+
+
+
+.whiz div.RangeChart{
+}
+
+.whiz div.RangeChart .sliderGroup{
+    position:relative;
+    top:18px;
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+}
+
+.whiz .ui-rangeSlider{
+    padding-top:0px;
+    height: 18px;
+}
+
+.whiz .ui-rangeSlider-container{
+    top: 6px;
+    height: 4px;
+    border-radius: 0px !important;
+    border-left: solid 0px #515862 !important;
+    border-right: solid 1px #515862 !important;
+    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#C1C4C9),color-stop(100%,#DBDDE6));
+}
+
+.whiz .ui-rangeSlider-innerBar{
+    top: -7px !important;
+    overflow: visible;
+}
+.whiz .ui-rangeSlider-arrow{
+    height: 17px;
+}
+.whiz .ui-rangeSlider-handle{
+    height: 20px;
+}
+.whiz .ui-rangeSlider-bar{
+    height: 12px;
+    opacity: 0.9;
+    top: -5px !important;
+}
+.whiz .ui-rangeSlider-label{
+    font-size: 0.7em;
+    padding: 3px 5px 2px 5px;
+    bottom: 0px;
+    top: 0px;
+}
+.whiz .ui-rangeSlider-label-inner{
+    display: none;
+}
+.whiz .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-inner{
+    font-size: 0.6em;
+    height:16px;
+    color: black;
+    border-left: 1px solid #646464;
+    padding-left: 0px;
+    margin-top: 1px;
+}
+.whiz .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-label{
+    bottom: -14px;
+}
+.whiz .ui-rangeSlider .ui-ruler-tick{
+}
+
+
+
+
+.project_fund {
+    font-size: 0.9em;
+    font-style: italic;
+}
+.credits_features {
+    margin-top: 4px;
+    padding-left: 20px;
+}

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Petroleum Spills &ge; 1 Barrel from OCS Oil & Gas Activities</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="./jquery/jquery-1.7.1.min.js"></script>
+        <script src="./jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script src="./jquery/jQAllRangeSliders-withRuler-min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+		<link rel="stylesheet" type="text/css" href="./keshif.css"/>
+        <link rel="stylesheet" href="./jquery/iThing-min.css">  
+
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+
+        <script src="moment.min.js"></script> 
+<script type="text/javascript">
+
+var spillsCol;
+
+function getDate(d){
+    var dt=d.data[1];
+    if(dt.getUTCFullYear) { return dt;}
+    var m=moment(d.data[1],["YYYY-MM-DD"]);
+    dt = new Date(m);
+    return dt;
+}
+
+function getSource(spill){
+    if(spill.data[spillsCol["Platform / Rig"]]!==null){ return "Platform / Rig"; }
+    if(spill.data[spillsCol["Pipeline"]]!==null){ return "Pipeline"; }
+    if(spill.data[spillsCol["Vessel"]]!==null){ return "Vessel"; }
+    return "Unknown";
+}
+function getMaterial(spill){
+    var toRet=[];
+    if(spill.data[spillsCol["Crude & Condensate"]]!==0) toRet.push("Crude & Condensate");
+    if(spill.data[spillsCol["Refined Petroleum"]]!==0) toRet.push("Refined Petroleum");
+    if(spill.data[spillsCol["Synthetic Base Fluid"]]!==0) toRet.push("Synthetic Base Fluid");
+    if(spill.data[spillsCol["Other Chemicals"]]!==0) toRet.push("Other Chemicals");
+    return toRet;
+}
+
+
+function resetSize(){
+    $('#whizChartId').height($(window).height()-10);
+    $('#whizChartId').width (1100);
+//    $('#chart_div4').height(730);
+//    $('#chart_div4').width (900);
+}
+
+function loadChart() {
+    
+    resetSize();
+    $(window).resize(function() {
+        resetSize();
+        whiz.updateLayout();
+    });
+
+	whiz.init({
+        chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
+        domID : "#whizChartId",
+                itemName : "spills",
+        categoryTextWidth: 200,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
+            sheets : [ 
+                {name:"Spills"},
+                {name:"Notes"},
+                {name:"Districts"} 
+            ]
+        },
+        loadedCb: function(){
+            spillsCol = whiz.dt_ColNames.Spills;
+
+            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Causes], ", ", false);
+            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
+            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Activity], /\/\s*/, false);
+        },
+        charts : [
+            {
+                chartTitle: "Size",
+                timeTitle: "Date",
+                itemMapFunc : function(spill){ return spill.data[spillsCol.Size]; },
+                sortingFuncs : [{ 
+                    func:whiz.filter_AciveItems_TotalItems,
+                    no_resort: true
+                }],
+                itemXPos : getDate,
+                filter: { rowConj: 'of size' },
+            },{
+                chartTitle: "Source",
+                itemMapFunc : getSource,
+                filter: { rowConj: 'from', rowGroupName: 'sources' }
+            },{
+                chartTitle: "Material",
+                itemMapFunc : getMaterial,
+                collapsed: true,
+                filter: { rowConj: 'from', rowGroupName: 'sources' }
+            }/*
+            whiz.addRangeChart({
+                chartTitle: "Water Depth",
+                itemMapFunc :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
+                filter: { unit: 'feet' }
+            });*/,{
+                chartTitle: "During Activity",
+                itemMapFunc : function(spill){ return spill.data[spillsCol["Activity"]] },
+                filter: { rowConj: 'during' }
+            },{
+                chartTitle: "Cause",
+                itemMapFunc : function(spill){ return spill.data[spillsCol["Causes"]] },
+                filter: { rowConj: 'because of', rowGroupName: 'causes' }
+            },{
+                chartTitle: "Company",
+                itemMapFunc : function(spill){ return spill.data[spillsCol["Company Name"]]},
+                filter: { rowConj: 'by', rowGroupName: ' companies' }
+            },{
+                chartTitle: "Other Properties",
+                tableName: "Notes",
+                itemMapFunc : function(spill){ return spill.data[spillsCol["Notes"]]},
+                collapsed: true,
+                filter: { rowConj: '', rowGroupName: 'other properties' }
+            },{
+                chartTitle: "District",
+                tableName: "Districts",
+                itemMapFunc : function(spill){ return spill.data[spillsCol["District"]] },
+                collapsed: true,
+                filter: { rowConj: 'at' }
+            }
+        ],
+        list: {
+            columns : [
+                {   name: 'Date',
+                    width: 50,
+                    value: function(d){ 
+                        var date=getDate(d);
+                        date = new Date(date.getUTCFullYear(), date.getUTCMonth());
+                        return date.getTime(); 
+                    },
+                    value_type : 'date',
+                    label: function(d){ 
+                        var date=getDate(d);
+                        return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
+                    }
+                },
+                {   name: 'Size',
+                    width: 50,
+                    value: function(d){ return d.data[spillsCol.Size]; },
+                    value_type : 'string'
+                }
+            ],
+            contentFunc : function(d){
+                var j;
+                var str="";
+                // location
+                var district=whiz.dt_id.Districts[d.data[spillsCol["District"]]];
+                if(district) district = district.data[1];
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data[spillsCol["Company Name"]]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
+                    +" <u>District</u>:"+district
+                    +" - <u>Area Block</u>:"+d.data[spillsCol["Area Block"]]
+                    +" - <u>Water Depth</u>:"+d.data[spillsCol["Water Depth (feet)"]]+"feet"
+                    +" - <u>Distance to Shore</u>:"+d.data[spillsCol["Distance to Shore (miles)"]]+"miles"
+                    +"</div>";
+                // Spillage
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
+                str+=" <u>Total</u>:"+d.data[spillsCol["Total Spilled"]];
+                str+=" <u>Crude & Condensate</u>:"+d.data[spillsCol["Crude & Condensate"]];
+                str+=" <u>Refined Petroleum</u>:"+d.data[spillsCol["Refined Petroleum"]];
+                str+=" <u>Synthetic Base Fluid</u>:"+d.data[spillsCol["Synthetic Base Fluid"]];
+                str+=" <u>Other Chemicals</u>:"+d.data[spillsCol["Other Chemicals"]];
+                str+="</div>"
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>";
+                for(j=0; j<d.data[spillsCol.Causes].length; j++){
+                    str+=d.data[spillsCol.Causes][j]+", ";
+                }
+                str+="</div>";
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource(d)
+                    +" <b>Facility:</b> "+ d.data[spillsCol["Facility"]]
+                    +"</div>";
+                return str;
+            }
+        }
+    });
+
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+#whizChartId {
+    margin: 0 auto;
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+	<body>
+		<div id="whizChartId"></div>
+	</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Teaching Assistnat Evaluations</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+		<link rel="stylesheet" type="text/css" href="./keshif.css"/>
+
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+
+<script type="text/javascript">
+
+function performanceText(d){
+    switch(d){
+        case 1: return "High";
+        case 2: return "Medium";
+        case 3: return "Low";
+        default: return "-";
+    }
+}
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height($(window).height()-45);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').height($(window).height()-45);
+        $('#chart_div4').width ($(window).width()*0.9);
+        whiz.updateLayout();
+    });
+
+    var TA_cols;
+
+	whiz.init({
+        chartTitle: "Teaching Assistant Evaluations",
+        domID : "#chart_div4",
+        categoryTextWidth:190,
+        itemName : "assistants",
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdEgtRFNsNU9LNTNPanFSUjVyTHlOU2c',
+            sheets : [ {name:"TAs"}, {name:"Instructors"} ]
+        },
+        loadedCb: function(){
+            TA_cols = whiz.dt_ColNames.TAs;
+        },
+        charts: [
+            {
+                chartTitle: "Performance",
+                itemMapFunc : function(ast){ return ast.data[TA_cols.Performance]; },
+                rowLabelText: function(d) { return performanceText(d.data[1]); },
+                filter: { rowConj: 'performance' },
+            },{
+                chartTitle: "Native Speaker",
+                itemMapFunc : function(ast){return ast.data[TA_cols.Native_Speaker]; },
+                rowLabelText: function(d) { 
+                    if(d.data[1]===1) { return "Yes"; }
+                    if(d.data[1]===2) { return "No"; }
+                },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Instructor",
+                itemMapFunc : function(ast){return ast.data[TA_cols.Instructor]; },
+                rowLabelText: function(d) { return whiz.dt_id.Instructors[d.data[1]].data[1];},
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Course",
+                itemMapFunc : function(ast){return ast.data[TA_cols.Instructor]; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Semester",
+                itemMapFunc : function(ast){return ast.data[TA_cols.Semester]; },
+                rowLabelText: function(d) { 
+                    if(d.data[1]===1) { return "Summer"; }
+                    if(d.data[1]===2) { return "Regular"; }
+                },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Class Size",
+                itemMapFunc : function(ast){return Math.floor(ast.data[TA_cols.Class_Size]/5); },
+                rowLabelText: function(d) { return d.data[1]*5;},
+                sortingFuncs: [{
+                     no_resort: true,
+                     func:function(a,b){ 
+                         return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); // X GB
+                     }
+                     }],
+               filter: { rowConj: 'at' }
+            }
+        ],
+        list:{
+            columns : [
+                {   name: 'Performance',
+                    width: 90,
+                    value: function(ast){ return ast.data[TA_cols.Performance]; },
+                    value_type : 'number',
+                    label: function(ast){ return performanceText(ast.data[TA_cols.Performance]); },
+                }
+            ],
+            textSearch : function (ast) { return ast.data[TA_cols.Name]; },
+            contentFunc : function(ast){
+                var j;
+                var str="";
+                // description
+                    str+="<div class=\"iteminfo iteminfo_1\">"+ast.data[TA_cols.Name];
+                    str+="</div>";
+                return str;
+            }
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>

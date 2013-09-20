@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Publication Browser</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="./keshif.css"/>
+
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+<script type="text/javascript">
+/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
+/*global google */
+
+var BEDERSON_ID = 3;
+
+function resizeChart(){
+    $('#chart_div4').height($(window).height()-65);
+    $('#chart_div4').width ($(window).width()-29);
+}
+
+function loadChart() {
+    resizeChart();
+    // set resize callback
+    $(window).resize(function() {
+        resizeChart();
+        whiz.updateLayout();
+    });
+
+    var authorCol, pubCol, keywordCol;
+
+    // set height of the source dom as 
+    var whizOptions={
+//        chartTitle: "Publications of Ben Bederson",
+        domID : "#chart_div4",
+        itemName : "publications",
+        listMaxColWidthMult: 0.4,
+        categoryTextWidth:190,
+        source : {
+            // google spreadsheet ID
+            gdocId : '0Ai6LdDWgaqgNdHk5SGF1SDdMd1hOMUc1elZHRHI3WkE',
+            // the sheets to load from the spreadsheet
+            sheets : [
+                {name: "Publications",query:"select A,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R"},
+                {name: "Venues"},
+                {name: "Authors"},
+                {name: "Keywords"},
+                {name: "VenueTypes"},
+                {name: "AuthorTypes"}
+            ]
+        },
+        loadedCb: function(){
+            var i,p,t;
+
+            authorCol = whiz.dt_ColNames.Authors;
+            pubCol = whiz.dt_ColNames.Publications;
+            keywordCol = whiz.dt_ColNames.Keywords;
+            
+            // convert authors and keywords columns in publication table ( space separated IDs) to array
+            whiz.cellToArray(whiz.dt.Publications, [pubCol.authors, pubCol.keywords]);
+
+            // remove ben bederson from author list, once and for all!
+            for(i=0; i<whiz.dt.Publications.length; i++){
+                var authors = whiz.dt.Publications[i].data[pubCol.authors];
+                newAuthors = [];
+                for(j=0 ; j<authors.length ; j++){
+                    if(authors[j]===BEDERSON_ID) continue;
+                    newAuthors.push(authors[j]);
+                }
+                whiz.dt.Publications[i].data[pubCol.authors] = newAuthors;
+            }
+        },
+        charts : [
+            {
+                chartTitle: "Topic",
+                tableName: "Keywords",
+                itemMapFunc : function(pub){ return pub.data[pubCol.keywords]; },
+                rowLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
+                singleSelect:true,
+                sortingFuncs : [
+                    {   name: "Last pub.", 
+                        func: function(a, b){
+                            if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
+                                return b.xMax_Dyn - a.xMax_Dyn;
+                            }
+                            if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
+                                return b.xMax - a.xMax;
+                            }
+                            if(b.xMax_Dyn===undefined){ return -1; }
+                            return 1;
+                        }
+                    },
+                    {   name: "First pub.", 
+                        func: function(a, b){
+                            if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
+                                return a.xMin_Dyn - b.xMin_Dyn;
+                            }
+                            if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
+                                return a.xMin - b.xMin;
+                            }
+                            if(b.xMin_Dyn===undefined){ return -1; }
+                            return 1;
+                        }
+                    },
+                    {   name:"# of Pub.", 
+                        func: function(a, b){
+                            var dif = whiz.dif_activeItems(a,b);
+                            if(dif!==0) { return dif; }
+                            return a.data[keywordCol.keyword].localeCompare(b.data[keywordCol.keyword]);
+                        }
+                    }
+                ],
+                filter : { rowConj: 'about', rowGroupName: 'categories' },
+                timeTitle: "Publication Year",
+                itemXPos : function(pub){ return pub.data[pubCol.time]; }
+            },{
+                chartTitle: "Coauth. Type",
+                tableName: "AuthorTypes",
+                itemMapFunc : function(pub){
+                    var typeList = {};
+                    var r = [];
+                    var authors = pub.data[pubCol.authors];
+                    for(i=0; i<authors.length; i++){
+                        var autData=whiz.dt_id.Authors[authors[i]];
+                        var typeID = autData.data[3];
+                        if(!typeList[typeID]){
+                            typeList[typeID] = true;
+                            r.push(typeID);
+                        }
+                    }
+                    return r;
+                },
+                barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
+                barInfoText: "Color:Coauth. type",
+                filter: { rowConj: 'with', rowGroupName: 'coauthor types' }
+            },{
+                chartTitle: "Coauthor",
+                tableName: "Authors",
+                itemMapFunc : function(pub){ return pub.data[pubCol.authors]; },
+                rowLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
+                rowTitleText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
+                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
+                sortingFuncs : [
+                    {   name: "# of Pub.", 
+                        func:function(a1, a2){
+                            // active item count first
+                            var dif = whiz.dif_activeItems(a1,a2);
+                            if(dif!==0) { return dif; }
+                            // activeItems : second
+                            dif = a2.items.length - a1.items.length;
+                            if(dif!==0) { return dif; }
+                            // author type second
+                            dif = a2.data[authorCol.author_type].localeCompare(a1.data[authorCol.author_type]);
+                            if(dif!==0) { return dif; }
+                            // author name third
+                            return -1*a2.data[authorCol.last_name].localeCompare(a1.data[authorCol.last_name]);
+                        }
+                    }
+                ],
+                barInfoText: "Color:Coauth. type",
+                textSearch: true,
+                filter: { rowConj: 'with', rowGroupName: 'coauthors' }
+            },{
+                chartTitle: "Pub. Type",
+                tableName: "VenueTypes",
+                itemMapFunc : function(pub){ return pub.data[pubCol.pub_type]; },
+                filter: { rowConj: 'as', rowGroupName: 'types' }
+            }
+        ],
+        list : {
+            columns : [
+                {   name: 'Year',
+                    width: 72,
+                    value: function(d){ return d.data[pubCol.time].getFullYear(); },
+                    value_type: 'number'
+                },
+                {   name: 'Pub. Type',
+                    width: 72,
+                    value_type: 'string',
+                    value: function(d){ 
+                        return whiz.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1]; 
+                    }
+                },
+                {   name: 'Venue',
+                    width: 85,
+                    value: function(d){ return d.data[pubCol.venue]; },
+                    value_type : 'number',
+                    label: function(d){ 
+                        return whiz.dt_id.Venues[d.data[pubCol.venue]].data[1]; 
+                    },
+                    title: function(d){ 
+                        return whiz.dt_id.Venues[d.data[pubCol.venue]].data[0]; 
+                    }
+                }
+            ],
+            textSearch : function (pub) { return pub.data[pubCol.title]; },
+            contentFunc : function(d){
+                var j;
+                var str="";
+                // thumbnail
+                if(d.data[pubCol.img]) { 
+                    str+="<div class=\"thumbnail\">";
+                    var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
+                    if(d.data[pubCol.pdf].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\">"+strImg+"</a>";
+                    } else {
+                        str+=strImg;
+                    }
+                    str+="</div>";
+
+                    str+="<div class=\"thumbnail2\">";
+                    var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
+                    if(d.data[pubCol.pdf].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\">"+strImg+"</a>";
+                    } else {
+                        str+=strImg;
+                    }
+                    str+="</div>";
+                }
+            
+                // paper name
+                    str+="<div class=\"iteminfo iteminfo_0\">";
+                    if(d.data[pubCol.url].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\">"+d.data[pubCol.title]+"</a>";
+                    } else {
+                        str+=d.data[pubCol.title];
+                    }
+                    str+="</div>";
+                // author names
+                var authors = d.data[pubCol.authors];
+                    str+="<div class=\"iteminfo iteminfo_1\">";
+                    for(j=0; j<authors.length; j++){
+                        var authData=whiz.dt_id.Authors[authors[j]].data;
+                        if(authData[authorCol.id]===BEDERSON_ID) { str+="<b>"; }
+                        str+=authData[authorCol.first_names]+" "+authData[authorCol.last_name];
+                        if(authData[authorCol.id]===BEDERSON_ID) { str+="</b>"; }
+                        if(j!==authors.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                // venue + details
+                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol.time].getFullYear()+"]</b> "+whiz.dt_id.Venues[d.data[pubCol.venue]].data[0];
+                    if(d.data[pubCol.details].trim()!=="") {
+                        str+=" - " + d.data[pubCol.details];
+                    }
+                    str+="</div>";
+                // keywords
+                    str+="<div class=\"iteminfo iteminfo_2\"> About: ";
+                    var cats = d.data[pubCol.keywords];
+                    for(j=0; j<cats.length; j++){
+                        str+=whiz.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
+                        if(j!==cats.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                // award
+                    if(d.data[pubCol.award]!==""){
+                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data[pubCol.award]+"</div>";
+                    }
+                return str;
+            }
+        }
+    };
+	whiz.init(whizOptions);
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+
+</script>
+<style>
+
+#chart_div4 rect.bar_style_coauthor_FA{ fill: #4D8B4D; }
+#chart_div4 rect.bar_style_coauthor_ST{ fill: #FCC240; }
+#chart_div4 rect.bar_style_coauthor_RE{ fill: #BF4B31; }
+#chart_div4 rect.bar_style_coauthor_IN{ fill: #4B3929; }
+
+div.listItem div.thumbnail{
+    float:right;
+    color:#666666;
+    display:none
+}
+div.thumbnail img{
+    max-height:80px;
+    border: solid 1px gray;
+}
+
+div.listItem div.thumbnail2{
+    float:right;
+    display: inline-block;
+    color:#666666;
+}
+div.thumbnail2 img{
+    max-height:70px;
+    border: solid 1px gray;
+}
+
+#chart_div4 {
+    background-color: white;
+}
+
+#pagecell{
+    position: relative;
+    top: 10px;
+    left: 10px;
+    right: 2%;
+    width: 98%;
+    background-color: #ffffff;
+}
+
+body {
+    font-family: Arial,sans-serif;
+    color: #333333;
+    margin: 0px;
+    padding: 0px;
+    background: #71828a; /* Old browsers */
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71828A), color-stop(1, #C5CFD0));
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #71828A 0%, #C5CFD0 100%);
+}
+
+#pageName {
+    padding: 0px 0px 14px 10px;
+    margin: 0px;
+    border-bottom: 1px solid #ccd2d2;
+}
+
+#pageName h2 {
+    font: bold 175% Arial,sans-serif;
+    color: #000000;
+    margin: 0px;
+    padding: 0px;
+}
+
+#pageName img {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 0px;
+    margin: 0px;
+    z-index:2;
+}
+
+#pageName a:link, a:visited{
+    color: #005FA9;
+    text-decoration: none;
+}
+
+#pageName a:hover{
+    text-decoration: underline;
+}
+
+
+</style>
+	</head>
+
+<body>
+    <div id="pagecell">
+        <div id="pageName">
+            <h2>
+            <a href="../index.html">Ben Bederson</a>
+            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>
+            </h2>
+        </div>
+    	<div id="chart_div4"></div>
+    </div>
+</body>
+</html>
