@@ -113,27 +113,19 @@ whiz.Item.prototype.updateSelected = function(){
     return this.selected;
 };
 whiz.Item.prototype.highlightAttributes = function(){
-    for(i=0; i< this.mappedRows.length; i++){
-        var chartMapping=this.mappedRows[i];
-        if(chartMapping === undefined) continue;
-        for(var j=0; j<chartMapping.length; j++){
-            chartMapping[j].itemhighlight = true;
-        }
-    }
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',true);
     }
+    for(i=0; i<this.cats.length; i++){
+        this.cats[i].setAttribute('itemhighlight',true);
+    }
 }
 whiz.Item.prototype.nohighlightAttributes = function(){
-    for(i=0; i< this.mappedRows.length; i++){
-        var chartMapping=this.mappedRows[i];
-        if(chartMapping === undefined) continue;
-        for(var j=0; j<chartMapping.length; j++){
-            chartMapping[j].itemhighlight = false;
-        }
-    }
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',false);
+    }
+    for(i=0; i<this.cats.length; i++){
+        this.cats[i].setAttribute('itemhighlight',false);
     }
 }
 
@@ -173,6 +165,7 @@ whiz.convertToArray = function(dataTable,sheetID,isPrimary){
             arr[r].mappedRows = [true];
             arr[r].mappedData = [true];
             arr[r].dots = [];
+            arr[r].cats = [];
         }
 	}
     return arr;
@@ -286,6 +279,7 @@ whiz.loadSheet_File = function(sheet){
                         item.mappedRows = [true];
                         item.mappedData = [true];
                         item.dots = [];
+                        item.cats = [];
                     }
                     arr.push(item);
                 }
@@ -467,18 +461,17 @@ whiz.list = function(config, root){
                 $(x).parent().children("span").css('display',(v==='')?'none':'inline-block');
                 var v=v.split(" ");
 
-                // go over all the items in the list
-                me.dom.listItems
-                    .each(function(item){
-                        var i=0
-                        var f = true;
-                        for(i=0 ; i<v.length; i++){
-                            f = f && config.textSearch(item).toLowerCase().indexOf(v[i])!==-1;
-                            if(f===false) break;
-                        }
-                        item.filters[0] = f;
-                        item.updateSelected();
-                    });
+                // go over all the items in the list, search each keyword separately
+                me.dom.listItems.each(function(item){
+                    var i=0
+                    var f = true;
+                    for(i=0 ; i<v.length; i++){
+                        f = f && config.textSearch(item).toLowerCase().indexOf(v[i])!==-1;
+                        if(f===false) break;
+                    }
+                    item.filters[0] = f;
+                    item.updateSelected();
+                });
                 whiz.update();
                 x.timer = null;
             }, 750);
@@ -730,12 +723,10 @@ whiz.list.prototype.insertItems = function(){
         })
         .on("mouseover",function(d,i){
             d.highlightAttributes();
-            whiz.updateHighlight();
         })
         .on("mouseout",function(d,i){
             // find all the things that 
             d.nohighlightAttributes();
-            whiz.updateHighlight();
         })
     ;
 };
@@ -951,13 +942,6 @@ whiz.update = function () {
     this.root.select("span.filter-block-clear")
         .style("display",(filteredCount>1)?"inline-block":"none");
 };
-
-whiz.updateHighlight = function(){
-    for (i=0; i<this.charts.length; ++i){
-        var chart = whiz.charts[i];
-        chart.updateSelfHighlight();
-    }
-}
 
 whiz.dif_activeItems = function(a,b){
 	return b.activeItems - a.activeItems;
@@ -1509,6 +1493,12 @@ whiz.BarChart.prototype.init_shared2 = function(){
 		.data(this.getData(), this._dataMap)
 	  .enter().append("svg:g")
 		.attr("class", "row")
+        .each(function(d){
+            var items = d.items;
+            for(var i=0; i<items.length; i++){
+                items[i].cats.push(this);
+            }
+        })
 		;
     this.dom.g_row = this.root.selectAll('g.row');
 	this.root
@@ -1564,16 +1554,6 @@ whiz.BarChart.prototype.updateSelf = function(){
     }
     this.refreshBarDisplay();
 	this.updateSorting();
-};
-whiz.BarChart.prototype.updateSelfHighlight = function(){
-    var whiz_ = this;
-    this.dom.g_row.each(function(d) {
-        if(d.itemhighlight){
-            this.setAttribute('itemhighlight',true)
-        } else {
-            this.setAttribute('itemhighlight',false)
-        }
-    });
 };
 
 whiz.BarChart.prototype.updateData_TimeMinMax = function(){
