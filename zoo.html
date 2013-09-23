@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Zoo Animals</title>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+		<link rel="stylesheet" type="text/css" href="./keshif.css"/>
+
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+
+<script type="text/javascript">
+
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height(1000);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').width ($(window).width()*0.9);
+        kshf.updateLayout();
+    });
+    
+    var animalCol;
+
+	kshf.init({
+        chartTitle: "Animals in Zoo",
+        domID : "#chart_div4",
+        itemName : "Animals",
+        categoryTextWidth:150,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
+            sheets : [ {name:"Animals"} ]
+        },
+        loadedCb: function(){
+            animalCol = kshf.dt_ColNames.Animals;
+        },
+        charts: [
+            {
+                chartTitle: "# Legs",
+                itemMapFunc : function(animal){ return animal.data[animalCol.legs]; },
+                filter: { rowConj: '# legs'}
+            },{
+                chartTitle: "Has Tail",
+                itemMapFunc : function(animal){return animal.data[animalCol.tail]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Has Hair",
+                itemMapFunc : function(animal){return animal.data[animalCol.hair]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Feathers",
+                itemMapFunc : function(animal){return animal.data[animalCol.feathers]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Backbone",
+                itemMapFunc : function(animal){return animal.data[animalCol.backbone]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Domestic",
+                itemMapFunc : function(animal){return animal.data[animalCol.domestic]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Has Eggs",
+                itemMapFunc : function(animal){return animal.data[animalCol.eggs]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Has Milk",
+                itemMapFunc : function(animal){return animal.data[animalCol.milk]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Aquatic",
+                itemMapFunc : function(animal){return animal.data[animalCol.aquatic]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Airborn",
+                itemMapFunc : function(animal){return animal.data[animalCol.airborn]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            },{
+                chartTitle: "Venomous",
+                itemMapFunc : function(animal){return animal.data[animalCol.venomous]; },
+                rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
+                filter: { rowConj: 'at' }
+            }
+        ],
+        list:{
+            columns : [
+                {   name: 'Name',
+                    width: 50,
+                    value: function(animal){ return animal.data[animalCol.name][0]; },
+                    value_type : 'string'
+                }
+            ],
+            textSearch : function(animal){ return animal.data[animalCol.name]; },
+            contentFunc : function(d){
+                var j;
+                var str=d.data[animalCol.name];
+                return str;
+            }
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>
