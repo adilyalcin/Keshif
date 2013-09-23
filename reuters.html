@@ -24,12 +24,12 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var newsCol,peopleCol,topicsCol;
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Reuters 1987 News Dataset",
         domID : "#chart_div4",
         itemName : "News stories",
@@ -43,10 +43,10 @@ function loadChart() {
             ]
         },
         loadedCb: function(){
-            newsCol = whiz.dt_ColNames.News;
-            peopleCol = whiz.dt_ColNames.People;
-            topicsCol = whiz.dt_ColNames.Topics;
-            whiz.cellToArray(whiz.dt.News, [newsCol.people, newsCol.places, newsCol.topics], /\b,/, false);
+            newsCol = kshf.dt_ColNames.News;
+            peopleCol = kshf.dt_ColNames.People;
+            topicsCol = kshf.dt_ColNames.Topics;
+            kshf.cellToArray(kshf.dt.News, [newsCol.people, newsCol.places, newsCol.topics], /\b,/, false);
         },
         charts:[
             {
@@ -58,7 +58,7 @@ function loadChart() {
                     var cats= {};
                     for(var i=0; i<topics.length; i++){
                         var t=topics[i];
-                        var tDt=whiz.dt_id.Topics[t];
+                        var tDt=kshf.dt_id.Topics[t];
                         if(tDt) cats[tDt.data[1]] = true;
                     }
                     var toRet=[]
@@ -82,9 +82,9 @@ function loadChart() {
             },{
                 chartTitle: "People",
                 itemMapFunc : function(news){return news.data[newsCol.people]; },
-                rowLabelText: function(d) { return whiz.dt_id.People[d.data[1]].data[peopleCol.Name]; },
+                rowLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
                 rowTitleText: function(d) { 
-                    var p = whiz.dt_id.People[d.data[1]];
+                    var p = kshf.dt_id.People[d.data[1]];
                     return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
                 },
                 filter: { rowConj: 'about' }

@@ -41,10 +41,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
-    var whizOptions={
+    var kshfOptions={
         chartTitle: "Transactions In Major League Baseball (trade, Signing, Draft, Etc.)",
         domID : "#chart_div4",
         itemName : "transactions",
@@ -86,7 +86,7 @@ function loadChart() {
                 itemMapFunc : function(tr){
                     var x=tr.data[4];
                     if(x==="") return null;
-                    return whiz.dt_id.baseball_teams_1[x].data[2];
+                    return kshf.dt_id.baseball_teams_1[x].data[2];
                 },
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
@@ -105,7 +105,7 @@ function loadChart() {
                 itemMapFunc : function(tr){
                     var x=tr.data[5];
                     if(x==="") return null;
-                    return whiz.dt_id.baseball_teams_1[x].data[2];
+                    return kshf.dt_id.baseball_teams_1[x].data[2];
                 },
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
@@ -145,14 +145,14 @@ function loadChart() {
                 // full date
                     str+="<div class=\"iteminfo iteminfo_1\">Full date: "+d.data[0];
                 // type
-                    str+="   Type: "+whiz.dt_id.baseball_trantype[d.data[3]].data[1]+"</div>";
+                    str+="   Type: "+kshf.dt_id.baseball_trantype[d.data[3]].data[1]+"</div>";
                 // team from & to
                     str+="<div class=\"iteminfo iteminfo_1\">Teams: From "+d.data[4]+" to "+d.data[5]+"</div>";
                 return str;
             }
         }
     };
-	whiz.init(whizOptions);
+	kshf.init(kshfOptions);
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

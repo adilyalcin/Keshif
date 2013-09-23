@@ -23,12 +23,12 @@ function loadChart() {
     // set resize callback
     $(window).resize(function() {
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
     
     var animalCol;
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Animals in Zoo",
         domID : "#chart_div4",
         itemName : "Animals",
@@ -38,7 +38,7 @@ function loadChart() {
             sheets : [ {name:"Animals"} ]
         },
         loadedCb: function(){
-            animalCol = whiz.dt_ColNames.Animals;
+            animalCol = kshf.dt_ColNames.Animals;
         },
         charts: [
             {

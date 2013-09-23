@@ -46,13 +46,13 @@ function loadChart() {
     // set resize callback
     $(window).resize(function() {
         resetSize();
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var prizeCols;
     var lautCols;
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Nobel Prize Winners",
         domID : "#chart_div4",
         categoryTextWidth: 206,
@@ -62,8 +62,8 @@ function loadChart() {
             sheets : [ {name:"prizes"}, {name:"countries"},{name:"laureate"} ]
         },
         loadedCb: function(){
-            prizeCols = whiz.dt_ColNames.prizes;
-            lautCols = whiz.dt_ColNames.laureate;
+            prizeCols = kshf.dt_ColNames.prizes;
+            lautCols = kshf.dt_ColNames.laureate;
         },
         charts : [
             {
@@ -75,7 +75,7 @@ function loadChart() {
             }, {
                 chartTitle: "Gender",
                 itemMapFunc : function(prize){ 
-                    var laureate = whiz.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.gender];
                 },
                 rowLabelText: function(d) { return getGender(d.data[1]); },
@@ -83,14 +83,14 @@ function loadChart() {
             }, {
                 chartTitle: "Born Country",
                 itemMapFunc : function(prize){ 
-                    var laureate = whiz.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.bornCountry];
                 },
                 filter: { rowConj: 'from' }
             }, {
                 chartTitle: "Affiliation",
                 itemMapFunc : function(prize){ 
-                    var laureate = whiz.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
                 },
                 filter: { rowConj: 'affiliated with' }
@@ -107,7 +107,7 @@ function loadChart() {
                         func:function(a,b){ return b.data[1] -a.data[1]; }
                     },
                     {   name:"Prize count",
-                        func:whiz.filter_AciveItems_TotalItems
+                        func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
                 filter: { rowConj: 'from' }
@@ -122,14 +122,14 @@ function loadChart() {
                 }
             ],
             textSearch : function (d) {
-                var laureate = whiz.dt_id.laureate[d.data[prizeCols.laureate_id]];
+                var laureate = kshf.dt_id.laureate[d.data[prizeCols.laureate_id]];
                 return laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
             },
             textSearchTitle : "laureate names",
             contentFunc : function(d) {
                 var j;
                 var str="";
-                var laureate = whiz.dt_id.laureate[d.data[prizeCols.laureate_id]];
+                var laureate = kshf.dt_id.laureate[d.data[prizeCols.laureate_id]];
                 var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
     //            var imgUrl="http://www.nobelprize.org/nobel_prizes/"+getRawCat(d.data[prizeCols.category])+"/laureates/"+d.data[prizeCols.year]+"/"+surname_short+".jpg";

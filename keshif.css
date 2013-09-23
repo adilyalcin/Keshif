@@ -1,6 +1,6 @@
 /*********************************
 
-whiz library
+kshf library
 
 Copyright (c) 2013, Mehmet Adil Yalcin
 All rights reserved.
@@ -32,17 +32,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
 
- .whizHost{
+ .kshfHost{
     border: solid 1px lightgray;
 }
-.whizHost:hover{
+.kshfHost:hover{
     box-shadow: 0px 0px 4px gray;
 }
-.whizHost:focus{
+.kshfHost:focus{
     outline: none;
 }
 
-.whiz {
+.kshf {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -50,7 +50,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.whiz div.leftBlockBackground{
+.kshf div.leftBlockBackground{
     position: absolute;
     left: 0px;
     background-image: linear-gradient(right, 
@@ -76,7 +76,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     z-index: -20;
     min-height: 100%;
 }
-.whiz div.leftBlockAdjustSize{
+.kshf div.leftBlockAdjustSize{
     position: absolute;
     width:6px;
     margin-left: -10px;
@@ -113,7 +113,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
 }
-.whiz div.leftBlockAdjustSize:hover{
+.kshf div.leftBlockAdjustSize:hover{
 /*    background-color: rgba(155, 151, 133, 0.2);
     border: dashed 1px rgb(187, 172, 123);*/
     border-bottom: solid 1px gray;
@@ -143,7 +143,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(150, 150, 150, 1) 60%, 
         rgba(150, 150, 150, 0) 100%);
 }
-.whiz div.chartAboveSeparator{
+.kshf div.chartAboveSeparator{
     position: relative;
     background-image: linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
@@ -172,109 +172,109 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*    cursor: ns-resize;*/
 }
 
-.whiz rect.selection_bar {
+.kshf rect.selection_bar {
 	fill: #788890;
 	fill-opacity: 0;
 	cursor: col-resize;
     stroke-width:1.5;
     pointer-events: none;
 }
-.whiz rect.selection_bar:hover {
+.kshf rect.selection_bar:hover {
 	stroke: orangered;
 }
-.whiz .whizChart[filtered_time=true] rect.selection_bar{
+.kshf .kshfChart[filtered_time=true] rect.selection_bar{
     fill-opacity: 0.5;
     pointer-events: auto;
 }
-.whiz g.x_axis text{
+.kshf g.x_axis text{
 	font-size: 0.7em;
     font-weight: 300;
 }
-.whiz g.timeAxisGroup text{
+.kshf g.timeAxisGroup text{
 	font-size: 0.8em;
     text-shadow: 1px 1px white;
     font-weight: 300;
 }
-.whiz g.timeAxisGroup line{
+.kshf g.timeAxisGroup line{
 	opacity: 1;
 	stroke-width: 2;
 	stroke: rgb(22, 16, 16);
 }
-.whiz g.timeAxisGroup line.minor{
+.kshf g.timeAxisGroup line.minor{
 	stroke-width: 1;
 	stroke: rgb(256, 0, 0);
 }
 
-.whiz g.timeAxisGroup .filter_handle path{
+.kshf g.timeAxisGroup .filter_handle path{
 	fill: #CFDADF;
 	stroke: #788890;
 	cursor: pointer;
 	stroke-width: 2;
 }
-.whiz g.timeAxisGroup .filter_handle path:hover{
+.kshf g.timeAxisGroup .filter_handle path:hover{
     stroke: orangered;
 }
 
-.whiz g.timeAxisGroup g.filter_handle line{
+.kshf g.timeAxisGroup g.filter_handle line{
 	stroke: gray;
 	stroke-width: 1;
     display:none;
 /*	stroke-dasharray: 3,2;*/
 }
-.whiz g.timeAxisGroup g.filter_handle[filtered=true] line{
+.kshf g.timeAxisGroup g.filter_handle[filtered=true] line{
     display:block;
 }
 
 
-.whiz g.row rect.total {
+.kshf g.row rect.total {
 	fill-opacity:0.2;
 }
-.whiz g.row rect.total {
+.kshf g.row rect.total {
 	cursor: pointer;
 }
-.whiz g.row rect.active {
+.kshf g.row rect.active {
     pointer-events: none;
 }/*
-.whiz g.row rect.timeBar.total {
+.kshf g.row rect.timeBar.total {
     pointer-events: none;
 }
-.whiz g.row rect.timeBar.active {
+.kshf g.row rect.timeBar.active {
 	cursor: pointer;
 }*/
-.whiz g.row g[highlight=true] rect.total{
+.kshf g.row g[highlight=true] rect.total{
 	stroke-width: 2;
 	stroke: orangered;
 }
 /*
-.whiz g.row g[highlight=true] rect.timeBar.active{
+.kshf g.row g[highlight=true] rect.timeBar.active{
 	stroke-width: 2;
 	stroke: orangered;
 }*/
 
-.whiz g.row rect.timeBar {
+.kshf g.row rect.timeBar {
 	fill: #E0E7EB;
 }
-.whiz g.row rect.rowBar {
+.kshf g.row rect.rowBar {
 	fill: #8699A8;
 }
-.whiz g.row rect.timeBar.total{
+.kshf g.row rect.timeBar.total{
 	fill-opacity:0.35;
 }
 
-.whiz .headerHTML {
+.kshf .headerHTML {
     pointer-events:none;
 }
-.whiz .headerGroup span.leftHeader {
+.kshf .headerGroup span.leftHeader {
     display: inline-block;
     float: left;
     pointer-events: all;
 }
-.whiz .headerGroup span.showFilterText{
+.kshf .headerGroup span.showFilterText{
     display: inline-block;
     float: left;
     pointer-events: all;
 }
-.whiz .headerGroup span.header_label {
+.kshf .headerGroup span.header_label {
 	font-size: 1.0em;
 	font-weight: 700;
 	cursor: default;
@@ -282,10 +282,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float:right;
     cursor: default;
 }
-.whiz div.whizChart[collapsed=true] .headerGroup span.header_label {
+.kshf div.kshfChart[collapsed=true] .headerGroup span.header_label {
     cursor: pointer;
 }
-.whiz .headerGroup span.header_label_arrow{
+.kshf .headerGroup span.header_label_arrow{
     font-size: 0.7em;
     display: block;
     float: right;
@@ -293,23 +293,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vertical-align: baseline;
     line-height: 18px;
 }
-.whiz .headerGroup span.rightHeader span.header_label_arrow{
+.kshf .headerGroup span.rightHeader span.header_label_arrow{
     float: left;
 }
-.whiz div.whizChart[collapsed=true]  .headerGroup span.header_label_up{
+.kshf div.kshfChart[collapsed=true]  .headerGroup span.header_label_up{
     display: none;
 }
-.whiz div.whizChart[collapsed=false] .headerGroup span.header_label_down{
+.kshf div.kshfChart[collapsed=false] .headerGroup span.header_label_down{
     display: none;
 }
-.whiz div.whizChart[collapsed=true] span {
+.kshf div.kshfChart[collapsed=true] span {
     color: gray;
 }
 
-.whiz g.barChart.revert g.headerGroup span.header_label {
+.kshf g.barChart.revert g.headerGroup span.header_label {
     text-anchor: start;
 }
-.whiz g.headerGroup text.barInfo {
+.kshf g.headerGroup text.barInfo {
 	font-size: 0.7em;
 	cursor: default;
     fill:gray;
@@ -317,53 +317,53 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-style: italic;
     font-weight:300;
 }
-.whizHost[hidebars=true] .whiz g.headerGroup text.barInfo {
+.kshfHost[hidebars=true] .kshf g.headerGroup text.barInfo {
     display: none;
 }
-.whiz div.whizChart[collapsed=true] g.headerGroup text.barInfo{
+.kshf div.kshfChart[collapsed=true] g.headerGroup text.barInfo{
     display: none;
 }
-.whiz g.barChart.revert g.headerGroup text.barInfo {
+.kshf g.barChart.revert g.headerGroup text.barInfo {
     text-anchor: end;
 }
-.whiz line.row_separator {
+.kshf line.row_separator {
     stroke-width:1;
     stroke-linecap: round;
     stroke: rgb(131, 131, 131);
     display:none;
 }
-.whizHost[hidebaraxis=true] svg>g.x_axis{
+.kshfHost[hidebaraxis=true] svg>g.x_axis{
     display:none;
 }
 
 
-.whiz div.whizChart[collapsed=true] g.scrollGroup{
+.kshf div.kshfChart[collapsed=true] g.scrollGroup{
     display: none;
 }
-.whiz g.scrollGroup g path.top_arrow{
+.kshf g.scrollGroup g path.top_arrow{
 	pointer-events:none;
 	fill:#AAAAAA;
 }
-.whiz g.scrollGroup g:hover path.top_arrow{
+.kshf g.scrollGroup g:hover path.top_arrow{
 	fill: #cb5454;
 }
 
-.whiz g.scrollGroup rect.background{
+.kshf g.scrollGroup rect.background{
 	fill:white;
 	stroke:rgb(202, 202, 202);
 	stroke-width:1;
 	stroke-opacity:1;
 }
-.whiz g.scrollGroup:hover rect.background{
+.kshf g.scrollGroup:hover rect.background{
 	stroke:gray;
 }
-.whiz g.scrollGroup rect.background_fill{
+.kshf g.scrollGroup rect.background_fill{
     opacity: 1;
     fill:white;
     cursor: pointer;
 }
 
-.whiz g.scrollGroup rect.handle{
+.kshf g.scrollGroup rect.handle{
 	fill:#999999;
 	stroke:gray;
 	stroke-width:0.5;
@@ -371,12 +371,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stroke-opacity:0.2;
 	cursor: pointer;
 }
-.whiz g.scrollGroup rect.handle[selected=true]{
+.kshf g.scrollGroup rect.handle[selected=true]{
 	stroke:#444444;
 	stroke-width:1;
 }
 
-.whiz g.scrollGroup text.row_number{
+.kshf g.scrollGroup text.row_number{
     font-size: 0.7em;
     display:none;
     text-anchor:end;
@@ -385,47 +385,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pointer-events:none;
     text-shadow: 1px 1px rgb(219, 219, 219);
 }
-.whiz g.scrollGroup:hover text.row_number{
+.kshf g.scrollGroup:hover text.row_number{
     display:block;
 }
 
-.whiz .key_label_2 {
+.kshf .key_label_2 {
 	font-size: 0.8em;
 }
 
-.whiz .key_label_3{
+.kshf .key_label_3{
 	font-size: 0.8em;
 	text-anchor: end;
 }
 
-.whiz .timeDot{
+.kshf .timeDot{
 	stroke: #eee;
 	cursor: pointer;
 	fill: #616F7A;
 }
-.whiz .timeDot[display=true] {
+.kshf .timeDot[display=true] {
 /*    pointer-events: none; */
 }
-.whiz .timeDot[display=false] {
+.kshf .timeDot[display=false] {
 	fill: #CCCCCC;
     pointer-events: none;
 }
-.whiz .timeDot[display=true]:hover {
+.kshf .timeDot[display=true]:hover {
 	stroke: orangered;
 	stroke-width:2;
 }
-.whiz .timeDot[highlight=true] {
+.kshf .timeDot[highlight=true] {
     stroke: #c32c2c;
     stroke-width:2;
 }
 
-.whiz div.whizChart[collapsed=true] g.barGroup_Top {
+.kshf div.kshfChart[collapsed=true] g.barGroup_Top {
     display:none;
 }
-.whiz div.whizChart[collapsed=true] g.timeAxisGroup {
+.kshf div.kshfChart[collapsed=true] g.timeAxisGroup {
     display:none;
 }
-.whiz div.whizChart span.sortOptionSelect_Label{
+.kshf div.kshfChart span.sortOptionSelect_Label{
     float: right;
     font-size: 0.8em;
     font-weight: 300;
@@ -433,46 +433,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: default;
     pointer-events:none;
 }
-.whiz div.whizChart[collapsed=true] span.sortOptionSelect_Label {
+.kshf div.kshfChart[collapsed=true] span.sortOptionSelect_Label {
     display:none;
 }
-.whiz div.whizChart select.sortOptionSelect{
+.kshf div.kshfChart select.sortOptionSelect{
     float:right;
     font-size:0.7em;
     pointer-events:all;
     clear:right;
 }
-.whiz div.whizChart[collapsed=true] select.sortOptionSelect{
+.kshf div.kshfChart[collapsed=true] select.sortOptionSelect{
     display: none;
 }
 
-.whiz select.listSortOptionSelect{
+.kshf select.listSortOptionSelect{
     position:absolute;
     bottom:0px;
 }
 
-.whiz div.whizChart g.row text.item_count {
+.kshf div.kshfChart g.row text.item_count {
 	font-size: 0.7em;
 	cursor: pointer;
 }
 
-.whiz div.whizChart g.row text.row_label {
+.kshf div.kshfChart g.row text.row_label {
 	font-size: 0.8em;
 	cursor: pointer;
 	text-anchor: end;
     font-weight:300;
 }
-.whiz div.whizChart[filtered_row=true] g.row[selected=false] text{
+.kshf div.kshfChart[filtered_row=true] g.row[selected=false] text{
     fill:gray;
 }
-.whiz div.whizChart[filtered_row=true] g.row[selected=true] text{
+.kshf div.kshfChart[filtered_row=true] g.row[selected=true] text{
 	font-weight: 700;
 	fill: #c32c2c;
 }
-.whiz div.whizChart g.row g[highlight=true] text{
+.kshf div.kshfChart g.row g[highlight=true] text{
     fill: orangered !important;
 }
-.whiz div.whizChart g.row[itemhighlight=true] g text{
+.kshf div.kshfChart g.row[itemhighlight=true] g text{
     fill: #c32c2c !important;
 }
 
@@ -481,82 +481,82 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	opacity: 0.06;
 }
 
-.whiz div.whizChart[collapsed=true] g.x_axis{
+.kshf div.kshfChart[collapsed=true] g.x_axis{
     display: none;
 }
-.whiz g.x_axis line{
+.kshf g.x_axis line{
 	opacity: 1;
 	stroke-width: 0.7;
 	stroke-dasharray:3,3;
 	stroke: rgb(180, 180, 180);
     pointer-events:none;
 }
-.whiz g.x_axis line.minor{
+.kshf g.x_axis line.minor{
 	stroke-width: 1;
 	stroke: rgb(160, 160, 160);
 }
-.whiz div.whizChart[collapsed=true] g.resort_button{
+.kshf div.kshfChart[collapsed=true] g.resort_button{
     display: none !important ;
 }
-.whiz g.resort_button rect{
+.kshf g.resort_button rect{
 	cursor: pointer;
 	fill-opacity: 0;
 }
-.whiz g.resort_button path{
+.kshf g.resort_button path{
 	pointer-events:none;
 	fill:#949494;
 }
-.whiz g.resort_button:hover path{
+.kshf g.resort_button:hover path{
 	fill:#cb5454;
 }
 
-.whiz g.row line.row_bar_line{
+.kshf g.row line.row_bar_line{
 	stroke-width: 0.7;
     pointer-events: none;
 }
-.whiz g[highlight=true] .row_bar_line{
+.kshf g[highlight=true] .row_bar_line{
 	stroke: orangered;
 	stroke-dasharray: none;
 }
-.whiz g rect.helphelp{
+.kshf g rect.helphelp{
 	stroke: #B1B79C;
 }
 
 
-.whiz g.top_arrow{
+.kshf g.top_arrow{
     display: none;
 }
-.whiz g.top_arrow rect{
+.kshf g.top_arrow rect{
     opacity: 0;
     cursor: pointer;
 }
 
-.whiz div.barChartMainInfo{
+.kshf div.barChartMainInfo{
     position: absolute;
     font-size: 0.8em;
     color: gray;
     cursor: default;
     display:none;
 }
-.whiz div.barChartMainInfo .refreshbarscales{
+.kshf div.barChartMainInfo .refreshbarscales{
     cursor:pointer;
     display: none;
 }
-.whiz div.barChartMainInfo .refreshbarscales:hover{
+.kshf div.barChartMainInfo .refreshbarscales:hover{
     color:#cb5454;
 }
-.whizHost[hidebars=true] .whiz div.barChartMainInfo{
+.kshfHost[hidebars=true] .kshf div.barChartMainInfo{
     display:none;
 }
 
 
-div.whiz{
+div.kshf{
     float:left;
     display:inline-block;
 /*    background-image: linear-gradient(#eee .1em, transparent .1em);
     background-size: 100% 18px;*/
 }
-div.whiz.layout_header{
+div.kshf.layout_header{
     width:100%;
     height: 21px;
     margin-bottom: 3px;
@@ -573,38 +573,38 @@ div.whiz.layout_header{
     border-bottom: solid 1px #c6bb9e;
     box-shadow: 0px 0px 10px #b7aa88;
 }
-div.whiz.layout_top{
+div.kshf.layout_top{
     display:block;
 }
-div.whiz.layout_left{
+div.kshf.layout_left{
     clear:left; 
 }
-div.whiz.layout_background{
+div.kshf.layout_background{
     position: absolute;
     min-height: 100%;
     left: 0px;
 }
 
 
-.whiz div.listChart{
+.kshf div.listChart{
     display:inline-block;
 }
 
-.whiz .listDiv {
+.kshf .listDiv {
     clear:left;
     box-shadow: 2px 2px 2px rgb(150, 134, 73);
     margin: 0px 0px 6px 6px;
 /*    display:none;*/
 }
 
-.whiz div.listItemGroup {
+.kshf div.listItemGroup {
     overflow-y:scroll;
     width: calc(100% - 2px);
     border-left: solid 2px rgb(233, 227, 205);
 }
 
 
-.whiz div.listItem {
+.kshf div.listItem {
 	clear:left;
     cursor:default;
     overflow: hidden;
@@ -826,7 +826,7 @@ div.listHeader input.bigTextSearch:hover{
     background-color: white;
     padding: 0px 0px 1px 0px;
 }
-.whiz div.listHeader ::-webkit-input-placeholder { 
+.kshf div.listHeader ::-webkit-input-placeholder { 
     color: #cb5454;
     font-weight: 300;
 }
@@ -975,37 +975,37 @@ div.credits:hover{
     background-color: #EEEEEE;
 }
 
-.whiz div.whizChart g.row rect.rowSelectBackground{
+.kshf div.kshfChart g.row rect.rowSelectBackground{
     opacity:0;
     pointer-events: none;
 }
-.whiz div.whizChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
+.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
 	opacity:1;
 }
-.whiz div.whizChart g.row rect.rowSelectBackground_ClickArea{
+.kshf div.kshfChart g.row rect.rowSelectBackground_ClickArea{
     opacity:0;
     pointer-events: all;
     cursor: pointer;
 }
-.whiz div.whizChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
+.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
     pointer-events: all;
 }
 
 
-.whiz div.whizChart input.chartRowLabelSearch::-webkit-input-placeholder { 
+.kshf div.kshfChart input.chartRowLabelSearch::-webkit-input-placeholder { 
     text-align:right; 
     font-weight: 500;
     color: #cb5454;
 }
-.whiz div.whizChart input.chartRowLabelSearch:focus::-webkit-input-placeholder { 
+.kshf div.kshfChart input.chartRowLabelSearch:focus::-webkit-input-placeholder { 
     color: #F3CDCD;
 }
 /*
-.whiz g.barChart.revert ::-webkit-input-placeholder { 
+.kshf g.barChart.revert ::-webkit-input-placeholder { 
     text-align:left;
 }*/
 
-.whiz div.chartClearFilterButton{
+.kshf div.chartClearFilterButton{
 	cursor: pointer;
     font-weight: 500;
     font-size: 0.7em;
@@ -1020,39 +1020,39 @@ div.credits:hover{
     border: solid 1px gray;
     pointer-events:all;
 }
-.whiz div.chartClearFilterButton:hover{
+.kshf div.chartClearFilterButton:hover{
 	font-weight:700;
 	box-shadow: inset 1px 1px 1px #474940;
     color: #cb5454;
 }
-.whiz div.chartClearFilterButton.rowFilter{
+.kshf div.chartClearFilterButton.rowFilter{
     float: right;
     margin: 1px 5px 0px 0px;
 }
-.whiz div.chartClearFilterButton.rangeFilter{
+.kshf div.chartClearFilterButton.rangeFilter{
     float: right;
     margin: 1px 5px 0px 0px;
 }
-.whiz div.chartClearFilterButton.timeFilter{
+.kshf div.chartClearFilterButton.timeFilter{
     float: left;
     margin: 1px 0px 0px 5px;
 }
-.whiz div.whizChart[filtered_row=true] div.chartClearFilterButton.rowFilter{
+.kshf div.kshfChart[filtered_row=true] div.chartClearFilterButton.rowFilter{
     display:inline-block;
 }
-.whiz div.whizChart[filtered_time=true] div.chartClearFilterButton.timeFilter{
+.kshf div.kshfChart[filtered_time=true] div.chartClearFilterButton.timeFilter{
     display:inline-block;
 }
-.whiz div.whizChart[filtered_range=true] div.chartClearFilterButton.rangeFilter{
+.kshf div.kshfChart[filtered_range=true] div.chartClearFilterButton.rangeFilter{
     display:inline-block;
 }
 
-.whiz img.chartRowLabelSearch{
+.kshf img.chartRowLabelSearch{
     float: right;
     clear: right;
     padding-top: 3px;
 }
-.whiz div.whizChart input.chartRowLabelSearch{
+.kshf div.kshfChart input.chartRowLabelSearch{
     float: right;
     text-align: right;
     font-size: 0.7em;
@@ -1065,18 +1065,18 @@ div.credits:hover{
     pointer-events: all;
 /*    border-bottom: dashed 1px #cb5454; */
 }
-.whiz div.whizChart input.chartRowLabelSearch:focus{
+.kshf div.kshfChart input.chartRowLabelSearch:focus{
     outline-color: gray;
     outline-width: 4px;
 }
 
-.whiz div.whizChart input.chartRowLabelSearch:hover{
+.kshf div.kshfChart input.chartRowLabelSearch:hover{
     border: solid 1px #cb5454;
     padding: 0px 3px 0px 0px;
     background-color: white;
 }
 
-div.whizChart{
+div.kshfChart{
     display:inline-block;
     float:right;
     clear:right;
@@ -1087,7 +1087,7 @@ div.whizChart{
 
 
 
-.whiz g.scrollGroup text.scroll_display_more{
+.kshf g.scrollGroup text.scroll_display_more{
     font-size: 0.7em;
     font-style:italic;
     cursor: pointer;
@@ -1095,15 +1095,15 @@ div.whizChart{
     opacity:1;
     text-anchor:end;
 }
-.whiz g.barChart.revert g.scrollGroup text.scroll_display_more{
+.kshf g.barChart.revert g.scrollGroup text.scroll_display_more{
     text-anchor:start;
 }
 
-.whiz g.scrollGroup text.scroll_display_more[highlight=true]{
+.kshf g.scrollGroup text.scroll_display_more[highlight=true]{
     fill: #cb5454;
 }
 
-.whiz text.textButton{
+.kshf text.textButton{
     cursor:pointer;
 }
 
@@ -1189,22 +1189,22 @@ div.listColumnRow div.listcell{
 
 
 
-.whiz div.RangeChart{
+.kshf div.RangeChart{
 }
 
-.whiz div.RangeChart .sliderGroup{
+.kshf div.RangeChart .sliderGroup{
     position:relative;
     top:18px;
     font-family: Helvetica, Arial, sans-serif;
     margin: 0 auto;
 }
 
-.whiz .ui-rangeSlider{
+.kshf .ui-rangeSlider{
     padding-top:0px;
     height: 18px;
 }
 
-.whiz .ui-rangeSlider-container{
+.kshf .ui-rangeSlider-container{
     top: 6px;
     height: 4px;
     border-radius: 0px !important;
@@ -1213,31 +1213,31 @@ div.listColumnRow div.listcell{
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#C1C4C9),color-stop(100%,#DBDDE6));
 }
 
-.whiz .ui-rangeSlider-innerBar{
+.kshf .ui-rangeSlider-innerBar{
     top: -7px !important;
     overflow: visible;
 }
-.whiz .ui-rangeSlider-arrow{
+.kshf .ui-rangeSlider-arrow{
     height: 17px;
 }
-.whiz .ui-rangeSlider-handle{
+.kshf .ui-rangeSlider-handle{
     height: 20px;
 }
-.whiz .ui-rangeSlider-bar{
+.kshf .ui-rangeSlider-bar{
     height: 12px;
     opacity: 0.9;
     top: -5px !important;
 }
-.whiz .ui-rangeSlider-label{
+.kshf .ui-rangeSlider-label{
     font-size: 0.7em;
     padding: 3px 5px 2px 5px;
     bottom: 0px;
     top: 0px;
 }
-.whiz .ui-rangeSlider-label-inner{
+.kshf .ui-rangeSlider-label-inner{
     display: none;
 }
-.whiz .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-inner{
+.kshf .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-inner{
     font-size: 0.6em;
     height:16px;
     color: black;
@@ -1245,10 +1245,10 @@ div.listColumnRow div.listcell{
     padding-left: 0px;
     margin-top: 1px;
 }
-.whiz .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-label{
+.kshf .ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-label{
     bottom: -14px;
 }
-.whiz .ui-rangeSlider .ui-ruler-tick{
+.kshf .ui-rangeSlider .ui-ruler-tick{
 }
 
 

@@ -18,51 +18,51 @@ function drawCharts(){
     var i,p,t;
     
     // to access row data easily by column name instead of integer column id.
-    var departmentCol = whiz.dt_ColNames.departments;
-    var peopleCol = whiz.dt_ColNames.people;
-    var projectsCol = whiz.dt_ColNames.projects;
-    var topicsCol = whiz.dt_ColNames.topics;
-    var member_typesCol = whiz.dt_ColNames.member_types;
-    var trsCol = whiz.dt_ColNames.trs;
+    var departmentCol = kshf.dt_ColNames.departments;
+    var peopleCol = kshf.dt_ColNames.people;
+    var projectsCol = kshf.dt_ColNames.projects;
+    var topicsCol = kshf.dt_ColNames.topics;
+    var member_typesCol = kshf.dt_ColNames.member_types;
+    var trsCol = kshf.dt_ColNames.trs;
     trsCol.people=9;
     trsCol.topics=10;
     trsCol.projects=11;
 
     // go over the list of tr_people, and add the conditions under trial table
-    for(t=0; t<whiz.dt.tr_people.length ; t++){
-        var tr_people = whiz.dt.tr_people[t];
+    for(t=0; t<kshf.dt.tr_people.length ; t++){
+        var tr_people = kshf.dt.tr_people[t];
         var tr_id = tr_people.data[0];
         var person_id = tr_people.data[1];
         // if person id doesn't exist, skip
-        if(whiz.dt_id.people[person_id]===undefined){continue;}
-        var tr = whiz.dt_id.trs[tr_id];
+        if(kshf.dt_id.people[person_id]===undefined){continue;}
+        var tr = kshf.dt_id.trs[tr_id];
         if(!tr.data[trsCol.people]) { tr.data[trsCol.people] = []; }
         tr.data[trsCol.people].push(person_id);
     }
     // go over the list of tr_topics, and add the conditions under trial table
-    for(t=0; t<whiz.dt.tr_topics.length ; t++){
-        var tr_topic = whiz.dt.tr_topics[t];
+    for(t=0; t<kshf.dt.tr_topics.length ; t++){
+        var tr_topic = kshf.dt.tr_topics[t];
         var tr_id_ = tr_topic.data[0];
         var topic_id = tr_topic.data[1];
         if(topic_id===null) { continue; }
-        var tr_ = whiz.dt_id.trs[tr_id_];
+        var tr_ = kshf.dt_id.trs[tr_id_];
         if(!tr_.data[trsCol.topics]) { tr_.data[trsCol.topics] = []; }
         tr_.data[trsCol.topics].push(topic_id);
     }
     // go over the list of tr_projects, and add the conditions under trial table
-    for(t=0; t<whiz.dt.tr_projects.length ; t++){
-        var tr_project = whiz.dt.tr_projects[t];
+    for(t=0; t<kshf.dt.tr_projects.length ; t++){
+        var tr_project = kshf.dt.tr_projects[t];
         var tr_id__ = tr_project.data[0];
         var project_id = tr_project.data[1];
         if(project_id===null) { continue; }
         // if project id doesn't exist, skip
-        if(whiz.dt_id.projects[project_id]===undefined){continue;}
-        var tr__ = whiz.dt_id.trs[tr_id__];
+        if(kshf.dt_id.projects[project_id]===undefined){continue;}
+        var tr__ = kshf.dt_id.trs[tr_id__];
         if(!tr__.data[trsCol.projects]) { tr__.data[trsCol.projects] = []; }
         tr__.data[trsCol.projects].push(project_id);
     }
 
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Topics",
 		tableName: "topics",
         itemMapFunc : function(pub){ return pub.data[trsCol.topics]; },
@@ -77,7 +77,7 @@ function drawCharts(){
         visibleRows: 9
 	});
 
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Authors",
 		tableName: "people",
         itemMapFunc : function(pub){ return pub.data[trsCol.people]; },
@@ -90,7 +90,7 @@ function drawCharts(){
 		}
 	});
 
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Member Type",
 		tableName: "member_types",
         itemMapFunc : function(pub){
@@ -99,9 +99,9 @@ function drawCharts(){
             var authors = pub.data[trsCol.people];
             if(authors===undefined) { return undefined; }
             for(i=0; i<authors.length; i++){
-                var autData=whiz.dt_id.people[authors[i]];
+                var autData=kshf.dt_id.people[authors[i]];
                 var typeID = autData.data[peopleCol.member_type_id];
-                if( whiz.dt_id.member_types[typeID]===undefined ) { continue; } 
+                if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
                 if(!typeList[typeID]){
                     typeList[typeID] = true;
                     r.push(typeID);
@@ -116,7 +116,7 @@ function drawCharts(){
 		}
 	});
     
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Projects",
 		tableName: "projects",
         itemMapFunc : function(pub){ return pub.data[trsCol.projects]; },
@@ -132,7 +132,7 @@ function drawCharts(){
     // alumni?
     // member type?
 
-    whiz.createListDisplay({
+    kshf.createListDisplay({
         columns : [
             {   name: 'Year',
                 width: 50,
@@ -157,7 +157,7 @@ function drawCharts(){
             if(authors){
                 str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                 for(j=0; j<authors.length; j++){
-                    var authData=whiz.dt_id.people[authors[j]].data;
+                    var authData=kshf.dt_id.people[authors[j]].data;
                     str+=authData[peopleCol.first_name]+" "+authData[peopleCol.last_name];
                     if(j!==authors.length-1) { str+=', '; }
                 }
@@ -174,7 +174,7 @@ function drawCharts(){
             if(topics){
                 str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
                 for(j=0; j<topics.length; j++){
-                    str+=whiz.dt_id.topics[topics[j]].data[topicsCol.topic];
+                    str+=kshf.dt_id.topics[topics[j]].data[topicsCol.topic];
                     if(j!==topics.length-1) { str+=', '; }
                 }
                 str+="</div>";
@@ -193,8 +193,8 @@ function drawCharts(){
         }
     });
 
-    whiz.updateLayout();
-    whiz.update();
+    kshf.updateLayout();
+    kshf.update();
 }
 
 function loadChart() {
@@ -205,9 +205,9 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
-    var whizOptions={
+    var kshfOptions={
         chartTitle: "HCIL TechReports / Publications",
         domID : "#chart_div4",
                 itemName : "publications",
@@ -228,7 +228,7 @@ function loadChart() {
         },
         loadedCb: drawCharts
     };
-	whiz.init(whizOptions);
+	kshf.init(kshfOptions);
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

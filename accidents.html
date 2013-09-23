@@ -187,7 +187,7 @@ function loadChart() {
     $(window).resize(function() {
 //        $('#chart_div4').height(1500);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var query = 'select *';
@@ -198,7 +198,7 @@ function loadChart() {
 
     var accCol;
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)",
         domID : "#chart_div4",
                 itemName : "accidents",
@@ -208,7 +208,7 @@ function loadChart() {
             sheets : [ sheetInfo ]
         },
         loadedCb: function(){
-            accCol = whiz.dt_ColNames.Accidents;
+            accCol = kshf.dt_ColNames.Accidents;
         },
         charts : [
             {
@@ -251,7 +251,7 @@ function loadChart() {
                     }
                 },{
                     name:"By accidents",
-                    func:whiz.filter_AciveItems_TotalItems
+                    func:kshf.filter_AciveItems_TotalItems
                 }],
                 filter: { rowConj: 'speed limit' }
             },{

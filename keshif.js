@@ -3,7 +3,7 @@
 
 /*********************************
 
-whiz library
+keshif library
 
 Copyright (c) 2013, Mehmet Adil Yalcin
 All rights reserved.
@@ -40,8 +40,8 @@ if(typeof google !== 'undefined'){
     google.load('visualization', '1', {'packages': []});
 }
 
-// whiz namespace
-var whiz = { };
+// kshf namespace
+var kshf = { };
 
 var log2Console = function(s,chart){
     var d=Date.now();
@@ -54,10 +54,10 @@ var log2Console = function(s,chart){
     );
 }
 
-whiz.surrogateCtor = function() {};
+kshf.surrogateCtor = function() {};
 
 // http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
-whiz.extendClass = function(base, sub) {
+kshf.extendClass = function(base, sub) {
   // Copy the prototype from the base to setup inheritance
   this.surrogateCtor.prototype = base.prototype;
   // Tricky huh?
@@ -69,24 +69,24 @@ whiz.extendClass = function(base, sub) {
 // ***************************************************************************************************
 // ITEM BASE OBJECT/PROPERTIES
 // ***************************************************************************************************
-whiz.Item = function(d, idIndex){
+kshf.Item = function(d, idIndex){
 	this.selected = true;
 	this.activeItems = 0;
 	this.items = []; // set of assigned primary items
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
 };
-whiz.Item.prototype.id = function(){
+kshf.Item.prototype.id = function(){
     return this.data[this.idIndex];
 };
-whiz.Item.prototype.updateSelected = function(){
+kshf.Item.prototype.updateSelected = function(){
     var i,len,f=this.filters;
     var oldSelected = this.selected;
     // checks if all filter results are true
     for(i=0, len = f.length; i<len && f[i]; i++){ }
     this.selected=(i===len);
     if(this.selected===true && oldSelected===false){
-        whiz.itemsSelectedCt++;
+        kshf.itemsSelectedCt++;
         for(i=0; i< this.mappedRows.length; i++){
             var chartMapping=this.mappedRows[i];
             if(chartMapping === undefined) continue;
@@ -96,7 +96,7 @@ whiz.Item.prototype.updateSelected = function(){
             }
         }
     } else if(this.selected===false && oldSelected===true){
-        whiz.itemsSelectedCt--;
+        kshf.itemsSelectedCt--;
         for(i=0; i< this.mappedRows.length; i++){
             var chartMapping=this.mappedRows[i];
             if(chartMapping === undefined) continue;
@@ -112,7 +112,7 @@ whiz.Item.prototype.updateSelected = function(){
     }
     return this.selected;
 };
-whiz.Item.prototype.highlightAttributes = function(){
+kshf.Item.prototype.highlightAttributes = function(){
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',true);
     }
@@ -120,7 +120,7 @@ whiz.Item.prototype.highlightAttributes = function(){
         this.cats[i].setAttribute('itemhighlight',true);
     }
 }
-whiz.Item.prototype.nohighlightAttributes = function(){
+kshf.Item.prototype.nohighlightAttributes = function(){
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',false);
     }
@@ -133,8 +133,8 @@ whiz.Item.prototype.nohighlightAttributes = function(){
 // GOOGLE CHART LOADING
 // ***************************************************************************************************
 
-// Gets google chart data and converts it to plain javascript array, for use with whiz
-whiz.convertToArray = function(dataTable,sheetID,isPrimary){
+// Gets google chart data and converts it to plain javascript array, for use with kshf
+kshf.convertToArray = function(dataTable,sheetID,isPrimary){
     var r,c,arr = [];
     // find the index called "id"
     var idIndex = -1;
@@ -159,7 +159,7 @@ whiz.convertToArray = function(dataTable,sheetID,isPrimary){
         if(idIndex===numCols){ // push unique id if necessary
             a.push(itemId++);
         }
-		arr[r] = new whiz.Item(a,idIndex);
+		arr[r] = new kshf.Item(a,idIndex);
         if(isPrimary){
             arr[r].filters = [true];
             arr[r].mappedRows = [true];
@@ -171,7 +171,7 @@ whiz.convertToArray = function(dataTable,sheetID,isPrimary){
     return arr;
 };
 // Loads all source sheets
-whiz.loadTables = function(){
+kshf.loadTables = function(){
     var i;
 	this.source.loadedTableCount=0;
 	for(i=0; i<this.source.sheets.length; i++){
@@ -189,9 +189,9 @@ whiz.loadTables = function(){
 	}
 };
 
-whiz.loadSheet_Google = function(sheet){
+kshf.loadSheet_Google = function(sheet){
     var tName = sheet.name;
-    var qString=whiz.queryURL_base+this.source.gdocId+'&headers=1&sheet='+tName;
+    var qString=kshf.queryURL_base+this.source.gdocId+'&headers=1&sheet='+tName;
     if(sheet.range){
         qString+="&range="+sheet.range;
     }
@@ -238,7 +238,7 @@ var unescapeCommas = function(c){
     return a;
 };
 
-whiz.loadSheet_File = function(sheet){
+kshf.loadSheet_File = function(sheet){
     var fileName=this.source.filePath+sheet.name+"."+this.source.fileType;
     var tableName = sheet.name;
     if(sheet.tableName) { tableName = sheet.tableName; }
@@ -250,7 +250,7 @@ whiz.loadSheet_File = function(sheet){
             var i,j;
             var lines = data.split(/\r\n|\r|\n/g);
             if(lines.length<1) { return; }
-            whiz.dt_ColNames[tableName] = {};
+            kshf.dt_ColNames[tableName] = {};
             var arr = [];
             var idIndex = -1;
             var itemId=0;
@@ -261,18 +261,18 @@ whiz.loadSheet_File = function(sheet){
                 if(i===0){ // header 
                     for(j=0; j<c.length;j++){
                         var colName = c[j];
-                        whiz.dt_ColNames[tableName][colName] = j;
+                        kshf.dt_ColNames[tableName][colName] = j;
                         if(colName===sheet.id){ idIndex = j;}
                     }
                     if(idIndex===-1){ // id column not found, you need to create your own
-                        whiz.dt_ColNames[tableName][sheet.id] = j;
+                        kshf.dt_ColNames[tableName][sheet.id] = j;
                         idIndex = j;
                     }
                 } else { // content
                     if(idIndex===c.length){// push unique id if necessary
                         c.push(itemId++);
                     }
-                    var item = new whiz.Item(c,idIndex);
+                    var item = new kshf.Item(c,idIndex);
                     // 1 true item is added for global search
                     if(sheet.primary){ 
                         item.filters = [true];
@@ -284,10 +284,10 @@ whiz.loadSheet_File = function(sheet){
                     arr.push(item);
                 }
             }
-            whiz.dt[tableName] = arr;
+            kshf.dt[tableName] = arr;
             if(sheet.primary){
-                whiz.items = arr;
-                whiz.itemsSelectedCt = arr.length;
+                kshf.items = arr;
+                kshf.itemsSelectedCt = arr.length;
             }
             // find the id row, and create the indexed table
             var id_table = {};
@@ -295,10 +295,10 @@ whiz.loadSheet_File = function(sheet){
                 var r=arr[j];
                 id_table[r.id()] = r; 
             }
-            whiz.dt_id[tableName] = id_table;
+            kshf.dt_id[tableName] = id_table;
             // finish loading
-            if(++whiz.source.loadedTableCount===whiz.source.sheets.length) {
-                whiz.createCharts();
+            if(++kshf.source.loadedTableCount===kshf.source.sheets.length) {
+                kshf.createCharts();
             }
         }
         }
@@ -306,7 +306,7 @@ whiz.loadSheet_File = function(sheet){
 };
 
 // Sends the spreadsheet query, retrieves the result in asynch mode, prepares the data and updates visualization when all data is loaded.
-whiz.sendTableQuery = function(_whiz, q, sheet, tableCount){
+kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
     var tableName = sheet.name;
     q.send( function(response){
         if(response.isError()) {
@@ -319,16 +319,16 @@ whiz.sendTableQuery = function(_whiz, q, sheet, tableCount){
         }*/
         var j;
         var google_datatable = response.getDataTable();
-        var d3_table = _whiz.convertToArray(google_datatable,sheet.id,sheet.primary);
-        _whiz.dt[tableName] = d3_table;
-        _whiz.dt_ColNames[tableName] = {};
+        var d3_table = _kshf.convertToArray(google_datatable,sheet.id,sheet.primary);
+        _kshf.dt[tableName] = d3_table;
+        _kshf.dt_ColNames[tableName] = {};
         for(j=0; j<google_datatable.getNumberOfColumns(); j++){
             var colName=google_datatable.getColumnLabel(j).trim();
-            _whiz.dt_ColNames[tableName][colName] = j;
+            _kshf.dt_ColNames[tableName][colName] = j;
         }
         if(sheet.primary){
-            whiz.items = d3_table;
-            whiz.itemsSelectedCt = d3_table.length;
+            kshf.items = d3_table;
+            kshf.itemsSelectedCt = d3_table.length;
         }
         // find the id row, and create the indexed table
         var id_table = {};
@@ -336,19 +336,19 @@ whiz.sendTableQuery = function(_whiz, q, sheet, tableCount){
             var r=d3_table[j];
             id_table[r.id()] = r; 
         }
-        _whiz.dt_id[tableName] = id_table;
+        _kshf.dt_id[tableName] = id_table;
         // finish loading
-        if(++_whiz.source.loadedTableCount===tableCount) {
-            whiz.createCharts();
+        if(++_kshf.source.loadedTableCount===tableCount) {
+            kshf.createCharts();
         }
    });
 };
-whiz.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
+kshf.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
     var i,uniqueID=0;
-    whiz.dt_id[dstTableName] = {};
-    whiz.dt[dstTableName] = [];
-    var dstTable_Id = whiz.dt_id[dstTableName];
-    var dstTable = whiz.dt[dstTableName];
+    kshf.dt_id[dstTableName] = {};
+    kshf.dt[dstTableName] = [];
+    var dstTable_Id = kshf.dt_id[dstTableName];
+    var dstTable = kshf.dt[dstTableName];
 
     var srcData=srcTableName;
     for(i=0 ; i<srcData.length ; i++){
@@ -360,7 +360,7 @@ whiz.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
                 if(v2==="") continue;
                 if(!dstTable_Id[v2]){
                     var a = [uniqueID++,v2];
-                    var item = new whiz.Item(a,1);
+                    var item = new kshf.Item(a,1);
                     dstTable_Id[v2] = item;
                     dstTable.push(item);
                 }   
@@ -368,7 +368,7 @@ whiz.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
         } else {
             if(!dstTable_Id[v]){
                 var a = [uniqueID++,v];
-                var item = new whiz.Item(a,1);
+                var item = new kshf.Item(a,1);
                 dstTable_Id[v] = item;
                 dstTable.push(item);
             }   
@@ -377,7 +377,7 @@ whiz.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
 };
 
 // Given a list of columns which hold multiple IDs, breaks them into an array
-whiz.cellToArray = function(dt, cols, splitExpr, convertInt){
+kshf.cellToArray = function(dt, cols, splitExpr, convertInt){
     if(splitExpr===undefined){
         splitExpr = /\b\s+/;
     }
@@ -415,7 +415,7 @@ function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-whiz.list = function(config, root){
+kshf.list = function(config, root){
     var i;
     var me = this;
     this.dragSrcEl = null;
@@ -439,7 +439,7 @@ whiz.list = function(config, root){
     var count_wrap = listHeaderTopRow.append("span").attr("class","listheader_count_wrap");
     count_wrap.append("span").attr("class","listheader_count_bar");
     count_wrap.append("span").attr("class","listheader_count");
-    listHeaderTopRow.append("span").attr("class","listheader_itemName").style("margin-right","2px").html(capitaliseFirstLetter(whiz.itemName));
+    listHeaderTopRow.append("span").attr("class","listheader_itemName").style("margin-right","2px").html(capitaliseFirstLetter(kshf.itemName));
     if(this.hideTextSearch!==true){    
         var listHeaderTopRowTextSearch = listHeaderTopRow.append("span").attr("class","bigTextSearch_wrap");
         listHeaderTopRowTextSearch.append("img")
@@ -472,7 +472,7 @@ whiz.list = function(config, root){
                     item.filters[0] = f;
                     item.updateSelected();
                 });
-                whiz.update();
+                kshf.update();
                 x.timer = null;
             }, 750);
         });
@@ -504,7 +504,7 @@ whiz.list = function(config, root){
     // TODO: implement popup for file-based resources
     listHeaderTopRow
       .append("a")
-        .attr("href","https://docs.google.com/spreadsheet/ccc?key="+whiz.source.gdocId)
+        .attr("href","https://docs.google.com/spreadsheet/ccc?key="+kshf.source.gdocId)
         .attr("target","_blank")
         .style("float","right")
       .append("img")
@@ -524,7 +524,7 @@ whiz.list = function(config, root){
             me.sortItems();
             me.reorderItems();
             me.updateList();
-            whiz.updateCustomListStyleSheet();
+            kshf.updateCustomListStyleSheet();
         })
         .selectAll("input.list_sort_label")
             .data(this.config)
@@ -549,7 +549,7 @@ whiz.list = function(config, root){
         .text("Reset all")
         .on("click",function(){ 
             log2Console("CLICK: clearAllFilters");
-            whiz.clearAllFilters();
+            kshf.clearAllFilters();
         });
    s.append("html:span")
         .attr("class","filter_reset")
@@ -557,7 +557,7 @@ whiz.list = function(config, root){
         .text("x")
         .on("click",function(){ 
             log2Console("CLICK: clearAllFilters");
-            whiz.clearAllFilters();
+            kshf.clearAllFilters();
         });
 
     this.sortItems();
@@ -565,37 +565,37 @@ whiz.list = function(config, root){
     this.setColumnMoveHandlers();
 };
 
-whiz.list.prototype.handleDragStart = function(e) {
+kshf.list.prototype.handleDragStart = function(e) {
 	this.dragSrcEl = e.target;
 //	e.dataTransfer.setDragImage(this.dragIcon, -10, -10);
 	e.dataTransfer.effectAllowed = 'move';
 	e.dataTransfer.setData('text/html', e.target.innerText);
     e.target.classList.add('drag_source');
 };
-whiz.list.prototype.handleDragOver = function(e) {
+kshf.list.prototype.handleDragOver = function(e) {
 	// Necessary. Allows us to drop.
 	if (e.preventDefault) { e.preventDefault(); }
 	e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
 	return false;
 };
-whiz.list.prototype.handleDragEnter = function(e) {
+kshf.list.prototype.handleDragEnter = function(e) {
     var source=this.dragSrcEl;
     var target=e.target;
 	if (source !== target) {
         e.target.classList.add('drag_over');
     }
 };
-whiz.list.prototype.handleDragLeave = function(e) {
+kshf.list.prototype.handleDragLeave = function(e) {
     e.target.classList.remove('drag_over');
 };
-whiz.list.prototype.handleDragEnd = function (e) {
+kshf.list.prototype.handleDragEnd = function (e) {
 	var cols = document.querySelectorAll('div.list-sort-option');
 	[].forEach.call(cols, function (col) {
 		col.classList.remove('drag_over');
         col.classList.remove('drag_source');
 	});
 };
-whiz.list.prototype.handleDrop = function(e) {
+kshf.list.prototype.handleDrop = function(e) {
 	// this / e.target is current target element.
 	// stops the browser from redirecting??
 	if (e.stopPropagation) { e.stopPropagation();  }
@@ -617,12 +617,12 @@ whiz.list.prototype.handleDrop = function(e) {
         this.sortItems();
         this.reorderItems();
         this.updateList();
-        whiz.updateCustomListStyleSheet();
+        kshf.updateCustomListStyleSheet();
 	}
 	return false;
 };
 // adds event listeners for drag&drop on sort columns
-whiz.list.prototype.setColumnMoveHandlers = function(){
+kshf.list.prototype.setColumnMoveHandlers = function(){
     var this_ = this;
 	var cols = document.querySelectorAll('div.listHeader div.list-sort-option');
 	[].forEach.call(cols, function(col) {
@@ -641,17 +641,17 @@ Array.prototype.repeat= function(what, L){
 };
 
 // after you re-sort the primary table or change item visibility, call this function
-whiz.list.prototype.updateListColumnHeaders = function(){
+kshf.list.prototype.updateListColumnHeaders = function(){
     var i,j;
     var iPrev=-1;
-    for(i=0;i<whiz.items.length;i++){
-        var p=whiz.items[i];
+    for(i=0;i<kshf.items.length;i++){
+        var p=kshf.items[i];
         if(p.selected===false) { continue; }
         // show all sort column labels by default 
         p.listsortcolumn = [].repeat(true,this.listSortOrder.length);
         // first selected item
         if(iPrev===-1){ iPrev=i; continue; }
-        var pPrev = whiz.items[iPrev];
+        var pPrev = kshf.items[iPrev];
         iPrev=i;
         for(j=0; j<this.listSortOrder.length ; j++){
             var f = this.config[this.listSortOrder[j]].value;
@@ -661,9 +661,9 @@ whiz.list.prototype.updateListColumnHeaders = function(){
     }
 };
 
-whiz.list.prototype.sortItems = function(){
+kshf.list.prototype.sortItems = function(){
     var this_ = this;
-	whiz.items.sort(function(a,b){
+	kshf.items.sort(function(a,b){
         if(a.selected===false || b.selected===false){ return 0; }
         var i,dif;
 		for(i=0; i<1; i++){
@@ -683,9 +683,9 @@ whiz.list.prototype.sortItems = function(){
 	});
 };
 
-whiz.list.prototype.updateSortColumnLabels=function(d,tada){
+kshf.list.prototype.updateSortColumnLabels=function(d,tada){
 	var t = d3.select(tada);
-    var whiz_ = this;
+    var kshf_ = this;
     var k,j;
 
     t.style("border-top", 
@@ -697,16 +697,16 @@ whiz.list.prototype.updateSortColumnLabels=function(d,tada){
     for(k=0; k<1 ; k++){
         var sortColumn=this.listSortOrder[k];
         t.select(".listsortcolumn")
-            .html(function(){ return whiz_.config[sortColumn].label(d); })
+            .html(function(){ return kshf_.config[sortColumn].label(d); })
 //            .style("opacity",d.listsortcolumn[k]?"1":"0.5")
             ;
     }
 };
 
-whiz.list.prototype.insertItems = function(){
+kshf.list.prototype.insertItems = function(){
     var this_ = this;
 	this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
-		.data(whiz.items, function(d){ return d.id(); })
+		.data(kshf.items, function(d){ return d.id(); })
     .enter()
 		.append("div")
 		.attr("class","listItem")
@@ -731,17 +731,17 @@ whiz.list.prototype.insertItems = function(){
     ;
 };
 
-whiz.list.prototype.reorderItems = function(){
+kshf.list.prototype.reorderItems = function(){
 	this.listDiv.selectAll("div.listItem")
-		.data(whiz.items, function(d){ return d.id(); })
+		.data(kshf.items, function(d){ return d.id(); })
 		.order();
 };
-whiz.list.prototype.updateItemVisibility = function(){
+kshf.list.prototype.updateItemVisibility = function(){
 	this.dom.listItems
 		.style("display",function(pub){ return (pub.selected)?"block":"none"; });
 };
 
-whiz.list.prototype.updateList = function(){
+kshf.list.prototype.updateList = function(){
     // evaluates column information for each item. TODO: cache
     this.updateListColumnHeaders();
     var this_ = this;
@@ -751,15 +751,15 @@ whiz.list.prototype.updateList = function(){
             return this_.updateSortColumnLabels(d,this); 
         });
         d3.select(".listheader_count").text( function(){ 
-            if(whiz.itemsSelectedCt===0) { return "No"; }
-            return whiz.itemsSelectedCt;
+            if(kshf.itemsSelectedCt===0) { return "No"; }
+            return kshf.itemsSelectedCt;
         });
     d3.select(".listheader_count").text( function(){ 
-        if(whiz.itemsSelectedCt===0) { return "No"; }
-        return whiz.itemsSelectedCt;
+        if(kshf.itemsSelectedCt===0) { return "No"; }
+        return kshf.itemsSelectedCt;
     });
     d3.select(".listheader_count_bar").transition().style("width",function(){ 
-        return (whiz.listDisplay.config[0].width*whiz.itemsSelectedCt/whiz.items.length)+"px";
+        return (kshf.listDisplay.config[0].width*kshf.itemsSelectedCt/kshf.items.length)+"px";
     });
 };
 
@@ -772,7 +772,7 @@ whiz.list.prototype.updateList = function(){
 // ***********************************************************************************************************
 
 
-whiz.init = function (options) {
+kshf.init = function (options) {
     var me = this;
     // BASIC OPTIONS
     this.chartTitle = options.chartTitle;
@@ -791,7 +791,7 @@ whiz.init = function (options) {
     this.scrollWidth = 10;
     this.sepWidth = 10;
     if(options.listMaxColWidthMult){
-        whiz.listMaxColWidthMult = options.listMaxColWidthMult;
+        kshf.listMaxColWidthMult = options.listMaxColWidthMult;
     } else {
         this.listMaxColWidthMult = 0.25;
     }
@@ -807,7 +807,7 @@ whiz.init = function (options) {
     this.time_animation_barscale = 400;
     
     this.root = d3.select(this.domID)
-        .attr("class","whizHost")
+        .attr("class","kshfHost")
         .attr("tabindex","1")
         .style("position","relative")
         .style("overflow-y","hidden");
@@ -816,11 +816,11 @@ whiz.init = function (options) {
             me.clearAllFilters();
         }
     });
-    this.layoutBackground = this.root.append("div").attr("class","whiz layout_background");
+    this.layoutBackground = this.root.append("div").attr("class","kshf layout_background");
     this.layoutBackground.append("div").attr("class","leftBlockBackground");
     this.layoutBackground.append("div").attr("class","leftBlockAdjustSize")
         .attr("title","Drag to adjust panel width")
-        .style("height",(whiz.line_height-2)+"px")
+        .style("height",(kshf.line_height-2)+"px")
         .style("top",options.chartTitle!==undefined?"23px":"1px")
         .on("mousedown", function (d, i) {
             log2Console("CLICK -  adjust left panel width");
@@ -830,8 +830,8 @@ whiz.init = function (options) {
             me.root.on("mousemove", function() {
                 var mouseMove_x = d3.mouse(this)[0];
                 var mouseDif = mouseMove_x-mouseDown_x;
-                whiz.time_animation_barscale = 0;
-                whiz.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                kshf.time_animation_barscale = 0;
+                kshf.setBarWidthLeftPanel(mouseDown_width+mouseDif);
             });
             me.root.on("mouseup", function(){
                 me.root.style('cursor','default');
@@ -850,7 +850,7 @@ whiz.init = function (options) {
         this.insertChartHeader();
     }
 
-    this.layoutTop = this.root.append("div").attr("class", "whiz layout_top");
+    this.layoutTop = this.root.append("div").attr("class", "kshf layout_top");
     this.layoutTop.append("div")
         .attr("class","barChartMainInfo")
         .text("⟾Item count ")
@@ -861,52 +861,52 @@ whiz.init = function (options) {
 //        .text("[x]")
         .attr("src","img/Refresh_font_awesome.svg")
         ;
-    this.layoutLeft = this.root.append("div").attr("class", "whiz layout_left");
-    this.layoutRight  = this.root.append("div").attr("class", "whiz layout_right");
+    this.layoutLeft = this.root.append("div").attr("class", "kshf layout_left");
+    this.layoutRight  = this.root.append("div").attr("class", "kshf layout_right");
 	
     this.loadTables();
 };
 
-whiz.createCharts = function(){
+kshf.createCharts = function(){
     if(this.loadedCb!==undefined) { this.loadedCb(); }
     for(var i=0; i<this.chartDefs.length; i++){
         this.addBarChart(this.chartDefs[i]);
     }
     this.createListDisplay(this.listDef);
-    whiz.updateLayout();
-    whiz.update();
+    kshf.updateLayout();
+    kshf.update();
 }
 
-whiz.insertChartHeader = function(){
-    this.layoutHeader = this.root.append("div").attr("class", "whiz layout_header").text(this.chartTitle);
+kshf.insertChartHeader = function(){
+    this.layoutHeader = this.root.append("div").attr("class", "kshf layout_header").text(this.chartTitle);
 }
 
-whiz.addBarChart = function(options){
+kshf.addBarChart = function(options){
     options.layout = (options.itemXPos!==undefined)?this.layoutTop:this.layoutLeft;
     if(options.tableName===undefined){
-        options.tableName = whiz.primaryTableName;
+        options.tableName = kshf.primaryTableName;
         options.generateRows = true;
     }
     if(options.sortingFuncs===undefined){
-        options.sortingFuncs = [{ func:whiz.filter_AciveItems_TotalItems }];
+        options.sortingFuncs = [{ func:kshf.filter_AciveItems_TotalItems }];
     }
     if(options.rowLabelText===undefined){
         // get the 2nd attribute as row text [1st is expected to be the id]
         options.rowLabelText = function(typ){ return typ.data[1]; };
     }
     options.rowTextWidth = this.categoryTextWidth;
-    this.charts.push(new whiz.BarChart(options));
+    this.charts.push(new kshf.BarChart(options));
 };
 
-whiz.addRangeChart = function(options){
+kshf.addRangeChart = function(options){
     options.layout = this.layoutLeft;
     this.charts.push(
-        new whiz.RangeChart(options)
+        new kshf.RangeChart(options)
     );
 }
 
 
-whiz.update = function () {
+kshf.update = function () {
     var i, chart, filteredCount=0;
 
     // if running for the first time, do stuff
@@ -916,7 +916,7 @@ whiz.update = function () {
         }
     }
 
-    whiz.time_animation_barscale = 400;
+    kshf.time_animation_barscale = 400;
     // since some items may no longer be visible, you need to update list column headers too
     if(this.listDisplay){
         if(this.listDisplay.hideTextSearch!==true) {
@@ -930,7 +930,7 @@ whiz.update = function () {
 
 	// update each widget within
 	for (i=0; i<this.charts.length; ++i){
-        chart = whiz.charts[i];
+        chart = kshf.charts[i];
         if(chart.type!=="RangeChart")
             chart.updateXAxisScale();
 
@@ -943,30 +943,30 @@ whiz.update = function () {
         .style("display",(filteredCount>1)?"inline-block":"none");
 };
 
-whiz.dif_activeItems = function(a,b){
+kshf.dif_activeItems = function(a,b){
 	return b.activeItems - a.activeItems;
 };
 
-whiz.filter_AciveItems_TotalItems = function(a,b){ 
-    var dif=whiz.dif_activeItems(a,b);
+kshf.filter_AciveItems_TotalItems = function(a,b){ 
+    var dif=kshf.dif_activeItems(a,b);
     if(dif===0) { return b.items.length-a.items.length; }
     return dif;
 };
 
-whiz.createListDisplay = function(listOptions){
-    this.listDisplay = new whiz.list(listOptions,this.layoutRight);
+kshf.createListDisplay = function(listOptions){
+    this.listDisplay = new kshf.list(listOptions,this.layoutRight);
 };
 
 
-whiz.clearAllFilters = function(){
+kshf.clearAllFilters = function(){
     var i,chart;
     for (i = 0; i < this.charts.length; ++i){
-        whiz.charts[i].clearAllFilters();
+        kshf.charts[i].clearAllFilters();
     }
     this.update();
 };
 
-whiz.updateLayout_Height = function(){
+kshf.updateLayout_Height = function(){
     var i;
     var divHeight = $(this.domID).height();
     if(this.chartTitle !== undefined){
@@ -983,7 +983,7 @@ whiz.updateLayout_Height = function(){
     var procBarChartsOld=-1;
 
     for (i = 0; i < this.charts.length; ++i){
-        if(whiz.charts[i].type==='barChart'){ barChartCount++; }
+        if(kshf.charts[i].type==='barChart'){ barChartCount++; }
         chartProcessed.push(false);
     }
     
@@ -993,7 +993,7 @@ whiz.updateLayout_Height = function(){
     divLineRem = divLineCount;
     var targetScatterplotHeight = Math.floor(divLineRem/4)+1;
     for (i=0; i < this.charts.length; ++i) {
-        var c2=whiz.charts[i];
+        var c2=kshf.charts[i];
         if(c2.type==='scatterplot'){
             c2.setRowCount_VisibleItem(targetScatterplotHeight-c2.rowCount_Header()-1);
             divLineRem-=c2.rowCount_Total();
@@ -1003,14 +1003,14 @@ whiz.updateLayout_Height = function(){
     }
     // TODO: list item header is assumed to be 3 rows, but it may dynamically change!
     var listHeight;
-    listHeight = whiz.line_height * (divLineRem-3);
+    listHeight = kshf.line_height * (divLineRem-3);
     $("div.listItemGroup").height(listHeight);
 
     //left panel
 
     // numeric range filters have a constant height (for now)
     for (i=0; i < this.charts.length; ++i) {
-        var c=whiz.charts[i];
+        var c=kshf.charts[i];
         if(c.type==='RangeChart' && chartProcessed[i]===false){
             divLineRem-=c.getHeight_Rows();
         }
@@ -1021,7 +1021,7 @@ whiz.updateLayout_Height = function(){
         procBarChartsOld = procBarCharts;
         var targetSharedHeight = Math.floor(divLineRem/(barChartCount-procBarCharts));
         for (i=0; i<this.charts.length; ++i) {
-            var c=whiz.charts[i];
+            var c=kshf.charts[i];
             if((c.type==='barChart') && chartProcessed[i]===false){
                 if(c.collapsed){
                     c.setRowCount_VisibleItem(3); // some number, TODO: do not insert chart items if not visible
@@ -1045,7 +1045,7 @@ whiz.updateLayout_Height = function(){
     // there may be some empty lines remaining, try to give it back to the filters
     if(divLineRem>0){
         for (i=0; i < this.charts.length && divLineRem>0; ++i) {
-            var c3=whiz.charts[i];
+            var c3=kshf.charts[i];
             if(c3.type==='barChart' && c3.catCount_Total!==c3.rowCount_VisibleItem){
                 var tmp=divLineRem;
                 divLineRem+=c3.rowCount_Total();
@@ -1057,26 +1057,26 @@ whiz.updateLayout_Height = function(){
 };
 
 
-whiz.updateLayout = function(){
+kshf.updateLayout = function(){
     this.updateLayout_Height();
 
     // WIDTH
-    whiz.time_animation_barscale = 400;
+    kshf.time_animation_barscale = 400;
     this.setBarWidthLeftPanel(Math.floor((this.divWidth-this.categoryTextWidth)/11));
 }
 
-whiz.setCategoryTextWidth = function(w){
+kshf.setCategoryTextWidth = function(w){
     this.categoryTextWidth = w;
     for(i = 0; i < this.charts.length; ++i){
-        if(whiz.charts[i].type==='barChart' || whiz.charts[i].type==='scatterplot'){
-            whiz.charts[i].options.rowTextWidth = w;
-            whiz.charts[i].updateWidth(w);
+        if(kshf.charts[i].type==='barChart' || kshf.charts[i].type==='scatterplot'){
+            kshf.charts[i].options.rowTextWidth = w;
+            kshf.charts[i].updateWidth(w);
         }
     }
     this.updateAllTheWidth();
 }
 
-whiz.setBarWidthLeftPanel = function(v){
+kshf.setBarWidthLeftPanel = function(v){
     if(v>200) {
         v=200;
     } else if(v>55){
@@ -1093,28 +1093,28 @@ whiz.setBarWidthLeftPanel = function(v){
     this.width_leftPanel_bar = v;
 
     for(i = 0; i < this.charts.length; ++i){
-        if(whiz.charts[i].type==='barChart' || whiz.charts[i].type==='scatterplot'){
-            whiz.charts[i].setBarWidth(this.width_leftPanel_bar);
+        if(kshf.charts[i].type==='barChart' || kshf.charts[i].type==='scatterplot'){
+            kshf.charts[i].setBarWidth(this.width_leftPanel_bar);
         }
     }
     this.updateAllTheWidth();
 }
 
-whiz.updateAllTheWidth = function(v){
-    this.width_leftPanel_total = this.width_leftPanel_bar+this.categoryTextWidth+whiz.scrollWidth + whiz.scrollPadding +2;
+kshf.updateAllTheWidth = function(v){
+    this.width_leftPanel_total = this.width_leftPanel_bar+this.categoryTextWidth+kshf.scrollWidth + kshf.scrollPadding +2;
     for (i = 0; i < this.charts.length; ++i){
-        if(whiz.charts[i].type==='RangeChart'){
-            whiz.charts[i].setWidth(this.width_leftPanel_total);
+        if(kshf.charts[i].type==='RangeChart'){
+            kshf.charts[i].setWidth(this.width_leftPanel_total);
         }
     }
 
     this.root.select("div.leftBlockBackground").style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.leftBlockAdjustSize").style("left",(this.width_leftPanel_total+2)+"px");
 
-    var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-whiz.scrollPadding-15; // 15 is padding
+    var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-kshf.scrollPadding-15; // 15 is padding
     for (i = 0; i < this.charts.length; ++i){
-        if(whiz.charts[i].type==='scatterplot'){
-            whiz.charts[i].setTimeWidth(width_rightPanel_total);
+        if(kshf.charts[i].type==='scatterplot'){
+            kshf.charts[i].setTimeWidth(width_rightPanel_total);
             break;
         }
     }
@@ -1124,19 +1124,19 @@ whiz.updateAllTheWidth = function(v){
     }
 
     // update list
-    this.maxTotalColWidth = width_rightPanel_total*whiz.listMaxColWidthMult;
+    this.maxTotalColWidth = width_rightPanel_total*kshf.listMaxColWidthMult;
     this.width_rightPanel_total = width_rightPanel_total;
 
-    whiz.updateCustomListStyleSheet();
+    kshf.updateCustomListStyleSheet();
 }
 
-whiz.updateCustomListStyleSheet = function(){
+kshf.updateCustomListStyleSheet = function(){
     var customSheet = document.createElement('style');
     customSheet.innerHTML = "";
     var totalColWidth=0;
     var columnPadding=5;//pixels per column
     for(i=0; i< 1; i++){
-        var j=whiz.listDisplay.listSortOrder[i];
+        var j=kshf.listDisplay.listSortOrder[i];
         var optionWidth=this.listDisplay.config[j].width;
         customSheet.innerHTML+=
             "div.listDiv div.listsortcolumn{ width: "+optionWidth+"px;}";
@@ -1157,10 +1157,10 @@ whiz.updateCustomListStyleSheet = function(){
 // BASE CHART
 // ***********************************************************************************************************
 
-whiz.Chart = function(options){
-    this.id=whiz.num_of_charts;
-    whiz.num_of_charts++;
-    this.filterId = whiz.maxFilterID++;
+kshf.Chart = function(options){
+    this.id=kshf.num_of_charts;
+    kshf.num_of_charts++;
+    this.filterId = kshf.maxFilterID++;
     this.options = options;
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
@@ -1168,9 +1168,9 @@ whiz.Chart = function(options){
 };
 
 // set x offset to display active number of items
-whiz.Chart.prototype.getRowLabelOffset = function(){
+kshf.Chart.prototype.getRowLabelOffset = function(){
     if(!this._labelXOffset){
-        var maxTotalCount = whiz.items.length;
+        var maxTotalCount = kshf.items.length;
         this._labelXOffset = 9;
         var digits = 1;
         while(maxTotalCount>9){
@@ -1187,9 +1187,9 @@ whiz.Chart.prototype.getRowLabelOffset = function(){
 // WHIZ BAR CHART
 // ***********************************************************************************************************
 
-whiz.BarChart = function(options){
+kshf.BarChart = function(options){
     // Call the parent's constructor
-    whiz.Chart.call(this, options);
+    kshf.Chart.call(this, options);
     this.sortDelay = 450; // ms
 
     if(!this.options.itemXPos){
@@ -1198,7 +1198,7 @@ whiz.BarChart = function(options){
     } else {
         this.type = 'scatterplot';
         this.filterCount = 2;
-        whiz.maxFilterID++;
+        kshf.maxFilterID++;
     }
 
     this.init_shared(options);
@@ -1207,11 +1207,11 @@ whiz.BarChart = function(options){
         this.options.display = {row_bar_line:false};
     } else {
         this.options.display = {row_bar_line:true};
-        for(var i=0; i<whiz.items.length; i++){
-            whiz.items[i].timePos = this.options.itemXPos(whiz.items[i]);
+        for(var i=0; i<kshf.items.length; i++){
+            kshf.items[i].timePos = this.options.itemXPos(kshf.items[i]);
         }
-        this.data_minDate = d3.min(whiz.items, this.options.itemXPos);
-        this.data_maxDate = d3.max(whiz.items, this.options.itemXPos);
+        this.data_minDate = d3.min(kshf.items, this.options.itemXPos);
+        this.data_maxDate = d3.max(kshf.items, this.options.itemXPos);
         // calculate minYear and maxYear per cetegory
         this.updateData_TimeMinMax();
         var i;
@@ -1224,21 +1224,21 @@ whiz.BarChart = function(options){
     this.init_shared2();
 };
 // Setup the prototype chain the right way
-whiz.extendClass(whiz.Chart, whiz.BarChart);
+kshf.extendClass(kshf.Chart, kshf.BarChart);
 
-whiz.BarChart.prototype.rowCount_Header_Left = function(){
+kshf.BarChart.prototype.rowCount_Header_Left = function(){
     var r=1; // title
     if(this.options.sortingFuncs.length>1) {r++;}
     if(this.showTextSearch){ r++;}
     return r;
 };
-whiz.BarChart.prototype.rowCount_Header_Right = function(){
+kshf.BarChart.prototype.rowCount_Header_Right = function(){
     if(this.type==='scatterplot'){
         return (this.options.timeTitle)?3:2;
     }
     return 0;
 };
-whiz.BarChart.prototype.rowCount_Header = function(){
+kshf.BarChart.prototype.rowCount_Header = function(){
     var h= Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
     if(this.type==='scatterplot'){
         h = Math.max(h,2);
@@ -1246,7 +1246,7 @@ whiz.BarChart.prototype.rowCount_Header = function(){
     return h;
 };
 
-whiz.BarChart.prototype.init_shared = function(options){
+kshf.BarChart.prototype.init_shared = function(options){
 	// register
     var i,j,f;
 
@@ -1263,12 +1263,12 @@ whiz.BarChart.prototype.init_shared = function(options){
     // generate row table if necessary
     if(this.options.generateRows){
         this.tableName = this.options.tableName+"_h_"+this.id;
-        whiz.createTableFromTable(whiz.items,this.tableName, this.options.itemMapFunc);
+        kshf.createTableFromTable(kshf.items,this.tableName, this.options.itemMapFunc);
     } else {
         this.tableName = this.options.tableName;
     }
     // BIG. Apply row map function
-    var dt = whiz.items;
+    var dt = kshf.items;
     var curDtId = this.getData_wID();
     for(i=0;i<dt.length;i++){
         var item = dt[i];
@@ -1331,7 +1331,7 @@ whiz.BarChart.prototype.init_shared = function(options){
     this.x_axis_active_filter = null;
 };
 
-whiz.BarChart.prototype.updateTotalItemCount = function(){
+kshf.BarChart.prototype.updateTotalItemCount = function(){
     var i,dt=this.getData();
     this.catCount_Total = 0;
     for(i=0; i<dt.length ; i++){
@@ -1339,16 +1339,16 @@ whiz.BarChart.prototype.updateTotalItemCount = function(){
     }
 };
 
-whiz.BarChart.prototype.getWidth = function(){
+kshf.BarChart.prototype.getWidth = function(){
     return this.options.rowTextWidth + 
         this.barMaxWidth +
-        ((this.type==='scatterplot')?(this.options.timeMaxWidth+whiz.sepWidth):0) +
-        whiz.scrollWidth + // assume scrollbar is on
-        whiz.scrollPadding
+        ((this.type==='scatterplot')?(this.options.timeMaxWidth+kshf.sepWidth):0) +
+        kshf.scrollWidth + // assume scrollbar is on
+        kshf.scrollPadding
         +2;
 };
 
-whiz.BarChart.prototype.rowCount_Total = function(){
+kshf.BarChart.prototype.rowCount_Total = function(){
     if(this.collapsed){
         return 1;
     }
@@ -1358,11 +1358,11 @@ whiz.BarChart.prototype.rowCount_Total = function(){
     return this.rowCount_VisibleItem+this.rowCount_Header()+bottomRow;
 };
 
-whiz.BarChart.prototype.rowCount_MaxTotal = function(){
+kshf.BarChart.prototype.rowCount_MaxTotal = function(){
     return this.catCount_Total+this.rowCount_Header()+1;
 };
 
-whiz.BarChart.prototype.updateChartTotalWidth = function(){
+kshf.BarChart.prototype.updateChartTotalWidth = function(){
     this.divRoot.style("width",this.getWidth()+"px");
     // to capture click/hover mouse events
     this.root.select("rect.chartBackground").attr('width',this.getWidth());
@@ -1373,11 +1373,11 @@ whiz.BarChart.prototype.updateChartTotalWidth = function(){
 
 };
 
-whiz.BarChart.prototype.init_shared2 = function(){
-    var whiz_ = this;
+kshf.BarChart.prototype.init_shared2 = function(){
+    var kshf_ = this;
     
     this.divRoot = this.options.layout
-        .append("div").attr("class","whizChart");
+        .append("div").attr("class","kshfChart");
 
 	this.root = this.divRoot
         .append("svg")
@@ -1400,10 +1400,10 @@ whiz.BarChart.prototype.init_shared2 = function(){
                 delta = -event.detail / 2;
             }
             if(delta<-0.1) { 
-                whiz_.setScrollPosition(whiz_.scrollbar.firstRow+1);
+                kshf_.setScrollPosition(kshf_.scrollbar.firstRow+1);
             }
             if(delta>0.1) { 
-                whiz_.setScrollPosition(whiz_.scrollbar.firstRow-1);
+                kshf_.setScrollPosition(kshf_.scrollbar.firstRow-1);
             }
 
             if (event.preventDefault) {//disable default wheel action of scrolling page
@@ -1483,9 +1483,9 @@ whiz.BarChart.prototype.init_shared2 = function(){
         ;
 	var barGroup_Top = this.root.append("svg:g")
 		.attr("class","barGroup_Top")
-		.attr("clip-path","url(#whiz_chart_clippath_"+this.id+")")
+		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
 		.attr("transform", function(d,i) {
-			return "translate(0," + ((whiz.line_height*whiz_.rowCount_Header())) + ")";
+			return "translate(0," + ((kshf.line_height*kshf_.rowCount_Header())) + ")";
 		});
 	var barGroup = barGroup_Top.append("svg:g")
 		.attr("class","barGroup");
@@ -1516,15 +1516,15 @@ whiz.BarChart.prototype.init_shared2 = function(){
     this.updateSorting(true);
 };
 
-whiz.BarChart.prototype.getData = function(){
-    return whiz.dt[this.tableName];
+kshf.BarChart.prototype.getData = function(){
+    return kshf.dt[this.tableName];
 };
-whiz.BarChart.prototype.getData_wID = function(){
-    return whiz.dt_id[this.tableName];
+kshf.BarChart.prototype.getData_wID = function(){
+    return kshf.dt_id[this.tableName];
 };
 
 // returns the maximum number of total items stored per row in chart data
-whiz.BarChart.prototype.getMaxTotalItemsPerRow = function(){
+kshf.BarChart.prototype.getMaxTotalItemsPerRow = function(){
     if(!this._maxTotalItemsPerRow){
         var dataMapFunc = this._dataMap;
         this._maxTotalItemsPerRow = d3.max(this.getData(), function(d){ 
@@ -1536,7 +1536,7 @@ whiz.BarChart.prototype.getMaxTotalItemsPerRow = function(){
 };
 
 // returns the maximum number of selected items stored per row in chart data
-whiz.BarChart.prototype.getMaxSelectedItemsPerRow = function(){
+kshf.BarChart.prototype.getMaxSelectedItemsPerRow = function(){
     var dataMapFunc = this._dataMap;
     this._maxSelectedItemsPerRow = d3.max(this.getData(), function(d){ 
         if(dataMapFunc(d)===null) { return null; }
@@ -1545,7 +1545,7 @@ whiz.BarChart.prototype.getMaxSelectedItemsPerRow = function(){
     return this._maxSelectedItemsPerRow;
 };
 
-whiz.BarChart.prototype.updateSelf = function(){
+kshf.BarChart.prototype.updateSelf = function(){
 	this.refreshActiveItemCount();
     this.refreshBarHeight();
     if(this.type==="scatterplot"){
@@ -1556,8 +1556,8 @@ whiz.BarChart.prototype.updateSelf = function(){
 	this.updateSorting();
 };
 
-whiz.BarChart.prototype.updateData_TimeMinMax = function(){
-    var whiz_ = this;
+kshf.BarChart.prototype.updateData_TimeMinMax = function(){
+    var kshf_ = this;
     var i;
     var specFunc = function(d){
         if(!d.selected) { return undefined; }
@@ -1573,16 +1573,16 @@ whiz.BarChart.prototype.updateData_TimeMinMax = function(){
 };
 
 
-whiz.BarChart.prototype.refreshActiveItemCount = function(){
-    var whiz_ = this;
+kshf.BarChart.prototype.refreshActiveItemCount = function(){
+    var kshf_ = this;
     this.dom.item_count.text(function(d) { return "("+d.activeItems+")";});
     this.dom.row_title.text(function(d){
-            return (d.activeItems===0?"No":d.activeItems)+" selected "+whiz.itemName+" "+
-                whiz_.options.filter.rowConj+" "+
-                ((whiz_.options.rowTitleText)?whiz_.options.rowTitleText(d):whiz_.options.rowLabelText(d));
+            return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
+                kshf_.options.filter.rowConj+" "+
+                ((kshf_.options.rowTitleText)?kshf_.options.rowTitleText(d):kshf_.options.rowLabelText(d));
         });
 };
-whiz.BarChart.prototype.refreshBarHeight = function(){
+kshf.BarChart.prototype.refreshBarHeight = function(){
 	// Non-selected rows have shorted bar height.
 	this.dom.allRowBars
 		.attr("height", function(d,i){ return (d.activeItems>0)?12:6; })
@@ -1594,16 +1594,16 @@ whiz.BarChart.prototype.refreshBarHeight = function(){
 		.attr("height", function(d,i){ return (d.activeItems>0)?10:4; })
 		.attr("y",function(d,i){ return (d.activeItems>0)?4:7; });
 };
-whiz.BarChart.prototype.refreshBarDisplay = function(){
-	var whiz_=this;
+kshf.BarChart.prototype.refreshBarDisplay = function(){
+	var kshf_=this;
 	this.dom.bar_active
         .transition()
-        .duration(whiz.time_animation_barscale)
-		.attr("width", function(d){return whiz_.xAxisScale(d.activeItems);})
+        .duration(kshf.time_animation_barscale)
+		.attr("width", function(d){return kshf_.xAxisScale(d.activeItems);})
         ;
 };
 // Applies alternating color for bar helper lines
-whiz.BarChart.prototype.refreshBarLineHelper = function(){
+kshf.BarChart.prototype.refreshBarLineHelper = function(){
 	if(this.options.display.row_bar_line===true){
 		this.root.selectAll(".row_bar_line")
 			.attr("stroke", function(d,i) {
@@ -1611,40 +1611,40 @@ whiz.BarChart.prototype.refreshBarLineHelper = function(){
 			});
 	}
 };
-whiz.BarChart.prototype.getFilteredCount = function(){
+kshf.BarChart.prototype.getFilteredCount = function(){
     var r=this.isFiltered_Row();
     if(this.type==="scatterplot"){
         r+=this.isFiltered_Time();
     }
     return r;
 }
-whiz.BarChart.prototype.refreshFilterRowState = function(){
+kshf.BarChart.prototype.refreshFilterRowState = function(){
 	var filtered = this.catCount_Selected!==0;
 	this.divRoot.attr("filtered_row",filtered);
 	this.root.selectAll("g.barGroup g.row")
 		.attr("selected", function(d) { return d.selected; });
 };
 
-whiz.BarChart.prototype.isFiltered_Row = function(state){
+kshf.BarChart.prototype.isFiltered_Row = function(state){
     return this.catCount_Selected!==0;
 };
-whiz.BarChart.prototype.isFiltered_Time = function(){
+kshf.BarChart.prototype.isFiltered_Time = function(){
 	return this.timeFilter_ms.min!==this.chartX_min_ms ||
 	       this.timeFilter_ms.max!==this.chartX_max_ms ;
 };
 //! Rows, not data!
-whiz.BarChart.prototype.selectAllRows = function(state){
+kshf.BarChart.prototype.selectAllRows = function(state){
     var i;
     var rows=this.getData();
     for(i=0; i<rows.length ; i++){ rows[i].selected = state; }
 	this.catCount_Selected = (state)?this.catCount_Total:0;
 };
 
-whiz.BarChart.prototype.clearAllFilters = function(toUpdate){
+kshf.BarChart.prototype.clearAllFilters = function(toUpdate){
     this.clearRowFilter();
     if(this.type==='scatterplot') this.clearTimeFilter();
 }
-whiz.BarChart.prototype.clearRowFilter = function(toUpdate){
+kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
 	this.selectAllRows(false);
     this.filter_addItems();
     this.refreshFilterRowState();
@@ -1652,28 +1652,28 @@ whiz.BarChart.prototype.clearRowFilter = function(toUpdate){
     if(this.dom.showTextSearch){
         this.dom.showTextSearch[0][0].value="";
     }
-    if(toUpdate!==false) { whiz.update(); }
+    if(toUpdate!==false) { kshf.update(); }
 };
 
-whiz.BarChart.prototype.clearTimeFilter = function(toUpdate){
+kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
 	this.timeFilter_ms.min = this.chartX_min_ms;
 	this.timeFilter_ms.max = this.chartX_max_ms;
 	this.yearSetXPos();
     this.filterTime();
-    if(toUpdate!==false) { whiz.update(); }
+    if(toUpdate!==false) { kshf.update(); }
 };
 
-whiz.BarChart.prototype.showHide = function(hide){
+kshf.BarChart.prototype.showHide = function(hide){
     this.collapsed = hide;
     this.headerhtml.select("span.leftHeader")
         .transition()
         .duration(500)
         .style("padding-top",(this.collapsed?0:this.leftHeaderPaddingTop)+"px");
-    whiz.updateLayout_Height();
+    kshf.updateLayout_Height();
 }
 
-whiz.BarChart.prototype.insertHeader = function(){
-	var whiz_ = this;
+kshf.BarChart.prototype.insertHeader = function(){
+	var kshf_ = this;
     var rows_Left = this.rowCount_Header_Left();
     var rows_Right = this.rowCount_Header_Right();
     if(this.type==='scatterplot'){
@@ -1687,17 +1687,17 @@ whiz.BarChart.prototype.insertHeader = function(){
 	var headerGroup = this.root.append("svg:g").attr("class","headerGroup")
         .on("mouseclick", function (d, i) { d3.event.preventDefault(); });
     this.headerhtml=headerGroup.append("svg:foreignObject").attr("class","headerHTML")
-        .attr("width",whiz_.options.rowTextWidth+200)
-        .attr("height",this.rowCount_Header()*whiz.line_height+2)
+        .attr("width",kshf_.options.rowTextWidth+200)
+        .attr("height",this.rowCount_Header()*kshf.line_height+2)
         .attr("x",0)
         .attr("y",0);
     this.headerhtml.append("xhtml:div").attr("class","chartAboveSeparator")
         .on("mousedown", function (d, i) {
-            log2Console("CLICK -  adjust filter height",whiz_);
-            whiz.root.style('cursor','ns-resize');
+            log2Console("CLICK -  adjust filter height",kshf_);
+            kshf.root.style('cursor','ns-resize');
             d3.event.preventDefault();
-            whiz.root.on("mouseup", function(){
-                whiz.root.style( 'cursor', 'default' );
+            kshf.root.on("mouseup", function(){
+                kshf.root.style( 'cursor', 'default' );
             });
         })
         .on("click",function(){
@@ -1705,9 +1705,9 @@ whiz.BarChart.prototype.insertHeader = function(){
             d3.event.preventDefault();
         });
         ;
-    this.leftHeaderPaddingTop = (leftMoveDown*whiz.line_height);
+    this.leftHeaderPaddingTop = (leftMoveDown*kshf.line_height);
     var leftBlock = this.headerhtml.append("xhtml:span").attr("class","leftHeader")
-        .style("width",(whiz_.options.rowTextWidth-this.getRowLabelOffset())+"px")
+        .style("width",(kshf_.options.rowTextWidth-this.getRowLabelOffset())+"px")
         .style("padding-top",this.leftHeaderPaddingTop+"px")
         ;
     var headerLabel = leftBlock.append("xhtml:span")
@@ -1716,32 +1716,32 @@ whiz.BarChart.prototype.insertHeader = function(){
         .style("float","right")
         .html(this.options.chartTitle)
         .on("click",function(){ 
-            if(whiz_.collapsed) {
-                log2Console("CLICK - showhide - false",whiz_);
-                whiz_.showHide(false);
+            if(kshf_.collapsed) {
+                log2Console("CLICK - showhide - false",kshf_);
+                kshf_.showHide(false);
             }
         })
         ;
     leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
         .attr("title","Show categories").text("▼")
         .on("click",function(){ 
-            log2Console("CLICK - showhide - false",whiz_);
-            whiz_.showHide(false);
+            log2Console("CLICK - showhide - false",kshf_);
+            kshf_.showHide(false);
         })
         ;
     leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
         .attr("title","Hide categories").text("▲")
         .on("click",function(){ 
-            log2Console("CLICK - showhide - true",whiz_);
-            whiz_.showHide(true);
+            log2Console("CLICK - showhide - true",kshf_);
+            kshf_.showHide(true);
         })
         ;
     leftBlock.append("xhtml:div")
         .attr("class","chartClearFilterButton rowFilter")
         .attr("title","Reset filter")
 		.on("click", function(d,i){
-            log2Console("CLICK - clearRowFilter",whiz_);
-            whiz_.clearRowFilter(); 
+            log2Console("CLICK - clearRowFilter",kshf_);
+            kshf_.clearRowFilter(); 
         })
         .text('x');
     if(this.type==="scatterplot"){
@@ -1755,43 +1755,43 @@ whiz.BarChart.prototype.insertHeader = function(){
             .style("float","left")
             .text(this.options.timeTitle)
             .on("click",function(){ 
-                if(whiz_.collapsed) {
-                    log2Console("CLICK - showhide - false",whiz_);
-                    whiz_.showHide(false);
+                if(kshf_.collapsed) {
+                    log2Console("CLICK - showhide - false",kshf_);
+                    kshf_.showHide(false);
                 }
             })
             ;
         rightBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
             .attr("title","Show categories").text("▼")
             .on("click",function(){ 
-                log2Console("CLICK - showhide - false,",whiz_);
-                whiz_.showHide(false);
+                log2Console("CLICK - showhide - false,",kshf_);
+                kshf_.showHide(false);
             })
             ;
         rightBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
             .attr("title","Hide categories").text("▲")
             .on("click",function(){ 
-                log2Console("CLICK - showhide - true",whiz_);
-                whiz_.showHide(true);
+                log2Console("CLICK - showhide - true",kshf_);
+                kshf_.showHide(true);
             })
             ;
         rightBlock.append("xhtml:div")
             .attr("class","chartClearFilterButton timeFilter")
             .attr("title","Reset filter")
             .on("click", function(d,i){
-                log2Console("CLICK - clearTimeFilter",whiz_);
-                whiz_.clearTimeFilter(); 
+                log2Console("CLICK - clearTimeFilter",kshf_);
+                kshf_.clearTimeFilter(); 
             })
             .text('x');
     }
 	// line
-    var line_y = whiz.line_height*this.rowCount_Header()-0.5;
+    var line_y = kshf.line_height*this.rowCount_Header()-0.5;
     headerGroup.append("svg:text")
         .attr("class", "barInfo")
         .text( ((this.options.barInfoText!==undefined)?this.options.barInfoText:"") )
         ;
 	var xxx=headerGroup.append("svg:g")
-		.attr("transform","matrix(0.008,0,0,0.008,"+(this.options.rowTextWidth-this.getRowLabelOffset()+5)+","+(line_y-whiz.line_height+3)+")")
+		.attr("transform","matrix(0.008,0,0,0.008,"+(this.options.rowTextWidth-this.getRowLabelOffset()+5)+","+(line_y-kshf.line_height+3)+")")
 		.attr("class","resort_button")
 		;
         xxx.append("svg:title").text("Move selected rows to top & re-order");
@@ -1801,8 +1801,8 @@ whiz.BarChart.prototype.insertHeader = function(){
             .attr("width",1500)
             .attr("height",1500)
             .on("click",function(d){
-                log2Console("CLICK - RESORT!",whiz_);
-                whiz_.sortDelay = 0; whiz_.updateSorting(true);
+                log2Console("CLICK - RESORT!",kshf_);
+                kshf_.sortDelay = 0; kshf_.updateSorting(true);
             })
             ;
         xxx.append("svg:path")
@@ -1832,28 +1832,28 @@ whiz.BarChart.prototype.insertHeader = function(){
                 this.timer = setTimeout( function(){
                     var v=x.value.toLowerCase();
                     if(v===""){
-                        whiz_.selectAllRows(false);
+                        kshf_.selectAllRows(false);
                     } else {
-                        var daat=whiz_.getData(),i,numSelected=0;
+                        var daat=kshf_.getData(),i,numSelected=0;
                         for(i=0; i<daat.length ; i++){
                             var d=daat[i];
-                            if(whiz_.options.rowLabelText(d).toLowerCase().indexOf(v)!==-1){
+                            if(kshf_.options.rowLabelText(d).toLowerCase().indexOf(v)!==-1){
                                 d.selected = true;
                             } else {
-                                if(whiz_.options.rowTitleText){
-                                    d.selected = whiz_.options.rowTitleText(d).toLowerCase().indexOf(v)!==-1;
+                                if(kshf_.options.rowTitleText){
+                                    d.selected = kshf_.options.rowTitleText(d).toLowerCase().indexOf(v)!==-1;
                                 } else{
                                     d.selected = false;
                                 }
                             }
                             numSelected+=d.selected;
                         }
-                        whiz_.catCount_Selected = numSelected;
+                        kshf_.catCount_Selected = numSelected;
                     }
-                    whiz_.filter_all();
-                    whiz_.refreshFilterRowState();
-                    whiz.update();
-                    whiz_.refreshFilterSummaryBlock();
+                    kshf_.filter_all();
+                    kshf_.refreshFilterRowState();
+                    kshf.update();
+                    kshf_.refreshFilterSummaryBlock();
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                 }, 750);
@@ -1868,12 +1868,12 @@ whiz.BarChart.prototype.insertHeader = function(){
         leftBlock.append("xhtml:select")
             .attr("class","sortOptionSelect")
 			.on("change", function(){
-                log2Console("CLICK - filter category sorting change",whiz_);
-				whiz_.sortID = this.selectedIndex;
-				whiz_.sortInverse = false;
-                whiz_.sortDelay = 0;
-                whiz_.sortSkip = false;
-				whiz_.updateSorting.call(whiz_,true);
+                log2Console("CLICK - filter category sorting change",kshf_);
+				kshf_.sortID = this.selectedIndex;
+				kshf_.sortInverse = false;
+                kshf_.sortDelay = 0;
+                kshf_.sortSkip = false;
+				kshf_.updateSorting.call(kshf_,true);
 			})
         .selectAll("input.sort_label")
 			.data(this.options.sortingFuncs)
@@ -1887,12 +1887,12 @@ whiz.BarChart.prototype.insertHeader = function(){
             .text("Sort by:")
     }
 
-    whiz.layoutTop.select(".barChartMainInfo")
-        .style("left",(whiz_.options.rowTextWidth-this.getRowLabelOffset()+9)+"px");
+    kshf.layoutTop.select(".barChartMainInfo")
+        .style("left",(kshf_.options.rowTextWidth-this.getRowLabelOffset()+9)+"px");
 
 };
 
-whiz.BarChart.prototype.setTimeWidth = function(w){
+kshf.BarChart.prototype.setTimeWidth = function(w){
     this.options.timeMaxWidth = w;
 
 
@@ -1909,17 +1909,17 @@ whiz.BarChart.prototype.setTimeWidth = function(w){
         .style("width",(w)+"px");
     this.root.select("g.timeAxisGroup")
         .attr("transform","translate("+
-              (this.barMaxWidth+whiz.scrollPadding+whiz.scrollWidth+whiz.sepWidth+this.options.rowTextWidth)+","+
-              (whiz.line_height*(this.rowCount_Header()-0.5)+2)+")");
+              (this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.options.rowTextWidth)+","+
+              (kshf.line_height*(this.rowCount_Header()-0.5)+2)+")");
 	if(this.options.display.row_bar_line){
-        var x2=this.options.rowTextWidth+this.barMaxWidth+this.timeScale.range()[1]+whiz.scrollPadding+whiz.scrollWidth;
+        var x2=this.options.rowTextWidth+this.barMaxWidth+this.timeScale.range()[1]+kshf.scrollPadding+kshf.scrollWidth;
         this.root.selectAll("line.row_bar_line")
             .attr("x2",x2);
     }
 
 };
 
-whiz.BarChart.prototype.updateXAxisScale = function(){
+kshf.BarChart.prototype.updateXAxisScale = function(){
     this.xAxisScale = d3.scale.linear()
         .domain([0,this.getMaxSelectedItemsPerRow()])
         .rangeRound([0, this.barMaxWidth]);
@@ -1929,24 +1929,24 @@ whiz.BarChart.prototype.updateXAxisScale = function(){
     this.insertXAxisTicks();
 }
 
-whiz.BarChart.prototype.setBarWidth = function(w){
+kshf.BarChart.prototype.setBarWidth = function(w){
     if(this.barMaxWidth===w) { return; }
     this.barMaxWidth = w;
     this.updateAllWidth();
 }
     
-whiz.BarChart.prototype.updateAllWidth = function(w){
+kshf.BarChart.prototype.updateAllWidth = function(w){
     this.updateXAxisScale();
     
     // update x axis items
     this.root.select("g.headerGroup div.chartAboveSeparator")
-        .style("width",(this.options.rowTextWidth+this.barMaxWidth+whiz.scrollWidth+whiz.scrollPadding)+"px")
+        .style("width",(this.options.rowTextWidth+this.barMaxWidth+kshf.scrollWidth+kshf.scrollPadding)+"px")
         ;
     
     this.updateScrollBarPos();
     
 	if(this.options.display.row_bar_line){
-        var x2=this.options.rowTextWidth+this.barMaxWidth+(this.timeScale?this.timeScale.range()[1]:0)+whiz.scrollPadding+whiz.scrollWidth;
+        var x2=this.options.rowTextWidth+this.barMaxWidth+(this.timeScale?this.timeScale.range()[1]:0)+kshf.scrollPadding+kshf.scrollWidth;
         this.root.selectAll("line.row_bar_line")
             .attr("x2",x2);
     }
@@ -1954,9 +1954,9 @@ whiz.BarChart.prototype.updateAllWidth = function(w){
     this.updateChartTotalWidth();
 };
 
-whiz.BarChart.prototype.refreshScrollbar = function(animate){
+kshf.BarChart.prototype.refreshScrollbar = function(animate){
     var me = this;
-	var firstRowHeight = whiz.line_height*this.scrollbar.firstRow;
+	var firstRowHeight = kshf.line_height*this.scrollbar.firstRow;
     var handleTopPos = firstRowHeight*(this.rowCount_VisibleItem/this.catCount_Total.toFixed());
     if(animate){
         this.root.selectAll("g.scrollGroup rect.background_up")
@@ -1967,7 +1967,7 @@ whiz.BarChart.prototype.refreshScrollbar = function(animate){
             .transition()
             .duration(500)
             .attr("y",handleTopPos)
-            .attr("height",whiz.line_height*this.rowCount_VisibleItem-handleTopPos)
+            .attr("height",kshf.line_height*this.rowCount_VisibleItem-handleTopPos)
         ;
         this.root.selectAll("g.scrollGroup rect.handle")
             .transition()
@@ -1984,7 +1984,7 @@ whiz.BarChart.prototype.refreshScrollbar = function(animate){
             .attr("height",(handleTopPos+5));
         this.root.selectAll("g.scrollGroup rect.background_down")
             .attr("y",handleTopPos)
-            .attr("height",whiz.line_height*this.rowCount_VisibleItem-handleTopPos)
+            .attr("height",kshf.line_height*this.rowCount_VisibleItem-handleTopPos)
         ;
         this.root.selectAll("g.scrollGroup rect.handle")
             .attr("y",handleTopPos);
@@ -2006,11 +2006,11 @@ whiz.BarChart.prototype.refreshScrollbar = function(animate){
         ;
 };
 
-whiz.BarChart.prototype.firstRowMax = function(){
+kshf.BarChart.prototype.firstRowMax = function(){
     return this.catCount_Total-this.rowCount_VisibleItem;
 };
 
-whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
+kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
 //    if(c===this.rowCount_VisibleItem){ return; }
     if(c>this.catCount_Total){ c = this.catCount_Total; }
     if(c<0){ c=1; }
@@ -2035,10 +2035,10 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
         }
     }
 
-    var totalHeight = whiz.line_height*this.rowCount_Total();
-    var barsHeight  = whiz.line_height*this.rowCount_VisibleItem;
+    var totalHeight = kshf.line_height*this.rowCount_Total();
+    var barsHeight  = kshf.line_height*this.rowCount_VisibleItem;
 
-    var whiz_ = this;
+    var kshf_ = this;
     if(this.collapsed===false){
         this.divRoot
             .attr("collapsed","false")
@@ -2047,7 +2047,7 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
             .style("height",totalHeight+"px");
    } else{
 /*        d3.timer(function(){
-            whiz_.divRoot.transition().delay(200);
+            kshf_.divRoot.transition().delay(200);
             return true;
         },10);        */
          // update chart height
@@ -2059,12 +2059,12 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
              .attr("collapsed","true");
          
    }
-    this.root.select("rect.chartBackground").attr('height', whiz.line_height*this.rowCount_Total());
+    this.root.select("rect.chartBackground").attr('height', kshf.line_height*this.rowCount_Total());
 //    this.divRoot.attr("collapsed",this.collapsed?"true":"false");
     
     
     // update clippath height
-    this.root.select("#whiz_chart_clippath_"+this.id+" rect")
+    this.root.select("#kshf_chart_clippath_"+this.id+" rect")
         .transition()
         .duration(500)
 		.attr("height",barsHeight);
@@ -2083,7 +2083,7 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
         .transition()
         .duration(500)
         .attr('y',(barsHeight+10));
-    var scrollHandleHeight=whiz.line_height*this.rowCount_VisibleItem*this.rowCount_VisibleItem/this.catCount_Total.toFixed();
+    var scrollHandleHeight=kshf.line_height*this.rowCount_VisibleItem*this.rowCount_VisibleItem/this.catCount_Total.toFixed();
     if(scrollHandleHeight<10) { scrollHandleHeight=10;}
 	this.root.selectAll("g.scrollGroup rect.handle")
         .transition()
@@ -2092,7 +2092,7 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
     
     // update x axis items
 	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
-		.attr("y2", barsHeight+whiz.line_height*1.5-4);
+		.attr("y2", barsHeight+kshf.line_height*1.5-4);
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
         .transition()
         .duration(500)
@@ -2102,12 +2102,12 @@ whiz.BarChart.prototype.setRowCount_VisibleItem = function(c){
 //    }
 
     // how much is one row when mapped to the scroll bar?
-	this.scrollbar.rowScrollHeight = whiz.line_height*this.rowCount_VisibleItem/this.catCount_Total;
+	this.scrollbar.rowScrollHeight = kshf.line_height*this.rowCount_VisibleItem/this.catCount_Total;
 	
     this.refreshScrollbar();
 };
 
-whiz.BarChart.prototype.setScrollPosition = function(pos) {
+kshf.BarChart.prototype.setScrollPosition = function(pos) {
     if(pos<0) { pos = 0;}
     if(pos>this.firstRowMax()){ pos=this.firstRowMax(); }
     if(this.scrollbar.firstRow===pos) { return;}
@@ -2115,7 +2115,7 @@ whiz.BarChart.prototype.setScrollPosition = function(pos) {
     this.refreshScrollbar();
 };
     
-whiz.BarChart.prototype.stepScrollPosition = function(stepSize) {
+kshf.BarChart.prototype.stepScrollPosition = function(stepSize) {
     if(this.scrollbar.firstRow===0 && stepSize<0){ return; }
     if(this.scrollbar.firstRow===this.firstRowMax() && stepSize>0){ return; }
     if(!this.scrollBarUp_Active){ return; }
@@ -2126,10 +2126,10 @@ whiz.BarChart.prototype.stepScrollPosition = function(stepSize) {
     window.setTimeout(this.stepScrollPosition.bind(this,stepSize), this.scrollBarUp_TimeStep);
 };
 
-whiz.BarChart.prototype.insertScrollbar = function(){
+kshf.BarChart.prototype.insertScrollbar = function(){
     // TODO: don't need this variable, use DOM information to see if scrollbar group exist
     this.scrollbar.show = true;
-    var whiz_ = this;
+    var kshf_ = this;
     
     // *****************
 	var scrollGroup = this.root.append("svg:g").attr("class","scrollGroup")
@@ -2146,19 +2146,19 @@ whiz.BarChart.prototype.insertScrollbar = function(){
     // more
     scrollGroup.append("svg:text").attr("class","scroll_display_more")
         .on("mousedown",function(){
-            log2Console("CLICK: scroll - more",whiz_);
+            log2Console("CLICK: scroll - more",kshf_);
             scrollGroup.selectAll("text.row_number").style("display","block");
-            whiz_.scrollBarUp_Active = true; 
-            whiz_.scrollBarUp_TimeStep = 200;
-            whiz_.stepScrollPosition(1);
+            kshf_.scrollBarUp_Active = true; 
+            kshf_.scrollBarUp_TimeStep = 200;
+            kshf_.stepScrollPosition(1);
         })
-        .on("mouseup",function(){ whiz_.scrollBarUp_Active = false; })
+        .on("mouseup",function(){ kshf_.scrollBarUp_Active = false; })
         .on("mouseover",function(e){ 
             d3.select(this).attr("highlight",true); 
         })
         .on("mouseout",function(){ 
             d3.select(this).attr("highlight",false); 
-            whiz_.scrollBarUp_Active = false; 
+            kshf_.scrollBarUp_Active = false; 
             scrollGroup.selectAll("text.row_number").style("display","");
         })
         ;
@@ -2168,15 +2168,15 @@ whiz.BarChart.prototype.insertScrollbar = function(){
     this.updateChartTotalWidth();
 };
 
-whiz.BarChart.prototype.insertScrollbar_do = function(parentDom){
-    var whiz_ = this;
+kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
+    var kshf_ = this;
     var mouseOverFunc = function(){
         d3.select(this)
             .transition()
             .duration(200)
             .style("fill","#EAEAEA")
             ;
-        whiz_.root.selectAll("g.scrollGroup rect.handle")
+        kshf_.root.selectAll("g.scrollGroup rect.handle")
             .transition()
             .duration(200)
             .style("fill-opacity",1)
@@ -2189,13 +2189,13 @@ whiz.BarChart.prototype.insertScrollbar_do = function(parentDom){
             .duration(200)
             .style("fill","white")
             ;
-        whiz_.root.selectAll("g.scrollGroup rect.handle")
+        kshf_.root.selectAll("g.scrollGroup rect.handle")
             .transition()
             .duration(200)
             .style("fill-opacity",0.2)
             .style("stroke-opacity",0.2)
             ;
-        whiz_.scrollBarUp_Active = false;
+        kshf_.scrollBarUp_Active = false;
     };
 
 	// scroll to top
@@ -2204,51 +2204,51 @@ whiz.BarChart.prototype.insertScrollbar_do = function(parentDom){
         xxx.append("svg:title")
             .text("Top");
         xxx.append("svg:rect")
-            .attr("width",whiz.scrollWidth)
+            .attr("width",kshf.scrollWidth)
             .attr("height",11)
             .on("click",function(){
-                log2Console("CLICK: scroll - go_top",whiz_);
-                whiz_.scrollbar.firstRow=0;
-                whiz_.refreshScrollbar(true);
+                log2Console("CLICK: scroll - go_top",kshf_);
+                kshf_.scrollbar.firstRow=0;
+                kshf_.refreshScrollbar(true);
             });
         xxx.append("svg:path").attr("class","top_arrow")
             .attr("d","M4 0 L0 3 L0 6 L4 3 L8  6 L8  3 Z M4 5 L0 8 L0 11 L4 8 L8 11 L8  8 Z")
             ;
 	// the background - static position/size
 	parentDom.append("svg:rect").attr("class", "background")
-		.attr("width",whiz.scrollWidth+1)
+		.attr("width",kshf.scrollWidth+1)
 		.attr("rx",4)
 		.attr("ry",4)
         .attr("x",-0.5)
         .attr("y",-0.5)
         ;
 	parentDom.append("svg:rect").attr("class", "background_fill background_up")
-		.attr("width",whiz.scrollWidth)
+		.attr("width",kshf.scrollWidth)
 		.attr("rx",4)
 		.attr("ry",4)
         .on("mousedown",function(){
             log2Console("CLICK: scroll - background_up");
-            whiz_.scrollBarUp_Active = true; 
-            whiz_.scrollBarUp_TimeStep = 200;
-            whiz_.stepScrollPosition(-1);
+            kshf_.scrollBarUp_Active = true; 
+            kshf_.scrollBarUp_TimeStep = 200;
+            kshf_.stepScrollPosition(-1);
         })
 		.on("mouseup",function(){
-            whiz_.scrollBarUp_Active = false; 
+            kshf_.scrollBarUp_Active = false; 
         })
 		.on("mouseover",mouseOverFunc)
 		.on("mouseout",mouseOutFunc);
 	parentDom.append("svg:rect").attr("class", "background_fill background_down")
-		.attr("width",whiz.scrollWidth)
+		.attr("width",kshf.scrollWidth)
 		.attr("rx",4)
 		.attr("ry",4)
         .on("mousedown",function(){
-            log2Console("CLICK: scroll - background_down",whiz_);
-            whiz_.scrollBarUp_Active = true; 
-            whiz_.scrollBarUp_TimeStep = 200;
-            whiz_.stepScrollPosition(1);
+            log2Console("CLICK: scroll - background_down",kshf_);
+            kshf_.scrollBarUp_Active = true; 
+            kshf_.scrollBarUp_TimeStep = 200;
+            kshf_.stepScrollPosition(1);
         })
 		.on("mouseup",function(){
-            whiz_.scrollBarUp_Active = false; 
+            kshf_.scrollBarUp_Active = false; 
         })
 		.on("mouseover",mouseOverFunc)
 		.on("mouseout",mouseOutFunc);
@@ -2259,56 +2259,56 @@ whiz.BarChart.prototype.insertScrollbar_do = function(parentDom){
 		.attr("y",0)
 		.attr("rx",4)
 		.attr("ry",4)
-		.attr("width",whiz.scrollWidth)
+		.attr("width",kshf.scrollWidth)
 		.on("mouseover",mouseOverFunc)
 		.on("mouseout",mouseOutFunc)
 		.on("mousedown", function(d, i) {
             log2Console("CLICK: scroll - handle");
-			whiz_.scrollbar.active=true;
+			kshf_.scrollbar.active=true;
 			d3.select(this).attr("selected", "true");
-			whiz_.root.style( 'cursor', 'pointer' );
+			kshf_.root.style( 'cursor', 'pointer' );
 			var mouseDown_y = d3.mouse(this.parentNode.parentNode.parentNode)[1];
-			var firstRow = whiz_.scrollbar.firstRow;
+			var firstRow = kshf_.scrollbar.firstRow;
             parentDom.selectAll("text.row_number").style("display","block");
-			whiz_.root.on("mousemove", function() {
+			kshf_.root.on("mousemove", function() {
 				var mouseMove_y = d3.mouse(this)[1];
 				var mouseDif = mouseMove_y-mouseDown_y;
 				// update position if necessary
-				var lineDif = Math.round(mouseDif/whiz_.scrollbar.rowScrollHeight);
+				var lineDif = Math.round(mouseDif/kshf_.scrollbar.rowScrollHeight);
 				if(lineDif!==0){
 					var hmm=firstRow + lineDif;
 					if(hmm<0) { hmm=0; }
-					if(hmm>whiz_.firstRowMax()) { hmm=whiz_.firstRowMax(); }
-					whiz_.scrollbar.firstRow = hmm;
-					whiz_.refreshScrollbar();
+					if(hmm>kshf_.firstRowMax()) { hmm=kshf_.firstRowMax(); }
+					kshf_.scrollbar.firstRow = hmm;
+					kshf_.refreshScrollbar();
 				}
 			});
-			whiz_.root.on("mouseup", function(){
-				whiz_.root.style( 'cursor', 'default' );
-				whiz_.scrollbar.active=false;
-				var btn=whiz_.root.select("g.scrollGroup rect.handle");
+			kshf_.root.on("mouseup", function(){
+				kshf_.root.style( 'cursor', 'default' );
+				kshf_.scrollbar.active=false;
+				var btn=kshf_.root.select("g.scrollGroup rect.handle");
 				btn.attr("selected", "false");
 				// unregister mouse-move callbacks
                 parentDom.selectAll("text.row_number").style("display","");
-				whiz_.root.on("mousemove", null);
-				whiz_.root.on("mouseup", null);
+				kshf_.root.on("mousemove", null);
+				kshf_.root.on("mouseup", null);
 			});
 		})
 		;
     // number display
 	parentDom.append("svg:text")
         .attr("class","first_row_number row_number")
-        .attr("x",whiz.scrollWidth)
+        .attr("x",kshf.scrollWidth)
         ;
 	parentDom.append("svg:text")
         .attr("class","last_row_number row_number")
-        .attr("x",whiz.scrollWidth)
+        .attr("x",kshf.scrollWidth)
         ;
 };
-whiz.BarChart.prototype.updateScrollBarPos = function(){
-	var translate_left = this.options.rowTextWidth+this.barMaxWidth+whiz.scrollPadding;//+this.options.timeMaxWidth;
+kshf.BarChart.prototype.updateScrollBarPos = function(){
+	var translate_left = this.options.rowTextWidth+this.barMaxWidth+kshf.scrollPadding;//+this.options.timeMaxWidth;
     this.root.select("g.scrollGroup")
-        .attr("transform","translate(0,"+(whiz.line_height*this.rowCount_Header())+")");
+        .attr("transform","translate(0,"+(kshf.line_height*this.rowCount_Header())+")");
 	this.root.select("g.scrollGroup g.leftScroll")
 		.attr("transform","translate("+
 			translate_left+",0)");
@@ -2322,15 +2322,15 @@ whiz.BarChart.prototype.updateScrollBarPos = function(){
         .attr("x", this.options.rowTextWidth-this.getRowLabelOffset());
 };
 
-whiz.BarChart.prototype.removeScrollBar = function(){
+kshf.BarChart.prototype.removeScrollBar = function(){
     this.scrollbar.show = false;	
     this.root.select("g.scrollGroup").remove();
     this.updateChartTotalWidth();
 };
 
-whiz.BarChart.prototype.filter_all = function(){
+kshf.BarChart.prototype.filter_all = function(){
     var i,j;
-    var items = whiz.items;
+    var items = kshf.items;
     var curDtId = this.getData_wID();
     var allSelected = this.catCount_Selected===0;
     for(i=0 ; i<items.length ; i++){
@@ -2363,8 +2363,8 @@ whiz.BarChart.prototype.filter_all = function(){
 };
 
 
-whiz.BarChart.prototype.filter_removeItems = function(){
-    var i, j, items=whiz.items, curDtId=this.getData_wID();
+kshf.BarChart.prototype.filter_removeItems = function(){
+    var i, j, items=kshf.items, curDtId=this.getData_wID();
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
         // update filter state
@@ -2390,9 +2390,9 @@ whiz.BarChart.prototype.filter_removeItems = function(){
     }
 };
 
-whiz.BarChart.prototype.filter_addItems = function(){
+kshf.BarChart.prototype.filter_addItems = function(){
     var i,j;
-    var items = whiz.items;
+    var items = kshf.items;
     var curDtId = this.getData_wID();
     var allRowsSelected = this.catCount_Selected===0;
     for(i=0 ; i<items.length ; i++){
@@ -2423,7 +2423,7 @@ whiz.BarChart.prototype.filter_addItems = function(){
 
 
 // When clicked on a row
-whiz.BarChart.prototype.filterRow = function(d,forceAll){
+kshf.BarChart.prototype.filterRow = function(d,forceAll){
 	d.selected = !d.selected;
     if(this.options.singleSelect===true){
         if(d.selected===true){
@@ -2457,16 +2457,16 @@ whiz.BarChart.prototype.filterRow = function(d,forceAll){
         this.root.select(".resort_button").style("display",
             (this.catCount_Selected===this.catCount_Total&&!this.showResortButton)?"none":"block");
     }
-	whiz.update();
+	kshf.update();
 	this.refreshFilterSummaryBlock();
     if(this.dom.showTextSearch){
         this.dom.showTextSearch[0][0].value="";
     }
     this.refreshFilterRowState();
 };
-whiz.BarChart.prototype.filterTime = function(){
+kshf.BarChart.prototype.filterTime = function(){
     var i,j;
-    var items = whiz.items;
+    var items = kshf.items;
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
         var t = item.timePos;
@@ -2477,8 +2477,8 @@ whiz.BarChart.prototype.filterTime = function(){
     }
 };
 
-whiz.BarChart.prototype.refreshFilterSummaryBlock = function(){
-	var whiz_=this;
+kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
+	var kshf_=this;
     if(!this.isFiltered_Row()){
         if(this.filterSummaryBlock_Row){
             this.filterSummaryBlock_Row[0][0].parentNode.removeChild(this.filterSummaryBlock_Row[0][0]);
@@ -2498,10 +2498,10 @@ whiz.BarChart.prototype.refreshFilterSummaryBlock = function(){
                     selectedItemsText+=" or ";
                     selectedItemsText_Sm+=", ";
                 }
-                var labelText = whiz_.options.rowLabelText(d);
+                var labelText = kshf_.options.rowLabelText(d);
                 var titleText = labelText;
-                if(whiz_.options.rowTitleText){
-                    titleText = whiz_.options.rowTitleText(d);
+                if(kshf_.options.rowTitleText){
+                    titleText = kshf_.options.rowTitleText(d);
                 }
                 selectedItemsText+="<b>"+labelText+"</b>";
                 selectedItemsText_Sm+=titleText;
@@ -2524,13 +2524,13 @@ whiz.BarChart.prototype.refreshFilterSummaryBlock = function(){
     }
 };
 
-whiz.BarChart.prototype.insertItemRows_shared = function(){
-	var whiz_ = this;
+kshf.BarChart.prototype.insertItemRows_shared = function(){
+	var kshf_ = this;
 	// create the clipping area
 	this.root.select("g.barGroup_Top")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
 		.insert("svg:clipPath",":first-child")
-		.attr("id","whiz_chart_clippath_"+this.id)
+		.attr("id","kshf_chart_clippath_"+this.id)
 	  .append("svg:rect").attr("class","clippingRect")
 		.attr("x",0)
 		.attr("y",0)
@@ -2538,25 +2538,25 @@ whiz.BarChart.prototype.insertItemRows_shared = function(){
 	var rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){ 
             if (this.timer) {
-                log2Console("CLICK: select exact category",whiz_);
+                log2Console("CLICK: select exact category",kshf_);
                 clearTimeout(this.timer);
                 this.timer = null;
                 // clears all the selection when selected
-                whiz_.selectAllRows(false);
-                whiz_.filterRow(d,true);
-                whiz_.sortDelay = 0; whiz_.updateSorting(true);
+                kshf_.selectAllRows(false);
+                kshf_.filterRow(d,true);
+                kshf_.sortDelay = 0; kshf_.updateSorting(true);
                 return;
             }
             var x = this;
             this.timer = setTimeout(function() { 
-                log2Console("CLICK: select category",whiz_);
+                log2Console("CLICK: select category",kshf_);
                 // if no item is selected, do not process click
 //                if(d.activeItems===0) return;
-                whiz_.filterRow(d);
+                kshf_.filterRow(d);
                 clearTimeout(x.timer);
                 x.timer = null;
 /*                setTimeout(function(){
-                    whiz_.sortDelay = 0; whiz_.updateSorting(true);
+                    kshf_.sortDelay = 0; kshf_.updateSorting(true);
                     clearTimeout(x.timer);
                 },2000);*/
             }, 150);
@@ -2581,7 +2581,7 @@ whiz.BarChart.prototype.insertItemRows_shared = function(){
         .style("fill","url(#rowSelectBackground_Label"+this.id+")")
 		.attr("x", 0)
 		.attr("y", 0)
-        .attr("height",whiz.line_height)
+        .attr("height",kshf.line_height)
 		;
 	this.dom.rowSelectBackground_Count = rowsSub // background 2
 		.append("svg:rect")
@@ -2589,14 +2589,14 @@ whiz.BarChart.prototype.insertItemRows_shared = function(){
         .style("fill","url(#rowSelectBackground_Count"+this.id+")")
         .attr("y", 0)
         .attr("width",this.getRowLabelOffset())
-        .attr("height",whiz.line_height)
+        .attr("height",kshf.line_height)
 		;
     this.dom.rowSelectBackground_ClickArea = rowsSub // background 1
         .append("svg:rect")
         .attr("class", "rowSelectBackground_ClickArea")
         .attr("x", 0)
         .attr("y", 4)
-        .attr("height",whiz.line_height-8)
+        .attr("height",kshf.line_height-8)
         ;
 	this.dom.item_count = rowsSub
 		.append("svg:text")
@@ -2613,20 +2613,20 @@ whiz.BarChart.prototype.insertItemRows_shared = function(){
 		this.dom.row_bar_line = rowsSub.append("svg:line")
 			.attr("class", "row_bar_line")
 			.attr("stroke-width","1")
-			.attr("y1", whiz.line_height/2.0)
-			.attr("y2", whiz.line_height/2.0);
+			.attr("y1", kshf.line_height/2.0)
+			.attr("y2", kshf.line_height/2.0);
 	}
 	this.dom.bar_active = rowsSub
 		.append("svg:rect")
 		.attr("class", function(d,i){ 
-			return "rowBar " +(whiz_.options.barClassFunc?whiz_.options.barClassFunc(d,i):"")+" active";
+			return "rowBar " +(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" active";
 		})
         .attr("x", this.options.rowTextWidth)
 		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
 	this.dom.bar_total = rowsSub
 		.append("svg:rect")
 		.attr("class", function(d,i){ 
-			return "rowBar "+(whiz_.options.barClassFunc?whiz_.options.barClassFunc(d,i):"")+" total";
+			return "rowBar "+(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" total";
 		})
         .attr("x", this.options.rowTextWidth)
 		.attr("rx",2).attr("ry",2)
@@ -2636,33 +2636,33 @@ whiz.BarChart.prototype.insertItemRows_shared = function(){
     this.updateWidth();
 };
 
-whiz.BarChart.prototype.updateWidth = function(){
-    whiz.time_animation_barscale = 400;
+kshf.BarChart.prototype.updateWidth = function(){
+    kshf.time_animation_barscale = 400;
 
     var labelWidth = this.options.rowTextWidth-this.getRowLabelOffset();
     this.dom.cat_labels
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x", labelWidth);
     this.dom.cat_labels
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x", labelWidth);
     this.dom.rowSelectBackground_Label
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("width",labelWidth);
     this.dom.rowSelectBackground_Count
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x",labelWidth);
     this.dom.rowSelectBackground_ClickArea
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("width",this.options.rowTextWidth);
     this.dom.item_count
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x", labelWidth+3);
     this.xAxisScale = d3.scale.linear()
         .domain([0,this.getMaxSelectedItemsPerRow()])
@@ -2672,20 +2672,20 @@ whiz.BarChart.prototype.updateWidth = function(){
 
     this.dom.allRowBars
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x", this.options.rowTextWidth);
 
 
     this.headerhtml.select("span.leftHeader")
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .style("width",(this.options.rowTextWidth-this.getRowLabelOffset())+"px")
         ;
 
     this.root.select("g.x_axis")
         .transition()
-        .duration(whiz.time_animation_barscale)
-        .attr("transform","translate("+this.options.rowTextWidth+","+(whiz.line_height*(this.rowCount_Header()))+")")
+        .duration(kshf.time_animation_barscale)
+        .attr("transform","translate("+this.options.rowTextWidth+","+(kshf.line_height*(this.rowCount_Header()))+")")
 
     if(this.dom.showTextSearch !== undefined)
         this.dom.showTextSearch
@@ -2702,19 +2702,19 @@ whiz.BarChart.prototype.updateWidth = function(){
 }
 
 
-whiz.BarChart.prototype.updateBarWidth = function(){
-    var whiz_ = this;
+kshf.BarChart.prototype.updateBarWidth = function(){
+    var kshf_ = this;
     this.dom.bar_total
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("width", function(d){
-            return Math.min(whiz_.xAxisScale(d.items.length),whiz_.barMaxWidth+7); 
+            return Math.min(kshf_.xAxisScale(d.items.length),kshf_.barMaxWidth+7); 
         })
         ;
 };
 
-whiz.BarChart.prototype.updateSorting = function(force){
-    var whiz_ = this;
+kshf.BarChart.prototype.updateSorting = function(force){
+    var kshf_ = this;
     var no_resort = this.options.sortingFuncs[this.sortID].no_resort;
     if(no_resort === true && force!==true){
         return;
@@ -2735,13 +2735,13 @@ whiz.BarChart.prototype.updateSorting = function(force){
         // use IDs if sorting function doesn't recide on ordering
         if(x===0) { x = b.id() - a.id(); }
         // reverse ordering
-        if(whiz_.sortInverse) { x*=-1; }
+        if(kshf_.sortInverse) { x*=-1; }
         return x;
     };
     var sortSelectedOnTop = function(a,b){
         // automatically apply selected-top ordering to ALL sorting functions
-        if(b.selected && !a.selected) { return (whiz_.sortInverse)?-1:1; }
-        if(a.selected && !b.selected) { return (whiz_.sortInverse)?1:-1; }
+        if(b.selected && !a.selected) { return (kshf_.sortInverse)?-1:1; }
+        if(a.selected && !b.selected) { return (kshf_.sortInverse)?1:-1; }
         return justSortFunc(a,b);
     };
     if(no_resort === true)
@@ -2753,7 +2753,7 @@ whiz.BarChart.prototype.updateSorting = function(force){
 		.order()
 		.transition()
         .delay(this.sortDelay)
-		.attr("transform", function(d,i) { return "translate(0,"+((whiz.line_height*i))+")"; });
+		.attr("transform", function(d,i) { return "translate(0,"+((kshf.line_height*i))+")"; });
     
     if(this.type==='scatterplot'){
         this.refreshBarLineHelper();
@@ -2762,7 +2762,7 @@ whiz.BarChart.prototype.updateSorting = function(force){
     this.sortDelay = 450;
 };
 
-whiz.BarChart.prototype.insertXAxisTicks = function(){
+kshf.BarChart.prototype.insertXAxisTicks = function(){
     var axisGroup = this.root.select("g.x_axis");
 
     var xAxis = d3.svg.axis()
@@ -2776,14 +2776,14 @@ whiz.BarChart.prototype.insertXAxisTicks = function(){
 	axisGroup.selectAll("g.tick.major text").attr("dy","2");
 	axisGroup.selectAll("g.tick line")
         .attr("y1","0")
-        .attr("y2",whiz.line_height*this.rowCount_VisibleItem);
+        .attr("y2",kshf.line_height*this.rowCount_VisibleItem);
 };
-whiz.BarChart.prototype.removeXAxis = function(){
+kshf.BarChart.prototype.removeXAxis = function(){
     this.root.select("g.x_axis").data([]).exit().remove();
 };
 
-whiz.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
-	var whiz_=this;
+kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
+	var kshf_=this;
 	var a = d3.select("span.filter-blocks-for-charts");
 	this.filterSummaryBlock_Row= a.append("html:span")
 		.attr("class","filter-block filter_row_text_"+this.filterId)
@@ -2795,12 +2795,12 @@ whiz.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
 		.attr("title","Reset filter")
 		.text("x")
 		.on("click",function(){ 
-            log2Console("CLICK: clear category filter",whiz_);
-            whiz_.clearRowFilter(); 
+            log2Console("CLICK: clear category filter",kshf_);
+            kshf_.clearRowFilter(); 
         });
 };
-whiz.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
-	var whiz_=this;
+kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
+	var kshf_=this;
 	var a = d3.select("span.filter-blocks-for-charts");
 	this.filterSummaryBlock_Time= a.append("html:span").attr("class","filter-block filter_row_text_"+(this.filterId+1));
 	this.filterSummaryBlock_Time.append("html:span").attr("class","filter_item");
@@ -2808,14 +2808,14 @@ whiz.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
 		.attr("title","Reset filter")
 		.text("x")
 		.on("click",function(){ 
-            log2Console("CLICK: clear time filter",whiz_);
-            whiz_.clearTimeFilter(); 
+            log2Console("CLICK: clear time filter",kshf_);
+            kshf_.clearTimeFilter(); 
         });
 };
 
-whiz.BarChart.prototype.refreshTimeChartBarDisplay = function(){
+kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
     // key dots are something else
-    var whiz_ = this;
+    var kshf_ = this;
     var r,j;
     var rows = this.getData();
     
@@ -2857,14 +2857,14 @@ whiz.BarChart.prototype.refreshTimeChartBarDisplay = function(){
     // update min-max extents
     this.dom.timeBarActive
         .transition()
-        .duration(whiz.time_animation_barscale)
+        .duration(kshf.time_animation_barscale)
         .attr("x", function(d) {
-            return whiz_.barMaxWidth+whiz.scrollWidth+whiz.sepWidth+whiz.scrollPadding+
-                whiz_.options.rowTextWidth+whiz_.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
+            return kshf_.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
+                kshf_.options.rowTextWidth+kshf_.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
         })
         .attr("width", function (d) { 
             if(d.xMin_Dyn===undefined){ return 0; }
-            return whiz_.timeScale(d.xMax_Dyn) - whiz_.timeScale(d.xMin_Dyn);
+            return kshf_.timeScale(d.xMax_Dyn) - kshf_.timeScale(d.xMin_Dyn);
         })
         ;
     for(r=0; r<rows.length; r++){
@@ -2873,8 +2873,8 @@ whiz.BarChart.prototype.refreshTimeChartBarDisplay = function(){
     }
 };
 
-whiz.BarChart.prototype.insertTimeChartRows = function(){
-	var whiz_ = this;
+kshf.BarChart.prototype.insertTimeChartRows = function(){
+	var kshf_ = this;
 
     var rows = this.root.selectAll("g.barGroup g.row");
     var rowsSub = this.root.selectAll("g.barGroup g.row g");
@@ -2900,29 +2900,29 @@ whiz.BarChart.prototype.insertTimeChartRows = function(){
             d.dots.push(this);
         })
 		.attr("class", function(d) {
-            if(whiz_.options.dotClassFunc){ return "timeDot " + whiz_.options.dotClassFunc(d); }
+            if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
             return "timeDot";
         })
 		.attr("r", 5)
-		.attr("cy", Math.floor(whiz.line_height / 2))
+		.attr("cy", Math.floor(kshf.line_height / 2))
 		.on("click", function(d,i,f) {
-            log2Console("CLICK: time dot",whiz_);
+            log2Console("CLICK: time dot",kshf_);
             // clear all the selections in filterRow function
-            whiz_.selectAllRows(false);
+            kshf_.selectAllRows(false);
 
             var itemDate = d.timePos;
             var rangeMin = new Date(itemDate);
             var rangeMax = new Date(itemDate);
 
-            if(whiz_.timeticks.range === d3.time.months){
+            if(kshf_.timeticks.range === d3.time.months){
                 rangeMin.setUTCDate(rangeMin.getUTCDate()-15);
                 rangeMax = new Date(rangeMin);
                 rangeMax.setUTCMonth(rangeMin.getUTCMonth()+1);
             }
-            if(whiz_.timeticks.range === d3.time.years){
+            if(kshf_.timeticks.range === d3.time.years){
                 // if years range is wide, use 5-year step size
-                var diff_Year =  whiz_.data_maxDate.getUTCFullYear() - whiz_.data_minDate.getUTCFullYear();
-                if(whiz_.options.timeMaxWidth<diff_Year*10){
+                var diff_Year =  kshf_.data_maxDate.getUTCFullYear() - kshf_.data_minDate.getUTCFullYear();
+                if(kshf_.options.timeMaxWidth<diff_Year*10){
                     rangeMin.setUTCFullYear(rangeMin.getUTCFullYear()-5);
                     rangeMax.setUTCFullYear(rangeMax.getUTCFullYear()+5);
                 } else {
@@ -2932,11 +2932,11 @@ whiz.BarChart.prototype.insertTimeChartRows = function(){
                 }
             }
 
-            whiz_.timeFilter_ms.min = Date.parse(rangeMin);
-            whiz_.timeFilter_ms.max = Date.parse(rangeMax);
-            whiz_.yearSetXPos();
-            whiz_.filterTime();
-            // whiz update is done by row-category click whcih is also auto-activated after dot click
+            kshf_.timeFilter_ms.min = Date.parse(rangeMin);
+            kshf_.timeFilter_ms.max = Date.parse(rangeMax);
+            kshf_.yearSetXPos();
+            kshf_.filterTime();
+            // kshf update is done by row-category click whcih is also auto-activated after dot click
 		})
         ;
     this.dom.timeBar       = this.root.selectAll('g.barGroup g.row rect.timeBar')
@@ -2946,7 +2946,7 @@ whiz.BarChart.prototype.insertTimeChartRows = function(){
 };
 
 
-whiz.BarChart.prototype.setTimeTicks = function(){
+kshf.BarChart.prototype.setTimeTicks = function(){
     this.timeticks = {};
 
     // http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
@@ -3021,7 +3021,7 @@ whiz.BarChart.prototype.setTimeTicks = function(){
         ;
 };
 
-whiz.BarChart.prototype.insertTimeTicks = function(){
+kshf.BarChart.prototype.insertTimeTicks = function(){
     var axisGroup = this.root.select("g.timeAxisGroup g.tickGroup");
     axisGroup.attr("transform","translate(0,-1)")
 
@@ -3042,7 +3042,7 @@ whiz.BarChart.prototype.insertTimeTicks = function(){
 
 };
 
-whiz.BarChart.prototype.insertTimeChartAxis_1 = function(){
+kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     var axisGroup = this.root.select("g.timeAxisGroup");
     var ggg = axisGroup.selectAll("g.sdsdsddsdd")
         .data([1])
@@ -3064,12 +3064,12 @@ whiz.BarChart.prototype.insertTimeChartAxis_1 = function(){
         .append("svg:line")
         .attr("x1", 0)
         .attr("x2", 0)
-        .attr("y1", whiz.line_height*1.5-4)
+        .attr("y1", kshf.line_height*1.5-4)
         ;
     axisSubGroup
         .append("svg:rect")
         .attr("class", "filter_nonselected")
-        .attr("y",whiz.line_height*1.5-4)
+        .attr("y",kshf.line_height*1.5-4)
         .on("click",function(){
             d3.event.stopPropagation();
         })
@@ -3090,8 +3090,8 @@ whiz.BarChart.prototype.insertTimeChartAxis_1 = function(){
         })
 }
 	
-whiz.BarChart.prototype.insertTimeChartAxis = function(){
-    var whiz_ = this;
+kshf.BarChart.prototype.insertTimeChartAxis = function(){
+    var kshf_ = this;
 
     var axisGroup = this.root.select("g.timeAxisGroup");
     var msPerTick;
@@ -3107,84 +3107,84 @@ whiz.BarChart.prototype.insertTimeChartAxis = function(){
 	
 	axisGroup.select("rect.selection_bar")
 			.on("mousedown", function(d, i) {
-                log2Console("CLICK: time selection bar",whiz_);
+                log2Console("CLICK: time selection bar",kshf_);
                 var eeeeee = this;
                 this.selected = true;
                 this.style.stroke = "orangered";
-                whiz_.divRoot.style('cursor','pointer');
+                kshf_.divRoot.style('cursor','pointer');
                 var mouseDown_x = d3.mouse(axisGroup[0][0])[0];
                 var mousedown_filter = {
-                    min: whiz_.timeFilter_ms.min,
-                    max: whiz_.timeFilter_ms.max
+                    min: kshf_.timeFilter_ms.min,
+                    max: kshf_.timeFilter_ms.max
                 };
-				var timeFilter_ms = whiz_.timeFilter_ms;
+				var timeFilter_ms = kshf_.timeFilter_ms;
                 var olddif=null;
-				whiz_.divRoot.on("mousemove", function() {
+				kshf_.divRoot.on("mousemove", function() {
 					var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
 					var mouseDif = mouseMove_x-mouseDown_x;
 					var mousemove_filter = timeFilter_ms.min;
-					var stepDif = Math.round(mouseDif/whiz_.lengthPerTick)*msPerTick;
+					var stepDif = Math.round(mouseDif/kshf_.lengthPerTick)*msPerTick;
 					if(stepDif===olddif ) { return; }
                     olddif=stepDif;
 					if(stepDif<0){
 						timeFilter_ms.min = mousedown_filter.min+stepDif;
-						if(timeFilter_ms.min<whiz_.timeScale.domain()[0].getTime()){
-							timeFilter_ms.min=whiz_.timeScale.domain()[0].getTime();
+						if(timeFilter_ms.min<kshf_.timeScale.domain()[0].getTime()){
+							timeFilter_ms.min=kshf_.timeScale.domain()[0].getTime();
 						}
 						timeFilter_ms.max=timeFilter_ms.min+(mousedown_filter.max-mousedown_filter.min);
 					} else {
 						timeFilter_ms.max = mousedown_filter.max+stepDif;
-						if(timeFilter_ms.max>whiz_.timeScale.domain()[1].getTime()){
-							timeFilter_ms.max=whiz_.timeScale.domain()[1].getTime();
+						if(timeFilter_ms.max>kshf_.timeScale.domain()[1].getTime()){
+							timeFilter_ms.max=kshf_.timeScale.domain()[1].getTime();
 						}
 						timeFilter_ms.min=timeFilter_ms.max-(mousedown_filter.max-mousedown_filter.min);
 					}
 					// TODO: make sure you don't exceed the boundaries
 					if(mousemove_filter.min!==timeFilter_ms.min){
 						// update filter 
-						whiz_.yearSetXPos();
-                        whiz_.filterTime();
-                        whiz_.sortSkip = true;
-						whiz.update();
+						kshf_.yearSetXPos();
+                        kshf_.filterTime();
+                        kshf_.sortSkip = true;
+						kshf.update();
 					}
 				});
-				whiz_.divRoot.on("mouseup", function(){
+				kshf_.divRoot.on("mouseup", function(){
                     eeeeee.style.stroke= "";
-                    whiz_.divRoot.style( 'cursor', 'default' );
-                    whiz_.x_axis_active_filter = null;
+                    kshf_.divRoot.style( 'cursor', 'default' );
+                    kshf_.x_axis_active_filter = null;
                     // unregister mouse-move callbacks
-                    whiz_.divRoot.on("mousemove", null);
-                    whiz_.divRoot.on("mouseup", null);
+                    kshf_.divRoot.on("mousemove", null);
+                    kshf_.divRoot.on("mouseup", null);
 				});
 			});
 	
 	// Filter handles
 	axisGroup.selectAll(".filter_handle g path")
 		.on("mousedown", function(d, i) {
-            log2Console("CLICK: time handle",whiz_);
+            log2Console("CLICK: time handle",kshf_);
             var eeeee = this;
-			whiz_.x_axis_active_filter = (i===0)?'min':'max';
+			kshf_.x_axis_active_filter = (i===0)?'min':'max';
             this.style.stroke = 'orangered';
-            whiz_.divRoot.style('cursor','pointer');
-			var timeFilter_ms = whiz_.timeFilter_ms; // shorthand
-			whiz_.divRoot.on("mousemove", function() {
+            kshf_.divRoot.style('cursor','pointer');
+			var timeFilter_ms = kshf_.timeFilter_ms; // shorthand
+			kshf_.divRoot.on("mousemove", function() {
 				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
 
                 // convert mouse position to date
                 var time_ms = Math.floor(
-                    whiz_.chartX_min_ms + (whiz_.chartX_max_ms-whiz_.chartX_min_ms)*(mouseMove_x / whiz_.timeScale.range()[1])
+                    kshf_.chartX_min_ms + (kshf_.chartX_max_ms-kshf_.chartX_min_ms)*(mouseMove_x / kshf_.timeScale.range()[1])
                     );
 
                 var time_dt = new Date(time_ms);
 
                 var time_ = null;
-                if(whiz_.timeticks.range===d3.time.years){
+                if(kshf_.timeticks.range===d3.time.years){
                     if(time_dt.getUTCMonth()<7){
                         time_ = new Date(time_dt.getUTCFullYear(),0,0);
                     } else {
                         time_ = new Date(time_dt.getUTCFullYear()+1,0,0);
                     }
-                } else if(whiz_.timeticks.range===d3.time.months){
+                } else if(kshf_.timeticks.range===d3.time.months){
                     if(time_dt.getUTCDate()<15){
                         time_ = new Date(time_dt.getUTCFullYear(),time_dt.getUTCMonth(),0);
                     } else {
@@ -3193,12 +3193,12 @@ whiz.BarChart.prototype.insertTimeChartAxis = function(){
                 }
 
                 // if it has the same value after mouse is moved, don't update any filter
-                if(timeFilter_ms[whiz_.x_axis_active_filter] === time_.getTime()) return;
-                timeFilter_ms[whiz_.x_axis_active_filter] = time_.getTime();
+                if(timeFilter_ms[kshf_.x_axis_active_filter] === time_.getTime()) return;
+                timeFilter_ms[kshf_.x_axis_active_filter] = time_.getTime();
                 
                 if(timeFilter_ms.max<timeFilter_ms.min){
                     eeeee.style.stroke = "";
-                    whiz_.x_axis_active_filter = (whiz_.x_axis_active_filter==='min'?'max':'min');
+                    kshf_.x_axis_active_filter = (kshf_.x_axis_active_filter==='min'?'max':'min');
                     //swap
                     var tttt= timeFilter_ms.max;
                     timeFilter_ms.max = timeFilter_ms.min;
@@ -3206,33 +3206,33 @@ whiz.BarChart.prototype.insertTimeChartAxis = function(){
                 }
 
                 // make sure filters do not exceed domain range
-                timeFilter_ms.min = Math.max(timeFilter_ms.min,whiz_.timeScale.domain()[0].getTime());
-                timeFilter_ms.max = Math.min(timeFilter_ms.max,whiz_.timeScale.domain()[1].getTime());
+                timeFilter_ms.min = Math.max(timeFilter_ms.min,kshf_.timeScale.domain()[0].getTime());
+                timeFilter_ms.max = Math.min(timeFilter_ms.max,kshf_.timeScale.domain()[1].getTime());
 
                 // make sure min-max order is preserved, and they are not closer than some limit to each other.
-/*                if(whiz_.x_axis_active_filter==='min'){
+/*                if(kshf_.x_axis_active_filter==='min'){
                     timeFilter_ms.min=Math.min(timeFilter_ms.min,timeFilter_ms.max-msPerTick);
-                } else if(whiz_.x_axis_active_filter==='max'){
+                } else if(kshf_.x_axis_active_filter==='max'){
                     timeFilter_ms.max=Math.max(timeFilter_ms.max,timeFilter_ms.min+msPerTick);
                 }*/
 
                 // update filter 
-                whiz_.yearSetXPos();
-                whiz_.filterTime();
-                whiz_.sortSkip = true;
-                if(whiz_.options.sortingFuncs[whiz_.sortID].no_resort!==true)
-                    whiz_.root.select(".resort_button").style("display","block");
-                whiz.update();
+                kshf_.yearSetXPos();
+                kshf_.filterTime();
+                kshf_.sortSkip = true;
+                if(kshf_.options.sortingFuncs[kshf_.sortID].no_resort!==true)
+                    kshf_.root.select(".resort_button").style("display","block");
+                kshf.update();
 			});
-			whiz_.divRoot.on("mouseup", function(){
+			kshf_.divRoot.on("mouseup", function(){
                 eeeee.style.stroke = "";
-				whiz_.divRoot.style( 'cursor', 'default' );
-				whiz_.x_axis_active_filter = null;
-				var btn=d3.selectAll(".filter_"+whiz_.x_axis_active_filter);
+				kshf_.divRoot.style( 'cursor', 'default' );
+				kshf_.x_axis_active_filter = null;
+				var btn=d3.selectAll(".filter_"+kshf_.x_axis_active_filter);
 				btn.attr("selected", "false");
 				// unregister mouse-move callbacks
-				whiz_.divRoot.on("mousemove", null);
-				whiz_.divRoot.on("mouseup", null);
+				kshf_.divRoot.on("mousemove", null);
+				kshf_.divRoot.on("mouseup", null);
 			});
             
 		});
@@ -3240,27 +3240,27 @@ whiz.BarChart.prototype.insertTimeChartAxis = function(){
     this.yearSetXPos();
 };
 
-whiz.BarChart.prototype.updateTimeChartBarsDots = function(){
-    var totalLeftWidth = this.barMaxWidth+whiz.scrollPadding+whiz.scrollWidth+whiz.sepWidth+this.options.rowTextWidth;
-	var whiz_ = this;
+kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
+    var totalLeftWidth = this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.options.rowTextWidth;
+	var kshf_ = this;
     this.dom.timeBarTotal
-        .attr("x",     function(d){ return totalLeftWidth+whiz_.timeScale(d.xMin); })
-        .attr("width", function(d){ return whiz_.timeScale(d.xMax) - whiz_.timeScale(d.xMin); })
+        .attr("x",     function(d){ return totalLeftWidth+kshf_.timeScale(d.xMin); })
+        .attr("width", function(d){ return kshf_.timeScale(d.xMax) - kshf_.timeScale(d.xMin); })
         ;
 	// Update bar dot positions
 	this.dom.timeDots
-		.attr("cx", function(d){ return totalLeftWidth+whiz_.timeScale(d.timePos); });
+		.attr("cx", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos); });
 };
-whiz.BarChart.prototype.getFilterMinDateText = function(){
+kshf.BarChart.prototype.getFilterMinDateText = function(){
     var dt = new Date(this.timeFilter_ms.min);
     return this.timeticks.format(dt);
 };
-whiz.BarChart.prototype.getFilterMaxDateText = function(){
+kshf.BarChart.prototype.getFilterMaxDateText = function(){
     var dt = new Date(this.timeFilter_ms.max);
     return this.timeticks.format(dt);
 };
 
-whiz.BarChart.prototype.yearSetXPos = function() {
+kshf.BarChart.prototype.yearSetXPos = function() {
 	var minX = this.timeScale(this.timeFilter_ms.min);
 	var maxX = this.timeScale(this.timeFilter_ms.max);
 	
@@ -3285,7 +3285,7 @@ whiz.BarChart.prototype.yearSetXPos = function() {
     this.refreshTimeChartTooltip();
 };
 
-whiz.BarChart.prototype.refreshTimeChartFilterText = function(){
+kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
     this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
     if(this.isFiltered_Time()){
         if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
@@ -3299,9 +3299,9 @@ whiz.BarChart.prototype.refreshTimeChartFilterText = function(){
         this.filterSummaryBlock_Time = null;
     }
 };
-whiz.BarChart.prototype.refreshTimeChartTooltip = function(){
-	var whiz_ = this;
-    var titleText = whiz.itemsSelectedCt+ " selected "+whiz.itemName+"from "+
+kshf.BarChart.prototype.refreshTimeChartTooltip = function(){
+	var kshf_ = this;
+    var titleText = kshf.itemsSelectedCt+ " selected "+kshf.itemName+"from "+
                 this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
 	this.root.selectAll("title.xaxis_title")
 		.text(titleText);
@@ -3312,8 +3312,8 @@ whiz.BarChart.prototype.refreshTimeChartTooltip = function(){
 // WHIZ RANGE CHART
 // ***********************************************************************************************************
 
-whiz.RangeChart = function(options){
-    whiz.Chart.call(this,options);
+kshf.RangeChart = function(options){
+    kshf.Chart.call(this,options);
     this.type = 'RangeChart';
     this.filterCount = 1;
     if(!this.options.filter){
@@ -3323,12 +3323,12 @@ whiz.RangeChart = function(options){
 
     this.root = this.options.layout
         .append("div")
-        .attr("class","whizChart RangeChart")
+        .attr("class","kshfChart RangeChart")
         .attr("filtered","false")
         ;
 
     // set filter to true by default
-    var dt = whiz.items;
+    var dt = kshf.items;
     for(i=0;i<dt.length;i++){
         var item = dt[i];
         // assume all filters pass
@@ -3343,10 +3343,10 @@ whiz.RangeChart = function(options){
     this.updateSelfLayout();
 }
 // Setup the prototype chain the right way
-whiz.extendClass(whiz.Chart, whiz.RangeChart);
+kshf.extendClass(kshf.Chart, kshf.RangeChart);
 
-whiz.RangeChart.prototype.insertHeader = function(){
-    var whiz_ = this;
+kshf.RangeChart.prototype.insertHeader = function(){
+    var kshf_ = this;
     var headerGroup = this.root.append("div").attr("class","headerGroup")
         .on("mouseclick", function (d, i) { 
             d3.event.preventDefault(); 
@@ -3363,9 +3363,9 @@ whiz.RangeChart.prototype.insertHeader = function(){
         .style("float","right")
         .text(this.options.chartTitle)
         .on("click",function(){ 
-            if(whiz_.collapsed) {
+            if(kshf_.collapsed) {
                 log2Console("CLICK: show-hide");
-                whiz_.showHide(false);
+                kshf_.showHide(false);
             }
         })
         ;
@@ -3373,47 +3373,47 @@ whiz.RangeChart.prototype.insertHeader = function(){
         .attr("title","Show categories").text("▼")
         .on("click",function(){ 
             log2Console("CLICK: show-hide");
-            whiz_.showHide(false);
+            kshf_.showHide(false);
         })
         ;
     leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
         .attr("title","Hide categories").text("▲")
         .on("click",function(){ 
             log2Console("CLICK: show-hide");
-            whiz_.showHide(true);
+            kshf_.showHide(true);
         })
         ;
     leftBlock.append("xhtml:div")
         .attr("class","chartClearFilterButton rangeFilter")
         .attr("title","Reset filter")
-        .on("click", function(d,i){ whiz_.clearRangeFilter(); })
+        .on("click", function(d,i){ kshf_.clearRangeFilter(); })
         .text('x');
 }
 
-whiz.convertToReadable = function(num){
+kshf.convertToReadable = function(num){
     if(num>1000000000){ return Math.floor(num/1000000000)+"B";}
     if(num>1000000){ return Math.floor(num/1000000)+"M";}
     if(num>1000   ){ return Math.floor(num/1000   )+"K";}
     return Math.floor(num);
 }
 
-whiz.RangeChart.prototype.insertRangeSlider = function(){
-    var whiz_ = this;
+kshf.RangeChart.prototype.insertRangeSlider = function(){
+    var kshf_ = this;
     this.sliderDiv = this.root.append("div")
         .attr("class","sliderGroup")
         .style("width","90%")
 //        .style("padding-top","54px")
         ;
     // find min and max of filter value
-    this.data_min = d3.min(whiz.items, this.options.itemMapFunc);
-    this.data_max = d3.max(whiz.items, this.options.itemMapFunc);
+    this.data_min = d3.min(kshf.items, this.options.itemMapFunc);
+    this.data_max = d3.max(kshf.items, this.options.itemMapFunc);
 
     // create a sorted array of data items
-    this.sortedData = whiz.items.slice(0);
+    this.sortedData = kshf.items.slice(0);
 
     this.sortedData.sort(function(a,b){
-        var v_a = whiz_.options.itemMapFunc(a);
-        var v_b = whiz_.options.itemMapFunc(b);
+        var v_a = kshf_.options.itemMapFunc(a);
+        var v_b = kshf_.options.itemMapFunc(b);
 
         if(v_a!==v_b) { return v_a-v_b;}
         return a.id() - b.id();
@@ -3428,14 +3428,14 @@ whiz.RangeChart.prototype.insertRangeSlider = function(){
         defaultValues:{min: this.data_min, max: this.data_max},
         arrows:false,
 //        step: sliderStep,
-        formatter: whiz.convertToReadable,
+        formatter: kshf.convertToReadable,
         scales: [
     // Primary scale
             {
                 first: function(val){ return val; },
                 next: function(val) { return val + sliderStep; },
                 stop: function(val) { return false; },
-                label: function(val){ return whiz.convertToReadable(val); }
+                label: function(val){ return kshf.convertToReadable(val); }
 /*                format: function(tickContainer, tickStart, tickEnd){ 
                     tickContainer.addClass("myCustomClass");
                 } */
@@ -3445,83 +3445,83 @@ whiz.RangeChart.prototype.insertRangeSlider = function(){
 //        delayOut: 4000
     })
     .bind("valuesChanging", function(e, data) {
-        var sdf_min = whiz_.sortedData_Filtered.min;
-        var sdf_max = whiz_.sortedData_Filtered.max;
+        var sdf_min = kshf_.sortedData_Filtered.min;
+        var sdf_max = kshf_.sortedData_Filtered.max;
 
-        if(whiz_.sliderRange.min>data.values.min) {
+        if(kshf_.sliderRange.min>data.values.min) {
             // more data is selected on the lower bounds
             while(true){
                 sdf_min--;
                 if(sdf_min<0) { sdf_min = 0; break; }
                 // run filter
-                var item = whiz_.sortedData[sdf_min];
-                var itemV=whiz_.options.itemMapFunc(item);
+                var item = kshf_.sortedData[sdf_min];
+                var itemV=kshf_.options.itemMapFunc(item);
                 var selected = itemV>=data.values.min;
-                item.filters[whiz_.filterId] = selected;
+                item.filters[kshf_.filterId] = selected;
                 item.updateSelected();
                 if(!selected){ sdf_min++; break; }
             }
-        } else if(whiz_.sliderRange.min<data.values.min) {
+        } else if(kshf_.sliderRange.min<data.values.min) {
             // less data is selected on the lower bounds
             while(true){
                 if(sdf_min>sdf_max) { sdf_min = sdf_max; break; }
                 // run filter
-                var item = whiz_.sortedData[sdf_min];
-                var itemV=whiz_.options.itemMapFunc(item);
+                var item = kshf_.sortedData[sdf_min];
+                var itemV=kshf_.options.itemMapFunc(item);
                 var selected = itemV>=data.values.min;
-                item.filters[whiz_.filterId] = selected;
+                item.filters[kshf_.filterId] = selected;
                 item.updateSelected();
                 if(selected){ break; }
                 sdf_min++;
             }
-        } else if(whiz_.sliderRange.max<data.values.max) {
+        } else if(kshf_.sliderRange.max<data.values.max) {
             // more data is selected on the upper bounds
-            var maxVal = whiz_.sortedData.length-1;
+            var maxVal = kshf_.sortedData.length-1;
             while(true){
                 sdf_max++;
                 if(sdf_max>maxVal) { sdf_max = maxVal; break; }
                 // run filter
-                var item = whiz_.sortedData[sdf_max];
-                var itemV=whiz_.options.itemMapFunc(item);
+                var item = kshf_.sortedData[sdf_max];
+                var itemV=kshf_.options.itemMapFunc(item);
                 var selected = itemV<=data.values.max;
-                item.filters[whiz_.filterId] = selected;
+                item.filters[kshf_.filterId] = selected;
                 item.updateSelected();
                 if(!selected){ sdf_max--; break; }
             }
-        } else if(whiz_.sliderRange.max>data.values.max) {
+        } else if(kshf_.sliderRange.max>data.values.max) {
             // less data is selected on the lower bounds
             while(true){
                 if(sdf_max<sdf_min) { sdf_max = sdf_min; break; }
                 // run filter
-                var item = whiz_.sortedData[sdf_max];
-                var itemV=whiz_.options.itemMapFunc(item);
+                var item = kshf_.sortedData[sdf_max];
+                var itemV=kshf_.options.itemMapFunc(item);
                 var selected = itemV<=data.values.max;
-                item.filters[whiz_.filterId] = selected;
+                item.filters[kshf_.filterId] = selected;
                 item.updateSelected();
                 if(selected){ break; }
                 sdf_max--;
             }
         }
-        if(sdf_min !== whiz_.sortedData_Filtered.min ||
-           sdf_max !== whiz_.sortedData_Filtered.max){
-            whiz.update();
-            whiz_.sortedData_Filtered.min = sdf_min;
-            whiz_.sortedData_Filtered.max = sdf_max;
+        if(sdf_min !== kshf_.sortedData_Filtered.min ||
+           sdf_max !== kshf_.sortedData_Filtered.max){
+            kshf.update();
+            kshf_.sortedData_Filtered.min = sdf_min;
+            kshf_.sortedData_Filtered.max = sdf_max;
         }
     
         // cache the current value
-        whiz_.sliderRange = {
+        kshf_.sliderRange = {
             min: data.values.min,
             max: data.values.max
         };
 
-        $(".filter_row_text_"+whiz_.filterId+" .filter_item")
-            .html("<b>" + whiz.convertToReadable(whiz_.sliderRange.min) + 
-                  "</b> to <b>" + whiz.convertToReadable(whiz_.sliderRange.max) + "</b>")
+        $(".filter_row_text_"+kshf_.filterId+" .filter_item")
+            .html("<b>" + kshf.convertToReadable(kshf_.sliderRange.min) + 
+                  "</b> to <b>" + kshf.convertToReadable(kshf_.sliderRange.max) + "</b>")
             ;
 
-        whiz_.root.attr("filtered_range",whiz_.isFiltered_range());
-        $(".filter_row_text_"+whiz_.filterId).attr("filtered",whiz_.isFiltered_range());
+        kshf_.root.attr("filtered_range",kshf_.isFiltered_range());
+        $(".filter_row_text_"+kshf_.filterId).attr("filtered",kshf_.isFiltered_range());
     });
  
     // if parent is hidden before, you need to call this manually to show range slider
@@ -3534,13 +3534,13 @@ whiz.RangeChart.prototype.insertRangeSlider = function(){
 }
 
 
-whiz.RangeChart.prototype.getHeight_Rows = function(){
+kshf.RangeChart.prototype.getHeight_Rows = function(){
     if(this.collapsed) return 1;
     return 3;
 }
 
-whiz.RangeChart.prototype.insertFilterSummaryBlock = function(){
-    var whiz_=this;
+kshf.RangeChart.prototype.insertFilterSummaryBlock = function(){
+    var kshf_=this;
     var a = d3.select("span.filter-blocks-for-charts");
     var s= a.append("html:span")
         .attr("class","filter-block filter_row_text_"+this.filterId)
@@ -3555,44 +3555,44 @@ whiz.RangeChart.prototype.insertFilterSummaryBlock = function(){
         .attr("class","filter_reset")
         .attr("title","Reset filter")
         .text("x")
-        .on("click",function(){ whiz_.clearRangeFilter(); });
+        .on("click",function(){ kshf_.clearRangeFilter(); });
 }
-whiz.RangeChart.prototype.updateSelf = function(){
+kshf.RangeChart.prototype.updateSelf = function(){
 }
-whiz.RangeChart.prototype.getFilteredCount = function(){
+kshf.RangeChart.prototype.getFilteredCount = function(){
     return 0;
 }
 
-whiz.RangeChart.prototype.setWidth = function(w){
+kshf.RangeChart.prototype.setWidth = function(w){
     this.root.style("width",w+"px");
 }
 
 
-whiz.RangeChart.prototype.showHide = function(hide){
+kshf.RangeChart.prototype.showHide = function(hide){
     this.collapsed = hide;
 
     this.sliderDiv.style("display",hide?"none":"block");
     this.updateSelfLayout();
-    whiz.updateLayout();
+    kshf.updateLayout();
 }
 
-whiz.RangeChart.prototype.updateSelfLayout = function(){
+kshf.RangeChart.prototype.updateSelfLayout = function(){
     this.root.attr("collapsed",(this.collapsed?"true":"false"));
     
-    var chartHeight = whiz.line_height*this.getHeight_Rows();
+    var chartHeight = kshf.line_height*this.getHeight_Rows();
 
     this.root.style("height",(chartHeight)+"px");
 }
 
-whiz.RangeChart.prototype.clearAllFilters = function(){
+kshf.RangeChart.prototype.clearAllFilters = function(){
     this.clearRangeFilter();
 }
 
-whiz.RangeChart.prototype.isFiltered_range = function(){
+kshf.RangeChart.prototype.isFiltered_range = function(){
     return this.sliderRange.min !== this.data_min || this.sliderRange.max !== this.data_max;
 }
 
-whiz.RangeChart.prototype.clearRangeFilter = function(){
+kshf.RangeChart.prototype.clearRangeFilter = function(){
     this.sliderRange = {
         min: this.data_min,
         max: this.data_max
@@ -3606,19 +3606,19 @@ whiz.RangeChart.prototype.clearRangeFilter = function(){
     this.sortedData_Filtered = { min:0 , max: this.sortedData.length-1};
 
     // set filter to true by default
-    var dt = whiz.items;
-//    whiz.filter_all=0;
+    var dt = kshf.items;
+//    kshf.filter_all=0;
     for(i=0;i<dt.length;i++){
         var item = dt[i];
         // assume all filters pass
         for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
             item.filters[f] = true;
         }
-//        whiz.itemsSelectedCt+=
+//        kshf.itemsSelectedCt+=
         item.updateSelected();
     }
 
-    whiz.update();
+    kshf.update();
 }
 
 

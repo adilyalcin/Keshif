@@ -27,10 +27,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
-    var whizOptions={
+    var kshfOptions={
         chartTitle: "Tablet Computers on Amazon.com",
         domID : "#chart_div4",
         categoryTextWidth:230,
@@ -48,7 +48,7 @@ function loadChart() {
                 itemMapFunc : function(tablet){ return tablet.data[3]; },
                 sortingFuncs:[
                     {   name: "# of Tablets", 
-                        func:whiz.filter_AciveItems_TotalItems
+                        func:kshf.filter_AciveItems_TotalItems
                     },
                     {   name: "Last tablet", 
                         func: function(a, b){
@@ -103,7 +103,7 @@ function loadChart() {
                 rowLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:whiz.filter_AciveItems_TotalItems
+                    func:kshf.filter_AciveItems_TotalItems
                 }],
                 filter: { rowConj: 'of', rowGroupName: 'ounces' }
             },{
@@ -159,7 +159,7 @@ function loadChart() {
             }
         }
     };
-	whiz.init(whizOptions);
+	kshf.init(kshfOptions);
 }
 
 var offline=true;

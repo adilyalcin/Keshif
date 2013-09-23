@@ -32,12 +32,12 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var TA_cols;
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Teaching Assistant Evaluations",
         domID : "#chart_div4",
         categoryTextWidth:190,
@@ -47,7 +47,7 @@ function loadChart() {
             sheets : [ {name:"TAs"}, {name:"Instructors"} ]
         },
         loadedCb: function(){
-            TA_cols = whiz.dt_ColNames.TAs;
+            TA_cols = kshf.dt_ColNames.TAs;
         },
         charts: [
             {
@@ -66,7 +66,7 @@ function loadChart() {
             },{
                 chartTitle: "Instructor",
                 itemMapFunc : function(ast){return ast.data[TA_cols.Instructor]; },
-                rowLabelText: function(d) { return whiz.dt_id.Instructors[d.data[1]].data[1];},
+                rowLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];},
                 filter: { rowConj: 'at' }
             },{
                 chartTitle: "Course",

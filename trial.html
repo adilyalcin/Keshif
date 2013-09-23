@@ -30,11 +30,11 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
 
-    whiz.init({
+    kshf.init({
         chartTitle: "Clinical Trial Sample Dataset",
         domID : "#chart_div4",
         categoryTextWidth:220,
@@ -50,15 +50,15 @@ function loadChart() {
             ]
         },
         loadedCb: function(){
-            whiz.createTableFromTable(whiz.dt.Trials,'Phases',function(d){ return d.data[4];});
-            whiz.createTableFromTable(whiz.dt.TrialConditions,'Conditions',function(d){ return d.data[1];});
+            kshf.createTableFromTable(kshf.dt.Trials,'Phases',function(d){ return d.data[4];});
+            kshf.createTableFromTable(kshf.dt.TrialConditions,'Conditions',function(d){ return d.data[1];});
 
             // go over the list of trial conditions, and add the conditions under trial table
-            for(t=0; t<whiz.dt.TrialConditions.length ; t++){
-                var trialCond = whiz.dt.TrialConditions[t];
+            for(t=0; t<kshf.dt.TrialConditions.length ; t++){
+                var trialCond = kshf.dt.TrialConditions[t];
                 var trialID = trialCond.data[0];
                 var condID = trialCond.data[1];
-                var trial = whiz.dt_id.Trials[trialID];
+                var trial = kshf.dt_id.Trials[trialID];
                 if(!trial.data[6]) { trial.data[6] = []; }
                 trial.data[6].push(condID);
             }
@@ -68,7 +68,7 @@ function loadChart() {
                 chartTitle: "Company",
                 tableName: "Companies",
                 rowTitleText: function(d){ return d.data[0]; },
-                dotClassFunc: function(d){ return "bar_style_phase_"+ whiz.dt_id.Phases[d.data[4]].data[0]; },
+                dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
                 barInfoText: "Dot color: Phase type",
                 itemXPos : function(d){ return d.data[2]; },
                 filter: { rowConj: 'by', rowGroupName: 'companies' },
@@ -77,13 +77,13 @@ function loadChart() {
             },{
                 chartTitle: "Company Industry",
                 tableName: "Industries",
-                itemMapFunc : function(trial){return whiz.dt_id.Companies[trial.data[0]].data[3]; },
+                itemMapFunc : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
                 rowLabelText: function(d){ return d.data[2]; },
                 rowTitleText: function(d){ return d.data[1]; },
                 filter: { rowConj: 'within', rowGroupName: 'industries' }
             }/*,{ // range chart!
                 chartTitle: "Comp. Market Cap",
-                itemMapFunc :  function(trial){ return whiz.dt_id.Companies[trial.data[0]].data[2]; }
+                itemMapFunc :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
             }*/,{
                 chartTitle: "Phase Type",
                 tableName: "Phases",
@@ -137,7 +137,7 @@ function loadChart() {
                     var conditions = d.data[6];
                     if(conditions){
                         for(j=0; j<conditions.length; j++){
-                            var cond=whiz.dt_id.Conditions[conditions[j]].data;
+                            var cond=kshf.dt_id.Conditions[conditions[j]].data;
                             str+=cond[1];
                             if(j!==conditions.length-1) { str+='<br/> '; }
                         }
@@ -149,10 +149,10 @@ function loadChart() {
                         d.data[5]+"</div>";
                 // company
                     var companyID = d.data[0];
-                    var companyData = whiz.dt_id.Companies[companyID];
+                    var companyData = kshf.dt_id.Companies[companyID];
                     str+=
                         "<div class=\"iteminfo iteminfo_1\" style=\"display:inline-block;\">"+companyData.data[1]+
-                        " - Market Cap:"+whiz.convertToReadable(companyData.data[2])+
+                        " - Market Cap:"+kshf.convertToReadable(companyData.data[2])+
                         " <a target=\"_blank\" href=\"http://finance.yahoo.com/echarts?s="+companyID+"\">Stock info</a> " 
                     +"</div>";
                 // phase

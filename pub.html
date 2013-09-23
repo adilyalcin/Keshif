@@ -28,13 +28,13 @@ function loadChart() {
     // set resize callback
     $(window).resize(function() {
         resizeChart();
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var authorCol, pubCol, keywordCol;
 
     // set height of the source dom as 
-    var whizOptions={
+    var kshfOptions={
 //        chartTitle: "Publications of Ben Bederson",
         domID : "#chart_div4",
         itemName : "publications",
@@ -56,22 +56,22 @@ function loadChart() {
         loadedCb: function(){
             var i,p,t;
 
-            authorCol = whiz.dt_ColNames.Authors;
-            pubCol = whiz.dt_ColNames.Publications;
-            keywordCol = whiz.dt_ColNames.Keywords;
+            authorCol = kshf.dt_ColNames.Authors;
+            pubCol = kshf.dt_ColNames.Publications;
+            keywordCol = kshf.dt_ColNames.Keywords;
             
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            whiz.cellToArray(whiz.dt.Publications, [pubCol.authors, pubCol.keywords]);
+            kshf.cellToArray(kshf.dt.Publications, [pubCol.authors, pubCol.keywords]);
 
             // remove ben bederson from author list, once and for all!
-            for(i=0; i<whiz.dt.Publications.length; i++){
-                var authors = whiz.dt.Publications[i].data[pubCol.authors];
+            for(i=0; i<kshf.dt.Publications.length; i++){
+                var authors = kshf.dt.Publications[i].data[pubCol.authors];
                 newAuthors = [];
                 for(j=0 ; j<authors.length ; j++){
                     if(authors[j]===BEDERSON_ID) continue;
                     newAuthors.push(authors[j]);
                 }
-                whiz.dt.Publications[i].data[pubCol.authors] = newAuthors;
+                kshf.dt.Publications[i].data[pubCol.authors] = newAuthors;
             }
         },
         charts : [
@@ -108,7 +108,7 @@ function loadChart() {
                     },
                     {   name:"# of Pub.", 
                         func: function(a, b){
-                            var dif = whiz.dif_activeItems(a,b);
+                            var dif = kshf.dif_activeItems(a,b);
                             if(dif!==0) { return dif; }
                             return a.data[keywordCol.keyword].localeCompare(b.data[keywordCol.keyword]);
                         }
@@ -125,7 +125,7 @@ function loadChart() {
                     var r = [];
                     var authors = pub.data[pubCol.authors];
                     for(i=0; i<authors.length; i++){
-                        var autData=whiz.dt_id.Authors[authors[i]];
+                        var autData=kshf.dt_id.Authors[authors[i]];
                         var typeID = autData.data[3];
                         if(!typeList[typeID]){
                             typeList[typeID] = true;
@@ -148,7 +148,7 @@ function loadChart() {
                     {   name: "# of Pub.", 
                         func:function(a1, a2){
                             // active item count first
-                            var dif = whiz.dif_activeItems(a1,a2);
+                            var dif = kshf.dif_activeItems(a1,a2);
                             if(dif!==0) { return dif; }
                             // activeItems : second
                             dif = a2.items.length - a1.items.length;
@@ -182,7 +182,7 @@ function loadChart() {
                     width: 72,
                     value_type: 'string',
                     value: function(d){ 
-                        return whiz.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1]; 
+                        return kshf.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1]; 
                     }
                 },
                 {   name: 'Venue',
@@ -190,10 +190,10 @@ function loadChart() {
                     value: function(d){ return d.data[pubCol.venue]; },
                     value_type : 'number',
                     label: function(d){ 
-                        return whiz.dt_id.Venues[d.data[pubCol.venue]].data[1]; 
+                        return kshf.dt_id.Venues[d.data[pubCol.venue]].data[1]; 
                     },
                     title: function(d){ 
-                        return whiz.dt_id.Venues[d.data[pubCol.venue]].data[0]; 
+                        return kshf.dt_id.Venues[d.data[pubCol.venue]].data[0]; 
                     }
                 }
             ],
@@ -234,7 +234,7 @@ function loadChart() {
                 var authors = d.data[pubCol.authors];
                     str+="<div class=\"iteminfo iteminfo_1\">";
                     for(j=0; j<authors.length; j++){
-                        var authData=whiz.dt_id.Authors[authors[j]].data;
+                        var authData=kshf.dt_id.Authors[authors[j]].data;
                         if(authData[authorCol.id]===BEDERSON_ID) { str+="<b>"; }
                         str+=authData[authorCol.first_names]+" "+authData[authorCol.last_name];
                         if(authData[authorCol.id]===BEDERSON_ID) { str+="</b>"; }
@@ -242,7 +242,7 @@ function loadChart() {
                     }
                     str+="</div>";
                 // venue + details
-                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol.time].getFullYear()+"]</b> "+whiz.dt_id.Venues[d.data[pubCol.venue]].data[0];
+                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol.time].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.venue]].data[0];
                     if(d.data[pubCol.details].trim()!=="") {
                         str+=" - " + d.data[pubCol.details];
                     }
@@ -251,7 +251,7 @@ function loadChart() {
                     str+="<div class=\"iteminfo iteminfo_2\"> About: ";
                     var cats = d.data[pubCol.keywords];
                     for(j=0; j<cats.length; j++){
-                        str+=whiz.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
+                        str+=kshf.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
                         if(j!==cats.length-1) { str+=', '; }
                     }
                     str+="</div>";
@@ -263,7 +263,7 @@ function loadChart() {
             }
         }
     };
-	whiz.init(whizOptions);
+	kshf.init(kshfOptions);
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

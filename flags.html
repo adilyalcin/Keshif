@@ -80,7 +80,7 @@ function loadChart() {
     // set resize callback
     $(window).resize(function() {
         resetSize();
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
     var flag_cols = {
@@ -117,7 +117,7 @@ function loadChart() {
         Text:30
     };
 
-    whiz.init({
+    kshf.init({
         chartTitle: "World Country Flags",
         domID : "#chart_div4",
                 itemName : "flags",
@@ -206,7 +206,7 @@ function loadChart() {
                     }
                     },
                     {   name:"Flag count",
-                        func:whiz.filter_AciveItems_TotalItems
+                        func:kshf.filter_AciveItems_TotalItems
                     }
                     ],
                 filter: { rowConj: '# of bars' }
@@ -225,7 +225,7 @@ function loadChart() {
                     }
                     },
                     {   name:"Flag count",
-                        func:whiz.filter_AciveItems_TotalItems
+                        func:kshf.filter_AciveItems_TotalItems
                     }
                     ],
                 filter: { rowConj: '# of stripes' }

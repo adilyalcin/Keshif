@@ -46,8 +46,8 @@ function getMaterial(spill){
 
 
 function resetSize(){
-    $('#whizChartId').height($(window).height()-10);
-    $('#whizChartId').width (1100);
+    $('#kshfChartId').height($(window).height()-10);
+    $('#kshfChartId').width (1100);
 //    $('#chart_div4').height(730);
 //    $('#chart_div4').width (900);
 }
@@ -57,12 +57,12 @@ function loadChart() {
     resetSize();
     $(window).resize(function() {
         resetSize();
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
 
-	whiz.init({
+	kshf.init({
         chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
-        domID : "#whizChartId",
+        domID : "#kshfChartId",
                 itemName : "spills",
         categoryTextWidth: 200,
         source : {
@@ -74,11 +74,11 @@ function loadChart() {
             ]
         },
         loadedCb: function(){
-            spillsCol = whiz.dt_ColNames.Spills;
+            spillsCol = kshf.dt_ColNames.Spills;
 
-            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Causes], ", ", false);
-            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
-            whiz.cellToArray(whiz.dt.Spills, [spillsCol.Activity], /\/\s*/, false);
+            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Causes], ", ", false);
+            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
+            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Activity], /\/\s*/, false);
         },
         charts : [
             {
@@ -86,7 +86,7 @@ function loadChart() {
                 timeTitle: "Date",
                 itemMapFunc : function(spill){ return spill.data[spillsCol.Size]; },
                 sortingFuncs : [{ 
-                    func:whiz.filter_AciveItems_TotalItems,
+                    func:kshf.filter_AciveItems_TotalItems,
                     no_resort: true
                 }],
                 itemXPos : getDate,
@@ -101,7 +101,7 @@ function loadChart() {
                 collapsed: true,
                 filter: { rowConj: 'from', rowGroupName: 'sources' }
             }/*
-            whiz.addRangeChart({
+            kshf.addRangeChart({
                 chartTitle: "Water Depth",
                 itemMapFunc :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
                 filter: { unit: 'feet' }
@@ -156,7 +156,7 @@ function loadChart() {
                 var j;
                 var str="";
                 // location
-                var district=whiz.dt_id.Districts[d.data[spillsCol["District"]]];
+                var district=kshf.dt_id.Districts[d.data[spillsCol["District"]]];
                 if(district) district = district.data[1];
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data[spillsCol["Company Name"]]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
@@ -194,7 +194,7 @@ google.setOnLoadCallback(loadChart);
 </script>
 <style>
 
-#whizChartId {
+#kshfChartId {
     margin: 0 auto;
 }
 
@@ -203,6 +203,6 @@ body{ margin:2px; }
 </style>
 	</head>
 	<body>
-		<div id="whizChartId"></div>
+		<div id="kshfChartId"></div>
 	</body>
 </html>

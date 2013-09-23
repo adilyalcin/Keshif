@@ -20,12 +20,12 @@
 function drawCharts(){
     var i,p,t;
 
-    var pubCol = whiz.dt_ColNames.Publications;
+    var pubCol = kshf.dt_ColNames.Publications;
     
     // convert authors and keywords columns in publication table ( space separated IDs) to array
-    whiz.cellToArray(whiz.dt.Publications, [pubCol['Co-Authors'], pubCol['Topics']],/\b,/, false );
+    kshf.cellToArray(kshf.dt.Publications, [pubCol['Co-Authors'], pubCol['Topics']],/\b,/, false );
     
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Topic",
         itemMapFunc : function(pub){ return pub.data[pubCol.Topics]; },
 		sortingFuncs : [
@@ -54,7 +54,7 @@ function drawCharts(){
                 }
             },
             {   name:"# of Pub.", 
-                func:whiz.filter_AciveItems_TotalItems
+                func:kshf.filter_AciveItems_TotalItems
             }
 		],
 		filter : { rowConj: 'about', rowGroupName: 'categories' },
@@ -62,19 +62,19 @@ function drawCharts(){
         itemXPos : function(pub){ return pub.data[pubCol.Time]; }
 	});
 
-    whiz.addBarChart({
+    kshf.addBarChart({
         chartTitle: "Co-Authors",
         itemMapFunc : function(pub){ return pub.data[pubCol['Co-Authors']]; },
         filter: { rowConj: 'as', rowGroupName: 'types' }
     });
 
-    whiz.addBarChart({
+    kshf.addBarChart({
 		chartTitle: "Pub. Type",
         itemMapFunc : function(pub){ return pub.data[pubCol.Type]; },
 		filter: { rowConj: 'as', rowGroupName: 'types' }
 	});
     
-    whiz.createListDisplay({
+    kshf.createListDisplay({
         columns : [
             {   name: 'Year',
                 width: 72,
@@ -135,8 +135,8 @@ function drawCharts(){
         }
     );
 
-    whiz.updateLayout();
-    whiz.update();
+    kshf.updateLayout();
+    kshf.update();
 }
 
 
@@ -148,10 +148,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.8);
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
     // set height of the source dom as 
-    var whizOptions={
+    var kshfOptions={
         chartTitle: "Bibliography of Marvin Minsky",
         domID : "#chart_div4",
                 itemName : "works",
@@ -167,7 +167,7 @@ function loadChart() {
         },
         loadedCb: drawCharts
     };
-	whiz.init(whizOptions);
+	kshf.init(kshfOptions);
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

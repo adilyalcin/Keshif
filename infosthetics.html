@@ -35,10 +35,10 @@ function loadChart() {
     // set resize callback
     $(window).resize(function() {
         resetSize();
-        whiz.updateLayout();
+        kshf.updateLayout();
     });
     
-	whiz.init({
+	kshf.init({
         chartTitle: "5 Years of Infosthetics",
         domID : "#chart_div4",
         itemName : "posts",
@@ -48,8 +48,8 @@ function loadChart() {
             sheets : [ {name:"Posts"}]
         },
         loadedCb: function(){
-            postCols = whiz.dt_ColNames.Posts;
-            whiz.cellToArray(whiz.dt.Posts, [postCols.categories], ",", false);
+            postCols = kshf.dt_ColNames.Posts;
+            kshf.cellToArray(kshf.dt.Posts, [postCols.categories], ",", false);
         },
         charts: [
             {
@@ -66,7 +66,7 @@ function loadChart() {
                 filter: { rowConj: 'in category' }
             },{
                 chartTitle: "Author",
-                itemMapFunc : function(post){ return post.data[postCols.author]; },
+                itemMapFuncf : function(post){ return post.data[postCols.author]; },
                 show_cat_fixed: 6,
                 filter: { rowConj: 'in category' }
             }
