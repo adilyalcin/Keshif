@@ -67,13 +67,13 @@ function loadChart() {
         },
         charts : [
             {
-                chartTitle: "Category",
+                facetTitle: "Category",
                 itemMapFunc : function(prize){ return prize.data[prizeCols.category]; },
                 filter: { rowConj: 'in category' },
                 timeTitle: "Date",
                 itemXPos : function(prize){ return new Date(moment(prize.data[prizeCols.year]+"01-01","YYYY-MM-DD")); }
             }, {
-                chartTitle: "Gender",
+                facetTitle: "Gender",
                 itemMapFunc : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.gender];
@@ -81,21 +81,21 @@ function loadChart() {
                 rowLabelText: function(d) { return getGender(d.data[1]); },
                 filter: { rowConj: 'gender' }
             }, {
-                chartTitle: "Born Country",
+                facetTitle: "Born Country",
                 itemMapFunc : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.bornCountry];
                 },
                 filter: { rowConj: 'from' }
             }, {
-                chartTitle: "Affiliation",
+                facetTitle: "Affiliation",
                 itemMapFunc : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
                 },
                 filter: { rowConj: 'affiliated with' }
             }, {
-                chartTitle: "Decade",
+                facetTitle: "Decade",
                 itemMapFunc : function(prize){ 
                     var x=prize.data[prizeCols.year];
                     return x - (x%10);

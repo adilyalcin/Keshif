@@ -65,7 +65,7 @@ function loadChart() {
         },
         charts:[
             {
-                chartTitle: "Company",
+                facetTitle: "Company",
                 tableName: "Companies",
                 rowTitleText: function(d){ return d.data[0]; },
                 dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
@@ -75,17 +75,17 @@ function loadChart() {
                 timeTitle: "Trial Primary Completion Date",
                 itemMapFunc : function(trial){ return trial.data[0]; }
             },{
-                chartTitle: "Company Industry",
+                facetTitle: "Company Industry",
                 tableName: "Industries",
                 itemMapFunc : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
                 rowLabelText: function(d){ return d.data[2]; },
                 rowTitleText: function(d){ return d.data[1]; },
                 filter: { rowConj: 'within', rowGroupName: 'industries' }
             }/*,{ // range chart!
-                chartTitle: "Comp. Market Cap",
+                facetTitle: "Comp. Market Cap",
                 itemMapFunc :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
             }*/,{
-                chartTitle: "Phase Type",
+                facetTitle: "Phase Type",
                 tableName: "Phases",
                 itemMapFunc : function(trial){ return trial.data[4]; },
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
@@ -100,7 +100,7 @@ function loadChart() {
                 }],
                 filter: { rowConj: 'in', rowGroupName: 'phase types' }
             },{
-                chartTitle: "Condition",
+                facetTitle: "Condition",
                 tableName: "Conditions" ,
                 itemMapFunc : function(trial){ return trial.data[6]; },
                 filter: { rowConj: 'about', rowGroupName: 'conditions' }

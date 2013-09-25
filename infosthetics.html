@@ -53,19 +53,19 @@ function loadChart() {
         },
         charts: [
             {
-                chartTitle: "Categories",
+                facetTitle: "Categories",
                 itemMapFunc : function(post){ return post.data[postCols.categories]; },
                 filter: { rowConj: 'in category' }
             },{
-                chartTitle: "# of comments",
+                facetTitle: "# of comments",
                 itemMapFunc : function(post){ return getNumComments(post.data[postCols.comments]); },
                 filter: { rowConj: 'in category' }
             },{
-                chartTitle: "Year",
+                facetTitle: "Year",
                 itemMapFunc : function(post){ return post.data[postCols.date].getUTCFullYear(); },
                 filter: { rowConj: 'in category' }
             },{
-                chartTitle: "Author",
+                facetTitle: "Author",
                 itemMapFuncf : function(post){ return post.data[postCols.author]; },
                 show_cat_fixed: 6,
                 filter: { rowConj: 'in category' }

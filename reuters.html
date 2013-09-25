@@ -50,7 +50,7 @@ function loadChart() {
         },
         charts:[
             {
-                chartTitle: "Category",
+                facetTitle: "Category",
                 tableName: "Topics",
                 generateRows: true,
                 itemMapFunc : function(news){
@@ -71,16 +71,16 @@ function loadChart() {
                 filter: { rowConj: 'about' },
                 timeTitle: "Publish Date"
             },{
-                chartTitle: "Topic",
+                facetTitle: "Topic",
                 itemMapFunc : function(news){ return news.data[newsCol.topics]; },
                 filter: { rowConj: 'about' }
             },{
-                chartTitle: "Country",
+                facetTitle: "Country",
                 itemMapFunc : function(news){return news.data[newsCol.places]; },
                 rowLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
                 filter: { rowConj: 'at' }
             },{
-                chartTitle: "People",
+                facetTitle: "People",
                 itemMapFunc : function(news){return news.data[newsCol.people]; },
                 rowLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
                 rowTitleText: function(d) { 

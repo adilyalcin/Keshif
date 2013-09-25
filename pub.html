@@ -34,7 +34,7 @@ function loadChart() {
     var authorCol, pubCol, keywordCol;
 
     // set height of the source dom as 
-    var kshfOptions={
+    kshf.init({
 //        chartTitle: "Publications of Ben Bederson",
         domID : "#chart_div4",
         itemName : "publications",
@@ -76,7 +76,7 @@ function loadChart() {
         },
         charts : [
             {
-                chartTitle: "Topic",
+                facetTitle: "Topic",
                 tableName: "Keywords",
                 itemMapFunc : function(pub){ return pub.data[pubCol.keywords]; },
                 rowLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
@@ -118,7 +118,7 @@ function loadChart() {
                 timeTitle: "Publication Year",
                 itemXPos : function(pub){ return pub.data[pubCol.time]; }
             },{
-                chartTitle: "Coauth. Type",
+                facetTitle: "Coauth. Type",
                 tableName: "AuthorTypes",
                 itemMapFunc : function(pub){
                     var typeList = {};
@@ -138,7 +138,7 @@ function loadChart() {
                 barInfoText: "Color:Coauth. type",
                 filter: { rowConj: 'with', rowGroupName: 'coauthor types' }
             },{
-                chartTitle: "Coauthor",
+                facetTitle: "Coauthor",
                 tableName: "Authors",
                 itemMapFunc : function(pub){ return pub.data[pubCol.authors]; },
                 rowLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
@@ -165,7 +165,7 @@ function loadChart() {
                 textSearch: true,
                 filter: { rowConj: 'with', rowGroupName: 'coauthors' }
             },{
-                chartTitle: "Pub. Type",
+                facetTitle: "Pub. Type",
                 tableName: "VenueTypes",
                 itemMapFunc : function(pub){ return pub.data[pubCol.pub_type]; },
                 filter: { rowConj: 'as', rowGroupName: 'types' }
@@ -262,8 +262,7 @@ function loadChart() {
                 return str;
             }
         }
-    };
-	kshf.init(kshfOptions);
+    });
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

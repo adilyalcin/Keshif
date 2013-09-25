@@ -14,16 +14,24 @@
 /*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
 /*global google */
 
+// to access row data easily by column name instead of integer column id.
+var departmentCol;
+var peopleCol;
+var projectsCol;
+var topicsCol;
+var member_typesCol;
+var trsCol;
+
 function drawCharts(){
     var i,p,t;
     
     // to access row data easily by column name instead of integer column id.
-    var departmentCol = kshf.dt_ColNames.departments;
-    var peopleCol = kshf.dt_ColNames.people;
-    var projectsCol = kshf.dt_ColNames.projects;
-    var topicsCol = kshf.dt_ColNames.topics;
-    var member_typesCol = kshf.dt_ColNames.member_types;
-    var trsCol = kshf.dt_ColNames.trs;
+    departmentCol = kshf.dt_ColNames.departments;
+    peopleCol = kshf.dt_ColNames.people;
+    projectsCol = kshf.dt_ColNames.projects;
+    topicsCol = kshf.dt_ColNames.topics;
+    member_typesCol = kshf.dt_ColNames.member_types;
+    trsCol = kshf.dt_ColNames.trs;
     trsCol.people=9;
     trsCol.topics=10;
     trsCol.projects=11;
@@ -61,140 +69,6 @@ function drawCharts(){
         if(!tr__.data[trsCol.projects]) { tr__.data[trsCol.projects] = []; }
         tr__.data[trsCol.projects].push(project_id);
     }
-
-    kshf.addBarChart({
-		chartTitle: "Topics",
-		tableName: "topics",
-        itemMapFunc : function(pub){ return pub.data[trsCol.topics]; },
-		rowLabelText: function(topic) { return topic.data[topicsCol.topic]; },
-		rowTitleText: function(topic) { return topic.data[topicsCol.topic]; },
-        itemXPos : function(pub){ return new Date(pub.data[trsCol.date]); },
-        timeTitle: "Publication Year",
-		filter: {
-			rowConj: 'about',
-			rowGroupName: 'topics'
-		},
-        visibleRows: 9
-	});
-
-    kshf.addBarChart({
-		chartTitle: "Authors",
-		tableName: "people",
-        itemMapFunc : function(pub){ return pub.data[trsCol.people]; },
-		rowLabelText: function(author) { 
-            return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
-        },
-		filter: {
-			rowConj: 'by',
-			rowGroupName: 'authors'
-		}
-	});
-
-    kshf.addBarChart({
-		chartTitle: "Member Type",
-		tableName: "member_types",
-        itemMapFunc : function(pub){
-            var typeList = {};
-            var r = [];
-            var authors = pub.data[trsCol.people];
-            if(authors===undefined) { return undefined; }
-            for(i=0; i<authors.length; i++){
-                var autData=kshf.dt_id.people[authors[i]];
-                var typeID = autData.data[peopleCol.member_type_id];
-                if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
-                if(!typeList[typeID]){
-                    typeList[typeID] = true;
-                    r.push(typeID);
-                }
-            }
-            return r;
-        },
-		rowLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
-		filter: {
-			rowConj: 'by',
-			rowGroupName: 'members'
-		}
-	});
-    
-    kshf.addBarChart({
-		chartTitle: "Projects",
-		tableName: "projects",
-        itemMapFunc : function(pub){ return pub.data[trsCol.projects]; },
-		rowLabelText: function(project) { return project.data[projectsCol.project];  },
-		filter: {
-			rowConj: 'within',
-			rowGroupName: 'projects'
-		}
-	});
-    
-    
-    // department?
-    // alumni?
-    // member type?
-
-    kshf.createListDisplay({
-        columns : [
-            {   name: 'Year',
-                width: 50,
-                value: function(pub){ return (pub.data[trsCol.date]).slice(0,4); },
-                value_type : 'number'
-            }
-        ],
-        textSearch : function (pub) { return pub.data[trsCol.title]; },
-        contentFunc : function(pub){
-            var j;
-            var str="";
-            // paper name
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                if(pub.data[trsCol.reference_url].trim()!==""){
-                    str+="<a target=\"_blank\" href=\""+pub.data[trsCol.reference_url]+"\">"+pub.data[trsCol.title]+"</a>";
-                } else {
-                    str+=pub.data[trsCol.title];
-                }
-                str+="</div>";
-            // author names
-            var authors = pub.data[trsCol.people];
-            if(authors){
-                str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
-                for(j=0; j<authors.length; j++){
-                    var authData=kshf.dt_id.people[authors[j]].data;
-                    str+=authData[peopleCol.first_name]+" "+authData[peopleCol.last_name];
-                    if(j!==authors.length-1) { str+=', '; }
-                }
-                str+="</div>";
-            }
-            // venue
-                str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
-                if(pub.data[trsCol.reference].trim()!==""){
-                    str+="<b>["+pub.data[trsCol.date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
-                }
-                str+="</div>";
-            // keywords
-            var topics = pub.data[trsCol.topics];
-            if(topics){
-                str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
-                for(j=0; j<topics.length; j++){
-                    str+=kshf.dt_id.topics[topics[j]].data[topicsCol.topic];
-                    if(j!==topics.length-1) { str+=', '; }
-                }
-                str+="</div>";
-            }
-            // links
-            str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
-            if(pub.data[trsCol.pdf].trim()!==""){
-                str+="<a target=\"_blank\" href=\""+pub.data[trsCol.pdf]+"\"><img src=\"img/pdf-logo.gif\"></a>";
-            }
-            if(pub.data[trsCol.video].trim()!==""){
-                str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
-            }
-            str+="</div>";
-            
-            return str;
-        }
-    });
-
-    kshf.updateLayout();
-    kshf.update();
 }
 
 function loadChart() {
@@ -207,10 +81,11 @@ function loadChart() {
         $('#chart_div4').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
-    var kshfOptions={
+    
+    kshf.init({
         chartTitle: "HCIL TechReports / Publications",
         domID : "#chart_div4",
-                itemName : "publications",
+        itemName : "publications",
         categoryTextWidth: 180,
         source : {
             gdocId : '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
@@ -227,8 +102,127 @@ function loadChart() {
             ]
         },
         loadedCb: drawCharts
-    };
-	kshf.init(kshfOptions);
+        charts: [
+            {
+                facetTitle: "Topics",
+                tableName: "topics",
+                itemMapFunc : function(pub){ return pub.data[trsCol.topics]; },
+                rowLabelText: function(topic) { return topic.data[topicsCol.topic]; },
+                rowTitleText: function(topic) { return topic.data[topicsCol.topic]; },
+                itemXPos : function(pub){ return new Date(pub.data[trsCol.date]); },
+                timeTitle: "Publication Year",
+                filter: {
+                    rowConj: 'about',
+                    rowGroupName: 'topics'
+                },
+                visibleRows: 9
+            },{
+                facetTitle: "Authors",
+                tableName: "people",
+                itemMapFunc : function(pub){ return pub.data[trsCol.people]; },
+                rowLabelText: function(author) { 
+                    return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
+                },
+                filter: {
+                    rowConj: 'by',
+                    rowGroupName: 'authors'
+                }
+            },{
+                facetTitle: "Member Type",
+                tableName: "member_types",
+                itemMapFunc : function(pub){
+                    var typeList = {};
+                    var r = [];
+                    var authors = pub.data[trsCol.people];
+                    if(authors===undefined) { return undefined; }
+                    for(i=0; i<authors.length; i++){
+                        var autData=kshf.dt_id.people[authors[i]];
+                        var typeID = autData.data[peopleCol.member_type_id];
+                        if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
+                        if(!typeList[typeID]){
+                            typeList[typeID] = true;
+                            r.push(typeID);
+                        }
+                    }
+                    return r;
+                },
+                rowLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
+                filter: {
+                    rowConj: 'by',
+                    rowGroupName: 'members'
+                }
+            },{
+                facetTitle: "Projects",
+                tableName: "projects",
+                itemMapFunc : function(pub){ return pub.data[trsCol.projects]; },
+                rowLabelText: function(project) { return project.data[projectsCol.project];  },
+                filter: {
+                    rowConj: 'within',
+                    rowGroupName: 'projects'
+                }
+            }
+        ],
+        list: {
+            columns : [
+                {   name: 'Year',
+                    width: 50,
+                    value: function(pub){ return (pub.data[trsCol.date]).slice(0,4); },
+                    value_type : 'number'
+                }
+            ],
+            textSearch : function (pub) { return pub.data[trsCol.title]; },
+            contentFunc : function(pub){
+                var j;
+                var str="";
+                // paper name
+                    str+="<div class=\"iteminfo iteminfo_0\">";
+                    if(pub.data[trsCol.reference_url].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+pub.data[trsCol.reference_url]+"\">"+pub.data[trsCol.title]+"</a>";
+                    } else {
+                        str+=pub.data[trsCol.title];
+                    }
+                    str+="</div>";
+                // author names
+                var authors = pub.data[trsCol.people];
+                if(authors){
+                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                    for(j=0; j<authors.length; j++){
+                        var authData=kshf.dt_id.people[authors[j]].data;
+                        str+=authData[peopleCol.first_name]+" "+authData[peopleCol.last_name];
+                        if(j!==authors.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                // venue
+                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                    if(pub.data[trsCol.reference].trim()!==""){
+                        str+="<b>["+pub.data[trsCol.date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
+                    }
+                    str+="</div>";
+                // keywords
+                var topics = pub.data[trsCol.topics];
+                if(topics){
+                    str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
+                    for(j=0; j<topics.length; j++){
+                        str+=kshf.dt_id.topics[topics[j]].data[topicsCol.topic];
+                        if(j!==topics.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                // links
+                str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
+                if(pub.data[trsCol.pdf].trim()!==""){
+                    str+="<a target=\"_blank\" href=\""+pub.data[trsCol.pdf]+"\"><img src=\"img/pdf-logo.gif\"></a>";
+                }
+                if(pub.data[trsCol.video].trim()!==""){
+                    str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
+                }
+                str+="</div>";
+                
+                return str;
+            }
+        }
+    });
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

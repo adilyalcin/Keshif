@@ -212,24 +212,24 @@ function loadChart() {
         },
         charts : [
             {
-                chartTitle: "Road Type",
+                facetTitle: "Road Type",
                 itemMapFunc : function(accident){ return accident.data[accCol.Road_Type]; },
                 rowLabelText: function(d) {  return roadTypeText(d.data[1]); },
                 itemXPos : function(accident){ return accident.data[accCol.Date]; },
                 filter: { rowConj: 'on', rowGroupName: 'road types' },
                 timeTitle: "Date"
             },{
-                chartTitle: "Severity",
+                facetTitle: "Severity",
                 itemMapFunc : function(accident){return accident.data[accCol.Severity]; },
                 rowLabelText: function(d) { return severityText(d.data[1]);},
                 filter: { rowConj: 'with severity' }
             },{
-                chartTitle: "Area",
+                facetTitle: "Area",
                 itemMapFunc : function(accident){return accident.data[accCol.Urban_or_Rural_Area]; },
                 rowLabelText: function(d) { return (d.data[1]===1)? "Urban":"Rural";},
                 filter: { rowConj: 'area' }
             },{
-                chartTitle: "Time of day",
+                facetTitle: "Time of day",
                 itemMapFunc : function(accident){
                     var hour= accident.data[accCol.Time][0];
                     if(hour<6) return 0;
@@ -240,7 +240,7 @@ function loadChart() {
                 rowLabelText: function(d){ return timeOfDayText(d.data[1]); },
                 filter: { rowConj: 'time of day' }
             },{
-                chartTitle: "Speed Limit",
+                facetTitle: "Speed Limit",
                 itemMapFunc : function(accident){return accident.data[accCol.Speed_limit]; },
                 rowLabelText: function(d) { return d.data[1]+" mph";},
                 sortingFuncs: [{
@@ -255,7 +255,7 @@ function loadChart() {
                 }],
                 filter: { rowConj: 'speed limit' }
             },{
-                chartTitle: "# of Vehicles",
+                facetTitle: "# of Vehicles",
                 itemMapFunc : function(accident){return accident.data[accCol.Vehicles]; },
                 sortingFuncs: [{
                     no_resort: true,
@@ -265,7 +265,7 @@ function loadChart() {
                 }],
                 filter: { rowConj: 'vehicles' }
             },{
-                chartTitle: "Road Surface",
+                facetTitle: "Road Surface",
                 itemMapFunc : function(accident){
                     var c=accident.data[accCol.Road_Surface_Conditions];
                     return (c===-1)?null:c; // skip if -1
@@ -273,19 +273,19 @@ function loadChart() {
                 rowLabelText: function(d) { return roadSurfaceText(d.data[1]); },
                 filter: { rowConj: 'road surface' }
             },{
-                chartTitle: "Light Condition",
+                facetTitle: "Light Condition",
                 itemMapFunc : function(accident){return accident.data[accCol.Light_Conditions]; },
                 rowLabelText: function(d) { return lightConditionText(d.data[1]); },
                 rowTitleText: function(d) { return lightConditionDetail(d.data[1]); },
                 filter: { rowConj: 'light condition' }
             },{
-                chartTitle: "Weather Condition",
+                facetTitle: "Weather Condition",
                 itemMapFunc : function(accident){return accident.data[accCol.Weather_Conditions]; },
                 rowLabelText: function(d) { return weatherConditionText(d.data[1]);},
                 rowTitleText: function(d) { return weatherConditionDetail(d.data[1]);},
                 filter: { rowConj: 'weather condition' }
             },{
-                chartTitle: "Special Condition",
+                facetTitle: "Special Condition",
                 itemMapFunc : function(accident){
                     var c=accident.data[accCol.Special_Conditions_at_Site];
                     return (c===0)?null:c; // skip if 0
@@ -294,7 +294,7 @@ function loadChart() {
                 rowTitleText: function(d) { return specialConditionDetail(d.data[1]); },
                 filter: { rowConj: 'special condition' }
             },{
-                chartTitle: "Junction Detail",
+                facetTitle: "Junction Detail",
                 itemMapFunc : function(accident){
                     var c=accident.data[accCol.Junction_Detail];
                     return (c===-0)?null:c; // skip if 0
@@ -303,7 +303,7 @@ function loadChart() {
                 collapsed: true,
                 filter: { rowConj: 'junction detail' }
             },{
-                chartTitle: "Junction Control",
+                facetTitle: "Junction Control",
                 itemMapFunc : function(accident){
                     var c=accident.data[accCol.Junction_Control];
                     return (c===-1)?null:c; // skip if 0

@@ -51,12 +51,12 @@ function loadChart() {
         },
         charts: [
             {
-                chartTitle: "Performance",
+                facetTitle: "Performance",
                 itemMapFunc : function(ast){ return ast.data[TA_cols.Performance]; },
                 rowLabelText: function(d) { return performanceText(d.data[1]); },
                 filter: { rowConj: 'performance' },
             },{
-                chartTitle: "Native Speaker",
+                facetTitle: "Native Speaker",
                 itemMapFunc : function(ast){return ast.data[TA_cols.Native_Speaker]; },
                 rowLabelText: function(d) { 
                     if(d.data[1]===1) { return "Yes"; }
@@ -64,16 +64,16 @@ function loadChart() {
                 },
                 filter: { rowConj: 'at' }
             },{
-                chartTitle: "Instructor",
+                facetTitle: "Instructor",
                 itemMapFunc : function(ast){return ast.data[TA_cols.Instructor]; },
                 rowLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];},
                 filter: { rowConj: 'at' }
             },{
-                chartTitle: "Course",
+                facetTitle: "Course",
                 itemMapFunc : function(ast){return ast.data[TA_cols.Instructor]; },
                 filter: { rowConj: 'at' }
             },{
-                chartTitle: "Semester",
+                facetTitle: "Semester",
                 itemMapFunc : function(ast){return ast.data[TA_cols.Semester]; },
                 rowLabelText: function(d) { 
                     if(d.data[1]===1) { return "Summer"; }
@@ -81,7 +81,7 @@ function loadChart() {
                 },
                 filter: { rowConj: 'at' }
             },{
-                chartTitle: "Class Size",
+                facetTitle: "Class Size",
                 itemMapFunc : function(ast){return Math.floor(ast.data[TA_cols.Class_Size]/5); },
                 rowLabelText: function(d) { return d.data[1]*5;},
                 sortingFuncs: [{

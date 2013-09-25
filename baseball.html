@@ -44,7 +44,7 @@ function loadChart() {
         kshf.updateLayout();
     });
 
-    var kshfOptions={
+    kshf.init({
         chartTitle: "Transactions In Major League Baseball (trade, Signing, Draft, Etc.)",
         domID : "#chart_div4",
         itemName : "transactions",
@@ -63,7 +63,7 @@ function loadChart() {
         },
         charts: [
             {
-                chartTitle: "Trans. Type",
+                facetTitle: "Trans. Type",
                 timeTitle: "Transaction Date",
                 tableName: "baseball_trantype",
                 itemMapFunc : function(tr){ return tr.data[3]; },
@@ -74,14 +74,14 @@ function loadChart() {
                 },
                 filter: { rowConj: 'of type' },
             },{
-                chartTitle: "From Team",
+                facetTitle: "From Team",
                 tableName: "baseball_teams_1",
                 itemMapFunc : function(tr){return tr.data[4];},
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'from' }
             },{
-                chartTitle: "From League",
+                facetTitle: "From League",
                 tableName: "baseball_leagues_1",
                 itemMapFunc : function(tr){
                     var x=tr.data[4];
@@ -93,14 +93,14 @@ function loadChart() {
                 rowLabelText: function(d) {return leagueText(d); },
                 filter: { rowConj: 'from' }
             },{
-                chartTitle: "To Team",
+                facetTitle: "To Team",
                 tableName: "baseball_teams_2",
                 itemMapFunc : function(tr){return tr.data[5];},
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'to', rowGroupName: 'teams' }
             },{
-                chartTitle: "To League",
+                facetTitle: "To League",
                 tableName: "baseball_leagues_2",
                 itemMapFunc : function(tr){
                     var x=tr.data[5];
@@ -151,8 +151,7 @@ function loadChart() {
                 return str;
             }
         }
-    };
-	kshf.init(kshfOptions);
+    });
 }
 
 // Set a callback to run when the Google Visualization API is loaded.

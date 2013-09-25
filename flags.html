@@ -133,14 +133,14 @@ function loadChart() {
         },*/
         charts:[
             {
-                chartTitle: "Continent",
+                facetTitle: "Continent",
                 itemMapFunc : function(flag){ return flag.data[flag_cols.Landmass]; },
                 rowLabelText: function(d) { return landmassText(d.data[1]); },
                 filter: { rowConj: 'in continent' },
                 timeTitle: "Flag Date",
                 itemXPos : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); }
             },{
-                chartTitle: "Language",
+                facetTitle: "Language",
                 itemMapFunc : function(flag){
                     var r= flag.data[flag_cols.Language];
                     if(r===9) return 10;
@@ -151,20 +151,20 @@ function loadChart() {
             },
             /*
             {
-                chartTitle: "Zone",
+                facetTitle: "Zone",
                 itemMapFunc : function(flag){return flag.data[flag_cols.Zone]; },
                 rowLabelText: function(d) { return zoneText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'zone' }
             },{
-                chartTitle: "Religion",
+                facetTitle: "Religion",
                 itemMapFunc : function(flag){return flag.data[flag_cols.Religion]; },
                 rowLabelText: function(d) { return religionText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'religion' }
             }); */
             {
-                chartTitle: "Color",
+                facetTitle: "Color",
                 itemMapFunc : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Red]) toRet.push("Red");
@@ -178,7 +178,7 @@ function loadChart() {
                 },
                 filter: { rowConj: 'has color', rowGroupName: 'colors' }
             },{
-                chartTitle: "Shape",
+                facetTitle: "Shape",
                 itemMapFunc : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Circles]) toRet.push("Circle");
@@ -192,7 +192,7 @@ function loadChart() {
                 },
                 filter: { rowConj: 'has shape', rowGroupName: 'shapes' }
             }, {
-                chartTitle: "Number of Bars",
+                facetTitle: "Number of Bars",
                 itemMapFunc : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
                     return (r===0)?0:r;
@@ -211,7 +211,7 @@ function loadChart() {
                     ],
                 filter: { rowConj: '# of bars' }
             },{
-                chartTitle: "Number of Stripes",
+                facetTitle: "Number of Stripes",
                 itemMapFunc : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
                     return (r===0)?null:r;
@@ -230,7 +230,7 @@ function loadChart() {
                     ],
                 filter: { rowConj: '# of stripes' }
             } /*,{
-                chartTitle: "Other Properties",
+                facetTitle: "Other Properties",
                 itemMapFunc : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Text]!==0) toRet.push("Text");

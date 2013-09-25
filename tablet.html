@@ -30,7 +30,7 @@ function loadChart() {
         kshf.updateLayout();
     });
 
-    var kshfOptions={
+    kshf.init({
         chartTitle: "Tablet Computers on Amazon.com",
         domID : "#chart_div4",
         categoryTextWidth:230,
@@ -42,7 +42,7 @@ function loadChart() {
         },
         charts : [
             {
-                chartTitle: "Brand",
+                facetTitle: "Brand",
                 tableName: "tablets",
                 generateRows: true,
                 itemMapFunc : function(tablet){ return tablet.data[3]; },
@@ -72,11 +72,11 @@ function loadChart() {
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 }
             },{
-                chartTitle: "Operating System",
+                facetTitle: "Operating System",
                 itemMapFunc : function(tablet){return tablet.data[14]; },
                 filter: { rowConj: 'with', rowGroupName: 'OS' }
             },{
-                chartTitle: "Flash Memory Size",
+                facetTitle: "Flash Memory Size",
                 itemMapFunc : function(tablet){return tablet.data[8]; },
                 sortingFuncs: [{
                     no_resort: true,
@@ -84,7 +84,7 @@ function loadChart() {
                     }],
                 filter: { rowConj: 'with', rowGroupName: 'memory' }
             },{
-                chartTitle: "Screen Size",
+                facetTitle: "Screen Size",
                 itemMapFunc : function(tablet){
                     var x= Math.floor(parseFloat(tablet.data[20]));
                     if(isNaN(x)) { return ""; }
@@ -98,7 +98,7 @@ function loadChart() {
                 ],
                 filter: { rowConj: 'with', rowGroupName: 'screen size' }
             },{
-                chartTitle: "Weight",
+                facetTitle: "Weight",
                 itemMapFunc : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
                 rowLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
                 sortingFuncs: [{
@@ -107,7 +107,7 @@ function loadChart() {
                 }],
                 filter: { rowConj: 'of', rowGroupName: 'ounces' }
             },{
-                chartTitle: "Battery Life",
+                facetTitle: "Battery Life",
                 itemMapFunc : function(tablet){return tablet.data[1]; },
                 rowLabelText: function(d) { return d.data[1] + " hours"; },
                 sortingFuncs: [{
@@ -158,11 +158,8 @@ function loadChart() {
                 return str;
             }
         }
-    };
-	kshf.init(kshfOptions);
+    });
 }
-
-var offline=true;
 
 $(document).ready(loadChart);
 // Set a callback to run when the Google Visualization API is loaded.
