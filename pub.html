@@ -181,20 +181,14 @@ function loadChart() {
                 {   name: 'Pub. Type',
                     width: 72,
                     value_type: 'string',
-                    value: function(d){ 
-                        return kshf.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1]; 
-                    }
+                    value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1];  }
                 },
                 {   name: 'Venue',
                     width: 85,
                     value: function(d){ return d.data[pubCol.venue]; },
                     value_type : 'number',
-                    label: function(d){ 
-                        return kshf.dt_id.Venues[d.data[pubCol.venue]].data[1]; 
-                    },
-                    title: function(d){ 
-                        return kshf.dt_id.Venues[d.data[pubCol.venue]].data[0]; 
-                    }
+                    label: function(d){ return kshf.dt_id.Venues[d.data[pubCol.venue]].data[1]; },
+                    title: function(d){ return kshf.dt_id.Venues[d.data[pubCol.venue]].data[0]; }
                 }
             ],
             textSearch : function (pub) { return pub.data[pubCol.title]; },
