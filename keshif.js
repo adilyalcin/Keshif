@@ -423,9 +423,9 @@ kshf.list = function(config, root){
 //	this.dragIcon = document.createElement('img');
 //	this.dragIcon.src = 'http://twitter.com/api/users/profile_image/twitter';
     
-    this.config = config.columns;
+    this.config = config.sortOpts;
     this.listSortOrder = [];
-    for(i=0; i<config.columns.length; i++){
+    for(i=0; i<this.config.length; i++){
         this.listSortOrder.push(i);
     }
     this.hideTextSearch = (config.textSearch===undefined);

@@ -1,6 +1,6 @@
 ========= Using Keshif ==================
 
-1) Insert kshf.init() function in a page load callback (see here **) using an object with parameters defined **here**.
+1) Insert kshf.init(params) function in a page load callback (see here **) using an object with parameters defined **here**.
 
 2) Insert the following scripts to your page:
 	<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
@@ -18,11 +18,11 @@
 
 chartTitle: (Optional) If provided, chart title is shown on the top row.
 
-domID: HTML Dom element ID which will hold all the interface components, starting with # character.
+domID: HTML Dom element ID which will hold all the interface components (starting with # character).
 
 itemName: The name of the primary item of your dataset. Item name is shown on top of list display, as in "X *itemName* (selected)"
 
-categoryTextWidth: The text width in left facet panel (pixels). This width includes the text for category label and item count. Make it wide enough so that all your labels are visible. Use abbrevations to make them shorter. ((Link))
+categoryTextWidth: The text width in left facet panel (pixels). This width includes the text for category label and item count. Make it wide enough so that all your labels are visible. Use label abbrevations to make them shorter. ((Link))
 
 source: Your data source description (text files or google spreadsheet), specified as an object with properties. More info...
 
@@ -31,12 +31,12 @@ charts: Your list of charts/filters, specified as an array of objects. Charts ar
 list: List display description. More info...
 
 loadedCb: (Optional)
-	The function called when all the data sources are loaded and before charts & list are created.
+	The function called after all the data sources are loaded and before charts & list are created.
 	You can do any updates/bookkeeping on the data you'd like to do here.
 
 ========== Source Config Parameters =================
 
-Source description object is composed of main source setting (gdoc or text file), and an array of data sheet descriptions.
+Source description object is composed of main source parameters (gdoc or text file), and an array of data sheet descriptions.
 
 Google Spreadsheet Parameters:
 
@@ -134,9 +134,30 @@ sortingFuncs: (Optional)
 ================= List Parameters =================
 
 
+contentFunc:
+	A function that takes a primary item data, and returns an html describing how an item should appear on the display.
 
+sortOpts:
+	An array or sorting options.
+
+textSearch: (Optional)
+	A function that returns a text given a primary item, which is used by the text search option.
+	You can return any specific row or combinations to enable searching in multiple fields.
+
+textSearchTitle: (Optional) By default, text search displays "Search *title*". You can modify *title* portion to say which attributes are searched here.
 
 ================= Notes =================
+
+Functions that take data paraameters.
+
+Let's take a look at an example function:
+itemMapFunc : function(spill){ return spill.data[spillsCol.Size]; },
+
+Parameter spill holds a primary item, and related data is stored in data property as an array.
+spillsCol is a custom variable set by the user for easy access to kshf.dt_ColNames.Spills;
+kshf.dt_ColNames.*** maps column names to column index (as can be used in a data property).
+In the case above 'Size' is the name of the column we want to access, and spill.data[spillsCol.Size] returns the relevant data.
+
 
 ** Optional: If you want to load data from google spreadsheet, insert this script to your page
 	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -145,7 +166,8 @@ sortingFuncs: (Optional)
 	<script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
 
 ** You can use various page callback methods depending on the frameworks you use.
-	Lean: $(document).ready(loadChart);
+	lean: define body onLoad event.
+	jquery: $(document).ready(loadChart);
 	Google: google.setOnLoadCallback(loadChart);
 
 
@@ -189,7 +211,7 @@ kshf.init({
                 filter: { rowConj: 'in category' }
             }
         ],
-        list:{
+        sortOpts:{
             columns : [
                 {   name: 'Date',
                     width: 45,
