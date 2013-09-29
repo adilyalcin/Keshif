@@ -50,7 +50,7 @@ function loadChart() {
         itemName : "transactions",
         categoryTextWidth:160,
         source : {
-            filePath: 'data/',
+            dirPath: 'data/',
             fileType: 'csv',
             sheets : [
                 {name:"baseball", id:"id", primary:true},
@@ -65,7 +65,7 @@ function loadChart() {
             {
                 facetTitle: "Trans. Type",
                 timeTitle: "Transaction Date",
-                tableName: "baseball_trantype",
+                catTableName: "baseball_trantype",
                 itemMapFunc : function(tr){ return tr.data[3]; },
                 itemXPos : function(tr){ 
                     var dt = tr.data[0];
@@ -75,14 +75,14 @@ function loadChart() {
                 filter: { rowConj: 'of type' },
             },{
                 facetTitle: "From Team",
-                tableName: "baseball_teams_1",
+                catTableName: "baseball_teams_1",
                 itemMapFunc : function(tr){return tr.data[4];},
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'from' }
             },{
                 facetTitle: "From League",
-                tableName: "baseball_leagues_1",
+                catTableName: "baseball_leagues_1",
                 itemMapFunc : function(tr){
                     var x=tr.data[4];
                     if(x==="") return null;
@@ -94,14 +94,14 @@ function loadChart() {
                 filter: { rowConj: 'from' }
             },{
                 facetTitle: "To Team",
-                tableName: "baseball_teams_2",
+                catTableName: "baseball_teams_2",
                 itemMapFunc : function(tr){return tr.data[5];},
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'to', rowGroupName: 'teams' }
             },{
                 facetTitle: "To League",
-                tableName: "baseball_leagues_2",
+                catTableName: "baseball_leagues_2",
                 itemMapFunc : function(tr){
                     var x=tr.data[5];
                     if(x==="") return null;

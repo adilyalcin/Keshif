@@ -183,7 +183,7 @@ kshf.loadTables = function(){
         }
         if(this.source.gdocId){
             this.loadSheet_Google(sheet);
-        } else if(this.source.filePath){
+        } else if(this.source.dirPath){
             this.loadSheet_File(sheet);
         }
 	}
@@ -239,7 +239,7 @@ var unescapeCommas = function(c){
 };
 
 kshf.loadSheet_File = function(sheet){
-    var fileName=this.source.filePath+sheet.name+"."+this.source.fileType;
+    var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
     var tableName = sheet.name;
     if(sheet.tableName) { tableName = sheet.tableName; }
     $.ajax( {
@@ -883,8 +883,8 @@ kshf.insertChartHeader = function(){
 
 kshf.addBarChart = function(options){
     options.layout = (options.itemXPos!==undefined)?this.layoutTop:this.layoutLeft;
-    if(options.tableName===undefined){
-        options.tableName = kshf.primaryTableName;
+    if(options.catTableName===undefined){
+        options.catTableName = kshf.primaryTableName;
         options.generateRows = true;
     }
     if(options.sortingFuncs===undefined){
@@ -1025,8 +1025,8 @@ kshf.updateLayout_Height = function(){
             if((c.type==='barChart') && chartProcessed[i]===false){
                 if(c.collapsed){
                     c.setRowCount_VisibleItem(3); // some number, TODO: do not insert chart items if not visible
-                } else if(c.options.show_cat_fixed){
-                    c.setRowCount_VisibleItem(c.options.show_cat_fixed);
+                } else if(c.options.catDispCountFix){
+                    c.setRowCount_VisibleItem(c.options.catDispCountFix);
                 } else if(c.rowCount_MaxTotal()<=targetSharedHeight){
                     c.setRowCount_VisibleItem(c.catCount_Total);
                 } else if(finalPass){
@@ -1262,10 +1262,10 @@ kshf.BarChart.prototype.init_shared = function(options){
     
     // generate row table if necessary
     if(this.options.generateRows){
-        this.tableName = this.options.tableName+"_h_"+this.id;
-        kshf.createTableFromTable(kshf.items,this.tableName, this.options.itemMapFunc);
+        this.catTableName = this.options.catTableName+"_h_"+this.id;
+        kshf.createTableFromTable(kshf.items,this.catTableName, this.options.itemMapFunc);
     } else {
-        this.tableName = this.options.tableName;
+        this.catTableName = this.options.catTableName;
     }
     // BIG. Apply row map function
     var dt = kshf.items;
@@ -1517,10 +1517,10 @@ kshf.BarChart.prototype.init_shared2 = function(){
 };
 
 kshf.BarChart.prototype.getData = function(){
-    return kshf.dt[this.tableName];
+    return kshf.dt[this.catTableName];
 };
 kshf.BarChart.prototype.getData_wID = function(){
-    return kshf.dt_id[this.tableName];
+    return kshf.dt_id[this.catTableName];
 };
 
 // returns the maximum number of total items stored per row in chart data

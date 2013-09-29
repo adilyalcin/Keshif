@@ -1,34 +1,41 @@
-========= Using Keshif ==================
+========= Adding Keshif ==================
 
-1) Insert kshf.init(params) function in a page load callback (see here **) using an object with parameters defined **here**.
+1) Insert kshf.init(params) function in a page load callback (**) using an object with parameters defined **here**.
 
-2) Insert the following scripts to your page:
+2) You need to include javascript files for jquery, d3, keshif and magnific-popup.
+
+	You can insert the following scripts to your page, if you want to use current keshif distribution structure. Your file locations and names may vary.
 	<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
 	<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
-	<script type="text/javascript" src="magnific-popup/jquery.magnific-popup.js"></script> 
+	<script type="text/javascript" src="./magnific-popup/jquery.magnific-popup.js"></script>
 
-	Your file locations and names may vary. Basically, you need to include jquery, d3, keshif and maginificant-popup.
-
-3) Insert the following style sheets to your page head section:
+Also, insert the following style sheets for keshif and magnific-popup to your page head section:
 	<link rel="stylesheet" type="text/css" href="./keshif.css"/>
 	<link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
 
 ========== Basic Config Parameters ====================
 
-chartTitle: (Optional) If provided, chart title is shown on the top row.
+domID: 
+	HTML Dom element ID which will hold all the interface components (starting with # character).
 
-domID: HTML Dom element ID which will hold all the interface components (starting with # character).
+itemName: 
+	The name of the primary item of your dataset. Item name is shown on top of list display, as in "X *itemName* (selected)"
 
-itemName: The name of the primary item of your dataset. Item name is shown on top of list display, as in "X *itemName* (selected)"
+categoryTextWidth: 
+	The text width in left facet panel (pixels). This width includes the text for category label and item count. Make it wide enough so that all your labels are visible. You can define abbrevations to make them shorter. ((Link))
 
-categoryTextWidth: The text width in left facet panel (pixels). This width includes the text for category label and item count. Make it wide enough so that all your labels are visible. Use label abbrevations to make them shorter. ((Link))
+source: 
+	Data source description (text files or google spreadsheet), specified as an object with properties. More info...
 
-source: Your data source description (text files or google spreadsheet), specified as an object with properties. More info...
+charts: 
+	Facet descriptions, specified as an array. Facets are inserted in the order specified top to bottom. More info...
 
-charts: Your list of charts/filters, specified as an array of objects. Charts are inserted in the order specified, top to bottom. More info...
+list: 
+	List display description. More info...
 
-list: List display description. More info...
+chartTitle: (Optional) 
+	If provided, chart title is shown as the top row.
 
 loadedCb: (Optional)
 	The function called after all the data sources are loaded and before charts & list are created.
@@ -42,25 +49,35 @@ Google Spreadsheet Parameters:
 
 	gdocId:	The id of your google document.
 
-	Access control* Set share setting of your document to whoever you want to allow access (read) to your data on the webpage.
-	You can make your spreadsheet public, or you can only share it with a specific group of people, through google login.
+	<Access control> Set share setting of your document to whoever you want to allow access (read) to your data on the webpage.
+	You can make your spreadsheet public, or you can only share it with a specific group of people.
+	Access using Keshif also runs on 
 
 Text File Parameters:
 
-	Each data sheet is expected to be in separate files. The file names are generated using sheet name and the following parameters
+	Each data sheet is expected to be in separate files. The file names are generated using sheet name and the following parameters.
 
-	filePath: The directory which stores the files.
-	fileType: Only 'csv' is supported for now. The first row (line) must only include column names / headers.
+	dirPath: 
+		The directory which stores the files.
+	fileType: 
+		Only 'csv' is supported for now. The first row (line) must only include column names / headers.
 
-	Full file path is filePath+sheetName+"."+fileType
+	Full file path is dirPath+sheetName+"."+fileType
 
 Data Sheet Parameters:
 
 	First sheet listed always holds primary data (shown/filtered on the list). Following parameters are supported:
 
-	name: Sheet name. If using google spreadhseet, it is the sheet name shown on bottom. If using text files, it is the file name without extension.
+	name: 
+		Sheet name. If using google spreadhseet, it is the sheet name shown on bottom. If using text files, it is the file name without extension.
 
-	id: (Optional) By default, the column that holds the unique id for each row in the data tables is assumed to be named 'id'. If it is names something else (ie. studentid), and you don't want to/cannot update spreadsheet, insert the column header name here.
+	id: (Optional) 
+		By default, the column that holds the unique id for each row in the data tables is assumed to be named 'id'. If it is names something else (ie. studentid), and you don't want to/cannot update spreadsheet, insert the column header name here.
+
+	tableName: (Optional)
+		By default, the tableName is the same as name parameter for sheet.
+		If you need to use the same data table for multiple charts (for example, have two filters based on teams (baseball dataset)), you need to download the same dataset twice using different tableName's.
+		You should then link catTableName with this custom tableNames.
 
 	query: (Optional, Google Spreadheet only)
 		The query string as accepted by google. More info... (https://developers.google.com/chart/interactive/docs/querylanguage)
@@ -76,30 +93,29 @@ Data Sheet Parameters:
 The properties that can be defined in each facet are:
 
 facetTitle:
-	The title text shon in this facet
+	The title of the facet
 
 itemMapCtgry:
-	A function that gets a primary item and returns how the data is mapped to categories in facet.
+	A function that gets a primary item and returns how the data is mapped to categories in facet. It can return null, a single value, or an array of values for multiple mappings.
 
 filter: 
-	The text used for displaying filter state.
-	rowConj: Ex: 'in category' 
+	The text used for displaying filter state. Ex: { rowConj: 'on', rowGroupName: 'road types' }
 
 timeTitle: 
 	The title text used for timeline. Only the first facet defined in the array can include a time extension.
 
 itemMapTime: 
-	A function that gets a primary item and returns some time property related to that item.
+	A function that gets a primary item and returns time object(s) relating to that item.
 
-tableName: (Optional)
+catTableName: (Optional)
 	By default, the list of categories is generated from the values returned by itemMapCtgry function.
-	In some cases, the data may be available in a spreadsheet already loaded.
-	If so, you can provide the tableName instead.
+	In some cases, the category data may be available in a spreadsheet already loaded, and include additional information per category.
+	If so, you can provide catTableName, which matches the tableName in data source description.
 	Parameters that take a category description will take all the row data in this specified table.
 
 catLabelText: (Optional)
 	By default, category labels are automatically extrackted from cells.
-	If you have a separate sheet that describes labels (see tableName) and/or you want to use abbrevations, 
+	If you have a separate sheet that describes labels (see catTableName) and/or you want to use abbrevations, 
 	  you can define a function which returns the label of a given category data.
 
 catTooltipText: (Optional)
@@ -107,9 +123,9 @@ catTooltipText: (Optional)
 	However, in some cases, you may choose to use abbrevations for labels and display full text as a tooltip.
 	You can set this property to a function similar to catLabelText, but returns a different string for label.
 
-show_cat_fixed: (Optional)
+catDispCountFix: (Optional)
 	By default, the number of categories shown/visible is dynamically adjusted by the layout algorithm.
-	If you need a specific / static height for categories in a facet, you can specify it using this parameter.
+	If you need a specific & static number of visible categories in a facet, you can specify it using this parameter.
 
 singleSelect: (Optional)
 	If you want the categories to be single-select only (like a radio box), set this parameter to true.
@@ -207,7 +223,7 @@ kshf.init({
             },{
                 facetTitle: "Author",
                 itemMapCtgryf : function(post){ return post.data[postCols.author]; },
-                show_cat_fixed: 6,
+                catDispCountFix: 6,
                 filter: { rowConj: 'in category' }
             }
         ],

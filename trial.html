@@ -66,7 +66,7 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Company",
-                tableName: "Companies",
+                catTableName: "Companies",
                 rowTitleText: function(d){ return d.data[0]; },
                 dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
                 barInfoText: "Dot color: Phase type",
@@ -76,7 +76,7 @@ function loadChart() {
                 itemMapFunc : function(trial){ return trial.data[0]; }
             },{
                 facetTitle: "Company Industry",
-                tableName: "Industries",
+                catTableName: "Industries",
                 itemMapFunc : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
                 rowLabelText: function(d){ return d.data[2]; },
                 rowTitleText: function(d){ return d.data[1]; },
@@ -86,7 +86,7 @@ function loadChart() {
                 itemMapFunc :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
             }*/,{
                 facetTitle: "Phase Type",
-                tableName: "Phases",
+                catTableName: "Phases",
                 itemMapFunc : function(trial){ return trial.data[4]; },
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
                 barInfoText: "Color: Phase type",
@@ -101,7 +101,7 @@ function loadChart() {
                 filter: { rowConj: 'in', rowGroupName: 'phase types' }
             },{
                 facetTitle: "Condition",
-                tableName: "Conditions" ,
+                catTableName: "Conditions" ,
                 itemMapFunc : function(trial){ return trial.data[6]; },
                 filter: { rowConj: 'about', rowGroupName: 'conditions' }
             }

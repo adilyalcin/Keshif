@@ -36,14 +36,14 @@ function loadChart() {
         categoryTextWidth:230,
         itemName : "tablets",
         source : {
-            filePath: 'data/',
+            dirPath: 'data/',
             fileType: 'csv',
             sheets : [ {name:"tablets", id:"ASIN"} ]
         },
         charts : [
             {
                 facetTitle: "Brand",
-                tableName: "tablets",
+                catTableName: "tablets",
                 generateRows: true,
                 itemMapFunc : function(tablet){ return tablet.data[3]; },
                 sortingFuncs:[

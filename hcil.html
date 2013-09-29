@@ -105,7 +105,7 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "Topics",
-                tableName: "topics",
+                catTableName: "topics",
                 itemMapFunc : function(pub){ return pub.data[trsCol.topics]; },
                 rowLabelText: function(topic) { return topic.data[topicsCol.topic]; },
                 rowTitleText: function(topic) { return topic.data[topicsCol.topic]; },
@@ -118,7 +118,7 @@ function loadChart() {
                 visibleRows: 9
             },{
                 facetTitle: "Authors",
-                tableName: "people",
+                catTableName: "people",
                 itemMapFunc : function(pub){ return pub.data[trsCol.people]; },
                 rowLabelText: function(author) { 
                     return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
@@ -129,7 +129,7 @@ function loadChart() {
                 }
             },{
                 facetTitle: "Member Type",
-                tableName: "member_types",
+                catTableName: "member_types",
                 itemMapFunc : function(pub){
                     var typeList = {};
                     var r = [];
@@ -153,7 +153,7 @@ function loadChart() {
                 }
             },{
                 facetTitle: "Projects",
-                tableName: "projects",
+                catTableName: "projects",
                 itemMapFunc : function(pub){ return pub.data[trsCol.projects]; },
                 rowLabelText: function(project) { return project.data[projectsCol.project];  },
                 filter: {
