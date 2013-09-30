@@ -10,6 +10,9 @@ Keshif
 
 **Keshif** is here to help you.
 
+To see how to use Keshif and further documetation, [serve 
+  yourself](https://github.com/adilyalcin/Keshif/wiki/Documentation).
+
 Demos
 -----
 
