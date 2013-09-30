@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0" width="1000" height="500">
+  <metadata><rdf:RDF><cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Flag of Tuvalu</dc:title>
+  </cc:Work></rdf:RDF></metadata>
+  <defs>
+  <clipPath id="p"><path d="M300,150H600V300Z M300,150V300H0Z M300,150H0V0Z M300,150V0H600 z"/></clipPath>
+  <clipPath id="q"><rect width="600" height="300"/></clipPath>
+  <g transform="scale(1.0079285,1.0079285)" id="s">
+    <polygon style="fill:#ffce00"
+       points="511.946,324.278 533.785,256.897 555.613,324.281 626.445,324.23 569.104,365.812 591.041,433.161 533.774,391.476 476.501,433.151 498.449,365.806 441.115,324.214 "
+       transform="matrix(0.42409132,0,0,0.42496543,32.937915,19.240824)"/>
+  </g>
+  </defs>
+  <rect width="1000" height="500" style="fill:#5b97b1"/>
+  <g transform="scale(0.8333333333,0.8333333333)">
+  <rect width="600" height="300" style="fill:#00247d"/>
+  <g style="fill:none;stroke:#ffffff;stroke-width:60">
+    <path d="M0,0L600,300 M600,0L0,300" clip-path="url(#q)"/>
+    <path d="M0,0L600,300 M600,0L0,300" clip-path="url(#p)" style="stroke:#cf142b;stroke-width:40"/>
+    <path d="M300,0V300 M0,150H600" style="stroke-width:100"/>
+    <path d="M300,0V300 M0,150H600" style="stroke:#cf142b"/>
+  </g></g>
+  <use x="657.66272" y="-98.259903" xlink:href="#s"/>
+  <use x="569.00061" y="153.87309" xlink:href="#s"/>
+  <use x="657.66278" y="96.796822" xlink:href="#s"/>
+  <use x="276.41541" y="279.6626" xlink:href="#s"/>
+  <use transform="matrix(-1,0,0,-1,918.05558,489.94217)" xlink:href="#s"/>
+  <use transform="matrix(-1,0,0,-1,1023.0596,344.72386)" xlink:href="#s"/>
+  <use transform="matrix(-1,0,0,-1,1111.3077,314.56311)" xlink:href="#s"/>
+  <use transform="matrix(-1,0,0,-1,1023.0596,565.90248)" xlink:href="#s"/>
+  <use transform="matrix(-1,0,0,-1,918.05558,591.59488)" xlink:href="#s"/>
+</svg>

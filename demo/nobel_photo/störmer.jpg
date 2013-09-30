@@ -1,0 +1,939 @@
+<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--[if lt IE 7]><html class="lt-ie9 lt-ie8 lt-ie7" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><![endif]-->
+<!--[if IE 7]><html class="lt-ie9 lt-ie8" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><![endif]-->
+<!--[if gt IE 8]><!--><html xmlns="http://www.w3.org/1999/xhtml"><!--<![endif]-->
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+<title>Page Not Found</title>
+
+<meta name="description" content="Nobelprize.org, Official web site of the Nobel Foundation">
+<meta name="keywords" content="Nobel, Nobelprize, Nobelpriset, Foundation, Prize, Alfred, Museum, Literature, Physics, Chemistry, Peace, Medicine, Physiology, Economics, Laureate, Laureates, Winner, Winners, Award, Awards, Science">
+<link href="https://plus.google.com/103477693143895827696" rel="publisher">
+<link href="/css/foundation/normalize.css" rel="stylesheet" type="text/css">
+<link href="/css/foundation/foundation.css?v=20130902" rel="stylesheet" type="text/css">
+<link href="/css/jquery/colorbox/colorbox.css" rel="stylesheet" type="text/css">
+<link href="/css/nobel.css?v=20130902" rel="stylesheet" type="text/css">
+<link href="/css/nobelslide.css" rel="stylesheet" type="text/css">
+<link href="/css/jquery/jquery.multiselect.css" rel="stylesheet" type="text/css">
+<link href="/css/jquery/mselect/jquery-ui-1.8.1.custom.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="/prog/js/jquery/jquery.colorbox-min.js"></script>
+<script language="javascript" type="text/javascript" src="/prog/js/standard.js"></script>
+<script language="javascript" type="text/javascript" src="/__utm.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script src="/prog/js/jquery/jquery.clearfield.packed.js"></script>
+<script src="/prog/js/jquery/jquery.meio.mask.min.js"></script>
+<script src="/prog/js/jquery/jquery.multiselect.min.js"></script>
+<script src="/prog/js/createform/create.js"></script>
+
+<script src="/prog/js/foundation/vendor/custom.modernizr.js"></script>
+<style>
+/* The Grid ---------------------- */
+.lt-ie9 .row { width: 940px; max-width: 100%; min-width: 768px; margin: 0 auto; }
+.lt-ie9 .row .row { width: auto; max-width: none; min-width: 0; margin: 0 -15px; }
+.lt-ie9 .row.large-collapse .column,
+.lt-ie9 .row.large-collapse .columns { padding: 0; }
+.lt-ie9 .row .row { width: auto; max-width: none; min-width: 0; margin: 0 -15px; }
+.lt-ie9 .row .row.large-collapse { margin: 0; }
+ 
+.lt-ie9 .column, .lt-ie9 .columns { float: left; min-height: 1px; padding: 0 15px; position: relative; }
+.lt-ie9 .column.large-centered, .columns.large-centered { float: none; margin: 0 auto; }
+ 
+.lt-ie9 [class*="column"] + [class*="column"]:last-child { float: right; }
+.lt-ie9 [class*="column"] + [class*="column"].end { float: left; }
+ 
+.lt-ie9 .large-1,
+.lt-ie9 .row .large-1 { width: 8.33333%; }
+ 
+.lt-ie9 .large-2,
+.lt-ie9 .row .large-2 { width: 16.66667%; }
+ 
+.lt-ie9 .large-3,
+.lt-ie9 .row .large-3 { width: 25%; }
+ 
+.lt-ie9 .large-4,
+.lt-ie9 .row .large-4 { width: 33.33333%; }
+ 
+.lt-ie9 .large-5,
+.lt-ie9 .row .large-5 { width: 41.66667%; }
+ 
+.lt-ie9 .large-6,
+.lt-ie9 .row .large-6 { width: 50%; }
+ 
+.lt-ie9 .large-7,
+.lt-ie9 .row .large-7 { width: 58.33333%; }
+ 
+.lt-ie9 .large-8,
+.lt-ie9 .row .large-8 { width: 66.66667%; }
+ 
+.lt-ie9 .large-9,
+.lt-ie9 .row .large-9 { width: 75%; }
+ 
+.lt-ie9 .large-10,
+.lt-ie9 .row .large-10 { width: 83.33333%; }
+ 
+.lt-ie9 .large-11,
+.lt-ie9 .row .large-11 { width: 91.66667%; }
+ 
+.lt-ie9 .large-12,
+.lt-ie9 .row .large-12 { width: 100%; }
+ 
+.lt-ie9 .row .large-offset-1 { margin-left: 8.33333%; }
+.lt-ie9 .row .large-offset-2 { margin-left: 16.66667%; }
+.lt-ie9 .row .large-offset-3 { margin-left: 25%; }
+.lt-ie9 .row .large-offset-4 { margin-left: 33.33333%; }
+.lt-ie9 .row .large-offset-5 { margin-left: 41.66667%; }
+.lt-ie9 .row .large-offset-6 { margin-left: 50%; }
+.lt-ie9 .row .large-offset-7 { margin-left: 58.33333%; }
+.lt-ie9 .row .large-offset-8 { margin-left: 66.66667%; }
+.lt-ie9 .row .large-offset-9 { margin-left: 75%; }
+.lt-ie9 .row .large-offset-10 { margin-left: 83.33333%; }
+ 
+.lt-ie9 .pull-2 { right: 16.66667%; }
+.lt-ie9 .pull-3 { right: 25%; }
+.lt-ie9 .pull-4 { right: 33.33333%; }
+.lt-ie9 .pull-5 { right: 41.66667%; }
+.lt-ie9 .pull-6 { right: 50%; }
+.lt-ie9 .pull-7 { right: 58.33333%; }
+.lt-ie9 .pull-8 { right: 66.66667%; }
+.lt-ie9 .pull-9 { right: 75%; }
+.lt-ie9 .pull-10 { right: 83.33333%; }
+ 
+.lt-ie9 .push-2 { left: 16.66667%; }
+.lt-ie9 .push-3 { left: 25%; }
+.lt-ie9 .push-4 { left: 33.33333%; }
+.lt-ie9 .push-5 { left: 41.66667%; }
+.lt-ie9 .push-6 { left: 50%; }
+.lt-ie9 .push-7 { left: 58.33333%; }
+.lt-ie9 .push-8 { left: 66.66667%; }
+.lt-ie9 .push-9 { left: 75%; }
+.lt-ie9 .push-10 { left: 83.33333%; }
+ 
+/* Nicolas Gallagher's micro clearfix */
+.lt-ie9 .row { *zoom: 1; }
+.lt-ie9 .row:before, .row:after { content: " "; display: table; }
+.lt-ie9 .row:after { clear: both; }
+
+
+
+
+/* IE8 fix for the topbar */
+.lt-ie9 .top-bar {
+background: #2f2f2f;
+*zoom: 1;
+overflow: visible;
+}
+.lt-ie9 .top-bar:before, .lt-ie9 .top-bar:after {
+content: " ";
+display: table;
+}
+.lt-ie9 .top-bar:after { clear: both; }
+.lt-ie9 .top-bar .toggle-topbar { display: none; }
+.lt-ie9 .top-bar .title-area { float: left; }
+.lt-ie9 .top-bar .name h1 a { width: auto; }
+.lt-ie9 .top-bar input,
+.lt-ie9 .top-bar .button {
+line-height: 2em;
+font-size: 0.875em;
+height: 2em;
+padding: 0 10px;
+position: relative;
+top: 8px;
+}
+.lt-ie9 .top-bar.expanded { background: #111111; }
+.lt-ie9 .contain-to-grid .top-bar {
+max-width: 57.5em;
+margin: 0 auto;
+}
+.lt-ie9 .top-bar-section {
+-webkit-transition: none 0 0;
+-moz-transition: none 0 0;
+transition: none 0 0;
+left: 0 !important;
+}
+.lt-ie9 .top-bar-section ul {
+width: auto;
+height: auto !important;
+display: inline;
+}
+.lt-ie9 .top-bar-section ul li { float: left; }
+.lt-ie9 .top-bar-section ul li > a { padding-right: 14px !important; }
+.lt-ie9 .top-bar-section ul li .js-generated { display: none; }
+.lt-ie9 .top-bar-section li a:not(.button) {
+padding: 0 15px;
+line-height: 45px;
+background: #111111;
+}
+.lt-ie9 .top-bar-section li a:not(.button):hover { background: #2b2b2b; }
+.lt-ie9 .top-bar-section .has-dropdown > a { padding-right: 35px !important; }
+.lt-ie9 .top-bar-section .has-dropdown > a:after {
+content: "";
+display: block;
+width: 0;
+height: 0;
+border: solid 5px;
+border-color: rgba(255, 255, 255, 0.5) transparent transparent transparent;
+margin-top: -2.5px;
+}
+.lt-ie9 .top-bar-section .has-dropdown.moved { position: relative; }
+.lt-ie9 .top-bar-section .has-dropdown.moved > .dropdown { visibility: hidden; }
+.lt-ie9 .top-bar-section .has-dropdown:hover > .dropdown,
+.lt-ie9 .top-bar-section .has-dropdown:active > .dropdown { visibility: visible; }
+.lt-ie9 .top-bar-section .has-dropdown .dropdown li.has-dropdown > a:after {
+border: none;
+content: "\00bb";
+margin-top: -7px;
+right: 5px;
+}
+.lt-ie9 .top-bar-section .dropdown {
+left: 0;
+top: auto;
+background: transparent;
+}
+.lt-ie9 .top-bar-section .dropdown li a {
+line-height: 1;
+white-space: nowrap;
+padding: 7px 15px;
+background: #1e1e1e;
+}
+.lt-ie9 .top-bar-section .dropdown li label {
+white-space: nowrap;
+background: #1e1e1e;
+}
+.lt-ie9 .top-bar-section .dropdown li .dropdown {
+left: 100%;
+top: 0;
+}
+.lt-ie9 .top-bar-section > ul > .divider {
+border-bottom: none;
+border-top: none;
+border-right: solid 1px #2b2b2b;
+border-left: solid 1px black;
+clear: none;
+height: 45px;
+width: 0px;
+}
+.lt-ie9 .top-bar-section .has-form {
+background: #111111;
+padding: 0 15px;
+height: 45px;
+}
+.lt-ie9 .top-bar-section ul.right li .dropdown {
+left: auto;
+right: 0;
+}
+.lt-ie9 .top-bar-section ul.right li .dropdown li .dropdown { right: 100%; }
+</style>
+</head>
+<body>
+
+<!-- Logo, search, quick links -->
+<div class="row" id="top-container">
+    <div class="large-12 columns show-for-small" id="mobile-logo">
+    	<a href="/"><img alt="Nobelprize.org" src="/images/logo_mobile.png"></a>
+    </div>
+    <div class="large-4 columns hide-for-small" id="logo-container">
+        <a href="/"><img alt="Nobelprize.org" src="/images/logo-nobelprize_org.png"></a>
+    </div>
+    <div id="quick-links-container" class="large-6 columns hide-for-small" style="background-color: none; text-align: right; padding-top: 40px;">
+        <ul style="list-style-type: none; margin: 0;">
+            <li style="display: inline;">
+                <a class="quick-link-top" href="/educational/" style="padding-left: 30px; background: url(/images/icons/icon-educational.png); background-repeat: no-repeat; background-size: 22px 18px; color: #ffffff;">Educational</a>
+            </li>
+            <li style="display: inline; margin-left: 30px;">
+                <a class="quick-link-top" href="/mediaplayer/" style="padding-left: 25px; background: url(/images/icons/icon-video.png); background-repeat: no-repeat; background-size: 18px 18px; color: #ffffff;">Video</a>
+            </li>
+            <li style="display: inline; margin-left: 30px;">
+                <a class="quick-link-top" href="/nobel_organizations/nobelmedia/nobelprize_org/" style="padding-left: 29px; background: url(/images/icons/icon-about-us.png); background-repeat: no-repeat; background-size: 22px 18px; color: #ffffff;">About Us</a>
+            </li>
+        </ul>
+    </div>
+    <div id="top-search" class="large-2 columns hide-for-small" style="text-align: right; padding: 38px 0 0 0;">
+    	<form action="http://search.nobelprize.org/search/nobel2013/" method="get" id="searchform" name="search-site-form" style="margin: 0;">
+            <input type="hidden" name="i" value="en" >
+            <input type="hidden" name="charset" value="UTF-8" >
+            <input type="hidden" name="oenc" value="UTF-8" >
+            <input placeholder="Search" type="text" id="searchform" name="q" style="font-size: 0.813em; border: 0; height: 26px; background-color: #e4e4e4; margin: 0; padding: 0 25px 0 5px; border-radius: 3px; background-image: url(/images/icons/icon-search.png); background-repeat: no-repeat; background-position: 97% 50%;">
+    	</form>
+    </div>
+</div>
+<!-- /Logo, search, quick links -->
+
+<!-- Main navigation -->
+<div class="row" style="margin-bottom: 6px;">
+    <nav class="top-bar">
+   	  <ul class="title-area">
+        <li class="name">
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+      </ul>
+    
+      <section class="top-bar-section">
+        <ul class="left">
+          <li><a class="main-navigation-link" href="/">Home</a></li>
+          <li class="divider"></li>
+          <li class="has-dropdown active"><a class="main-navigation-link" href="/nobel_prizes/">Nobel Prizes and Laureates</a>
+          	<ul class="dropdown">
+                <li class="show-for-touch"><a href="/nobel_prizes/" class="main-nav-dropdown-link">Nobel Prizes and Laureates</a></li>
+            	<li><a href="/nobel_prizes/physics/" class="main-nav-dropdown-link">Physics Prize</a></li>
+                <li><a href="/nobel_prizes/chemistry/" class="main-nav-dropdown-link">Chemistry Prize</a></li>
+            	<li><a href="/nobel_prizes/medicine/" class="main-nav-dropdown-link">Medicine Prize</a></li>
+                <li><a href="/nobel_prizes/literature/" class="main-nav-dropdown-link">Literature Prize</a></li>
+                <li><a href="/nobel_prizes/peace/" class="main-nav-dropdown-link">Peace Prize</a></li>
+                <li><a href="/nobel_prizes/economic-sciences/" class="main-nav-dropdown-link">Prize in Economic Sciences</a></li>
+                <li><a href="/nobel_prizes/facts/" class="main-nav-dropdown-link">Quick Facts</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+          <li class="has-dropdown"><a class="main-navigation-link" href="/nomination/">Nomination</a>
+          	<ul class="dropdown">
+            	<li class="show-for-touch"><a href="/nomination/" class="main-nav-dropdown-link">Nomination</a></li>
+            	<li><a href="/nomination/physics/" class="main-nav-dropdown-link">Physics Prize</a></li>
+                <li><a href="/nomination/chemistry/" class="main-nav-dropdown-link">Chemistry Prize</a></li>
+            	<li><a href="/nomination/medicine/" class="main-nav-dropdown-link">Medicine Prize</a></li>
+                <li><a href="/nomination/literature/" class="main-nav-dropdown-link">Literature Prize</a></li>
+                <li><a href="/nomination/peace/" class="main-nav-dropdown-link">Peace Prize</a></li>
+                <li><a href="/nomination/economic-sciences/" class="main-nav-dropdown-link">Prize in Economic Sciences</a></li>
+                <li><a href="/nomination/archive/" class="main-nav-dropdown-link">Nomination Archive</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+          <li class="has-dropdown"><a class="main-navigation-link" href="/ceremonies/">Ceremonies</a>
+          	<ul class="dropdown">
+            	<li class="show-for-touch"><a href="/ceremonies/" class="main-nav-dropdown-link">Ceremonies</a></li>
+            	<li><a href="/ceremonies/archive/" class="main-nav-dropdown-link">Ceremony Archive</a></li>
+                <li><a href="/ceremonies/menus/" class="main-nav-dropdown-link">Nobel Banquet Menus</a></li>
+            	<li><a href="/ceremonies/dresscode/" class="main-nav-dropdown-link">Nobel Banquet Dress Code</a></li>
+                <li><a href="/ceremonies/queens-gowns/" class="main-nav-dropdown-link">The Queen's Gowns</a></li>
+                <li><a href="/ceremonies/eyewitness/" class="main-nav-dropdown-link">Eyewitness Reports</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+          <li class="has-dropdown"><a class="main-navigation-link" href="/alfred_nobel/">Alfred Nobel</a>
+          	<ul class="dropdown">
+            	<li class="show-for-touch"><a href="/alfred_nobel/" class="main-nav-dropdown-link">Alfred Nobel</a></li>
+            	<li><a href="/alfred_nobel/will/" class="main-nav-dropdown-link">Alfred Nobel's Will</a></li>
+                <li><a href="/alfred_nobel/biographical/" class="main-nav-dropdown-link">Alfred Nobel's Life</a></li>
+                <li><a href="/alfred_nobel/library/" class="main-nav-dropdown-link">Private Library of Alfred Nobel</a></li>
+                <li><a href="/alfred_nobel/books/" class="main-nav-dropdown-link">Books on Alfred Nobel</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+          <li class="has-dropdown"><a class="main-navigation-link" href="/events/">Events</a>
+          	<ul class="dropdown">
+            	<li class="show-for-touch"><a href="/events/" class="main-nav-dropdown-link">Events</a></li>
+            	<li><a href="/events/nobel-week-dialogue/" class="main-nav-dropdown-link">Nobel Week Dialogue</a></li>
+                <li><a href="/events/nobel-prize-inspiration-initiative/" class="main-nav-dropdown-link">Nobel Prize Inspiration Initiative</a></li>
+            	<li><a href="/events/nobel-concert/" class="main-nav-dropdown-link">Nobel Prize Concert</a></li>
+                <li><a href="/events/nobel-museum/" class="main-nav-dropdown-link">Exhibitions at the Nobel Museum</a></li>
+                <li><a href="/events/nobel-peace-center/" class="main-nav-dropdown-link">Exhibitions at the Nobel Peace Center</a></li>
+            </ul>
+          </li>
+          <li class="show-for-small has-form">
+            <form action="http://search.nobelprize.org/search/nobel2013/" method="get" id="searchform" name="search-site-form" style="margin: 0;">
+                <input type="hidden" name="i" value="en" >
+                <input type="hidden" name="charset" value="UTF-8" >
+                <input type="hidden" name="oenc" value="UTF-8" >
+                <input placeholder="Search" type="text" id="searchform" name="q" style="border: 0; height: 26px; background-color: #e4e4e4; margin: 0; padding: 0 25px 0 5px; border-radius: 3px; background-image: url(/images/icons/icon-search.png); background-repeat: no-repeat; background-position: 97% 50%;">
+            </form>          
+          </li>
+          <li class="quick-link-nav"><a href="/nobel_organizations/nobelmedia/nobelprize_org/" class="main-navigation-link">About Us</a></li>
+        </ul>
+      </section>
+    </nav>
+</div>
+<!-- /main navigation -->
+
+<style>
+#left-arrow:hover {
+	cursor: pointer;
+}
+
+#right-arrow:hover {
+	cursor: pointer;
+}
+</style>
+<div class="row">
+	<!-- Left column -->
+    <div id="nobel-left-col" class="large-3 columns" style="margin-top: 10px; padding-top: 15px; padding-bottom: 600px; background-color: #f0f0f0; border-right: 1px solid #d3d3d3;"><!--eri-no-index-->
+
+
+<div class="row">
+    <div class="large-12 columns">
+        <h5>Lists of Nobel Prizes and Laureates</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
+	<form name="goto" style="margin-bottom: 0;">
+        <select name="gotolist" onchange="location.href=goto.gotolist.options[selectedIndex].value" style="font-size: 0.813em;">
+            <option value="" selected>Choose a list</option>
+            <option value="/nobel_prizes/physics/laureates/">Show all Physics Prizes</option>
+            <option value="/nobel_prizes/chemistry/laureates/">Show all Chemistry Prizes</option>
+            <option value="/nobel_prizes/medicine/laureates/">Show all Medicine Prizes</option>
+            <option value="/nobel_prizes/literature/laureates/">Show all Literature Prizes</option>
+            <option value="/nobel_prizes/peace/laureates/">Show all Peace Prizes</option>
+            <option value="/nobel_prizes/economic-sciences/laureates/">Show all Prizes in Economic Sciences</option>
+            <option value="/nobel_prizes/lists/all/index.html">Show all Nobel Prizes</option>
+            <option value="/nobel_prizes/lists/organizations.html">Show all Awarded Organizations</option>
+            <option value="/nobel_prizes/lists/women.html">Show all Awarded Women</option>
+            <option value="/nobel_prizes/lists/universities.html">Nobel Laureates: Affiliation</option>
+            <option value="/nobel_prizes/lists/age.html">Nobel Laureates: Age</option>
+            <option value="/nobel_prizes/lists/countries.html">Nobel Laureates: Country of birth</option>
+        </select>
+	</form>
+    </div>
+</div>
+
+<!--
+
+<div class="row">
+    <div class="large-12 columns">
+        <h5>Find Nobel Prizes and Laureates</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 columns">
+        <select id="left-col-filter-dropdown">
+            <option id="che">Chemistry</option>
+            <option id="phy">Physics</option>
+            <option id="pea">Peace</option>
+            <option id="lit">Literature</option>
+            <option id="med">Medicine</option>
+            <option id="eco">Economic Sciences</option>
+        </select>
+    </div>
+</div>
+
+-->
+
+        
+        <hr>
+
+
+<!--/eri-no-index-->
+
+        
+    </div>
+    <!-- /left column -->
+    <!-- Middle column -->
+	<div id="nobel-middle-col" class="large-6 columns" style="padding-top: 15px; padding-bottom: 15px; background-color: #ffffff;">
+          <div class="row">
+            <div class="large-12 columns">
+
+
+<!-- Start Main Content -->
+
+  <h1>Page Not Found</h1>
+  <p>&nbsp;</p>
+  <p>Nobelprize.org launched a new web site in June 2013. This
+      can make your bookmarks disappear.</p>
+  <p>&nbsp;</p>
+  <p><b>Please try the following:</b></p>
+<p>&bull;&nbsp;Open the <a href="/index.html">Nobelprize.org</a> home page and
+  search for links to the information you want.</p>
+<p>&bull;&nbsp;Enter a term in the SEARCH field at the top of the page.</p>
+
+        <p>&bull;&nbsp;If you typed a page address in the address bar, make sure
+     it is spelled correctly.</p>
+        <p>&nbsp;</p>
+  <p>If you have arrived at this page through a link on another web site, please
+     inform the webmaster of that site that the page has been moved.</p>
+  <p>&nbsp;</p>
+  
+<!-- End Main Area  -->
+
+<div style="clear:both"></div>
+
+<!--eri-no-index-->
+
+
+<div class="tool_area">
+<ul>
+                <li class="first">
+                <!-- ADDTHIS BUTTON BEGIN -->
+        <script type="text/javascript">
+        var addthis_config = {
+                <!-- services_compact: 'email, facebook, twitter, digg, delicious, stumbleupon, technorati, translate, print, more',
+-->
+                username: "nobelprize",
+                <!-- ui_cobrand:"Nobelprize.org", -->
+                ui_header_color: "#8A8384",
+                ui_header_background: "#fff",
+                <!-- ui_delay: 500, -->
+                ui_click: true
+        }
+        </script>
+
+                <a href="http://www.addthis.com/bookmark.php?v=250" class="share addthis_button"><img src="/images/general/pixel.gif"
+ alt="Share" width="20" height="13" border="0"/></a>
+                <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js"></script>
+        <!-- ADDTHIS BUTTON END --></li>
+                <li><a href="/prog/php/tellfriend/tell.php?head=1&amp;top=1&amp;url=/nobel_prizes/physics/laureates/1998/st%C3%B6rmer.jpg" class="tell_a_friend" 
+target="_blank"><img src="/images/general/pixel.gif" alt="Tell a Friend" width="20" height="13" border="0"/></a></li>
+                <li class="last"><a href="/prog/php/comments/showcomment.php?head=1&amp;objectname=/nobel_prizes/physics/laureates/1998/st%C3%B6rmer.jpg&amp;formname=site&amp;top=1" 
+class="comments"><img src="/images/general/pixel.gif" alt="Comments" width="20" height="13" border="0"/></a></li>
+              </ul>
+
+</div>
+
+
+
+<div style="clear:both"></div>
+<div class="mla_cite"> <span class="row1">To cite this page</span><br><span class="row2">MLA style: "Page Not Found". <i>Nobelprize.org.</i> Nobel Media AB 2013. Web. 11 Sep 2013. &lt;http://www.nobelprize.org/nobel_prizes/physics/laureates/1998/st%C3%B6rmer.jpg&gt; </span> </div>
+
+
+<hr><h2 class="hide-for-print">Recommended:</h2>
+<div class="row hide-for-print">
+<div class="large-4 columns hide-for-print"><a href="/educational/physics/laser/"><img src="/images/recommend/educational/physics/laser-challenge-game.jpg"></a><div><b><a href="/educational/physics/laser/">Play the Laser Challenge Game</a></b></div><div><p>Your mission is to arrange an amazing laser party!</p></div><p>&nbsp;</p>
+</div>
+<div class="large-4 columns hide-for-print"><a href="/nobel_prizes/themes/physics/karlsson/index.html"><img src="/images/recommend/physics/physics-overview.jpg"></a><div><b><a href="/nobel_prizes/themes/physics/karlsson/index.html">The Nobel Prize in Physics 1901-2000</a></b></div><div><p>Read more about the Nobel Prize in Physics.</p></div><p>&nbsp;</p>
+</div>
+<div class="large-4 columns hide-for-print"><a href="/nobel_prizes/facts/physics/index.html"><img src="/images/recommend/physics/physics-short-facts.jpg"></a><div><b><a href="/nobel_prizes/facts/physics/index.html">Facts on the Nobel Prize in Physics</a></b></div><div><p>All you want to know about the Nobel Prize in Physics!</p></div><p>&nbsp;</p>
+</div>
+</div>
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+    <!-- /middle column -->
+    
+    <!-- Right column -->
+    <div id="nobel-right-col" class="large-3 columns" style="margin-top: 10px; padding-top: 15px; padding-bottom: 15px; background-color: #f0f0f0; border-left: 1px solid #d3d3d3;">
+<div class="row">
+<div class="large-12 columns">
+<a href="http://www.nobelprize.org/press/nobelfoundation/#/news/view/announcements-of-the-2013-nobel-prizes-and-the-sveriges-riksbank-prize-in-economic-sciences-in-memory-of-alfred-nobel-57064" target="_blank"><img src="/images/right-column/announcement2013-schedule.jpg"></a>
+</div>
+</div>
+<div style="background-color: #FFFFFF; border-top: 1px solid #D7D5D5; height: 1px; margin-top: 10px; margin-bottom: 10px; "></div>
+<div class="row">
+<div class="large-12 columns">
+<a href="http://www.nobelweekdialogue.org/" target="_blank"><img src="/images/right-column/nobel-week-dialogue.jpg"></a>
+</div>
+</div><div style="background-color: #FFFFFF; border-top: 1px solid #D7D5D5; height: 1px; margin-top: 10px; margin-bottom: 10px; "></div>
+
+
+    </div>
+    <!-- /right column -->
+</div>
+
+<!-- /content area -->
+
+
+<!-- Small footer -->
+<div class="row show-for-small" id="small-footer-container" style="background-color: #111111;">
+	<div class="large-12 columns">
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">Contact</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+            <li><a href="/contact/copyright.html">Copyright</a></li>
+            <li><a href="/contact/archive-sales.html">Archive Sales</a></li>
+            <li><a href="/contact/nominations.html">Nominations</a></li>
+            <li><a href="/contact/technical.html">Technical</a></li>
+            <li><a href="/contact/comments-suggestions.html">Comments and Suggestions</a></li>
+        </ul>
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">Press</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+            <li><a href="/press/">Press Releases</a></li>
+            <li><a href="/press/nobelfoundation/">Newsroom - Nobel Foundation</a></li>
+            <li><a href="/press/nobelmedia/">Newsroom - Nobel Media</a></li>
+        </ul>
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">Sitemap</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+            <li><a href="/az_index.html">A-Z Index</a></li>
+        </ul>
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">FAQ</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+            <li><a href="">Frequently Asked Questions</a></li>
+        </ul>
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">Terms</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+        	<li><a href="/nobel_organizations/nobelmedia/nobelprize_org/terms_use.html">Terms of Use</a></li>
+            <li><a href="/nobel_organizations/nobelmedia/nobelprize_org/privacy_policy.html">Privacy Policy</a></li>
+            <li><a href="/nobel_organizations/nobelmedia/nobelprize_org/tech_support/">Technical Support</a></li>
+            <li><a href="/nobel_organizations/nobelmedia/nobelprize_org/developer/">For Developers</a></li>
+            <li><a href="/nobel_organizations/nobelmedia/nobelprize_org/copyright/">Copyright</a></li>
+        </ul>
+    	<h3 style="margin-top: 15px; margin-bottom: 0; padding-bottom: 0; color: #eeeeee; font-weight: bold; font-size: 16px; text-decoration: underline;">Follow</h3>
+        <ul style="color: #ffffff;" class="small-footer-list">
+            <li><a href="https://twitter.com/Nobelprize_org">Twitter</a></li>
+            <li><a href="https://www.facebook.com/Nobelprize.org">Facebook</a></li>
+            <li><a href="https://plus.google.com/+NobelPrize/posts">Google+</a></li>
+            <li><a href="http://www.youtube.com/thenobelprize">YouTube</a></li>
+            <li><a href="http://www.nobelprize.org/nobel_organizations/nobelmedia/nobelprize_org/newsletter/">Nobelprize.org Monthly</a></li>
+            <li><a href="/nobel_organizations/nobelmedia/channels/app/index.html">Nobel Prize App</a></li>
+        </ul>
+    </div>
+</div>
+<!-- /small footer -->
+
+<!-- Big footer -->
+<div class="hide-for-small" id="footer-container" style="width: 100%; position: fixed; bottom: -215px;">
+    <div style="width: 100%; background-color: #e3e3e3;">
+    	<div class="row">
+            <div class="large-8 columns" style="padding-top: 10px; padding-bottom: 10px;">
+            	<a class="footer-top-link" style="padding-left: 15px; background: url(/images/foundation/arrow-right.png); background-repeat: no-repeat;" href="#" id="footer-top-link-first">CONTACT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRESS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SITEMAP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FAQ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TERMS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOLLOW</a>
+                <!--<ul style="list-style-type: none; margin: 0; padding: 0;">
+                	<li style="display: inline;"><a id="footer-top-link-first" class="footer-top-link" style="padding-left: 15px; background: url(/images/foundation/arrow-right.png); background-repeat: no-repeat;" href="#">CONTACT</a></li>
+                    <li style="display: inline; border-left: 1px solid #285993; margin-left: 10px; padding-left: 10px;"><a class="footer-top-link" href="#">PRESS</a></li>
+                    <li style="display: inline; border-left: 1px solid #285993; margin-left: 10px; padding-left: 10px;"><a class="footer-top-link" href="#">SITEMAP</a></li>
+                    <li style="display: inline; border-left: 1px solid #285993; margin-left: 10px; padding-left: 10px;"><a class="footer-top-link" href="#">FAQ</a></li>
+                    <li style="display: inline; border-left: 1px solid #285993; margin-left: 10px; padding-left: 10px;"><a class="footer-top-link" href="#">TERMS</a></li>
+                    <li style="display: inline; border-left: 1px solid #285993; margin-left: 10px; padding-left: 10px;"><a class="footer-top-link" href="#">FOLLOW</a></li>
+                </ul>-->
+            </div>
+            <div class="large-4 columns" style="text-align: right;">
+            	<p style="color: #888; margin: 8px 0 0 0; padding: 0;">Copyright &copy; Nobel Media AB 2013</p>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%; background-color: #fff;">
+    	<div class="row">
+        	<div class="large-3 columns">
+                <ul style="list-style-type: none;">
+                    <li class="footer-list-headline">Contact</li>
+                    <li><a class="footer-link" href="/contact/copyright.html">Copyright</a></li>
+                    <li><a class="footer-link" href="/contact/archive-sales.html">Archive Sales</a></li>
+                    <li><a class="footer-link" href="/contact/nominations.html">Nominations</a></li>
+                    <li><a class="footer-link" href="/contact/technical.html">Technical</a></li>
+                    <li><a class="footer-link" href="/contact/comments-suggestions.html">Comments and Suggestions</a></li>
+                </ul>
+            </div>
+            <div class="large-3 columns">
+            	<div class="row">
+                	<div class="large-12 columns">
+                        <ul style="list-style-type: none;">
+                            <li class="footer-list-headline">Press</li>
+                            <li><a class="footer-link" href="/press/">Press Releases</a></li>
+                            <li><a class="footer-link" href="/press/nobelfoundation/">Newsroom - Nobel Foundation</a></li>
+                            <li><a class="footer-link" href="/press/nobelmedia/">Newsroom - Nobel Media</a></li>
+                        </ul>
+                	</div>
+                </div>
+            	<div class="row">
+                	<div class="large-12 columns">
+                    	<ul style="list-style-type: none;">
+                        	<li class="footer-list-headline">Sitemap</li>
+                        	<li><a class="footer-link" href="/az_index.html/">A-Z Index</a></li>
+                        </ul>
+                	</div>
+                </div>
+            </div>
+            <div class="large-3 columns">
+                <div class="row">
+                	<div class="large-12 columns">
+                        <ul style="list-style-type: none;">
+                            <li class="footer-list-headline">FAQ</li>
+                            <li><a class="footer-link helplink faqLink" style="cursor: pointer;">Frequently Asked Questions</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                	<div class="large-12 columns">
+                    	<ul style="list-style-type: none;">
+                        	<li class="footer-list-headline">Terms</li>
+                        	<li><a class="footer-link" href="/nobel_organizations/nobelmedia/nobelprize_org/terms_use.html">Terms of Use</a></li>
+                            <li><a class="footer-link" href="/nobel_organizations/nobelmedia/nobelprize_org/privacy_policy.html">Privacy Policy</a></li>
+                        	<li><a class="footer-link" href="/nobel_organizations/nobelmedia/nobelprize_org/tech_support/">Technical Support</a></li>
+                        	<li><a class="footer-link" href="/nobel_organizations/nobelmedia/nobelprize_org/developer/">For Developers</a></li>
+                        	<li><a class="footer-link" href="/nobel_organizations/nobelmedia/nobelprize_org/copyright/">Copyright</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        	<div class="large-3 columns">
+                <ul style="list-style-type: none;">
+                	<li class="footer-list-headline">Follow</li>
+                    <li style="padding-left: 35px; background: url('/images/twitter-bw-icon.png'); background-repeat: no-repeat;"><a href="https://twitter.com/Nobelprize_org">Twitter</a></li>
+                    <li style="padding-left: 35px; background: url('/images/fb-bw-icon.png'); background-repeat: no-repeat;"><a href="https://www.facebook.com/Nobelprize.org">Facebook</a></li>
+                    <li style="padding-left: 35px; background: url('/images/google-bw-icon.png'); background-repeat: no-repeat;"><a href="https://plus.google.com/+NobelPrize/posts">Google+</a></li>
+                    <li style="padding-left: 35px; background: url('/images/youtube-bw-icon.png'); background-repeat: no-repeat;"><a href="http://www.youtube.com/thenobelprize">YouTube</a></li>
+                    <li style="padding-left: 35px; background: url('/images/monthly-bw-icon.png'); background-repeat: no-repeat;"><a href="http://www.nobelprize.org/nobel_organizations/nobelmedia/nobelprize_org/newsletter/">Nobelprize.org Monthly</a></li>
+                    <li style="padding-left: 35px; background: url('/images/nobelprize_app-bw-icon.png'); background-repeat: no-repeat;"><a href="/nobel_organizations/nobelmedia/channels/app/index.html">Nobel Prize App</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /big footer -->
+
+  <script>
+  document.write('<script src=' +
+  ('__proto__' in {} ? '/prog/js/foundation/vendor/zepto' : '/prog/js/foundation/vendor/jquery') +
+  '.js><\/script>')
+  </script>
+  
+  <!--<script src="js/foundation.min.js"></script>-->
+  
+  <script src="/prog/js/foundation/foundation.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.alerts.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.clearing.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.cookie.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.dropdown.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.forms.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.joyride.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.magellan.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.orbit.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.placeholder.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.reveal.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.section.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.tooltips.js"></script>
+  
+  <script src="/prog/js/foundation/foundation.topbar.js"></script>
+  
+  
+  <script>
+  	var left_height, middle_height, right_height, highest;
+	
+    $(document).foundation();
+	
+	var footer_visible = false;
+	
+	var filter_year = 2012;
+	
+
+
+
+$('document').ready(function() {
+	
+	//checkVersion();
+	
+	left_height = $('#nobel-left-col').height();
+	left_height = Math.round(left_height);
+	middle_height = $('#nobel-middle-col').height();
+	middle_height = Math.round(middle_height);
+	right_height = $('#nobel-right-col').height();
+	right_height = Math.round(right_height);
+	
+	if($(window).width() > 780) {
+		
+		// Calculate the height of the containers and make it look right
+		highest = left_height;
+		
+		if(middle_height > highest) {
+			highest = middle_height;
+		}
+		
+		if(right_height > highest) {
+			highest = right_height;
+		}
+		
+		var highest_mid = highest+20;
+		$('#nobel-left-col').height(highest);
+		$('#nobel-middle-col').height(highest_mid);
+		$('#nobel-right-col').height(highest);
+	}
+	
+	
+	/* Left sidebar filter */
+	$('#left-arrow').click(function() {
+		
+		if(filter_year > 1901) {
+			filter_year--;
+			$('#year-input').val(filter_year);
+		}
+	});
+	
+	$('#right-arrow').click(function() {
+		
+		if(filter_year < 2012) {
+			filter_year++;
+			$('#year-input').val(filter_year);
+		}
+	});
+	
+	
+	$('.footer-top-link').click(function() {
+		
+		if(!footer_visible) {
+			show_footer();
+		}
+		else {
+			hide_footer();
+		}
+	});
+	
+	$('.footer-top-link').click(function(event) {
+		event.preventDefault();
+	});
+	
+	// Left column filter dropdown
+	$('#left-col-filter-dropdown').change(function() {
+	});
+	
+	/* Goto other biography up-and-down-year */
+	var selected_goto_year = 2012;
+	var selected_goto_year = $('#hidden-the-year').val();
+	var url;
+	var selected_goto_prize;
+	
+	// Dropdown
+	$('#goto-prize-change-prize').change(function() {
+		selected_goto_prize = $(this).find(":selected").val();
+		
+		if(selected_goto_prize == "economic-sciences" && selected_goto_year<1969) {
+			url = 'http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1969/';
+		}
+		else {
+			url = 'http://www.nobelprize.org';
+			url += '/nobel_prizes/'+selected_goto_prize+'/laureates/'+selected_goto_year+'/';
+		}
+			
+		location.href = url;
+	});
+	
+	// Button tap down
+	$('#goto-prize-tap-down').click(function() {
+		if(parseInt(selected_goto_year) > 1901) {
+			selected_goto_prize = $('#goto-prize-change-prize').find(":selected").val();
+			selected_goto_year--;
+			
+			if(selected_goto_prize == "economic-sciences" && selected_goto_year<1969) {
+				url = 'http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1969/';
+			}
+			else {
+				url = 'http://www.nobelprize.org';
+				url += '/nobel_prizes/'+selected_goto_prize+'/laureates/'+selected_goto_year+'/';
+			}
+			
+			location.href = url;
+		}
+	});
+	
+	// Button tap up
+	$('#goto-prize-tap-up').click(function() {
+		if(parseInt(selected_goto_year) < 2012) {
+			selected_goto_prize = $('#goto-prize-change-prize').find(":selected").val();
+			selected_goto_year++;
+			
+			if(selected_goto_prize == "economic-sciences" && selected_goto_year<1969) {
+				url = 'http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1969/';
+			}
+			else {
+				//url = 'http://www.nobelprize.org';
+				url = 'http://www.nobelprize.org';
+				url += '/nobel_prizes/'+selected_goto_prize+'/laureates/'+selected_goto_year+'/';
+			}
+			
+			location.href = url;
+		}
+	});
+	
+	$('#goto-prize-change-year').keyup(function() {
+		
+		if($(this).val().length == 4) {
+			selected_goto_year = $('#goto-prize-change-year').val();
+			selected_goto_prize = $('#goto-prize-change-prize').find(":selected").val();
+			
+			if(selected_goto_prize == "economic-sciences" && selected_goto_year<1969) {
+				//url = 'http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1969/';
+				url = 'http://'+www.nobelprize.org+'/nobel_prizes/economic-sciences/laureates/1969/';
+			}
+			else {
+				//url = 'http://www.nobelprize.org';
+				url = 'http://www.nobelprize.org';
+				url += '/nobel_prizes/'+selected_goto_prize+'/laureates/'+selected_goto_year+'/';
+			}
+			
+			location.href = url;
+		}
+	});
+});
+
+
+// Show the footer
+function show_footer() {
+	
+	$('#footer-container').animate({
+		bottom: '0'
+	}, 500, function() {
+	});
+	
+	$('#footer-top-link-first').css('background-image', 'url(/images/foundation/arrow-down.png)');
+	
+	footer_visible = true;
+}
+
+// Hide the footer
+function hide_footer() {
+	
+	$('#footer-container').animate({
+		bottom: '-215px'
+	}, 500, function() {
+	});
+	
+	$('#footer-top-link-first').css('background-image', 'url(/images/foundation/arrow-right.png)');
+	
+	footer_visible = false;
+}
+
+/*
+function getInternetExplorerVersion()
+// Returns the version of Internet Explorer or a -1
+// (indicating the use of another browser).
+{
+  var rv = -1; // Return value assumes failure.
+  if (navigator.appName == 'Microsoft Internet Explorer')
+  {
+    var ua = navigator.userAgent;
+    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    if (re.exec(ua) != null)
+      rv = parseFloat( RegExp.$1 );
+  }
+  return rv;
+}
+
+function checkVersion()
+{
+  var msg = "You're not using Internet Explorer.";
+  var ver = getInternetExplorerVersion();
+
+  if ( ver > -1 )
+  {
+    if ( ver >= 9.0 ) 
+      msg = "You're using a recent copy of Internet Explorer."
+    else
+      msg = "You should upgrade your copy of Internet Explorer.";
+	  //$('#mobile-logo').hide();
+  }
+  //alert( msg );
+}*/
+
+  </script>
+
+
+</body></html>
+
+<!--/eri-no-index-->
+
+
+
+
+

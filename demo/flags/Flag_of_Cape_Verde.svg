@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="510" height="300">
+	<rect width="510" height="300" fill="#003893"/>
+	<rect y="150" width="510" height="75" fill="#fff"/>
+	<rect y="175" width="510" height="25" fill="#ce1126"/>
+	<g id="s" transform="translate(191.25,112.5)">
+		<g id="c">
+			<path id="t" d="M 0,-15 v 15 h 7.5" transform="rotate(18 0,-15)" fill="#fc0"/>
+			<use xlink:href="#t" transform="scale(-1,1)"/>
+		</g>
+		<use xlink:href="#c" transform="rotate(72)"/>
+		<use xlink:href="#c" transform="rotate(144)"/>
+		<use xlink:href="#c" transform="rotate(216)"/>
+		<use xlink:href="#c" transform="rotate(288)"/>
+	</g>
+	<use xlink:href="#s" x="-44.08" y="14.32"/>
+	<use xlink:href="#s" x="44.08" y="14.32"/>
+	<use xlink:href="#s" x="71.33" y="51.82"/>
+	<use xlink:href="#s" x="71.33" y="98.18"/>
+	<use xlink:href="#s" x="44.08" y="135.68"/>
+	<use xlink:href="#s" y="150"/>
+	<use xlink:href="#s" x="-44.08" y="135.68"/>
+	<use xlink:href="#s" x="-71.33" y="98.18"/>
+	<use xlink:href="#s" x="-71.33" y="51.82"/>
+</svg>
