@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./jquery/jquery-1.7.1.min.js" charset="utf-8"></script>
+
+    <title>Treemap Art</title>
+
+    <style>
+    
+      div.rect {
+        position:absolute;
+      }
+      div.rect:hover {
+        box-shadow: inset 0px 0px 8px 2px black;
+      }
+      div.rect[selected=true] {
+        box-shadow: inset 0px 0px 8px 2px black;
+      }
+      
+      div.label{
+        position:absolute;
+        bottom:20px;
+        right: 20px;
+        display: none;
+        padding: 10px;
+        background-color:white;
+        border-radius: 15px;
+
+        box-shadow: 0px 0px 8px 2px gray;
+      }
+      div.rect:hover div.label{
+        display:block;
+      }
+      div.rect[selected=true] div.label{
+        display:block;
+      }
+
+      div.line{
+        background-color: black;
+        position:absolute;
+        pointer-events: none;
+      }
+      
+      #tree{
+        height: 750px;
+      }
+      
+      body{
+        background-color: #e4e5e7;
+      }
+    </style>
+<script>
+  
+  
+var treemap = [
+  [0,0,326,248,"1",2323,'white' ],
+  [336,0,209,248,"2",2323,'#3a54a4' ],
+  [549,0,164,248,"3",2323,'white' ],
+  [732,0,278,262,"4",2323,'#3a54a4' ],
+  [0,260,218,163,"5",2323,'#3a54a4' ],
+  [230,260,170,168,"6",2323,'white' ],
+  [407,260,154,152,"7",2323,'white' ],
+  [569,260,144,153,"8",2323,'#ee2123' ],
+  [732,270,278,186,"9",2323,'white' ],
+  [0,428,218,165,"10",2323,'#f2eb19' ],
+  [230,431,170,166,"11",2323,'white' ],
+  [407,419,154,141,"12",2323,'#f2eb19' ],
+  [569,419,144,141,"13",2323,'white' ],
+  [732,467,278,160,"14",2323,'#3a54a4' ],
+  [0,600,218,149,"15",2323,'#3a54a4' ],
+  [230,604,170,145,"16",2323,'#ee2123' ],
+  [405,571,123,178,"17",2323,'white' ],
+  [530,571,118,178,"18",2323,'white' ],
+  [655,571,58 ,178,"19",2323,'#ee2123' ],
+  [732,635,278,114,"20",2323,'white' ]
+];
+  
+  
+  var lines = [
+    [0,248,729,12],
+    [713,0,19,749],
+    [326,0,10,248],
+    [545,0,4,248],
+    [732,262,278,8],
+    [732,455,278,12],
+    [732,627,278,8],
+    [218,250,12,499],
+    [400,250,7,499],
+    [561,250,8,320],
+    [528,570,7,179],
+    [648,570,7,179],
+    [0,423,220,5],
+    [0,593,220,7],
+    [230,428,170,3],
+    [400,412,320,7],
+    [400,560,320,11],
+    [230,597,170,7],
+  ];
+
+function yeah(){
+  
+  d3.select("#tree")
+    .selectAll("div.rect")
+    .data(treemap)
+  .enter()
+    .append("div")
+    .attr("class","rect")
+    .style("background-color",function(d){ 
+      return d[6];
+    })
+    .style("left",function(d){ 
+      return d[0]+"px";
+    })
+    .style("top",function(d){ 
+      return d[1]+"px";
+    })
+    .style("width",function(d){ 
+      return d[2]+"px";
+    })
+    .style("height",function(d){ 
+      return d[3]+"px";
+    })
+    .on("click",function(d,e){
+      if(this.getAttribute("selected")==="true"){
+        this.setAttribute("selected",false);
+      } else {
+        $(".rect").attr("selected","false");
+        this.setAttribute("selected",true);
+      }
+    })
+    .append("div")
+    .style("position","relative")
+    .style("height",function(d){ 
+      return d[3]+"px";
+    })
+    .style("width",function(d){ 
+      return d[2]+"px";
+    })
+    .append("div")
+    .attr("class","label")
+    .text(function(d){ return d[4];});
+  
+  
+ d3.select("#tree")
+    .selectAll("div.line")
+    .data(lines)
+  .enter()
+    .append("div")
+    .attr("class","line")
+    .style("left",function(d){ 
+      return d[0]+"px";
+    })
+    .style("top",function(d){ 
+      return d[1]+"px";
+    })
+    .style("width",function(d){ 
+      return d[2]+"px";
+    })
+    .style("height",function(d){ 
+      return d[3]+"px";
+    })
+    ;
+
+  
+}
+  
+  
+  
+  
+$(document).ready(yeah);
+  
+</script>
+      
+  </head>
+
+  <body>
+    <div style="position:relative; margin:40px 30px;">
+    <div id="tree"></div>
+    </div>
+  </body>
+</html>
