@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Clinical Trial Browser</title>
+		<!--Load the AJAX API-->
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="./jquery/jquery-1.7.1.min.js"></script>
+        <script src="./jquery/jquery-ui-1.8.16.custom.min.js"></script>
+        <script src="./jquery/jQAllRangeSliders-withRuler-min.js"></script>
+<!--	I have custom changes which affect element insertion/deletion -- LIST DISPLAY 
+			<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+		<script type="text/javascript" src="./d3.v3/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+
+        <link rel="stylesheet" href="./jquery/iThing-min.css">  
+        <link rel="stylesheet" type="text/css" href="./keshif.css"/>
+
+        <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
+        <script src="magnific-popup/jquery.magnific-popup.js"></script> 
+<script type="text/javascript">
+/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
+/*global google */
+
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height($(window).height()-45);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').height($(window).height()-45);
+        $('#chart_div4').width ($(window).width()*0.9);
+        kshf.updateLayout();
+    });
+
+
+    kshf.init({
+        chartTitle: "Clinical Trial Sample Dataset",
+        domID : "#chart_div4",
+        categoryTextWidth:220,
+        itemName : "clinical trials",
+        source : {
+//            gdocId : '0Ai6LdDWgaqgNdG1RYzVDRjJObFRuaEZBQUVEeUdIYlE', // small
+          gdocId : '0Ai6LdDWgaqgNdEtNaVZkaVNVMklJR1ZVbk1BYTc3QVE', // big
+            sheets : [
+                {name:"Trials"},
+                {name:"Companies"},
+                {name:"Industries"},
+                {name:"TrialConditions"}
+            ]
+        },
+        loadedCb: function(){
+            kshf.createTableFromTable(kshf.dt.Trials,'Phases',function(d){ return d.data[4];});
+            kshf.createTableFromTable(kshf.dt.TrialConditions,'Conditions',function(d){ return d.data[1];});
+
+            // go over the list of trial conditions, and add the conditions under trial table
+            for(t=0; t<kshf.dt.TrialConditions.length ; t++){
+                var trialCond = kshf.dt.TrialConditions[t];
+                var trialID = trialCond.data[0];
+                var condID = trialCond.data[1];
+                var trial = kshf.dt_id.Trials[trialID];
+                if(!trial.data[6]) { trial.data[6] = []; }
+                trial.data[6].push(condID);
+            }
+        },
+        charts:[
+            {
+                facetTitle: "Company",
+                catTableName: "Companies",
+                rowTitleText: function(d){ return d.data[0]; },
+                dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
+                barInfoText: "Dot color: Phase type",
+                itemXPos : function(d){ return d.data[2]; },
+                filter: { rowConj: 'by', rowGroupName: 'companies' },
+                timeTitle: "Trial Primary Completion Date",
+                itemMapFunc : function(trial){ return trial.data[0]; }
+            },{
+                facetTitle: "Company Industry",
+                catTableName: "Industries",
+                itemMapFunc : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
+                rowLabelText: function(d){ return d.data[2]; },
+                rowTitleText: function(d){ return d.data[1]; },
+                filter: { rowConj: 'within', rowGroupName: 'industries' }
+            }/*,{ // range chart!
+                facetTitle: "Comp. Market Cap",
+                itemMapFunc :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
+            }*/,{
+                facetTitle: "Phase Type",
+                catTableName: "Phases",
+                itemMapFunc : function(trial){ return trial.data[4]; },
+                barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
+                barInfoText: "Color: Phase type",
+                sortingFuncs: [{
+                    func:function(a,b){ 
+                        var dif=a.data[1].localeCompare(b.data[1]);
+                        if(dif===0) { return b.items.length-a.items.length; }
+                        return dif;
+                    },
+                    no_resort: true // never sort chart again
+                }],
+                filter: { rowConj: 'in', rowGroupName: 'phase types' }
+            },{
+                facetTitle: "Condition",
+                catTableName: "Conditions" ,
+                itemMapFunc : function(trial){ return trial.data[6]; },
+                filter: { rowConj: 'about', rowGroupName: 'conditions' }
+            }
+        ],
+        list:{
+            sortOpts : [
+                {   name: 'Date',
+                    width: 75,
+                    value: function(d){ return d.data[2].getTime(); },
+                    value_type : 'date',
+                    label: function(d){ 
+                        var date=d.data[2];
+                        return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
+                    }
+                },
+                {   name: 'Phase',
+                    width: 75,
+                    value: function(d){ return d.data[4]; },
+                    value_type: 'string'
+                },
+                {   name: 'Company',
+                    width: 75,
+                    value: function(d){ return d.data[0]; },
+                    value_type : 'string'
+                }
+            ],
+            textSearch : function (trial) { return trial.data[5]; },
+            contentFunc : function(d){
+                var j;
+                var str="";
+                // conditions
+                    str+="<div class=\"iteminfo iteminfo_2\" style=\"float:right; display:inline-block; text-align:right; margin-left:15px;\"><b>Conditions:</b><br/>";
+                    var conditions = d.data[6];
+                    if(conditions){
+                        for(j=0; j<conditions.length; j++){
+                            var cond=kshf.dt_id.Conditions[conditions[j]].data;
+                            str+=cond[1];
+                            if(j!==conditions.length-1) { str+='<br/> '; }
+                        }
+                    }
+                    str+="</div>";
+                // title
+                    str+="<div class=\"iteminfo iteminfo_0\">"+
+                        "<a target=\"_blank\" href=\"http://clinicaltrials.gov/show/"+d.data[1]+"\">"+d.data[1]+"</a> - "+
+                        d.data[5]+"</div>";
+                // company
+                    var companyID = d.data[0];
+                    var companyData = kshf.dt_id.Companies[companyID];
+                    str+=
+                        "<div class=\"iteminfo iteminfo_1\" style=\"display:inline-block;\">"+companyData.data[1]+
+                        " - Market Cap:"+kshf.convertToReadable(companyData.data[2])+
+                        " <a target=\"_blank\" href=\"http://finance.yahoo.com/echarts?s="+companyID+"\">Stock info</a> " 
+                    +"</div>";
+                // phase
+                    str+="<div class=\"iteminfo iteminfo_1\">Phase: "+d.data[4]+"</div>";
+                return str;
+            }
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+/* rectangle style */
+#chart_div4 rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div4 rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div4 rect.bar_style_phase_2{ fill: #ff942a; }
+#chart_div4 rect.bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div4 rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div4 rect.bar_style_phase_5{ fill: #3886c8; }
+
+/* dot style */
+#chart_div4 circle.timeDot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div4 circle.timeDot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div4 circle.timeDot[display=true].bar_style_phase_2{ fill: #ff942a; }
+#chart_div4 circle.timeDot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div4 circle.timeDot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div4 circle.timeDot[display=true].bar_style_phase_5{ fill: #3886c8; }
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+    
+</html>

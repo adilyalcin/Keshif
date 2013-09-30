@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>HCIL Browser</title>
+		<!--Load the AJAX API-->
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../magnific-popup/jquery.magnific-popup.js"></script> 
+
+        <link rel="stylesheet" href="../magnific-popup/magnific-popup.css" type="text/css">
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript">
+/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
+/*global google */
+
+// to access row data easily by column name instead of integer column id.
+var departmentCol;
+var peopleCol;
+var projectsCol;
+var topicsCol;
+var member_typesCol;
+var trsCol;
+
+function drawCharts(){
+    var i,p,t;
+    
+    // to access row data easily by column name instead of integer column id.
+    departmentCol = kshf.dt_ColNames.departments;
+    peopleCol = kshf.dt_ColNames.people;
+    projectsCol = kshf.dt_ColNames.projects;
+    topicsCol = kshf.dt_ColNames.topics;
+    member_typesCol = kshf.dt_ColNames.member_types;
+    trsCol = kshf.dt_ColNames.trs;
+    trsCol.people=9;
+    trsCol.topics=10;
+    trsCol.projects=11;
+
+    // go over the list of tr_people, and add the conditions under trial table
+    for(t=0; t<kshf.dt.tr_people.length ; t++){
+        var tr_people = kshf.dt.tr_people[t];
+        var tr_id = tr_people.data[0];
+        var person_id = tr_people.data[1];
+        // if person id doesn't exist, skip
+        if(kshf.dt_id.people[person_id]===undefined){continue;}
+        var tr = kshf.dt_id.trs[tr_id];
+        if(!tr.data[trsCol.people]) { tr.data[trsCol.people] = []; }
+        tr.data[trsCol.people].push(person_id);
+    }
+    // go over the list of tr_topics, and add the conditions under trial table
+    for(t=0; t<kshf.dt.tr_topics.length ; t++){
+        var tr_topic = kshf.dt.tr_topics[t];
+        var tr_id_ = tr_topic.data[0];
+        var topic_id = tr_topic.data[1];
+        if(topic_id===null) { continue; }
+        var tr_ = kshf.dt_id.trs[tr_id_];
+        if(!tr_.data[trsCol.topics]) { tr_.data[trsCol.topics] = []; }
+        tr_.data[trsCol.topics].push(topic_id);
+    }
+    // go over the list of tr_projects, and add the conditions under trial table
+    for(t=0; t<kshf.dt.tr_projects.length ; t++){
+        var tr_project = kshf.dt.tr_projects[t];
+        var tr_id__ = tr_project.data[0];
+        var project_id = tr_project.data[1];
+        if(project_id===null) { continue; }
+        // if project id doesn't exist, skip
+        if(kshf.dt_id.projects[project_id]===undefined){continue;}
+        var tr__ = kshf.dt_id.trs[tr_id__];
+        if(!tr__.data[trsCol.projects]) { tr__.data[trsCol.projects] = []; }
+        tr__.data[trsCol.projects].push(project_id);
+    }
+}
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height($(window).height()-45);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').height($(window).height()-45);
+        $('#chart_div4').width ($(window).width()*0.9);
+        kshf.updateLayout();
+    });
+    
+    kshf.init({
+        chartTitle: "HCIL TechReports / Publications",
+        domID : "#chart_div4",
+        itemName : "publications",
+        categoryTextWidth: 180,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
+            sheets : [
+                {name:"trs",query:'select A,D,E,F,G,M,N,O,P'},
+                {name:"tr_people", query:"select A,B,D"}, //query:"select * where B = 84"},
+                {name:"tr_projects"},
+                {name:"tr_topics"},
+                {name:"people"},
+                {name:"member_types"},
+                {name:"departments"},
+                {name:"projects"},
+                {name:"topics"}
+            ]
+        },
+        loadedCb: drawCharts,
+        charts: [
+            {
+                facetTitle: "Topics",
+                catTableName: "topics",
+                itemMapFunc : function(pub){ return pub.data[trsCol.topics]; },
+                rowLabelText: function(topic) { return topic.data[topicsCol.topic]; },
+                rowTitleText: function(topic) { return topic.data[topicsCol.topic]; },
+                itemXPos : function(pub){ return new Date(pub.data[trsCol.date]); },
+                timeTitle: "Publication Year",
+                filter: {
+                    rowConj: 'about',
+                    rowGroupName: 'topics'
+                },
+                visibleRows: 9
+            },{
+                facetTitle: "Authors",
+                catTableName: "people",
+                itemMapFunc : function(pub){ return pub.data[trsCol.people]; },
+                rowLabelText: function(author) { 
+                    return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
+                },
+                filter: {
+                    rowConj: 'by',
+                    rowGroupName: 'authors'
+                }
+            },{
+                facetTitle: "Member Type",
+                catTableName: "member_types",
+                itemMapFunc : function(pub){
+                    var typeList = {};
+                    var r = [];
+                    var authors = pub.data[trsCol.people];
+                    if(authors===undefined) { return undefined; }
+                    for(i=0; i<authors.length; i++){
+                        var autData=kshf.dt_id.people[authors[i]];
+                        var typeID = autData.data[peopleCol.member_type_id];
+                        if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
+                        if(!typeList[typeID]){
+                            typeList[typeID] = true;
+                            r.push(typeID);
+                        }
+                    }
+                    return r;
+                },
+                rowLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
+                filter: {
+                    rowConj: 'by',
+                    rowGroupName: 'members'
+                }
+            },{
+                facetTitle: "Projects",
+                catTableName: "projects",
+                itemMapFunc : function(pub){ return pub.data[trsCol.projects]; },
+                rowLabelText: function(project) { return project.data[projectsCol.project];  },
+                filter: {
+                    rowConj: 'within',
+                    rowGroupName: 'projects'
+                }
+            }
+        ],
+        list: {
+            sortOpts : [
+                {   name: 'Year',
+                    width: 50,
+                    value: function(pub){ return (pub.data[trsCol.date]).slice(0,4); },
+                    value_type : 'number'
+                }
+            ],
+            textSearch : function (pub) { return pub.data[trsCol.title]; },
+            contentFunc : function(pub){
+                var j;
+                var str="";
+                // paper name
+                    str+="<div class=\"iteminfo iteminfo_0\">";
+                    if(pub.data[trsCol.reference_url].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+pub.data[trsCol.reference_url]+"\">"+pub.data[trsCol.title]+"</a>";
+                    } else {
+                        str+=pub.data[trsCol.title];
+                    }
+                    str+="</div>";
+                // author names
+                var authors = pub.data[trsCol.people];
+                if(authors){
+                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                    for(j=0; j<authors.length; j++){
+                        var authData=kshf.dt_id.people[authors[j]].data;
+                        str+=authData[peopleCol.first_name]+" "+authData[peopleCol.last_name];
+                        if(j!==authors.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                // venue
+                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                    if(pub.data[trsCol.reference].trim()!==""){
+                        str+="<b>["+pub.data[trsCol.date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
+                    }
+                    str+="</div>";
+                // keywords
+                var topics = pub.data[trsCol.topics];
+                if(topics){
+                    str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
+                    for(j=0; j<topics.length; j++){
+                        str+=kshf.dt_id.topics[topics[j]].data[topicsCol.topic];
+                        if(j!==topics.length-1) { str+=', '; }
+                    }
+                    str+="</div>";
+                }
+                // links
+                str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
+                if(pub.data[trsCol.pdf].trim()!==""){
+                    str+="<a target=\"_blank\" href=\""+pub.data[trsCol.pdf]+"\"><img src=\"img/pdf-logo.gif\"></a>";
+                }
+                if(pub.data[trsCol.video].trim()!==""){
+                    str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
+                }
+                str+="</div>";
+                
+                return str;
+            }
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+</script>
+<style>
+
+/* rectangle style */
+#chart_div4 rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div4 rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div4 rect.bar_style_phase_2{ fill: #ff942a; }
+#chart_div4 rect.bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div4 rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div4 rect.bar_style_phase_5{ fill: #3886c8; }
+
+/* dot style */
+#chart_div4 circle.key_dot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div4 circle.key_dot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div4 circle.key_dot[display=true].bar_style_phase_2{ fill: #ff942a; }
+#chart_div4 circle.key_dot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div4 circle.key_dot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div4 circle.key_dot[display=true].bar_style_phase_5{ fill: #3886c8; }
+
+#chart_div4 {
+    margin: 0 auto;
+    width: 100%;
+}
+
+div.listItem{
+    padding-bottom:10px;
+}
+    
+body{ margin:2px; }
+
+		</style>
+	</head>
+
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+    
+</html>

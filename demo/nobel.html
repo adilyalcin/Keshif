@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Nobel Prize Winners</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../magnific-popup/jquery.magnific-popup.js"></script> 
+
+        <link rel="stylesheet" href="../magnific-popup/magnific-popup.css" type="text/css">
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+
+function getGender(v){
+    switch(v){
+        case 'male': return "Male";
+        case 'female': return "Female";
+        case 'org': return "Organization";
+    }
+}
+
+function getRawCat(v){
+    switch(v){
+        case 'Economics': return "economic-sciences";
+        case 'Literature': return "literature";
+        case 'Medicine': return "medicine";
+        case "Physics": return "physics";
+        case "Peace": return "peace";
+        case "Chemistry": return "chemistry";
+        default: return "";
+    }
+}
+
+function resetSize(){
+    $('#chart_div4').height($(window).height()-10);
+//    $('#chart_div4').height(730);
+    $('#chart_div4').width (900);
+}
+
+function loadChart() {
+    resetSize();
+    // set resize callback
+    $(window).resize(function() {
+        resetSize();
+        kshf.updateLayout();
+    });
+
+    var prizeCols;
+    var lautCols;
+
+	kshf.init({
+        chartTitle: "Nobel Prize Winners",
+        domID : "#chart_div4",
+        categoryTextWidth: 206,
+        itemName : "laureates",
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
+            sheets : [ {name:"prizes"}, {name:"countries"},{name:"laureate"} ]
+        },
+        loadedCb: function(){
+            prizeCols = kshf.dt_ColNames.prizes;
+            lautCols = kshf.dt_ColNames.laureate;
+        },
+        charts : [
+            {
+                facetTitle: "Category",
+                itemMapFunc : function(prize){ return prize.data[prizeCols.category]; },
+                filter: { rowConj: 'in category' },
+                timeTitle: "Date",
+                itemXPos : function(prize){ return new Date(moment(prize.data[prizeCols.year]+"01-01","YYYY-MM-DD")); }
+            }, {
+                facetTitle: "Gender",
+                itemMapFunc : function(prize){ 
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    return laureate.data[lautCols.gender];
+                },
+                rowLabelText: function(d) { return getGender(d.data[1]); },
+                filter: { rowConj: 'gender' }
+            }, {
+                facetTitle: "Born Country",
+                itemMapFunc : function(prize){ 
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    return laureate.data[lautCols.bornCountry];
+                },
+                filter: { rowConj: 'from' }
+            }, {
+                facetTitle: "Affiliation",
+                itemMapFunc : function(prize){ 
+                    var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
+                    return laureate.data[lautCols.name];
+                },
+                filter: { rowConj: 'affiliated with' }
+            }, {
+                facetTitle: "Decade",
+                itemMapFunc : function(prize){ 
+                    var x=prize.data[prizeCols.year];
+                    return x - (x%10);
+                },
+                rowLabelText: function(d) { return d.data[1]+"s"; },
+                sortingFuncs: [{
+                        name:"Year",
+                        no_resort: true,
+                        func:function(a,b){ return b.data[1] -a.data[1]; }
+                    },
+                    {   name:"Prize count",
+                        func:kshf.filter_AciveItems_TotalItems
+                    }
+                ],
+                filter: { rowConj: 'from' }
+            }
+        ],
+        list: {
+            sortOpts : [
+                {   name: 'Date',
+                    width: 45,
+                    value: function(d){ return d.data[prizeCols.year]; },
+                    value_type : 'number'
+                }
+            ],
+            textSearch : function (d) {
+                var laureate = kshf.dt_id.laureate[d.data[prizeCols.laureate_id]];
+                return laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
+            },
+            textSearchTitle : "laureate names",
+            contentFunc : function(d) {
+                var j;
+                var str="";
+                var laureate = kshf.dt_id.laureate[d.data[prizeCols.laureate_id]];
+                var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
+                surname_short = surname_short.replace("von_","").replace("la_","");
+    //            var imgUrl="http://www.nobelprize.org/nobel_prizes/"+getRawCat(d.data[prizeCols.category])+"/laureates/"+d.data[prizeCols.year]+"/"+surname_short+".jpg";
+                var imgUrl="./nobel_photo/"+surname_short+".jpg";
+
+                if(laureate.data[lautCols.gender]!=='org'){
+                    str+="<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">";
+                    str+="<div style=\"position: absolute; left:85px;\">";
+                } else {
+                    str+="<div style=\"position: relative; left:85px;\">";
+                }
+
+                // description
+                str+="<div class=\"iteminfo iteminfo_0\">";
+                str+=laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
+                str+="</div>";
+
+                str+="<div class=\"iteminfo iteminfo_3\">";
+                if(laureate.data[lautCols.gender]!=='org'){
+                    var born=laureate.data[lautCols.born];
+                    var died=laureate.data[lautCols.died];
+                    str+="Born: "+laureate.data[lautCols.bornCountry]+", "+laureate.data[lautCols.bornCity]+
+                        (born!==null?(", "+moment(born).format("MMM. DD YYYY")):"")+
+                        (died!==null?(", Died in "+moment(died).format("MMM. DD YYYY")):"")
+                        ;
+                }
+                str+="</div>";
+
+                str+="<div class=\"iteminfo iteminfo_1\">Nobel Prize In: ";
+                str+=d.data[prizeCols.category];
+                str+="</div>";
+
+                str+="<div class=\"iteminfo iteminfo_2\">Motivation: ";
+                str+=d.data[prizeCols.motivation];
+                str+="</div>";
+
+                var mot = d.data[prizeCols.overallMotivation];
+                if(mot!=="" && mot!== null){
+                    str+="<div class=\"iteminfo iteminfo_3\">Overall motivation: ";
+                    str+=mot;
+                    str+="</div>";
+                }
+
+                str+="</div>"
+
+                return str;
+            }
+        }
+    });
+}
+
+$(document).ready(loadChart);
+
+</script>
+<style>
+
+div.listItem{
+    padding-bottom: 4px;
+}
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+/*    top: 50px;*/
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>
