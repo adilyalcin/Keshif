@@ -509,8 +509,9 @@ function loadChart() {
                     var words = answer.data[2].split(" ");
                     var newwords = [];
                     for(var i=0; i<words.length ; i++){
-                        if(stopWords[words[i]]===undefined) {
-                            newwords.push(words[i]);
+                        var w=words[i].toLowerCase();
+                        if(stopWords[w]===undefined) {
+                            newwords.push(w);
                         }
                     }
                     return newwords;
