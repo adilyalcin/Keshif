@@ -465,19 +465,19 @@ function loadChart() {
         itemName : "answers",
         categoryTextWidth:160,
         source : {
-            gdocId : '0Ai6LdDWgaqgNdGEyX1BNOHlJS0hobmJaaHJfMGxSb0E',
+/*            gdocId : '0Ai6LdDWgaqgNdGEyX1BNOHlJS0hobmJaaHJfMGxSb0E',
             sheets : [ 
                 {name:"ideas"},
                 {name:"fits"},
                 {name:"users"} 
-            ]
-/*            dirPath: 'data/',
+            ]*/
+            dirPath: 'data/',
             fileType: 'csv',
             sheets : [
                 {name:"xparty_ideas", tableName: "ideas"},
                 {name:"xparty_fits", tableName: "fits"},
                 {name:"xparty_users", tableName: "users"}
-            ]*/
+            ]
         },
         loadedCb: function(){
             for(var i=0; i<kshf.dt.fits.length; i++){
