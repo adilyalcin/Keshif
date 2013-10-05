@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Nobel Prize Winners</title>
-<!--        <script type="text/javascript" src="http://www.google.com/jsapi"></script> -->
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -57,15 +57,15 @@ function loadChart() {
         categoryTextWidth: 206,
         itemName : "laureates",
         source : {
-            //gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
-            //sheets : [ {name:"prizes"}, {name:"countries"},{name:"laureate"} ]
-            dirPath: 'data/',
+            gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
+            sheets : [ {name:"prizes"}, {name:"countries"},{name:"laureate"} ]
+            /*dirPath: 'data/',
             fileType: 'csv',
             sheets : [
                 {name:"nobel_prizes", tableName: "prizes"},
                 {name:"nobel_countries", tableName: "countries"},
                 {name:"nobel_laureate", tableName: "laureate"}
-            ]
+            ]*/
         },
         loadedCb: function(){
             prizeCols = kshf.dt_ColNames.prizes;

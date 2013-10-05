@@ -1251,6 +1251,44 @@ div.listColumnRow div.listcell{
 .kshf .ui-rangeSlider .ui-ruler-tick{
 }
 
+div.kshf.layout_infobox {
+    height: 100px;
+    position: relative;
+    margin: 0 auto;
+    border: 0px double gray;
+    display: block;
+    float: none;
+    width: 350px;
+    height: 70px;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    box-shadow: 0px 0px 20px gray;
+    border-radius:15px;
+}
+
+.kshf.layout_infobox img.status{
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 25px;
+}
+
+.kshf.layout_infobox div.status_text{
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 70px;
+    height:20px;
+}
+.kshf.layout_infobox div.status_text div{
+    display:inline-block;
+    margin-left:15px;
+    font-size: 0.8em;
+}
 
 
 

@@ -85,10 +85,11 @@ function loadChart() {
             },{
                 facetTitle: "Co-Authors",
                 itemMapFunc : function(pub){ return pub.data[pubCol['Co-Authors']]; },
-                filter: { rowConj: 'as', rowGroupName: 'types' }
+                filter: { rowConj: 'with', rowGroupName: 'types' }
             },{
                 facetTitle: "Pub. Type",
                 itemMapFunc : function(pub){ return pub.data[pubCol.Type]; },
+                forceSearch: false,
                 filter: { rowConj: 'as', rowGroupName: 'types' }
             }
         ],
