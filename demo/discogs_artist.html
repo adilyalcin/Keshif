@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Artist Discography</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../magnific-popup/jquery.magnific-popup.js"></script> 
+
+        <link rel="stylesheet" href="../magnific-popup/magnific-popup.css" type="text/css">
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+
+var artistId = 1950693;
+
+var releaseCols = {
+    thumb: 0,
+    artist: 1,
+    format: 2,
+    genres: 3,
+    id: 4,
+    label: 5,
+    role: 6,
+    styles: 7,
+    title: 8,
+    type: 9,
+    year: 10
+};
+var releaseColsMax=0;
+var tableName = "release";
+
+var totalPages = -1;
+var pagesLoaded = 0;
+
+var totalMasters = 0;
+var mastersLoaded = 0;
+
+var totalReleases = 0;
+var releasesLoaded = 0;
+
+function checkRequestStatus(){
+    window.setTimeout(function() {
+        // update UI....
+        d3.select(".kshf.layout_infobox div.status_text div")
+            .html("<br/> Pages ("+pagesLoaded+"/"+totalPages+
+                ") - Master("+mastersLoaded+"/"+totalMasters+
+                ") - Release("+releasesLoaded+"/"+totalReleases+")"
+                );
+    });
+    // finish loading
+    if(pagesLoaded===totalPages && totalMasters===mastersLoaded && totalReleases===releasesLoaded){
+        d3.select(".kshf.layout_infobox div.status_text span")
+            .text("Creating browser");
+        d3.select(".kshf.layout_infobox div.status_text div")
+            .text("");
+        window.setTimeout(function() {
+            // do this once all the data is loaded
+            kshf.items = kshf.dt[tableName];
+            kshf.itemsSelectedCt = kshf.dt[tableName].length;
+            kshf.createCharts();
+        }, 50);
+    }
+}
+
+function checkForMoreRequests(data){
+    if(totalPages===-1){ totalPages = data.data.pagination.pages; }
+    pagesLoaded++;
+    if(data.data.pagination.page===1){
+        for(var i=2; i<=totalPages;i++){
+            $.ajax( {
+                url:"http://api.discogs.com/artists/"+artistId+"/releases?page="+i+"&per_page=100",
+                dataType: "jsonp",
+                success: function(data) { processReleaseListResponse(data); }
+            });
+        }
+    }
+    checkRequestStatus();
+}
+
+function forwardMasterListResponse(role){
+    return function(data){
+        var versions = data.data.versions;
+        for(var i=0; i<versions.length ; i++){
+            var relData = versions[i];
+            if(relData.status!=="Accepted") { continue; }
+            totalReleases++;
+            $.ajax( {
+                url:relData.resource_url,
+                dataType: "jsonp",
+                success: processReleaseResponse(role)
+            });
+        }
+        mastersLoaded++;
+        checkRequestStatus();
+    }
+}
+/*
+function processMasterListResponse(data){
+    var arr = kshf.dt[tableName];
+    var versions = data.data.versions;
+    for(var i=0; i<versions.length ; i++){
+        var relData = versions[i];
+        var relData2 = [];
+        if(relData.status!=="Accepted") { continue; }
+        for (var colName in relData) {
+            if(colName==="resource_url") { continue; }
+            if(colName==="status"){ continue; }
+            if(colName==="trackinfo"){ continue; }
+            if(colName==="released") {
+                colName = "year";
+                relData.year = relData.released;
+            }
+            if(colName==="format"){
+                relData[colName] = unescapeCommas(relData[colName].split(","));
+            }
+            relData2[releaseCols[colName]] = relData[colName];
+        }
+        // From master:
+        // set artist
+        // set role 
+        var item = new kshf.Item(relData2,releaseCols.id);
+        item.filters = [true];
+        item.mappedRows = [true];
+        item.mappedData = [true];
+        item.dots = [];
+        item.cats = [];
+        arr.push(item);
+    }
+    mastersLoaded++;
+    checkRequestStatus();
+}*/
+
+function processReleaseResponse(role){
+    return function(data){
+        var relData = data.data;
+
+        var relData2 = [];
+        var arr = kshf.dt[tableName];
+
+        if(relData.year===0) {
+            relData.year = undefined;
+        }
+
+        relData2[releaseCols.id] = relData.id;
+        relData2[releaseCols.thumb] = relData.thumb;
+        relData2[releaseCols.year] = relData.year;
+        relData2[releaseCols.styles] = relData.styles;
+        relData2[releaseCols.genres] = relData.genres;
+        relData2[releaseCols.country] = relData.country;
+        relData2[releaseCols.title] = relData.title;
+        relData2[releaseCols.label] = [];
+        relData2[releaseCols.role] = role;
+        for(var i=0;i<relData.labels.length ; i++){
+            relData2[releaseCols.label].push(relData.labels[i].name);
+        }
+        relData2[releaseCols.artist] = [];
+        for(var i=0;i<relData.artists.length ; i++){
+            relData2[releaseCols.artist].push(relData.artists[i].name);
+        }
+
+        var item = new kshf.Item(relData2,releaseCols.id);
+        item.filters = [true];
+        item.mappedRows = [true];
+        item.mappedData = [true];
+        item.dots = [];
+        item.cats = [];
+        arr.push(item);
+
+        releasesLoaded++;
+        checkRequestStatus();
+    }
+}
+
+function processReleaseListResponse(data){
+    var arr = kshf.dt[tableName];
+    var releases=data.data.releases;
+    for(var i=0; i<releases.length ; i++){
+        var relData = releases[i];
+        var relData2 = [];
+        //!!! Get column names
+        for (var colName in relData) {
+            if(colName==="resource_url") continue;
+            if(colName==="status") continue;
+            if(colName==="trackinfo") continue; // available on remix role
+            if(colName==="format"){
+                relData[colName] = unescapeCommas(relData[colName].split(","));
+            }
+            relData2[releaseCols[colName]] = relData[colName];
+        }
+
+        if(relData2[releaseCols.type]==="master"){
+            totalMasters++;
+            $.ajax( {
+                url:"http://api.discogs.com/masters/"+relData2[releaseCols.id]+"/versions",
+//                url:"http://api.discogs.com/releases/"+relData2[releaseCols.main_release],
+                type: "GET",
+                dataType: "jsonp",
+                success: forwardMasterListResponse(relData.role)
+            });
+
+            continue;
+        }
+        var item = new kshf.Item(relData2,releaseCols.id);
+        if(true){ 
+            item.filters = [true];
+            item.mappedRows = [true];
+            item.mappedData = [true];
+            item.dots = [];
+            item.cats = [];
+        }
+        arr.push(item);
+    }
+
+    checkForMoreRequests(data);
+}
+
+function loadArtistData(){
+    kshf.primaryTableName = tableName;
+    kshf.dt_ColNames[tableName] = releaseCols;
+
+    kshf.dt[tableName] = [];
+
+    $.ajax( {
+        url:"http://api.discogs.com/artists/"+artistId+"/releases?page=1&per_page=100",
+        type: "GET",
+        dataType: "jsonp",
+        success: function(data) {
+            processReleaseListResponse(data);
+        },
+        error: function(data) {
+            console.log("fuck");
+        }
+    });
+}
+
+function resetSize(){
+    $('#chart_div4').height($(window).height()-10);
+//    $('#chart_div4').height(730);
+    $('#chart_div4').width (900);
+}
+
+function loadChart() {
+    resetSize();
+    // set resize callback
+    $(window).resize(function() {
+        resetSize();
+        kshf.updateLayout();
+    });
+
+    var prizeCols;
+    var lautCols;
+
+	kshf.init({
+        chartTitle: "The Cinematic Orchestra Discography",
+        domID : "#chart_div4",
+        categoryTextWidth: 206,
+        itemName : "releases",
+        source: {
+            callback : loadArtistData
+        },
+        charts : [
+            {
+                facetTitle: "Label",
+                catItemMap : function(release){ return release.data[releaseCols.label]; },
+                filter: { rowConj: 'label' },
+                timeItemMap : function(release){ 
+                    var rYear = release.data[releaseCols.year];
+                    if(rYear===undefined) return null;
+                    if(rYear===null) return null;
+                    return new Date(moment(rYear+"01-01","YYYY-MM-DD"));
+                },
+                timeTitle : "Year"
+/*            }, {
+                facetTitle: "Type",
+                catItemMap : function(release){ return release.data[releaseCols.type]; },
+                filter: { rowConj: 'type' }*/
+            }, {
+                facetTitle: "Style",
+                catItemMap : function(release){ 
+                    return release.data[releaseCols.styles];
+                },
+                filter: { rowConj: 'style' }
+            }, {
+                facetTitle: "Format",
+                catItemMap : function(release){ return release.data[releaseCols.format]; },
+                filter: { rowConj: 'format' }
+            }, {
+                facetTitle: "Country",
+                catItemMap : function(release){ return release.data[releaseCols.country]; },
+                filter: { rowConj: 'country' }
+            }, {
+                facetTitle: "Role",
+                catItemMap : function(release){ return release.data[releaseCols.role]; },
+                filter: { rowConj: 'role' }
+            }, {
+                facetTitle: "Artist",
+                catItemMap : function(release){ return release.data[releaseCols.artist]; },
+                filter: { rowConj: 'artist' }
+            }
+        ],
+        list: {
+            sortOpts : [
+                {   name: 'Year',
+                    width: 45,
+                    value: function(release){ 
+                        var rYear = release.data[releaseCols.year];
+                        if(rYear===undefined) return '-';
+                        if(rYear===null) return '-';
+                        return rYear; 
+                    },
+                    value_type : 'number'
+                }
+            ],
+            textSearch : function (release) {
+                return release.data[releaseCols.title];
+            },
+            textSearchTitle : "release names",  
+            contentFunc : function(release) {
+                var str="";
+                var imgUrl = release.data[releaseCols.thumb];
+                if(imgUrl!==undefined){
+                    imgUrl = "http://s.pixogs.com/image/"+imgUrl.slice(imgUrl.lastIndexOf("/")+1);
+                    str+="<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">";
+                    str+="<div style=\"position: absolute; left:85px;\">";
+                } else {
+                    str+="<div style=\"position: relative; left:85px;\">";
+                }
+
+                str+=release.data[releaseCols.title];
+
+                str+="</div>";
+
+                return str;
+            }
+        }
+    });
+}
+
+$(document).ready(loadChart);
+
+</script>
+<style>
+
+div.listItem{
+    padding-bottom: 4px;
+}
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+/*    top: 50px;*/
+}
+
+body{ margin:2px; }
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>

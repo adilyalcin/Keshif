@@ -69,24 +69,24 @@ function loadChart() {
                 rowTitleText: function(d){ return d.data[0]; },
                 dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
                 barInfoText: "Dot color: Phase type",
-                itemXPos : function(d){ return d.data[2]; },
+                timeItemMap : function(d){ return d.data[2]; },
                 filter: { rowConj: 'by', rowGroupName: 'companies' },
                 timeTitle: "Trial Primary Completion Date",
-                itemMapFunc : function(trial){ return trial.data[0]; }
+                catItemMap : function(trial){ return trial.data[0]; }
             },{
                 facetTitle: "Company Industry",
                 catTableName: "Industries",
-                itemMapFunc : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
+                catItemMap : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
                 rowLabelText: function(d){ return d.data[2]; },
                 rowTitleText: function(d){ return d.data[1]; },
                 filter: { rowConj: 'within', rowGroupName: 'industries' }
             }/*,{ // range chart!
                 facetTitle: "Comp. Market Cap",
-                itemMapFunc :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
+                catItemMap :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
             }*/,{
                 facetTitle: "Phase Type",
                 catTableName: "Phases",
-                itemMapFunc : function(trial){ return trial.data[4]; },
+                catItemMap : function(trial){ return trial.data[4]; },
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
                 barInfoText: "Color: Phase type",
                 sortingFuncs: [{
@@ -101,7 +101,7 @@ function loadChart() {
             },{
                 facetTitle: "Condition",
                 catTableName: "Conditions" ,
-                itemMapFunc : function(trial){ return trial.data[6]; },
+                catItemMap : function(trial){ return trial.data[6]; },
                 filter: { rowConj: 'about', rowGroupName: 'conditions' }
             }
         ],

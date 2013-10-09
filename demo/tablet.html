@@ -42,7 +42,7 @@ function loadChart() {
                 facetTitle: "Brand",
                 catTableName: "tablets",
                 generateRows: true,
-                itemMapFunc : function(tablet){ return tablet.data[3]; },
+                catItemMap : function(tablet){ return tablet.data[3]; },
                 sortingFuncs:[
                     {   name: "# of Tablets", 
                         func:kshf.filter_AciveItems_TotalItems
@@ -63,18 +63,18 @@ function loadChart() {
                 filter: { rowConj: 'by', rowGroupName: 'brands' },
                 // time options
                 timeTitle: "Release Date",
-                itemXPos : function(tablet){ 
+                timeItemMap : function(tablet){ 
                     var dt = tablet.data[7];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 }
             },{
                 facetTitle: "Operating System",
-                itemMapFunc : function(tablet){return tablet.data[14]; },
+                catItemMap : function(tablet){return tablet.data[14]; },
                 filter: { rowConj: 'with', rowGroupName: 'OS' }
             },{
                 facetTitle: "Flash Memory Size",
-                itemMapFunc : function(tablet){return tablet.data[8]; },
+                catItemMap : function(tablet){return tablet.data[8]; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ return parseInt(b.data[1],10) -parseInt(a.data[1],10); }
@@ -82,7 +82,7 @@ function loadChart() {
                 filter: { rowConj: 'with', rowGroupName: 'memory' }
             },{
                 facetTitle: "Screen Size",
-                itemMapFunc : function(tablet){
+                catItemMap : function(tablet){
                     var x= Math.floor(parseFloat(tablet.data[20]));
                     if(isNaN(x)) { return ""; }
                     return x;
@@ -96,7 +96,7 @@ function loadChart() {
                 filter: { rowConj: 'with', rowGroupName: 'screen size' }
             },{
                 facetTitle: "Weight",
-                itemMapFunc : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
+                catItemMap : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
                 rowLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
                 sortingFuncs: [{
                     no_resort: true,
@@ -105,7 +105,7 @@ function loadChart() {
                 filter: { rowConj: 'of', rowGroupName: 'ounces' }
             },{
                 facetTitle: "Battery Life",
-                itemMapFunc : function(tablet){return tablet.data[1]; },
+                catItemMap : function(tablet){return tablet.data[1]; },
                 rowLabelText: function(d) { return d.data[1] + " hours"; },
                 sortingFuncs: [{
                     no_resort: true,

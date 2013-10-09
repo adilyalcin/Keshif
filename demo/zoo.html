@@ -39,56 +39,56 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "# Legs",
-                itemMapFunc : function(animal){ return animal.data[animalCol.legs]; },
+                catItemMap : function(animal){ return animal.data[animalCol.legs]; },
                 filter: { rowConj: '# legs'}
             },{
                 facetTitle: "Has Tail",
-                itemMapFunc : function(animal){return animal.data[animalCol.tail]; },
+                catItemMap : function(animal){return animal.data[animalCol.tail]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Has Hair",
-                itemMapFunc : function(animal){return animal.data[animalCol.hair]; },
+                catItemMap : function(animal){return animal.data[animalCol.hair]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Feathers",
-                itemMapFunc : function(animal){return animal.data[animalCol.feathers]; },
+                catItemMap : function(animal){return animal.data[animalCol.feathers]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Backbone",
-                itemMapFunc : function(animal){return animal.data[animalCol.backbone]; },
+                catItemMap : function(animal){return animal.data[animalCol.backbone]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Domestic",
-                itemMapFunc : function(animal){return animal.data[animalCol.domestic]; },
+                catItemMap : function(animal){return animal.data[animalCol.domestic]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Has Eggs",
-                itemMapFunc : function(animal){return animal.data[animalCol.eggs]; },
+                catItemMap : function(animal){return animal.data[animalCol.eggs]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Has Milk",
-                itemMapFunc : function(animal){return animal.data[animalCol.milk]; },
+                catItemMap : function(animal){return animal.data[animalCol.milk]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Aquatic",
-                itemMapFunc : function(animal){return animal.data[animalCol.aquatic]; },
+                catItemMap : function(animal){return animal.data[animalCol.aquatic]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Airborn",
-                itemMapFunc : function(animal){return animal.data[animalCol.airborn]; },
+                catItemMap : function(animal){return animal.data[animalCol.airborn]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Venomous",
-                itemMapFunc : function(animal){return animal.data[animalCol.venomous]; },
+                catItemMap : function(animal){return animal.data[animalCol.venomous]; },
                 rowLabelText: function(d) { return (d.data[1])?"True":"False"; },
                 filter: { rowConj: 'at' }
             }

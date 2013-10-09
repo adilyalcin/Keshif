@@ -74,13 +74,13 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Category",
-                itemMapFunc : function(prize){ return prize.data[prizeCols.category]; },
+                catItemMap : function(prize){ return prize.data[prizeCols.category]; },
                 filter: { rowConj: 'in category' },
                 timeTitle: "Date",
-                itemXPos : function(prize){ return new Date(moment(prize.data[prizeCols.year]+"01-01","YYYY-MM-DD")); }
+                timeItemMap : function(prize){ return new Date(moment(prize.data[prizeCols.year]+"01-01","YYYY-MM-DD")); }
             }, {
                 facetTitle: "Gender",
-                itemMapFunc : function(prize){ 
+                catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.gender];
                 },
@@ -88,21 +88,21 @@ function loadChart() {
                 filter: { rowConj: 'gender' }
             }, {
                 facetTitle: "Born Country",
-                itemMapFunc : function(prize){ 
+                catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.bornCountry];
                 },
                 filter: { rowConj: 'from' }
             }, {
                 facetTitle: "Affiliation",
-                itemMapFunc : function(prize){ 
+                catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.laureate[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
                 },
                 filter: { rowConj: 'affiliated with' }
             }, {
                 facetTitle: "Decade",
-                itemMapFunc : function(prize){ 
+                catItemMap : function(prize){ 
                     var x=prize.data[prizeCols.year];
                     return x - (x%10);
                 },
@@ -199,6 +199,10 @@ div.listItem{
 .iteminfo a{
     color:#606060;
     font-style:italic;
+}
+
+.bigTextSearch {
+    width: 170px;
 }
 
 #chart_div4 {

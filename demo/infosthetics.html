@@ -52,19 +52,19 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "Categories",
-                itemMapFunc : function(post){ return post.data[postCols.categories]; },
+                catItemMap : function(post){ return post.data[postCols.categories]; },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "# of comments",
-                itemMapFunc : function(post){ return getNumComments(post.data[postCols.comments]); },
+                catItemMap : function(post){ return getNumComments(post.data[postCols.comments]); },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "Year",
-                itemMapFunc : function(post){ return post.data[postCols.date].getUTCFullYear(); },
+                catItemMap : function(post){ return post.data[postCols.date].getUTCFullYear(); },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "Author",
-                itemMapFunc : function(post){ return post.data[postCols.author]; },
+                catItemMap : function(post){ return post.data[postCols.author]; },
                 catDispCountFix: 6,
                 filter: { rowConj: 'in category' }
             }

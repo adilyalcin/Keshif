@@ -76,7 +76,7 @@ function loadChart() {
             {
                 facetTitle: "Topic",
                 catTableName: "Keywords",
-                itemMapFunc : function(pub){ return pub.data[pubCol.keywords]; },
+                catItemMap : function(pub){ return pub.data[pubCol.keywords]; },
                 rowLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
                 singleSelect:true,
                 sortingFuncs : [
@@ -114,11 +114,11 @@ function loadChart() {
                 ],
                 filter : { rowConj: 'about', rowGroupName: 'categories' },
                 timeTitle: "Publication Year",
-                itemXPos : function(pub){ return pub.data[pubCol.time]; }
+                timeItemMap : function(pub){ return pub.data[pubCol.time]; }
             },{
                 facetTitle: "Coauth. Type",
                 catTableName: "AuthorTypes",
-                itemMapFunc : function(pub){
+                catItemMap : function(pub){
                     var typeList = {};
                     var r = [];
                     var authors = pub.data[pubCol.authors];
@@ -138,7 +138,7 @@ function loadChart() {
             },{
                 facetTitle: "Coauthor",
                 catTableName: "Authors",
-                itemMapFunc : function(pub){ return pub.data[pubCol.authors]; },
+                catItemMap : function(pub){ return pub.data[pubCol.authors]; },
                 rowLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 rowTitleText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
                 barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
@@ -165,7 +165,7 @@ function loadChart() {
             },{
                 facetTitle: "Pub. Type",
                 catTableName: "VenueTypes",
-                itemMapFunc : function(pub){ return pub.data[pubCol.pub_type]; },
+                catItemMap : function(pub){ return pub.data[pubCol.pub_type]; },
                 filter: { rowConj: 'as', rowGroupName: 'types' }
             }
         ],

@@ -82,49 +82,49 @@ function loadChart() {
             {
                 facetTitle: "Size",
                 timeTitle: "Date",
-                itemMapFunc : function(spill){ return spill.data[spillsCol.Size]; },
+                catItemMap : function(spill){ return spill.data[spillsCol.Size]; },
                 sortingFuncs : [{ 
                     func:kshf.filter_AciveItems_TotalItems,
                     no_resort: true
                 }],
-                itemXPos : getDate,
+                timeItemMap : getDate,
                 filter: { rowConj: 'of size' },
             },{
                 facetTitle: "Source",
-                itemMapFunc : getSource,
+                catItemMap : getSource,
                 filter: { rowConj: 'from', rowGroupName: 'sources' }
             },{
                 facetTitle: "Material",
-                itemMapFunc : getMaterial,
+                catItemMap : getMaterial,
                 collapsed: true,
                 filter: { rowConj: 'from', rowGroupName: 'sources' }
             }/*
             kshf.addRangeChart({
                 facetTitle: "Water Depth",
-                itemMapFunc :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
+                catItemMap :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
                 filter: { unit: 'feet' }
             });*/,{
                 facetTitle: "During Activity",
-                itemMapFunc : function(spill){ return spill.data[spillsCol["Activity"]] },
+                catItemMap : function(spill){ return spill.data[spillsCol["Activity"]] },
                 filter: { rowConj: 'during' }
             },{
                 facetTitle: "Cause",
-                itemMapFunc : function(spill){ return spill.data[spillsCol["Causes"]] },
+                catItemMap : function(spill){ return spill.data[spillsCol["Causes"]] },
                 filter: { rowConj: 'because of', rowGroupName: 'causes' }
             },{
                 facetTitle: "Company",
-                itemMapFunc : function(spill){ return spill.data[spillsCol["Company Name"]]},
+                catItemMap : function(spill){ return spill.data[spillsCol["Company Name"]]},
                 filter: { rowConj: 'by', rowGroupName: ' companies' }
             },{
                 facetTitle: "Other Properties",
                 catTableName: "Notes",
-                itemMapFunc : function(spill){ return spill.data[spillsCol["Notes"]]},
+                catItemMap : function(spill){ return spill.data[spillsCol["Notes"]]},
                 collapsed: true,
                 filter: { rowConj: '', rowGroupName: 'other properties' }
             },{
                 facetTitle: "District",
                 catTableName: "Districts",
-                itemMapFunc : function(spill){ return spill.data[spillsCol["District"]] },
+                catItemMap : function(spill){ return spill.data[spillsCol["District"]] },
                 collapsed: true,
                 filter: { rowConj: 'at' }
             }

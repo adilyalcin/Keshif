@@ -498,14 +498,14 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "Categories",
-                itemMapFunc : function(answer){ 
+                catItemMap : function(answer){ 
                     return qCats[answer.data[0]]; 
                 },
                 filter: { rowConj: 'of type' },
             },
             {
                 facetTitle: "Tags",
-                itemMapFunc : function(answer){ 
+                catItemMap : function(answer){ 
                     var words = answer.data[2].split(" ");
                     var newwords = [];
                     for(var i=0; i<words.length ; i++){
@@ -520,7 +520,7 @@ function loadChart() {
             },
             {
                 facetTitle: "Students",
-                itemMapFunc : function(answer){ 
+                catItemMap : function(answer){ 
                     return kshf.dt_id.users[answer.data[1]].data[2];
                 },
                 catDispCountFix: 5,

@@ -49,7 +49,7 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Topic",
-                itemMapFunc : function(pub){ return pub.data[pubCol.Topics]; },
+                catItemMap : function(pub){ return pub.data[pubCol.Topics]; },
                 sortingFuncs : [
                     {   name: "Last pub. of topic", 
                         func: function(a, b){
@@ -81,14 +81,14 @@ function loadChart() {
                 ],
                 filter : { rowConj: 'about', rowGroupName: 'categories' },
                 timeTitle: "Publication Year",
-                itemXPos : function(pub){ return pub.data[pubCol.Time]; }
+                timeItemMap : function(pub){ return pub.data[pubCol.Time]; }
             },{
                 facetTitle: "Co-Authors",
-                itemMapFunc : function(pub){ return pub.data[pubCol['Co-Authors']]; },
+                catItemMap : function(pub){ return pub.data[pubCol['Co-Authors']]; },
                 filter: { rowConj: 'with', rowGroupName: 'types' }
             },{
                 facetTitle: "Pub. Type",
-                itemMapFunc : function(pub){ return pub.data[pubCol.Type]; },
+                catItemMap : function(pub){ return pub.data[pubCol.Type]; },
                 forceSearch: false,
                 filter: { rowConj: 'as', rowGroupName: 'types' }
             }

@@ -63,8 +63,8 @@ function loadChart() {
                 facetTitle: "Trans. Type",
                 timeTitle: "Transaction Date",
                 catTableName: "baseball_trantype",
-                itemMapFunc : function(tr){ return tr.data[3]; },
-                itemXPos : function(tr){ 
+                catItemMap : function(tr){ return tr.data[3]; },
+                timeItemMap : function(tr){ 
                     var dt = tr.data[0];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
@@ -73,14 +73,14 @@ function loadChart() {
             },{
                 facetTitle: "From Team",
                 catTableName: "baseball_teams_1",
-                itemMapFunc : function(tr){return tr.data[4];},
+                catItemMap : function(tr){return tr.data[4];},
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'from' }
             },{
                 facetTitle: "From League",
                 catTableName: "baseball_leagues_1",
-                itemMapFunc : function(tr){
+                catItemMap : function(tr){
                     var x=tr.data[4];
                     if(x==="") return null;
                     return kshf.dt_id.baseball_teams_1[x].data[2];
@@ -92,14 +92,14 @@ function loadChart() {
             },{
                 facetTitle: "To Team",
                 catTableName: "baseball_teams_2",
-                itemMapFunc : function(tr){return tr.data[5];},
+                catItemMap : function(tr){return tr.data[5];},
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
                 filter: { rowConj: 'to', rowGroupName: 'teams' }
             },{
                 facetTitle: "To League",
                 catTableName: "baseball_leagues_2",
-                itemMapFunc : function(tr){
+                catItemMap : function(tr){
                     var x=tr.data[5];
                     if(x==="") return null;
                     return kshf.dt_id.baseball_teams_1[x].data[2];

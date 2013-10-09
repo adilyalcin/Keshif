@@ -67,7 +67,7 @@ function religionText(d){
 
 function resetSize(){
     $('#chart_div4').height($(window).height()-10);
-    $('#chart_div4').width (1100);
+    $('#chart_div4').width (900);
 }
 
 function loadChart() {
@@ -129,14 +129,14 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Continent",
-                itemMapFunc : function(flag){ return flag.data[flag_cols.Landmass]; },
+                catItemMap : function(flag){ return flag.data[flag_cols.Landmass]; },
                 rowLabelText: function(d) { return landmassText(d.data[1]); },
                 filter: { rowConj: 'in continent' },
                 timeTitle: "Flag Date",
-                itemXPos : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); }
+                timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); }
             },{
                 facetTitle: "Language",
-                itemMapFunc : function(flag){
+                catItemMap : function(flag){
                     var r= flag.data[flag_cols.Language];
                     if(r===9) return 10;
                     return r;
@@ -147,20 +147,20 @@ function loadChart() {
             /*
             {
                 facetTitle: "Zone",
-                itemMapFunc : function(flag){return flag.data[flag_cols.Zone]; },
+                catItemMap : function(flag){return flag.data[flag_cols.Zone]; },
                 rowLabelText: function(d) { return zoneText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'zone' }
             },{
                 facetTitle: "Religion",
-                itemMapFunc : function(flag){return flag.data[flag_cols.Religion]; },
+                catItemMap : function(flag){return flag.data[flag_cols.Religion]; },
                 rowLabelText: function(d) { return religionText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'religion' }
             }); */
             {
                 facetTitle: "Color",
-                itemMapFunc : function(flag){
+                catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Red]) toRet.push("Red");
                     if(flag.data[flag_cols.Green]) toRet.push("Green");
@@ -174,7 +174,7 @@ function loadChart() {
                 filter: { rowConj: 'has color', rowGroupName: 'colors' }
             },{
                 facetTitle: "Shape",
-                itemMapFunc : function(flag){
+                catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Circles]) toRet.push("Circle");
                     if(flag.data[flag_cols.Crosses]) toRet.push("Crosses");
@@ -188,7 +188,7 @@ function loadChart() {
                 filter: { rowConj: 'has shape', rowGroupName: 'shapes' }
             }, {
                 facetTitle: "Number of Bars",
-                itemMapFunc : function(flag){ 
+                catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
                     return (r===0)?0:r;
                 },
@@ -207,7 +207,7 @@ function loadChart() {
                 filter: { rowConj: '# of bars' }
             },{
                 facetTitle: "Number of Stripes",
-                itemMapFunc : function(flag){ 
+                catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
                     return (r===0)?null:r;
                 },
@@ -226,7 +226,7 @@ function loadChart() {
                 filter: { rowConj: '# of stripes' }
             } /*,{
                 facetTitle: "Other Properties",
-                itemMapFunc : function(flag){
+                catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data[flag_cols.Text]!==0) toRet.push("Text");
                     if(flag.data[flag_cols.Icon]!==0) toRet.push("Icon");

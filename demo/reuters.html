@@ -49,7 +49,7 @@ function loadChart() {
                 facetTitle: "Category",
                 catTableName: "Topics",
                 generateRows: true,
-                itemMapFunc : function(news){
+                catItemMap : function(news){
                     var topics = news.data[newsCol.topics];
                     var cats= {};
                     for(var i=0; i<topics.length; i++){
@@ -63,21 +63,21 @@ function loadChart() {
                     }
                     return toRet;
                 },
-                itemXPos : function(news){ return news.data[newsCol.time]; },
+                timeItemMap : function(news){ return news.data[newsCol.time]; },
                 filter: { rowConj: 'about' },
                 timeTitle: "Publish Date"
             },{
                 facetTitle: "Topic",
-                itemMapFunc : function(news){ return news.data[newsCol.topics]; },
+                catItemMap : function(news){ return news.data[newsCol.topics]; },
                 filter: { rowConj: 'about' }
             },{
                 facetTitle: "Country",
-                itemMapFunc : function(news){return news.data[newsCol.places]; },
+                catItemMap : function(news){return news.data[newsCol.places]; },
                 rowLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "People",
-                itemMapFunc : function(news){return news.data[newsCol.people]; },
+                catItemMap : function(news){return news.data[newsCol.people]; },
                 rowLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
                 rowTitleText: function(d) { 
                     var p = kshf.dt_id.People[d.data[1]];
