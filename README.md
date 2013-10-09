@@ -66,5 +66,5 @@ Demos
 
 Mehmet Adil Yalcin @ HCIL, University of Maryland, College Park
 
-Supported in part by <a href="http://www.huawei.com">Huawei</a>.
+Funded in part by <a href="http://www.huawei.com">Huawei</a>.
 
