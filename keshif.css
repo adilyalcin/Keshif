@@ -1319,8 +1319,7 @@ div.kshf.layout_infobox {
 .kshf.layout_infobox div.status_text{
     margin: auto;
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 10px;
     left: 70px;
     height:20px;
 }
@@ -1329,6 +1328,7 @@ div.kshf.layout_infobox {
     clear:left;
     float:left;
     margin-left:5px;
+    margin-top:5px;
     font-size: 0.8em;
 }
 

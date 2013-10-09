@@ -14,8 +14,31 @@
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
 
+var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = pair[1];
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]], pair[1] ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(pair[1]);
+    }
+  } 
+    return query_string;
+} ();
 
 var artistId = 1950693;
+var tableName = "release";
 
 var releaseCols = {
     thumb: 0,
@@ -30,9 +53,8 @@ var releaseCols = {
     type: 9,
     year: 10
 };
-var releaseColsMax=0;
-var tableName = "release";
 
+// Resource loading status
 var totalPages = -1;
 var pagesLoaded = 0;
 
@@ -46,9 +68,9 @@ function checkRequestStatus(){
     window.setTimeout(function() {
         // update UI....
         d3.select(".kshf.layout_infobox div.status_text div")
-            .html("<br/> Pages ("+pagesLoaded+"/"+totalPages+
-                ") - Master("+mastersLoaded+"/"+totalMasters+
-                ") - Release("+releasesLoaded+"/"+totalReleases+")"
+            .html("Pages: "+pagesLoaded+"/"+totalPages+
+                " , Master: "+mastersLoaded+"/"+totalMasters+
+                " , Release: "+releasesLoaded+"/"+totalReleases
                 );
     });
     // finish loading
@@ -74,7 +96,7 @@ function checkForMoreRequests(data){
             $.ajax( {
                 url:"http://api.discogs.com/artists/"+artistId+"/releases?page="+i+"&per_page=100",
                 dataType: "jsonp",
-                success: function(data) { processReleaseListResponse(data); }
+                success: processReleaseListResponse
             });
         }
     }
@@ -83,9 +105,8 @@ function checkForMoreRequests(data){
 
 function forwardMasterListResponse(role){
     return function(data){
-        var versions = data.data.versions;
-        for(var i=0; i<versions.length ; i++){
-            var relData = versions[i];
+        for(var i=0; i<data.data.versions.length ; i++){
+            var relData = data.data.versions[i];
             if(relData.status!=="Accepted") { continue; }
             totalReleases++;
             $.ajax( {
@@ -98,6 +119,7 @@ function forwardMasterListResponse(role){
         checkRequestStatus();
     }
 }
+
 /*
 function processMasterListResponse(data){
     var arr = kshf.dt[tableName];
@@ -161,6 +183,10 @@ function processReleaseResponse(role){
         for(var i=0;i<relData.artists.length ; i++){
             relData2[releaseCols.artist].push(relData.artists[i].name);
         }
+        relData2[releaseCols.format] = [];
+        for(var i=0;i<relData.formats.length ; i++){
+            relData2[releaseCols.format].push(relData.formats[i].name);
+        }
 
         var item = new kshf.Item(relData2,releaseCols.id);
         item.filters = [true];
@@ -177,9 +203,28 @@ function processReleaseResponse(role){
 
 function processReleaseListResponse(data){
     var arr = kshf.dt[tableName];
-    var releases=data.data.releases;
-    for(var i=0; i<releases.length ; i++){
-        var relData = releases[i];
+    for(var i=0; i<data.data.releases.length ; i++){
+        var relData = data.data.releases[i];
+        if(relData.type==="master"){
+            totalMasters++;
+            $.ajax( {
+                url:"http://api.discogs.com/masters/"+relData.id+"/versions",
+                // if you only want to get 1 release per master
+//                url:"http://api.discogs.com/releases/"+relData.main_release,
+                dataType: "jsonp",
+                success: forwardMasterListResponse(relData.role)
+            });
+            continue;
+        } else {
+            totalReleases++;
+            $.ajax( {
+                url:"http://api.discogs.com/releases/"+relData.id,
+                dataType: "jsonp",
+                success: processReleaseResponse(relData.role)
+            });
+            continue;
+        }
+/*
         var relData2 = [];
         //!!! Get column names
         for (var colName in relData) {
@@ -192,18 +237,6 @@ function processReleaseListResponse(data){
             relData2[releaseCols[colName]] = relData[colName];
         }
 
-        if(relData2[releaseCols.type]==="master"){
-            totalMasters++;
-            $.ajax( {
-                url:"http://api.discogs.com/masters/"+relData2[releaseCols.id]+"/versions",
-//                url:"http://api.discogs.com/releases/"+relData2[releaseCols.main_release],
-                type: "GET",
-                dataType: "jsonp",
-                success: forwardMasterListResponse(relData.role)
-            });
-
-            continue;
-        }
         var item = new kshf.Item(relData2,releaseCols.id);
         if(true){ 
             item.filters = [true];
@@ -212,7 +245,7 @@ function processReleaseListResponse(data){
             item.dots = [];
             item.cats = [];
         }
-        arr.push(item);
+        arr.push(item);*/
     }
 
     checkForMoreRequests(data);
@@ -221,25 +254,18 @@ function processReleaseListResponse(data){
 function loadArtistData(){
     kshf.primaryTableName = tableName;
     kshf.dt_ColNames[tableName] = releaseCols;
-
     kshf.dt[tableName] = [];
 
     $.ajax( {
         url:"http://api.discogs.com/artists/"+artistId+"/releases?page=1&per_page=100",
         type: "GET",
         dataType: "jsonp",
-        success: function(data) {
-            processReleaseListResponse(data);
-        },
-        error: function(data) {
-            console.log("fuck");
-        }
+        success: processReleaseListResponse
     });
 }
 
 function resetSize(){
     $('#chart_div4').height($(window).height()-10);
-//    $('#chart_div4').height(730);
     $('#chart_div4').width (900);
 }
 
@@ -251,11 +277,13 @@ function loadChart() {
         kshf.updateLayout();
     });
 
-    var prizeCols;
-    var lautCols;
+    // if artistId is defined, load that artist
+    if(QueryString.artistId!==undefined){
+        artistId = QueryString.artistId;
+    }
 
 	kshf.init({
-        chartTitle: "The Cinematic Orchestra Discography",
+        chartTitle: "Artist Discography",
         domID : "#chart_div4",
         categoryTextWidth: 206,
         itemName : "releases",
@@ -322,15 +350,40 @@ function loadChart() {
             contentFunc : function(release) {
                 var str="";
                 var imgUrl = release.data[releaseCols.thumb];
+                var aLink = "<a href=\"http://www.discogs.com/release/"+release.data[releaseCols.id]+"\" target=\"_blank\">";
                 if(imgUrl!==undefined){
                     imgUrl = "http://s.pixogs.com/image/"+imgUrl.slice(imgUrl.lastIndexOf("/")+1);
-                    str+="<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">";
+                    str+=aLink+"<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">"+"</a>";
                     str+="<div style=\"position: absolute; left:85px;\">";
                 } else {
                     str+="<div style=\"position: relative; left:85px;\">";
                 }
 
-                str+=release.data[releaseCols.title];
+                str+="<div class=\"iteminfo iteminfo_0\">"+aLink+release.data[releaseCols.title]+"</a>"+"</div>";
+
+                if(release.data[releaseCols.genres]!==undefined){
+                    str+="<div class=\"iteminfo iteminfo_1\">";
+                    str+="<b>Genres</b>: "+release.data[releaseCols.genres].toString();
+                    str+="</div>";
+                }
+
+                if(release.data[releaseCols.styles]!==undefined){
+                    str+="<div class=\"iteminfo iteminfo_1\">";
+                    str+="<b>Styles</b>: "+release.data[releaseCols.styles].toString();
+                    str+="</div>";
+                }
+
+                if(release.data[releaseCols.format]!==undefined){
+                    str+="<div class=\"iteminfo iteminfo_1\">";
+                    str+="<b>Format</b>: "+release.data[releaseCols.format].toString();
+                    str+="</div>";
+                }
+
+                if(release.data[releaseCols.label]!==undefined){
+                    str+="<div class=\"iteminfo iteminfo_1\">";
+                    str+="<b>Label</b>: "+release.data[releaseCols.label].toString();
+                    str+="</div>";
+                }
 
                 str+="</div>";
 
@@ -354,9 +407,19 @@ div.listItem{
     font-style:italic;
 }
 
+.iteminfo_1 b{
+    width: 60px;
+    display:inline-block;
+}
+
 #chart_div4 {
     margin: 0 auto;
 /*    top: 50px;*/
+}
+
+div.listItem div.iteminfo {
+    text-indent:  0em;
+    padding-left: 0em;
 }
 
 body{ margin:2px; }
