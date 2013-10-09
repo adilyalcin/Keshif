@@ -243,6 +243,7 @@ var unescapeCommas = function(c){
 };
 
 kshf.loadSheet_File = function(sheet){
+    var me=this;
     var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
     var tableName = sheet.name;
     if(sheet.tableName) { tableName = sheet.tableName; }
@@ -260,7 +261,11 @@ kshf.loadSheet_File = function(sheet){
             var itemId=0;
             // for each line, split on , character
             for(i=0; i<lines.length; i++){
-                var c=lines[i].split(",");
+                var c;
+                if(me.source.fileType==='csv')
+                    c=lines[i].split(",");
+                else if(me.source.fileType==='tsv')
+                    c=lines[i].split("\t");
                 c=unescapeCommas(c);
                 if(i===0){ // header 
                     for(j=0; j<c.length;j++){
