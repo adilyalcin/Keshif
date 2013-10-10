@@ -318,7 +318,7 @@ kshf.incrementLoadedTableCount = function(){
         // finish loading
     if(this.source.loadedTableCount===this.source.sheets.length) {
         d3.select(".kshf.layout_infobox div.status_text span")
-            .text("Creating browser");
+            .text("Creating Keshif browser");
         d3.select(".kshf.layout_infobox div.status_text div")
             .text("");
         window.setTimeout(function() {
@@ -2551,6 +2551,8 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 		;
 	var rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){ 
+            log2Console("CLICK: select category",kshf_);
+            kshf_.filterRow(d);
             if (this.timer) {
                 log2Console("CLICK: select exact category",kshf_);
                 clearTimeout(this.timer);
@@ -2563,17 +2565,15 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
             }
             var x = this;
             this.timer = setTimeout(function() { 
-                log2Console("CLICK: select category",kshf_);
                 // if no item is selected, do not process click
 //                if(d.activeItems===0) return;
-                kshf_.filterRow(d);
-                clearTimeout(x.timer);
+//                clearTimeout(x.timer);
                 x.timer = null;
 /*                setTimeout(function(){
                     kshf_.sortDelay = 0; kshf_.updateSorting(true);
                     clearTimeout(x.timer);
                 },2000);*/
-            }, 150);
+            }, 500);
         })
         ;
     var rowsSub = rows.append("svg:g").attr("class","barRow")
