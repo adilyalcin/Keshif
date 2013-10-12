@@ -547,16 +547,24 @@ kshf.list = function(_kshf, config, root){
         .text("i");
 
     // TODO: implement popup for file-based resources
-    listHeaderTopRow
-      .append("a")
-        .attr("href","https://docs.google.com/spreadsheet/ccc?key="+kshf.source.gdocId)
-        .attr("target","_blank")
-        .style("float","right")
-      .append("img")
-        .attr("class","datasource")
-        .attr("title","Open Data Source")
-        .attr("src",this.parentKshf.dirRoot+"img/datasource.png")
-        ;
+    if(_kshf.showDataSource !== false){
+        listHeaderTopRow
+          .append("div")
+            .style("float","right")
+            .on("click",function(){
+                if(_kshf.source.gDocId){
+                    window.open("https://docs.google.com/spreadsheet/ccc?key="+_kshf.source.gdocId,"_blank");
+                } else {
+                    me.parentKshf.root.select(".layout_infobox").style("display","block");
+                    me.parentKshf.root.select("div.infobox_datasource").style("display","block");
+                }
+            })
+          .append("img")
+            .attr("class","datasource")
+            .attr("title","Open Data Source")
+            .attr("src",this.parentKshf.dirRoot+"img/datasource.png")
+            ;
+        }
 
     var listColumnRow=listHeader.append("div").attr("class","listColumnRow");
 
@@ -849,16 +857,18 @@ kshf.init = function (options) {
     if(options.dirRoot !== undefined){
         this.dirRoot = options.dirRoot;
     }
+    this.showDataSource = true;
+    if(options.showDataSource!==undefined){
+        this.showDataSource = options.showDataSource;
+    }
 
     var creditString="";
-    creditString += "<div class=\"all-the-credits\">";
-    creditString += "";
     creditString += "<div align=\"center\">";
-    creditString += "This browser is created by <span class=\"libName\">Keshif<\/span> library.";
+    creditString += "Browser created by <span class=\"libName\">Keshif<\/span> library.";
     creditString += "<\/br>";
-    creditString += " <div style=\"width:500px; text-align:left\" align=\"left\" class=\"boxinbox\">";
+    creditString += " <div align=\"left\" class=\"boxinbox features\">";
     creditString += " <ul class=\"credits_features\">";
-    creditString += "     <li>Left: categories. Top: time. All: in synch.<\/li>";
+    creditString += "     <li>Left: categories. Top: time. All: in sync.<\/li>";
     creditString += "     <li>Mix and match your search. \"And\" selection across different filters, \"or\" inside same filter with multiple categories.<\/li>";
     creditString += "     <li>Text search: Look up all items in the collections, or filter categories.<\/li>";
     creditString += "     <li>Time filtering: Drag &amp; drop handles, set your range.<\/li>";
@@ -870,18 +880,17 @@ kshf.init = function (options) {
     creditString += "Get keshif source code from <a href=\"http:\/\/www.github.com\/adilyalcin\/Keshif\" target=\"_blank\"><img alt=\"github\" src=\"img\/gitHub.png\" height=\"20\" style=\"position:relative; top:5px\"><\/a> and use it on your own page.<\/br>";
     creditString += "<iframe src=\"http:\/\/ghbtns.com\/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true&size=large\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"152px\" height=\"30px\"><\/iframe>";
     creditString += "<iframe src=\"http:\/\/ghbtns.com\/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true&size=large\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"152px\" height=\"30px\"><\/iframe>";
-    creditString += "<\/div>";
+    creditString += "<\/div><br>";
     creditString += "";
-    creditString += "<div align=\"center\" class=\"project_3rdparty \">";
-    creditString += "<div class=\"boxinbox\">";
+    creditString += "<div align=\"center\" class=\"boxinbox project_3rdparty\">";
     creditString += " 3rd party libraries and APIs:<br\/>";
     creditString += " <a href=\"http:\/\/d3js.org\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_01.png\" style=\"width:110px; top:0px\"><\/a>";
     creditString += " <a href=\"http:\/\/jquery.com\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_02.png\" style=\"width:150px; top: -15px;\"><\/a>";
     creditString += " <a href=\"https:\/\/developers.google.com\/chart\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_03.png\" style=\"width:90px\"><\/a>";
-    creditString += "<\/div>";
     creditString += "<\/div><br>";
     creditString += "";
-    creditString += "<div style=\"width: 450px;\" align=\"center\" class=\"boxinbox\">";
+    creditString += "<div style=\"width: 450px;\" align=\"center\" class=\"boxinbox project_credits\">";
+    creditString += " Developed by:<br\/>";
     creditString += " <a href=\"http:\/\/www.adilyalcin.me\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/credit-1_01.png\" style=\"height:100px\"><\/a>";
     creditString += " <img src=\""+this.dirRoot+"img\/credit-1_02.png\" style=\"height:100px; padding:0px 4px 0px 4px\">";
     creditString += " <a href=\"http:\/\/www.cs.umd.edu\/hcil\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/credit-1_03.png\" style=\"height:100px\"><\/a>";
@@ -892,7 +901,6 @@ kshf.init = function (options) {
     creditString += "<div align=\"center\" class=\"project_fund\">";
     creditString += "<i>Keshif<\/i> (<a target=\"_blank\" href=\"http:\/\/translate.google.com\/#auto\/en\/ke%C5%9Fif\">keşif<\/a>) means discovery and exploration in Turkish.<br\/><br\/>";
     creditString += "Research made practical. Funded in part by <a href=\"http:\/\/www.huawei.com\">Huawei<\/a>. <\/div>";
-    creditString += "<\/div>";
     creditString += "";
 
     this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox");
@@ -900,6 +908,8 @@ kshf.init = function (options) {
         .attr("class","infobox_background")
         .on("click",function(){
             me.layout_infobox.style("display","none");
+            me.layout_infobox.select("div.infobox_credit").style("display","none");
+            me.layout_infobox.select("div.infobox_datasource").style("display","none");
         });
     var loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
     loadingBox.append("img")
@@ -911,8 +921,34 @@ kshf.init = function (options) {
     hmmm.append("span")
         .text("Loading...");
     hmmm.append("div");
-    var creditBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit");
-    creditBox.html(creditString);
+    
+    var infobox_credit = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit")
+    infobox_credit.append("div").attr("class","infobox_close_button").text("x")
+        .on("click",function(){
+            me.layout_infobox.style("display","none");
+            me.layout_infobox.select("div.infobox_credit").style("display","none");
+            me.layout_infobox.select("div.infobox_datasource").style("display","none");
+        });
+    infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
+
+    var infobox_datasource = this.layout_infobox.append("div").attr("class","infobox_content infobox_datasource").text("Datasource files:");
+    infobox_datasource.append("div").attr("class","infobox_close_button").text("x")
+        .on("click",function(){
+            me.layout_infobox.style("display","none");
+            me.layout_infobox.select("div.infobox_credit").style("display","none");
+            me.layout_infobox.select("div.infobox_datasource").style("display","none");
+        });
+    var infobox_datasource_ul = infobox_datasource.append("ul");
+    if(this.showDataSource && this.source.gDocId===undefined){
+        infobox_datasource_ul.selectAll("li")
+            .data(this.source.sheets, this._dataMap)
+          .enter().append("li")
+            .append("a")
+            .attr("target","_blank")
+            .attr("href",function(i){ return me.source.dirPath+i.name+"."+me.source.fileType;})
+            .text(function(i){ return i.name+"."+me.source.fileType;})
+            ;
+    }
 
     this.layoutBackground = this.root.append("div").attr("class","kshf layout_background");
     this.layoutBackground.append("div").attr("class","leftBlockBackground");

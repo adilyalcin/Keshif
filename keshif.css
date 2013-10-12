@@ -1305,6 +1305,24 @@ div.listColumnRow div.listcell{
     transition: all 0.5s;
 }
 
+
+.kshf.layout_infobox div.infobox_close_button{
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    background-color: rgb(151, 151, 151);
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 20px;
+    color: white;
+}
+.kshf.layout_infobox div.infobox_close_button:hover{
+    background-color: rgb(111, 111, 111);
+}
+
 div.kshf.layout_infobox div.infobox_content{
     border: 0px double gray;
     display: block;
@@ -1326,7 +1344,7 @@ div.kshf.layout_infobox div.infobox_loading{
 
 div.kshf.layout_infobox div.infobox_credit{
     display:none;
-    padding-top:30px;
+    padding-top:15px;
     width: 600px;
     height: 580px;
 }
@@ -1335,6 +1353,15 @@ div.kshf.layout_infobox div.infobox_credit div.all-the-credits{
     top:0px
     bottom:0px;
 }
+
+div.kshf.layout_infobox div.infobox_datasource{
+    display:none;
+    padding-top:30px;
+    padding-left:20px;
+    width: 300px;
+    height: 200px;
+}
+
 
 .kshf.layout_infobox div.infobox_loading img.status{
     margin: auto;
@@ -1364,11 +1391,11 @@ div.kshf.layout_infobox div.infobox_credit div.all-the-credits{
     font-style: italic;
 }
 
-.project_3rdparty{
+div.boxinbox.project_3rdparty{
     font-size: 0.9em;
     font-style: italic;
 }
-.project_3rdparty img{
+div.boxinbox.project_3rdparty img{
     position:relative;
 }
 
@@ -1395,3 +1422,16 @@ span.libName{
     font-size: 1.4em;
     font-weight: 700;
 }
+
+div.boxinbox.features{
+    width:500px; 
+    text-align:left;
+    border: solid 0px lightgray; 
+    box-shadow: 0px 0px 0px gray; 
+}
+
+div.boxinbox.project_credits{
+    font-size: 0.9em;
+    font-style: italic;
+}
+
