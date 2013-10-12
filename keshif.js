@@ -1280,13 +1280,13 @@ kshf.Chart = function(options){
 kshf.Chart.prototype.getRowLabelOffset = function(){
     if(!this._labelXOffset){
         var maxTotalCount = kshf.items.length;
-        this._labelXOffset = 9;
+        this._labelXOffset = 12;
         var digits = 1;
         while(maxTotalCount>9){
             digits++
             maxTotalCount = Math.floor(maxTotalCount/10);
         }
-        this._labelXOffset += digits*7;
+        this._labelXOffset += digits*6;
     }
     return this._labelXOffset;
 };
