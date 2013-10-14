@@ -1344,9 +1344,9 @@ div.kshf.layout_infobox div.infobox_loading{
 
 div.kshf.layout_infobox div.infobox_credit{
     display:none;
-    padding-top:15px;
+    padding-top: 5px;
     width: 600px;
-    height: 580px;
+    height: 460px;
 }
 div.kshf.layout_infobox div.infobox_credit div.all-the-credits{
     margin: auto;
