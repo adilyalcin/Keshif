@@ -608,7 +608,7 @@ kshf.list = function(_kshf, config, root){
           .append("div")
             .style("float","right")
             .on("click",function(){
-                if(_kshf.source.gDocId){
+                if(_kshf.source.gdocId){
                     window.open("https://docs.google.com/spreadsheet/ccc?key="+_kshf.source.gdocId,"_blank");
                 } else {
                     me.parentKshf.root.select(".layout_infobox").style("display","block");
@@ -1469,6 +1469,7 @@ kshf.BarChart.prototype.init_shared = function(options){
     } else {
         this.catTableName = this.options.catTableName;
     }
+
     // BIG. Apply row map function
     var dt = kshf.items;
     var curDtId = this.getData_wID();
@@ -1479,7 +1480,19 @@ kshf.BarChart.prototype.init_shared = function(options){
             item.filters[f] = true;
         }
         var toMap = this.options.catItemMap(item);
-        if(toMap===undefined || toMap==="") { toMap=null; }
+        if(toMap===undefined || toMap==="") { 
+            toMap=null;
+        } else if(Array.isArray(toMap)){
+            // remove duplicate values in the array
+            var found = {};
+            toMap = toMap.filter(function(e){
+                if(found[e]===undefined){
+                    found[e] = true;
+                    return true;
+                }
+                return false;
+            });
+        }
         item.mappedData[this.filterId] = toMap;
         item.mappedRows[this.filterId] = [];
         if(toMap===null) { continue; }
