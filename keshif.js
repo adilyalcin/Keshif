@@ -3093,6 +3093,12 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
         })
 		.attr("r", 5)
 		.attr("cy", Math.floor(kshf.line_height / 2))
+        .on("mouseover",function(d,i,f){
+            d.highlightAttributes();
+        })
+        .on("mouseout",function(d,i){
+            d.nohighlightAttributes();
+        })
 		.on("click", function(d,i,f) {
             log2Console("CLICK: time dot",kshf_);
             // clear all the selections in filterRow function
