@@ -1448,8 +1448,8 @@ kshf.BarChart.prototype.rowCount_Header_Right = function(){
 };
 kshf.BarChart.prototype.rowCount_Header = function(){
     var h= Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
-    if(this.id ===0){
-        h = Math.max(h,2);
+    if(this.id===0){
+        if(this.rowCount_Header_Right()-this.rowCount_Header_Left()<1) h++;
     }
     return h;
 };

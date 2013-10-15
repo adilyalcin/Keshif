@@ -30,11 +30,12 @@ function loadChart() {
 
     // set height of the source dom as 
     kshf.init({
-//        chartTitle: "Publications of Ben Bederson",
         domID : "#chart_div4",
+        dirRoot: "../",
         itemName : "publications",
         listMaxColWidthMult: 0.4,
         categoryTextWidth:190,
+        dirRoot: "../",
         source : {
             // google spreadsheet ID
             gdocId : '0Ai6LdDWgaqgNdHk5SGF1SDdMd1hOMUc1elZHRHI3WkE',
@@ -113,7 +114,7 @@ function loadChart() {
                 timeTitle: "Publication Year",
                 timeItemMap : function(pub){ return pub.data[pubCol.time]; }
             },{
-                facetTitle: "Coauth. Type",
+                facetTitle: "Coauthor Type",
                 catTableName: "AuthorTypes",
                 catItemMap : function(pub){
                     var typeList = {};

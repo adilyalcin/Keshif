@@ -439,7 +439,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float: right;
     font-size: 0.7em;
     font-weight: 500;
-    padding-top: 5px;
+    padding: 3px 3px 0px 0px;
     cursor: default;
     pointer-events:none;
 }
@@ -451,6 +451,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size:0.7em;
     pointer-events:all;
     clear:right;
+    margin:0px;
 }
 .kshf div.kshfChart[collapsed=true] select.sortOptionSelect{
     display: none;
