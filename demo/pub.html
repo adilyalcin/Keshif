@@ -114,26 +114,6 @@ function loadChart() {
                 timeTitle: "Publication Year",
                 timeItemMap : function(pub){ return pub.data[pubCol.time]; }
             },{
-                facetTitle: "Coauthor Type",
-                catTableName: "AuthorTypes",
-                catItemMap : function(pub){
-                    var typeList = {};
-                    var r = [];
-                    var authors = pub.data[pubCol.authors];
-                    for(i=0; i<authors.length; i++){
-                        var autData=kshf.dt_id.Authors[authors[i]];
-                        var typeID = autData.data[3];
-                        if(!typeList[typeID]){
-                            typeList[typeID] = true;
-                            r.push(typeID);
-                        }
-                    }
-                    return r;
-                },
-                barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
-                barInfoText: "Color:Coauth. type",
-                filter: { rowConj: 'with', rowGroupName: 'coauthor types' }
-            },{
                 facetTitle: "Coauthor",
                 catTableName: "Authors",
                 catItemMap : function(pub){ return pub.data[pubCol.authors]; },
@@ -161,7 +141,27 @@ function loadChart() {
                 textSearch: true,
                 filter: { rowConj: 'with', rowGroupName: 'coauthors' }
             },{
-                facetTitle: "Pub. Type",
+                facetTitle: "Coauthor Type",
+                catTableName: "AuthorTypes",
+                catItemMap : function(pub){
+                    var typeList = {};
+                    var r = [];
+                    var authors = pub.data[pubCol.authors];
+                    for(i=0; i<authors.length; i++){
+                        var autData=kshf.dt_id.Authors[authors[i]];
+                        var typeID = autData.data[3];
+                        if(!typeList[typeID]){
+                            typeList[typeID] = true;
+                            r.push(typeID);
+                        }
+                    }
+                    return r;
+                },
+                barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
+                barInfoText: "Color:Coauth. type",
+                filter: { rowConj: 'with', rowGroupName: 'coauthor types' }
+            },{
+                facetTitle: "Publication Type",
                 catTableName: "VenueTypes",
                 catItemMap : function(pub){ return pub.data[pubCol.pub_type]; },
                 filter: { rowConj: 'as', rowGroupName: 'types' }
