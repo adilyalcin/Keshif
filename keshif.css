@@ -209,22 +209,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.row rect.active {
     pointer-events: none;
-}/*
-.kshf g.row rect.timeBar.total {
-    pointer-events: none;
 }
-.kshf g.row rect.timeBar.active {
-	cursor: pointer;
-}*/
 .kshf g.row g[highlight=true] rect.total{
 	stroke-width: 2;
 	stroke: orangered;
 }
-/*
-.kshf g.row g[highlight=true] rect.timeBar.active{
-	stroke-width: 2;
-	stroke: orangered;
-}*/
 
 .kshf g.row rect.timeBar {
 	fill: #E0E7EB;
@@ -234,6 +223,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.row rect.timeBar.total{
 	fill-opacity:0.35;
+}
+.kshf div.kshfChart[collapsedTime=true] g.row rect.timeBar {
+    display:none;
 }
 
 .kshf .headerHTML {
@@ -258,6 +250,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: default;
     font-variant: small-caps;
 }
+
+.kshf .headerGroup span.rightHeader span.header_label {
+    float:left;
+}
 .kshf div.kshfChart[collapsed=true] .headerGroup span.header_label {
     cursor: pointer;
 }
@@ -269,18 +265,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vertical-align: baseline;
     line-height: 18px;
 }
+.kshf .headerGroup span.rightHeader{
+    display:inline-block;
+    float:right;
+    pointer-events:all;
+}
+.kshf div.kshfChart[collapsed=true] .headerGroup {
+    color: gray;
+}
+.kshf div.kshfChart[collapsedTime=true] .headerGroup span.rightHeader{
+    color: gray;
+}
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
     float: left;
 }
-.kshf div.kshfChart[collapsed=true]  .headerGroup span.header_label_up{
+.kshf div.kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_up{
     display: none;
 }
-.kshf div.kshfChart[collapsed=false] .headerGroup span.header_label_down{
+.kshf div.kshfChart[collapsed=false] .headerGroup span.leftHeader span.header_label_down{
     display: none;
 }
-.kshf div.kshfChart[collapsed=true] span {
-    color: gray;
+.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_up{
+    display: none;
 }
+.kshf div.kshfChart[collapsedTime=false][collapsed=false] .headerGroup span.rightHeader span.header_label_down{
+    display: none;
+}
+.kshf div.kshfChart[collapsed=true] .headerGroup span.rightHeader span.header_label_up{
+    display: none;
+}
+
 
 .kshf div.kshfChart div.chartBackground{
     z-index:-60;
@@ -320,6 +334,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsed=true] g.scrollGroup{
     display: none;
 }
+.kshf div.kshfChart[collapsedTime=true] g.scrollGroup g.rightScroll{
+    display: none;
+}
+
 .kshf g.scrollGroup g path.top_arrow{
 	pointer-events:none;
 	fill:#AAAAAA;
@@ -413,6 +431,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cursor: pointer;
 	fill: #616F7A;
 }
+.kshf div.kshfChart[collapsedTime=true] .timeDot{
+    display:none;
+}
 .kshf .timeDot[display=true] {
 /*    pointer-events: none; */
 }
@@ -433,6 +454,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display:none;
 }
 .kshf div.kshfChart[collapsed=true] g.timeAxisGroup {
+    display:none;
+}
+.kshf div.kshfChart[collapsedTime=true] g.timeAxisGroup {
     display:none;
 }
 .kshf div.kshfChart span.sortOptionSelect_Label{
@@ -524,6 +548,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row line.row_bar_line{
 	stroke-width: 0.7;
     pointer-events: none;
+}
+.kshf div.kshfChart[collapsedTime=true] g.row line.row_bar_line{
+    display: none;
 }
 .kshf g[highlight=true] .row_bar_line{
 	stroke: orangered;
@@ -621,7 +648,6 @@ div.kshf.layout_left_background{
 }
 .kshf.layout_left_header div.filter_header{
     position: relative;
-    left: 2px;
     background-color: rgba(125,125,125,0.15);
 /*    border-bottom: solid 1px gray; */
     box-shadow: 0px 0px 2px 1px lightgray;
@@ -637,6 +663,10 @@ div.kshf.layout_left_background{
     font-variant: small-caps;
     font-style: normal;
     text-decoration: underline;
+}
+div.kshf.layout_right{
+    position:relative;
+/*    top:-18px; */
 }
 
 
@@ -656,6 +686,7 @@ div.kshf.layout_left_background{
     overflow-y:scroll;
     width: calc(100% - 2px);
     border-left: solid 2px rgb(233, 227, 205);
+    background-color: white;
 }
 
 
@@ -849,7 +880,7 @@ div.listHeader span.filter_reset {
 .kshf span.filter-block-clear{
     background-color: rgba(228, 223, 212, 0.7) !important;
     font-size: 12px;
-    display: inline-block;
+    display: none;
     cursor:pointer;
     color: rgb(37, 33, 18);
     font-weight: 300;
