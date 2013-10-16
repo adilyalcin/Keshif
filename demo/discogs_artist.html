@@ -65,17 +65,15 @@ function checkRequestStatus(){
     window.setTimeout(function() {
         // update UI....
         d3.select(".kshf.layout_infobox div.status_text div")
-            .html("Pages: "+pagesLoaded+"/"+totalPages+
+            .html("Progress = Pages: "+pagesLoaded+"/"+totalPages+
                 " , Master: "+mastersLoaded+"/"+totalMasters+
                 " , Release: "+releasesLoaded+"/"+totalReleases
                 );
     });
     // finish loading
     if(pagesLoaded===totalPages && totalMasters===mastersLoaded && totalReleases===releasesLoaded){
-        d3.select(".kshf.layout_infobox div.status_text span")
-            .text("Creating browser");
-        d3.select(".kshf.layout_infobox div.status_text div")
-            .text("");
+        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+        d3.select(".kshf.layout_infobox div.status_text div").text("");
         window.setTimeout(function() {
             // do this once all the data is loaded
             kshf.items = kshf.dt[tableName];
@@ -88,7 +86,7 @@ function checkRequestStatus(){
 function checkForMoreRequests(data){
     if(totalPages===-1){ totalPages = data.data.pagination.pages; }
     pagesLoaded++;
-    if(data.data.pagination.page===1){
+    if(pagesLoaded===1){
         for(var i=2; i<=totalPages;i++){
             $.ajax( {
                 url:"http://api.discogs.com/artists/"+artistId+"/releases?page="+i+"&per_page=100",
@@ -116,42 +114,6 @@ function forwardMasterListResponse(role){
         checkRequestStatus();
     }
 }
-
-/*
-function processMasterListResponse(data){
-    var arr = kshf.dt[tableName];
-    var versions = data.data.versions;
-    for(var i=0; i<versions.length ; i++){
-        var relData = versions[i];
-        var relData2 = [];
-        if(relData.status!=="Accepted") { continue; }
-        for (var colName in relData) {
-            if(colName==="resource_url") { continue; }
-            if(colName==="status"){ continue; }
-            if(colName==="trackinfo"){ continue; }
-            if(colName==="released") {
-                colName = "year";
-                relData.year = relData.released;
-            }
-            if(colName==="format"){
-                relData[colName] = unescapeCommas(relData[colName].split(","));
-            }
-            relData2[releaseCols[colName]] = relData[colName];
-        }
-        // From master:
-        // set artist
-        // set role 
-        var item = new kshf.Item(relData2,releaseCols.id);
-        item.filters = [true];
-        item.mappedRows = [true];
-        item.mappedData = [true];
-        item.dots = [];
-        item.cats = [];
-        arr.push(item);
-    }
-    mastersLoaded++;
-    checkRequestStatus();
-}*/
 
 function processReleaseResponse(role){
     return function(data){
@@ -206,8 +168,6 @@ function processReleaseListResponse(data){
             totalMasters++;
             $.ajax( {
                 url:"http://api.discogs.com/masters/"+relData.id+"/versions",
-                // if you only want to get 1 release per master
-//                url:"http://api.discogs.com/releases/"+relData.main_release,
                 dataType: "jsonp",
                 success: forwardMasterListResponse(relData.role)
             });
@@ -221,28 +181,6 @@ function processReleaseListResponse(data){
             });
             continue;
         }
-/*
-        var relData2 = [];
-        //!!! Get column names
-        for (var colName in relData) {
-            if(colName==="resource_url") continue;
-            if(colName==="status") continue;
-            if(colName==="trackinfo") continue; // available on remix role
-            if(colName==="format"){
-                relData[colName] = unescapeCommas(relData[colName].split(","));
-            }
-            relData2[releaseCols[colName]] = relData[colName];
-        }
-
-        var item = new kshf.Item(relData2,releaseCols.id);
-        if(true){ 
-            item.filters = [true];
-            item.mappedRows = [true];
-            item.mappedData = [true];
-            item.dots = [];
-            item.cats = [];
-        }
-        arr.push(item);*/
     }
 
     checkForMoreRequests(data);
@@ -253,9 +191,10 @@ function loadArtistData(){
     kshf.dt_ColNames[tableName] = releaseCols;
     kshf.dt[tableName] = [];
 
+    checkRequestStatus();
+
     $.ajax( {
         url:"http://api.discogs.com/artists/"+artistId+"/releases?page=1&per_page=100",
-        type: "GET",
         dataType: "jsonp",
         success: processReleaseListResponse
     });
@@ -286,9 +225,7 @@ function loadChart() {
         categoryTextWidth: 206,
         itemName : "releases",
         showDataSource : false,
-        source: {
-            callback : loadArtistData
-        },
+        source: { callback : loadArtistData },
         charts : [
             {
                 facetTitle: "Label",
