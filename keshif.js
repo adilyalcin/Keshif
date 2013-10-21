@@ -2045,8 +2045,8 @@ kshf.BarChart.prototype.insertHeader = function(){
             .attr("width",1500)
             .attr("height",1500)
             .on("click",function(d){
-                log2Console("CLICK - RESORT!",kshf_);
-                kshf_.sortDelay = 0; kshf_.updateSorting(true);
+                kshf_.sortDelay = 0; 
+                kshf_.updateSorting(true);
             })
             ;
         xxx.append("svg:path")
@@ -2624,9 +2624,13 @@ kshf.BarChart.prototype.filter_addItems = function(){
     }
 };
 
+kshf.BarChart.prototype.noItemOnSelect = function(d){
+    return d.selected!==false || this.catCount_Selected!==0 || d.activeItems!==0;
+}
 
 // When clicked on a row
 kshf.BarChart.prototype.filterRow = function(d,forceAll){
+    // if new selection would generate 0 items in result, don't change anything
 	d.selected = !d.selected;
     if(this.options.singleSelect===true){
         if(d.selected===true){
@@ -2666,6 +2670,7 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
         this.dom.showTextSearch[0][0].value="";
     }
     this.refreshFilterRowState();
+    return true;
 };
 kshf.BarChart.prototype.filterTime = function(){
     var i,j;
@@ -2741,6 +2746,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	var rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){ 
             log2Console("CLICK: select category",kshf_);
+            if(!kshf_.noItemOnSelect(d)) return;
             kshf_.filterRow(d);
             if (this.timer) {
                 log2Console("CLICK: select exact category",kshf_);
@@ -2749,7 +2755,8 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
                 // clears all the selection when selected
                 kshf_.selectAllRows(false);
                 kshf_.filterRow(d,true);
-                kshf_.sortDelay = 0; kshf_.updateSorting(true);
+                kshf_.sortDelay = 0;
+                kshf_.updateSorting(true);
                 return;
             }
             var x = this;
@@ -2766,14 +2773,16 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
         })
         ;
     var rowsSub = rows.append("svg:g").attr("class","barRow")
-		.on("mouseover", function(e){
+		.on("mouseover", function(d){
             // if there are no active item, do not allow selection
 //            if(e.activeItems===0) return;
+            if(!kshf_.noItemOnSelect(d)) return;
             this.setAttribute("highlight",true);
         })
-		.on("mouseout", function(e){ 
+		.on("mouseout", function(d){ 
             this.setAttribute("highlight",false);
         })
+        .attr("highlight","false")
         ;
     this.dom.row_title = rowsSub
         .append("svg:title")
@@ -3116,7 +3125,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
         })
 		.on("click", function(d,i,f) {
             log2Console("CLICK: time dot",kshf_);
-            // clear all the selections in filterRow function
+            // clear all the selections
             kshf_.selectAllRows(false);
 
             var itemDate = d.timePos;

@@ -1,4 +1,4 @@
-/*********************************
+/*********************************hg
 
 kshf library
 
@@ -66,25 +66,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     background-image: linear-gradient(right, 
         rgba(230, 230, 230, 0) 0%, 
         rgba(230, 230, 230, 1) 40%, 
-        rgba(101, 101, 101, 1) 50%, 
+        rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
     background-image: -webkit-linear-gradient(right, 
         rgba(230, 230, 230, 0) 0%, 
         rgba(230, 230, 230, 1) 40%, 
-        rgba(101, 101, 101, 1) 50%, 
+        rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
     background-image: -moz-linear-gradient(right, 
         rgba(230, 230, 230, 0) 0%, 
         rgba(230, 230, 230, 1) 40%, 
-        rgba(101, 101, 101, 1) 50%, 
+        rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
     background-image: -ms-linear-gradient(right, 
         rgba(230, 230, 230, 0) 0%, 
         rgba(230, 230, 230, 1) 40%, 
-        rgba(101, 101, 101, 1) 50%, 
+        rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
 }
@@ -200,33 +200,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display:block;
 }
 
-
-.kshf g.row rect.total {
-	fill-opacity:0.2;
-}
-.kshf g.row rect.total {
-	cursor: pointer;
-}
-.kshf g.row rect.active {
-    pointer-events: none;
-}
-.kshf g.row g[highlight=true] rect.total{
-	stroke-width: 2;
-	stroke: orangered;
-}
-
-.kshf g.row rect.timeBar {
-	fill: #E0E7EB;
-}
-.kshf g.row rect.rowBar {
-	fill: #8699A8;
-}
-.kshf g.row rect.timeBar.total{
-	fill-opacity:0.35;
-}
-.kshf div.kshfChart[collapsedTime=true] g.row rect.timeBar {
-    display:none;
-}
 
 .kshf .headerHTML {
     pointer-events:none;
@@ -445,7 +418,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stroke: orangered;
 	stroke-width:2;
 }
-.kshf .timeDot[highlight=true] {
+.kshf .timeDot[G=true] {
     stroke: #c32c2c;
     stroke-width:2;
 }
@@ -486,30 +459,87 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     bottom:0px;
 }
 
-.kshf div.kshfChart g.row text.item_count {
-	font-size: 0.7em;
-	cursor: pointer;
+
+.kshf g.row rect.total {
+    fill-opacity:0.2;
+}
+.kshf g.row g[highlight=true] rect.total{
+    stroke-width: 2;
+    stroke: orangered;
+    cursor: pointer;
+}
+.kshf g.row rect.active {
+    pointer-events: none;
+}
+.kshf g.row rect.rowBar {
+    fill: #8699A8;
 }
 
-.kshf div.kshfChart g.row text.row_label {
-	font-size: 0.8em;
-	cursor: pointer;
-	text-anchor: end;
+.kshf g.row g[highlight=false] text.item_count {
+    font-size: 0.7em;
+    cursor: default;
+}
+.kshf g.row g[highlight=true] text.item_count {
+    font-size: 0.7em;
+    cursor: pointer;
+}
+.kshf g.row g[highlight=false] text.row_label {
+    font-size: 0.8em;
+    text-anchor: end;
     font-weight:300;
+    cursor: default;
+}
+.kshf g.row g[highlight=true] text.row_label {
+    font-size: 0.8em;
+    text-anchor: end;
+    font-weight:300;
+    cursor: pointer;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=false] text{
     fill:gray;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] text{
-	font-weight: 700;
-	fill: #c32c2c;
+    font-weight: 700;
+    fill: #c32c2c;
 }
-.kshf div.kshfChart g.row g[highlight=true] text{
+.kshf g.row g[highlight=true] text{
     fill: orangered !important;
 }
-.kshf div.kshfChart g.row[itemhighlight=true] g text{
+.kshf g.row[itemhighlight=true] g text{
     fill: #c32c2c !important;
 }
+
+.kshf g.row rect.timeBar {
+    fill: #E0E7EB;
+}
+.kshf g.row rect.timeBar.total{
+    fill-opacity:0.35;
+}
+.kshf div.kshfChart[collapsedTime=true] g.row rect.timeBar {
+    display:none;
+}
+
+.kshf g.row rect.rowSelectBackground{
+    opacity:0;
+    pointer-events: none;
+}
+.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
+    opacity:1;
+}
+.kshf g.row g[highlight=true] rect.rowSelectBackground_ClickArea{
+    opacity:0;
+    pointer-events: all;
+    cursor: pointer;
+}
+.kshf g.row g[highlight=false] rect.rowSelectBackground_ClickArea{
+    opacity:0;
+    pointer-events: all;
+    cursor: default;
+}
+.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
+    pointer-events: all;
+}
+
 
 .filter_handle rect.filter_nonselected{
 	fill: gray;
@@ -554,10 +584,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g[highlight=true] .row_bar_line{
 	stroke: orangered;
-	stroke-dasharray: none;
-}
-.kshf g rect.helphelp{
-	stroke: #B1B79C;
 }
 
 
@@ -1071,21 +1097,6 @@ div.credits:hover{
     background-color: #EEEEEE;
 }
 
-.kshf div.kshfChart g.row rect.rowSelectBackground{
-    opacity:0;
-    pointer-events: none;
-}
-.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
-	opacity:1;
-}
-.kshf div.kshfChart g.row rect.rowSelectBackground_ClickArea{
-    opacity:0;
-    pointer-events: all;
-    cursor: pointer;
-}
-.kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
-    pointer-events: all;
-}
 
 
 .kshf div.kshfChart input.chartRowLabelSearch::-webkit-input-placeholder { 
