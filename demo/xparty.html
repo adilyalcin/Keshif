@@ -527,9 +527,9 @@ function loadChart() {
         ],
         list: {
             sortOpts : [
-                {   name: 'Student ID',
-                    width: 75,
-                    value: function(answer){ return answer.data[1]; }
+                {   name: 'Student Name',
+                    width: 95,
+                    value: function(answer){ return kshf.dt_id.users[answer.data[1]].data[2]; }
                 }
             ],
             contentFunc : function(d){

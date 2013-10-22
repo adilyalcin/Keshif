@@ -460,7 +460,7 @@ function loadChart() {
         domID : "#chart_div4",
         itemName : "answers",
         dirRoot: "../",
-        categoryTextWidth:160,
+        categoryTextWidth:143,
         source : {
             dirPath: 'data/',
             fileType: 'tsv',
@@ -483,6 +483,7 @@ function loadChart() {
                     var newwords = [];
                     for(var i=0; i<words.length ; i++){
                         var w=words[i].toLowerCase();
+                        if(w==="") continue;
                         if(stopWords[w]===undefined) {
                             newwords.push(w);
                         }
@@ -504,7 +505,8 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Categories',
                     width: 75,
-                    value: function(answer){ return answer.data[0]; }
+                    value: function(answer){ return answer.data[0]; },
+                    value_type : 'string'
                 }
             ],
             contentFunc : function(d){
