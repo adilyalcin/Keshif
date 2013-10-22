@@ -114,7 +114,7 @@ function loadChart() {
         domID : "#chart_div4",
         dirRoot: "../",
         itemName : "flags",
-        categoryTextWidth: 206,
+        categoryTextWidth: 171,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -185,7 +185,7 @@ function loadChart() {
                 },
                 filter: { rowConj: 'has shape', rowGroupName: 'shapes' }
             }, {
-                facetTitle: "Number of Bars",
+                facetTitle: "# of Bars",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
                     return (r===0)?0:r;
@@ -204,7 +204,7 @@ function loadChart() {
                     ],
                 filter: { rowConj: '# of bars' }
             },{
-                facetTitle: "Number of Stripes",
+                facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
                     return (r===0)?null:r;
