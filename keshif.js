@@ -1688,7 +1688,7 @@ kshf.BarChart.prototype.init_shared2 = function(){
 	this.dom = {};
     var rowBackgroundColor = "#dadada";
     var dotBackgroundColor = "#616F7A";
-    var dotBackgroundColor_Inactive = "#CCCCCC";
+    var dotBackgroundColor_Inactive = "#AAAAAA";
     var otherGradientColor="gray";
     
     var gradient =this.root.append("svg:linearGradient")
@@ -1749,22 +1749,19 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .style("stop-color",otherGradientColor)
         .style("stop-opacity",0);
 
-    gradient =this.root.append("svg:linearGradient")
+
+    gradient =this.root.append("svg:radialGradient")
         .attr("id","dotGradient"+this.id)
         .attr("x1","0%")
         .attr("y1","0%")
-        .attr("x2","100%")
-        .attr("y2","0%");
+        .attr("x2","0%")
+        .attr("y2","100%");
     gradient.append("svg:stop")
         .attr("offset","0%")
         .style("stop-color",dotBackgroundColor)
-        .style("stop-opacity",0);
-    gradient.append("svg:stop")
-        .attr("offset","45%")
-        .style("stop-color",dotBackgroundColor)
         .style("stop-opacity",1);
     gradient.append("svg:stop")
-        .attr("offset","55%")
+        .attr("offset","25%")
         .style("stop-color",dotBackgroundColor)
         .style("stop-opacity",1);
     gradient.append("svg:stop")
@@ -1772,25 +1769,24 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .style("stop-color",dotBackgroundColor)
         .style("stop-opacity",0);
 
-    gradient =this.root.append("svg:linearGradient")
+    gradient =this.root.append("svg:radialGradient")
         .attr("id","dotGradient_Inactive"+this.id)
         .attr("x1","0%")
         .attr("y1","0%")
-        .attr("x2","100%")
-        .attr("y2","0%");
+        .attr("x2","0%")
+        .attr("y2","100%");
     gradient.append("svg:stop")
         .attr("offset","0%")
         .style("stop-color",dotBackgroundColor_Inactive)
-        .style("stop-opacity",0);
+        .style("stop-opacity",1);
     gradient.append("svg:stop")
-        .attr("offset","50%")
+        .attr("offset","25%")
         .style("stop-color",dotBackgroundColor_Inactive)
         .style("stop-opacity",1);
     gradient.append("svg:stop")
         .attr("offset","100%")
         .style("stop-color",dotBackgroundColor_Inactive)
         .style("stop-opacity",0);
-
 
     this.root
         .append("svg:g")
@@ -3185,7 +3181,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
                 return d.items; }, 
               function(d){ 
                 return d.id(); })
-		.enter().append("svg:rect")
+		.enter().append("svg:circle")
         .each(function(d){
             d.dots.push(this);
         })
@@ -3193,10 +3189,8 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
             return "timeDot";
         })
-        .attr("width", 10)
-        .attr("height", 10)
-		.attr("y", Math.floor(kshf.line_height / 4))
-        .attr("ry",3).attr("rx",3)
+        .attr("r", 7)
+        .attr("cy", Math.floor(kshf.line_height / 2 ))
         .on("mouseover",function(d,i,f){
             d.highlightAttributes();
         })
@@ -3547,7 +3541,7 @@ kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
         ;
 	// Update bar dot positions
 	this.dom.timeDots
-		.attr("x", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos) - 5; });
+		.attr("cx", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos) ; });
 };
 kshf.BarChart.prototype.getFilterMinDateText = function(){
     var dt = new Date(this.timeFilter_ms.min);
