@@ -400,9 +400,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .timeDot{
-	stroke: #eee;
 	cursor: pointer;
-	fill: #616F7A;
+/*	fill: #616F7A; 
+    stroke: #eee;
+*/
+    fill: url(#dotGradient0);
 }
 .kshf div.kshfChart[collapsedTime=true] .timeDot{
     display:none;
@@ -411,7 +413,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*    pointer-events: none; */
 }
 .kshf .timeDot[display=false] {
-	fill: #CCCCCC;
+/*	fill: #CCCCCC; */
+    fill: url(#dotGradient_Inactive0);
     pointer-events: none;
 }
 .kshf .timeDot[display=true]:hover {

@@ -1687,6 +1687,8 @@ kshf.BarChart.prototype.init_shared2 = function(){
 
 	this.dom = {};
     var rowBackgroundColor = "#dadada";
+    var dotBackgroundColor = "#616F7A";
+    var dotBackgroundColor_Inactive = "#CCCCCC";
     var otherGradientColor="gray";
     
     var gradient =this.root.append("svg:linearGradient")
@@ -1746,7 +1748,50 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .attr("offset","100%")
         .style("stop-color",otherGradientColor)
         .style("stop-opacity",0);
-    
+
+    gradient =this.root.append("svg:linearGradient")
+        .attr("id","dotGradient"+this.id)
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","100%")
+        .attr("y2","0%");
+    gradient.append("svg:stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0);
+    gradient.append("svg:stop")
+        .attr("offset","45%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",1);
+    gradient.append("svg:stop")
+        .attr("offset","55%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",1);
+    gradient.append("svg:stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0);
+
+    gradient =this.root.append("svg:linearGradient")
+        .attr("id","dotGradient_Inactive"+this.id)
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","100%")
+        .attr("y2","0%");
+    gradient.append("svg:stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",0);
+    gradient.append("svg:stop")
+        .attr("offset","50%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",1);
+    gradient.append("svg:stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",0);
+
+
     this.root
         .append("svg:g")
         .attr("class", "x_axis")
@@ -3079,7 +3124,7 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
         if(rowData.sortDirty===true && this.type==="scatterplot"){
             rowData.items.sort(timeChartSortFunc);
             var g_row = this.root.selectAll("g.row");
-            g_row.selectAll("circle.timeDot")
+            g_row.selectAll(".timeDot")
                 .data(function(d) { return d.items; }, function(d){ return d.id(); })
                 // calling order will make sure selected ones appear on top of unselected ones.
                 .order()
@@ -3093,7 +3138,7 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
             .order()*/
     }
 
-    this.dom.g_row.selectAll("circle.timeDot")
+    this.dom.g_row.selectAll(".timeDot")
         .data(function(d) { return d.items; }, function(d){ return d.id(); })
         // calling order will make sure selected ones appear on top of unselected ones.
         .order()
@@ -3140,7 +3185,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
                 return d.items; }, 
               function(d){ 
                 return d.id(); })
-		.enter().append("svg:circle")
+		.enter().append("svg:rect")
         .each(function(d){
             d.dots.push(this);
         })
@@ -3148,8 +3193,10 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
             return "timeDot";
         })
-		.attr("r", 5)
-		.attr("cy", Math.floor(kshf.line_height / 2))
+        .attr("width", 10)
+        .attr("height", 10)
+		.attr("y", Math.floor(kshf.line_height / 4))
+        .attr("ry",3).attr("rx",3)
         .on("mouseover",function(d,i,f){
             d.highlightAttributes();
         })
@@ -3193,7 +3240,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
     this.dom.timeBar       = this.root.selectAll('g.barGroup g.row rect.timeBar')
     this.dom.timeBarActive = this.root.selectAll("g.barGroup g.row rect.timeBar.active");
     this.dom.timeBarTotal  = this.root.selectAll("g.barGroup g.row rect.timeBar.total");
-    this.dom.timeDots      = this.root.selectAll('g.barGroup g.row circle.timeDot');
+    this.dom.timeDots      = this.root.selectAll('g.barGroup g.row .timeDot');
 };
 
 
@@ -3500,7 +3547,7 @@ kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
         ;
 	// Update bar dot positions
 	this.dom.timeDots
-		.attr("cx", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos); });
+		.attr("x", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos) - 5; });
 };
 kshf.BarChart.prototype.getFilterMinDateText = function(){
     var dt = new Date(this.timeFilter_ms.min);
