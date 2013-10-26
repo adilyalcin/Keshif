@@ -3189,7 +3189,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
             return "timeDot";
         })
-        .attr("r", 7)
+        .attr("r", 5)
         .attr("cy", Math.floor(kshf.line_height / 2 ))
         .on("mouseover",function(d,i,f){
             d.highlightAttributes();
