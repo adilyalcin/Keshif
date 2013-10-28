@@ -128,7 +128,7 @@ function loadChart() {
             {
                 facetTitle: "Continent",
                 catItemMap : function(flag){ return flag.data[flag_cols.Landmass]; },
-                rowLabelText: function(d) { return landmassText(d.data[1]); },
+                catLabelText: function(d) { return landmassText(d.data[1]); },
                 filter: { rowConj: 'in continent' },
                 timeTitle: "Flag Date",
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); }
@@ -139,20 +139,20 @@ function loadChart() {
                     if(r===9) return 10;
                     return r;
                 },
-                rowLabelText: function(d) { return languageText(d.data[1]); },
+                catLabelText: function(d) { return languageText(d.data[1]); },
                 filter: { rowConj: 'language' }
             },
             /*
             {
                 facetTitle: "Zone",
                 catItemMap : function(flag){return flag.data[flag_cols.Zone]; },
-                rowLabelText: function(d) { return zoneText(d.data[1]); },
+                catLabelText: function(d) { return zoneText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'zone' }
             },{
                 facetTitle: "Religion",
                 catItemMap : function(flag){return flag.data[flag_cols.Religion]; },
-                rowLabelText: function(d) { return religionText(d.data[1]); },
+                catLabelText: function(d) { return religionText(d.data[1]); },
                 collapsed: true,
                 filter: { rowConj: 'religion' }
             }); */
@@ -190,7 +190,7 @@ function loadChart() {
                     var r=flag.data[flag_cols.Bars];
                     return (r===0)?0:r;
                 },
-                rowLabelText: function(d) { return d.data[1]+" bar"+(d.data[1]>1?"s":""); },
+                catLabelText: function(d) { return d.data[1]+" bar"+(d.data[1]>1?"s":""); },
                 sortingFuncs: [{
                     name:"Bar count",
                     no_resort: true,
@@ -209,7 +209,7 @@ function loadChart() {
                     var r=flag.data[flag_cols.Stripes];
                     return (r===0)?null:r;
                 },
-                rowLabelText: function(d) { return d.data[1]+" stripe"+(d.data[1]>1?"s":""); },
+                catLabelText: function(d) { return d.data[1]+" stripe"+(d.data[1]>1?"s":""); },
                 sortingFuncs: [{
                     name:"Stripe count",
                     no_resort: true,

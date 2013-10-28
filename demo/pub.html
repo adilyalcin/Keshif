@@ -75,7 +75,7 @@ function loadChart() {
                 facetTitle: "Topic",
                 catTableName: "Keywords",
                 catItemMap : function(pub){ return pub.data[pubCol.keywords]; },
-                rowLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
+                catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
                 singleSelect:true,
                 sortingFuncs : [
                     {   name: "Last pub.", 
@@ -117,8 +117,8 @@ function loadChart() {
                 facetTitle: "Coauthor",
                 catTableName: "Authors",
                 catItemMap : function(pub){ return pub.data[pubCol.authors]; },
-                rowLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
-                rowTitleText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
+                catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
+                catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
                 barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
                 sortingFuncs : [
                     {   name: "# of Pub.", 

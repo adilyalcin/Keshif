@@ -71,13 +71,13 @@ function loadChart() {
             },{
                 facetTitle: "Country",
                 catItemMap : function(news){return news.data[newsCol.places]; },
-                rowLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
+                catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "People",
                 catItemMap : function(news){return news.data[newsCol.people]; },
-                rowLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
-                rowTitleText: function(d) { 
+                catLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
+                catTooltipText: function(d) { 
                     var p = kshf.dt_id.People[d.data[1]];
                     return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
                 },

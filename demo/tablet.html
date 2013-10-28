@@ -85,7 +85,7 @@ function loadChart() {
                     if(isNaN(x)) { return ""; }
                     return x;
                 },
-                rowLabelText: function(d) { return d.data[1]+" inches"; },
+                catLabelText: function(d) { return d.data[1]+" inches"; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){  return b.data[1]-a.data[1]; }
@@ -95,7 +95,7 @@ function loadChart() {
             },{
                 facetTitle: "Weight",
                 catItemMap : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
-                rowLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
+                catLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:kshf.filter_AciveItems_TotalItems
@@ -104,7 +104,7 @@ function loadChart() {
             },{
                 facetTitle: "Battery Life",
                 catItemMap : function(tablet){return tablet.data[1]; },
-                rowLabelText: function(d) { return d.data[1] + " hours"; },
+                catLabelText: function(d) { return d.data[1] + " hours"; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ return b.data[1] - a.data[1]; }

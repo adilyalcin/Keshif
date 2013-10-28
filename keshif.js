@@ -1088,9 +1088,9 @@ kshf.addBarChart = function(options){
     if(options.sortingFuncs===undefined){
         options.sortingFuncs = [{ func:kshf.filter_AciveItems_TotalItems }];
     }
-    if(options.rowLabelText===undefined){
+    if(options.catLabelText===undefined){
         // get the 2nd attribute as row text [1st is expected to be the id]
-        options.rowLabelText = function(typ){ return typ.data[1]; };
+        options.catLabelText = function(typ){ return typ.data[1]; };
     }
     options.rowTextWidth = this.categoryTextWidth;
     this.charts.push(new kshf.BarChart(this,options));
@@ -1892,7 +1892,7 @@ kshf.BarChart.prototype.refreshActiveItemCount = function(){
     this.dom.row_title.text(function(d){
             return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
                 kshf_.options.filter.rowConj+" "+
-                ((kshf_.options.rowTitleText)?kshf_.options.rowTitleText(d):kshf_.options.rowLabelText(d));
+                ((kshf_.options.catTooltipText)?kshf_.options.catTooltipText(d):kshf_.options.catLabelText(d));
         });
 };
 kshf.BarChart.prototype.refreshBarHeight = function(){
@@ -2149,11 +2149,11 @@ kshf.BarChart.prototype.insertHeader = function(){
                         var daat=kshf_.getData(),i,numSelected=0;
                         for(i=0; i<daat.length ; i++){
                             var d=daat[i];
-                            if(kshf_.options.rowLabelText(d).toString().toLowerCase().indexOf(v)!==-1){
+                            if(kshf_.options.catLabelText(d).toString().toLowerCase().indexOf(v)!==-1){
                                 d.selected = true;
                             } else {
-                                if(kshf_.options.rowTitleText){
-                                    d.selected = kshf_.options.rowTitleText(d).toLowerCase().indexOf(v)!==-1;
+                                if(kshf_.options.catTooltipText){
+                                    d.selected = kshf_.options.catTooltipText(d).toLowerCase().indexOf(v)!==-1;
                                 } else{
                                     d.selected = false;
                                 }
@@ -2780,10 +2780,10 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
                     selectedItemsText+=" or ";
                     selectedItemsText_Sm+=", ";
                 }
-                var labelText = kshf_.options.rowLabelText(d);
+                var labelText = kshf_.options.catLabelText(d);
                 var titleText = labelText;
-                if(kshf_.options.rowTitleText){
-                    titleText = kshf_.options.rowTitleText(d);
+                if(kshf_.options.catTooltipText){
+                    titleText = kshf_.options.catTooltipText(d);
                 }
                 selectedItemsText+="<b>"+labelText+"</b>";
                 selectedItemsText_Sm+=titleText;
@@ -2893,7 +2893,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 		.append("svg:text")
 		.attr("class", "row_label")
 		.attr("dy", 14)
-		.text(this.options.rowLabelText);
+		.text(this.options.catLabelText);
 	// Create helper line
 	if(this.options.display.row_bar_line){
 		this.dom.row_bar_line = rowsSub.append("svg:line")

@@ -85,7 +85,7 @@ function loadChart() {
                 },
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
-                rowLabelText: function(d) {return leagueText(d); },
+                catLabelText: function(d) {return leagueText(d); },
                 filter: { rowConj: 'from' }
             },{
                 facetTitle: "To Team",
@@ -104,7 +104,7 @@ function loadChart() {
                 },
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
-                rowLabelText: function(d) {return leagueText(d); },
+                catLabelText: function(d) {return leagueText(d); },
                 filter: { rowConj: 'to' }
             }
         ],

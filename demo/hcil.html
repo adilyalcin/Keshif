@@ -107,8 +107,8 @@ function loadChart() {
                 facetTitle: "Topics",
                 catTableName: "topics",
                 catItemMap : function(pub){ return pub.data[trsCol.topics]; },
-                rowLabelText: function(topic) { return topic.data[topicsCol.topic]; },
-                rowTitleText: function(topic) { return topic.data[topicsCol.topic]; },
+                catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
+                catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
                 timeItemMap : function(pub){ return new Date(pub.data[trsCol.date]); },
                 timeTitle: "Publication Year",
                 filter: {
@@ -120,7 +120,7 @@ function loadChart() {
                 facetTitle: "Authors",
                 catTableName: "people",
                 catItemMap : function(pub){ return pub.data[trsCol.people]; },
-                rowLabelText: function(author) { 
+                catLabelText: function(author) { 
                     return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
                 },
                 filter: {
@@ -146,7 +146,7 @@ function loadChart() {
                     }
                     return r;
                 },
-                rowLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
+                catLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
                 filter: {
                     rowConj: 'by',
                     rowGroupName: 'members'
@@ -155,7 +155,7 @@ function loadChart() {
                 facetTitle: "Projects",
                 catTableName: "projects",
                 catItemMap : function(pub){ return pub.data[trsCol.projects]; },
-                rowLabelText: function(project) { return project.data[projectsCol.project];  },
+                catLabelText: function(project) { return project.data[projectsCol.project];  },
                 filter: {
                     rowConj: 'within',
                     rowGroupName: 'projects'

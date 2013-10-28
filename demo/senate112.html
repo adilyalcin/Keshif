@@ -40,7 +40,7 @@ function loadChart() {
             },{
                 facetTitle: "Sessions",
                 catItemMap : function(vote){return vote.data[2]; },
-                rowLabelText: function(d) { 
+                catLabelText: function(d) { 
                     if(d.data[1]===1) { return "1st Session"; }
                     if(d.data[1]===2) { return "2nd Session"; }
                 },
@@ -54,7 +54,7 @@ function loadChart() {
             },{
                 facetTitle: "Yea's",
                 catItemMap : function(vote){ return Math.floor(vote.data[8]/5)*5; },
-                rowLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
+                catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ 
@@ -66,7 +66,7 @@ function loadChart() {
             },{
                 facetTitle: "Nay's",
                 catItemMap : function(vote){ return Math.floor(vote.data[9]/5)*5; },
-                rowLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
+                catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ 
