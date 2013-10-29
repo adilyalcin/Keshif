@@ -133,8 +133,7 @@ function loadChart() {
                     width: 50,
                     value: function(d){ 
                         var date=getDate(d);
-                        date = new Date(date.getUTCFullYear(), date.getUTCMonth());
-                        return date.getTime(); 
+                        return new Date(date.getUTCFullYear(), date.getUTCMonth());
                     },
                     value_type : 'date',
                     label: function(d){ 
