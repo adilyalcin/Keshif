@@ -416,6 +416,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[dotConfig=Gradient-50] .timeDot{
     fill: url(#dotGradient50);
 }
+.kshf div.kshfChart[dotConfig=Gradient-25] .timeDot{
+    fill: url(#dotGradient25);
+}
 
 .kshf div.kshfChart[collapsedTime=true] .timeDot{
     display:none;

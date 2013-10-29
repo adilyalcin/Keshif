@@ -1806,6 +1806,25 @@ kshf.BarChart.prototype.init_shared2 = function(){
             .style("stop-opacity",0);
 
         gradient =this.root.append("svg:radialGradient")
+            .attr("id","dotGradient25")
+            .attr("x1","0%")
+            .attr("y1","0%")
+            .attr("x2","0%")
+            .attr("y2","100%");
+        gradient.append("svg:stop")
+            .attr("offset","0%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.25);
+        gradient.append("svg:stop")
+            .attr("offset","25%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.25);
+        gradient.append("svg:stop")
+            .attr("offset","100%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0);
+
+        gradient =this.root.append("svg:radialGradient")
             .attr("id","dotGradient100")
             .attr("x1","0%")
             .attr("y1","0%")
@@ -2312,8 +2331,10 @@ kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
             this.divRoot.attr("dotconfig","Gradient-100");
         } else if(mmm>numOfItems){
             this.divRoot.attr("dotconfig","Gradient-75");
-        } else {
+        } else if(mmm>numOfItems*0.5){
             this.divRoot.attr("dotconfig","Gradient-50");
+        } else {
+            this.divRoot.attr("dotconfig","Gradient-25");
         }
     }
 }
