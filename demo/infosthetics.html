@@ -10,6 +10,7 @@
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
 function getNumComments(v){
     if(v==0) return "None";
     if(v<6) return "1-5";
@@ -20,7 +21,6 @@ function getNumComments(v){
 
 function resetSize(){
     $('#chart_div4').height($(window).height()-10);
-//    $('#chart_div4').height(730);
     $('#chart_div4').width (800);
 }
 
@@ -41,20 +41,19 @@ function loadChart() {
         categoryTextWidth:171,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
-            sheets : [ {name:"Posts"}]
+            sheets : [ {name:"Posts"} ]
         },
         loadedCb: function(){
             postCols = kshf.dt_ColNames.Posts;
-            kshf.cellToArray(kshf.dt.Posts, [postCols['Categories']], ",", false);
+            kshf.cellToArray(kshf.dt.Posts, [postCols['Category']], ",", false);
         },
         charts: [
-            {
-                facetTitle: "Categories",
-                catItemMap : function(post){ return post.data[postCols['Categories']]; },
+            {   facetTitle: "Category",
+                catItemMap : function(post){ return post.data[postCols['Category']]; },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "# of comments",
-                catItemMap : function(post){ return getNumComments(post.data[postCols['Comments']]); },
+                catItemMap : function(post){ return getNumComments(post.data[postCols['# of Comments']]); },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "Year",
@@ -96,7 +95,7 @@ function loadChart() {
 
                 // author
                 str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['Comments']];
+                str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['# of Comments']];
                 str+="</div>";
 
                 str+="</div>";
@@ -110,27 +109,17 @@ $(document).ready(loadChart);
 
 </script>
 <style>
-
-div.listItem{
-    padding-bottom: 4px;
-}
-
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-
-#chart_div4 {
-    margin: 0 auto;
-/*    top: 50px;*/
-}
-
-.leftBlockAdjustSize{
-    display: none;
-}
-
-body{ margin:2px; }
-
+    div.listItem{
+        padding-bottom: 4px;
+    }
+    .iteminfo a{
+        color:#606060;
+        font-style:italic;
+    }
+    #chart_div4 {
+        margin: 0 auto;
+    }
+    body{ margin:2px; }
 </style>
 	</head>
 	<body>
