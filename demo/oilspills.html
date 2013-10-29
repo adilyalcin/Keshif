@@ -80,7 +80,7 @@ function loadChart() {
             {
                 facetTitle: "Size",
                 timeTitle: "Date",
-                catItemMap : function(spill){ return spill.data[spillsCol.Size]; },
+                catItemMap : function(spill){ return spill.data[spillsCol['Size']]; },
                 sortingFuncs : [{ 
                     func:kshf.filter_AciveItems_TotalItems,
                     no_resort: true
@@ -103,15 +103,15 @@ function loadChart() {
                 filter: { unit: 'feet' }
             });*/,{
                 facetTitle: "During Activity",
-                catItemMap : function(spill){ return spill.data[spillsCol["Activity"]] },
+                catItemMap : function(spill){ return spill.data[spillsCol["During Activity"]] },
                 filter: { rowConj: 'during' }
             },{
                 facetTitle: "Cause",
-                catItemMap : function(spill){ return spill.data[spillsCol["Causes"]] },
+                catItemMap : function(spill){ return spill.data[spillsCol["Cause"]] },
                 filter: { rowConj: 'because of', rowGroupName: 'causes' }
             },{
                 facetTitle: "Company",
-                catItemMap : function(spill){ return spill.data[spillsCol["Company Name"]]},
+                catItemMap : function(spill){ return spill.data[spillsCol["Company"]]},
                 filter: { rowConj: 'by', rowGroupName: ' companies' }
             },{
                 facetTitle: "Other Properties",

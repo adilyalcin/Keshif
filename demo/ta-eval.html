@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Teaching Assistnat Evaluations</title>
+		<title>Teaching Assistant Evaluations</title>
         <script type="text/javascript" src="http://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
@@ -35,7 +35,7 @@ function loadChart() {
         chartTitle: "Teaching Assistant Evaluations",
         domID : "#chart_div4",
         dirRoot: "../",
-        categoryTextWidth:190,
+        categoryTextWidth:170,
         itemName : "assistants",
         source : {
             gdocId : '0Ai6LdDWgaqgNdEgtRFNsNU9LNTNPanFSUjVyTHlOU2c',
@@ -47,12 +47,12 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "Performance",
-                catItemMap : function(ast){ return ast.data[TA_cols.Performance]; },
+                catItemMap : function(ast){ return ast.data[TA_cols['Performance']]; },
                 catLabelText: function(d) { return performanceText(d.data[1]); },
                 filter: { rowConj: 'performance' },
             },{
                 facetTitle: "Native Speaker",
-                catItemMap : function(ast){return ast.data[TA_cols.Native_Speaker]; },
+                catItemMap : function(ast){return ast.data[TA_cols['Native Speaker']]; },
                 catLabelText: function(d) { 
                     if(d.data[1]===1) { return "Yes"; }
                     if(d.data[1]===2) { return "No"; }
@@ -60,16 +60,16 @@ function loadChart() {
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Instructor",
-                catItemMap : function(ast){return ast.data[TA_cols.Instructor]; },
+                catItemMap : function(ast){return ast.data[TA_cols['Instructor']]; },
                 catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];},
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Course",
-                catItemMap : function(ast){return ast.data[TA_cols.Instructor]; },
+                catItemMap : function(ast){return ast.data[TA_cols['Course']]; },
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Semester",
-                catItemMap : function(ast){return ast.data[TA_cols.Semester]; },
+                catItemMap : function(ast){return ast.data[TA_cols['Semester']]; },
                 catLabelText: function(d) { 
                     if(d.data[1]===1) { return "Summer"; }
                     if(d.data[1]===2) { return "Regular"; }
@@ -77,7 +77,7 @@ function loadChart() {
                 filter: { rowConj: 'at' }
             },{
                 facetTitle: "Class Size",
-                catItemMap : function(ast){return Math.floor(ast.data[TA_cols.Class_Size]/5); },
+                catItemMap : function(ast){return Math.floor(ast.data[TA_cols['Class Size']]/5); },
                 catLabelText: function(d) { return d.data[1]*5;},
                 sortingFuncs: [{
                      no_resort: true,
@@ -92,17 +92,18 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Performance',
                     width: 90,
-                    value: function(ast){ return ast.data[TA_cols.Performance]; },
+                    value: function(ast){ return ast.data[TA_cols['Performance']]; },
                     value_type : 'number',
-                    label: function(ast){ return performanceText(ast.data[TA_cols.Performance]); },
+                    label: function(ast){ return performanceText(ast.data[TA_cols['Performance']]); },
                 }
             ],
-            textSearch : function (ast) { return ast.data[TA_cols.Name]; },
+            textSearch : function (ast) { return ast.data[TA_cols['Name']]; },
+            textSearchTitle: "TA Name",
             contentFunc : function(ast){
                 var j;
                 var str="";
                 // description
-                    str+="<div class=\"iteminfo iteminfo_1\">"+ast.data[TA_cols.Name];
+                    str+="<div class=\"iteminfo iteminfo_1\">"+ast.data[TA_cols['Name']];
                     str+="</div>";
                 return str;
             }

@@ -45,24 +45,24 @@ function loadChart() {
         },
         loadedCb: function(){
             postCols = kshf.dt_ColNames.Posts;
-            kshf.cellToArray(kshf.dt.Posts, [postCols.categories], ",", false);
+            kshf.cellToArray(kshf.dt.Posts, [postCols['Categories']], ",", false);
         },
         charts: [
             {
                 facetTitle: "Categories",
-                catItemMap : function(post){ return post.data[postCols.categories]; },
+                catItemMap : function(post){ return post.data[postCols['Categories']]; },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "# of comments",
-                catItemMap : function(post){ return getNumComments(post.data[postCols.comments]); },
+                catItemMap : function(post){ return getNumComments(post.data[postCols['Comments']]); },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "Year",
-                catItemMap : function(post){ return post.data[postCols.date].getUTCFullYear(); },
+                catItemMap : function(post){ return post.data[postCols['DateTime']].getUTCFullYear(); },
                 filter: { rowConj: 'in category' }
             },{
                 facetTitle: "Author",
-                catItemMap : function(post){ return post.data[postCols.author]; },
+                catItemMap : function(post){ return post.data[postCols['Author']]; },
                 catDispCountFix: 6,
                 filter: { rowConj: 'in category' }
             }
@@ -71,32 +71,32 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 45,
-                    value: function(d){ return d.data[postCols.date].getUTCFullYear(); },
+                    value: function(d){ return d.data[postCols['DateTime']].getUTCFullYear(); },
                     value_type : 'number'
                 }
             ],
-            textSearch : function (d) { return d.data[postCols.title]; },
+            textSearch : function (d) { return d.data[postCols['Title']]; },
             textSearchTitle : "post title",
             contentFunc : function(d) {
                 var j;
                 var str="";
                 
-                str+="<img src=\""+d.data[postCols.img]+"\" width=\"80\" style=\"float:left\">";
+                str+="<img src=\""+d.data[postCols['Img']]+"\" width=\"80\" style=\"float:left\">";
                 str+="<div style=\"position: relative; left:5px; width:calc(100% - 85px);\">";
 
                 // title
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+="<a href=\""+d.data[postCols.url]+"\" target=\"_blanl\">"+d.data[postCols.title]+"<a/>";
+                str+="<a href=\""+d.data[postCols['URL']]+"\" target=\"_blanl\">"+d.data[postCols['Title']]+"<a/>";
                 str+="</div>";
 
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="About: "+d.data[postCols.categories];
+                str+="About: "+d.data[postCols['Categories']];
                 str+="</div>";
 
                 // author
                 str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="Written by: "+d.data[postCols.author]+" Comments: "+d.data[postCols.comments];
+                str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['Comments']];
                 str+="</div>";
 
                 str+="</div>";

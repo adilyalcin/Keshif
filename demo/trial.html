@@ -62,26 +62,6 @@ function loadChart() {
         },
         charts:[
             {
-                facetTitle: "Company",
-                catTableName: "Companies",
-                catTooltipText: function(d){ return d.data[0]; },
-                dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
-                barInfoText: "Dot color: Phase type",
-                timeItemMap : function(d){ return d.data[2]; },
-                filter: { rowConj: 'by', rowGroupName: 'companies' },
-                timeTitle: "Trial Primary Completion Date",
-                catItemMap : function(trial){ return trial.data[0]; }
-            },{
-                facetTitle: "Company Industry",
-                catTableName: "Industries",
-                catItemMap : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
-                catLabelText: function(d){ return d.data[2]; },
-                catTooltipText: function(d){ return d.data[1]; },
-                filter: { rowConj: 'within', rowGroupName: 'industries' }
-            }/*,{ // range chart!
-                facetTitle: "Comp. Market Cap",
-                catItemMap :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
-            }*/,{
                 facetTitle: "Phase Type",
                 catTableName: "Phases",
                 catItemMap : function(trial){ return trial.data[4]; },
@@ -95,7 +75,27 @@ function loadChart() {
                     },
                     no_resort: true // never sort chart again
                 }],
-                filter: { rowConj: 'in', rowGroupName: 'phase types' }
+                filter: { rowConj: 'in', rowGroupName: 'phase types' },
+                timeItemMap : function(d){ return d.data[2]; },
+                timeTitle: "Trial Primary Completion Date",
+            },{
+                facetTitle: "Company Industry",
+                catTableName: "Industries",
+                catItemMap : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
+                catLabelText: function(d){ return d.data[2]; },
+                catTooltipText: function(d){ return d.data[1]; },
+                filter: { rowConj: 'within', rowGroupName: 'industries' }
+            }/*,{ // range chart!
+                facetTitle: "Comp. Market Cap",
+                catItemMap :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
+            }*/,{
+                facetTitle: "Company",
+                catItemMap : function(trial){ return trial.data[0]; },
+                catTableName: "Companies",
+                catTooltipText: function(d){ return d.data[0]; },
+                dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
+                barInfoText: "Dot color: Phase type",
+                filter: { rowConj: 'by', rowGroupName: 'companies' }
             },{
                 facetTitle: "Condition",
                 catTableName: "Conditions" ,
@@ -107,7 +107,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 75,
-                    value: function(d){ return d.data[2].getTime(); },
+                    value: function(d){ return d.data[2]; },
                     value_type : 'date',
                     label: function(d){ 
                         var date=d.data[2];
@@ -170,7 +170,7 @@ google.setOnLoadCallback(loadChart);
     font-style:italic;
 }
 
-/* rectangle style */
+/* rectangle style 
 #chart_div4 rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
 #chart_div4 rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
 #chart_div4 rect.bar_style_phase_2{ fill: #ff942a; }
@@ -178,14 +178,14 @@ google.setOnLoadCallback(loadChart);
 #chart_div4 rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
 #chart_div4 rect.bar_style_phase_5{ fill: #3886c8; }
 
-/* dot style */
+/* dot style 
 #chart_div4 circle.timeDot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
 #chart_div4 circle.timeDot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
 #chart_div4 circle.timeDot[display=true].bar_style_phase_2{ fill: #ff942a; }
 #chart_div4 circle.timeDot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
 #chart_div4 circle.timeDot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
 #chart_div4 circle.timeDot[display=true].bar_style_phase_5{ fill: #3886c8; }
-
+*/
 #chart_div4 {
     margin: 0 auto;
 }

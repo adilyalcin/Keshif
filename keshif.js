@@ -1132,6 +1132,10 @@ kshf.update = function () {
         this.listDisplay.updateList();
     }
 
+    if(this.charts[0].type==='scatterplot'){
+        this.charts[0].updateTimeChartDotConfig();
+    }
+
 	// update each widget within
 	for (i=0; i<this.charts.length; ++i){
         chart = kshf.charts[i];
@@ -2284,7 +2288,7 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
 
 kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
     var me = this;
-    if(this.options.timeDotConfig === undefined){
+    if(this.options.timeDotConfig === undefined && this.type==='scatterplot'){
         var mmm = this.options.timeMaxWidth/10;
         var timeRange = this.chartX_max_ms-this.chartX_min_ms;
         var spannedRange = 0;
@@ -2821,8 +2825,6 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
         this.dom.showTextSearch[0][0].value="";
     }
     this.refreshFilterRowState();
-
-    this.updateTimeChartDotConfig();
 
     return true;
 };
