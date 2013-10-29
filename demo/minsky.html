@@ -9,9 +9,6 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
         <script type="text/javascript">
-/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
-/*global google */
-
 
 function loadChart() {
     // set div height accordingly 
@@ -42,12 +39,12 @@ function loadChart() {
         loadedCb: function(){
             pubCol = kshf.dt_ColNames.Publications;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt.Publications, [pubCol['Co-Authors'], pubCol['Topics']],/\b,/, false );
+            kshf.cellToArray(kshf.dt.Publications, [pubCol['Co-Author'], pubCol['Topic']],/\b,/, false );
         },
         charts:[
             {
                 facetTitle: "Topic",
-                catItemMap : function(pub){ return pub.data[pubCol.Topics]; },
+                catItemMap : function(pub){ return pub.data[pubCol['Topic']]; },
                 sortingFuncs : [
                     {   name: "Last pub. of topic", 
                         func: function(a, b){
@@ -79,14 +76,14 @@ function loadChart() {
                 ],
                 filter : { rowConj: 'about', rowGroupName: 'categories' },
                 timeTitle: "Publication Year",
-                timeItemMap : function(pub){ return pub.data[pubCol.Time]; }
+                timeItemMap : function(pub){ return pub.data[pubCol['Time']]; }
             },{
-                facetTitle: "Co-Authors",
-                catItemMap : function(pub){ return pub.data[pubCol['Co-Authors']]; },
+                facetTitle: "Co-Author",
+                catItemMap : function(pub){ return pub.data[pubCol['Co-Author']]; },
                 filter: { rowConj: 'with', rowGroupName: 'types' }
             },{
                 facetTitle: "Pub. Type",
-                catItemMap : function(pub){ return pub.data[pubCol.Type]; },
+                catItemMap : function(pub){ return pub.data[pubCol['Pub. Type']]; },
                 forceSearch: false,
                 filter: { rowConj: 'as', rowGroupName: 'types' }
             }
@@ -95,27 +92,27 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     width: 72,
-                    value: function(d){ return d.data[pubCol.Time].getFullYear(); },
+                    value: function(d){ return d.data[pubCol['Time']].getFullYear(); },
                     value_type: 'number'
                 },
                 {   name: 'Type',
                     width: 72,
                     value_type: 'string',
-                    value: function(d){  return d.data[pubCol.Type];  }
+                    value: function(d){  return d.data[pubCol['Type']];  }
                 },
             ],
-            textSearch : function (pub) { return pub.data[pubCol.Title]; },
+            textSearch : function (pub) { return pub.data[pubCol['Title']]; },
             contentFunc : function(item){
                 var j;
                 var str="";
-                var ptype=item.data[pubCol.Type];
+                var ptype=item.data[pubCol['Type']];
                 // paper name
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+=item.data[pubCol.Title];
                 if(ptype!=='') str+=" <i>("+ptype+")</i>";
                 str+="</div>";
                 // Venue
-                var year = item.data[pubCol.Time].getFullYear();
+                var year = item.data[pubCol['Time']].getFullYear();
                 var venue=item.data[pubCol['Venue']];
                 var subvenue=item.data[pubCol['Venue-Sub']];
                 var location=item.data[pubCol['Location']];
@@ -128,24 +125,14 @@ function loadChart() {
                     str+="</div>";
                 }
                 // co-authors
-                var coAuthors=item.data[pubCol['Co-Authors']];
+                var coAuthors=item.data[pubCol['Co-Author']];
                 if(coAuthors.length!==0){
-                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: ";
-                    for(j=0; j<coAuthors.length;j++){
-                        str+=coAuthors[j];
-                        if(j!==coAuthors.length-1) str+=", ";
-                    }
-                    str+="</div>";
+                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: "+coAuthors+"</div>";
                 }
                 // topics
-                var topics=item.data[pubCol['Topics']];
+                var topics=item.data[pubCol['Topic']];
                 if(topics.length!==0){
-                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: ";
-                    for(j=0; j<topics.length;j++){
-                        str+=topics[j];
-                        if(j!==topics.length-1) str+=", ";
-                    }
-                    str+="</div>";
+                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
                 }
                 return str;
             }

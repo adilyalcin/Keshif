@@ -49,9 +49,11 @@ function loadChart() {
         charts: [
             {   facetTitle: "Category",
                 catItemMap : function(post){ return post.data[postCols['Category']]; },
+                timeItemMap : function(post){ return post.data[postCols['DateTime']]; },
+                timeTitle: "Date",
                 filter: { rowConj: 'in category' }
             },{
-                facetTitle: "# of comments",
+                facetTitle: "# of Comments",
                 catItemMap : function(post){ return getNumComments(post.data[postCols['# of Comments']]); },
                 filter: { rowConj: 'in category' }
             },{
@@ -88,9 +90,7 @@ function loadChart() {
                 str+="</div>";
 
                 // categories
-                str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="About: "+d.data[postCols['Category']];
-                str+="</div>";
+                str+="<div class=\"iteminfo iteminfo_1\">About: "+d.data[postCols['Category']]+"</div>";
 
                 // author
                 str+="<div class=\"iteminfo iteminfo_1\">";

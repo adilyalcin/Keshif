@@ -249,7 +249,7 @@ function loadChart() {
                 filter: { rowConj: 'speed limit' }
             },{
                 facetTitle: "# of Vehicles",
-                catItemMap : function(accident){return accident.data[accCol['Vehicles']]; },
+                catItemMap : function(accident){return accident.data[accCol['# of Vehicles']]; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ 
@@ -258,9 +258,9 @@ function loadChart() {
                 }],
                 filter: { rowConj: 'vehicles' }
             },{
-                facetTitle: "Road Surface Conditions",
+                facetTitle: "Road Surface Condition",
                 catItemMap : function(accident){
-                    var c=accident.data[accCol['Road Surface Conditions']];
+                    var c=accident.data[accCol['Road Surface Condition']];
                     return (c===-1)?null:c; // skip if -1
                 },
                 catLabelText: function(d) { return roadSurfaceText(d.data[1]); },
