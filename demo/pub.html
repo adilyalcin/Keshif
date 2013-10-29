@@ -103,11 +103,7 @@ function loadChart() {
                         }
                     },
                     {   name:"# of Pub.", 
-                        func: function(a, b){
-                            var dif = kshf.dif_activeItems(a,b);
-                            if(dif!==0) { return dif; }
-                            return a.data[keywordCol.keyword].localeCompare(b.data[keywordCol.keyword]);
-                        }
+                        func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
                 filter : { rowConj: 'about', rowGroupName: 'categories' },

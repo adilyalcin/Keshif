@@ -748,6 +748,8 @@ kshf.list.prototype.sortItems = function(){
             var f_b = f(b);
             if(c.value_type==='string') {
                 dif = f_a.localeCompare(f_b);
+            } else if(c.value_type==='date') {
+                dif = f_b.getTime() - f_a.getTime();
             } else {
                 dif = f_b-f_a;
             }
@@ -880,6 +882,7 @@ kshf.init = function (options) {
     this.loadedCb = options.loadedCb;
 
     this.time_animation_barscale = 400;
+    this.layout_animation = 500;
     
     this.root = d3.select(this.domID)
         .attr("class","kshfHost")
@@ -990,6 +993,7 @@ kshf.init = function (options) {
             ;
     }
 
+
     this.layoutBackground = this.root.append("div").attr("class","kshf layout_left_background");
     var mm=this.root.append("div").attr("class","kshf layout_left_header").append("div").attr("class","filter_header");
     mm.style("top",(this.chartTitle?"23":"0")+"px")
@@ -1024,8 +1028,10 @@ kshf.init = function (options) {
             me.root.on("mousemove", function() {
                 var mouseMove_x = d3.mouse(this)[0];
                 var mouseDif = mouseMove_x-mouseDown_x;
-                kshf.time_animation_barscale = 0;
-                kshf.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                me.time_animation_barscale = 0;
+                me.layout_animation = 0;
+                me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                me.layout_animation = 500;
             });
             me.root.on("mouseup", function(){
                 me.root.style('cursor','default');
@@ -1204,7 +1210,7 @@ kshf.updateLayout_Height = function(){
     // TODO: list item header is assumed to be 3 rows, but it may dynamically change!
     this.root.selectAll("div.listItemGroup")
         .transition()
-        .duration(500)
+        .duration(this.layout_animation)
         .style("height",(kshf.line_height * (divLineRem-3))+"px")
         ;
 
@@ -1286,7 +1292,7 @@ kshf.updateLayout_Height = function(){
 
     this.root.selectAll("div.layout_right")
         .transition()
-        .duration(500)
+        .duration(this.layout_animation)
         .style("top", (-topOffset*kshf.line_height)+"px");
 };
 
@@ -1316,7 +1322,7 @@ kshf.setCategoryTextWidth = function(w){
 
 kshf.setBarWidthLeftPanel = function(v){
     if(v>200) {
-        v=200;
+//        v=200;
     } else if(v>55){
         this.root.attr("hideBars",false);
         this.root.attr("hideBarAxis",false);
@@ -1687,8 +1693,6 @@ kshf.BarChart.prototype.init_shared2 = function(){
 
 	this.dom = {};
     var rowBackgroundColor = "#dadada";
-    var dotBackgroundColor = "#616F7A";
-    var dotBackgroundColor_Inactive = "#AAAAAA";
     var otherGradientColor="gray";
     
     var gradient =this.root.append("svg:linearGradient")
@@ -1749,44 +1753,90 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .style("stop-color",otherGradientColor)
         .style("stop-opacity",0);
 
+    if(this.options.timeItemMap!==undefined){
+        var dotBackgroundColor = "#616F7A";
+        var dotBackgroundColor_Inactive = "#CCCCCC";
 
-    gradient =this.root.append("svg:radialGradient")
-        .attr("id","dotGradient"+this.id)
-        .attr("x1","0%")
-        .attr("y1","0%")
-        .attr("x2","0%")
-        .attr("y2","100%");
-    gradient.append("svg:stop")
-        .attr("offset","0%")
-        .style("stop-color",dotBackgroundColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","25%")
-        .style("stop-color",dotBackgroundColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","100%")
-        .style("stop-color",dotBackgroundColor)
-        .style("stop-opacity",0);
+        var gradient =this.root.append("svg:radialGradient")
+            .attr("id","dotGradient50")
+            .attr("x1","0%")
+            .attr("y1","0%")
+            .attr("x2","0%")
+            .attr("y2","100%");
+        gradient.append("svg:stop")
+            .attr("offset","0%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.5);
+        gradient.append("svg:stop")
+            .attr("offset","25%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.5);
+        gradient.append("svg:stop")
+            .attr("offset","100%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0);
 
-    gradient =this.root.append("svg:radialGradient")
-        .attr("id","dotGradient_Inactive"+this.id)
-        .attr("x1","0%")
-        .attr("y1","0%")
-        .attr("x2","0%")
-        .attr("y2","100%");
-    gradient.append("svg:stop")
-        .attr("offset","0%")
-        .style("stop-color",dotBackgroundColor_Inactive)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","25%")
-        .style("stop-color",dotBackgroundColor_Inactive)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","100%")
-        .style("stop-color",dotBackgroundColor_Inactive)
-        .style("stop-opacity",0);
+        gradient =this.root.append("svg:radialGradient")
+            .attr("id","dotGradient75")
+            .attr("x1","0%")
+            .attr("y1","0%")
+            .attr("x2","0%")
+            .attr("y2","100%");
+        gradient.append("svg:stop")
+            .attr("offset","0%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.75);
+        gradient.append("svg:stop")
+            .attr("offset","25%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0.75);
+        gradient.append("svg:stop")
+            .attr("offset","100%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0);
+
+        gradient =this.root.append("svg:radialGradient")
+            .attr("id","dotGradient100")
+            .attr("x1","0%")
+            .attr("y1","0%")
+            .attr("x2","0%")
+            .attr("y2","100%");
+        gradient.append("svg:stop")
+            .attr("offset","0%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",1.00);
+        gradient.append("svg:stop")
+            .attr("offset","25%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",1.00);
+        gradient.append("svg:stop")
+            .attr("offset","100%")
+            .style("stop-color",dotBackgroundColor)
+            .style("stop-opacity",0);
+
+        gradient =this.root.append("svg:radialGradient")
+            .attr("id","dotGradient_Inactive")
+            .attr("x1","0%")
+            .attr("y1","0%")
+            .attr("x2","0%")
+            .attr("y2","100%");
+        gradient.append("svg:stop")
+            .attr("offset","0%")
+            .style("stop-color",dotBackgroundColor_Inactive)
+            .style("stop-opacity",1);
+        gradient.append("svg:stop")
+            .attr("offset","25%")
+            .style("stop-color",dotBackgroundColor_Inactive)
+            .style("stop-opacity",1);
+        gradient.append("svg:stop")
+            .attr("offset","100%")
+            .style("stop-color",dotBackgroundColor_Inactive)
+            .style("stop-opacity",0);
+
+        if(this.options.timeDotConfig!==undefined){
+            this.divRoot.attr("dotconfig",this.options.timeDotConfig);
+        }
+    }
 
     this.root
         .append("svg:g")
@@ -1966,6 +2016,7 @@ kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
         this.dom.showTextSearch[0][0].value="";
     }
     if(toUpdate!==false) { kshf.update(); }
+    this.updateTimeChartDotConfig();
 };
 
 kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
@@ -1999,19 +2050,19 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
 
     this.headerhtml.select("span.leftHeader")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .style("padding-top",(this.collapsed?collapsedHeaderPadding:this.leftHeaderPaddingTop)+"px");
 
     this.root.select("g.barGroup_Top")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .attr("transform", function(d,i) {
             return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
         })
 
     this.root.select("g.x_axis")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .attr("transform","translate("+this.options.rowTextWidth+","+(kshf.line_height*(this.rowCount_Header()))+")")
 
     this.root.select("g.timeAxisGroup")
@@ -2207,7 +2258,6 @@ kshf.BarChart.prototype.insertHeader = function(){
 kshf.BarChart.prototype.setTimeWidth = function(w){
     this.options.timeMaxWidth = w;
 
-
     this.setTimeTicks();
 
     this.updateTimeChartBarsDots();
@@ -2229,7 +2279,34 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
             .attr("x2",x2);
     }
 
+    this.updateTimeChartDotConfig();
 };
+
+kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
+    var me = this;
+    if(this.options.timeDotConfig === undefined){
+        var mmm = this.options.timeMaxWidth/10;
+        var timeRange = this.chartX_max_ms-this.chartX_min_ms;
+        var spannedRange = 0;
+        this.dom.timeBarActive
+            .each(function(d) {
+                if(me.catCount_Selected===0 || d.selected===true){
+                    spannedRange += (d.xMax-d.xMin);
+                }
+            })
+        var numOfItems = this.parentKshf.itemsSelectedCt;
+        mmm = mmm*(spannedRange/timeRange);
+        if(mmm>numOfItems*4){
+            this.divRoot.attr("dotconfig","Solid");
+        } else if(mmm>numOfItems*2){
+            this.divRoot.attr("dotconfig","Gradient-100");
+        } else if(mmm>numOfItems){
+            this.divRoot.attr("dotconfig","Gradient-75");
+        } else {
+            this.divRoot.attr("dotconfig","Gradient-50");
+        }
+    }
+}
 
 kshf.BarChart.prototype.updateXAxisScale = function(){
     this.xAxisScale = d3.scale.linear()
@@ -2275,20 +2352,20 @@ kshf.BarChart.prototype.refreshScrollbar = function(animate){
         if(scrollHandleHeight<10) { scrollHandleHeight=10;}
         this.root.selectAll("g.scrollGroup rect.background_up")
             .transition()
-            .duration(500)
+            .duration(this.parentKshf.layout_animation)
             .attr("height",(handleTopPos));
         this.root.selectAll("g.scrollGroup rect.background_down")
             .transition()
-            .duration(500)
+            .duration(this.parentKshf.layout_animation)
             .attr("y",handleTopPos)
             .attr("height",kshf.line_height*this.rowCount_VisibleItem-handleTopPos)
         ;
         this.root.selectAll("g.scrollGroup rect.handle")
             .transition()
-            .duration(500)
+            .duration(this.parentKshf.layout_animation)
         this.root.selectAll("g.scrollGroup rect.handle")
             .transition()
-            .duration(500)
+            .duration(this.parentKshf.layout_animation)
             .attr("height",scrollHandleHeight)
             .attr("y",handleTopPos);
         this.root.select("g.barGroup")
@@ -2360,14 +2437,14 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
         .attr("collapsed",this.collapsed===false?"false":"true")
         .attr("collapsedTime",this.collapsedTime===false?"false":"true")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .style("height",totalHeight+"px");
     this.root.select("rect.chartBackground").attr('height', kshf.line_height*this.rowCount_Total());
     
     // update clippath height
     this.root.select("#kshf_chart_clippath_"+this.id+" rect")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
 		.attr("height",barsHeight);
     
     this.root.select("g.headerGroup text.barInfo")
@@ -2378,25 +2455,25 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
     // update scrollbar height
     this.root.selectAll("g.scrollGroup rect.background")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
 		.attr("height",barsHeight+1);
     this.root.selectAll("g.scrollGroup text.scroll_display_more")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .attr('y',(barsHeight+10));
     
     // update x axis items
 	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
 		.attr("y2", barsHeight+kshf.line_height*1.5-4);
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
 		.attr("height", barsHeight);
     this.root.selectAll("g.x_axis g.tick line")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .attr("y2", barsHeight);
 
     // how much is one row when mapped to the scroll bar?
@@ -2581,17 +2658,17 @@ kshf.BarChart.prototype.updateScrollBarPos = function(){
 	var translate_left = this.options.rowTextWidth+this.barMaxWidth+kshf.scrollPadding;//+this.options.timeMaxWidth;
     this.root.select("g.scrollGroup")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
         .attr("transform","translate(0,"+(kshf.line_height*this.rowCount_Header())+")");
 	this.root.select("g.scrollGroup g.leftScroll")
         .transition()
-        .duration(500)
+        .duration(this.parentKshf.layout_animation)
 		.attr("transform","translate("+
 			translate_left+",0)");
     if(this.type==='scatterplot'){
         this.root.select("g.scrollGroup g.rightScroll")
             .transition()
-            .duration(500)
+            .duration(this.parentKshf.layout_animation)
             .attr("transform","translate("+(this.getWidth()-15)+",0)");
     }
 
@@ -2744,6 +2821,9 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
         this.dom.showTextSearch[0][0].value="";
     }
     this.refreshFilterRowState();
+
+    this.updateTimeChartDotConfig();
+
     return true;
 };
 kshf.BarChart.prototype.filterTime = function(){
@@ -3051,10 +3131,12 @@ kshf.BarChart.prototype.updateSorting = function(force){
 kshf.BarChart.prototype.insertXAxisTicks = function(){
     var axisGroup = this.root.select("g.x_axis");
 
+    var timeVal = this.barMaxWidth/25;
+
     var xAxis = d3.svg.axis()
         .tickSize(0, 0, 0)
 		.orient('top')
-		.ticks(this.barMaxWidth/25) // TODO: make this configurable
+		.ticks(timeVal) // TODO: make this configurable
 		.tickFormat(d3.format("s"))
         .scale(this.xAxisScale);
 	axisGroup.call(xAxis);
@@ -3267,7 +3349,7 @@ kshf.BarChart.prototype.setTimeTicks = function(){
         this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/70));
     } else if(true){
         this.timeticks.range = d3.time.months;
-        this.timeticks.format = d3.time.format("%b. %y");
+        this.timeticks.format = d3.time.format("%b'%y");
         this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/70));
         // must be 1/2/3/4/60/12
         if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}

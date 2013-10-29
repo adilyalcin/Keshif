@@ -166,7 +166,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-weight: 300;
 }
 .kshf g.timeAxisGroup text{
-	font-size: 0.8em;
+	font-size: 0.7em;
     text-shadow: 1px 1px white;
     font-weight: 300;
 }
@@ -401,27 +401,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf .timeDot{
 	cursor: pointer;
-/*	fill: #616F7A; 
-    stroke: #eee;
-*/
-    fill: url(#dotGradient0);
 }
+
+.kshf div.kshfChart[dotConfig=Solid] .timeDot{
+    fill: #616F7A; 
+    stroke: #eee;
+}
+.kshf div.kshfChart[dotConfig=Gradient-100] .timeDot{
+    fill: url(#dotGradient100);
+}
+.kshf div.kshfChart[dotConfig=Gradient-75] .timeDot{
+    fill: url(#dotGradient75);
+}
+.kshf div.kshfChart[dotConfig=Gradient-50] .timeDot{
+    fill: url(#dotGradient50);
+}
+
 .kshf div.kshfChart[collapsedTime=true] .timeDot{
     display:none;
 }
-.kshf .timeDot[display=true] {
-/*    pointer-events: none; */
-}
 .kshf .timeDot[display=false] {
-/*	fill: #CCCCCC; */
-    fill: url(#dotGradient_Inactive0);
     pointer-events: none;
 }
+.kshf div.kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
+    fill: url(#dotGradient_Inactive);
+}
+.kshf div.kshfChart[dotConfig=Solid] .timeDot[display=false] {
+    fill: #CCCCCC;
+}
 .kshf .timeDot[display=true]:hover {
-	stroke: orangered;
+	stroke: orangered !important;
 	stroke-width:2;
 }
-.kshf .timeDot[G=true] {
+.kshf .timeDot[highlight=true] {
     stroke: #c32c2c;
     stroke-width:2;
 }
