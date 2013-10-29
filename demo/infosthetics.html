@@ -37,7 +37,6 @@ function loadChart() {
         chartTitle: "5 Years of Infosthetics",
         domID : "#chart_div4",
         dirRoot: "../",
-        itemName : "posts",
         categoryTextWidth:171,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
@@ -90,7 +89,7 @@ function loadChart() {
 
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="About: "+d.data[postCols['Categories']];
+                str+="About: "+d.data[postCols['Category']];
                 str+="</div>";
 
                 // author

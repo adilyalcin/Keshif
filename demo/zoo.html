@@ -25,7 +25,6 @@ function loadChart() {
         chartTitle: "Animals in Zoo",
         dirRoot: "../",
         domID : "#chart_div4",
-        itemName : "Animals",
         categoryTextWidth:150,
         showDataSource : false,
         source : {
@@ -37,7 +36,7 @@ function loadChart() {
         },
         charts: [
             {
-                facetTitle: "# Legs",
+                facetTitle: "# of Legs",
                 catItemMap : function(animal){ return animal.data[animalCol['# of Legs']]; },
                 filter: { rowConj: '# legs'}
             },{

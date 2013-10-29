@@ -59,15 +59,10 @@ function loadChart() {
         chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
         domID : "#kshfChartId",
         dirRoot: "../",
-        itemName : "spills",
         categoryTextWidth: 200,
         source : {
             gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
-            sheets : [ 
-                {name:"Spills"},
-                {name:"Notes"},
-                {name:"Districts"} 
-            ]
+            sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
         },
         loadedCb: function(){
             spillsCol = kshf.dt_ColNames.Spills;

@@ -522,7 +522,7 @@ kshf.list = function(_kshf, config, root){
     var count_wrap = listHeaderTopRow.append("span").attr("class","listheader_count_wrap");
     count_wrap.append("span").attr("class","listheader_count_bar");
     count_wrap.append("span").attr("class","listheader_count");
-    listHeaderTopRow.append("span").attr("class","listheader_itemName").style("margin-right","2px").html(capitaliseFirstLetter(kshf.itemName));
+    listHeaderTopRow.append("span").attr("class","listheader_itemName").style("margin-right","2px").html(kshf.itemName);
     if(this.hideTextSearch!==true){    
         var listHeaderTopRowTextSearch = listHeaderTopRow.append("span").attr("class","bigTextSearch_wrap");
         listHeaderTopRowTextSearch.append("img")
@@ -876,7 +876,6 @@ kshf.init = function (options) {
     if(this.line_height===undefined){
         this.line_height = 18; // default
     }
-    this.itemName = options.itemName;
     this.domID = options.domID;
     this.source = options.source;
     this.loadedCb = options.loadedCb;
@@ -895,6 +894,13 @@ kshf.init = function (options) {
             me.clearAllFilters();
         }
     });
+
+    if(options.itemName!==undefined){
+        this.itemName = options.itemName;
+    } else {
+        this.itemName = this.source.sheets[0].name;
+    }
+    
 
     this.dirRoot = "./";
     if(options.dirRoot !== undefined){
