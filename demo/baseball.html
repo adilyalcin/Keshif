@@ -9,22 +9,11 @@
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
-/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
-/*global google*/
-
 /*
 Data source:
 http://www.infochimps.com/datasets/retrosheet-transactions-in-major-league-baseball-trade-signing-d
 ttp://www.retrosheet.org/transactions/index.html  
 */
-
-function leagueText(d){
-    switch(d.data[1]){
-        case "NL": return "National League";
-        case "AL": return "American League";
-        default: return d.data[1];
-    }
-}
 
 function loadChart() {
     
@@ -83,7 +72,6 @@ function loadChart() {
                 },
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
-                catLabelText: function(d) {return leagueText(d); },
                 textFilter: 'from'
             },{
                 facetTitle: "To Team",
@@ -101,7 +89,6 @@ function loadChart() {
                 },
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
-                catLabelText: function(d) {return leagueText(d); },
                 textFilter: 'to'
             }
         ],

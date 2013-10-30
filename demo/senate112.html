@@ -47,7 +47,7 @@ function loadChart() {
                 },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ return parseFloat(a.data[1],10) -parseFloat(b.data[1],10); }
+                    func:kshf.sortFunc_Column_ParseInt_Incr
                     }],
                 textFilter: 'at'
             },{
@@ -56,7 +56,7 @@ function loadChart() {
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); }
+                    func:kshf.sortFunc_Column_ParseInt_Decr
                     }],
                 forceSearch: false
             },{
@@ -65,7 +65,7 @@ function loadChart() {
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); }
+                    func:kshf.sortFunc_Column_ParseInt_Decr
                     }],
                 forceSearch: false
             }

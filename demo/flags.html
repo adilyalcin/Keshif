@@ -9,6 +9,7 @@
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
 function landmassText(d){
     switch(d){
         case 1: return "North America";
@@ -191,10 +192,10 @@ function loadChart() {
                 sortingFuncs: [{
                     name:"Bar count",
                     no_resort: true,
-                    func:function(a,b){ return a.data[1] -b.data[1]; }
+                    func:kshf.sortFunc_Column_Int_Incr
                 },{  
                     name:"Flag count",
-                    func:kshf.filter_AciveItems_TotalItems
+                    func:kshf.sortFunc_ActiveCount_TotalCount
                 }]
             },{
                 facetTitle: "# of Stripes",
@@ -206,10 +207,10 @@ function loadChart() {
                 sortingFuncs: [{
                     name:"Stripe count",
                     no_resort: true,
-                    func:function(a,b){ return a.data[1] -b.data[1]; }
+                    func:kshf.sortFunc_Column_Int_Incr
                 },{ 
                     name:"Flag count",
-                    func:kshf.filter_AciveItems_TotalItems
+                    func:kshf.sortFunc_ActiveCount_TotalCount
                 }]
             } /*,{
                 facetTitle: "Other Properties",
@@ -239,8 +240,8 @@ function loadChart() {
                     value_type : 'number'
                 }
             ],
-    /*        textSearch : function (flag) { return flag.data[flag_cols.Country]; },
-            textSearchTitle : "countries",*/
+            textSearch : function (flag) { return flag.data[flag_cols.Country]; },
+            textSearchTitle : "countries",
             contentFunc : function(d){
                 var j;
                 var str="";

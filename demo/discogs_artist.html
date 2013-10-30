@@ -43,9 +43,9 @@ var releaseCols = {
     format: 2,
     genres: 3,
     id: 4,
-    label: 5,
+    Label: 5,
     role: 6,
-    styles: 7,
+    Style: 7,
     title: 8,
     type: 9,
     year: 10
@@ -129,14 +129,14 @@ function processReleaseResponse(role){
         relData2[releaseCols.id] = relData.id;
         relData2[releaseCols.thumb] = relData.thumb;
         relData2[releaseCols.year] = relData.year;
-        relData2[releaseCols.styles] = relData.styles;
+        relData2[releaseCols.Style] = relData.styles;
         relData2[releaseCols.genres] = relData.genres;
         relData2[releaseCols.country] = relData.country;
         relData2[releaseCols.title] = relData.title;
-        relData2[releaseCols.label] = [];
+        relData2[releaseCols.Label] = [];
         relData2[releaseCols.role] = role;
         for(var i=0;i<relData.labels.length ; i++){
-            relData2[releaseCols.label].push(relData.labels[i].name);
+            relData2[releaseCols.Label].push(relData.labels[i].name);
         }
         relData2[releaseCols.artist] = [];
         for(var i=0;i<relData.artists.length ; i++){
@@ -229,24 +229,19 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Label",
-                catItemMap : function(release){ return release.data[releaseCols.label]; },
-                filter: { rowConj: 'label' },
+                timeTitle : "Year",
                 timeItemMap : function(release){ 
                     var rYear = release.data[releaseCols.year];
                     if(rYear===undefined) return null;
                     if(rYear===null) return null;
                     return new Date(moment(rYear+"01-01","YYYY-MM-DD"));
-                },
-                timeTitle : "Year"
+                }
 /*            }, {
                 facetTitle: "Type",
                 catItemMap : function(release){ return release.data[releaseCols.type]; },
                 filter: { rowConj: 'type' }*/
             }, {
                 facetTitle: "Style",
-                catItemMap : function(release){ 
-                    return release.data[releaseCols.styles];
-                },
                 filter: { rowConj: 'style' }
             }, {
                 facetTitle: "Format",
@@ -303,9 +298,9 @@ function loadChart() {
                     str+="</div>";
                 }
 
-                if(release.data[releaseCols.styles]!==undefined){
+                if(release.data[releaseCols.Style]!==undefined){
                     str+="<div class=\"iteminfo iteminfo_1\">";
-                    str+="<b>Styles</b>: "+release.data[releaseCols.styles].toString();
+                    str+="<b>Styles</b>: "+release.data[releaseCols.Style].toString();
                     str+="</div>";
                 }
 
@@ -315,9 +310,9 @@ function loadChart() {
                     str+="</div>";
                 }
 
-                if(release.data[releaseCols.label]!==undefined){
+                if(release.data[releaseCols.Label]!==undefined){
                     str+="<div class=\"iteminfo iteminfo_1\">";
-                    str+="<b>Label</b>: "+release.data[releaseCols.label].toString();
+                    str+="<b>Label</b>: "+release.data[releaseCols.Label].toString();
                     str+="</div>";
                 }
 

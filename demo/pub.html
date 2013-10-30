@@ -78,31 +78,13 @@ function loadChart() {
                 singleSelect:true,
                 sortingFuncs : [
                     {   name: "Last pub.", 
-                        func: function(a, b){
-                            if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
-                                return b.xMax_Dyn - a.xMax_Dyn;
-                            }
-                            if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
-                                return b.xMax - a.xMax;
-                            }
-                            if(b.xMax_Dyn===undefined){ return -1; }
-                            return 1;
-                        }
+                        func: kshf.sortFunc_Time_Last
                     },
                     {   name: "First pub.", 
-                        func: function(a, b){
-                            if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
-                                return a.xMin_Dyn - b.xMin_Dyn;
-                            }
-                            if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
-                                return a.xMin - b.xMin;
-                            }
-                            if(b.xMin_Dyn===undefined){ return -1; }
-                            return 1;
-                        }
+                        func: kshf.sortFunc_Time_First
                     },
                     {   name:"# of Pub.", 
-                        func:kshf.filter_AciveItems_TotalItems
+                        func:kshf.sortFunc_ActiveCount_TotalCount
                     }
                 ],
                 textFilter: 'about'

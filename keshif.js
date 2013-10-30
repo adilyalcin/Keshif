@@ -1096,7 +1096,7 @@ kshf.addBarChart = function(options){
         options.generateRows = true;
     }
     if(options.sortingFuncs===undefined){
-        options.sortingFuncs = [{ func:kshf.filter_AciveItems_TotalItems }];
+        options.sortingFuncs = [{ func:kshf.sortFunc_ActiveCount_TotalCount }];
     }
     if(options.catLabelText===undefined){
         // get the 2nd attribute as row text [1st is expected to be the id]
@@ -1157,11 +1157,46 @@ kshf.dif_activeItems = function(a,b){
 	return b.activeItems - a.activeItems;
 };
 
-kshf.filter_AciveItems_TotalItems = function(a,b){ 
+kshf.sortFunc_ActiveCount_TotalCount = function(a,b){ 
     var dif=kshf.dif_activeItems(a,b);
     if(dif===0) { return b.items.length-a.items.length; }
     return dif;
 };
+kshf.sortFunc_Column_Int_Incr = function(a,b){ 
+    return a.data[1] - b.data[1]; 
+}
+kshf.sortFunc_Column_Int_Decr = function(a,b){ 
+    return b.data[1] - a.data[1]; 
+}
+kshf.sortFunc_Column_ParseInt_Incr = function(a,b){ 
+    return parseFloat(a.data[1],10) -parseFloat(b.data[1],10);
+}
+kshf.sortFunc_Column_ParseInt_Decr = function(a,b){ 
+    return parseFloat(b.data[1],10) -parseFloat(a.data[1],10);
+}
+
+kshf.sortFunc_Time_Last = function(a, b){
+    if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
+        return b.xMax_Dyn - a.xMax_Dyn;
+    }
+    if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
+        return b.xMax - a.xMax;
+    }
+    if(b.xMax_Dyn===undefined){ return -1; }
+    return 1;
+}
+
+kshf.sortFunc_Time_First = function(a, b){
+    if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
+        return a.xMin_Dyn - b.xMin_Dyn;
+    }
+    if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
+        return a.xMin - b.xMin;
+    }
+    if(b.xMin_Dyn===undefined){ return -1; }
+    return 1;
+}
+
 
 kshf.createListDisplay = function(listOptions){
     this.listDisplay = new kshf.list(this,listOptions,this.layoutRight);

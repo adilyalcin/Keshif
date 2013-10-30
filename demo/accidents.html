@@ -10,6 +10,7 @@
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
 var QueryString = function () {
   // This function is anonymous, is executed immediately and 
   // the return value is assigned to QueryString!
@@ -33,138 +34,12 @@ var QueryString = function () {
     return query_string;
 } ();
 
-
-function roadTypeText(d){
-    switch(d){
-        case 1: return "Roundabout";
-        case 2: return "One way Street";
-        case 3: return "Dual Carriageway";
-        case 6: return "Single Carriageway";
-        case 7: return "Slip Road";
-        case 9: return "Unknown";
-        default: return "-";
-    }
-}
-function roadSurfaceText(d){
-    switch(d){
-        case 1: return "Dry";
-        case 2: return "Wet / Damp";
-        case 3: return "Snow";
-        case 4: return "Frost / Ice";
-        case 5: return "Flood";
-        default: return "-";
-    }
-}
-function junctionDetailText(d){
-    switch(d){
-        case 1: return "Roundabout";
-        case 2: return "Mini roundabout";
-        case 3: return "T/staggered junction";
-        case 5: return "Slip road";
-        case 6: return "Crossroads";
-        case 7: return "More than four arms (not RAB)";
-        case 8: return "Private drive or entrance";
-        case 9: return "Other";
-        default: return "-";
-    }
-}
-function junctionControlText(d){
-    switch(d){
-        case 1: return "Authorized Person";
-        case 2: return "Traffic signal";
-        case 3: return "Stop sign";
-        case 4: return "Give way or uncontrolled";
-        default: return "-";
-    }
-}
-function severityText(d){
-    switch(d){
-        case 1: return "Fatal";
-        case 2: return "Serious";
-        case 3: return "Slight";
-        default: return "-";
-    }
-}
-function lightConditionText(d){
-    switch(d){
-        case 1: return "Daylight";
-        case 4: return "Dark, street lights lit";
-        case 5: return "Dark, street lights unlit";
-        case 6: return "Dark, no street lights";
-        case 7: return "Dark, ? street lights";
-        default: return "-";
-    }
-}
-function lightConditionDetail(d){
-    switch(d){
-        case 1: return "Daylight";
-        case 4: return "Darkness: street lights present and lit";
-        case 5: return "Darkness: street lights present but unlit";
-        case 6: return "Darkness: no street lighting";
-        case 7: return "Darkness: street lighting unknown";
-        default: return "-";
-    }
-}
-function weatherConditionText(d){
-    switch(d){
-        case 1: return "Fine";
-        case 2: return "Raining";
-        case 3: return "Snowing";
-        case 4: return "Fine, high winds ";
-        case 5: return "Raining, high winds";
-        case 6: return "Snowing, high winds";
-        case 7: return "Fog or mist";
-        case 8: return "Other";
-        case 9: return "Unknown";
-        default: return "-";
-    }
-}
 function timeOfDayText(d){
     switch(d){
         case 0: return "Night: 00-06";
         case 1: return "Morning: 06-12";
         case 2: return "Afternoon: 12-18";
         case 3: return "Evening: 18-24";
-    }
-}
-function weatherConditionDetail(d){
-    switch(d){
-        case 1: return "Fine without high winds";
-        case 2: return "Raining without high winds";
-        case 3: return "Snowing without high winds";
-        case 4: return "Fine with high winds ";
-        case 5: return "Raining with high winds";
-        case 6: return "Snowing with high winds";
-        case 7: return "Fog or mist — if hazard";
-        case 8: return "Other";
-        case 9: return "Unknown";
-        default: return "-";
-    }
-}
-function specialConditionText(d){
-    switch(d){
-        case 0: return "None";
-        case 1: return "Traffic signal out";
-        case 2: return "Traffic signal defective";
-        case 3: return "Signing/marking defective";
-        case 4: return "Roadworks";
-        case 5: return "Road surface defective";
-        case 6: return "Oil or diesel";
-        case 7: return "Mud";
-        default: return "-";
-    }
-}
-function specialConditionDetail(d){
-    switch(d){
-        case 0: return "None";
-        case 1: return "Auto traffic signal out";
-        case 2: return "Auto traffic signal partially defective";
-        case 3: return "Permanent road signing or marking defective or obscured";
-        case 4: return "Roadworks";
-        case 5: return "Road surface defective";
-        case 6: return "Oil or diesel";
-        case 7: return "Mud";
-        default: return "-";
     }
 }
 
@@ -195,7 +70,10 @@ function loadChart() {
         categoryTextWidth:220,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
-            sheets : [ sheetInfo ]
+            sheets : [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
+                {name:"JuncDet"} , {name:"JuncCont"} , {name:"SpecCond"} ,
+                {name:"Severity"} , {name:"LightCond"} , {name:"WeatherCond"}
+            ]
         },
         loadedCb: function(){
             accCol = kshf.dt_ColNames.Accidents;
@@ -203,12 +81,12 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Road Type",
-                catLabelText: function(d) {  return roadTypeText(d.data[1]); },
+                catTableName: "RoadType",
                 timeTitle: "Date",
                 textFilter : 'on', textGroup: 'road types'
             },{
                 facetTitle: "Severity",
-                catLabelText: function(d) { return severityText(d.data[1]); },
+                catTableName: "Severity",
                 textFilter : 'with severity', textGroup: 'road types'
             },{
                 facetTitle: "Area",
@@ -229,59 +107,55 @@ function loadChart() {
                 sortingFuncs: [{
                     name:"By speed",
                     no_resort: true,
-                    func:function(a,b){ 
-                        return parseFloat(a.data[1],10) -parseFloat(b.data[1],10); // X GB
-                    }
+                    func:kshf.sortFunc_Column_ParseInt_Incr
                 },{
                     name:"By accidents",
-                    func:kshf.filter_AciveItems_TotalItems
+                    func:kshf.sortFunc_ActiveCount_TotalCount
                 }]
             },{
                 facetTitle: "# of Vehicles",
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ 
-                        return parseFloat(a.data[1],10) -parseFloat(b.data[1],10); // X GB
-                    }
+                    func:kshf.sortFunc_Column_ParseInt_Incr
                 }]
             },{
                 facetTitle: "Road Surface Condition",
+                catTableName: "RoadSurface",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Road Surface Condition']];
                     return (c===-1)?null:c; // skip if -1
-                },
-                catLabelText: function(d) { return roadSurfaceText(d.data[1]); }
+                }
             },{
                 facetTitle: "Light Condition",
-                catLabelText: function(d) { return lightConditionText(d.data[1]); },
-                catTooltipText: function(d) { return lightConditionDetail(d.data[1]); }
+                catTableName: "LightCond",
+                catTooltipText: function(d) { return d.data[2]; }
             },{
                 facetTitle: "Weather Condition",
-                catLabelText: function(d) { return weatherConditionText(d.data[1]);},
-                catTooltipText: function(d) { return weatherConditionDetail(d.data[1]);}
+                catTableName: "WeatherCond",
+                catTooltipText: function(d) { return d.data[2];}
             },{
                 facetTitle: "Special Condition",
+                catTableName: "SpecCond",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Special Condition']];
                     return (c===0)?null:c; // skip if 0
                 },
-                catLabelText: function(d) { return specialConditionText(d.data[1]); },
-                catTooltipText: function(d) { return specialConditionDetail(d.data[1]); }
+                catTooltipText: function(d) { return d.data[2]; }
             },{
                 facetTitle: "Junction Detail",
+                catTableName: "JuncDet",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Junction Detail']];
                     return (c===-0)?null:c; // skip if 0
                 },
-                catLabelText: function(d) { return junctionDetailText(d.data[1]); },
                 collapsed: true
             },{
                 facetTitle: "Junction Control",
+                catTableName: "JuncCont",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Junction Control']];
                     return (c===-1)?null:c; // skip if 0
                 },
-                catLabelText: function(d) { return junctionControlText(d.data[1]); },
                 collapsed: true
             }
             ],
@@ -304,22 +178,26 @@ function loadChart() {
                     str+="<div class=\"iteminfo iteminfo_0\"> ";
                     str+="<i>"+moment(aDate).format("MMM Do, YYYY")+"</i> - "+ accident.data[accCol.Accident_Index];
                     str+="</div>";
-                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Severity</u>: "+ severityText(accident.data[accCol['Severity']]);
+                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Severity</u>: "+ 
+                        kshf.dt_id['Severity'][accident.data[accCol['Severity']]].data[1];
                     str+=" - <u># of vehicles</u>: "+ accident.data[accCol['Vehicles']];
                     str+=" - <u># of casualties</u>: "+ accident.data[accCol['Casualties']]+"</div>";
-                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Road Type</u>: "+ roadTypeText(accident.data[accCol['Road_Type']]);
+                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Road Type</u>: "+ 
+                        kshf.dt_id['RoadType'][accident.data[accCol['Road Type']]].data[1];
                     str+=" - <u>Speed limit</u>: "+ accident.data[accCol['Speed Limit']]+"mph";
                     str+=" - <u>Area</u>: "+ ((accident.data[accCol['Urban_or_Rural_Area']]===1)? "Urban":"Rural");
                     
                     str+="</div>";
                     str+="<div class=\"iteminfo iteminfo_2\"><u>Light condition</u>: "+ 
-                        lightConditionDetail(accident.data[accCol['Light Condition']]) +"</div>";
+                        kshf.dt_id['LightCond'][accident.data[accCol['Light Condition']]].data[2] +"</div>";
                     str+="<div class=\"iteminfo iteminfo_2\"><u>Road condition</u>: "+ 
-                        roadSurfaceText(accident.data[accCol['Road Surface Condition']]) +"</div>";
+                        kshf.dt_id['RoadSurface'][accident.data[accCol['Road Surface Condition']]].data[1] +"</div>";
                     if(accident.data[accCol['Weather Condition']]!==0)
-                        str+="<div class=\"iteminfo iteminfo_2\"><u>Weather condition</u>: "+ weatherConditionDetail(accident.data[accCol['Weather Condition']]) +"</div>";
+                        str+="<div class=\"iteminfo iteminfo_2\"><u>Weather condition</u>: "+ 
+                            kshf.dt_id['WeatherCond'][accident.data[accCol['Weather Condition']]].data[2] +"</div>";
                     if(accident.data[accCol['Special Condition']]!==0)
-                        str+="<div class=\"iteminfo iteminfo_2\"><u>Special condition</u>: "+ specialConditionDetail(accident.data[accCol['Special Condition']]) +"</div>";
+                        str+="<div class=\"iteminfo iteminfo_2\"><u>Special condition</u>: "+ 
+                            kshf.dt_id['SpecCond'][accident.data[accCol['Special Condition']]].data[2] +"</div>";
                     return str;
                 }
             }
