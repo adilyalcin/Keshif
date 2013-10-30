@@ -48,7 +48,6 @@ function loadChart() {
         },
         charts: [
             {   facetTitle: "Category",
-                timeItemMap : function(post){ return post.data[postCols['DateTime']]; },
                 timeTitle: "Date",
                 textFilter: 'about'
             },{
@@ -56,7 +55,7 @@ function loadChart() {
                 catItemMap : function(post){ return getNumComments(post.data[postCols['# of Comments']]); },
             },{
                 facetTitle: "Year",
-                catItemMap : function(post){ return post.data[postCols['DateTime']].getUTCFullYear(); },
+                catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
                 textFilter: 'in'
             },{
                 facetTitle: "Author",
@@ -68,7 +67,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 45,
-                    value: function(d){ return d.data[postCols['DateTime']].getUTCFullYear(); },
+                    value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); },
                     value_type : 'number'
                 }
             ],

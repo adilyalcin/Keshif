@@ -63,6 +63,7 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Phase Type",
+                timeTitle: "Primary Completion Date",
                 catTableName: "Phases",
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
                 barInfoText: "Color: Phase type",
@@ -74,8 +75,6 @@ function loadChart() {
                     },
                     no_resort: true // never sort chart again
                 }],
-                timeItemMap : function(d){ return d.data[2]; },
-                timeTitle: "Trial Primary Completion Date",
                 textFilter: 'in', textGroup: 'phase types'
             },{
                 facetTitle: "Company Industry",

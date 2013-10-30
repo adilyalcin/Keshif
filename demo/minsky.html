@@ -44,8 +44,7 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Topic",
-                timeTitle: "Publication Year",
-                timeItemMap : function(pub){ return pub.data[pubCol['Time']]; },
+                timeTitle: "Date",
                 sortingFuncs : [
                     {   name: "Last pub. of topic", 
                         func: function(a, b){
@@ -89,7 +88,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     width: 72,
-                    value: function(d){ return d.data[pubCol['Time']].getFullYear(); },
+                    value: function(d){ return d.data[pubCol['Date']].getFullYear(); },
                     value_type: 'number'
                 },
                 {   name: 'Pub. Type',
@@ -109,7 +108,7 @@ function loadChart() {
                 if(ptype!=='') str+=" <i>("+ptype+")</i>";
                 str+="</div>";
                 // Venue
-                var year = item.data[pubCol['Time']].getFullYear();
+                var year = item.data[pubCol['Date']].getFullYear();
                 var venue=item.data[pubCol['Venue']];
                 var subvenue=item.data[pubCol['Venue-Sub']];
                 var location=item.data[pubCol['Location']];

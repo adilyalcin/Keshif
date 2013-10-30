@@ -1090,7 +1090,7 @@ kshf.insertChartHeader = function(){
 }
 
 kshf.addBarChart = function(options){
-    options.layout = (options.timeItemMap!==undefined)?this.layoutTop:this.layoutLeft;
+    options.layout = (options.timeTitle!==undefined)?this.layoutTop:this.layoutLeft;
     if(options.catTableName===undefined){
         options.catTableName = kshf.primaryTableName;
         options.generateRows = true;
@@ -1451,7 +1451,7 @@ kshf.BarChart = function(_kshf, options){
     this.sortDelay = 450; // ms
     this.parentKshf = _kshf;
 
-    if(!this.options.timeItemMap){
+    if(!this.options.timeTitle){
         this.type = 'barChart';
         this.filterCount = 1;
     } else {
@@ -1462,7 +1462,7 @@ kshf.BarChart = function(_kshf, options){
 
     this.init_shared(options);
 
-    if(!this.options.timeItemMap){
+    if(!this.options.timeTitle){
         this.options.display = {row_bar_line:false};
     } else {
         this.options.display = {row_bar_line:true};
@@ -1525,6 +1525,13 @@ kshf.BarChart.prototype.init_shared = function(options){
         var colId = this.parentKshf.dt_ColNames[tableName][this.options.facetTitle];
         this.options.catItemMap = function(d){ 
             return d.data[colId];
+        }
+    }
+    if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
+        var tableName2 = this.parentKshf.source.sheets[0].name;
+        var colId2 = this.parentKshf.dt_ColNames[tableName2][this.options.timeTitle];
+        this.options.timeItemMap = function(d){ 
+            return d.data[colId2];
         }
     }
 
@@ -1769,7 +1776,7 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .style("stop-color",otherGradientColor)
         .style("stop-opacity",0);
 
-    if(this.options.timeItemMap!==undefined){
+    if(this.type==="scatterplot"){
         var dotBackgroundColor = "#616F7A";
         var dotBackgroundColor_Inactive = "#CCCCCC";
 

@@ -40,15 +40,16 @@ function loadChart() {
             newsCol = kshf.dt_ColNames.News;
             peopleCol = kshf.dt_ColNames.People;
             topicsCol = kshf.dt_ColNames.Topics;
-            kshf.cellToArray(kshf.dt.News, [newsCol.people, newsCol.places, newsCol.topics], /\b,/, false);
+            kshf.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
         },
         charts:[
             {
                 facetTitle: "Category",
-                catTableName: "Topics",
+                timeTitle: "Publish Time",
+                catTableName: "Topic",
                 generateRows: true,
                 catItemMap : function(news){
-                    var topics = news.data[newsCol.topics];
+                    var topics = news.data[newsCol.Topic];
                     var cats= {};
                     for(var i=0; i<topics.length; i++){
                         var t=topics[i];
@@ -60,38 +61,31 @@ function loadChart() {
                         toRet.push(c);
                     }
                     return toRet;
-                },
-                timeItemMap : function(news){ return news.data[newsCol.time]; },
-                filter: { rowConj: 'about' },
-                timeTitle: "Publish Date"
+                }
             },{
                 facetTitle: "Topic",
-                catItemMap : function(news){ return news.data[newsCol.topics]; },
-                filter: { rowConj: 'about' }
+                textFilter: 'about'
             },{
                 facetTitle: "Country",
-                catItemMap : function(news){return news.data[newsCol.places]; },
                 catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
-                filter: { rowConj: 'at' }
+                textFilter: 'at'
             },{
                 facetTitle: "People",
-                catItemMap : function(news){return news.data[newsCol.people]; },
                 catLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
                 catTooltipText: function(d) { 
                     var p = kshf.dt_id.People[d.data[1]];
                     return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
-                },
-                filter: { rowConj: 'about' }
+                }
             }
         ],
         list:{
             sortOpts : [
                 {   name: 'Date',
                     width: 70,
-                    value: function(news){ return news.data[newsCol.time]; },
+                    value: function(news){ return news.data[newsCol['Publish Time']]; },
                     value_type : 'date',
                     label: function(d){ 
-                        var date=d.data[newsCol.time];
+                        var date=d.data[newsCol['Publish Time']];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
                     }
                 }
@@ -100,16 +94,11 @@ function loadChart() {
             contentFunc : function(news){
                 var j;
                 var str=news.data[newsCol.title].replace("<","&lt;").replace(">","&gt;");
-                var cats = news.data[newsCol.topics];
+                var cats = news.data[newsCol.Topic];
                 if(cats.length>0){
-                    str+="<div class=\"iteminfo iteminfo_1\"> Topics: ";
-                    for(j=0; j<cats.length; j++){
-                        str+=cats[j];
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
+                    str+="<div class=\"iteminfo iteminfo_1\"> Topics: " + cats + "</div>";
                 }
-                var ctrs = news.data[newsCol.places];
+                var ctrs = news.data[newsCol.Country];
                 if(ctrs.length>0){
                     str+="<div class=\"iteminfo iteminfo_1\"> Countries: ";
                     for(j=0; j<ctrs.length; j++){

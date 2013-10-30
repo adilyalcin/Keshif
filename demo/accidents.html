@@ -205,7 +205,6 @@ function loadChart() {
                 facetTitle: "Road Type",
                 catLabelText: function(d) {  return roadTypeText(d.data[1]); },
                 timeTitle: "Date",
-                timeItemMap : function(accident){ return accident.data[accCol.Date]; },
                 textFilter : 'on', textGroup: 'road types'
             },{
                 facetTitle: "Severity",

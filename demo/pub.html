@@ -37,7 +37,7 @@ function loadChart() {
         dirRoot: "../",
         source : {
             // google spreadsheet ID
-            gdocId : '0Ai6LdDWgaqgNdHk5SGF1SDdMd1hOMUc1elZHRHI3WkE',
+            gdocId : '0Ai6LdDWgaqgNdE0zcUFicnBhSXo0THFFeHJ4aE10UUE',
             // the sheets to load from the spreadsheet
             sheets : [
                 {name: "Publications",query:"select A,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R"},
@@ -56,24 +56,24 @@ function loadChart() {
             keywordCol = kshf.dt_ColNames.Keywords;
             
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt.Publications, [pubCol.authors, pubCol.keywords]);
+            kshf.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
 
             // remove ben bederson from author list, once and for all!
             for(i=0; i<kshf.dt.Publications.length; i++){
-                var authors = kshf.dt.Publications[i].data[pubCol.authors];
+                var authors = kshf.dt.Publications[i].data[pubCol.Coauthor];
                 newAuthors = [];
                 for(j=0 ; j<authors.length ; j++){
                     if(authors[j]===BEDERSON_ID) continue;
                     newAuthors.push(authors[j]);
                 }
-                kshf.dt.Publications[i].data[pubCol.authors] = newAuthors;
+                kshf.dt.Publications[i].data[pubCol.Coauthor] = newAuthors;
             }
         },
         charts : [
             {
                 facetTitle: "Topic",
                 catTableName: "Keywords",
-                catItemMap : function(pub){ return pub.data[pubCol.keywords]; },
+                timeTitle: "Publication Date",
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
                 singleSelect:true,
                 sortingFuncs : [
@@ -105,13 +105,10 @@ function loadChart() {
                         func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
-                timeTitle: "Publication Year",
-                timeItemMap : function(pub){ return pub.data[pubCol.time]; },
                 textFilter: 'about'
             },{
                 facetTitle: "Coauthor",
                 catTableName: "Authors",
-                catItemMap : function(pub){ return pub.data[pubCol.authors]; },
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
                 barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
@@ -141,7 +138,7 @@ function loadChart() {
                 catItemMap : function(pub){
                     var typeList = {};
                     var r = [];
-                    var authors = pub.data[pubCol.authors];
+                    var authors = pub.data[pubCol.Coauthor];
                     for(i=0; i<authors.length; i++){
                         var autData=kshf.dt_id.Authors[authors[i]];
                         var typeID = autData.data[3];
@@ -158,7 +155,6 @@ function loadChart() {
             },{
                 facetTitle: "Publication Type",
                 catTableName: "VenueTypes",
-                catItemMap : function(pub){ return pub.data[pubCol.pub_type]; },
                 textFilter: 'as'
             }
         ],
@@ -166,13 +162,13 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     width: 72,
-                    value: function(d){ return d.data[pubCol.time].getFullYear(); },
+                    value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); },
                     value_type: 'number'
                 },
                 {   name: 'Pub. Type',
                     width: 72,
                     value_type: 'string',
-                    value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol.pub_type]].data[1];  }
+                    value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol['Publication Type']]].data[1];  }
                 },
                 {   name: 'Venue',
                     width: 85,
@@ -216,7 +212,7 @@ function loadChart() {
                     }
                     str+="</div>";
                 // author names
-                var authors = d.data[pubCol.authors];
+                var authors = d.data[pubCol.Coauthor];
                     str+="<div class=\"iteminfo iteminfo_1\">";
                     for(j=0; j<authors.length; j++){
                         var authData=kshf.dt_id.Authors[authors[j]].data;
@@ -227,14 +223,14 @@ function loadChart() {
                     }
                     str+="</div>";
                 // venue + details
-                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol.time].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.venue]].data[0];
+                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol['Publication Date']].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.venue]].data[0];
                     if(d.data[pubCol.details].trim()!=="") {
                         str+=" - " + d.data[pubCol.details];
                     }
                     str+="</div>";
                 // keywords
                     str+="<div class=\"iteminfo iteminfo_2\"> About: ";
-                    var cats = d.data[pubCol.keywords];
+                    var cats = d.data[pubCol.Topic];
                     for(j=0; j<cats.length; j++){
                         str+=kshf.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
                         if(j!==cats.length-1) { str+=', '; }
