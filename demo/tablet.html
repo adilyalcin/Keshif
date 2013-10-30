@@ -10,8 +10,6 @@
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
-/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
-/*global google */
 
 function loadChart() {
     // set div height accordingly 
@@ -36,10 +34,7 @@ function loadChart() {
         },
         charts : [
             {
-                facetTitle: "Brand",
-                catTableName: "tablets",
-                generateRows: true,
-                catItemMap : function(tablet){ return tablet.data[3]; },
+                facetTitle: "Brand Name",
                 sortingFuncs:[
                     {   name: "# of Tablets", 
                         func:kshf.filter_AciveItems_TotalItems
@@ -57,26 +52,22 @@ function loadChart() {
                         }
                     }
                 ],
-                filter: { rowConj: 'by', rowGroupName: 'brands' },
-                // time options
                 timeTitle: "Release Date",
                 timeItemMap : function(tablet){ 
                     var dt = tablet.data[7];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
-                }
+                },
+                textFilter: 'by', textGroup: 'brands'
             },{
                 facetTitle: "Operating System",
-                catItemMap : function(tablet){return tablet.data[14]; },
-                filter: { rowConj: 'with', rowGroupName: 'OS' }
             },{
                 facetTitle: "Flash Memory Size",
                 catItemMap : function(tablet){return tablet.data[8]; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ return parseInt(b.data[1],10) -parseInt(a.data[1],10); }
-                    }],
-                filter: { rowConj: 'with', rowGroupName: 'memory' }
+                }]
             },{
                 facetTitle: "Screen Size",
                 catItemMap : function(tablet){
@@ -88,9 +79,7 @@ function loadChart() {
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){  return b.data[1]-a.data[1]; }
-                    }
-                ],
-                filter: { rowConj: 'with', rowGroupName: 'screen size' }
+                }]
             },{
                 facetTitle: "Weight",
                 catItemMap : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
@@ -98,18 +87,15 @@ function loadChart() {
                 sortingFuncs: [{
                     no_resort: true,
                     func:kshf.filter_AciveItems_TotalItems
-                }],
-                filter: { rowConj: 'of', rowGroupName: 'ounces' }
+                }]
             },{
                 facetTitle: "Battery Life",
-                catItemMap : function(tablet){return tablet.data[1]; },
                 catLabelText: function(d) { return d.data[1] + " hours"; },
                 sortingFuncs: [{
                     no_resort: true,
                     func:function(a,b){ return b.data[1] - a.data[1]; }
                     }],
-                forceSearch: false,
-                filter: { rowConj: 'with', rowGroupName: 'battey life' }
+                forceSearch: false
             }
         ],
         list:{

@@ -67,59 +67,48 @@ function loadChart() {
         loadedCb: function(){
             spillsCol = kshf.dt_ColNames.Spills;
 
-            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Causes], ", ", false);
+            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Cause], ", ", false);
             kshf.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
-            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Activity], /\/\s*/, false);
+            kshf.cellToArray(kshf.dt.Spills, [spillsCol['During Activity']], /\/\s*/, false);
         },
         charts : [
             {
                 facetTitle: "Size",
                 timeTitle: "Date",
-                catItemMap : function(spill){ return spill.data[spillsCol['Size']]; },
                 sortingFuncs : [{ 
                     func:kshf.filter_AciveItems_TotalItems,
                     no_resort: true
                 }],
-                timeItemMap : getDate,
-                filter: { rowConj: 'of size' },
+                timeItemMap : getDate
             },{
                 facetTitle: "Source",
-                catItemMap : getSource,
-                filter: { rowConj: 'from', rowGroupName: 'sources' }
+                catItemMap : getSource
             },{
                 facetTitle: "Material",
-                catItemMap : getMaterial,
-                collapsed: true,
-                filter: { rowConj: 'from', rowGroupName: 'sources' }
+                catItemMap : getMaterial
             }/*
             kshf.addRangeChart({
                 facetTitle: "Water Depth",
                 catItemMap :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
                 filter: { unit: 'feet' }
-            });*/,{
-                facetTitle: "During Activity",
-                catItemMap : function(spill){ return spill.data[spillsCol["During Activity"]] },
-                filter: { rowConj: 'during' }
+            });*/,
+            {
+                facetTitle: "During Activity"
             },{
-                facetTitle: "Cause",
-                catItemMap : function(spill){ return spill.data[spillsCol["Cause"]] },
-                filter: { rowConj: 'because of', rowGroupName: 'causes' }
+                facetTitle: "Cause"
             },{
                 facetTitle: "Company",
-                catItemMap : function(spill){ return spill.data[spillsCol["Company"]]},
-                filter: { rowConj: 'by', rowGroupName: ' companies' }
+                textFilter: 'by', textGroup: 'companies'
             },{
                 facetTitle: "Other Properties",
                 catTableName: "Notes",
                 catItemMap : function(spill){ return spill.data[spillsCol["Notes"]]},
-                collapsed: true,
-                filter: { rowConj: '', rowGroupName: 'other properties' }
+                collapsed: true
             },{
                 facetTitle: "District",
                 catTableName: "Districts",
-                catItemMap : function(spill){ return spill.data[spillsCol["District"]] },
                 collapsed: true,
-                filter: { rowConj: 'at' }
+                textFilter: 'at'
             }
         ],
         list: {
@@ -163,11 +152,7 @@ function loadChart() {
                 str+=" <u>Synthetic Base Fluid</u>:"+d.data[spillsCol["Synthetic Base Fluid"]];
                 str+=" <u>Other Chemicals</u>:"+d.data[spillsCol["Other Chemicals"]];
                 str+="</div>"
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>";
-                for(j=0; j<d.data[spillsCol.Causes].length; j++){
-                    str+=d.data[spillsCol.Causes][j]+", ";
-                }
-                str+="</div>";
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+d.data[spillsCol.Cause]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource(d)
                     +" <b>Facility:</b> "+ d.data[spillsCol["Facility"]]
                     +"</div>";

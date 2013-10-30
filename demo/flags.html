@@ -126,11 +126,10 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Continent",
-                catItemMap : function(flag){ return flag.data[flag_cols.Landmass]; },
                 catLabelText: function(d) { return landmassText(d.data[1]); },
-                filter: { rowConj: 'in continent' },
                 timeTitle: "Flag Date",
-                timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); }
+                timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
+                textFilter : 'in', textGroup  : 'continents'
             },{
                 facetTitle: "Language",
                 catItemMap : function(flag){
@@ -138,8 +137,7 @@ function loadChart() {
                     if(r===9) return 10;
                     return r;
                 },
-                catLabelText: function(d) { return languageText(d.data[1]); },
-                filter: { rowConj: 'language' }
+                catLabelText: function(d) { return languageText(d.data[1]); }
             },
             /*
             {
@@ -168,7 +166,7 @@ function loadChart() {
                     if(flag.data[flag_cols.Orange]) toRet.push("Orange / Brown");
                     return toRet;
                 },
-                filter: { rowConj: 'has color', rowGroupName: 'colors' }
+                textFilter : 'has color', textGroup  : 'colors'
             },{
                 facetTitle: "Shape",
                 catItemMap : function(flag){
@@ -182,7 +180,7 @@ function loadChart() {
                     if(flag.data[flag_cols.Triangle]) toRet.push("Triangle");
                     return toRet;
                 },
-                filter: { rowConj: 'has shape', rowGroupName: 'shapes' }
+                textFilter : 'has shape', textGroup  : 'shapes'
             }, {
                 facetTitle: "# of Bars",
                 catItemMap : function(flag){ 
@@ -193,15 +191,11 @@ function loadChart() {
                 sortingFuncs: [{
                     name:"Bar count",
                     no_resort: true,
-                    func:function(a,b){ 
-                        return a.data[1] -b.data[1]; // X GB
-                    }
-                    },
-                    {   name:"Flag count",
-                        func:kshf.filter_AciveItems_TotalItems
-                    }
-                    ],
-                filter: { rowConj: '# of bars' }
+                    func:function(a,b){ return a.data[1] -b.data[1]; }
+                },{  
+                    name:"Flag count",
+                    func:kshf.filter_AciveItems_TotalItems
+                }]
             },{
                 facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
@@ -212,15 +206,11 @@ function loadChart() {
                 sortingFuncs: [{
                     name:"Stripe count",
                     no_resort: true,
-                    func:function(a,b){ 
-                        return a.data[1] -b.data[1]; // X GB
-                    }
-                    },
-                    {   name:"Flag count",
-                        func:kshf.filter_AciveItems_TotalItems
-                    }
-                    ],
-                filter: { rowConj: '# of stripes' }
+                    func:function(a,b){ return a.data[1] -b.data[1]; }
+                },{ 
+                    name:"Flag count",
+                    func:kshf.filter_AciveItems_TotalItems
+                }]
             } /*,{
                 facetTitle: "Other Properties",
                 catItemMap : function(flag){

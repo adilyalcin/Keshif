@@ -59,22 +59,20 @@ function loadChart() {
         charts: [
             {
                 facetTitle: "Trans. Type",
-                timeTitle: "Transaction Date",
                 catTableName: "baseball_trantype",
-                catItemMap : function(tr){ return tr.data[3]; },
+                timeTitle: "Transaction Date",
                 timeItemMap : function(tr){ 
                     var dt = tr.data[0];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 },
-                filter: { rowConj: 'of type' },
+                textFilter: 'of type'
             },{
                 facetTitle: "From Team",
                 catTableName: "baseball_teams_1",
-                catItemMap : function(tr){return tr.data[4];},
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
-                filter: { rowConj: 'from' }
+                textFilter : 'from', textGroup  : 'teams'
             },{
                 facetTitle: "From League",
                 catTableName: "baseball_leagues_1",
@@ -86,14 +84,13 @@ function loadChart() {
                 barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
                 catLabelText: function(d) {return leagueText(d); },
-                filter: { rowConj: 'from' }
+                textFilter: 'from'
             },{
                 facetTitle: "To Team",
                 catTableName: "baseball_teams_2",
-                catItemMap : function(tr){return tr.data[5];},
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
                 barInfoText: "Color:League",
-                filter: { rowConj: 'to', rowGroupName: 'teams' }
+                textFilter : 'to', textGroup  : 'teams'
             },{
                 facetTitle: "To League",
                 catTableName: "baseball_leagues_2",
@@ -105,7 +102,7 @@ function loadChart() {
                 barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
                 barInfoText: "Color:League",
                 catLabelText: function(d) {return leagueText(d); },
-                filter: { rowConj: 'to' }
+                textFilter: 'to'
             }
         ],
         list: {

@@ -1010,17 +1010,15 @@ kshf.init = function (options) {
         .attr("class","filter-block-clear")
         .attr("filtered_row","false")
         .text("Clear All")
-        .on("click",function(){ 
-         log2Console("CLICK: clearAllFilters");
-         kshf.clearAllFilters();
+        .on("click",function(){
+            kshf.clearAllFilters();
         });
     s.append("div")
         .attr("class","chartClearFilterButton allFilter")
         .attr("title","Clear all")
         .text("x")
-        .on("click",function(){ 
-         log2Console("CLICK: clearAllFilters");
-         kshf.clearAllFilters();
+        .on("click",function(){
+            kshf.clearAllFilters();
         });
 
     mm.append("div").attr("class","leftBlockAdjustSize")
@@ -1521,7 +1519,15 @@ kshf.BarChart.prototype.init_shared = function(options){
     this.sortInverse=false;
     this.options.timeMaxWidth=0;
 	// filter options - must be always specified
-    
+
+    if(this.options.catItemMap===undefined){
+        var tableName = this.parentKshf.source.sheets[0].name;
+        var colId = this.parentKshf.dt_ColNames[tableName][this.options.facetTitle];
+        this.options.catItemMap = function(d){ 
+            return d.data[colId];
+        }
+    }
+
     // generate row table if necessary
     if(this.options.generateRows){
         this.catTableName = this.options.catTableName+"_h_"+this.id;
@@ -1966,12 +1972,12 @@ kshf.BarChart.prototype.updateData_TimeMinMax = function(){
 
 
 kshf.BarChart.prototype.refreshActiveItemCount = function(){
-    var kshf_ = this;
+    var me = this;
     this.dom.item_count.text(function(d) { return "("+d.activeItems+")";});
     this.dom.row_title.text(function(d){
             return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
-                kshf_.options.filter.rowConj+" "+
-                ((kshf_.options.catTooltipText)?kshf_.options.catTooltipText(d):kshf_.options.catLabelText(d));
+                (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
+                ((me.options.catTooltipText)?me.options.catTooltipText(d):me.options.catLabelText(d));
         });
 };
 kshf.BarChart.prototype.refreshBarHeight = function(){
@@ -2032,11 +2038,12 @@ kshf.BarChart.prototype.selectAllRows = function(state){
 	this.catCount_Selected = (state)?this.catCount_Total:0;
 };
 
-kshf.BarChart.prototype.clearAllFilters = function(toUpdate){
-    this.clearRowFilter();
-    if(this.type==='scatterplot') this.clearTimeFilter();
+kshf.BarChart.prototype.clearAllFilters = function(){
+    this.clearRowFilter(false);
+    if(this.type==='scatterplot') this.clearTimeFilter(false);
 }
 kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
+    if(this.catCount_Selected===0) return;
 	this.selectAllRows(false);
     this.filter_addItems();
     this.refreshFilterRowState();
@@ -2045,7 +2052,6 @@ kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
         this.dom.showTextSearch[0][0].value="";
     }
     if(toUpdate!==false) { kshf.update(); }
-    this.updateTimeChartDotConfig();
 };
 
 kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
@@ -2901,7 +2907,7 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         });
         if(this.catCount_Selected>3){
             var bold=this.catCount_Selected;
-            bold+=" selected "+(this.options.filter.rowGroupName?this.options.filter.rowGroupName:"categories");
+            bold+=" "+(this.options.textGroup?this.options.textGroup:"categories");
             $(".filter_row_text_"+this.filterId+" .filter_item")
                 .html("<b>"+bold+"</b>")
                 .attr("title",selectedItemsText_Sm)
@@ -3184,7 +3190,7 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
 	var a = d3.select("span.filter-blocks-for-charts");
 	this.filterSummaryBlock_Row= a.append("html:span")
 		.attr("class","filter-block filter_row_text_"+this.filterId)
-		.text(" "+this.options.filter.rowConj+": ");
+		.text(" "+(this.options.textFilter?this.options.textFilter:this.options.facetTitle)+": ");
 	this.filterSummaryBlock_Row.append("html:span")
 		.attr("class","filter_item");
 	this.filterSummaryBlock_Row.append("html:span")
@@ -3719,10 +3725,6 @@ kshf.RangeChart = function(options){
     kshf.Chart.call(this,options);
     this.type = 'RangeChart';
     this.filterCount = 1;
-    if(!this.options.filter){
-        this.options.filter = {};
-    }
-
 
     this.root = this.options.layout
         .append("div")
@@ -3940,9 +3942,9 @@ kshf.RangeChart.prototype.insertFilterSummaryBlock = function(){
         .text(this.options.facetTitle+" between ");
     s.append("html:span")
         .attr("class","filter_item");
-    if(this.options.filter.unit){
-        s.append("html:span").text(" "+this.options.filter.unit);
-    }
+//    if(this.options.filterText.unit){
+//        s.append("html:span").text(" "+this.options.filterText.unit);
+//    }
     s.append("html:span")
         .attr("class","filter_reset")
         .attr("title","Clear filter")

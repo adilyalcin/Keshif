@@ -1,4 +1,4 @@
-Country,Was,Independence,Flag,Landmass,Zone,Area,Population,Language,Religion,Bars,Stripes,Colors,Red,Green,Blue,Gold,White,Black,Orange,Mainhue,Circles,Crosses,Saltires,Quarters,Sunstars,Crescent,Triangle,Icon,Animate,Text,topleft,botright,Flag_source
+Country,Was,Independence,Flag,Continent,Zone,Area,Population,Language,Religion,Bars,Stripes,Colors,Red,Green,Blue,Gold,White,Black,Orange,Mainhue,Circles,Crosses,Saltires,Quarters,Sunstars,Crescent,Triangle,Icon,Animate,Text,topleft,botright,Flag_source
 Afghanistan,,8/19/1919,flags/Flag_of_Afghanistan.svg,5,1,648,16,10,2,0,3,5,1,1,0,1,1,1,0,green,0,0,0,0,1,0,0,1,0,0,black,green,http://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Afghanistan.svg
 Albania,,11/28/1912,flags/Flag_of_Albania.svg,3,1,29,3,6,6,0,0,3,1,0,0,0,0,1,0,red,0,0,0,0,0,0,0,1,1,0,red,red,http://upload.wikimedia.org/wikipedia/commons/3/36/Flag_of_Albania.svg
 Algeria,,7/3/1962,flags/Flag_of_Algeria.svg,4,1,2388,20,8,2,2,0,3,1,1,0,0,1,0,0,green,0,0,0,0,1,1,0,0,0,0,green,white,http://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg

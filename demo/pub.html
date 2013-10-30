@@ -105,9 +105,9 @@ function loadChart() {
                         func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
-                filter : { rowConj: 'about', rowGroupName: 'categories' },
                 timeTitle: "Publication Year",
-                timeItemMap : function(pub){ return pub.data[pubCol.time]; }
+                timeItemMap : function(pub){ return pub.data[pubCol.time]; },
+                textFilter: 'about'
             },{
                 facetTitle: "Coauthor",
                 catTableName: "Authors",
@@ -134,7 +134,7 @@ function loadChart() {
                 ],
                 barInfoText: "Color:Coauth. type",
                 textSearch: true,
-                filter: { rowConj: 'with', rowGroupName: 'coauthors' }
+                textFilter: 'with', textGroup: 'co-authors'
             },{
                 facetTitle: "Coauthor Type",
                 catTableName: "AuthorTypes",
@@ -154,12 +154,12 @@ function loadChart() {
                 },
                 barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
                 barInfoText: "Color:Coauth. type",
-                filter: { rowConj: 'with', rowGroupName: 'coauthor types' }
+                textFilter: 'with'
             },{
                 facetTitle: "Publication Type",
                 catTableName: "VenueTypes",
                 catItemMap : function(pub){ return pub.data[pubCol.pub_type]; },
-                filter: { rowConj: 'as', rowGroupName: 'types' }
+                textFilter: 'as'
             }
         ],
         list : {

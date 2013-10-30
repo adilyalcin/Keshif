@@ -44,7 +44,8 @@ function loadChart() {
         charts:[
             {
                 facetTitle: "Topic",
-                catItemMap : function(pub){ return pub.data[pubCol['Topic']]; },
+                timeTitle: "Publication Year",
+                timeItemMap : function(pub){ return pub.data[pubCol['Time']]; },
                 sortingFuncs : [
                     {   name: "Last pub. of topic", 
                         func: function(a, b){
@@ -74,18 +75,14 @@ function loadChart() {
                         func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
-                filter : { rowConj: 'about', rowGroupName: 'categories' },
-                timeTitle: "Publication Year",
-                timeItemMap : function(pub){ return pub.data[pubCol['Time']]; }
+                textFilter: 'about'
             },{
                 facetTitle: "Co-Author",
-                catItemMap : function(pub){ return pub.data[pubCol['Co-Author']]; },
-                filter: { rowConj: 'with', rowGroupName: 'types' }
+                textFilter: 'with', textGroup: 'authors'
             },{
                 facetTitle: "Pub. Type",
-                catItemMap : function(pub){ return pub.data[pubCol['Pub. Type']]; },
                 forceSearch: false,
-                filter: { rowConj: 'as', rowGroupName: 'types' }
+                textFilter: 'as'
             }
         ],
         list:{
@@ -95,10 +92,10 @@ function loadChart() {
                     value: function(d){ return d.data[pubCol['Time']].getFullYear(); },
                     value_type: 'number'
                 },
-                {   name: 'Type',
+                {   name: 'Pub. Type',
                     width: 72,
                     value_type: 'string',
-                    value: function(d){  return d.data[pubCol['Type']];  }
+                    value: function(d){  return d.data[pubCol['Pub. Type']];  }
                 },
             ],
             textSearch : function (pub) { return pub.data[pubCol['Title']]; },

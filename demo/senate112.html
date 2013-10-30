@@ -37,48 +37,38 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Result",
-                catItemMap : function(vote){ return vote.data[billCols['Result']]; },
+                timeTitle: "Vote Date",
                 timeItemMap : function(d){ return d.data[1]; },
-                filter: { rowConj: 'resulting in' },
-                timeTitle: "Vote Date"
+                textFilter: 'resulting in'
             },{
                 facetTitle: "Session",
-                catItemMap : function(vote){return vote.data[billCols['Session']]; },
                 catLabelText: function(d) { 
                     if(d.data[1]===1) { return "1st Session"; }
                     if(d.data[1]===2) { return "2nd Session"; }
                 },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ 
-                        return parseFloat(a.data[1],10) -parseFloat(b.data[1],10); // X GB
-                    }
+                    func:function(a,b){ return parseFloat(a.data[1],10) -parseFloat(b.data[1],10); }
                     }],
-                filter: { rowConj: 'at' }
+                textFilter: 'at'
             },{
                 facetTitle: "Yea's",
                 catItemMap : function(vote){ return Math.floor(vote.data[billCols['Yea\'s']]/5)*5; },
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ 
-                        return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); // X GB
-                    }
+                    func:function(a,b){ return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); }
                     }],
-                forceSearch: false,
-                filter: { rowConj: 'with', rowGroupName: 'yea ranges' }
+                forceSearch: false
             },{
                 facetTitle: "Nay's",
                 catItemMap : function(vote){ return Math.floor(vote.data[billCols['Nay\'s']]/5)*5; },
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ 
-                        return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); // X GB
-                    }
+                    func:function(a,b){ return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); }
                     }],
-                forceSearch: false,
-                filter: { rowConj: 'with', rowGroupName: 'nay ranges' }
+                forceSearch: false
             }
             ],
         list: {
@@ -112,9 +102,9 @@ function loadChart() {
                     str+="Question:"+d.data[5]+"</div>";
                 // yay/nay
                     str+="<div class=\"iteminfo iteminfo_2\">";
-                    var r=d.data[billCols['Yay\'s']]/d.data[billCols['Nay\'s']];
+                    var r=d.data[billCols['Yea\'s']]/d.data[billCols['Nay\'s']];
                     str+="<span style=\"color:"+((r>1)?"green":"red")+"\">";
-                    str+="Yays:"+d.data[billCols['Yay\'s']];
+                    str+="Yays:"+d.data[billCols['Yea\'s']];
                     str+=" Nays:"+d.data[billCols['Nay\'s']];
                     str+="</span>";
                     str+="</div>";

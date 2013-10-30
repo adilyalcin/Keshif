@@ -41,39 +41,29 @@ function loadChart() {
             sheets : [ {name:"Assistants"}, {name:"Instructors"} ]
         },
         loadedCb: function(){
-            TA_cols = kshf.dt_ColNames.TAs;
+            TA_cols = kshf.dt_ColNames.Assistants;
         },
         charts: [
             {
                 facetTitle: "Performance",
-                catItemMap : function(ast){ return ast.data[TA_cols['Performance']]; },
-                catLabelText: function(d) { return performanceText(d.data[1]); },
-                filter: { rowConj: 'performance' },
+                catLabelText: function(d) { return performanceText(d.data[1]); }
             },{
                 facetTitle: "Native Speaker",
-                catItemMap : function(ast){return ast.data[TA_cols['Native Speaker']]; },
                 catLabelText: function(d) { 
                     if(d.data[1]===1) { return "Yes"; }
                     if(d.data[1]===2) { return "No"; }
-                },
-                filter: { rowConj: 'at' }
+                }
             },{
                 facetTitle: "Instructor",
-                catItemMap : function(ast){return ast.data[TA_cols['Instructor']]; },
-                catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];},
-                filter: { rowConj: 'at' }
+                catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];}
             },{
-                facetTitle: "Course",
-                catItemMap : function(ast){return ast.data[TA_cols['Course']]; },
-                filter: { rowConj: 'at' }
+                facetTitle: "Course"
             },{
                 facetTitle: "Semester",
-                catItemMap : function(ast){return ast.data[TA_cols['Semester']]; },
                 catLabelText: function(d) { 
                     if(d.data[1]===1) { return "Summer"; }
                     if(d.data[1]===2) { return "Regular"; }
-                },
-                filter: { rowConj: 'at' }
+                }
             },{
                 facetTitle: "Class Size",
                 catItemMap : function(ast){return Math.floor(ast.data[TA_cols['Class Size']]/5); },
@@ -83,8 +73,7 @@ function loadChart() {
                      func:function(a,b){ 
                          return parseFloat(b.data[1],10) -parseFloat(a.data[1],10); // X GB
                      }
-                     }],
-               filter: { rowConj: 'at' }
+                     }]
             }
         ],
         list:{

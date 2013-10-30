@@ -65,32 +65,29 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Category",
-                catItemMap : function(prize){ return prize.data[prizeCols['Category']]; },
-                filter: { rowConj: 'in category' },
                 timeTitle: "Date",
-                timeItemMap : function(prize){ return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD")); }
+                timeItemMap : function(prize){ return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD")); },
+                textFilter: 'about'
             }, {
                 facetTitle: "Gender",
                 catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.gender];
                 },
-                catLabelText: function(d) { return getGender(d.data[1]); },
-                filter: { rowConj: 'gender' }
+                catLabelText: function(d) { return getGender(d.data[1]); }
             }, {
                 facetTitle: "Born Country",
                 catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.bornCountry];
                 },
-                filter: { rowConj: 'from' }
+                textGroup: 'countries'
             }, {
                 facetTitle: "Affiliation",
                 catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
-                },
-                filter: { rowConj: 'affiliated with' }
+                }
             }, {
                 facetTitle: "Decade",
                 catItemMap : function(prize){ 
@@ -107,7 +104,7 @@ function loadChart() {
                         func:kshf.filter_AciveItems_TotalItems
                     }
                 ],
-                filter: { rowConj: 'from' }
+                textFilter: 'in', textGroup: 'decades'
             }
         ],
         list: {

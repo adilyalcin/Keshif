@@ -31,9 +31,9 @@ function drawCharts(){
     topicsCol = kshf.dt_ColNames.topics;
     member_typesCol = kshf.dt_ColNames.member_types;
     trsCol = kshf.dt_ColNames.trs;
-    trsCol.people=9;
-    trsCol.topics=10;
-    trsCol.projects=11;
+    trsCol.Author=9;
+    trsCol.Topic=10;
+    trsCol.Project=11;
 
     // go over the list of tr_people, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_people.length ; t++){
@@ -43,8 +43,8 @@ function drawCharts(){
         // if person id doesn't exist, skip
         if(kshf.dt_id.people[person_id]===undefined){continue;}
         var tr = kshf.dt_id.trs[tr_id];
-        if(!tr.data[trsCol.people]) { tr.data[trsCol.people] = []; }
-        tr.data[trsCol.people].push(person_id);
+        if(!tr.data[trsCol.Author]) { tr.data[trsCol.Author] = []; }
+        tr.data[trsCol.Author].push(person_id);
     }
     // go over the list of tr_topics, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_topics.length ; t++){
@@ -53,8 +53,8 @@ function drawCharts(){
         var topic_id = tr_topic.data[1];
         if(topic_id===null) { continue; }
         var tr_ = kshf.dt_id.trs[tr_id_];
-        if(!tr_.data[trsCol.topics]) { tr_.data[trsCol.topics] = []; }
-        tr_.data[trsCol.topics].push(topic_id);
+        if(!tr_.data[trsCol.Topic]) { tr_.data[trsCol.Topic] = []; }
+        tr_.data[trsCol.Topic].push(topic_id);
     }
     // go over the list of tr_projects, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_projects.length ; t++){
@@ -65,8 +65,8 @@ function drawCharts(){
         // if project id doesn't exist, skip
         if(kshf.dt_id.projects[project_id]===undefined){continue;}
         var tr__ = kshf.dt_id.trs[tr_id__];
-        if(!tr__.data[trsCol.projects]) { tr__.data[trsCol.projects] = []; }
-        tr__.data[trsCol.projects].push(project_id);
+        if(!tr__.data[trsCol.Project]) { tr__.data[trsCol.Project] = []; }
+        tr__.data[trsCol.Project].push(project_id);
     }
 }
 
@@ -104,36 +104,28 @@ function loadChart() {
         loadedCb: drawCharts,
         charts: [
             {
-                facetTitle: "Topics",
+                facetTitle: "Topic",
                 catTableName: "topics",
-                catItemMap : function(pub){ return pub.data[trsCol.topics]; },
                 catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
                 catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
                 timeItemMap : function(pub){ return new Date(pub.data[trsCol.date]); },
                 timeTitle: "Publication Year",
-                filter: {
-                    rowConj: 'about',
-                    rowGroupName: 'topics'
-                },
+                textFilter: 'about', textGroup: 'topics',
                 visibleRows: 9
             },{
-                facetTitle: "Authors",
+                facetTitle: "Author",
                 catTableName: "people",
-                catItemMap : function(pub){ return pub.data[trsCol.people]; },
                 catLabelText: function(author) { 
                     return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
                 },
-                filter: {
-                    rowConj: 'by',
-                    rowGroupName: 'authors'
-                }
+                textFilter: 'by', textGroup: 'authors'
             },{
                 facetTitle: "Member Type",
                 catTableName: "member_types",
                 catItemMap : function(pub){
                     var typeList = {};
                     var r = [];
-                    var authors = pub.data[trsCol.people];
+                    var authors = pub.data[trsCol.Author];
                     if(authors===undefined) { return undefined; }
                     for(i=0; i<authors.length; i++){
                         var autData=kshf.dt_id.people[authors[i]];
@@ -147,19 +139,12 @@ function loadChart() {
                     return r;
                 },
                 catLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
-                filter: {
-                    rowConj: 'by',
-                    rowGroupName: 'members'
-                }
+                textFilter: 'by', textGroup: 'members'
             },{
-                facetTitle: "Projects",
+                facetTitle: "Project",
                 catTableName: "projects",
-                catItemMap : function(pub){ return pub.data[trsCol.projects]; },
                 catLabelText: function(project) { return project.data[projectsCol.project];  },
-                filter: {
-                    rowConj: 'within',
-                    rowGroupName: 'projects'
-                }
+                textFilter: 'within', textGroup: 'projects'
             }
         ],
         list: {
@@ -183,7 +168,7 @@ function loadChart() {
                     }
                     str+="</div>";
                 // author names
-                var authors = pub.data[trsCol.people];
+                var authors = pub.data[trsCol.Author];
                 if(authors){
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     for(j=0; j<authors.length; j++){
@@ -200,7 +185,7 @@ function loadChart() {
                     }
                     str+="</div>";
                 // keywords
-                var topics = pub.data[trsCol.topics];
+                var topics = pub.data[trsCol.Topic];
                 if(topics){
                     str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
                     for(j=0; j<topics.length; j++){
@@ -230,27 +215,10 @@ google.setOnLoadCallback(loadChart);
 </script>
 <style>
 
-/* rectangle style */
-#chart_div4 rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
-#chart_div4 rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
-#chart_div4 rect.bar_style_phase_2{ fill: #ff942a; }
-#chart_div4 rect.bar_style_phase_3{ fill: rgb(178, 94, 235); }
-#chart_div4 rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
-#chart_div4 rect.bar_style_phase_5{ fill: #3886c8; }
-
-/* dot style */
-#chart_div4 circle.key_dot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
-#chart_div4 circle.key_dot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
-#chart_div4 circle.key_dot[display=true].bar_style_phase_2{ fill: #ff942a; }
-#chart_div4 circle.key_dot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
-#chart_div4 circle.key_dot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
-#chart_div4 circle.key_dot[display=true].bar_style_phase_5{ fill: #3886c8; }
-
 #chart_div4 {
     margin: 0 auto;
     width: 100%;
 }
-
 div.listItem{
     padding-bottom:10px;
 }

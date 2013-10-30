@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
         <script type="text/javascript">
+
+var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
+
 function loadChart() {
     // set div height accordingly 
     $('#chart_div4').height(800);
@@ -22,10 +25,10 @@ function loadChart() {
     var animalCol;
 
 	kshf.init({
-        chartTitle: "Animals in Zoo",
+        chartTitle: "Animals in A Zoo",
         dirRoot: "../",
         domID : "#chart_div4",
-        categoryTextWidth:150,
+        categoryTextWidth:160,
         showDataSource : false,
         source : {
             gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
@@ -36,59 +39,37 @@ function loadChart() {
         },
         charts: [
             {
-                facetTitle: "# of Legs",
-                catItemMap : function(animal){ return animal.data[animalCol['# of Legs']]; },
-                filter: { rowConj: '# legs'}
+                facetTitle: "# of Legs"
             },{
                 facetTitle: "Has Tail",
-                catItemMap : function(animal){return animal.data[animalCol['Has Tail']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Has Hair",
-                catItemMap : function(animal){return animal.data[animalCol['Has Hair']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Has Feathers",
-                catItemMap : function(animal){return animal.data[animalCol['Has Feathers']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Has Backbone",
-                catItemMap : function(animal){return animal.data[animalCol['Has Backbone']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Has Eggs",
-                catItemMap : function(animal){return animal.data[animalCol['Has Eggs']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Has Milk",
-                catItemMap : function(animal){return animal.data[animalCol['Has Milk']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Domestic",
-                catItemMap : function(animal){return animal.data[animalCol['Domestic']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Aquatic",
-                catItemMap : function(animal){return animal.data[animalCol['Aquatic']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Airborn",
-                catItemMap : function(animal){return animal.data[animalCol['Airborn']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             },{
                 facetTitle: "Venomous",
-                catItemMap : function(animal){return animal.data[animalCol['Venomous']]; },
-                catLabelText: function(d) { return (d.data[1])?"True":"False"; },
-                filter: { rowConj: 'at' }
+                catLabelText: trueFalse
             }
         ],
         list:{
