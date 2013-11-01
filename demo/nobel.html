@@ -67,6 +67,7 @@ function loadChart() {
                 facetTitle: "Category",
                 timeTitle: "Date",
                 timeItemMap : function(prize){ return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD")); },
+                singleSelect: true,
                 textFilter: 'about'
             }, {
                 facetTitle: "Gender",
@@ -111,7 +112,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 45,
-                    value: function(d){ return d.data[prizeCols['Year']]; },
+                    value: function(d){ return parseInt(d.data[prizeCols['Year']]); },
                     value_type : 'number'
                 }
             ],
@@ -160,7 +161,7 @@ function loadChart() {
                 str+=d.data[prizeCols['Motivation']];
                 str+="</div>";
 
-                var mot = d.data[prizeCols['Motivation Overall']];
+                var mot = d.data[prizeCols['Overall Motivation']];
                 if(mot!=="" && mot!== null){
                     str+="<div class=\"iteminfo iteminfo_3\">Overall motivation: ";
                     str+=mot;

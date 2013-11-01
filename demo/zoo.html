@@ -14,7 +14,7 @@ var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
 
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height(800);
+    $('#chart_div4').height(750);
     $('#chart_div4').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
@@ -29,7 +29,7 @@ function loadChart() {
         dirRoot: "../",
         domID : "#chart_div4",
         categoryTextWidth:160,
-        showDataSource : false,
+        //showDataSource : false,
         source : {
             gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
             sheets : [ {name:"Animals"} ]
@@ -38,38 +38,28 @@ function loadChart() {
             animalCol = kshf.dt_ColNames.Animals;
         },
         charts: [
-            {
-                facetTitle: "# of Legs"
-            },{
-                facetTitle: "Has Tail",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Has Hair",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Has Feathers",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Has Backbone",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Has Eggs",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Has Milk",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Domestic",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Aquatic",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Airborn",
-                catLabelText: trueFalse
-            },{
-                facetTitle: "Venomous",
-                catLabelText: trueFalse
+            {   facetTitle: "# of Legs",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Tail",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Hair",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Feathers",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Backbone",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Eggs",
+                catBarScale: "selected"
+            },{ facetTitle: "Has Milk",
+                catBarScale: "selected"
+            },{ facetTitle: "Domestic",
+                catBarScale: "selected"
+            },{ facetTitle: "Aquatic",
+                catBarScale: "selected"
+            },{ facetTitle: "Airborn",
+                catBarScale: "selected"
+            },{ facetTitle: "Venomous",
+                catBarScale: "selected"
             }
         ],
         list:{
@@ -82,9 +72,7 @@ function loadChart() {
             ],
             textSearch : function(animal){ return animal.data[animalCol.Name]; },
             contentFunc : function(d){
-                var j;
-                var str=d.data[animalCol.Name];
-                return str;
+                return d.data[animalCol.Name];
             }
         }
     });

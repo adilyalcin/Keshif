@@ -437,7 +437,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stroke-width:2;
 }
 .kshf .timeDot[highlight=true] {
-    stroke: #c32c2c;
+    stroke: #c32c2c !important;
     stroke-width:2;
 }
 

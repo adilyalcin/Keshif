@@ -29,7 +29,6 @@ function loadChart() {
         kshf.updateLayout();
     });
 
-
     kshf.init({
         chartTitle: "Clinical Trial Sample Dataset",
         domID : "#chart_div4",
@@ -66,7 +65,6 @@ function loadChart() {
                 timeTitle: "Primary Completion Date",
                 catTableName: "Phases",
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
-                barInfoText: "Color: Phase type",
                 sortingFuncs: [{
                     func:function(a,b){ 
                         var dif=a.data[1].localeCompare(b.data[1]);
@@ -91,7 +89,6 @@ function loadChart() {
                 catTableName: "Companies",
                 catTooltipText: function(d){ return d.data[0]; },
                 dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
-                barInfoText: "Dot color: Phase type",
                 textFilter: 'by', textGroup: 'companies'
             },{
                 facetTitle: "Condition",

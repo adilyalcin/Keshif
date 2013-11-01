@@ -130,6 +130,7 @@ function loadChart() {
                 catLabelText: function(d) { return landmassText(d.data[1]); },
                 timeTitle: "Flag Date",
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
+                timeBarShow: true,
                 textFilter : 'in', textGroup  : 'continents'
             },{
                 facetTitle: "Language",
