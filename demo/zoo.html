@@ -14,7 +14,7 @@ var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
 
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height(750);
+    $('#chart_div4').height(900);
     $('#chart_div4').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
@@ -25,11 +25,11 @@ function loadChart() {
     var animalCol;
 
 	kshf.init({
-        chartTitle: "Animals in A Zoo",
+        chartTitle: "Animals in some Zoo",
         dirRoot: "../",
         domID : "#chart_div4",
         categoryTextWidth:160,
-        //showDataSource : false,
+        showDataSource : false,
         source : {
             gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
             sheets : [ {name:"Animals"} ]
@@ -37,42 +37,17 @@ function loadChart() {
         loadedCb: function(){
             animalCol = kshf.dt_ColNames.Animals;
         },
-        charts: [
-            {   facetTitle: "# of Legs",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Tail",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Hair",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Feathers",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Backbone",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Eggs",
-                catBarScale: "selected"
-            },{ facetTitle: "Has Milk",
-                catBarScale: "selected"
-            },{ facetTitle: "Domestic",
-                catBarScale: "selected"
-            },{ facetTitle: "Aquatic",
-                catBarScale: "selected"
-            },{ facetTitle: "Airborn",
-                catBarScale: "selected"
-            },{ facetTitle: "Venomous",
-                catBarScale: "selected"
-            }
-        ],
         list:{
             sortOpts : [
                 {   name: 'Name',
                     width: 50,
-                    value: function(animal){ return animal.data[animalCol.Name][0]; },
+                    value: function(animal){ return animal.data[animalCol['*Name']][0]; },
                     value_type : 'string'
                 }
             ],
-            textSearch : function(animal){ return animal.data[animalCol.Name]; },
+            textSearch : function(animal){ return animal.data[animalCol['*Name']]; },
             contentFunc : function(d){
-                return d.data[animalCol.Name];
+                return d.data[animalCol['*Name']];
             }
         }
     });

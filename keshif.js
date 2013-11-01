@@ -257,6 +257,7 @@ kshf.loadSheet_File = function(sheet){
             var lines = data.split(/\r\n|\r|\n/g);
             if(lines.length<1) { return; }
             kshf.dt_ColNames[tableName] = {};
+            kshf.dt_ColNames_Arr[tableName] = [];
             var arr = [];
             var idIndex = -1;
             var itemId=0;
@@ -272,10 +273,12 @@ kshf.loadSheet_File = function(sheet){
                     for(j=0; j<c.length;j++){
                         var colName = c[j];
                         kshf.dt_ColNames[tableName][colName] = j;
+                        kshf.dt_ColNames_Arr[tableName][j]=colName;
                         if(colName===sheet.id){ idIndex = j;}
                     }
                     if(idIndex===-1){ // id column not found, you need to create your own
                         kshf.dt_ColNames[tableName][sheet.id] = j;
+                        kshf.dt_ColNames_Arr[tableName][j] = sheet.id;
                         idIndex = j;
                     }
                 } else { // content
@@ -317,6 +320,7 @@ kshf.loadSheet_Data = function(sheet){
     if(sheet.tableName) { tableName = sheet.tableName; }
     var i,j;
     kshf.dt_ColNames[tableName] = {};
+    kshf.dt_ColNames_Arr[tableName] = [];
     var arr = [];
     var idIndex = -1;
     var itemId=0;
@@ -327,10 +331,12 @@ kshf.loadSheet_Data = function(sheet){
             for(j=0; j<c.length;j++){
                 var colName = c[j];
                 kshf.dt_ColNames[tableName][colName] = j;
+                kshf.dt_ColNames[tableName][j] = colName;
                 if(colName===sheet.id){ idIndex = j;}
             }
             if(idIndex===-1){ // id column not found, you need to create your own
                 kshf.dt_ColNames[tableName][sheet.id] = j;
+                kshf.dt_ColNames[tableName][j] = sheet.id;
                 idIndex = j;
             }
         } else { // content
@@ -406,9 +412,11 @@ kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
         var d3_table = _kshf.convertToArray(google_datatable,sheet.id,sheet.primary);
         _kshf.dt[tableName] = d3_table;
         _kshf.dt_ColNames[tableName] = {};
+        _kshf.dt_ColNames_Arr[tableName] = [];
         for(j=0; j<google_datatable.getNumberOfColumns(); j++){
             var colName=google_datatable.getColumnLabel(j).trim();
             _kshf.dt_ColNames[tableName][colName] = j;
+            _kshf.dt_ColNames_Arr[tableName][j] = colName;
         }
         if(sheet.primary){
             kshf.items = d3_table;
@@ -857,12 +865,13 @@ kshf.init = function (options) {
     this.dt = {};
     this.dt_id = {};
     this.dt_ColNames = {};
+    this.dt_ColNames_Arr = {};
     this.num_of_charts = 0;
     this.maxFilterID = 1; // 1 is used for global search
     this.categoryTextWidth = options.categoryTextWidth;
     this.chartDefs = options.charts;
     this.listDef = options.list;
-    
+
     this.scrollPadding = 5;
     this.scrollWidth = 10;
     this.sepWidth = 10;
@@ -1074,6 +1083,17 @@ kshf.init = function (options) {
 
 kshf.createCharts = function(){
     if(this.loadedCb!==undefined) { this.loadedCb(); }
+
+    if(this.chartDefs===undefined){
+        this.chartDefs = [];
+        var mainTableName = this.source.sheets[0].name;
+        var colNames = this.dt_ColNames_Arr[mainTableName];
+        for(var i=0; i<colNames.length; i++){
+            if(colNames[i][0]==="*") continue;
+            this.chartDefs.push({facetTitle: colNames[i]});
+        }
+    }
+
     for(var i=0; i<this.chartDefs.length; i++){
         this.addBarChart(this.chartDefs[i]);
     }
@@ -1918,7 +1938,6 @@ kshf.BarChart.prototype.init_shared2 = function(){
             this.divRoot.attr("dotconfig",this.options.timeDotConfig);
         }
     }
-
     this.root
         .append("svg:g")
         .attr("class", "x_axis")
@@ -1950,6 +1969,10 @@ kshf.BarChart.prototype.init_shared2 = function(){
 		.attr("class", "timeAxisGroup")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
       .append("svg:g").attr("class","tickGroup");
+
+    if(this.catCount_Total===1){
+        this.options.catBarScale = "selected";
+    }
 
     this.insertHeader();
     this.insertItemRows_shared();
@@ -2130,6 +2153,7 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
     }
 
     this.leftHeaderPaddingTop = ((this.rowCount_Header() - this.rowCount_Header_Left())*kshf.line_height);
+    this.leftHeaderPaddingTop--;
 
     this.headerhtml.select("span.leftHeader")
         .transition()
@@ -2160,6 +2184,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     var rows_Left = this.rowCount_Header_Left();
 
     this.leftHeaderPaddingTop = ((this.rowCount_Header() - this.rowCount_Header_Left())*kshf.line_height);
+    this.leftHeaderPaddingTop--;
 
 	var headerGroup = this.root.append("svg:g").attr("class","headerGroup")
         .on("mouseclick", function (d, i) { d3.event.preventDefault(); });
@@ -3120,9 +3145,6 @@ kshf.BarChart.prototype.updateWidth = function(){
         .transition()
         .duration(kshf.time_animation_barscale)
         .attr("x", labelWidth+3);
-    this.catBarAxisScale = d3.scale.linear()
-        .domain([0,this.getMaxSelectedItemsPerRow()])
-        .rangeRound([0, this.barMaxWidth]);
     
     this.updateAllWidth();
 
