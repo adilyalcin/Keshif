@@ -33,9 +33,9 @@ function loadChart() {
             sheets : [ {name:"Animals"} ]
         },
         list : {
+            sortColWidth: 50,
             sortOpts : [
                 {   name: 'Name',
-                    width: 50,
                     value: function(animal){ return animal.data[0][0]; } // first letter in name column
                 }
             ],

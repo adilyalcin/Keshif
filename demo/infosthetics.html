@@ -64,9 +64,9 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 45,
             sortOpts : [
                 {   name: 'Date',
-                    width: 45,
                     value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
                 }
             ],

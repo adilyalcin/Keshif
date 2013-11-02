@@ -263,8 +263,8 @@ function loadChart() {
         ],
         list: {
             sortOpts : [
+                sortColWidth: 45,
                 {   name: 'Year',
-                    width: 45,
                     value: function(release){ 
                         var rYear = release.data[releaseCols.year];
                         if(rYear===undefined) return '-';

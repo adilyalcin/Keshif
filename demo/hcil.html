@@ -148,9 +148,9 @@ function loadChart() {
             }
         ],
         list: {
+            sortColWidth: 50,
             sortOpts : [
                 {   name: 'Year',
-                    width: 50,
                     value: function(pub){ return parseInt(pub.data[trsCol.date].slice(0,4)); }
                 }
             ],

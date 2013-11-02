@@ -88,13 +88,12 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 90,
             sortOpts : [
                 {   name: 'Rating',
-                    width: 90,
                     value: function(d){ return d.data[6]; }
                 },
                 {   name: 'Op. Sys',
-                    width: 90,
                     value: function(d){ 
                         if(d.data[14]==='') { return 'N/A';}
                         if(d.data[14].length>12){

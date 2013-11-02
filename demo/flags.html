@@ -227,9 +227,9 @@ function loadChart() {
             });*/
         ],
         list:{
+            sortColWidth: 70,
             sortOpts : [
                 {   name: 'Flag Date',
-                    width: 70,
                     value: function(d){ 
                         var r= d.data[flag_cols.Independence];
                         if(r===null) return null;

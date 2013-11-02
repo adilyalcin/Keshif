@@ -67,13 +67,12 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 72,
             sortOpts : [
                 {   name: 'Year',
-                    width: 72,
                     value: function(d){ return d.data[pubCol['Date']].getFullYear(); }
                 },
                 {   name: 'Pub. Type',
-                    width: 72,
                     value: function(d){  return d.data[pubCol['Pub. Type']];  }
                 },
             ],

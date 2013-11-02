@@ -98,9 +98,9 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 75,
             sortOpts : [
                 {   name: 'Date',
-                    width: 75,
                     value: function(d){ return d.data[2]; },
                     label: function(d){ 
                         var date=d.data[2];
@@ -108,11 +108,9 @@ function loadChart() {
                     }
                 },
                 {   name: 'Phase Type',
-                    width: 75,
                     value: function(d){ return d.data[4]; }
                 },
                 {   name: 'Company',
-                    width: 75,
                     value: function(d){ return d.data[0]; }
                 }
             ],

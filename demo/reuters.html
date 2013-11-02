@@ -79,9 +79,9 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 70,
             sortOpts : [
                 {   name: 'Publish Time',
-                    width: 70,
                     label: function(d){ 
                         var date=d.data[newsCol['Publish Time']];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 

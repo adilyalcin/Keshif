@@ -140,20 +140,17 @@ function loadChart() {
             }
         ],
         list : {
+            sortColWidth: 78,
             sortOpts : [
                 {   name: 'Year',
-                    width: 72,
                     value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); }
                 },
                 {   name: 'Pub. Type',
-                    width: 72,
                     value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol['Publication Type']]].data[1];  }
                 },
                 {   name: 'Venue',
-                    width: 85,
-                    value: function(d){ return d.data[pubCol.venue]; },
-                    label: function(d){ return kshf.dt_id.Venues[d.data[pubCol.venue]].data[1]; },
-                    title: function(d){ return kshf.dt_id.Venues[d.data[pubCol.venue]].data[0]; }
+                    label: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[1]; },
+                    title: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0]; }
                 }
             ],
             textSearch : 'title',
@@ -200,8 +197,8 @@ function loadChart() {
                         if(j!==authors.length-1) { str+=', '; }
                     }
                     str+="</div>";
-                // venue + details
-                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol['Publication Date']].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.venue]].data[0];
+                // Venue + details
+                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol['Publication Date']].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0];
                     if(d.data[pubCol.details].trim()!=="") {
                         str+=" - " + d.data[pubCol.details];
                     }

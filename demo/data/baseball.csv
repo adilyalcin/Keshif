@@ -1,4 +1,4 @@
-primary-date,transaction-ID,player,Trans. Type,From Team,To Team
+primary-date,Transact.ID,player,Trans. Type,From Team,To Team
 1/1/2011,61905,riggs001,F,,MIL
 1/3/2011,60909,bucht001,F,,NYN
 1/3/2011,60953,capuc001,F,,NYN

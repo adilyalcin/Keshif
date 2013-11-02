@@ -510,10 +510,9 @@ kshf.list = function(_kshf, config, root){
     this.parentKshf = _kshf;
     this.dragSrcEl = null;
     this.dom = {};
-//	this.dragIcon = document.createElement('img');
-//	this.dragIcon.src = 'http://twitter.com/api/users/profile_image/twitter';
     
     this.config = config.sortOpts;
+    this.sortColWidth = config.sortColWidth;
     this.listSortOrder = [];
     for(i=0; i<this.config.length; i++){
         this.listSortOrder.push(i);
@@ -630,7 +629,7 @@ kshf.list = function(_kshf, config, root){
 
     listColumnRow.append("select")
         .attr("class","listSortOptionSelect")
-        .style("width",(this.config[0].width+12)+"px")
+        .style("width",(this.sortColWidth+12)+"px")
         .on("change", function(){
             me.listSortOrder[0] = this.selectedIndex;;
             // trigger sorting reorder
@@ -896,7 +895,7 @@ kshf.list.prototype.updateList = function(){
         return kshf.itemsSelectedCt;
     });
     d3.select(".listheader_count_bar").transition().style("width",function(){ 
-        return (kshf.listDisplay.config[0].width*kshf.itemsSelectedCt/kshf.items.length)+"px";
+        return (kshf.listDisplay.sortColWidth*kshf.itemsSelectedCt/kshf.items.length)+"px";
     });
 };
 
@@ -1501,7 +1500,7 @@ kshf.updateCustomListStyleSheet = function(){
     var columnPadding=5;//pixels per column
     for(i=0; i< 1; i++){
         var j=kshf.listDisplay.listSortOrder[i];
-        var optionWidth=this.listDisplay.config[j].width;
+        var optionWidth=this.listDisplay.sortColWidth;
         customSheet.innerHTML+=
             "div.listDiv div.listsortcolumn{ width: "+optionWidth+"px;}";
         totalColWidth+=optionWidth;

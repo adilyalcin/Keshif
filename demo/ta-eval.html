@@ -75,21 +75,14 @@ function loadChart() {
             }
         ],
         list:{
+            sortColWidth: 90,
             sortOpts : [
                 {   name: 'Performance',
-                    width: 90,
                     label: function(ast){ return performanceText(ast.data[TA_cols['Performance']]); },
                 }
             ],
             textSearch : 'Name',
-            contentFunc : function(ast){
-                var j;
-                var str="";
-                // description
-                    str+="<div class=\"iteminfo iteminfo_1\">"+ast.data[TA_cols['Name']];
-                    str+="</div>";
-                return str;
-            }
+            content : 'Name'
         }
     });
 }

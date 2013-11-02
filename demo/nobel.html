@@ -107,11 +107,8 @@ function loadChart() {
             }
         ],
         list: {
-            sortOpts : [
-                {   name: 'Year',
-                    width: 45
-                }
-            ],
+            sortColWidth: 45,
+            sortOpts : [ {name: 'Year'} ],
             textSearch : "names",
             textSearchFunc : function (d) {
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];

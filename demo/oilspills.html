@@ -111,9 +111,9 @@ function loadChart() {
             }
         ],
         list: {
+            sortColWidth: 50,
             sortOpts : [
                 {   name: 'Date',
-                    width: 50,
                     value: function(d){ 
                         var date=getDate(d);
                         return new Date(date.getUTCFullYear(), date.getUTCMonth());
@@ -123,10 +123,7 @@ function loadChart() {
                         return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
                     }
                 },
-                {   name: 'Size',
-                    width: 50,
-                    value: function(d){ return d.data[spillsCol.Size]; }
-                }
+                { name: 'Size' }
             ],
             contentFunc : function(d){
                 var j;

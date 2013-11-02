@@ -37,12 +37,12 @@ function loadChart() {
             dirPath: 'data/',
             fileType: 'csv',
             sheets : [
-                {name:"baseball", id:"id", primary:true},
-                {name:"baseball_trantype", id:"id"},
-                {name:"baseball_teams", tableName: "baseball_teams_1", id:"id"},
-                {name:"baseball_teams", tableName: "baseball_teams_2", id:"id"},
-                {name:"baseball_leagues", tableName: "baseball_leagues_1", id:"id"},
-                {name:"baseball_leagues", tableName: "baseball_leagues_2", id:"id"}
+                {name:"baseball"},
+                {name:"baseball_trantype"},
+                {name:"baseball_teams", tableName: "baseball_teams_1"},
+                {name:"baseball_teams", tableName: "baseball_teams_2"},
+                {name:"baseball_leagues", tableName: "baseball_leagues_1"},
+                {name:"baseball_leagues", tableName: "baseball_leagues_2"}
             ]
         },
         charts: [
@@ -93,9 +93,9 @@ function loadChart() {
             }
         ],
         list: {
+            sortColWidth: 75,
             sortOpts : [
                 {   name: 'Date',
-                    width: 65,
                     value: function(d){ 
                         var dt = d.data[0];
                         if(dt===""){ return null; }
@@ -109,11 +109,7 @@ function loadChart() {
                         return moment(dt,"MM/DD/YYYY").format("MMM YYYY"); 
                     }
                 },
-                {   name: 'Trans. Id',
-                    width: 65,
-                    value: function(d){ return  d.data[1]; }
-                },
-
+                {   name: 'Transact.ID' },
             ],
             contentFunc : function(d){
                 var j;
