@@ -763,24 +763,55 @@ kshf.list.prototype.updateListColumnHeaders = function(){
 
 kshf.list.prototype.sortItems = function(){
     var this_ = this;
-	kshf.items.sort(function(a,b){
+    var c = this_.config[this_.listSortOrder[0]];
+    var sortValueFunc = c.value;
+
+    // 0: string, 1: date, 2: others
+    var sortValueType, sortValueType_temp;
+    
+    // find appropriate sort value type
+    for(var k=0, same=0; true ; k++){
+        if(same===3 || k===this.parentKshf.items.length){
+            sortValueType = sortValueType_temp;
+            break;
+        }
+        var item = this.parentKshf.items[k];
+        var f = sortValueFunc(item);
+        var sortValueType_temp2;
+        switch(typeof f){
+        case 'string': sortValueType_temp2 = 0; break;
+        case 'number': sortValueType_temp2 = 2; break;
+        case 'object': 
+            if(f instanceof Date) 
+                sortValueType_temp2 = 1; 
+            else 
+                sortValueType_temp2=2;
+            break;
+        default: sortValueType_temp2 = 2; break;
+        }
+
+        if(sortValueType_temp2===sortValueType_temp){
+            same++;
+        } else {
+            sortValueType_temp = sortValueType_temp2;
+            same=0;
+        }
+    }
+
+	this.parentKshf.items.sort(function(a,b){
+        // do not need to process unselected items
         if(a.selected===false || b.selected===false){ return 0; }
-        var i,dif;
-		for(i=0; i<1; i++){
-            var c = this_.config[this_.listSortOrder[i]];
-            var f = c.value;
-            var f_a = f(a);
-            var f_b = f(b);
-            if(c.value_type==='string') {
-                dif = f_a.localeCompare(f_b);
-            } else if(c.value_type==='date') {
-                dif = f_b.getTime() - f_a.getTime();
-            } else {
-                dif = f_b-f_a;
-            }
-			if(dif!==0) { return dif; }
-		}
-        if(dif!==0) { return dif; }
+        var dif;
+        var f_a = sortValueFunc(a);
+        var f_b = sortValueFunc(b);
+        if(sortValueType===0) {
+            dif = f_a.localeCompare(f_b);
+        } else if(c.value_type===1) {
+            dif = f_b.getTime() - f_a.getTime();
+        } else {
+            dif = f_b-f_a;
+        }
+		if(dif!==0) { return dif; }
         return b.id()-a.id();
 	});
 };

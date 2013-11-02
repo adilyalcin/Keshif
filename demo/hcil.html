@@ -151,8 +151,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     width: 50,
-                    value: function(pub){ return (pub.data[trsCol.date]).slice(0,4); },
-                    value_type : 'number'
+                    value: function(pub){ return parseInt(pub.data[trsCol.date].slice(0,4)); }
                 }
             ],
             textSearch : "title",

@@ -93,8 +93,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Rating',
                     width: 90,
-                    value: function(d){ return d.data[6]; },
-                    value_type : 'number'
+                    value: function(d){ return d.data[6]; }
                 },
                 {   name: 'Op. Sys',
                     width: 90,
@@ -104,8 +103,7 @@ function loadChart() {
                             return d.data[14].slice(0,11)+"...";
                         }
                         return d.data[14]; 
-                    },
-                    value_type : 'string'
+                    }
                 }
             ],
             textSearchFunc : function (tablet) { return tablet.data[24]; },

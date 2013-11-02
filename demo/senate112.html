@@ -74,8 +74,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 70,
-                    value: function(d){ return d.data[billCols['Vote Date']].getTime(); },
-                    value_type : 'number',
+                    value: function(d){ return d.data[billCols['Vote Date']]; },
                     label: function(d){ 
                         var date=d.data[1];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
@@ -83,8 +82,7 @@ function loadChart() {
                 },
                 {   name: 'Result',
                     width: 70,
-                    value: function(d){ return d.data[6]; },
-                    value_type : 'string'
+                    value: function(d){ return d.data[billCols.Result]; }
                 }
             ],
             textSearchFunc : function (vote) { return vote.data[7]; },

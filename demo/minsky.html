@@ -71,12 +71,10 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     width: 72,
-                    value: function(d){ return d.data[pubCol['Date']].getFullYear(); },
-                    value_type: 'number'
+                    value: function(d){ return d.data[pubCol['Date']].getFullYear(); }
                 },
                 {   name: 'Pub. Type',
                     width: 72,
-                    value_type: 'string',
                     value: function(d){  return d.data[pubCol['Pub. Type']];  }
                 },
             ],

@@ -67,8 +67,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Date',
                     width: 45,
-                    value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); },
-                    value_type : 'number'
+                    value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
                 }
             ],
             textSearch : "Title",

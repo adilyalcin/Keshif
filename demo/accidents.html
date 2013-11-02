@@ -164,7 +164,6 @@ function loadChart() {
                     {   name: 'Date',
                         width: 70,
                         value: function(accident){ return accident.data[accCol.Date]; },
-                        value_type : 'date',
                         label: function(accident){ 
                             var date=accident.data[accCol.Date];
                             return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
