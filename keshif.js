@@ -518,8 +518,26 @@ kshf.list = function(_kshf, config, root){
     for(i=0; i<this.config.length; i++){
         this.listSortOrder.push(i);
     }
-    this.hideTextSearch = (config.textSearch===undefined);
-    
+
+    var mainTableName = _kshf.source.sheets[0].name;
+
+    if(config.textSearch!==undefined){
+        if(config.textSearchFunc===undefined){
+            var colId = _kshf.dt_ColNames[mainTableName][config.textSearch];
+            config.textSearchFunc = function(d){ return d.data[colId]; }
+        }
+        if(config.textSearch[0]==="*")
+            config.textSearch = config.textSearch.substring(1);
+        // decapitalize
+        config.textSearch= config.textSearch.charAt(0).toLowerCase() + config.textSearch.slice(1);
+    }
+    if(config.content!==undefined){
+        var colId2 = _kshf.dt_ColNames[mainTableName][config.content];
+        config.contentFunc = function(d){ return d.data[colId2]; }
+    }
+
+    this.hideTextSearch = (config.textSearchFunc===undefined);
+
     this.contentFunc = config.contentFunc;
 
 	this.listDiv = root.append("div").attr("class","listDiv");
@@ -538,7 +556,7 @@ kshf.list = function(_kshf, config, root){
             .style("margin-left","20px")
             ;
         listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
-            .attr("placeholder","Search "+(config.textSearchTitle?config.textSearchTitle:"title"))
+            .attr("placeholder","Search "+(config.textSearch?config.textSearch:"title"))
             .attr("autofocus","true");
         $("input.bigTextSearch").keydown(function(){
             if(this.timer){
@@ -556,7 +574,7 @@ kshf.list = function(_kshf, config, root){
                     var i=0
                     var f = true;
                     for(i=0 ; i<v.length; i++){
-                        f = f && config.textSearch(item).toLowerCase().indexOf(v[i])!==-1;
+                        f = f && config.textSearchFunc(item).toLowerCase().indexOf(v[i])!==-1;
                         if(f===false) break;
                     }
                     item.filters[0] = f;

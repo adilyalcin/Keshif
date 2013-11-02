@@ -22,8 +22,6 @@ function loadChart() {
         kshf.updateLayout();
     });
     
-    var animalCol;
-
 	kshf.init({
         chartTitle: "Animals in some Zoo",
         dirRoot: "../",
@@ -34,21 +32,16 @@ function loadChart() {
             gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
             sheets : [ {name:"Animals"} ]
         },
-        loadedCb: function(){
-            animalCol = kshf.dt_ColNames.Animals;
-        },
-        list:{
+        list : {
             sortOpts : [
                 {   name: 'Name',
                     width: 50,
-                    value: function(animal){ return animal.data[animalCol['*Name']][0]; },
+                    value: function(animal){ return animal.data[0][0]; }, // first letter in name column
                     value_type : 'string'
                 }
             ],
-            textSearch : function(animal){ return animal.data[animalCol['*Name']]; },
-            contentFunc : function(d){
-                return d.data[animalCol['*Name']];
-            }
+            textSearch : '*Name',
+            content: '*Name'
         }
     });
 }

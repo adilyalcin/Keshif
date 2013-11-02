@@ -116,11 +116,11 @@ function loadChart() {
                     value_type : 'number'
                 }
             ],
-            textSearch : function (d) {
+            textSearch : "names",
+            textSearchFunc : function (d) {
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
                 return laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
             },
-            textSearchTitle : "names",
             contentFunc : function(d) {
                 var j;
                 var str="";

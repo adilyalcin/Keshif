@@ -83,8 +83,7 @@ function loadChart() {
                     label: function(ast){ return performanceText(ast.data[TA_cols['Performance']]); },
                 }
             ],
-            textSearch : function (ast) { return ast.data[TA_cols['Name']]; },
-            textSearchTitle: "TA Name",
+            textSearch : 'Name',
             contentFunc : function(ast){
                 var j;
                 var str="";

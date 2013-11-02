@@ -113,7 +113,6 @@ function loadChart() {
                     }
                 ],
                 barInfoText: "Color:Coauth. type",
-                textSearch: true,
                 textFilter: 'with', textGroup: 'co-authors'
             },{
                 facetTitle: "Coauthor Type",
@@ -161,7 +160,7 @@ function loadChart() {
                     title: function(d){ return kshf.dt_id.Venues[d.data[pubCol.venue]].data[0]; }
                 }
             ],
-            textSearch : function (pub) { return pub.data[pubCol.title]; },
+            textSearch : 'title',
             contentFunc : function(d){
                 var j;
                 var str="";

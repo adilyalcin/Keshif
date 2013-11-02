@@ -236,13 +236,11 @@ function loadChart() {
                         if(r===null) return null;
                         var dt=new Date(moment(r,"MM/DD/YYYY"));
                         return dt.getUTCFullYear();
-                        return r.getUTCFullYear();
                     },
                     value_type : 'number'
                 }
             ],
-            textSearch : function (flag) { return flag.data[flag_cols.Country]; },
-            textSearchTitle : "countries",
+            textSearch : "country",
             contentFunc : function(d){
                 var j;
                 var str="";

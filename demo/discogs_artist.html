@@ -274,10 +274,7 @@ function loadChart() {
                     value_type : 'number'
                 }
             ],
-            textSearch : function (release) {
-                return release.data[releaseCols.title];
-            },
-            textSearchTitle : "release names",  
+            textSearch : "title",
             contentFunc : function(release) {
                 var str="";
                 var imgUrl = release.data[releaseCols.thumb];

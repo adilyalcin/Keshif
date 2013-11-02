@@ -80,7 +80,7 @@ function loadChart() {
                     value: function(d){  return d.data[pubCol['Pub. Type']];  }
                 },
             ],
-            textSearch : function (pub) { return pub.data[pubCol['Title']]; },
+            textSearch : 'Title',
             contentFunc : function(item){
                 var j;
                 var str="";

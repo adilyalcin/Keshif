@@ -87,7 +87,7 @@ function loadChart() {
                     value_type : 'string'
                 }
             ],
-            textSearch : function (vote) { return vote.data[7]; },
+            textSearchFunc : function (vote) { return vote.data[7]; },
             contentFunc : function(d){
                 var j;
                 var str="";

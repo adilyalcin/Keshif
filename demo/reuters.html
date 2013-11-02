@@ -90,7 +90,7 @@ function loadChart() {
                     }
                 }
             ],
-            textSearch : function (news) { return news.data[newsCol.title]; },
+            textSearch : 'title',
             contentFunc : function(news){
                 var j;
                 var str=news.data[newsCol.title].replace("<","&lt;").replace(">","&gt;");
