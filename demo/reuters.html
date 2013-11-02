@@ -82,7 +82,6 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Publish Time',
                     width: 70,
-                    value: function(news){ return news.data[newsCol['Publish Time']]; },
                     label: function(d){ 
                         var date=d.data[newsCol['Publish Time']];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 

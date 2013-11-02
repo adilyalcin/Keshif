@@ -519,12 +519,9 @@ kshf.list = function(_kshf, config, root){
         this.listSortOrder.push(i);
     }
 
-    var mainTableName = _kshf.source.sheets[0].name;
-
     if(config.textSearch!==undefined){
         if(config.textSearchFunc===undefined){
-            var colId = _kshf.dt_ColNames[mainTableName][config.textSearch];
-            config.textSearchFunc = function(d){ return d.data[colId]; }
+            config.textSearchFunc = _kshf.columnAccessFunc(config.textSearch);
         }
         if(config.textSearch[0]==="*")
             config.textSearch = config.textSearch.substring(1);
@@ -532,8 +529,7 @@ kshf.list = function(_kshf, config, root){
         config.textSearch= config.textSearch.charAt(0).toLowerCase() + config.textSearch.slice(1);
     }
     if(config.content!==undefined){
-        var colId2 = _kshf.dt_ColNames[mainTableName][config.content];
-        config.contentFunc = function(d){ return d.data[colId2]; }
+        config.contentFunc = _kshf.columnAccessFunc(config.content);
     }
 
     this.hideTextSearch = (config.textSearchFunc===undefined);
@@ -651,8 +647,12 @@ kshf.list = function(_kshf, config, root){
             .attr("dt-order",function(d,i){ return i; })
             ;
     for(i=0; i<this.config.length ; i++){
-        if(!this.config[i].label) {
-            this.config[i].label = this.config[i].value;
+        var c = this.config[i];
+        if(c.value===undefined){
+            c.value = this.parentKshf.columnAccessFunc(c.name);
+        }
+        if(!c.label) {
+            c.label = c.value;
         }
     }
     listColumnRow.append("span").attr("class","filter-blocks").append("span").attr("class","filter-blocks-for-charts");
@@ -746,6 +746,7 @@ kshf.list.prototype.updateListColumnHeaders = function(){
     var iPrev=-1;
     for(i=0;i<kshf.items.length;i++){
         var p=kshf.items[i];
+        // skip unselected items
         if(p.selected===false) { continue; }
         // show all sort column labels by default 
         p.listsortcolumn = [].repeat(true,this.listSortOrder.length);
@@ -761,6 +762,12 @@ kshf.list.prototype.updateListColumnHeaders = function(){
     }
 };
 
+kshf.columnAccessFunc = function(columnName){
+    var mainTableName = this.source.sheets[0].name;
+    var colId = this.dt_ColNames[mainTableName][columnName];
+    return function(d){ return d.data[colId]; }
+}
+
 kshf.list.prototype.sortItems = function(){
     var this_ = this;
     var c = this_.config[this_.listSortOrder[0]];
@@ -769,7 +776,7 @@ kshf.list.prototype.sortItems = function(){
     // 0: string, 1: date, 2: others
     var sortValueType, sortValueType_temp;
     
-    // find appropriate sort value type
+    // find appropriate sortvalue type
     for(var k=0, same=0; true ; k++){
         if(same===3 || k===this.parentKshf.items.length){
             sortValueType = sortValueType_temp;
@@ -799,7 +806,7 @@ kshf.list.prototype.sortItems = function(){
     }
 
 	this.parentKshf.items.sort(function(a,b){
-        // do not need to process unselected items
+        // do not need to process unselected items / put them at the end
         if(a.selected===false || b.selected===false){ return 0; }
         var dif;
         var f_a = sortValueFunc(a);
@@ -827,13 +834,10 @@ kshf.list.prototype.updateSortColumnLabels=function(d,tada){
         });
 
     // now update the text
-    for(k=0; k<1 ; k++){
-        var sortColumn=this.listSortOrder[k];
-        t.select(".listsortcolumn")
-            .html(function(){ return kshf_.config[sortColumn].label(d); })
-//            .style("opacity",d.listsortcolumn[k]?"1":"0.5")
-            ;
-    }
+    var sortColumn=this.listSortOrder[0];
+    t.select(".listsortcolumn")
+        .html(function(){ return kshf_.config[sortColumn].label(d); })
+        ;
 };
 
 kshf.list.prototype.insertItems = function(){
@@ -1629,18 +1633,10 @@ kshf.BarChart.prototype.init_shared = function(options){
 	// filter options - must be always specified
 
     if(this.options.catItemMap===undefined){
-        var tableName = this.parentKshf.source.sheets[0].name;
-        var colId = this.parentKshf.dt_ColNames[tableName][this.options.facetTitle];
-        this.options.catItemMap = function(d){ 
-            return d.data[colId];
-        }
+        this.options.catItemMap = this.parentKshf.columnAccessFunc(this.options.facetTitle);
     }
     if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
-        var tableName2 = this.parentKshf.source.sheets[0].name;
-        var colId2 = this.parentKshf.dt_ColNames[tableName2][this.options.timeTitle];
-        this.options.timeItemMap = function(d){ 
-            return d.data[colId2];
-        }
+        this.options.timeItemMap = this.parentKshf.columnAccessFunc(this.options.timeTitle);
     }
 
     // generate row table if necessary

@@ -72,9 +72,8 @@ function loadChart() {
             ],
         list: {
             sortOpts : [
-                {   name: 'Date',
+                {   name: 'Vote Date',
                     width: 70,
-                    value: function(d){ return d.data[billCols['Vote Date']]; },
                     label: function(d){ 
                         var date=d.data[1];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
