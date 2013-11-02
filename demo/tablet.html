@@ -36,8 +36,7 @@ function loadChart() {
             {
                 facetTitle: "Brand Name",
                 sortingFuncs:[
-                    {   name: "# of Tablets", 
-                        func:kshf.sortFunc_ActiveCount_TotalCount
+                    {   name: "# of Tablets"
                     },
                     {   name: "Last tablet", 
                         func: kshf.sortFunc_Time_Last
@@ -57,7 +56,7 @@ function loadChart() {
                 catItemMap : function(tablet){return tablet.data[8]; },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ return parseInt(b.data[1],10) -parseInt(a.data[1],10); }
+                    func: kshf.sortFunc_Column_ParseInt_Decr
                 }]
             },{
                 facetTitle: "Screen Size",
@@ -69,22 +68,21 @@ function loadChart() {
                 catLabelText: function(d) { return d.data[1]+" inches"; },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){  return b.data[1]-a.data[1]; }
+                    func: kshf.sortFunc_Column_Int_Decr
                 }]
             },{
                 facetTitle: "Weight",
                 catItemMap : function(tablet){ return Math.floor(tablet.data[12]/5)*5;},
                 catLabelText: function(d) { return d.data[1]+" - "+(d.data[1]+4.9)+" ounces"; },
                 sortingFuncs: [{
-                    no_resort: true,
-                    func:kshf.sortFunc_ActiveCount_TotalCount
+                    no_resort: true
                 }]
             },{
                 facetTitle: "Battery Life",
                 catLabelText: function(d) { return d.data[1] + " hours"; },
                 sortingFuncs: [{
                     no_resort: true,
-                    func:function(a,b){ return b.data[1] - a.data[1]; }
+                    func: kshf.sortFunc_Column_Int_Decr
                     }],
                 forceSearch: false
             }

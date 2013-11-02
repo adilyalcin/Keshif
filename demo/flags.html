@@ -195,8 +195,7 @@ function loadChart() {
                     no_resort: true,
                     func:kshf.sortFunc_Column_Int_Incr
                 },{  
-                    name:"Flag count",
-                    func:kshf.sortFunc_ActiveCount_TotalCount
+                    name:"Flag count"
                 }]
             },{
                 facetTitle: "# of Stripes",
@@ -205,14 +204,14 @@ function loadChart() {
                     return (r===0)?null:r;
                 },
                 catLabelText: function(d) { return d.data[1]+" stripe"+(d.data[1]>1?"s":""); },
-                sortingFuncs: [{
-                    name:"Stripe count",
-                    no_resort: true,
-                    func:kshf.sortFunc_Column_Int_Incr
-                },{ 
-                    name:"Flag count",
-                    func:kshf.sortFunc_ActiveCount_TotalCount
-                }]
+                sortingFuncs: [
+                    {   name:"Stripe count",
+                        no_resort: true,
+                        func:kshf.sortFunc_Column_Int_Incr
+                    },{ 
+                        name:"Flag count"
+                    }
+                ]
             } /*,{
                 facetTitle: "Other Properties",
                 catItemMap : function(flag){

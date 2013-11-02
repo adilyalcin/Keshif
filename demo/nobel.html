@@ -100,9 +100,7 @@ function loadChart() {
                         name:"Year",
                         no_resort: true,
                         func:function(a,b){ return b.data[1] -a.data[1]; }
-                    },
-                    {   name:"Prize count",
-                        func:kshf.sortFunc_ActiveCount_TotalCount
+                    },{ name:"Prize count"
                     }
                 ],
                 textFilter: 'in', textGroup: 'decades'

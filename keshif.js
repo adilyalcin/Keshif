@@ -3252,6 +3252,9 @@ kshf.BarChart.prototype.updateSorting = function(force){
     }
 	// sort the data
     var funcToCall = this.options.sortingFuncs[this.sortID].func;
+    if(funcToCall===undefined){
+        funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
+    }
     var justSortFunc = function(a,b){
         // call the sorting function
         var x=funcToCall(a,b);
