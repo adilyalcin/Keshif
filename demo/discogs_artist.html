@@ -39,12 +39,12 @@ var tableName = "release";
 
 var releaseCols = {
     thumb: 0,
-    artist: 1,
-    format: 2,
+    Artist: 1,
+    Format: 2,
     genres: 3,
     id: 4,
     Label: 5,
-    role: 6,
+    Role: 6,
     Style: 7,
     title: 8,
     type: 9,
@@ -131,20 +131,20 @@ function processReleaseResponse(role){
         relData2[releaseCols.year] = relData.year;
         relData2[releaseCols.Style] = relData.styles;
         relData2[releaseCols.genres] = relData.genres;
-        relData2[releaseCols.country] = relData.country;
+        relData2[releaseCols.Country] = relData.country;
         relData2[releaseCols.title] = relData.title;
         relData2[releaseCols.Label] = [];
-        relData2[releaseCols.role] = role;
+        relData2[releaseCols.Role] = role;
         for(var i=0;i<relData.labels.length ; i++){
             relData2[releaseCols.Label].push(relData.labels[i].name);
         }
-        relData2[releaseCols.artist] = [];
+        relData2[releaseCols.Artist] = [];
         for(var i=0;i<relData.artists.length ; i++){
-            relData2[releaseCols.artist].push(relData.artists[i].name);
+            relData2[releaseCols.Artist].push(relData.artists[i].name);
         }
-        relData2[releaseCols.format] = [];
+        relData2[releaseCols.Format] = [];
         for(var i=0;i<relData.formats.length ; i++){
-            relData2[releaseCols.format].push(relData.formats[i].name);
+            relData2[releaseCols.Format].push(relData.formats[i].name);
         }
 
         var item = new kshf.Item(relData2,releaseCols.id);
@@ -225,7 +225,10 @@ function loadChart() {
         categoryTextWidth: 206,
         itemName : "releases",
         showDataSource : false,
-        source: { callback : loadArtistData },
+        source: {
+            callback : loadArtistData,
+            sheets : [ {name:tableName}]
+        },
         charts : [
             {
                 facetTitle: "Label",
@@ -235,7 +238,7 @@ function loadChart() {
                     if(rYear===undefined) return null;
                     if(rYear===null) return null;
                     return new Date(moment(rYear+"01-01","YYYY-MM-DD"));
-                }
+            }
 /*            }, {
                 facetTitle: "Type",
                 catItemMap : function(release){ return release.data[releaseCols.type]; },
@@ -245,25 +248,21 @@ function loadChart() {
                 filter: { rowConj: 'style' }
             }, {
                 facetTitle: "Format",
-                catItemMap : function(release){ return release.data[releaseCols.format]; },
                 filter: { rowConj: 'format' }
             }, {
                 facetTitle: "Country",
-                catItemMap : function(release){ return release.data[releaseCols.country]; },
                 filter: { rowConj: 'country' }
             }, {
                 facetTitle: "Role",
-                catItemMap : function(release){ return release.data[releaseCols.role]; },
                 filter: { rowConj: 'role' }
             }, {
                 facetTitle: "Artist",
-                catItemMap : function(release){ return release.data[releaseCols.artist]; },
                 filter: { rowConj: 'artist' }
             }
         ],
         list: {
+            sortColWidth: 45,
             sortOpts : [
-                sortColWidth: 45,
                 {   name: 'Year',
                     value: function(release){ 
                         var rYear = release.data[releaseCols.year];
@@ -300,9 +299,9 @@ function loadChart() {
                     str+="</div>";
                 }
 
-                if(release.data[releaseCols.format]!==undefined){
+                if(release.data[releaseCols.Format]!==undefined){
                     str+="<div class=\"iteminfo iteminfo_1\">";
-                    str+="<b>Format</b>: "+release.data[releaseCols.format].toString();
+                    str+="<b>Format</b>: "+release.data[releaseCols.Format].toString();
                     str+="</div>";
                 }
 
