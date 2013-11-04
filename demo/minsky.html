@@ -47,14 +47,9 @@ function loadChart() {
                 timeTitle: "Date",
                 timeBarShow: true,
                 sortingFuncs : [
-                    {   name: "Last pub. of topic", 
-                        func: kshf.sortFunc_Time_Last
-                    },
-                    {   name: "First pub. of topic", 
-                        func: kshf.sortFunc_Time_First
-                    },
-                    {   name:"# of Pub."
-                    }
+                    { name: "Last pub. of topic", func: kshf.sortFunc_Time_Last },
+                    { name: "First pub. of topic", func: kshf.sortFunc_Time_First },
+                    { name:"# of Pub." }
                 ],
                 textFilter: 'about'
             },{
@@ -71,10 +66,7 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     value: function(d){ return d.data[pubCol['Date']].getFullYear(); }
-                },
-                {   name: 'Pub. Type',
-                    value: function(d){  return d.data[pubCol['Pub. Type']];  }
-                },
+                },{ name: 'Pub. Type' },
             ],
             textSearch : 'Title',
             contentFunc : function(item){
