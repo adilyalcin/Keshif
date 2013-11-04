@@ -196,7 +196,12 @@ kshf.loadSource = function(){
 
 kshf.loadSheet_Google = function(sheet){
     var tName = sheet.name;
-    var qString=kshf.queryURL_base+this.source.gdocId+'&headers=1&sheet='+tName;
+    var qString=kshf.queryURL_base+this.source.gdocId+'&headers=1'
+    if(sheet.sheetID){
+        qString+='&gid='+sheet.sheetID;
+    } else {
+        qString+='&sheet='+tName;
+    }
     if(sheet.range){
         qString+="&range="+sheet.range;
     }
@@ -762,7 +767,7 @@ kshf.list.prototype.updateListColumnHeaders = function(){
 };
 
 kshf.columnAccessFunc = function(columnName){
-    var mainTableName = this.source.sheets[0].name;
+    var mainTableName = this.getMainChartName();
     var colId = this.dt_ColNames[mainTableName][columnName];
     return function(d){ return d.data[colId]; }
 }
@@ -959,10 +964,9 @@ kshf.init = function (options) {
     if(options.itemName!==undefined){
         this.itemName = options.itemName;
     } else {
-        this.itemName = this.source.sheets[0].name;
+        this.itemName = this.getMainChartName();
     }
     
-
     this.dirRoot = "./";
     if(options.dirRoot !== undefined){
         this.dirRoot = options.dirRoot;
@@ -1031,7 +1035,11 @@ kshf.init = function (options) {
     hmmm.append("span")
         .text("Loading...");
     hmmm.append("div")
-    .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
+        .text(
+            (this.source.sheets!==undefined)?
+            "("+this.source.loadedTableCount+"/"+this.source.sheets.length+")":
+            ""
+            );
 
     var infobox_credit = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit")
     infobox_credit.append("div").attr("class","infobox_close_button").text("x")
@@ -1133,13 +1141,16 @@ kshf.init = function (options) {
     this.loadSource();
 };
 
+kshf.getMainChartName = function() {
+    return this.source.sheets[0].name;
+}
+
 kshf.createCharts = function(){
     if(this.loadedCb!==undefined) { this.loadedCb(); }
 
     if(this.chartDefs===undefined){
         this.chartDefs = [];
-        var mainTableName = this.source.sheets[0].name;
-        var colNames = this.dt_ColNames_Arr[mainTableName];
+        var colNames = this.dt_ColNames_Arr[this.getMainChartName()];
         for(var i=0; i<colNames.length; i++){
             if(colNames[i][0]==="*") continue;
             this.chartDefs.push({facetTitle: colNames[i]});
