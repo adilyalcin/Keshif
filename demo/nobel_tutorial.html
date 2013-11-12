@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Nobel Prize Winners</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+function resetSize(){
+    $('#nobelDiv').height($(window).height()-10);
+    $('#nobelDiv').width (1000);
+}
+
+function loadChart() {
+    resetSize();
+    $(window).resize(function() {
+        resetSize();
+        kshf.updateLayout();
+    });
+
+    kshf.init({
+        chartTitle: "Nobel Prize Winners",
+        domID : "#nobelDiv",
+        dirRoot: "../",
+        categoryTextWidth: 150,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
+            sheets : [ {name:"Prizes"}, {name:"Laureates"} ]
+        },
+        columnsSkip : ["Overall Motivation","laureate_id"],
+        list: {
+            sortColWidth: 45,
+            sortOpts : [ {name: 'Year'} ],
+            contentFunc : function(d) {
+                var laureateID = d.data[kshf.dt_ColNames.Prizes.laureate_id];
+                var laureate = kshf.dt_id.Laureates[laureateID];
+                return "<div class=\"iteminfo iteminfo_0\">" +
+                    laureate.data[kshf.dt_ColNames.Laureates.firstname] + " " + 
+                    laureate.data[kshf.dt_ColNames.Laureates.surname] +
+                    "</div>";
+            }
+        }
+    });
+}
+
+$(document).ready(loadChart);
+
+</script>
+<style>
+    #nobelDiv { margin: 0 auto; }
+    body { margin:2px; }
+</style>
+	</head>
+	<body><div id="nobelDiv"></div></body>
+</html>

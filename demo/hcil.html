@@ -108,8 +108,8 @@ function loadChart() {
                 catTableName: "topics",
                 catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
                 catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
-                timeItemMap : function(pub){ return new Date(pub.data[trsCol.date]); },
-                timeTitle: "Publication Year",
+                timeItemMap : function(pub){ return new Date(pub.data[trsCol.Date]); },
+                timeTitle: "Date",
                 textFilter: 'about', textGroup: 'topics',
                 visibleRows: 9
             },{
@@ -151,7 +151,7 @@ function loadChart() {
             sortColWidth: 50,
             sortOpts : [
                 {   name: 'Year',
-                    value: function(pub){ return parseInt(pub.data[trsCol.date].slice(0,4)); }
+                    value: function(pub){ return parseInt(pub.data[trsCol.Date].slice(0,4)); }
                 }
             ],
             textSearch : "title",
@@ -180,7 +180,7 @@ function loadChart() {
                 // venue
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     if(pub.data[trsCol.reference].trim()!==""){
-                        str+="<b>["+pub.data[trsCol.date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
+                        str+="<b>["+pub.data[trsCol.Date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
                     }
                     str+="</div>";
                 // keywords

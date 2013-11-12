@@ -949,6 +949,13 @@ kshf.init = function (options) {
     this.time_animation_barscale = 400;
     this.layout_animation = 500;
     
+    this.skipFacet = {};
+    if(options.columnsSkip){
+        for(var i=0; i<options.columnsSkip.length; i++){
+            this.skipFacet[options.columnsSkip[i]] = true;
+        }
+    }
+
     this.root = d3.select(this.domID)
         .attr("class","kshfHost")
         .attr("tabindex","1")
@@ -1152,10 +1159,14 @@ kshf.createCharts = function(){
         this.chartDefs = [];
         var colNames = this.dt_ColNames_Arr[this.getMainChartName()];
         for(var i=0; i<colNames.length; i++){
-            if(colNames[i][0]==="*") continue;
+            var colName = colNames[i];
+            if(colName===this.source.sheets[0].id) continue;
+            if(this.skipFacet[colName]===true) continue;
+            if(colName[0]==="*") continue;
             this.chartDefs.push({facetTitle: colNames[i]});
         }
     }
+    // TODO: Find the first column that has a date value, set it the time component of first chart
 
     for(var i=0; i<this.chartDefs.length; i++){
         this.addBarChart(this.chartDefs[i]);
