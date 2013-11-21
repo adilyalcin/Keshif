@@ -60,13 +60,7 @@ function loadChart() {
 
             // remove ben bederson from author list, once and for all!
             for(i=0; i<kshf.dt.Publications.length; i++){
-                var authors = kshf.dt.Publications[i].data[pubCol.Coauthor];
-                newAuthors = [];
-                for(j=0 ; j<authors.length ; j++){
-                    if(authors[j]===BEDERSON_ID) continue;
-                    newAuthors.push(authors[j]);
-                }
-                kshf.dt.Publications[i].data[pubCol.Coauthor] = newAuthors;
+                
             }
         },
         charts : [
@@ -85,6 +79,15 @@ function loadChart() {
                 textFilter: 'about'
             },{
                 facetTitle: "Coauthor",
+                catItemMap : function(pub){
+                    var authors = pub.data[pubCol.Coauthor];
+                    newAuthors = [];
+                    for(j=0 ; j<authors.length ; j++){
+                        if(authors[j]===BEDERSON_ID) continue;
+                        newAuthors.push(authors[j]);
+                    }
+                    return newAuthors;
+                },
                 catTableName: "Authors",
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },

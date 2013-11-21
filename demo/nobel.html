@@ -110,7 +110,7 @@ function loadChart() {
                 surname_short = surname_short.replace("von_","").replace("la_","");
                 var imgUrl="./nobel_photo/"+surname_short+".jpg";
 
-                if(laureate.data[lautCols.gender]!=='org'){
+                if(laureate.data[lautCols.gender]!==3){
                     str+="<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">";
                     str+="<div style=\"position: absolute; left:85px;\">";
                 } else {

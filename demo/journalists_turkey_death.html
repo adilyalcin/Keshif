@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Journalists Assassinated in Turkey after 1970</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+function loadChart() {
+    $('#chart_div4').height(550);
+    $('#chart_div4').width(550);
+    
+	kshf.init({
+        chartTitle: "Journalists Assassinated in Turkey after 1970",
+        dirRoot: "../",
+        domID : "#chart_div4",
+        categoryTextWidth:160,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
+            sheets : [ {name:"Journalists"} ]
+        },
+        charts : [
+            {   facetTitle: "Journalists",
+                catItemMap : function(j){ return "All"; }, 
+                timeTitle: "Date"
+            },{ facetTitle: "Organization"
+            },{ facetTitle: "Location"
+            }
+        ],
+        list : {
+            sortColWidth: 50,
+            sortOpts : [ {name: 'Date',value: function(d){ return d.data[3].getFullYear(); } } ],
+            content: '*Journalist'
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>
