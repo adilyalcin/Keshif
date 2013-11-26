@@ -57,11 +57,6 @@ function loadChart() {
             
             // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
-
-            // remove ben bederson from author list, once and for all!
-            for(i=0; i<kshf.dt.Publications.length; i++){
-                
-            }
         },
         charts : [
             {
@@ -147,8 +142,7 @@ function loadChart() {
                     value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol['Publication Type']]].data[1];  }
                 },
                 {   name: 'Venue',
-                    label: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[1]; },
-                    title: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0]; }
+                    value: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[1]; }
                 }
             ],
             textSearch : 'title',
