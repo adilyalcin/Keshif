@@ -1855,15 +1855,15 @@ kshf.BarChart.prototype.init_shared2 = function(){
         gradient.append("svg:stop")
             .attr("offset","0%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.5);
+            .style("stop-opacity",0.4);
         gradient.append("svg:stop")
             .attr("offset","25%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.5);
+            .style("stop-opacity",0.4);
         gradient.append("svg:stop")
             .attr("offset","100%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0);
+            .style("stop-opacity",0.3);
 
         gradient =this.root.append("svg:radialGradient")
             .attr("id","dotGradient75")
@@ -1874,15 +1874,15 @@ kshf.BarChart.prototype.init_shared2 = function(){
         gradient.append("svg:stop")
             .attr("offset","0%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.75);
+            .style("stop-opacity",0.6);
         gradient.append("svg:stop")
             .attr("offset","25%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.75);
+            .style("stop-opacity",0.6);
         gradient.append("svg:stop")
             .attr("offset","100%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0);
+            .style("stop-opacity",0.5);
 
         gradient =this.root.append("svg:radialGradient")
             .attr("id","dotGradient25")
@@ -1901,7 +1901,7 @@ kshf.BarChart.prototype.init_shared2 = function(){
         gradient.append("svg:stop")
             .attr("offset","100%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0);
+            .style("stop-opacity",0.2);
 
         gradient =this.root.append("svg:radialGradient")
             .attr("id","dotGradient100")
@@ -1912,15 +1912,15 @@ kshf.BarChart.prototype.init_shared2 = function(){
         gradient.append("svg:stop")
             .attr("offset","0%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",1.00);
+            .style("stop-opacity",0.85);
         gradient.append("svg:stop")
             .attr("offset","25%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",1.00);
+            .style("stop-opacity",0.85);
         gradient.append("svg:stop")
             .attr("offset","100%")
             .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0);
+            .style("stop-opacity",0.7);
 
         gradient =this.root.append("svg:radialGradient")
             .attr("id","dotGradient_Inactive")
