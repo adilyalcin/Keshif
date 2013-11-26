@@ -641,7 +641,6 @@ kshf.list = function(_kshf, config, root){
             me.sortItems();
             me.reorderItems();
             me.updateList();
-            kshf.updateCustomListStyleSheet();
         })
         .selectAll("input.list_sort_label")
             .data(this.config)
@@ -666,78 +665,8 @@ kshf.list = function(_kshf, config, root){
 
     this.sortItems();
     this.insertItems();
-    this.setColumnMoveHandlers();
 };
 
-kshf.list.prototype.handleDragStart = function(e) {
-	this.dragSrcEl = e.target;
-//	e.dataTransfer.setDragImage(this.dragIcon, -10, -10);
-	e.dataTransfer.effectAllowed = 'move';
-	e.dataTransfer.setData('text/html', e.target.innerText);
-    e.target.classList.add('drag_source');
-};
-kshf.list.prototype.handleDragOver = function(e) {
-	// Necessary. Allows us to drop.
-	if (e.preventDefault) { e.preventDefault(); }
-	e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-	return false;
-};
-kshf.list.prototype.handleDragEnter = function(e) {
-    var source=this.dragSrcEl;
-    var target=e.target;
-	if (source !== target) {
-        e.target.classList.add('drag_over');
-    }
-};
-kshf.list.prototype.handleDragLeave = function(e) {
-    e.target.classList.remove('drag_over');
-};
-kshf.list.prototype.handleDragEnd = function (e) {
-	var cols = document.querySelectorAll('div.list-sort-option');
-	[].forEach.call(cols, function (col) {
-		col.classList.remove('drag_over');
-        col.classList.remove('drag_source');
-	});
-};
-kshf.list.prototype.handleDrop = function(e) {
-	// this / e.target is current target element.
-	// stops the browser from redirecting??
-	if (e.stopPropagation) { e.stopPropagation();  }
-    var source=this.dragSrcEl;
-    var target=e.target;
-	if (source !== target) {
-		// Update column label
-        var tempText = source.innerText;
-		source.innerText = target.innerText;
-		target.innerText = tempText;
-        // update listSortOrder
-		this.listSortOrder[source.dataset.sortid] = parseInt(target.dataset.sortfunc,10);
-		this.listSortOrder[target.dataset.sortid] = parseInt(source.dataset.sortfunc,10);
-        // update sort function stored in dom
-		var swp = source.dataset.sortfunc;
-		source.dataset.sortfunc = target.dataset.sortfunc;
-		target.dataset.sortfunc = swp;
-        // trigger sorting reorder
-        this.sortItems();
-        this.reorderItems();
-        this.updateList();
-        kshf.updateCustomListStyleSheet();
-	}
-	return false;
-};
-// adds event listeners for drag&drop on sort columns
-kshf.list.prototype.setColumnMoveHandlers = function(){
-    var this_ = this;
-	var cols = document.querySelectorAll('div.listHeader div.list-sort-option');
-	[].forEach.call(cols, function(col) {
-		col.addEventListener('dragstart', function(e){ return this_.handleDragStart(e);}, false);
-		col.addEventListener('dragenter', function(e){ return this_.handleDragEnter(e);}, false);
-		col.addEventListener('dragover',  function(e){ return this_.handleDragOver(e);},  false);
-		col.addEventListener('dragleave', function(e){ return this_.handleDragLeave(e);}, false);
-		col.addEventListener('drop',      function(e){ return this_.handleDrop(e);},      false);
-		col.addEventListener('dragend',   function(e){ return this_.handleDragEnd(e);},   false);
-  });
-};
 
 Array.prototype.repeat= function(what, L){
     while(L) { this[--L]= what; }
@@ -748,6 +677,8 @@ Array.prototype.repeat= function(what, L){
 kshf.list.prototype.updateListColumnHeaders = function(){
     var i,j;
     var iPrev=-1;
+    var sortValueFunc = this.config[this.listSortOrder[0]].value;
+    var sortValueType = this.sortValueType();
     for(i=0;i<kshf.items.length;i++){
         var p=kshf.items[i];
         // skip unselected items
@@ -758,11 +689,8 @@ kshf.list.prototype.updateListColumnHeaders = function(){
         if(iPrev===-1){ iPrev=i; continue; }
         var pPrev = kshf.items[iPrev];
         iPrev=i;
-        for(j=0; j<this.listSortOrder.length ; j++){
-            var f = this.config[this.listSortOrder[j]].value;
-            if(f(p)!==f(pPrev)){ break; }
-            p.listsortcolumn[j] = false;
-        }
+
+        p.listsortcolumn[0] = kshf.compareListItems(p,pPrev,sortValueFunc,sortValueType)!=0;
     }
 };
 
@@ -772,18 +700,15 @@ kshf.columnAccessFunc = function(columnName){
     return function(d){ return d.data[colId]; }
 }
 
-kshf.list.prototype.sortItems = function(){
-    var this_ = this;
-    var c = this_.config[this_.listSortOrder[0]];
-    var sortValueFunc = c.value;
-
+kshf.list.prototype.sortValueType = function(){
+    var sortValueFunc = this.config[this.listSortOrder[0]].value;
     // 0: string, 1: date, 2: others
-    var sortValueType, sortValueType_temp;
+    var sortValueType_, sortValueType_temp, same;
     
     // find appropriate sortvalue type
     for(var k=0, same=0; true ; k++){
         if(same===3 || k===this.parentKshf.items.length){
-            sortValueType = sortValueType_temp;
+            sortValueType_ = sortValueType_temp;
             break;
         }
         var item = this.parentKshf.items[k];
@@ -808,22 +733,32 @@ kshf.list.prototype.sortItems = function(){
             same=0;
         }
     }
+    return sortValueType_;
+}
 
+kshf.compareListItems = function(a, b, sortValueFunc, sortValueType){
+    var dif;
+    var f_a = sortValueFunc(a);
+    var f_b = sortValueFunc(b);
+    if(sortValueType===0) {
+        dif = f_a.localeCompare(f_b);
+    } else if(sortValueType===1) {
+        dif = f_b.getTime() - f_a.getTime();
+    } else {
+        dif = f_b-f_a;
+    }
+    return dif;
+}
+
+kshf.list.prototype.sortItems = function(){
+    var sortValueFunc = this.config[this.listSortOrder[0]].value;
+    var sortValueType = this.sortValueType();
 	this.parentKshf.items.sort(function(a,b){
-        // do not need to process unselected items / put them at the end
+        // do not need to process unselected items, their order does not matter
         if(a.selected===false || b.selected===false){ return 0; }
-        var dif;
-        var f_a = sortValueFunc(a);
-        var f_b = sortValueFunc(b);
-        if(sortValueType===0) {
-            dif = f_a.localeCompare(f_b);
-        } else if(c.value_type===1) {
-            dif = f_b.getTime() - f_a.getTime();
-        } else {
-            dif = f_b-f_a;
-        }
-		if(dif!==0) { return dif; }
-        return b.id()-a.id();
+        var dif=kshf.compareListItems(a,b,sortValueFunc,sortValueType);
+        if(dif!==0) { return dif; }
+        return b.id()-a.id(); // use unique IDs to add sorting order as the last option
 	});
 };
 
@@ -1269,6 +1204,12 @@ kshf.sortFunc_Column_ParseInt_Incr = function(a,b){
 kshf.sortFunc_Column_ParseInt_Decr = function(a,b){ 
     return parseFloat(b.data[1],10) -parseFloat(a.data[1],10);
 }
+kshf.sortFunc_String_Decr = function(a,b){ 
+    return b.data[1].localeCompare(a.data[1]);
+}
+kshf.sortFunc_String_Incr = function(a,b){ 
+    return b.data[1].localeCompare(a.data[1]);
+}
 
 kshf.sortFunc_Time_Last = function(a, b){
     if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
@@ -1528,10 +1469,10 @@ kshf.updateCustomListStyleSheet = function(){
         totalColWidth+=optionWidth;
     }
     var contentWidth = (this.width_rightPanel_total-totalColWidth-30);
-    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
+//    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
     this.listDisplay.listDiv.select("div.listHeader span.filter-blocks").style("padding-left",(totalColWidth+13)+"px");
-//    this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");
+    this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");
     if(!this.specialStyle){
         this.specialStyle = document.body.appendChild(customSheet);
     }
@@ -3764,10 +3705,6 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
                     timeFilter_ms.min = tttt;
                 }
 
-                // make sure filters do not exceed domain range
-                timeFilter_ms.min = Math.max(timeFilter_ms.min,kshf_.timeScale.domain()[0].getTime());
-                timeFilter_ms.max = Math.min(timeFilter_ms.max,kshf_.timeScale.domain()[1].getTime());
-
                 // make sure min-max order is preserved, and they are not closer than some limit to each other.
 /*                if(kshf_.x_axis_active_filter==='min'){
                     timeFilter_ms.min=Math.min(timeFilter_ms.min,timeFilter_ms.max-msPerTick);
@@ -3820,6 +3757,10 @@ kshf.BarChart.prototype.getFilterMaxDateText = function(){
 };
 
 kshf.BarChart.prototype.yearSetXPos = function() {
+    // make sure filters do not exceed domain range
+    this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeScale.domain()[0].getTime());
+    this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeScale.domain()[1].getTime());
+
 	var minX = this.timeScale(this.timeFilter_ms.min);
 	var maxX = this.timeScale(this.timeFilter_ms.max);
 	
@@ -4151,14 +4092,12 @@ kshf.RangeChart.prototype.clearRangeFilter = function(){
 
     // set filter to true by default
     var dt = kshf.items;
-//    kshf.filter_all=0;
     for(i=0;i<dt.length;i++){
         var item = dt[i];
         // assume all filters pass
         for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
             item.filters[f] = true;
         }
-//        kshf.itemsSelectedCt+=
         item.updateSelected();
     }
 
