@@ -9,54 +9,40 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
         <script type="text/javascript">
-
-function loadChart() {
-    $('#chart_div4').height(550);
-    $('#chart_div4').width(550);
-    
-	kshf.init({
-        chartTitle: "Journalists Assassinated in Turkey after 1970",
-        dirRoot: "../",
-        domID : "#chart_div4",
-        categoryTextWidth:160,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
-            sheets : [ {name:"Journalists"} ]
-        },
-        charts : [
-            {   facetTitle: "Journalists",
-                catItemMap : function(j){ return "All"; }, 
-                timeTitle: "Date"
-            },{ facetTitle: "Organization"
-            },{ facetTitle: "Location"
+        google.setOnLoadCallback(function(){
+            kshf.init({
+                chartTitle: "Journalists Assassinated in Turkey after 1970",
+                dirRoot: "../",
+                domID : "#chart_div4",
+                categoryTextWidth:160,
+                source : {
+                    gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
+                    sheets : [ {name:"Journalists"} ]
+                },
+                charts : [
+                    {   facetTitle: "Journalists",
+                        catItemMap : function(j){ return "All"; }, 
+                        timeTitle: "Date"
+                    },{ facetTitle: "Organization"
+                    },{ facetTitle: "Location"
+                    }
+                ],
+                list : {
+                    sortColWidth: 50,
+                    sortOpts : [ {name: 'Date',value: function(d){ return d.data[3].getFullYear(); } } ],
+                    content: '*Journalist'
+                }
+            });
+        });
+        </script>
+        
+        <style>
+            #chart_div4 {
+                margin: 0 auto;
+                width: 520px;
+                height: 550px;
             }
-        ],
-        list : {
-            sortColWidth: 50,
-            sortOpts : [ {name: 'Date',value: function(d){ return d.data[3].getFullYear(); } } ],
-            content: '*Journalist'
-        }
-    });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
-
-</script>
-<style>
-
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-
-#chart_div4 {
-    margin: 0 auto;
-}
-
-</style>
-	</head>
-	<body>
-		<div id="chart_div4"></div>
-	</body>
+        </style>
+    </head>
+	<body><div id="chart_div4"></div></body>
 </html>
