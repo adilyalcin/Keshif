@@ -1351,7 +1351,7 @@ kshf.updateLayout_Height = function(){
         allDone = true;
         for (i=0; i < this.charts.length && divLineRem>0; ++i) {
             var c3=kshf.charts[i];
-            if(c3.type==='barChart' && c3.catCount_Total!==c3.rowCount_VisibleItem && c3.hidden===false){
+            if(c3.type==='barChart' && c3.catCount_Total!==c3.rowCount_VisibleItem && c3.hidden===false && c3.options.catDispCountFix===undefined){
                 var tmp=divLineRem;
                 divLineRem+=c3.rowCount_Total();
                 c3.setRowCount_VisibleItem(c3.rowCount_VisibleItem+1);
@@ -2532,10 +2532,10 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
 //    if(c===this.rowCount_VisibleItem){ return; }
     if(c>this.catCount_Total){ c = this.catCount_Total; }
     if(c<0){ c=1; }
-    if(this.catCount_Total<=3){ 
+    if(this.catCount_Total<=2){ 
         c = this.catCount_Total;
     } else {
-        c = Math.max(c,3);
+        c = Math.max(c,2);
     }
     if(this.rowCount_VisibleItem === c){
 //        return;

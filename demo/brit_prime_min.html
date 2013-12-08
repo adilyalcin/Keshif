@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>British Prime Ministers since 1721</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height(800);
+    $('#chart_div4').width (700);
+    
+	kshf.init({
+        dirRoot: "../",
+        itemName: "entries",
+        domID : "#chart_div4",
+        categoryTextWidth:250,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdGctWDlBc0lxdGh1YThNQ0RPLTEyQXc',
+            sheets : [ {name:"Prime Ministers"} ]
+        },
+        charts : [
+            {
+                facetTitle: "Party", 
+                timeTitle: "Year",
+                catItemMap : function(d){ 
+                    var p1=d.data[2];
+                    var p2=d.data[4];
+                    if(p2===null || p2 === "") return p1;
+                    else return [p1, p2];
+                },
+                timeItemMap : function(d){ 
+                    var y=d.data[0];
+                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
+                },
+                sortingFuncs : [
+                    { name: "Current first",  func: kshf.sortFunc_Time_Last },
+                    { name: "Past first",  func: kshf.sortFunc_Time_First },
+                    { name:" # of Years" }
+                ]
+            },{
+                facetTitle: "Prime minister",
+                catItemMap : function(d){ 
+                    var p1=d.data[1];
+                    var p2=d.data[3];
+                    if(p2===null || p2 === "") return p1;
+                    else return [p1, p2];
+                },
+            }
+        ],
+        list : {
+            sortColWidth: 50,
+            sortOpts : [
+                {   name: 'Year ',
+                    value: function(d){ return d.data[0]; } // first letter in name column
+                }
+            ],
+            content: 'Prime minister'
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>

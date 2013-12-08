@@ -14,15 +14,6 @@
 var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
 
 function loadChart() {
-    // set div height accordingly 
-    $('#chart_div4').height(800);
-    $('#chart_div4').width (700);
-    // set resize callback
-    $(window).resize(function() {
-        $('#chart_div4').width ($(window).width()*0.9);
-        kshf.updateLayout();
-    });
-    
 	kshf.init({
         chartTitle: "Doctor Who villains & monsters since 1963",
         dirRoot: "../",
@@ -109,6 +100,8 @@ google.setOnLoadCallback(loadChart);
 
 #chart_div4 {
     margin: 0 auto;
+    height: 800px;
+    width: 700px;
 }
 
 </style>

@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>The Last Ten Years of NHMRC research funding dataset 2004 - 2013</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
+
+function loadChart() {
+    // set div height accordingly 
+    $('#chart_div4').height(900);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').width ($(window).width()*0.9);
+        kshf.updateLayout();
+    });
+    
+	kshf.init({
+        chartTitle: "The Last Ten Years of NHMRC research funding dataset 2004 - 2013",
+        dirRoot: "../",
+        domID : "#chart_div4",
+        categoryTextWidth:300,
+        showDataSource : false,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdFVvN1otMW1VdzhubkZuWFZIWHZhZVE',
+            sheets : [ {name:"Grants", range:"A1:U4000"} ]
+        },
+        charts : [
+            {
+                facetTitle: "Main Category RFCD",
+                catDispCountFix: 6,
+                timeTitle: "App Year",
+                timeItemMap : function(d){ 
+                    var y=d.data[10];
+                    if(y===null) return null;
+                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
+                }
+            },{
+                facetTitle: "Broad Research Area", catDispCountFix: 2
+            },{
+                facetTitle: "Funding Purpose", catDispCountFix: 2
+            },{
+                facetTitle: "Main Funding Group", catDispCountFix: 2
+            },{
+                facetTitle: "Sector", catDispCountFix: 2
+            },{
+                facetTitle: "Field Of Research / RFCD"
+            },{
+                facetTitle: "Main Funding Unit Type", catDispCountFix: 3
+            },{
+                facetTitle: "Grant Admin Institution", catDispCountFix: 5
+            },{
+                facetTitle: "State", catDispCountFix: 3
+            },{
+                facetTitle: "Main Category RFCD",
+            }
+        ],
+        list : {
+            sortColWidth: 50,
+            sortOpts : [ {   name: 'App Year'} ],
+            textSearch : 'Simplified Title',
+            content: 'Simplified Title'
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+
+#chart_div4 {
+    margin: 0 auto;
+}
+
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>
