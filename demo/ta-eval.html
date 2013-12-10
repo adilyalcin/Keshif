@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
         <script type="text/javascript">
+
 function performanceText(d){
     switch(d){
         case 1: return "High";
@@ -18,7 +19,7 @@ function performanceText(d){
     }
 }
 
-function loadChart() {
+google.setOnLoadCallback(function () {
     // set div height accordingly 
     $('#chart_div4').height($(window).height()-45);
     $('#chart_div4').width ($(window).width()*0.9);
@@ -85,28 +86,12 @@ function loadChart() {
             content : 'Name'
         }
     });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
-
-</script>
-<style>
-
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-
-#chart_div4 {
-    margin: 0 auto;
-}
-
-body{ margin:2px; }
-
-</style>
+});
+        </script>
+        
+        <style>
+            #chart_div4 { margin: 0 auto; }
+        </style>
 	</head>
-	<body>
-		<div id="chart_div4"></div>
-	</body>
+	<body><div id="chart_div4"></div></body>
 </html>

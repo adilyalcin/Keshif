@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>e-Commerce - Correlated Dataset</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+function loadChart() {
+	kshf.init({
+        chartTitle: "e-Commerce - Correlated Dataset",
+        dirRoot: "../",
+        domID : "#chart_div4",
+        categoryTextWidth:100,
+        showDataSource : false,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdHFkS1E2V2M0SHRkWkRUX0p4T2pHVmc',
+            sheets : [ {name:"Shorts"} ]
+        },
+        charts : [
+            {
+                facetTitle: "Color"
+            },
+            {
+                facetTitle: "Size"
+            },
+            {
+                facetTitle: "Store"
+            },
+            {
+                facetTitle: "Price"
+            }
+
+        ],
+        loadedCb: function(){
+            // convert authors and keywords columns in publication table ( space separated IDs) to array
+            kshf.cellToArray(kshf.dt.Shorts, [1, 2], /\b,\s+/, false);
+        },
+        list : {
+            sortColWidth: 50,
+            sortOpts : [ {   name: 'Price' } ],
+            textSearch : 'Model',
+            content: 'Model'
+        }
+    });
+}
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(loadChart);
+
+</script>
+<style>
+#chart_div4 {
+    margin: 0 auto;
+    width: 500px;
+    height: 400px;
+}
+</style>
+	</head>
+	<body>
+		<div id="chart_div4"></div>
+	</body>
+</html>

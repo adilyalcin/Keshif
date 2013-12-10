@@ -10,59 +10,43 @@
 
         <script type="text/javascript">
 
-var trueFalse = function(d) { return (d.data[1])?"True":"False"; };
-
-function loadChart() {
-    // set div height accordingly 
-    $('#chart_div4').height(900);
-    $('#chart_div4').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-        $('#chart_div4').width ($(window).width()*0.9);
-        kshf.updateLayout();
-    });
-    
-	kshf.init({
-        chartTitle: "Animals in some Zoo",
-        dirRoot: "../",
-        domID : "#chart_div4",
-        categoryTextWidth:160,
-        showDataSource : false,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
-            sheets : [ {name:"Animals"} ]
-        },
-        list : {
-            sortColWidth: 50,
-            sortOpts : [
-                {   name: 'Name',
-                    value: function(animal){ return animal.data[0][0]; } // first letter in name column
+        google.setOnLoadCallback(function () {
+            // set div height accordingly 
+            $('#chart_div4').height(900);
+            $('#chart_div4').width ($(window).width()*0.9);
+            // set resize callback
+            $(window).resize(function() {
+                $('#chart_div4').width ($(window).width()*0.9);
+                kshf.updateLayout();
+            });
+            
+        	kshf.init({
+                chartTitle: "Animals in some Zoo",
+                dirRoot: "../",
+                domID : "#chart_div4",
+                categoryTextWidth:160,
+                showDataSource : false,
+                source : {
+                    gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
+                    sheets : [ {name:"Animals"} ]
+                },
+                list : {
+                    sortColWidth: 50,
+                    sortOpts : [
+                        {   name: 'Name',
+                            value: function(animal){ return animal.data[0][0]; } // first letter in name column
+                        }
+                    ],
+                    textSearch : '*Name',
+                    content: '*Name'
                 }
-            ],
-            textSearch : '*Name',
-            content: '*Name'
-        }
-    });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
-
-</script>
-<style>
-
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-
-#chart_div4 {
-    margin: 0 auto;
-}
-
-</style>
+            });
+        });
+        </script>
+        
+        <style>
+            #chart_div4 { margin: 0 auto; }
+        </style>
 	</head>
-	<body>
-		<div id="chart_div4"></div>
-	</body>
+	<body><div id="chart_div4"></div></body>
 </html>
