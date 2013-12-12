@@ -1738,6 +1738,30 @@ kshf.BarChart.prototype.updateChartTotalWidth = function(){
 
 };
 
+kshf.BarChart.prototype.scrollItems = function(event){
+    var delta = 0;
+    if (!event) { event = window.event; }
+    // normalize the delta
+    if (event.wheelDelta) {
+        // IE and Opera
+        delta = event.wheelDelta / 60;
+    } else if (event.detail) {
+        // W3C
+        delta = -event.detail / 2;
+    }
+    if(delta<-0.05) { 
+        this.setScrollPosition(this.scrollbar.firstRow+1);
+    }
+    if(delta>0.05) { 
+        this.setScrollPosition(this.scrollbar.firstRow-1);
+    }
+    if(event.preventDefault) { //disable default wheel action of scrolling page
+        event.preventDefault();
+    } else {
+        return false;
+    }
+};
+
 kshf.BarChart.prototype.init_shared2 = function(){
     var kshf_ = this;
     var me=this;
@@ -1754,30 +1778,7 @@ kshf.BarChart.prototype.init_shared2 = function(){
     this.root.append("svg:rect")
         .attr("class","chartBackground")
         .style("opacity",0)
-        .on("mousewheel",function(event){
-            var delta = 0;
-            if (!event) { event = window.event; }
-            // normalize the delta
-            if (event.wheelDelta) {
-                // IE and Opera
-                delta = event.wheelDelta / 60;
-            } else if (event.detail) {
-                // W3C
-                delta = -event.detail / 2;
-            }
-            if(delta<-0.1) { 
-                kshf_.setScrollPosition(kshf_.scrollbar.firstRow+1);
-            }
-            if(delta>0.1) { 
-                kshf_.setScrollPosition(kshf_.scrollbar.firstRow-1);
-            }
-
-            if (event.preventDefault) {//disable default wheel action of scrolling page
-                event.preventDefault();
-            } else {
-                return false;
-            }
-        })
+        .on("mousewheel",this.scrollItems.bind(this))
     ;
 
 	this.dom = {};
@@ -2173,6 +2174,7 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
         .attr("transform", function(d,i) {
             return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
         })
+        ;
 
     this.root.select("g.x_axis")
         .transition()
@@ -2563,7 +2565,14 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
         .transition()
         .duration(this.parentKshf.layout_animation)
         .style("height",totalHeight+"px");
-    this.root.select("rect.chartBackground").attr('height', kshf.line_height*this.rowCount_Total());
+    this.root.select("rect.chartBackground").attr(
+        'height', 
+        kshf.line_height*(this.rowCount_VisibleItem)
+        );
+    this.root.select("rect.chartBackground").attr(
+        'y', 
+        kshf.line_height*this.rowCount_Header()
+        );
     
     // update clippath height
     this.root.select("#kshf_chart_clippath_"+this.id+" rect")
@@ -3013,6 +3022,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	// create the clipping area
 	this.root.select("g.barGroup_Top")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
+        .on("mousewheel",this.scrollItems.bind(this))
 		.insert("svg:clipPath",":first-child")
 		.attr("id","kshf_chart_clippath_"+this.id)
 	  .append("svg:rect").attr("class","clippingRect")
