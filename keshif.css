@@ -230,13 +230,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsed=true] .headerGroup span.header_label {
     cursor: pointer;
 }
-.kshf .headerGroup span.header_label_arrow{
+
+.kshf .kshfChart .headerGroup span.header_label_arrow{
     font-size: 0.7em;
-    display: block;
+    display: none;
     float: right;
     cursor: pointer;
     vertical-align: baseline;
     line-height: 18px;
+}
+.kshf .kshfChart:hover .headerGroup span.header_label_arrow{
+    display: block;
 }
 .kshf .headerGroup span.rightHeader{
     display:inline-block;
@@ -251,6 +255,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
     float: left;
+}
+.kshf .kshfChart[collapsed=true] .headerGroup span.header_label_arrow{
+    display: block;
 }
 .kshf div.kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_up{
     display: none;
