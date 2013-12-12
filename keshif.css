@@ -232,9 +232,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .kshfChart .headerGroup span.header_label_arrow{
-    font-size: 0.7em;
+    font-size: 0.9em;
     display: none;
-    float: right;
+    float: left;
+    padding-left: 3px;
     cursor: pointer;
     vertical-align: baseline;
     line-height: 18px;
@@ -254,7 +255,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     color: gray;
 }
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
-    float: left;
+    float: right;
 }
 .kshf .kshfChart[collapsed=true] .headerGroup span.header_label_arrow{
     display: block;
@@ -610,7 +611,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g[highlight=true] .row_bar_line{
 	stroke: orangered;
 }
-
+.kshf line.selectVertLine {
+    stroke: #EEDDDE;
+    stroke-width: 2;
+}
 
 .kshf g.top_arrow{
     display: none;
@@ -696,6 +700,8 @@ div.kshf.layout_left_background{
 }
 .kshf.layout_left_header{
     position:absolute;
+    left:0px;
+    top:0px;
 }
 .kshf.layout_left_header div.filter_header{
     position: relative;
@@ -832,10 +838,33 @@ div.listItem div.content{
     border: solid 0px lightgray;
     position: relative;
 }
-div.listItem div.iteminfo_0 a{
+div.listItem .iteminfo_0 a{
 	color: #222222;
 }
 
+div.listItem .itemtoggledetails{
+    padding-right:3px;
+    display:inline-block; 
+    font-size: 0.8em;
+    margin : auto; 
+    text-align: center;
+    font-weight: 700;
+    width:20px;
+    cursor: pointer;
+}
+
+div.listItem div.item_details{
+
+}
+
+div.listItem[details=true]  .item_details_on{ display:none; }
+div.listItem[details=false] .item_details_on{ display:block; }
+
+div.listItem[details=true]  .item_details_off{ display:block; }
+div.listItem[details=false] .item_details_off{ display:none; }
+
+div.listItem[details=true]  .item_details{ display:block; }
+div.listItem[details=false] .item_details{ display:none; }
 
 div.group_col0{
     border-top: double 4px gray;
@@ -1546,3 +1575,11 @@ div.boxinbox.project_credits{
     font-style: italic;
 }
 
+
+
+/* Mozilla customization */
+@-moz-document url-prefix() {
+    .kshf.layout_left_header span.filters_text{
+        top:0px;
+    }
+}

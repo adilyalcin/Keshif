@@ -146,9 +146,22 @@ function loadChart() {
                 }
             ],
             textSearch : 'title',
+            toggleDetails : true,
             contentFunc : function(d){
                 var j;
                 var str="";
+
+                // paper name
+                    str+="<div class=\"iteminfo iteminfo_0\">";
+                    str+="<span onclick=\"kshf.listItemDetailToggleFunc2(this)\" style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
+                    if(d.data[pubCol.url].trim()!==""){
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\">"+
+                            "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                    }
+                    str+="</div>";
+
+                str+="<span class=\"item_details\">";
+
                 // thumbnail
                 if(d.data[pubCol.img]) { 
                     str+="<div class=\"thumbnail\">";
@@ -169,15 +182,9 @@ function loadChart() {
                     }
                     str+="</div>";
                 }
-            
-                // paper name
-                    str+="<div class=\"iteminfo iteminfo_0\">";
-                    if(d.data[pubCol.url].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\">"+d.data[pubCol.title]+"</a>";
-                    } else {
-                        str+=d.data[pubCol.title];
-                    }
-                    str+="</div>";
+
+                str+="<div style=\"display:inline-block; width:calc(100% - 110px);padding-left: 5px; padding-top: 2px;\"''>"
+
                 // author names
                 var authors = d.data[pubCol.Coauthor];
                     str+="<div class=\"iteminfo iteminfo_1\">";
@@ -190,7 +197,7 @@ function loadChart() {
                     }
                     str+="</div>";
                 // Venue + details
-                    str+="<div class=\"iteminfo iteminfo_1\"><b>["+d.data[pubCol['Publication Date']].getFullYear()+"]</b> "+kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0];
+                    str+="<div class=\"iteminfo iteminfo_1\"><b>"+d.data[pubCol['Publication Date']].getFullYear()+"</b> - "+kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0];
                     if(d.data[pubCol.details].trim()!=="") {
                         str+=" - " + d.data[pubCol.details];
                     }
@@ -207,6 +214,9 @@ function loadChart() {
                     if(d.data[pubCol.award]!==""){
                         str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data[pubCol.award]+"</div>";
                     }
+
+                str+="</div>";
+
                 return str;
             }
         }
@@ -226,7 +236,7 @@ google.setOnLoadCallback(loadChart);
 #chart_div4 rect.bar_style_coauthor_IN{ fill: #4B3929; }
 
 div.listItem div.thumbnail{
-    float:right;
+    float:left;
     color:#666666;
     display:none
 }
@@ -236,7 +246,7 @@ div.thumbnail img{
 }
 
 div.listItem div.thumbnail2{
-    float:right;
+    float:left;
     display: inline-block;
     color:#666666;
 }
@@ -318,7 +328,7 @@ body {
         <div id="pageName">
             <h2>
             <a href="../index.html">Ben Bederson</a>
-            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>
+<!--            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>-->
             </h2>
         </div>
     	<div id="chart_div4"></div>

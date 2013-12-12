@@ -540,6 +540,9 @@ kshf.list = function(_kshf, config, root){
 
     this.contentFunc = config.contentFunc;
 
+    this.toggleDetails = config.toggleDetails;
+    if(this.toggleDetails === undefined) { this.toggleDetails = false; }
+
 	this.listDiv = root.append("div").attr("class","listDiv");
     
     var listHeader=this.listDiv.append("div").attr("class","listHeader");
@@ -786,26 +789,57 @@ kshf.list.prototype.insertItems = function(){
     .enter()
 		.append("div")
 		.attr("class","listItem")
-		.html(function(d){
-            var i,str="";
-            // Sort column headers
-            str+="<div class=\"listcell listsortcolumn\"";
-            var titleFunc = this_.config[0].title;
-            if(titleFunc) { str+=" title=\""+titleFunc(d)+"\""; }
-            str+="\"></div>";
-            // Content
-            str+="<div class=\"content\">"+this_.contentFunc(d)+"</div>";
-            return str;
-        })
+        .attr("details","false")
         .on("mouseover",function(d,i){
             d.highlightAttributes();
         })
         .on("mouseout",function(d,i){
-            // find all the things that 
+            // find all the things that  ....
             d.nohighlightAttributes();
+        });
+
+    this.dom.listItems
+        .append("div")
+        .attr("class","listcell listsortcolumn")
+        .html(function(d){
+            var titleFunc = this_.config[0].title;
+            if(titleFunc) { str+=" title=\""+titleFunc(d)+"\""; }
         })
-    ;
+        ;
+
+    if(this_.toggleDetails){
+        var x= this.dom.listItems
+            .append("div")
+            .attr("class","listcell itemtoggledetails");
+        x.append("span").attr("class","item_details_on").html("[+]") // ▼
+            .attr("title","Show details")
+            .on("click", kshf.listItemDetailToggleFunc);
+        x.append("span").attr("class","item_details_off").html("[-]") // ▲
+            .attr("title","Hide details")
+            .on("click", kshf.listItemDetailToggleFunc);
+    }
+
+    this.dom.listItems
+        .append("div")
+        .attr("class","content")
+        .html(function(d){ return this_.contentFunc(d);});
 };
+
+kshf.listItemDetailToggleFunc = function(){
+    var m=$(this.parentNode.parentNode).attr('details');
+    if(m==="true") $(this.parentNode.parentNode).attr('details', false);
+    if(m==="false") $(this.parentNode.parentNode).attr('details', true);
+}
+kshf.listItemDetailToggleFunc2 = function(t){
+    var nd = $(t), i=0;
+    while(nd.attr('details')===undefined){
+        nd = nd.parent();
+        if(nd===undefined) return;
+    }
+    var m=nd.attr('details');
+    if(m==="true") nd.attr('details', false);
+    if(m==="false") nd.attr('details', true);
+}
 
 kshf.list.prototype.reorderItems = function(){
 	this.listDiv.selectAll("div.listItem")
@@ -1468,7 +1502,8 @@ kshf.updateCustomListStyleSheet = function(){
             "div.listDiv div.listsortcolumn{ width: "+optionWidth+"px;}";
         totalColWidth+=optionWidth;
     }
-    var contentWidth = (this.width_rightPanel_total-totalColWidth-30);
+    // 25 is for itemtoggledetails
+    var contentWidth = (this.width_rightPanel_total-totalColWidth-30-25);
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
     this.listDisplay.listDiv.select("div.listHeader span.filter-blocks").style("padding-left",(totalColWidth+13)+"px");
@@ -1779,6 +1814,7 @@ kshf.BarChart.prototype.init_shared2 = function(){
         .attr("class","chartBackground")
         .style("opacity",0)
         .on("mousewheel",this.scrollItems.bind(this))
+        .on("mousedown", function (d, i) { d3.event.preventDefault(); })
     ;
 
 	this.dom = {};
@@ -1958,6 +1994,15 @@ kshf.BarChart.prototype.init_shared2 = function(){
             return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
         })
         ;
+    barGroup_Top.append("svg:line")
+        .attr("class","selectVertLine")
+        .attr("x1", 0)
+        .attr("x2", 0)
+        .attr("y1", -kshf.line_height*1.5)
+        .t
+        ;
+
+
 	var barGroup = barGroup_Top.append("svg:g")
 		.attr("class","barGroup");
 	barGroup.selectAll("g.row")
@@ -2604,6 +2649,9 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
         .transition()
         .duration(this.parentKshf.layout_animation)
 		.attr("height", barsHeight);
+    this.root.selectAll("line.selectVertLine")
+        .attr("y2", kshf.line_height*(this.rowCount_VisibleItem+1.5));
+
     this.root.selectAll("g.x_axis g.tick line")
         .transition()
         .duration(this.parentKshf.layout_animation)
@@ -3411,9 +3459,18 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
         .attr("cy", Math.floor(kshf.line_height / 2 ))
         .on("mouseover",function(d,i,f){
             d.highlightAttributes();
+            // update the position of selectVertLine
+            var tm = kshf_.timeScale(kshf_.options.timeItemMap(d));
+            var totalLeftWidth = kshf_.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+kshf_.options.rowTextWidth;
+            kshf_.root.select("line.selectVertLine")
+                .attr("x1",tm+totalLeftWidth)
+                .attr("x2",tm+totalLeftWidth)
+                .style("display","block");
         })
         .on("mouseout",function(d,i){
             d.nohighlightAttributes();
+            kshf_.root.select("line.selectVertLine")
+                .style("display","none");
         })
 		.on("click", function(d,i,f) {
             log2Console("CLICK: time dot",kshf_);
@@ -3581,9 +3638,6 @@ kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
         .attr("class", "filter_nonselected")
         .attr("y",kshf.line_height*1.5-4)
         .on("click",function(){
-            d3.event.stopPropagation();
-        })
-        .on("mousemove",function(){
             d3.event.stopPropagation();
         })
         ;
