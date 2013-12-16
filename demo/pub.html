@@ -7,24 +7,149 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript">
-/*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
-/*global google */
+
+var postURL = "http://localhost:9090/";
+//var postURL = "http://keshiftracker.appspot.com";
+var demoID = 7;
+
+function writeCookie(name,value,days) {
+    var date, expires;
+    if (days) {
+        date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires=" + date.toGMTString();
+    }else{
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+};
+
+function readCookie(name) {
+    var i, c, ca, nameEQ = name + "=";
+    ca = document.cookie.split(';');
+    for(i=0;i < ca.length;i++) {
+        c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1,c.length);
+        }
+        if (c.indexOf(nameEQ) == 0) {
+            return c.substring(nameEQ.length,c.length);
+        }
+    }
+    return '';
+};
+
+var loadTs = null;
+
+function sendLog(catID, actID, dt){
+    // log only if all is fine
+    if(logIf.Check!==true) return;
+    var ts;
+    if(loadTs===null){
+        loadTs = Date.now();
+        ts = loadTs;
+    } else {
+        ts = Date.now()-loadTs;
+    }
+    var _dt = {
+        'catID' : catID,
+        'actID' : actID,
+        'sesID' : logIf.sessionID,
+        'ts'    : ts,
+        'demoID': demoID
+    };
+    if(dt){ for (var key in dt) { _dt[key]=dt[key]; } }
+    $.ajax({
+        type: "GET",
+        dataType: "jsonp",
+        jsonpCallback: "", // no callback / not interested in returned data
+        url: postURL,
+        data: _dt
+    });
+}
 
 var BEDERSON_ID = 3;
 
-function resizeChart(){
-    $('#chart_div4').height($(window).height()-65);
-    $('#chart_div4').width ($(window).width()-29);
+var isMobile = {
+    Android    : function() { return navigator.userAgent.match(/Android/i); },
+    BlackBerry : function() { return navigator.userAgent.match(/BlackBerry/i); },
+    iOS        : function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+    Opera      : function() { return navigator.userAgent.match(/Opera Mini/i); },
+    Windows    : function() { return navigator.userAgent.match(/IEMobile/i); },
+    any        : function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+
+var logIf = {
+    WindowSize : function(){ // minimum 950 x 500 (timeline is shown with 4 categories)
+        // Using HTML document size (Device screen.width & screen.height is not important)
+        var w=$(window).width();
+        var h=$(window).height();
+        return (w>950) && (h>500) /* && (w>h)*/;
+    },
+    Desktop : function(){ // skip: Android, Blackberry, iPhone, iPad, iPod, Opera Mini, IEMobile
+        return isMobile.any()===null;
+    },
+    NoTouch : function(){ // skip browsers supporting touch events.
+        return !Modernizr.touch; 
+    },
+    NotIE : function() { // IE has issues with SVG rendering...
+        return (navigator.appName !== 'Microsoft Internet Explorer');
+    },
+    InlineSVG : function(){ // Specificly, we must make sure that browser upports inline SVG elements
+        return Modernizr.inlineSVG;
+    },
+    setSessionID : function(){
+        document.getElementsByTagName("body")[0].onmousemove = null;
+        this.sessionID = readCookie('sessionId');
+        if(this.sessionID === '') {
+            var ran  = window.event.clientX*Math.random();
+            var ran2 = window.event.clientY*Math.random();
+            this.sessionID = Math.floor((ran+ran2)*10000000000000);
+            writeCookie('sessionId', this.sessionID, 30);
+        }
+        this.All();
+    },
+    All : function(){
+        var tmp = this.Check;
+        this.Check =  this.WindowSize() && this.Desktop() && this.NoTouch() && this.NotIE() && (this.sessionID!==null);
+        if(this.Check===true && tmp === false) {
+            sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,
+                { height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
+        }
+        return this.Check;
+    },
+    sessionID: null,
+    Check : true
 }
 
-function loadChart() {
+function resizeChart(){
+    var h=$(window).height()-65;
+    var w=$(window).width()-29;
+    if($('#chart_div4').height()===h && $('#chart_div4').width()===w) return false;
+    $('#chart_div4').height(h);
+    $('#chart_div4').width (w);
+    logIf.All();
+    sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,
+        { height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
+    return true;
+}
+
+$( window ).on('unload',function() {
+    sendLog(CATID.Other,ACTID_OTHER.ClosePage);
+});
+
+google.setOnLoadCallback(function() {
     resizeChart();
-    // set resize callback
     $(window).resize(function() {
-        resizeChart();
-        kshf.updateLayout();
+        if(resizeChart()) kshf.updateLayout();
     });
+
+    logIf.Check = logIf.All();
 
     var authorCol, pubCol, keywordCol;
 
@@ -49,12 +174,9 @@ function loadChart() {
             ]
         },
         loadedCb: function(){
-            var i,p,t;
-
             authorCol = kshf.dt_ColNames.Authors;
             pubCol = kshf.dt_ColNames.Publications;
             keywordCol = kshf.dt_ColNames.Keywords;
-            
             // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
         },
@@ -78,8 +200,7 @@ function loadChart() {
                     var authors = pub.data[pubCol.Coauthor];
                     newAuthors = [];
                     for(j=0 ; j<authors.length ; j++){
-                        if(authors[j]===BEDERSON_ID) continue;
-                        newAuthors.push(authors[j]);
+                        if(authors[j]!==BEDERSON_ID) newAuthors.push(authors[j]);
                     }
                     return newAuthors;
                 },
@@ -87,23 +208,6 @@ function loadChart() {
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
                 barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
-                sortingFuncs : [
-                    {   name: "# of Pub.", 
-                        func:function(a1, a2){
-                            // active item count first
-                            var dif = kshf.dif_activeItems(a1,a2);
-                            if(dif!==0) { return dif; }
-                            // activeItems : second
-                            dif = a2.items.length - a1.items.length;
-                            if(dif!==0) { return dif; }
-                            // author type second
-                            dif = a2.data[authorCol.author_type].localeCompare(a1.data[authorCol.author_type]);
-                            if(dif!==0) { return dif; }
-                            // author name third
-                            return -1*a2.data[authorCol.last_name].localeCompare(a1.data[authorCol.last_name]);
-                        }
-                    }
-                ],
                 barInfoText: "Color:Coauth. type",
                 textFilter: 'with', textGroup: 'co-authors'
             },{
@@ -137,11 +241,9 @@ function loadChart() {
             sortOpts : [
                 {   name: 'Year',
                     value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); }
-                },
-                {   name: 'Pub. Type',
+                },{ name: 'Pub. Type',
                     value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol['Publication Type']]].data[1];  }
-                },
-                {   name: 'Venue',
+                },{ name: 'Venue',
                     value: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[1]; }
                 }
             ],
@@ -155,7 +257,8 @@ function loadChart() {
                     str+="<div class=\"iteminfo iteminfo_0\">";
                     str+="<span onclick=\"kshf.listItemDetailToggleFunc2(this)\" style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
                     if(d.data[pubCol.url].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\">"+
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\" "+
+                                "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\">"+
                             "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
                     }
                     str+="</div>";
@@ -163,20 +266,12 @@ function loadChart() {
                 str+="<span class=\"item_details\">";
 
                 // thumbnail
-                if(d.data[pubCol.img]) { 
-                    str+="<div class=\"thumbnail\">";
-                    var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
-                    if(d.data[pubCol.pdf].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\">"+strImg+"</a>";
-                    } else {
-                        str+=strImg;
-                    }
-                    str+="</div>";
-
+                if(d.data[pubCol.img] && false) { 
                     str+="<div class=\"thumbnail2\">";
                     var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
                     if(d.data[pubCol.pdf].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\">"+strImg+"</a>";
+                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\""+
+                            "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowPDF,"+d.id()+")\">"+strImg+"</a>";
                     } else {
                         str+=strImg;
                     }
@@ -221,11 +316,7 @@ function loadChart() {
             }
         }
     });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
-
+});
 
 </script>
 <style>
@@ -240,17 +331,16 @@ div.listItem div.thumbnail{
     color:#666666;
     display:none
 }
-div.thumbnail img{
+div.listItem div.thumbnail2{
+    float:left;
+    color:#666666;
+    display: inline-block;
+}
+div.listItem div.thumbnail img{
     max-height:80px;
     border: solid 1px gray;
 }
-
-div.listItem div.thumbnail2{
-    float:left;
-    display: inline-block;
-    color:#666666;
-}
-div.thumbnail2 img{
+div.listItem div.thumbnail2 img{
     max-height:70px;
     border: solid 1px gray;
 }
@@ -319,11 +409,10 @@ body {
     text-decoration: underline;
 }
 
-
 </style>
 	</head>
 
-<body>
+<body onmousemove="logIf.setSessionID()">
     <div id="pagecell">
         <div id="pageName">
             <h2>
