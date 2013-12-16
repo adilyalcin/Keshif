@@ -7,8 +7,14 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
+        <!-- Logging features -->
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
+
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
+var demoID = 12;
 
 function landmassText(d){
     switch(d){
@@ -68,6 +74,42 @@ function resetSize(){
     $('#chart_div4').width (900);
 }
 
+
+var flag_cols = {
+    Country : 0,
+    Was:1,
+    Independence:2,
+    Flag:3,
+    Landmass:4,
+    Zone:5,
+    Area:6,
+    Population:7,
+    Language:8,
+    Religion:9,
+    Bars:10,
+    Stripes:11,
+    Colors:12,
+    Red:13,
+    Green:14,
+    Blue:15,
+    Gold:16,
+    White:17,
+    Black:18,
+    Orange:19,
+    Mainhue:20,
+    Circles:21,
+    Crosses:22,
+    Saltires:23,
+    Quarters:24,
+    Sunstars:25,
+    Crescent:26,
+    Triangle:27,
+    Icon:28,
+    Animate:29,
+    Text:30
+};
+
+
 function loadChart() {
     resetSize();
     // set resize callback
@@ -76,39 +118,7 @@ function loadChart() {
         kshf.updateLayout();
     });
 
-    var flag_cols = {
-        Country : 0,
-        Was:1,
-        Independence:2,
-        Flag:3,
-        Landmass:4,
-        Zone:5,
-        Area:6,
-        Population:7,
-        Language:8,
-        Religion:9,
-        Bars:10,
-        Stripes:11,
-        Colors:12,
-        Red:13,
-        Green:14,
-        Blue:15,
-        Gold:16,
-        White:17,
-        Black:18,
-        Orange:19,
-        Mainhue:20,
-        Circles:21,
-        Crosses:22,
-        Saltires:23,
-        Quarters:24,
-        Sunstars:25,
-        Crescent:26,
-        Triangle:27,
-        Icon:28,
-        Animate:29,
-        Text:30
-    };
+    logIf.Check = logIf.All();
 
     kshf.init({
         chartTitle: "World Country Flags",
@@ -282,30 +292,18 @@ $(document).ready(loadChart);
 
 </script>
 <style>
-
-div.listItem{
-    padding-bottom: 4px;
-}
-
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-
-#chart_div4 {
-    margin: 0 auto;
-/*    top: 50px;*/
-}
-/*
-.leftBlockAdjustSize{ display: none; }
-div.credits{ display: none }
-img.datasource{ display: none; }*/
-
-body{ margin:2px; }
-
+    div.listItem{
+        padding-bottom: 4px;
+    }
+    .iteminfo a{
+        color:#606060;
+        font-style:italic;
+    }
+    #chart_div4 {
+        margin: 0 auto;
+    }
+    body{ margin:2px; }
 </style>
 	</head>
-	<body>
-		<div id="chart_div4"></div>
-	</body>
+	<body onmousemove="logIf.setSessionID()"><div id="chart_div4"></div></body>
 </html>

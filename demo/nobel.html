@@ -8,8 +8,15 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
+        <!-- Logging features -->
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
+
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
+
+var demoID = 14;
 
 function getGender(v){
     switch(v){
@@ -24,7 +31,7 @@ function resetSize(){
     $('#nobelDiv').width (1000);
 }
 
-function loadChart() {
+$(document).ready( function(){
     resetSize();
     $(window).resize(function() {
         resetSize();
@@ -33,6 +40,8 @@ function loadChart() {
 
     var prizeCols;
     var lautCols;
+
+    logIf.Check = logIf.All();
 
 	kshf.init({
         chartTitle: "Nobel Prize Winners",
@@ -154,9 +163,7 @@ function loadChart() {
             }
         }
     });
-}
-
-$(document).ready(loadChart);
+});
 
 </script>
 <style>
@@ -165,5 +172,5 @@ $(document).ready(loadChart);
     body{ margin:2px; }
 </style>
 	</head>
-	<body><div id="nobelDiv"></div></body>
+	<body onmousemove="logIf.setSessionID()"><div id="nobelDiv"></div></body>
 </html>

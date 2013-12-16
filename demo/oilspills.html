@@ -8,13 +8,19 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
+        <!-- Logging features -->
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
+
         <script src="../jquery/jquery-ui-1.8.16.custom.min.js"></script>
         <script src="../jquery/jQAllRangeSliders-withRuler-min.js"></script>
         <link rel="stylesheet" href="../jquery/iThing-min.css">  
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
+
 var spillsCol;
+var demoID = 15;
 
 function getDate(d){
     var dt=d.data[1];
@@ -39,21 +45,20 @@ function getMaterial(spill){
     return toRet;
 }
 
-
 function resetSize(){
     $('#kshfChartId').height($(window).height()-10);
     $('#kshfChartId').width (1100);
-//    $('#chart_div4').height(730);
-//    $('#chart_div4').width (900);
 }
 
-function loadChart() {
+google.setOnLoadCallback( function(){
     
     resetSize();
     $(window).resize(function() {
         resetSize();
         kshf.updateLayout();
     });
+
+    logIf.Check = logIf.All();
 
 	kshf.init({
         chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
@@ -154,23 +159,15 @@ function loadChart() {
             }
         }
     });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
+});
 
 </script>
-<style>
-
-#kshfChartId {
-    margin: 0 auto;
-}
-
-body{ margin:2px; }
-
-</style>
+        <style>
+            #kshfChartId {
+                margin: 0 auto;
+            }
+            body{ margin:2px; }
+        </style>
 	</head>
-	<body>
-		<div id="kshfChartId"></div>
-	</body>
+	<body onmousemove="logIf.setSessionID()"><div id="kshfChartId"></div></body>
 </html>
