@@ -481,17 +481,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf div.listDiv select.listSortOptionSelect{
-    position:absolute;
+    float:left;
     bottom:0px;
 }
 .kshf div.listDiv div.itemstoggledetails{
-    position:absolute;
+    float:left;
     width:20px;
     font-size: 1em;
     color:#222222;
     text-align: center;
     font-weight: 700;
     cursor: pointer;
+    padding-left:3px;
 }
 .kshf div.listDiv div.itemstoggledetails span{
     display:none;

@@ -775,8 +775,8 @@ kshf.list = function(_kshf, config, root){
     // add collapse list feature
     if(this.toggleDetails===true){
        var x=listColumnRow.append("div")
-            .attr("class","itemstoggledetails")
-            .style("padding-left",(this.sortColWidth+5)+"px");
+            .attr("class","itemstoggledetails");
+//            .style("padding-left",(this.sortColWidth+5)+"px");
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
             .on("click", function(d){ me.dom.listItems.each(function(d){ 
@@ -794,8 +794,8 @@ kshf.list = function(_kshf, config, root){
 
     listColumnRow
         .append("span").attr("class","filter-blocks")
-        .append("span").attr("class","filter-blocks-for-charts")
-            .style("padding-left",(this.sortColWidth+(this.toggleDetails?23:3))+"px");
+        .append("span").attr("class","filter-blocks-for-charts");
+//            .style("padding-left",(this.sortColWidth+(this.toggleDetails?23:3))+"px");
 
     this.listDiv.append("div").attr("class","listItemGroup");
 
