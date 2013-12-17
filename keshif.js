@@ -650,6 +650,8 @@ kshf.list = function(_kshf, config, root){
     if(this.toggleDetails === undefined) { this.toggleDetails = false; }
 
 	this.listDiv = root.append("div").attr("class","listDiv");
+
+    this.listDiv.attr('showAll','true');
     
     var listHeader=this.listDiv.append("div").attr("class","listHeader");
     var listHeaderTopRow=listHeader.append("div").attr("class","topRow");
@@ -747,7 +749,7 @@ kshf.list = function(_kshf, config, root){
 
     listColumnRow.append("select")
         .attr("class","listSortOptionSelect")
-        .style("width",(this.sortColWidth+12)+"px")
+        .style("width",(this.sortColWidth)+"px")
         .on("change", function(){
             me.listSortOrder[0] = this.selectedIndex;;
             // trigger sorting reorder
@@ -767,18 +769,40 @@ kshf.list = function(_kshf, config, root){
         if(c.value===undefined){
             c.value = this.parentKshf.columnAccessFunc(c.name);
         }
-        if(!c.label) {
-            c.label = c.value;
-        }
+        if(!c.label) c.label = c.value;
     }
-    listColumnRow.append("span").attr("class","filter-blocks").append("span").attr("class","filter-blocks-for-charts");
-    this.listDiv.append("div").attr("class","listItemGroup");
 
-    this.listDiv.select("span.filter-blocks");
+    // add collapse list feature
+    if(this.toggleDetails===true){
+       var x=listColumnRow.append("div")
+            .attr("class","itemstoggledetails")
+            .style("padding-left",(this.sortColWidth+5)+"px");
+        x.append("span").attr("class","items_details_on").html("[+]")
+            .attr("title","Show details")
+            .on("click", function(d){ me.dom.listItems.each(function(d){ 
+                $(this).attr('details', true); }) 
+                me.listDiv.attr('showAll','false');
+            });
+        x.append("span").attr("class","items_details_off").html("[-]")
+            .attr("title","Show details")
+            .on("click", function(d){ me.dom.listItems.each(function(d){ 
+                $(this).attr('details', false); }) 
+                me.listDiv.attr('showAll','true');
+            });
+    }
+
+
+    listColumnRow
+        .append("span").attr("class","filter-blocks")
+        .append("span").attr("class","filter-blocks-for-charts")
+            .style("padding-left",(this.sortColWidth+(this.toggleDetails?23:3))+"px");
+
+    this.listDiv.append("div").attr("class","listItemGroup");
 
     this.sortItems();
     this.insertItems();
 };
+
 
 
 Array.prototype.repeat= function(what, L){
@@ -1637,7 +1661,6 @@ kshf.updateCustomListStyleSheet = function(){
     var contentWidth = (this.width_rightPanel_total-totalColWidth-30-25);
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
-    this.listDisplay.listDiv.select("div.listHeader span.filter-blocks").style("padding-left",(totalColWidth+13)+"px");
     this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");
     if(!this.specialStyle){
         this.specialStyle = document.body.appendChild(customSheet);

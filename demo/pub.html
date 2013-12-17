@@ -123,7 +123,7 @@ google.setOnLoadCallback(function() {
             }
         ],
         list : {
-            sortColWidth: 78,
+            sortColWidth: 85,
             sortOpts : [
                 {   name: 'Year',
                     value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); }
@@ -152,7 +152,7 @@ google.setOnLoadCallback(function() {
                 str+="<span class=\"item_details\">";
 
                 // thumbnail
-                if(d.data[pubCol.img] && false) { 
+                if(d.data[pubCol.img]) { 
                     str+="<div class=\"thumbnail2\">";
                     var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
                     if(d.data[pubCol.pdf].trim()!==""){

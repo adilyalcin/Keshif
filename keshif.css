@@ -480,10 +480,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: none;
 }
 
-.kshf select.listSortOptionSelect{
+.kshf div.listDiv select.listSortOptionSelect{
     position:absolute;
     bottom:0px;
 }
+.kshf div.listDiv div.itemstoggledetails{
+    position:absolute;
+    width:20px;
+    font-size: 1em;
+    color:#222222;
+    text-align: center;
+    font-weight: 700;
+    cursor: pointer;
+}
+.kshf div.listDiv div.itemstoggledetails span{
+    display:none;
+}
+
+.kshf div.listDiv               div.itemstoggledetails span.items_details_on { display:none; }
+.kshf div.listDiv[showAll=true] div.itemstoggledetails span.items_details_on { display:inline-block; }
+.kshf div.listDiv               div.itemstoggledetails span.items_details_off{ display:inline-block; }
+.kshf div.listDiv[showAll=true] div.itemstoggledetails span.items_details_off{ display:none; }
+
+.kshf div.itemstoggledetails[details=true]  .item_details_off{ display:block; }
+.kshf div.listItem[details=false] .item_details_off{ display:none; }
+
 
 
 .kshf g.row rect.total {
@@ -785,10 +806,10 @@ div.listItem div.icon{
 	width:28px;
 }
 
-div.listItem div.icon a{
+.kshf div.listItem div.icon a{
 	color:white;
 }
-div.listDiv div.listsortcolumn{
+.kshf div.listDiv div.listsortcolumn{
 	padding-right:3px;
     padding-left:2px;
 	display:inline-block; 
@@ -797,11 +818,11 @@ div.listDiv div.listsortcolumn{
     text-align: center;
     font-weight: 700;
 }
-div.listDiv div.listsortcolumn_0{
+.kshf div.listDiv div.listsortcolumn_0{
     font-weight:bold;
 }
 
-div.listItem div.iteminfo{
+.kshf div.listItem div.iteminfo{
     float:none;
     clear: left;
     font-weight:normal;
@@ -811,38 +832,38 @@ div.listItem div.iteminfo{
 }
 
 
-div.listItem .iteminfo_0{
+.kshf div.listItem .iteminfo_0{
     font-size:1.0em;
     font-weight:bold;
 	color: black;
 }
 
-div.listItem .iteminfo_1{
+.kshf div.listItem .iteminfo_1{
     font-size:0.9em;
 	color: #555555;
 }
-div.listItem .iteminfo_2{
+.kshf div.listItem .iteminfo_2{
     font-size:0.8em;
 	color: #555555;
     font-style:italic;
     font-weight:300;
 }
-div.listItem .iteminfo_3{
+.kshf div.listItem .iteminfo_3{
     font-size:0.8em;
 	color: rgb(167, 31, 31);
     font-style:italic;
     font-weight:300;
 }
 
-div.listItem div.content{
+.kshf div.listItem div.content{
     border: solid 0px lightgray;
     position: relative;
 }
-div.listItem .iteminfo_0 a{
+.kshf div.listItem .iteminfo_0 a{
 	color: #222222;
 }
 
-div.listItem .itemtoggledetails{
+.kshf div.listItem .itemtoggledetails{
     padding-right:3px;
     display:inline-block; 
     font-size: 0.8em;
@@ -853,26 +874,26 @@ div.listItem .itemtoggledetails{
     cursor: pointer;
 }
 
-div.listItem div.item_details{
+.kshf div.listItem div.item_details{
 
 }
 
-div.listItem[details=true]  .item_details_on{ display:none; }
-div.listItem[details=false] .item_details_on{ display:block; }
+.kshf div.listItem[details=true]  .item_details_on{ display:none; }
+.kshf div.listItem[details=false] .item_details_on{ display:block; }
 
-div.listItem[details=true]  .item_details_off{ display:block; }
-div.listItem[details=false] .item_details_off{ display:none; }
+.kshf div.listItem[details=true]  .item_details_off{ display:block; }
+.kshf div.listItem[details=false] .item_details_off{ display:none; }
 
-div.listItem[details=true]  .item_details{ display:block; }
-div.listItem[details=false] .item_details{ display:none; }
+.kshf div.listItem[details=true]  .item_details{ display:block; }
+.kshf div.listItem[details=false] .item_details{ display:none; }
 
-div.group_col0{
+.kshf div.group_col0{
     border-top: double 4px gray;
 }
-div.group_col1{
+.kshf div.group_col1{
     border-top: double 4px lightgray;
 }
-div.group_col2{
+.kshf div.group_col2{
     border-top: solid 1px lightgray;
 }
 
@@ -902,7 +923,6 @@ div.listHeader div.topRow {
 .kshf div.listHeader span.filter-blocks{
 	font-size: 0.9em;
     float: left;
-    padding-left: 215px;
     display: inline-block;
 }
 
