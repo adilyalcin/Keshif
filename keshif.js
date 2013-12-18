@@ -646,12 +646,14 @@ kshf.list = function(_kshf, config, root){
 
     this.contentFunc = config.contentFunc;
 
-    this.toggleDetails = config.toggleDetails;
-    if(this.toggleDetails === undefined) { this.toggleDetails = false; }
+    this.detailsToggle = config.detailsToggle;
+    if(this.detailsToggle === undefined) { this.detailsToggle = false; }
+    this.detailsDefault = config.detailsDefault;
+    if(this.detailsDefault === undefined) { this.detailsDefault = false; }
 
 	this.listDiv = root.append("div").attr("class","listDiv");
 
-    this.listDiv.attr('showAll','true');
+    this.listDiv.attr('showAll',this.detailsDefault?'false':'true');
     
     var listHeader=this.listDiv.append("div").attr("class","listHeader");
     var listHeaderTopRow=listHeader.append("div").attr("class","topRow");
@@ -773,7 +775,7 @@ kshf.list = function(_kshf, config, root){
     }
 
     // add collapse list feature
-    if(this.toggleDetails===true){
+    if(this.detailsToggle===true){
        var x=listColumnRow.append("div")
             .attr("class","itemstoggledetails");
 //            .style("padding-left",(this.sortColWidth+5)+"px");
@@ -795,7 +797,7 @@ kshf.list = function(_kshf, config, root){
     listColumnRow
         .append("span").attr("class","filter-blocks")
         .append("span").attr("class","filter-blocks-for-charts");
-//            .style("padding-left",(this.sortColWidth+(this.toggleDetails?23:3))+"px");
+//            .style("padding-left",(this.sortColWidth+(this.detailsToggle?23:3))+"px");
 
     this.listDiv.append("div").attr("class","listItemGroup");
 
@@ -923,7 +925,7 @@ kshf.list.prototype.insertItems = function(){
     .enter()
 		.append("div")
 		.attr("class","listItem")
-        .attr("details","false")
+        .attr("details",this.detailsDefault?"true":"false")
         .attr("itemID",function(d){return d.id();})
         .on("mouseover",function(d,i){
             d.highlightAttributes();
@@ -942,7 +944,7 @@ kshf.list.prototype.insertItems = function(){
         })
         ;
 
-    if(this_.toggleDetails){
+    if(this_.detailsToggle){
         var x= this.dom.listItems
             .append("div")
             .attr("class","listcell itemtoggledetails");
@@ -2471,7 +2473,6 @@ kshf.BarChart.prototype.insertHeader = function(){
                 kshf_.clearTimeFilter();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
                     {facet:kshf_.options.timeTitle,results:kshf.itemsSelectedCt});
-
             })
             .text('x');
     }
@@ -3516,8 +3517,8 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
 		.attr("title","Clear filter")
 		.text("x")
 		.on("click",function(){ 
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.facetTitle));
             kshf_.clearRowFilter(); 
+            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.facetTitle));
         });
 };
 kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
@@ -3529,8 +3530,8 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
 		.attr("title","Clear filter")
 		.text("x")
 		.on("click",function(){ 
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.timeTitle));
             kshf_.clearTimeFilter(); 
+            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.timeTitle));
         });
 };
 
@@ -3646,7 +3647,6 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
                 .style("display","none");
         })
 		.on("click", function(d,i,f) {
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDot,kshf.getFilteringState());
             // clear all the selections
             kshf_.selectAllRows(false);
 
@@ -3677,6 +3677,8 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             kshf_.yearSetXPos();
             kshf_.filterTime();
             // kshf update is done by row-category click whcih is also auto-activated after dot click
+
+            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDot,kshf.getFilteringState());
 		})
         ;
     this.dom.timeBar       = this.root.selectAll('g.barGroup g.row rect.timeBar')

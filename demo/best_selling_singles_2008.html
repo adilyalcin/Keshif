@@ -23,7 +23,7 @@
                 chartTitle: "Best-selling singles of 2008",
                 dirRoot: "../",
                 domID : "#chart_div4",
-                categoryTextWidth:160,
+                categoryTextWidth:190,
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
                     sheets : [ {name:"Singles"} ]
@@ -34,12 +34,14 @@
                     },{ facetTitle: "Age"
                     },{ facetTitle: "Type"
                     },{ facetTitle: "Race"
-                    },{ facetTitle: "Country of origin", catDispCountFix:4
+                    },{ facetTitle: "Country (origin)", 
+                        catItemMap: function(d){ return d.data[8];},
+                        catDispCountFix:4
                     },{ facetTitle: "Genre"
                     }
                 ],
                 list : {
-                    sortColWidth: 60,
+                    sortColWidth: 75,
                     sortOpts : [ {name: 'Position'} ],
                     contentFunc: function(d){
                         return d.data[2] + " - " + d.data[1];

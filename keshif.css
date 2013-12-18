@@ -492,7 +492,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     text-align: center;
     font-weight: 700;
     cursor: pointer;
-    padding-left:3px;
+    padding-left:5px;
 }
 .kshf div.listDiv div.itemstoggledetails span{
     display:none;
@@ -873,10 +873,6 @@ div.listItem div.icon{
     font-weight: 700;
     width:20px;
     cursor: pointer;
-}
-
-.kshf div.listItem div.item_details{
-
 }
 
 .kshf div.listItem[details=true]  .item_details_on{ display:none; }

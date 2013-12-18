@@ -124,7 +124,7 @@ function loadChart() {
         chartTitle: "World Country Flags",
         domID : "#chart_div4",
         dirRoot: "../",
-        categoryTextWidth: 171,
+        categoryTextWidth: 176,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -237,7 +237,7 @@ function loadChart() {
             });*/
         ],
         list:{
-            sortColWidth: 70,
+            sortColWidth: 80,
             sortOpts : [
                 {   name: 'Flag Date',
                     value: function(d){ 
@@ -249,15 +249,18 @@ function loadChart() {
                 }
             ],
             textSearch : "country",
+            detailsToggle : true,
+            detailsDefault : true,
             contentFunc : function(d){
                 var j;
                 var str="";
                 // description
-                    str+="<img src=\""+d.data[flag_cols.Flag]+"\" width=\"150\" style=\"float:left\">";
-                    str+="<div style=\"position: absolute; left:155px\">";
+                    str+="<img src=\""+d.data[flag_cols.Flag]+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
+                    str+="<div style=\"float:left;\">";
                     str+="<span class=\"iteminfo iteminfo_0\">";
                     str+=d.data[flag_cols.Country];
                     str+="</span></br>";
+                    str+="<span class=\"item_details\">";
                     str+="<span class=\"iteminfo iteminfo_1\"><u>Continent</u>: ";
                     str+=landmassText(d.data[flag_cols.Landmass]) + " | <u>Language</u>: ";
                     str+=languageText(d.data[flag_cols.Language]);
@@ -281,6 +284,7 @@ function loadChart() {
                     if(d.data[flag_cols.Crescent]) str+="Crescent, ";
                     if(d.data[flag_cols.Triangle]) str+="Triangle, ";
                     str+="</span></br>";
+                    str+="</span>"; // item_details
                     str+="</div>";
                 return str;
             }

@@ -134,7 +134,8 @@ google.setOnLoadCallback(function() {
                 }
             ],
             textSearch : 'title',
-            toggleDetails : true,
+            detailsToggle : true,
+            detailsDefault : false,
             contentFunc : function(d){
                 var j;
                 var str="";
@@ -157,7 +158,7 @@ google.setOnLoadCallback(function() {
                     var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
                     if(d.data[pubCol.pdf].trim()!==""){
                         str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\""+
-                            "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowPDF,"+d.id()+")\">"+strImg+"</a>";
+                            "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowPDF,{itemID:"+d.id()+"})\">"+strImg+"</a>";
                     } else {
                         str+=strImg;
                     }
