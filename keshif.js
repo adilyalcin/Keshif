@@ -40,6 +40,10 @@ if(typeof google !== 'undefined'){
     google.load('visualization', '1', {'packages': []});
 }
 
+if(typeof sendLog !== 'function'){
+    sendLog = null;
+}
+
 // kshf namespace
 var kshf = { };
 
@@ -732,13 +736,13 @@ kshf.list = function(_kshf, config, root){
           .append("div")
             .style("float","right")
             .on("click",function(){
-                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
                 if(_kshf.source.gdocId){
                     window.open("https://docs.google.com/spreadsheet/ccc?key="+_kshf.source.gdocId,"_blank");
                 } else {
                     me.parentKshf.root.select(".layout_infobox").style("display","block");
                     me.parentKshf.root.select("div.infobox_datasource").style("display","block");
                 }
+                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
             })
           .append("img")
             .attr("class","datasource")
