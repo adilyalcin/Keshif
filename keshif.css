@@ -937,7 +937,6 @@ div.listHeader div.topRow {
     padding: 0px 1px 0px 2px;
     margin-top: 2px;
     margin-left: 5px;
-    height:16px;
 /*    border-radius: 8px; */
 }
 .kshf span.filter-block b{
@@ -963,7 +962,7 @@ div.listHeader span.filter_reset {
     font-weight: 300;
     display: inline-block;
     width: 16px;
-    height: 16px;
+    height: 17px;
     box-shadow: 1px 1px 1px rgb(78, 71, 43);
     text-align: center;
     font-size: 0.8em;
@@ -971,8 +970,7 @@ div.listHeader span.filter_reset {
     color: rgb(238, 235, 224);
     position: relative;
     left: 1px;
-/*    float: right; */
-    top: -1px;
+    float: right;
     line-height: 15px;
     margin-left: 2px;
 }

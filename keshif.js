@@ -1091,7 +1091,7 @@ kshf.init = function (options) {
         .style("overflow-y","hidden")
         ;
     $(this.domID).keydown(function(e){
-        if(e.which===27){ // escape
+        if(e.which===27){ // escchartRowLabelSearchape
             me.clearAllFilters();
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,kshf.getFilteringState());
         }
@@ -1646,6 +1646,7 @@ kshf.updateAllTheWidth = function(v){
             break;
         }
     }
+
     // for some reason, on page load, this variable may be null. urgh.
     if(this.listDisplay){
         this.listDisplay.listDiv.style("width",width_rightPanel_total+"px");
@@ -1675,6 +1676,8 @@ kshf.updateCustomListStyleSheet = function(){
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
     this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");
+    this.root.select("span.filter-blocks").style("width",contentWidth+"px");
+
     if(!this.specialStyle){
         this.specialStyle = document.body.appendChild(customSheet);
     }
@@ -2508,23 +2511,22 @@ kshf.BarChart.prototype.insertHeader = function(){
 	var xxx=headerGroup.append("svg:g")
 		.attr("transform","matrix(0.008,0,0,0.008,"+(this.options.rowTextWidth-this.getRowLabelOffset()+5)+","+(line_y-kshf.line_height+3)+")")
 		.attr("class","resort_button")
-		;
+        ;
         xxx.append("svg:title").text("Move selected rows to top & re-order");
         xxx.append("svg:rect")
             .attr("x",0)
             .attr("y",0)
-            .attr("width",1500)
-            .attr("height",1500)
+            .attr("width",2400)
+            .attr("height",1800)
             .on("click",function(d){
-                if(sendLog) sendLog(CATID.FacetSort,ACTID_SORT.ResortButton,{facet:kshf_.options.facetTitle});
                 kshf_.sortDelay = 0; 
                 kshf_.updateSorting(true);
+                if(sendLog) sendLog(CATID.FacetSort,ACTID_SORT.ResortButton,{facet:kshf_.options.facetTitle});
             })
             ;
         xxx.append("svg:path")
             .attr("d",
                 "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
-//            .attr("d","m 1511,480 q 0,-5 -1,-7 Q 1446,205 1242,38.5 1038,-128 764,-128 618,-128 481.5,-73 345,-18 238,84 L 109,-45 Q 90,-64 64,-64 38,-64 19,-45 0,-26 0,0 v 448 q 0,26 19,45 19,19 45,19 h 448 q 26,0 45,-19 19,-19 19,-45 0,-26 -19,-45 L 420,266 q 71,-66 161,-102 90,-36 187,-36 134,0 250,65 116,65 186,179 11,17 53,117 8,23 30,23 h 192 q 13,0 22.5,-9.5 9.5,-9.5 9.5,-22.5 z m 25,800 V 832 q 0,-26 -19,-45 -19,-19 -45,-19 h -448 q -26,0 -45,19 -19,19 -19,45 0,26 19,45 l 138,138 Q 969,1152 768,1152 634,1152 518,1087 402,1022 332,908 321,891 279,791 271,768 249,768 H 50 Q 37,768 27.5,777.5 18,787 18,800 v 7 q 65,268 270,434.5 205,166.5 480,166.5 146,0 284,-55.5 138,-55.5 245,-156.5 l 130,129 q 19,19 45,19 26,0 45,-19 19,-19 19,-45 z")
             .attr("class","unselected")
             ;
     if(this.showTextSearch){
@@ -2536,7 +2538,6 @@ kshf.BarChart.prototype.insertHeader = function(){
         this.dom.showTextSearch= leftBlock.append("xhtml:input")
             .attr("type","text")
             .attr("class","chartRowLabelSearch")
-//            .style("margin-right",(this.getRowLabelOffset())+"px")
             .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
             .on("input",function(){
                 if(this.timer){
@@ -2565,10 +2566,17 @@ kshf.BarChart.prototype.insertHeader = function(){
                         }
                         kshf_.catCount_Selected = numSelected;
                     }
+                    // convert state to multiple-or selection
+                    var tmpSelectType = kshf_.options.selectType;
+                    kshf_.options.selectType = "MultipleOr";
+                    
                     kshf_.filter_all();
                     kshf_.refreshFilterRowState();
                     kshf.update();
                     kshf_.refreshFilterSummaryBlock();
+
+                    kshf_.options.selectType = tmpSelectType;
+
                     if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatTextSearch,kshf.getFilteringState(kshf_.options.facetTitle));
                 }, 750);
             })
@@ -3566,27 +3574,27 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
 	var a = d3.select("span.filter-blocks-for-charts");
 	this.filterSummaryBlock_Row= a.append("html:span").attr("class","filter-block filter_row_text_"+this.filterId)
 		.text(" "+(this.options.textFilter?this.options.textFilter:this.options.facetTitle)+": ");
-	this.filterSummaryBlock_Row.append("html:span").attr("class","filter_item");
-	this.filterSummaryBlock_Row.append("html:span").attr("class","filter_reset")
-		.attr("title","Clear filter")
-		.text("x")
-		.on("click",function(){ 
+    this.filterSummaryBlock_Row.append("html:span").attr("class","filter_reset")
+        .attr("title","Clear filter")
+        .text("x")
+        .on("click",function(){ 
             kshf_.clearRowFilter(); 
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.facetTitle));
         });
+	this.filterSummaryBlock_Row.append("html:span").attr("class","filter_item");
 };
 kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
 	var kshf_=this;
 	var a = d3.select("span.filter-blocks-for-charts");
 	this.filterSummaryBlock_Time=a.append("html:span").attr("class","filter-block filter_row_text_"+(this.filterId+1));
-	this.filterSummaryBlock_Time.append("html:span").attr("class","filter_item");
-	this.filterSummaryBlock_Time.append("html:span").attr("class","filter_reset")
-		.attr("title","Clear filter")
-		.text("x")
-		.on("click",function(){ 
+    this.filterSummaryBlock_Time.append("html:span").attr("class","filter_reset")
+        .attr("title","Clear filter")
+        .text("x")
+        .on("click",function(){ 
             kshf_.clearTimeFilter(); 
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(kshf_.options.timeTitle));
         });
+	this.filterSummaryBlock_Time.append("html:span").attr("class","filter_item");
 };
 
 kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
