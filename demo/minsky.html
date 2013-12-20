@@ -69,15 +69,19 @@ function loadChart() {
                 },{ name: 'Pub. Type' },
             ],
             textSearch : 'Title',
+            detailsToggle : true,
             contentFunc : function(item){
                 var j;
                 var str="";
-                var ptype=item.data[pubCol['Type']];
+                var ptype=item.data[pubCol['Pub. Type']];
                 // paper name
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+=item.data[pubCol.Title];
                 if(ptype!=='') str+=" <i>("+ptype+")</i>";
                 str+="</div>";
+
+                str+="<span class=\"item_details\">";
+
                 // Venue
                 var year = item.data[pubCol['Date']].getFullYear();
                 var venue=item.data[pubCol['Venue']];
@@ -101,6 +105,9 @@ function loadChart() {
                 if(topics.length!==0){
                     str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
                 }
+
+                str+="</div>";
+
                 return str;
             }
         }

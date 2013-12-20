@@ -67,7 +67,7 @@ function loadChart() {
         chartTitle: "Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)",
         domID : "#chart_div4",
         dirRoot: "../",
-        categoryTextWidth:220,
+        categoryTextWidth:245,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
             sheets : [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
@@ -168,6 +168,7 @@ function loadChart() {
                         }
                     }
                 ],
+                detailsToggle : true,
                 contentFunc : function(accident){
                     var j;
                     var str="";
@@ -175,6 +176,7 @@ function loadChart() {
                     str+="<div class=\"iteminfo iteminfo_0\"> ";
                     str+="<i>"+moment(aDate).format("MMM Do, YYYY")+"</i> - "+ accident.data[accCol.Accident_Index];
                     str+="</div>";
+                    str+="<span class=\"item_details\">";
                     str+="<div class=\"iteminfo iteminfo_1\"> <u>Severity</u>: "+ 
                         kshf.dt_id['Severity'][accident.data[accCol['Severity']]].data[1];
                     str+=" - <u># of vehicles</u>: "+ accident.data[accCol['Vehicles']];
@@ -195,6 +197,7 @@ function loadChart() {
                     if(accident.data[accCol['Special Condition']]!==0)
                         str+="<div class=\"iteminfo iteminfo_2\"><u>Special condition</u>: "+ 
                             kshf.dt_id['SpecCond'][accident.data[accCol['Special Condition']]].data[2] +"</div>";
+                    str+="</span>";
                     return str;
                 }
             }

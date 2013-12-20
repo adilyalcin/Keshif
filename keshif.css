@@ -543,6 +543,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-weight:300;
     cursor: pointer;
 }
+.kshfHost[kb_modifier=true] .kshf g.row g[highlight=true] text.row_label {
+    cursor: cell;
+}
 .kshf div.kshfChart[filtered_row=true] g.row[selected=false] text{
     fill:gray;
 }

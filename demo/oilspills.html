@@ -130,19 +130,23 @@ google.setOnLoadCallback( function(){
                 },
                 { name: 'Size' }
             ],
+            detailsToggle : true,
             contentFunc : function(d){
                 var j;
                 var str="";
                 // location
                 var district=kshf.dt_id.Districts[d.data[spillsCol["District"]]];
                 if(district) district = district.data[1];
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data[spillsCol["Company Name"]]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data[spillsCol["Company"]]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
                     +" <u>District</u>:"+district
                     +" - <u>Area Block</u>:"+d.data[spillsCol["Area Block"]]
                     +" - <u>Water Depth</u>:"+d.data[spillsCol["Water Depth (feet)"]]+"feet"
                     +" - <u>Distance to Shore</u>:"+d.data[spillsCol["Distance to Shore (miles)"]]+"miles"
                     +"</div>";
+                
+                str+="<span class=\"item_details\">";
+                
                 // Spillage
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
                 str+=" <u>Total</u>:"+d.data[spillsCol["Total Spilled"]];
@@ -155,6 +159,9 @@ google.setOnLoadCallback( function(){
                 str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource(d)
                     +" <b>Facility:</b> "+ d.data[spillsCol["Facility"]]
                     +"</div>";
+
+                str+="</span>";
+                
                 return str;
             }
         }
