@@ -37,6 +37,7 @@ var logIf = {
             this.sessionID = Math.floor((ran+ran2)*10000000000000);
             writeCookie('sessionId', this.sessionID, 30);
         }
+        this.sessionID2 = Math.floor(Math.random()*10000000000000);
         this.All();
     },
     All : function(){
@@ -49,6 +50,7 @@ var logIf = {
         return this.Check;
     },
     sessionID: null,
+    sessionID2: null,
     Check : true
 }
 
@@ -96,6 +98,7 @@ function sendLog(catID, actID, dt){
         'catID' : catID,
         'actID' : actID,
         'sesID' : logIf.sessionID,
+        'sesID2': logIf.sessionID2,
         'ts'    : ts,
         'demoID': demoID
     };
