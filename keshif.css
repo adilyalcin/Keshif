@@ -34,6 +34,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  .kshfHost{
     border: solid 1px lightgray;
+    background-color: white;
 }
 .kshfHost:hover{
     box-shadow: 0px 0px 4px gray;
@@ -87,6 +88,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
+
+    z-index:10;
 }
 .kshf div.leftBlockAdjustSize:hover{
 /*    background-color: rgba(155, 151, 133, 0.2);
@@ -222,6 +225,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float:right;
     cursor: default;
     font-variant: small-caps;
+    pointer-events: none;
 }
 
 .kshf .headerGroup span.rightHeader span.header_label {
@@ -654,6 +658,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size: 0.8em;
     color: gray;
     cursor: default;
+    font-size:0.7em;
+    width:100px;
+}
+.kshfHost[hideBarAxis=true] .kshf div.barChartMainInfo{
     display:none;
 }
 .kshf div.barChartMainInfo .refreshbarscales{
@@ -681,6 +689,7 @@ div.kshf.layout_header{
     font-weight: 700;
     font-size: 1.05em;
     text-shadow: 1px 1px 2px white;
+    float:none;
 
     text-align: center;
     background-image: linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
@@ -693,13 +702,17 @@ div.kshf.layout_header{
 }
 div.kshf.layout_top{
     display:block;
+    position:absolute;
 }
 div.kshf.layout_left{
-    clear:left; 
+    clear:left;
+    position: absolute;
+    left:0px;
 }
 div.kshf.layout_left_background{
     position: absolute;
     min-height: 100%;
+    height: 2000px;
     left: 0px;
     background-image: linear-gradient(right, 
         rgba(243, 243, 243, 0) 0%, 
@@ -721,7 +734,7 @@ div.kshf.layout_left_background{
         rgba(243, 243, 243, 1) 5%, 
         rgba(243, 243, 243, 1) 60%, 
         rgba(243, 243, 243, 0) 100%);
-    z-index: -20;
+    pointer-events: none;
 }
 .kshf.layout_left_header{
     position:absolute;
@@ -729,22 +742,18 @@ div.kshf.layout_left_background{
     top:0px;
 }
 .kshf.layout_left_header div.filter_header{
-    position: relative;
     background-color: rgba(125,125,125,0.15);
-/*    border-bottom: solid 1px gray; */
-    box-shadow: 0px 0px 2px 1px lightgray;
+    border-bottom: solid 1px gray;
+    box-shadow: 0px 0px 2px 1px gray;
 }
 
 .kshf.layout_left_header span.filters_text{
-    margin-left: 5px;
     position: relative;
-    top:-3px;
-    float:left;
-    font-size: 1.2em;
+    float: right;
+    font-size: 0.9em;
     font-weight: 700;
-    font-variant: small-caps;
+    top: -1px;
     font-style: normal;
-    text-decoration: underline;
 }
 div.kshf.layout_right{
     position:relative;
@@ -987,9 +996,10 @@ div.listHeader span.filter_reset {
     background-color: rgba(238, 235, 224,0.1);
     padding: 0px 0px 0px 2px;
     height:14px;
-    float:right;
+    float: right;
     border-radius:7px;
     margin-right: 5px;
+    margin-left: 5px;
 }
 .kshf span.filter-block-clear:hover{
     box-shadow: inset 1px 1px 1px #474940;

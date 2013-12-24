@@ -1090,6 +1090,7 @@ kshf.init = function (options) {
         .style("position","relative")
         .style("overflow-y","hidden")
         ;
+
     $(this.domID).keydown(function(e){
         if(e.which===27){ // escchartRowLabelSearchape
             me.clearAllFilters();
@@ -1213,11 +1214,31 @@ kshf.init = function (options) {
     }
 
 
-    this.layoutBackground = this.root.append("div").attr("class","kshf layout_left_background");
-    var mm=this.root.append("div").attr("class","kshf layout_left_header").append("div").attr("class","filter_header");
+    if(this.chartTitle!==undefined){
+        this.insertChartHeader();
+    }
+
+    var subRoot = this.root.append("div").style("position","relative");
+
+    this.layoutBackground = subRoot.append("div").attr("class","kshf layout_left_background");
+
+    this.layoutTop = subRoot.append("div").attr("class", "kshf layout_top");
+    this.layoutTop.append("div")
+        .attr("class","barChartMainInfo")
+        .text("⇒Item count ")//⟾
+        .append("img")
+        .attr("class","refreshbarscales")
+        .attr("width","13")
+        .style("margin-bottom","-2px")
+//        .text("[x]")
+        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
+        ;
+
+
+    var mm=subRoot.append("div").attr("class","kshf layout_left_header").append("div").attr("class","filter_header");
     mm.style("top",(this.chartTitle?"23":"0")+"px")
         .style("height",(this.line_height-2)+"px");
-    mm.append("span").attr("class","filters_text").text("Filters");
+    mm.append("span").attr("class","filters_text").text("FILTERS↓");
     // insert clear all option
     var s= mm.append("span")
         .attr("class","filter-block-clear")
@@ -1237,7 +1258,7 @@ kshf.init = function (options) {
 
     mm.append("div").attr("class","leftBlockAdjustSize")
         .attr("title","Drag to adjust panel width")
-        .style("height",(kshf.line_height-3)+"px")
+        .style("height",(kshf.line_height-5)+"px")
         .on("mousedown", function (d, i) {
             me.root.style('cursor','ew-resize');
             var mouseDown_x = d3.mouse(this.parentNode.parentNode)[0];
@@ -1264,23 +1285,8 @@ kshf.init = function (options) {
             d3.event.preventDefault();
         });
 
-    if(this.chartTitle!==undefined){
-        this.insertChartHeader();
-    }
-
-    this.layoutTop = this.root.append("div").attr("class", "kshf layout_top");
-    this.layoutTop.append("div")
-        .attr("class","barChartMainInfo")
-        .text("⟾Item count ")
-        .append("img")
-        .attr("class","refreshbarscales")
-        .attr("width","13")
-        .style("margin-bottom","-2px")
-//        .text("[x]")
-        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
-        ;
-    this.layoutLeft = this.root.append("div").attr("class", "kshf layout_left");
-    this.layoutRight  = this.root.append("div").attr("class", "kshf layout_right");
+    this.layoutLeft = subRoot.append("div").attr("class", "kshf layout_left");
+    this.layoutRight  = subRoot.append("div").attr("class", "kshf layout_right");
 	
     this.loadSource();
 };
@@ -1471,6 +1477,7 @@ kshf.updateLayout_Height = function(){
     }
     
     var divLineRem = divLineCount;
+    var usedLines = 0;
 
     // right panel ******************
     divLineRem = divLineCount;
@@ -1567,14 +1574,20 @@ kshf.updateLayout_Height = function(){
     c2=kshf.charts[0];
     var topOffset=0;
     if(c2.type==='scatterplot'){
-        topOffset = c2.rowCount_Total()-c2.rowCount_Total_Right();
-        if(topOffset>0) topOffset--;
+        topOffset = c2.rowCount_Total_Right();
+//        topOffset = c2.rowCount_Total()-c2.rowCount_Total_Right();
+//        if(topOffset>0) topOffset--;
     }
 
     this.root.selectAll("div.layout_right")
         .transition()
         .duration(this.layout_animation)
-        .style("top", (-topOffset*kshf.line_height)+"px");
+        .style("top", (topOffset*kshf.line_height)+"px");
+
+    this.root.selectAll("div.layout_left")
+        .transition()
+        .duration(this.layout_animation)
+        .style("top", (topOffset*kshf.line_height)+"px");
 };
 
 
@@ -1638,6 +1651,11 @@ kshf.updateAllTheWidth = function(v){
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.leftBlockAdjustSize").style("left",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
+
+    this.root.select("div.layout_right").style("left",(this.width_leftPanel_total)+"px");
+
+    this.root.select(".kshf.layout_left_header span.filters_text")
+        .style("margin-right",(this.width_leftPanel_total-this.categoryTextWidth+this.charts[0].getRowLabelOffset()-8-8)+"px")
 
     var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-kshf.scrollPadding-15; // 15 is padding
     for (i = 0; i < this.charts.length; ++i){
@@ -2613,8 +2631,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     }
 
     kshf.layoutTop.select(".barChartMainInfo")
-        .style("left",(kshf_.options.rowTextWidth-this.getRowLabelOffset()+9)+"px");
-
+        .style("left",(kshf_.options.rowTextWidth)+"px");
 };
 
 kshf.BarChart.prototype.setTimeWidth = function(w){
@@ -3480,7 +3497,6 @@ kshf.BarChart.prototype.updateWidth = function(){
     this.root.select("g.headerGroup text.barInfo")
         .attr("x", this.options.rowTextWidth)
         ;
-
 }
 
 
