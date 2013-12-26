@@ -24,12 +24,34 @@
                 chartTitle: "Animals in some Zoo",
                 dirRoot: "../",
                 domID : "#chart_div4",
-                categoryTextWidth:160,
+                categoryTextWidth:150,
                 showDataSource : false,
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
                     sheets : [ {name:"Animals"} ]
                 },
+                charts :[
+                    {   facetTitle: "# of Legs"
+                    },{ facetTitle: "Properties",
+                        catItemMap: function(d){
+                            var r =[];
+                            if(d.data[2 ]) r.push("Has Tail");
+                            if(d.data[3 ]) r.push("Has Hair");
+                            if(d.data[4 ]) r.push("Has Feathers");
+                            if(d.data[5 ]) r.push("Has Backbone");
+                            if(d.data[6 ]) r.push("Has Eggs");
+                            if(d.data[7 ]) r.push("Has Milk");
+                            if(d.data[8 ]) r.push("Domestic");
+                            if(d.data[9 ]) r.push("Aquatic");
+                            if(d.data[10]) r.push("Airborn");
+                            if(d.data[11]) r.push("Venomous");
+                            if(d.data[12]) r.push("Predator");
+                            if(d.data[13]) r.push("Has Tooth");
+                            if(d.data[14]) r.push("Breathes");
+                            return r;
+                        }
+                    }
+                ],
                 list : {
                     sortColWidth: 50,
                     sortOpts : [
