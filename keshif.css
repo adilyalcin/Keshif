@@ -52,8 +52,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.kshf div.leftBlockAdjustSize{
-    position: absolute;
+.kshf span.leftBlockAdjustSize{
+    position: relative;
+    float:right;
+    right: -3px;
     width:6px;
     margin-left: -10px;
     border-bottom: solid 1px lightgray;
@@ -88,10 +90,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(12, 12, 12, 1) 50%, 
         rgba(230, 230, 230, 1) 60%, 
         rgba(230, 230, 230, 0) 100%);
-
-    z-index:10;
 }
-.kshf div.leftBlockAdjustSize:hover{
+.kshf span.leftBlockAdjustSize:hover{
 /*    background-color: rgba(155, 151, 133, 0.2);
     border: dashed 1px rgb(187, 172, 123);*/
     border-bottom: solid 1px gray;
@@ -653,25 +653,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
 }
 
-.kshf div.barChartMainInfo{
-    position: absolute;
+.kshf span.barChartMainInfo{
     font-size: 0.8em;
     color: gray;
     cursor: default;
     font-size:0.7em;
     width:100px;
+    position:relative;
+    top:-3px;
+    left: -13px;
 }
-.kshfHost[hideBarAxis=true] .kshf div.barChartMainInfo{
+.kshfHost[hideBarAxis=true] .kshf span.barChartMainInfo{
     display:none;
 }
-.kshf div.barChartMainInfo .refreshbarscales{
+.kshf span.barChartMainInfo .refreshbarscales{
     cursor:pointer;
     display: none;
 }
-.kshf div.barChartMainInfo .refreshbarscales:hover{
+.kshf span.barChartMainInfo .refreshbarscales:hover{
     color:#cb5454;
 }
-.kshfHost[hidebars=true] .kshf div.barChartMainInfo{
+.kshfHost[hidebars=true] .kshf span.barChartMainInfo{
     display:none;
 }
 
@@ -740,6 +742,7 @@ div.kshf.layout_left_background{
     position:absolute;
     left:0px;
     top:0px;
+    z-index: 10;
 }
 .kshf.layout_left_header div.filter_header{
     background-color: rgba(125,125,125,0.15);
@@ -752,7 +755,6 @@ div.kshf.layout_left_background{
     float: right;
     font-size: 0.9em;
     font-weight: 700;
-    top: -1px;
     font-style: normal;
 }
 div.kshf.layout_right{
@@ -985,26 +987,26 @@ div.listHeader span.filter_reset {
 }
 
 .kshf span.filter-block-clear{
-    background-color: rgba(228, 223, 212, 0.7) !important;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 15px;
     display: none;
     cursor:pointer;
     color: rgb(37, 33, 18);
     font-weight: 300;
     border: 1px rgb(104, 91, 43) solid;
     box-shadow: 1px 1px 1px rgb(78, 71, 43);
-    background-color: rgba(238, 235, 224,0.1);
+    background-color: white;
     padding: 0px 0px 0px 2px;
     height:14px;
-    float: right;
+    float: left;
     border-radius:7px;
-    margin-right: 5px;
-    margin-left: 5px;
+    margin-right: 2px;
+    margin-left: 1px;
 }
 .kshf span.filter-block-clear:hover{
     box-shadow: inset 1px 1px 1px #474940;
 }
-div.listHeader span.filter_reset:hover{
+.kshf div.listHeader span.filter_reset:hover{
     box-shadow: inset 1px 1px 1px rgb(78, 71, 43);
     font-weight:500;
 }
@@ -1012,10 +1014,10 @@ div.listHeader span.filter_reset:hover{
 
 
 
-div.listHeader span.bigTextSearch_wrap {
+.kshf div.listHeader span.bigTextSearch_wrap {
     position: relative;
 }
-div.listHeader span.bigTextSearch_wrap span {
+.kshf div.listHeader span.bigTextSearch_wrap span {
     position: absolute;
     display: none;
     top: 3px;
@@ -1025,10 +1027,10 @@ div.listHeader span.bigTextSearch_wrap span {
     background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -690px;
     cursor: pointer;
 }
-div.listHeader span.bigTextSearch_wrap span:hover {
+.kshf div.listHeader span.bigTextSearch_wrap span:hover {
     background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -665px;
 }
-div.listHeader input.bigTextSearch{
+.kshf div.listHeader input.bigTextSearch{
     font-size: 0.8em;
     font-weight: 700;
     color: #cb5454;
@@ -1038,19 +1040,23 @@ div.listHeader input.bigTextSearch{
     border-width:0px;
     border-bottom: dashed 1px #cb5454;
 }
-div.listHeader input.bigTextSearch:focus{
+.kshf div.listHeader input.bigTextSearch:focus{
     outline-color: gray;
     outline-width: 4px;
 }
-div.listHeader input.bigTextSearch:hover{
+.kshf div.listHeader input.bigTextSearch:hover{
     border: solid 1px #cb5454;
     background-color: white;
     padding: 0px 0px 1px 0px;
 }
-.kshf div.listHeader ::-webkit-input-placeholder { 
+.kshf div.listHeader input.bigTextSearch::-webkit-input-placeholder { 
     color: #cb5454;
     font-weight: 300;
 }
+.kshf div.listHeader input.bigTextSearch:focus::-webkit-input-placeholder { 
+    color: #F3CDCD;
+}
+
 
 
 
@@ -1203,7 +1209,7 @@ div.credits:hover{
     box-shadow: 1px 1px 1px #474940;
     text-align: center;
     font-size: 0.7em;
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(228, 226, 222);
     color: black;
     display: none;
     border: solid 1px gray;
@@ -1216,15 +1222,15 @@ div.credits:hover{
 }
 .kshf div.chartClearFilterButton.rowFilter{
     float: right;
-    margin: 1px 5px 0px 0px;
+    margin: 1px 3px 0px 0px;
 }
 .kshf div.chartClearFilterButton.rangeFilter{
     float: right;
-    margin: 1px 5px 0px 0px;
+    margin: 1px 3px 0px 0px;
 }
 .kshf div.chartClearFilterButton.timeFilter{
     float: left;
-    margin: 1px 0px 0px 5px;
+    margin: 1px 0px 0px 3px;
 }
 .kshf div.kshfChart[filtered_row=true] div.chartClearFilterButton.rowFilter{
     display:inline-block;
@@ -1245,7 +1251,8 @@ div.credits:hover{
     height: 14px;
     border: solid 0px white;
     border-left: solid 1px gray;
-    border-radius:7px;
+    border-radius:6.5px;
+    line-height: 13px;
 }
 .kshf span.filter-block-clear:hover div.chartClearFilterButton.allFilter{
     font-weight:700;

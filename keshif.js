@@ -1054,6 +1054,12 @@ kshf.init = function (options) {
     this.num_of_charts = 0;
     this.maxFilterID = 1; // 1 is used for global search
     this.categoryTextWidth = options.categoryTextWidth;
+    if(this.categoryTextWidth===undefined){
+        this.categoryTextWidt = 153;
+    }
+    if(this.categoryTextWidth<153){
+        this.categoryTextWidth = 153;
+    }
     this.chartDefs = options.charts;
     this.listDef = options.list;
 
@@ -1096,11 +1102,11 @@ kshf.init = function (options) {
             me.clearAllFilters();
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,kshf.getFilteringState());
         }
-        if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey || e.metaKey){
+        if(e.shiftKey || e.altKey || e.ctrlKey || e.ctrlKey){
             $(this).attr("kb_modifier",true);
         }
     }).keyup(function(e){
-        if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey || e.metaKey===false){
+        if(e.shiftKey===false && e.altKey===false && e.ctrlKey===false && e.ctrlKey===false){
             $(this).attr("kb_modifier",false);
         }
     });
@@ -1223,24 +1229,19 @@ kshf.init = function (options) {
     this.layoutBackground = subRoot.append("div").attr("class","kshf layout_left_background");
 
     this.layoutTop = subRoot.append("div").attr("class", "kshf layout_top");
-    this.layoutTop.append("div")
-        .attr("class","barChartMainInfo")
-        .text("⇒Item count ")//⟾
-        .append("img")
-        .attr("class","refreshbarscales")
-        .attr("width","13")
-        .style("margin-bottom","-2px")
-//        .text("[x]")
-        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
-        ;
 
+    var mm=subRoot
+        .append("div")
+            .attr("class","kshf layout_left_header")
+        .append("div")
+            .attr("class","filter_header")
+            .style("top",(this.chartTitle?"23":"0")+"px")
+            .style("height",(this.line_height-2)+"px");
+    var mmm = mm.append("span").style("width",this.categoryTextWidth+"px").style("display","inline-block");
 
-    var mm=subRoot.append("div").attr("class","kshf layout_left_header").append("div").attr("class","filter_header");
-    mm.style("top",(this.chartTitle?"23":"0")+"px")
-        .style("height",(this.line_height-2)+"px");
-    mm.append("span").attr("class","filters_text").text("FILTERS↓");
+    mmm.append("span").attr("class","filters_text").text("FILTERS↓");
     // insert clear all option
-    var s= mm.append("span")
+    var s= mmm.append("span")
         .attr("class","filter-block-clear")
         .attr("filtered_row","false")
         .text("Clear All")
@@ -1252,11 +1253,21 @@ kshf.init = function (options) {
         .attr("class","chartClearFilterButton allFilter")
         .attr("title","Clear all")
         .text("x")
-        .on("click",function(){
-            kshf.clearAllFilters();
-        });
+        .on("click",function(){ kshf.clearAllFilters(); });
+    mm.append("span")
+        .attr("class","barChartMainInfo")
+        .text("⇒Item count ")//⟾
+        .append("img")
+        .attr("class","refreshbarscales")
+        .attr("width","13")
+        .style("margin-bottom","-2px")
+        .style("display","none")
+//        .text("[x]")
+        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
+        ;
 
-    mm.append("div").attr("class","leftBlockAdjustSize")
+
+    mm.append("span").attr("class","leftBlockAdjustSize")
         .attr("title","Drag to adjust panel width")
         .style("height",(kshf.line_height-5)+"px")
         .on("mousedown", function (d, i) {
@@ -1335,10 +1346,6 @@ kshf.addBarChart = function(options){
     }
     if(options.sortingFuncs===undefined){
         options.sortingFuncs = [{ func:kshf.sortFunc_ActiveCount_TotalCount }];
-    }
-    if(options.catLabelText===undefined){
-        // get the 2nd attribute as row text [1st is expected to be the id]
-        options.catLabelText = function(typ){ return typ.data[1]; };
     }
     options.rowTextWidth = this.categoryTextWidth;
     this.charts.push(new kshf.BarChart(this,options));
@@ -1649,13 +1656,12 @@ kshf.updateAllTheWidth = function(v){
     var rowLabelOffset = this.charts[0].getRowLabelOffset();
 
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
-    this.root.select("div.leftBlockAdjustSize").style("left",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
     this.root.select("div.layout_right").style("left",(this.width_leftPanel_total)+"px");
 
     this.root.select(".kshf.layout_left_header span.filters_text")
-        .style("margin-right",(this.width_leftPanel_total-this.categoryTextWidth+this.charts[0].getRowLabelOffset()-8-8)+"px")
+        .style("margin-right",(this.charts[0].getRowLabelOffset()-8)+"px")
 
     var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-kshf.scrollPadding-15; // 15 is padding
     for (i = 0; i < this.charts.length; ++i){
@@ -1815,13 +1821,19 @@ kshf.BarChart.prototype.init_shared = function(options){
     this.sortID=0;
     this.sortInverse=false;
     this.options.timeMaxWidth=0;
+
 	// filter options - must be always specified
+
+    if(this.options.showNoneCat===undefined){
+        this.options.showNoneCat = false;
+    }
+
+    if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
+        this.options.timeItemMap = this.parentKshf.columnAccessFunc(this.options.timeTitle);
+    }
 
     if(this.options.catItemMap===undefined){
         this.options.catItemMap = this.parentKshf.columnAccessFunc(this.options.facetTitle);
-    }
-    if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
-        this.options.timeItemMap = this.parentKshf.columnAccessFunc(this.options.timeTitle);
     }
 
     // generate row table if necessary
@@ -1830,6 +1842,45 @@ kshf.BarChart.prototype.init_shared = function(options){
         kshf.createTableFromTable(kshf.items,this.catTableName, this.options.catItemMap);
     } else {
         this.catTableName = this.options.catTableName;
+    }
+
+    var noneID = null;
+    if(this.options.showNoneCat===true){
+        // TODO: Check if a category named "None" exist in table
+        noneID = 1000;
+        var newItem = new kshf.Item([noneID,"None"],0)
+        kshf.dt[this.catTableName].push(newItem);
+        kshf.dt_id[this.catTableName][noneID] = newItem;
+    }
+
+    if(this.options.catLabelText===undefined){
+        // get the 2nd attribute as row text [1st is expected to be the id]
+        options.catLabelText = function(typ){ return typ.data[1]; };
+    }
+    if(this.options.showNoneCat===true){
+        var _catLabelText = this.options.catLabelText;
+        var _catTooltipText = this.options.catTooltipText;
+        options.catLabelText = function(d){ 
+            if(d.id()===noneID) return "None";
+            return _catLabelText(d);
+        };
+        options.catTooltipText = function(d){ 
+            if(d.id()===noneID) return "None";
+            return _catTooltipText(d);
+        };
+    }
+
+    if(this.options.showNoneCat===true){
+        var _catItemMap = this.options.catItemMap;
+        this.options.catItemMap = function(d){
+            var r=_catItemMap(d);
+            if(r===null) return noneID;
+            if(r instanceof Array)
+                if(r.length===0) {
+                    return noneID;
+                }
+            return r;
+        }
     }
 
     var optimalSelectOption = "Single";
@@ -3327,7 +3378,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	var rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){
             var tmpSelectType = kshf_.options.selectType;
-            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey || d3.event.metaKey){
+            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
                 kshf_.options.selectType = "MultipleOr";
             }
             if(!kshf_.noItemOnSelect(d)) {
@@ -3358,7 +3409,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
     var rowsSub = rows.append("svg:g").attr("class","barRow")
 		.on("mouseover", function(d){
             var tmpSelectType = kshf_.options.selectType;
-            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey || d3.event.metaKey){
+            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
                 kshf_.options.selectType = "MultipleOr";
             }
             // if there are no active item, do not allow selection (under some specific conditions)
