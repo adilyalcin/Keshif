@@ -57,7 +57,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float:right;
     right: -3px;
     width:6px;
-    margin-left: -10px;
     border-bottom: solid 1px lightgray;
     border-top: solid 1px lightgray;
 /*    
@@ -516,17 +515,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     fill-opacity:0.2;
 }
 .kshf g.row g[highlight=true] rect.total{
-    stroke-width: 2;
-    stroke: orangered;
     cursor: pointer;
 }
-.kshf g.row rect.active {
+.kshf g.row g[highlight=true] rect.active{
+    stroke-width: 2;
+    stroke: orangered;
     pointer-events: none;
+}
+.kshf g.row rect.active {
+/*    pointer-events: none; */
 }
 .kshf g.row rect.rowBar {
     fill: #8699A8;
 }
 
+.kshf g.row[noitems=true] text{
+    fill:gray;
+}
 .kshf g.row g[highlight=false] text.item_count {
     font-size: 0.7em;
     cursor: default;
@@ -549,9 +554,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshfHost[kb_modifier=true] .kshf g.row g[highlight=true] text.row_label {
     cursor: cell;
-}
-.kshf div.kshfChart[filtered_row=true] g.row[selected=false] text{
-    fill:gray;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] text{
     font-weight: 700;
@@ -661,7 +663,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     width:100px;
     position:relative;
     top:-3px;
-    left: -13px;
+    padding-left: 10px;
 }
 .kshfHost[hideBarAxis=true] .kshf span.barChartMainInfo{
     display:none;
@@ -748,6 +750,9 @@ div.kshf.layout_left_background{
     background-color: rgba(125,125,125,0.15);
     border-bottom: solid 1px gray;
     box-shadow: 0px 0px 2px 1px gray;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin-left:2px;
 }
 
 .kshf.layout_left_header span.filters_text{
@@ -756,6 +761,7 @@ div.kshf.layout_left_background{
     font-size: 0.9em;
     font-weight: 700;
     font-style: normal;
+    cursor: default;
 }
 div.kshf.layout_right{
     position:relative;
@@ -990,18 +996,17 @@ div.listHeader span.filter_reset {
     font-size: 11px;
     line-height: 15px;
     display: none;
-    cursor:pointer;
+    cursor:default;
     color: rgb(37, 33, 18);
     font-weight: 300;
     border: 1px rgb(104, 91, 43) solid;
     box-shadow: 1px 1px 1px rgb(78, 71, 43);
     background-color: white;
-    padding: 0px 0px 0px 2px;
+    padding: 0px 3px 0px 0px;
     height:14px;
     float: left;
     border-radius:7px;
     margin-right: 2px;
-    margin-left: 1px;
 }
 .kshf span.filter-block-clear:hover{
     box-shadow: inset 1px 1px 1px #474940;
@@ -1152,7 +1157,8 @@ div.chartInfo{
 img.datasource{
     height:14px;
     cursor:pointer;
-    float:right;
+    float:left;
+    margin-right: 3px;
  	box-shadow: 1px 1px 1px #474940;
     border: solid 1px black;
     background-color:white;
@@ -1174,8 +1180,7 @@ div.credits{
 	background-color: white;
 	color: black;
 	position: relative;
-	margin-left: 4px;
-	margin-right: 12px;
+	margin:2px;
     float:right;
     font-weight: bolder;
     font-style:italic;
@@ -1242,19 +1247,19 @@ div.credits:hover{
     display:inline-block;
 }
 .kshf div.chartClearFilterButton.allFilter{
+    cursor: pointer;
     display: inline-block;
-    float: right;
-    margin-left: 2px;
+    float: left;
     font-size: 11px;
-    pointer-events: none;
     position: relative;
     height: 14px;
     border: solid 0px white;
     border-left: solid 1px gray;
-    border-radius:6.5px;
+    border-radius:7px;
     line-height: 13px;
+    left:-2px;
 }
-.kshf span.filter-block-clear:hover div.chartClearFilterButton.allFilter{
+.kshf div.chartClearFilterButton.allFilter:hover{
     font-weight:700;
     box-shadow: inset 1px 1px 1px #474940;
     color: #cb5454;
@@ -1611,10 +1616,3 @@ div.boxinbox.project_credits{
 }
 
 
-
-/* Mozilla customization */
-@-moz-document url-prefix() {
-    .kshf.layout_left_header span.filters_text{
-        top:0px;
-    }
-}

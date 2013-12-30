@@ -154,6 +154,8 @@ function loadChart() {
                     value: function(pub){ return parseInt(pub.data[trsCol.Date].slice(0,4)); }
                 }
             ],
+            detailsToggle : true,
+            detailsDefault : false,
             textSearch : "title",
             contentFunc : function(pub){
                 var j;
@@ -166,6 +168,9 @@ function loadChart() {
                         str+=pub.data[trsCol.title];
                     }
                     str+="</div>";
+
+                str+="<span class=\"item_details\">";
+
                 // author names
                 var authors = pub.data[trsCol.Author];
                 if(authors){
@@ -202,6 +207,8 @@ function loadChart() {
                     str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
                 }
                 str+="</div>";
+
+                str+="</span>"; // item_details
                 
                 return str;
             }
@@ -219,7 +226,7 @@ google.setOnLoadCallback(loadChart);
     width: 100%;
 }
 div.listItem{
-    padding-bottom:10px;
+    padding-bottom:3px;
 }
     
 body{ margin:2px; }

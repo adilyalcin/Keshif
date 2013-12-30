@@ -45,7 +45,7 @@ $(document).ready( function(){
         chartTitle: "5 Years of Infosthetics",
         domID : "#chart_div4",
         dirRoot: "../",
-        categoryTextWidth:176,
+        categoryTextWidth:130,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
             sheets : [ {name:"Posts"} ]
@@ -59,7 +59,7 @@ $(document).ready( function(){
                 timeTitle: "Date",
                 textFilter: 'about'
             },{
-                facetTitle: "# of Comments",
+                facetTitle: "Comment #",
                 catItemMap : function(post){ return getNumComments(post.data[postCols['# of Comments']]); },
             },{
                 facetTitle: "Year",

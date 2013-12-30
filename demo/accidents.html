@@ -67,7 +67,7 @@ function loadChart() {
         chartTitle: "Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)",
         domID : "#chart_div4",
         dirRoot: "../",
-        categoryTextWidth:245,
+        categoryTextWidth:170,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
             sheets : [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
@@ -118,7 +118,7 @@ function loadChart() {
                     func:kshf.sortFunc_Column_ParseInt_Incr
                 }]
             },{
-                facetTitle: "Road Surface Condition",
+                facetTitle: "Road Surface",
                 catTableName: "RoadSurface",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Road Surface Condition']];
