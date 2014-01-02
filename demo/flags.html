@@ -138,6 +138,10 @@ function loadChart() {
             {
                 facetTitle: "Continent",
                 catLabelText: function(d) { return landmassText(d.data[1]); },
+                sortingFuncs : [
+                    { name:"Flag #" },
+                    { name: "First Flag",  func: kshf.sortFunc_Time_First }
+                ],
                 timeTitle: "Flag Date",
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
                 timeBarShow: true,
@@ -248,7 +252,7 @@ function loadChart() {
                     }
                 }
             ],
-            textSearch : "country",
+            textSearch : "Country",
             detailsToggle : true,
             detailsDefault : false,
             contentFunc : function(d){

@@ -45,7 +45,7 @@ $(document).ready( function(){
         chartTitle: "Nobel Prize Winners",
         domID : "#nobelDiv",
         dirRoot: "../",
-        categoryTextWidth: 200,
+        categoryTextWidth: 170,
         source : {
             gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
             sheets : [ {name:"Prizes"},{name:"Laureates"} ]
@@ -105,6 +105,8 @@ $(document).ready( function(){
         list: {
             sortColWidth: 55,
             sortOpts : [ {name: 'Year'} ],
+            detailsToggle : true,
+            detailsDefault : true,
             textSearch : "names",
             textSearchFunc : function (d) {
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
@@ -119,16 +121,17 @@ $(document).ready( function(){
                 var imgUrl="./nobel_photo/"+surname_short+".jpg";
 
                 if(laureate.data[lautCols.gender]!==3){
-                    str+="<img src=\""+imgUrl+"\" width=\"80\" style=\"float:left\">";
-                    str+="<div style=\"position: absolute; left:85px;\">";
+                    str+="<img class=\"item_details\" src=\""+imgUrl+"\" width=\"70\" style=\"float:right;\">";
                 } else {
-                    str+="<div style=\"position: relative; left:85px;\">";
                 }
+                str+="<div style=\"float:left; width:calc(80%);\">";
 
                 // description
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+=laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
                 str+="</div>";
+
+                str+="<span class=\"item_details\">";
 
                 str+="<div class=\"iteminfo iteminfo_3\">";
                 if(laureate.data[lautCols.gender]!=='org'){
@@ -141,13 +144,9 @@ $(document).ready( function(){
                 }
                 str+="</div>";
 
-                str+="<div class=\"iteminfo iteminfo_1\">Nobel Prize In: ";
-                str+=d.data[prizeCols['Category']];
-                str+="</div>";
+                str+="<div class=\"iteminfo iteminfo_1\">Nobel Prize In: "+d.data[prizeCols['Category']]+"</div>";
 
-                str+="<div class=\"iteminfo iteminfo_2\">Motivation: ";
-                str+=d.data[prizeCols['Motivation']];
-                str+="</div>";
+                str+="<div class=\"iteminfo iteminfo_2\">Motivation: "+d.data[prizeCols['Motivation']]+"</div>";
 
                 var mot = d.data[prizeCols['Overall Motivation']];
                 if(mot!=="" && mot!== null){
@@ -155,8 +154,9 @@ $(document).ready( function(){
                     str+=mot;
                     str+="</div>";
                 }
-
                 str+="</div>"
+
+                str+="</span>";
 
                 return str;
             }
@@ -166,7 +166,7 @@ $(document).ready( function(){
 
 </script>
         <style>
-            div.listItem{ padding-bottom: 4px; }
+            div.listItem{ padding-bottom: 2 px; }
             #nobelDiv { margin: 0 auto; }
             body{ margin:2px; }
         </style>

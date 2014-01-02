@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>U.S. Presidents</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+    	google.setOnLoadCallback( function(){
+            kshf.init({
+                chartTitle: "U.S. Presidents",
+                dirRoot: "../",
+                domID : "#chart_div4",
+                categoryTextWidth:140,
+                source : {
+                    gdocId : '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
+                    sheets : [ {name:"Presidents"} ]
+                },
+                charts : [
+                    {   facetTitle: "Party", 
+                        timeTitle: "Term Start",
+                        timeItemMap : function(d){
+                            var year=d.data[3].substr(0,4);
+                            return new Date(moment(year+"01-01","YYYY-MM-DD"));
+                        },
+                    },{
+                        facetTitle: "State of Birth",
+                    },{
+                        facetTitle: "Occupation",
+                    },{
+                        facetTitle: "College",
+                    },{
+                        facetTitle: "Religion",
+                    },{
+                        facetTitle: "Notes",
+                    }
+                ],
+                list : {
+                    sortColWidth: 60,
+                    sortOpts : [
+                        {   name: 'Term',
+                            value: function(d){ return d.data[0]; }
+                        },{ name: 'Party',
+                            value: function(d){ 
+                                switch(d.data[2]){
+                                    case "Federalist": return "Fed";
+                                    case "Democratic": return "Dem";
+                                    case "Democratic-Republican": return "Dem-Rep";
+                                    case "Whig": return "Whig";
+                                    case "Republican": return "Rep";
+                                    case "Union": return "Uni";
+                                }
+                            }
+                        }
+                    ],
+                    contentFunc: function(d){
+                        return '<img src=\"'+d.data[11]+'\">';
+                    }
+                }
+            });
+        });
+        </script>
+        <style>
+            #chart_div4 {
+                margin: 0 auto;
+                width: 630px;
+                height: 700px;
+            }
+            div.content img{
+                width: 300px;
+            }
+        </style>
+	</head>
+	<body><div id="chart_div4"></div></body>
+</html>

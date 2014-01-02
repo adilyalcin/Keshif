@@ -76,7 +76,7 @@ $(document).ready( function(){
             sortOpts : [
                 {   name: 'Date',
                     value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
-                }
+                },{ name: '# of Comments'}
             ],
             textSearch : "Title",
             contentFunc : function(d) {
