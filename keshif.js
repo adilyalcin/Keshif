@@ -186,21 +186,42 @@ kshf.Item.prototype.updateSelected = function(){
     }
     return this.selected;
 };
-kshf.Item.prototype.highlightAttributes = function(){
+kshf.Item.prototype.highlightDots = function(){
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',true);
     }
+}
+kshf.Item.prototype.highlightCategories = function(){
     for(i=0; i<this.cats.length; i++){
         this.cats[i].setAttribute('itemhighlight',true);
     }
 }
-kshf.Item.prototype.nohighlightAttributes = function(){
+kshf.Item.prototype.highlightOnList = function(){
+    this.listItem.setAttribute("highlight",true);
+}
+kshf.Item.prototype.highlightAttributes = function(){
+    this.highlightDots();
+    this.highlightCategories();
+    this.highlightOnList();
+}
+
+kshf.Item.prototype.nohighlightDots = function(){
     for(i=0; i<this.dots.length; i++){
         this.dots[i].setAttribute('highlight',false);
     }
+}
+kshf.Item.prototype.nohighlightCategories = function(){
     for(i=0; i<this.cats.length; i++){
         this.cats[i].setAttribute('itemhighlight',false);
     }
+}
+kshf.Item.prototype.nohighlightOnList = function(){
+    this.listItem.setAttribute("highlight",false);
+}
+kshf.Item.prototype.nohighlightAttributes = function(){
+    this.nohighlightDots();
+    this.nohighlightCategories();
+    this.nohighlightOnList();
 }
 
 // ***************************************************************************************************
@@ -924,10 +945,14 @@ kshf.list.prototype.insertItems = function(){
 		.attr("class","listItem")
         .attr("details",this.detailsDefault?"true":"false")
         .attr("itemID",function(d){return d.id();})
+        // store the link to DOM in the data item
+        .each(function(d){ d.listItem = this; })
         .on("mouseover",function(d,i){
+            $(this).attr("highlight","true");
             d.highlightAttributes();
         })
         .on("mouseout",function(d,i){
+            $(this).attr("highlight","false");
             // find all the things that  ....
             d.nohighlightAttributes();
         });
@@ -1644,7 +1669,7 @@ kshf.updateLayout_Height = function(){
     this.root.selectAll("div.layout_left")
         .transition()
         .duration(this.layout_animation)
-        .style("top", (topOffset*kshf.line_height)+"px");
+        .style("top",(c2.type==='scatterplot'?(c2.rowCount_Total()*kshf.line_height):0)+"px");
 };
 
 
@@ -3432,11 +3457,13 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         this.root.selectAll("g.row").each( function(d){
             if(d.selected) {
                 if(selectedItemsCount!==0) {
-                    if(kshf_.options.selectType==="MultipleAnd")
+                    if(kshf_.options.selectType==="MultipleAnd"){
                         selectedItemsText+=" and "; 
-                    else
+                        selectedItemsText_Sm+=" and "; 
+                    } else{
                         selectedItemsText+=" or "; 
-                    selectedItemsText_Sm+=", ";
+                        selectedItemsText_Sm+=" or "; 
+                    }
                 }
                 var labelText = kshf_.options.catLabelText(d);
                 var titleText = labelText;
@@ -3502,10 +3529,22 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
                     kshf.getFilteringState(kshf_.options.facetTitle,d.data[1]));
             }
             var x = this;
-            if(kshf_.options.selectType !== "Single"){
-                this.timer = setTimeout(function() { x.timer = null; }, 500);
+            this.timer = setTimeout(function() { x.timer = null; }, 500);
+        })
+        .on("mouseover",function(d,i){
+            var dd;
+            for(var i=0; i<d.items.length; i++){
+                dd = d.items[i];
+                if(dd.selected===true) dd.highlightOnList();
             }
         })
+        .on("mouseout",function(d,i){
+            var dd;
+            for(var i=0; i<d.items.length; i++){
+                dd = d.items[i];
+                if(dd.selected===true) dd.nohighlightOnList();
+            }
+        });
         ;
     this.dom.rowsSub = this.dom.rows.append("svg:g").attr("class","barRow")
 		.on("mouseover", function(d){
@@ -3872,11 +3911,13 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
                 .attr("x1",tm+totalLeftWidth)
                 .attr("x2",tm+totalLeftWidth)
                 .style("display","block");
+            d3.event.stopPropagation();
         })
         .on("mouseout",function(d,i){
             d.nohighlightAttributes();
             kshf_.root.select("line.selectVertLine")
                 .style("display","none");
+            d3.event.stopPropagation();
         })
 		.on("click", function(d,i,f) {
             // clear all the selections

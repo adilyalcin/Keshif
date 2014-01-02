@@ -263,6 +263,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] .headerGroup span.header_label_arrow{
     display: block;
 }
+.kshf .kshfChart[collapsedTime=true] .headerGroup span.header_label_down{
+    display: block;
+}
 .kshf div.kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_up{
     display: none;
 }
@@ -328,6 +331,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.scrollGroup g:hover path.top_arrow{
 	fill: #cb5454;
+    -webkit-transition: fill 200ms linear;
+    -moz-transition: fill 200ms linear;
+    -o-transition: fill 200ms linear;
+    -ms-transition: fill 200ms linear;
+    transition: fill 200ms linear;
 }
 
 .kshf g.scrollGroup rect.background{
@@ -338,6 +346,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.scrollGroup:hover rect.background{
 	stroke:gray;
+    -webkit-transition: stroke 200ms linear;
+    -moz-transition: stroke 200ms linear;
+    -o-transition: stroke 200ms linear;
+    -ms-transition: stroke 200ms linear;
+    transition: stroke 200ms linear;
 }
 .kshf g.scrollGroup rect.background_fill{
     opacity: 1;
@@ -446,10 +459,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .timeDot[display=true]:hover {
 	stroke: orangered !important;
 	stroke-width:2;
+    -webkit-transition: stroke 100ms linear;
+    -moz-transition: stroke 100ms linear;
+    -o-transition: stroke 100ms linear;
+    -ms-transition: stroke 100ms linear;
+    transition: stroke 100ms linear;
 }
 .kshf .timeDot[highlight=true] {
     stroke: #c32c2c !important;
     stroke-width:2;
+    -webkit-transition: stroke 200ms linear;
+    -moz-transition: stroke 200ms linear;
+    -o-transition: stroke 200ms linear;
+    -ms-transition: stroke 200ms linear;
+    transition: stroke 200ms linear;
 }
 
 .kshf div.kshfChart[collapsed=true] g.barGroup_Top {
@@ -513,14 +536,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf g.row rect.total {
     fill-opacity:0.2;
+    stroke: white;
+    stroke-width: 0;
+    -webkit-transition: all 150ms linear;
+    -moz-transition: all 150ms linear;
+    -o-transition: all 150ms linear;
+    -ms-transition: all 150ms linear;
+    transition: all 150ms linear;
 }
 .kshf g.row g[highlight=true] rect.total{
     cursor: pointer;
 }
 .kshf g.row g[highlight=true] rect.active{
-    stroke-width: 2;
-    stroke: orangered;
     pointer-events: none;
+    stroke: orangered;
+    stroke-width: 2;
+    -webkit-transition: all 150ms linear;
+    -moz-transition: all 150ms linear;
+    -o-transition: all 150ms linear;
+    -ms-transition: all 150ms linear;
+    transition: all 150ms linear;
 }
 .kshf g.row rect.active {
 /*    pointer-events: none; */
@@ -561,9 +596,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.row g[highlight=true] text{
     fill: orangered !important;
+    -webkit-transition: fill 100ms linear;
+    -moz-transition: fill 100ms linear;
+    -o-transition: fill 100ms linear;
+    -ms-transition: fill 100ms linear;
+    transition: fill 100ms linear;
 }
 .kshf g.row[itemhighlight=true] g text{
     fill: #c32c2c !important;
+    -webkit-transition: fill 100ms linear;
+    -moz-transition: fill 100ms linear;
+    -o-transition: fill 100ms linear;
+    -ms-transition: fill 100ms linear;
+    transition: fill 100ms linear;
 }
 
 .kshf g.row rect.timeBar {
@@ -630,6 +675,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.resort_button:hover path{
 	fill:#cb5454;
+    -webkit-transition: fill 250ms linear;
+    -moz-transition: fill 250ms linear;
+    -o-transition: fill 250ms linear;
+    -ms-transition: fill 250ms linear;
+    transition: fill 250ms linear;
 }
 
 .kshf g.row line.row_bar_line{
@@ -645,6 +695,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf line.selectVertLine {
     stroke: #EEDDDE;
     stroke-width: 2;
+    display:none;
 }
 
 .kshf g.top_arrow{
@@ -800,8 +851,21 @@ div.listItem:nth-child(even) {
     background-color:#f5f5f5;
 }
 */
-div.listItem:hover{
-    background-color:#EEEEEE;
+div.listItem[highlight=true]{
+    background-color:#E1E1E1;
+    -webkit-transition: background-color 100ms linear;
+    -moz-transition: background-color 100ms linear;
+    -o-transition: background-color 100ms linear;
+    -ms-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
+}
+div.listItem[highlight=false]{
+    background-color:white;
+    -webkit-transition: background-color 100ms linear;
+    -moz-transition: background-color 100ms linear;
+    -o-transition: background-color 100ms linear;
+    -ms-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
 }
 
 
