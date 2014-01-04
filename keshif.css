@@ -211,6 +211,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float: left;
     pointer-events: all;
 }
+.kshf .headerGroup span.rightHeader{
+    display:inline-block;
+    float:right;
+    pointer-events:all;
+}
 .kshf .headerGroup span.showFilterText{
     display: inline-block;
     float: left;
@@ -234,22 +239,54 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
 }
 
-.kshf .kshfChart .headerGroup span.header_label_arrow{
-    font-size: 0.9em;
+.kshf .kshfChart .headerGroup svg.settingButton{
     display: none;
     float: left;
-    padding-left: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    margin-left: 2px;
+}
+.kshf .headerGroup svg.settingButton{ 
+    height: 15px;
+    width: 12px;
+}
+.kshf .kshfChart[collapsed=false][showconfig=true] .headerGroup  svg.settingButton{
+    display: block;
+    fill: black;
+    background: #E2E2E2;
+}
+.kshf .kshfChart[showconfig=false] .headerGroup svg.settingButton{ 
+    fill: gray;
+}
+.kshf .kshfChart:hover[collapsed=false] .headerGroup svg.settingButton{
+    display: block;
+}
+.kshf .kshfChart .headerGroup svg.settingButton:hover{
+    fill:#cb5454;
+    -webkit-transition: fill 250ms linear;
+    -moz-transition: fill 250ms linear;
+    -o-transition: fill 250ms linear;
+    -ms-transition: fill 250ms linear;
+    transition: fill 250ms linear;
+}
+.kshf .kshfChart .headerGroup span.header_label_arrow{
+    font-size: 0.8em;
+    float: left;
+    display: none;
     cursor: pointer;
     vertical-align: baseline;
     line-height: 18px;
+    width: 13px;
+    height:18px;
+    transition: all 250ms linear;
 }
-.kshf .kshfChart:hover .headerGroup span.header_label_arrow{
+.kshf .kshfChart .headerGroup span.header_label_none{
     display: block;
 }
-.kshf .headerGroup span.rightHeader{
-    display:inline-block;
-    float:right;
-    pointer-events:all;
+.kshf .kshfChart .headerGroup span.header_label_arrow:hover{
+    color:#cb5454;
 }
 .kshf div.kshfChart[collapsed=true] .headerGroup {
     color: gray;
@@ -257,29 +294,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsedTime=true] .headerGroup span.rightHeader{
     color: gray;
 }
+
+.kshf .kshfChart .headerGroup span.header_label_none{
+    display: block;
+}
+.kshf .kshfChart[collapsed=true] .headerGroup span.header_label_none{
+    display: none;
+}
+.kshf .kshfChart[collapsed=true] .headerGroup span.header_label_down{
+    display: block;
+}
+.kshf .kshfChart[collapsed=false]:hover .headerGroup span.header_label_none{
+    display: none;
+}
+.kshf .kshfChart[collapsed=false]:hover .headerGroup span.header_label_up{
+    display: block;
+}
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
     float: right;
 }
-.kshf .kshfChart[collapsed=true] .headerGroup span.header_label_arrow{
+.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_down{
     display: block;
-}
-.kshf .kshfChart[collapsedTime=true] .headerGroup span.header_label_down{
-    display: block;
-}
-.kshf div.kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_up{
-    display: none;
-}
-.kshf div.kshfChart[collapsed=false] .headerGroup span.leftHeader span.header_label_down{
-    display: none;
-}
-.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_up{
-    display: none;
-}
-.kshf div.kshfChart[collapsedTime=false][collapsed=false] .headerGroup span.rightHeader span.header_label_down{
-    display: none;
-}
-.kshf div.kshfChart[collapsed=true] .headerGroup span.rightHeader span.header_label_up{
-    display: none;
 }
 
 
@@ -484,7 +519,49 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsedTime=true] g.timeAxisGroup {
     display:none;
 }
-.kshf div.kshfChart span.sortOptionSelect_Label{
+
+.kshf span.chooseConfigGroup{
+    float:left;
+    width:25px;
+}
+
+.kshf .chooseConfigGroup svg{
+    margin: 1px;
+}
+.kshf .chooseConfigGroup circle{
+    fill: lightgray;
+    cursor: pointer;
+    stroke: black;
+    stroke-width: 1;
+}
+.kshf .chooseConfigGroup circle:hover{
+    fill:#cb5454 !important;
+    -webkit-transition: fill 250ms linear;
+    -moz-transition: fill 250ms linear;
+    -o-transition: fill 250ms linear;
+    -ms-transition: fill 250ms linear;
+    transition: fill 250ms linear;
+}
+
+.kshf .configGroup{
+    background-color: rgb(226, 226, 226);
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5)
+}
+
+.kshf .kshfChart[collapsed=true] .configGroup{
+    display: none;
+}
+
+.kshf .configGroup[shown=order] .chooseConfigGroup circle.order{
+    fill: gray;
+}
+.kshf .configGroup[shown=filter] .chooseConfigGroup circle.filter{
+    fill: gray;
+}
+
+.kshf .kshfChart div.configGroup{ display:none; }
+.kshf .kshfChart[showconfig=true]  div.configGroup{ display:block; }
+.kshf .kshfChart span.optionSelect_Label{
     float: right;
     font-size: 0.7em;
     font-weight: 500;
@@ -492,18 +569,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: default;
     pointer-events:none;
 }
-.kshf div.kshfChart[collapsed=true] span.sortOptionSelect_Label {
-    display:none;
-}
-.kshf div.kshfChart select.sortOptionSelect{
+.kshf div.kshfChart select.optionSelect{
     float:right;
     font-size:0.7em;
     pointer-events:all;
     clear:right;
     margin:0px;
 }
+
+.kshf .kshfChart span.sortOptionSelectGroup{ 
+    display:none;
+    float:right;
+}
+.kshf .configGroup[shown=order] span.sortOptionSelectGroup{ 
+    display:block;
+}
 .kshf div.kshfChart[collapsed=true] select.sortOptionSelect{
     display: none;
+}
+
+.kshf .kshfChart span.filterOptionSelectGroup{ 
+    display:none;
+    float:right;
+}
+.kshf .configGroup[shown=filter] span.filterOptionSelectGroup{ 
+    display:block;
 }
 
 .kshf div.listDiv select.listSortOptionSelect{
@@ -852,7 +942,7 @@ div.listItem:nth-child(even) {
 }
 */
 div.listItem[highlight=true]{
-    background-color:#E1E1E1;
+    background-color:#EEEEEE;
     -webkit-transition: background-color 100ms linear;
     -moz-transition: background-color 100ms linear;
     -o-transition: background-color 100ms linear;
@@ -1535,6 +1625,20 @@ div.listColumnRow div.listcell{
 .kshf .ui-rangeSlider .ui-ruler-tick{
 }
 
+.kshf.layout_resize{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    cursor: nwse-resize;
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid lightgray;
+    border-top: 16px solid transparent;
+}
+.kshf.layout_resize:hover{
+    border-right: 16px solid gray;
+}
 
 
 .kshf.layout_infobox div.infobox_background{

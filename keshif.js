@@ -126,7 +126,8 @@ var ACTID_OTHER = {
     InfoButton : 2,
     LeftPanelWidth: 5,
     OpenPage   : 3, // load
-    ClosePage  : 4  // unload
+    ClosePage  : 4,  // unload
+    Resize     : 6
 };
 
 
@@ -1194,6 +1195,32 @@ kshf.init = function (options) {
     creditString += "Research made practical. Funded in part by <a href=\"http:\/\/www.huawei.com\">Huawei<\/a>. <\/div>";
     creditString += "";
 
+    this.layout_resize = this.root.append("div").attr("class", "kshf layout_resize")
+        .on("mousedown", function (d, i) {
+            me.root.style('cursor','nwse-resize');
+            var mouseDown_x = d3.mouse($("body")[0])[0];
+            var mouseDown_y = d3.mouse($("body")[0])[1];
+            var mouseDown_width  = $(this.parentNode).width();
+            var mouseDown_height = $(this.parentNode).height();
+
+            d3.select("body").on("mousemove", function() {
+                var mouseDown_x_diff = d3.mouse($("body")[0])[0]-mouseDown_x;
+                var mouseDown_y_diff = d3.mouse($("body")[0])[1]-mouseDown_y;
+                $(me.domID).height(mouseDown_height+mouseDown_y_diff);
+                $(me.domID).width (mouseDown_width +mouseDown_x_diff);
+                me.updateLayout();
+            });
+            d3.select("body").on("mouseup", function(){
+                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.Resize);
+                me.root.style('cursor','default');
+                // unregister mouse-move callbacks
+                d3.select("body").on("mousemove", null);
+                d3.select("body").on("mouseup", null);
+            });
+            d3.event.preventDefault();
+        })
+
+
     this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox");
     this.layout_infobox.append("div")
         .attr("class","infobox_background")
@@ -1292,7 +1319,9 @@ kshf.init = function (options) {
         .on("click",function(){
             d3.event.stopPropagation();
             d3.event.preventDefault();
-        });    var mmm = mm.append("span").style("width",this.categoryTextWidth+"px").style("display","inline-block");
+        });    
+
+    var mmm = mm.append("span").style("width",this.categoryTextWidth+"px").style("display","inline-block");
 
     mmm.append("span").attr("class","filters_text").text("FILTERS↓");
     // insert clear all option
@@ -1565,6 +1594,7 @@ kshf.updateLayout_Height = function(){
     divLineRem = divLineCount;
     var c2=kshf.charts[0];
     if(c2.type==='scatterplot'){
+        c2.adjustLeftHeaderPadding();
         if(divLineRem>15){
             var targetScatterplotHeight = Math.floor(divLineRem/4)+1;
             c2.setRowCount_VisibleItem(targetScatterplotHeight-c2.rowCount_Header()-1);
@@ -1572,7 +1602,6 @@ kshf.updateLayout_Height = function(){
             chartProcessed[0]=true;
         } else { 
             c2.collapsedTime = true;
-            c2.adjustLeftHeaderPadding();
             divLineRem--;
         }
     }
@@ -1682,15 +1711,19 @@ kshf.updateLayout = function(){
 
     // WIDTH
     kshf.time_animation_barscale = 400;
-    var initBarChartWidth;
+    var initBarChartWidth = this.width_leftPanel_bar;
     if(this.width_leftPanel_bar===undefined){
         if(this.barChartWidth===undefined) {
             initBarChartWidth = Math.floor((this.divWidth-this.categoryTextWidth)/11);
         } else {
             initBarChartWidth= this.barChartWidth;
         }
-        this.setBarWidthLeftPanel(initBarChartWidth);
+    } else {
+        if(this.barChartWidth!==undefined) {
+            initBarChartWidth= this.barChartWidth;
+        }
     }
+    this.setBarWidthLeftPanel(initBarChartWidth);
 }
 
 kshf.setCategoryTextWidth = function(w){
@@ -1880,7 +1913,7 @@ kshf.extendClass(kshf.Chart, kshf.BarChart);
 
 kshf.BarChart.prototype.rowCount_Header_Left = function(){
     var r=1; // title
-    if(this.options.sortingFuncs.length>1) {r++;}
+    if(this.showConfig) {r++;}
     if(this.showTextSearch){ r++;}
     return r;
 };
@@ -1974,6 +2007,7 @@ kshf.BarChart.prototype.init_shared = function(options){
     }
 
     var optimalSelectOption = "Single";
+    this.hasMultiValueItem = false;
 
     // BIG. Apply row map function
     var dt = kshf.items;
@@ -2004,6 +2038,7 @@ kshf.BarChart.prototype.init_shared = function(options){
         if(toMap===null) { continue; }
         if(toMap instanceof Array){
             optimalSelectOption = "MultipleAnd";
+            this.hasMultiValueItem = true;
             for(j=0;j<toMap.length;j++){
                 m=curDtId[toMap[j]];
                 if(m){
@@ -2033,6 +2068,8 @@ kshf.BarChart.prototype.init_shared = function(options){
             this.options.selectType = optimalSelectOption;
         }
     }
+
+    this.showConfig = this.options.sortingFuncs.length>1;
 
     // Modified internal dataMap function - Skip rows with0 active item count
     if(this.options.dataMap) {
@@ -2112,7 +2149,7 @@ kshf.BarChart.prototype.updateChartTotalWidth = function(){
     this.divRoot.style("width",this.getWidth()+"px");
     // to capture click/hover mouse events
     this.root.select("rect.chartBackground").attr('width',this.getWidth());
-    this.root.select("g.headerGroup .headerHTML").attr('width',this.getWidth());
+    this.root.select(".headerHTML").attr('width',this.getWidth());
     this.root.select("rect.clippingRect")
         .attr("width",this.getWidth())
         ;
@@ -2336,9 +2373,6 @@ kshf.BarChart.prototype.init_DOM = function(){
 	var barGroup_Top = this.root.append("svg:g")
 		.attr("class","barGroup_Top")
 		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
-        .attr("transform", function(d,i) {
-            return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
-        })
         ;
     if(this.type==='scatterplot') { 
         barGroup_Top.append("svg:line")
@@ -2348,7 +2382,6 @@ kshf.BarChart.prototype.init_DOM = function(){
             .attr("y1", -kshf.line_height*1.5)
             ;
     }
-
 
 	var barGroup = barGroup_Top.append("svg:g")
 		.attr("class","barGroup");
@@ -2615,16 +2648,16 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
 
 kshf.BarChart.prototype.insertHeader = function(){
 	var kshf_ = this;
+    var me = this;
     var rows_Left = this.rowCount_Header_Left();
 
     this.leftHeaderPaddingTop = ((this.rowCount_Header() - this.rowCount_Header_Left())*kshf.line_height);
     this.leftHeaderPaddingTop--;
 
 	var headerGroup = this.root.append("svg:g").attr("class","headerGroup")
-        .on("mouseclick", function (d, i) { d3.event.preventDefault(); });
+        .on("mouseclick", function (d, i) { d3.event.preventDefault(); })
+        ;
     this.headerhtml=headerGroup.append("svg:foreignObject").attr("class","headerHTML")
-        .attr("width",kshf_.options.rowTextWidth+200)
-        .attr("height",this.rowCount_Header()*kshf.line_height+2)
         .attr("x",0)
         .attr("y",0);
     if(this.id!==0){
@@ -2647,7 +2680,10 @@ kshf.BarChart.prototype.insertHeader = function(){
         .style("width",kshf_.options.rowTextWidth+"px")
         .style("padding-top",this.leftHeaderPaddingTop+"px")
         ;
-    var headerLabel = leftBlock.append("xhtml:span")
+
+    var topRow = leftBlock.append("xhtml:div").style("height",kshf.line_height+"px");
+
+    var headerLabel = topRow.append("xhtml:span")
         .attr("class", "header_label")
         .attr("title", this.catCount_Total+" categories")
         .html(this.options.facetTitle)
@@ -2655,15 +2691,38 @@ kshf.BarChart.prototype.insertHeader = function(){
             if(kshf_.collapsed) { kshf_.collapseCategories(false); }
         })
         ;
-    leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
+    
+    // this one is just a space filler!
+    topRow.append("xhtml:span").attr("class","header_label_arrow header_label_none");
+
+    topRow.append("xhtml:span").attr("class","header_label_arrow header_label_down")
         .attr("title","Show categories").text("▼")
         .on("click",function(){ kshf_.collapseCategories(false); })
         ;
-    leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
+    topRow.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
         .attr("title","Hide categories").text("▲")
         .on("click",function(){ kshf_.collapseCategories(true); })
         ;
-    leftBlock.append("xhtml:div")
+
+    topRow.append("svg")
+        .attr("class", "settingButton")
+        .attr("version","1.1")
+        .attr("height","12px")
+        .attr("width","12px")
+        .attr("xml:space","preserve")
+        .attr("viewBox","0 0 24 24")
+        .on("click",function(d){
+            me.showConfig = !me.showConfig;
+            me.parentKshf.updateLayout();
+        })
+    .append("svg:path")
+        .attr("clip-rule","evenodd")
+        .attr("d","M21.521,10.146c-0.41-0.059-0.846-0.428-0.973-0.82l-0.609-1.481  c-0.191-0.365-0.146-0.935,0.1-1.264l0.99-1.318c0.246-0.33,0.227-0.854-0.047-1.162l-1.084-1.086  c-0.309-0.272-0.832-0.293-1.164-0.045l-1.316,0.988c-0.33,0.248-0.898,0.293-1.264,0.101l-1.48-0.609  c-0.395-0.126-0.764-0.562-0.82-0.971l-0.234-1.629c-0.057-0.409-0.441-0.778-0.85-0.822c0,0-0.255-0.026-0.77-0.026  c-0.514,0-0.769,0.026-0.769,0.026c-0.41,0.044-0.794,0.413-0.852,0.822l-0.233,1.629c-0.058,0.409-0.427,0.845-0.82,0.971  l-1.48,0.609C7.48,4.25,6.912,4.206,6.582,3.958L5.264,2.969c-0.33-0.248-0.854-0.228-1.163,0.045L3.017,4.1  C2.745,4.409,2.723,4.932,2.971,5.262l0.988,1.318C4.208,6.91,4.252,7.479,4.061,7.844L3.45,9.326  c-0.125,0.393-0.562,0.762-0.971,0.82L0.85,10.377c-0.408,0.059-0.777,0.442-0.82,0.853c0,0-0.027,0.255-0.027,0.77  s0.027,0.77,0.027,0.77c0.043,0.411,0.412,0.793,0.82,0.852l1.629,0.232c0.408,0.059,0.846,0.428,0.971,0.82l0.611,1.48  c0.191,0.365,0.146,0.936-0.102,1.264l-0.988,1.318c-0.248,0.33-0.308,0.779-0.132,0.994c0.175,0.217,0.677,0.752,0.678,0.754  s0.171,0.156,0.375,0.344s1.042,0.449,1.372,0.203l1.317-0.99c0.33-0.246,0.898-0.293,1.264-0.1l1.48,0.609  c0.394,0.125,0.763,0.562,0.82,0.971l0.233,1.629c0.058,0.408,0.441,0.779,0.852,0.822c0,0,0.255,0.027,0.769,0.027  c0.515,0,0.77-0.027,0.77-0.027c0.409-0.043,0.793-0.414,0.85-0.822l0.234-1.629c0.057-0.408,0.426-0.846,0.82-0.971l1.48-0.611  c0.365-0.191,0.934-0.146,1.264,0.102l1.318,0.99c0.332,0.246,0.854,0.227,1.164-0.047l1.082-1.084  c0.273-0.311,0.293-0.834,0.047-1.164l-0.99-1.318c-0.246-0.328-0.291-0.898-0.1-1.264l0.609-1.48  c0.127-0.393,0.562-0.762,0.973-0.82l1.627-0.232c0.41-0.059,0.779-0.441,0.822-0.852c0,0,0.027-0.255,0.027-0.77  s-0.027-0.77-0.027-0.77c-0.043-0.41-0.412-0.794-0.822-0.853L21.521,10.146z M12,15C10.343,15,9,13.656,9,12  C9,10.343,10.343,9,12,9c1.657,0,3,1.344,3,3C15,13.656,13.656,15,12,15z")
+        .attr("fill-rule","evenodd")
+        ;
+
+
+    topRow.append("xhtml:div")
         .attr("class","chartClearFilterButton rowFilter")
         .attr("title","Clear filter")
 		.on("click", function(d,i){
@@ -2697,13 +2756,11 @@ kshf.BarChart.prototype.insertHeader = function(){
             .text('x');
     }
 	// line
-    var line_y = kshf.line_height*this.rowCount_Header()-0.5;
     headerGroup.append("svg:text")
         .attr("class", "barInfo")
         .text( ((this.options.barInfoText!==undefined)?this.options.barInfoText:"") )
         ;
 	var xxx=headerGroup.append("svg:g")
-		.attr("transform","matrix(0.008,0,0,0.008,"+(this.options.rowTextWidth+5)+","+(line_y-kshf.line_height+3)+")")
 		.attr("class","resort_button")
         ;
         xxx.append("svg:title").text("Move selected rows to top & re-order");
@@ -2723,6 +2780,124 @@ kshf.BarChart.prototype.insertHeader = function(){
                 "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
             .attr("class","unselected")
             ;
+
+    // ************************************************************************************
+    // ****** CONFIG LINE *****************************************************************
+
+
+    var filterOptions = ["Only One","Match Any"];
+    if(this.hasMultiValueItem===true){
+        filterOptions.push("Match All");
+    }
+    var configOptions = ["filter","order"]
+
+    var configGroup = 
+        leftBlock.append("xhtml:div")
+            .attr("class","configGroup")
+            .attr("shown","filter")
+            .style("height",this.parentKshf.line_height+"px")
+            .style("background","#E2E2E2")
+            ;
+
+    var chooseConfig = configGroup.append("xhtml:span").attr("class","chooseConfigGroup");
+
+    var filterGr = configGroup.append("xhtml:span").attr("class","filterOptionSelectGroup");
+    filterGr.append("xhtml:select")
+        .attr("class","optionSelect")
+        .on("change", function(d){
+            switch(this.selectedOptions[0].text){
+            case "Only One":
+                me.options.selectType = "Single";
+                // TODO: make sure only 1 item is selected at max. Unselect others..
+                break;
+            case "Match All":
+                me.options.selectType = "MultipleAnd";
+                break;
+            case "Match Any":
+                me.options.selectType = "MultipleOr";
+                break;
+            }
+            // update filtering
+            if(me.options.selectType === "Single" && me.catCount_Selected>1){
+                kshf_.selectAllRows(false);
+            }
+            me.filter_all();
+            me.sortSkip = true;
+            kshf.update();
+            me.refreshFilterSummaryBlock();
+            me.refreshFilterRowState();
+        })
+    .selectAll("input.sort_label")
+        .data(filterOptions)
+      .enter().append("xhtml:option")
+        .attr("class", "filter_label")
+        .text(function(d){ return d; })
+        .each(function(d){
+            if( (d==="Only One" && me.options.selectType==="Single") ||
+                (d==="Match All"      && me.options.selectType==="MultipleAnd") ||
+                (d==="Match Any"      && me.options.selectType==="MultipleOr")
+                )
+                $(this).attr("selected","selected");
+        })
+        ;
+    filterGr.append("xhtml:span")
+        .attr("class","optionSelect_Label")
+        .text("Filter by")
+        ;
+
+    if(this.showConfig) {
+        var sortGr = configGroup.append("xhtml:span").attr("class","sortOptionSelectGroup");
+        sortGr.append("xhtml:select")
+            .attr("class","optionSelect")
+            .on("change", function(){
+                if(sendLog) {
+                    sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
+                        {facet:kshf_.options.facetTitle, funcID:this.selectedIndex});
+                }
+                kshf_.sortID = this.selectedIndex;
+                kshf_.sortInverse = false;
+                kshf_.sortDelay = 0;
+                kshf_.sortSkip = false;
+                kshf_.updateSorting.call(kshf_,true);
+            })
+        .selectAll("input.sort_label")
+            .data(this.options.sortingFuncs)
+          .enter().append("xhtml:option")
+            .attr("class", "sort_label")
+            .text(function(d){ return d.name; })
+            .attr(function(d){ return d.name; })
+            ;
+        sortGr.append("xhtml:span")
+            .attr("class","optionSelect_Label")
+            .text("Order by")
+            ;
+
+        configGroup.attr("shown","order");
+
+        chooseConfig.selectAll("svg")
+            .data(configOptions)
+        .enter().append("svg")
+            .attr("version","1.1")
+            .attr("height","10px")
+            .attr("width" ,"10px")
+            .attr("xml:space","preserve")
+            .attr("viewBox","0 0 10 10")
+            .on("click",function(d){
+                $(this.parentNode.parentNode).attr("shown",d)
+            })
+        .append("svg:circle")
+            .attr("class",function(d){ return d;})
+            .attr("r","4")
+            .attr("cx","5")
+            .attr("cy","5")
+            ;
+    }
+
+
+    kshf.layoutTop.select(".barChartMainInfo")
+        .style("left",kshf_.parentKshf.getRowTotalTextWidth()+"px")
+        ;
+
     if(this.showTextSearch){
         leftBlock.append("xhtml:img")
             .attr('src',this.parentKshf.dirRoot+"img/search-logo.svg")
@@ -2780,34 +2955,6 @@ kshf.BarChart.prototype.insertHeader = function(){
             })
             ;
     }
-	if(this.options.sortingFuncs.length>1) {
-        leftBlock.append("xhtml:select")
-            .attr("class","sortOptionSelect")
-			.on("change", function(){
-                if(sendLog) {
-                    sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
-                        {facet:kshf_.options.facetTitle, funcID:this.selectedIndex});
-                }
-				kshf_.sortID = this.selectedIndex;
-				kshf_.sortInverse = false;
-                kshf_.sortDelay = 0;
-                kshf_.sortSkip = false;
-				kshf_.updateSorting.call(kshf_,true);
-			})
-        .selectAll("input.sort_label")
-			.data(this.options.sortingFuncs)
-		  .enter().append("xhtml:option")
-			.attr("class", "sort_label")
-			.text(function(d){ return d.name; })
-			.attr(function(d){ return d.name; })
-			;
-        leftBlock.append("xhtml:span")
-            .attr("class","sortOptionSelect_Label")
-            .text("Sort by:")
-    }
-
-    kshf.layoutTop.select(".barChartMainInfo")
-        .style("left",kshf_.parentKshf.getRowTotalTextWidth()+"px");
 };
 
 kshf.BarChart.prototype.setTimeWidth = function(w){
@@ -2998,8 +3145,38 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
     var barsHeight  = kshf.line_height*this.rowCount_VisibleItem;
 
     var kshf_ = this;
+    var me = this;
+
+    this.root.select(".barGroup_Top")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("transform", function(d,i) {
+            return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
+        })
+        ;
+    this.root.select(".x_axis")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("transform", function(d,i) {
+            return "translate("+me.parentKshf.getRowTotalTextWidth()+"," + ((kshf.line_height*me.rowCount_Header())) + ")";
+        })
+        ;
+
+    this.root.select(".headerHTML")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("height",this.rowCount_Header()*kshf.line_height+2)
+        ;
+
+    var line_y = kshf.line_height*this.rowCount_Header()-0.5;
+    this.root.select("g.resort_button")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("transform","matrix(0.008,0,0,0.008,"+(this.options.rowTextWidth+5)+","+(line_y-kshf.line_height+3)+")")
+
     this.divRoot
         .attr("collapsed",this.collapsed===false?"false":"true")
+        .attr("showconfig",this.showConfig)
         .attr("collapsedTime",this.collapsedTime===false?"false":"true")
         .transition()
         .duration(this.parentKshf.layout_animation)
@@ -3419,10 +3596,10 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
 
 	kshf.update();
 	this.refreshFilterSummaryBlock();
+    this.refreshFilterRowState();
     if(this.dom.showTextSearch){
         this.dom.showTextSearch[0][0].value="";
     }
-    this.refreshFilterRowState();
 
     return true;
 };
@@ -3513,8 +3690,11 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
                 kshf_.options.selectType = tmpSelectType;
                 return;
             }
+
             kshf_.filterRow(d);
+
             kshf_.options.selectType = tmpSelectType;
+
             if (this.timer) {
                 clearTimeout(this.timer);
                 this.timer = null;
