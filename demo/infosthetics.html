@@ -80,20 +80,16 @@ $(document).ready( function(){
             ],
             textSearch : "Title",
             contentFunc : function(d) {
-                var j;
                 var str="";
                 
                 str+="<img src=\""+d.data[postCols['Img']]+"\" width=\"80\" style=\"float:left\">";
                 str+="<div style=\"position: relative; left:5px; width:calc(100% - 85px);\">";
-
                 // title
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+="<a href=\""+d.data[postCols['URL']]+"\" target=\"_blanl\">"+d.data[postCols['Title']]+"<a/>";
                 str+="</div>";
-
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">About: "+d.data[postCols['Category']]+"</div>";
-
                 // author
                 str+="<div class=\"iteminfo iteminfo_1\">";
                 str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['# of Comments']];

@@ -73,11 +73,10 @@ google.setOnLoadCallback(function() {
                 timeTitle: "Publication Date",
                 timeBarShow: true,
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
-//                selectType:"Single",
                 sortingFuncs : [
                     { name: "Last pub.",  func: kshf.sortFunc_Time_Last },
                     { name: "First pub.",  func: kshf.sortFunc_Time_First },
-                    { name:"# of Pub." }
+                    { name: "Pub. #" }
                 ],
                 textFilter: 'about'
             },{
