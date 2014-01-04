@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Keshif Tracker Results</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    var cols;
+
+	kshf.init({
+        chartTitle: "KeshifTrackerData",
+        domID : "#chart_div4",
+        dirRoot: "../",
+        categoryTextWidth:180,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdFJvMmIyLUZPZWkzZG1KanlaQm1odXc',
+            sheets : [ {name:"FilterMessages"} ]
+        },
+        loadedCb: function(){
+            cols = kshf.dt_ColNames.FilterMessages;
+        },
+        charts: [
+            {
+                facetTitle: "Demo",
+                catItemMap : function(f){ 
+                    switch(f.data[cols['demoID']]){
+                    case 1:  return '1';
+                    case 2:  return '2';
+                    case 3:  return '3';
+                    case 4:  return '4';
+                    case 5:  return '5';
+                    case 6:  return 'Publictns (Bederson-Home)';
+                    case 7:  return 'Publictns (Bederson)';
+                    case 8:  return 'TimeMaxHandle';
+                    case 9:  return 'TimeDragRange';
+                    case 10: return 'Best Selling Singles';
+                    case 11: return 'Dr. Who';
+                    case 12: return 'Flags';
+                    case 13: return 'Infosthestics';
+                    case 14: return 'Nobel';
+                    case 15: return 'Oil Spills';
+                    case 13: return 'Infosthestics';
+                    }
+                    return '???';
+                }
+            },{ facetTitle: "Facet",
+                catDispCountFix: 5,
+                catItemMap : function(f){ return f.data[cols['facet']]; }
+            },{ facetTitle: "Action",
+                catDispCountFix: 5,
+                catItemMap : function(f){ 
+                    switch(f.data[cols['actID']]){
+                    case 1:  return 'CatValueAdd';
+                    case 2:  return 'CatValueRemove';
+                    case 3:  return 'CatValueExact';
+                    case 4:  return 'ClearOnSummary';
+                    case 5:  return 'ClearOnFacet';
+                    case 6:  return 'ClearAll';
+                    case 7:  return 'TimeMinHandle';
+                    case 8:  return 'TimeMaxHandle';
+                    case 9:  return 'TimeDragRange';
+                    case 10: return 'TimeDot';
+                    case 11: return 'CatTextSearch';
+                    case 12: return 'MainTextSearch';
+                    case 13: return 'ClearAllEscape';
+                    }
+                    return '???';
+                }
+            },{ facetTitle: "Item Info",
+                catDispCountFix: 5,
+                catItemMap : function(f){ return f.data[cols['itemInfo']]; }
+            },{ facetTitle: "textSrch",
+                catDispCountFix: 3,
+            },{
+                facetTitle: "Time Filter Active",
+                catItemMap : function(f){ return f.data[cols['timeFltr']]; },
+                sortingFuncs: [{
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                }]
+            },{ facetTitle: "Max. Ctgry. Active",
+                catItemMap : function(f){ 
+                    var v= f.data[cols['selected']];
+
+                    var nums = v.split(/,|\[|\]|L|\b\s+/);
+                    var nums2 = [];
+                    var total = 0;
+                    for(i=0; i<nums.length; i++){
+                        if(nums[i]==="") continue;
+                        var x = parseInt(nums[i]);
+                        nums2.push(x);
+                        total += x;
+                    }
+                    return total;
+                },
+                sortingFuncs: [{
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                }]
+            },{ facetTitle: "Max. Facets Active",
+                catItemMap : function(f){ 
+                    var v= f.data[cols['filtered']];
+
+                    var nums = v.split(/\[|\]|L|\b\s+/);
+                    var nums2 = [];
+                    for(i=0; i<nums.length; i++){
+                        if(nums[i]==="") continue;
+                        var x = parseInt(nums[i]);
+                        nums2.push(x);
+                    }
+
+                    return nums2.length;
+                },
+                sortingFuncs: [{
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                }]
+            },{
+                facetTitle: "TimeDif (sec)",
+                catItemMap : function(f){ 
+                    var tsec= Math.floor(f.data[cols['ts']]/1000);
+                    var tsec_approx = Math.floor(tsec/10)*10;
+                    return tsec_approx+"-"+(tsec_approx+9);
+                }
+            },{
+                facetTitle: "results",
+                sortingFuncs: [{
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                }]
+            }
+        ],
+        list:{
+            sortColWidth: 65,
+            sortOpts : [ {name: 'ts' } ],
+            contentFunc : function(d) {
+                var str="";
+                str+="<div class=\"iteminfo iteminfo_1\"> SesID: "+d.data[cols.sesID]+"</div>";
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+        <style>
+            div.listItem{
+                padding-bottom: 4px;
+            }
+            .iteminfo a{
+                color:#606060;
+                font-style:italic;
+            }
+            #chart_div4 {
+                margin: 0 auto;
+                height: 1300px;
+                width: 700px;
+            }
+            body{ margin:2px; }
+        </style>
+    </head>
+	<body> <div id="chart_div4"></div> </body>
+</html>
