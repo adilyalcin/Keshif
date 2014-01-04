@@ -246,7 +246,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    margin-left: 2px;
 }
 .kshf .headerGroup svg.settingButton{ 
     height: 15px;
@@ -545,7 +544,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf .configGroup{
     background-color: rgb(226, 226, 226);
-    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5)
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
 }
 
 .kshf .kshfChart[collapsed=true] .configGroup{
