@@ -2787,9 +2787,9 @@ kshf.BarChart.prototype.insertHeader = function(){
     // ****** CONFIG LINE *****************************************************************
 
 
-    var filterOptions = ["Only One","Match Any"];
+    var filterOptions = ["One","Any"];
     if(this.hasMultiValueItem===true){
-        filterOptions.push("Match All");
+        filterOptions.push("All");
     }
     var configOptions = ["filter","order"]
 
@@ -2807,14 +2807,14 @@ kshf.BarChart.prototype.insertHeader = function(){
         .attr("class","optionSelect")
         .on("change", function(d){
             switch(this.selectedOptions[0].text){
-            case "Only One":
+            case "One":
                 me.options.selectType = "Single";
                 // TODO: make sure only 1 item is selected at max. Unselect others..
                 break;
-            case "Match All":
+            case "All":
                 me.options.selectType = "MultipleAnd";
                 break;
-            case "Match Any":
+            case "Any":
                 me.options.selectType = "MultipleOr";
                 break;
             }
@@ -2834,16 +2834,16 @@ kshf.BarChart.prototype.insertHeader = function(){
         .attr("class", "filter_label")
         .text(function(d){ return d; })
         .each(function(d){
-            if( (d==="Only One" && me.options.selectType==="Single") ||
-                (d==="Match All"      && me.options.selectType==="MultipleAnd") ||
-                (d==="Match Any"      && me.options.selectType==="MultipleOr")
+            if( (d==="One" && me.options.selectType==="Single") ||
+                (d==="All" && me.options.selectType==="MultipleAnd") ||
+                (d==="Any" && me.options.selectType==="MultipleOr")
                 )
                 $(this).attr("selected","selected");
         })
         ;
     filterGr.append("xhtml:span")
         .attr("class","optionSelect_Label")
-        .text("Filter by")
+        .text("Select by")
         ;
 
     if(this.showConfig) {
