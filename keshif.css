@@ -226,9 +226,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 
-.kshf .headerHTML {
+.kshf .headerGroup{
+    position: absolute;
     pointer-events:none;
 }
+
+
 .kshf .headerGroup span.leftHeader {
     display: inline-block;
     float: left;
@@ -361,10 +364,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     z-index:-60;
 }
 
-.kshf g.barChart.revert g.headerGroup span.header_label {
+.kshf g.barChart.revert .headerGroup span.header_label {
     text-anchor: start;
 }
-.kshf g.headerGroup .barInfo {
+.kshf .headerGroup .barInfo {
     padding-left:20px;
 	font-size: 0.7em;
 	cursor: default;
@@ -373,13 +376,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-style: italic;
     font-weight:300;
 }
-.kshfHost[hidebars=true] .kshf g.headerGroup .barInfo {
+.kshfHost[hidebars=true] .kshf .headerGroup .barInfo {
     display: none;
 }
-.kshf div.kshfChart[collapsed=true] g.headerGroup .barInfo{
+.kshf div.kshfChart[collapsed=true] .headerGroup .barInfo{
     display: none;
 }
-.kshf g.barChart.revert g.headerGroup .barInfo {
+.kshf g.barChart.revert .headerGroup .barInfo {
     text-anchor: end;
 }
 .kshf line.row_separator {
@@ -563,6 +566,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span.chooseConfigGroup{
     float:left;
     width:25px;
+    position:absolute;
+    left:1px;
 }
 
 .kshf .chooseConfigGroup svg{
@@ -792,18 +797,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stroke-width: 1;
 	stroke: rgb(160, 160, 160);
 }
-.kshf div.kshfChart[collapsed=true] g.resort_button{
+
+.kshf .resort_button{
+    position:absolute;
+    pointer-events:all;
+    bottom:4px;
+    cursor:pointer;
+}
+.kshf div.kshfChart[collapsed=true] svg.resort_button{
     display: none !important ;
 }
-.kshf g.resort_button rect{
-	cursor: pointer;
-	fill-opacity: 0;
-}
-.kshf g.resort_button path{
-	pointer-events:none;
+.kshf svg.resort_button path{
 	fill:#616161;
 }
-.kshf g.resort_button:hover path{
+.kshf svg.resort_button:hover path{
 	fill:#cb5454;
     -webkit-transition: fill 250ms linear;
     -moz-transition: fill 250ms linear;
@@ -1408,16 +1415,16 @@ div.credits:hover{
     box-shadow: 1px 1px 1px #474940;
     text-align: center;
     font-size: 0.7em;
-    background-color: rgb(228, 226, 222);
+    background-color: rgb(190, 190, 190);
     color: black;
     display: none;
+    font-weight:700;
     border: solid 1px gray;
     pointer-events:all;
 }
 .kshf div.chartClearFilterButton:hover{
-	font-weight:700;
-	box-shadow: inset 1px 1px 1px #474940;
     color: #cb5454;
+	box-shadow: inset 1px 1px 1px #474940;
 }
 .kshf div.chartClearFilterButton.rowFilter{
     float: right;
