@@ -251,10 +251,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     height: 15px;
     width: 12px;
 }
-.kshf .kshfChart[collapsed=false][showconfig=true] .headerGroup  svg.settingButton{
+.kshf .kshfChart[collapsed=false][showconfig=true] .headerGroup svg.settingButton{
     display: block;
     fill: black;
-    background: #E2E2E2;
+    background: rgba(226, 226, 226, 0.5);
 }
 .kshf .kshfChart[showconfig=false] .headerGroup svg.settingButton{ 
     fill: gray;
@@ -543,7 +543,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .configGroup{
-    background-color: rgb(226, 226, 226);
+    background-color: rgba(226, 226, 226, 0.5);
     border-radius: 4px;
     box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
 }

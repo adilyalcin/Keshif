@@ -971,10 +971,10 @@ kshf.list.prototype.insertItems = function(){
         var x= this.dom.listItems
             .append("div")
             .attr("class","listcell itemtoggledetails");
-        x.append("span").attr("class","item_details_on").html("[+]") // ▼
+        x.append("span").attr("class","item_details_on").html("[+]")
             .attr("title","Show details")
             .on("click", kshf.listItemDetailToggleFunc);
-        x.append("span").attr("class","item_details_off").html("[-]") // ▲
+        x.append("span").attr("class","item_details_off").html("[-]")
             .attr("title","Hide details")
             .on("click", kshf.listItemDetailToggleFunc);
     }
@@ -1195,31 +1195,32 @@ kshf.init = function (options) {
     creditString += "Research made practical. Funded in part by <a href=\"http:\/\/www.huawei.com\">Huawei<\/a>. <\/div>";
     creditString += "";
 
-    this.layout_resize = this.root.append("div").attr("class", "kshf layout_resize")
-        .on("mousedown", function (d, i) {
-            me.root.style('cursor','nwse-resize');
-            var mouseDown_x = d3.mouse($("body")[0])[0];
-            var mouseDown_y = d3.mouse($("body")[0])[1];
-            var mouseDown_width  = $(this.parentNode).width();
-            var mouseDown_height = $(this.parentNode).height();
+    if(options.showResizeCorner === undefined || options.showResizeCorner!==false){
+        this.layout_resize = this.root.append("div").attr("class", "kshf layout_resize")
+           .on("mousedown", function (d, i) {
+               me.root.style('cursor','nwse-resize');
+               var mouseDown_x = d3.mouse($("body")[0])[0];
+               var mouseDown_y = d3.mouse($("body")[0])[1];
+               var mouseDown_width  = $(this.parentNode).width();
+               var mouseDown_height = $(this.parentNode).height();
 
-            d3.select("body").on("mousemove", function() {
-                var mouseDown_x_diff = d3.mouse($("body")[0])[0]-mouseDown_x;
-                var mouseDown_y_diff = d3.mouse($("body")[0])[1]-mouseDown_y;
-                $(me.domID).height(mouseDown_height+mouseDown_y_diff);
-                $(me.domID).width (mouseDown_width +mouseDown_x_diff);
-                me.updateLayout();
-            });
-            d3.select("body").on("mouseup", function(){
-                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.Resize);
-                me.root.style('cursor','default');
-                // unregister mouse-move callbacks
-                d3.select("body").on("mousemove", null);
-                d3.select("body").on("mouseup", null);
-            });
-            d3.event.preventDefault();
-        })
-
+               d3.select("body").on("mousemove", function() {
+                   var mouseDown_x_diff = d3.mouse($("body")[0])[0]-mouseDown_x;
+                   var mouseDown_y_diff = d3.mouse($("body")[0])[1]-mouseDown_y;
+                   $(me.domID).height(mouseDown_height+mouseDown_y_diff);
+                   $(me.domID).width (mouseDown_width +mouseDown_x_diff);
+                   me.updateLayout();
+               });
+               d3.select("body").on("mouseup", function(){
+                   if(sendLog) sendLog(CATID.Other,ACTID_OTHER.Resize);
+                   me.root.style('cursor','default');
+                   // unregister mouse-move callbacks
+                   d3.select("body").on("mousemove", null);
+                   d3.select("body").on("mouseup", null);
+               });
+               d3.event.preventDefault();
+           }) 
+    }
 
     this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox");
     this.layout_infobox.append("div")
@@ -2696,11 +2697,11 @@ kshf.BarChart.prototype.insertHeader = function(){
     topRow.append("xhtml:span").attr("class","header_label_arrow header_label_none");
 
     topRow.append("xhtml:span").attr("class","header_label_arrow header_label_down")
-        .attr("title","Show categories").text("▼")
+        .attr("title","Show categories").text("▶")
         .on("click",function(){ kshf_.collapseCategories(false); })
         ;
     topRow.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
-        .attr("title","Hide categories").text("▲")
+        .attr("title","Hide categories").text("▼")
         .on("click",function(){ kshf_.collapseCategories(true); })
         ;
 
@@ -2740,11 +2741,11 @@ kshf.BarChart.prototype.insertHeader = function(){
             .on("click",function(){ if(kshf_.collapsedTime) { kshf_.collapseTime(false); } })
             ;
         rightBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
-            .attr("title","Show categories").text("▼")
+            .attr("title","Show categories").text("▶")
             .on("click",function(){ kshf_.collapseTime(false); })
             ;
         rightBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
-            .attr("title","Hide categories").text("▲")
+            .attr("title","Hide categories").text("▼")
             .on("click",function(){ kshf_.collapseTime(true); })
             ;
         rightBlock.append("xhtml:div")
@@ -3683,7 +3684,6 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 		;
 	this.dom.rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){
-            var tmpSelectType = kshf_.options.selectType;
             if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
                 kshf_.options.selectType = "MultipleOr";
             }
@@ -3691,10 +3691,9 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
                 kshf_.options.selectType = tmpSelectType;
                 return;
             }
+            // TODO: If new select type is different, show the config option on display!
 
             kshf_.filterRow(d);
-
-            kshf_.options.selectType = tmpSelectType;
 
             if (this.timer) {
                 clearTimeout(this.timer);
@@ -4550,11 +4549,11 @@ kshf.RangeChart.prototype.insertHeader = function(){
         .on("click",function(){ if(kshf_.collapsed) { kshf_.collapseCategories(false); } })
         ;
     leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
-        .attr("title","Show categories").text("▼")
+        .attr("title","Show categories").text("▶")
         .on("click",function(){ kshf_.collapseCategories(false); })
         ;
     leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
-        .attr("title","Hide categories").text("▲")
+        .attr("title","Hide categories").text("▼")
         .on("click",function(){ kshf_.collapseCategories(true); })
         ;
     leftBlock.append("xhtml:div")
