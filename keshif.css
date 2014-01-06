@@ -124,29 +124,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     position: relative;
     background-image: linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 1) 5%, 
-        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 1) 10%, 
+        rgba(190, 190, 190, 1) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -webkit-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 1) 5%, 
-        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 1) 10%, 
+        rgba(190, 190, 190, 1) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -moz-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 1) 5%, 
-        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 1) 10%, 
+        rgba(190, 190, 190, 1) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -ms-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 1) 5%, 
-        rgba(190, 190, 190, 1) 60%, 
+        rgba(190, 190, 190, 1) 10%, 
+        rgba(190, 190, 190, 1) 90%, 
         rgba(190, 190, 190, 0) 100%);
     height: 1px;
-    top: -1px;
     margin-bottom: -2px;
     pointer-events: all;
 /*    cursor: ns-resize;*/
+}
+.kshf .chartFirstLineBackground{
+    width:100%;
+    position: relative;
+    background-image: linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 10%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 10%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 10%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 10%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
 }
 
 .kshf rect.selection_bar {
@@ -210,6 +233,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: inline-block;
     float: left;
     pointer-events: all;
+    position:relative;
 }
 .kshf .headerGroup span.rightHeader{
     display:inline-block;
@@ -230,6 +254,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: default;
     font-variant: small-caps;
     pointer-events: none;
+    padding-top:2px;
+    height:16px;
 }
 
 .kshf .headerGroup span.rightHeader span.header_label {
@@ -239,22 +265,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
 }
 
+.kshf div.kshfChart div.header_belowFirstRow{
+    position:relative;
+    top:1px;
+}
+
 .kshf .kshfChart .headerGroup svg.settingButton{
     display: none;
     float: left;
-    margin-top: 3px;
+    margin-top: 2px;
     cursor: pointer;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-}
-.kshf .headerGroup svg.settingButton{ 
+/*    border: solid 1px rgba(1,1,1,0); */
     height: 15px;
     width: 12px;
+    padding-bottom:1px;
+    background: rgba(100,100,100,0);
+    transition: all 250ms linear;
 }
+
+.kshf .kshfChart[collapsed=true] .header_belowFirstRow{
+    display: none;
+}
+
 .kshf .kshfChart[collapsed=false][showconfig=true] .headerGroup svg.settingButton{
     display: block;
     fill: black;
-    background: rgba(226, 226, 226, 0.5);
+    background: rgba(100,100,100,0.3);
+    transition: all 250ms linear;
+/*    border: solid 1px gray; */
 }
 .kshf .kshfChart[showconfig=false] .headerGroup svg.settingButton{ 
     fill: gray;
@@ -303,10 +343,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] .headerGroup span.header_label_down{
     display: block;
 }
-.kshf .kshfChart[collapsed=false]:hover .headerGroup span.header_label_none{
+.kshf .kshfChart[collapsed=false] .headerGroup span.header_label_none{
     display: none;
 }
-.kshf .kshfChart[collapsed=false]:hover .headerGroup span.header_label_up{
+.kshf .kshfChart[collapsed=false] .headerGroup span.header_label_up{
     display: block;
 }
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
@@ -324,7 +364,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.barChart.revert g.headerGroup span.header_label {
     text-anchor: start;
 }
-.kshf g.headerGroup text.barInfo {
+.kshf g.headerGroup .barInfo {
+    padding-left:20px;
 	font-size: 0.7em;
 	cursor: default;
     fill:gray;
@@ -332,13 +373,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-style: italic;
     font-weight:300;
 }
-.kshfHost[hidebars=true] .kshf g.headerGroup text.barInfo {
+.kshfHost[hidebars=true] .kshf g.headerGroup .barInfo {
     display: none;
 }
-.kshf div.kshfChart[collapsed=true] g.headerGroup text.barInfo{
+.kshf div.kshfChart[collapsed=true] g.headerGroup .barInfo{
     display: none;
 }
-.kshf g.barChart.revert g.headerGroup text.barInfo {
+.kshf g.barChart.revert g.headerGroup .barInfo {
     text-anchor: end;
 }
 .kshf line.row_separator {
@@ -543,7 +584,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .configGroup{
-    background-color: rgba(226, 226, 226, 0.5);
     border-radius: 4px;
     box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
 }
@@ -761,7 +801,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.resort_button path{
 	pointer-events:none;
-	fill:#949494;
+	fill:#616161;
 }
 .kshf g.resort_button:hover path{
 	fill:#cb5454;
