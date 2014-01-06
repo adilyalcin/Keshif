@@ -95,7 +95,6 @@ google.setOnLoadCallback(function() {
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
                 barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
-                barInfoText: "Color:Coauth. type",
                 textFilter: 'with', textGroup: 'co-authors'
             },{
                 facetTitle: "Coauthor Type",
@@ -116,7 +115,6 @@ google.setOnLoadCallback(function() {
                     return r;
                 },
                 barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
-                barInfoText: "Color:Coauth. type",
                 textFilter: 'with'
             },{
                 facetTitle: "Publication Type",
