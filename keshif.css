@@ -171,6 +171,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(190, 190, 190, 0.3) 90%, 
         rgba(190, 190, 190, 0) 100%);
 }
+.kshf .chartFirstLineBackgroundRight{
+    width:100%;
+    position: relative;
+    height:18px;
+    background-image: linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -webkit-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -moz-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+    background-image: -ms-linear-gradient(right, 
+        rgba(190, 190, 190, 0) 0%, 
+        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 90%, 
+        rgba(190, 190, 190, 0) 100%);
+}
 
 .kshf rect.selection_bar {
 	fill: #788890;

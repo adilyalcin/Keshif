@@ -2645,6 +2645,14 @@ kshf.BarChart.prototype.collapseTime = function(hide){
 }
 
 kshf.BarChart.prototype.updateLeftHeaderPaddingTop = function(hide){
+    if(this.type!=="scatterplot") {
+        this.leftHeaderPaddingTop = 0;
+        return;
+    }
+    if(this.collapsed){
+        this.leftHeaderPaddingTop = kshf.line_height;
+        return;
+    }
     this.leftHeaderPaddingTop = ((this.rowCount_Header() - this.rowCount_Header_Left())*kshf.line_height);
 }
 
@@ -2654,10 +2662,8 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
 
     this.updateLeftHeaderPaddingTop();
 
-    var topPadding = (this.collapsed?kshf.line_height:this.leftHeaderPaddingTop)+"px";
-
     this.dom_headerGroup.select("span.leftHeader")
-        .style("padding-top",topPadding);
+        .style("padding-top",this.leftHeaderPaddingTop+"px");
 
     this.root.select("g.barGroup_Top")
         .transition()
@@ -2682,7 +2688,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     this.updateLeftHeaderPaddingTop();
 
     var leftBlock = this.dom_headerGroup.append("span").attr("class","leftHeader")
-        .style("padding-top",(this.collapsed?kshf.line_height:this.leftHeaderPaddingTop)+"px");
+        .style("padding-top",this.leftHeaderPaddingTop+"px");
 
     leftBlock.append("div").attr("class","chartAboveSeparator").style("top","0px");
 
@@ -2744,21 +2750,26 @@ kshf.BarChart.prototype.insertHeader = function(){
         })
         .text('x');
     if(this.type==="scatterplot"){
-        var rightBlock = this.dom_headerGroup.append("span").attr("class","rightHeader");
-        rightBlock.append("span")
+        var rightBlock = this.dom_headerGroup.append("span").attr("class","rightHeader").style("height","20px");
+
+        rightBlock.append("div").attr("class","chartAboveSeparator");
+
+        var poff = rightBlock.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight").style("height","18px");
+
+        poff.append("span")
             .attr("class", "header_label")
             .text(this.options.timeTitle)
             .on("click",function(){ if(kshf_.collapsedTime) { kshf_.collapseTime(false); } })
             ;
-        rightBlock.append("span").attr("class","header_label_arrow header_label_down")
+        poff.append("span").attr("class","header_label_arrow header_label_down")
             .attr("title","Show categories").text("▶")
             .on("click",function(){ kshf_.collapseTime(false); })
             ;
-        rightBlock.append("span").attr("class","header_label_arrow header_label_up"  )
+        poff.append("span").attr("class","header_label_arrow header_label_up"  )
             .attr("title","Hide categories").text("▼")
             .on("click",function(){ kshf_.collapseTime(true); })
             ;
-        rightBlock.append("div")
+        poff.append("div")
             .attr("class","chartClearFilterButton timeFilter")
             .attr("title","Clear filter")
             .on("click", function(d,i){ 
@@ -2767,9 +2778,11 @@ kshf.BarChart.prototype.insertHeader = function(){
                     {facet:kshf_.options.timeTitle,results:kshf.itemsSelectedCt});
             })
             .text('x');
+
+        rightBlock.append("div").attr("class","chartAboveSeparator");
     }
 
-    var xxx=this.dom_headerGroup.append("svg")
+    var xxx=leftBlock.append("svg")
         .attr("class", "resort_button")
         .attr("version","1.1")
         .attr("height","15px")
