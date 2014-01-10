@@ -28,6 +28,34 @@ $(document).ready( function(){
         },
         charts: [
             {
+                timeTitle: "Time",
+                timeItemMap: function(f){ 
+                    return new Date(f.data[cols['ts']]*900+1388088936864);
+                },
+                facetTitle: "Action",
+                catDispCountFix: 5,
+                catItemMap : function(f){ 
+                    switch(f.data[cols['actID']]){
+                    case 1:  return 'CatValueAdd';
+                    case 2:  return 'CatValueRemove';
+                    case 3:  return 'CatValueExact';
+                    case 4:  return 'ClearOnSummary';
+                    case 5:  return 'ClearOnFacet';
+                    case 6:  return 'ClearAll';
+                    case 7:  return 'TimeMinHandle';
+                    case 8:  return 'TimeMaxHandle';
+                    case 9:  return 'TimeDragRange';
+                    case 10: return 'TimeDot';
+                    case 11: return 'CatTextSearch';
+                    case 12: return 'MainTextSearch';
+                    case 13: return 'ClearAllEscape';
+                    }
+                    return '???';
+                }
+            },{ facetTitle: "Facet",
+                catDispCountFix: 5,
+                catItemMap : function(f){ return f.data[cols['facet']]; }
+            },{ 
                 facetTitle: "Demo",
                 catItemMap : function(f){ 
                     switch(f.data[cols['demoID']]){
@@ -47,29 +75,6 @@ $(document).ready( function(){
                     case 14: return 'Nobel';
                     case 15: return 'Oil Spills';
                     case 13: return 'Infosthestics';
-                    }
-                    return '???';
-                }
-            },{ facetTitle: "Facet",
-                catDispCountFix: 5,
-                catItemMap : function(f){ return f.data[cols['facet']]; }
-            },{ facetTitle: "Action",
-                catDispCountFix: 5,
-                catItemMap : function(f){ 
-                    switch(f.data[cols['actID']]){
-                    case 1:  return 'CatValueAdd';
-                    case 2:  return 'CatValueRemove';
-                    case 3:  return 'CatValueExact';
-                    case 4:  return 'ClearOnSummary';
-                    case 5:  return 'ClearOnFacet';
-                    case 6:  return 'ClearAll';
-                    case 7:  return 'TimeMinHandle';
-                    case 8:  return 'TimeMaxHandle';
-                    case 9:  return 'TimeDragRange';
-                    case 10: return 'TimeDot';
-                    case 11: return 'CatTextSearch';
-                    case 12: return 'MainTextSearch';
-                    case 13: return 'ClearAllEscape';
                     }
                     return '???';
                 }

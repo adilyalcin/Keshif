@@ -64,7 +64,7 @@ google.setOnLoadCallback( function(){
         chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
         domID : "#kshfChartId",
         dirRoot: "../",
-        categoryTextWidth: 200,
+        categoryTextWidth: 120,
         source : {
             gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
             sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
@@ -181,6 +181,9 @@ google.setOnLoadCallback( function(){
                 min-height: 100%;
             }
             body{ margin:2px; }
+            div.kshf.layout_header span.title{
+                letter-spacing: 0em;
+            }
         </style>
 	</head>
 	<body onmousemove="logIf.setSessionID()"><div id="kshfChartId"></div></body>
