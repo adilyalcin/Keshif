@@ -1285,12 +1285,8 @@ kshf.init = function (options) {
 
     this.layoutTop = subRoot.append("div").attr("class", "kshf layout_top");
 
-    var mm=subRoot
-        .append("div")
-            .attr("class","kshf layout_left_header")
-        .append("div")
+    var mm=this.root.select(".layout_header").append("div")
             .attr("class","filter_header")
-            .style("top",(this.chartTitle?"23":"0")+"px")
             .style("height",(this.line_height-2)+"px");
 
     mm.append("span").attr("class","leftBlockAdjustSize")
@@ -1322,7 +1318,10 @@ kshf.init = function (options) {
             d3.event.preventDefault();
         });    
 
-    var mmm = mm.append("span").style("width",this.categoryTextWidth+"px").style("display","inline-block");
+    var mmm = mm.append("span")
+        .style("width",this.categoryTextWidth+"px")
+        .style("display","inline-block")
+        .style("float","left");
 
     mmm.append("span").attr("class","filters_text").text("FILTERS↓");
     // insert clear all option
@@ -1936,19 +1935,15 @@ kshf.BarChart.prototype.rowCount_Header_Left = function(){
 kshf.BarChart.prototype.rowCount_Header_Right = function(){
     if(this.type==='scatterplot'){
         if(this.collapsed || this.collapsedTime) return 1;
-        return (this.options.timeTitle)?3:2;
+//        return (this.options.timeTitle)?3:2;
     }
-    return 0;
+    return 1;
 };
 kshf.BarChart.prototype.rowCount_Header = function(){
     if(this.collapsed){
-        if(this.id===0) return 2;
         return 1;
     }
     var h= Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
-    if(this.id===0){
-        if(this.rowCount_Header_Right()-this.rowCount_Header_Left()<1) h++;
-    }
     return h;
 };
 
@@ -2152,9 +2147,9 @@ kshf.BarChart.prototype.rowCount_Total = function(){
 };
 kshf.BarChart.prototype.rowCount_Total_Right = function(){
     if(this.type==='scatterplot' && this.collapsedTime===true){
-        return 1;
+        return 2;
     }
-    return this.rowCount_Total();
+    return this.rowCount_Total()+1;
 };
 
 kshf.BarChart.prototype.rowCount_MaxTotal = function(){
@@ -2645,7 +2640,7 @@ kshf.BarChart.prototype.collapseTime = function(hide){
 }
 
 kshf.BarChart.prototype.updateLeftHeaderPaddingTop = function(hide){
-    if(this.type!=="scatterplot") {
+    if(this.type!=="scatterplot" || true) {
         this.leftHeaderPaddingTop = 0;
         return;
     }
@@ -2664,6 +2659,8 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
 
     this.dom_headerGroup.select("span.leftHeader")
         .style("padding-top",this.leftHeaderPaddingTop+"px");
+    this.dom_headerGroup.select("span.rightHeader")
+        .style("padding-top",this.leftHeaderPaddingTop+"px");
 
     this.root.select("g.barGroup_Top")
         .transition()
@@ -2673,12 +2670,15 @@ kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
         })
         ;
 
-    this.root.select("g.timeAxisGroup")
-        .attr("transform","translate("+
-              (this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth())+","+
-              (kshf.line_height*(this.rowCount_Header()-0.5)+2)+")");
+    this.updateTimeAxisGroupTransform();
 }
 
+kshf.BarChart.prototype.updateTimeAxisGroupTransform = function(){
+    var x = (this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
+    var y = (kshf.line_height*(this.rowCount_Total())-10);
+    this.root.select("g.timeAxisGroup")
+        .attr("transform","translate("+x+","+y+")");
+}
 
 kshf.BarChart.prototype.insertHeader = function(){
 	var kshf_ = this;
@@ -2687,8 +2687,9 @@ kshf.BarChart.prototype.insertHeader = function(){
 
     this.updateLeftHeaderPaddingTop();
 
-    var leftBlock = this.dom_headerGroup.append("span").attr("class","leftHeader")
-        .style("padding-top",this.leftHeaderPaddingTop+"px");
+    var leftBlock = this.dom_headerGroup.append("span").attr("class","leftHeader");
+
+    leftBlock.style("padding-top",this.leftHeaderPaddingTop+"px");
 
     leftBlock.append("div").attr("class","chartAboveSeparator").style("top","0px");
 
@@ -2756,11 +2757,6 @@ kshf.BarChart.prototype.insertHeader = function(){
 
         var poff = rightBlock.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight").style("height","18px");
 
-        poff.append("span")
-            .attr("class", "header_label")
-            .text(this.options.timeTitle)
-            .on("click",function(){ if(kshf_.collapsedTime) { kshf_.collapseTime(false); } })
-            ;
         poff.append("span").attr("class","header_label_arrow header_label_down")
             .attr("title","Show categories").text("▶")
             .on("click",function(){ kshf_.collapseTime(false); })
@@ -2768,6 +2764,11 @@ kshf.BarChart.prototype.insertHeader = function(){
         poff.append("span").attr("class","header_label_arrow header_label_up"  )
             .attr("title","Hide categories").text("▼")
             .on("click",function(){ kshf_.collapseTime(true); })
+            ;
+        poff.append("span")
+            .attr("class", "header_label")
+            .text(this.options.timeTitle)
+            .on("click",function(){ if(kshf_.collapsedTime) { kshf_.collapseTime(false); } })
             ;
         poff.append("div")
             .attr("class","chartClearFilterButton timeFilter")
@@ -2781,6 +2782,8 @@ kshf.BarChart.prototype.insertHeader = function(){
 
         rightBlock.append("div").attr("class","chartAboveSeparator");
     }
+
+    var header_belowFirstRow = leftBlock.append("div").attr("class","header_belowFirstRow");
 
     var xxx=leftBlock.append("svg")
         .attr("class", "resort_button")
@@ -2803,17 +2806,7 @@ kshf.BarChart.prototype.insertHeader = function(){
         ;
     xxx.append("svg:title").text("Move selected rows to top & re-order");
 
-/*
-	this.dom_headerGroup.append("svg")
-        xxx.append("svg:path")
-            .attr("d",
-                "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
-            .attr("class","unselected")
-            ;
-*/
-    var header_belowFirstRow = leftBlock.append("div").attr("class","header_belowFirstRow");
-
-    // ************************************************************************************
+c    // ************************************************************************************
     // ****** CONFIG LINE *****************************************************************
 
     var filterOptions = ["One","Any"];
@@ -3002,10 +2995,7 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
     
     this.dom_headerGroup.select("span.rightHeader")
         .style("width",(w)+"px");
-    this.root.select("g.timeAxisGroup")
-        .attr("transform","translate("+
-              (this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth())+","+
-              (kshf.line_height*(this.rowCount_Header()-0.5)+2)+")");
+    this.updateTimeAxisGroupTransform();
 	if(this.options.display.row_bar_line){
         this.root.selectAll("line.row_bar_line")
             .attr("x2",
@@ -3211,7 +3201,9 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
         .attr("collapsedTime",this.collapsedTime===false?"false":"true")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .style("height",totalHeight+"px");
+        .style("height",(this.type!=="scatterplot")?(totalHeight+"px"):"100%");
+        ;
+
     this.root.select("rect.chartBackground").attr(
         'height', 
         kshf.line_height*(this.rowCount_VisibleItem)
@@ -3241,11 +3233,14 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
 	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
         .transition()
         .duration(this.parentKshf.layout_animation)
-		.attr("y2", barsHeight+kshf.line_height*1.5-4);
+        .attr("y1", 23-barsHeight-0*kshf.line_height-5)
+		.attr("y2", barsHeight+kshf.line_height*1.5-4-barsHeight-0*kshf.line_height-5)
+        ;
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
         .transition()
         .duration(this.parentKshf.layout_animation)
-		.attr("height", barsHeight);
+        .attr("y",kshf.line_height*(1.5-this.rowCount_VisibleItem)-7)
+		.attr("height", barsHeight-kshf.line_height);
     this.root.selectAll("line.selectVertLine")
         .attr("y2", kshf.line_height*(this.rowCount_VisibleItem+1.5));
 
@@ -4189,20 +4184,21 @@ kshf.BarChart.prototype.setTimeTicks = function(){
     var diff_Month = (this.data_maxDate.getUTCFullYear()*12+this.data_maxDate.getUTCMonth())-
                      (this.data_minDate.getUTCFullYear()*12+this.data_minDate.getUTCMonth());
 
-    // this.options.timeMaxWidth is the width
+    // this.options.timeMaxWidth is the current timeline width
 
     // choose range
     if(this.options.timeMaxWidth/70<=diff_Year/10){
+        // YEAR
         this.timeticks.range = d3.time.years;
         this.timeticks.format = d3.time.format("%Y");
-        // Math.floor(diff_Year/this.timeticks.stepSize) <= this.options.timeMaxWidth/70
         this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/70));
     } else if(this.options.timeMaxWidth/70<=diff_Year){
+        // YEAR
         this.timeticks.range = d3.time.years;
         this.timeticks.format = d3.time.format("%Y");
-        // Math.floor(diff_Year/this.timeticks.stepSize) <= this.options.timeMaxWidth/70
         this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/70));
-    } else if(true){
+    } else if(this.options.timeMaxWidth/70<=diff_Month){
+        // MONTH
         this.timeticks.range = d3.time.months;
         this.timeticks.format = d3.time.format("%b'%y");
         this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/70));
@@ -4210,7 +4206,11 @@ kshf.BarChart.prototype.setTimeTicks = function(){
         if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
         else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
         else if(this.timeticks.stepSize>4) {this.timeticks.stepSize = 4;}
-//        this.timeticks.stepSize = 4;
+    } else if(true){
+        // DAY
+        this.timeticks.range = d3.time.day;
+        this.timeticks.format = d3.time.format("%b'%y");
+        this.timeticks.stepSize = Math.ceil(diff_Day/(this.options.timeMaxWidth/70));
     }
 
     // update this.chartX_min_ms and this.chartX_max_ms
@@ -4218,21 +4218,12 @@ kshf.BarChart.prototype.setTimeTicks = function(){
     if(this.timeticks.range===d3.time.years){
         this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),0));
         this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear()+1,0));
-//        var diffYear = (this.data_maxDate.getUTCFullYear()+1-this.data_minDate.getUTCFullYear())%this.timeticks.stepSize;
-//        if(diffYear===0){ diffYear=this.timeticks.stepSize; }
-//        tempDate = new Date(this.data_maxDate.getUTCFullYear()+1+(this.timeticks.stepSize-diffYear),0);
-//        this.chartX_max_ms = Date.parse(new Date(tempDate.getUTCFullYear(),0));
-    }    
-    if(this.timeticks.range===d3.time.months){
+    } else if(this.timeticks.range===d3.time.months){
         this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
         this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
-        // make sure the last ending month is step-size away from beginning
-//        var startTime = this.data_minDate.getUTCFullYear()*12 + this.data_minDate.getUTCMonth();
-//        var endTime = this.data_maxDate.getUTCFullYear()*12 + this.data_maxDate.getUTCMonth()+1;
-//        var diffMonth = (endTime-startTime)%this.timeticks.stepSize;
-//        if(diffMonth===0){ diffMonth=this.timeticks.stepSize; }
-//        tempDate = new Date(this.data_maxDate.getUTCFullYear(), this.data_maxDate.getUTCMonth()+1+(this.timeticks.stepSize-diffMonth));
-//        this.chartX_max_ms = Date.parse(new Date(tempDate.getUTCFullYear(),(tempDate.getUTCMonth())));
+    } else if(this.timeticks.range===d3.time.days){
+        this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
+        this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
     }
     
     // reset filter state
@@ -4252,13 +4243,12 @@ kshf.BarChart.prototype.setTimeTicks = function(){
 
 kshf.BarChart.prototype.insertTimeTicks = function(){
     var axisGroup = this.root.select("g.timeAxisGroup g.tickGroup");
-    axisGroup.attr("transform","translate(0,-1)")
 
     var numTicks = Math.floor(this.options.timeMaxWidth/70);
 
     var xAxis = d3.svg.axis()
         .scale(this.timeScale)
-        .orient('top')
+        .orient('bottom')
         .tickSize(8, 5, 2)
         .ticks(this.timeticks.range, this.timeticks.stepSize ) // d3.time.years, 2
         .tickFormat(this.timeticks.format ) // d3.time.format("%Y")
@@ -4273,15 +4263,11 @@ kshf.BarChart.prototype.insertTimeTicks = function(){
 
 kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     var axisGroup = this.root.select("g.timeAxisGroup");
-    var ggg = axisGroup.selectAll("g.sdsdsddsdd")
-        .data([1])
-        .enter()
-        .append("svg:g").attr("class","sdsdsddsdd")
-        ;
+    var ggg = axisGroup.append("svg:g").attr("class","sdsdsddsdd")  ;
     ggg.append("svg:title").attr("class","xaxis_title");
     ggg.append("svg:rect")
         .attr("class", "selection_bar")
-        .attr("y", -5.5)
+        .attr("y", -2.5)
         .attr("height", 7)
 
     var axisSubGroup=axisGroup.selectAll(".filter_handle")
@@ -4298,7 +4284,6 @@ kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     axisSubGroup
         .append("svg:rect")
         .attr("class", "filter_nonselected")
-        .attr("y",kshf.line_height*1.5-4)
         .on("click",function(){
             d3.event.stopPropagation();
         })
@@ -4487,9 +4472,9 @@ kshf.BarChart.prototype.yearSetXPos = function() {
 	var maxX = this.timeScale(this.timeFilter_ms.max);
 	
 	this.root.selectAll("g.filter_min")
-		.attr("transform", function(d) { return "translate(" + minX + ","+(-15)+")"; });
+		.attr("transform", function(d) { return "translate(" + minX + ","+(-12)+")"; });
 	this.root.selectAll("g.filter_max")
-		.attr("transform", function(d) { return "translate(" + maxX + ","+(-15)+")"; });
+		.attr("transform", function(d) { return "translate(" + maxX + ","+(-12)+")"; });
 	this.root.selectAll("rect.selection_bar")
 		.attr("x", minX)
 		.attr("width", (maxX - minX));

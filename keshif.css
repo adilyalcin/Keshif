@@ -378,10 +378,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: block;
 }
 .kshf .headerGroup span.rightHeader span.header_label_arrow{
-    float: right;
 }
 .kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_down{
     display: block;
+}
+.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_up{
+    display: none !important;
 }
 
 
@@ -775,7 +777,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     fill: #E0E7EB;
 }
 .kshf g.row rect.timeBar.total{
-    fill-opacity:0.35;
+    fill-opacity:0.2;
 }
 .kshf div.kshfChart[collapsedTime=true] g.row rect.timeBar {
     display:none;
@@ -826,7 +828,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .resort_button{
     position:absolute;
     pointer-events:all;
-    bottom:4px;
+    bottom:1px;
     cursor:pointer;
 }
 .kshf div.kshfChart[collapsed=true] svg.resort_button{
@@ -870,13 +872,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf span.barChartMainInfo{
     font-size: 0.8em;
+    font-weight: 500;
     color: gray;
     cursor: default;
     font-size:0.7em;
-    width:100px;
     position:relative;
-    top:-3px;
     padding-left: 10px;
+    float:left;
 }
 .kshfHost[hideBarAxis=true] .kshf span.barChartMainInfo{
     display:none;
@@ -959,16 +961,20 @@ div.kshf.layout_left_background{
     top:0px;
     z-index: 10;
 }
-.kshf.layout_left_header div.filter_header{
+.kshf div.filter_header{
     background-color: rgba(125,125,125,0.15);
     border-bottom: solid 1px gray;
     box-shadow: 0px 0px 2px 1px gray;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     margin-left:2px;
+    margin-top:2px;
+    float:left;
+    font-size: 0.9em;
+    text-shadow: none;
 }
 
-.kshf.layout_left_header span.filters_text{
+.kshf span.filters_text{
     position: relative;
     float: right;
     font-size: 0.9em;
@@ -1152,11 +1158,13 @@ div.listHeader {
 	padding: 0px 5px 0px 2px;
     min-height: 22px;
     
-    background-image: linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgba(233, 227, 205,1) 30%, rgba(233, 227, 205,0) 100%); //* uses rgba */
-    background-image: -ms-linear-gradient(bottom, rgb(233, 227, 205) 30%, rgb(255,255,255) 100%);
+    background-image: linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgba(233, 227, 205,1) 0%, rgba(233, 227, 205,0.3) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);*/
+    background-color: rgba(233, 227, 205,1);
+    border-top-left-radius: 20px;
 }
 
 div.listHeader div.topRow {
@@ -1377,10 +1385,10 @@ span.sort_column_remove:hover{
 
 
 
-div.chartInfo{
+.kshf div.chartInfo{
     position:absolute;
 }
-img.datasource{
+.kshf img.datasource{
     height:14px;
     cursor:pointer;
     float:left;
@@ -1389,11 +1397,11 @@ img.datasource{
     border: solid 1px black;
     background-color:white;
 }
-img.datasource:hover{
+.kshf img.datasource:hover{
  	box-shadow: inset 1px 1px 1px #474940;
 }
 
-div.credits{
+.kshf div.credits{
 	cursor: pointer;
 	font-weight: 500;
 	display: inline-block;
@@ -1406,12 +1414,12 @@ div.credits{
 	background-color: white;
 	color: black;
 	position: relative;
-	margin:2px;
+	margin:2px 15px 2px 2px;
     float:right;
     font-weight: bolder;
     font-style:italic;
 }
-div.credits:hover{
+.kshf div.credits:hover{
 	box-shadow: inset 1px 1px 1px #474940;
     background-color: #EEEEEE;
 }
