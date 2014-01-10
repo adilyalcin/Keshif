@@ -622,14 +622,6 @@ function capitaliseFirstLetter(string) {
 }
 
 kshf.getFilteringState = function(facetTitle, itemInfo) {
-    /*if(this.isFiltered_Time()){
-        if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
-            this.insertFilterSummaryBlock_Time();
-        }
-        $(".filter_row_text_"+(this.filterId+1)+" .filter_item")
-            .html("from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>")
-        ;*/
-
     var r={
         results : this.itemsSelectedCt,
         textSrch: $("input.bigTextSearch").val()
@@ -816,7 +808,6 @@ kshf.list = function(_kshf, config, root){
     listColumnRow
         .append("span").attr("class","filter-blocks")
         .append("span").attr("class","filter-blocks-for-charts");
-//            .style("padding-left",(this.sortColWidth+(this.detailsToggle?23:3))+"px");
 
     this.listDiv.append("div").attr("class","listItemGroup");
 
@@ -1285,74 +1276,6 @@ kshf.init = function (options) {
 
     this.layoutTop = subRoot.append("div").attr("class", "kshf layout_top");
 
-    var mm=this.root.select(".layout_header").append("div")
-            .attr("class","filter_header")
-            .style("height",(this.line_height-2)+"px");
-
-    mm.append("span").attr("class","leftBlockAdjustSize")
-        .attr("title","Drag to adjust panel width")
-        .style("height",(kshf.line_height-4)+"px")
-        .on("mousedown", function (d, i) {
-            me.root.style('cursor','ew-resize');
-            var mouseDown_x = d3.mouse(this.parentNode.parentNode)[0];
-            var mouseDown_width = me.width_leftPanel_bar;
-            me.root.on("mousemove", function() {
-                var mouseMove_x = d3.mouse(this)[0];
-                var mouseDif = mouseMove_x-mouseDown_x;
-                me.time_animation_barscale = 0;
-                me.layout_animation = 0;
-                me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
-                me.layout_animation = 500;
-            });
-            me.root.on("mouseup", function(){
-                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.LeftPanelWidth,{panelWidth:me.width_leftPanel_bar});
-                me.root.style('cursor','default');
-                // unregister mouse-move callbacks
-                me.root.on("mousemove", null);
-                me.root.on("mouseup", null);
-            });
-            d3.event.preventDefault();
-        })
-        .on("click",function(){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-        });    
-
-    var mmm = mm.append("span")
-        .style("width",this.categoryTextWidth+"px")
-        .style("display","inline-block")
-        .style("float","left");
-
-    mmm.append("span").attr("class","filters_text").text("FILTERS↓");
-    // insert clear all option
-    var s= mmm.append("span")
-        .attr("class","filter-block-clear")
-        .attr("filtered_row","false")
-        .text("Clear all")
-        ;
-    s.append("div")
-        .attr("class","chartClearFilterButton allFilter")
-        .attr("title","Clear all")
-        .text("x")
-        .on("click",function(){ kshf.clearAllFilters(); });
-    mm.append("span")
-        .attr("class","barChartMainInfo")
-        .text(this.primItemCatValue===null?"⇒Item count ":("⇒Total "+this.primItemCatValue))//⟾
-        .append("img")
-        .attr("class","refreshbarscales")
-        .attr("width","13")
-        .style("margin-bottom","-2px")
-        .style("display","none")
-//        .text("[x]")
-        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
-        .on("click",function(){
-            kshf.clearAllFilters();
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAll,kshf.getFilteringState());
-        });
-        ;
-
-
-
     this.layoutLeft  = subRoot.append("div").attr("class", "kshf layout_left");
     this.layoutRight = subRoot.append("div").attr("class", "kshf layout_right");
 	
@@ -1397,6 +1320,73 @@ kshf.createCharts = function(){
 kshf.insertChartHeader = function(){
     var me = this;
     this.layoutHeader = this.root.append("div").attr("class", "kshf layout_header");
+
+    var dom_filter_header=this.root.select(".layout_header").append("div")
+            .attr("class","filter_header")
+            .style("height",(this.line_height-3)+"px");
+
+    dom_filter_header.append("span").attr("class","leftBlockAdjustSize")
+        .attr("title","Drag to adjust panel width")
+        .style("height",(kshf.line_height-4)+"px")
+        .on("mousedown", function (d, i) {
+            me.root.style('cursor','ew-resize');
+            var mouseDown_x = d3.mouse(this.parentNode.parentNode)[0];
+            var mouseDown_width = me.width_leftPanel_bar;
+            me.root.on("mousemove", function() {
+                var mouseMove_x = d3.mouse(this)[0];
+                var mouseDif = mouseMove_x-mouseDown_x;
+                me.time_animation_barscale = 0;
+                me.layout_animation = 0;
+                me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                me.layout_animation = 500;
+            });
+            me.root.on("mouseup", function(){
+                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.LeftPanelWidth,{panelWidth:me.width_leftPanel_bar});
+                me.root.style('cursor','default');
+                // unregister mouse-move callbacks
+                me.root.on("mousemove", null);
+                me.root.on("mouseup", null);
+            });
+            d3.event.preventDefault();
+        })
+        .on("click",function(){
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+        });    
+
+    var left_align = dom_filter_header.append("span")
+        .attr("class","left_align")
+        .style("width",this.categoryTextWidth+"px");
+
+    left_align.append("span").attr("class","filters_text").text("Filters"); //↓
+    // insert clear all option
+    var s= left_align.append("span")
+        .attr("class","filter-block-clear")
+        .attr("filtered_row","false")
+        .text("Clear all")
+        .on("click",function(){ kshf.clearAllFilters(); })
+        ;
+    s.append("div")
+        .attr("class","chartClearFilterButton allFilter")
+        .attr("title","Clear all")
+        .text("x")
+        ;
+    dom_filter_header.append("span")
+        .attr("class","barChartMainInfo")
+        .text(this.primItemCatValue===null?"⇒Item Count ":("⇒Total "+this.primItemCatValue))//⟾
+        .append("img")
+        .attr("class","refreshbarscales")
+        .attr("width","13")
+        .style("margin-bottom","-2px")
+        .style("display","none")
+        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
+        .on("click",function(){
+            kshf.clearAllFilters();
+            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAll,kshf.getFilteringState());
+        });
+        ;
+
+
     // Info & Credits
     this.layoutHeader
         .append("div")
@@ -1431,7 +1421,11 @@ kshf.insertChartHeader = function(){
             .attr("src",this.dirRoot+"img/datasource.png")
             ;
         }
-    this.layoutHeader.append("span").text(this.chartTitle);
+
+
+    this.layoutHeader.append("span")
+        .attr("class","title")
+        .text(this.chartTitle);
 }
 
 kshf.addBarChart = function(options){
@@ -1787,7 +1781,7 @@ kshf.updateAllTheWidth = function(v){
     var rowLabelOffset = this.getRowLabelOffset();
 
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
-    this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-10)+"px");
+    this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
     this.root.select("div.layout_right").style("left",(this.width_leftPanel_total)+"px");
 
@@ -1935,9 +1929,10 @@ kshf.BarChart.prototype.rowCount_Header_Left = function(){
 kshf.BarChart.prototype.rowCount_Header_Right = function(){
     if(this.type==='scatterplot'){
         if(this.collapsed || this.collapsedTime) return 1;
+        return 2;
 //        return (this.options.timeTitle)?3:2;
     }
-    return 1;
+    return 0;
 };
 kshf.BarChart.prototype.rowCount_Header = function(){
     if(this.collapsed){
@@ -2161,25 +2156,30 @@ kshf.BarChart.prototype.rowCount_MinTotal = function(){
 };
 
 kshf.BarChart.prototype.updateChartTotalWidth = function(){
-    var totalWidth = this.getWidth();
-    this.divRoot.style("width",totalWidth+"px");
-    // to capture click/hover mouse events
-    this.root.select("rect.chartBackground").attr('width',totalWidth);
-
-    this.divRoot.select(".headerGroup").style('width',totalWidth+"px");
-
-    this.root.select("rect.clippingRect")
-        .attr("width",totalWidth)
-        ;
     var leftPanelWidth = this.parentKshf.getRowTotalTextWidth() +
         this.barMaxWidth +
         kshf.scrollWidth;
+    var totalWidth = this.getWidth();
+
+    this.divRoot.style("width",totalWidth+"px");
+    this.root.select("rect.chartBackground")
+        .attr('width',totalWidth)
+        ;
+    this.divRoot.select("rect.clippingRect_2")
+        .attr("x",leftPanelWidth+10)
+        .attr("width",this.options.timeMaxWidth+7)
+        ;
+    this.divRoot.select(".headerGroup")
+        .style('width',totalWidth+"px")
+        ;
+    this.root.select("rect.clippingRect")
+        .attr("width",totalWidth)
+        ;
     this.dom_headerGroup.select("span.leftHeader")
         .transition()
         .duration(kshf.time_animation_barscale)
         .style("width",leftPanelWidth+"px")
         ;
-
 };
 
 kshf.BarChart.prototype.scrollItems = function(event){
@@ -2616,10 +2616,19 @@ kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
     if(toUpdate!==false) { kshf.update(); }
 };
 
+kshf.BarChart.prototype.clearTimeFilter_ms = function(){
+    this.timeFilter_ms= { min: this.chartX_min_ms, max:this.chartX_max_ms };
+}
+kshf.BarChart.prototype.clearTimeZoom_ms = function(){
+    this.timeZoom_ms = { min: this.chartX_min_ms, max:this.chartX_max_ms };
+}
+
 kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
-	this.timeFilter_ms.min = this.chartX_min_ms;
-	this.timeFilter_ms.max = this.chartX_max_ms;
-	this.yearSetXPos();
+    this.clearTimeFilter_ms();
+    this.clearTimeZoom_ms();
+    // TODO: do this only is it is zoomed in before
+    this.setTimeWidth(this.options.timeMaxWidth);
+    this.yearSetXPos();
     this.filterTime();
     if(toUpdate!==false) { kshf.update(); }
 };
@@ -2781,6 +2790,101 @@ kshf.BarChart.prototype.insertHeader = function(){
             .text('x');
 
         rightBlock.append("div").attr("class","chartAboveSeparator");
+
+        var config_zoom = rightBlock.append("div").attr("class","config_zoom");
+
+        config_zoom.append("span")
+            .attr("class","zoom_button zoom_in")
+            .attr("disabled","true")
+            .text("Zoom in")
+            .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","in");  })
+            .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
+            .on("click",function(d){
+                me.timeZoom_ms.min = me.timeFilter_ms.min;
+                me.timeZoom_ms.max = me.timeFilter_ms.max;
+                me.useCurrentTimeMinMax = true;
+                me.setTimeWidth(me.options.timeMaxWidth);
+                me.useCurrentTimeMinMax = undefined;
+                me.divRoot.select(".zoom_out").attr("disabled","false");
+                me.divRoot.select(".zoom_in").attr("disabled","true");
+            });
+
+        // **********************************
+        // ZOOM SVG
+
+        var zoom_svg = config_zoom.append("svg")
+            .attr("version","1.1")
+            .attr("xmlns","http://www.w3.org/2000/svg")
+            .attr("x","0px")
+            .attr("y","0px")
+            .attr("width","15px")
+            .attr("height","20px")
+            .attr("viewBox","0 0 404.999 722.387")
+            .attr("enable-background","new 0 0 404.999 722.387")
+            .attr("xml:space","preserve")
+            ;
+
+        var gradient_1=zoom_svg.append("svg:linearGradient")
+            .attr("id","SVGID_1_")
+            .attr("gradientUnits","userSpaceOnUse")
+            .attr("x1","202.4995")
+            .attr("y1","719.8745")
+            .attr("x2","202.4995")
+            .attr("y2","4.9341")
+        gradient_1.append("svg:stop").attr("offset","0.2").attr("style","stop-color:#FFFFFF");
+        gradient_1.append("svg:stop").attr("offset","1").attr("style","stop-color:#939598");
+
+        var gradient_2=zoom_svg.append("svg:linearGradient")
+            .attr("id","SVGID_2_")
+            .attr("gradientUnits","userSpaceOnUse")
+            .attr("x1","202.4995")
+            .attr("y1","719.8745")
+            .attr("x2","202.4995")
+            .attr("y2","4.9341")
+        gradient_2.append("svg:stop").attr("offset","0").attr("style","stop-color:#939598");
+        gradient_2.append("svg:stop").attr("offset","0.8").attr("style","stop-color:#FFFFFF");
+
+        zoom_svg.append("svg:path")
+            .attr("d","M202.499,3.723L394.31,110.316"+
+        "c-134.189,0-127.738,227.969-127.738,509.696l-64.072,98.652l-64.073-98.652c0-281.727-1.306-509.696-128.737-509.696"+
+        "C9.689,110.316,202.499,3.722,202.499,3.723z")
+            ;
+        
+        zoom_svg.append("svg:rect")
+            .attr("class","block_bottom")
+            .attr("x","108.12")
+            .attr("y","617.797")
+            .attr("display","inline")
+            .attr("fill","#FFFFFF")
+            .attr("width","180")
+            .attr("height","112")
+            ;
+
+        zoom_svg.append("svg:rect")
+            .attr("class","block_top")
+            .attr("x","-37.88")
+            .attr("y","-27.203")
+            .attr("display","inline")
+            .attr("fill","#FFFFFF")
+            .attr("width","496")
+            .attr("height","142")
+            ;
+
+        config_zoom.append("span")
+            .attr("class","zoom_button zoom_out")
+            .attr("disabled","true")
+            .text("Zoom out")
+            .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","out");  })
+            .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
+            .on("click",function(){
+                me.clearTimeZoom_ms();
+                me.useCurrentTimeMinMax = true;
+                me.setTimeWidth(me.options.timeMaxWidth);
+                me.useCurrentTimeMinMax = undefined;
+                me.divRoot.select(".zoom_out").attr("disabled","true");
+            })
+            ;
+
     }
 
     var header_belowFirstRow = leftBlock.append("div").attr("class","header_belowFirstRow");
@@ -2806,7 +2910,7 @@ kshf.BarChart.prototype.insertHeader = function(){
         ;
     xxx.append("svg:title").text("Move selected rows to top & re-order");
 
-c    // ************************************************************************************
+    // ************************************************************************************
     // ****** CONFIG LINE *****************************************************************
 
     var filterOptions = ["One","Any"];
@@ -2998,9 +3102,7 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
     this.updateTimeAxisGroupTransform();
 	if(this.options.display.row_bar_line){
         this.root.selectAll("line.row_bar_line")
-            .attr("x2",
-                this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+
-                this.timeScale.range()[1]+kshf.scrollPadding+kshf.scrollWidth);
+            .attr("x2",this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+w);
     }
 
     this.updateTimeChartDotConfig();
@@ -3010,7 +3112,7 @@ kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
     var me = this;
     if(this.options.timeDotConfig === undefined && this.type==='scatterplot'){
         var mmm = this.options.timeMaxWidth/10;
-        var timeRange = this.chartX_max_ms-this.chartX_min_ms;
+        var timeRange = this.timeZoom_ms.max-this.timeZoom_ms.min;
         var spannedRange = 0;
 
         this.dom.g_row.each(function(d) {
@@ -3214,7 +3316,7 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
         );
     
     // update clippath height
-    this.root.select("#kshf_chart_clippath_"+this.id+" rect")
+    this.root.selectAll(".barChartClipPath rect")
         .transition()
         .duration(this.parentKshf.layout_animation)
 		.attr("height",barsHeight);
@@ -3233,14 +3335,14 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
 	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("y1", 23-barsHeight-0*kshf.line_height-5)
-		.attr("y2", barsHeight+kshf.line_height*1.5-4-barsHeight-0*kshf.line_height-5)
+        .attr("y1", -barsHeight-8)
+		.attr("y2", -8)
         ;
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("y",kshf.line_height*(1.5-this.rowCount_VisibleItem)-7)
-		.attr("height", barsHeight-kshf.line_height);
+        .attr("y",-barsHeight-8)
+		.attr("height", barsHeight);
     this.root.selectAll("line.selectVertLine")
         .attr("y2", kshf.line_height*(this.rowCount_VisibleItem+1.5));
 
@@ -3701,15 +3803,25 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
 kshf.BarChart.prototype.insertItemRows_shared = function(){
 	var kshf_ = this;
 	// create the clipping area
-	this.root.select("g.barGroup_Top")
+	var clipPaths = this.root.select("g.barGroup_Top")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
         .on("mousewheel",this.scrollItems.bind(this))
-		.insert("svg:clipPath",":first-child")
+	.insert("svg:g",":first-child")
+        .attr("class","barChartClipPath");
+
+    clipPaths.insert("svg:clipPath")
 		.attr("id","kshf_chart_clippath_"+this.id)
-	  .append("svg:rect").attr("class","clippingRect")
+	.append("svg:rect").attr("class","clippingRect")
 		.attr("x",0)
 		.attr("y",0)
 		;
+
+    clipPaths.insert("svg:clipPath")
+        .attr("id","kshf_chart_clippathsm_"+this.id)
+    .append("svg:rect").attr("class","clippingRect_2")
+        .attr("y",0)
+        ;
+
 	this.dom.rows = this.root.selectAll("g.barGroup g.row")
 		.on("click", function(d){
             if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
@@ -4080,8 +4192,10 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
 kshf.BarChart.prototype.insertTimeChartRows = function(){
 	var kshf_ = this;
 
-    var rows = this.root.selectAll("g.barGroup g.row");
-    var rowsSub = this.root.selectAll("g.barGroup g.row g");
+    var rowsSub = this.root.selectAll("g.barGroup g.row g").append("g")
+        .attr("class","timeLineParts")
+        .attr("clip-path","url(#kshf_chart_clippathsm_"+this.id+")")
+        ;
     if(this.options.timeBarShow===true){
         rowsSub
             .append("svg:rect")
@@ -4096,7 +4210,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             .attr("ry",2);
         }
 	// Create bar dots
-	rows.selectAll("g.timeDot")
+	rowsSub.selectAll("g.timeDot")
 		.data(function(d){ 
                 return d.items; }, 
               function(d){ 
@@ -4214,35 +4328,35 @@ kshf.BarChart.prototype.setTimeTicks = function(){
     }
 
     // update this.chartX_min_ms and this.chartX_max_ms
-    var tempDate;
-    if(this.timeticks.range===d3.time.years){
-        this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),0));
-        this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear()+1,0));
-    } else if(this.timeticks.range===d3.time.months){
-        this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
-        this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
-    } else if(this.timeticks.range===d3.time.days){
-        this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
-        this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
-    }
-    
-    // reset filter state
-    if(this.timeFilter_ms===undefined) {
-        this.timeFilter_ms = {
-            min: this.chartX_min_ms,
-            max: this.chartX_max_ms
-        };
-    }
+    if(this.useCurrentTimeMinMax===undefined){
+        var tempDate;
+        if(this.timeticks.range===d3.time.years){
+            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),0));
+            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear()+1,0));
+        } else if(this.timeticks.range===d3.time.months){
+            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
+            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
+        } else if(this.timeticks.range===d3.time.days){
+            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
+            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
+        }
 
+        this.clearTimeZoom_ms();
+        this.clearTimeFilter_ms();
+    }
     // update the time scale with the new date domain
-    this.timeScale = d3.time.scale.utc()
-        .domain([new Date(this.chartX_min_ms), new Date(this.chartX_max_ms)])
-        .rangeRound([0, this.options.timeMaxWidth-18])
-        ;
+    this.updateTimeScale();
 };
 
+kshf.BarChart.prototype.updateTimeScale = function(){
+    this.timeScale = d3.time.scale.utc()
+        .domain([new Date(this.timeZoom_ms.min), new Date(this.timeZoom_ms.max)])
+        .rangeRound([0, this.options.timeMaxWidth])
+        ;
+}
+
 kshf.BarChart.prototype.insertTimeTicks = function(){
-    var axisGroup = this.root.select("g.timeAxisGroup g.tickGroup");
+    var tickGroup = this.root.select("g.timeAxisGroup g.tickGroup");
 
     var numTicks = Math.floor(this.options.timeMaxWidth/70);
 
@@ -4255,18 +4369,21 @@ kshf.BarChart.prototype.insertTimeTicks = function(){
         .tickSubdivide(this.timeticks.stepSize-1)
         ;
     ;
-    axisGroup.call(xAxis);
+    tickGroup.call(xAxis);
 
-    axisGroup.selectAll(".tick.major text").style("text-anchor","middle");
-
+    tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
+/*
+    tickGroup.append("svg:path")
+        .attr("class","bottom_border")
+        .attr("d","M0,2V0H"+this.options.timeMaxWidth+"V2")
+        .attr("transform","translate(0,25)");*/
 };
 
 kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     var axisGroup = this.root.select("g.timeAxisGroup");
-    var ggg = axisGroup.append("svg:g").attr("class","sdsdsddsdd")  ;
+    var ggg = axisGroup.append("svg:g").attr("class","selection_bar")  ;
     ggg.append("svg:title").attr("class","xaxis_title");
     ggg.append("svg:rect")
-        .attr("class", "selection_bar")
         .attr("y", -2.5)
         .attr("height", 7)
 
@@ -4295,7 +4412,7 @@ kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     axisSubSubGroup.append("svg:title").attr("class","xaxis_title");
     axisSubSubGroup
         .append("svg:path")
-        .attr("transform",function(d,i) { return "translate("+(i===0?"-3":"3")+",0)";})
+        .attr("transform",function(d,i) { return "translate("+(i===0?"0":"0")+",-12)";})
         .attr("d", function(d,i) { 
             return (i===0)?"M0 6 L0 20 L12 13 Z":"M0 6 L0 20 L-12 13 Z";
         })
@@ -4303,6 +4420,7 @@ kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
 	
 kshf.BarChart.prototype.insertTimeChartAxis = function(){
     var kshf_ = this;
+    var me=this;
 
     var axisGroup = this.root.select("g.timeAxisGroup");
     var msPerTick;
@@ -4314,9 +4432,9 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
         default: break;
     }
     this.lengthPerTick = msPerTick*this.timeScale.range()[1]/
-        (this.timeScale.domain()[1]-this.timeScale.domain()[0]);
+        (this.timeZoom_ms.max-this.timeZoom_ms.min);
 	
-	axisGroup.select("rect.selection_bar")
+	axisGroup.select(".selection_bar rect")
 			.on("mousedown", function(d, i) {
                 var eeeeee = this;
                 this.selected = true;
@@ -4338,14 +4456,14 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
                     olddif=stepDif;
 					if(stepDif<0){
 						timeFilter_ms.min = mousedown_filter.min+stepDif;
-						if(timeFilter_ms.min<kshf_.timeScale.domain()[0].getTime()){
-							timeFilter_ms.min=kshf_.timeScale.domain()[0].getTime();
+						if(timeFilter_ms.min<me.timeZoom_ms.min){
+							timeFilter_ms.min=me.timeZoom_ms.min;
 						}
 						timeFilter_ms.max=timeFilter_ms.min+(mousedown_filter.max-mousedown_filter.min);
 					} else {
 						timeFilter_ms.max = mousedown_filter.max+stepDif;
-						if(timeFilter_ms.max>kshf_.timeScale.domain()[1].getTime()){
-							timeFilter_ms.max=kshf_.timeScale.domain()[1].getTime();
+						if(timeFilter_ms.max>me.timeZoom_ms.max){
+							timeFilter_ms.max=me.timeZoom_ms.max;
 						}
 						timeFilter_ms.min=timeFilter_ms.max-(mousedown_filter.max-mousedown_filter.min);
 					}
@@ -4382,7 +4500,7 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
 
                 // convert mouse position to date
                 var time_ms = Math.floor(
-                    kshf_.chartX_min_ms + (kshf_.chartX_max_ms-kshf_.chartX_min_ms)*(mouseMove_x / kshf_.timeScale.range()[1])
+                    kshf_.timeZoom_ms.min + (kshf_.timeZoom_ms.max-kshf_.timeZoom_ms.min)*(mouseMove_x / kshf_.timeScale.range()[1])
                     );
 
                 var time_dt = new Date(time_ms);
@@ -4465,17 +4583,19 @@ kshf.BarChart.prototype.getFilterMaxDateText = function(){
 
 kshf.BarChart.prototype.yearSetXPos = function() {
     // make sure filters do not exceed domain range
-    this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeScale.domain()[0].getTime());
-    this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeScale.domain()[1].getTime());
+    this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
+    this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
 
 	var minX = this.timeScale(this.timeFilter_ms.min);
 	var maxX = this.timeScale(this.timeFilter_ms.max);
+
+    this.divRoot.select(".config_zoom").style("margin-left",minX+"px")
 	
 	this.root.selectAll("g.filter_min")
-		.attr("transform", function(d) { return "translate(" + minX + ","+(-12)+")"; });
+		.attr("transform", function(d) { return "translate(" + minX + ",0)"; });
 	this.root.selectAll("g.filter_max")
-		.attr("transform", function(d) { return "translate(" + maxX + ","+(-12)+")"; });
-	this.root.selectAll("rect.selection_bar")
+		.attr("transform", function(d) { return "translate(" + maxX + ",0)"; });
+	this.root.selectAll(".selection_bar rect")
 		.attr("x", minX)
 		.attr("width", (maxX - minX));
 	this.root.select("g.filter_min .filter_nonselected")
@@ -4495,6 +4615,8 @@ kshf.BarChart.prototype.yearSetXPos = function() {
 kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
     this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
     if(this.isFiltered_Time()){
+        this.divRoot.select(".config_zoom").style("display","block");
+        this.divRoot.select(".zoom_in").attr("disabled","false");
         if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
             this.insertFilterSummaryBlock_Time();
         }
@@ -4502,6 +4624,8 @@ kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
             .html("from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>")
         ;
     } else if(this.filterSummaryBlock_Time){
+        this.divRoot.select(".config_zoom").style("display","none");
+        this.divRoot.select(".zoom_in").attr("disabled","true");
         this.filterSummaryBlock_Time[0][0].parentNode.removeChild(this.filterSummaryBlock_Time[0][0]);
         this.filterSummaryBlock_Time = null;
     }

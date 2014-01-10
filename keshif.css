@@ -197,17 +197,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(190, 190, 190, 0) 100%);
 }
 
-.kshf rect.selection_bar {
+.kshf g.selection_bar rect{
 	fill: #788890;
 	fill-opacity: 0;
 	cursor: col-resize;
     stroke-width:1.5;
     pointer-events: none;
 }
-.kshf rect.selection_bar:hover {
+.kshf .selection_bar rect:hover {
 	stroke: orangered;
 }
-.kshf .kshfChart[filtered_time=true] rect.selection_bar{
+.kshf .kshfChart[filtered_time=true] .selection_bar rect{
     fill-opacity: 0.5;
     pointer-events: auto;
 }
@@ -250,6 +250,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display:block;
 }
 
+.kshf g.timeAxisGroup path.bottom_border{
+    fill:lightgray;
+}
+
 
 .kshf .headerGroup{
     position: absolute;
@@ -284,6 +288,76 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pointer-events: none;
     padding-top:2px;
     height:16px;
+}
+
+.kshf .rightHeader .config_zoom{
+    padding-top: 0px;
+    margin-right:20px;
+    float:left;
+    display:none;
+}
+.kshf .rightHeader .config_zoom svg{
+    position:relative;
+    top:2px;
+    display:none;
+}
+
+.kshf .config_zoom .block_bottom{
+    display:block;
+}
+.kshf .config_zoom .block_top{
+    display:block;
+}
+
+.kshf .config_zoom[zoom=in] .block_bottom{
+    display:none;
+}
+.kshf .config_zoom[zoom=out] .block_top{
+    display:none;
+}
+
+.kshf .config_zoom path{
+    fill: white;
+    display:inline;
+    stroke:#000000;
+    stroke-width:25;
+    stroke-miterlimit:10;
+}
+.kshf .config_zoom[zoom=in] path{
+    fill:url(#SVGID_2_);
+}
+.kshf .config_zoom[zoom=out] path{
+    fill:url(#SVGID_1_);
+}
+
+.kshf .rightHeader .zoom_button{
+    font-size: 11px;
+    font-weight: 300;
+    background-color: white;
+    border-radius: 7px;
+    padding: 1px 5px 1px 5px;
+    position:relative;
+    top:1px;
+    pointer-events: none;
+    margin-right: 3px;
+}
+.kshf .rightHeader .zoom_button[disabled=false]{
+    color: rgb(37, 33, 18);
+    border: 1px gray solid;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 1px 1px 1px #474940;
+    background-color: #EEEEEE;
+    font-weight: 500;
+}
+.kshf .rightHeader .zoom_button[disabled=true]{
+    border: 1px lightgray solid;
+    color: gray;
+    cursor: default;
+}
+.kshf .rightHeader .zoom_button[disabled=false]:hover{
+    box-shadow: inset 1px 1px 1px #474940;
+    color: red;
 }
 
 .kshf .headerGroup span.rightHeader span.header_label {
@@ -879,6 +953,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     position:relative;
     padding-left: 10px;
     float:left;
+    font-variant: small-caps;
 }
 .kshfHost[hideBarAxis=true] .kshf span.barChartMainInfo{
     display:none;
@@ -900,6 +975,13 @@ div.kshf{
     display:inline-block;
 /*    background-image: linear-gradient(#eee .1em, transparent .1em);
     background-size: 100% 18px;*/
+}
+div.kshf.layout_header span.title{
+    float: left;
+    margin-left: 20px;
+    font-size: 1.2em;
+    letter-spacing: 0.1em;
+    font-variant: small-caps;
 }
 div.kshf.layout_header{
     width:100%;
@@ -962,16 +1044,16 @@ div.kshf.layout_left_background{
     z-index: 10;
 }
 .kshf div.filter_header{
-    background-color: rgba(125,125,125,0.15);
-    border-bottom: solid 1px gray;
-    box-shadow: 0px 0px 2px 1px gray;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    margin-left:2px;
+/*    background-color: white;
+    font-size: 0.9em;
+    box-shadow: 0px 0px 4px 1px gray; */
     margin-top:2px;
     float:left;
-    font-size: 0.9em;
     text-shadow: none;
+}
+
+.kshf div.filter_header .left_align{
+    float:left;
 }
 
 .kshf span.filters_text{
@@ -981,6 +1063,7 @@ div.kshf.layout_left_background{
     font-weight: 700;
     font-style: normal;
     cursor: default;
+    font-variant: small-caps;
 }
 div.kshf.layout_right{
     position:relative;
@@ -1152,7 +1235,7 @@ div.listItem div.groupMe{
     float: none;
 }
 
-div.listHeader {
+.kshf div.listHeader {
 	font-weight: bold;
 	color: black;
 	padding: 0px 5px 0px 2px;
@@ -1164,10 +1247,12 @@ div.listHeader {
     background-image: -webkit-linear-gradient(bottom, rgba(233, 227, 205,1) 0%, rgba(233, 227, 205,0.3) 100%);
     background-image: -ms-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);*/
     background-color: rgba(233, 227, 205,1);
+    
     border-top-left-radius: 20px;
+    border-top: solid 2px rgba(192, 184, 153, 1);
 }
 
-div.listHeader div.topRow {
+.kshf div.listHeader div.topRow {
     min-height: 22px;
 }
 
@@ -1193,6 +1278,10 @@ div.listHeader div.topRow {
 .kshf span.filter-block b{
     font-weight: 700;
 }
+.kshf span.filter-block:hover{
+/*    box-shadow: inset 1px 1px 1px rgb(78, 71, 43); */
+    box-shadow: none;
+}
 .kshf span.filter-block[filtered=false]{
 	display: none;
 }/*
@@ -1217,7 +1306,7 @@ div.listHeader span.filter_reset {
     box-shadow: 1px 1px 1px rgb(78, 71, 43);
     text-align: center;
     font-size: 0.8em;
-    background-color: rgb(124, 122, 113);
+    background-color: rgb(99, 93, 70);
     color: rgb(238, 235, 224);
     position: relative;
     left: 1px;
@@ -1230,24 +1319,25 @@ div.listHeader span.filter_reset {
     font-size: 11px;
     line-height: 15px;
     display: none;
-    cursor:default;
+    cursor: pointer;
     color: rgb(37, 33, 18);
     font-weight: 300;
     border: 1px rgb(104, 91, 43) solid;
-    box-shadow: 1px 1px 1px rgb(78, 71, 43);
     background-color: white;
-    padding: 0px 3px 0px 0px;
+    padding: 0px 5px 0px 0px;
     height:14px;
     float: left;
-    border-radius:7px;
     margin-right: 2px;
+    margin-left: 2px;
+    box-shadow: 1px 1px 1px #474940;
 }
 .kshf span.filter-block-clear:hover{
-    box-shadow: inset 1px 1px 1px #474940;
+/*    box-shadow: inset 1px 1px 1px #474940;*/
+    box-shadow: none;
 }
 .kshf div.listHeader span.filter_reset:hover{
     box-shadow: inset 1px 1px 1px rgb(78, 71, 43);
-    font-weight:500;
+    font-weight:700;
 }
 
 
@@ -1313,6 +1403,7 @@ div.listHeader span.listheader_itemName{
     font-size: 1.1em;
     text-shadow: 1px 1px lightgray;
     float:left;
+    font-weight:500;
 }
 div.listHeader span.listheader_count_bar{
     background-color: rgb(132, 147, 160);
@@ -1481,19 +1572,21 @@ span.sort_column_remove:hover{
     display:inline-block;
 }
 .kshf div.chartClearFilterButton.allFilter{
-    cursor: pointer;
     display: inline-block;
     float: left;
-    font-size: 11px;
+    font-size: 10px;
     position: relative;
     height: 14px;
     border: solid 0px white;
-    border-left: solid 1px gray;
-    border-radius:7px;
     line-height: 13px;
-    left:-2px;
+    margin-right:3px;
+    font-weight:500;
+    color:white;
+    background-color: rgb(121, 117, 101);
+    font-weight:500;
+    pointer-events: none;
 }
-.kshf div.chartClearFilterButton.allFilter:hover{
+.kshf .filter-block-clear:hover div.chartClearFilterButton.allFilter{
     font-weight:700;
     box-shadow: inset 1px 1px 1px #474940;
     color: #cb5454;
