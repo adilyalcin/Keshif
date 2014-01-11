@@ -156,6 +156,7 @@ kshf.Item.prototype.updateSelected = function(){
     // checks if all filter results are true
     for(i=0, len = f.length; i<len && f[i]; i++){ }
     this.selected=(i===len);
+
     if(this.selected===true && oldSelected===false){
         kshf.itemsSelectedCt++;
         for(i=0; i< this.mappedRows.length; i++){
@@ -167,6 +168,9 @@ kshf.Item.prototype.updateSelected = function(){
                 m.barValue+=this.barCount;
                 m.sortDirty=true;
             }
+        }
+        for(i=0; i<this.dots.length; i++){
+            this.dots[i].setAttribute('display',"true");
         }
     } else if(this.selected===false && oldSelected===true){
         kshf.itemsSelectedCt--;
@@ -180,10 +184,9 @@ kshf.Item.prototype.updateSelected = function(){
                 m.sortDirty=true;
             }
         }
-    }
-    var displaySetting = (this.selected)?"true":"false";
-    for(i=0; i<this.dots.length; i++){
-        this.dots[i].setAttribute('display',displaySetting);
+        for(i=0; i<this.dots.length; i++){
+            this.dots[i].setAttribute('display',"false");
+        }
     }
     return this.selected;
 };
@@ -1063,10 +1066,10 @@ kshf.init = function (options) {
     this.maxFilterID = 1; // 1 is used for global search
     this.categoryTextWidth = options.categoryTextWidth;
     if(this.categoryTextWidth===undefined){
-        this.categoryTextWidth = 107;
+        this.categoryTextWidth = 115;
     }
-    if(this.categoryTextWidth<107){
-        this.categoryTextWidth = 107;
+    if(this.categoryTextWidth<115){
+        this.categoryTextWidth = 115;
     }
     this.chartDefs = options.charts;
     this.listDef = options.list;
@@ -1455,9 +1458,11 @@ kshf.update = function () {
         for(i=0 ; i<this.items.length ; i++){
             this.items[i].updateSelected();
         }
+        this.firsttimeupdate = true; 
     }
 
     kshf.time_animation_barscale = 400;
+
     // since some items may no longer be visible, you need to update list column headers too
     if(this.listDisplay){
         if(this.listDisplay.hideTextSearch!==true) {
@@ -1476,13 +1481,15 @@ kshf.update = function () {
 	// update each widget within
 	for (i=0; i<this.charts.length; ++i){
         chart = kshf.charts[i];
-        if(chart.type!=="RangeChart")
-            chart.updateXAxisScale();
-            chart.updateSelf();
+        if(chart.type!=="RangeChart"){
+            chart.updateBarAxisScale();
+        }
+        chart.updateSelf();
         filteredCount += chart.getFilteredCount();
 	}
-    // "clear all filters" button
-    this.root.select("span.filter-block-clear")
+
+    // "clear all" filter button
+    this.root.select(".filter-block-clear")
         .style("display",(filteredCount>0)?"inline-block":"none");
 };
 
@@ -1904,7 +1911,7 @@ kshf.BarChart = function(_kshf, options){
             min: d3.min(kshf.items, this.options.timeItemMap),
             max: d3.max(kshf.items, this.options.timeItemMap)};
 
-        // calculate minYear and maxYear per cetegory
+        // calculate minYear and maxYear per cetegory, and use it for total.
         this.updateData_TimeMinMax();
         var i;
         var d=this.getData();
@@ -2492,7 +2499,7 @@ kshf.BarChart.prototype.updateSelf = function(){
         this.refreshTimeChartTooltip();
         this.refreshTimeChartBarDisplay();
     }
-    this.refreshBarDisplay();
+    this.updateWidth_Bars_Active();
 	this.updateSorting();
 };
 
@@ -2535,12 +2542,11 @@ kshf.BarChart.prototype.refreshActiveItemCount = function(){
     this.dom.rows.each(function(d){ 
         this.setAttribute("noitems",!me.noItemOnSelect(d));
     });
-//    this.dom.item_count.text(function(d) { return "("+d.barValueMax+")";});
     this.dom.row_title.text(function(d){
-            return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
-                (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
-                ((me.options.catTooltipText)?me.options.catTooltipText(d):me.options.catLabelText(d));
-        });
+        return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
+            (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
+            ((me.options.catTooltipText)?me.options.catTooltipText(d):me.options.catLabelText(d));
+    });
 };
 kshf.BarChart.prototype.refreshBarHeight = function(){
 	// Non-selected rows have shorted bar height.
@@ -2556,7 +2562,7 @@ kshf.BarChart.prototype.refreshBarHeight = function(){
 		.attr("height", function(d,i){ return (d.activeItems>0)?10:4; })
 		.attr("y",function(d,i){ return (d.activeItems>0)?4:7; });
 };
-kshf.BarChart.prototype.refreshBarDisplay = function(){
+kshf.BarChart.prototype.updateWidth_Bars_Active = function(){
 	var kshf_=this;
 	this.dom.bar_active
         .transition()
@@ -2581,8 +2587,7 @@ kshf.BarChart.prototype.getFilteredCount = function(){
     return r;
 }
 kshf.BarChart.prototype.refreshFilterRowState = function(){
-	var filtered = this.catCount_Selected!==0;
-	this.divRoot.attr("filtered_row",filtered);
+	this.divRoot.attr("filtered_row",this.isFiltered_Row());
 	this.root.selectAll("g.barGroup g.row")
 		.attr("selected", function(d) { return d.selected; });
 };
@@ -2628,8 +2633,7 @@ kshf.BarChart.prototype.clearTimeZoom_ms = function(){
 kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
     this.clearTimeFilter_ms();
     this.clearTimeZoom_ms();
-    // TODO: do this only is it is zoomed in before
-    this.setTimeWidth(this.options.timeMaxWidth);
+    this.updateTimelineLayut();
     this.yearSetXPos();
     this.filterTime();
     if(toUpdate!==false) { kshf.update(); }
@@ -2805,7 +2809,7 @@ kshf.BarChart.prototype.insertHeader = function(){
                 me.timeZoom_ms.min = me.timeFilter_ms.min;
                 me.timeZoom_ms.max = me.timeFilter_ms.max;
                 me.useCurrentTimeMinMax = true;
-                me.updateTimelineLayut(me.options.timeMaxWidth);
+                me.updateTimelineLayut();
                 me.useCurrentTimeMinMax = undefined;
                 me.divRoot.select(".zoom_out").attr("disabled","false");
                 me.divRoot.select(".zoom_in").attr("disabled","true");
@@ -2881,7 +2885,7 @@ kshf.BarChart.prototype.insertHeader = function(){
             .on("click",function(){
                 me.clearTimeZoom_ms();
                 me.useCurrentTimeMinMax = true;
-                me.updateTimelineLayut(me.options.timeMaxWidth);
+                me.updateTimelineLayut();
                 me.useCurrentTimeMinMax = undefined;
                 me.divRoot.select(".zoom_out").attr("disabled","true");
             })
@@ -2953,8 +2957,8 @@ kshf.BarChart.prototype.insertHeader = function(){
             me.filter_all();
             me.sortSkip = true;
             kshf.update();
-            me.refreshFilterSummaryBlock();
             me.refreshFilterRowState();
+            me.refreshFilterSummaryBlock();
         })
     .selectAll("input.sort_label")
         .data(filterOptions)
@@ -3070,8 +3074,8 @@ kshf.BarChart.prototype.insertHeader = function(){
                     kshf_.options.selectType = "MultipleOr";
                     
                     kshf_.filter_all();
-                    kshf_.refreshFilterRowState();
                     kshf.update();
+                    kshf_.refreshFilterRowState();
                     kshf_.refreshFilterSummaryBlock();
 
                     kshf_.options.selectType = tmpSelectType;
@@ -3093,6 +3097,7 @@ kshf.BarChart.prototype.updateTimelineLayut = function(){
     this.refreshTimeChartBarDisplay();
     this.insertTimeTicks();
     this.insertTimeChartAxis();
+    this.updateTimeChartDotConfig();
 }
 
 kshf.BarChart.prototype.setTimeWidth = function(w){
@@ -3113,32 +3118,43 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
         this.root.selectAll("line.row_bar_line")
             .attr("x2",this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+w);
     }
-
-    this.updateTimeChartDotConfig();
 };
 
 kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
     var me = this;
     if(this.options.timeDotConfig === undefined && this.type==='scatterplot'){
-        var mmm = this.options.timeMaxWidth/10;
-        var timeRange = this.timeZoom_ms.max-this.timeZoom_ms.min;
-        var spannedRange = 0;
+        var totalActiveTime_length = 0;
 
         this.dom.g_row.each(function(d) {
             if(me.catCount_Selected===0 || d.selected===true){
-                spannedRange += (d.xMax-d.xMin);
+                if(d.xMax_Dyn===undefined || d.xMin_Dyn===undefined) return;
+                totalActiveTime_length+=me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
             }
-        })
+        });
+
+        var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
+        var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
+
+        // how much width of time does each dot take?
+        var dotPixelWidth = 12;
+//        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
+//        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
+        var maxDots = totalActiveTime_length/dotPixelWidth;
+//        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
+//        x*dotTimeWidth = this.options.timeMaxWidth;
         
         var numOfItems = this.parentKshf.itemsSelectedCt;
-        mmm = mmm*(spannedRange/timeRange);
-        if(mmm>numOfItems*3){
+
+        // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
+//        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
+
+        if(maxDots>numOfItems*3){
             this.divRoot.attr("dotconfig","Solid");
-        } else if(mmm>numOfItems*1.5){
+        } else if(maxDots>numOfItems*1.5){
             this.divRoot.attr("dotconfig","Gradient-100");
-        } else if(mmm>numOfItems*0.8){
+        } else if(maxDots>numOfItems*0.8){
             this.divRoot.attr("dotconfig","Gradient-75");
-        } else if(mmm>numOfItems*0.3){
+        } else if(maxDots>numOfItems*0.3){
             this.divRoot.attr("dotconfig","Gradient-50");
         } else {
             this.divRoot.attr("dotconfig","Gradient-25");
@@ -3146,7 +3162,7 @@ kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
     }
 }
 
-kshf.BarChart.prototype.updateXAxisScale = function(){
+kshf.BarChart.prototype.updateBarAxisScale = function(){
     if(this.options.catBarScale==="selected"){
         this.catBarAxisScale = d3.scale.linear()
             .domain([0,this.parentKshf.itemsSelectedCt])
@@ -3156,9 +3172,7 @@ kshf.BarChart.prototype.updateXAxisScale = function(){
             .domain([0,this.getMaxBarValuePerRow()])
             .rangeRound([0, this.barMaxWidth]);
         }
-
-    this.updateBarWidth();
-    this.refreshBarDisplay();
+    this.updateWidth_Bars_Total();
     this.insertXAxisTicks();
 }
 
@@ -3169,7 +3183,9 @@ kshf.BarChart.prototype.setBarWidth = function(w){
 }
     
 kshf.BarChart.prototype.updateAllWidth = function(w){
-    this.updateXAxisScale();
+    this.updateBarAxisScale();
+
+    this.updateWidth_Bars_Active();
     
     // update x axis items
     this.dom_headerGroup.select("div.chartAboveSeparator")
@@ -3605,9 +3621,7 @@ kshf.BarChart.prototype.filter_multi = function(item,m,curDtId) {
 }
 
 kshf.BarChart.prototype.filter_all = function(){
-    var i,j;
-    var items = kshf.items;
-    var curDtId = this.getData_wID();
+    var i, j, items=kshf.items, curDtId=this.getData_wID();
     var allSelected = this.catCount_Selected===0;
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
@@ -3634,7 +3648,6 @@ kshf.BarChart.prototype.filter_removeItems = function(){
     var i, j, items=kshf.items, curDtId=this.getData_wID();
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
-        // update filter state
         var m=item.mappedData[this.filterId];
         if(m!==undefined && m!==null && m!==""){
             if(m instanceof Array){
@@ -3653,9 +3666,7 @@ kshf.BarChart.prototype.filter_removeItems = function(){
 };
 
 kshf.BarChart.prototype.filter_addItems = function(){
-    var i,j;
-    var items = kshf.items;
-    var curDtId = this.getData_wID();
+    var i, j, items=kshf.items, curDtId=this.getData_wID();
     var allRowsSelected = this.catCount_Selected===0;
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
@@ -3712,7 +3723,14 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
     if(forceAll){
         this.filter_all();
     } else if(this.catCount_Selected===1){
-        this.filter_removeItems();
+        if(this.options.selectType==="MultipleOr"){
+            this.filter_removeItems();
+        } else if(this.options.selectType==="MultipleAnd"){
+            if(d.selected)
+                this.filter_removeItems();
+            else
+                this.filter_addItems();
+        }
     } else if(this.catCount_Selected===0){
         this.filter_addItems();
     } else {
@@ -3736,8 +3754,8 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
     }
 
 	kshf.update();
-	this.refreshFilterSummaryBlock();
     this.refreshFilterRowState();
+    this.refreshFilterSummaryBlock();
     if(this.dom.showTextSearch){
         this.dom.showTextSearch[0][0].value="";
     }
@@ -3761,11 +3779,13 @@ kshf.BarChart.prototype.filterTime = function(){
 kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
 	var kshf_=this;
     if(!this.isFiltered_Row()){
+        // remove DOM
         if(this.filterSummaryBlock_Row){
             this.filterSummaryBlock_Row[0][0].parentNode.removeChild(this.filterSummaryBlock_Row[0][0]);
             this.filterSummaryBlock_Row = null;
         }
     } else {
+        // insert DOM
         if(this.filterSummaryBlock_Row===null || this.filterSummaryBlock_Row===undefined){
             this.insertFilterSummaryBlock_Rows();
         }
@@ -3773,26 +3793,26 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         var selectedItemsText="";
         var selectedItemsText_Sm="";
         var selectedItemsCount=0;
+        var catLabelText = this.options.catLabelText;
+        var catTooltipText = this.options.catTooltipText;
         this.root.selectAll("g.row").each( function(d){
-            if(d.selected) {
-                if(selectedItemsCount!==0) {
-                    if(kshf_.options.selectType==="MultipleAnd"){
-                        selectedItemsText+=" and "; 
-                        selectedItemsText_Sm+=" and "; 
-                    } else{
-                        selectedItemsText+=" or "; 
-                        selectedItemsText_Sm+=" or "; 
-                    }
+            if(d.selected===false) return; 
+            if(selectedItemsCount!==0) {
+                if(kshf_.options.selectType==="MultipleAnd"){
+                    selectedItemsText+=" and "; 
+                    selectedItemsText_Sm+=" and "; 
+                } else{
+                    selectedItemsText+=" or "; 
+                    selectedItemsText_Sm+=" or "; 
                 }
-                var labelText = kshf_.options.catLabelText(d);
-                var titleText = labelText;
-                if(kshf_.options.catTooltipText){
-                    titleText = kshf_.options.catTooltipText(d);
-                }
-                selectedItemsText+="<b>"+labelText+"</b>";
-                selectedItemsText_Sm+=titleText;
-                selectedItemsCount++;
             }
+            var labelText = catLabelText(d);
+            var titleText = labelText;
+            if(catTooltipText) titleText = catTooltipText(d);
+
+            selectedItemsText+="<b>"+labelText+"</b>";
+            selectedItemsText_Sm+=titleText;
+            selectedItemsCount++;
         });
         if(this.catCount_Selected>3){
             var bold=this.catCount_Selected;
@@ -3878,16 +3898,6 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
         ;
     this.dom.rowsSub = this.dom.rows.append("svg:g").attr("class","barRow")
 		.on("mouseover", function(d){
-            var tmpSelectType = kshf_.options.selectType;
-            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
-                kshf_.options.selectType = "MultipleOr";
-            }
-            // if there are no active item, do not allow selection (under some specific conditions)
-            if(!kshf_.noItemOnSelect(d)) {
-                kshf_.options.selectType = tmpSelectType;
-                return;
-            }
-            kshf_.options.selectType = tmpSelectType;
             this.setAttribute("highlight",true);
         })
 		.on("mouseout", function(d){ 
@@ -4017,7 +4027,7 @@ kshf.BarChart.prototype.updateWidth = function(){
 }
 
 
-kshf.BarChart.prototype.updateBarWidth = function(){
+kshf.BarChart.prototype.updateWidth_Bars_Total = function(){
     var kshf_ = this;
     this.dom.bar_total
         .transition()
@@ -4139,7 +4149,7 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
 
 kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
     // key dots are something else
-    var kshf_ = this;
+    var me = this;
     var r,j;
     var rows = this.getData();
     
@@ -4157,8 +4167,7 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
         var rowData=rows[r];
         if(rowData.sortDirty===true && this.type==="scatterplot"){
             rowData.items.sort(timeChartSortFunc);
-            var g_row = this.root.selectAll("g.row");
-            g_row.selectAll(".timeDot")
+            this.root.selectAll("g.row").selectAll(".timeDot")
                 .data(function(d) { return d.items; }, function(d){ return d.id(); })
                 // calling order will make sure selected ones appear on top of unselected ones.
                 .order()
@@ -4166,30 +4175,22 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
             // TODO: call order only on this row
             // re-calculate min-max only on this row
             // etc...
-        }/*
-            .data(function(d) { return d.items; }, function(d){ return d.id(); })
-            // calling order will make sure selected ones appear on top of unselected ones.
-            .order()*/
+        }
     }
 
-    this.dom.g_row.selectAll(".timeDot")
-        .data(function(d) { return d.items; }, function(d){ return d.id(); })
-        // calling order will make sure selected ones appear on top of unselected ones.
-        .order()
-        ;
+    // update min-max time extents ber timeBar
     this.updateData_TimeMinMax();
-    // update min-max extents
     if(this.dom.timeBarActive){
         this.dom.timeBarActive
             .transition()
             .duration(kshf.time_animation_barscale)
             .attr("x", function(d) {
-                return kshf_.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
-                    kshf_.parentKshf.getRowTotalTextWidth()+kshf_.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
+                return me.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
+                    me.parentKshf.getRowTotalTextWidth()+me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
             })
             .attr("width", function (d) { 
                 if(d.xMin_Dyn===undefined){ return 0; }
-                return kshf_.timeScale(d.xMax_Dyn) - kshf_.timeScale(d.xMin_Dyn);
+                return me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
             })
             ;
     }
@@ -4324,11 +4325,11 @@ kshf.BarChart.prototype.setTimeTicks = function(){
         this.timeticks.format_my = function(d){
             return d.getUTCFullYear();
         };
-        if(timeWidthSteps<=diff_Year/10) {
-            this.timeticks.stepSize = Math.ceil(10*diff_Year/timeWidthSteps);
-        } else {
+//        if(timeWidthSteps<=diff_Year/10) {
+//            this.timeticks.stepSize = Math.ceil(5*diff_Year/timeWidthSteps);
+//        } else {
             this.timeticks.stepSize = Math.ceil(diff_Year/timeWidthSteps);
-        }
+//        }
     } else if(timeWidthSteps<=diff_Month){
         // MONTH
         this.timeticks.range = d3.time.months;
@@ -4483,8 +4484,10 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
 					}
 					// TODO: make sure you don't exceed the boundaries
 					if(mousemove_filter.min!==timeFilter_ms.min){
+                        kshf.time_animation_barscale = 0;
 						// update filter 
 						kshf_.yearSetXPos();
+                        kshf.time_animation_barscale = 400;
                         kshf_.filterTime();
                         kshf_.sortSkip = true;
 						kshf.update();
@@ -4542,7 +4545,9 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
                 }
 
                 // update filter 
+                kshf.time_animation_barscale = 0;
                 kshf_.yearSetXPos();
+                kshf.time_animation_barscale = 400;
                 kshf_.filterTime();
                 kshf_.sortSkip = true;
                 if(kshf_.options.sortingFuncs[kshf_.sortID].no_resort!==true)
@@ -4593,11 +4598,15 @@ kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
     var totalLeftWidth = this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
 	var kshf_ = this;
     this.dom.timeBarTotal
+        .transition()
+        .duration(kshf.time_animation_barscale)
         .attr("x",     function(d){ return totalLeftWidth+kshf_.timeScale(d.xMin); })
         .attr("width", function(d){ return kshf_.timeScale(d.xMax) - kshf_.timeScale(d.xMin); })
         ;
 	// Update bar dot positions
 	this.dom.timeDots
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("cx", function(d){ return totalLeftWidth+kshf_.timeScale(d.timePos) ; });
 };
 kshf.BarChart.prototype.getFilterMinDateText = function(){
@@ -4617,19 +4626,37 @@ kshf.BarChart.prototype.yearSetXPos = function() {
 	var minX = this.timeScale(this.timeFilter_ms.min);
 	var maxX = this.timeScale(this.timeFilter_ms.max);
 
-    this.divRoot.select(".config_zoom").style("margin-left",minX+"px")
+    if(maxX-minX>190){
+        this.divRoot.select(".config_zoom")
+            .style("float","left")
+            .style("margin-left",minX+"px");
+    } else{
+        this.divRoot.select(".config_zoom")
+            .style("float","right")
+            ;
+    }
 	
 	this.root.selectAll("g.filter_min")
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("transform", function(d) { return "translate(" + minX + ",0)"; });
 	this.root.selectAll("g.filter_max")
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("transform", function(d) { return "translate(" + maxX + ",0)"; });
 	this.root.selectAll(".selection_bar rect")
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("x", minX)
 		.attr("width", (maxX - minX));
 	this.root.select("g.filter_min .filter_nonselected")
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("x", -minX)
 		.attr("width", minX);
 	this.root.select("g.filter_max .filter_nonselected")
+        .transition()
+        .duration(kshf.time_animation_barscale)
 		.attr("x", 0)
 		.attr("width", this.options.timeMaxWidth -maxX);
     this.root.select("g.filter_min")
@@ -4659,11 +4686,9 @@ kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
     }
 };
 kshf.BarChart.prototype.refreshTimeChartTooltip = function(){
-	var kshf_ = this;
     var titleText = kshf.itemsSelectedCt+ " selected "+kshf.itemName+"from "+
                 this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
-	this.root.selectAll("title.xaxis_title")
-		.text(titleText);
+	this.root.selectAll("title.xaxis_title").text(titleText);
 };
 
 

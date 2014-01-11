@@ -292,8 +292,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf .rightHeader .config_zoom{
     padding-top: 0px;
-    margin-right:20px;
-    float:left;
+    margin-right:10px;
+    float:right;
     display:none;
 }
 .kshf .rightHeader .config_zoom svg{
