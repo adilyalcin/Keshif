@@ -331,15 +331,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .rightHeader .zoom_button{
+    font-family: 'Source Sans Pro', Helvetica, Arial ,sans-serif;
     font-size: 11px;
     font-weight: 300;
     background-color: white;
     border-radius: 7px;
-    padding: 1px 5px 1px 5px;
+    padding: 0px 5px 0px 5px;
     position:relative;
     top:1px;
     pointer-events: none;
-    margin-right: 3px;
+    margin-right: 10px;
 }
 .kshf .rightHeader .zoom_button[disabled=false]{
     color: rgb(37, 33, 18);

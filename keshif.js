@@ -51,8 +51,8 @@ var log2Console = function(s,chart){
     var d=Date.now();
     d = new Date(d);
     console.log(
-        d.getUTCFullYear()+"."+d.getUTCMonth()+"."+d.getUTCDate()+" "+
-        d.getUTCHours()+":"+d.getUTCMinutes()+":"+d.getUTCSeconds()+":"+d.getUTCMilliseconds()+
+        d.getFullYear()+"."+d.getMonth()+"."+d.getDate()+" "+
+        d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds()+
         " = "+s
        +(chart!==undefined?(" Chart:"+chart.options.facetTitle):"")
     );
@@ -641,8 +641,6 @@ kshf.getFilteringState = function(facetTitle, itemInfo) {
         // include time range if time is filtered
         if(c.type==='scatterplot'){
             if(c.isFiltered_Time()) {
-                // this.getFilterMinDateText()
-                // this.getFilterMaxDateText()
                 r.timeFltr = 1;
             }
         }
@@ -1902,8 +1900,10 @@ kshf.BarChart = function(_kshf, options){
         for(var i=0; i<kshf.items.length; i++){
             kshf.items[i].timePos = this.options.timeItemMap(kshf.items[i]);
         }
-        this.data_minDate = d3.min(kshf.items, this.options.timeItemMap);
-        this.data_maxDate = d3.max(kshf.items, this.options.timeItemMap);
+        this.timeData_dt = {
+            min: d3.min(kshf.items, this.options.timeItemMap),
+            max: d3.max(kshf.items, this.options.timeItemMap)};
+
         // calculate minYear and maxYear per cetegory
         this.updateData_TimeMinMax();
         var i;
@@ -2124,9 +2124,11 @@ kshf.BarChart.prototype.updateTotalItemCount = function(){
 kshf.BarChart.prototype.getWidth = function(){
     return this.parentKshf.getRowTotalTextWidth() +
         this.barMaxWidth +
-        ((this.type==='scatterplot')?(this.options.timeMaxWidth+kshf.sepWidth):0) +
         kshf.scrollWidth + // assume scrollbar is on
-        kshf.scrollPadding
+        kshf.scrollPadding+
+        ((this.type==='scatterplot')?(
+            this.options.timeMaxWidth+kshf.sepWidth+kshf.scrollWidth+kshf.scrollPadding
+            ):0)
         +2;
 };
 
@@ -2589,8 +2591,8 @@ kshf.BarChart.prototype.isFiltered_Row = function(state){
     return this.catCount_Selected!==0;
 };
 kshf.BarChart.prototype.isFiltered_Time = function(){
-	return this.timeFilter_ms.min!==this.chartX_min_ms ||
-	       this.timeFilter_ms.max!==this.chartX_max_ms ;
+	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
+	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
 };
 //! Rows, not data!
 kshf.BarChart.prototype.selectAllRows = function(state){
@@ -2617,10 +2619,10 @@ kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
 };
 
 kshf.BarChart.prototype.clearTimeFilter_ms = function(){
-    this.timeFilter_ms= { min: this.chartX_min_ms, max:this.chartX_max_ms };
+    this.timeFilter_ms= { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
 }
 kshf.BarChart.prototype.clearTimeZoom_ms = function(){
-    this.timeZoom_ms = { min: this.chartX_min_ms, max:this.chartX_max_ms };
+    this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
 }
 
 kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
@@ -2796,14 +2798,14 @@ kshf.BarChart.prototype.insertHeader = function(){
         config_zoom.append("span")
             .attr("class","zoom_button zoom_in")
             .attr("disabled","true")
-            .text("Zoom in")
+            .text("⇥ Zoom in ⇤")
             .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","in");  })
             .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
             .on("click",function(d){
                 me.timeZoom_ms.min = me.timeFilter_ms.min;
                 me.timeZoom_ms.max = me.timeFilter_ms.max;
                 me.useCurrentTimeMinMax = true;
-                me.setTimeWidth(me.options.timeMaxWidth);
+                me.updateTimelineLayut(me.options.timeMaxWidth);
                 me.useCurrentTimeMinMax = undefined;
                 me.divRoot.select(".zoom_out").attr("disabled","false");
                 me.divRoot.select(".zoom_in").attr("disabled","true");
@@ -2873,13 +2875,13 @@ kshf.BarChart.prototype.insertHeader = function(){
         config_zoom.append("span")
             .attr("class","zoom_button zoom_out")
             .attr("disabled","true")
-            .text("Zoom out")
+            .text("⇤ Zoom out ⇥")
             .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","out");  })
             .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
             .on("click",function(){
                 me.clearTimeZoom_ms();
                 me.useCurrentTimeMinMax = true;
-                me.setTimeWidth(me.options.timeMaxWidth);
+                me.updateTimelineLayut(me.options.timeMaxWidth);
                 me.useCurrentTimeMinMax = undefined;
                 me.divRoot.select(".zoom_out").attr("disabled","true");
             })
@@ -3085,15 +3087,22 @@ kshf.BarChart.prototype.insertHeader = function(){
     }
 };
 
-kshf.BarChart.prototype.setTimeWidth = function(w){
-    this.options.timeMaxWidth = w;
-
+kshf.BarChart.prototype.updateTimelineLayut = function(){
     this.setTimeTicks();
-
     this.updateTimeChartBarsDots();
     this.refreshTimeChartBarDisplay();
     this.insertTimeTicks();
     this.insertTimeChartAxis();
+}
+
+kshf.BarChart.prototype.setTimeWidth = function(w){
+    this.options.timeMaxWidth = w;
+    if(this.scrollbar.show===true){
+        this.options.timeMaxWidth -= kshf.scrollPadding + kshf.scrollWidth;
+    }
+
+    this.updateTimelineLayut();
+
     this.updateChartTotalWidth();
     this.updateScrollBarPos();
     
@@ -3170,7 +3179,7 @@ kshf.BarChart.prototype.updateAllWidth = function(w){
     this.updateScrollBarPos();
     
 	if(this.options.display.row_bar_line){
-        var x2=this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+(this.timeScale?this.timeScale.range()[1]:0)+kshf.scrollPadding+kshf.scrollWidth;
+        var x2=this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+(this.timeScale?this.options.timeMaxWidth:0)+kshf.scrollPadding+kshf.scrollWidth;
         this.root.selectAll("line.row_bar_line")
             .attr("x2",x2);
     }
@@ -3361,7 +3370,7 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
 };
 
 kshf.BarChart.prototype.updateCatAxisTextPos = function() {
-    this.root.selectAll("g.x_axis g.tick.major text")
+    this.root.selectAll("g.x_axis g.tick text")
         .transition()
         .duration(this.parentKshf.layout_animation)
         .attr("dy",3+this.rowCount_VisibleItem*this.parentKshf.line_height);
@@ -3566,7 +3575,7 @@ kshf.BarChart.prototype.updateScrollBarPos = function(){
         this.root.select("g.scrollGroup g.rightScroll")
             .transition()
             .duration(this.parentKshf.layout_animation)
-            .attr("transform","translate("+(this.getWidth()-15)+",0)");
+            .attr("transform","translate("+(this.getWidth()-kshf.scrollWidth-3)+",0)");
     }
 
     this.root.select("text.scroll_display_more")
@@ -3738,10 +3747,11 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
 kshf.BarChart.prototype.filterTime = function(){
     var i,j;
     var items = kshf.items;
+    var timeFilterId = this.filterId+1;
     for(i=0 ; i<items.length ; i++){
         var item = items[i];
         var t = item.timePos;
-        item.filters[this.filterId+1] = 
+        item.filters[timeFilterId] = 
             (t>=this.timeFilter_ms.min) &&
             (t< this.timeFilter_ms.max);
         item.updateSelected();
@@ -4088,7 +4098,7 @@ kshf.BarChart.prototype.insertXAxisTicks = function(){
 	axisGroup.call(xAxis);
 
     // no animation! by default it is inserted at 0, we need to update it without animation	
-    this.root.selectAll("g.x_axis g.tick.major text")
+    this.root.selectAll("g.x_axis g.tick text")
         .attr("dy",3+this.rowCount_VisibleItem*this.parentKshf.line_height);
 
 	axisGroup.selectAll("g.tick line")
@@ -4251,20 +4261,20 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             var rangeMax = new Date(itemDate);
 
             if(kshf_.timeticks.range === d3.time.months){
-                rangeMin.setUTCDate(rangeMin.getUTCDate()-15);
+                rangeMin.setDate(rangeMin.getDate()-15);
                 rangeMax = new Date(rangeMin);
-                rangeMax.setUTCMonth(rangeMin.getUTCMonth()+1);
+                rangeMax.setMonth(rangeMin.getMonth()+1);
             }
             if(kshf_.timeticks.range === d3.time.years){
-                // if years range is wide, use 5-year step size
-                var diff_Year =  kshf_.data_maxDate.getUTCFullYear() - kshf_.data_minDate.getUTCFullYear();
+                // if zoomed years range is wide, use 5-year step size
+                var diff_Year =  new Date(kshf_.timeZoom_ms.max).getFullYear() - new Date(kshf_.timeZoom_ms.min).getFullYear();
                 if(kshf_.options.timeMaxWidth<diff_Year*10){
-                    rangeMin.setUTCFullYear(rangeMin.getUTCFullYear()-5);
-                    rangeMax.setUTCFullYear(rangeMax.getUTCFullYear()+5);
+                    rangeMin.setFullYear(rangeMin.getFullYear()-5);
+                    rangeMax.setFullYear(rangeMax.getFullYear()+5);
                 } else {
-                    rangeMin.setUTCMonth(rangeMin.getUTCMonth()-6);
+                    rangeMin.setMonth(rangeMin.getMonth()-6);
                     rangeMax = new Date(rangeMin);
-                    rangeMax.setUTCMonth(rangeMin.getUTCMonth()+12);
+                    rangeMax.setMonth(rangeMin.getMonth()+12);
                 }
             }
 
@@ -4289,56 +4299,65 @@ kshf.BarChart.prototype.setTimeTicks = function(){
 
     // http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
     var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    var _MS_PER_MONTH = _MS_PER_DAY * 30.4; // assuming 30.4 days per month - 365/12
+    var _MS_PER_YEAR = _MS_PER_DAY * 365;
 
-    var utc_min = Date.parse(this.data_minDate);
-    var utc_max = Date.parse(this.data_maxDate);
+    var timeZoom_msDiff;
+    if(this.timeZoom_ms!==undefined) {
+        timeZoom_msDiff= this.timeZoom_ms.max - this.timeZoom_ms.min;
+    } else {
+        timeZoom_msDiff = this.timeData_dt.max.getTime() - this.timeData_dt.min.getTime();
+    }
 
-    var diff_Day = Math.ceil((utc_max - utc_min) / _MS_PER_DAY);
-    var diff_Year =  this.data_maxDate.getUTCFullYear() - this.data_minDate.getUTCFullYear();
-    var diff_Month = (this.data_maxDate.getUTCFullYear()*12+this.data_maxDate.getUTCMonth())-
-                     (this.data_minDate.getUTCFullYear()*12+this.data_minDate.getUTCMonth());
+    var diff_Day = Math.floor(timeZoom_msDiff / _MS_PER_DAY);
+    var diff_Month =  Math.floor(timeZoom_msDiff / _MS_PER_MONTH );
+    var diff_Year= Math.floor(timeZoom_msDiff / _MS_PER_YEAR );
 
     // this.options.timeMaxWidth is the current timeline width
+    var timeWidthSteps = this.options.timeMaxWidth/70;
 
     // choose range
-    if(this.options.timeMaxWidth/70<=diff_Year/10){
+    if(timeWidthSteps<=diff_Year){
         // YEAR
         this.timeticks.range = d3.time.years;
-        this.timeticks.format = d3.time.format("%Y");
-        this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/70));
-    } else if(this.options.timeMaxWidth/70<=diff_Year){
-        // YEAR
-        this.timeticks.range = d3.time.years;
-        this.timeticks.format = d3.time.format("%Y");
-        this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/70));
-    } else if(this.options.timeMaxWidth/70<=diff_Month){
+        this.timeticks.format = d3.time.format.utc("%Y");
+        this.timeticks.format_my = function(d){
+            return d.getUTCFullYear();
+        };
+        if(timeWidthSteps<=diff_Year/10) {
+            this.timeticks.stepSize = Math.ceil(10*diff_Year/timeWidthSteps);
+        } else {
+            this.timeticks.stepSize = Math.ceil(diff_Year/timeWidthSteps);
+        }
+    } else if(timeWidthSteps<=diff_Month){
         // MONTH
         this.timeticks.range = d3.time.months;
-        this.timeticks.format = d3.time.format("%b'%y");
-        this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/70));
-        // must be 1/2/3/4/60/12
+        this.timeticks.format = d3.time.format.utc("%b'%y");
+        this.timeticks.format_my = function(d){
+            return d.getUTCMonth()+"'"+d.getUTCFullYear()%100;
+        };
+        this.timeticks.stepSize = Math.ceil(diff_Month/timeWidthSteps);
+        // must be 1/2/3/4/6/12
         if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
         else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
         else if(this.timeticks.stepSize>4) {this.timeticks.stepSize = 4;}
     } else if(true){
         // DAY
         this.timeticks.range = d3.time.day;
-        this.timeticks.format = d3.time.format("%b'%y");
-        this.timeticks.stepSize = Math.ceil(diff_Day/(this.options.timeMaxWidth/70));
+        this.timeticks.format = d3.time.format.utc("%b'%y");
+        this.timeticks.stepSize = Math.ceil(diff_Day/timeWidthSteps);
     }
 
-    // update this.chartX_min_ms and this.chartX_max_ms
     if(this.useCurrentTimeMinMax===undefined){
         var tempDate;
         if(this.timeticks.range===d3.time.years){
-            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),0));
-            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear()+1,0));
+            this.timeRange_ms = { 
+                min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),0,1),
+                max: Date.UTC(this.timeData_dt.max.getUTCFullYear()+1,0,1)};
         } else if(this.timeticks.range===d3.time.months){
-            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
-            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
-        } else if(this.timeticks.range===d3.time.days){
-            this.chartX_min_ms = Date.parse(new Date(this.data_minDate.getUTCFullYear(),(this.data_minDate.getUTCMonth())));
-            this.chartX_max_ms = Date.parse(new Date(this.data_maxDate.getUTCFullYear(),(this.data_maxDate.getUTCMonth()+1)));
+            this.timeRange_ms = {
+                min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),1),
+                max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth()+1,1)};
         }
 
         this.clearTimeZoom_ms();
@@ -4372,11 +4391,6 @@ kshf.BarChart.prototype.insertTimeTicks = function(){
     tickGroup.call(xAxis);
 
     tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
-/*
-    tickGroup.append("svg:path")
-        .attr("class","bottom_border")
-        .attr("d","M0,2V0H"+this.options.timeMaxWidth+"V2")
-        .attr("transform","translate(0,25)");*/
 };
 
 kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
@@ -4500,34 +4514,28 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
 
                 // convert mouse position to date
                 var time_ms = Math.floor(
-                    kshf_.timeZoom_ms.min + (kshf_.timeZoom_ms.max-kshf_.timeZoom_ms.min)*(mouseMove_x / kshf_.timeScale.range()[1])
+                    kshf_.timeZoom_ms.min+ 
+                    (kshf_.timeZoom_ms.max-kshf_.timeZoom_ms.min)*(mouseMove_x / kshf_.options.timeMaxWidth)
                     );
 
                 var time_dt = new Date(time_ms);
 
                 var time_ = null;
                 if(kshf_.timeticks.range===d3.time.years){
-                    if(time_dt.getUTCMonth()<7){
-                        time_ = new Date(time_dt.getUTCFullYear(),0,0);
-                    } else {
-                        time_ = new Date(time_dt.getUTCFullYear()+1,0,0);
-                    }
+                    time_ = kshf.nearestYear(time_dt);
                 } else if(kshf_.timeticks.range===d3.time.months){
-                    if(time_dt.getUTCDate()<15){
-                        time_ = new Date(time_dt.getUTCFullYear(),time_dt.getUTCMonth(),0);
-                    } else {
-                        time_ = new Date(time_dt.getUTCFullYear(),time_dt.getUTCMonth()+1,0);
-                    }
+                    time_ = kshf.nearestMonth(time_dt);
                 }
 
                 // if it has the same value after mouse is moved, don't update any filter
                 if(timeFilter_ms[kshf_.x_axis_active_filter] === time_.getTime()) return;
+                // update timeFilter_ms
                 timeFilter_ms[kshf_.x_axis_active_filter] = time_.getTime();
                 
+                // Check agains min/max order, sawp if necessary
                 if(timeFilter_ms.max<timeFilter_ms.min){
                     eeeee.style.stroke = "";
                     kshf_.x_axis_active_filter = (kshf_.x_axis_active_filter==='min'?'max':'min');
-                    //swap
                     var tttt= timeFilter_ms.max;
                     timeFilter_ms.max = timeFilter_ms.min;
                     timeFilter_ms.min = tttt;
@@ -4560,6 +4568,26 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
 		});
     this.yearSetXPos();
 };
+
+kshf.nearestYear = function(d){
+    var dr = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    if(d.getUTCMonth()>6) dr.setUTCFullYear(dr.getUTCFullYear()+1);
+    return dr;
+}
+kshf.nearestMonth = function(d){
+    var dr = new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1));
+    if(d.getUTCDate()>15) dr.setUTCMonth(dr.getUTCMonth()+1);
+    return dr;
+}
+kshf.nearestDay = function(d){
+    
+}
+kshf.nearestHour = function(d){
+    
+}
+kshf.nearestMinute = function(d){
+    
+}
 
 kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
     var totalLeftWidth = this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
@@ -4603,11 +4631,11 @@ kshf.BarChart.prototype.yearSetXPos = function() {
 		.attr("width", minX);
 	this.root.select("g.filter_max .filter_nonselected")
 		.attr("x", 0)
-		.attr("width", this.timeScale.range()[1] -maxX);
+		.attr("width", this.options.timeMaxWidth -maxX);
     this.root.select("g.filter_min")
-        .attr("filtered",this.timeFilter_ms.min!==this.chartX_min_ms);
+        .attr("filtered",this.timeFilter_ms.min!==this.timeRange_ms.min);
     this.root.select("g.filter_max")
-        .attr("filtered",this.timeFilter_ms.max!==this.chartX_max_ms);
+        .attr("filtered",this.timeFilter_ms.max!==this.timeRange_ms.max);
     this.refreshTimeChartFilterText();
     this.refreshTimeChartTooltip();
 };
