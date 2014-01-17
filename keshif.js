@@ -1065,6 +1065,7 @@ kshf.init = function (options) {
     this.num_of_charts = 0;
     this.maxFilterID = 1; // 1 is used for global search
     this.categoryTextWidth = options.categoryTextWidth;
+    this.barMaxWidth = 0;
     if(this.categoryTextWidth===undefined){
         this.categoryTextWidth = 115;
     }
@@ -1337,6 +1338,7 @@ kshf.insertChartHeader = function(){
                 me.time_animation_barscale = 0;
                 me.layout_animation = 0;
                 me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                me.updateAllTheWidth();
                 me.layout_animation = 500;
             });
             me.root.on("mouseup", function(){
@@ -1475,9 +1477,7 @@ kshf.update = function () {
 	// update each widget within
 	for (i=0; i<this.charts.length; ++i){
         chart = kshf.charts[i];
-        if(chart.type!=="RangeChart"){
-            chart.updateBarAxisScale();
-        }
+        chart.updateBarAxisScale();
         chart.updateSelf();
         filteredCount += chart.getFilteredCount();
 	}
@@ -1561,9 +1561,8 @@ kshf.clearAllFilters = function(){
 
 kshf.updateLayout_Height = function(){
     var i;
-    var divHeight = $(this.domID).height();
-    // chart title..
-    divHeight-=22;
+    var chartHeaderHeight = 22;
+    var divHeight = $(this.domID).height() - chartHeaderHeight;
 
     this.divWidth = $(this.domID).width();
 
@@ -1584,13 +1583,12 @@ kshf.updateLayout_Height = function(){
     var usedLines = 0;
     var remHeight = divHeight;
 
-    // right panel ******************
-    divLineRem = divLineCount;
+    // timeline first ******************
     var c2=kshf.charts[0];
     if(c2.type==='scatterplot'){
-        c2.adjustLeftHeaderPadding();
+        // uncollapse scatterplot only if total chart height is more than 15 rows
         if(divLineRem>15){
-            var targetScatterplotHeight = Math.floor(divLineRem/4)+1;
+            var targetScatterplotHeight = Math.ceil(divLineRem/4);
             c2.setRowCount_VisibleItem(targetScatterplotHeight-c2.rowCount_Header()-1);
 
             var splotHeight=c2.rowCount_Total_Right();
@@ -1601,11 +1599,12 @@ kshf.updateLayout_Height = function(){
             c2.collapsedTime = true;
             divLineRem--;
             remHeight -= kshf.line_height*1;
+            // chartProcessed[0]=true; // categories are not processed
         }
     }
 
     // TODO: list item header is assumed to be 3 rows, but it may dynamically change!
-    this.root.selectAll("div.listItemGroup")
+    this.root.select("div.listItemGroup")
         .transition()
         .duration(this.layout_animation)
         .style("height",(remHeight-65)+"px")
@@ -1614,24 +1613,18 @@ kshf.updateLayout_Height = function(){
     // *********************************************************************************
     // left panel ***********************************************************************
     divLineRem = divLineCount;
-    for (i=0; i < this.charts.length; ++i) {
-        var c2=kshf.charts[i];
-        if(c2.type==='scatterplot' && chartProcessed[i]===true){
-            divLineRem-=c2.rowCount_Total();
+    for (i=0; i<this.charts.length; ++i) {
+        var c3=kshf.charts[i];
+        if(c3.type==='scatterplot' && chartProcessed[i]===true){
+            divLineRem-=c3.rowCount_Total();
             break;
         }
-    }
-
-    // numeric range filters have a constant height (for now)
-    for (i=0; i < this.charts.length; ++i) {
-        var c=kshf.charts[i];
-        if(c.type==='RangeChart' && chartProcessed[i]===false){ divLineRem-=c.getHeight_Rows(); }
     }
 
     var finalPass = false;
     while(procBarCharts<barChartCount){
         procBarChartsOld = procBarCharts;
-        var targetSharedHeight = Math.floor(divLineRem/(barChartCount-procBarCharts));
+        var targetRowCount = Math.floor(divLineRem/(barChartCount-procBarCharts));
         for (i=0; i<this.charts.length; ++i) {
             var c=kshf.charts[i];
             if((c.type==='barChart' || c.type==='scatterplot') && chartProcessed[i]===false){
@@ -1641,20 +1634,23 @@ kshf.updateLayout_Height = function(){
                     procBarCharts++;
                     c.hidden = true;
                     continue;
-                } else if(c.collapsed){
-                    c.setRowCount_VisibleItem(3); // some number, TODO: do not insert chart items if not visible
+                } 
+                if(c.collapsedTime){
+                    ; //
                 } else if(c.options.catDispCountFix){
                     c.setRowCount_VisibleItem(c.options.catDispCountFix);
-                } else if(c.rowCount_MaxTotal()<=targetSharedHeight){
+                } else if(c.rowCount_MaxTotal()<=targetRowCount){
                     // you say you have 10 rows available, but I only needed 5. Thanks,
                     c.setRowCount_VisibleItem(c.catCount_Total);
                 } else if(finalPass){
-                    c.setRowCount_VisibleItem(targetSharedHeight-c.rowCount_Header()-1);
+                    c.setRowCount_VisibleItem(targetRowCount-c.rowCount_Header()-1);
                 } else {
                     continue;
                 }
-                c.hidden=false;
-                c.divRoot.style("display","block");
+                if(c.hidden===undefined || c.hidden===true){
+                    c.hidden=false;
+                    c.divRoot.style("display","block");
+                }
                 divLineRem-=c.rowCount_Total();
                 chartProcessed[i] = true;
                 procBarCharts++;
@@ -1669,31 +1665,33 @@ kshf.updateLayout_Height = function(){
         allDone = true;
         for (i=0; i < this.charts.length && divLineRem>0; ++i) {
             var c3=kshf.charts[i];
-            if(c3.type==='barChart' && c3.catCount_Total!==c3.rowCount_VisibleItem && c3.hidden===false && c3.options.catDispCountFix===undefined){
-                var tmp=divLineRem;
-                divLineRem+=c3.rowCount_Total();
-                c3.setRowCount_VisibleItem(c3.rowCount_VisibleItem+1);
-                divLineRem-=c3.rowCount_Total();
-                if(tmp!==divLineRem) allDone=false;
-            }
+            if(c3.hidden===true) continue;
+            if(c3.collapsed===true) continue;
+            if(c3.catCount_Total===c3.rowCount_VisibleItem) continue;
+            if(c3.options.catDispCountFix!==undefined) continue;
+            if(c3.type==='scatterplot' && c3.collapsedTime===false) continue;
+            var tmp=divLineRem;
+            divLineRem+=c3.rowCount_Total();
+            c3.setRowCount_VisibleItem(c3.rowCount_VisibleItem+1);
+            divLineRem-=c3.rowCount_Total();
+            if(tmp!==divLineRem) allDone=false;
         }
     }
 
-    // adjust layout_right vertical position
-    c2=kshf.charts[0];
-    var topOffset=0;
-    if(c2.type==='scatterplot'){
-        topOffset = c2.rowCount_Total_Right();
-//        topOffset = c2.rowCount_Total()-c2.rowCount_Total_Right();
-//        if(topOffset>0) topOffset--;
+    for (i=0; i < this.charts.length; ++i) {
+        var c4=kshf.charts[i];
+        c4.update_VisibleItem(false);
     }
 
-    this.root.selectAll("div.layout_right")
-        .transition()
-        .duration(this.layout_animation)
-        .style("top", (topOffset*kshf.line_height)+"px");
+    // adjust layout_right vertical position
+    if(c2.type==='scatterplot'){
+        this.layoutRight
+            .transition()
+            .duration(this.layout_animation)
+            .style("top", (c2.rowCount_Total_Right()*kshf.line_height)+"px");
+    }
 
-    this.root.selectAll("div.layout_left")
+    this.root.select("div.layout_left")
         .transition()
         .duration(this.layout_animation)
         .style("top",(c2.type==='scatterplot'?(c2.rowCount_Total()*kshf.line_height):0)+"px");
@@ -1701,9 +1699,8 @@ kshf.updateLayout_Height = function(){
 
 
 kshf.updateLayout = function(){
-    if(kshf.loaded!==true){
-        return;
-    }
+    if(kshf.loaded!==true) return;
+
     this.divWidth = $(this.domID).width();
 
     kshf.time_animation_barscale = 400;
@@ -1720,21 +1717,27 @@ kshf.updateLayout = function(){
         }
     }
 
-    this.setHideBarAxis(initBarChartWidth);
+    this.layout_animation = 0;
+    this.time_animation_barscale = 0;
 
     // HEIGHT
     this.updateLayout_Height();
 
     // WIDTH
     this.setBarWidthLeftPanel(initBarChartWidth);
+    this.updateAllTheWidth();
+
+    this.layout_animation = 500;
 }
 
+// Not explicitly called, you can call this maunally to change the text width size after the browser is created
 kshf.setCategoryTextWidth = function(w){
     this.categoryTextWidth = w;
     for(i = 0; i < this.charts.length; ++i){
         if(kshf.charts[i].type==='barChart' || kshf.charts[i].type==='scatterplot'){
             kshf.charts[i].options.rowTextWidth = w;
-            kshf.charts[i].updateWidth(w);
+            kshf.charts[i].updateTextWidth(w);
+            kshf.charts[i].updateBarWidth();
         }
     }
     this.updateAllTheWidth();
@@ -1742,21 +1745,26 @@ kshf.setCategoryTextWidth = function(w){
 
 kshf.setHideBarAxis = function(v){
     if(v>200) {
+        this.hideBars = false;
         this.hideBarAxis = false;
-//        v=200;
     } else if(v>45){
-        this.root.attr("hideBars",false);
+        this.hideBars = false;
         this.hideBarAxis = false;
     } else if(v>10){
-        this.root.attr("hideBars",false);
+        this.hideBars = false;
         this.hideBarAxis = true;
-    } else { 
-        this.root.attr("hideBars",true);
+    } else {
+        this.hideBars = true;
         this.hideBarAxis = true;
         v = 0; 
     }
     this.width_leftPanel_bar = v;
 
+    if(this.hideBars===false){
+        this.root.attr("hidebars",false);
+    } else {
+        this.root.attr("hidebars",true);
+    }
     if(this.hideBarAxis===false){
         this.root.attr("hideBarAxis",false);
     } else {
@@ -1766,28 +1774,25 @@ kshf.setHideBarAxis = function(v){
 
 kshf.setBarWidthLeftPanel = function(v){
     this.setHideBarAxis(v);
-    for(i = 0; i < this.charts.length; ++i){
-        if(kshf.charts[i].type==='barChart' || kshf.charts[i].type==='scatterplot'){
-            kshf.charts[i].setBarWidth(this.width_leftPanel_bar);
-        }
+    if(this.barMaxWidth===this.width_leftPanel_bar) return;
+    this.barMaxWidth = this.width_leftPanel_bar;
+    for(i=0; i<this.charts.length; ++i){
+        var c = kshf.charts[i];
+        c.updateBarAxisScale();
+        c.updateWidth_Bars_Active();
+        c.updateChartTotalWidth();
     }
-    this.updateAllTheWidth();
 }
 
 kshf.updateAllTheWidth = function(v){
     this.width_leftPanel_total = this.getRowTotalTextWidth()+this.width_leftPanel_bar+kshf.scrollWidth+kshf.scrollPadding+2;
-    for (i = 0; i < this.charts.length; ++i){
-        if(kshf.charts[i].type==='RangeChart'){
-            kshf.charts[i].setWidth(this.width_leftPanel_total);
-        }
-    }
 
     var rowLabelOffset = this.getRowLabelOffset();
 
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
-    this.root.select("div.layout_right").style("left",(this.width_leftPanel_total)+"px");
+    this.layoutRight.style("left",(this.width_leftPanel_total)+"px");
 
     this.root.select(".kshf.layout_left_header span.filters_text")
         .style("margin-right","-8px")
@@ -1936,23 +1941,19 @@ kshf.BarChart.prototype.rowCount_Header_Right = function(){
     if(this.type==='scatterplot'){
         if(this.collapsed || this.collapsedTime) return 1;
         return 2;
-//        return (this.options.timeTitle)?3:2;
     }
     return 0;
 };
 kshf.BarChart.prototype.rowCount_Header = function(){
-    if(this.collapsed){
-        return 1;
-    }
-    var h= Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
-    return h;
+    if(this.collapsed) return 1;
+    return Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
 };
 
 kshf.BarChart.prototype.init_shared = function(options){
 	// register
     var i,j,f;
 
-    this.barMaxWidth = 0;
+    this.parentKshf.barMaxWidth = 0;
 
 	//sorting options
     //assert(this.options.sorting);
@@ -2130,7 +2131,7 @@ kshf.BarChart.prototype.updateTotalItemCount = function(){
 kshf.BarChart.prototype.getWidth = function(){
 
     return this.parentKshf.getRowTotalTextWidth() +
-        this.barMaxWidth +
+        this.parentKshf.barMaxWidth +
         kshf.scrollWidth + // assume scrollbar is on
         kshf.scrollPadding+
         ((this.type==='scatterplot')?(
@@ -2142,17 +2143,16 @@ kshf.BarChart.prototype.getWidth = function(){
 
 kshf.BarChart.prototype.rowCount_Total = function(){
     if(this.collapsed){
-        if(this.id===0) return 2;
         return 1;
     }
     // need 1 more row at the bottom is scrollbar is shown, or barInfoText is set
-    var bottomRow=0;
-    if(this.scrollbar.show || this.parentKshf.hideBarAxis===false) bottomRow=1;
+    var bottomRow=1;
+//    if(this.scrollbar.show || this.parentKshf.hideBarAxis===false) bottomRow=1;
     return this.rowCount_VisibleItem+this.rowCount_Header()+bottomRow;
 };
 kshf.BarChart.prototype.rowCount_Total_Right = function(){
     if(this.type==='scatterplot' && this.collapsedTime===true){
-        return 2;
+        return 1;
     }
     return this.rowCount_Total()+1;
 };
@@ -2161,14 +2161,13 @@ kshf.BarChart.prototype.rowCount_MaxTotal = function(){
     return this.catCount_Total+this.rowCount_Header()+1;
 };
 kshf.BarChart.prototype.rowCount_MinTotal = function(){
-    var _min =  (this.catCount_Total<3)?this.catCount_Total:3;
-    return _min+this.rowCount_Header()+1;
+    return this.rowCount_Header()+Math.min(this.catCount_Total,3)+1;
 };
 
 kshf.BarChart.prototype.updateChartTotalWidth = function(){
-    var leftPanelWidth = this.parentKshf.getRowTotalTextWidth() +
-        this.barMaxWidth +
-        kshf.scrollWidth;
+    this.updateScrollGroupPos();
+
+    var leftPanelWidth = this.parentKshf.getRowTotalTextWidth() + this.parentKshf.barMaxWidth + kshf.scrollWidth;
     var totalWidth = this.getWidth();
 
     this.divRoot.style("width",totalWidth+"px");
@@ -2451,6 +2450,8 @@ kshf.BarChart.prototype.init_DOM = function(){
     }
 
     this.insertHeader();
+    this.insertScrollbar();
+
     this.insertItemRows_shared();
     if(this.type==='scatterplot') { 
         this.insertTimeChartRows();
@@ -2567,11 +2568,11 @@ kshf.BarChart.prototype.refreshBarHeight = function(){
 		.attr("y",function(d,i){ return (d.activeItems>0)?4:7; });
 };
 kshf.BarChart.prototype.updateWidth_Bars_Active = function(){
-	var kshf_=this;
+	var me=this;
 	this.dom.bar_active
         .transition()
         .duration(kshf.time_animation_barscale)
-		.attr("width", function(d){return kshf_.catBarAxisScale(d.barValue);})
+		.attr("width", function(d){ return me.catBarAxisScale(d.barValue);})
         ;
 };
 // Applies alternating color for bar helper lines
@@ -2646,51 +2647,18 @@ kshf.BarChart.prototype.collapseCategories = function(hide){
         if(hide===true) sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Collapse,{facet:this.options.facetTitle});
         else            sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Show,{facet:this.options.facetTitle});
     }
-    kshf.updateLayout_Height();
+    this.update_VisibleItem(true); // force update
+    this.parentKshf.updateLayout_Height();
 }
 
 kshf.BarChart.prototype.collapseTime = function(hide){
     this.collapsedTime = hide;
-    this.adjustLeftHeaderPadding();
-    kshf.updateLayout_Height();
-}
-
-kshf.BarChart.prototype.updateLeftHeaderPaddingTop = function(hide){
-    if(this.type!=="scatterplot" || true) {
-        this.leftHeaderPaddingTop = 0;
-        return;
-    }
-    if(this.collapsed){
-        this.leftHeaderPaddingTop = kshf.line_height;
-        return;
-    }
-    this.leftHeaderPaddingTop = ((this.rowCount_Header() - this.rowCount_Header_Left())*kshf.line_height);
-}
-
-// ONLY CALLED IF THIS CHART HAS TIMELINE
-kshf.BarChart.prototype.adjustLeftHeaderPadding = function(hide){
-    var me=this;
-
-    this.updateLeftHeaderPaddingTop();
-
-    this.dom_headerGroup.select("span.leftHeader")
-        .style("padding-top",this.leftHeaderPaddingTop+"px");
-    this.dom_headerGroup.select("span.rightHeader")
-        .style("padding-top",this.leftHeaderPaddingTop+"px");
-
-    this.root.select("g.barGroup_Top")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr("transform", function(d,i) {
-            return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
-        })
-        ;
-
-    this.updateTimeAxisGroupTransform();
+    this.update_VisibleItem(true); // force update
+    this.parentKshf.updateLayout_Height();
 }
 
 kshf.BarChart.prototype.updateTimeAxisGroupTransform = function(){
-    var x = (this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
+    var x = (this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
     var y = (kshf.line_height*(this.rowCount_Total())-10);
     this.root.select("g.timeAxisGroup")
         .attr("transform","translate("+x+","+y+")");
@@ -2701,11 +2669,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     var me = this;
     var rows_Left = this.rowCount_Header_Left();
 
-    this.updateLeftHeaderPaddingTop();
-
     var leftBlock = this.dom_headerGroup.append("span").attr("class","leftHeader");
-
-    leftBlock.style("padding-top",this.leftHeaderPaddingTop+"px");
 
     leftBlock.append("div").attr("class","chartAboveSeparator").style("top","0px");
 
@@ -3110,7 +3074,6 @@ kshf.BarChart.prototype.setTimeWidth = function(w){
     this.updateTimelineLayut(true);
 
     this.updateChartTotalWidth();
-    this.updateScrollBarPos();
     
     this.dom_headerGroup.select("span.rightHeader")
         .style("width",(w)+"px");
@@ -3165,41 +3128,26 @@ kshf.BarChart.prototype.updateBarAxisScale = function(){
     if(this.options.catBarScale==="selected"){
         this.catBarAxisScale = d3.scale.linear()
             .domain([0,this.parentKshf.itemsSelectedCt])
-            .rangeRound([0, this.barMaxWidth]);
+            .rangeRound([0, this.parentKshf.barMaxWidth]);
     } else {
         this.catBarAxisScale = d3.scale.linear()
             .domain([0,this.getMaxBarValuePerRow()])
-            .rangeRound([0, this.barMaxWidth]);
+            .rangeRound([0, this.parentKshf.barMaxWidth]);
         }
     this.updateWidth_Bars_Total();
     this.insertXAxisTicks();
 }
 
-kshf.BarChart.prototype.setBarWidth = function(w){
-    if(this.barMaxWidth===w) { return; }
-    this.barMaxWidth = w;
-    this.updateAllWidth();
-}
     
-kshf.BarChart.prototype.updateAllWidth = function(w){
+kshf.BarChart.prototype.updateBarWidth = function(w){
     this.updateBarAxisScale();
-
     this.updateWidth_Bars_Active();
-    
-    // update x axis items
-    this.dom_headerGroup.select("div.chartAboveSeparator")
-        .style("width",(this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+kshf.scrollWidth+kshf.scrollPadding)+"px")
-        ;
-    
-    this.updateScrollBarPos();
-    
     this.updateRowBarLineWidth();
-    
     this.updateChartTotalWidth();
 };
 
 kshf.BarChart.prototype.updateRowBarLineWidth = function(){
-    var x2=this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth()
+    var x2=this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth()
         +this.options.timeMaxWidth;
     this.dom.row_bar_line.attr("x2",x2);
 }
@@ -3265,16 +3213,7 @@ kshf.BarChart.prototype.firstRowMax = function(){
     return this.catCount_Total-this.rowCount_VisibleItem;
 };
 
-kshf.BarChart.prototype.updateHeaderHTMLHeight = function(){
-    this.dom_headerGroup
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .style("height",(this.rowCount_Header()*kshf.line_height+2)+"px")
-        ;
-}
-
 kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
-//    if(c===this.rowCount_VisibleItem){ return; }
     if(c>this.catCount_Total){ c = this.catCount_Total; }
     if(c<0){ c=1; }
     if(this.catCount_Total<=2){ 
@@ -3282,116 +3221,105 @@ kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
     } else {
         c = Math.max(c,2);
     }
-    if(this.rowCount_VisibleItem === c){
-//        return;
-    }
     this.rowCount_VisibleItem = c;
-    // if current scrollbar first row is no longer possible
-    this.scrollbar.firstRow = Math.min(this.scrollbar.firstRow,this.firstRowMax());
-    
-    // should we display scrollbar or not?
-    if(this.rowCount_VisibleItem===this.catCount_Total){
-        this.removeScrollBar();
+}
+kshf.BarChart.prototype.update_VisibleItem = function(forced){
+    if(this.visibleItemRow===undefined){
+        this.visibleItemRow = this.rowCount_VisibleItem;
     } else {
-        if(this.scrollbar.show!==true){
-            this.insertScrollbar();
-        }
+        if(this.visibleItemRow===this.rowCount_VisibleItem && forced===false) return;
+        this.visibleItemRow = this.rowCount_VisibleItem;
     }
-
-    var totalHeight = kshf.line_height*this.rowCount_Total();
-    var barsHeight  = kshf.line_height*this.rowCount_VisibleItem;
-
-    var kshf_ = this;
-    var me = this;
-
-    this.root.select(".barGroup_Top")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr("transform", function(d,i) {
-            return "translate(0," + ((kshf.line_height*me.rowCount_Header())) + ")";
-        })
-        ;
-    this.root.select(".x_axis")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr("transform", function(d,i) {
-            return "translate("+(me.parentKshf.getRowTotalTextWidth())+"," + (kshf.line_height*me.rowCount_Header()+3) + ")";
-        })
-        ;
-
-    this.updateHeaderHTMLHeight();
-
-    var line_y = kshf.line_height*this.rowCount_Header()-0.5;
+    var totalHeight      = kshf.line_height*this.rowCount_Total();
+    var visibleRowHeight = kshf.line_height*this.rowCount_VisibleItem;
+    var headerHeight     = kshf.line_height*this.rowCount_Header();
 
     this.divRoot
         .attr("collapsed",this.collapsed===false?"false":"true")
         .attr("showconfig",this.showConfig)
         .attr("collapsedTime",this.collapsedTime===false?"false":"true")
+        .attr("showscrollbar",this.rowCount_VisibleItem!==this.catCount_Total)
         .transition()
         .duration(this.parentKshf.layout_animation)
         .style("height",(this.type!=="scatterplot")?(totalHeight+"px"):"100%");
         ;
 
-    this.root.select("rect.chartBackground").attr(
-        'height', 
-        kshf.line_height*(this.rowCount_VisibleItem)
-        );
-    this.root.select("rect.chartBackground").attr(
-        'y', 
-        kshf.line_height*this.rowCount_Header()
-        );
-    
-    // update clippath height
+    // ******************************************************************************
+    // Scrollbar stuff
+
+    // scrollbar.firstRow cannot exceed firstRowMax()
+    this.scrollbar.firstRow = Math.min(this.scrollbar.firstRow,this.firstRowMax());
+    // how much is one row when mapped to the scroll bar?
+    this.scrollbar.rowScrollHeight = visibleRowHeight/this.catCount_Total;
+    if(this.rowCount_VisibleItem!==this.catCount_Total){
+        // update scrollbar height
+        this.root.selectAll("g.scrollGroup rect.background")
+            .transition()
+            .duration(this.parentKshf.layout_animation)
+            .attr("height",visibleRowHeight+1)
+            ;
+        this.root.select("g.scrollGroup text.scroll_display_more")
+            .transition()
+            .duration(this.parentKshf.layout_animation)
+            .attr('y',(visibleRowHeight+10))
+            ;
+        this.updateScrollGroupPos();
+        this.refreshScrollbar(true);
+    }
+
+    this.root.select(".barGroup_Top")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("transform", "translate(0,"+headerHeight+")")
+        ;
+    this.root.select(".x_axis")
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .attr("transform", "translate("+(this.parentKshf.getRowTotalTextWidth())+","+(headerHeight+3)+")")
+        ;
+    this.dom_headerGroup
+        .transition()
+        .duration(this.parentKshf.layout_animation)
+        .style("height",(headerHeight+2)+"px")
+        ;
+
+    this.root.select("rect.chartBackground")
+        .attr('height',visibleRowHeight)
+        .attr('y',headerHeight)
+        ;
     this.root.selectAll(".barChartClipPath rect")
         .transition()
         .duration(this.parentKshf.layout_animation)
-		.attr("height",barsHeight);
-    
-    // update scrollbar height
-    this.root.selectAll("g.scrollGroup rect.background")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-		.attr("height",barsHeight+1);
-    this.root.selectAll("g.scrollGroup text.scroll_display_more")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr('y',(barsHeight+10));
-    
+		.attr("height",visibleRowHeight)
+        ;
+
     // update x axis items
 	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("y1", -barsHeight-8)
+        .attr("y1", -visibleRowHeight-8)
 		.attr("y2", -8)
         ;
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("y",-barsHeight-8)
-		.attr("height", barsHeight);
+        .attr("y",-visibleRowHeight-8)
+		.attr("height", visibleRowHeight)
+        ;
     this.root.selectAll("line.selectVertLine")
-        .attr("y2", kshf.line_height*(this.rowCount_VisibleItem+1.5));
-
+        .attr("y2", kshf.line_height*(this.rowCount_VisibleItem+1.5))
+        ;
     this.root.selectAll("g.x_axis g.tick line")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("y2", barsHeight);
-
-    this.updateCatAxisTextPos();
-
-    // how much is one row when mapped to the scroll bar?
-	this.scrollbar.rowScrollHeight = kshf.line_height*this.rowCount_VisibleItem/this.catCount_Total;
-	
-    this.updateScrollBarPos();
-    this.refreshScrollbar(true);
-};
-
-kshf.BarChart.prototype.updateCatAxisTextPos = function() {
+        .attr("y2", visibleRowHeight)
+        ;
     this.root.selectAll("g.x_axis g.tick text")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("dy",3+this.rowCount_VisibleItem*this.parentKshf.line_height);
-}
+        .attr("dy",visibleRowHeight+3);
+};
+
 
 kshf.BarChart.prototype.setScrollPosition = function(pos) {
     if(pos<0) { pos = 0;}
@@ -3413,48 +3341,48 @@ kshf.BarChart.prototype.stepScrollPosition = function(stepSize) {
 };
 
 kshf.BarChart.prototype.insertScrollbar = function(){
+    var me = this;
+
     // TODO: don't need this variable, use DOM information to see if scrollbar group exist
     this.scrollbar.show = true;
-    var kshf_ = this;
     
     // *****************
-	var scrollGroup = this.root.append("svg:g").attr("class","scrollGroup")
+	var scrollGroup = this.root.append("svg:g")
+        .attr("class","scrollGroup")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
 		;
+
     // left scroll
     this.dom.leftScroll = scrollGroup.append("svg:g").attr("class","leftScroll");
     this.insertScrollbar_do(this.dom.leftScroll);
+    // right scroll
     if(this.type==='scatterplot'){
         this.dom.rightScroll = scrollGroup.append("svg:g").attr("class","rightScroll");
         this.insertScrollbar_do(this.dom.rightScroll);
     }
 
-    // more
+    // "more..." text
     scrollGroup.append("svg:text").attr("class","scroll_display_more")
         .on("mousedown",function(){
             scrollGroup.selectAll("text.row_number").style("display","block");
-            kshf_.scrollBarUp_Active = true; 
-            kshf_.scrollBarUp_TimeStep = 200;
-            kshf_.stepScrollPosition(1);
+            me.scrollBarUp_Active = true; 
+            me.scrollBarUp_TimeStep = 200;
+            me.stepScrollPosition(1);
             if(sendLog) {
                 sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
-                    {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
+                    {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
             }
         })
-        .on("mouseup",function(){ kshf_.scrollBarUp_Active = false; })
+        .on("mouseup",function(){ me.scrollBarUp_Active = false; })
         .on("mouseover",function(e){ 
             d3.select(this).attr("highlight",true); 
         })
         .on("mouseout",function(){ 
             d3.select(this).attr("highlight",false); 
-            kshf_.scrollBarUp_Active = false; 
+            me.scrollBarUp_Active = false; 
             scrollGroup.selectAll("text.row_number").style("display","");
         })
         ;
-    
-    this.updateScrollBarPos();
-    this.refreshScrollbar();
-    this.updateChartTotalWidth();
 };
 
 kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
@@ -3577,19 +3505,19 @@ kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
         .attr("x",kshf.scrollWidth)
         ;
 };
-kshf.BarChart.prototype.updateScrollBarPos = function(){
-	var translate_left = this.parentKshf.getRowTotalTextWidth()+this.barMaxWidth+kshf.scrollPadding;//+this.options.timeMaxWidth;
+kshf.BarChart.prototype.updateScrollGroupPos = function(){
     this.root.select("g.scrollGroup")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("transform","translate(0,"+(kshf.line_height*this.rowCount_Header())+")");
-	this.root.select("g.scrollGroup g.leftScroll")
+        .attr("transform","translate(0,"+(kshf.line_height*this.rowCount_Header())+")")
+        ;
+	this.dom.leftScroll
         .transition()
         .duration(this.parentKshf.layout_animation)
-		.attr("transform","translate("+
-			translate_left+",0)");
+		.attr("transform","translate("+(this.parentKshf.getRowTotalTextWidth()+this.parentKshf.barMaxWidth+kshf.scrollPadding)+",0)")
+        ;
     if(this.type==='scatterplot'){
-        this.root.select("g.scrollGroup g.rightScroll")
+        this.dom.rightScroll
             .transition()
             .duration(this.parentKshf.layout_animation)
             .attr("transform","translate("+(this.getWidth()-kshf.scrollWidth-3)+",0)");
@@ -3597,12 +3525,6 @@ kshf.BarChart.prototype.updateScrollBarPos = function(){
 
     this.root.select("text.scroll_display_more")
         .attr("x", this.parentKshf.categoryTextWidth);
-};
-
-kshf.BarChart.prototype.removeScrollBar = function(){
-    this.scrollbar.show = false;	
-    this.root.select("g.scrollGroup").remove();
-    this.updateChartTotalWidth();
 };
 
 kshf.BarChart.prototype.filter_multi = function(item,m,curDtId) {
@@ -3969,29 +3891,28 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
         .attr("x", this.parentKshf.getRowTotalTextWidth())
         ;
 
-    this.updateWidth();
+    this.updateTextWidth();
 };
 
-kshf.BarChart.prototype.updateWidth = function(){
+kshf.BarChart.prototype.updateTextWidth = function(){
     kshf.time_animation_barscale = 400;
 
-    var labelWidth = this.options.rowTextWidth;
     this.dom.cat_labels
         .transition()
         .duration(kshf.time_animation_barscale)
-        .attr("x", labelWidth);
+        .attr("x", this.options.rowTextWidth);
     this.dom.cat_labels
         .transition()
         .duration(kshf.time_animation_barscale)
-        .attr("x", labelWidth);
+        .attr("x", this.options.rowTextWidth);
     this.dom.rowSelectBackground_Label
         .transition()
         .duration(kshf.time_animation_barscale)
-        .attr("width",labelWidth);
+        .attr("width",this.options.rowTextWidth);
     this.dom.rowSelectBackground_Count
         .transition()
         .duration(kshf.time_animation_barscale)
-        .attr("x",labelWidth);
+        .attr("x",this.options.rowTextWidth);
     this.dom.rowSelectBackground_ClickArea
         .transition()
         .duration(kshf.time_animation_barscale)
@@ -3999,22 +3920,18 @@ kshf.BarChart.prototype.updateWidth = function(){
     this.dom.item_count
         .transition()
         .duration(kshf.time_animation_barscale)
-        .attr("x", labelWidth+3);
+        .attr("x", this.options.rowTextWidth+3);
     
-    this.updateAllWidth();
-
     this.dom.allRowBars
         .transition()
         .duration(kshf.time_animation_barscale)
         .attr("x", this.parentKshf.getRowTotalTextWidth())
         ;
-
     this.dom_headerGroup.selectAll(".leftHeader_XX")
         .transition()
         .duration(kshf.time_animation_barscale)
         .style("width",(this.options.rowTextWidth)+"px")
         ;
-
     this.root.select("g.x_axis")
         .transition()
         .duration(kshf.time_animation_barscale)
@@ -4035,7 +3952,7 @@ kshf.BarChart.prototype.updateWidth_Bars_Total = function(){
         .transition()
         .duration(kshf.time_animation_barscale)
         .attr("width", function(d){
-            return Math.min(kshf_.catBarAxisScale(d.barValueMax),kshf_.barMaxWidth+7); 
+            return Math.min(kshf_.catBarAxisScale(d.barValueMax),kshf_.parentKshf.barMaxWidth+7); 
         })
         ;
 };
@@ -4097,9 +4014,9 @@ kshf.BarChart.prototype.updateSorting = function(force){
 kshf.BarChart.prototype.insertXAxisTicks = function(){
     var axisGroup = this.root.select("g.x_axis");
 
-    var ticksSkip = this.barMaxWidth/25;
+    var ticksSkip = this.parentKshf.barMaxWidth/25;
     if(this.getMaxBarValuePerRow()>100000){
-        ticksSkip = this.barMaxWidth/30;
+        ticksSkip = this.parentKshf.barMaxWidth/30;
     }
 
     var xAxis = d3.svg.axis()
@@ -4189,7 +4106,7 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
             .transition()
             .duration(kshf.time_animation_barscale)
             .attr("x", function(d) {
-                return me.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
+                return me.parentKshf.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
                     me.parentKshf.getRowTotalTextWidth()+me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
             })
             .attr("width", function (d) { 
@@ -4244,7 +4161,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
             d.highlightAttributes();
             // update the position of selectVertLine
             var tm = kshf_.timeScale(kshf_.options.timeItemMap(d));
-            var totalLeftWidth = kshf_.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+kshf_.parentKshf.getRowTotalTextWidth();
+            var totalLeftWidth = kshf_.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+kshf_.parentKshf.getRowTotalTextWidth();
             kshf_.root.select("line.selectVertLine")
                 .attr("x1",tm+totalLeftWidth)
                 .attr("x2",tm+totalLeftWidth)
@@ -4623,7 +4540,7 @@ kshf.nearestMinute = function(d){
 }
 
 kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
-    var totalLeftWidth = this.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
+    var totalLeftWidth = this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
 	var kshf_ = this;
     this.dom.timeBarTotal
         .transition()
@@ -4718,301 +4635,4 @@ kshf.BarChart.prototype.refreshTimeChartTooltip = function(){
                 this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
 	this.root.selectAll("title.xaxis_title").text(titleText);
 };
-
-
-// ***********************************************************************************************************
-// WHIZ RANGE CHART
-// ***********************************************************************************************************
-
-kshf.RangeChart = function(options){
-    kshf.Chart.call(this,options);
-    this.type = 'RangeChart';
-    this.filterCount = 1;
-
-    this.root = this.options.layout
-        .append("div")
-        .attr("class","kshfChart RangeChart")
-        .attr("filtered","false")
-        ;
-
-    // set filter to true by default
-    var dt = kshf.items;
-    for(i=0;i<dt.length;i++){
-        var item = dt[i];
-        // assume all filters pass
-        for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
-            item.filters[f] = true;
-        }
-    }
-
-    this.insertHeader();
-    this.insertRangeSlider();
-
-    this.updateSelfLayout();
-}
-// Setup the prototype chain the right way
-kshf.extendClass(kshf.Chart, kshf.RangeChart);
-
-kshf.RangeChart.prototype.insertHeader = function(){
-    var kshf_ = this;
-    var headerGroup = this.root.append("div").attr("class","headerGroup")
-        .on("mouseclick", function (d, i) { 
-            d3.event.preventDefault(); 
-        });
-
-    headerGroup.append("xhtml:div").attr("class","chartAboveSeparator");
-
-    var leftBlock = headerGroup.append("span").attr("class","leftHeader")
-        .style("width",(this.options.rowTextWidth)+"px")
-        ;
-
-    leftBlock.append("span")
-        .attr("class", "header_label")
-        .style("float","right")
-        .text(this.options.facetTitle)
-        .on("click",function(){ if(kshf_.collapsed) { kshf_.collapseCategories(false); } })
-        ;
-    leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_down")
-        .attr("title","Show categories").text("▶")
-        .on("click",function(){ kshf_.collapseCategories(false); })
-        ;
-    leftBlock.append("xhtml:span").attr("class","header_label_arrow header_label_up"  )
-        .attr("title","Hide categories").text("▼")
-        .on("click",function(){ kshf_.collapseCategories(true); })
-        ;
-    leftBlock.append("xhtml:div")
-        .attr("class","chartClearFilterButton rangeFilter")
-        .attr("title","Clear filter")
-        .on("click", function(d,i){ kshf_.clearRangeFilter(); })
-        .text('x');
-}
-
-kshf.convertToReadable = function(num){
-    if(num>1000000000){ return Math.floor(num/1000000000)+"B";}
-    if(num>1000000){ return Math.floor(num/1000000)+"M";}
-    if(num>1000   ){ return Math.floor(num/1000   )+"K";}
-    return Math.floor(num);
-}
-
-kshf.RangeChart.prototype.insertRangeSlider = function(){
-    var kshf_ = this;
-    this.sliderDiv = this.root.append("div")
-        .attr("class","sliderGroup")
-        .style("width","90%")
-        ;
-    // find min and max of filter value
-    this.data_min = d3.min(kshf.items, this.options.catItemMap);
-    this.data_max = d3.max(kshf.items, this.options.catItemMap);
-
-    // create a sorted array of data items
-    this.sortedData = kshf.items.slice(0);
-
-    this.sortedData.sort(function(a,b){
-        var v_a = kshf_.options.catItemMap(a);
-        var v_b = kshf_.options.catItemMap(b);
-
-        if(v_a!==v_b) { return v_a-v_b;}
-        return a.id() - b.id();
-    });
-
-    this.sortedData_Filtered = { min:0 , max: this.sortedData.length-1};
-
-    var sliderStep = Math.floor((this.data_max-this.data_min)/10);
-
-    this.sliderUI = $(this.sliderDiv.append("div")[0][0]).rangeSlider({
-        bounds:{min: this.data_min, max: this.data_max},
-        defaultValues:{min: this.data_min, max: this.data_max},
-        arrows:false,
-//        step: sliderStep,
-        formatter: kshf.convertToReadable,
-        scales: [
-    // Primary scale
-            {
-                first: function(val){ return val; },
-                next: function(val) { return val + sliderStep; },
-                stop: function(val) { return false; },
-                label: function(val){ return kshf.convertToReadable(val); }
-/*                format: function(tickContainer, tickStart, tickEnd){ 
-                    tickContainer.addClass("myCustomClass");
-                } */
-            }
-        ]
-//        valueLabels:"change",
-//        delayOut: 4000
-    })
-    .bind("valuesChanging", function(e, data) {
-        var sdf_min = kshf_.sortedData_Filtered.min;
-        var sdf_max = kshf_.sortedData_Filtered.max;
-
-        if(kshf_.sliderRange.min>data.values.min) {
-            // more data is selected on the lower bounds
-            while(true){
-                sdf_min--;
-                if(sdf_min<0) { sdf_min = 0; break; }
-                // run filter
-                var item = kshf_.sortedData[sdf_min];
-                var itemV=kshf_.options.catItemMap(item);
-                var selected = itemV>=data.values.min;
-                item.filters[kshf_.filterId] = selected;
-                item.updateSelected();
-                if(!selected){ sdf_min++; break; }
-            }
-        } else if(kshf_.sliderRange.min<data.values.min) {
-            // less data is selected on the lower bounds
-            while(true){
-                if(sdf_min>sdf_max) { sdf_min = sdf_max; break; }
-                // run filter
-                var item = kshf_.sortedData[sdf_min];
-                var itemV=kshf_.options.catItemMap(item);
-                var selected = itemV>=data.values.min;
-                item.filters[kshf_.filterId] = selected;
-                item.updateSelected();
-                if(selected){ break; }
-                sdf_min++;
-            }
-        } else if(kshf_.sliderRange.max<data.values.max) {
-            // more data is selected on the upper bounds
-            var maxVal = kshf_.sortedData.length-1;
-            while(true){
-                sdf_max++;
-                if(sdf_max>maxVal) { sdf_max = maxVal; break; }
-                // run filter
-                var item = kshf_.sortedData[sdf_max];
-                var itemV=kshf_.options.catItemMap(item);
-                var selected = itemV<=data.values.max;
-                item.filters[kshf_.filterId] = selected;
-                item.updateSelected();
-                if(!selected){ sdf_max--; break; }
-            }
-        } else if(kshf_.sliderRange.max>data.values.max) {
-            // less data is selected on the lower bounds
-            while(true){
-                if(sdf_max<sdf_min) { sdf_max = sdf_min; break; }
-                // run filter
-                var item = kshf_.sortedData[sdf_max];
-                var itemV=kshf_.options.catItemMap(item);
-                var selected = itemV<=data.values.max;
-                item.filters[kshf_.filterId] = selected;
-                item.updateSelected();
-                if(selected){ break; }
-                sdf_max--;
-            }
-        }
-        if(sdf_min !== kshf_.sortedData_Filtered.min ||
-           sdf_max !== kshf_.sortedData_Filtered.max){
-            kshf.update();
-            kshf_.sortedData_Filtered.min = sdf_min;
-            kshf_.sortedData_Filtered.max = sdf_max;
-        }
-    
-        // cache the current value
-        kshf_.sliderRange = {
-            min: data.values.min,
-            max: data.values.max
-        };
-
-        $(".filter_row_text_"+kshf_.filterId+" .filter_item")
-            .html("<b>" + kshf.convertToReadable(kshf_.sliderRange.min) + 
-                  "</b> to <b>" + kshf.convertToReadable(kshf_.sliderRange.max) + "</b>")
-            ;
-
-        kshf_.root.attr("filtered_range",kshf_.isFiltered_range());
-        $(".filter_row_text_"+kshf_.filterId).attr("filtered",kshf_.isFiltered_range());
-    });
- 
-    // if parent is hidden before, you need to call this manually to show range slider
-    this.sliderUI.rangeSlider('resize');
-
-    this.sliderRange = {
-        min: this.data_min,
-        max: this.data_max
-    };
-}
-
-
-kshf.RangeChart.prototype.getHeight_Rows = function(){
-    if(this.collapsed) return 1;
-    return 3;
-}
-
-kshf.RangeChart.prototype.insertFilterSummaryBlock = function(){
-    var kshf_=this;
-    var a = d3.select("span.filter-blocks-for-charts");
-    var s= a.append("html:span")
-        .attr("class","filter-block filter_row_text_"+this.filterId)
-        .attr("filtered","false")
-        .text(this.options.facetTitle+" between ");
-    s.append("html:span")
-        .attr("class","filter_item");
-//    if(this.options.filterText.unit){
-//        s.append("html:span").text(" "+this.options.filterText.unit);
-//    }
-    s.append("html:span")
-        .attr("class","filter_reset")
-        .attr("title","Clear filter")
-        .text("x")
-        .on("click",function(){ kshf_.clearRangeFilter(); });
-}
-kshf.RangeChart.prototype.updateSelf = function(){
-}
-kshf.RangeChart.prototype.getFilteredCount = function(){
-    return 0;
-}
-
-kshf.RangeChart.prototype.setWidth = function(w){
-    this.root.style("width",w+"px");
-}
-
-
-kshf.RangeChart.prototype.collapseCategories = function(hide){
-    this.collapsed = hide;
-
-    this.sliderDiv.style("display",hide?"none":"block");
-    this.updateSelfLayout();
-    kshf.updateLayout();
-}
-
-kshf.RangeChart.prototype.updateSelfLayout = function(){
-    this.root.attr("collapsed",(this.collapsed?"true":"false"));
-    
-    var chartHeight = kshf.line_height*this.getHeight_Rows();
-
-    this.root.style("height",(chartHeight)+"px");
-}
-
-kshf.RangeChart.prototype.clearAllFilters = function(){
-    this.clearRangeFilter();
-}
-
-kshf.RangeChart.prototype.isFiltered_range = function(){
-    return this.sliderRange.min !== this.data_min || this.sliderRange.max !== this.data_max;
-}
-
-kshf.RangeChart.prototype.clearRangeFilter = function(){
-    this.sliderRange = {
-        min: this.data_min,
-        max: this.data_max
-    };
-
-    this.sliderUI.rangeSlider('min',this.sliderRange.min);
-    this.sliderUI.rangeSlider('max',this.sliderRange.max);
-    this.root.attr("filtered_range",this.isFiltered_range());
-    $(".filter_row_text_"+this.filterId).attr("filtered",this.isFiltered_range());
-
-    this.sortedData_Filtered = { min:0 , max: this.sortedData.length-1};
-
-    // set filter to true by default
-    var dt = kshf.items;
-    for(i=0;i<dt.length;i++){
-        var item = dt[i];
-        // assume all filters pass
-        for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
-            item.filters[f] = true;
-        }
-        item.updateSelected();
-    }
-
-    kshf.update();
-}
-
 

@@ -496,12 +496,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display:none;
 }
 
+.kshf div.kshfChart[showscrollbar=true] g.scrollGroup{
+    display:inline-block;
+}
+.kshf div.kshfChart[showscrollbar=false] g.scrollGroup{
+    display:none;
+}
 
 .kshf div.kshfChart[collapsed=true] g.scrollGroup{
-    display: none;
+    display: none !important;
 }
 .kshf div.kshfChart[collapsedTime=true] g.scrollGroup g.rightScroll{
-    display: none;
+    display: none !important;
 }
 
 .kshf g.scrollGroup g path.top_arrow{

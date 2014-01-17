@@ -111,12 +111,6 @@ var flag_cols = {
 
 
 function loadChart() {
-    resetSize();
-    // set resize callback
-    $(window).resize(function() {
-        resetSize();
-        kshf.updateLayout();
-    });
 
     logIf.Check = logIf.All();
 
@@ -125,7 +119,7 @@ function loadChart() {
         domID : "#chart_div4",
         dirRoot: "../",
         categoryTextWidth: 155,
-        showResizeCorner: false,
+        //showResizeCorner: false,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -147,7 +141,7 @@ function loadChart() {
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
                 timeBarShow: true,
                 textFilter : 'in', textGroup  : 'continents'
-            },{
+            },/*{
                 facetTitle: "Language",
                 catItemMap : function(flag){
                     var r= flag.data[flag_cols.Language];
@@ -198,7 +192,7 @@ function loadChart() {
                     return toRet;
                 },
                 textFilter : 'has shape', textGroup  : 'shapes'
-            }, {
+            }, /*{
                 facetTitle: "# of Bars",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
@@ -212,7 +206,7 @@ function loadChart() {
                 },{  
                     name:"# Flags"
                 }]
-            },{
+            },*/{
                 facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
@@ -261,7 +255,6 @@ function loadChart() {
                 var str="";
                 // description
                     str+="<img src=\""+d.data[flag_cols.Flag]+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
-                    str+="<div style=\"float:left;\">";
                     str+="<span class=\"iteminfo iteminfo_0\">";
                     str+=d.data[flag_cols.Country];
                     str+="</span></br>";
@@ -290,7 +283,6 @@ function loadChart() {
                     if(d.data[flag_cols.Triangle]) str+="Triangle, ";
                     str+="</span></br>";
                     str+="</span>"; // item_details
-                    str+="</div>";
                 return str;
             }
         }
@@ -310,6 +302,8 @@ $(document).ready(loadChart);
     }
     #chart_div4 {
         margin: 0 auto;
+        width:800px;
+        height:530px;
     }
     body{ margin:2px; }
 </style>
