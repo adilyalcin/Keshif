@@ -172,27 +172,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rgba(190, 190, 190, 0) 100%);
 }
 .kshf .chartFirstLineBackgroundRight{
-    width:100%;
-    position: relative;
-    height:18px;
     background-image: linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 30%, 
         rgba(190, 190, 190, 0.3) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -webkit-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 30%, 
         rgba(190, 190, 190, 0.3) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -moz-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 30%, 
         rgba(190, 190, 190, 0.3) 90%, 
         rgba(190, 190, 190, 0) 100%);
     background-image: -ms-linear-gradient(right, 
         rgba(190, 190, 190, 0) 0%, 
-        rgba(190, 190, 190, 0.3) 3%, 
+        rgba(190, 190, 190, 0.3) 30%, 
         rgba(190, 190, 190, 0.3) 90%, 
         rgba(190, 190, 190, 0) 100%);
 }
@@ -423,6 +420,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     width: 13px;
     height:18px;
     transition: all 250ms linear;
+    top: 2px;
+    position: relative;
 }
 .kshf .kshfChart .headerGroup span.header_label_none{
     display: block;
@@ -987,7 +986,6 @@ div.kshf.layout_header span.title{
 div.kshf.layout_header{
     width:100%;
     height: 21px;
-    margin-bottom: 3px;
     font-weight: 700;
     font-size: 1.05em;
     text-shadow: 1px 1px 2px white;
@@ -1241,12 +1239,12 @@ div.listItem div.groupMe{
 	color: black;
 	padding: 0px 5px 0px 2px;
     min-height: 22px;
-    
-    background-image: linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgba(233, 227, 205,1) 0%, rgba(233, 227, 205,0.3) 100%);
-    background-image: -ms-linear-gradient(bottom, rgb(233, 227, 205) 0%, rgba(233, 227, 205,0.3) 100%);*/
+
+    background-image: linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
+    background-image: -o-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
+    background-image: -moz-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
+    background-image: -webkit-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
+    background-image: -ms-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);*/
     background-color: rgba(233, 227, 205,1);
     
     border-top-left-radius: 20px;
@@ -1270,7 +1268,7 @@ div.listItem div.groupMe{
     font-weight: 300;
     border: 1px rgb(104, 91, 43) solid;
     box-shadow: 1px 1px 1px rgb(78, 71, 43);
-    background-color: rgba(238, 235, 224,0.1);
+    background-color: rgba(255,255,255,0.7);
     padding: 0px 1px 0px 2px;
     margin-top: 2px;
     margin-left: 5px;
