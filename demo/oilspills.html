@@ -46,8 +46,8 @@ function getMaterial(spill){
 }
 
 function resetSize(){
-    $('#kshfChartId').height($(window).height()-10);
-    $('#kshfChartId').width (1100);
+    $('#kshfChartId').height(750);
+    $('#kshfChartId').width (950);
 }
 
 google.setOnLoadCallback( function(){
@@ -61,10 +61,10 @@ google.setOnLoadCallback( function(){
     logIf.Check = logIf.All();
 
 	kshf.init({
-        chartTitle: "Petroleum Spills - Greater Than 1 Barrel from OCS Oil & Gas Activities",
+        chartTitle: "Petroleum Spills - from OCS Oil & Gas Activities",
         domID : "#kshfChartId",
         dirRoot: "../",
-        categoryTextWidth: 120,
+        categoryTextWidth: 180,
         source : {
             gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
             sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
@@ -79,7 +79,8 @@ google.setOnLoadCallback( function(){
         charts : [
             {
                 facetTitle: "Size",
-                timeTitle: "Date",
+                timeTitle: "Spill Date",
+                timeItemMap :  function(spill){ return spill.data[spillsCol["Date"]] },
                 sortingFuncs : [{ 
                     no_resort: true
                 }],
@@ -175,13 +176,15 @@ google.setOnLoadCallback( function(){
                 margin: 0 auto;
             }
             html, body {
-                margin: 0;
                 width: 100%;
                 height: 100%;
                 min-height: 100%;
             }
-            body{ margin:2px; }
             div.kshf.layout_header span.title{
+                letter-spacing: 0em;
+            }
+            div.kshf.layout_header span.title{
+                font-size: 1em;
                 letter-spacing: 0em;
             }
         </style>

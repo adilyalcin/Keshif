@@ -15,37 +15,27 @@ $(document).ready( function(){
     var cols;
 
 	kshf.init({
-        chartTitle: "KeshifTrackerData",
+        chartTitle: "KeshifTrackerConfig",
         domID : "#chart_div4",
         dirRoot: "../",
         categoryTextWidth:180,
         source : {
-            // 0Ai6LdDWgaqgNdFJvMmIyLUZPZWkzZG1KanlaQm1odXc
-            gdocId : '0Ai6LdDWgaqgNdE1IU3pQdGJsODJTa05zbThtZFhha3c',
-            sheets : [ {name:"Messages"} ]
+            gdocId : '0Ai6LdDWgaqgNdFJvMmIyLUZPZWkzZG1KanlaQm1odXc',
+            sheets : [ {name:"ConfigMessages"} ]
         },
         loadedCb: function(){
-            cols = kshf.dt_ColNames.Messages;
+            cols = kshf.dt_ColNames.ConfigMessages;
         },
         charts: [
-            {   timeTitle: "Time",
+            {
+                timeTitle: "Time",
                 timeItemMap: function(f){ 
-                    return new Date(f.data[cols['ts']]*900+1388088936864);
+                    var ts= f.data[cols['ts']];
+                    if(ts<100000000) return null;
+                    var dt = new Date(ts);
+                    if(dt.getUTCFullYear()<2000) return null;
+                    return dt;
                 },
-                facetTitle: "Action Category",
-                catItemMap : function(f){ 
-                    switch(f.data[cols['catID']]){
-                    case 1:  return 'FacetFilter';
-                    case 2:  return 'FacetSort';
-                    case 3:  return 'FacetScroll';
-                    case 4:  return 'FacetCollapse';
-                    case 5:  return 'ItemBased';
-                    case 6:  return 'Configuration';
-                    case 7:  return 'Other';
-                    }
-                    return '???';
-                }
-            },{
                 facetTitle: "Demo",
                 catItemMap : function(f){ 
                     switch(f.data[cols['demoID']]){
@@ -69,19 +59,35 @@ $(document).ready( function(){
                     }
                     return '???';
                 }
-            },{ facetTitle: "Facet",
-                catItemMap : function(f){ return f.data[cols['facet']]; }
-            },{ facetTitle: "Action ID",
-                catItemMap : function(f){ return f.data[cols['actID']]; }
-            },{ facetTitle: "SessionID",
-                catItemMap : function(f){ return f.data[cols['sesID']]; }
-            },{ facetTitle: "Integer Value",
-                catItemMap : function(f){ return f.data[cols['intValue']]; }
+            },{ facetTitle: "width",
+                sortingFuncs: [{
+                    name:"numeric",
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                },{
+                    name:"By freq."
+                }],
+                catItemMap : function(f){ 
+                    var x=f.data[cols['width']];
+                    return Math.floor(x/20)*20;
+                }
+            },{ facetTitle: "height",
+                sortingFuncs: [{
+                    name:"numeric",
+                    no_resort: true,
+                    func: kshf.sortFunc_Column_ParseInt_Incr
+                },{
+                    name:"By freq."
+                }],
+                catItemMap : function(f){ 
+                    var x=f.data[cols['height']];
+                    return Math.floor(x/20)*20;
+                }
             }
         ],
         list:{
             sortColWidth: 65,
-            sortOpts : [ {name: 'ts' } ],
+            sortOpts : [ {name: 'width' } ],
             contentFunc : function(d) {
                 var str="";
                 str+="<div class=\"iteminfo iteminfo_1\"> SesID: "+d.data[cols.sesID]+"</div>";

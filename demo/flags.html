@@ -69,12 +69,6 @@ function religionText(d){
     }
 };
 
-function resetSize(){
-    $('#chart_div4').height($(window).height()-10);
-    $('#chart_div4').width (900);
-}
-
-
 var flag_cols = {
     Country : 0,
     Was:1,
@@ -119,7 +113,7 @@ function loadChart() {
         domID : "#chart_div4",
         dirRoot: "../",
         categoryTextWidth: 155,
-        //showResizeCorner: false,
+        showResizeCorner: false,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -141,7 +135,7 @@ function loadChart() {
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
                 timeBarShow: true,
                 textFilter : 'in', textGroup  : 'continents'
-            },/*{
+            },{
                 facetTitle: "Language",
                 catItemMap : function(flag){
                     var r= flag.data[flag_cols.Language];
@@ -192,7 +186,7 @@ function loadChart() {
                     return toRet;
                 },
                 textFilter : 'has shape', textGroup  : 'shapes'
-            }, /*{
+            }, {
                 facetTitle: "# of Bars",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
@@ -206,7 +200,7 @@ function loadChart() {
                 },{  
                     name:"# Flags"
                 }]
-            },*/{
+            },{
                 facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
@@ -302,10 +296,9 @@ $(document).ready(loadChart);
     }
     #chart_div4 {
         margin: 0 auto;
-        width:800px;
-        height:530px;
+        width:950px;
+        height:750px;
     }
-    body{ margin:2px; }
 </style>
 	</head>
 	<body onmousemove="logIf.setSessionID()"><div id="chart_div4"></div></body>
