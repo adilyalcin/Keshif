@@ -35,14 +35,21 @@ var logIf = {
             var ran  = window.event.clientX*Math.random();
             var ran2 = window.event.clientY*Math.random();
             this.sessionID = Math.floor((ran+ran2)*10000000000000);
-            writeCookie('sessionId', this.sessionID, 30);
+            writeCookie('sessionId', this.sessionID, 365);
         }
         this.sessionID2 = Math.floor(Math.random()*10000000000000);
         this.All();
     },
+    host : function(){
+        if(document.location.hostname==="localhost") return true;
+        if(document.location.hostname==="adilyalcin.github.io") return true;
+        if(document.location.hostname==="www.cs.umd.edu") return true;
+        if(document.location.hostname==="cs.umd.edu") return true;
+        return false;
+    },
     All : function(){
         var tmp = this.Check;
-        this.Check =  this.WindowSize() && this.Desktop() && this.NoTouch() && this.NotIE() && (this.sessionID!==null);
+        this.Check =  this.WindowSize() && this.Desktop() && this.NoTouch() && this.NotIE() && this.host()===true && (this.sessionID!==null);
         if(this.Check===true && tmp === false) {
             sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,
                 { height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
