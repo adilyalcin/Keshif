@@ -2712,6 +2712,7 @@ kshf.BarChart.prototype.insertHeader = function(){
         .attr("viewBox","0 0 24 24")
         .on("click",function(d){
             me.showConfig = !me.showConfig;
+            me.update_VisibleItem(true); // force update
             me.parentKshf.updateLayout();
         })
     .append("svg:path")
@@ -3234,11 +3235,13 @@ kshf.BarChart.prototype.update_VisibleItem = function(forced){
     var visibleRowHeight = kshf.line_height*this.rowCount_VisibleItem;
     var headerHeight     = kshf.line_height*this.rowCount_Header();
 
+    this.scrollbar.show = this.rowCount_VisibleItem!==this.catCount_Total;
+
     this.divRoot
         .attr("collapsed",this.collapsed===false?"false":"true")
         .attr("showconfig",this.showConfig)
         .attr("collapsedTime",this.collapsedTime===false?"false":"true")
-        .attr("showscrollbar",this.rowCount_VisibleItem!==this.catCount_Total)
+        .attr("showscrollbar",this.scrollbar.show)
         .transition()
         .duration(this.parentKshf.layout_animation)
         .style("height",(this.type!=="scatterplot")?(totalHeight+"px"):"100%");
@@ -3343,9 +3346,6 @@ kshf.BarChart.prototype.stepScrollPosition = function(stepSize) {
 kshf.BarChart.prototype.insertScrollbar = function(){
     var me = this;
 
-    // TODO: don't need this variable, use DOM information to see if scrollbar group exist
-    this.scrollbar.show = true;
-    
     // *****************
 	var scrollGroup = this.root.append("svg:g")
         .attr("class","scrollGroup")
@@ -4258,7 +4258,7 @@ kshf.BarChart.prototype.setTimeTicks = function(){
         // MONTH
         this.timeticks.range = d3.time.months;
         this.timeticks.format = d3.time.format.utc("%b '%y");
-        this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/50));
+        this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/60));
         // must be 1/2/3/4/6/12
         if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
         else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
@@ -4506,12 +4506,12 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
 				kshf_.divRoot.on("mouseup", null);
 
                 kshf_.updateTimeChartDotConfig();
-            if(sendLog) {
-                if(kshf_.x_axis_active_filter==="min")
-                    sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMinHandle,kshf.getFilteringState());
-                else
-                    sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMaxHandle,kshf.getFilteringState());
-            }
+                if(sendLog) {
+                    if(kshf_.x_axis_active_filter==="min")
+                        sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMinHandle,kshf.getFilteringState());
+                    else
+                        sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMaxHandle,kshf.getFilteringState());
+                }
 			});
 		});
     this.yearSetXPos();

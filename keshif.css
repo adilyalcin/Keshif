@@ -786,10 +786,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     -ms-transition: all 150ms linear;
     transition: all 150ms linear;
 }
-.kshf g.row g[highlight=true] rect.total{
+.kshf g.row[noitems=false] g[highlight=true] rect.total{
     cursor: pointer;
 }
-.kshf g.row g[highlight=true] rect.active{
+.kshf g.row[noitems=false] g[highlight=true] rect.active{
     pointer-events: none;
     stroke: orangered;
     stroke-width: 2;
@@ -809,34 +809,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row[noitems=true] text{
     fill:gray;
 }
-.kshf g.row g[highlight=false] text.item_count {
+.kshf g.row g text.item_count {
     font-size: 0.7em;
     cursor: default;
 }
-.kshf g.row g[highlight=true] text.item_count {
-    font-size: 0.7em;
+.kshf g.row[noitems=false] g[highlight=true] text.item_count {
     cursor: pointer;
 }
-.kshf g.row g[highlight=false] text.row_label {
+.kshf g.row g text.row_label {
     font-size: 0.8em;
     text-anchor: end;
     font-weight:300;
     cursor: default;
 }
-.kshf g.row g[highlight=true] text.row_label {
-    font-size: 0.8em;
-    text-anchor: end;
-    font-weight:300;
+.kshf g.row[noitems=false] g[highlight=true] text.row_label {
     cursor: pointer;
 }
-.kshfHost[kb_modifier=true] .kshf g.row g[highlight=true] text.row_label {
+.kshfHost[kb_modifier=true] .kshf g.row[noitems=false] g[highlight=true] text.row_label {
     cursor: cell;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] text{
     font-weight: 700;
     fill: #c32c2c;
 }
-.kshf g.row g[highlight=true] text{
+.kshf g.row[noitems=false] g[highlight=true] text{
     fill: orangered !important;
     -webkit-transition: fill 100ms linear;
     -moz-transition: fill 100ms linear;
@@ -870,15 +866,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
     opacity:1;
 }
-.kshf g.row g[highlight=true] rect.rowSelectBackground_ClickArea{
-    opacity:0;
-    pointer-events: all;
-    cursor: pointer;
-}
-.kshf g.row g[highlight=false] rect.rowSelectBackground_ClickArea{
+.kshf g.row g rect.rowSelectBackground_ClickArea{
     opacity:0;
     pointer-events: all;
     cursor: default;
+}
+.kshf g.row[noitems=false] g[highlight=true] rect.rowSelectBackground_ClickArea{
+    cursor: pointer;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
     pointer-events: all;
@@ -933,7 +927,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsedTime=true] g.row line.row_bar_line{
     display: none;
 }
-.kshf g[highlight=true] .row_bar_line{
+.kshf g.row[noitems=false] g[highlight=true] .row_bar_line{
 	stroke: orangered;
 }
 .kshf line.selectVertLine {
