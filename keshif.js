@@ -3304,8 +3304,8 @@ kshf.BarChart.prototype.update_VisibleItem = function(forced){
 		.attr("y2", -8)
         ;
 	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
+//        .transition()
+//        .duration(this.parentKshf.layout_animation)
         .attr("y",-visibleRowHeight-8)
 		.attr("height", visibleRowHeight)
         ;
@@ -4306,6 +4306,7 @@ kshf.BarChart.prototype.updateTimeScale = function(){
 }
 
 kshf.BarChart.prototype.insertTimeTicks = function(){
+    var kshf_ = this;
     var tickGroup = this.root.select("g.timeAxisGroup g.tickGroup");
 
     var numTicks = Math.floor(this.options.timeMaxWidth/70);
@@ -4320,6 +4321,32 @@ kshf.BarChart.prototype.insertTimeTicks = function(){
         ;
     ;
     tickGroup.call(xAxis);
+
+    this.insertTimeTicks_timeValues = [];
+
+    tickGroup.selectAll("text")
+        .each(function(d,i){
+            kshf_.insertTimeTicks_timeValues.push(d);
+        })
+        .on("click",function(d,i){
+            var curTime  = kshf_.insertTimeTicks_timeValues[i];
+            var nextTime = kshf_.insertTimeTicks_timeValues[i+1];
+            if(nextTime === undefined){
+                nextTime = kshf_.timeRange_ms.max;
+//                curTime = kshf_.insertTimeTicks_timeValues[i-1];
+            }
+            kshf_.timeFilter_ms.min = curTime;
+            kshf_.timeFilter_ms.max = nextTime;
+            kshf_.yearSetXPos();
+            kshf_.filterTime();
+
+            kshf_.sortSkip = true;
+            kshf.update();
+
+        })
+        ;
+
+    var text=xAxis.tickValues();
 
     tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
 };
@@ -4346,6 +4373,8 @@ kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
     axisSubGroup
         .append("svg:rect")
         .attr("class", "filter_nonselected")
+        .attr("y",0)
+        .attr("height",0)
         .on("click",function(){
             d3.event.stopPropagation();
         })

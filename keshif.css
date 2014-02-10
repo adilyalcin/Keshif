@@ -211,11 +211,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.x_axis text{
 	font-size: 0.7em;
     font-weight: 300;
+    cursor: default;
 }
 .kshf g.timeAxisGroup text{
 	font-size: 0.7em;
     text-shadow: 1px 1px white;
     font-weight: 300;
+    cursor: pointer;
 }
 .kshf g.timeAxisGroup line{
 	opacity: 1;
