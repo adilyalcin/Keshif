@@ -8,9 +8,6 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
-        <!-- Logging features -->
-        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
-
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
 
@@ -36,8 +33,6 @@ $(document).ready( function(){
 //        kshf.updateLayout();
     });
 
-    logIf.Check = logIf.All();
-    
 	kshf.init({
         chartTitle: "Tomorrow's Professor Mailing List",
         domID : "#chart_div4",
@@ -63,20 +58,29 @@ $(document).ready( function(){
         } ],
         list:{
             sortColWidth: 70,
-            sortOpts : [ { name: 'id'},{
-                name:"Category"
-            } ],
+            sortOpts : [ 
+                {   name: 'id',
+                    noGroupBorder: true
+                },{
+                    name:"Category"
+                }],
             textSearch : "Title",
+            detailsToggle : true,
+            detailsDefault : false,
             contentFunc : function(d) {
                 var str="";
                 // title
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+d.data[postCols['id']]+"\" target=\"_blanl\">"+d.data[postCols['Title']]+"<a/>";
                 str+="</div>";
+
+                str+="<span class=\"item_details\">";
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">In: "+
                     kshf.dt_id.Categories[d.data[postCols['Category']]].data[2]+
                     "</div>";
+                str+="</span>";
+
                 str+="</div>";
                 return str;
             }
@@ -96,8 +100,11 @@ $(document).ready( function(){
             #chart_div4 {
                 margin: 0 auto;
             }
+            div.listItem {
+                padding-bottom: 0px;
+            }
             body{ margin:2px; }
         </style>
     </head>
-	<body onmousemove="logIf.setSessionID()"> <div id="chart_div4"></div> </body>
+	<body> <div id="chart_div4"></div> </body>
 </html>
