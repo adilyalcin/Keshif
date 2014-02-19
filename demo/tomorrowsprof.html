@@ -31,12 +31,12 @@ function resetSize(){
 }
 
 $(document).ready( function(){
-    var postCols, catCols;
+    var postCols, catCols, tNow;
     resetSize();
     // set resize callback
     $(window).resize(function() {
-        resetSize();
-        kshf.updateLayout();
+//        resetSize();
+//        kshf.updateLayout();
     });
 
     logIf.Check = logIf.All();
@@ -54,10 +54,16 @@ $(document).ready( function(){
             postCols = kshf.dt_ColNames.Posts;
             catCols = kshf.dt_ColNames.Categories;
         },
-        charts: [
-            {   facetTitle: "Category", catTableName: "Categories"
-            }
-        ],
+        charts: [ {
+            facetTitle: "Category", 
+            timeTitle: "Date",
+            timeItemMap : function(d){
+                var r =new Date(Date.now());
+                r.setDate(r.getDate()-d.data[0]*4);
+                return r;
+            },
+            catTableName: "Categories"
+        } ],
         list:{
             sortColWidth: 70,
             sortOpts : [ { name: 'id'},{

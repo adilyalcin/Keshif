@@ -1683,7 +1683,7 @@ kshf.updateLayout_Height = function(){
         c4.update_VisibleItem(false);
     }
 
-    // adjust layout_right vertical position
+    // adjust layoutRight vertical position
     if(c2.type==='scatterplot'){
         this.layoutRight
             .transition()
@@ -1792,7 +1792,7 @@ kshf.updateAllTheWidth = function(v){
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
-    this.layoutRight.style("left",(this.width_leftPanel_total)+"px");
+    this.layoutRight.style("left",((this.charts.length>1)?this.width_leftPanel_total:0)+"px");
 
     this.root.select(".kshf.layout_left_header span.filters_text")
         .style("margin-right","-8px")
@@ -1807,7 +1807,8 @@ kshf.updateAllTheWidth = function(v){
 
     // for some reason, on page load, this variable may be null. urgh.
     if(this.listDisplay){
-        this.listDisplay.listDiv.style("width",width_rightPanel_total+"px");
+        this.listDisplay.listDiv.style("width",
+            ((this.charts.length>1)?width_rightPanel_total:this.divWidth-15)+"px");
     }
 
     // update list
