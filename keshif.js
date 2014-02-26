@@ -893,6 +893,8 @@ kshf.compareListItems = function(a, b, sortValueFunc, sortValueType){
     if(sortValueType===0) {
         dif = f_a.localeCompare(f_b);
     } else if(sortValueType===1) {
+        if(f_a===null) return -1;
+        if(f_b===null) return 1;
         dif = f_b.getTime() - f_a.getTime();
     } else {
         dif = f_b-f_a;
@@ -914,18 +916,23 @@ kshf.list.prototype.sortItems = function(){
 
 kshf.list.prototype.updateSortColumnLabels=function(d,tada){
 	var t = d3.select(tada);
-    var kshf_ = this;
+    var me = this;
     var k,j;
 
-    t.style("border-top", 
-        function(d){ ;
-            return ((d.listsortcolumn[0])?"double 4px gray":"duble 0px gray");
-        });
+    var sortColumn=this.listSortOrder[0];
+
+    if(this.config[sortColumn].noGroupBorder !== true){
+        t.style("border-top", 
+            function(d){ ;
+                return ((d.listsortcolumn[0])?"double 4px gray":"duble 0px gray");
+            });
+    } else {
+        t.style("border-top", "solid 0px gray");
+    }
 
     // now update the text
-    var sortColumn=this.listSortOrder[0];
     t.select(".listsortcolumn")
-        .html(function(){ return kshf_.config[sortColumn].label(d); })
+        .html(function(){ return me.config[sortColumn].label(d); })
         ;
 };
 
