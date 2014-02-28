@@ -1839,6 +1839,9 @@ kshf.updateCustomListStyleSheet = function(){
     }
     // 25 is for itemtoggledetails
     var contentWidth = (this.width_rightPanel_total-totalColWidth-30-25);
+    if(this.charts.length<2){
+        contentWidth+=this.width_leftPanel_total;
+    }
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
     this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");

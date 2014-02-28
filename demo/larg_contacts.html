@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Learning Analytics Contacts</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+function resetSize(){
+    $('#chartDiv').height(750);
+    $('#chartDiv').width (700);
+}
+
+$(document).ready( function(){
+    resetSize();
+
+	kshf.init({
+        chartTitle: "Learning Analytics Contacts",
+        domID : "#chartDiv",
+        dirRoot: "../",
+        categoryTextWidth: 220,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdDJQck5SXzhJaXNLSnV5WDJpcUJDd0E',
+            sheets : [ {name:"Contacts"} ]
+        },
+        loadedCb: function(){
+            kshf.cellToArray(kshf.dt.Contacts, [2], /\b,\s+/, false);
+        },
+        charts : [
+            {
+                facetTitle: "Department",
+                timeTitle: "Last Meeting",
+                sortingFuncs : [
+                    { name: "Last meeting.",  func: kshf.sortFunc_Time_Last },
+                    { name: "Contact #" }
+                ],
+            }
+        ],
+        list: {
+            sortColWidth: 55,
+            sortOpts : [ {name: 'Last Meeting',label: function(d){ 
+                    if(d.data[7]===null) return "-";
+                    return moment(d.data[7]).format('MM/DD/YY'); 
+                } 
+            } ],
+            detailsToggle : true,
+            detailsDefault : true,
+            textSearch : "names",
+            textSearchFunc : function (d) {
+                return d.data[0];
+            },
+            contentFunc : function(d) {
+                var j;
+                var str="";
+
+                if(d.data[4]!==null || d.data[4]!==""){
+                    str+="<img class=\"item_details\" src=\""+d.data[4]+"\" width=\"70\" style=\"float:left;\">";
+                } else {
+                }
+                str+="<div style=\"float:left; width:calc(80%);\">";
+
+                // description
+                str+="<div class=\"iteminfo iteminfo_0\">";
+                str+=d.data[0];
+                str+="<a href=\"mailto:"+d.data[1]+"\"><img src=\"img/email.png\" height=\"12\" style=\"margin-left:20px\"></a> - ";
+                str+="<a href=\""+d.data[3]+"\" target=\"_blank\"><img src=\"img/url.png\" height=\"15\"></a>";
+                str+="</div>";
+
+                str+="<span class=\"item_details\">";
+
+                str+="<div class=\"iteminfo iteminfo_1\"> Department: " + d.data[2]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> Skills: " + d.data[6]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> Last Meeting: " + d.data[7]+"</div>";
+                str+="</span>";
+
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+        <style>
+            div.listItem{ padding-bottom: 5px; }
+            #chartDiv { margin: 0 auto; }
+            html, body {
+                width: 100%;
+                height: 100%;
+                min-height: 100%;
+            }
+        </style>
+	</head>
+	<body><div id="chartDiv"></div></body>
+</html>
