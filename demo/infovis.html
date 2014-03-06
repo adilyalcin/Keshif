@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>InfoVis Papers</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+google.setOnLoadCallback(function () {
+    // set div height accordingly 
+    $('#chart_div4').height($(window).height()-45);
+    $('#chart_div4').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div4').height($(window).height()-45);
+        $('#chart_div4').width ($(window).width()*0.9);
+        kshf.updateLayout();
+    });
+
+	kshf.init({
+        chartTitle: "InfoVis Papers",
+        domID : "#chart_div4",
+        dirRoot: "../",
+        categoryTextWidth:140,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
+            sheets : [ {name:"Publications"} ]
+        },
+        loadedCb: function(){
+            kshf.cellToArray(kshf.dt.Publications, [2, 3, 4, 5, 6, 7], "*", false);
+        },
+        charts: [
+            {
+                facetTitle: "Concepts",
+//                facetTitle: "Keywords",
+                timeTitle: "Year",
+                timeItemMap: function(d){
+                    var yr = d.data[0].substring(7,9);
+//                    console.log(yr);
+//                    if(isNaN(yr)) return null;
+                    return new Date(moment(yr,"YY"));
+                }
+            },{
+                facetTitle: "Concepts",
+            },{
+                facetTitle: "Index terms",
+            },{
+                facetTitle: "Authors",
+            },{
+                facetTitle: "Best",
+                catItemMap: function(d){
+                    var toRet = [];
+                    if(d.data[8]===true) toRet.push("Best");
+                    if(d.data[6].length>10) toRet.push("Cited +10");
+                    return toRet;
+                }
+            },{
+                facetTitle: "# Citations",
+                catItemMap: function(d){
+                    if(d.data[6]===null) return 0;
+                    return d.data[6].length;
+                },
+                sortingFuncs: [{
+                    no_resort: true,
+                    func:kshf.sortFunc_Column_ParseInt_Incr
+                }]
+            }
+        ],
+        list:{
+            sortColWidth: 90,
+            detailsToggle : true,
+            detailsDefault : false,
+            sortOpts : [
+                {   name: 'Year',
+                    value: function(d){ 
+                        var yr = d.data[0].substring(7,9);
+                        var dt=new Date(moment(yr,"YY"));
+                        return dt.getFullYear();
+                    },
+                }
+            ],
+            textSearch : 'Title',
+            contentFunc : function(d) {
+                var j;
+                var str="";
+
+                // description
+                str+="<div class=\"iteminfo iteminfo_0\">";
+                str+=d.data[1];
+                str+="<a target=\"_blank\" href=\"http://dx.doi.org/"+d.data[9]+"\">"+
+                    "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                str+="</div>";
+
+                str+="<span class=\"item_details\">";
+
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + d.data[2]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data[3]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data[4]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + d.data[5]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data[6].length+"</div>";
+                str+="</span>";
+
+                return str;
+            }
+        }
+    });
+});
+        </script>
+        
+        <style>
+            #chart_div4 { margin: 0 auto; }
+        </style>
+	</head>
+	<body><div id="chart_div4"></div></body>
+</html>
