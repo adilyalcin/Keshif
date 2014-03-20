@@ -1,5 +1,5 @@
 /*jslint plusplus: true, vars: true, browser: true, white:true, nomen :true, sloppy:true, continue:true */
-/*global $, d3, google, alert */
+/*global d3, google */
 
 /*********************************
 
@@ -345,6 +345,7 @@ var unescapeCommas = function(c){
     return a;
 };
 
+// The only place where jquery - ajax load - is used!
 kshf.loadSheet_File = function(sheet){
     var me=this;
     var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
@@ -522,11 +523,7 @@ kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
             d3.select(".kshf.layout_infobox div.status_text div")
                 .text("("+response.getMessage()+")");
             return;
-        }/*
-        if(response.hasWarning()) {
-            alert("Cannot get data from spreadsheet: reason:"+response.getMessage());
-            return;
-        }*/
+        }
         var j;
         var google_datatable = response.getDataTable();
         var d3_table = _kshf.convertToArray(google_datatable,sheet.id,sheet.primary);
@@ -627,7 +624,7 @@ function capitaliseFirstLetter(string) {
 kshf.getFilteringState = function(facetTitle, itemInfo) {
     var r={
         results : this.itemsSelectedCt,
-        textSrch: $("input.bigTextSearch").val()
+        textSrch: this.root.select("input.bigTextSearch").value
     };
 
     // facet title parameters
@@ -713,18 +710,18 @@ kshf.list = function(_kshf, config, root){
             .attr("width","13")
             .style("margin-left","20px")
             ;
-        listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
+        var bigTextSearch = listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
             .attr("placeholder","Search "+(config.textSearch?config.textSearch:"title"))
             .attr("autofocus","true");
-        $("input.bigTextSearch").keydown(function(){
+        bigTextSearch.on("keydown",function(){
             if(this.timer){
                 clearTimeout(this.timer);
                 this.timer = null;
             }
             var x = this;
             this.timer = setTimeout( function(){
-                var v=$(x).val().toLowerCase();
-                $(x).parent().children("span").css('display',(v==='')?'none':'inline-block');
+                var v=x.value.toLowerCase();
+                listHeaderTopRowTextSearch.select("span").style('display',(v==='')?'none':'inline-block');
                 var v=v.split(" ");
 
                 // go over all the items in the list, search each keyword separately
@@ -745,8 +742,9 @@ kshf.list = function(_kshf, config, root){
         });
         listHeaderTopRowTextSearch.append("span")
             .on("click",function() {
-                $(this).prev('input').val('').focus().trigger("keyup");
-                $(this).css('display','none');
+                d3.select(this).style('display','none');
+                bigTextSearch[0][0].value = '';
+                bigTextSearch[0][0].focus();
 
                 // No timeout necessary. Clear selection rightaway.
                 // go over all the items in the list, search each keyword separately
@@ -794,13 +792,13 @@ kshf.list = function(_kshf, config, root){
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
             .on("click", function(d){ me.dom.listItems.each(function(d){ 
-                $(this).attr('details', true); }) 
+                d3.select(this).attr('details', true); }) 
                 me.listDiv.attr('showAll','false');
             });
         x.append("span").attr("class","items_details_off").html("[-]")
             .attr("title","Show details")
             .on("click", function(d){ me.dom.listItems.each(function(d){ 
-                $(this).attr('details', false); }) 
+                d3.select(this).attr('details', false); }) 
                 me.listDiv.attr('showAll','true');
             });
     }
@@ -948,11 +946,11 @@ kshf.list.prototype.insertItems = function(){
         // store the link to DOM in the data item
         .each(function(d){ d.listItem = this; })
         .on("mouseover",function(d,i){
-            $(this).attr("highlight","true");
+            d3.select(this).attr("highlight","true");
             d.highlightAttributes();
         })
         .on("mouseout",function(d,i){
-            $(this).attr("highlight","false");
+            d3.select(this).attr("highlight","false");
             // find all the things that  ....
             d.nohighlightAttributes();
         });
@@ -985,36 +983,36 @@ kshf.list.prototype.insertItems = function(){
 };
 
 kshf.listItemDetailToggleFunc = function(d){
-    var nd = $(this), i=0;
-    while(nd.attr('details')===undefined){
-        nd = nd.parent();
+    var nd = d3.select(this)[0][0], i=0;
+    while(true){
         if(nd===undefined) return;
-    }
-    var m=nd.attr('details');
-    if(m==="true") {
-        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:d.id()});
-        nd.attr('details', false);
-    }
-    if(m==="false") {
-        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:d.id()});
-        nd.attr('details', true);
+        var details = nd.getAttribute('details');
+        if(details==="true"){
+            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:d.id()});
+            nd.setAttribute('details', false);
+        }
+        if(details==="false"){
+            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:d.id()});
+            nd.setAttribute('details', true);
+        }
+        nd = nd.parentNode;
     }
 }
 kshf.listItemDetailToggleFunc2 = function(t){
-    var nd = $(t), i=0;
-    while(nd.attr('details')===undefined){
-        nd = nd.parent();
+    var nd = d3.select(t)[0][0], i=0;
+    while(true){
         if(nd===undefined) return;
-    }
-    var m  = nd.attr('details');
-    var _id = nd.attr('itemID');
-    if(m==="true") {
-        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:_id});
-        nd.attr('details', false);
-    }
-    if(m==="false") {
-        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:_id});
-        nd.attr('details', true);
+        var details = nd.getAttribute('details');
+        var _id = nd.getAttribute('itemID');
+        if(details==="true"){
+            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:_id});
+            nd.setAttribute('details', false);
+        }
+        if(details==="false"){
+            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:_id});
+            nd.setAttribute('details', true);
+        }
+        nd = nd.parentNode;
     }
 }
 
@@ -1123,21 +1121,22 @@ kshf.init = function (options) {
         .attr("tabindex","1")
         .style("position","relative")
         .style("overflow-y","hidden")
+        .on("keydown",function(){
+            var e = d3.event;
+            if(e.keyCode===27){ // escchartRowLabelSearchape
+                me.clearAllFilters();
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,kshf.getFilteringState());
+            }
+            if(e.shiftKey || e.altKey || e.ctrlKey || e.ctrlKey){
+                d3.select(this).attr("kb_modifier",true);
+            }
+        }).on("keyup",function(){
+            var e = d3.event;
+            if(e.shiftKey===false && e.altKey===false && e.ctrlKey===false && e.ctrlKey===false){
+                d3.select(this).attr("kb_modifier",false);
+            }
+        })
         ;
-
-    $(this.domID).keydown(function(e){
-        if(e.which===27){ // escchartRowLabelSearchape
-            me.clearAllFilters();
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,kshf.getFilteringState());
-        }
-        if(e.shiftKey || e.altKey || e.ctrlKey || e.ctrlKey){
-            $(this).attr("kb_modifier",true);
-        }
-    }).keyup(function(e){
-        if(e.shiftKey===false && e.altKey===false && e.ctrlKey===false && e.ctrlKey===false){
-            $(this).attr("kb_modifier",false);
-        }
-    });
 
     if(options.itemName!==undefined){
         this.itemName = options.itemName;
@@ -1199,16 +1198,16 @@ kshf.init = function (options) {
         this.layout_resize = this.root.append("div").attr("class", "kshf layout_resize")
            .on("mousedown", function (d, i) {
                me.root.style('cursor','nwse-resize');
-               var mouseDown_x = d3.mouse($("body")[0])[0];
-               var mouseDown_y = d3.mouse($("body")[0])[1];
-               var mouseDown_width  = $(this.parentNode).width();
-               var mouseDown_height = $(this.parentNode).height();
+               var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
+               var mouseDown_y = d3.mouse(d3.select("body")[0][0])[1];
+               var mouseDown_width  = parseInt(d3.select(this.parentNode).style("width"));
+               var mouseDown_height = parseInt(d3.select(this.parentNode).style("height"));
 
                d3.select("body").on("mousemove", function() {
-                   var mouseDown_x_diff = d3.mouse($("body")[0])[0]-mouseDown_x;
-                   var mouseDown_y_diff = d3.mouse($("body")[0])[1]-mouseDown_y;
-                   $(me.domID).height(mouseDown_height+mouseDown_y_diff);
-                   $(me.domID).width (mouseDown_width +mouseDown_x_diff);
+                   var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
+                   var mouseDown_y_diff = d3.mouse(d3.select("body")[0][0])[1]-mouseDown_y;
+                   d3.select(me.domID).style("height",(mouseDown_height+mouseDown_y_diff)+"px");
+                   d3.select(me.domID).style("width" ,(mouseDown_width +mouseDown_x_diff)+"px");
                    me.updateLayout();
                });
                d3.select("body").on("mouseup", function(){
@@ -1566,12 +1565,19 @@ kshf.clearAllFilters = function(){
     this.update();
 };
 
+kshf.domHeight = function(){
+    return parseInt(d3.select(this.domID).style("height"));
+};
+kshf.domWidth = function(){
+    return parseInt(d3.select(this.domID).style("width"));
+};
+
 kshf.updateLayout_Height = function(){
     var i;
     var chartHeaderHeight = 22;
-    var divHeight = $(this.domID).height() - chartHeaderHeight;
+    var divHeight = this.domHeight() - chartHeaderHeight;
 
-    this.divWidth = $(this.domID).width();
+    this.divWidth = this.domWidth();
 
     var divLineCount = Math.floor(divHeight/this.line_height);
     
@@ -1708,7 +1714,7 @@ kshf.updateLayout_Height = function(){
 kshf.updateLayout = function(){
     if(kshf.loaded!==true) return;
 
-    this.divWidth = $(this.domID).width();
+    this.divWidth = this.domWidth();
 
     kshf.time_animation_barscale = 400;
     var initBarChartWidth = this.width_leftPanel_bar;
@@ -2947,7 +2953,7 @@ kshf.BarChart.prototype.insertHeader = function(){
                 (d==="All" && me.options.selectType==="MultipleAnd") ||
                 (d==="Any" && me.options.selectType==="MultipleOr")
                 )
-                $(this).attr("selected","selected");
+                d3.select(this).attr("selected","selected");
         })
         ;
     filterGr.append("span")
@@ -2993,7 +2999,7 @@ kshf.BarChart.prototype.insertHeader = function(){
             .attr("xml:space","preserve")
             .attr("viewBox","0 0 10 10")
             .on("click",function(d){
-                $(this.parentNode.parentNode).attr("shown",d)
+                d3.select(this.parentNode.parentNode).attr("shown",d)
             })
         .append("svg:circle")
             .attr("class",function(d){ return d;})
@@ -3751,12 +3757,12 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         if(this.catCount_Selected>3){
             var bold=this.catCount_Selected;
             bold+=" "+(this.options.textGroup?this.options.textGroup:"categories");
-            $(".filter_row_text_"+this.filterId+" .filter_item")
+            this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
                 .html("<b>"+bold+"</b>")
                 .attr("title",selectedItemsText_Sm)
                 ;
         } else {
-            $(".filter_row_text_"+this.filterId+" .filter_item")
+            this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
                 .html(selectedItemsText)
                 .attr("title",selectedItemsText_Sm)
                 ;
@@ -4660,7 +4666,7 @@ kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
         if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
             this.insertFilterSummaryBlock_Time();
         }
-        $(".filter_row_text_"+(this.filterId+1)+" .filter_item")
+        this.parentKshf.root.select(".filter_row_text_"+(this.filterId+1)+" .filter_item")
             .html("from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>")
         ;
     } else if(this.filterSummaryBlock_Time){
