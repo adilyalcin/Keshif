@@ -240,40 +240,14 @@ kshf.Item.prototype.nohighlightAttributes = function(){
 // DOCUMENT LOADING
 // ***************************************************************************************************
 
-// Gets google chart datatable and converts it to plain javascript array, for use with kshf
-kshf.convertGDocToArray = function(dataTable,sheet){
-    var r,i,arr = [];
-    var idIndex = -1;
-    var numCols = dataTable.getNumberOfColumns();
-    var itemId=0;
-    // find the index with sheet.id (idIndex)
-    for(i=0; true ; i++){
-        if(i===numCols || dataTable.getColumnLabel(i).trim()===sheet.id) {
-            idIndex = i;
-            break;
-        }
-    }
-    // create the array to return
-    arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
-	for(r=0; r<dataTable.getNumberOfRows() ; r++){
-		var c=[];
-        c.length = numCols; // pre-allocate for speed
-		for(i=0; i<numCols ; i++) { c[i] = dataTable.getValue(r,i); }
-        // push unique id as the last column if necessary
-        if(idIndex===numCols) c.push(itemId++);
-        arr[r] = new kshf.Item(c,idIndex,sheet.primary);
-	}
-    return arr;
-};
-
 // Loads all source sheets
+// Once everything is loaded, kshf.createCharts() will be called
 kshf.loadSource = function(){
     if(this.source.callback){
         this.source.callback();
         return;
     }
-    var i;
-	for(i=0; i<this.source.sheets.length; i++){
+	for(var i=0; i<this.source.sheets.length; i++){
         var sheet = this.source.sheets[i];
         if(sheet.id===undefined){ sheet.id="id"; }
         if(i==0){
@@ -291,57 +265,62 @@ kshf.loadSource = function(){
 };
 
 kshf.loadSheet_Google = function(sheet){
-    var tName = sheet.name;
+    var me=this;
+    var tableName = sheet.name;
     var qString=kshf.queryURL_base+this.source.gdocId+'&headers=1'
     if(sheet.sheetID){
         qString+='&gid='+sheet.sheetID;
     } else {
-        qString+='&sheet='+tName;
+        qString+='&sheet='+tableName;
     }
     if(sheet.range){
         qString+="&range="+sheet.range;
     }
-    var query=new google.visualization.Query(qString);
-    if(sheet.query){
-        query.setQuery(sheet.query);
-    }
-    this.sendTableQuery(this,query,sheet,this.source.sheets.length);
-};
 
-// give it alist split by, it will reconstruct "... , ..." cases back
-var unescapeCommas = function(c){
-    var k=0,j;
-    var escaped=false;
-    var cell;
-    var a=[];
-    for(j=0; j<c.length;j++){
-        if(escaped){
-            cell+=","+c[j];
-            if(c[j][c[j].length-1]==="\""){
-                escaped=false;
-            } else {
-                continue;
-            }
-        } else {
-            if(c[j][0]==="\""){
-                escaped = true;
-                cell = c[j].slice(1,c[j].length-1);
-                continue;
-            }
-            cell = c[j];
-        }
-        // convert to num
-        var n=+cell;
-        if(!isNaN(n) && cell!==""){
-            cell=n;
-        } else {/*
-            // convert to date
-            var dt = Date.parse(cell);
-            if(!isNaN(dt)){ cell = new Date(dt); } */
-        }
-        a.push(cell);
+    var googleQuery=new google.visualization.Query(qString);
+    if(sheet.query){
+        googleQuery.setQuery(sheet.query);
     }
-    return a;
+
+    googleQuery.send( function(response){
+        if(response.isError()) {
+            d3.select(".kshf.layout_infobox div.status_text span")
+                .text("Cannot load data");
+            d3.select(".kshf.layout_infobox img")
+                .attr("src",me.dirRoot+"img/alert.png")
+                .style("height","40px");
+            d3.select(".kshf.layout_infobox div.status_text div")
+                .text("("+response.getMessage()+")");
+            return;
+        }
+        var j,r,i,arr=[],idIndex=-1,itemId=0;
+        var dataTable = response.getDataTable();
+        var numCols = dataTable.getNumberOfColumns();
+
+        // find the index with sheet.id (idIndex)
+        for(i=0; true ; i++){
+            if(i===numCols || dataTable.getColumnLabel(i).trim()===sheet.id) {
+                idIndex = i;
+                break;
+            }
+        }
+        // create the data array
+        arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
+        for(r=0; r<dataTable.getNumberOfRows() ; r++){
+            var c=[];
+            c.length = numCols; // pre-allocate for speed
+            for(i=0; i<numCols ; i++) { c[i] = dataTable.getValue(r,i); }
+            // push unique id as the last column if necessary
+            if(idIndex===numCols) c.push(itemId++);
+            arr[r] = new kshf.Item(c,idIndex,sheet.primary);
+        }
+
+        kshf.createColumnNames(tableName);
+        for(j=0; j<dataTable.getNumberOfColumns(); j++){
+            kshf.insertColumnName(tableName,dataTable.getColumnLabel(j).trim(),j);
+        }
+        me.finishDataLoad(sheet,arr);
+    });
 };
 
 // The only place where jquery - ajax load - is used!
@@ -358,8 +337,7 @@ kshf.loadSheet_File = function(sheet){
             var i,j;
             var lines = data.split(/\r\n|\r|\n/g);
             if(lines.length<2) { return; } // csv file doens't have data
-            kshf.dt_ColNames[tableName] = {};
-            kshf.dt_ColNames_Arr[tableName] = [];
+            kshf.createColumnNames(tableName);
             var arr = [];
             var idIndex = -1;
             var itemId=0;
@@ -370,17 +348,15 @@ kshf.loadSheet_File = function(sheet){
                     c=lines[i].split(",");
                 else if(me.source.fileType==='tsv')
                     c=lines[i].split("\t");
-                c=unescapeCommas(c);
+                c=kshf.unescapeCommas(c);
                 if(i===0){ // header 
                     for(j=0; j<c.length;j++){
                         var colName = c[j];
-                        kshf.dt_ColNames[tableName][colName] = j;
-                        kshf.dt_ColNames_Arr[tableName][j]=colName;
+                        kshf.insertColumnName(tableName,colName,j);
                         if(colName===sheet.id){ idIndex = j;}
                     }
                     if(idIndex===-1){ // id column not found, you need to create your own
-                        kshf.dt_ColNames[tableName][sheet.id] = j;
-                        kshf.dt_ColNames_Arr[tableName][j] = sheet.id;
+                        kshf.insertColumnName(tableName,sheet.id,j);
                         idIndex = j;
                     }
                 } else { // content
@@ -399,23 +375,20 @@ kshf.loadSheet_Memory = function(sheet){
     var tableName = sheet.name;
     if(sheet.tableName) { tableName = sheet.tableName; }
     var i,j;
-    kshf.dt_ColNames[tableName] = {};
-    kshf.dt_ColNames_Arr[tableName] = [];
     var arr = [];
     var idIndex = -1;
     var itemId=0;
+    this.createColumnNames(tableName);
     for(i=0; i<sheet.data.length; i++){
         var c = sheet.data[i];
         if(i===0){ // header 
             for(j=0; j<c.length;j++){
                 var colName = c[j];
-                kshf.dt_ColNames[tableName][colName] = j;
-                kshf.dt_ColNames[tableName][j] = colName;
+                kshf.insertColumnName(tableName,colName,j);
                 if(colName===sheet.id){ idIndex = j;}
             }
             if(idIndex===-1){ // id column not found, you need to create your own
-                kshf.dt_ColNames[tableName][sheet.id] = j;
-                kshf.dt_ColNames[tableName][j] = sheet.id;
+                kshf.insertColumnName(tableName,sheet.id,j);
                 idIndex = j;
             }
         } else { // content
@@ -425,6 +398,15 @@ kshf.loadSheet_Memory = function(sheet){
         }
     }
     this.finishDataLoad(sheet,arr);
+};
+
+kshf.createColumnNames = function(tableName){
+    kshf.dt_ColNames    [tableName] = {};
+    kshf.dt_ColNames_Arr[tableName] = [];
+};
+kshf.insertColumnName = function(tableName, colName, index){
+    kshf.dt_ColNames    [tableName][colName] = index;
+    kshf.dt_ColNames_Arr[tableName][index  ] = colName;
 };
 
 kshf.finishDataLoad = function(sheet,arr) {
@@ -477,35 +459,8 @@ kshf.incrementLoadedTableCount = function(){
     }
 }
 
+
 // Sends the spreadsheet query, retrieves the result in asynch mode, prepares the data and updates visualization when all data is loaded.
-kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
-    var me = this;
-    var tableName = sheet.name;
-    q.send( function(response){
-        if(response.isError()) {
-            d3.select(".kshf.layout_infobox div.status_text span")
-                .text("Cannot load data");
-            d3.select(".kshf.layout_infobox img")
-                .attr("src",me.dirRoot+"img/alert.png")
-                .style("height","40px");
-            d3.select(".kshf.layout_infobox div.status_text div")
-                .text("("+response.getMessage()+")");
-            return;
-        }
-        var j;
-        var google_datatable = response.getDataTable();
-        var arr = _kshf.convertGDocToArray(google_datatable,sheet);
-        _kshf.dt[tableName] = arr;
-        _kshf.dt_ColNames[tableName] = {};
-        _kshf.dt_ColNames_Arr[tableName] = [];
-        for(j=0; j<google_datatable.getNumberOfColumns(); j++){
-            var colName=google_datatable.getColumnLabel(j).trim();
-            _kshf.dt_ColNames[tableName][colName] = j;
-            _kshf.dt_ColNames_Arr[tableName][j] = colName;
-        }
-        me.finishDataLoad(sheet,arr);
-   });
-};
 kshf.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
     var i,uniqueID=0;
     kshf.dt_id[dstTableName] = {};
@@ -567,6 +522,41 @@ kshf.cellToArray = function(dt, cols, splitExpr, convertInt){
             p[cols[t]] = list;
         }
     }
+};
+// give it a list split by, it will reconstruct "... , ..." cases back
+kshf.unescapeCommas = function(c){
+    var k=0,j;
+    var escaped=false;
+    var cell;
+    var a=[];
+    for(j=0; j<c.length;j++){
+        if(escaped){
+            cell+=","+c[j];
+            if(c[j][c[j].length-1]==="\""){
+                escaped=false;
+            } else {
+                continue;
+            }
+        } else {
+            if(c[j][0]==="\""){
+                escaped = true;
+                cell = c[j].slice(1,c[j].length-1);
+                continue;
+            }
+            cell = c[j];
+        }
+        // convert to num
+        var n=+cell;
+        if(!isNaN(n) && cell!==""){
+            cell=n;
+        } else {/*
+            // convert to date
+            var dt = Date.parse(cell);
+            if(!isNaN(dt)){ cell = new Date(dt); } */
+        }
+        a.push(cell);
+    }
+    return a;
 };
 
 
