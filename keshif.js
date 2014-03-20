@@ -134,7 +134,7 @@ var ACTID_OTHER = {
 // ***************************************************************************************************
 // ITEM BASE OBJECT/PROPERTIES
 // ***************************************************************************************************
-kshf.Item = function(d, idIndex){
+kshf.Item = function(d, idIndex, primary){
     // the main data within item
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
@@ -145,6 +145,14 @@ kshf.Item = function(d, idIndex){
     this.barValue = 0;
     this.barValueMax = 0;
 	this.items = []; // set of assigned primary items
+    if(primary){
+        // 1 true value is added for global search
+        this.filters = [true];
+        this.mappedRows = [true];
+        this.mappedData = [true];
+        this.dots = [];
+        this.cats = [];
+    }
 };
 kshf.Item.prototype.id = function(){
     return this.data[this.idIndex];
@@ -229,44 +237,35 @@ kshf.Item.prototype.nohighlightAttributes = function(){
 }
 
 // ***************************************************************************************************
-// GOOGLE CHART LOADING
+// DOCUMENT LOADING
 // ***************************************************************************************************
 
-// Gets google chart data and converts it to plain javascript array, for use with kshf
-kshf.convertToArray = function(dataTable,sheetID,isPrimary){
-    var r,c,arr = [];
-    // find the index called "id"
+// Gets google chart datatable and converts it to plain javascript array, for use with kshf
+kshf.convertGDocToArray = function(dataTable,sheet){
+    var r,i,arr = [];
     var idIndex = -1;
     var numCols = dataTable.getNumberOfColumns();
     var itemId=0;
-    var newItem;
-
-    for(c=0; true ; c++){
-        if(c===numCols || dataTable.getColumnLabel(c).trim()===sheetID) {
-            idIndex = c;
+    // find the index with sheet.id (idIndex)
+    for(i=0; true ; i++){
+        if(i===numCols || dataTable.getColumnLabel(i).trim()===sheet.id) {
+            idIndex = i;
             break;
         }
     }
-
+    // create the array to return
     arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
 	for(r=0; r<dataTable.getNumberOfRows() ; r++){
-		var a=[];
-        a.length = numCols; // pre-allocate for speed
-		for(c=0; c<numCols ; c++) { a[c] = dataTable.getValue(r,c); }
-        // push unique id if necessary
-        if(idIndex===numCols) a.push(itemId++);
-        newItem = new kshf.Item(a,idIndex);
-        if(isPrimary){
-            newItem.filters = [true];
-            newItem.mappedRows = [true];
-            newItem.mappedData = [true];
-            newItem.dots = [];
-            newItem.cats = [];
-        }
-        arr[r] = newItem;
+		var c=[];
+        c.length = numCols; // pre-allocate for speed
+		for(i=0; i<numCols ; i++) { c[i] = dataTable.getValue(r,i); }
+        // push unique id as the last column if necessary
+        if(idIndex===numCols) c.push(itemId++);
+        arr[r] = new kshf.Item(c,idIndex,sheet.primary);
 	}
     return arr;
 };
+
 // Loads all source sheets
 kshf.loadSource = function(){
     if(this.source.callback){
@@ -286,7 +285,7 @@ kshf.loadSource = function(){
         } else if(this.source.dirPath){
             this.loadSheet_File(sheet);
         } else if (sheet.data) { // load data from memory - ATR
-            this.loadSheet_Data(sheet);
+            this.loadSheet_Memory(sheet);
         }
 	}
 };
@@ -358,13 +357,12 @@ kshf.loadSheet_File = function(sheet){
         success: function(data) {
             var i,j;
             var lines = data.split(/\r\n|\r|\n/g);
-            if(lines.length<1) { return; }
+            if(lines.length<2) { return; } // csv file doens't have data
             kshf.dt_ColNames[tableName] = {};
             kshf.dt_ColNames_Arr[tableName] = [];
             var arr = [];
             var idIndex = -1;
             var itemId=0;
-            var item;
             // for each line, split on , character
             for(i=0; i<lines.length; i++){
                 var c;
@@ -386,40 +384,18 @@ kshf.loadSheet_File = function(sheet){
                         idIndex = j;
                     }
                 } else { // content
-                    if(idIndex===c.length){// push unique id if necessary
-                        c.push(itemId++);
-                    }
-                    item = new kshf.Item(c,idIndex);
-                    // 1 true item is added for global search
-                    if(sheet.primary){ 
-                        item.filters = [true];
-                        item.mappedRows = [true];
-                        item.mappedData = [true];
-                        item.dots = [];
-                        item.cats = [];
-                    }
-                    arr.push(item);
+                    // push unique id as the last column if necessary
+                    if(idIndex===c.length) c.push(itemId++);
+                    arr.push(new kshf.Item(c,idIndex,sheet.primary));
                 }
             }
-            kshf.dt[tableName] = arr;
-            if(sheet.primary){
-                kshf.items = arr;
-                kshf.itemsSelectedCt = arr.length;
-            }
-            // find the id row, and create the indexed table
-            var id_table = {};
-            for(j=0; j<arr.length ;j++) {
-                var r=arr[j];
-                id_table[r.id()] = r; 
-            }
-            kshf.dt_id[tableName] = id_table;
-            kshf.incrementLoadedTableCount();
+            me.finishDataLoad(sheet, arr);
         }
     });
 };
 
 // load data from memory - ATR
-kshf.loadSheet_Data = function(sheet){
+kshf.loadSheet_Memory = function(sheet){
     var tableName = sheet.name;
     if(sheet.tableName) { tableName = sheet.tableName; }
     var i,j;
@@ -428,7 +404,6 @@ kshf.loadSheet_Data = function(sheet){
     var arr = [];
     var idIndex = -1;
     var itemId=0;
-    // for each line, split on , character
     for(i=0; i<sheet.data.length; i++){
         var c = sheet.data[i];
         if(i===0){ // header 
@@ -444,27 +419,21 @@ kshf.loadSheet_Data = function(sheet){
                 idIndex = j;
             }
         } else { // content
-            if(idIndex===c.length){// push unique id if necessary
-                c.push(itemId++);
-            }
-            var item = new kshf.Item(c,idIndex);
-            // 1 true item is added for global search
-            if(sheet.primary){ 
-                item.filters = [true];
-                item.mappedRows = [true];
-                item.mappedData = [true];
-                item.dots = [];
-                item.cats = [];
-            }
-            arr.push(item);
+            // push unique id as the last column if necessary
+            if(idIndex===c.length) c.push(itemId++);
+            arr.push(new kshf.Item(c,idIndex,sheet.primary));
         }
-    }   
+    }
+    this.finishDataLoad(sheet,arr);
+};
+
+kshf.finishDataLoad = function(sheet,arr) {
+    var tableName = sheet.name, j;
     kshf.dt[tableName] = arr;
     if(sheet.primary){
         kshf.items = arr;
         kshf.itemsSelectedCt = arr.length;
     }
-    // find the id row, and create the indexed table
     var id_table = {};
     for(j=0; j<arr.length ;j++) {
         var r=arr[j];
@@ -473,7 +442,6 @@ kshf.loadSheet_Data = function(sheet){
     kshf.dt_id[tableName] = id_table;
     kshf.incrementLoadedTableCount();
 };
-
 
 kshf.incrementLoadedTableCount = function(){
     var me=this;
@@ -526,8 +494,8 @@ kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
         }
         var j;
         var google_datatable = response.getDataTable();
-        var d3_table = _kshf.convertToArray(google_datatable,sheet.id,sheet.primary);
-        _kshf.dt[tableName] = d3_table;
+        var arr = _kshf.convertGDocToArray(google_datatable,sheet);
+        _kshf.dt[tableName] = arr;
         _kshf.dt_ColNames[tableName] = {};
         _kshf.dt_ColNames_Arr[tableName] = [];
         for(j=0; j<google_datatable.getNumberOfColumns(); j++){
@@ -535,18 +503,7 @@ kshf.sendTableQuery = function(_kshf, q, sheet, tableCount){
             _kshf.dt_ColNames[tableName][colName] = j;
             _kshf.dt_ColNames_Arr[tableName][j] = colName;
         }
-        if(sheet.primary){
-            kshf.items = d3_table;
-            kshf.itemsSelectedCt = d3_table.length;
-        }
-        // find the id row, and create the indexed table
-        var id_table = {};
-        for(j=0; j<d3_table.length ;j++) {
-            var r=d3_table[j];
-            id_table[r.id()] = r; 
-        }
-        _kshf.dt_id[tableName] = id_table;
-        kshf.incrementLoadedTableCount();
+        me.finishDataLoad(sheet,arr);
    });
 };
 kshf.createTableFromTable = function(srcTableName, dstTableName, mapFunc){
