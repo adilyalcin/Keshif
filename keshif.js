@@ -148,6 +148,7 @@ kshf.Item = function(d, idIndex, primary){
     if(primary){
         // 1 true value is added for global search
         this.filters = [true];
+        this.barCount = 1; // 1 by default
         this.mappedRows = [true];
         this.mappedData = [true];
         this.dots = [];
@@ -442,10 +443,6 @@ kshf.incrementLoadedTableCount = function(){
             for(i=0; i<mainTableLen; i++){
                 var d=mainTable[i];
                 d.barCount = d.data[colId];
-            }
-        } else {
-            for(i=0; i<mainTableLen; i++){
-                mainTable[i].barCount = 1;  // each item counts as 1 to see the real number
             }
         }
 
