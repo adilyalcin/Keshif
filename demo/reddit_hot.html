@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Hot posts on reddit</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+var tableName = "posts";
+
+var postCols = {
+    subreddit: 0,
+    num_comments: 1,
+    score: 2,
+    ups: 3,
+    downs: 4,
+    gilded: 5,
+    id: 6,
+    title: 7,
+    url: 8,
+    thumbnail: 9
+};
+
+function loadData(){
+    kshf.primaryTableName = tableName;
+    kshf.dt_ColNames[tableName] = postCols;
+    kshf.dt[tableName] = [];
+    var arr = kshf.dt[tableName];
+    var i;
+
+    $.ajax( {
+        url: "http://api.reddit.com/hot.json?limit=100",
+        dataType: "json",
+        success: function(data){
+            var posts = data.data.children;
+
+            for(i=0; i<posts.length; i++){
+                var p = posts[i].data;
+                var c = [];
+                c[postCols.subreddit] = p.subreddit;
+                c[postCols.num_comments] = p.num_comments;
+                c[postCols.score] = p.score;
+                c[postCols.ups] = p.ups;
+                c[postCols.downs] = p.downs;
+                c[postCols.gilded] = p.gilded;
+                c[postCols.id] = p.id;
+                c[postCols.title] = p.title;
+                c[postCols.url] = p.url;
+                c[postCols.thumbnail] = p.thumbnail;
+                arr.push(new kshf.Item(c,postCols.id,true));
+            }
+
+            kshf.items = kshf.dt[tableName];
+            kshf.itemsSelectedCt = kshf.dt[tableName].length;
+
+            var id_table = {};
+            for(j=0; j<arr.length ;j++) {
+                var r=arr[j];
+                id_table[r.id()] = r; 
+            }
+            kshf.dt_id[tableName] = id_table;
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { kshf.createCharts(); }, 50);
+        }
+    });
+}
+
+$(document).ready( function(){
+	kshf.init({
+        chartTitle: "Hot posts on reddit",
+        domID : "#chart_div4",
+        dirRoot: "../",
+        categoryTextWidth: 150,
+        showDataSource : false,
+        source: {
+            callback : loadData,
+            sheets : [ {name:tableName, id:"id"}]
+        },
+        charts : [
+            {   facetTitle: "subreddit"
+            },{ facetTitle: "num_comments",
+                catItemMap : function(d){ 
+                    var v=d.data[postCols.num_comments];
+                    var v_round = Math.floor(v/200)*200;
+                    return v_round + " - " + (v_round+199);
+                }
+            },{ facetTitle: "score",
+                catItemMap : function(d){ 
+                    var v=d.data[postCols.num_comments];
+                    var v_round = Math.floor(v/500)*500;
+                    return v_round + " - " + (v_round+499);
+                }
+            },{ facetTitle: "gilded"
+            }
+        ],
+        list: {
+            sortColWidth: 60,
+            sortOpts : [ {   name: 'score' } ],
+            textSearch : "title",
+            contentFunc : function(d){
+                var str="";
+                // thumbnail
+                if(d.data[postCols.thumbnail]!=="") { 
+                    str+="<div style=\"float:right\">";
+                    str+="<img src=\""+d.data[postCols.thumbnail]+"\"/>";
+                    str+="</div>";
+                }
+                // title
+                str+=d.data[postCols.title];
+                // link
+                str+="<a target=\"_blank\" href=\""+d.data[postCols.url]+"\" "+
+                        "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\">"+
+                    "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+        div.listItem{
+            padding-bottom: 4px;
+        }
+        #chart_div4 {
+            margin: 0 auto;
+            width:800px;
+            height:700px;
+            padding-top: 20px;
+        }
+        body{ margin:2px; }
+    </style>
+	</head>
+	<body><div id="chart_div4"></div></body>
+</html>
