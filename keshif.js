@@ -124,9 +124,9 @@ var ACTID_CONFIG= {
 var ACTID_OTHER = {
     DataSource : 1,
     InfoButton : 2,
-    LeftPanelWidth: 5,
     OpenPage   : 3, // load
     ClosePage  : 4,  // unload
+    LeftPanelWidth: 5,
     Resize     : 6
 };
 
@@ -1049,6 +1049,7 @@ kshf.init = function (options) {
     this.source = options.source;
     this.source.loadedTableCount=0;
     this.loadedCb = options.loadedCb;
+    this.readyCb = options.readyCb;
 
     this.time_animation_barscale = 400;
     this.layout_animation = 500;
@@ -1265,6 +1266,8 @@ kshf.createCharts = function(){
     // hide infobox
     d3.select(".kshf.layout_infobox").style("display","none");
     d3.select("div.infobox_loading").style("display","none");
+
+    if(this.readyCb!==undefined) { this.readyCb(); }
 }
 
 kshf.insertChartHeader = function(){
@@ -1399,7 +1402,6 @@ kshf.addRangeChart = function(options){
     );
 }
 
-
 kshf.update = function () {
     var i, chart, filteredCount=0;
 
@@ -1436,6 +1438,11 @@ kshf.update = function () {
     this.root.select(".filter-block-clear")
         .style("display",(filteredCount>0)?"inline-block":"none");
 };
+
+kshf.filterFacetAttribute = function(chartId, itemId){
+    var chart = this.charts[chartId];
+    chart.filterRow(chart.getData()[itemId]);
+}
 
 kshf.dif_activeItems = function(a,b){
 	return b.activeItems - a.activeItems;
@@ -2072,11 +2079,8 @@ kshf.BarChart.prototype.init_shared = function(options){
         (this.catCount_Total>=20 && this.options.forceSearch!==false)||this.options.forceSearch===true
         ;
 
-    // scrollbar options - depends on _dataMap - this.catCount_Total
-	this.scrollbar = { }; /*
-    if(!this.rowCount_VisibleItem) {
-        this.rowCount_VisibleItem = this.catCount_Total;
-    }*/
+    // scrollbar options
+	this.scrollbar = { };
     this.scrollbar.firstRow = 0;
     this.x_axis_active_filter = null;
 };
