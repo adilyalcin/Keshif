@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Failed Bank List - FDIC, US</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript">
+        google.setOnLoadCallback(function(){
+            kshf.init({
+                chartTitle: "Failed Bank List - FDIC, US",
+                dirRoot: "../",
+                domID : "#chart_div4",
+                categoryTextWidth:200,
+                source : {
+                    gdocId : '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
+                    sheets : [ {name:"Banks"} ]
+                },
+                charts : [
+                    {   facetTitle: "State",
+                        catItemMap: function(d){ return d.data[2];},
+                        timeTitle: "Closing Date"
+                    },{ facetTitle: "City"
+                    },{ facetTitle: "Acquiring Institution"
+                    },{ facetTitle: "Loss Share Type"
+                    }
+                ],
+                list : {
+                    sortColWidth: 75,
+                    sortOpts : [ {name: 'CERT'} ],
+                    textSearchFunc: function(d){
+                        return d.data[0];
+                    },
+                    content: "Bank Name"
+                }
+            });
+        });
+        </script>
+        
+        <style>
+            #chart_div4 {
+                margin: 0 auto;
+                width: 720px;
+                height: 650px;
+            }
+        </style>
+    </head>
+	<body><div id="chart_div4"></div></body>
+</html>

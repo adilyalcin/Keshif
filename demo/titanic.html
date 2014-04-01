@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Titanic Passengers</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript">
+        google.setOnLoadCallback(function(){
+            kshf.init({
+                chartTitle: "Titanic Passengers",
+                dirRoot: "../",
+                domID : "#chart_div4",
+                source : {
+                    gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
+                    sheets : [ {name:"Passengers"} ]
+                },
+                charts : [
+                    {   facetTitle: "survived"
+                    },{ facetTitle: "pclass"
+                    },{ facetTitle: "sex"
+                    },{ facetTitle: "age",
+                        catItemMap : function(d){
+                            var age = d.data[4];
+                            if(age=="NA") return age;
+                            if(age<18) return "0...18";
+                            if(age<30) return "19...29";
+                            if(age<50) return "30...49";
+                            return "50...";
+                        }
+                    },{ facetTitle: "embarked"
+                    },{ facetTitle: "boat"
+                    },{ facetTitle: "room"
+                    }
+                ],
+                list : {
+                    sortColWidth: 75,
+                    sortOpts : [ {name: 'id'} ],
+                    textSearchFunc: function(d){ return d.data[3]; },
+                    content: "name"
+                }
+            });
+        });
+        </script>
+        
+        <style>
+            #chart_div4 {
+                margin: 0 auto;
+                width: 600px;
+                height: 700px;
+            }
+        </style>
+    </head>
+	<body><div id="chart_div4"></div></body>
+</html>
