@@ -24,18 +24,7 @@ function getGender(v){
     }
 }
 
-function resetSize(){
-    $('#nobelDiv').height(750);
-    $('#nobelDiv').width (950);
-}
-
 $(document).ready( function(){
-    resetSize();
-    $(window).resize(function() {
-        resetSize();
-        kshf.updateLayout();
-    });
-
     var prizeCols;
     var lautCols;
 
@@ -167,7 +156,7 @@ $(document).ready( function(){
 </script>
         <style>
             div.listItem{ padding-bottom: 2 px; }
-            #nobelDiv { margin: 0 auto; }
+            #nobelDiv { margin: 0 auto; height: 750px; width:950px; }
             html, body {
                 width: 100%;
                 height: 100%;
