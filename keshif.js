@@ -1571,7 +1571,7 @@ kshf.updateLayout_Height = function(){
     this.root.select("div.listItemGroup")
         .transition()
         .duration(this.layout_animation)
-        .style("height",(remHeight-65)+"px")
+        .style("height",(remHeight-60)+"px")
         ;
 
     // *********************************************************************************
@@ -1772,7 +1772,7 @@ kshf.updateAllTheWidth = function(v){
     // for some reason, on page load, this variable may be null. urgh.
     if(this.listDisplay){
         this.listDisplay.listDiv.style("width",
-            ((this.charts.length>1)?width_rightPanel_total:this.divWidth-15)+"px");
+            ((this.charts.length>1)?width_rightPanel_total+9:this.divWidth-15)+"px");
     }
 
     // update list
@@ -1794,8 +1794,11 @@ kshf.updateCustomListStyleSheet = function(){
             "div.listDiv div.listsortcolumn{ width: "+optionWidth+"px;}";
         totalColWidth+=optionWidth;
     }
-    // 25 is for itemtoggledetails
-    var contentWidth = (this.width_rightPanel_total-totalColWidth-30-25);
+    var contentWidth = (this.width_rightPanel_total-totalColWidth-15);
+    // 22 is for itemtoggledetails
+    if(this.listDisplay.detailsToggle){
+        contentWidth -= 22;
+    }
     if(this.charts.length<2){
         contentWidth+=this.width_leftPanel_total;
     }

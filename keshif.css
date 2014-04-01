@@ -677,6 +677,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     width:25px;
     position:absolute;
     left:1px;
+    top: 3px;
 }
 
 .kshf .chooseConfigGroup svg{
@@ -1080,7 +1081,7 @@ div.kshf.layout_right{
 .kshf .listDiv {
     clear:left;
     box-shadow: 2px 2px 2px rgb(150, 134, 73);
-    margin: 0px 0px 6px 6px;
+    margin-left: 6px;
 /*    display:none;*/
 }
 
@@ -1240,7 +1241,6 @@ div.listItem div.groupMe{
 	font-weight: bold;
 	color: black;
 	padding: 0px 5px 0px 2px;
-    min-height: 22px;
 
     background-image: linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
     background-image: -o-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
