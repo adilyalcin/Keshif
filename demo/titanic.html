@@ -25,12 +25,28 @@
                     },{ facetTitle: "age",
                         catItemMap : function(d){
                             var age = d.data[4];
-                            if(age=="NA") return age;
+                            if(age===null) return "NA";
                             if(age<18) return "0...18";
                             if(age<30) return "19...29";
                             if(age<50) return "30...49";
                             return "50...";
-                        }
+                        },
+                        sortingFuncs : [{ 
+                            func:  function(a, b){
+                                var age_a = a.data[1];
+                                var age_b = b.data[1];
+                                if(age_a === "NA") return 1;
+                                if(age_b === "NA") return -1;
+                                if(age_a === "0...18") return -1;
+                                if(age_b === "0...18") return 1;
+                                if(age_a === "50...") return 1;
+                                if(age_b === "50...") return -1;
+                                if(age_a === "30...49") return 1;
+                                if(age_b === "30...49") return -1;
+                                return 0;
+                            },
+                            no_resort: true
+                        }]
                     },{ facetTitle: "embarked"
                     },{ facetTitle: "boat"
                     },{ facetTitle: "room"
