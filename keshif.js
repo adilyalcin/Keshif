@@ -688,6 +688,13 @@ kshf.list = function(_kshf, config, root){
             }, 750);
         });
         listHeaderTopRowTextSearch.append("span")
+            .html('<svg width="15" height="15" viewBox="0 0 48 48">'+
+                  '<g>'+
+                    '<path type="arc" style="fill-opacity:1;" cx="24" cy="24" rx="22" ry="22" d="M 46 24 A 22 22 0 1 1  2,24 A 22 22 0 1 1  46 24 z"/>'+
+                    '<path nodetypes="cc" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 16.221825,16.221825 L 31.778175,31.778175"/>'+
+                    '<path nodetypes="cc" d="M 31.778175,16.221825 L 16.221825,31.778175" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>'+
+                  '</g>'+
+                '</svg>')
             .on("click",function() {
                 d3.select(this).style('display','none');
                 bigTextSearch[0][0].value = '';
@@ -887,28 +894,31 @@ kshf.list.prototype.updateSortColumnLabels=function(d,tada){
 
 kshf.list.prototype.insertItems = function(){
     var this_ = this;
-    this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
-        .data([])
-    .enter()
-        .append("div");
-/*	this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
-		.data(kshf.items, function(d){ return d.id(); })
-    .enter()
-		.append("div")
-		.attr("class","listItem")
-        .attr("details",this.detailsDefault?"true":"false")
-        .attr("itemID",function(d){return d.id();})
-        // store the link to DOM in the data item
-        .each(function(d){ d.listItem = this; })
-        .on("mouseover",function(d,i){
-            d3.select(this).attr("highlight","true");
-            d.highlightAttributes();
-        })
-        .on("mouseout",function(d,i){
-            d3.select(this).attr("highlight","false");
-            // find all the things that  ....
-            d.nohighlightAttributes();
-        });*/
+    if(this.contentFunc===undefined){
+        this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
+            .data([])
+        .enter()
+            .append("div");
+    } else {
+        this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
+            .data(kshf.items, function(d){ return d.id(); })
+        .enter()
+            .append("div")
+            .attr("class","listItem")
+            .attr("details",this.detailsDefault?"true":"false")
+            .attr("itemID",function(d){return d.id();})
+            // store the link to DOM in the data item
+            .each(function(d){ d.listItem = this; })
+            .on("mouseover",function(d,i){
+                d3.select(this).attr("highlight","true");
+                d.highlightAttributes();
+            })
+            .on("mouseout",function(d,i){
+                d3.select(this).attr("highlight","false");
+                // find all the things that  ....
+                d.nohighlightAttributes();
+            });
+    }
 
     this.dom.listItems
         .append("div")
@@ -1029,9 +1039,9 @@ kshf.init = function (options) {
     if(this.categoryTextWidth===undefined){
         this.categoryTextWidth = 115;
     }
-    if(this.categoryTextWidth<115){
+/*    if(this.categoryTextWidth<115){
         this.categoryTextWidth = 115;
-    }
+    }*/
     this.chartDefs = options.charts;
     this.listDef = options.list;
 
@@ -1061,6 +1071,7 @@ kshf.init = function (options) {
     this.source.loadedTableCount=0;
     this.loadedCb = options.loadedCb;
     this.readyCb = options.readyCb;
+    this.updateCb = options.updateCb;
 
     this.time_animation_barscale = 400;
     this.layout_animation = 500;
@@ -1073,7 +1084,7 @@ kshf.init = function (options) {
     }
 
     this.root = d3.select(this.domID)
-        .attr("class","kshfHost")
+        .classed("kshfHost",true)
         .attr("tabindex","1")
         .style("position","relative")
         .style("overflow-y","hidden")
@@ -1229,8 +1240,9 @@ kshf.init = function (options) {
             ;
     }
 
-
-    this.insertChartHeader();
+    if(this.chartTitle!==undefined){
+        this.insertChartHeader();
+    }
 
     var subRoot = this.root.append("div").style("position","relative");
 
@@ -1431,7 +1443,6 @@ kshf.update = function () {
         if(this.listDisplay.hideTextSearch!==true) {
             if(this.listDisplay.listDiv.select("input.bigTextSearch")[0][0].value!=="") filteredCount++;
         }
-        // d3 - for each item
         this.listDisplay.updateItemVisibility();
         // not optimal too
         this.listDisplay.updateList();
@@ -1448,6 +1459,10 @@ kshf.update = function () {
     // "clear all" filter button
     this.root.select(".filter-block-clear")
         .style("display",(filteredCount>0)?"inline-block":"none");
+
+    if(this.updateCb){
+        this.updateCb();
+    }
 };
 
 kshf.filterFacetAttribute = function(chartId, itemId){
@@ -1537,7 +1552,10 @@ kshf.domWidth = function(){
 kshf.updateLayout_Height = function(){
     var i;
     var chartHeaderHeight = 22;
-    var divHeight = this.domHeight() - chartHeaderHeight;
+    var divHeight = this.domHeight();
+    if(this.chartTitle!==undefined){
+        divHeight-=chartHeaderHeight;
+    }
 
     this.divWidth = this.domWidth();
 
@@ -1814,7 +1832,7 @@ kshf.updateCustomListStyleSheet = function(){
     if(this.listDisplay.detailsToggle){
         contentWidth -= 22;
     }
-    if(this.charts.length<2){
+    if(this.fullWidthResultSet()){
         contentWidth+=this.width_leftPanel_total;
     }
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
@@ -2433,6 +2451,7 @@ kshf.BarChart.prototype.init_DOM = function(){
     }
 
     this.insertHeader();
+
     this.insertScrollbar();
 
     this.insertItemRows_shared();
@@ -4325,7 +4344,6 @@ kshf.BarChart.prototype.insertTimeTicks = function(){
 
             kshf_.sortSkip = true;
             kshf.update();
-
         })
         ;
 

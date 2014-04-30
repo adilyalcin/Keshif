@@ -1350,15 +1350,17 @@ div.listHeader span.filter_reset {
 .kshf div.listHeader span.bigTextSearch_wrap span {
     position: absolute;
     display: none;
-    top: 3px;
-    right: 0px;
+    top: 2px;
+    right: 3px;
     width: 16px;
     height: 16px;
-    background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -690px;
     cursor: pointer;
 }
-.kshf div.listHeader span.bigTextSearch_wrap span:hover {
-    background: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=4') 0 -665px;
+.kshf div.listHeader span.bigTextSearch_wrap span svg g {
+    fill:gray;
+}
+.kshf div.listHeader span.bigTextSearch_wrap span:hover svg g{
+    fill:#cb5454;
 }
 .kshf div.listHeader input.bigTextSearch{
     font-size: 0.8em;
