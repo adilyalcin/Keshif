@@ -210,7 +210,8 @@ kshf.Item.prototype.highlightCategories = function(){
     }
 }
 kshf.Item.prototype.highlightOnList = function(){
-    this.listItem.setAttribute("highlight",true);
+    if(this.listItem!== undefined)
+        this.listItem.setAttribute("highlight",true);
 }
 kshf.Item.prototype.highlightAttributes = function(){
     this.highlightDots();
@@ -669,7 +670,9 @@ kshf.list = function(_kshf, config, root){
                 var v=v.split(" ");
 
                 // go over all the items in the list, search each keyword separately
-                me.dom.listItems.each(function(item){
+                var k;
+                for(k=0; k<kshf.items.length ; k++){
+                    item = kshf.items[k];                    
                     var i=0
                     var f = true;
                     for(i=0 ; i<v.length; i++){
@@ -678,7 +681,7 @@ kshf.list = function(_kshf, config, root){
                     }
                     item.filters[0] = f;
                     item.updateSelected();
-                });
+                };
                 kshf.update();
                 x.timer = null;
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,kshf.getFilteringState());
@@ -692,10 +695,12 @@ kshf.list = function(_kshf, config, root){
 
                 // No timeout necessary. Clear selection rightaway.
                 // go over all the items in the list, search each keyword separately
-                me.dom.listItems.each(function(item){
+                var k;
+                for(k=0; k<kshf.items.length ; k++){
+                    item = kshf.items[k];                    
                     item.filters[0] = true;
                     item.updateSelected();
-                });
+                };
                 kshf.update();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,kshf.getFilteringState());
             });
@@ -732,21 +737,23 @@ kshf.list = function(_kshf, config, root){
     if(this.detailsToggle===true){
        var x=listColumnRow.append("div")
             .attr("class","itemstoggledetails");
-//            .style("padding-left",(this.sortColWidth+5)+"px");
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
-            .on("click", function(d){ me.dom.listItems.each(function(d){ 
-                d3.select(this).attr('details', true); }) 
+            .on("click", function(d){
+                me.dom.listItems.each(function(d){ 
+                    d3.select(this).attr('details', true);
+                }); 
                 me.listDiv.attr('showAll','false');
             });
         x.append("span").attr("class","items_details_off").html("[-]")
-            .attr("title","Show details")
-            .on("click", function(d){ me.dom.listItems.each(function(d){ 
-                d3.select(this).attr('details', false); }) 
+            .attr("title","Hide details")
+            .on("click", function(d){
+                me.dom.listItems.each(function(d){ 
+                    d3.select(this).attr('details', false);
+                });
                 me.listDiv.attr('showAll','true');
             });
     }
-
 
     listColumnRow
         .append("span").attr("class","filter-blocks")
@@ -880,7 +887,11 @@ kshf.list.prototype.updateSortColumnLabels=function(d,tada){
 
 kshf.list.prototype.insertItems = function(){
     var this_ = this;
-	this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
+    this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
+        .data([])
+    .enter()
+        .append("div");
+/*	this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
 		.data(kshf.items, function(d){ return d.id(); })
     .enter()
 		.append("div")
@@ -897,7 +908,7 @@ kshf.list.prototype.insertItems = function(){
             d3.select(this).attr("highlight","false");
             // find all the things that  ....
             d.nohighlightAttributes();
-        });
+        });*/
 
     this.dom.listItems
         .append("div")
@@ -920,7 +931,7 @@ kshf.list.prototype.insertItems = function(){
             .on("click", kshf.listItemDetailToggleFunc);
     }
 
-    this.dom.listItems
+    this.dom.listItems_Content = this.dom.listItems
         .append("div")
         .attr("class","content")
         .html(function(d){ return this_.contentFunc(d);});
@@ -1748,6 +1759,10 @@ kshf.setBarWidthLeftPanel = function(v){
     }
 }
 
+kshf.fullWidthResultSet = function(){
+    return this.charts.length==1 && this.charts[0].type==='scatterplot';
+}
+
 kshf.updateAllTheWidth = function(v){
     this.width_leftPanel_total = this.getRowTotalTextWidth()+this.width_leftPanel_bar+kshf.scrollWidth+kshf.scrollPadding+2;
 
@@ -1756,7 +1771,7 @@ kshf.updateAllTheWidth = function(v){
     this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
-    this.layoutRight.style("left",((this.charts.length>1)?this.width_leftPanel_total:0)+"px");
+    this.layoutRight.style("left",(this.fullWidthResultSet()?0:this.width_leftPanel_total)+"px");
 
     this.root.select(".kshf.layout_left_header span.filters_text")
         .style("margin-right","-8px")
@@ -1772,7 +1787,7 @@ kshf.updateAllTheWidth = function(v){
     // for some reason, on page load, this variable may be null. urgh.
     if(this.listDisplay){
         this.listDisplay.listDiv.style("width",
-            ((this.charts.length>1)?width_rightPanel_total+9:this.divWidth-15)+"px");
+            ((this.fullWidthResultSet()==false)?width_rightPanel_total+9:this.divWidth-15)+"px");
     }
 
     // update list
@@ -1804,7 +1819,7 @@ kshf.updateCustomListStyleSheet = function(){
     }
 //    customSheet.innerHTML += "div.listItem div.content{ width:"+contentWidth+"px; }";
     this.listDisplay.listDiv.select("span.listheader_count_wrap").style("width",totalColWidth+"px");
-    this.listDisplay.dom.listItems.select(".content").style("width",contentWidth+"px");
+    this.listDisplay.dom.listItems_Content.style("width",contentWidth+"px");
     this.root.select("span.filter-blocks").style("width",contentWidth+"px");
 
     if(!this.specialStyle){
