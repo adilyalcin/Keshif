@@ -12,18 +12,18 @@
 
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height($(window).height()-45);
-    $('#chart_div4').width ($(window).width()*0.9);
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').height($(window).height()-45);
-        $('#chart_div4').width ($(window).width()*0.9);
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
 
     kshf.init({
         chartTitle: "Clinical Trial Sample Dataset",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth:170,
         itemName : "clinical trials",
@@ -152,32 +152,23 @@ google.setOnLoadCallback(loadChart);
 }
 
 /* rectangle style 
-#chart_div4 rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
-#chart_div4 rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
-#chart_div4 rect.bar_style_phase_2{ fill: #ff942a; }
-#chart_div4 rect.bar_style_phase_3{ fill: rgb(178, 94, 235); }
-#chart_div4 rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
-#chart_div4 rect.bar_style_phase_5{ fill: #3886c8; }
+#chart_div rect.bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div rect.bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div rect.bar_style_phase_2{ fill: #ff942a; }
+#chart_div rect.bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div rect.bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div rect.bar_style_phase_5{ fill: #3886c8; }
 
 /* dot style 
-#chart_div4 circle.timeDot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
-#chart_div4 circle.timeDot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
-#chart_div4 circle.timeDot[display=true].bar_style_phase_2{ fill: #ff942a; }
-#chart_div4 circle.timeDot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
-#chart_div4 circle.timeDot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
-#chart_div4 circle.timeDot[display=true].bar_style_phase_5{ fill: #3886c8; }
+#chart_div circle.timeDot[display=true].bar_style_phase_0{ fill: rgb(109, 207, 95); }
+#chart_div circle.timeDot[display=true].bar_style_phase_1{ fill: rgb(236, 91, 108); }
+#chart_div circle.timeDot[display=true].bar_style_phase_2{ fill: #ff942a; }
+#chart_div circle.timeDot[display=true].bar_style_phase_3{ fill: rgb(178, 94, 235); }
+#chart_div circle.timeDot[display=true].bar_style_phase_4{ fill: rgb(248, 248, 0); }
+#chart_div circle.timeDot[display=true].bar_style_phase_5{ fill: #3886c8; }
 */
-#chart_div4 {
-    margin: 0 auto;
-}
-
-body{ margin:2px; }
-
 </style>
 	</head>
 
-	<body>
-		<div id="chart_div4"></div>
-	</body>
-    
+	<body><div id="chart_div"></div></body>
 </html>

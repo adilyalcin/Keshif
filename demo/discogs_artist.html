@@ -201,8 +201,8 @@ function loadArtistData(){
 }
 
 function resetSize(){
-    $('#chart_div4').height($(window).height()-10);
-    $('#chart_div4').width (900);
+    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').width (900);
 }
 
 function loadChart() {
@@ -220,7 +220,7 @@ function loadChart() {
 
 	kshf.init({
         chartTitle: "Artist Discography",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth: 206,
         itemName : "releases",
@@ -338,11 +338,6 @@ div.listItem{
     display:inline-block;
 }
 
-#chart_div4 {
-    margin: 0 auto;
-/*    top: 50px;*/
-}
-
 div.listItem div.iteminfo {
     text-indent:  0em;
     padding-left: 0em;
@@ -353,6 +348,6 @@ body{ margin:2px; }
 </style>
 	</head>
 	<body>
-		<div id="chart_div4"></div>
+		<div id="chart_div"></div>
 	</body>
 </html>

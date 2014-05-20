@@ -21,9 +21,9 @@ var BEDERSON_ID = 3;
 function resizeChart(){
     var h=$(window).height()-65;
     var w=$(window).width()-29;
-    if($('#chart_div4').height()===h && $('#chart_div4').width()===w) return false;
-    $('#chart_div4').height(h);
-    $('#chart_div4').width (w);
+    if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
+    $('#chart_div').height(h);
+    $('#chart_div').width (w);
     logIf.All();
     sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,{ height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
     return true;
@@ -42,7 +42,7 @@ google.setOnLoadCallback(function() {
     // set height of the source dom as 
     kshf.init({
         chartTitle: "Ben Bederson's Publications",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         listMaxColWidthMult: 0.4,
         categoryTextWidth:175,
         dirRoot: "../",
@@ -208,17 +208,14 @@ google.setOnLoadCallback(function() {
 </script>
 <style>
 
-html{
-  height: 100%;
-}
 body {
-  min-height: 100%;
+    margin: 0px;
 }
 
-#chart_div4 rect.bar_style_coauthor_FA{ fill: #4D8B4D; }
-#chart_div4 rect.bar_style_coauthor_ST{ fill: #FCC240; }
-#chart_div4 rect.bar_style_coauthor_RE{ fill: #BF4B31; }
-#chart_div4 rect.bar_style_coauthor_IN{ fill: #4B3929; }
+#chart_div rect.bar_style_coauthor_FA{ fill: #4D8B4D; }
+#chart_div rect.bar_style_coauthor_ST{ fill: #FCC240; }
+#chart_div rect.bar_style_coauthor_RE{ fill: #BF4B31; }
+#chart_div rect.bar_style_coauthor_IN{ fill: #4B3929; }
 
 div.listItem div.thumbnail{
     float:left;
@@ -239,7 +236,7 @@ div.listItem div.thumbnail2 img{
     border: solid 1px gray;
 }
 
-#chart_div4 {
+#chart_div {
     background-color: white;
 }
 
@@ -324,7 +321,7 @@ body {
 <!--            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>-->
             </h2>
         </div>
-    	<div id="chart_div4"></div>
+    	<div id="chart_div"></div>
     </div>
 </body>
 </html>

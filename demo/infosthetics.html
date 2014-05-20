@@ -26,8 +26,8 @@ function getNumComments(v){
 }
 
 function resetSize(){
-    $('#chart_div4').height($(window).height()-10);
-    $('#chart_div4').width (800);
+    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').width (800);
 }
 
 $(document).ready( function(){
@@ -43,7 +43,7 @@ $(document).ready( function(){
     
 	kshf.init({
         chartTitle: "5 Years of Infosthetics",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth:130,
         source : {
@@ -111,11 +111,7 @@ $(document).ready( function(){
                 color:#606060;
                 font-style:italic;
             }
-            #chart_div4 {
-                margin: 0 auto;
-            }
-            body{ margin:2px; }
         </style>
     </head>
-	<body onmousemove="logIf.setSessionID()"> <div id="chart_div4"></div> </body>
+	<body onmousemove="logIf.setSessionID()"> <div id="chart_div"></div> </body>
 </html>

@@ -12,12 +12,12 @@
         <script type="text/javascript">
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height($(window).height()-45);
-    $('#chart_div4').width ($(window).width()*0.9);
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').height($(window).height()-45);
-        $('#chart_div4').width ($(window).width()*0.9);
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
 
@@ -25,7 +25,7 @@ function loadChart() {
 
 	kshf.init({
         chartTitle: "Reuters 1987 News Dataset",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         itemName : "News stories",
         categoryTextWidth:150,
@@ -116,10 +116,6 @@ function loadChart() {
 google.setOnLoadCallback(loadChart);
 
 </script>
-        <style>
-            #chart_div4 { margin: 0 auto; }
-            body{ margin:2px; }
-        </style>
 	</head>
-	<body><div id="chart_div4"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>

@@ -76,7 +76,7 @@ function loadData(){
 $(document).ready( function(){
 	kshf.init({
         chartTitle: "Hot posts on reddit",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth: 150,
         showDataSource : false,
@@ -103,7 +103,7 @@ $(document).ready( function(){
         ],
         list: {
             sortColWidth: 60,
-            sortOpts : [ {   name: 'score' } ],
+            sortOpts : [ { name: 'score' } ],
             textSearch : "title",
             contentFunc : function(d){
                 var str="";
@@ -130,14 +130,11 @@ $(document).ready( function(){
         div.listItem{
             padding-bottom: 4px;
         }
-        #chart_div4 {
-            margin: 0 auto;
+        #chart_div {
             width:800px;
             height:700px;
-            padding-top: 20px;
         }
-        body{ margin:2px; }
     </style>
 	</head>
-	<body><div id="chart_div4"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>

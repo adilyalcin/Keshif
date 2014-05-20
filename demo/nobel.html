@@ -33,7 +33,7 @@ $(document).ready( function(){
 
 	kshf.init({
         chartTitle: "Nobel Prize Winners",
-        domID : "#nobelDiv",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth: 170,
         source : {
@@ -157,7 +157,7 @@ $(document).ready( function(){
 </script>
         <style>
             div.listItem{ padding-bottom: 2 px; }
-            #nobelDiv { margin: 0 auto; height: 750px; width:950px; }
+            #chart_div { height: 750px; width:950px; }
             html, body {
                 width: 100%;
                 height: 100%;
@@ -165,5 +165,5 @@ $(document).ready( function(){
             }
         </style>
 	</head>
-	<body onmousemove="logIf.setSessionID()"><div id="nobelDiv"></div></body>
+	<body onmousemove="logIf.setSessionID()"><div id="chart_div"></div></body>
 </html>

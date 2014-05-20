@@ -19,18 +19,18 @@ ttp://www.retrosheet.org/transactions/index.html
 function loadChart() {
     
     // set div height accordingly 
-    $('#chart_div4').height($(window).height()-45);
-    $('#chart_div4').width ($(window).width()*0.9);
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').height($(window).height()-45);
-        $('#chart_div4').width ($(window).width()*0.9);
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
 
     kshf.init({
         chartTitle: "Transactions In Major League Baseball (trade, Signing, Draft, Etc.)",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         itemName : "transactions",
 //        categoryTextWidth:130,
@@ -141,12 +141,8 @@ $(document).ready(loadChart);
     font-style:italic;
 }
 
-#chart_div4 rect.bar_style_teamleague_AL{ fill: #4D8B4D; }
-#chart_div4 rect.bar_style_teamleague_NL{ fill: #FCC240; }
-
-#chart_div4 {
-    margin: 0 auto;
-}
+#chart_div rect.bar_style_teamleague_AL{ fill: #4D8B4D; }
+#chart_div rect.bar_style_teamleague_NL{ fill: #FCC240; }
 
 body{ margin:2px; }
 
@@ -154,7 +150,7 @@ body{ margin:2px; }
 	</head>
 
 	<body>
-		<div id="chart_div4"></div>
+		<div id="chart_div"></div>
 	</body>
     
 </html>

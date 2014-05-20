@@ -111,7 +111,7 @@ function loadChart() {
 
     kshf.init({
         chartTitle: "World Country Flags",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth: 155,
         showResizeCorner: false,
@@ -295,12 +295,11 @@ $(document).ready(loadChart);
         color:#606060;
         font-style:italic;
     }
-    #chart_div4 {
-        margin: 0 auto;
+    #chart_div {
         width:950px;
         height:750px;
     }
 </style>
 	</head>
-	<body onmousemove="logIf.setSessionID()"><div id="chart_div4"></div></body>
+	<body onmousemove="logIf.setSessionID()"><div id="chart_div"></div></body>
 </html>

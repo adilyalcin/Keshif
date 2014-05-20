@@ -14,18 +14,18 @@
 
 google.setOnLoadCallback(function () {
     // set div height accordingly 
-    $('#chart_div4').height(900);
-    $('#chart_div4').width ($(window).width()*0.9);
+    $('#chart_div').height(900);
+    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').width ($(window).width()*0.9);
+        $('#chart_div').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
     
 	kshf.init({
         chartTitle: "The Last Ten Years of NHMRC research funding dataset 2004 - 2013",
         dirRoot: "../",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         categoryTextWidth:300,
         showDataSource : false,
         source : {
@@ -72,9 +72,6 @@ google.setOnLoadCallback(function () {
 });
 
 </script>
-        <style>
-            #chart_div4 { margin: 0 auto; }
-        </style>
 	</head>
-	<body><div id="chart_div4"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>

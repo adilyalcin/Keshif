@@ -11,14 +11,13 @@
         <link rel="stylesheet" href="./style.css"/ type="text/css">
         <script type="text/javascript">
 
-        var format = d3.time.format("%Y-%m-%d");
-        var sinkDate = format.parse("1912-04-15"); // returns a Date
+        var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
 
         google.setOnLoadCallback(function(){
             kshf.init({
                 chartTitle: "Titanic Passengers",
                 dirRoot: "../",
-                domID : "#chart_div4",
+                domID : "#chart_div",
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
@@ -92,12 +91,11 @@
         </script>
         
         <style>
-            #chart_div4 {
-                margin: 0 auto;
+            #chart_div {
                 width: 800px;
                 height: 700px;
             }
         </style>
     </head>
-	<body><div id="chart_div4"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>

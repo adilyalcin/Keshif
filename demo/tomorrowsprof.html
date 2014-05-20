@@ -20,8 +20,8 @@ function getNumComments(v){
 }
 
 function resetSize(){
-    $('#chart_div4').height($(window).height()-10);
-    $('#chart_div4').width (1100);
+    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').width (1100);
 }
 
 $(document).ready( function(){
@@ -35,7 +35,7 @@ $(document).ready( function(){
 
 	kshf.init({
         chartTitle: "Tomorrow's Professor Mailing List",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth:160,
         source : {
@@ -97,14 +97,7 @@ $(document).ready( function(){
                 color:#606060;
                 font-style:italic;
             }
-            #chart_div4 {
-                margin: 0 auto;
-            }
-            div.listItem {
-                padding-bottom: 0px;
-            }
-            body{ margin:2px; }
         </style>
     </head>
-	<body> <div id="chart_div4"></div> </body>
+	<body> <div id="chart_div"></div> </body>
 </html>

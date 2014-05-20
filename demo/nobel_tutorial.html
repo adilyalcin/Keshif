@@ -12,8 +12,8 @@
         <script type="text/javascript">
 
 function resetSize(){
-    $('#nobelDiv').height($(window).height()-10);
-    $('#nobelDiv').width (1000);
+    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').width (1000);
 }
 
 function loadChart() {
@@ -25,7 +25,7 @@ function loadChart() {
 
     kshf.init({
         chartTitle: "Nobel Prize Winners",
-        domID : "#nobelDiv",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth: 150,
         source : {
@@ -47,14 +47,8 @@ function loadChart() {
         }
     });
 }
-
 $(document).ready(loadChart);
-
 </script>
-<style>
-    #nobelDiv { margin: 0 auto; }
-    body { margin:2px; }
-</style>
 	</head>
-	<body><div id="nobelDiv"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>

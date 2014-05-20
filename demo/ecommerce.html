@@ -14,7 +14,7 @@ function loadChart() {
 	kshf.init({
         chartTitle: "e-Commerce - Correlated",
         dirRoot: "../",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         categoryTextWidth:100,
         showDataSource : false,
         source : {
@@ -54,14 +54,11 @@ google.setOnLoadCallback(loadChart);
 
 </script>
 <style>
-#chart_div4 {
-    margin: 0 auto;
+#chart_div {
     width: 500px;
     height: 400px;
 }
 </style>
 	</head>
-	<body>
-		<div id="chart_div4"></div>
-	</body>
+	<body><div id="chart_div"></div></body>
 </html>

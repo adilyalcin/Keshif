@@ -44,15 +44,14 @@ function timeOfDayText(d){
     }
 }
 
-
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height(1200);
-    $('#chart_div4').width ($(window).width()*0.9);
+    $('#chart_div').height(1200);
+    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-//        $('#chart_div4').height(1500);
-        $('#chart_div4').width ($(window).width()*0.9);
+//        $('#chart_div').height(1500);
+        $('#chart_div').width ($(window).width()*0.9);
         kshf.updateLayout();
     });
 
@@ -66,7 +65,7 @@ function loadChart() {
 
 	kshf.init({
         chartTitle: "Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         categoryTextWidth:170,
         source : {
@@ -210,21 +209,14 @@ google.setOnLoadCallback(loadChart);
 
 </script>
 <style>
-
 .iteminfo a{
     color:#606060;
     font-style:italic;
 }
 
-#chart_div4 {
-    margin: 0 auto;
-}
-
-body{ margin:2px; }
-
 </style>
 	</head>
 	<body>
-		<div id="chart_div4"></div>
+		<div id="chart_div"></div>
 	</body>
 </html>

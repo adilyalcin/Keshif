@@ -13,12 +13,12 @@
 
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div4').height($(window).height()-45);
-    $('#chart_div4').width ($(window).width()*0.8);
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.8);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').height($(window).height()-45);
-        $('#chart_div4').width ($(window).width()*0.8);
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.8);
         kshf.updateLayout();
     });
     var pubCol;
@@ -26,7 +26,7 @@ function loadChart() {
     // set height of the source dom as 
     kshf.init({
         chartTitle: "Bibliography of Marvin Minsky",
-        domID : "#chart_div4",
+        domID : "#chart_div",
         dirRoot: "../",
         itemName : "works",
         listMaxColWidthMult: 0.4,
@@ -147,19 +147,15 @@ div.thumbnail2 img{
     max-height:70px;
     border: solid 1px gray;
 }
-
-#chart_div4 {
+#chart_div {
     width: 100%;
-    margin: 0 auto;
 }
-
-body{ margin:2px; }
 
 </style>
 
 	</head>
 
 	<body>
-		<div id="chart_div4"></div>
+		<div id="chart_div"></div>
 	</body>
 </html>
