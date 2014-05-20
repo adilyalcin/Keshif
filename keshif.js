@@ -1498,9 +1498,7 @@ kshf.sortFunc_ActiveCount_TotalCount = function(a,b){
     return dif;
 };
 kshf.sortFunc_BarValue = function(a,b){ 
-    var dif=kshf.dif_barValue(a,b);
-    if(dif===0) { return b.id()-a.id(); }
-    return dif;
+    return kshf.dif_barValue(a,b);
 };
 kshf.sortFunc_Column_Int_Incr = function(a,b){ 
     return a.data[1] - b.data[1]; 
@@ -3989,11 +3987,22 @@ kshf.BarChart.prototype.updateSorting = function(force){
     if(funcToCall===undefined){
         funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
     }
+    var compareFunc_Num = function(a,b){
+        return b - a;
+    };
+    var compareFunc_Str = function(a,b){
+        return b.localeCompare(a);
+    };
+    var compareFuncc = compareFunc_Num;
+    if(typeof(this.getData()[0].id())==="string") compareFuncc = compareFunc_Str;
+
     var justSortFunc = function(a,b){
         // call the sorting function
         var x=funcToCall(a,b);
         // use IDs if sorting function doesn't recide on ordering
-        if(x===0) { x = b.id() - a.id(); }
+        if(x===0) { 
+            x = compareFuncc(a.id(),b.id());
+        }
         // reverse ordering
         if(kshf_.sortInverse) { x*=-1; }
         return x;
