@@ -1351,17 +1351,26 @@ kshf.insertChartHeader = function(){
     dom_filter_header.append("span")
         .attr("class","barChartMainInfo")
         .text(this.primItemCatValue===null?"⇒Item Count ":("⇒Total "+this.primItemCatValue))//⟾
-        .append("img")
+        .append("span")
         .attr("class","refreshbarscales")
         .attr("width","13")
         .style("margin-bottom","-2px")
         .style("display","none")
-        .attr("src",this.dirRoot+"img/Refresh_font_awesome.svg")
         .on("click",function(){
             kshf.clearAllFilters();
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAll,kshf.getFilteringState());
-        });
-        ;
+        })
+        .append("svg")
+        .attr("viewBox","0 -256 1792 1792")
+        .attr("width","13px")
+        .attr("height","100%")
+        .append("g")
+            .attr("transform","matrix(1,0,0,-1,121.49153,1270.2373)")
+            .append("path")
+                .style("fill","currentColor")
+                .attr("d",
+                    "m 1511,480 q 0,-5 -1,-7 Q 1446,205 1242,38.5 1038,-128 764,-128 618,-128 481.5,-73 345,-18 238,84 L 109,-45 Q 90,-64 64,-64 38,-64 19,-45 0,-26 0,0 v 448 q 0,26 19,45 19,19 45,19 h 448 q 26,0 45,-19 19,-19 19,-45 0,-26 -19,-45 L 420,266 q 71,-66 161,-102 90,-36 187,-36 134,0 250,65 116,65 186,179 11,17 53,117 8,23 30,23 h 192 q 13,0 22.5,-9.5 9.5,-9.5 9.5,-22.5 z m 25,800 V 832 q 0,-26 -19,-45 -19,-19 -45,-19 h -448 q -26,0 -45,19 -19,19 -19,45 0,26 19,45 l 138,138 Q 969,1152 768,1152 634,1152 518,1087 402,1022 332,908 321,891 279,791 271,768 249,768 H 50 Q 37,768 27.5,777.5 18,787 18,800 v 7 q 65,268 270,434.5 205,166.5 480,166.5 146,0 284,-55.5 138,-55.5 245,-156.5 l 130,129 q 19,19 45,19 26,0 45,-19 19,-19 19,-45 z"
+                    );
 
 
     // Info & Credits
@@ -1978,6 +1987,8 @@ kshf.BarChart.prototype.init_shared = function(options){
 
     if(this.options.catItemMap===undefined){
         this.options.catItemMap = this.parentKshf.columnAccessFunc(this.options.facetTitle);
+    } else if(typeof(this.options.catItemMap)==="string"){
+        this.options.catItemMap = kshf.columnAccessFunc(this.options.catItemMap);
     }
 
     // generate row table if necessary
@@ -3001,10 +3012,19 @@ kshf.BarChart.prototype.insertHeader = function(){
 
     if(this.showTextSearch){
         var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX").style("padding-top","1px");
-        textSearchRowDOM.append("img")
-            .attr('src',this.parentKshf.dirRoot+"img/search-logo.svg")
+        textSearchRowDOM.append("svg")
             .attr("class","chartRowLabelSearch")
             .attr("width","13")
+            .attr("height","12")
+            .attr("viewBox","0 0 491.237793 452.9882813")
+            .attr("xmlns","http://www.w3.org/2000/svg")
+            .html(
+              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
+               '<g fill-rule="evenodd" clip-rule="evenodd">'+
+                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
+                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
+               '</g>'+
+              '</g>')
             ;
         this.dom.showTextSearch= textSearchRowDOM.append("input")
             .attr("type","text")

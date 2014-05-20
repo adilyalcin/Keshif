@@ -1597,10 +1597,10 @@ span.sort_column_remove:hover{
 
 
 
-.kshf img.chartRowLabelSearch{
+.kshf svg.chartRowLabelSearch{
     float: right;
     clear: right;
-    padding-top: 3px;
+    margin-top: 3px;
 }
 .kshf div.kshfChart input.chartRowLabelSearch{
     float: right;
