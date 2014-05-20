@@ -8,6 +8,7 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
+        <link rel="stylesheet" href="./style.css"/ type="text/css">
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
     	google.setOnLoadCallback( function(){
@@ -27,16 +28,11 @@
                             var year=d.data[3].substr(0,4);
                             return new Date(moment(year+"01-01","YYYY-MM-DD"));
                         },
-                    },{
-                        facetTitle: "State of Birth",
-                    },{
-                        facetTitle: "Occupation",
-                    },{
-                        facetTitle: "College",
-                    },{
-                        facetTitle: "Religion",
-                    },{
-                        facetTitle: "Notes",
+                    },{ facetTitle: "State of Birth",
+                    },{ facetTitle: "Occupation",
+                    },{ facetTitle: "College",
+                    },{ facetTitle: "Religion",
+                    },{ facetTitle: "Notes",
                     }
                 ],
                 list : {
@@ -58,9 +54,7 @@
                             }
                         }
                     ],
-                    contentFunc: function(d){
-                        return '<img src=\"'+d.data[11]+'\">';
-                    }
+                    contentFunc: function(d){ return '<img src=\"'+d.data[11]+'\">'; }
                 }
             });
         });
