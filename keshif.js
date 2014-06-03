@@ -130,7 +130,6 @@ var ACTID_OTHER = {
     Resize     : 6
 };
 
-
 // ***************************************************************************************************
 // ITEM BASE OBJECT/PROPERTIES
 // ***************************************************************************************************
@@ -138,7 +137,6 @@ kshf.Item = function(d, idIndex, primary){
     // the main data within item
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
-    // used by primary tem only
 	this.selected = true;
     // used by filters
 	this.activeItems = 0;
@@ -146,7 +144,7 @@ kshf.Item = function(d, idIndex, primary){
     this.barValueMax = 0;
 	this.items = []; // set of assigned primary items
     if(primary){
-        // 1 true value is added for global search
+        // 1 true value is added for global text search
         this.filters = [true];
         this.barCount = 1; // 1 by default
         this.mappedRows = [true];
@@ -161,57 +159,46 @@ kshf.Item.prototype.id = function(){
 kshf.Item.prototype.updateSelected = function(){
     var i,len,f=this.filters;
     var oldSelected = this.selected;
-    var chartMapping,m;
+    var me=this;
     // checks if all filter results are true
-    for(i=0, len = f.length; i<len && f[i]; i++){ }
-    this.selected=(i===len);
-
+    this.selected=true;
+    this.filters.forEach(function(f){ me.selected=me.selected&&f; });
+    
     if(this.selected===true && oldSelected===false){
         kshf.itemsSelectedCt++;
-        for(i=0; i< this.mappedRows.length; i++){
-            chartMapping=this.mappedRows[i];
-            if(chartMapping === undefined) continue;
-            for(var j=0; j<chartMapping.length; j++){
-                m = chartMapping[j];
+        this.mappedRows.forEach(function(chartMapping){
+            if(chartMapping === undefined) return;
+            if(chartMapping === true) return;
+            chartMapping.forEach(function(m){
                 m.activeItems++;
-                m.barValue+=this.barCount;
+                m.barValue+=me.barCount;
                 m.sortDirty=true;
-            }
-        }
-        for(i=0; i<this.dots.length; i++){
-            this.dots[i].setAttribute('display',"true");
-        }
+            });
+        });
+        this.dots.forEach(function(d){d.setAttribute('display',"true");});
     } else if(this.selected===false && oldSelected===true){
         kshf.itemsSelectedCt--;
-        for(i=0; i< this.mappedRows.length; i++){
-            var chartMapping=this.mappedRows[i];
-            if(chartMapping === undefined) continue;
-            for(var j=0; j<chartMapping.length; j++){
-                m = chartMapping[j];
+        this.mappedRows.forEach(function(chartMapping){
+            if(chartMapping === undefined) return;
+            if(chartMapping === true) return;
+            chartMapping.forEach(function(m){
                 m.activeItems--;
-                m.barValue-=this.barCount;
+                m.barValue-=me.barCount;
                 m.sortDirty=true;
-            }
-        }
-        for(i=0; i<this.dots.length; i++){
-            this.dots[i].setAttribute('display',"false");
-        }
+            });
+        });
+        this.dots.forEach(function(d){d.setAttribute('display',"false");});
     }
     return this.selected;
 };
 kshf.Item.prototype.highlightDots = function(){
-    for(i=0; i<this.dots.length; i++){
-        this.dots[i].setAttribute('highlight',true);
-    }
+    this.dots.forEach(function(d){d.setAttribute('highlight',true);});
 }
 kshf.Item.prototype.highlightCategories = function(){
-    for(i=0; i<this.cats.length; i++){
-        this.cats[i].setAttribute('itemhighlight',true);
-    }
+    this.cats.forEach(function(d){d.setAttribute('highlight',"true");});
 }
 kshf.Item.prototype.highlightOnList = function(){
-    if(this.listItem!== undefined)
-        this.listItem.setAttribute("highlight",true);
+    if(this.listItem!==undefined) this.listItem.setAttribute("highlight",true);
 }
 kshf.Item.prototype.highlightAttributes = function(){
     this.highlightDots();
@@ -220,14 +207,10 @@ kshf.Item.prototype.highlightAttributes = function(){
 }
 
 kshf.Item.prototype.nohighlightDots = function(){
-    for(i=0; i<this.dots.length; i++){
-        this.dots[i].setAttribute('highlight',false);
-    }
+    this.dots.forEach(function(d){d.setAttribute('highlight',false);});
 }
 kshf.Item.prototype.nohighlightCategories = function(){
-    for(i=0; i<this.cats.length; i++){
-        this.cats[i].setAttribute('itemhighlight',false);
-    }
+    this.cats.forEach(function(d){d.setAttribute('highlight',"false");});
 }
 kshf.Item.prototype.nohighlightOnList = function(){
     this.listItem.setAttribute("highlight",false);
@@ -416,10 +399,7 @@ kshf.finishDataLoad = function(sheet,arr) {
         kshf.itemsSelectedCt = arr.length;
     }
     var id_table = {};
-    for(var j=0; j<arr.length ;j++) {
-        var r=arr[j];
-        id_table[r.id()] = r; 
-    }
+    arr.forEach(function(r){id_table[r.id()] = r;});
     kshf.dt_id[sheet.tableName] = id_table;
     kshf.incrementLoadedTableCount();
 };
@@ -435,13 +415,9 @@ kshf.incrementLoadedTableCount = function(){
         // update primary item stuff if necessary
         var mainTable = this.dt[this.getMainChartName()];
         var colId = this.dt_ColNames[this.getMainChartName()][this.primItemCatValue];
-        var mainTableLen=mainTable.length;
-        var i=0;
+
         if(typeof this.primItemCatValue =='string'){
-            for(i=0; i<mainTableLen; i++){
-                var d=mainTable[i];
-                d.barCount = d.data[colId];
-            }
+            mainTable.forEach(function(d){d.barCount=d.data[colId];});
         }
 
         d3.select(".kshf.layout_infobox div.status_text span")
@@ -494,13 +470,13 @@ kshf.cellToArray = function(dt, cols, splitExpr, convertInt){
     if(splitExpr===undefined){
         splitExpr = /\b\s+/;
     }
-    var i,j,t;
-    for(i=0; i<dt.length ;i++){
-        var p = dt[i].data;
-        for(t=0; t<cols.length ; t++){
-            var list = p[cols[t]];
-            if(list===null) continue;
-            if(typeof list==="number") continue;
+    var j;
+    dt.forEach(function(p){
+        p = p.data;
+        cols.forEach(function(c){
+            var list = p[c];
+            if(list===null) return;
+            if(typeof list==="number") return;
             var list2 = list.split(splitExpr);
             list = [];
             // remove empty "" items
@@ -514,9 +490,9 @@ kshf.cellToArray = function(dt, cols, splitExpr, convertInt){
                     list[j] = parseInt(list[j],10);
                 }
             }
-            p[cols[t]] = list;
-        }
-    }
+            p[c] = list;
+        });
+    });
 };
 // give it a list split by, it will reconstruct "... , ..." cases back
 kshf.unescapeCommas = function(c){
@@ -600,7 +576,7 @@ kshf.getFilteringState = function(facetTitle, itemInfo) {
 };
 
 kshf.list = function(_kshf, config, root){
-    var i;
+    var i=0;
     var me = this;
     this.parentKshf = _kshf;
     this.dragSrcEl = null;
@@ -609,14 +585,14 @@ kshf.list = function(_kshf, config, root){
     // List sorting options
     this.listSortOrder = [];
     this.sortOpts = config.sortOpts;
-    for(i=0; i<this.sortOpts.length ; i++){
-       var c = this.sortOpts[i];
-       if(c.value===undefined){
-           c.value = this.parentKshf.columnAccessFunc(c.name);
-       }
-       if(!c.label) c.label = c.value;
-        this.listSortOrder.push(i);
-    }
+    this.sortOpts.forEach(function(c){
+        if(c.value===undefined){
+            c.value = me.parentKshf.columnAccessFunc(c.name);
+        }
+        if(!c.label) c.label = c.value;
+        me.listSortOrder.push(i);
+        i++;
+    });
     this.displayType = 'list';
     if(config.displayType==='grid') this.displayType = 'grid';
 
@@ -685,9 +661,7 @@ kshf.list = function(_kshf, config, root){
                 var v=v.split(" ");
 
                 // go over all the items in the list, search each keyword separately
-                var k;
-                for(k=0; k<kshf.items.length ; k++){
-                    item = kshf.items[k];                    
+                kshf.items.forEach(function(item){
                     var i=0
                     var f = true;
                     for(i=0 ; i<v.length; i++){
@@ -696,7 +670,7 @@ kshf.list = function(_kshf, config, root){
                     }
                     item.filters[0] = f;
                     item.updateSelected();
-                };
+                });
                 kshf.update();
                 x.timer = null;
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,kshf.getFilteringState());
@@ -717,12 +691,10 @@ kshf.list = function(_kshf, config, root){
 
                 // No timeout necessary. Clear selection rightaway.
                 // go over all the items in the list, search each keyword separately
-                var k;
-                for(k=0; k<kshf.items.length ; k++){
-                    item = kshf.items[k];                    
+                kshf.items.forEach(function(item){
                     item.filters[0] = true;
                     item.updateSelected();
-                };
+                });
                 kshf.update();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,kshf.getFilteringState());
             });
@@ -792,7 +764,7 @@ kshf.list.prototype.updateListColumnHeaders = function(){
     for(i=0;i<kshf.items.length;i++){
         var p=kshf.items[i];
         // skip unselected items
-        if(p.selected===false) { continue; }
+        if(!p.selected) { continue; }
         // show all sort column labels by default 
         p.listsortcolumn = [].repeat(true,this.listSortOrder.length);
         // first selected item
@@ -867,7 +839,7 @@ kshf.list.prototype.sortItems = function(){
     var sortValueType = this.sortValueType();
 	this.parentKshf.items.sort(function(a,b){
         // do not need to process unselected items, their order does not matter
-        if(a.selected===false || b.selected===false){ return 0; }
+        if(!a.selected||!b.selected){ return 0; }
         var dif=kshf.compareListItems(a,b,sortValueFunc,sortValueType);
         if(dif!==0) { return dif; }
         return b.id()-a.id(); // use unique IDs to add sorting order as the last option
@@ -990,8 +962,7 @@ kshf.list.prototype.reorderItems = function(){
 };
 kshf.list.prototype.updateItemVisibility = function(){
     var showType=this.displayType==='list'?"block":"inline-block";
-	this.dom.listItems
-		.style("display",function(pub){ return (pub.selected)?showType:"none"; });
+	this.dom.listItems.style("display",function(d){return (d.selected)?showType:"none"; });
 };
 
 kshf.list.prototype.updateList = function(){
@@ -1001,13 +972,13 @@ kshf.list.prototype.updateList = function(){
     if(this.displayType==='list'){
         this.dom.listItems
             .each(function(d){
-                if(!d.selected) { return; }
+                if(!d.selected) return;
                 return this_.updateSortColumnLabels(d,this); 
             });
     }
 	this.dom.listItems
 		.each(function(d){
-            if(!d.selected) { return; }
+            if(!d.selected) return;
             return this_.updateSortColumnLabels(d,this); 
         });
     d3.select(".listheader_count").text(function(){
@@ -1167,7 +1138,7 @@ kshf.init = function (options) {
     creditString += "Research made practical. Funded in part by <a href=\"http:\/\/www.huawei.com\">Huawei<\/a>. <\/div>";
     creditString += "";
 
-    if(options.showResizeCorner === undefined || options.showResizeCorner!==false){
+    if(options.showResizeCorner === true){
         this.layout_resize = this.root.append("div").attr("class", "kshf layout_resize")
            .on("mousedown", function (d, i) {
                me.root.style('cursor','nwse-resize');
@@ -1272,22 +1243,21 @@ kshf.createCharts = function(){
     if(this.chartDefs===undefined){
         this.chartDefs = [];
         var colNames = this.dt_ColNames_Arr[this.getMainChartName()];
-        for(var i=0; i<colNames.length; i++){
-            var colName = colNames[i];
-            if(colName===this.source.sheets[0].id) continue;
-            if(this.skipFacet[colName]===true) continue;
-            if(colName[0]==="*") continue;
-            this.chartDefs.push({facetTitle: colNames[i]});
-        }
+        colNames.forEach(function(colName){
+            if(colName===me.source.sheets[0].id) return;
+            if(me.skipFacet[colName]===true) return;
+            if(colName[0]==="*") return;
+            me.chartDefs.push({facetTitle: colName});
+        });
     }
     // TODO: Find the first column that has a date value, set it the time component of first chart
 
     for(var i=0; i<this.chartDefs.length; i++){
         this.addBarChart(this.chartDefs[i]);
     }
-    for(var i=0; i<this.charts.length; i++){
-        this.charts[i].init_DOM();
-    }
+    this.charts.forEach(function(chart){
+        chart.init_DOM();
+    });
     this.createListDisplay(this.listDef);
     this.loaded = true;
     this.updateLayout();
@@ -1441,13 +1411,11 @@ kshf.addRangeChart = function(options){
 }
 
 kshf.update = function () {
-    var i, chart, filteredCount=0;
+    var filteredCount=0;
 
     // if running for the first time, do stuff
     if(this.firsttimeupdate === undefined){
-        for(i=0 ; i<this.items.length ; i++){
-            this.items[i].updateSelected();
-        }
+        this.items.forEach(function(item){item.updateSelected();});
         this.firsttimeupdate = true; 
     }
 
@@ -1464,12 +1432,11 @@ kshf.update = function () {
     }
 
 	// update each widget within
-	for (i=0; i<this.charts.length; ++i){
-        chart = kshf.charts[i];
+    this.charts.forEach(function(chart){
         chart.updateBarAxisScale();
         chart.updateSelf();
         filteredCount += chart.getFilteredCount();
-	}
+    });
 
     // "clear all" filter button
     this.root.select(".filter-block-clear")
@@ -1569,6 +1536,8 @@ kshf.updateLayout_Height = function(){
     if(this.chartTitle!==undefined){
         divHeight-=chartHeaderHeight;
     }
+
+    this.layoutBackground.style("height",divHeight+"px");
 
     this.divWidth = this.domWidth();
 
@@ -1739,13 +1708,13 @@ kshf.updateLayout = function(){
 // Not explicitly called, you can call this maunally to change the text width size after the browser is created
 kshf.setCategoryTextWidth = function(w){
     this.categoryTextWidth = w;
-    for(i = 0; i < this.charts.length; ++i){
-        if(kshf.charts[i].type==='barChart' || kshf.charts[i].type==='scatterplot'){
-            kshf.charts[i].options.rowTextWidth = w;
-            kshf.charts[i].updateTextWidth(w);
-            kshf.charts[i].updateBarWidth();
+    this.charts.forEach(function(chart){
+        if(chart.type==='barChart' || chart.type==='scatterplot'){
+            chart.options.rowTextWidth = w;
+            chart.updateTextWidth(w);
+            chart.updateBarWidth();
         }
-    }
+    });
     this.updateAllTheWidth();
 }
 
@@ -1782,12 +1751,11 @@ kshf.setBarWidthLeftPanel = function(v){
     this.setHideBarAxis(v);
     if(this.barMaxWidth===this.width_leftPanel_bar) return;
     this.barMaxWidth = this.width_leftPanel_bar;
-    for(i=0; i<this.charts.length; ++i){
-        var c = kshf.charts[i];
-        c.updateBarAxisScale();
-        c.updateWidth_Bars_Active();
-        c.updateChartTotalWidth();
-    }
+    this.charts.forEach(function(chart){
+        chart.updateBarAxisScale();
+        chart.updateWidth_Bars_Active();
+        chart.updateChartTotalWidth();
+    });
 }
 
 kshf.fullWidthResultSet = function(){
@@ -1799,7 +1767,7 @@ kshf.updateAllTheWidth = function(v){
 
     var rowLabelOffset = this.getRowLabelOffset();
 
-    this.root.select("div.layout_left_background").style("width",(this.width_leftPanel_total)+"px");
+    this.layoutBackground.style("width",(this.width_leftPanel_total)+"px");
     this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
 
     this.layoutRight.style("left",(this.fullWidthResultSet()?0:this.width_leftPanel_total)+"px");
@@ -1891,6 +1859,7 @@ kshf.getRowTotalTextWidth = function(){
 
 kshf.BarChart = function(_kshf, options){
     // Call the parent's constructor
+    var me = this;
     kshf.Chart.call(this, options);
     this.sortDelay = 450; // ms
     this.parentKshf = _kshf;
@@ -1910,9 +1879,9 @@ kshf.BarChart = function(_kshf, options){
         this.options.display = {row_bar_line:false};
     } else {
         this.options.display = {row_bar_line:true};
-        for(var i=0; i<kshf.items.length; i++){
-            kshf.items[i].timePos = this.options.timeItemMap(kshf.items[i]);
-        }
+        kshf.items.forEach(function(item){
+            item.timePos = me.options.timeItemMap(item);
+        })
         this.timeData_dt = {
             min: d3.min(kshf.items, this.options.timeItemMap),
             max: d3.max(kshf.items, this.options.timeItemMap)};
@@ -1953,7 +1922,7 @@ kshf.BarChart.prototype.rowCount_Header = function(){
 
 kshf.BarChart.prototype.init_shared = function(options){
 	// register
-    var i,j,f;
+    var j,f, me=this;
 
     this.parentKshf.barMaxWidth = 0;
 
@@ -2031,16 +2000,13 @@ kshf.BarChart.prototype.init_shared = function(options){
     this.hasMultiValueItem = false;
 
     // BIG. Apply row map function
-    var dt = kshf.items;
     var curDtId = this.getData_wID();
-    var m;
-    for(i=0;i<dt.length;i++){
-        var item = dt[i];
+    kshf.items.forEach(function(item){
         // assume all filters pass
-        for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
+        for(j=0,f=me.filterId;j<me.filterCount;j++,f++){
             item.filters[f] = true;
         }
-        var toMap = this.options.catItemMap(item);
+        var toMap = me.options.catItemMap(item);
         if(toMap===undefined || toMap==="") { 
             toMap=null;
         } else if(toMap instanceof Array){
@@ -2054,33 +2020,33 @@ kshf.BarChart.prototype.init_shared = function(options){
                 return false;
             });
         }
-        item.mappedData[this.filterId] = toMap;
-        item.mappedRows[this.filterId] = [];
-        if(toMap===null) { continue; }
+        item.mappedData[me.filterId] = toMap;
+        item.mappedRows[me.filterId] = [];
+        if(toMap===null) { return; }
         if(toMap instanceof Array){
             optimalSelectOption = "MultipleAnd";
-            this.hasMultiValueItem = true;
-            for(j=0;j<toMap.length;j++){
-                m=curDtId[toMap[j]];
+            me.hasMultiValueItem = true;
+            toMap.forEach(function(a){
+                var m=curDtId[a];
                 if(m){
                     m.items.push(item);
                     m.activeItems++;
                     m.barValue+=item.barCount;
                     m.barValueMax+=item.barCount;
                     m.sortDirty = true;
-                    item.mappedRows[this.filterId].push(m);
+                    item.mappedRows[me.filterId].push(m);
                 }
-            }
+            });
         } else {
-            m=curDtId[toMap];
+            var m=curDtId[toMap];
             m.items.push(item);
             m.activeItems++;
             m.barValue+=item.barCount;
             m.barValueMax+=item.barCount;
             m.sortDirty = true;
-            item.mappedRows[this.filterId].push(curDtId[toMap]);
+            item.mappedRows[me.filterId].push(curDtId[toMap]);
         }
-    }
+    });
 
     if(this.options.selectType===undefined){
         this.options.selectType = optimalSelectOption;
@@ -2122,11 +2088,11 @@ kshf.BarChart.prototype.init_shared = function(options){
 };
 
 kshf.BarChart.prototype.updateTotalItemCount = function(){
-    var i,dt=this.getData();
+    var me = this;
     this.catCount_Total = 0;
-    for(i=0; i<dt.length ; i++){
-        if(this._dataMap(dt[i])!==null) { this.catCount_Total++; }
-    }
+    this.getData().forEach(function(d){
+        if(me._dataMap(d)!==null) { me.catCount_Total++; }
+    });
 };
 
 kshf.BarChart.prototype.getWidth = function(){
@@ -2428,10 +2394,8 @@ kshf.BarChart.prototype.init_DOM = function(){
 	  .enter().append("svg:g")
 		.attr("class", "row")
         .each(function(d){
-            var items = d.items;
-            for(var i=0; i<items.length; i++){
-                items[i].cats.push(this);
-            }
+            var mee=this;
+            d.items.forEach(function(dd){dd.cats.push(mee);});
         })
 		;
     this.dom.g_row = this.root.selectAll('g.row');
@@ -2447,7 +2411,7 @@ kshf.BarChart.prototype.init_DOM = function(){
     }
 
     if(this.catCount_Total===1){
-        this.options.catBarScale = "selected";
+        this.options.catBarScale = "scale_frequency";
     }
 
     this.insertHeader();
@@ -2512,18 +2476,15 @@ kshf.BarChart.prototype.updateSelf = function(){
 
 kshf.BarChart.prototype.updateData_TimeMinMax = function(){
     var kshf_ = this;
-    var i;
     var specFunc = function(d){
-        if(!d.selected) { return undefined; }
+        if(!d.selected) return undefined; // unselected items have no timePos
         return d.timePos;
     };
-    var rows=this.getData();
-	for(i=0; i<rows.length; i++){
-		var rowData=rows[i];
-        if(rowData.sortDirty===false) continue;
-		rowData.xMin_Dyn = d3.min(rowData.items, specFunc);
-		rowData.xMax_Dyn = d3.max(rowData.items, specFunc);
-	}
+    this.getData().forEach(function(row){
+        if(row.sortDirty===false) return;
+        row.xMin_Dyn = d3.min(row.items, specFunc);
+        row.xMax_Dyn = d3.max(row.items, specFunc);
+    });
 };
 
 // You should only display at most 3 digits + k/m/etc
@@ -2592,8 +2553,7 @@ kshf.BarChart.prototype.getFilteredCount = function(){
 }
 kshf.BarChart.prototype.refreshFilterRowState = function(){
 	this.divRoot.attr("filtered_row",this.isFiltered_Row());
-	this.root.selectAll("g.barGroup g.row")
-		.attr("selected", function(d) { return d.selected; });
+	this.root.selectAll("g.barGroup g.row").attr("selected",function(d){return d.selected;});
 };
 
 kshf.BarChart.prototype.isFiltered_Row = function(state){
@@ -2605,9 +2565,7 @@ kshf.BarChart.prototype.isFiltered_Time = function(){
 };
 //! Rows, not data!
 kshf.BarChart.prototype.selectAllRows = function(state){
-    var i;
-    var rows=this.getData();
-    for(i=0; i<rows.length ; i++){ rows[i].selected = state; }
+    this.getData().forEach(function(r){r.selected=state;});
 	this.catCount_Selected = (state)?this.catCount_Total:0;
 };
 
@@ -2692,16 +2650,9 @@ kshf.BarChart.prototype.insertHeader = function(){
         })
         ;
     
-    // this one is just a space filler!
-    topRow.append("span").attr("class","header_label_arrow header_label_none");
-
-    topRow.append("span").attr("class","header_label_arrow header_label_down")
-        .attr("title","Show categories").text("▶")
-        .on("click",function(){ kshf_.collapseCategories(false); })
-        ;
-    topRow.append("span").attr("class","header_label_arrow header_label_up"  )
-        .attr("title","Hide categories").text("▼")
-        .on("click",function(){ kshf_.collapseCategories(true); })
+    topRow.append("span").attr("class","header_label_arrow")
+        .attr("title","Show/Hide categories").text("▼")
+        .on("click",function(){ kshf_.collapseCategories(!kshf_.collapsed); })
         ;
 
     topRow.append("svg")
@@ -2740,13 +2691,9 @@ kshf.BarChart.prototype.insertHeader = function(){
 
         var poff = rightBlock.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight").style("height","18px");
 
-        poff.append("span").attr("class","header_label_arrow header_label_down")
-            .attr("title","Show categories").text("▶")
-            .on("click",function(){ kshf_.collapseTime(false); })
-            ;
-        poff.append("span").attr("class","header_label_arrow header_label_up"  )
-            .attr("title","Hide categories").text("▼")
-            .on("click",function(){ kshf_.collapseTime(true); })
+        poff.append("span").attr("class","header_label_arrow")
+            .attr("title","Show/Hide categories").text("▼")
+            .on("click",function(){ kshf_.collapseTime(!kshf_.collapsedTime); })
             ;
         poff.append("span")
             .attr("class", "header_label")
@@ -3102,7 +3049,7 @@ kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
     var totalActiveTime_pixLength = 0;
 
     this.dom.g_row.each(function(d) {
-        if(me.catCount_Selected!==0 && d.selected!==true) return;
+        if(me.catCount_Selected!==0 && !d.selected) return;
         if(d.xMax_Dyn===undefined || d.xMin_Dyn===undefined) return;
         totalActiveTime_pixLength+=me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
     });
@@ -3137,7 +3084,7 @@ kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
 }
 
 kshf.BarChart.prototype.updateBarAxisScale = function(){
-    if(this.options.catBarScale==="selected"){
+    if(this.options.catBarScale==="scale_frequency"){
         this.catBarAxisScale = d3.scale.linear()
             .domain([0,this.parentKshf.itemsSelectedCt])
             .rangeRound([0, this.parentKshf.barMaxWidth]);
@@ -3474,7 +3421,7 @@ kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
 		.on("mouseout",mouseOutFunc)
 		.on("mousedown", function(d, i) {
 			kshf_.scrollbar.active=true;
-			d3.select(this).attr("selected", "true");
+			d3.select(this).attr("selected",true);
 			kshf_.root.style( 'cursor', 'pointer' );
 			var mouseDown_y = d3.mouse(this.parentNode.parentNode.parentNode)[1];
 			var firstRow = kshf_.scrollbar.firstRow;
@@ -3496,7 +3443,7 @@ kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
 				kshf_.root.style( 'cursor', 'default' );
 				kshf_.scrollbar.active=false;
 				var btn=kshf_.root.select("g.scrollGroup rect.handle");
-				btn.attr("selected", "false");
+				btn.attr("selected",false);
 				// unregister mouse-move callbacks
                 parentDom.selectAll("text.row_number").style("display","");
 				kshf_.root.on("mousemove", null);
@@ -3555,79 +3502,70 @@ kshf.BarChart.prototype.filter_multi = function(item,m,curDtId) {
 }
 
 kshf.BarChart.prototype.filter_all = function(){
-    var i, j, items=kshf.items, curDtId=this.getData_wID();
-    var allSelected = this.catCount_Selected===0;
-    for(i=0 ; i<items.length ; i++){
-        var item = items[i];
+    var curDtId=this.getData_wID(), me=this, allSelected = this.catCount_Selected===0;
+    kshf.items.forEach(function(item){
         if(allSelected){
-            item.filters[this.filterId] = true;
+            item.filters[me.filterId] = true;
         } else {
-            var m=item.mappedData[this.filterId];
+            var m=item.mappedData[me.filterId];
             if(m===undefined || m===null || m===""){ 
-                item.filters[this.filterId] = false;
+                item.filters[me.filterId] = false;
             } else {
                 if(m instanceof Array){
-                    this.filter_multi(item,m,curDtId);
+                    me.filter_multi(item,m,curDtId);
                 } else {
-                    item.filters[this.filterId] = curDtId[m].selected;
+                    item.filters[me.filterId] = curDtId[m].selected;
                 }
             }
         }
         item.updateSelected();
-    }
+    });
 };
 
 
 kshf.BarChart.prototype.filter_removeItems = function(){
-    var i, j, items=kshf.items, curDtId=this.getData_wID();
-    for(i=0 ; i<items.length ; i++){
-        var item = items[i];
-        var m=item.mappedData[this.filterId];
+    var curDtId=this.getData_wID(), me=this;
+    kshf.items.forEach(function(item){
+        var m=item.mappedData[me.filterId];
         if(m!==undefined && m!==null && m!==""){
             if(m instanceof Array){
-                this.filter_multi(item,m,curDtId);
+                me.filter_multi(item,m,curDtId);
             } else {
-                item.filters[this.filterId] = curDtId[m].selected;
+                item.filters[me.filterId] = curDtId[m].selected;
             }
         } else {
-            item.filters[this.filterId] = false;
+            item.filters[me.filterId] = false;
         }
         // you are only "removing" items
-        if(item.selected){
-            item.updateSelected();
-        }
-    }
+        if(item.selected) item.updateSelected();
+    });
 };
 
 kshf.BarChart.prototype.filter_addItems = function(){
-    var i, j, items=kshf.items, curDtId=this.getData_wID();
-    var allRowsSelected = this.catCount_Selected===0;
-    for(i=0 ; i<items.length ; i++){
-        var item = items[i];
+    var curDtId=this.getData_wID(), me=this, allRowsSelected = this.catCount_Selected===0;
+    kshf.items.forEach(function(item){
         if(allRowsSelected){
-            item.filters[this.filterId] = true;
+            item.filters[me.filterId] = true;
         } else {
-            var m=item.mappedData[this.filterId];
+            var m=item.mappedData[me.filterId];
             if(m!==undefined && m!==null && m!==""){
                 if(m instanceof Array){
-                    this.filter_multi(item,m,curDtId);
+                    me.filter_multi(item,m,curDtId);
                 } else {
-                    item.filters[this.filterId] = curDtId[m].selected;
+                    item.filters[me.filterId] = curDtId[m].selected;
                 }
             }
         }
         // you are only adding items
-        if(!item.selected){
-            item.updateSelected();
-        }
-    }
+        if(!item.selected) item.updateSelected();
+    });
 };
 
 // if returns false, item is not selected!
 // to return false, all components should be false.
 // or, if one of the components return true, item can be selected
 kshf.BarChart.prototype.noItemOnSelect = function(d){
-    var r = d.selected!==false; // you can (un)select a selected item
+    var r = d.selected; // you can (un)select a selected item
     // if item is unselected, you can select if no item is currently selected
     r = r || (this.catCount_Selected!==0 && this.options.selectType!=="MultipleAnd");
     r = r || (d.activeItems!==0);
@@ -3640,7 +3578,7 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
 	d.selected = !d.selected;
     // If selectType is Single, deselect other selections
     if(this.options.selectType==="Single"){
-        if(d.selected===true){
+        if(d.selected){
             this.selectAllRows(false);
             d.selected=true;
             forceAll=true;
@@ -3697,17 +3635,14 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
     return true;
 };
 kshf.BarChart.prototype.filterTime = function(){
-    var i,j;
-    var items = kshf.items;
     var timeFilterId = this.filterId+1;
-    for(i=0 ; i<items.length ; i++){
-        var item = items[i];
+    kshf.items.forEach(function(item){
         var t = item.timePos;
         item.filters[timeFilterId] = 
             (t>=this.timeFilter_ms.min) &&
             (t< this.timeFilter_ms.max);
         item.updateSelected();
-    }
+    });
 };
 
 kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
@@ -3730,7 +3665,7 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         var catLabelText = this.options.catLabelText;
         var catTooltipText = this.options.catTooltipText;
         this.root.selectAll("g.row").each( function(d){
-            if(d.selected===false) return; 
+            if(!d.selected) return; 
             if(selectedItemsCount!==0) {
                 if(kshf_.options.selectType==="MultipleAnd"){
                     selectedItemsText+=" and "; 
@@ -3809,40 +3744,26 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
                     kshf.getFilteringState(kshf_.options.facetTitle,d.data[1]));
                 return;
             } else if(sendLog){
-                if(sendLog) sendLog(CATID.FacetFilter,(d.selected===true)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
+                if(sendLog) sendLog(CATID.FacetFilter,(d.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
                     kshf.getFilteringState(kshf_.options.facetTitle,d.data[1]));
             }
             var x = this;
             this.timer = setTimeout(function() { x.timer = null; }, 500);
         })
+        .attr("highlight","false")
         .on("mouseover",function(d,i){
-            var dd;
-            for(var i=0; i<d.items.length; i++){
-                dd = d.items[i];
-                if(dd.selected===true) dd.highlightOnList();
-            }
+            this.setAttribute("highlight",true);
+            d.items.forEach(function(dd){if(dd.selected) dd.highlightOnList();});
         })
         .on("mouseout",function(d,i){
-            var dd;
-            for(var i=0; i<d.items.length; i++){
-                dd = d.items[i];
-                if(dd.selected===true) dd.nohighlightOnList();
-            }
-        });
-        ;
-    this.dom.rowsSub = this.dom.rows.append("svg:g").attr("class","barRow")
-		.on("mouseover", function(d){
-            this.setAttribute("highlight",true);
-        })
-		.on("mouseout", function(d){ 
             this.setAttribute("highlight",false);
+            d.items.forEach(function(dd){if(dd.selected) dd.nohighlightOnList();});
         })
-        .attr("highlight","false")
         ;
-    this.dom.row_title = this.dom.rowsSub
+    this.dom.row_title = this.dom.rows
         .append("svg:title")
         .attr("class", "row_title");
-	this.dom.rowSelectBackground_Label = this.dom.rowsSub // background 1
+	this.dom.rowSelectBackground_Label = this.dom.rows // background 1
 		.append("svg:rect")
 		.attr("class", "rowSelectBackground rowSelectBackground_Label")
         .style("fill","url(#rowSelectBackground_Label"+this.id+")")
@@ -3850,7 +3771,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 		.attr("y", 0)
         .attr("height",kshf.line_height)
 		;
-	this.dom.rowSelectBackground_Count = this.dom.rowsSub // background 2
+	this.dom.rowSelectBackground_Count = this.dom.rows // background 2
 		.append("svg:rect")
 		.attr("class", "rowSelectBackground rowSelectBackground_Count")
         .style("fill","url(#rowSelectBackground_Count"+this.id+")")
@@ -3858,26 +3779,26 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
         .attr("width",this.parentKshf.getRowLabelOffset())
         .attr("height",kshf.line_height)
 		;
-    this.dom.rowSelectBackground_ClickArea = this.dom.rowsSub // background 1
+    this.dom.rowSelectBackground_ClickArea = this.dom.rows // background 1
         .append("svg:rect")
         .attr("class", "rowSelectBackground_ClickArea")
         .attr("x", 0)
         .attr("y", 4)
         .attr("height",kshf.line_height-8)
         ;
-	this.dom.item_count = this.dom.rowsSub
+	this.dom.item_count = this.dom.rows
 		.append("svg:text")
 		.attr("class", "item_count")
 		.attr("dy", 13)
 		;
-	this.dom.cat_labels = this.dom.rowsSub
+	this.dom.cat_labels = this.dom.rows
 		.append("svg:text")
 		.attr("class", "row_label")
 		.attr("dy", 14)
 		.text(this.options.catLabelText);
 	// Create helper line
 	if(this.options.display.row_bar_line){
-		this.dom.row_bar_line = this.dom.rowsSub.append("svg:line")
+		this.dom.row_bar_line = this.dom.rows.append("svg:line")
 			.attr("class", "row_bar_line")
 			.attr("stroke-width","1")
 			.attr("y1", kshf.line_height/2.0)
@@ -3885,13 +3806,13 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	} else{
         this.dom.row_bar_line = this.root.select(".row_bar_line"); // empty
     }
-	this.dom.bar_active = this.dom.rowsSub
+	this.dom.bar_active = this.dom.rows
 		.append("svg:rect")
 		.attr("class", function(d,i){ 
 			return "rowBar " +(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" active";
 		})
 		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
-	this.dom.bar_total = this.dom.rowsSub
+	this.dom.bar_total = this.dom.rows
 		.append("svg:rect")
 		.attr("class", function(d,i){ 
 			return "rowBar "+(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" total";
@@ -4106,20 +4027,18 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
         return posA.getTime()-posB.getTime();
     };
     
-    for(r=0; r<rows.length; r++){
-        var rowData=rows[r];
-        if(rowData.sortDirty===true && this.type==="scatterplot"){
-            rowData.items.sort(timeChartSortFunc);
-            this.root.selectAll("g.row").selectAll(".timeDot")
-                .data(function(d) { return d.items; }, function(d){ return d.id(); })
-                // calling order will make sure selected ones appear on top of unselected ones.
-                .order()
-                ;
-            // TODO: call order only on this row
-            // re-calculate min-max only on this row
-            // etc...
-        }
-    }
+    rows.forEach(function(row){
+        if(!row.sortDirty || me.type!=="scatterplot") return;
+        row.items.sort(timeChartSortFunc);
+        me.root.selectAll("g.row").selectAll(".timeDot")
+            .data(function(d) { return d.items; }, function(d){ return d.id(); })
+            // calling order will make sure selected ones appear on top of unselected ones.
+            .order()
+            ;
+        // TODO: call order only on this row
+        // re-calculate min-max only on this row
+        // etc...
+    });
 
     // update min-max time extents ber timeBar
     this.updateData_TimeMinMax();
@@ -4137,34 +4056,31 @@ kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
             })
             ;
     }
-    for(r=0; r<rows.length; r++){
-        var rowData=rows[r];
-        rowData.sortDirty=false;
-    }
+    rows.forEach(function(row){row.sortDirty=false;});
 };
 
 kshf.BarChart.prototype.insertTimeChartRows = function(){
 	var kshf_ = this;
 
-    var rowsSub = this.root.selectAll("g.barGroup g.row g").append("g")
+    var rows = this.root.selectAll("g.barGroup g.row").append("g")
         .attr("class","timeLineParts")
         .attr("clip-path","url(#kshf_chart_clippathsm_"+this.id+")")
         ;
     if(this.options.timeBarShow===true){
-        rowsSub
+        rows
             .append("svg:rect")
             .attr("class", "timeBar total")
             .attr("rx",2)
             .attr("ry",2)
             ;
-        rowsSub
+        rows
             .append("svg:rect")
             .attr("class", "timeBar active")
             .attr("rx",2)
             .attr("ry",2);
         }
 	// Create bar dots
-	rowsSub.selectAll("g.timeDot")
+	rows.selectAll("g.timeDot")
 		.data(function(d){ 
                 return d.items; }, 
               function(d){ 

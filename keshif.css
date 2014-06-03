@@ -47,11 +47,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	font-family: Helvetica, Arial, sans-serif;
 }
 
-
-
-
-
-
+ 
 .kshf span.leftBlockAdjustSize{
     position: relative;
     float:right;
@@ -415,7 +411,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart .headerGroup span.header_label_arrow{
     font-size: 0.8em;
     float: left;
-    display: none;
+    display: block;
     cursor: pointer;
     vertical-align: baseline;
     line-height: 18px;
@@ -424,10 +420,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     transition: all 250ms linear;
     top: 2px;
     position: relative;
+
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
 }
-.kshf .kshfChart .headerGroup span.header_label_none{
-    display: block;
+.kshf .kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_arrow{
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
 }
+.kshf .kshfChart[collapsedTime=true] .headerGroup span.rightHeader span.header_label_arrow{
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
 .kshf .kshfChart .headerGroup span.header_label_arrow:hover{
     color:#cb5454;
 }
@@ -437,29 +451,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsedTime=true] .headerGroup span.rightHeader{
     color: gray;
 }
-
-.kshf .kshfChart .headerGroup span.header_label_none{
-    display: block;
-}
-.kshf .kshfChart[collapsed=true] .headerGroup span.header_label_none{
-    display: none;
-}
 .kshf .kshfChart[collapsed=true] .headerGroup span.header_label_down{
     display: block;
-}
-.kshf .kshfChart[collapsed=false] .headerGroup span.header_label_none{
-    display: none;
-}
-.kshf .kshfChart[collapsed=false] .headerGroup span.header_label_up{
-    display: block;
-}
-.kshf .headerGroup span.rightHeader span.header_label_arrow{
-}
-.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_down{
-    display: block;
-}
-.kshf div.kshfChart[collapsedTime=true][collapsed=false] .headerGroup span.rightHeader span.header_label_up{
-    display: none !important;
 }
 
 
@@ -789,10 +782,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     -ms-transition: all 150ms linear;
     transition: all 150ms linear;
 }
-.kshf g.row[noitems=false] g[highlight=true] rect.total{
+.kshf g.row[noitems=false] g[   =true] rect.total{
     cursor: pointer;
 }
-.kshf g.row[noitems=false] g[highlight=true] rect.active{
+.kshf g.row[noitems=false][highlight=true] rect.active{
     pointer-events: none;
     stroke: orangered;
     stroke-width: 2;
@@ -812,30 +805,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row[noitems=true] text{
     fill:gray;
 }
-.kshf g.row g text.item_count {
+.kshf g.row text.item_count {
     font-size: 0.7em;
     cursor: default;
 }
-.kshf g.row[noitems=false] g[highlight=true] text.item_count {
+.kshf g.row[noitems=false][highlight=true] text.item_count {
     cursor: pointer;
 }
-.kshf g.row g text.row_label {
+.kshf g.row text.row_label {
     font-size: 0.8em;
     text-anchor: end;
     font-weight:300;
     cursor: default;
 }
-.kshf g.row[noitems=false] g[highlight=true] text.row_label {
+.kshf g.row[noitems=false][highlight=true] text.row_label {
     cursor: pointer;
 }
-.kshfHost[kb_modifier=true] .kshf g.row[noitems=false] g[highlight=true] text.row_label {
+.kshfHost[kb_modifier=true] .kshf g.row[noitems=false][highlight=true] text.row_label {
     cursor: cell;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] text{
     font-weight: 700;
     fill: #c32c2c;
 }
-.kshf g.row[noitems=false] g[highlight=true] text{
+.kshf g.row[noitems=false][highlight=true] text{
     fill: orangered !important;
     -webkit-transition: fill 100ms linear;
     -moz-transition: fill 100ms linear;
@@ -843,7 +836,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     -ms-transition: fill 100ms linear;
     transition: fill 100ms linear;
 }
-.kshf g.row[itemhighlight=true] g text{
+.kshf g.row[itemhighlight=true] text{
     fill: #c32c2c !important;
     -webkit-transition: fill 100ms linear;
     -moz-transition: fill 100ms linear;
@@ -869,12 +862,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground{
     opacity:1;
 }
-.kshf g.row g rect.rowSelectBackground_ClickArea{
+.kshf g.row rect.rowSelectBackground_ClickArea{
     opacity:0;
     pointer-events: all;
     cursor: default;
 }
-.kshf g.row[noitems=false] g[highlight=true] rect.rowSelectBackground_ClickArea{
+.kshf g.row[noitems=false][highlight=true] rect.rowSelectBackground_ClickArea{
     cursor: pointer;
 }
 .kshf div.kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea{
@@ -930,7 +923,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.kshfChart[collapsedTime=true] g.row line.row_bar_line{
     display: none;
 }
-.kshf g.row[noitems=false] g[highlight=true] .row_bar_line{
+.kshf g.row[noitems=false][highlight=true] .row_bar_line{
 	stroke: orangered;
 }
 .kshf line.selectVertLine {
@@ -1015,7 +1008,6 @@ div.kshf.layout_left{
 div.kshf.layout_left_background{
     position: absolute;
     min-height: 100%;
-    height: 2000px;
     left: 0px;
     background-image: linear-gradient(right, 
         rgba(243, 243, 243, 0) 0%, 
@@ -1069,7 +1061,6 @@ div.kshf.layout_left_background{
 }
 div.kshf.layout_right{
     position:relative;
-/*    top:-18px; */
 }
 
 
@@ -1555,7 +1546,7 @@ span.sort_column_remove:hover{
 }
 .kshf div.chartClearFilterButton.rowFilter{
     float: right;
-    margin: 1px 3px 0px 0px;
+    margin: 1px 2px 0px 0px;
 }
 .kshf div.chartClearFilterButton.rangeFilter{
     float: right;

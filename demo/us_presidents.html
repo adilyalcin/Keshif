@@ -41,19 +41,9 @@
                     sortOpts : [
                         {   name: 'Term',
                             value: function(d){ return d.data[0]; }
-                        },{ name: 'Party',
-                            value: function(d){ 
-                                switch(d.data[2]){
-                                    case "Federalist": return "Fed";
-                                    case "Democratic": return "Dem";
-                                    case "Democratic-Republican": return "Dem-Rep";
-                                    case "Whig": return "Whig";
-                                    case "Republican": return "Rep";
-                                    case "Union": return "Uni";
-                                }
-                            }
                         }
                     ],
+                    displayType: 'grid',
                     contentFunc: function(d){ return '<img src=\"'+d.data[11]+'\">'; }
                 }
             });
@@ -65,7 +55,8 @@
                 height: 700px;
             }
             div.content img{
-                width: 300px;
+                width: 350px;
+                padding-left: 15px;
             }
         </style>
 	</head>
