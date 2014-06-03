@@ -1772,9 +1772,6 @@ kshf.updateAllTheWidth = function(v){
 
     this.layoutRight.style("left",(this.fullWidthResultSet()?0:this.width_leftPanel_total)+"px");
 
-    this.root.select(".kshf.layout_left_header span.filters_text")
-        .style("margin-right","-8px")
-
     var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-kshf.scrollPadding-15; // 15 is padding
     for (i = 0; i < this.charts.length; ++i){
         if(kshf.charts[i].type==='scatterplot'){
