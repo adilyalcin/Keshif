@@ -255,13 +255,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         stroke-width: 2;
         display:none;
     }
-    div.chartAboveSeparator{
-        position: relative;
-        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
-        height: 1px;
-        margin-bottom: -2px;
-        pointer-events: all;
-    }
 
     .selection_bar rect{
         fill: #788890;
@@ -362,6 +355,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: none;
             padding-top:2px;
             height:16px;
+        }
+        .border_line{
+            position: relative;
+            .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
+            height: 1px;
+            margin-bottom: -2px;
+            pointer-events: all;
         }
         .chartFirstLineBackground{
             width:100%;
