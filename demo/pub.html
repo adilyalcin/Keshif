@@ -66,6 +66,9 @@ google.setOnLoadCallback(function() {
             // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
         },
+        readyCb: function(){
+            kshf.updateLayout();
+        },
         charts : [
             {
                 facetTitle: "Topic",

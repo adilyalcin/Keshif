@@ -1001,6 +1001,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader span.bigTextSearch_wrap {
   position: relative;
+  white-space: nowrap;
+}
+.kshf div.listHeader span.bigTextSearch_wrap svg.searchIcon {
+  margin-left: 10px;
 }
 .kshf div.listHeader span.bigTextSearch_wrap span {
   position: absolute;
@@ -1011,7 +1015,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 16px;
   cursor: pointer;
 }
-.kshf div.listHeader span.bigTextSearch_wrap span svg g {
+.kshf div.listHeader span.bigTextSearch_wrap span svg.clearText g {
   fill: gray;
 }
 .kshf div.listHeader span.bigTextSearch_wrap span:hover svg g {
@@ -1027,11 +1031,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px;
   border-bottom: dashed 1px #cb5454;
 }
-.kshf div.listHeader input.bigTextSearch :focus {
+.kshf div.listHeader input.bigTextSearch:focus {
   outline-color: gray;
   outline-width: 4px;
 }
-.kshf div.listHeader input.bigTextSearch :hover {
+.kshf div.listHeader input.bigTextSearch:hover {
   border: solid 1px #cb5454;
   background-color: white;
   padding: 0px 0px 1px 0px;
@@ -1048,6 +1052,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-shadow: 1px 1px lightgray;
   float: left;
   font-weight: 500;
+  margin-right: 10px;
 }
 .kshf div.listHeader span.listheader_count_bar {
   background-color: #8493a0;
@@ -1113,6 +1118,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   overflow: hidden;
   float: none;
+  border-top: double 0px gray;
 }
 .kshf div.listItem .itemtoggledetails {
   padding-right: 3px;

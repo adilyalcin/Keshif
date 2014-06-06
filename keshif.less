@@ -915,6 +915,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         span.bigTextSearch_wrap {
             position: relative;
+            white-space: nowrap;
+            svg.searchIcon {
+                margin-left: 10px;
+            }
             span {
                 position: absolute;
                 display: none;
@@ -923,8 +927,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 16px;
                 height: 16px;
                 cursor: pointer;
-                svg g {
-                    fill:gray;
+                svg.clearText {
+                    g { fill:gray; }
                 }
                 &:hover svg g{
                     fill:#cb5454;
@@ -940,11 +944,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             border-width:0px;
             border-bottom: dashed 1px #cb5454;
-            :focus{
+            &:focus{
                 outline-color: gray;
                 outline-width: 4px;
             }
-            :hover{
+            &:hover{
                 border: solid 1px #cb5454;
                 background-color: white;
                 padding: 0px 0px 1px 0px;
@@ -963,6 +967,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-shadow: 1px 1px lightgray;
             float:left;
             font-weight:500;
+            margin-right: 10px;
         }
         span.listheader_count_bar{
             background-color: rgb(132, 147, 160);
@@ -1026,6 +1031,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor:default;
         overflow: hidden;
         float: none;
+        border-top: double 0px gray;
 
         .itemtoggledetails{
             padding-right:3px;

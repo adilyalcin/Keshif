@@ -583,16 +583,13 @@ kshf.list = function(_kshf, config, root){
     this.dom = {};
     
     // List sorting options
-    this.listSortOrder = [];
     this.sortOpts = config.sortOpts;
-    this.sortOpts.forEach(function(c){
-        if(c.value===undefined){
-            c.value = me.parentKshf.columnAccessFunc(c.name);
-        }
-        if(!c.label) c.label = c.value;
-        me.listSortOrder.push(i);
-        i++;
+    this.sortOpts.forEach(function(sortOpt){
+        if(sortOpt.value===undefined) sortOpt.value = me.parentKshf.columnAccessFunc(sortOpt.name);
+        if(!sortOpt.label) sortOpt.label = sortOpt.value;
+        sortOpt.valueType = me.sortValueType(sortOpt.value);;
     });
+    this.sortOpt_Active = this.sortOpts[0];
     this.displayType = 'list';
     if(config.displayType==='grid') this.displayType = 'grid';
 
@@ -629,11 +626,11 @@ kshf.list = function(_kshf, config, root){
     var count_wrap = listHeaderTopRow.append("span").attr("class","listheader_count_wrap").style('width',me.sortColWidth+"px");;
     count_wrap.append("span").attr("class","listheader_count_bar");
     count_wrap.append("span").attr("class","listheader_count");
-    listHeaderTopRow.append("span").attr("class","listheader_itemName").style("margin-right","2px").html(kshf.itemName);
+    listHeaderTopRow.append("span").attr("class","listheader_itemName").html(kshf.itemName);
     if(this.hideTextSearch!==true){    
         var listHeaderTopRowTextSearch = listHeaderTopRow.append("span").attr("class","bigTextSearch_wrap");
         listHeaderTopRowTextSearch.append("svg")
-            .style("margin-left","20px")
+            .attr("class","searchIcon")
             .attr("width","13")
             .attr("height","12")
             .attr("viewBox","0 0 491.237793 452.9882813")
@@ -677,7 +674,7 @@ kshf.list = function(_kshf, config, root){
             }, 750);
         });
         listHeaderTopRowTextSearch.append("span")
-            .html('<svg width="15" height="15" viewBox="0 0 48 48">'+
+            .html('<svg width="15" height="15" viewBox="0 0 48 48" class="clearText">'+
                   '<g>'+
                     '<path type="arc" style="fill-opacity:1;" cx="24" cy="24" rx="22" ry="22" d="M 46 24 A 22 22 0 1 1  2,24 A 22 22 0 1 1  46 24 z"/>'+
                     '<path nodetypes="cc" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 16.221825,16.221825 L 31.778175,31.778175"/>'+
@@ -706,10 +703,14 @@ kshf.list = function(_kshf, config, root){
         .attr("class","listSortOptionSelect")
         .style("width",(this.sortColWidth)+"px")
         .on("change", function(){
-            me.listSortOrder[0] = this.selectedIndex;;
+            me.sortOpt_Active = me.sortOpts[this.selectedIndex];
             // trigger sorting reorder
             me.sortItems();
+            // re-order dom
             me.reorderItems();
+            // update sort column labels
+            me.dom.listItems.selectAll(".listsortcolumn")
+                .html(function(d){ return me.sortOpt_Active.label(d); });
             me.updateList();
         })
         .selectAll("input.list_sort_label")
@@ -717,7 +718,6 @@ kshf.list = function(_kshf, config, root){
         .enter().append("option")
             .attr("class", "list_sort_label")
             .text(function(d){ return d.name; })
-            .attr("dt-order",function(d,i){ return i; })
             ;
 
     // add collapse list feature
@@ -754,23 +754,31 @@ Array.prototype.repeat= function(what, L){
 };
 
 // after you re-sort the primary table or change item visibility, call this function
-kshf.list.prototype.updateListColumnHeaders = function(){
-    var i,j;
-    var iPrev=-1;
-    var sortValueFunc = this.sortOpts[this.listSortOrder[0]].value;
-    var sortValueType = this.sortValueType();
-    for(i=0;i<kshf.items.length;i++){
-        var p=kshf.items[i];
-        // skip unselected items
-        if(!p.selected) { continue; }
-        // show all sort column labels by default 
-        p.listsortcolumn = [].repeat(true,this.listSortOrder.length);
-        // first selected item
-        if(iPrev===-1){ iPrev=i; continue; }
-        var pPrev = kshf.items[iPrev];
-        iPrev=i;
+kshf.list.prototype.updateShowListGroupBorder = function(){
+    var me = this;
+    if(this.displayType==='list') {
+        if(this.sortOpt_Active.noGroupBorder !== true){
+            // go over item list
+            var i=0,iPrev=-1;
+            var sortValueFunc = this.sortOpt_Active.value;
+            var sortValueType = this.sortOpt_Active.valueType;
+            for(;i<kshf.items.length;i++){
+                var item=kshf.items[i];
+                // skip unselected items
+                if(!item.selected) continue;
+                // show all sort column labels by default 
+                item.showListSortColumn = true;
+                // first selected item
+                if(iPrev===-1){ iPrev=i; continue; }
+                var pPrev = kshf.items[iPrev];
+                iPrev=i;
 
-        p.listsortcolumn[0] = kshf.compareListItems(p,pPrev,sortValueFunc,sortValueType)!=0;
+                var showBorder = (kshf.compareListItems(item,pPrev,sortValueFunc,sortValueType)!==0);
+                item.listItem.style.borderTopWidth = showBorder?"4px":"0px";
+            }
+        } else {
+            this.dom.listItems.style("border-top-width", "0px");
+        }
     }
 };
 
@@ -780,8 +788,7 @@ kshf.columnAccessFunc = function(columnName){
     return function(d){ return d.data[colId]; }
 }
 
-kshf.list.prototype.sortValueType = function(){
-    var sortValueFunc = this.sortOpts[this.listSortOrder[0]].value;
+kshf.list.prototype.sortValueType = function(sortValueFunc){
     // 0: string, 1: date, 2: others
     var sortValueType_, sortValueType_temp, same;
     
@@ -833,8 +840,8 @@ kshf.compareListItems = function(a, b, sortValueFunc, sortValueType){
 }
 
 kshf.list.prototype.sortItems = function(){
-    var sortValueFunc = this.sortOpts[this.listSortOrder[0]].value;
-    var sortValueType = this.sortValueType();
+    var sortValueFunc = this.sortOpt_Active.value;
+    var sortValueType = this.sortOpt_Active.valueType;
 	this.parentKshf.items.sort(function(a,b){
         // do not need to process unselected items, their order does not matter
         if(!a.selected||!b.selected){ return 0; }
@@ -844,30 +851,8 @@ kshf.list.prototype.sortItems = function(){
 	});
 };
 
-kshf.list.prototype.updateSortColumnLabels=function(d,tada){
-	var t = d3.select(tada);
-    var me = this;
-    var k,j;
-
-    var sortColumn=this.listSortOrder[0];
-
-    if(this.sortOpts[sortColumn].noGroupBorder !== true){
-        t.style("border-top", 
-            function(d){ ;
-                return ((d.listsortcolumn[0])?"double 4px gray":"duble 0px gray");
-            });
-    } else {
-        t.style("border-top", "solid 0px gray");
-    }
-
-    // now update the text
-    t.select(".listsortcolumn")
-        .html(function(){ return me.sortOpts[sortColumn].label(d); })
-        ;
-};
-
 kshf.list.prototype.insertItems = function(){
-    var this_ = this;
+    var me = this;
 
     this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
         // if content Func is not defined, provide an empty list
@@ -893,15 +878,12 @@ kshf.list.prototype.insertItems = function(){
         this.dom.listItems
             .append("div")
             .attr("class","listcell listsortcolumn")
-            .style("width",this_.sortColWidth+"px")
-            .html(function(d){
-                var titleFunc = this_.sortOpts[0].title;
-                if(titleFunc) { str+=" title=\""+titleFunc(d)+"\""; }
-            })
+            .style("width",this.sortColWidth+"px")
+            .html(function(d){ return me.sortOpt_Active.label(d); });
             ;
     }
 
-    if(this_.detailsToggle){
+    if(this.detailsToggle){
         var x= this.dom.listItems
             .append("div")
             .attr("class","listcell itemtoggledetails");
@@ -916,7 +898,7 @@ kshf.list.prototype.insertItems = function(){
     this.dom.listItems_Content = this.dom.listItems
         .append("div")
         .attr("class","content")
-        .html(function(d){ return this_.contentFunc(d);});
+        .html(function(d){ return me.contentFunc(d);});
 };
 
 kshf.listItemDetailToggleFunc = function(d){
@@ -965,20 +947,7 @@ kshf.list.prototype.updateItemVisibility = function(){
 
 kshf.list.prototype.updateList = function(){
     // evaluates column information for each item. TODO: cache
-    this.updateListColumnHeaders();
-    var this_ = this;
-    if(this.displayType==='list'){
-        this.dom.listItems
-            .each(function(d){
-                if(!d.selected) return;
-                return this_.updateSortColumnLabels(d,this); 
-            });
-    }
-	this.dom.listItems
-		.each(function(d){
-            if(!d.selected) return;
-            return this_.updateSortColumnLabels(d,this); 
-        });
+    this.updateShowListGroupBorder();
     d3.select(".listheader_count").text(function(){
         if(kshf.itemsSelectedCt===0) { return "No"; }
         return kshf.itemsSelectedCt;
@@ -1517,10 +1486,7 @@ kshf.createListDisplay = function(listOptions){
 
 
 kshf.clearAllFilters = function(){
-    var i,chart;
-    for (i = 0; i < this.charts.length; ++i){
-        kshf.charts[i].clearAllFilters();
-    }
+    this.charts.forEach(function(chart){chart.clearAllFilters();});
     this.update();
 };
 
