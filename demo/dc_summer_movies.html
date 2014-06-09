@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Summer Outdoor Movies in DC area</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./style.css"/ type="text/css">
+        <script type="text/javascript">
+
+function resetSize(){
+    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').width (1000);
+}
+
+function loadChart() {
+    resetSize();
+    $(window).resize(function() {
+        resetSize();
+        kshf.updateLayout();
+    });
+
+    var m_now = moment();
+    var m_thisweek = moment().add('days',7);
+    var m_nextweek = moment().add('days',14);
+
+    kshf.init({
+        chartTitle: "Summer Outdoor Movies in DC area",
+        domID : "#chart_div",
+        dirRoot: "../",
+        categoryTextWidth: 250,
+        itemName: "Outdoor Movie Screenings in DC area",
+        source : {
+            // 1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8
+            // 
+            gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
+            sheets : [ {name:"Screening"}, {name:"Series"} ]
+        },
+        charts : [
+            {   facetTitle: "City",
+                timeTitle: "Date",
+                catItemMap: function(d){ 
+                    var series = kshf.dt_id.Series[d.data[0]];
+                    return series.data[4];
+                },
+                timeItemMap : function(d){  return d.data[1]; },
+//                catLabelText: function(d) { return getGender(d.data[1]); }
+            },{
+                facetTitle: "State",
+                catItemMap: function(d){ 
+                    var series = kshf.dt_id.Series[d.data[0]];
+                    return series.data[3];
+                }
+            },{
+                facetTitle: "Time",
+                catItemMap: function(d){ 
+                    var m_scr = moment(d.data[1]);
+                    if(m_scr.isBefore(m_now)) return null;
+                    if(m_scr.isBefore(m_thisweek)) return "This Week";
+                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                    return null;
+                }
+            },{
+                facetTitle: "Day Of Week",
+                catItemMap: function(d){ 
+                    switch(moment(d.data[1]).days()){
+                        case 0: return "Sunday";
+                        case 1: return "Monday";
+                        case 2: return "Tuesday";
+                        case 3: return "Wednesday";
+                        case 4: return "Thursday";
+                        case 5: return "Friday";
+                        case 6: return "Saturday";
+                    }
+                },
+            },{
+                facetTitle: "Movie"
+            }
+        ],
+        readyCb: function(){
+            kshf.filterFacetAttribute(2,0);
+        },
+//        columnsSkip : ["Overall Motivation","laureate_id"],
+        list: {
+            sortColWidth: 110,
+            sortOpts : [ {
+                name: 'Date',
+                label: function(d){ 
+                    return moment(d.data[1]).format('MMM Do - ddd');
+                }
+            } ],
+            detailsToggle : true,
+            detailsDefault : false,
+            contentFunc : function(d) {
+                var series = kshf.dt_id.Series[d.data[0]];
+                var str="";
+                str+=d.data[2];
+                str+="<span class=\"item_details\">";
+
+                str+="<div class=\"iteminfo iteminfo_1\">"+
+                    "<a target=\"_blank\" href=\""+series.data[6]+"\">"+
+                    series.data[1]+"</a> - <b>"+ 
+                    series.data[4]+"</b> - "+
+                    series.data[3]+"</div>";
+                str+="</span>"; // item_details
+                return str;
+            }
+        }
+    });
+}
+$(document).ready(loadChart);
+</script>
+    <style type="text/css" media="screen">
+        .settingButton { display: none !important;}
+        .listItem{padding: 4px 0px 4px 0px !important;}
+    </style>
+	</head>
+	<body><div id="chart_div"></div></body>
+</html>

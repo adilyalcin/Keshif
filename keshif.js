@@ -1209,6 +1209,7 @@ kshf.getMainChartName = function() {
 }
 
 kshf.createCharts = function(){
+    var me=this;
     if(this.loadedCb!==undefined) { this.loadedCb(); }
 
     if(this.chartDefs===undefined){
