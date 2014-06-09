@@ -1662,6 +1662,8 @@ kshf.updateLayout = function(){
     this.layout_animation = 0;
     this.time_animation_barscale = 0;
 
+    this.setHideBarAxis(initBarChartWidth);
+
     // HEIGHT
     this.updateLayout_Height();
 
