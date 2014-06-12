@@ -3,16 +3,19 @@
 	<head>
 		<title>Summer Outdoor Movies in DC area</title>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
         <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./style.css"/ type="text/css">
         <script type="text/javascript">
 
 function resetSize(){
-    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').height($(window).height()-30);
     $('#chart_div').width (1000);
 }
 
@@ -86,15 +89,35 @@ function loadChart() {
             }
         ],
         readyCb: function(){
+            $(".itemtoggledetails").click(function(d){
+                var kshfItem = d.currentTarget.parentNode.__data__;
+                var movieName = kshfItem.data[2];
+                if(d3.select(kshfItem.listItem).select(".movieInfo").style("display")==="block") return;
+                $.ajax( {
+                    url: "http://www.omdbapi.com/?t="+movieName,
+                    dataType: "json",
+                    success: function(data){
+                        if(data.Error) return;
+                        d3.select(kshfItem.listItem).select(".moviePoster").attr("src",data.Poster);
+                        d3.select(kshfItem.listItem).select(".movieInfo").style("display","block");
+                        d3.select(kshfItem.listItem).select(".Year .value").text(data.Year);
+                        d3.select(kshfItem.listItem).select(".Rated .value").text(data.Rated);
+                        d3.select(kshfItem.listItem).select(".Genre .value").text(data.Genre);
+                        d3.select(kshfItem.listItem).select(".Plot .value").text(data.Plot);
+                        d3.select(kshfItem.listItem).select(".Awards .value").text(data.Awards);
+                        d3.select(kshfItem.listItem).select(".imdbRating .value").text(data.imdbRating);
+                    }
+                });
+            })
 //            kshf.filterFacetAttribute(2,0);
         },
 //        columnsSkip : ["Overall Motivation","laureate_id"],
         list: {
-            sortColWidth: 110,
+            sortColWidth: 90,
             sortOpts : [ {
                 name: 'Date',
                 label: function(d){ 
-                    return moment(d.data[1]).format('MMM Do - ddd');
+                    return moment(d.data[1]).format('MMM Do, ddd');
                 }
             } ],
             detailsToggle : "One",
@@ -102,14 +125,27 @@ function loadChart() {
             contentFunc : function(d) {
                 var series = kshf.dt_id.Series[d.data[0]];
                 var str="";
-                str+=d.data[2];
+                str+="<span class=\"item_details\">";
+                str+="<img class='moviePoster'/>"
+                str+="</span>"; // item_details
+
+                str+="<span class='movieName'>"+d.data[2]+"</span>";
                 str+="<span class=\"item_details\">";
 
-                str+="<div class=\"iteminfo iteminfo_1\">"+
-                    "<a target=\"_blank\" href=\""+series.data[6]+"\">"+
-                    series.data[1]+"</a> - <b>"+ 
-                    series.data[4]+"</b> - "+
-                    series.data[3]+"</div>";
+                str+=
+                    "<span class='header'>Screening Series</span>: <a target=\"_blank\" href=\""+series.data[6]+"\">"+
+                    series.data[1]+"</a></br>"+
+                    "<span class='header'>Location</span>: <b>"+series.data[4]+"</b> - "+ series.data[3]+
+                    "<span class='movieInfo' style='display:none;'>"+
+                    "<span class='Year'><span class='header'>Year</span>: <span class='value'></span></span></br>"+
+                    "<span class='Rated'><span class='header'>Rated</span>: <span class='value'></span></span></br>"+
+                    "<span class='Genre'><span class='header'>Genre</span>: <span class='value'></span></span></br>"+
+                    "<span class='Plot'><span class='header'>Plot</span>: <span class='value'></span></span></br>"+
+                    "<span class='Awards'><span class='header'>Awards</span>: <span class='value'></span></span></br>"+
+                    "<span class='imdbRating'><span class='header'>IMDB Rating</span>: <span class='value'></span></span></br>"+
+                    "</span>" // movieInfo
+                    ;
+
                 str+="</span>"; // item_details
                 return str;
             }
@@ -121,6 +157,33 @@ $(document).ready(loadChart);
     <style type="text/css" media="screen">
         .settingButton { display: none !important;}
         .listItem{padding: 4px 0px 4px 0px !important;}
+        .listItem a{
+            color: rgb(95, 62, 21);
+        }
+        .moviePoster{ 
+            float:right; width:120px;
+
+            padding:4px;
+            border:solid;
+            border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+            border-width: 1px 2px 2px 1px;
+            background-color:white;
+        }
+        .movieName{
+            font-family: Josefin Slab;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+        .listsortcolumn{
+            font-weight: 300 !important;
+        }
+        .item_details .header{
+            font-weight: 300;
+        }
+        .movieInfo{
+            border-top: dotted 2px gray;
+            font-size: 0.9em;
+        }
     </style>
 	</head>
 	<body><div id="chart_div"></div></body>
