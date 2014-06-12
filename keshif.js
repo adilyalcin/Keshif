@@ -613,7 +613,7 @@ kshf.list = function(_kshf, config, root){
     this.contentFunc = config.contentFunc;
 
     this.detailsToggle = config.detailsToggle;
-    if(this.detailsToggle === undefined) { this.detailsToggle = false; }
+    if(this.detailsToggle === undefined) { this.detailsToggle = "Off"; }
     this.detailsDefault = config.detailsDefault;
     if(this.detailsDefault === undefined) { this.detailsDefault = false; }
 
@@ -721,19 +721,19 @@ kshf.list = function(_kshf, config, root){
             ;
 
     // add collapse list feature
-    if(this.detailsToggle===true){
+    if(this.detailsToggle==="Multi"){
        var x=listColumnRow.append("div")
             .attr("class","itemstoggledetails");
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
             .on("click", function(d){
-                me.dom.listItems.each(function(d){ d3.select(this).attr('details', true);});
+                me.dom.listItems.attr('details', true);
                 me.listDiv.attr('showAll','false');
             });
         x.append("span").attr("class","items_details_off").html("[-]")
             .attr("title","Hide details")
             .on("click", function(d){
-                me.dom.listItems.each(function(d){ d3.select(this).attr('details', false); });
+                me.dom.listItems.attr('details', false);
                 me.listDiv.attr('showAll','true');
             });
     }
@@ -883,16 +883,16 @@ kshf.list.prototype.insertItems = function(){
             ;
     }
 
-    if(this.detailsToggle){
+    if(this.detailsToggle!=="Off"){
         var x= this.dom.listItems
             .append("div")
             .attr("class","listcell itemtoggledetails");
         x.append("span").attr("class","item_details_on").html("[+]")
             .attr("title","Show details")
-            .on("click", kshf.listItemDetailToggleFunc);
+            .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
         x.append("span").attr("class","item_details_off").html("[-]")
             .attr("title","Hide details")
-            .on("click", kshf.listItemDetailToggleFunc);
+            .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
     }
 
     this.dom.listItems_Content = this.dom.listItems
@@ -902,21 +902,26 @@ kshf.list.prototype.insertItems = function(){
 };
 
 kshf.listItemDetailToggleFunc = function(d){
-    var nd = d3.select(this)[0][0], i=0;
-    while(true){
-        if(nd===undefined) return;
-        var details = nd.getAttribute('details');
-        if(details==="true"){
-            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:d.id()});
-            nd.setAttribute('details', false);
+    var details = d.listItem.getAttribute('details');
+    if(details==="true"){
+        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Collapse,{itemID:d.id()});
+        d.listItem.setAttribute('details', false);
+        if(this.listDisplay.detailsToggle==="One"){
+            this.lastSelectedItem = undefined;
         }
-        if(details==="false"){
-            if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:d.id()});
-            nd.setAttribute('details', true);
+    }
+    if(details==="false"){
+        if(sendLog) sendLog(CATID.ItemBased,ACTID_ITEM.Show,{itemID:d.id()});
+        d.listItem.setAttribute('details', true);
+        if(this.listDisplay.detailsToggle==="One"){
+            if(this.lastSelectedItem){
+                this.lastSelectedItem.listItem.setAttribute("details",false);
+            }
         }
-        nd = nd.parentNode;
+        this.lastSelectedItem = d;
     }
 }
+
 kshf.listItemDetailToggleFunc2 = function(t){
     var nd = d3.select(t)[0][0], i=0;
     while(true){
@@ -980,6 +985,7 @@ kshf.init = function (options) {
     this.maxFilterID = 1; // 1 is used for global search
     this.categoryTextWidth = options.categoryTextWidth;
     this.barMaxWidth = 0;
+    this.itemtoggledetailsWidth = 22;
     if(this.categoryTextWidth===undefined){
         this.categoryTextWidth = 115;
     }
@@ -1770,8 +1776,9 @@ kshf.updateCustomListStyleSheet = function(){
     if(this.fullWidthResultSet()){
         contentWidth+=this.width_leftPanel_total;
     }
-    // 22 is for itemtoggledetails
-    if(this.listDisplay.detailsToggle){ contentWidth-=22; }
+    if(this.listDisplay.detailsToggle!=="Off"){
+        contentWidth-=this.itemtoggledetailsWidth;
+    }
     contentWidth-=this.listDisplay.sortColWidth;
     contentWidth-=9; // works for now. TODO: check 
     this.root.select("span.filter-blocks").style("width",contentWidth+"px");
