@@ -7,23 +7,14 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
-        <!-- Logging features -->
-        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
-        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
-
         <link rel="stylesheet" href="./style.css"/ type="text/css">
         <script type="text/javascript">
 
-        var demoID = 10;
-
         google.setOnLoadCallback(function(){
-            logIf.Check = logIf.All();
-
             kshf.init({
                 chartTitle: "Best-selling singles of 2008",
                 dirRoot: "../",
                 domID : "#chart_div",
-//                categoryTextWidth:190,
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
                     sheets : [ {name:"Singles"} ]
@@ -61,5 +52,5 @@
             }
         </style>
     </head>
-	<body onmousemove="logIf.setSessionID()"><div id="chart_div"></div></body>
+	<body><div id="chart_div"></div></body>
 </html>
