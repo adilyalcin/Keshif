@@ -50,6 +50,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &[kb_modifier=true] g.row[noitems=false][highlight=true] text.row_label {
         cursor: cell;
     }
+    .subRoot{
+        position:relative;
+    }
 }
 
 .kshf {
@@ -87,6 +90,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 10px;
             float:left;
             font-variant: small-caps;
+            margin-bottom:-2px;
+
             .refreshbarscales{
                 cursor:pointer;
                 display: none;
@@ -753,6 +758,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rect.rowSelectBackground{
             opacity:0;
             pointer-events: none;
+        }
+        rect.rowSelectBackground_Count{
+            fill:url(#gr_rowSelectBackground_Count);
+        }
+        rect.rowSelectBackground_Label{
+            fill:url(#gr_rowSelectBackground_Label);
         }
         rect.rowSelectBackground_ClickArea{
             opacity:0;

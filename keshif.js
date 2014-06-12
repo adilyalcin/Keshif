@@ -1055,6 +1055,142 @@ kshf.init = function (options) {
         })
         ;
 
+    // add gradients
+    var rowBackgroundColor = "#dadada";
+    var otherGradientColor="gray";
+    var gradient_svg = this.root.append("svg").attr("width",0).attr("height",0).append("defs");
+    var dotBackgroundColor = "#616F7A";
+    var dotBackgroundColor_Inactive = "#CCCCCC";
+
+    var gradient =gradient_svg.append("linearGradient")
+        .attr("id","gr_rowSelectBackground_Count")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","100%")
+        .attr("y2","0%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",rowBackgroundColor)
+        .style("stop-opacity",1);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",rowBackgroundColor)
+        .style("stop-opacity",0);
+    
+    gradient =gradient_svg.append("linearGradient")
+        .attr("id","gr_rowSelectBackground_Label")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","100%")
+        .attr("y2","0%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",rowBackgroundColor)
+        .style("stop-opacity",0);
+    gradient.append("stop")
+        .attr("offset","20%")
+        .style("stop-color",rowBackgroundColor)
+        .style("stop-opacity",1);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",rowBackgroundColor)
+        .style("stop-opacity",1);
+    
+    gradient =gradient_svg.append("radialGradient")
+        .attr("id","dotGradient50")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","0%")
+        .attr("y2","100%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.4);
+    gradient.append("stop")
+        .attr("offset","25%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.4);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.3);
+
+    gradient =gradient_svg.append("radialGradient")
+        .attr("id","dotGradient75")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","0%")
+        .attr("y2","100%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.6);
+    gradient.append("stop")
+        .attr("offset","25%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.6);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.5);
+
+    gradient =gradient_svg.append("radialGradient")
+        .attr("id","dotGradient25")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","0%")
+        .attr("y2","100%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.25);
+    gradient.append("stop")
+        .attr("offset","25%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.25);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.2);
+
+    gradient =gradient_svg.append("radialGradient")
+        .attr("id","dotGradient100")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","0%")
+        .attr("y2","100%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.85);
+    gradient.append("stop")
+        .attr("offset","25%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.85);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor)
+        .style("stop-opacity",0.7);
+
+    gradient =gradient_svg.append("radialGradient")
+        .attr("id","dotGradient_Inactive")
+        .attr("x1","0%")
+        .attr("y1","0%")
+        .attr("x2","0%")
+        .attr("y2","100%");
+    gradient.append("stop")
+        .attr("offset","0%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",1);
+    gradient.append("stop")
+        .attr("offset","25%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",1);
+    gradient.append("stop")
+        .attr("offset","100%")
+        .style("stop-color",dotBackgroundColor_Inactive)
+        .style("stop-opacity",0);
+
     if(options.itemName!==undefined){
         this.itemName = options.itemName;
     } else {
@@ -1198,7 +1334,7 @@ kshf.init = function (options) {
         this.insertChartHeader();
     }
 
-    var subRoot = this.root.append("div").style("position","relative");
+    var subRoot = this.root.append("div").attr("class","subRoot");
 
     this.layoutBackground = subRoot.append("div").attr("class","kshf layout_left_background");
 
@@ -1308,8 +1444,6 @@ kshf.insertChartHeader = function(){
         .append("span")
         .attr("class","refreshbarscales")
         .attr("width","13")
-        .style("margin-bottom","-2px")
-        .style("display","none")
         .on("click",function(){
             kshf.clearAllFilters();
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAll,kshf.getFilteringState());
@@ -2179,166 +2313,8 @@ kshf.BarChart.prototype.init_DOM = function(){
     ;
 
 	this.dom = {};
-    var rowBackgroundColor = "#dadada";
-    var otherGradientColor="gray";
     
-    var gradient =this.root.append("svg:linearGradient")
-        .attr("id","rowSelectBackground_Count"+this.id)
-        .attr("x1","0%")
-        .attr("y1","0%")
-        .attr("x2","100%")
-        .attr("y2","0%");
-    gradient.append("svg:stop")
-        .attr("offset","0%")
-        .style("stop-color",rowBackgroundColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","100%")
-        .style("stop-color",rowBackgroundColor)
-        .style("stop-opacity",0);
-    
-    gradient =this.root.append("svg:linearGradient")
-        .attr("id","rowSelectBackground_Label"+this.id)
-        .attr("x1","0%")
-        .attr("y1","0%")
-        .attr("x2","100%")
-        .attr("y2","0%");
-    gradient.append("svg:stop")
-        .attr("offset","0%")
-        .style("stop-color",rowBackgroundColor)
-        .style("stop-opacity",0);
-    gradient.append("svg:stop")
-        .attr("offset","20%")
-        .style("stop-color",rowBackgroundColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","100%")
-        .style("stop-color",rowBackgroundColor)
-        .style("stop-opacity",1);
-    
-    
-    gradient =this.root.append("svg:linearGradient")
-        .attr("id","timeselectbar_"+this.id)
-        .attr("x1","100%")
-        .attr("y1","0%")
-        .attr("x2","0%")
-        .attr("y2","0%");
-    gradient.append("svg:stop")
-        .attr("offset","0%")
-        .style("stop-color",otherGradientColor)
-        .style("stop-opacity",0);
-    gradient.append("svg:stop")
-        .attr("offset","5%")
-        .style("stop-color",otherGradientColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","60%")
-        .style("stop-color",otherGradientColor)
-        .style("stop-opacity",1);
-    gradient.append("svg:stop")
-        .attr("offset","100%")
-        .style("stop-color",otherGradientColor)
-        .style("stop-opacity",0);
-
     if(this.type==="scatterplot"){
-        var dotBackgroundColor = "#616F7A";
-        var dotBackgroundColor_Inactive = "#CCCCCC";
-
-        var gradient =this.root.append("svg:radialGradient")
-            .attr("id","dotGradient50")
-            .attr("x1","0%")
-            .attr("y1","0%")
-            .attr("x2","0%")
-            .attr("y2","100%");
-        gradient.append("svg:stop")
-            .attr("offset","0%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.4);
-        gradient.append("svg:stop")
-            .attr("offset","25%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.4);
-        gradient.append("svg:stop")
-            .attr("offset","100%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.3);
-
-        gradient =this.root.append("svg:radialGradient")
-            .attr("id","dotGradient75")
-            .attr("x1","0%")
-            .attr("y1","0%")
-            .attr("x2","0%")
-            .attr("y2","100%");
-        gradient.append("svg:stop")
-            .attr("offset","0%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.6);
-        gradient.append("svg:stop")
-            .attr("offset","25%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.6);
-        gradient.append("svg:stop")
-            .attr("offset","100%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.5);
-
-        gradient =this.root.append("svg:radialGradient")
-            .attr("id","dotGradient25")
-            .attr("x1","0%")
-            .attr("y1","0%")
-            .attr("x2","0%")
-            .attr("y2","100%");
-        gradient.append("svg:stop")
-            .attr("offset","0%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.25);
-        gradient.append("svg:stop")
-            .attr("offset","25%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.25);
-        gradient.append("svg:stop")
-            .attr("offset","100%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.2);
-
-        gradient =this.root.append("svg:radialGradient")
-            .attr("id","dotGradient100")
-            .attr("x1","0%")
-            .attr("y1","0%")
-            .attr("x2","0%")
-            .attr("y2","100%");
-        gradient.append("svg:stop")
-            .attr("offset","0%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.85);
-        gradient.append("svg:stop")
-            .attr("offset","25%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.85);
-        gradient.append("svg:stop")
-            .attr("offset","100%")
-            .style("stop-color",dotBackgroundColor)
-            .style("stop-opacity",0.7);
-
-        gradient =this.root.append("svg:radialGradient")
-            .attr("id","dotGradient_Inactive")
-            .attr("x1","0%")
-            .attr("y1","0%")
-            .attr("x2","0%")
-            .attr("y2","100%");
-        gradient.append("svg:stop")
-            .attr("offset","0%")
-            .style("stop-color",dotBackgroundColor_Inactive)
-            .style("stop-opacity",1);
-        gradient.append("svg:stop")
-            .attr("offset","25%")
-            .style("stop-color",dotBackgroundColor_Inactive)
-            .style("stop-opacity",1);
-        gradient.append("svg:stop")
-            .attr("offset","100%")
-            .style("stop-color",dotBackgroundColor_Inactive)
-            .style("stop-opacity",0);
-
         if(this.options.timeDotConfig!==undefined){
             this.divRoot.attr("dotconfig",this.options.timeDotConfig);
         }
@@ -3715,7 +3691,6 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	this.dom.rowSelectBackground_Label = this.dom.rows // background 1
 		.append("svg:rect")
 		.attr("class", "rowSelectBackground rowSelectBackground_Label")
-        .style("fill","url(#rowSelectBackground_Label"+this.id+")")
 		.attr("x", 0)
 		.attr("y", 0)
         .attr("height",kshf.line_height)
@@ -3723,7 +3698,6 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	this.dom.rowSelectBackground_Count = this.dom.rows // background 2
 		.append("svg:rect")
 		.attr("class", "rowSelectBackground rowSelectBackground_Count")
-        .style("fill","url(#rowSelectBackground_Count"+this.id+")")
         .attr("y", 0)
         .attr("width",this.parentKshf.getRowLabelOffset())
         .attr("height",kshf.line_height)

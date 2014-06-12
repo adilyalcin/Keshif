@@ -56,6 +56,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost[kb_modifier=true] g.row[noitems=false][highlight=true] text.row_label {
   cursor: cell;
 }
+.kshfHost .subRoot {
+  position: relative;
+}
 .kshf {
   font-family: Helvetica, Arial, sans-serif;
   float: left;
@@ -94,6 +97,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-left: 10px;
   float: left;
   font-variant: small-caps;
+  margin-bottom: -2px;
 }
 .kshf.layout_header span.barChartMainInfo .refreshbarscales {
   cursor: pointer;
@@ -821,6 +825,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row rect.rowSelectBackground {
   opacity: 0;
   pointer-events: none;
+}
+.kshf g.row rect.rowSelectBackground_Count {
+  fill: url(#gr_rowSelectBackground_Count);
+}
+.kshf g.row rect.rowSelectBackground_Label {
+  fill: url(#gr_rowSelectBackground_Label);
 }
 .kshf g.row rect.rowSelectBackground_ClickArea {
   opacity: 0;
