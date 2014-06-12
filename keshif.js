@@ -2165,17 +2165,15 @@ kshf.BarChart.prototype.init_DOM = function(){
     this.divRoot = this.options.layout
         .append("div").attr("class","kshfChart");
 
-    this.dom_headerGroup = this.divRoot.append("span").attr("class","headerGroup");
+    this.dom_headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
 	this.root = this.divRoot
-        .append("svg")
+        .append("svg").attr("class","chart_root")
             .attr("xmlns","http://www.w3.org/2000/svg")
-            .style("width","100%")
-            .style("height","100%");
+            ;
     // to capture click/hover mouse events
     this.root.append("svg:rect")
         .attr("class","chartBackground")
-        .style("opacity",0)
         .on("mousewheel",this.scrollItems.bind(this))
         .on("mousedown", function (d, i) { d3.event.preventDefault(); })
     ;
@@ -2353,6 +2351,7 @@ kshf.BarChart.prototype.init_DOM = function(){
 	var barGroup_Top = this.root.append("svg:g")
 		.attr("class","barGroup_Top")
 		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
+        .attr("transform","translate(0,20)")
         ;
     if(this.type==='scatterplot') { 
         barGroup_Top.append("svg:line")
@@ -2595,7 +2594,7 @@ kshf.BarChart.prototype.collapseTime = function(hide){
 
 kshf.BarChart.prototype.updateTimeAxisGroupTransform = function(){
     var x = (this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
-    var y = (kshf.line_height*(this.rowCount_Total())-10);
+    var y = (kshf.line_height*(this.rowCount_VisibleItem)+27);
     this.root.select("g.timeAxisGroup")
         .attr("transform","translate("+x+","+y+")");
 }
@@ -2607,14 +2606,13 @@ kshf.BarChart.prototype.insertHeader = function(){
 
     var leftBlock = this.dom_headerGroup.append("span").attr("class","leftHeader");
 
-    leftBlock.append("div").attr("class","border_line").style("top","0px");
+    leftBlock.append("div").attr("class","border_line border_line_top");
 
     var topRow_background = leftBlock.append("div").attr("class","chartFirstLineBackground");
 
     leftBlock.append("div").attr("class","border_line");
 
     var topRow = topRow_background.append("div")
-        .style("height",kshf.line_height+"px")
         .attr("class","leftHeader_XX");
 
     var headerLabel = topRow.append("span")
@@ -2661,11 +2659,11 @@ kshf.BarChart.prototype.insertHeader = function(){
         })
         .text('x');
     if(this.type==="scatterplot"){
-        var rightBlock = this.dom_headerGroup.append("span").attr("class","rightHeader").style("height","20px");
+        var rightBlock = this.dom_headerGroup.append("span").attr("class","rightHeader");
 
         rightBlock.append("div").attr("class","border_line");
 
-        var poff = rightBlock.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight").style("height","18px");
+        var poff = rightBlock.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
 
         poff.append("span").attr("class","header_label_arrow")
             .attr("title","Show/Hide categories").text("▼")
@@ -2781,7 +2779,6 @@ kshf.BarChart.prototype.insertHeader = function(){
                 me.divRoot.select(".zoom_out").attr("disabled","true");
             })
             ;
-
     }
 
     var header_belowFirstRow = leftBlock.append("div").attr("class","header_belowFirstRow");
@@ -2918,21 +2915,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     }
 
     if(this.showTextSearch){
-        var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX").style("padding-top","1px");
-        textSearchRowDOM.append("svg")
-            .attr("class","chartRowLabelSearch")
-            .attr("width","13")
-            .attr("height","12")
-            .attr("viewBox","0 0 491.237793 452.9882813")
-            .attr("xmlns","http://www.w3.org/2000/svg")
-            .html(
-              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
-               '<g fill-rule="evenodd" clip-rule="evenodd">'+
-                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
-                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
-               '</g>'+
-              '</g>')
-            ;
+        var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX");
         this.dom.showTextSearch= textSearchRowDOM.append("input")
             .attr("type","text")
             .attr("class","chartRowLabelSearch")
@@ -2982,6 +2965,20 @@ kshf.BarChart.prototype.insertHeader = function(){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
             })
+            ;
+        textSearchRowDOM.append("svg")
+            .attr("class","chartRowLabelSearch")
+            .attr("width","13")
+            .attr("height","12")
+            .attr("viewBox","0 0 491.237793 452.9882813")
+            .attr("xmlns","http://www.w3.org/2000/svg")
+            .html(
+              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
+               '<g fill-rule="evenodd" clip-rule="evenodd">'+
+                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
+                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
+               '</g>'+
+              '</g>')
             ;
     }
 };
@@ -3173,7 +3170,7 @@ kshf.BarChart.prototype.update_VisibleItem = function(forced){
         .attr("showscrollbar",this.scrollbar.show)
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .style("height",(this.type!=="scatterplot")?(totalHeight+"px"):"100%");
+        .style("height",(totalHeight+"px"))
         ;
 
     // ******************************************************************************
@@ -3199,20 +3196,10 @@ kshf.BarChart.prototype.update_VisibleItem = function(forced){
         this.refreshScrollbar(true);
     }
 
-    this.root.select(".barGroup_Top")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr("transform", "translate(0,"+headerHeight+")")
-        ;
     this.root.select(".x_axis")
         .transition()
         .duration(this.parentKshf.layout_animation)
-        .attr("transform", "translate("+(this.parentKshf.getRowTotalTextWidth())+","+(headerHeight+3)+")")
-        ;
-    this.dom_headerGroup
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .style("height",(headerHeight+2)+"px")
+        .attr("transform", "translate("+(this.parentKshf.getRowTotalTextWidth())+",23)")
         ;
 
     this.root.select("rect.chartBackground")
@@ -3278,6 +3265,7 @@ kshf.BarChart.prototype.insertScrollbar = function(){
     // *****************
 	var scrollGroup = this.root.append("svg:g")
         .attr("class","scrollGroup")
+        .attr("transform","translate(0,20)")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
 		;
 
@@ -3309,7 +3297,7 @@ kshf.BarChart.prototype.insertScrollbar = function(){
         .on("mouseout",function(){ 
             d3.select(this).attr("highlight",false); 
             me.scrollBarUp_Active = false; 
-            scrollGroup.selectAll("text.row_number").style("display","");
+            scrollGroup.selectAll("text.row_number").style("display","none");
         })
         ;
 };
@@ -3435,11 +3423,6 @@ kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
         ;
 };
 kshf.BarChart.prototype.updateScrollGroupPos = function(){
-    this.root.select("g.scrollGroup")
-        .transition()
-        .duration(this.parentKshf.layout_animation)
-        .attr("transform","translate(0,"+(kshf.line_height*this.rowCount_Header())+")")
-        ;
 	this.dom.leftScroll
         .transition()
         .duration(this.parentKshf.layout_animation)
@@ -3556,11 +3539,6 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
         }
     }
 	this.catCount_Selected += (d.selected)?1:-1;
-	if(this.catCount_Selected===0){ 
-        this.showResortButton=true;
-    } else {
-        this.showResortButton=false;
-    }
     this.sortSkip = true;
 
     if(forceAll){
@@ -3592,8 +3570,9 @@ kshf.BarChart.prototype.filterRow = function(d,forceAll){
         }
     }
     if(this.options.sortingFuncs[this.sortID].no_resort!==true){
-        this.divRoot.select(".resort_button").style("display",
-            (this.catCount_Selected===this.catCount_Total&&!this.showResortButton)?"none":"block");
+        this.divRoot.attr("canResort",
+            this.catCount_Selected!==this.catCount_Total&&this.catCount_Selected!==0
+            );
     }
 
 	kshf.update();
@@ -3920,7 +3899,7 @@ kshf.BarChart.prototype.updateSorting = function(force){
     if(this.type==='scatterplot'){
         this.refreshBarLineHelper();
     }
-    this.divRoot.select(".resort_button").style("display","none");
+    this.divRoot.attr("canResort",false);
     this.sortDelay = 450;
 };
 
@@ -4425,8 +4404,8 @@ kshf.BarChart.prototype.insertTimeChartAxis = function(){
                 kshf_.sortSkip = true;
 
                 if(kshf_.options.sortingFuncs[kshf_.sortID].no_resort!==true)
-                    kshf_.divRoot.select(".resort_button").style("display","block");
-                
+                    kshf_.divRoot.attr("canResort",true);
+
                 kshf_.skipUpdateTimeChartDotConfig = true;
                 kshf.update();
                 kshf_.skipUpdateTimeChartDotConfig = false;

@@ -342,8 +342,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // timeAxisGroup
 
     .headerGroup{
-        position: absolute;
         pointer-events:none;
+        position:relative;
         span.header_label {
             font-size: 1.0em;
             font-weight: 700;
@@ -362,9 +362,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 1px;
             margin-bottom: -2px;
             pointer-events: all;
+            &.border_line_top{
+                top: -1px;
+            }
         }
         .chartFirstLineBackground{
             width:100%;
+            height: 18px;
             position: relative;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
@@ -375,6 +379,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:none;
             border-radius: 4px;
             box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
+            position: relative;
             .chooseConfigGroup {
                 float:left;
                 width:25px;
@@ -467,14 +472,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         span.leftHeader {
             display: inline-block;
-            float: left;
             pointer-events: all;
-            position:relative;
         }
         span.rightHeader{
             display:inline-block;
-            float:right;
             pointer-events:all;
+            float: right;
             span.header_label {
                 float:left;
             }
@@ -548,9 +551,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display:inline-block;
         float:right;
         clear:right;
-        div.chartBackground{
-            z-index:-60;
-        }
         span.optionSelect_Label{
             float: right;
             font-size: 0.7em;
@@ -568,11 +568,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: #F3CDCD;
         }
 
-        svg.resort_button{
+        svg.chart_root{
+            width:100%;
+            height:100%;
+            position:relative;
+            top: -20px;
+            pointer-events: none;
+            rect.chartBackground{
+                opacity: 0;
+            }
+            >g{
+                pointer-events: all;
+            }
+        }
+
+        .resort_button{
             position:absolute;
             pointer-events:all;
             bottom:1px;
             cursor:pointer;
+            display: none;
             path{
                 fill:#616161;
                 .transition(~"all 250ms linear");
@@ -581,12 +596,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 fill:#cb5454;
             }
         }
-        div.header_belowFirstRow{
-            position:relative;
-            top:1px;
-        }
         input.chartRowLabelSearch{
-            float: right;
             text-align: right;
             font-size: 0.7em;
             font-weight: 700;
@@ -608,8 +618,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         svg.chartRowLabelSearch{
-            float: right;
-            clear: right;
             margin-top: 3px;
         }
         &[collapsed=true] {
@@ -625,12 +633,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .header_belowFirstRow{ display: none; }
             g.scrollGroup{ display: none !important; }
-            svg.resort_button{ display: none !important ; }
+            .resort_button{ display: none !important ; }
             g.x_axis{ display:none; }
             g.barGroup_Top { display:none; }
             g.timeAxisGroup { display:none; }
             .configGroup{ display: none; }
             select.sortOptionSelect{ display: none; }
+            svg.chart_root{ display: none; }
         }
         &[collapsedTime=true] {
             .headerGroup span.rightHeader {
@@ -724,6 +733,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:inline-block;
         }
         &[showscrollbar=false] g.scrollGroup{ display:none; }
+
+        &[canresort=true] .resort_button{ display: block; }
     }// kshfChart
 
     g.row {
