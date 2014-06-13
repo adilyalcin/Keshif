@@ -885,6 +885,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row rect.rowBar {
   fill: #8699A8;
 }
+.kshf g.row[noitems=true] {
+  display: none;
+}
 .kshf g.row[noitems=true] text {
   fill: gray;
 }
