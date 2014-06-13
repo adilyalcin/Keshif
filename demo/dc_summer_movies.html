@@ -10,8 +10,8 @@
 
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
-        <script type="text/javascript" src="moment.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./style.css"/ type="text/css">
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript">
 
 function resetSize(){
@@ -51,12 +51,15 @@ function loadChart() {
 //                catLabelText: function(d) { return getGender(d.data[1]); }
             },{
                 facetTitle: "State",
+                removeInactiveAttrib: false,
                 catItemMap: function(d){ 
                     var series = kshf.dt_id.Series[d.data[0]];
                     return series.data[3];
                 }
             },{
                 facetTitle: "Soon",
+                removeInactiveAttrib: false,
+                sortingFuncs: [{no_resort: true}],
                 catItemMap: function(d){ 
                     var m_scr = moment(d.data[1]);
                     if(m_scr.isBefore(m_now)) return null;
@@ -155,7 +158,7 @@ function loadChart() {
 $(document).ready(loadChart);
 </script>
     <style type="text/css" media="screen">
-        .settingButton { display: none !important;}
+/*        .settingButton { display: none !important;} */
         .listItem{padding: 4px 0px 4px 0px !important;}
         .listItem a{
             color: rgb(95, 62, 21);
