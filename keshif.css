@@ -629,7 +629,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart svg.chart_root rect.chartBackground {
   opacity: 0;
 }
-.kshf .kshfChart svg.chart_root > g {
+.kshf .kshfChart svg.chart_root > * {
   pointer-events: all;
 }
 .kshf .kshfChart .resort_button {
@@ -833,7 +833,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   fill: url(#gr_rowSelectBackground_Label);
 }
 .kshf g.row rect.rowSelectBackground_ClickArea {
-  opacity: 0;
   pointer-events: all;
   cursor: default;
 }
@@ -884,6 +883,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.row rect.rowBar {
   fill: #8699A8;
+}
+.kshf g.row[noitems=true] {
+  display: none;
 }
 .kshf g.row[noitems=true] text {
   fill: gray;

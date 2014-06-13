@@ -582,7 +582,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             rect.chartBackground{
                 opacity: 0;
             }
-            >g{
+            >*{
                 pointer-events: all;
             }
         }
@@ -766,7 +766,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill:url(#gr_rowSelectBackground_Label);
         }
         rect.rowSelectBackground_ClickArea{
-            opacity:0;
             pointer-events: all;
             cursor: default;
         }
@@ -814,8 +813,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rect.rowBar {
             fill: #8699A8;
         }
-        &[noitems=true] text{
-            fill:gray;
+        &[noitems=true] {
+            display: none;
+            text{
+                fill:gray;
+            }
         }
         &[itemhighlight=true] text{
             fill: #c32c2c !important;
