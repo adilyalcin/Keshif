@@ -2456,7 +2456,7 @@ kshf.formatForItemCount = function(n){
 kshf.BarChart.prototype.refreshActiveItemCount = function(){
     var me = this;
     this.dom.item_count.text(function(d) { return "("+kshf.formatForItemCount(d.barValue)+")";});
-    this.dom.rows.each(function(d){ 
+    this.dom.g_row.each(function(d){ 
         this.setAttribute("noitems",!me.noItemOnSelect(d));
     });
     this.dom.row_title.text(function(d){
@@ -3644,7 +3644,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
         .attr("y",0)
         ;
 
-	this.dom.rows = this.root.selectAll("g.barGroup g.row")
+	this.dom.g_row
 		.on("click", function(d){
             if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
                 kshf_.options.selectType = "MultipleOr";
@@ -3683,34 +3683,34 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
             d.items.forEach(function(dd){if(dd.selected) dd.nohighlightOnList();});
         })
         ;
-    this.dom.row_title = this.dom.rows.append("title").attr("class", "row_title");
-	this.dom.rowSelectBackground_Label = this.dom.rows
+    this.dom.row_title = this.dom.g_row.append("title").attr("class", "row_title");
+	this.dom.rowSelectBackground_Label = this.dom.g_row
 		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
 		.attr("x", 0).attr("y", 0)
         .attr("height",kshf.line_height)
 		;
-	this.dom.rowSelectBackground_Count = this.dom.rows
+	this.dom.rowSelectBackground_Count = this.dom.g_row
 		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Count")
         .attr("y", 0)
         .attr("width",this.parentKshf.getRowLabelOffset())
         .attr("height",kshf.line_height)
 		;
-    this.dom.rowSelectBackground_ClickArea = this.dom.rows
-        .append("rect").attr("class", "rowSelectBackground rowSelectBackground_ClickArea")
+    this.dom.rowSelectBackground_ClickArea = this.dom.g_row
+        .append("rect").attr("class", "rowSelectBackground_ClickArea")
         .attr("x", 0).attr("y", 4)
         .attr("height",kshf.line_height-8)
         ;
-	this.dom.item_count = this.dom.rows
+	this.dom.item_count = this.dom.g_row
 		.append("text").attr("class", "item_count")
 		.attr("dy", 13)
 		;
-	this.dom.cat_labels = this.dom.rows
+	this.dom.cat_labels = this.dom.g_row
 		.append("text").attr("class", "row_label")
 		.attr("dy", 14)
 		.text(this.options.catLabelText);
 	// Create helper line
 	if(this.options.display.row_bar_line){
-		this.dom.row_bar_line = this.dom.rows.append("line")
+		this.dom.row_bar_line = this.dom.g_row.append("line")
 			.attr("class", "row_bar_line")
 			.attr("stroke-width","1")
 			.attr("y1", kshf.line_height/2.0)
@@ -3718,13 +3718,13 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	} else{
         this.dom.row_bar_line = this.root.select(".row_bar_line"); // empty
     }
-	this.dom.bar_active = this.dom.rows
+	this.dom.bar_active = this.dom.g_row
 		.append("rect")
 		.attr("class", function(d,i){ 
 			return "rowBar " +(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" active";
 		})
 		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
-	this.dom.bar_total = this.dom.rows
+	this.dom.bar_total = this.dom.g_row
 		.append("rect")
 		.attr("class", function(d,i){ 
 			return "rowBar "+(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" total";
@@ -3742,48 +3742,36 @@ kshf.BarChart.prototype.updateTextWidth = function(){
     kshf.time_animation_barscale = 400;
 
     this.dom.cat_labels
-        .transition()
-        .duration(kshf.time_animation_barscale)
+        .transition().duration(kshf.time_animation_barscale)
         .attr("x", this.options.rowTextWidth);
-    this.dom.cat_labels
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .attr("x", this.options.rowTextWidth);
-    this.dom.rowSelectBackground_Label
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .attr("width",this.options.rowTextWidth);
     this.dom.rowSelectBackground_Count
-        .transition()
-        .duration(kshf.time_animation_barscale)
+        .transition().duration(kshf.time_animation_barscale)
         .attr("x",this.options.rowTextWidth);
-    this.dom.rowSelectBackground_ClickArea
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .attr("width",this.options.rowTextWidth);
     this.dom.item_count
-        .transition()
-        .duration(kshf.time_animation_barscale)
+        .transition().duration(kshf.time_animation_barscale)
         .attr("x", this.options.rowTextWidth+3);
+    this.dom.rowSelectBackground_Label
+        .transition().duration(kshf.time_animation_barscale)
+        .attr("width",this.options.rowTextWidth);
+    this.dom.rowSelectBackground_ClickArea
+        .transition().duration(kshf.time_animation_barscale)
+        .attr("width",this.options.rowTextWidth);
     
     this.dom.allRowBars
-        .transition()
-        .duration(kshf.time_animation_barscale)
+        .transition().duration(kshf.time_animation_barscale)
         .attr("x", this.parentKshf.getRowTotalTextWidth())
         ;
     this.dom_headerGroup.selectAll(".leftHeader_XX")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .style("width",(this.options.rowTextWidth)+"px")
+        .transition().duration(kshf.time_animation_barscale)
+        .style("width",this.options.rowTextWidth+"px")
         ;
     this.root.select("g.x_axis")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .attr("transform","translate("+(this.parentKshf.getRowTotalTextWidth())+","+(kshf.line_height*this.rowCount_Header()+3)+")")
+        .transition().duration(kshf.time_animation_barscale)
+        .attr("transform","translate("+
+            (this.parentKshf.getRowTotalTextWidth())+","+(kshf.line_height*this.rowCount_Header()+3)+")")
 
     if(this.dom.showTextSearch !== undefined)
-        this.dom.showTextSearch
-            .style("width",(this.options.rowTextWidth-20)+"px")
+        this.dom.showTextSearch.style("width",(this.options.rowTextWidth-20)+"px")
 
     this.dom.row_bar_line
         .attr("x1", this.parentKshf.getRowTotalTextWidth()+2);
