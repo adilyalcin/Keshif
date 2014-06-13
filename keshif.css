@@ -515,8 +515,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup span.header_label_arrow :hover {
   color: #cb5454;
 }
-.kshf .headerGroup span.leftHeader {
-  display: inline-block;
+.kshf .headerGroup .leftHeader {
   pointer-events: all;
 }
 .kshf .headerGroup span.rightHeader {
@@ -530,8 +529,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup span.rightHeader .config_zoom {
   padding-top: 0px;
   margin-right: 10px;
+  height: 18px;
   float: right;
-  display: none;
 }
 .kshf .headerGroup span.rightHeader .config_zoom svg {
   position: relative;
@@ -658,6 +657,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
   background-color: rgba(244, 244, 244, 0);
   pointer-events: all;
+  margin-bottom: 0px;
   /*    border-bottom: dashed 1px #cb5454; */
 }
 .kshf .kshfChart input.chartRowLabelSearch:focus {
@@ -670,7 +670,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
 }
 .kshf .kshfChart svg.chartRowLabelSearch {
-  margin-top: 3px;
+  vertical-align: middle;
 }
 .kshf .kshfChart[collapsed=true] .headerGroup {
   color: gray;
@@ -681,7 +681,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] .headerGroup span.header_label {
   cursor: pointer;
 }
-.kshf .kshfChart[collapsed=true] .headerGroup span.leftHeader span.header_label_arrow {
+.kshf .kshfChart[collapsed=true] .headerGroup .leftHeader span.header_label_arrow {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
@@ -798,6 +798,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   fill-opacity: 0.5;
   pointer-events: auto;
 }
+.kshf .kshfChart[filtered_time=false] .config_zoom .zoom_button {
+  display: none;
+}
 .kshf .kshfChart[filtered_range=true] div.chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
@@ -806,6 +809,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart[canresort=true] .resort_button {
   display: block;
+}
+.kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
+  display: none;
 }
 .kshf g.row rect.total {
   fill-opacity: 0.2;
@@ -884,9 +890,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf g.row rect.rowBar {
   fill: #8699A8;
-}
-.kshf g.row[noitems=true] {
-  display: none;
 }
 .kshf g.row[noitems=true] text {
   fill: gray;
@@ -1304,15 +1307,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   fill: white;
   cursor: pointer;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: fill 0.2s ease-in-out;
+  -moz-transition: fill 0.2s ease-in-out;
+  -o-transition: fill 0.2s ease-in-out;
+  transition: fill 0.2s ease-in-out;
 }
-.kshf g.scrollGroup rect.background_fill :hover {
+.kshf g.scrollGroup rect.background_fill:hover {
   fill: #EAEAEA;
-  /*    animation-duration: 3s;
-                animation-name: background_fill_in; */
 }
 .kshf g.scrollGroup rect.handle {
   fill: #999999;

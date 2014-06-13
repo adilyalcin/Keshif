@@ -475,8 +475,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .rotate(0deg);
             :hover{ color:#cb5454; }
         }
-        span.leftHeader {
-            display: inline-block;
+        .leftHeader {
             pointer-events: all;
         }
         span.rightHeader{
@@ -489,8 +488,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .config_zoom{
                 padding-top: 0px;
                 margin-right:10px;
+                height: 18px;
                 float:right;
-                display:none;
                 svg{
                     position:relative;
                     top:2px;
@@ -611,6 +610,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: #cb5454;
             background-color:rgba(244, 244, 244,0);
             pointer-events: all;
+            margin-bottom: 0px;
         /*    border-bottom: dashed 1px #cb5454; */
             &:focus{
                 outline-color: gray;
@@ -623,7 +623,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         svg.chartRowLabelSearch{
-            margin-top: 3px;
+            vertical-align: middle;
         }
         &[collapsed=true] {
             .headerGroup {
@@ -632,7 +632,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 span.header_label {
                     cursor: pointer;
                 }
-                span.leftHeader span.header_label_arrow{
+                .leftHeader span.header_label_arrow{
                     .rotate(-90deg);
                 }
             }
@@ -734,12 +734,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: auto;
             }
         }
+        &[filtered_time=false] {
+            .config_zoom .zoom_button{
+                display: none;
+            }
+        }
         &[filtered_range=true] div.chartClearFilterButton.rangeFilter{
             display:inline-block;
         }
         &[showscrollbar=false] g.scrollGroup{ display:none; }
 
         &[canresort=true] .resort_button{ display: block; }
+
+        &[removeinactiveattrib=true] &[noitems=true] {
+            display: none;
+        }
+
     }// kshfChart
 
     g.row {
@@ -815,7 +825,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill: #8699A8;
         }
         &[noitems=true] {
-            display: none;
             text{
                 fill:gray;
             }
@@ -1194,12 +1203,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             opacity: 1;
             fill: white; 
             cursor: pointer;
-            .transition(~"all 0.2s ease-in-out");
-            :hover{
-                fill:#EAEAEA;
-            /*    animation-duration: 3s;
-                animation-name: background_fill_in; */
-            }
+            .transition(~"fill 0.2s ease-in-out");
+            &:hover{ fill:#EAEAEA; }
         }
         rect.handle{
             fill:#999999;
