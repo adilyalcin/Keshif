@@ -990,6 +990,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 0px 1px 0px 2px;
   margin-top: 2px;
   margin-left: 5px;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
+}
+.kshf div.listHeader span.filter-blocks span.filter-block[ready=true] {
+  opacity: 1;
 }
 .kshf div.listHeader span.filter-blocks span.filter-block:hover {
   /*    box-shadow: inset 1px 1px 1px rgb(78, 71, 43); */

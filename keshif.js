@@ -3503,12 +3503,15 @@ kshf.BarChart.prototype.filterTime = function(){
 };
 
 kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
-	var kshf_=this;
+	var me=this;
     if(!this.isFiltered_Row()){
         // remove DOM
         if(this.filterSummaryBlock_Row){
-            this.filterSummaryBlock_Row[0][0].parentNode.removeChild(this.filterSummaryBlock_Row[0][0]);
-            this.filterSummaryBlock_Row = null;
+            this.filterSummaryBlock_Row.attr("ready",false);
+            setTimeout(function(){
+                me.filterSummaryBlock_Row[0][0].parentNode.removeChild(me.filterSummaryBlock_Row[0][0]);
+                me.filterSummaryBlock_Row = null;
+            }, 300);
         }
     } else {
         // insert DOM
@@ -3524,7 +3527,7 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
         this.root.selectAll("g.row").each( function(d){
             if(!d.selected) return; 
             if(selectedItemsCount!==0) {
-                if(kshf_.options.selectType==="MultipleAnd"){
+                if(me.options.selectType==="MultipleAnd"){
                     selectedItemsText+=" and "; 
                     selectedItemsText_Sm+=" and "; 
                 } else{
@@ -3824,6 +3827,9 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.facetTitle));
         });
 	this.filterSummaryBlock_Row.append("span").attr("class","filter_item");
+    // animate appear
+    window.getComputedStyle(this.filterSummaryBlock_Row[0][0]).opacity;
+    this.filterSummaryBlock_Row.attr("ready",true);
 };
 kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
 	var me=this;
