@@ -10,6 +10,11 @@
 
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript">
+
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 function loadChart() {
     // set div height accordingly 
     $('#chart_div').height($(window).height()-45);
