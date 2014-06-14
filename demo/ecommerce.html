@@ -10,7 +10,7 @@
         <script type="text/javascript">
 
 function loadChart() {
-	kshf.init({
+	new kshf.Browser({
         chartTitle: "e-Commerce - Correlated",
         dirRoot: "../",
         domID : "#chart_div",
@@ -37,7 +37,7 @@ function loadChart() {
         ],
         loadedCb: function(){
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt.Shorts, [1, 2], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Shorts, [1, 2], /\b,\s+/, false);
         },
         list : {
             sortColWidth: 50,

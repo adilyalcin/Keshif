@@ -20,10 +20,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Tablet Computers on Amazon.com",
         domID : "#chart_div",
         dirRoot: "../",

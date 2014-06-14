@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript">
         google.setOnLoadCallback(function(){
-            kshf.init({
+            browser = new kshf.Browser({
                 chartTitle: "Failed Bank List - FDIC, US",
                 dirRoot: "../",
                 domID : "#chart_div",
@@ -21,7 +21,7 @@
                     sheets : [ {name:"Banks"},{name:"States"} ]
                 },
                 loadedCb: function(){
-                    kshf.cellToArray(kshf.dt.Banks, [7], /\//, false);
+                    kshf.Util.cellToArray(kshf.dt.Banks, [7], /\//, false);
                 },
                 charts : [
                     {   facetTitle: "State",

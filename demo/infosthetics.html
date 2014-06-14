@@ -36,12 +36,12 @@ $(document).ready( function(){
     // set resize callback
     $(window).resize(function() {
         resetSize();
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     logIf.Check = logIf.All();
     
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "5 Years of Infosthetics",
         domID : "#chart_div",
         dirRoot: "../",
@@ -52,7 +52,7 @@ $(document).ready( function(){
         },
         loadedCb: function(){
             postCols = kshf.dt_ColNames.Posts;
-            kshf.cellToArray(kshf.dt.Posts, [postCols['Category']], ",", false);
+            kshf.Util.cellToArray(kshf.dt.Posts, [postCols['Category']], ",", false);
         },
         charts: [
             {   facetTitle: "Category",

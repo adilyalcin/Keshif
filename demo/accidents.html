@@ -53,7 +53,7 @@ function loadChart() {
     $(window).resize(function() {
 //        $('#chart_div').height(1500);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     var query = 'select *';
@@ -64,7 +64,7 @@ function loadChart() {
 
     var accCol;
 
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)",
         domID : "#chart_div",
         dirRoot: "../",
@@ -169,38 +169,7 @@ function loadChart() {
                         }
                     }
                 ],
-                detailsToggle : "Multi" /*,
-                contentFunc : function(accident){
-                    var j;
-                    var str="";
-                    var aDate = accident.data[accCol.Date];
-                    str+="<div class=\"iteminfo iteminfo_0\"> ";
-                    str+="<i>"+moment(aDate).format("MMM Do, YYYY")+"</i> - "+ accident.data[accCol.Accident_Index];
-                    str+="</div>";
-                    str+="<span class=\"item_details\">";
-                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Severity</u>: "+ 
-                        kshf.dt_id['Severity'][accident.data[accCol['Severity']]].data[1];
-                    str+=" - <u># of vehicles</u>: "+ accident.data[accCol['Vehicles']];
-                    str+=" - <u># of casualties</u>: "+ accident.data[accCol['Casualties']]+"</div>";
-                    str+="<div class=\"iteminfo iteminfo_1\"> <u>Road Type</u>: "+ 
-                        kshf.dt_id['RoadType'][accident.data[accCol['Road Type']]].data[1];
-                    str+=" - <u>Speed limit</u>: "+ accident.data[accCol['Speed Limit']]+"mph";
-                    str+=" - <u>Area</u>: "+ ((accident.data[accCol['Urban_or_Rural_Area']]===1)? "Urban":"Rural");
-                    
-                    str+="</div>";
-                    str+="<div class=\"iteminfo iteminfo_2\"><u>Light condition</u>: "+ 
-                        kshf.dt_id['LightCond'][accident.data[accCol['Light Condition']]].data[2] +"</div>";
-                    str+="<div class=\"iteminfo iteminfo_2\"><u>Road condition</u>: "+ 
-                        kshf.dt_id['RoadSurface'][accident.data[accCol['Road Surface Condition']]].data[1] +"</div>";
-                    if(accident.data[accCol['Weather Condition']]!==0)
-                        str+="<div class=\"iteminfo iteminfo_2\"><u>Weather condition</u>: "+ 
-                            kshf.dt_id['WeatherCond'][accident.data[accCol['Weather Condition']]].data[2] +"</div>";
-                    if(accident.data[accCol['Special Condition']]!==0)
-                        str+="<div class=\"iteminfo iteminfo_2\"><u>Special condition</u>: "+ 
-                            kshf.dt_id['SpecCond'][accident.data[accCol['Special Condition']]].data[2] +"</div>";
-                    str+="</span>";
-                    return str;
-                }*/
+                detailsToggle : "Multi"
             }
     });
 }

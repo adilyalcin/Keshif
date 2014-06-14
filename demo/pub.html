@@ -32,7 +32,7 @@ function resizeChart(){
 google.setOnLoadCallback(function() {
     resizeChart();
     $(window).resize(function() {
-        if(resizeChart()) kshf.updateLayout();
+        if(resizeChart()) browser.updateLayout();
     });
 
     logIf.Check = logIf.All();
@@ -40,7 +40,7 @@ google.setOnLoadCallback(function() {
     var authorCol, pubCol, keywordCol;
 
     // set height of the source dom as 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Ben Bederson's Publications",
         domID : "#chart_div",
         listMaxColWidthMult: 0.4,
@@ -64,10 +64,10 @@ google.setOnLoadCallback(function() {
             pubCol = kshf.dt_ColNames.Publications;
             keywordCol = kshf.dt_ColNames.Keywords;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
+            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
         },
         readyCb: function(){
-            kshf.updateLayout();
+            browser.updateLayout();
         },
         charts : [
             {

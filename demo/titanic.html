@@ -14,7 +14,7 @@
         var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
 
         google.setOnLoadCallback(function(){
-            kshf.init({
+            new kshf.Browser({
                 chartTitle: "Titanic Passengers",
                 dirRoot: "../",
                 domID : "#chart_div",

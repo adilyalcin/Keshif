@@ -17,10 +17,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Clinical Trial Sample Dataset",
         domID : "#chart_div",
         dirRoot: "../",
@@ -37,8 +37,8 @@ function loadChart() {
             ]
         },
         loadedCb: function(){
-            kshf.createTableFromTable(kshf.dt.Trials,'Phases',function(d){ return d.data[4];});
-            kshf.createTableFromTable(kshf.dt.TrialConditions,'Conditions',function(d){ return d.data[1];});
+            browser.createTableFromTable(kshf.dt.Trials,'Phases',function(d){ return d.data[4];});
+            browser.createTableFromTable(kshf.dt.TrialConditions,'Conditions',function(d){ return d.data[1];});
 
             // go over the list of trial conditions, and add the conditions under trial table
             for(t=0; t<kshf.dt.TrialConditions.length ; t++){

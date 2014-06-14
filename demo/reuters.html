@@ -23,12 +23,12 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     var newsCol,peopleCol,topicsCol;
 
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "Reuters 1987 News Dataset",
         domID : "#chart_div",
         dirRoot: "../",
@@ -46,7 +46,7 @@ function loadChart() {
             newsCol = kshf.dt_ColNames.News;
             peopleCol = kshf.dt_ColNames.People;
             topicsCol = kshf.dt_ColNames.Topics;
-            kshf.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
+            kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
         },
         charts:[
             {

@@ -450,11 +450,11 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "XParty - Why did you decide to take Paths to CS?",
         domID : "#chart_div4",
         dirRoot: "../",

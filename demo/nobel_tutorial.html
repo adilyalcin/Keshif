@@ -20,10 +20,10 @@ function loadChart() {
     resetSize();
     $(window).resize(function() {
         resetSize();
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Nobel Prize Winners",
         domID : "#chart_div",
         dirRoot: "../",

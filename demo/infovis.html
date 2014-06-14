@@ -20,10 +20,10 @@ google.setOnLoadCallback(function () {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "InfoVis Papers",
         domID : "#chart_div",
         dirRoot: "../",
@@ -33,7 +33,7 @@ google.setOnLoadCallback(function () {
             sheets : [ {name:"Publications"} ]
         },
         loadedCb: function(){
-            kshf.cellToArray(kshf.dt.Publications, [2, 3, 4, 5, 6, 7], "*", false);
+            kshf.Util.cellToArray(kshf.dt.Publications, [2, 3, 4, 5, 6, 7], "*", false);
         },
         charts: [
             {

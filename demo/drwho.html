@@ -20,7 +20,7 @@ var demoID = 11;
 
 google.setOnLoadCallback( function () {
     logIf.Check = logIf.All();
-	kshf.init({
+	new kshf.Browser({
         chartTitle: "Doctor Who villains",
         dirRoot: "../",
         itemName: "villains",
@@ -32,7 +32,7 @@ google.setOnLoadCallback( function () {
         },
         loadedCb: function(){
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt['TELEVIZED VILLAINS'], [4,7,8], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt['TELEVIZED VILLAINS'], [4,7,8], /\b,\s+/, false);
         },
         charts : [
             {

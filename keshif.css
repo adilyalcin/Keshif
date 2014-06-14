@@ -378,7 +378,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   font-variant: small-caps;
   pointer-events: none;
-  padding-top: 2px;
+  padding-top: 1px;
   height: 16px;
 }
 .kshf .headerGroup .border_line {
@@ -391,8 +391,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 1px;
   margin-bottom: -2px;
   pointer-events: all;
-}
-.kshf .headerGroup .border_line.border_line_top {
   top: -1px;
 }
 .kshf .headerGroup .chartFirstLineBackground {
@@ -658,7 +656,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(244, 244, 244, 0);
   pointer-events: all;
   margin-bottom: 0px;
-  /*    border-bottom: dashed 1px #cb5454; */
+  margin-right: 2px;
 }
 .kshf .kshfChart input.chartRowLabelSearch:focus {
   outline-color: gray;

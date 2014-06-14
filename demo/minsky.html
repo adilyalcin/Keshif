@@ -19,12 +19,12 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.8);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
     var pubCol;
     
     // set height of the source dom as 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Bibliography of Marvin Minsky",
         domID : "#chart_div",
         dirRoot: "../",
@@ -40,7 +40,7 @@ function loadChart() {
         loadedCb: function(){
             pubCol = kshf.dt_ColNames.Publications;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.cellToArray(kshf.dt.Publications, [pubCol['Co-Author'], pubCol['Topic']],/\b,/, false );
+            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol['Co-Author'], pubCol['Topic']],/\b,/, false );
         },
         charts:[
             {

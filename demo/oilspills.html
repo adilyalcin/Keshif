@@ -53,12 +53,12 @@ google.setOnLoadCallback( function(){
     resetSize();
     $(window).resize(function() {
         resetSize();
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     logIf.Check = logIf.All();
 
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "Petroleum Spills - from OCS Oil & Gas Activities",
         domID : "#chart_div",
         dirRoot: "../",
@@ -70,9 +70,9 @@ google.setOnLoadCallback( function(){
         loadedCb: function(){
             spillsCol = kshf.dt_ColNames.Spills;
 
-            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Cause], ", ", false);
-            kshf.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
-            kshf.cellToArray(kshf.dt.Spills, [spillsCol['During Activity']], /\/\s*/, false);
+            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol.Cause], ", ", false);
+            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
+            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol['During Activity']], /\/\s*/, false);
         },
         charts : [
             {

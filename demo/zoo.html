@@ -18,10 +18,10 @@
             // set resize callback
             $(window).resize(function() {
                 $('#chart_div').width ($(window).width()*0.9);
-                kshf.updateLayout();
+                browser.updateLayout();
             });
             
-        	kshf.init({
+        	browser = new kshf.Browser({
                 chartTitle: "Animals in some Zoo",
                 dirRoot: "../",
                 domID : "#chart_div",

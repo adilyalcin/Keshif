@@ -28,12 +28,12 @@ google.setOnLoadCallback(function () {
     $(window).resize(function() {
         $('#chart_div').height($(window).height()-45);
         $('#chart_div').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     var TA_cols;
 
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "Teaching Assistant Evaluations",
         domID : "#chart_div",
         dirRoot: "../",

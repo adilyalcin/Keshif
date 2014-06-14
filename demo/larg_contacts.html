@@ -20,7 +20,7 @@ function resetSize(){
 $(document).ready( function(){
     resetSize();
 
-	kshf.init({
+	new kshf.Browser({
         chartTitle: "Learning Analytics Contacts",
         domID : "#chartDiv",
         dirRoot: "../",
@@ -30,7 +30,7 @@ $(document).ready( function(){
             sheets : [ {name:"Contacts"} ]
         },
         loadedCb: function(){
-            kshf.cellToArray(kshf.dt.Contacts, [2], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Contacts, [2], /\b,\s+/, false);
         },
         charts : [
             {

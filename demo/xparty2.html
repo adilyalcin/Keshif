@@ -449,11 +449,10 @@ function loadChart() {
     $(window).resize(function() {
         $('#chart_div4').height($(window).height()-45);
         $('#chart_div4').width ($(window).width()*0.9);
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
-
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "XParty - Why did you decide to take Paths to CS?",
         domID : "#chart_div4",
         itemName : "answers",
@@ -509,22 +508,8 @@ function loadChart() {
             contentFunc : function(d){
                 var j;
                 var str="";
-                str+="<div class=\"iteminfo iteminfo_0\">"+d.data[2]+"</div>";/*
-                str+="<div class=\"iteminfo iteminfo_1\">Group under: ";
-                var cats = qCats[d.data[0]];
-                if(cats===undefined) str+="none"; else
-                for(var i=0;i<cats.length;i++){
-                    str+=cats[i]+" , ";
-                }
-                str+="</div";
-                // name
-/*                    str+="<div class=\"iteminfo iteminfo_0\">Player: "+
-                        "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data[2][0]+"/P"+d.data[2]+".htm\">"+d.data[2]+"</a></div>";
-                // type
-                    str+="   Type: "+kshf.dt_id.baseball_trantype[d.data[3]].data[1]+"</div>";
-                // team from & to
-                    str+="<div class=\"iteminfo iteminfo_1\">Teams: From "+d.data[4]+" to "+d.data[5]+"</div>";
-  */              return str;
+                str+="<div class=\"iteminfo iteminfo_0\">"+d.data[2]+"</div>";
+                return str;
             }
         }
     });

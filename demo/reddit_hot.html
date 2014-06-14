@@ -25,8 +25,9 @@ var postCols = {
     thumbnail: 9
 };
 
-function loadData(){
-    kshf.primaryTableName = tableName;
+function loadData(browser){
+    browser.primaryTableName = tableName;
+
     kshf.dt_ColNames[tableName] = postCols;
     kshf.dt[tableName] = [];
     var arr = kshf.dt[tableName];
@@ -51,11 +52,13 @@ function loadData(){
                 c[postCols.title] = p.title;
                 c[postCols.url] = p.url;
                 c[postCols.thumbnail] = p.thumbnail;
-                arr.push(new kshf.Item(c,postCols.id,true));
+                var item = new kshf.Item(c,postCols.id,true);
+                item.browser = browser;
+                arr.push(item);
             }
 
-            kshf.items = kshf.dt[tableName];
-            kshf.itemsSelectedCt = kshf.dt[tableName].length;
+            browser.items = kshf.dt[tableName];
+            browser.itemsSelectedCt = kshf.dt[tableName].length;
 
             var id_table = {};
             for(j=0; j<arr.length ;j++) {
@@ -67,13 +70,13 @@ function loadData(){
             // finish loading....
             d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
             d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { kshf.createCharts(); }, 50);
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
         }
     });
 }
 
 $(document).ready( function(){
-	kshf.init({
+	browser = new kshf.Browser({
         chartTitle: "Hot posts on reddit",
         domID : "#chart_div",
         dirRoot: "../",
