@@ -315,6 +315,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .timeDot[display=false] {
   pointer-events: none;
+  fill: #CCCCCC;
+  opacity: 0.2;
 }
 .kshf .timeDot[display=true]:hover {
   stroke: orangered !important;
@@ -412,8 +414,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .configGroup {
   display: none;
-  border-radius: 4px;
-  box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 .kshf .headerGroup .configGroup .chooseConfigGroup {
@@ -518,51 +518,51 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .leftHeader {
   pointer-events: all;
 }
-.kshf .headerGroup span.rightHeader {
+.kshf .headerGroup .rightHeader {
   display: inline-block;
   pointer-events: all;
   float: right;
 }
-.kshf .headerGroup span.rightHeader span.header_label {
+.kshf .headerGroup .rightHeader span.header_label {
   float: left;
 }
-.kshf .headerGroup span.rightHeader .config_zoom {
+.kshf .headerGroup .rightHeader .config_zoom {
   padding-top: 0px;
   margin-right: 10px;
   height: 18px;
   float: right;
 }
-.kshf .headerGroup span.rightHeader .config_zoom svg {
+.kshf .headerGroup .rightHeader .config_zoom svg {
   position: relative;
   top: 2px;
   display: none;
 }
-.kshf .headerGroup span.rightHeader .config_zoom .block_bottom {
+.kshf .headerGroup .rightHeader .config_zoom .block_bottom {
   display: block;
 }
-.kshf .headerGroup span.rightHeader .config_zoom .block_top {
+.kshf .headerGroup .rightHeader .config_zoom .block_top {
   display: block;
 }
-.kshf .headerGroup span.rightHeader .config_zoom path {
+.kshf .headerGroup .rightHeader .config_zoom path {
   fill: white;
   display: inline;
   stroke: #000000;
   stroke-width: 25;
   stroke-miterlimit: 10;
 }
-.kshf .headerGroup span.rightHeader .config_zoom[zoom=in] path {
+.kshf .headerGroup .rightHeader .config_zoom[zoom=in] path {
   fill: url(#SVGID_2_);
 }
-.kshf .headerGroup span.rightHeader .config_zoom[zoom=in] .block_bottom {
+.kshf .headerGroup .rightHeader .config_zoom[zoom=in] .block_bottom {
   display: none;
 }
-.kshf .headerGroup span.rightHeader .config_zoom[zoom=out] path {
+.kshf .headerGroup .rightHeader .config_zoom[zoom=out] path {
   fill: url(#SVGID_1_);
 }
-.kshf .headerGroup span.rightHeader .config_zoom[zoom=out] .block_top {
+.kshf .headerGroup .rightHeader .config_zoom[zoom=out] .block_top {
   display: none;
 }
-.kshf .headerGroup span.rightHeader .zoom_button {
+.kshf .headerGroup .rightHeader .zoom_button {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
   font-size: 11px;
   font-weight: 300;
@@ -574,7 +574,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   margin-right: 10px;
 }
-.kshf .headerGroup span.rightHeader .zoom_button[disabled=false] {
+.kshf .headerGroup .rightHeader .zoom_button[disabled=false] {
   color: #252112;
   border: 1px gray solid;
   cursor: pointer;
@@ -583,11 +583,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #EEEEEE;
   font-weight: 500;
 }
-.kshf .headerGroup span.rightHeader .zoom_button[disabled=false]:hover {
+.kshf .headerGroup .rightHeader .zoom_button[disabled=false]:hover {
   box-shadow: inset 1px 1px 1px #474940;
   color: red;
 }
-.kshf .headerGroup span.rightHeader .zoom_button[disabled=true] {
+.kshf .headerGroup .rightHeader .zoom_button[disabled=true] {
   border: 1px lightgray solid;
   color: gray;
   cursor: default;
@@ -715,10 +715,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] svg.chart_root {
   display: none;
 }
-.kshf .kshfChart[collapsedTime=true] .headerGroup span.rightHeader {
+.kshf .kshfChart[collapsedTime=true] .headerGroup .rightHeader {
   color: gray;
 }
-.kshf .kshfChart[collapsedTime=true] .headerGroup span.rightHeader span.header_label_arrow {
+.kshf .kshfChart[collapsedTime=true] .headerGroup .rightHeader span.header_label_arrow {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
@@ -738,10 +738,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfChart[collapsed=false][showconfig=true] .headerGroup svg.settingButton {
-  display: block;
   fill: black;
   background: rgba(100, 100, 100, 0.3);
-  transition: all 250ms linear;
   /*    border: solid 1px gray; */
 }
 .kshf .kshfChart[showconfig=true] div.configGroup {
@@ -749,9 +747,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart[showconfig=false] .headerGroup svg.settingButton {
   fill: gray;
-}
-.kshf .kshfChart[collapsed=false]:hover .headerGroup svg.settingButton {
-  display: block;
 }
 .kshf .kshfChart[dotConfig=Solid] .timeDot {
   fill: #616F7A;
@@ -775,9 +770,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
   fill: url(#dotGradient_Inactive);
 }
-.kshf .kshfChart[dotConfig=Solid] .timeDot[display=false] {
-  fill: #CCCCCC;
-}
 .kshf .kshfChart[filtered_row=true] g.row[selected=true] text {
   font-weight: 700;
   fill: #c32c2c;
@@ -787,6 +779,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea {
   pointer-events: all;
+}
+.kshf .kshfChart[filtered_row=true] g.row[selected=false] text.filter_add_more {
+  display: block;
 }
 .kshf .kshfChart[filtered_row=true] div.chartClearFilterButton.rowFilter {
   display: inline-block;
@@ -843,19 +838,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   cursor: default;
 }
+.kshf g.row text {
+  -webkit-transition: fill 150ms linear;
+  -moz-transition: fill 150ms linear;
+  -o-transition: fill 150ms linear;
+  transition: fill 150ms linear;
+}
 .kshf g.row text.item_count {
   font-size: 0.7em;
   cursor: default;
+  pointer-events: none;
 }
 .kshf g.row text.row_label {
   font-size: 0.8em;
   text-anchor: end;
   font-weight: 300;
   cursor: default;
+  pointer-events: none;
+}
+.kshf g.row text.filter_add_more {
+  font-size: 1.1em;
+  cursor: default;
+  display: none;
+  text-anchor: middle;
+  cursor: pointer;
+  fill: gray;
+}
+.kshf g.row text.filter_add_more:hover {
+  fill: black;
 }
 .kshf g.row line.row_bar_line {
   stroke-width: 0.7;
   pointer-events: none;
+}
+.kshf g.row[noitems=false][highlight=true] rect.rowSelectBackground_ClickArea {
+  cursor: pointer;
 }
 .kshf g.row[noitems=false][highlight=true] rect.total {
   cursor: pointer;
@@ -864,29 +881,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   stroke: orangered;
   stroke-width: 2;
-  -webkit-transition: all 150ms linear;
-  -moz-transition: all 150ms linear;
-  -o-transition: all 150ms linear;
-  transition: all 150ms linear;
 }
-.kshf g.row[noitems=false][highlight=true] text.item_count {
-  cursor: pointer;
-}
-.kshf g.row[noitems=false][highlight=true] text.row_label {
-  cursor: pointer;
-}
-.kshf g.row[noitems=false][highlight=true] text {
+.kshf g.row[noitems=false][highlight=true] text:not(.filter_add_more) {
   fill: orangered !important;
-  -webkit-transition: fill 100ms linear;
-  -moz-transition: fill 100ms linear;
-  -o-transition: fill 100ms linear;
-  transition: fill 100ms linear;
 }
 .kshf g.row[noitems=false][highlight=true] .row_bar_line {
   stroke: orangered;
-}
-.kshf g.row[noitems=false][highlight=true] rect.rowSelectBackground_ClickArea {
-  cursor: pointer;
 }
 .kshf g.row rect.rowBar {
   fill: #8699A8;
@@ -1490,4 +1490,124 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.layout_resize :hover {
   border-right: 16px solid gray;
+}
+.tipsy {
+  font-size: 10px;
+  position: absolute;
+  padding: 5px;
+  z-index: 100000;
+}
+.tipsy-inner {
+  background-color: #000;
+  color: #FFF;
+  max-width: 200px;
+  padding: 5px 8px 4px 8px;
+  text-align: center;
+}
+/* Rounded corners */
+.tipsy-inner {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+/* Uncomment for shadow */
+/*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+.tipsy-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  line-height: 0;
+  border: 5px dashed #000;
+}
+/* Rules to colour arrows */
+.tipsy-arrow-n {
+  border-bottom-color: #000;
+}
+.tipsy-arrow-s {
+  border-top-color: #000;
+}
+.tipsy-arrow-e {
+  border-left-color: #000;
+}
+.tipsy-arrow-w {
+  border-right-color: #000;
+}
+.tipsy-n .tipsy-arrow {
+  top: 0px;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-nw .tipsy-arrow {
+  top: 0;
+  left: 10px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-ne .tipsy-arrow {
+  top: 0;
+  right: 10px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-s .tipsy-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-sw .tipsy-arrow {
+  bottom: 0;
+  left: 10px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-se .tipsy-arrow {
+  bottom: 0;
+  right: 10px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-e .tipsy-arrow {
+  right: 0;
+  top: 50%;
+  margin-top: -5px;
+  border-left-style: solid;
+  border-right: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+.tipsy-w .tipsy-arrow {
+  left: 0;
+  top: 50%;
+  margin-top: -5px;
+  border-right-style: solid;
+  border-left: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+.tipsy {
+  pointer-events: none;
+}
+.tipsy-inner {
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 0px 5px 2px 2px;
+  font-size: 1.2em;
+}
+.tipsy-inner b {
+  font-size: 1.4em;
 }

@@ -292,6 +292,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .transition(~"all 100ms linear");
         &[display=false] {
             pointer-events: none;
+            fill: #CCCCCC;
+            opacity: 0.2;
         }
         &[display=true]:hover {
             stroke: orangered !important;
@@ -382,8 +384,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .configGroup{
             display:none;
-            border-radius: 4px;
-            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
+//            border-radius: 4px;
+//            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
             position: relative;
             .chooseConfigGroup {
                 float:left;
@@ -478,7 +480,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .leftHeader {
             pointer-events: all;
         }
-        span.rightHeader{
+        .rightHeader{
             display:inline-block;
             pointer-events:all;
             float: right;
@@ -647,7 +649,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             svg.chart_root{ display: none; }
         }
         &[collapsedTime=true] {
-            .headerGroup span.rightHeader {
+            .headerGroup .rightHeader {
                 color: gray;
                 span.header_label_arrow{
                     .rotate(-90deg);
@@ -669,10 +671,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[collapsed=false][showconfig=true] .headerGroup svg.settingButton{
-            display: block;
+//            display: block;
             fill: black;
             background: rgba(100,100,100,0.3);
-            transition: all 250ms linear;
         /*    border: solid 1px gray; */
         }
         &[showconfig=true]  div.configGroup{ display:block; }
@@ -680,7 +681,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill: gray;
         }
         &[collapsed=false]:hover .headerGroup svg.settingButton{
-            display: block;
+//            display: block;
         }
         &[dotConfig=Solid] .timeDot{
             fill: #616F7A; 
@@ -705,20 +706,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[dotConfig|=Gradient] .timeDot[display=false] {
             fill: url(#dotGradient_Inactive);
         }
-        &[dotConfig=Solid] .timeDot[display=false] {
-            fill: #CCCCCC;
-        }
         &[filtered_row=true] {
-            g.row[selected=true] {
-                text{
-                    font-weight: 700;
-                    fill: #c32c2c;
+            g.row{
+                &[selected=true] {
+                    text{
+                        font-weight: 700;
+                        fill: #c32c2c;
+                    }
+                    rect.rowSelectBackground{
+                        opacity:1;
+                    }
+                    rect.rowSelectBackground_ClickArea{
+                        pointer-events: all;
+                    }
                 }
-                rect.rowSelectBackground{
-                    opacity:1;
-                }
-                rect.rowSelectBackground_ClickArea{
-                    pointer-events: all;
+                &[selected=false]{
+                    text.filter_add_more{
+                        display: block;
+                    }
                 }
             }
             div.chartClearFilterButton.rowFilter{
@@ -780,21 +785,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             cursor: default;
         }
-        text.item_count {
-            font-size: 0.7em;
-            cursor: default;
-        }
-        text.row_label {
-            font-size: 0.8em;
-            text-anchor: end;
-            font-weight:300;
-            cursor: default;
+        text{
+            .transition(~"fill 150ms linear");
+            &.item_count {
+                font-size: 0.7em;
+                cursor: default;
+                pointer-events: none;
+            }
+            &.row_label {
+                font-size: 0.8em;
+                text-anchor: end;
+                font-weight:300;
+                cursor: default;
+                pointer-events: none;
+            }
+            &.filter_add_more {
+                font-size: 1.1em;
+                cursor: default;
+                display: none;
+                text-anchor: middle;
+                cursor: pointer;
+                fill: gray;
+                &:hover{
+                    fill: black;
+                }
+            }
         }
         line.row_bar_line{
             stroke-width: 0.7;
             pointer-events: none;
         }
         &[noitems=false][highlight=true] {
+            rect.rowSelectBackground_ClickArea{
+                cursor: pointer;
+            }
             rect.total{
                 cursor: pointer;
             }
@@ -802,23 +826,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: none;
                 stroke: orangered;
                 stroke-width: 2;
-                .transition(~"all 150ms linear");
             }
-            text.item_count {
-                cursor: pointer;
-            }
-            text.row_label {
-                cursor: pointer;
-            }
-            text{
+            text:not(.filter_add_more){
                 fill: orangered !important;
-                .transition(~"fill 100ms linear");
             }
             .row_bar_line{
                 stroke: orangered;
-            }
-            rect.rowSelectBackground_ClickArea{
-                cursor: pointer;
             }
         }
         rect.rowBar {
@@ -1375,4 +1388,44 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         :hover{ border-right: 16px solid gray; }
     }
 }
+
+.tipsy { font-size: 10px; position: absolute; padding: 5px; z-index: 100000; }
+.tipsy-inner { background-color: #000; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+
+/* Rounded corners */
+.tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+
+/* Uncomment for shadow */
+/*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+
+.tipsy-arrow { position: absolute; width: 0; height: 0; line-height: 0; border: 5px dashed #000; }
+
+/* Rules to colour arrows */
+.tipsy-arrow-n { border-bottom-color: #000; }
+.tipsy-arrow-s { border-top-color: #000; }
+.tipsy-arrow-e { border-left-color: #000; }
+.tipsy-arrow-w { border-right-color: #000; }
+
+.tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
+.tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
+.tipsy-ne .tipsy-arrow { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
+.tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
+.tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
+.tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+
+.tipsy{
+    pointer-events: none;
+}
+.tipsy-inner{
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0px 5px 2px 2px;
+//    font-variant: small-caps;
+    font-size: 1.2em;
+    b{
+        font-size: 1.4em;
+    }
+}
+
 

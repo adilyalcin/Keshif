@@ -130,6 +130,117 @@ var ACTID_OTHER = {
     Resize     : 6
 };
 
+// tipsy, facebook style tooltips for jquery
+// Modified / simplified version for internal Keshif use
+// version 1.0.0a
+// (c) 2008-2010 jason frame [jason@onehackoranother.com]
+// released under the MIT license
+
+function Tipsy(element, options) {
+    this.jq_element = $(element);
+    this.options = $.extend({}, this.defaults, options);
+    this.show();
+};
+Tipsy.prototype = {
+    defaults: {
+        className: null,
+        delayIn: 0,
+        delayOut: 0,
+        fade: false,
+        fallback: '',
+        gravity: 'n',
+        offset: 0,
+        offset_x: 0,
+        offset_y: 0,
+        opacity: 0.8
+    },
+    show: function() {
+        var maybeCall = function(thing, ctx) {
+            return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
+        };
+
+        var title = this.getTitle();
+        if(!title) return;
+        var jq_tip = this.tip();
+        
+        jq_tip.find('.tipsy-inner')['html'](title);
+        jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
+        jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
+        
+        var pos = $.extend({}, this.jq_element.offset(), {
+            width: this.jq_element[0].offsetWidth,
+            height: this.jq_element[0].offsetHeight
+        });
+        
+        var actualWidth = jq_tip[0].offsetWidth,
+            actualHeight = jq_tip[0].offsetHeight,
+            gravity = maybeCall(this.options.gravity, this.jq_element[0]);
+        
+        var tp;
+        switch (gravity.charAt(0)) {
+            case 'n':
+                tp = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+                break;
+            case 's':
+                tp = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+                break;
+            case 'e':
+                tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset};
+                break;
+            case 'w':
+                tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset};
+                break;
+        }
+        tp.top+=this.options.offset_y;
+        tp.left+=this.options.offset_x;
+        
+        if (gravity.length == 2) {
+            if (gravity.charAt(1) == 'w') {
+                tp.left = pos.left + pos.width / 2 - 15;
+            } else {
+                tp.left = pos.left + pos.width / 2 - actualWidth + 15;
+            }
+        }
+        
+        jq_tip.css(tp).addClass('tipsy-' + gravity);
+        jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
+        if (this.options.className) {
+            jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
+        }
+        
+        if (this.options.fade) {
+            jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: this.options.opacity},200);
+        } else {
+            jq_tip.css({visibility: 'visible', opacity: this.options.opacity});
+        }
+    },
+    hide: function() {
+        if (this.options.fade) {
+            this.tip().stop().fadeOut(200,function() { $(this).remove(); });
+        } else {
+            this.tip().remove();
+        }
+    },
+    getTitle: function() {
+        var title, jq_e = this.jq_element, o = this.options;
+        var title, o = this.options;
+        if (typeof o.title == 'string') {
+            title = jq_e.attr(o.title == 'title' ? 'original-title' : o.title);
+        } else if (typeof o.title == 'function') {
+            title = o.title.call(jq_e[0]);
+        }
+        title = ('' + title).replace(/(^\s*|\s*$)/, "");
+        return title || o.fallback;
+    },
+    tip: function() {
+        if(this.jq_tip) return this.jq_tip;
+        this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
+        this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
+        return this.jq_tip;
+    },
+};
+
+
 // ***************************************************************************************************
 // ITEM BASE OBJECT/PROPERTIES
 // ***************************************************************************************************
@@ -2306,6 +2417,7 @@ kshf.BarChart.prototype.scrollItems = function(event){
 };
 
 kshf.BarChart.prototype.init_DOM = function(){
+    var me = this;
     this.divRoot = this.options.layout
         .append("div").attr("class","kshfChart")
         .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
@@ -2355,6 +2467,7 @@ kshf.BarChart.prototype.init_DOM = function(){
 		.attr("class", "row")
         .each(function(d){
             var mee=this;
+            d.barChart = me;
             // Add this DOM to each kshf item under cats
             d.items.forEach(function(dd){dd.cats.push(mee);});
         })
@@ -2466,10 +2579,8 @@ kshf.formatForItemCount = function(n){
 
 kshf.BarChart.prototype.refreshActiveItemCount = function(){
     var me = this;
-    this.dom.item_count.text(function(d) { return "("+kshf.formatForItemCount(d.barValue)+")";});
-    this.dom.g_row.each(function(d){ 
-        this.setAttribute("noitems",me.noItemOnSelect(d));
-    });
+    this.dom.item_count.text(function(d){ return "("+kshf.formatForItemCount(d.barValue)+")"; });
+    this.dom.g_row.each(function(d){ this.setAttribute("noitems",me.noItemOnSelect(d)); });
     this.dom.row_title.text(function(d){
         return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
             (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
@@ -2589,7 +2700,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     var rightHeader;
 
     if(this.type==="scatterplot"){
-        rightHeader = this.dom_headerGroup.append("span").attr("class","rightHeader");
+        rightHeader = this.dom_headerGroup.append("div").attr("class","rightHeader");
     }
 
     var leftHeader = this.dom_headerGroup.append("div").attr("class","leftHeader");
@@ -2733,10 +2844,7 @@ kshf.BarChart.prototype.insertHeader = function(){
     // ****** CONFIG LINE *****************************************************************
 
     var filterOptions = ["One","Any"];
-    if(this.hasMultiValueItem===true){
-        filterOptions.push("All");
-    }
-    var configOptions = ["filter","order"]
+    if(this.hasMultiValueItem===true){ filterOptions.push("All"); }
 
     var configGroup = 
         header_belowFirstRow.append("div")
@@ -2744,12 +2852,28 @@ kshf.BarChart.prototype.insertHeader = function(){
             .attr("shown","filter")
             .style("height",this.parentKshf.line_height+"px")
             ;
-
-    var chooseConfig = configGroup.append("span").attr("class","chooseConfigGroup");
-
+/*
+    var configOptions = ["filter","order"]
+    configGroup.append("span").attr("class","chooseConfigGroup").selectAll("svg")
+        .data(configOptions)
+    .enter().append("svg")
+        .attr("version","1.1")
+        .attr("height","10px")
+        .attr("width" ,"10px")
+        .attr("xml:space","preserve")
+        .attr("viewBox","0 0 10 10")
+        .on("click",function(d){
+            d3.select(this.parentNode.parentNode).attr("shown",d)
+        })
+    .append("circle")
+        .attr("class",function(d){ return d;})
+        .attr("r","4")
+        .attr("cx","5")
+        .attr("cy","5")
+        ;*/
+/*
     var filterGr = configGroup.append("span").attr("class","filterOptionSelectGroup");
-    filterGr.append("select")
-        .attr("class","optionSelect")
+    filterGr.append("select").attr("class","optionSelect")
         .on("change", function(d){
             switch(this.selectedOptions[0].text){
             case "One":
@@ -2786,10 +2910,8 @@ kshf.BarChart.prototype.insertHeader = function(){
                 d3.select(this).attr("selected","selected");
         })
         ;
-    filterGr.append("span")
-        .attr("class","optionSelect_Label")
-        .text("Select by")
-        ;
+    filterGr.append("span").attr("class","optionSelect_Label").text("Select by")
+        ;*/
 
     if(this.showConfig) {
         var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
@@ -2819,24 +2941,6 @@ kshf.BarChart.prototype.insertHeader = function(){
             ;
 
         configGroup.attr("shown","order");
-
-        chooseConfig.selectAll("svg")
-            .data(configOptions)
-        .enter().append("svg")
-            .attr("version","1.1")
-            .attr("height","10px")
-            .attr("width" ,"10px")
-            .attr("xml:space","preserve")
-            .attr("viewBox","0 0 10 10")
-            .on("click",function(d){
-                d3.select(this.parentNode.parentNode).attr("shown",d)
-            })
-        .append("circle")
-            .attr("class",function(d){ return d;})
-            .attr("r","4")
-            .attr("cx","5")
-            .attr("cy","5")
-            ;
     }
 
     if(this.showTextSearch){
@@ -3560,7 +3664,7 @@ kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
 };
 
 kshf.BarChart.prototype.insertItemRows_shared = function(){
-	var kshf_ = this;
+	var me = this;
 	// create the clipping area
 	var clipPaths = this.root.select("g.barGroup_Top")
 		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
@@ -3584,43 +3688,103 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	this.dom.g_row
 		.on("click", function(d){
             if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
-                kshf_.options.selectType = "MultipleOr";
+                me.options.selectType = "MultipleOr";
             }
-            if(kshf_.noItemOnSelect(d)) {
-                kshf_.options.selectType = tmpSelectType;
+            if(me.noItemOnSelect(d)) {
+                me.options.selectType = tmpSelectType;
                 return;
             }
+            this.tipsy.hide();
             // TODO: If new select type is different, show the config option on display!
 
-            kshf_.filterRow(d);
+            me.filterRow(d);
 
             if (this.timer) {
                 clearTimeout(this.timer);
                 this.timer = null;
                 // clears all the selection when selected
-                kshf_.selectAllAttribs(false);
-                kshf_.filterRow(d,true);
+                me.selectAllAttribs(false);
+                me.filterRow(d,true);
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatValueExact,
-                    kshf.getFilteringState(kshf_.options.facetTitle,d.data[1]));
+                    kshf.getFilteringState(me.options.facetTitle,d.data[1]));
                 return;
             } else if(sendLog){
                 if(sendLog) sendLog(CATID.FacetFilter,(d.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
-                    kshf.getFilteringState(kshf_.options.facetTitle,d.data[1]));
+                    kshf.getFilteringState(me.options.facetTitle,d.data[1]));
             }
             var x = this;
             this.timer = setTimeout(function() { x.timer = null; }, 500);
         })
         .attr("highlight","false")
         .on("mouseover",function(d,i){
+            if(me.noItemOnSelect(d)) return;
+
             this.setAttribute("highlight",true);
             d.items.forEach(function(dd){if(dd.selected) dd.highlightOnList();});
+            this.tipsy = new Tipsy(this, {
+                gravity: 'w',
+                offset_y: 9,
+                offset_x: 2,
+                offset_x: me.parentKshf.getRowTotalTextWidth(),
+                fade: true,
+                title: function(){
+                    var d=this.__data__;
+                    if(d.selected) return "<b>-</b> Remove "+me.options.facetTitle+" Filter";
+                    if(d.barChart.attribCount_Selected!==0){
+                        if(d.barChart.options.selectType==="Single")
+                             return "<b>&laquo;</b> Change "+me.options.facetTitle+" Filter";
+                         else 
+                            return "<b>+</b> Add "+me.options.facetTitle+" (and)";
+                    }
+                    return "<b>+</b> Add "+me.options.facetTitle+" Filter";
+                }
+            });
         })
         .on("mouseout",function(d,i){
+            if(me.noItemOnSelect(d)) return;
+
             this.setAttribute("highlight",false);
             d.items.forEach(function(dd){if(dd.selected) dd.nohighlightOnList();});
+            this.tipsy.hide();
         })
         ;
+    
     this.dom.row_title = this.dom.g_row.append("title").attr("class", "row_title");
+
+    this.dom.add_more = this.dom.g_row.append("text").attr("class", "filter_add_more")
+        .attr("dy",14)
+        .attr("dx",8)
+        .html("&#8853;")
+        .on("mouseover",function(d,i){
+            this.tipsy = new Tipsy(this, {
+                gravity: 'sw',
+                offset_y: 5,
+                offset_x: 1,
+                fade: true,
+                title: function(){
+                    return "<b>+</b> Add "+me.options.facetTitle+" (or)";
+                }
+            });
+            d3.event.stopPropagation();
+        })
+        .on("mouseout",function(d,i){
+            this.tipsy.hide();
+            d3.event.stopPropagation();
+        })
+        .on("click",function(d,i){
+            var tmpSelectType = me.options.selectType;
+            me.options.selectType = "MultipleOr";
+            this.tipsy.hide();
+            // TODO: If new select type is different, show the config option on display!
+
+            me.filterRow(d);
+
+            me.options.selectType = tmpSelectType;
+
+            d3.event.stopPropagation();
+        })
+        ;
+
 	this.dom.rowSelectBackground_Label = this.dom.g_row
 		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
 		.attr("x", 0).attr("y", 0)
@@ -3634,7 +3798,7 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 		;
     this.dom.rowSelectBackground_ClickArea = this.dom.g_row
         .append("rect").attr("class", "rowSelectBackground_ClickArea")
-        .attr("x", 0).attr("y", 4)
+        .attr("x", 20).attr("y", 4)
         .attr("height",kshf.line_height-8)
         ;
 	this.dom.item_count = this.dom.g_row
@@ -3658,13 +3822,13 @@ kshf.BarChart.prototype.insertItemRows_shared = function(){
 	this.dom.bar_active = this.dom.g_row
 		.append("rect")
 		.attr("class", function(d,i){ 
-			return "rowBar " +(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" active";
+			return "rowBar " +(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" active";
 		})
 		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
 	this.dom.bar_total = this.dom.g_row
 		.append("rect")
 		.attr("class", function(d,i){ 
-			return "rowBar "+(kshf_.options.barClassFunc?kshf_.options.barClassFunc(d,i):"")+" total";
+			return "rowBar "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" total";
 		})
 		.attr("rx",2).attr("ry",2)
 		;
@@ -3692,7 +3856,7 @@ kshf.BarChart.prototype.updateTextWidth = function(){
         .attr("width",this.options.rowTextWidth);
     this.dom.rowSelectBackground_ClickArea
         .transition().duration(kshf.time_animation_barscale)
-        .attr("width",this.options.rowTextWidth);
+        .attr("width",this.parentKshf.getRowTotalTextWidth()-20);
     
     this.dom.allRowBars
         .transition().duration(kshf.time_animation_barscale)
@@ -3769,7 +3933,8 @@ kshf.BarChart.prototype.updateSorting = function(force){
 	    this.getData().sort(justSortFunc);
     else
         this.getData().sort(sortSelectedOnTop);
-	this.dom.g_row
+	
+    this.dom.g_row
 		.data(this.getData(), this._dataMap)
 		.order()
 		.transition()
@@ -3843,6 +4008,9 @@ kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
             if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.timeTitle));
         });
 	this.filterSummaryBlock_Time.append("span").attr("class","filter_item");
+    // animate appear
+    window.getComputedStyle(this.filterSummaryBlock_Time[0][0]).opacity;
+    this.filterSummaryBlock_Time.attr("ready",true);
 };
 
 kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
@@ -3920,9 +4088,7 @@ kshf.BarChart.prototype.insertTimeChartRows = function(){
               function(d){ 
                 return d.id(); })
 		.enter().append("circle")
-        .each(function(d){
-            d.dots.push(this);
-        })
+        .each(function(d){ d.dots.push(this); })
 		.attr("class", function(d) {
             if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
             return "timeDot";
@@ -4410,6 +4576,7 @@ kshf.BarChart.prototype.yearSetXPos = function() {
 };
 
 kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
+    var me = this;
     this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
     if(this.isFiltered_Time()){
         this.divRoot.select(".zoom_in").attr("disabled","false");
@@ -4421,8 +4588,13 @@ kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
         ;
     } else if(this.filterSummaryBlock_Time){
         this.divRoot.select(".zoom_in").attr("disabled","true");
-        this.filterSummaryBlock_Time[0][0].parentNode.removeChild(this.filterSummaryBlock_Time[0][0]);
-        this.filterSummaryBlock_Time = null;
+        if(this.filterSummaryBlock_Time){
+            this.filterSummaryBlock_Time.attr("ready",false);
+            setTimeout(function(){
+                me.filterSummaryBlock_Time[0][0].parentNode.removeChild(me.filterSummaryBlock_Time[0][0]);
+                me.filterSummaryBlock_Time = null;
+            }, 300);
+        }
     }
 };
 kshf.BarChart.prototype.refreshTimeChartTooltip = function(){
