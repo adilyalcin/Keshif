@@ -12,6 +12,7 @@
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
         <script type="text/javascript">
 
 function resetSize(){
@@ -23,14 +24,14 @@ function loadChart() {
     resetSize();
     $(window).resize(function() {
         resetSize();
-        kshf.updateLayout();
+        browser.updateLayout();
     });
 
     var m_now = moment();
     var m_thisweek = moment().add('days',7);
     var m_nextweek = moment().add('days',14);
 
-    kshf.init({
+    browser = new kshf.Browser({
         chartTitle: "Summer Outdoor Movies in DC area",
         domID : "#chart_div",
         dirRoot: "../",
@@ -41,13 +42,24 @@ function loadChart() {
             sheets : [ {name:"Screening"}, {name:"Series"} ]
         },
         charts : [
-            {   facetTitle: "City",
-                timeTitle: "Date",
+            {
+                facetTitle: "Soon",
+                timeTitle: "Date (Next 2 weeks)",
+                removeInactiveAttrib: false,
+                sortingFuncs: [{no_resort: true}],
                 catItemMap: function(d){ 
-                    var series = kshf.dt_id.Series[d.data[0]];
-                    return series.data[4];
+                    var m_scr = moment(d.data[1]);
+                    if(m_scr.isBefore(m_now)) return null;
+                    if(m_scr.isBefore(m_thisweek)) return "This Week";
+                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                    return null;
                 },
-                timeItemMap : function(d){  return d.data[1]; },
+                timeItemMap : function(d){ 
+                    var m_scr = moment(d.data[1]);
+                    if(m_scr.isBefore(m_now)) return null;
+                    if(m_scr.isAfter(m_nextweek)) return null;
+                    return d.data[1];
+                },
 //                catLabelText: function(d) { return getGender(d.data[1]); }
             },{
                 facetTitle: "State",
@@ -57,15 +69,10 @@ function loadChart() {
                     return series.data[3];
                 }
             },{
-                facetTitle: "Soon",
-                removeInactiveAttrib: false,
-                sortingFuncs: [{no_resort: true}],
+                facetTitle: "City",
                 catItemMap: function(d){ 
-                    var m_scr = moment(d.data[1]);
-                    if(m_scr.isBefore(m_now)) return null;
-                    if(m_scr.isBefore(m_thisweek)) return "This Week";
-                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
-                    return null;
+                    var series = kshf.dt_id.Series[d.data[0]];
+                    return series.data[4];
                 }
             },{
                 facetTitle: "Day Of Week",
@@ -111,8 +118,7 @@ function loadChart() {
                         d3.select(kshfItem.listItem).select(".imdbRating .value").text(data.imdbRating);
                     }
                 });
-            })
-//            kshf.filterFacetAttribute(2,0);
+            });
         },
 //        columnsSkip : ["Overall Motivation","laureate_id"],
         list: {
