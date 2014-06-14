@@ -47,17 +47,6 @@ if(typeof sendLog !== 'function'){
 // kshf namespace
 var kshf = { };
 
-var log2Console = function(s,chart){
-    var d=Date.now();
-    d = new Date(d);
-    console.log(
-        d.getFullYear()+"."+d.getMonth()+"."+d.getDate()+" "+
-        d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds()+
-        " = "+s
-       +(chart!==undefined?(" Chart:"+chart.options.facetTitle):"")
-    );
-}
-
 kshf.surrogateCtor = function() {};
 
 // http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
@@ -241,9 +230,10 @@ Tipsy.prototype = {
 };
 
 
-// ***************************************************************************************************
-// ITEM BASE OBJECT/PROPERTIES
-// ***************************************************************************************************
+
+/**
+ * @constructor
+ */
 kshf.Item = function(d, idIndex, primary){
     // the main data within item
     this.data = d;
@@ -264,73 +254,89 @@ kshf.Item = function(d, idIndex, primary){
         this.cats = [];
     }
 };
-kshf.Item.prototype.id = function(){
-    return this.data[this.idIndex];
-};
-kshf.Item.prototype.updateSelected = function(){
-    var i,len,f=this.filters;
-    var oldSelected = this.selected;
-    var me=this;
-    // checks if all filter results are true
-    this.selected=true;
-    this.filters.forEach(function(f){ me.selected=me.selected&&f; });
-    
-    if(this.selected===true && oldSelected===false){
-        kshf.itemsSelectedCt++;
-        this.mappedRows.forEach(function(chartMapping){
-            if(chartMapping === undefined) return;
-            if(chartMapping === true) return;
-            chartMapping.forEach(function(m){
-                m.activeItems++;
-                m.barValue+=me.barCount;
-                m.sortDirty=true;
+kshf.Item.prototype = {
+    /**
+     * Returns unique ID of the item.
+     */
+    id: function(){
+        return this.data[this.idIndex];
+    },
+    /**
+     * Updates "selected" state, and notifies all related filter attributes of the change.
+     */
+    updateSelected: function(){
+        var i,len,f=this.filters;
+        var oldSelected = this.selected;
+        var me=this;
+        // checks if all filter results are true
+        this.selected=true;
+        this.filters.forEach(function(f){ me.selected=me.selected&&f; });
+        
+        if(this.selected===true && oldSelected===false){
+            kshf.itemsSelectedCt++;
+            this.mappedRows.forEach(function(chartMapping){
+                if(chartMapping === undefined) return;
+                if(chartMapping === true) return;
+                chartMapping.forEach(function(m){
+                    m.activeItems++;
+                    m.barValue+=me.barCount;
+                    m.sortDirty=true;
+                });
             });
-        });
-        this.dots.forEach(function(d){d.setAttribute('display',"true");});
-    } else if(this.selected===false && oldSelected===true){
-        kshf.itemsSelectedCt--;
-        this.mappedRows.forEach(function(chartMapping){
-            if(chartMapping === undefined) return;
-            if(chartMapping === true) return;
-            chartMapping.forEach(function(m){
-                m.activeItems--;
-                m.barValue-=me.barCount;
-                m.sortDirty=true;
+            this.dots.forEach(function(d){d.setAttribute('display',"true");});
+        } else if(this.selected===false && oldSelected===true){
+            kshf.itemsSelectedCt--;
+            this.mappedRows.forEach(function(chartMapping){
+                if(chartMapping === undefined) return;
+                if(chartMapping === true) return;
+                chartMapping.forEach(function(m){
+                    m.activeItems--;
+                    m.barValue-=me.barCount;
+                    m.sortDirty=true;
+                });
             });
-        });
-        this.dots.forEach(function(d){d.setAttribute('display',"false");});
-    }
-    return this.selected;
-};
-kshf.Item.prototype.highlightDots = function(){
-    this.dots.forEach(function(d){d.setAttribute('highlight',true);});
-}
-kshf.Item.prototype.highlightCategories = function(){
-    this.cats.forEach(function(d){d.setAttribute('highlight',"true");});
-}
-kshf.Item.prototype.highlightOnList = function(){
-    if(this.listItem!==undefined) this.listItem.setAttribute("highlight",true);
-}
-kshf.Item.prototype.highlightAttributes = function(){
-    this.highlightDots();
-    this.highlightCategories();
-    this.highlightOnList();
-}
+            this.dots.forEach(function(d){d.setAttribute('display',"false");});
+        }
+        return this.selected;
+    },
+    /** Highlights all the time components of this kshf item */
+    highlightTime: function(){
+        this.dots.forEach(function(d){d.setAttribute('highlight',true);});
+    },
+    /** Highlights all attributes of this kshf item */
+    highlightAttribs: function(){
+        this.cats.forEach(function(d){d.setAttribute('highlight',"true");});
+    },
+    /** Highlights the list item */
+    highlightListItem: function(){
+        if(this.listItem!==undefined) this.listItem.setAttribute("highlight",true);
+    },
+    /** Higlights all relevant UI parts to this UI item - Attributes, dots, and list */
+    highlightAll: function(){
+        this.highlightTime();
+        this.highlightAttribs();
+        this.highlightListItem();
+    },
 
-kshf.Item.prototype.nohighlightDots = function(){
-    this.dots.forEach(function(d){d.setAttribute('highlight',false);});
-}
-kshf.Item.prototype.nohighlightCategories = function(){
-    this.cats.forEach(function(d){d.setAttribute('highlight',"false");});
-}
-kshf.Item.prototype.nohighlightOnList = function(){
-    this.listItem.setAttribute("highlight",false);
-}
-kshf.Item.prototype.nohighlightAttributes = function(){
-    this.nohighlightDots();
-    this.nohighlightCategories();
-    this.nohighlightOnList();
-}
+    /** Removes higlight from all the time components of this kshf item */
+    nohighlightTime: function(){
+        this.dots.forEach(function(d){d.setAttribute('highlight',false);});
+    },
+    /** Removes higlight from all attributes of this kshf item */
+    nohighlightAttribs: function(){
+        this.cats.forEach(function(d){d.setAttribute('highlight',"false");});
+    },
+    /** Removes higlight from the list item */
+    nohighlightListItem: function(){
+        this.listItem.setAttribute("highlight",false);
+    },
+    /** Removes higlight from all relevant UI parts to this UI item - Attributes, dots, and list */
+    nohighlightAll: function(){
+        this.nohighlightTime();
+        this.nohighlightAttribs();
+        this.nohighlightListItem();
+    },
+};
 
 // ***************************************************************************************************
 // DOCUMENT LOADING
@@ -512,10 +518,10 @@ kshf.finishDataLoad = function(sheet,arr) {
     var id_table = {};
     arr.forEach(function(r){id_table[r.id()] = r;});
     kshf.dt_id[sheet.tableName] = id_table;
-    kshf.incrementLoadedTableCount();
+    kshf.incrementLoadedSheetCount();
 };
 
-kshf.incrementLoadedTableCount = function(){
+kshf.incrementLoadedSheetCount = function(){
     var me=this;
     this.source.loadedTableCount++;
     d3.select(".kshf.layout_infobox div.status_text div")
@@ -686,11 +692,14 @@ kshf.getFilteringState = function(facetTitle, itemInfo) {
     return r;
 };
 
-kshf.list = function(_kshf, config, root){
+/**
+ * The list UI
+ * @constructor
+ */
+kshf.List = function(_kshf, config, root){
     var i=0;
     var me = this;
     this.parentKshf = _kshf;
-    this.dragSrcEl = null;
     this.dom = {};
     
     // List sorting options
@@ -815,14 +824,12 @@ kshf.list = function(_kshf, config, root){
         .style("width",(this.sortColWidth)+"px")
         .on("change", function(){
             me.sortOpt_Active = me.sortOpts[this.selectedIndex];
-            // trigger sorting reorder
             me.sortItems();
-            // re-order dom
-            me.reorderItems();
+            me.reorderItemsOnDOM();
             // update sort column labels
             me.dom.listItems.selectAll(".listsortcolumn")
                 .html(function(d){ return me.sortOpt_Active.label(d); });
-            me.updateList();
+            me.updateShowListGroupBorder();
         })
         .selectAll("input.list_sort_label")
             .data(this.sortOpts)
@@ -856,83 +863,158 @@ kshf.list = function(_kshf, config, root){
     this.sortItems();
     this.insertItems();
 };
+kshf.List.prototype = {
+    /** Insert items into the UI, called once on load */
+    insertItems: function(){
+        var me = this;
 
+        this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
+            // if content Func is not defined, provide an empty list
+            .data((this.contentFunc===undefined?[]:kshf.items), function(d){ return d.id(); })
+        .enter()
+            .append("div")
+            .attr("class","listItem")
+            .attr("details",this.detailsDefault?"true":"false")
+            .attr("itemID",function(d){return d.id();})
+            // store the link to DOM in the data item
+            .each(function(d){ d.listItem = this; })
+            .on("mouseover",function(d,i){
+                d3.select(this).attr("highlight","true");
+                d.highlightAll();
+            })
+            .on("mouseout",function(d,i){
+                d3.select(this).attr("highlight","false");
+                // find all the things that  ....
+                d.nohighlightAll();
+            });
 
-
-Array.prototype.repeat= function(what, L){
-    while(L) { this[--L]= what; }
-    return this;
-};
-
-// after you re-sort the primary table or change item visibility, call this function
-kshf.list.prototype.updateShowListGroupBorder = function(){
-    var me = this;
-    if(this.displayType==='list') {
-        if(this.sortOpt_Active.noGroupBorder !== true){
-            // go over item list
-            var i=0,iPrev=-1;
-            var sortValueFunc = this.sortOpt_Active.value;
-            var sortValueType = this.sortOpt_Active.valueType;
-            for(;i<kshf.items.length;i++){
-                var item=kshf.items[i];
-                // skip unselected items
-                if(!item.selected) continue;
-                // show all sort column labels by default 
-                item.showListSortColumn = true;
-                // first selected item
-                if(iPrev===-1){ iPrev=i; continue; }
-                var pPrev = kshf.items[iPrev];
-                iPrev=i;
-
-                var showBorder = (kshf.compareListItems(item,pPrev,sortValueFunc,sortValueType)!==0);
-                item.listItem.style.borderTopWidth = showBorder?"4px":"0px";
-            }
-        } else {
-            this.dom.listItems.style("border-top-width", "0px");
+        if(this.displayType==='list'){
+            this.dom.listItems
+                .append("div")
+                .attr("class","listcell listsortcolumn")
+                .style("width",this.sortColWidth+"px")
+                .html(function(d){ return me.sortOpt_Active.label(d); });
+                ;
         }
+
+        if(this.detailsToggle!=="Off"){
+            var x= this.dom.listItems
+                .append("div")
+                .attr("class","listcell itemtoggledetails");
+            x.append("span").attr("class","item_details_on").html("[+]")
+                .attr("title","Show details")
+                .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
+            x.append("span").attr("class","item_details_off").html("[-]")
+                .attr("title","Hide details")
+                .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
+        }
+
+        this.dom.listItems_Content = this.dom.listItems
+            .append("div")
+            .attr("class","content")
+            .html(function(d){ return me.contentFunc(d);});
+    },
+    /** after you re-sort the primary table or change item visibility, call this function */
+    updateShowListGroupBorder: function(){
+        var me = this;
+        if(this.displayType==='list') {
+            if(this.sortOpt_Active.noGroupBorder !== true){
+                // go over item list
+                var i=0,iPrev=-1;
+                var sortValueFunc = this.sortOpt_Active.value;
+                var sortValueType = this.sortOpt_Active.valueType;
+                for(;i<kshf.items.length;i++){
+                    var item=kshf.items[i];
+                    // skip unselected items
+                    if(!item.selected) continue;
+                    // show all sort column labels by default 
+                    item.showListSortColumn = true;
+                    // first selected item
+                    if(iPrev===-1){ iPrev=i; continue; }
+                    var pPrev = kshf.items[iPrev];
+                    iPrev=i;
+
+                    var showBorder = (kshf.compareListItems(item,pPrev,sortValueFunc,sortValueType)!==0);
+                    item.listItem.style.borderTopWidth = showBorder?"4px":"0px";
+                }
+            } else {
+                this.dom.listItems.style("border-top-width", "0px");
+            }
+        }
+    },
+    /** Reorders items in the DOM */
+    reorderItemsOnDOM: function(){
+        this.dom.listItems
+            .data(kshf.items, function(d){ return d.id(); })
+            .order();
+    },
+    /** Sort all items fiven the active sort option */
+    sortItems: function(){
+        var sortValueFunc = this.sortOpt_Active.value;
+        var sortValueType = this.sortOpt_Active.valueType;
+        this.parentKshf.items.sort(function(a,b){
+            // do not need to process unselected items, their order does not matter
+            if(!a.selected||!b.selected){ return 0; }
+            var dif=kshf.compareListItems(a,b,sortValueFunc,sortValueType);
+            if(dif!==0) { return dif; }
+            return b.id()-a.id(); // use unique IDs to add sorting order as the last option
+        });
+    },
+    /** Returns the sort value type for fiven sort Value function */
+    sortValueType: function(sortValueFunc){
+        // 0: string, 1: date, 2: others
+        var sortValueType_, sortValueType_temp, same;
+        
+        // find appropriate sortvalue type
+        for(var k=0, same=0; true ; k++){
+            if(same===3 || k===this.parentKshf.items.length){
+                sortValueType_ = sortValueType_temp;
+                break;
+            }
+            var item = this.parentKshf.items[k];
+            var f = sortValueFunc(item);
+            var sortValueType_temp2;
+            switch(typeof f){
+            case 'string': sortValueType_temp2 = 0; break;
+            case 'number': sortValueType_temp2 = 2; break;
+            case 'object': 
+                if(f instanceof Date) 
+                    sortValueType_temp2 = 1; 
+                else 
+                    sortValueType_temp2=2;
+                break;
+            default: sortValueType_temp2 = 2; break;
+            }
+
+            if(sortValueType_temp2===sortValueType_temp){
+                same++;
+            } else {
+                sortValueType_temp = sortValueType_temp2;
+                same=0;
+            }
+        }
+        return sortValueType_;
+    },
+    /** Updates visibility of list items */
+    updateItemVisibility: function(){
+        var showType=this.displayType==='list'?"block":"inline-block";
+    	this.dom.listItems.style("display",function(d){return (d.selected)?showType:"none"; });
+        d3.select(".listheader_count").text(function(){
+            if(kshf.itemsSelectedCt===0) { return "No"; }
+            return kshf.itemsSelectedCt;
+        });
+        d3.select(".listheader_count_bar").transition().style("width",function(){ 
+            return (kshf.listDisplay.sortColWidth*kshf.itemsSelectedCt/kshf.items.length)+"px";
+        });
     }
 };
+
 
 kshf.columnAccessFunc = function(columnName){
     var mainTableName = this.getMainChartName();
     var colId = this.dt_ColNames[mainTableName][columnName];
     return function(d){ return d.data[colId]; }
-}
-
-kshf.list.prototype.sortValueType = function(sortValueFunc){
-    // 0: string, 1: date, 2: others
-    var sortValueType_, sortValueType_temp, same;
-    
-    // find appropriate sortvalue type
-    for(var k=0, same=0; true ; k++){
-        if(same===3 || k===this.parentKshf.items.length){
-            sortValueType_ = sortValueType_temp;
-            break;
-        }
-        var item = this.parentKshf.items[k];
-        var f = sortValueFunc(item);
-        var sortValueType_temp2;
-        switch(typeof f){
-        case 'string': sortValueType_temp2 = 0; break;
-        case 'number': sortValueType_temp2 = 2; break;
-        case 'object': 
-            if(f instanceof Date) 
-                sortValueType_temp2 = 1; 
-            else 
-                sortValueType_temp2=2;
-            break;
-        default: sortValueType_temp2 = 2; break;
-        }
-
-        if(sortValueType_temp2===sortValueType_temp){
-            same++;
-        } else {
-            sortValueType_temp = sortValueType_temp2;
-            same=0;
-        }
-    }
-    return sortValueType_;
-}
+};
 
 kshf.compareListItems = function(a, b, sortValueFunc, sortValueType){
     var dif;
@@ -948,68 +1030,6 @@ kshf.compareListItems = function(a, b, sortValueFunc, sortValueType){
         dif = f_b-f_a;
     }
     return dif;
-}
-
-kshf.list.prototype.sortItems = function(){
-    var sortValueFunc = this.sortOpt_Active.value;
-    var sortValueType = this.sortOpt_Active.valueType;
-	this.parentKshf.items.sort(function(a,b){
-        // do not need to process unselected items, their order does not matter
-        if(!a.selected||!b.selected){ return 0; }
-        var dif=kshf.compareListItems(a,b,sortValueFunc,sortValueType);
-        if(dif!==0) { return dif; }
-        return b.id()-a.id(); // use unique IDs to add sorting order as the last option
-	});
-};
-
-kshf.list.prototype.insertItems = function(){
-    var me = this;
-
-    this.dom.listItems = this.listDiv.select(".listItemGroup").selectAll("div.listItem")
-        // if content Func is not defined, provide an empty list
-        .data((this.contentFunc===undefined?[]:kshf.items), function(d){ return d.id(); })
-    .enter()
-        .append("div")
-        .attr("class","listItem")
-        .attr("details",this.detailsDefault?"true":"false")
-        .attr("itemID",function(d){return d.id();})
-        // store the link to DOM in the data item
-        .each(function(d){ d.listItem = this; })
-        .on("mouseover",function(d,i){
-            d3.select(this).attr("highlight","true");
-            d.highlightAttributes();
-        })
-        .on("mouseout",function(d,i){
-            d3.select(this).attr("highlight","false");
-            // find all the things that  ....
-            d.nohighlightAttributes();
-        });
-
-    if(this.displayType==='list'){
-        this.dom.listItems
-            .append("div")
-            .attr("class","listcell listsortcolumn")
-            .style("width",this.sortColWidth+"px")
-            .html(function(d){ return me.sortOpt_Active.label(d); });
-            ;
-    }
-
-    if(this.detailsToggle!=="Off"){
-        var x= this.dom.listItems
-            .append("div")
-            .attr("class","listcell itemtoggledetails");
-        x.append("span").attr("class","item_details_on").html("[+]")
-            .attr("title","Show details")
-            .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
-        x.append("span").attr("class","item_details_off").html("[-]")
-            .attr("title","Hide details")
-            .on("click", function(d){ kshf.listItemDetailToggleFunc(d);});
-    }
-
-    this.dom.listItems_Content = this.dom.listItems
-        .append("div")
-        .attr("class","content")
-        .html(function(d){ return me.contentFunc(d);});
 };
 
 kshf.listItemDetailToggleFunc = function(d){
@@ -1050,30 +1070,6 @@ kshf.listItemDetailToggleFunc2 = function(t){
         nd = nd.parentNode;
     }
 }
-
-kshf.list.prototype.reorderItems = function(){
-	this.listDiv.selectAll("div.listItem")
-		.data(kshf.items, function(d){ return d.id(); })
-		.order();
-};
-kshf.list.prototype.updateItemVisibility = function(){
-    var showType=this.displayType==='list'?"block":"inline-block";
-	this.dom.listItems.style("display",function(d){return (d.selected)?showType:"none"; });
-};
-
-kshf.list.prototype.updateList = function(){
-    // evaluates column information for each item. TODO: cache
-    this.updateShowListGroupBorder();
-    d3.select(".listheader_count").text(function(){
-        if(kshf.itemsSelectedCt===0) { return "No"; }
-        return kshf.itemsSelectedCt;
-    });
-    d3.select(".listheader_count_bar").transition().style("width",function(){ 
-        return (kshf.listDisplay.sortColWidth*kshf.itemsSelectedCt/kshf.items.length)+"px";
-    });
-};
-
-
 
 
 
@@ -1652,13 +1648,13 @@ kshf.update = function () {
         }
         this.listDisplay.updateItemVisibility();
         // not optimal too
-        this.listDisplay.updateList();
+        this.listDisplay.updateShowListGroupBorder();
     }
 
 	// update each widget within
     this.charts.forEach(function(chart){
         chart.updateBarAxisScale();
-        chart.updateSelf();
+        chart.refreshUI();
         filteredCount += chart.getFilteredCount();
     });
 
@@ -1674,7 +1670,7 @@ kshf.update = function () {
 
 kshf.filterFacetAttribute = function(chartId, itemId){
     var chart = this.charts[chartId];
-    chart.filterRow(chart.getData()[itemId]);
+    chart.filterAttrib(chart.getAttribs()[itemId]);
 }
 
 kshf.dif_activeItems = function(a,b){
@@ -1735,7 +1731,7 @@ kshf.sortFunc_Time_First = function(a, b){
 
 
 kshf.createListDisplay = function(listOptions){
-    this.listDisplay = new kshf.list(this,listOptions,this.layoutRight);
+    this.listDisplay = new kshf.List(this,listOptions,this.layoutRight);
 };
 
 kshf.clearAllFilters = function(){
@@ -1786,7 +1782,7 @@ kshf.updateLayout_Height = function(){
         // uncollapse scatterplot only if total chart height is more than 15 rows
         if(divLineRem>15){
             var targetScatterplotHeight = Math.ceil(divLineRem/4);
-            c2.setRowCount_VisibleItem(targetScatterplotHeight-c2.rowCount_Header()-1);
+            c2.setRowCount_VisibleAttribs(targetScatterplotHeight-c2.rowCount_Header()-1);
 
             var splotHeight=c2.rowCount_Total_Right();
             divLineRem-= splotHeight;
@@ -1835,12 +1831,12 @@ kshf.updateLayout_Height = function(){
                 if(c.collapsedTime){
                     ; //
                 } else if(c.options.catDispCountFix){
-                    c.setRowCount_VisibleItem(c.options.catDispCountFix);
+                    c.setRowCount_VisibleAttribs(c.options.catDispCountFix);
                 } else if(c.rowCount_MaxTotal()<=targetRowCount){
                     // you say you have 10 rows available, but I only needed 5. Thanks,
-                    c.setRowCount_VisibleItem(c.attribCount_Active);
+                    c.setRowCount_VisibleAttribs(c.attribCount_Active);
                 } else if(finalPass){
-                    c.setRowCount_VisibleItem(targetRowCount-c.rowCount_Header()-1);
+                    c.setRowCount_VisibleAttribs(targetRowCount-c.rowCount_Header()-1);
                 } else {
                     continue;
                 }
@@ -1869,7 +1865,7 @@ kshf.updateLayout_Height = function(){
             if(c3.type==='scatterplot' && c3.collapsedTime===false) continue;
             var tmp=divLineRem;
             divLineRem+=c3.rowCount_Total();
-            c3.setRowCount_VisibleItem(c3.rowCount_Visible+1);
+            c3.setRowCount_VisibleAttribs(c3.rowCount_Visible+1);
             divLineRem-=c3.rowCount_Total();
             if(tmp!==divLineRem) allDone=false;
         }
@@ -1932,7 +1928,7 @@ kshf.setCategoryTextWidth = function(w){
     this.charts.forEach(function(chart){
         if(chart.type==='barChart' || chart.type==='scatterplot'){
             chart.options.rowTextWidth = w;
-            chart.updateTextWidth(w);
+            chart.refreshTextWidth(w);
             chart.updateBarWidth();
         }
     });
@@ -1977,8 +1973,8 @@ kshf.setBarWidthLeftPanel = function(v){
     this.barMaxWidth = this.width_leftPanel_bar;
     this.charts.forEach(function(chart){
         chart.updateBarAxisScale();
-        chart.updateWidth_Bars_Active();
-        chart.updateChartTotalWidth();
+        chart.refreshWidth_Bars_Active();
+        chart.refreshUIWidth();
     });
 }
 
@@ -2055,7 +2051,7 @@ kshf.Chart = function(options){
 kshf.getRowLabelOffset = function(){
     if(!this._labelXOffset){
         var maxTotalCount = d3.max(this.charts, function(chart){ 
-            return chart.getMaxBarValueMaxPerRow();
+            return chart.getMaxBarValueMaxPerAttrib();
         });
         this._labelXOffset = 12;
         var digits = 1;
@@ -2075,10 +2071,10 @@ kshf.getRowTotalTextWidth = function(){
 }
 
 
-// ***********************************************************************************************************
-// WHIZ BAR CHART
-// ***********************************************************************************************************
-
+/**
+ * KESHIF BAR CHART
+ * @constructor
+ */
 kshf.BarChart = function(_kshf, options){
     // Call the parent's constructor
     var me = this;
@@ -2109,9 +2105,9 @@ kshf.BarChart = function(_kshf, options){
             max: d3.max(kshf.items, this.options.timeItemMap)};
 
         // calculate minYear and maxYear per cetegory, and use it for total.
-        this.updateData_TimeMinMax();
+        this.updateAttrib_TimeMinMax();
         var i;
-        var d=this.getData();
+        var d=this.getAttribs();
         for(i=0; i<d.length; i++){
             d[i].xMin = d[i].xMin_Dyn;
             d[i].xMax = d[i].xMax_Dyn;
@@ -2124,440 +2120,2418 @@ kshf.BarChart = function(_kshf, options){
 // Setup the prototype chain the right way
 kshf.extendClass(kshf.Chart, kshf.BarChart);
 
-kshf.BarChart.prototype.rowCount_Header_Left = function(){
-    var r=1; // title
-    if(this.showConfig) {r++;}
-    if(this.showTextSearch){ r++;}
-    return r;
-};
-kshf.BarChart.prototype.rowCount_Header_Right = function(){
-    if(this.type==='scatterplot'){
-        if(this.collapsedTime) return 1;
-        return 2;
-    }
-    return 0;
-};
-kshf.BarChart.prototype.rowCount_Header = function(){
-    if(this.collapsed) return 1;
-    return Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
-};
-kshf.BarChart.prototype.rowCount_Total = function(){
-    if(this.collapsed) return 1;
-    // need 1 more row at the bottom is scrollbar is shown, or barInfoText is set
-    var bottomRow=0;
-    if(this.scrollbar.show || this.parentKshf.hideBarAxis===false) bottomRow=1;
-    return this.rowCount_Header()+this.rowCount_Visible+bottomRow;
-};
-kshf.BarChart.prototype.rowCount_Total_Right = function(){
-    if(this.type!=='scatterplot') return 0;
-    if(this.collapsedTime===true) return 1;
-    return this.rowCount_Header_Right()+this.rowCount_Visible+2;
-};
-
-kshf.BarChart.prototype.rowCount_MaxTotal = function(){
-    return this.rowCount_Header()+this.attribCount_Active+1;
-};
-kshf.BarChart.prototype.rowCount_MinTotal = function(){
-    return this.rowCount_Header()+Math.min(this.attribCount_Active,3)+1;
-};
-
-
-
-kshf.BarChart.prototype.init_shared = function(options){
-	// register
-    var j,f, me=this;
-
-    this.parentKshf.barMaxWidth = 0;
-
-	//sorting options
-    //assert(this.options.sorting);
-    // select the first sorting function as default
-    this.sortID=0;
-    this.sortInverse=false;
-    this.options.timeMaxWidth=0;
-
-	// filter options - must be always specified
-
-    if(this.options.showNoneCat===undefined){
-        this.options.showNoneCat = false;
-    }
-
-    if(this.options.removeInactiveAttrib===undefined){
-        this.options.removeInactiveAttrib = true;
-    }
-
-    if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
-        this.options.timeItemMap = this.parentKshf.columnAccessFunc(this.options.timeTitle);
-    }
-
-    if(this.options.catItemMap===undefined){
-        this.options.catItemMap = this.parentKshf.columnAccessFunc(this.options.facetTitle);
-    } else if(typeof(this.options.catItemMap)==="string"){
-        this.options.catItemMap = kshf.columnAccessFunc(this.options.catItemMap);
-    }
-
-    // generate row table if necessary
-    if(this.options.generateRows){
-        this.catTableName = this.options.catTableName+"_h_"+this.id;
-        kshf.createTableFromTable(kshf.items,this.catTableName, this.options.catItemMap);
-    } else {
-        this.catTableName = this.options.catTableName;
-    }
-
-    var noneID = null;
-    if(this.options.showNoneCat===true){
-        // TODO: Check if a category named "None" exist in table
-        noneID = 1000;
-        var newItem = new kshf.Item([noneID,"None"],0)
-        kshf.dt[this.catTableName].push(newItem);
-        kshf.dt_id[this.catTableName][noneID] = newItem;
-    }
-
-    if(this.options.catLabelText===undefined){
-        // get the 2nd attribute as row text [1st is expected to be the id]
-        options.catLabelText = function(typ){ return typ.data[1]; };
-    }
-    if(this.options.showNoneCat===true){
-        var _catLabelText = this.options.catLabelText;
-        var _catTooltipText = this.options.catTooltipText;
-        options.catLabelText = function(d){ 
-            if(d.id()===noneID) return "None";
-            return _catLabelText(d);
-        };
-        options.catTooltipText = function(d){ 
-            if(d.id()===noneID) return "None";
-            return _catTooltipText(d);
-        };
-    }
-
-    if(this.options.showNoneCat===true){
-        var _catItemMap = this.options.catItemMap;
-        this.options.catItemMap = function(d){
-            var r=_catItemMap(d);
-            if(r===null) return noneID;
-            if(r instanceof Array)
-                if(r.length===0) {
-                    return noneID;
-                }
-            return r;
+kshf.BarChart.prototype = {
+    /** rowCount_Header_Left */
+    rowCount_Header_Left: function(){
+        var r=1; // title
+        if(this.showConfig) {r++;}
+        if(this.showTextSearch){ r++;}
+        return r;
+    },
+    /** rowCount_Header_Right */
+    rowCount_Header_Right: function(){
+        if(this.type==='scatterplot'){
+            if(this.collapsedTime) return 1;
+            return 2;
         }
-    }
+        return 0;
+    },
+    /** rowCount_Header */
+    rowCount_Header: function(){
+        if(this.collapsed) return 1;
+        return Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
+    },
+    /** rowCount_Total */
+    rowCount_Total: function(){
+        if(this.collapsed) return 1;
+        // need 1 more row at the bottom is scrollbar is shown, or barInfoText is set
+        var bottomRow=0;
+        if(this.scrollbar.show || this.parentKshf.hideBarAxis===false) bottomRow=1;
+        return this.rowCount_Header()+this.rowCount_Visible+bottomRow;
+    },
+    /** rowCount_Total_Right */
+    rowCount_Total_Right: function(){
+        if(this.type!=='scatterplot') return 0;
+        if(this.collapsedTime===true) return 1;
+        return this.rowCount_Header_Right()+this.rowCount_Visible+2;
+    },
+    /** rowCount_MaxTotal */
+    rowCount_MaxTotal: function(){
+        return this.rowCount_Header()+this.attribCount_Active+1;
+    },
+    /** rowCount_MinTotal */
+    rowCount_MinTotal: function(){
+        return this.rowCount_Header()+Math.min(this.attribCount_Active,3)+1;
+    },
+    /** init_shared */
+    init_shared: function(options){
+    	// register
+        var j,f, me=this;
 
-    var optimalSelectOption = "Single";
-    this.hasMultiValueItem = false;
+        this.parentKshf.barMaxWidth = 0;
 
-    // BIG. Apply row map function
-    var curDtId = this.getData_wID();
-    kshf.items.forEach(function(item){
-        // assume all filters pass
-        for(j=0,f=me.filterId;j<me.filterCount;j++,f++){
-            item.filters[f] = true;
+    	//sorting options
+        //assert(this.options.sorting);
+        // select the first sorting function as default
+        this.sortID=0;
+        this.sortInverse=false;
+        this.options.timeMaxWidth=0;
+
+    	// filter options - must be always specified
+
+        if(this.options.showNoneCat===undefined){
+            this.options.showNoneCat = false;
         }
-        var toMap = me.options.catItemMap(item);
-        if(toMap===undefined || toMap==="") { 
-            toMap=null;
-        } else if(toMap instanceof Array){
-            // remove duplicate values in the array
-            var found = {};
-            toMap = toMap.filter(function(e){
-                if(found[e]===undefined){
-                    found[e] = true;
-                    return true;
-                }
-                return false;
-            });
+
+        if(this.options.removeInactiveAttrib===undefined){
+            this.options.removeInactiveAttrib = true;
         }
-        item.mappedData[me.filterId] = toMap;
-        item.mappedRows[me.filterId] = [];
-        if(toMap===null) { return; }
-        if(toMap instanceof Array){
-            optimalSelectOption = "MultipleAnd";
-            me.hasMultiValueItem = true;
-            toMap.forEach(function(a){
-                var m=curDtId[a];
-                if(m){
-                    m.items.push(item);
-                    m.activeItems++;
-                    m.barValue+=item.barCount;
-                    m.barValueMax+=item.barCount;
-                    m.sortDirty = true;
-                    item.mappedRows[me.filterId].push(m);
-                }
-            });
+
+        if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
+            this.options.timeItemMap = this.parentKshf.columnAccessFunc(this.options.timeTitle);
+        }
+
+        if(this.options.catItemMap===undefined){
+            this.options.catItemMap = this.parentKshf.columnAccessFunc(this.options.facetTitle);
+        } else if(typeof(this.options.catItemMap)==="string"){
+            this.options.catItemMap = kshf.columnAccessFunc(this.options.catItemMap);
+        }
+
+        // generate row table if necessary
+        if(this.options.generateRows){
+            this.catTableName = this.options.catTableName+"_h_"+this.id;
+            kshf.createTableFromTable(kshf.items,this.catTableName, this.options.catItemMap);
         } else {
-            var m=curDtId[toMap];
-            m.items.push(item);
-            m.activeItems++;
-            m.barValue+=item.barCount;
-            m.barValueMax+=item.barCount;
-            m.sortDirty = true;
-            item.mappedRows[me.filterId].push(curDtId[toMap]);
+            this.catTableName = this.options.catTableName;
         }
-    });
 
-    if(this.options.selectType===undefined){
-        this.options.selectType = optimalSelectOption;
-    } else {
-        if(this.options.selectType!=="MultipleOr"&&this.options.selectType!=="Single"){
+        var noneID = null;
+        if(this.options.showNoneCat===true){
+            // TODO: Check if a category named "None" exist in table
+            noneID = 1000;
+            var newItem = new kshf.Item([noneID,"None"],0)
+            kshf.dt[this.catTableName].push(newItem);
+            kshf.dt_id[this.catTableName][noneID] = newItem;
+        }
+
+        if(this.options.catLabelText===undefined){
+            // get the 2nd attribute as row text [1st is expected to be the id]
+            options.catLabelText = function(typ){ return typ.data[1]; };
+        }
+        if(this.options.showNoneCat===true){
+            var _catLabelText = this.options.catLabelText;
+            var _catTooltipText = this.options.catTooltipText;
+            options.catLabelText = function(d){ 
+                if(d.id()===noneID) return "None";
+                return _catLabelText(d);
+            };
+            options.catTooltipText = function(d){ 
+                if(d.id()===noneID) return "None";
+                return _catTooltipText(d);
+            };
+        }
+
+        if(this.options.showNoneCat===true){
+            var _catItemMap = this.options.catItemMap;
+            this.options.catItemMap = function(d){
+                var r=_catItemMap(d);
+                if(r===null) return noneID;
+                if(r instanceof Array)
+                    if(r.length===0) {
+                        return noneID;
+                    }
+                return r;
+            }
+        }
+
+        var optimalSelectOption = "Single";
+        this.hasMultiValueItem = false;
+
+        // BIG. Apply row map function
+        var curDtId = this.getAttribs_wID();
+        kshf.items.forEach(function(item){
+            // assume all filters pass
+            for(j=0,f=me.filterId;j<me.filterCount;j++,f++){
+                item.filters[f] = true;
+            }
+            var toMap = me.options.catItemMap(item);
+            if(toMap===undefined || toMap==="") { 
+                toMap=null;
+            } else if(toMap instanceof Array){
+                // remove duplicate values in the array
+                var found = {};
+                toMap = toMap.filter(function(e){
+                    if(found[e]===undefined){
+                        found[e] = true;
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            item.mappedData[me.filterId] = toMap;
+            item.mappedRows[me.filterId] = [];
+            if(toMap===null) { return; }
+            if(toMap instanceof Array){
+                optimalSelectOption = "MultipleAnd";
+                me.hasMultiValueItem = true;
+                toMap.forEach(function(a){
+                    var m=curDtId[a];
+                    if(m){
+                        m.items.push(item);
+                        m.activeItems++;
+                        m.barValue+=item.barCount;
+                        m.barValueMax+=item.barCount;
+                        m.sortDirty = true;
+                        item.mappedRows[me.filterId].push(m);
+                    }
+                });
+            } else {
+                var m=curDtId[toMap];
+                m.items.push(item);
+                m.activeItems++;
+                m.barValue+=item.barCount;
+                m.barValueMax+=item.barCount;
+                m.sortDirty = true;
+                item.mappedRows[me.filterId].push(curDtId[toMap]);
+            }
+        });
+
+        if(this.options.selectType===undefined){
             this.options.selectType = optimalSelectOption;
+        } else {
+            if(this.options.selectType!=="MultipleOr"&&this.options.selectType!=="Single"){
+                this.options.selectType = optimalSelectOption;
+            }
         }
-    }
 
-    this.showConfig = this.options.sortingFuncs.length>1;
+        this.showConfig = this.options.sortingFuncs.length>1;
 
-    // Modified internal dataMap function - Skip rows with0 active item count
-    if(this.options.dataMap) {
-        this._dataMap = function(d){
-            if(d.items.length===0) { return null; }
-            return options.dataMap(d);
-        };
-    } else {
-        this._dataMap = function(d){
-            if(d.items.length===0) { return null; }
-            return d.id();
-        };
-    }
-
-    // Linear pass over data to see which ones are not skipped.
-    this.updateAtribCount_Total();
-    this.updateAtribCount_Active();
-	this.selectAllAttribs(false);
-    // text search is automatically enabled is num of rows is more than 20.
-    // It is NOT dependent on number of displayed rows
-    this.showTextSearch = 
-        (this.attribCount_Total>=20 && this.options.forceSearch!==false)||this.options.forceSearch===true;
-
-    // scrollbar options
-	this.scrollbar = { };
-    this.scrollbar.firstRow = 0;
-    this.x_axis_active_filter = null;
-};
-
-kshf.BarChart.prototype.updateAtribCount_Total = function(){
-    var me = this;
-    this.attribCount_Total = 0;
-    this.getData().forEach(function(d){
-        if(me._dataMap(d)!==null) me.attribCount_Total++;
-    });
-};
-kshf.BarChart.prototype.updateAtribCount_Active = function(){
-    var me = this;
-    this.attribCount_Active = 0;
-    this.getData().forEach(function(d){
-        if(me._dataMap(d)===null) return;
-        if(me.noItemOnSelect(d)) return;
-        me.attribCount_Active++;
-    });
-};
-
-kshf.BarChart.prototype.getWidth = function(){
-    return this.getWidth_Left()+
-        ((this.type==='scatterplot')?(
-            this.options.timeMaxWidth+kshf.sepWidth+
-              ((this.scrollbar.show)?(kshf.scrollWidth+kshf.scrollPadding):0)
-            ):0);
-};
-kshf.BarChart.prototype.getWidth_Left = function(){
-    return this.parentKshf.getRowTotalTextWidth() +
-        this.parentKshf.barMaxWidth +
-        kshf.scrollWidth + // assume scrollbar is on
-        kshf.scrollPadding
-        +1;
-};
-
-kshf.BarChart.prototype.updateChartTotalWidth = function(){
-    this.updateScrollGroupPos();
-
-    var leftPanelWidth = this.getWidth_Left();
-    var totalWidth = this.getWidth();
-
-    this.divRoot.style("width",totalWidth+"px");
-    this.root.select("rect.chartBackground")
-        .attr('width',totalWidth)
-        ;
-    this.divRoot.select("rect.clippingRect_2")
-        .attr("x",leftPanelWidth+10)
-        .attr("width",this.options.timeMaxWidth+7)
-        ;
-    this.divRoot.select(".headerGroup")
-        .style('width',totalWidth+"px")
-        ;
-    this.root.select("rect.clippingRect")
-        .attr("width",totalWidth)
-        ;
-    this.dom_headerGroup.select(".leftHeader")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-        .style("width",leftPanelWidth+"px")
-        ;
-};
-
-kshf.BarChart.prototype.scrollItems = function(event){
-    var delta = 0;
-    if (!event) { event = window.event; }
-    // normalize the delta
-    if (event.wheelDelta) {
-        // IE and Opera
-        delta = event.wheelDelta / 60;
-    } else if (event.detail) {
-        // W3C
-        delta = -event.detail / 2;
-    }
-    if(delta<-0.05) { 
-        this.setScrollPosition(this.scrollbar.firstRow+1);
-    }
-    if(delta>0.05) { 
-        this.setScrollPosition(this.scrollbar.firstRow-1);
-    }
-    if(event.preventDefault) { //disable default wheel action of scrolling page
-        event.preventDefault();
-    } else {
-        return false;
-    }
-};
-
-kshf.BarChart.prototype.init_DOM = function(){
-    var me = this;
-    this.divRoot = this.options.layout
-        .append("div").attr("class","kshfChart")
-        .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
-        ;
-
-    this.dom_headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-
-	this.root = this.divRoot
-        .append("svg").attr("class","chart_root").attr("xmlns","http://www.w3.org/2000/svg");
-    // to capture click/hover mouse events
-    this.root.append("rect")
-        .attr("class","chartBackground")
-        .on("mousewheel",this.scrollItems.bind(this))
-        .on("mousedown", function (d, i) { d3.event.preventDefault(); })
-    ;
-
-	this.dom = {};
-    
-    if(this.type==="scatterplot"){
-        if(this.options.timeDotConfig!==undefined){
-            this.divRoot.attr("dotconfig",this.options.timeDotConfig);
+        // Modified internal dataMap function - Skip rows with0 active item count
+        if(this.options.dataMap) {
+            this._dataMap = function(d){
+                if(d.items.length===0) { return null; }
+                return options.dataMap(d);
+            };
+        } else {
+            this._dataMap = function(d){
+                if(d.items.length===0) { return null; }
+                return d.id();
+            };
         }
-    }
-    this.root.append("g").attr("class", "x_axis")
-        .on("mousedown", function (d, i) { d3.event.preventDefault(); })
+
+        // Linear pass over data to see which ones are not skipped.
+        this.updateAtribCount_Total();
+        this.updateAtribCount_Active();
+    	this.selectAllAttribs(false);
+        // text search is automatically enabled is num of rows is more than 20.
+        // It is NOT dependent on number of displayed rows
+        this.showTextSearch = 
+            (this.attribCount_Total>=20 && this.options.forceSearch!==false)||this.options.forceSearch===true;
+
+        // scrollbar options
+    	this.scrollbar = { };
+        this.scrollbar.firstRow = 0;
+        this.x_axis_active_filter = null;
+    },
+    /** updateAtribCount_Total */
+    updateAtribCount_Total: function(){
+        var me = this;
+        this.attribCount_Total = 0;
+        this.getAttribs().forEach(function(d){
+            if(me._dataMap(d)!==null) me.attribCount_Total++;
+        });
+    },
+    /** updateAtribCount_Total */
+    updateAtribCount_Active: function(){
+        var me = this;
+        this.attribCount_Active = 0;
+        this.getAttribs().forEach(function(d){
+            if(me._dataMap(d)===null) return;
+            if(me.noItemOnSelect(d)) return;
+            me.attribCount_Active++;
+        });
+    },
+    /** getWidth_Total */
+    getWidth_Total: function(){
+        return this.getWidth_Left()+
+            ((this.type==='scatterplot')?(
+                this.options.timeMaxWidth+kshf.sepWidth+
+                  ((this.scrollbar.show)?(kshf.scrollWidth+kshf.scrollPadding):0)
+                ):0);
+    },
+    /** getWidth_Left */
+    getWidth_Left: function(){
+        return this.parentKshf.getRowTotalTextWidth() +
+            this.parentKshf.barMaxWidth +
+            kshf.scrollWidth + // assume scrollbar is on
+            kshf.scrollPadding
+            +1;
+    },
+    /** refreshUIWidth */
+    refreshUIWidth: function(){
+        this.refreshScrollGroupPos();
+
+        var leftPanelWidth = this.getWidth_Left();
+        var totalWidth = this.getWidth_Total();
+
+        this.divRoot.style("width",totalWidth+"px");
+        this.root.select("rect.chartBackground")
+            .attr('width',totalWidth)
+            ;
+        this.divRoot.select("rect.clippingRect_2")
+            .attr("x",leftPanelWidth+10)
+            .attr("width",this.options.timeMaxWidth+7)
+            ;
+        this.divRoot.select(".headerGroup")
+            .style('width',totalWidth+"px")
+            ;
+        this.root.select("rect.clippingRect")
+            .attr("width",totalWidth)
+            ;
+        this.dom_headerGroup.select(".leftHeader")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+            .style("width",leftPanelWidth+"px")
+            ;
+    },
+    /** scrollItemCb */
+    scrollItemCb: function(event){
+        var delta = 0;
+        if (!event) { event = window.event; }
+        // normalize the delta
+        if (event.wheelDelta) {
+            // IE and Opera
+            delta = event.wheelDelta / 60;
+        } else if (event.detail) {
+            // W3C
+            delta = -event.detail / 2;
+        }
+        if(delta<-0.05) { 
+            this.setScrollPosition(this.scrollbar.firstRow+1);
+        }
+        if(delta>0.05) { 
+            this.setScrollPosition(this.scrollbar.firstRow-1);
+        }
+        if(event.preventDefault) { //disable default wheel action of scrolling page
+            event.preventDefault();
+        } else {
+            return false;
+        }
+    },
+    /** init_DOM */
+    init_DOM: function(){
+        var me = this;
+        this.divRoot = this.options.layout
+            .append("div").attr("class","kshfChart")
+            .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
+            ;
+
+        this.dom_headerGroup = this.divRoot.append("div").attr("class","headerGroup");
+
+    	this.root = this.divRoot
+            .append("svg").attr("class","chart_root").attr("xmlns","http://www.w3.org/2000/svg");
+        // to capture click/hover mouse events
+        this.root.append("rect")
+            .attr("class","chartBackground")
+            .on("mousewheel",this.scrollItemCb.bind(this))
+            .on("mousedown", function (d, i) { d3.event.preventDefault(); })
         ;
-	var barGroup_Top = this.root.append("g")
-		.attr("class","barGroup_Top")
-		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
-        .attr("transform","translate(0,20)")
+
+    	this.dom = {};
+        
+        if(this.type==="scatterplot"){
+            if(this.options.timeDotConfig!==undefined){
+                this.divRoot.attr("dotconfig",this.options.timeDotConfig);
+            }
+        }
+        this.root.append("g").attr("class", "x_axis")
+            .on("mousedown", function (d, i) { d3.event.preventDefault(); })
+            ;
+    	var barGroup_Top = this.root.append("g")
+    		.attr("class","barGroup_Top")
+    		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
+            .attr("transform","translate(0,20)")
+            ;
+        if(this.type==='scatterplot') { 
+            barGroup_Top.append("line")
+                .attr("class","selectVertLine")
+                .attr("x1", 0)
+                .attr("x2", 0)
+                .attr("y1", -kshf.line_height*1.5)
+                ;
+        }
+
+    	var barGroup = barGroup_Top.append("g")
+    		.attr("class","barGroup");
+    	barGroup.selectAll("g.row")
+            // removes attributes with no items
+    		.data(this.getAttribs(), this._dataMap)
+    	  .enter().append("g")
+    		.attr("class", "row")
+            .each(function(d){
+                var mee=this;
+                d.barChart = me;
+                // Add this DOM to each kshf item under cats
+                d.items.forEach(function(dd){dd.cats.push(mee);});
+            })
+    		;
+        this.dom.g_row = this.root.selectAll('g.row');
+
+        if(this.type==='scatterplot') { 
+        	var timeAxisGroup = this.root.append("g").attr("class","timeAxisGroup")
+        		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
+                ;
+            timeAxisGroup.append("g").attr("class","tickGroup");
+        }
+
+        if(this.attribCount_Active===1){
+            this.options.catBarScale = "scale_frequency";
+        }
+
+        this.insertHeader();
+
+        this.insertScrollbar();
+
+        this.insertItemRows_shared();
+        if(this.type==='scatterplot') { 
+            this.insertTimeChartRows();
+            this.insertTimeChartAxis_1();
+        }
+        this.updateSorting(true);
+    },
+    /** getAttribs */
+    getAttribs: function(){
+        return kshf.dt[this.catTableName];
+    },
+    /** getAttribs_wID */
+    getAttribs_wID: function(){
+        return kshf.dt_id[this.catTableName];
+    },
+    /** returns the maximum number of total items stored per row in chart data */
+    getMaxTotalItemsPerRow: function(){
+        if(!this._maxTotalItemsPerRow){
+            var dataMapFunc = this._dataMap;
+            this._maxTotalItemsPerRow = d3.max(this.getAttribs(), function(d){ 
+                if(dataMapFunc(d)===null) { return null; }
+                return d.items.length;
+            });
+        }
+        return this._maxTotalItemsPerRow;
+    },
+    /** returns the maximum number of selected items stored per row in chart data */
+    getMaxBarValuePerAttrib: function(){
+        var dataMapFunc = this._dataMap;
+        return d3.max(this.getAttribs(), function(d){ 
+            if(dataMapFunc(d)===null) { return null; }
+            return d.barValue;
+        });
+    },
+    /** returns the maximum number of maximum selected items stored per row in chart data */
+    getMaxBarValueMaxPerAttrib: function(){
+        var dataMapFunc = this._dataMap;
+        return d3.max(this.getAttribs(), function(d){ 
+            if(dataMapFunc(d)===null) { return null; }
+            return d.barValueMax;
+        });
+    },
+    /** refreshUI */
+    refreshUI: function(){
+    	this.refreshActiveItemCount();
+        this.refreshBarHeight();
+        if(this.type==="scatterplot"){
+            this.refreshTimeChartTooltip();
+            this.refreshTimeChartBarDisplay();
+            this.refreshTimeChartDotConfig();
+        }
+        this.refreshWidth_Bars_Active();
+        if(this.options.removeInactiveAttrib){
+            this.updateAtribCount_Active();
+        }
+    	this.updateSorting(false);
+    },
+    /** updateAttrib_TimeMinMax */
+    updateAttrib_TimeMinMax: function(){
+        var specFunc = function(d){
+            if(!d.selected) return undefined; // unselected items have no timePos
+            return d.timePos;
+        };
+        this.getAttribs().forEach(function(row){
+            if(row.sortDirty===false) return;
+            row.xMin_Dyn = d3.min(row.items, specFunc);
+            row.xMax_Dyn = d3.max(row.items, specFunc);
+        });
+    },
+    /** refreshActiveItemCount */
+    refreshActiveItemCount: function(){
+        var me = this;
+        this.dom.item_count.text(function(d){ return "("+kshf.formatForItemCount(d.barValue)+")"; });
+        this.dom.g_row.each(function(d){ this.setAttribute("noitems",me.noItemOnSelect(d)); });
+        this.dom.row_title.text(function(d){
+            return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
+                (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
+                ((me.options.catTooltipText)?me.options.catTooltipText(d):me.options.catLabelText(d));
+        });
+    },
+    /** refreshBarHeight */
+    refreshBarHeight: function(){
+    	// Non-selected rows have shorted bar height.
+    	this.dom.allRowBars
+    		.attr("height", function(d,i){ return (d.activeItems>0)?12:6; })
+    		.attr("y",function(d,i){ return (d.activeItems>0)?3:6; });
+        if(this.dom.timeBar){
+            this.dom.timeBar
+        		.attr("height", function(d,i){ return (d.activeItems>0)?12:6; })
+        		.attr("y",function(d,i){ return (d.activeItems>0)?3:6; });
+        }
+    	this.dom.bar_active
+    		.attr("height", function(d,i){ return (d.activeItems>0)?10:4; })
+    		.attr("y",function(d,i){ return (d.activeItems>0)?4:7; });
+    },
+    /** refreshWidth_Bars_Active */
+    refreshWidth_Bars_Active: function(){
+    	var me=this;
+    	this.dom.bar_active
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("width", function(d){ return me.catBarAxisScale(d.barValue);})
+            ;
+    },
+    /** Applies alternating color for bar helper lines */
+    refreshBarLineHelper: function(){
+    	this.dom.row_bar_line.attr("stroke", function(d,i) {
+    		return (d.orderIndex%2===1)?"rgb(200,200,200)":"rgb(80,80,80)";
+    	});
+    },
+    /** getFilteredCount */
+    getFilteredCount: function(){
+        var r=this.isFiltered_Attrib();
+        if(this.type==="scatterplot") r+=this.isFiltered_Time();
+        return r;
+    },
+    /** refreshFilterRowState */
+    refreshFilterRowState: function(){
+    	this.divRoot.attr("filtered_row",this.isFiltered_Attrib());
+    	this.dom.g_row.attr("selected",function(d){return d.selected;});
+    },
+    /** isFiltered_Attrib */
+    isFiltered_Attrib: function(state){
+        return this.attribCount_Selected!==0;
+    },
+    /** isFiltered_Time */
+    isFiltered_Time: function(){
+    	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
+    	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
+    },
+    /** selectAllAttribs */
+    selectAllAttribs: function(state){
+        this.getAttribs().forEach(function(r){r.selected=state;});
+    	this.attribCount_Selected = (state)?this.attribCount_Total:0;
+    },
+    /** clearAllFilters */
+    clearAllFilters: function(){
+        this.clearAttribFilter(false);
+        if(this.type==='scatterplot') this.clearTimeFilter(false);
+    },
+    /** clearAttribFilter */
+    clearAttribFilter: function(toUpdate){
+        if(this.attribCount_Selected===0) return;
+    	this.selectAllAttribs(false);
+        this.updateSelected_SelectOnly();
+        this.refreshFilterRowState();
+    	this.refreshFilterSummaryBlock();
+        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
+        if(toUpdate!==false) kshf.update();
+    },
+    /** clearTimeFilter */
+    clearTimeFilter: function(toUpdate){
+        this.resetTimeFilter_ms();
+        this.resetTimeZoom_ms();
+        this.refreshTimechartLayout(toUpdate);
+        this.yearSetXPos();
+        this.updateItemFilterState_Time();
+        if(toUpdate!==false) kshf.update();
+    },
+    /** resetTimeFilter_ms */
+    resetTimeFilter_ms: function(){
+        this.timeFilter_ms= { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+    },
+    /** resetTimeZoom_ms */
+    resetTimeZoom_ms: function(){
+        this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+    },
+    /** collapseCategories */
+    collapseCategories: function(hide){
+        this.collapsed = hide;
+        if(sendLog) {
+            if(hide===true) sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Collapse,{facet:this.options.facetTitle});
+            else            sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Show,{facet:this.options.facetTitle});
+        }
+        this.refreshVisibleAttribs(true); // force update
+        this.parentKshf.updateLayout_Height();
+    },
+    /** collapseTime */
+    collapseTime: function(hide){
+        this.collapsedTime = hide;
+        this.refreshVisibleAttribs(true); // force update
+        this.parentKshf.updateLayout_Height();
+    },
+    /** refreshTimeAxisPosition */
+    refreshTimeAxisPosition: function(){
+        var x = (this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
+        var y = (kshf.line_height*this.rowCount_Visible+27);
+        this.root.select("g.timeAxisGroup")
+            .transition().duration(this.parentKshf.layout_animation)
+            .attr("transform","translate("+x+","+y+")");
+    },
+    /** insertHeader */
+    insertHeader: function(){
+    	var me = this;
+        var rows_Left = this.rowCount_Header_Left();
+        var rightHeader;
+
+        if(this.type==="scatterplot"){
+            rightHeader = this.dom_headerGroup.append("div").attr("class","rightHeader");
+        }
+
+        var leftHeader = this.dom_headerGroup.append("div").attr("class","leftHeader");
+        leftHeader.append("div").attr("class","border_line border_line_top");
+        var topRow_background = leftHeader.append("div").attr("class","chartFirstLineBackground");
+        leftHeader.append("div").attr("class","border_line");
+
+        var topRow = topRow_background.append("div").attr("class","leftHeader_XX");
+
+        var headerLabel = topRow.append("span").attr("class", "header_label")
+            .attr("title", this.attribCount_Total+" attributes")
+            .html(this.options.facetTitle)
+            .on("click",function(){ 
+                if(me.collapsed) { me.collapseCategories(false); }
+            })
+            ;
+        topRow.append("span").attr("class","header_label_arrow")
+            .attr("title","Show/Hide categories").text("▼")
+            .on("click",function(){ me.collapseCategories(!me.collapsed); })
+            ;
+        topRow.append("svg").attr("class", "settingButton")
+            .attr("version","1.1")
+            .attr("height","12px")
+            .attr("width","12px")
+            .attr("title","Settings")
+            .attr("xml:space","preserve")
+            .attr("viewBox","0 0 24 24")
+            .on("click",function(d){
+                me.showConfig = !me.showConfig;
+                me.refreshVisibleAttribs(true); // force update
+                me.parentKshf.updateLayout();
+            })
+        .append("path")
+            .attr("clip-rule","evenodd")
+            .attr("d","M21.521,10.146c-0.41-0.059-0.846-0.428-0.973-0.82l-0.609-1.481  c-0.191-0.365-0.146-0.935,0.1-1.264l0.99-1.318c0.246-0.33,0.227-0.854-0.047-1.162l-1.084-1.086  c-0.309-0.272-0.832-0.293-1.164-0.045l-1.316,0.988c-0.33,0.248-0.898,0.293-1.264,0.101l-1.48-0.609  c-0.395-0.126-0.764-0.562-0.82-0.971l-0.234-1.629c-0.057-0.409-0.441-0.778-0.85-0.822c0,0-0.255-0.026-0.77-0.026  c-0.514,0-0.769,0.026-0.769,0.026c-0.41,0.044-0.794,0.413-0.852,0.822l-0.233,1.629c-0.058,0.409-0.427,0.845-0.82,0.971  l-1.48,0.609C7.48,4.25,6.912,4.206,6.582,3.958L5.264,2.969c-0.33-0.248-0.854-0.228-1.163,0.045L3.017,4.1  C2.745,4.409,2.723,4.932,2.971,5.262l0.988,1.318C4.208,6.91,4.252,7.479,4.061,7.844L3.45,9.326  c-0.125,0.393-0.562,0.762-0.971,0.82L0.85,10.377c-0.408,0.059-0.777,0.442-0.82,0.853c0,0-0.027,0.255-0.027,0.77  s0.027,0.77,0.027,0.77c0.043,0.411,0.412,0.793,0.82,0.852l1.629,0.232c0.408,0.059,0.846,0.428,0.971,0.82l0.611,1.48  c0.191,0.365,0.146,0.936-0.102,1.264l-0.988,1.318c-0.248,0.33-0.308,0.779-0.132,0.994c0.175,0.217,0.677,0.752,0.678,0.754  s0.171,0.156,0.375,0.344s1.042,0.449,1.372,0.203l1.317-0.99c0.33-0.246,0.898-0.293,1.264-0.1l1.48,0.609  c0.394,0.125,0.763,0.562,0.82,0.971l0.233,1.629c0.058,0.408,0.441,0.779,0.852,0.822c0,0,0.255,0.027,0.769,0.027  c0.515,0,0.77-0.027,0.77-0.027c0.409-0.043,0.793-0.414,0.85-0.822l0.234-1.629c0.057-0.408,0.426-0.846,0.82-0.971l1.48-0.611  c0.365-0.191,0.934-0.146,1.264,0.102l1.318,0.99c0.332,0.246,0.854,0.227,1.164-0.047l1.082-1.084  c0.273-0.311,0.293-0.834,0.047-1.164l-0.99-1.318c-0.246-0.328-0.291-0.898-0.1-1.264l0.609-1.48  c0.127-0.393,0.562-0.762,0.973-0.82l1.627-0.232c0.41-0.059,0.779-0.441,0.822-0.852c0,0,0.027-0.255,0.027-0.77  s-0.027-0.77-0.027-0.77c-0.043-0.41-0.412-0.794-0.822-0.853L21.521,10.146z M12,15C10.343,15,9,13.656,9,12  C9,10.343,10.343,9,12,9c1.657,0,3,1.344,3,3C15,13.656,13.656,15,12,15z")
+            .attr("fill-rule","evenodd")
+        .append("title").text("Settings");
+
+        topRow.append("div")
+            .attr("class","chartClearFilterButton rowFilter")
+            .attr("title","Clear filter")
+    		.on("click", function(d,i){
+                me.clearAttribFilter();
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,kshf.getFilteringState(me.options.facetTitle));
+            })
+            .text('x');
+        if(this.type==="scatterplot"){
+            rightHeader.append("div").attr("class","border_line");
+
+            var poff = rightHeader.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
+
+            poff.append("span").attr("class","header_label_arrow")
+                .attr("title","Show/Hide categories").text("▼")
+                .on("click",function(){ me.collapseTime(!me.collapsedTime); })
+                ;
+            poff.append("span")
+                .attr("class", "header_label")
+                .text(this.options.timeTitle)
+                .on("click",function(){ if(me.collapsedTime) { me.collapseTime(false); } })
+                ;
+            poff.append("div")
+                .attr("class","chartClearFilterButton timeFilter")
+                .attr("title","Clear filter")
+                .on("click", function(d,i){ 
+                    me.clearTimeFilter();
+                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
+                        {facet:me.options.timeTitle,results:kshf.itemsSelectedCt});
+                })
+                .text('x');
+
+            rightHeader.append("div").attr("class","border_line");
+
+            var config_zoom = rightHeader.append("div").attr("class","config_zoom");
+
+            config_zoom.append("span")
+                .attr("class","zoom_button zoom_in")
+                .attr("disabled","true")
+                .text("⇥ Zoom in ⇤")
+                .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","in");  })
+                .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
+                .on("click",function(d){
+                    me.timeZoom_ms.min = me.timeFilter_ms.min;
+                    me.timeZoom_ms.max = me.timeFilter_ms.max;
+                    me.useCurrentTimeMinMax = true;
+                    me.refreshTimechartLayout(true);
+                    me.useCurrentTimeMinMax = undefined;
+                    me.divRoot.select(".zoom_out").attr("disabled","false");
+                    me.divRoot.select(".zoom_in").attr("disabled","true");
+                });
+
+            config_zoom.append("span")
+                .attr("class","zoom_button zoom_out")
+                .attr("disabled","true")
+                .text("⇤ Zoom out ⇥")
+                .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","out");  })
+                .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
+                .on("click",function(){
+                    me.resetTimeZoom_ms();
+                    me.useCurrentTimeMinMax = true;
+                    me.refreshTimechartLayout(true);
+                    me.useCurrentTimeMinMax = undefined;
+                    me.divRoot.select(".zoom_out").attr("disabled","true");
+                })
+                ;
+        }
+
+        var header_belowFirstRow = leftHeader.append("div").attr("class","header_belowFirstRow");
+
+        var xxx=leftHeader.append("svg")
+            .attr("class", "resort_button")
+            .attr("version","1.1")
+            .attr("height","15px")
+            .attr("width","15px")
+            .attr("title","Settings")
+            .attr("xml:space","preserve")
+            .attr("viewBox","0 0 2000 1000")
+            .style("left",(this.parentKshf.categoryTextWidth+5)+"px")
+            .on("click",function(d){
+                me.sortDelay = 0; 
+                me.updateSorting(true);
+                if(sendLog) sendLog(CATID.FacetSort,ACTID_SORT.ResortButton,{facet:me.options.facetTitle});
+            })
+            ;
+        xxx.append("path")
+            .attr("d",
+                "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
+            ;
+        xxx.append("title").text("Move selected rows to top & re-order");
+
+        // ************************************************************************************
+        // ****** CONFIG LINE *****************************************************************
+
+        var filterOptions = ["One","Any"];
+        if(this.hasMultiValueItem===true){ filterOptions.push("All"); }
+
+        var configGroup = 
+            header_belowFirstRow.append("div")
+                .attr("class","configGroup leftHeader_XX")
+                .attr("shown","filter")
+                .style("height",this.parentKshf.line_height+"px")
+                ;
+    /*
+        var configOptions = ["filter","order"]
+        configGroup.append("span").attr("class","chooseConfigGroup").selectAll("svg")
+            .data(configOptions)
+        .enter().append("svg")
+            .attr("version","1.1")
+            .attr("height","10px")
+            .attr("width" ,"10px")
+            .attr("xml:space","preserve")
+            .attr("viewBox","0 0 10 10")
+            .on("click",function(d){
+                d3.select(this.parentNode.parentNode).attr("shown",d)
+            })
+        .append("circle")
+            .attr("class",function(d){ return d;})
+            .attr("r","4")
+            .attr("cx","5")
+            .attr("cy","5")
+            ;*/
+    /*
+        var filterGr = configGroup.append("span").attr("class","filterOptionSelectGroup");
+        filterGr.append("select").attr("class","optionSelect")
+            .on("change", function(d){
+                switch(this.selectedOptions[0].text){
+                case "One":
+                    me.options.selectType = "Single";
+                    // TODO: make sure only 1 item is selected at max. Unselect others..
+                    break;
+                case "All":
+                    me.options.selectType = "MultipleAnd";
+                    break;
+                case "Any":
+                    me.options.selectType = "MultipleOr";
+                    break;
+                }
+                // update filtering
+                if(me.options.selectType === "Single" && me.attribCount_Selected>1){
+                    me.selectAllAttribs(false);
+                }
+                me.updateSelected_AllItems();
+                me.sortSkip = true;
+                kshf.update();
+                me.refreshFilterRowState();
+                me.refreshFilterSummaryBlock();
+            })
+        .selectAll("input.sort_label")
+            .data(filterOptions)
+          .enter().append("option")
+            .attr("class", "filter_label")
+            .text(function(d){ return d; })
+            .each(function(d){
+                if( (d==="One" && me.options.selectType==="Single") ||
+                    (d==="All" && me.options.selectType==="MultipleAnd") ||
+                    (d==="Any" && me.options.selectType==="MultipleOr")
+                    )
+                    d3.select(this).attr("selected","selected");
+            })
+            ;
+        filterGr.append("span").attr("class","optionSelect_Label").text("Select by")
+            ;*/
+
+        if(this.showConfig) {
+            var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
+            sortGr.append("select")
+                .attr("class","optionSelect")
+                .on("change", function(){
+                    if(sendLog) {
+                        sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
+                            {facet:me.options.facetTitle, funcID:this.selectedIndex});
+                    }
+                    me.sortID = this.selectedIndex;
+                    me.sortInverse = false;
+                    me.sortDelay = 0;
+                    me.sortSkip = false;
+                    me.updateSorting.call(me,true);
+                })
+            .selectAll("input.sort_label")
+                .data(this.options.sortingFuncs)
+              .enter().append("option")
+                .attr("class", "sort_label")
+                .text(function(d){ return d.name; })
+                .attr(function(d){ return d.name; })
+                ;
+            sortGr.append("span")
+                .attr("class","optionSelect_Label")
+                .text("Order by")
+                ;
+
+            configGroup.attr("shown","order");
+        }
+
+        if(this.showTextSearch){
+            var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX");
+            this.dom.showTextSearch= textSearchRowDOM.append("input")
+                .attr("type","text")
+                .attr("class","chartRowLabelSearch")
+                .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
+                .on("input",function(){
+                    if(this.timer){
+                        clearTimeout(this.timer);
+                        this.timer = null;
+                    }
+                    var x = this;
+                    this.timer = setTimeout( function(){
+                        var v=x.value.toLowerCase();
+                        if(v===""){
+                            me.selectAllAttribs(false);
+                        } else {
+                            var daat=me.getAttribs(),i,numSelected=0;
+                            for(i=0; i<daat.length ; i++){
+                                var d=daat[i];
+                                if(me.options.catLabelText(d).toString().toLowerCase().indexOf(v)!==-1){
+                                    d.selected = true;
+                                } else {
+                                    if(me.options.catTooltipText){
+                                        d.selected = me.options.catTooltipText(d).toLowerCase().indexOf(v)!==-1;
+                                    } else{
+                                        d.selected = false;
+                                    }
+                                }
+                                numSelected+=d.selected;
+                            }
+                            me.attribCount_Selected = numSelected;
+                        }
+                        // convert state to multiple-or selection
+                        var tmpSelectType = me.options.selectType;
+                        me.options.selectType = "MultipleOr";
+                        
+                        me.updateSelected_AllItems();
+                        kshf.update();
+                        me.refreshFilterRowState();
+                        me.refreshFilterSummaryBlock();
+
+                        me.options.selectType = tmpSelectType;
+
+                        if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatTextSearch,kshf.getFilteringState(me.options.facetTitle));
+                    }, 750);
+                })
+                .on("blur",function(){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                })
+                ;
+            textSearchRowDOM.append("svg")
+                .attr("class","chartRowLabelSearch")
+                .attr("width","13")
+                .attr("height","12")
+                .attr("viewBox","0 0 491.237793 452.9882813")
+                .attr("xmlns","http://www.w3.org/2000/svg")
+                .html(
+                  '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
+                   '<g fill-rule="evenodd" clip-rule="evenodd">'+
+                    '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
+                    '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
+                   '</g>'+
+                  '</g>')
+                ;
+        }
+    },
+    /** refreshTimechartLayout */
+    refreshTimechartLayout: function(toUpdate){
+        this.setTimeTicks();
+        this.updateTimeChartBarsDots();
+        this.refreshTimeChartBarDisplay();
+        this.insertTimeTicks();
+        this.insertTimeChartAxis();
+        if(toUpdate===true) this.refreshTimeChartDotConfig();
+    },
+    /** setTimeWidth */
+    setTimeWidth: function(w){
+        this.options.timeMaxWidth = w;
+        if(this.scrollbar.show===true){
+            this.options.timeMaxWidth -= kshf.scrollPadding + kshf.scrollWidth;
+        }
+
+        this.refreshTimechartLayout(true);
+        this.refreshUIWidth();
+        this.dom_headerGroup.select(".rightHeader").style("width",(w)+"px");
+        this.refreshTimeAxisPosition();
+        this.updateRowBarLineWidth();
+    },
+    /** refreshTimeChartDotConfig */
+    refreshTimeChartDotConfig: function(){
+        if(this.type!=='scatterplot') return;
+        if(this.options.timeDotConfig !== undefined) return;
+        if(this.skipUpdateTimeChartDotConfig === true) return;
+        var me = this;
+
+        var totalActiveTime_pixLength = 0;
+
+        this.dom.g_row.each(function(d) {
+            if(me.attribCount_Selected!==0 && !d.selected) return;
+            if(d.xMax_Dyn===undefined || d.xMin_Dyn===undefined) return;
+            totalActiveTime_pixLength+=me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
+        });
+
+        var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
+        var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
+
+        // how much width of time does each dot take?
+        var dotPixelWidth = 12;
+    //        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
+    //        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
+        var maxDots = totalActiveTime_pixLength/dotPixelWidth;
+    //        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
+    //        x*dotTimeWidth = this.options.timeMaxWidth;
+        
+        var numOfItems = this.parentKshf.itemsSelectedCt;
+
+        // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
+    //        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
+
+        if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
+            this.divRoot.attr("dotconfig","Solid");
+        } else if(maxDots>numOfItems*1.5){
+            this.divRoot.attr("dotconfig","Gradient-100");
+        } else if(maxDots>numOfItems*0.8){
+            this.divRoot.attr("dotconfig","Gradient-75");
+        } else if(maxDots>numOfItems*0.3){
+            this.divRoot.attr("dotconfig","Gradient-50");
+        } else {
+            this.divRoot.attr("dotconfig","Gradient-25");
+        }
+    },
+    /** updateBarAxisScale */
+    updateBarAxisScale: function(){
+        if(this.options.catBarScale==="scale_frequency"){
+            this.catBarAxisScale = d3.scale.linear()
+                .domain([0,this.parentKshf.itemsSelectedCt])
+                .rangeRound([0, this.parentKshf.barMaxWidth]);
+        } else {
+            this.catBarAxisScale = d3.scale.linear()
+                .domain([0,this.getMaxBarValuePerAttrib()])
+                .rangeRound([0, this.parentKshf.barMaxWidth]);
+            }
+        this.refreshWidth_Bars_Total();
+        this.insertXAxisTicks();
+    },
+    /** updateBarWidth */
+    updateBarWidth: function(w){
+        this.updateBarAxisScale();
+        this.refreshWidth_Bars_Active();
+        this.updateRowBarLineWidth();
+        this.refreshUIWidth();
+    },
+    /** updateRowBarLineWidth */
+    updateRowBarLineWidth: function(){
+        var x2=this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth()
+            +this.options.timeMaxWidth;
+        this.dom.row_bar_line.attr("x2",x2);
+    },
+    /** refreshScrollbar */
+    refreshScrollbar: function(animate){
+        var me = this;
+    	var firstRowHeight = kshf.line_height*this.scrollbar.firstRow;
+        var handleTopPos = firstRowHeight*(this.rowCount_Visible/this.attribCount_Active.toFixed());
+        if(animate){
+            var scrollHandleHeight=kshf.line_height*this.rowCount_Visible*this.rowCount_Visible/this.attribCount_Active.toFixed();
+            if(scrollHandleHeight<10) { scrollHandleHeight=10;}
+            this.root.selectAll("g.scrollGroup rect.background_up")
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr("height",(handleTopPos));
+            this.root.selectAll("g.scrollGroup rect.background_down")
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr("y",handleTopPos)
+                .attr("height",kshf.line_height*this.rowCount_Visible-handleTopPos)
+            ;
+            this.root.selectAll("g.scrollGroup rect.handle")
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr("height",scrollHandleHeight)
+                .attr("y",handleTopPos);
+            this.root.select("g.barGroup")
+                .transition().duration(this.parentKshf.layout_animation)
+                .ease(d3.ease("cubic-out"))
+                .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
+        } else {
+            this.root.selectAll("g.scrollGroup rect.background_up")
+                .attr("height",(handleTopPos+5));
+            this.root.selectAll("g.scrollGroup rect.background_down")
+                .attr("y",handleTopPos)
+                .attr("height",kshf.line_height*this.rowCount_Visible-handleTopPos)
+            ;
+            this.root.selectAll("g.scrollGroup rect.handle")
+                .attr("y",handleTopPos);
+            this.root.select("g.barGroup")
+                .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
+        }
+        this.root.selectAll("g.scrollGroup g.top_arrow").style("display",
+            (this.scrollbar.firstRow!==0)?"inline":"none");
+        this.root.select("text.scroll_display_more")
+            .style("display",
+                (this.scrollbar.firstRow!==this.firstRowMax())?"inline":"none")
+            .text( function(){
+                if(me.scrollbar.firstRow===me.firstRowMax()) return "";
+                return (me.attribCount_Active-me.rowCount_Visible-me.scrollbar.firstRow)+" more...";
+            });
+        this.root.selectAll("g.scrollGroup text.first_row_number")
+            .text(this.scrollbar.firstRow===0?"":this.scrollbar.firstRow)
+            .attr("y",handleTopPos-1)
+            ;
+    },
+    /** firstRowMax */
+    firstRowMax: function(){
+        return this.attribCount_Active-this.rowCount_Visible;
+    },
+    /** setRowCount_VisibleAttribs */
+    setRowCount_VisibleAttribs: function(c){
+        if(c<0) c=1;
+        if(c>this.attribCount_Active) c=this.attribCount_Active;
+        if(this.attribCount_Active<=2){ 
+            c = this.attribCount_Active;
+        } else {
+            c = Math.max(c,2);
+        }
+        this.rowCount_Visible = c;
+    },
+    /** refreshVisibleAttribs */
+    refreshVisibleAttribs: function(forced){
+        var totalHeight      = kshf.line_height*this.rowCount_Total();
+        var visibleRowHeight = kshf.line_height*this.rowCount_Visible;
+        var headerHeight     = kshf.line_height*this.rowCount_Header();
+
+        this.scrollbar.show = this.rowCount_Visible!==this.attribCount_Active;
+
+        this.divRoot
+            .attr("collapsed",this.collapsed===false?"false":"true")
+            .attr("showconfig",this.showConfig)
+            .attr("collapsedTime",this.collapsedTime===false?"false":"true")
+            .attr("showscrollbar",this.scrollbar.show)
+            ;
+        if(this.type!=='scatterplot'){
+            this.divRoot
+                .transition().duration(this.parentKshf.layout_animation)
+                .style("height",totalHeight+"px")
+                ;
+        }
+
+        this.root.style("height",totalHeight+"px");
+
+        // ******************************************************************************
+        // Scrollbar stuff
+
+        // scrollbar.firstRow cannot exceed firstRowMax()
+        this.scrollbar.firstRow = Math.min(this.scrollbar.firstRow,this.firstRowMax());
+        // how much is one row when mapped to the scroll bar?
+        this.scrollbar.rowScrollHeight = visibleRowHeight/this.attribCount_Active;
+        if(this.rowCount_Visible!==this.attribCount_Active){
+            // update scrollbar height
+            this.root.selectAll("g.scrollGroup rect.background")
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr("height",visibleRowHeight+1)
+                ;
+            this.root.select("g.scrollGroup text.scroll_display_more")
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr('y',visibleRowHeight+10)
+                ;
+            this.refreshScrollGroupPos();
+            this.refreshScrollbar(true);
+        }
+
+        this.root.select(".x_axis")
+            .transition().duration(this.parentKshf.layout_animation)
+            .attr("transform", "translate("+(this.parentKshf.getRowTotalTextWidth())+",23)")
+            ;
+
+        this.root.select("rect.chartBackground")
+            .attr('height',visibleRowHeight)
+            .attr('y',headerHeight)
+            ;
+        this.root.selectAll(".barChartClipPath rect")
+            .transition().duration(this.parentKshf.layout_animation)
+    		.attr("height",visibleRowHeight)
+            ;
+
+        if(this.type==='scatterplot'){
+            this.refreshTimeAxisPosition();
+        }
+
+        // update x axis items
+    	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
+            .transition().duration(this.parentKshf.layout_animation)
+            .attr("y1", -visibleRowHeight-8)
+    		.attr("y2", -8)
+            ;
+    	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
+    //        .transition()
+    //        .duration(this.parentKshf.layout_animation)
+            .attr("y",-visibleRowHeight-8)
+    		.attr("height", visibleRowHeight)
+            ;
+        this.root.selectAll("line.selectVertLine")
+            .attr("y2", kshf.line_height*(this.rowCount_Visible+1.5))
+            ;
+        this.root.selectAll("g.x_axis g.tick line")
+            .transition().duration(this.parentKshf.layout_animation)
+            .attr("y2", visibleRowHeight)
+            ;
+        this.root.selectAll("g.x_axis g.tick text")
+            .transition().duration(this.parentKshf.layout_animation)
+            .attr("dy",visibleRowHeight+3);
+    },
+    /** setScrollPosition */
+    setScrollPosition: function(pos) {
+        if(pos<0) { pos = 0;}
+        if(pos>this.firstRowMax()){ pos=this.firstRowMax(); }
+        if(this.scrollbar.firstRow===pos) { return;}
+        this.scrollbar.firstRow = pos;
+        this.refreshScrollbar();
+    },
+    /** stepScrollPosition */
+    stepScrollPosition: function(stepSize) {
+        if(this.scrollbar.firstRow===0 && stepSize<0){ return; }
+        if(this.scrollbar.firstRow===this.firstRowMax() && stepSize>0){ return; }
+        if(!this.scrollBarUp_Active){ return; }
+        this.scrollbar.firstRow+=stepSize;
+        this.refreshScrollbar();
+        this.scrollBarUp_TimeStep-=10;
+        if(this.scrollBarUp_TimeStep<15){ this.scrollBarUp_TimeStep = 15; }
+        window.setTimeout(this.stepScrollPosition.bind(this,stepSize), this.scrollBarUp_TimeStep);
+    },
+    /** insertScrollbar */
+    insertScrollbar: function(){
+        var me = this;
+
+    	var scrollGroup = this.root.append("g").attr("class","scrollGroup")
+            .attr("transform","translate(0,20)")
+    		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
+    		;
+
+        // left scroll
+        this.dom.leftScroll = scrollGroup.append("g").attr("class","leftScroll");
+        this.insertScrollbar_do(this.dom.leftScroll);
+        // right scroll
+        if(this.type==='scatterplot'){
+            this.dom.rightScroll = scrollGroup.append("g").attr("class","rightScroll");
+            this.insertScrollbar_do(this.dom.rightScroll);
+        }
+
+        // "more..." text
+        scrollGroup.append("text").attr("class","scroll_display_more")
+            .on("mousedown",function(){
+                scrollGroup.selectAll("text.row_number").style("display","block");
+                me.scrollBarUp_Active = true; 
+                me.scrollBarUp_TimeStep = 200;
+                me.stepScrollPosition(1);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
+                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
+                }
+            })
+            .on("mouseup",function(){ me.scrollBarUp_Active = false; })
+            .on("mouseover",function(e){ 
+                d3.select(this).attr("highlight",true); 
+            })
+            .on("mouseout",function(){ 
+                d3.select(this).attr("highlight",false); 
+                me.scrollBarUp_Active = false; 
+                scrollGroup.selectAll("text.row_number").style("display","none");
+            })
+            ;
+    },
+    /** insertScrollbar_do */
+    insertScrollbar_do: function(parentDom){
+        var kshf_ = this;
+        var mouseOutFunc = function(){
+            kshf_.scrollBarUp_Active = false;
+        };
+
+    	// scroll to top
+    	var xxx=parentDom.append("g").attr("class","top_arrow")
+            .attr("transform","translate(1,-13)");
+            xxx.append("title")
+                .text("Top");
+            xxx.append("rect")
+                .attr("width",kshf.scrollWidth)
+                .attr("height",11)
+                .on("click",function(){
+                    kshf_.scrollbar.firstRow=0;
+                    kshf_.refreshScrollbar(true);
+                    if(sendLog) {
+                        sendLog(CATID.FacetScroll,ACTID_SCROLL.ScrollToTop, 
+                            {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
+                    }
+                });
+            xxx.append("path").attr("class","top_arrow")
+                .attr("d","M4 0 L0 3 L0 6 L4 3 L8  6 L8  3 Z M4 5 L0 8 L0 11 L4 8 L8 11 L8  8 Z")
+                ;
+    	// the background - static position/size
+    	parentDom.append("rect").attr("class", "background")
+    		.attr("width",kshf.scrollWidth+1)
+    		.attr("rx",4)
+    		.attr("ry",4)
+            .attr("x",-0.5)
+            .attr("y",-0.5)
+            ;
+    	parentDom.append("rect").attr("class", "background_fill background_up")
+    		.attr("width",kshf.scrollWidth)
+    		.attr("rx",4)
+    		.attr("ry",4)
+            .on("mousedown",function(){
+                kshf_.scrollBarUp_Active = true; 
+                kshf_.scrollBarUp_TimeStep = 200;
+                kshf_.stepScrollPosition(-1);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar,
+                        {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
+                }
+            })
+    		.on("mouseup",function(){
+                kshf_.scrollBarUp_Active = false; 
+            })
+    		.on("mouseout",mouseOutFunc);
+    	parentDom.append("rect").attr("class", "background_fill background_down")
+    		.attr("width",kshf.scrollWidth)
+    		.attr("rx",4)
+    		.attr("ry",4)
+            .on("mousedown",function(){
+                kshf_.scrollBarUp_Active = true; 
+                kshf_.scrollBarUp_TimeStep = 200;
+                kshf_.stepScrollPosition(1);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar, 
+                        {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
+                }
+            })
+    		.on("mouseup",function(){
+                kshf_.scrollBarUp_Active = false; 
+            })
+    		.on("mouseout",mouseOutFunc);
+    	// the handle - very (very) dynamic
+    	parentDom.append("rect")
+    		.attr("class", "handle")
+    		.attr("x",0)
+    		.attr("y",0)
+    		.attr("rx",4)
+    		.attr("ry",4)
+    		.attr("width",kshf.scrollWidth)
+    		.on("mouseout",mouseOutFunc)
+    		.on("mousedown", function(d, i) {
+    			kshf_.scrollbar.active=true;
+    			d3.select(this).attr("selected",true);
+    			kshf_.root.style( 'cursor', 'pointer' );
+    			var mouseDown_y = d3.mouse(this.parentNode.parentNode.parentNode)[1];
+    			var firstRow = kshf_.scrollbar.firstRow;
+                parentDom.selectAll("text.row_number").style("display","block");
+    			kshf_.root.on("mousemove", function() {
+    				var mouseMove_y = d3.mouse(this)[1];
+    				var mouseDif = mouseMove_y-mouseDown_y;
+    				// update position if necessary
+    				var lineDif = Math.round(mouseDif/kshf_.scrollbar.rowScrollHeight);
+    				if(lineDif!==0){
+    					var hmm=firstRow + lineDif;
+    					if(hmm<0) { hmm=0; }
+    					if(hmm>kshf_.firstRowMax()) { hmm=kshf_.firstRowMax(); }
+    					kshf_.scrollbar.firstRow = hmm;
+    					kshf_.refreshScrollbar();
+    				}
+    			});
+    			kshf_.root.on("mouseup", function(){
+    				kshf_.root.style( 'cursor', 'default' );
+    				kshf_.scrollbar.active=false;
+    				var btn=kshf_.root.select("g.scrollGroup rect.handle");
+    				btn.attr("selected",false);
+    				// unregister mouse-move callbacks
+                    parentDom.selectAll("text.row_number").style("display","");
+    				kshf_.root.on("mousemove", null);
+    				kshf_.root.on("mouseup", null);
+                    if(sendLog) sendLog(CATID.FacetScroll,ACTID_SCROLL.DragScrollbar,
+                        {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
+    			});
+    		})
+    		;
+        // number display
+    	parentDom.append("text")
+            .attr("class","first_row_number row_number")
+            .attr("x",kshf.scrollWidth)
+            ;
+    	parentDom.append("text")
+            .attr("class","last_row_number row_number")
+            .attr("x",kshf.scrollWidth)
+            ;
+    },
+    /** refreshScrollGroupPos */
+    refreshScrollGroupPos: function(){
+    	this.dom.leftScroll
+            .transition().duration(this.parentKshf.layout_animation)
+    		.attr("transform","translate("+(this.parentKshf.getRowTotalTextWidth()+this.parentKshf.barMaxWidth+kshf.scrollPadding)+",0)")
+            ;
+        if(this.type==='scatterplot'){
+            this.dom.rightScroll
+                .transition().duration(this.parentKshf.layout_animation)
+                .attr("transform","translate("+(this.getWidth_Total()-kshf.scrollWidth-3)+",0)");
+        }
+
+        this.root.select("text.scroll_display_more")
+            .attr("x", this.parentKshf.categoryTextWidth);
+    },
+    /** filter_multi */
+    filter_multi: function(item,m,curDtId) {
+        if(this.options.selectType!=="MultipleAnd"){
+            // ANY of the item mappins is true
+            for(j=0;true;j++){
+                if(j===m.length)           { item.filters[this.filterId] = false; break; }
+                if(curDtId[m[j]].selected) { item.filters[this.filterId] = true;  break; }
+            }
+        } else {
+            // ALL of the current selection is in item mappings
+            // see how many items return true. If it matches current selected count, then all selections are met for this item
+            var t=0;
+            for(j=0;j<m.length;j++) { if(curDtId[m[j]].selected) t++; }
+            item.filters[this.filterId] = (t===this.attribCount_Selected);
+        }
+    },
+    /** updateItemFilterState */
+    updateItemFilterState: function(){
+        var me=this;
+        var curDtId=this.getAttribs_wID();
+        var allSelected=this.attribCount_Selected===0;
+        kshf.items.forEach(function(item){
+            if(allSelected){
+                item.filters[me.filterId] = true;
+                return;
+            }
+            var m=item.mappedData[me.filterId];
+            if(m===undefined || m===null || m===""){ 
+                item.filters[me.filterId] = false;
+            } else {
+                if(m instanceof Array){
+                    me.filter_multi(item,m,curDtId);
+                } else {
+                    item.filters[me.filterId] = curDtId[m].selected;
+                }
+            }
+        });
+    },
+    /** updateItemFilterState_Time */
+    updateItemFilterState_Time: function(){
+        var timeFilterId = this.filterId+1, me=this;
+        kshf.items.forEach(function(item){
+            item.filters[timeFilterId] = 
+                (item.timePos>=me.timeFilter_ms.min) &&
+                (item.timePos< me.timeFilter_ms.max);
+            item.updateSelected();
+        });
+    },
+    /** updateSelected_AllItems */
+    updateSelected_AllItems: function(){
+        this.updateItemFilterState();
+        kshf.items.forEach(function(item){
+            item.updateSelected();
+        });
+    }, 
+    /** updateSelected_UnSelectOnly */
+    updateSelected_UnSelectOnly: function(){
+        this.updateItemFilterState();
+        kshf.items.forEach(function(item){
+            if(item.selected) item.updateSelected();
+        });
+    },
+    /** updateSelected_SelectOnly */
+    updateSelected_SelectOnly: function(){
+        this.updateItemFilterState();
+        kshf.items.forEach(function(item){
+            if(!item.selected) item.updateSelected();
+        });
+    },
+    /**
+     * if returns false, item is not selected!
+     * to return false, all components should be false.
+     * or, if one of the components return true, item can be selected
+     */
+    noItemOnSelect: function(d){
+        // you can (un)select a selected item
+        if(d.selected) return false;
+        // if item is unselected, you can select if no item is currently selected
+        if(d.activeItems!==0) return false;
+        if(this.attribCount_Selected!==0 && this.options.selectType!=="MultipleAnd") return false;
+        return true;
+    },
+    /** When clicked on an attribute ... */
+    filterAttrib: function(d,forceAll){
+        // Flip selection state
+    	d.selected = !d.selected;
+        // If selectType is Single, deselect other selections
+        if(this.options.selectType==="Single"){
+            if(d.selected){
+                this.selectAllAttribs(false);
+                d.selected=true;
+                forceAll=true;
+            }
+        }
+    	this.attribCount_Selected += (d.selected)?1:-1;
+        this.sortSkip = true;
+
+        if(forceAll){
+            this.updateSelected_AllItems();
+        } else if(this.attribCount_Selected===1){
+            if(this.options.selectType==="MultipleOr"){
+                this.updateSelected_UnSelectOnly();
+            } else if(this.options.selectType==="MultipleAnd"){
+                if(d.selected)
+                    this.updateSelected_UnSelectOnly();
+                else
+                    this.updateSelected_SelectOnly();
+            }
+        } else if(this.attribCount_Selected===0){
+            this.updateSelected_SelectOnly();
+        } else {
+            if(this.options.selectType==="MultipleOr"){
+                if(d.selected){
+                    this.updateSelected_SelectOnly();
+                } else {
+                    this.updateSelected_UnSelectOnly();
+                }
+            } else if(this.options.selectType==="MultipleAnd"){
+                if(d.selected){
+                    this.updateSelected_UnSelectOnly();
+                } else {
+                    this.updateSelected_SelectOnly();
+                }
+            }
+        }
+        if(this.options.sortingFuncs[this.sortID].no_resort!==true){
+            this.divRoot.attr("canResort",this.attribCount_Selected!==this.attribCount_Active&&this.attribCount_Selected!==0);
+        }
+
+    	kshf.update();
+        this.refreshFilterRowState();
+        this.refreshFilterSummaryBlock();
+        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
+
+        return true;
+    },
+    /** refreshFilterSummaryBlock */
+    refreshFilterSummaryBlock: function(){
+    	var me=this;
+        if(!this.isFiltered_Attrib()){
+            // remove DOM
+            if(this.filterSummaryBlock_Row){
+                this.filterSummaryBlock_Row.attr("ready",false);
+                setTimeout(function(){
+                    me.filterSummaryBlock_Row[0][0].parentNode.removeChild(me.filterSummaryBlock_Row[0][0]);
+                    me.filterSummaryBlock_Row = null;
+                }, 300);
+            }
+        } else {
+            // insert DOM
+            if(this.filterSummaryBlock_Row===null || this.filterSummaryBlock_Row===undefined){
+                this.insertFilterSummaryBlock_Rows();
+            }
+            // go over all items and prepare the list
+            var selectedItemsText="";
+            var selectedItemsText_Sm="";
+            var selectedItemsCount=0;
+            var catLabelText = this.options.catLabelText;
+            var catTooltipText = this.options.catTooltipText;
+            this.root.selectAll("g.row").each( function(d){
+                if(!d.selected) return; 
+                if(selectedItemsCount!==0) {
+                    if(me.options.selectType==="MultipleAnd"){
+                        selectedItemsText+=" and "; 
+                        selectedItemsText_Sm+=" and "; 
+                    } else{
+                        selectedItemsText+=" or "; 
+                        selectedItemsText_Sm+=" or "; 
+                    }
+                }
+                var labelText = catLabelText(d);
+                var titleText = labelText;
+                if(catTooltipText) titleText = catTooltipText(d);
+
+                selectedItemsText+="<b>"+labelText+"</b>";
+                selectedItemsText_Sm+=titleText;
+                selectedItemsCount++;
+            });
+            if(this.attribCount_Selected>3){
+                var bold=this.attribCount_Selected;
+                bold+=" "+(this.options.textGroup?this.options.textGroup:"categories");
+                this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
+                    .html("<b>"+bold+"</b>")
+                    .attr("title",selectedItemsText_Sm)
+                    ;
+            } else {
+                this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
+                    .html(selectedItemsText)
+                    .attr("title",selectedItemsText_Sm)
+                    ;
+            }
+        }
+    },
+    /** insertItemRows_shared */
+    insertItemRows_shared: function(){
+    	var me = this;
+    	// create the clipping area
+    	var clipPaths = this.root.select("g.barGroup_Top")
+    		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
+            .on("mousewheel",this.scrollItemCb.bind(this))
+    	.insert("g",":first-child")
+            .attr("class","barChartClipPath");
+
+        clipPaths.insert("clipPath")
+    		.attr("id","kshf_chart_clippath_"+this.id)
+    	.append("rect").attr("class","clippingRect")
+    		.attr("x",0)
+    		.attr("y",0)
+    		;
+
+        clipPaths.insert("clipPath")
+            .attr("id","kshf_chart_clippathsm_"+this.id)
+        .append("rect").attr("class","clippingRect_2")
+            .attr("y",0)
+            ;
+
+    	this.dom.g_row
+    		.on("click", function(d){
+                if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
+                    me.options.selectType = "MultipleOr";
+                }
+                if(me.noItemOnSelect(d)) {
+                    me.options.selectType = tmpSelectType;
+                    return;
+                }
+                this.tipsy.hide();
+                // TODO: If new select type is different, show the config option on display!
+
+                me.filterAttrib(d);
+
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                    // clears all the selection when selected
+                    me.selectAllAttribs(false);
+                    me.filterAttrib(d,true);
+                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatValueExact,
+                        kshf.getFilteringState(me.options.facetTitle,d.data[1]));
+                    return;
+                } else if(sendLog){
+                    if(sendLog) sendLog(CATID.FacetFilter,(d.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
+                        kshf.getFilteringState(me.options.facetTitle,d.data[1]));
+                }
+                var x = this;
+                this.timer = setTimeout(function() { x.timer = null; }, 500);
+            })
+            .attr("highlight","false")
+            .on("mouseover",function(d,i){
+                if(me.noItemOnSelect(d)) return;
+
+                this.setAttribute("highlight",true);
+                d.items.forEach(function(dd){if(dd.selected) dd.highlightListItem();});
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w',
+                    offset_y: 9,
+                    offset_x: 2,
+                    offset_x: me.parentKshf.getRowTotalTextWidth(),
+                    fade: true,
+                    title: function(){
+                        var d=this.__data__;
+                        if(d.selected) return "<b>-</b> Remove "+me.options.facetTitle+" Filter";
+                        if(d.barChart.attribCount_Selected!==0){
+                            if(d.barChart.options.selectType==="Single")
+                                 return "<b>&laquo;</b> Change "+me.options.facetTitle+" Filter";
+                             else 
+                                return "<b>+</b> Add "+me.options.facetTitle+" (and)";
+                        }
+                        return "<b>+</b> Add "+me.options.facetTitle+" Filter";
+                    }
+                });
+            })
+            .on("mouseout",function(d,i){
+                if(me.noItemOnSelect(d)) return;
+
+                this.setAttribute("highlight",false);
+                d.items.forEach(function(dd){if(dd.selected) dd.nohighlightListItem();});
+                this.tipsy.hide();
+            })
+            ;
+        
+        this.dom.row_title = this.dom.g_row.append("title").attr("class", "row_title");
+
+        this.dom.add_more = this.dom.g_row.append("text").attr("class", "filter_add_more")
+            .attr("dy",14)
+            .attr("dx",8)
+            .html("&#8853;")
+            .on("mouseover",function(d,i){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'sw',
+                    offset_y: 5,
+                    offset_x: 1,
+                    fade: true,
+                    title: function(){
+                        return "<b>+</b> Add "+me.options.facetTitle+" (or)";
+                    }
+                });
+                d3.event.stopPropagation();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+                d3.event.stopPropagation();
+            })
+            .on("click",function(d,i){
+                var tmpSelectType = me.options.selectType;
+                me.options.selectType = "MultipleOr";
+                this.tipsy.hide();
+                // TODO: If new select type is different, show the config option on display!
+
+                me.filterAttrib(d);
+
+                me.options.selectType = tmpSelectType;
+
+                d3.event.stopPropagation();
+            })
+            ;
+
+    	this.dom.rowSelectBackground_Label = this.dom.g_row
+    		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
+    		.attr("x", 0).attr("y", 0)
+            .attr("height",kshf.line_height)
+    		;
+    	this.dom.rowSelectBackground_Count = this.dom.g_row
+    		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Count")
+            .attr("y", 0)
+            .attr("width",this.parentKshf.getRowLabelOffset())
+            .attr("height",kshf.line_height)
+    		;
+        this.dom.rowSelectBackground_ClickArea = this.dom.g_row
+            .append("rect").attr("class", "rowSelectBackground_ClickArea")
+            .attr("x", 20).attr("y", 4)
+            .attr("height",kshf.line_height-8)
+            ;
+    	this.dom.item_count = this.dom.g_row
+    		.append("text").attr("class", "item_count")
+    		.attr("dy", 13)
+    		;
+    	this.dom.cat_labels = this.dom.g_row
+    		.append("text").attr("class", "row_label")
+    		.attr("dy", 14)
+    		.text(this.options.catLabelText);
+    	// Create helper line
+    	if(this.options.display.row_bar_line){
+    		this.dom.row_bar_line = this.dom.g_row.append("line")
+    			.attr("class", "row_bar_line")
+    			.attr("stroke-width","1")
+    			.attr("y1", kshf.line_height/2.0)
+    			.attr("y2", kshf.line_height/2.0);
+    	} else{
+            this.dom.row_bar_line = this.root.select(".row_bar_line"); // empty
+        }
+    	this.dom.bar_active = this.dom.g_row
+    		.append("rect")
+    		.attr("class", function(d,i){ 
+    			return "rowBar " +(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" active";
+    		})
+    		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
+    	this.dom.bar_total = this.dom.g_row
+    		.append("rect")
+    		.attr("class", function(d,i){ 
+    			return "rowBar "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" total";
+    		})
+    		.attr("rx",2).attr("ry",2)
+    		;
+        this.dom.allRowBars = this.root.selectAll('g.barGroup g.row rect.rowBar')
+            .attr("x", this.parentKshf.getRowTotalTextWidth())
+            ;
+
+        this.refreshTextWidth();
+    },
+    /** refreshTextWidth */
+    refreshTextWidth: function(){
+        kshf.time_animation_barscale = 400;
+
+        this.dom.cat_labels
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("x", this.options.rowTextWidth);
+        this.dom.rowSelectBackground_Count
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("x",this.options.rowTextWidth);
+        this.dom.item_count
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("x", this.options.rowTextWidth+3);
+        this.dom.rowSelectBackground_Label
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("width",this.options.rowTextWidth);
+        this.dom.rowSelectBackground_ClickArea
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("width",this.parentKshf.getRowTotalTextWidth()-20);
+        this.dom.allRowBars
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("x", this.parentKshf.getRowTotalTextWidth());
+        this.dom_headerGroup.selectAll(".leftHeader_XX")
+            .transition().duration(kshf.time_animation_barscale)
+            .style("width",this.options.rowTextWidth+"px");
+        this.root.select("g.x_axis")
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("transform","translate("+
+                (this.parentKshf.getRowTotalTextWidth())+","+(kshf.line_height*this.rowCount_Header()+3)+")")
+
+        if(this.dom.showTextSearch)
+            this.dom.showTextSearch.style("width",(this.options.rowTextWidth-20)+"px")
+
+        this.dom.row_bar_line
+            .attr("x1", this.parentKshf.getRowTotalTextWidth()+2);
+    },
+    /** refreshWidth_Bars_Total */
+    refreshWidth_Bars_Total: function(){
+        var me = this;
+        this.dom.bar_total
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("width", function(d){
+                return Math.min(me.catBarAxisScale(d.barValueMax),me.parentKshf.barMaxWidth+7); 
+            });
+    },
+    /** updateSorting */
+    updateSorting: function(force){
+        var me = this;
+        var no_resort = this.options.sortingFuncs[this.sortID].no_resort;
+    	if(this.sortSkip){
+            this.sortSkip=false;
+    		return;
+    	}
+        if(this.scrollbar.firstRow!==0){ // always scrolls to top row automatically when re-sorted
+            this.scrollbar.firstRow=0;
+            this.refreshScrollbar();
+        }
+    	// sort the data
+        var funcToCall = this.options.sortingFuncs[this.sortID].func;
+        if(funcToCall===undefined){
+            funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
+        }
+        var idCompareFunc = function(a,b){return b-a;};
+        if(typeof(this.getAttribs()[0].id())==="string") 
+            idCompareFunc = function(a,b){return b.localeCompare(a);};
+
+        var justSortFunc = function(a,b){
+            var a_noitems = me.noItemOnSelect(a);
+            var b_noitems = me.noItemOnSelect(b);
+            if( a_noitems &&  b_noitems) return  0; // Whatever, both won't be visible
+            if( a_noitems && !b_noitems) return  1;
+            if(!a_noitems &&  b_noitems) return -1;
+            // call the sorting function
+            var x=funcToCall(a,b);
+            // use IDs if sorting function doesn't recide on ordering
+            if(x===0) x = idCompareFunc(a.id(),b.id());
+            // reverse ordering
+            if(me.sortInverse) x*=-1;
+            return x;
+        };
+        var sortSelectedOnTop = function(a,b){
+            // automatically apply selected-top ordering to ALL sorting functions
+            if(!a.selected &&  b.selected) return  1;
+            if( a.selected && !b.selected) return -1;
+            return justSortFunc(a,b);
+        };
+        if(no_resort === true)
+    	    this.getAttribs().sort(justSortFunc);
+        else
+            this.getAttribs().sort(sortSelectedOnTop);
+    	
+        this.dom.g_row
+    		.data(this.getAttribs(), this._dataMap)
+    		.order()
+    		.transition()
+            .delay(this.sortDelay)
+    		.attr("transform", function(d,i) { return "translate(0,"+((kshf.line_height*i))+")"; })
+            .each(function(d,i){d.orderIndex = i;})
+            ;
+
+        if(this.type==='scatterplot'){
+            this.refreshBarLineHelper();
+        }
+        this.divRoot.attr("canResort",false);
+        this.sortDelay = 450;
+    },
+    /** insertXAxisTicks */
+    insertXAxisTicks: function(){
+        var axisGroup = this.root.select("g.x_axis");
+
+        var ticksSkip = this.parentKshf.barMaxWidth/25;
+        if(this.getMaxBarValuePerAttrib()>100000){
+            ticksSkip = this.parentKshf.barMaxWidth/30;
+        }
+
+        var xAxis = d3.svg.axis()
+            .tickSize(0, 0, 0)
+    		.orient('bottom')
+    		.ticks(ticksSkip)
+    		.tickFormat(d3.format("s"))
+            .scale(this.catBarAxisScale);
+
+    	axisGroup.call(xAxis);
+
+        // no animation! by default it is inserted at 0, we need to update it without animation	
+        this.root.selectAll("g.x_axis g.tick text")
+            .attr("dy",3+this.rowCount_Visible*this.parentKshf.line_height);
+
+    	axisGroup.selectAll("g.tick line")
+            .attr("y1","0")
+            .attr("y2",kshf.line_height*this.rowCount_Visible);
+    },
+    /** removeXAxis */
+    removeXAxis: function(){
+        this.root.select("g.x_axis").data([]).exit().remove();
+    },
+    /** insertFilterSummaryBlock_Rows */
+    insertFilterSummaryBlock_Rows: function(){
+    	var me=this;
+    	var a = d3.select("span.filter-blocks");
+    	this.filterSummaryBlock_Row= a.append("span").attr("class","filter-block filter_row_text_"+this.filterId)
+    		.text(" "+(this.options.textFilter?this.options.textFilter:this.options.facetTitle)+": ");
+        this.filterSummaryBlock_Row.append("span").attr("class","filter_reset")
+            .attr("title","Clear filter")
+            .text("x")
+            .on("click",function(){ 
+                me.clearAttribFilter(); 
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.facetTitle));
+            });
+    	this.filterSummaryBlock_Row.append("span").attr("class","filter_item");
+        // animate appear
+        window.getComputedStyle(this.filterSummaryBlock_Row[0][0]).opacity;
+        this.filterSummaryBlock_Row.attr("ready",true);
+    },
+    /** insertFilterSummaryBlock_Time */
+    insertFilterSummaryBlock_Time: function(){
+    	var me=this;
+    	var a = d3.select("span.filter-blocks");
+    	this.filterSummaryBlock_Time=a.append("span").attr("class","filter-block filter_row_text_"+(this.filterId+1));
+        this.filterSummaryBlock_Time.append("span").attr("class","filter_reset")
+            .attr("title","Clear filter")
+            .text("x")
+            .on("click",function(){ 
+                me.clearTimeFilter(); 
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.timeTitle));
+            });
+    	this.filterSummaryBlock_Time.append("span").attr("class","filter_item");
+        // animate appear
+        window.getComputedStyle(this.filterSummaryBlock_Time[0][0]).opacity;
+        this.filterSummaryBlock_Time.attr("ready",true);
+    },
+    /** refreshTimeChartBarDisplay */
+    refreshTimeChartBarDisplay: function(){
+        // key dots are something else
+        var me = this;
+        var r,j;
+        var rows = this.getAttribs();
+        
+        var timeChartSortFunc = function(a,b){
+            if(a.selected&&!b.selected) { return  1; }
+            if(b.selected&&!a.selected) { return -1; }
+            // use left-to-right sorting
+            var posA = a.timePos;
+            var posB = b.timePos;
+            if(posA===null || posB===null) { return 0; }
+            return posA.getTime()-posB.getTime();
+        };
+        
+        rows.forEach(function(row){
+            if(!row.sortDirty || me.type!=="scatterplot") return;
+            row.items.sort(timeChartSortFunc);
+            me.root.selectAll("g.row").selectAll(".timeDot")
+                .data(function(d) { return d.items; }, function(d){ return d.id(); })
+                // calling order will make sure selected ones appear on top of unselected ones.
+                .order()
+                ;
+            // TODO: call order only on this row
+            // re-calculate min-max only on this row
+            // etc...
+        });
+
+        // update min-max time extents ber timeBar
+        this.updateAttrib_TimeMinMax();
+        if(this.dom.timeBarActive){
+            this.dom.timeBarActive
+                .transition()
+                .duration(kshf.time_animation_barscale)
+                .attr("x", function(d) {
+                    return me.parentKshf.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
+                        me.parentKshf.getRowTotalTextWidth()+me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
+                })
+                .attr("width", function (d) { 
+                    if(d.xMin_Dyn===undefined){ return 0; }
+                    return me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
+                })
+                ;
+        }
+        rows.forEach(function(row){row.sortDirty=false;});
+    },
+    /** insertTimeChartRows */
+    insertTimeChartRows: function(){
+    	var me = this;
+
+        var rows = this.dom.g_row.append("g").attr("class","timeLineParts")
+            .attr("clip-path","url(#kshf_chart_clippathsm_"+this.id+")")
+            ;
+        if(this.options.timeBarShow===true){
+            rows.append("rect").attr("class", "timeBar total")
+                .attr("rx",2).attr("ry",2);
+            rows.append("rect").attr("class", "timeBar active")
+                .attr("rx",2).attr("ry",2);
+            }
+    	// Create bar dots
+    	rows.selectAll("g.timeDot")
+    		.data(function(d){ 
+                    return d.items; }, 
+                  function(d){ 
+                    return d.id(); })
+    		.enter().append("circle")
+            .each(function(d){ d.dots.push(this); })
+    		.attr("class", function(d) {
+                if(me.options.dotClassFunc){ return "timeDot " + me.options.dotClassFunc(d); }
+                return "timeDot";
+            })
+            .attr("r", 5)
+            .attr("cy", Math.floor(kshf.line_height / 2 ))
+            .on("mouseover",function(d,i,f){
+                d.highlightAll();
+                // update the position of selectVertLine
+                var tm = me.timeScale(me.options.timeItemMap(d));
+                var totalLeftWidth = me.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+me.parentKshf.getRowTotalTextWidth();
+                me.root.select("line.selectVertLine")
+                    .attr("x1",tm+totalLeftWidth)
+                    .attr("x2",tm+totalLeftWidth)
+                    .style("display","block");
+                d3.event.stopPropagation();
+            })
+            .on("mouseout",function(d,i){
+                d.nohighlightAll();
+                me.root.select("line.selectVertLine")
+                    .style("display","none");
+                d3.event.stopPropagation();
+            })
+    		.on("click", function(d,i,f) {
+                var itemDate = d.timePos;
+                var rangeMin = new Date(itemDate);
+                var rangeMax = new Date(itemDate);
+
+                if(me.timeticks.range === d3.time.months){
+                    rangeMin.setDate(rangeMin.getDate()-15);
+                    rangeMax = new Date(rangeMin);
+                    rangeMax.setMonth(rangeMin.getMonth()+1);
+                }
+                if(me.timeticks.range === d3.time.years){
+                    // if zoomed years range is wide, use 5-year step size
+                    var diff_Year =  new Date(me.timeZoom_ms.max).getFullYear() - new Date(me.timeZoom_ms.min).getFullYear();
+                    if(me.options.timeMaxWidth<diff_Year*10){
+                        rangeMin.setFullYear(rangeMin.getFullYear()-5);
+                        rangeMax.setFullYear(rangeMax.getFullYear()+5);
+                    } else {
+                        rangeMin.setMonth(rangeMin.getMonth()-6);
+                        rangeMax = new Date(rangeMin);
+                        rangeMax.setMonth(rangeMin.getMonth()+12);
+                    }
+                }
+                if(me.timeticks.range === d3.time.days){
+                    rangeMin.setDate(rangeMin.getDate()-1);
+                    rangeMax.setDate(rangeMin.getDate()-1);
+                }
+
+                me.timeFilter_ms.min = Date.parse(rangeMin);
+                me.timeFilter_ms.max = Date.parse(rangeMax);
+                me.yearSetXPos();
+                me.updateItemFilterState_Time();
+                // kshf update is done by row-category click whcih is also auto-activated after dot click
+
+                // clear all the selections
+                me.selectAllAttribs(false);
+
+                // filter for row too
+                me.filterAttrib(d3.select(this.parentNode.parentNode).datum());
+
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDot,kshf.getFilteringState());
+
+                d3.event.stopPropagation();
+    		})
+            ;
+        this.dom.timeBar       = this.root.selectAll('g.barGroup g.row rect.timeBar')
+        this.dom.timeBarActive = this.root.selectAll("g.barGroup g.row rect.timeBar.active");
+        this.dom.timeBarTotal  = this.root.selectAll("g.barGroup g.row rect.timeBar.total");
+        this.dom.timeDots      = this.root.selectAll('g.barGroup g.row .timeDot');
+    },
+    /** setTimeTicks */
+    setTimeTicks: function(){
+        this.timeticks = {};
+
+        // http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
+        var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+        var _MS_PER_MONTH = _MS_PER_DAY * 30.4; // assuming 30.4 days per month - 365/12
+        var _MS_PER_YEAR = _MS_PER_DAY * 365;
+
+        var timeZoom_msDiff;
+        if(this.timeZoom_ms!==undefined) {
+            timeZoom_msDiff= this.timeZoom_ms.max - this.timeZoom_ms.min;
+        } else {
+            timeZoom_msDiff = this.timeData_dt.max.getTime() - this.timeData_dt.min.getTime();
+        }
+
+        var diff_Day = Math.floor(timeZoom_msDiff / _MS_PER_DAY);
+        var diff_Month =  Math.floor(timeZoom_msDiff / _MS_PER_MONTH );
+        var diff_Year= Math.floor(timeZoom_msDiff / _MS_PER_YEAR );
+
+        // this.options.timeMaxWidth is the current timeline width
+        var timeWidthSteps = this.options.timeMaxWidth/70;
+
+        // choose range
+        if(timeWidthSteps<=diff_Year){
+            // YEAR
+            this.timeticks.range = d3.time.years;
+            this.timeticks.format = d3.time.format.utc("%Y");
+            this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/30));
+        } else if(timeWidthSteps<=diff_Month){
+            // MONTH
+            this.timeticks.range = d3.time.months;
+            this.timeticks.format = d3.time.format.utc("%b '%y");
+            this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/60));
+            // must be 1/2/3/4/6/12
+            if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
+            else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
+            else if(this.timeticks.stepSize>4) {this.timeticks.stepSize = 4;}
+        } else if(true){
+            // DAY
+            this.timeticks.range = d3.time.days;
+            this.timeticks.format = d3.time.format.utc("%e %b"); // 17Feb
+            this.timeticks.stepSize = Math.ceil(diff_Day/timeWidthSteps/2);
+            // 16/11/8/7/5.5/5
+            if(this.timeticks.stepSize>16) { this.timeticks.stepSize = 32;}
+            else if(this.timeticks.stepSize>10){ this.timeticks.stepSize = 15;}
+            else if(this.timeticks.stepSize>5) {this.timeticks.stepSize = 10;}
+            this.timeticks.stepSize++;
+        }
+
+        if(this.useCurrentTimeMinMax===undefined){
+            var tempDate;
+            if(this.timeticks.range===d3.time.years){
+                this.timeRange_ms = { 
+                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),0,1),
+                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear()+1,0,1)};
+            } else if(this.timeticks.range===d3.time.months){
+                this.timeRange_ms = {
+                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),1),
+                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth()+1,1)};
+            } else if(this.timeticks.range===d3.time.days){
+                this.timeRange_ms = {
+                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),this.timeData_dt.min.getUTCDate()-1),
+                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth(),this.timeData_dt.max.getUTCDate()+1)};
+            }
+
+            this.resetTimeZoom_ms();
+            this.resetTimeFilter_ms();
+        }
+        // update the time scale with the new date domain
+        this.updateTimeScale();
+    },
+    /** updateTimeScale */
+    updateTimeScale: function(){
+        this.timeScale = d3.time.scale.utc()
+            .domain([new Date(this.timeZoom_ms.min), new Date(this.timeZoom_ms.max)])
+            .rangeRound([0, this.options.timeMaxWidth])
+            ;
+    },
+    /** insertTimeTicks */
+    insertTimeTicks: function(){
+        var kshf_ = this;
+        var tickGroup = this.root.select("g.timeAxisGroup g.tickGroup");
+
+        var numTicks = Math.floor(this.options.timeMaxWidth/70);
+
+        var xAxis = d3.svg.axis()
+            .scale(this.timeScale)
+            .orient('bottom')
+            .innerTickSize(8)
+            .outerTickSize(3)
+            .ticks(this.timeticks.range, this.timeticks.stepSize ) // d3.time.years, 2 , no tickValues
+            .tickFormat(this.timeticks.format ) // d3.time.format("%Y")
+            ;
         ;
-    if(this.type==='scatterplot') { 
-        barGroup_Top.append("line")
-            .attr("class","selectVertLine")
+        tickGroup.call(xAxis);
+
+        this.insertTimeTicks_timeValues = [];
+
+        tickGroup.selectAll("text")
+            .each(function(d,i){
+                kshf_.insertTimeTicks_timeValues.push(d);
+            })
+            .on("click",function(d,i){
+                var curTime  = kshf_.insertTimeTicks_timeValues[i];
+                var nextTime = kshf_.insertTimeTicks_timeValues[i+1];
+                if(nextTime === undefined){
+                    nextTime = kshf_.timeRange_ms.max;
+    //                curTime = kshf_.insertTimeTicks_timeValues[i-1];
+                }
+                kshf_.timeFilter_ms.min = curTime;
+                kshf_.timeFilter_ms.max = nextTime;
+                kshf_.yearSetXPos();
+                kshf_.updateItemFilterState_Time();
+
+                kshf_.sortSkip = true;
+                kshf.update();
+            })
+            ;
+
+        var text=xAxis.tickValues();
+
+        tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
+    },
+    /** insertTimeChartAxis_1 */
+    insertTimeChartAxis_1: function(){
+        var axisGroup = this.root.select("g.timeAxisGroup");
+        var ggg = axisGroup.append("g").attr("class","selection_bar")  ;
+        ggg.append("title").attr("class","xaxis_title");
+        ggg.append("rect")
+            .attr("y", -2.5)
+            .attr("height", 7)
+
+        var axisSubGroup=axisGroup.selectAll(".filter_handle")
+            .data([1,2])
+            .enter()
+            .append("g")
+            .attr("class", function(d,i) { return "filter_handle "+((i===0)?"filter_min":"filter_max"); });
+        axisSubGroup
+            .append("line")
             .attr("x1", 0)
             .attr("x2", 0)
-            .attr("y1", -kshf.line_height*1.5)
+            .attr("y1", kshf.line_height*1.5-4)
             ;
-    }
-
-	var barGroup = barGroup_Top.append("g")
-		.attr("class","barGroup");
-	barGroup.selectAll("g.row")
-        // removes attributes with no items
-		.data(this.getData(), this._dataMap)
-	  .enter().append("g")
-		.attr("class", "row")
-        .each(function(d){
-            var mee=this;
-            d.barChart = me;
-            // Add this DOM to each kshf item under cats
-            d.items.forEach(function(dd){dd.cats.push(mee);});
-        })
-		;
-    this.dom.g_row = this.root.selectAll('g.row');
-
-    if(this.type==='scatterplot') { 
-    	var timeAxisGroup = this.root.append("g").attr("class","timeAxisGroup")
-    		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
+        axisSubGroup
+            .append("rect")
+            .attr("class", "filter_nonselected")
+            .attr("y",0)
+            .attr("height",0)
+            .on("click",function(){
+                d3.event.stopPropagation();
+            })
             ;
-        timeAxisGroup.append("g").attr("class","tickGroup");
-    }
 
-    if(this.attribCount_Active===1){
-        this.options.catBarScale = "scale_frequency";
-    }
+        var axisSubGroup=axisGroup.selectAll(".filter_handle");
+        
+        var axisSubSubGroup = axisSubGroup.append("g");
+        axisSubSubGroup.append("title").attr("class","xaxis_title");
+        axisSubSubGroup
+            .append("path")
+            .attr("transform",function(d,i) { return "translate("+(i===0?"0":"0")+",-12)";})
+            .attr("d", function(d,i) { 
+                return (i===0)?"M0 6 L0 20 L12 13 Z":"M0 6 L0 20 L-12 13 Z";
+            })
+    },
+	/** insertTimeChartAxis */
+    insertTimeChartAxis: function(){
+        var me=this;
 
-    this.insertHeader();
+        var axisGroup = this.root.select("g.timeAxisGroup");
+        var msPerTick;
+        switch(this.timeticks.range){
+            case d3.time.years:
+                msPerTick = 31557600000; break;
+            case d3.time.months:
+                msPerTick = 31557600000/12; break;
+            case d3.time.days:
+                msPerTick = 31557600000/(12*30); break;
+            default: break;
+        }
+        this.lengthPerTick = msPerTick*this.timeScale.range()[1]/
+            (this.timeZoom_ms.max-this.timeZoom_ms.min);
+    	
+    	axisGroup.select(".selection_bar rect")
+    		.on("mousedown", function(d, i) {
+                var eeeeee = this;
+                this.selected = true;
+                this.style.stroke = "orangered";
+                me.divRoot.style('cursor','pointer');
+                var mouseDown_x = d3.mouse(axisGroup[0][0])[0];
+                var mousedown_filter = {
+                    min: me.timeFilter_ms.min,
+                    max: me.timeFilter_ms.max
+                };
+    			var timeFilter_ms = me.timeFilter_ms;
+                var olddif=null;
+    			me.divRoot.on("mousemove", function() {
+    				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
+    				var mouseDif = mouseMove_x-mouseDown_x;
+    				var mousemove_filter = timeFilter_ms.min;
+    				var stepDif = Math.round(mouseDif/me.lengthPerTick)*msPerTick;
+    				if(stepDif===olddif ) { return; }
+                    olddif=stepDif;
+    				if(stepDif<0){
+    					timeFilter_ms.min = mousedown_filter.min+stepDif;
+    					if(timeFilter_ms.min<me.timeZoom_ms.min){
+    						timeFilter_ms.min=me.timeZoom_ms.min;
+    					}
+    					timeFilter_ms.max=timeFilter_ms.min+(mousedown_filter.max-mousedown_filter.min);
+    				} else {
+    					timeFilter_ms.max = mousedown_filter.max+stepDif;
+    					if(timeFilter_ms.max>me.timeZoom_ms.max){
+    						timeFilter_ms.max=me.timeZoom_ms.max;
+    					}
+    					timeFilter_ms.min=timeFilter_ms.max-(mousedown_filter.max-mousedown_filter.min);
+    				}
+    				// TODO: make sure you don't exceed the boundaries
+    				if(mousemove_filter.min!==timeFilter_ms.min){
+                        kshf.time_animation_barscale = 0;
+    					// update filter 
+    					me.yearSetXPos();
+                        kshf.time_animation_barscale = 400;
+                        me.updateItemFilterState_Time();
+                        me.sortSkip = true;
+                        me.skipUpdateTimeChartDotConfig = true;
+    					kshf.update();
+                        me.skipUpdateTimeChartDotConfig = false;
+    				}
+    			});
+    			me.divRoot.on("mouseup", function(){
+                    eeeeee.style.stroke= "";
+                    me.divRoot.style( 'cursor', 'default' );
+                    me.x_axis_active_filter = null;
+                    // unregister mouse-move callbacks
+                    me.divRoot.on("mousemove", null);
+                    me.divRoot.on("mouseup", null);
+                    this.refreshTimeChartDotConfig();
+                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDragRange,kshf.getFilteringState());
+    			});
+    		});
+    	
+    	// Filter handles
+    	axisGroup.selectAll(".filter_handle g path")
+    		.on("mousedown", function(d, i) {
+                var eeeee = this;
+    			me.x_axis_active_filter = (i===0)?'min':'max';
+                this.style.stroke = 'orangered';
+                me.divRoot.style('cursor','pointer');
+    			var timeFilter_ms = me.timeFilter_ms; // shorthand
+    			me.divRoot.on("mousemove", function() {
+    				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
 
-    this.insertScrollbar();
+                    // convert mouse position to date
+                    var time_ms = Math.floor(
+                        me.timeZoom_ms.min+ 
+                        (me.timeZoom_ms.max-me.timeZoom_ms.min)*(mouseMove_x / me.options.timeMaxWidth)
+                        );
 
-    this.insertItemRows_shared();
-    if(this.type==='scatterplot') { 
-        this.insertTimeChartRows();
-        this.insertTimeChartAxis_1();
-    }
-    this.updateSorting(true);
-};
+                    var time_dt = new Date(time_ms);
 
-kshf.BarChart.prototype.getData = function(){
-    return kshf.dt[this.catTableName];
-};
-kshf.BarChart.prototype.getData_wID = function(){
-    return kshf.dt_id[this.catTableName];
-};
+                    var time_ = null;
+                    if(me.timeticks.range===d3.time.years){
+                        time_ = kshf.nearestYear(time_dt);
+                    } else if(me.timeticks.range===d3.time.months){
+                        time_ = kshf.nearestMonth(time_dt);
+                    } else if(me.timeticks.range===d3.time.days){
+                        time_ = kshf.nearestDay(time_dt);
+                    }
 
-// returns the maximum number of total items stored per row in chart data
-kshf.BarChart.prototype.getMaxTotalItemsPerRow = function(){
-    if(!this._maxTotalItemsPerRow){
-        var dataMapFunc = this._dataMap;
-        this._maxTotalItemsPerRow = d3.max(this.getData(), function(d){ 
-            if(dataMapFunc(d)===null) { return null; }
-            return d.items.length;
-        });
-    }
-    return this._maxTotalItemsPerRow;
-};
+                    // if it has the same value after mouse is moved, don't update any filter
+                    if(timeFilter_ms[me.x_axis_active_filter] === time_.getTime()) return;
+                    // update timeFilter_ms
+                    timeFilter_ms[me.x_axis_active_filter] = time_.getTime();
+                    
+                    // Check agains min/max order, sawp if necessary
+                    if(timeFilter_ms.max<timeFilter_ms.min){
+                        eeeee.style.stroke = "";
+                        me.x_axis_active_filter = (me.x_axis_active_filter==='min'?'max':'min');
+                        var tttt= timeFilter_ms.max;
+                        timeFilter_ms.max = timeFilter_ms.min;
+                        timeFilter_ms.min = tttt;
+                    }
 
-// returns the maximum number of selected items stored per row in chart data
-kshf.BarChart.prototype.getMaxBarValuePerRow = function(){
-    var dataMapFunc = this._dataMap;
-    return d3.max(this.getData(), function(d){ 
-        if(dataMapFunc(d)===null) { return null; }
-        return d.barValue;
-    });
-};
-kshf.BarChart.prototype.getMaxBarValueMaxPerRow = function(){
-    var dataMapFunc = this._dataMap;
-    return d3.max(this.getData(), function(d){ 
-        if(dataMapFunc(d)===null) { return null; }
-        return d.barValueMax;
-    });
-};
+                    // update filter 
+                    kshf.time_animation_barscale = 0;
+                    me.yearSetXPos();
+                    kshf.time_animation_barscale = 400;
+                    me.updateItemFilterState_Time();
+                    me.sortSkip = true;
 
+                    if(me.options.sortingFuncs[me.sortID].no_resort!==true)
+                        me.divRoot.attr("canResort",true);
 
-kshf.BarChart.prototype.updateSelf = function(){
-	this.refreshActiveItemCount();
-    this.refreshBarHeight();
-    if(this.type==="scatterplot"){
+                    me.skipUpdateTimeChartDotConfig = true;
+                    kshf.update();
+                    me.skipUpdateTimeChartDotConfig = false;
+    			});
+    			me.divRoot.on("mouseup", function(){
+                    eeeee.style.stroke = "";
+    				me.divRoot.style( 'cursor', 'default' );
+    				me.x_axis_active_filter = null;
+    				var btn=d3.selectAll(".filter_"+me.x_axis_active_filter);
+    				btn.attr("selected", "false");
+    				// unregister mouse-move callbacks
+    				me.divRoot.on("mousemove", null);
+    				me.divRoot.on("mouseup", null);
+
+                    me.refreshTimeChartDotConfig();
+                    if(sendLog) {
+                        if(me.x_axis_active_filter==="min")
+                            sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMinHandle,kshf.getFilteringState());
+                        else
+                            sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMaxHandle,kshf.getFilteringState());
+                    }
+    			});
+    		});
+        this.yearSetXPos();
+    },
+    /** updateTimeChartBarsDots */
+    updateTimeChartBarsDots: function(){
+        var totalLeftWidth = this.parentKshf.barMaxWidth+kshf.scrollPadding+
+            kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
+    	var me = this;
+        this.dom.timeBarTotal
+            .transition().duration(kshf.time_animation_barscale)
+            .attr("x",     function(d){ return totalLeftWidth+me.timeScale(d.xMin); })
+            .attr("width", function(d){ return me.timeScale(d.xMax) - me.timeScale(d.xMin); })
+            ;
+    	// Update bar dot positions
+    	this.dom.timeDots
+            .transition().duration(kshf.time_animation_barscale)
+    		.attr("cx", function(d){ return totalLeftWidth+me.timeScale(d.timePos) ; });
+    },
+    /** getFilterMinDateText */
+    getFilterMinDateText: function(){
+        var dt = new Date(this.timeFilter_ms.min);
+        return this.timeticks.format(dt);
+    },
+    /** getFilterMaxDateText */
+    getFilterMaxDateText: function(){
+        var dt = new Date(this.timeFilter_ms.max);
+        return this.timeticks.format(dt);
+    },
+    /** yearSetXPos */
+    yearSetXPos: function() {
+        // make sure filters do not exceed domain range
+        this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
+        this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
+
+    	var minX = this.timeScale(this.timeFilter_ms.min);
+    	var maxX = this.timeScale(this.timeFilter_ms.max);
+
+        if(this.options.timeMaxWidth-minX>190){
+            this.divRoot.select(".config_zoom")
+                .style("float","left")
+                .style("margin-left",minX+"px");
+        } else{
+            this.divRoot.select(".config_zoom")
+                .style("float","right")
+                ;
+        }
+    	
+    	this.root.selectAll("g.filter_min")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("transform", function(d) { return "translate(" + minX + ",0)"; });
+    	this.root.selectAll("g.filter_max")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("transform", function(d) { return "translate(" + maxX + ",0)"; });
+    	this.root.selectAll(".selection_bar rect")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("x", minX)
+    		.attr("width", (maxX - minX));
+    	this.root.select("g.filter_min .filter_nonselected")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("x", -minX)
+    		.attr("width", minX);
+    	this.root.select("g.filter_max .filter_nonselected")
+            .transition()
+            .duration(kshf.time_animation_barscale)
+    		.attr("x", 0)
+    		.attr("width", this.options.timeMaxWidth -maxX);
+        this.root.select("g.filter_min")
+            .attr("filtered",this.timeFilter_ms.min!==this.timeRange_ms.min);
+        this.root.select("g.filter_max")
+            .attr("filtered",this.timeFilter_ms.max!==this.timeRange_ms.max);
+        this.refreshTimeChartFilterText();
         this.refreshTimeChartTooltip();
-        this.refreshTimeChartBarDisplay();
-        this.updateTimeChartDotConfig();
+    },
+    /** refreshTimeChartFilterText */
+    refreshTimeChartFilterText: function(){
+        var me = this;
+        this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
+        if(this.isFiltered_Time()){
+            this.divRoot.select(".zoom_in").attr("disabled","false");
+            if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
+                this.insertFilterSummaryBlock_Time();
+            }
+            this.parentKshf.root.select(".filter_row_text_"+(this.filterId+1)+" .filter_item")
+                .html("from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>")
+            ;
+        } else if(this.filterSummaryBlock_Time){
+            this.divRoot.select(".zoom_in").attr("disabled","true");
+            if(this.filterSummaryBlock_Time){
+                this.filterSummaryBlock_Time.attr("ready",false);
+                setTimeout(function(){
+                    if(me.filterSummaryBlock_Time===null) return;
+                    me.filterSummaryBlock_Time[0][0].parentNode.removeChild(me.filterSummaryBlock_Time[0][0]);
+                    me.filterSummaryBlock_Time = null;
+                }, 300);
+            }
+        }
+    },
+    /** refreshTimeChartTooltip */
+    refreshTimeChartTooltip: function(){
+        var titleText = kshf.itemsSelectedCt+ " selected "+kshf.itemName+"from "+
+                    this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
+    	this.root.selectAll("title.xaxis_title").text(titleText);
     }
-    this.updateWidth_Bars_Active();
-    if(this.options.removeInactiveAttrib){
-        this.updateAtribCount_Active();
-    }
-	this.updateSorting(false);
-};
-
-kshf.BarChart.prototype.updateData_TimeMinMax = function(){
-    var specFunc = function(d){
-        if(!d.selected) return undefined; // unselected items have no timePos
-        return d.timePos;
-    };
-    this.getData().forEach(function(row){
-        if(row.sortDirty===false) return;
-        row.xMin_Dyn = d3.min(row.items, specFunc);
-        row.xMax_Dyn = d3.max(row.items, specFunc);
-    });
 };
 
 // You should only display at most 3 digits + k/m/etc
@@ -2576,1911 +4550,6 @@ kshf.formatForItemCount = function(n){
     if(n<1000000000) return Math.floor(n/1000000)+"m";
     return n;
 }
-
-kshf.BarChart.prototype.refreshActiveItemCount = function(){
-    var me = this;
-    this.dom.item_count.text(function(d){ return "("+kshf.formatForItemCount(d.barValue)+")"; });
-    this.dom.g_row.each(function(d){ this.setAttribute("noitems",me.noItemOnSelect(d)); });
-    this.dom.row_title.text(function(d){
-        return (d.activeItems===0?"No":d.activeItems)+" selected "+kshf.itemName+" "+
-            (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
-            ((me.options.catTooltipText)?me.options.catTooltipText(d):me.options.catLabelText(d));
-    });
-};
-kshf.BarChart.prototype.refreshBarHeight = function(){
-	// Non-selected rows have shorted bar height.
-	this.dom.allRowBars
-		.attr("height", function(d,i){ return (d.activeItems>0)?12:6; })
-		.attr("y",function(d,i){ return (d.activeItems>0)?3:6; });
-    if(this.dom.timeBar){
-        this.dom.timeBar
-    		.attr("height", function(d,i){ return (d.activeItems>0)?12:6; })
-    		.attr("y",function(d,i){ return (d.activeItems>0)?3:6; });
-    }
-	this.root.selectAll('g.barGroup g.row rect.active')
-		.attr("height", function(d,i){ return (d.activeItems>0)?10:4; })
-		.attr("y",function(d,i){ return (d.activeItems>0)?4:7; });
-};
-kshf.BarChart.prototype.updateWidth_Bars_Active = function(){
-	var me=this;
-	this.dom.bar_active
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("width", function(d){ return me.catBarAxisScale(d.barValue);})
-        ;
-};
-// Applies alternating color for bar helper lines
-kshf.BarChart.prototype.refreshBarLineHelper = function(){
-	this.dom.row_bar_line.attr("stroke", function(d,i) {
-		return (d.orderIndex%2===1)?"rgb(200,200,200)":"rgb(80,80,80)";
-	});
-};
-kshf.BarChart.prototype.getFilteredCount = function(){
-    var r=this.isFiltered_Row();
-    if(this.type==="scatterplot"){
-        r+=this.isFiltered_Time();
-    }
-    return r;
-}
-kshf.BarChart.prototype.refreshFilterRowState = function(){
-	this.divRoot.attr("filtered_row",this.isFiltered_Row());
-	this.dom.g_row.attr("selected",function(d){return d.selected;});
-};
-
-kshf.BarChart.prototype.isFiltered_Row = function(state){
-    return this.attribCount_Selected!==0;
-};
-kshf.BarChart.prototype.isFiltered_Time = function(){
-	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
-	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
-};
-kshf.BarChart.prototype.selectAllAttribs = function(state){
-    this.getData().forEach(function(r){r.selected=state;});
-	this.attribCount_Selected = (state)?this.attribCount_Total:0;
-};
-
-kshf.BarChart.prototype.clearAllFilters = function(){
-    this.clearRowFilter(false);
-    if(this.type==='scatterplot') this.clearTimeFilter(false);
-}
-kshf.BarChart.prototype.clearRowFilter = function(toUpdate){
-    if(this.attribCount_Selected===0) return;
-	this.selectAllAttribs(false);
-    this.filter_addItems();
-    this.refreshFilterRowState();
-	this.refreshFilterSummaryBlock();
-    if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
-    if(toUpdate!==false) kshf.update();
-};
-
-kshf.BarChart.prototype.clearTimeFilter_ms = function(){
-    this.timeFilter_ms= { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
-}
-kshf.BarChart.prototype.clearTimeZoom_ms = function(){
-    this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
-}
-
-kshf.BarChart.prototype.clearTimeFilter = function(toUpdate){
-    this.clearTimeFilter_ms();
-    this.clearTimeZoom_ms();
-    this.updateTimelineLayut(toUpdate);
-    this.yearSetXPos();
-    this.filterTime();
-    if(toUpdate!==false) kshf.update();
-};
-
-kshf.BarChart.prototype.collapseCategories = function(hide){
-    this.collapsed = hide;
-    if(sendLog) {
-        if(hide===true) sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Collapse,{facet:this.options.facetTitle});
-        else            sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Show,{facet:this.options.facetTitle});
-    }
-    this.refreshVisibleAttribs(true); // force update
-    this.parentKshf.updateLayout_Height();
-}
-
-kshf.BarChart.prototype.collapseTime = function(hide){
-    this.collapsedTime = hide;
-    this.refreshVisibleAttribs(true); // force update
-    this.parentKshf.updateLayout_Height();
-}
-
-kshf.BarChart.prototype.updateTimeAxisGroupTransform = function(){
-    var x = (this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth());
-    var y = (kshf.line_height*this.rowCount_Visible+27);
-    this.root.select("g.timeAxisGroup")
-        .transition().duration(this.parentKshf.layout_animation)
-        .attr("transform","translate("+x+","+y+")");
-}
-
-kshf.BarChart.prototype.insertHeader = function(){
-	var kshf_ = this;
-    var me = this;
-    var rows_Left = this.rowCount_Header_Left();
-    var rightHeader;
-
-    if(this.type==="scatterplot"){
-        rightHeader = this.dom_headerGroup.append("div").attr("class","rightHeader");
-    }
-
-    var leftHeader = this.dom_headerGroup.append("div").attr("class","leftHeader");
-
-    leftHeader.append("div").attr("class","border_line border_line_top");
-
-    var topRow_background = leftHeader.append("div").attr("class","chartFirstLineBackground");
-
-    leftHeader.append("div").attr("class","border_line");
-
-    var topRow = topRow_background.append("div")
-        .attr("class","leftHeader_XX");
-
-    var headerLabel = topRow.append("span")
-        .attr("class", "header_label")
-        .attr("title", this.attribCount_Total+" attributes")
-        .html(this.options.facetTitle)
-        .on("click",function(){ 
-            if(kshf_.collapsed) { kshf_.collapseCategories(false); }
-        })
-        ;
-    
-    topRow.append("span").attr("class","header_label_arrow")
-        .attr("title","Show/Hide categories").text("▼")
-        .on("click",function(){ kshf_.collapseCategories(!kshf_.collapsed); })
-        ;
-
-    topRow.append("svg")
-        .attr("class", "settingButton")
-        .attr("version","1.1")
-        .attr("height","12px")
-        .attr("width","12px")
-        .attr("title","Settings")
-        .attr("xml:space","preserve")
-        .attr("viewBox","0 0 24 24")
-        .on("click",function(d){
-            me.showConfig = !me.showConfig;
-            me.refreshVisibleAttribs(true); // force update
-            me.parentKshf.updateLayout();
-        })
-    .append("path")
-        .attr("clip-rule","evenodd")
-        .attr("d","M21.521,10.146c-0.41-0.059-0.846-0.428-0.973-0.82l-0.609-1.481  c-0.191-0.365-0.146-0.935,0.1-1.264l0.99-1.318c0.246-0.33,0.227-0.854-0.047-1.162l-1.084-1.086  c-0.309-0.272-0.832-0.293-1.164-0.045l-1.316,0.988c-0.33,0.248-0.898,0.293-1.264,0.101l-1.48-0.609  c-0.395-0.126-0.764-0.562-0.82-0.971l-0.234-1.629c-0.057-0.409-0.441-0.778-0.85-0.822c0,0-0.255-0.026-0.77-0.026  c-0.514,0-0.769,0.026-0.769,0.026c-0.41,0.044-0.794,0.413-0.852,0.822l-0.233,1.629c-0.058,0.409-0.427,0.845-0.82,0.971  l-1.48,0.609C7.48,4.25,6.912,4.206,6.582,3.958L5.264,2.969c-0.33-0.248-0.854-0.228-1.163,0.045L3.017,4.1  C2.745,4.409,2.723,4.932,2.971,5.262l0.988,1.318C4.208,6.91,4.252,7.479,4.061,7.844L3.45,9.326  c-0.125,0.393-0.562,0.762-0.971,0.82L0.85,10.377c-0.408,0.059-0.777,0.442-0.82,0.853c0,0-0.027,0.255-0.027,0.77  s0.027,0.77,0.027,0.77c0.043,0.411,0.412,0.793,0.82,0.852l1.629,0.232c0.408,0.059,0.846,0.428,0.971,0.82l0.611,1.48  c0.191,0.365,0.146,0.936-0.102,1.264l-0.988,1.318c-0.248,0.33-0.308,0.779-0.132,0.994c0.175,0.217,0.677,0.752,0.678,0.754  s0.171,0.156,0.375,0.344s1.042,0.449,1.372,0.203l1.317-0.99c0.33-0.246,0.898-0.293,1.264-0.1l1.48,0.609  c0.394,0.125,0.763,0.562,0.82,0.971l0.233,1.629c0.058,0.408,0.441,0.779,0.852,0.822c0,0,0.255,0.027,0.769,0.027  c0.515,0,0.77-0.027,0.77-0.027c0.409-0.043,0.793-0.414,0.85-0.822l0.234-1.629c0.057-0.408,0.426-0.846,0.82-0.971l1.48-0.611  c0.365-0.191,0.934-0.146,1.264,0.102l1.318,0.99c0.332,0.246,0.854,0.227,1.164-0.047l1.082-1.084  c0.273-0.311,0.293-0.834,0.047-1.164l-0.99-1.318c-0.246-0.328-0.291-0.898-0.1-1.264l0.609-1.48  c0.127-0.393,0.562-0.762,0.973-0.82l1.627-0.232c0.41-0.059,0.779-0.441,0.822-0.852c0,0,0.027-0.255,0.027-0.77  s-0.027-0.77-0.027-0.77c-0.043-0.41-0.412-0.794-0.822-0.853L21.521,10.146z M12,15C10.343,15,9,13.656,9,12  C9,10.343,10.343,9,12,9c1.657,0,3,1.344,3,3C15,13.656,13.656,15,12,15z")
-        .attr("fill-rule","evenodd")
-    .append("title").text("Settings");
-        ;
-
-
-    topRow.append("div")
-        .attr("class","chartClearFilterButton rowFilter")
-        .attr("title","Clear filter")
-		.on("click", function(d,i){
-            kshf_.clearRowFilter();
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,kshf.getFilteringState(kshf_.options.facetTitle));
-        })
-        .text('x');
-    if(this.type==="scatterplot"){
-        rightHeader.append("div").attr("class","border_line");
-
-        var poff = rightHeader.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
-
-        poff.append("span").attr("class","header_label_arrow")
-            .attr("title","Show/Hide categories").text("▼")
-            .on("click",function(){ kshf_.collapseTime(!kshf_.collapsedTime); })
-            ;
-        poff.append("span")
-            .attr("class", "header_label")
-            .text(this.options.timeTitle)
-            .on("click",function(){ if(kshf_.collapsedTime) { kshf_.collapseTime(false); } })
-            ;
-        poff.append("div")
-            .attr("class","chartClearFilterButton timeFilter")
-            .attr("title","Clear filter")
-            .on("click", function(d,i){ 
-                kshf_.clearTimeFilter();
-                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
-                    {facet:kshf_.options.timeTitle,results:kshf.itemsSelectedCt});
-            })
-            .text('x');
-
-        rightHeader.append("div").attr("class","border_line");
-
-        var config_zoom = rightHeader.append("div").attr("class","config_zoom");
-
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_in")
-            .attr("disabled","true")
-            .text("⇥ Zoom in ⇤")
-            .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","in");  })
-            .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
-            .on("click",function(d){
-                me.timeZoom_ms.min = me.timeFilter_ms.min;
-                me.timeZoom_ms.max = me.timeFilter_ms.max;
-                me.useCurrentTimeMinMax = true;
-                me.updateTimelineLayut(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","false");
-                me.divRoot.select(".zoom_in").attr("disabled","true");
-            });
-
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_out")
-            .attr("disabled","true")
-            .text("⇤ Zoom out ⇥")
-            .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","out");  })
-            .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
-            .on("click",function(){
-                me.clearTimeZoom_ms();
-                me.useCurrentTimeMinMax = true;
-                me.updateTimelineLayut(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","true");
-            })
-            ;
-    }
-
-    var header_belowFirstRow = leftHeader.append("div").attr("class","header_belowFirstRow");
-
-    var xxx=leftHeader.append("svg")
-        .attr("class", "resort_button")
-        .attr("version","1.1")
-        .attr("height","15px")
-        .attr("width","15px")
-        .attr("title","Settings")
-        .attr("xml:space","preserve")
-        .attr("viewBox","0 0 2000 1000")
-        .style("left",(this.parentKshf.categoryTextWidth+5)+"px")
-        .on("click",function(d){
-            kshf_.sortDelay = 0; 
-            kshf_.updateSorting(true);
-            if(sendLog) sendLog(CATID.FacetSort,ACTID_SORT.ResortButton,{facet:kshf_.options.facetTitle});
-        })
-        ;
-    xxx.append("path")
-        .attr("d",
-            "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
-        ;
-    xxx.append("title").text("Move selected rows to top & re-order");
-
-    // ************************************************************************************
-    // ****** CONFIG LINE *****************************************************************
-
-    var filterOptions = ["One","Any"];
-    if(this.hasMultiValueItem===true){ filterOptions.push("All"); }
-
-    var configGroup = 
-        header_belowFirstRow.append("div")
-            .attr("class","configGroup leftHeader_XX")
-            .attr("shown","filter")
-            .style("height",this.parentKshf.line_height+"px")
-            ;
-/*
-    var configOptions = ["filter","order"]
-    configGroup.append("span").attr("class","chooseConfigGroup").selectAll("svg")
-        .data(configOptions)
-    .enter().append("svg")
-        .attr("version","1.1")
-        .attr("height","10px")
-        .attr("width" ,"10px")
-        .attr("xml:space","preserve")
-        .attr("viewBox","0 0 10 10")
-        .on("click",function(d){
-            d3.select(this.parentNode.parentNode).attr("shown",d)
-        })
-    .append("circle")
-        .attr("class",function(d){ return d;})
-        .attr("r","4")
-        .attr("cx","5")
-        .attr("cy","5")
-        ;*/
-/*
-    var filterGr = configGroup.append("span").attr("class","filterOptionSelectGroup");
-    filterGr.append("select").attr("class","optionSelect")
-        .on("change", function(d){
-            switch(this.selectedOptions[0].text){
-            case "One":
-                me.options.selectType = "Single";
-                // TODO: make sure only 1 item is selected at max. Unselect others..
-                break;
-            case "All":
-                me.options.selectType = "MultipleAnd";
-                break;
-            case "Any":
-                me.options.selectType = "MultipleOr";
-                break;
-            }
-            // update filtering
-            if(me.options.selectType === "Single" && me.attribCount_Selected>1){
-                kshf_.selectAllAttribs(false);
-            }
-            me.filter_all();
-            me.sortSkip = true;
-            kshf.update();
-            me.refreshFilterRowState();
-            me.refreshFilterSummaryBlock();
-        })
-    .selectAll("input.sort_label")
-        .data(filterOptions)
-      .enter().append("option")
-        .attr("class", "filter_label")
-        .text(function(d){ return d; })
-        .each(function(d){
-            if( (d==="One" && me.options.selectType==="Single") ||
-                (d==="All" && me.options.selectType==="MultipleAnd") ||
-                (d==="Any" && me.options.selectType==="MultipleOr")
-                )
-                d3.select(this).attr("selected","selected");
-        })
-        ;
-    filterGr.append("span").attr("class","optionSelect_Label").text("Select by")
-        ;*/
-
-    if(this.showConfig) {
-        var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
-        sortGr.append("select")
-            .attr("class","optionSelect")
-            .on("change", function(){
-                if(sendLog) {
-                    sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
-                        {facet:kshf_.options.facetTitle, funcID:this.selectedIndex});
-                }
-                kshf_.sortID = this.selectedIndex;
-                kshf_.sortInverse = false;
-                kshf_.sortDelay = 0;
-                kshf_.sortSkip = false;
-                kshf_.updateSorting.call(kshf_,true);
-            })
-        .selectAll("input.sort_label")
-            .data(this.options.sortingFuncs)
-          .enter().append("option")
-            .attr("class", "sort_label")
-            .text(function(d){ return d.name; })
-            .attr(function(d){ return d.name; })
-            ;
-        sortGr.append("span")
-            .attr("class","optionSelect_Label")
-            .text("Order by")
-            ;
-
-        configGroup.attr("shown","order");
-    }
-
-    if(this.showTextSearch){
-        var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX");
-        this.dom.showTextSearch= textSearchRowDOM.append("input")
-            .attr("type","text")
-            .attr("class","chartRowLabelSearch")
-            .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
-            .on("input",function(){
-                if(this.timer){
-                    clearTimeout(this.timer);
-                    this.timer = null;
-                }
-                var x = this;
-                this.timer = setTimeout( function(){
-                    var v=x.value.toLowerCase();
-                    if(v===""){
-                        kshf_.selectAllAttribs(false);
-                    } else {
-                        var daat=kshf_.getData(),i,numSelected=0;
-                        for(i=0; i<daat.length ; i++){
-                            var d=daat[i];
-                            if(kshf_.options.catLabelText(d).toString().toLowerCase().indexOf(v)!==-1){
-                                d.selected = true;
-                            } else {
-                                if(kshf_.options.catTooltipText){
-                                    d.selected = kshf_.options.catTooltipText(d).toLowerCase().indexOf(v)!==-1;
-                                } else{
-                                    d.selected = false;
-                                }
-                            }
-                            numSelected+=d.selected;
-                        }
-                        kshf_.attribCount_Selected = numSelected;
-                    }
-                    // convert state to multiple-or selection
-                    var tmpSelectType = kshf_.options.selectType;
-                    kshf_.options.selectType = "MultipleOr";
-                    
-                    kshf_.filter_all();
-                    kshf.update();
-                    kshf_.refreshFilterRowState();
-                    kshf_.refreshFilterSummaryBlock();
-
-                    kshf_.options.selectType = tmpSelectType;
-
-                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatTextSearch,kshf.getFilteringState(kshf_.options.facetTitle));
-                }, 750);
-            })
-            .on("blur",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            })
-            ;
-        textSearchRowDOM.append("svg")
-            .attr("class","chartRowLabelSearch")
-            .attr("width","13")
-            .attr("height","12")
-            .attr("viewBox","0 0 491.237793 452.9882813")
-            .attr("xmlns","http://www.w3.org/2000/svg")
-            .html(
-              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
-               '<g fill-rule="evenodd" clip-rule="evenodd">'+
-                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
-                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
-               '</g>'+
-              '</g>')
-            ;
-    }
-};
-
-kshf.BarChart.prototype.updateTimelineLayut = function(toUpdate){
-    this.setTimeTicks();
-    this.updateTimeChartBarsDots();
-    this.refreshTimeChartBarDisplay();
-    this.insertTimeTicks();
-    this.insertTimeChartAxis();
-    if(toUpdate===true) this.updateTimeChartDotConfig();
-}
-
-kshf.BarChart.prototype.setTimeWidth = function(w){
-    this.options.timeMaxWidth = w;
-    if(this.scrollbar.show===true){
-        this.options.timeMaxWidth -= kshf.scrollPadding + kshf.scrollWidth;
-    }
-
-    this.updateTimelineLayut(true);
-
-    this.updateChartTotalWidth();
-    
-    this.dom_headerGroup.select("span.rightHeader")
-        .style("width",(w)+"px");
-    this.updateTimeAxisGroupTransform();
-    this.updateRowBarLineWidth();
-};
-
-kshf.BarChart.prototype.updateTimeChartDotConfig = function(){
-    if(this.type!=='scatterplot') return;
-    if(this.options.timeDotConfig !== undefined) return;
-    if(this.skipUpdateTimeChartDotConfig === true) return;
-    var me = this;
-
-    var totalActiveTime_pixLength = 0;
-
-    this.dom.g_row.each(function(d) {
-        if(me.attribCount_Selected!==0 && !d.selected) return;
-        if(d.xMax_Dyn===undefined || d.xMin_Dyn===undefined) return;
-        totalActiveTime_pixLength+=me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
-    });
-
-    var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
-    var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
-
-    // how much width of time does each dot take?
-    var dotPixelWidth = 12;
-//        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
-//        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
-    var maxDots = totalActiveTime_pixLength/dotPixelWidth;
-//        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
-//        x*dotTimeWidth = this.options.timeMaxWidth;
-    
-    var numOfItems = this.parentKshf.itemsSelectedCt;
-
-    // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
-//        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
-
-    if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
-        this.divRoot.attr("dotconfig","Solid");
-    } else if(maxDots>numOfItems*1.5){
-        this.divRoot.attr("dotconfig","Gradient-100");
-    } else if(maxDots>numOfItems*0.8){
-        this.divRoot.attr("dotconfig","Gradient-75");
-    } else if(maxDots>numOfItems*0.3){
-        this.divRoot.attr("dotconfig","Gradient-50");
-    } else {
-        this.divRoot.attr("dotconfig","Gradient-25");
-    }
-}
-
-kshf.BarChart.prototype.updateBarAxisScale = function(){
-    if(this.options.catBarScale==="scale_frequency"){
-        this.catBarAxisScale = d3.scale.linear()
-            .domain([0,this.parentKshf.itemsSelectedCt])
-            .rangeRound([0, this.parentKshf.barMaxWidth]);
-    } else {
-        this.catBarAxisScale = d3.scale.linear()
-            .domain([0,this.getMaxBarValuePerRow()])
-            .rangeRound([0, this.parentKshf.barMaxWidth]);
-        }
-    this.updateWidth_Bars_Total();
-    this.insertXAxisTicks();
-}
-
-    
-kshf.BarChart.prototype.updateBarWidth = function(w){
-    this.updateBarAxisScale();
-    this.updateWidth_Bars_Active();
-    this.updateRowBarLineWidth();
-    this.updateChartTotalWidth();
-};
-
-kshf.BarChart.prototype.updateRowBarLineWidth = function(){
-    var x2=this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth()
-        +this.options.timeMaxWidth;
-    this.dom.row_bar_line.attr("x2",x2);
-}
-
-kshf.BarChart.prototype.refreshScrollbar = function(animate){
-    var me = this;
-	var firstRowHeight = kshf.line_height*this.scrollbar.firstRow;
-    var handleTopPos = firstRowHeight*(this.rowCount_Visible/this.attribCount_Active.toFixed());
-    if(animate){
-        var scrollHandleHeight=kshf.line_height*this.rowCount_Visible*this.rowCount_Visible/this.attribCount_Active.toFixed();
-        if(scrollHandleHeight<10) { scrollHandleHeight=10;}
-        this.root.selectAll("g.scrollGroup rect.background_up")
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr("height",(handleTopPos));
-        this.root.selectAll("g.scrollGroup rect.background_down")
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr("y",handleTopPos)
-            .attr("height",kshf.line_height*this.rowCount_Visible-handleTopPos)
-        ;
-        this.root.selectAll("g.scrollGroup rect.handle")
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr("height",scrollHandleHeight)
-            .attr("y",handleTopPos);
-        this.root.select("g.barGroup")
-            .transition().duration(this.parentKshf.layout_animation)
-            .ease(d3.ease("cubic-out"))
-            .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
-    } else {
-        this.root.selectAll("g.scrollGroup rect.background_up")
-            .attr("height",(handleTopPos+5));
-        this.root.selectAll("g.scrollGroup rect.background_down")
-            .attr("y",handleTopPos)
-            .attr("height",kshf.line_height*this.rowCount_Visible-handleTopPos)
-        ;
-        this.root.selectAll("g.scrollGroup rect.handle")
-            .attr("y",handleTopPos);
-        this.root.select("g.barGroup")
-            .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
-    }
-    this.root.selectAll("g.scrollGroup g.top_arrow").style("display",
-        (this.scrollbar.firstRow!==0)?"inline":"none");
-    this.root.select("text.scroll_display_more")
-        .style("display",
-            (this.scrollbar.firstRow!==this.firstRowMax())?"inline":"none")
-        .text( function(){
-            if(me.scrollbar.firstRow===me.firstRowMax()) return "";
-            return (me.attribCount_Active-me.rowCount_Visible-me.scrollbar.firstRow)+" more...";
-        });
-    this.root.selectAll("g.scrollGroup text.first_row_number")
-        .text(this.scrollbar.firstRow===0?"":this.scrollbar.firstRow)
-        .attr("y",handleTopPos-1)
-        ;
-};
-
-kshf.BarChart.prototype.firstRowMax = function(){
-    return this.attribCount_Active-this.rowCount_Visible;
-};
-
-kshf.BarChart.prototype.setRowCount_VisibleItem = function(c){
-    if(c<0) c=1;
-    if(c>this.attribCount_Active) c=this.attribCount_Active;
-    if(this.attribCount_Active<=2){ 
-        c = this.attribCount_Active;
-    } else {
-        c = Math.max(c,2);
-    }
-    this.rowCount_Visible = c;
-}
-kshf.BarChart.prototype.refreshVisibleAttribs = function(forced){
-    var totalHeight      = kshf.line_height*this.rowCount_Total();
-    var visibleRowHeight = kshf.line_height*this.rowCount_Visible;
-    var headerHeight     = kshf.line_height*this.rowCount_Header();
-
-    this.scrollbar.show = this.rowCount_Visible!==this.attribCount_Active;
-
-    this.divRoot
-        .attr("collapsed",this.collapsed===false?"false":"true")
-        .attr("showconfig",this.showConfig)
-        .attr("collapsedTime",this.collapsedTime===false?"false":"true")
-        .attr("showscrollbar",this.scrollbar.show)
-        ;
-    if(this.type!=='scatterplot'){
-        this.divRoot
-            .transition().duration(this.parentKshf.layout_animation)
-            .style("height",totalHeight+"px")
-            ;
-    }
-
-    this.root.style("height",totalHeight+"px");
-
-    // ******************************************************************************
-    // Scrollbar stuff
-
-    // scrollbar.firstRow cannot exceed firstRowMax()
-    this.scrollbar.firstRow = Math.min(this.scrollbar.firstRow,this.firstRowMax());
-    // how much is one row when mapped to the scroll bar?
-    this.scrollbar.rowScrollHeight = visibleRowHeight/this.attribCount_Active;
-    if(this.rowCount_Visible!==this.attribCount_Active){
-        // update scrollbar height
-        this.root.selectAll("g.scrollGroup rect.background")
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr("height",visibleRowHeight+1)
-            ;
-        this.root.select("g.scrollGroup text.scroll_display_more")
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr('y',visibleRowHeight+10)
-            ;
-        this.updateScrollGroupPos();
-        this.refreshScrollbar(true);
-    }
-
-    this.root.select(".x_axis")
-        .transition().duration(this.parentKshf.layout_animation)
-        .attr("transform", "translate("+(this.parentKshf.getRowTotalTextWidth())+",23)")
-        ;
-
-    this.root.select("rect.chartBackground")
-        .attr('height',visibleRowHeight)
-        .attr('y',headerHeight)
-        ;
-    this.root.selectAll(".barChartClipPath rect")
-        .transition().duration(this.parentKshf.layout_animation)
-		.attr("height",visibleRowHeight)
-        ;
-
-    if(this.type==='scatterplot'){
-        this.updateTimeAxisGroupTransform();
-    }
-
-    // update x axis items
-	this.root.selectAll("g.timeAxisGroup g.filter_handle line")
-        .transition().duration(this.parentKshf.layout_animation)
-        .attr("y1", -visibleRowHeight-8)
-		.attr("y2", -8)
-        ;
-	this.root.selectAll("g.timeAxisGroup rect.filter_nonselected")
-//        .transition()
-//        .duration(this.parentKshf.layout_animation)
-        .attr("y",-visibleRowHeight-8)
-		.attr("height", visibleRowHeight)
-        ;
-    this.root.selectAll("line.selectVertLine")
-        .attr("y2", kshf.line_height*(this.rowCount_Visible+1.5))
-        ;
-    this.root.selectAll("g.x_axis g.tick line")
-        .transition().duration(this.parentKshf.layout_animation)
-        .attr("y2", visibleRowHeight)
-        ;
-    this.root.selectAll("g.x_axis g.tick text")
-        .transition().duration(this.parentKshf.layout_animation)
-        .attr("dy",visibleRowHeight+3);
-};
-
-
-kshf.BarChart.prototype.setScrollPosition = function(pos) {
-    if(pos<0) { pos = 0;}
-    if(pos>this.firstRowMax()){ pos=this.firstRowMax(); }
-    if(this.scrollbar.firstRow===pos) { return;}
-    this.scrollbar.firstRow = pos;
-    this.refreshScrollbar();
-};
-    
-kshf.BarChart.prototype.stepScrollPosition = function(stepSize) {
-    if(this.scrollbar.firstRow===0 && stepSize<0){ return; }
-    if(this.scrollbar.firstRow===this.firstRowMax() && stepSize>0){ return; }
-    if(!this.scrollBarUp_Active){ return; }
-    this.scrollbar.firstRow+=stepSize;
-    this.refreshScrollbar();
-    this.scrollBarUp_TimeStep-=10;
-    if(this.scrollBarUp_TimeStep<15){ this.scrollBarUp_TimeStep = 15; }
-    window.setTimeout(this.stepScrollPosition.bind(this,stepSize), this.scrollBarUp_TimeStep);
-};
-
-kshf.BarChart.prototype.insertScrollbar = function(){
-    var me = this;
-
-	var scrollGroup = this.root.append("g")
-        .attr("class","scrollGroup")
-        .attr("transform","translate(0,20)")
-		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
-		;
-
-    // left scroll
-    this.dom.leftScroll = scrollGroup.append("g").attr("class","leftScroll");
-    this.insertScrollbar_do(this.dom.leftScroll);
-    // right scroll
-    if(this.type==='scatterplot'){
-        this.dom.rightScroll = scrollGroup.append("g").attr("class","rightScroll");
-        this.insertScrollbar_do(this.dom.rightScroll);
-    }
-
-    // "more..." text
-    scrollGroup.append("text").attr("class","scroll_display_more")
-        .on("mousedown",function(){
-            scrollGroup.selectAll("text.row_number").style("display","block");
-            me.scrollBarUp_Active = true; 
-            me.scrollBarUp_TimeStep = 200;
-            me.stepScrollPosition(1);
-            if(sendLog) {
-                sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
-                    {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-            }
-        })
-        .on("mouseup",function(){ me.scrollBarUp_Active = false; })
-        .on("mouseover",function(e){ 
-            d3.select(this).attr("highlight",true); 
-        })
-        .on("mouseout",function(){ 
-            d3.select(this).attr("highlight",false); 
-            me.scrollBarUp_Active = false; 
-            scrollGroup.selectAll("text.row_number").style("display","none");
-        })
-        ;
-};
-
-kshf.BarChart.prototype.insertScrollbar_do = function(parentDom){
-    var kshf_ = this;
-    var mouseOutFunc = function(){
-        kshf_.scrollBarUp_Active = false;
-    };
-
-	// scroll to top
-	var xxx=parentDom.append("g").attr("class","top_arrow")
-        .attr("transform","translate(1,-13)");
-        xxx.append("title")
-            .text("Top");
-        xxx.append("rect")
-            .attr("width",kshf.scrollWidth)
-            .attr("height",11)
-            .on("click",function(){
-                kshf_.scrollbar.firstRow=0;
-                kshf_.refreshScrollbar(true);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ScrollToTop, 
-                        {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
-                }
-            });
-        xxx.append("path").attr("class","top_arrow")
-            .attr("d","M4 0 L0 3 L0 6 L4 3 L8  6 L8  3 Z M4 5 L0 8 L0 11 L4 8 L8 11 L8  8 Z")
-            ;
-	// the background - static position/size
-	parentDom.append("rect").attr("class", "background")
-		.attr("width",kshf.scrollWidth+1)
-		.attr("rx",4)
-		.attr("ry",4)
-        .attr("x",-0.5)
-        .attr("y",-0.5)
-        ;
-	parentDom.append("rect").attr("class", "background_fill background_up")
-		.attr("width",kshf.scrollWidth)
-		.attr("rx",4)
-		.attr("ry",4)
-        .on("mousedown",function(){
-            kshf_.scrollBarUp_Active = true; 
-            kshf_.scrollBarUp_TimeStep = 200;
-            kshf_.stepScrollPosition(-1);
-            if(sendLog) {
-                sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar,
-                    {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
-            }
-        })
-		.on("mouseup",function(){
-            kshf_.scrollBarUp_Active = false; 
-        })
-		.on("mouseout",mouseOutFunc);
-	parentDom.append("rect").attr("class", "background_fill background_down")
-		.attr("width",kshf.scrollWidth)
-		.attr("rx",4)
-		.attr("ry",4)
-        .on("mousedown",function(){
-            kshf_.scrollBarUp_Active = true; 
-            kshf_.scrollBarUp_TimeStep = 200;
-            kshf_.stepScrollPosition(1);
-            if(sendLog) {
-                sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar, 
-                    {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
-            }
-        })
-		.on("mouseup",function(){
-            kshf_.scrollBarUp_Active = false; 
-        })
-		.on("mouseout",mouseOutFunc);
-	// the handle - very (very) dynamic
-	parentDom.append("rect")
-		.attr("class", "handle")
-		.attr("x",0)
-		.attr("y",0)
-		.attr("rx",4)
-		.attr("ry",4)
-		.attr("width",kshf.scrollWidth)
-		.on("mouseout",mouseOutFunc)
-		.on("mousedown", function(d, i) {
-			kshf_.scrollbar.active=true;
-			d3.select(this).attr("selected",true);
-			kshf_.root.style( 'cursor', 'pointer' );
-			var mouseDown_y = d3.mouse(this.parentNode.parentNode.parentNode)[1];
-			var firstRow = kshf_.scrollbar.firstRow;
-            parentDom.selectAll("text.row_number").style("display","block");
-			kshf_.root.on("mousemove", function() {
-				var mouseMove_y = d3.mouse(this)[1];
-				var mouseDif = mouseMove_y-mouseDown_y;
-				// update position if necessary
-				var lineDif = Math.round(mouseDif/kshf_.scrollbar.rowScrollHeight);
-				if(lineDif!==0){
-					var hmm=firstRow + lineDif;
-					if(hmm<0) { hmm=0; }
-					if(hmm>kshf_.firstRowMax()) { hmm=kshf_.firstRowMax(); }
-					kshf_.scrollbar.firstRow = hmm;
-					kshf_.refreshScrollbar();
-				}
-			});
-			kshf_.root.on("mouseup", function(){
-				kshf_.root.style( 'cursor', 'default' );
-				kshf_.scrollbar.active=false;
-				var btn=kshf_.root.select("g.scrollGroup rect.handle");
-				btn.attr("selected",false);
-				// unregister mouse-move callbacks
-                parentDom.selectAll("text.row_number").style("display","");
-				kshf_.root.on("mousemove", null);
-				kshf_.root.on("mouseup", null);
-                if(sendLog) sendLog(CATID.FacetScroll,ACTID_SCROLL.DragScrollbar,
-                    {facet:kshf_.options.facetTitle,firstRow:kshf_.scrollbar.firstRow});
-			});
-		})
-		;
-    // number display
-	parentDom.append("text")
-        .attr("class","first_row_number row_number")
-        .attr("x",kshf.scrollWidth)
-        ;
-	parentDom.append("text")
-        .attr("class","last_row_number row_number")
-        .attr("x",kshf.scrollWidth)
-        ;
-};
-kshf.BarChart.prototype.updateScrollGroupPos = function(){
-	this.dom.leftScroll
-        .transition().duration(this.parentKshf.layout_animation)
-		.attr("transform","translate("+(this.parentKshf.getRowTotalTextWidth()+this.parentKshf.barMaxWidth+kshf.scrollPadding)+",0)")
-        ;
-    if(this.type==='scatterplot'){
-        this.dom.rightScroll
-            .transition().duration(this.parentKshf.layout_animation)
-            .attr("transform","translate("+(this.getWidth()-kshf.scrollWidth-3)+",0)");
-    }
-
-    this.root.select("text.scroll_display_more")
-        .attr("x", this.parentKshf.categoryTextWidth);
-};
-
-kshf.BarChart.prototype.filter_multi = function(item,m,curDtId) {
-    if(this.options.selectType!=="MultipleAnd"){
-        // ANY of the item mappins is true
-        for(j=0;true;j++){
-            if(j===m.length)           { item.filters[this.filterId] = false; break; }
-            if(curDtId[m[j]].selected) { item.filters[this.filterId] = true;  break; }
-        }
-    } else {
-        // ALL of the current selection is in item mappings
-        // see how many items return true. If it matches current selected count, then all selections are met for this item
-        var t=0;
-        for(j=0;j<m.length;j++) { if(curDtId[m[j]].selected) t++; }
-        item.filters[this.filterId] = (t===this.attribCount_Selected);
-    }
-}
-
-kshf.BarChart.prototype.filter_all = function(){
-    var curDtId=this.getData_wID(), me=this, allSelected = this.attribCount_Selected===0;
-    kshf.items.forEach(function(item){
-        if(allSelected){
-            item.filters[me.filterId] = true;
-        } else {
-            var m=item.mappedData[me.filterId];
-            if(m===undefined || m===null || m===""){ 
-                item.filters[me.filterId] = false;
-            } else {
-                if(m instanceof Array){
-                    me.filter_multi(item,m,curDtId);
-                } else {
-                    item.filters[me.filterId] = curDtId[m].selected;
-                }
-            }
-        }
-        item.updateSelected();
-    });
-};
-
-
-kshf.BarChart.prototype.filter_removeItems = function(){
-    var curDtId=this.getData_wID(), me=this;
-    kshf.items.forEach(function(item){
-        var m=item.mappedData[me.filterId];
-        if(m!==undefined && m!==null && m!==""){
-            if(m instanceof Array){
-                me.filter_multi(item,m,curDtId);
-            } else {
-                item.filters[me.filterId] = curDtId[m].selected;
-            }
-        } else {
-            item.filters[me.filterId] = false;
-        }
-        // you are only "removing" items
-        if(item.selected) item.updateSelected();
-    });
-};
-
-kshf.BarChart.prototype.filter_addItems = function(){
-    var curDtId=this.getData_wID(), me=this, allRowsSelected = this.attribCount_Selected===0;
-    kshf.items.forEach(function(item){
-        if(allRowsSelected){
-            item.filters[me.filterId] = true;
-        } else {
-            var m=item.mappedData[me.filterId];
-            if(m!==undefined && m!==null && m!==""){
-                if(m instanceof Array){
-                    me.filter_multi(item,m,curDtId);
-                } else {
-                    item.filters[me.filterId] = curDtId[m].selected;
-                }
-            }
-        }
-        // you are only adding items
-        if(!item.selected) item.updateSelected();
-    });
-};
-
-// if returns false, item is not selected!
-// to return false, all components should be false.
-// or, if one of the components return true, item can be selected
-kshf.BarChart.prototype.noItemOnSelect = function(d){
-    // you can (un)select a selected item
-    if(d.selected) return false;
-    // if item is unselected, you can select if no item is currently selected
-    if(d.activeItems!==0) return false;
-    if(this.attribCount_Selected!==0 && this.options.selectType!=="MultipleAnd") return false;
-    return true;
-}
-
-// When clicked on a row
-kshf.BarChart.prototype.filterRow = function(d,forceAll){
-    // Flip selection state
-	d.selected = !d.selected;
-    // If selectType is Single, deselect other selections
-    if(this.options.selectType==="Single"){
-        if(d.selected){
-            this.selectAllAttribs(false);
-            d.selected=true;
-            forceAll=true;
-        }
-    }
-	this.attribCount_Selected += (d.selected)?1:-1;
-    this.sortSkip = true;
-
-    if(forceAll){
-        this.filter_all();
-    } else if(this.attribCount_Selected===1){
-        if(this.options.selectType==="MultipleOr"){
-            this.filter_removeItems();
-        } else if(this.options.selectType==="MultipleAnd"){
-            if(d.selected)
-                this.filter_removeItems();
-            else
-                this.filter_addItems();
-        }
-    } else if(this.attribCount_Selected===0){
-        this.filter_addItems();
-    } else {
-        if(this.options.selectType==="MultipleOr"){
-            if(d.selected){
-                this.filter_addItems();
-            } else {
-                this.filter_removeItems();
-            }
-        } else if(this.options.selectType==="MultipleAnd"){
-            if(d.selected){
-                this.filter_removeItems();
-            } else {
-                this.filter_addItems();
-            }
-        }
-    }
-    if(this.options.sortingFuncs[this.sortID].no_resort!==true){
-        this.divRoot.attr("canResort",this.attribCount_Selected!==this.attribCount_Active&&this.attribCount_Selected!==0);
-    }
-
-	kshf.update();
-    this.refreshFilterRowState();
-    this.refreshFilterSummaryBlock();
-    if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
-
-    return true;
-};
-kshf.BarChart.prototype.filterTime = function(){
-    var timeFilterId = this.filterId+1, me=this;
-    kshf.items.forEach(function(item){
-        item.filters[timeFilterId] = 
-            (item.timePos>=me.timeFilter_ms.min) &&
-            (item.timePos< me.timeFilter_ms.max);
-        item.updateSelected();
-    });
-};
-
-kshf.BarChart.prototype.refreshFilterSummaryBlock = function(){
-	var me=this;
-    if(!this.isFiltered_Row()){
-        // remove DOM
-        if(this.filterSummaryBlock_Row){
-            this.filterSummaryBlock_Row.attr("ready",false);
-            setTimeout(function(){
-                me.filterSummaryBlock_Row[0][0].parentNode.removeChild(me.filterSummaryBlock_Row[0][0]);
-                me.filterSummaryBlock_Row = null;
-            }, 300);
-        }
-    } else {
-        // insert DOM
-        if(this.filterSummaryBlock_Row===null || this.filterSummaryBlock_Row===undefined){
-            this.insertFilterSummaryBlock_Rows();
-        }
-        // go over all items and prepare the list
-        var selectedItemsText="";
-        var selectedItemsText_Sm="";
-        var selectedItemsCount=0;
-        var catLabelText = this.options.catLabelText;
-        var catTooltipText = this.options.catTooltipText;
-        this.root.selectAll("g.row").each( function(d){
-            if(!d.selected) return; 
-            if(selectedItemsCount!==0) {
-                if(me.options.selectType==="MultipleAnd"){
-                    selectedItemsText+=" and "; 
-                    selectedItemsText_Sm+=" and "; 
-                } else{
-                    selectedItemsText+=" or "; 
-                    selectedItemsText_Sm+=" or "; 
-                }
-            }
-            var labelText = catLabelText(d);
-            var titleText = labelText;
-            if(catTooltipText) titleText = catTooltipText(d);
-
-            selectedItemsText+="<b>"+labelText+"</b>";
-            selectedItemsText_Sm+=titleText;
-            selectedItemsCount++;
-        });
-        if(this.attribCount_Selected>3){
-            var bold=this.attribCount_Selected;
-            bold+=" "+(this.options.textGroup?this.options.textGroup:"categories");
-            this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
-                .html("<b>"+bold+"</b>")
-                .attr("title",selectedItemsText_Sm)
-                ;
-        } else {
-            this.parentKshf.root.select(".filter_row_text_"+this.filterId+" .filter_item")
-                .html(selectedItemsText)
-                .attr("title",selectedItemsText_Sm)
-                ;
-        }
-    }
-};
-
-kshf.BarChart.prototype.insertItemRows_shared = function(){
-	var me = this;
-	// create the clipping area
-	var clipPaths = this.root.select("g.barGroup_Top")
-		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
-        .on("mousewheel",this.scrollItems.bind(this))
-	.insert("g",":first-child")
-        .attr("class","barChartClipPath");
-
-    clipPaths.insert("clipPath")
-		.attr("id","kshf_chart_clippath_"+this.id)
-	.append("rect").attr("class","clippingRect")
-		.attr("x",0)
-		.attr("y",0)
-		;
-
-    clipPaths.insert("clipPath")
-        .attr("id","kshf_chart_clippathsm_"+this.id)
-    .append("rect").attr("class","clippingRect_2")
-        .attr("y",0)
-        ;
-
-	this.dom.g_row
-		.on("click", function(d){
-            if(d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey || d3.event.ctrlKey){
-                me.options.selectType = "MultipleOr";
-            }
-            if(me.noItemOnSelect(d)) {
-                me.options.selectType = tmpSelectType;
-                return;
-            }
-            this.tipsy.hide();
-            // TODO: If new select type is different, show the config option on display!
-
-            me.filterRow(d);
-
-            if (this.timer) {
-                clearTimeout(this.timer);
-                this.timer = null;
-                // clears all the selection when selected
-                me.selectAllAttribs(false);
-                me.filterRow(d,true);
-                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatValueExact,
-                    kshf.getFilteringState(me.options.facetTitle,d.data[1]));
-                return;
-            } else if(sendLog){
-                if(sendLog) sendLog(CATID.FacetFilter,(d.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
-                    kshf.getFilteringState(me.options.facetTitle,d.data[1]));
-            }
-            var x = this;
-            this.timer = setTimeout(function() { x.timer = null; }, 500);
-        })
-        .attr("highlight","false")
-        .on("mouseover",function(d,i){
-            if(me.noItemOnSelect(d)) return;
-
-            this.setAttribute("highlight",true);
-            d.items.forEach(function(dd){if(dd.selected) dd.highlightOnList();});
-            this.tipsy = new Tipsy(this, {
-                gravity: 'w',
-                offset_y: 9,
-                offset_x: 2,
-                offset_x: me.parentKshf.getRowTotalTextWidth(),
-                fade: true,
-                title: function(){
-                    var d=this.__data__;
-                    if(d.selected) return "<b>-</b> Remove "+me.options.facetTitle+" Filter";
-                    if(d.barChart.attribCount_Selected!==0){
-                        if(d.barChart.options.selectType==="Single")
-                             return "<b>&laquo;</b> Change "+me.options.facetTitle+" Filter";
-                         else 
-                            return "<b>+</b> Add "+me.options.facetTitle+" (and)";
-                    }
-                    return "<b>+</b> Add "+me.options.facetTitle+" Filter";
-                }
-            });
-        })
-        .on("mouseout",function(d,i){
-            if(me.noItemOnSelect(d)) return;
-
-            this.setAttribute("highlight",false);
-            d.items.forEach(function(dd){if(dd.selected) dd.nohighlightOnList();});
-            this.tipsy.hide();
-        })
-        ;
-    
-    this.dom.row_title = this.dom.g_row.append("title").attr("class", "row_title");
-
-    this.dom.add_more = this.dom.g_row.append("text").attr("class", "filter_add_more")
-        .attr("dy",14)
-        .attr("dx",8)
-        .html("&#8853;")
-        .on("mouseover",function(d,i){
-            this.tipsy = new Tipsy(this, {
-                gravity: 'sw',
-                offset_y: 5,
-                offset_x: 1,
-                fade: true,
-                title: function(){
-                    return "<b>+</b> Add "+me.options.facetTitle+" (or)";
-                }
-            });
-            d3.event.stopPropagation();
-        })
-        .on("mouseout",function(d,i){
-            this.tipsy.hide();
-            d3.event.stopPropagation();
-        })
-        .on("click",function(d,i){
-            var tmpSelectType = me.options.selectType;
-            me.options.selectType = "MultipleOr";
-            this.tipsy.hide();
-            // TODO: If new select type is different, show the config option on display!
-
-            me.filterRow(d);
-
-            me.options.selectType = tmpSelectType;
-
-            d3.event.stopPropagation();
-        })
-        ;
-
-	this.dom.rowSelectBackground_Label = this.dom.g_row
-		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
-		.attr("x", 0).attr("y", 0)
-        .attr("height",kshf.line_height)
-		;
-	this.dom.rowSelectBackground_Count = this.dom.g_row
-		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Count")
-        .attr("y", 0)
-        .attr("width",this.parentKshf.getRowLabelOffset())
-        .attr("height",kshf.line_height)
-		;
-    this.dom.rowSelectBackground_ClickArea = this.dom.g_row
-        .append("rect").attr("class", "rowSelectBackground_ClickArea")
-        .attr("x", 20).attr("y", 4)
-        .attr("height",kshf.line_height-8)
-        ;
-	this.dom.item_count = this.dom.g_row
-		.append("text").attr("class", "item_count")
-		.attr("dy", 13)
-		;
-	this.dom.cat_labels = this.dom.g_row
-		.append("text").attr("class", "row_label")
-		.attr("dy", 14)
-		.text(this.options.catLabelText);
-	// Create helper line
-	if(this.options.display.row_bar_line){
-		this.dom.row_bar_line = this.dom.g_row.append("line")
-			.attr("class", "row_bar_line")
-			.attr("stroke-width","1")
-			.attr("y1", kshf.line_height/2.0)
-			.attr("y2", kshf.line_height/2.0);
-	} else{
-        this.dom.row_bar_line = this.root.select(".row_bar_line"); // empty
-    }
-	this.dom.bar_active = this.dom.g_row
-		.append("rect")
-		.attr("class", function(d,i){ 
-			return "rowBar " +(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" active";
-		})
-		.attr("rx",2).attr("ry",2); // skip mouse events to the underlying bigger bar
-	this.dom.bar_total = this.dom.g_row
-		.append("rect")
-		.attr("class", function(d,i){ 
-			return "rowBar "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" total";
-		})
-		.attr("rx",2).attr("ry",2)
-		;
-    this.dom.allRowBars = this.root.selectAll('g.barGroup g.row rect.rowBar')
-        .attr("x", this.parentKshf.getRowTotalTextWidth())
-        ;
-
-    this.updateTextWidth();
-};
-
-kshf.BarChart.prototype.updateTextWidth = function(){
-    kshf.time_animation_barscale = 400;
-
-    this.dom.cat_labels
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("x", this.options.rowTextWidth);
-    this.dom.rowSelectBackground_Count
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("x",this.options.rowTextWidth);
-    this.dom.item_count
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("x", this.options.rowTextWidth+3);
-    this.dom.rowSelectBackground_Label
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("width",this.options.rowTextWidth);
-    this.dom.rowSelectBackground_ClickArea
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("width",this.parentKshf.getRowTotalTextWidth()-20);
-    
-    this.dom.allRowBars
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("x", this.parentKshf.getRowTotalTextWidth())
-        ;
-    this.dom_headerGroup.selectAll(".leftHeader_XX")
-        .transition().duration(kshf.time_animation_barscale)
-        .style("width",this.options.rowTextWidth+"px")
-        ;
-    this.root.select("g.x_axis")
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("transform","translate("+
-            (this.parentKshf.getRowTotalTextWidth())+","+(kshf.line_height*this.rowCount_Header()+3)+")")
-
-    if(this.dom.showTextSearch)
-        this.dom.showTextSearch.style("width",(this.options.rowTextWidth-20)+"px")
-
-    this.dom.row_bar_line
-        .attr("x1", this.parentKshf.getRowTotalTextWidth()+2);
-}
-
-
-kshf.BarChart.prototype.updateWidth_Bars_Total = function(){
-    var me = this;
-    this.dom.bar_total
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("width", function(d){
-            return Math.min(me.catBarAxisScale(d.barValueMax),me.parentKshf.barMaxWidth+7); 
-        })
-        ;
-};
-
-kshf.BarChart.prototype.updateSorting = function(force){
-    var me = this;
-    var no_resort = this.options.sortingFuncs[this.sortID].no_resort;
-	if(this.sortSkip){
-        this.sortSkip=false;
-		return;
-	}
-    if(this.scrollbar.firstRow!==0){ // always scrolls to top row automatically when re-sorted
-        this.scrollbar.firstRow=0;
-        this.refreshScrollbar();
-    }
-	// sort the data
-    var funcToCall = this.options.sortingFuncs[this.sortID].func;
-    if(funcToCall===undefined){
-        funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
-    }
-    var idCompareFunc = function(a,b){return b-a;};
-    if(typeof(this.getData()[0].id())==="string") 
-        idCompareFunc = function(a,b){return b.localeCompare(a);};
-
-    var justSortFunc = function(a,b){
-        var a_noitems = me.noItemOnSelect(a);
-        var b_noitems = me.noItemOnSelect(b);
-        if( a_noitems &&  b_noitems) return  0; // Whatever, both won't be visible
-        if( a_noitems && !b_noitems) return  1;
-        if(!a_noitems &&  b_noitems) return -1;
-        // call the sorting function
-        var x=funcToCall(a,b);
-        // use IDs if sorting function doesn't recide on ordering
-        if(x===0) x = idCompareFunc(a.id(),b.id());
-        // reverse ordering
-        if(me.sortInverse) x*=-1;
-        return x;
-    };
-    var sortSelectedOnTop = function(a,b){
-        // automatically apply selected-top ordering to ALL sorting functions
-        if(!a.selected &&  b.selected) return  1;
-        if( a.selected && !b.selected) return -1;
-        return justSortFunc(a,b);
-    };
-    if(no_resort === true)
-	    this.getData().sort(justSortFunc);
-    else
-        this.getData().sort(sortSelectedOnTop);
-	
-    this.dom.g_row
-		.data(this.getData(), this._dataMap)
-		.order()
-		.transition()
-        .delay(this.sortDelay)
-		.attr("transform", function(d,i) { return "translate(0,"+((kshf.line_height*i))+")"; })
-        .each(function(d,i){d.orderIndex = i;})
-        ;
-
-    if(this.type==='scatterplot'){
-        this.refreshBarLineHelper();
-    }
-    this.divRoot.attr("canResort",false);
-    this.sortDelay = 450;
-};
-
-kshf.BarChart.prototype.insertXAxisTicks = function(){
-    var axisGroup = this.root.select("g.x_axis");
-
-    var ticksSkip = this.parentKshf.barMaxWidth/25;
-    if(this.getMaxBarValuePerRow()>100000){
-        ticksSkip = this.parentKshf.barMaxWidth/30;
-    }
-
-    var xAxis = d3.svg.axis()
-        .tickSize(0, 0, 0)
-		.orient('bottom')
-		.ticks(ticksSkip)
-		.tickFormat(d3.format("s"))
-        .scale(this.catBarAxisScale);
-
-	axisGroup.call(xAxis);
-
-    // no animation! by default it is inserted at 0, we need to update it without animation	
-    this.root.selectAll("g.x_axis g.tick text")
-        .attr("dy",3+this.rowCount_Visible*this.parentKshf.line_height);
-
-	axisGroup.selectAll("g.tick line")
-        .attr("y1","0")
-        .attr("y2",kshf.line_height*this.rowCount_Visible);
-};
-kshf.BarChart.prototype.removeXAxis = function(){
-    this.root.select("g.x_axis").data([]).exit().remove();
-};
-
-kshf.BarChart.prototype.insertFilterSummaryBlock_Rows = function(){
-	var me=this;
-	var a = d3.select("span.filter-blocks");
-	this.filterSummaryBlock_Row= a.append("span").attr("class","filter-block filter_row_text_"+this.filterId)
-		.text(" "+(this.options.textFilter?this.options.textFilter:this.options.facetTitle)+": ");
-    this.filterSummaryBlock_Row.append("span").attr("class","filter_reset")
-        .attr("title","Clear filter")
-        .text("x")
-        .on("click",function(){ 
-            me.clearRowFilter(); 
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.facetTitle));
-        });
-	this.filterSummaryBlock_Row.append("span").attr("class","filter_item");
-    // animate appear
-    window.getComputedStyle(this.filterSummaryBlock_Row[0][0]).opacity;
-    this.filterSummaryBlock_Row.attr("ready",true);
-};
-kshf.BarChart.prototype.insertFilterSummaryBlock_Time = function(){
-	var me=this;
-	var a = d3.select("span.filter-blocks");
-	this.filterSummaryBlock_Time=a.append("span").attr("class","filter-block filter_row_text_"+(this.filterId+1));
-    this.filterSummaryBlock_Time.append("span").attr("class","filter_reset")
-        .attr("title","Clear filter")
-        .text("x")
-        .on("click",function(){ 
-            me.clearTimeFilter(); 
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,kshf.getFilteringState(me.options.timeTitle));
-        });
-	this.filterSummaryBlock_Time.append("span").attr("class","filter_item");
-    // animate appear
-    window.getComputedStyle(this.filterSummaryBlock_Time[0][0]).opacity;
-    this.filterSummaryBlock_Time.attr("ready",true);
-};
-
-kshf.BarChart.prototype.refreshTimeChartBarDisplay = function(){
-    // key dots are something else
-    var me = this;
-    var r,j;
-    var rows = this.getData();
-    
-    var timeChartSortFunc = function(a,b){
-        if(a.selected&&!b.selected) { return  1; }
-        if(b.selected&&!a.selected) { return -1; }
-        // use left-to-right sorting
-        var posA = a.timePos;
-        var posB = b.timePos;
-        if(posA===null || posB===null) { return 0; }
-        return posA.getTime()-posB.getTime();
-    };
-    
-    rows.forEach(function(row){
-        if(!row.sortDirty || me.type!=="scatterplot") return;
-        row.items.sort(timeChartSortFunc);
-        me.root.selectAll("g.row").selectAll(".timeDot")
-            .data(function(d) { return d.items; }, function(d){ return d.id(); })
-            // calling order will make sure selected ones appear on top of unselected ones.
-            .order()
-            ;
-        // TODO: call order only on this row
-        // re-calculate min-max only on this row
-        // etc...
-    });
-
-    // update min-max time extents ber timeBar
-    this.updateData_TimeMinMax();
-    if(this.dom.timeBarActive){
-        this.dom.timeBarActive
-            .transition()
-            .duration(kshf.time_animation_barscale)
-            .attr("x", function(d) {
-                return me.parentKshf.barMaxWidth+kshf.scrollWidth+kshf.sepWidth+kshf.scrollPadding+
-                    me.parentKshf.getRowTotalTextWidth()+me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn);
-            })
-            .attr("width", function (d) { 
-                if(d.xMin_Dyn===undefined){ return 0; }
-                return me.timeScale(d.xMax_Dyn) - me.timeScale(d.xMin_Dyn);
-            })
-            ;
-    }
-    rows.forEach(function(row){row.sortDirty=false;});
-};
-
-kshf.BarChart.prototype.insertTimeChartRows = function(){
-	var kshf_ = this;
-
-    var rows = this.root.selectAll("g.barGroup g.row").append("g")
-        .attr("class","timeLineParts")
-        .attr("clip-path","url(#kshf_chart_clippathsm_"+this.id+")")
-        ;
-    if(this.options.timeBarShow===true){
-        rows
-            .append("rect")
-            .attr("class", "timeBar total")
-            .attr("rx",2)
-            .attr("ry",2)
-            ;
-        rows
-            .append("rect")
-            .attr("class", "timeBar active")
-            .attr("rx",2)
-            .attr("ry",2);
-        }
-	// Create bar dots
-	rows.selectAll("g.timeDot")
-		.data(function(d){ 
-                return d.items; }, 
-              function(d){ 
-                return d.id(); })
-		.enter().append("circle")
-        .each(function(d){ d.dots.push(this); })
-		.attr("class", function(d) {
-            if(kshf_.options.dotClassFunc){ return "timeDot " + kshf_.options.dotClassFunc(d); }
-            return "timeDot";
-        })
-        .attr("r", 5)
-        .attr("cy", Math.floor(kshf.line_height / 2 ))
-        .on("mouseover",function(d,i,f){
-            d.highlightAttributes();
-            // update the position of selectVertLine
-            var tm = kshf_.timeScale(kshf_.options.timeItemMap(d));
-            var totalLeftWidth = kshf_.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+kshf_.parentKshf.getRowTotalTextWidth();
-            kshf_.root.select("line.selectVertLine")
-                .attr("x1",tm+totalLeftWidth)
-                .attr("x2",tm+totalLeftWidth)
-                .style("display","block");
-            d3.event.stopPropagation();
-        })
-        .on("mouseout",function(d,i){
-            d.nohighlightAttributes();
-            kshf_.root.select("line.selectVertLine")
-                .style("display","none");
-            d3.event.stopPropagation();
-        })
-		.on("click", function(d,i,f) {
-
-            var itemDate = d.timePos;
-            var rangeMin = new Date(itemDate);
-            var rangeMax = new Date(itemDate);
-
-            if(kshf_.timeticks.range === d3.time.months){
-                rangeMin.setDate(rangeMin.getDate()-15);
-                rangeMax = new Date(rangeMin);
-                rangeMax.setMonth(rangeMin.getMonth()+1);
-            }
-            if(kshf_.timeticks.range === d3.time.years){
-                // if zoomed years range is wide, use 5-year step size
-                var diff_Year =  new Date(kshf_.timeZoom_ms.max).getFullYear() - new Date(kshf_.timeZoom_ms.min).getFullYear();
-                if(kshf_.options.timeMaxWidth<diff_Year*10){
-                    rangeMin.setFullYear(rangeMin.getFullYear()-5);
-                    rangeMax.setFullYear(rangeMax.getFullYear()+5);
-                } else {
-                    rangeMin.setMonth(rangeMin.getMonth()-6);
-                    rangeMax = new Date(rangeMin);
-                    rangeMax.setMonth(rangeMin.getMonth()+12);
-                }
-            }
-            if(kshf_.timeticks.range === d3.time.days){
-                rangeMin.setDate(rangeMin.getDate()-1);
-                rangeMax.setDate(rangeMin.getDate()-1);
-            }
-
-            kshf_.timeFilter_ms.min = Date.parse(rangeMin);
-            kshf_.timeFilter_ms.max = Date.parse(rangeMax);
-            kshf_.yearSetXPos();
-            kshf_.filterTime();
-            // kshf update is done by row-category click whcih is also auto-activated after dot click
-
-            // clear all the selections
-            kshf_.selectAllAttribs(false);
-
-            // filter for row too
-            kshf_.filterRow(d3.select(this.parentNode.parentNode).datum());
-
-            if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDot,kshf.getFilteringState());
-
-            d3.event.stopPropagation();
-		})
-        ;
-    this.dom.timeBar       = this.root.selectAll('g.barGroup g.row rect.timeBar')
-    this.dom.timeBarActive = this.root.selectAll("g.barGroup g.row rect.timeBar.active");
-    this.dom.timeBarTotal  = this.root.selectAll("g.barGroup g.row rect.timeBar.total");
-    this.dom.timeDots      = this.root.selectAll('g.barGroup g.row .timeDot');
-};
-
-
-kshf.BarChart.prototype.setTimeTicks = function(){
-    this.timeticks = {};
-
-    // http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
-    var _MS_PER_DAY = 1000 * 60 * 60 * 24;
-    var _MS_PER_MONTH = _MS_PER_DAY * 30.4; // assuming 30.4 days per month - 365/12
-    var _MS_PER_YEAR = _MS_PER_DAY * 365;
-
-    var timeZoom_msDiff;
-    if(this.timeZoom_ms!==undefined) {
-        timeZoom_msDiff= this.timeZoom_ms.max - this.timeZoom_ms.min;
-    } else {
-        timeZoom_msDiff = this.timeData_dt.max.getTime() - this.timeData_dt.min.getTime();
-    }
-
-    var diff_Day = Math.floor(timeZoom_msDiff / _MS_PER_DAY);
-    var diff_Month =  Math.floor(timeZoom_msDiff / _MS_PER_MONTH );
-    var diff_Year= Math.floor(timeZoom_msDiff / _MS_PER_YEAR );
-
-    // this.options.timeMaxWidth is the current timeline width
-    var timeWidthSteps = this.options.timeMaxWidth/70;
-
-    // choose range
-    if(timeWidthSteps<=diff_Year){
-        // YEAR
-        this.timeticks.range = d3.time.years;
-        this.timeticks.format = d3.time.format.utc("%Y");
-        this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/30));
-    } else if(timeWidthSteps<=diff_Month){
-        // MONTH
-        this.timeticks.range = d3.time.months;
-        this.timeticks.format = d3.time.format.utc("%b '%y");
-        this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/60));
-        // must be 1/2/3/4/6/12
-        if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
-        else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
-        else if(this.timeticks.stepSize>4) {this.timeticks.stepSize = 4;}
-    } else if(true){
-        // DAY
-        this.timeticks.range = d3.time.days;
-        this.timeticks.format = d3.time.format.utc("%e %b"); // 17Feb
-        this.timeticks.stepSize = Math.ceil(diff_Day/timeWidthSteps/2);
-        // 16/11/8/7/5.5/5
-        if(this.timeticks.stepSize>16) { this.timeticks.stepSize = 32;}
-        else if(this.timeticks.stepSize>10){ this.timeticks.stepSize = 15;}
-        else if(this.timeticks.stepSize>5) {this.timeticks.stepSize = 10;}
-        this.timeticks.stepSize++;
-    }
-
-    if(this.useCurrentTimeMinMax===undefined){
-        var tempDate;
-        if(this.timeticks.range===d3.time.years){
-            this.timeRange_ms = { 
-                min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),0,1),
-                max: Date.UTC(this.timeData_dt.max.getUTCFullYear()+1,0,1)};
-        } else if(this.timeticks.range===d3.time.months){
-            this.timeRange_ms = {
-                min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),1),
-                max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth()+1,1)};
-        } else if(this.timeticks.range===d3.time.days){
-            this.timeRange_ms = {
-                min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),this.timeData_dt.min.getUTCDate()-1),
-                max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth(),this.timeData_dt.max.getUTCDate()+1)};
-        }
-
-        this.clearTimeZoom_ms();
-        this.clearTimeFilter_ms();
-    }
-    // update the time scale with the new date domain
-    this.updateTimeScale();
-};
-
-kshf.BarChart.prototype.updateTimeScale = function(){
-    this.timeScale = d3.time.scale.utc()
-        .domain([new Date(this.timeZoom_ms.min), new Date(this.timeZoom_ms.max)])
-        .rangeRound([0, this.options.timeMaxWidth])
-        ;
-}
-
-kshf.BarChart.prototype.insertTimeTicks = function(){
-    var kshf_ = this;
-    var tickGroup = this.root.select("g.timeAxisGroup g.tickGroup");
-
-    var numTicks = Math.floor(this.options.timeMaxWidth/70);
-
-    var xAxis = d3.svg.axis()
-        .scale(this.timeScale)
-        .orient('bottom')
-        .innerTickSize(8)
-        .outerTickSize(3)
-        .ticks(this.timeticks.range, this.timeticks.stepSize ) // d3.time.years, 2 , no tickValues
-        .tickFormat(this.timeticks.format ) // d3.time.format("%Y")
-        ;
-    ;
-    tickGroup.call(xAxis);
-
-    this.insertTimeTicks_timeValues = [];
-
-    tickGroup.selectAll("text")
-        .each(function(d,i){
-            kshf_.insertTimeTicks_timeValues.push(d);
-        })
-        .on("click",function(d,i){
-            var curTime  = kshf_.insertTimeTicks_timeValues[i];
-            var nextTime = kshf_.insertTimeTicks_timeValues[i+1];
-            if(nextTime === undefined){
-                nextTime = kshf_.timeRange_ms.max;
-//                curTime = kshf_.insertTimeTicks_timeValues[i-1];
-            }
-            kshf_.timeFilter_ms.min = curTime;
-            kshf_.timeFilter_ms.max = nextTime;
-            kshf_.yearSetXPos();
-            kshf_.filterTime();
-
-            kshf_.sortSkip = true;
-            kshf.update();
-        })
-        ;
-
-    var text=xAxis.tickValues();
-
-    tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
-};
-
-kshf.BarChart.prototype.insertTimeChartAxis_1 = function(){
-    var axisGroup = this.root.select("g.timeAxisGroup");
-    var ggg = axisGroup.append("g").attr("class","selection_bar")  ;
-    ggg.append("title").attr("class","xaxis_title");
-    ggg.append("rect")
-        .attr("y", -2.5)
-        .attr("height", 7)
-
-    var axisSubGroup=axisGroup.selectAll(".filter_handle")
-        .data([1,2])
-        .enter()
-        .append("g")
-        .attr("class", function(d,i) { return "filter_handle "+((i===0)?"filter_min":"filter_max"); });
-    axisSubGroup
-        .append("line")
-        .attr("x1", 0)
-        .attr("x2", 0)
-        .attr("y1", kshf.line_height*1.5-4)
-        ;
-    axisSubGroup
-        .append("rect")
-        .attr("class", "filter_nonselected")
-        .attr("y",0)
-        .attr("height",0)
-        .on("click",function(){
-            d3.event.stopPropagation();
-        })
-        ;
-
-    var axisSubGroup=axisGroup.selectAll(".filter_handle");
-    
-    var axisSubSubGroup = axisSubGroup.append("g");
-    axisSubSubGroup.append("title").attr("class","xaxis_title");
-    axisSubSubGroup
-        .append("path")
-        .attr("transform",function(d,i) { return "translate("+(i===0?"0":"0")+",-12)";})
-        .attr("d", function(d,i) { 
-            return (i===0)?"M0 6 L0 20 L12 13 Z":"M0 6 L0 20 L-12 13 Z";
-        })
-}
-	
-kshf.BarChart.prototype.insertTimeChartAxis = function(){
-    var me=this;
-
-    var axisGroup = this.root.select("g.timeAxisGroup");
-    var msPerTick;
-    switch(this.timeticks.range){
-        case d3.time.years:
-            msPerTick = 31557600000; break;
-        case d3.time.months:
-            msPerTick = 31557600000/12; break;
-        case d3.time.days:
-            msPerTick = 31557600000/(12*30); break;
-        default: break;
-    }
-    this.lengthPerTick = msPerTick*this.timeScale.range()[1]/
-        (this.timeZoom_ms.max-this.timeZoom_ms.min);
-	
-	axisGroup.select(".selection_bar rect")
-		.on("mousedown", function(d, i) {
-            var eeeeee = this;
-            this.selected = true;
-            this.style.stroke = "orangered";
-            me.divRoot.style('cursor','pointer');
-            var mouseDown_x = d3.mouse(axisGroup[0][0])[0];
-            var mousedown_filter = {
-                min: me.timeFilter_ms.min,
-                max: me.timeFilter_ms.max
-            };
-			var timeFilter_ms = me.timeFilter_ms;
-            var olddif=null;
-			me.divRoot.on("mousemove", function() {
-				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
-				var mouseDif = mouseMove_x-mouseDown_x;
-				var mousemove_filter = timeFilter_ms.min;
-				var stepDif = Math.round(mouseDif/me.lengthPerTick)*msPerTick;
-				if(stepDif===olddif ) { return; }
-                olddif=stepDif;
-				if(stepDif<0){
-					timeFilter_ms.min = mousedown_filter.min+stepDif;
-					if(timeFilter_ms.min<me.timeZoom_ms.min){
-						timeFilter_ms.min=me.timeZoom_ms.min;
-					}
-					timeFilter_ms.max=timeFilter_ms.min+(mousedown_filter.max-mousedown_filter.min);
-				} else {
-					timeFilter_ms.max = mousedown_filter.max+stepDif;
-					if(timeFilter_ms.max>me.timeZoom_ms.max){
-						timeFilter_ms.max=me.timeZoom_ms.max;
-					}
-					timeFilter_ms.min=timeFilter_ms.max-(mousedown_filter.max-mousedown_filter.min);
-				}
-				// TODO: make sure you don't exceed the boundaries
-				if(mousemove_filter.min!==timeFilter_ms.min){
-                    kshf.time_animation_barscale = 0;
-					// update filter 
-					me.yearSetXPos();
-                    kshf.time_animation_barscale = 400;
-                    me.filterTime();
-                    me.sortSkip = true;
-                    me.skipUpdateTimeChartDotConfig = true;
-					kshf.update();
-                    me.skipUpdateTimeChartDotConfig = false;
-				}
-			});
-			me.divRoot.on("mouseup", function(){
-                eeeeee.style.stroke= "";
-                me.divRoot.style( 'cursor', 'default' );
-                me.x_axis_active_filter = null;
-                // unregister mouse-move callbacks
-                me.divRoot.on("mousemove", null);
-                me.divRoot.on("mouseup", null);
-                this.updateTimeChartDotConfig();
-                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDragRange,kshf.getFilteringState());
-			});
-		});
-	
-	// Filter handles
-	axisGroup.selectAll(".filter_handle g path")
-		.on("mousedown", function(d, i) {
-            var eeeee = this;
-			me.x_axis_active_filter = (i===0)?'min':'max';
-            this.style.stroke = 'orangered';
-            me.divRoot.style('cursor','pointer');
-			var timeFilter_ms = me.timeFilter_ms; // shorthand
-			me.divRoot.on("mousemove", function() {
-				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
-
-                // convert mouse position to date
-                var time_ms = Math.floor(
-                    me.timeZoom_ms.min+ 
-                    (me.timeZoom_ms.max-me.timeZoom_ms.min)*(mouseMove_x / me.options.timeMaxWidth)
-                    );
-
-                var time_dt = new Date(time_ms);
-
-                var time_ = null;
-                if(me.timeticks.range===d3.time.years){
-                    time_ = kshf.nearestYear(time_dt);
-                } else if(me.timeticks.range===d3.time.months){
-                    time_ = kshf.nearestMonth(time_dt);
-                } else if(me.timeticks.range===d3.time.days){
-                    time_ = kshf.nearestDay(time_dt);
-                }
-
-                // if it has the same value after mouse is moved, don't update any filter
-                if(timeFilter_ms[me.x_axis_active_filter] === time_.getTime()) return;
-                // update timeFilter_ms
-                timeFilter_ms[me.x_axis_active_filter] = time_.getTime();
-                
-                // Check agains min/max order, sawp if necessary
-                if(timeFilter_ms.max<timeFilter_ms.min){
-                    eeeee.style.stroke = "";
-                    me.x_axis_active_filter = (me.x_axis_active_filter==='min'?'max':'min');
-                    var tttt= timeFilter_ms.max;
-                    timeFilter_ms.max = timeFilter_ms.min;
-                    timeFilter_ms.min = tttt;
-                }
-
-                // update filter 
-                kshf.time_animation_barscale = 0;
-                me.yearSetXPos();
-                kshf.time_animation_barscale = 400;
-                me.filterTime();
-                me.sortSkip = true;
-
-                if(me.options.sortingFuncs[me.sortID].no_resort!==true)
-                    me.divRoot.attr("canResort",true);
-
-                me.skipUpdateTimeChartDotConfig = true;
-                kshf.update();
-                me.skipUpdateTimeChartDotConfig = false;
-			});
-			me.divRoot.on("mouseup", function(){
-                eeeee.style.stroke = "";
-				me.divRoot.style( 'cursor', 'default' );
-				me.x_axis_active_filter = null;
-				var btn=d3.selectAll(".filter_"+me.x_axis_active_filter);
-				btn.attr("selected", "false");
-				// unregister mouse-move callbacks
-				me.divRoot.on("mousemove", null);
-				me.divRoot.on("mouseup", null);
-
-                me.updateTimeChartDotConfig();
-                if(sendLog) {
-                    if(me.x_axis_active_filter==="min")
-                        sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMinHandle,kshf.getFilteringState());
-                    else
-                        sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMaxHandle,kshf.getFilteringState());
-                }
-			});
-		});
-    this.yearSetXPos();
-};
 
 kshf.nearestYear = function(d){
     var dr = new Date(Date.UTC(d.getUTCFullYear(),0,1));
@@ -4503,103 +4572,4 @@ kshf.nearestHour = function(d){
 kshf.nearestMinute = function(d){
     
 }
-
-kshf.BarChart.prototype.updateTimeChartBarsDots = function(){
-    var totalLeftWidth = this.parentKshf.barMaxWidth+kshf.scrollPadding+kshf.scrollWidth+kshf.sepWidth+this.parentKshf.getRowTotalTextWidth();
-	var me = this;
-    this.dom.timeBarTotal
-        .transition().duration(kshf.time_animation_barscale)
-        .attr("x",     function(d){ return totalLeftWidth+me.timeScale(d.xMin); })
-        .attr("width", function(d){ return me.timeScale(d.xMax) - me.timeScale(d.xMin); })
-        ;
-	// Update bar dot positions
-	this.dom.timeDots
-        .transition().duration(kshf.time_animation_barscale)
-		.attr("cx", function(d){ return totalLeftWidth+me.timeScale(d.timePos) ; });
-};
-kshf.BarChart.prototype.getFilterMinDateText = function(){
-    var dt = new Date(this.timeFilter_ms.min);
-    return this.timeticks.format(dt);
-};
-kshf.BarChart.prototype.getFilterMaxDateText = function(){
-    var dt = new Date(this.timeFilter_ms.max);
-    return this.timeticks.format(dt);
-};
-
-kshf.BarChart.prototype.yearSetXPos = function() {
-    // make sure filters do not exceed domain range
-    this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
-    this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
-
-	var minX = this.timeScale(this.timeFilter_ms.min);
-	var maxX = this.timeScale(this.timeFilter_ms.max);
-
-    if(this.options.timeMaxWidth-minX>190){
-        this.divRoot.select(".config_zoom")
-            .style("float","left")
-            .style("margin-left",minX+"px");
-    } else{
-        this.divRoot.select(".config_zoom")
-            .style("float","right")
-            ;
-    }
-	
-	this.root.selectAll("g.filter_min")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("transform", function(d) { return "translate(" + minX + ",0)"; });
-	this.root.selectAll("g.filter_max")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("transform", function(d) { return "translate(" + maxX + ",0)"; });
-	this.root.selectAll(".selection_bar rect")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("x", minX)
-		.attr("width", (maxX - minX));
-	this.root.select("g.filter_min .filter_nonselected")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("x", -minX)
-		.attr("width", minX);
-	this.root.select("g.filter_max .filter_nonselected")
-        .transition()
-        .duration(kshf.time_animation_barscale)
-		.attr("x", 0)
-		.attr("width", this.options.timeMaxWidth -maxX);
-    this.root.select("g.filter_min")
-        .attr("filtered",this.timeFilter_ms.min!==this.timeRange_ms.min);
-    this.root.select("g.filter_max")
-        .attr("filtered",this.timeFilter_ms.max!==this.timeRange_ms.max);
-    this.refreshTimeChartFilterText();
-    this.refreshTimeChartTooltip();
-};
-
-kshf.BarChart.prototype.refreshTimeChartFilterText = function(){
-    var me = this;
-    this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
-    if(this.isFiltered_Time()){
-        this.divRoot.select(".zoom_in").attr("disabled","false");
-        if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
-            this.insertFilterSummaryBlock_Time();
-        }
-        this.parentKshf.root.select(".filter_row_text_"+(this.filterId+1)+" .filter_item")
-            .html("from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>")
-        ;
-    } else if(this.filterSummaryBlock_Time){
-        this.divRoot.select(".zoom_in").attr("disabled","true");
-        if(this.filterSummaryBlock_Time){
-            this.filterSummaryBlock_Time.attr("ready",false);
-            setTimeout(function(){
-                me.filterSummaryBlock_Time[0][0].parentNode.removeChild(me.filterSummaryBlock_Time[0][0]);
-                me.filterSummaryBlock_Time = null;
-            }, 300);
-        }
-    }
-};
-kshf.BarChart.prototype.refreshTimeChartTooltip = function(){
-    var titleText = kshf.itemsSelectedCt+ " selected "+kshf.itemName+"from "+
-                this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
-	this.root.selectAll("title.xaxis_title").text(titleText);
-};
 
