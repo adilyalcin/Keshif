@@ -58,7 +58,7 @@ $(document).ready( function(){
                     return '???';
                 }
             },{ facetTitle: "width",
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
@@ -70,7 +70,7 @@ $(document).ready( function(){
                     return Math.floor(x/20)*20;
                 }
             },{ facetTitle: "height",
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
@@ -85,7 +85,7 @@ $(document).ready( function(){
         ],
         list:{
             sortColWidth: 65,
-            sortOpts : [ {name: 'width' } ],
+            sortingOpts : [ {name: 'width' } ],
             contentFunc : function(d) {
                 var str="";
                 str+="<div class=\"iteminfo iteminfo_1\"> SesID: "+d.data[cols.sesID]+"</div>";

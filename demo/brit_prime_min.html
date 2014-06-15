@@ -34,7 +34,7 @@
                         timeItemMap : function(d){ 
                             return new Date(moment(d.data[0]+"01-01","YYYY-MM-DD"));
                         },
-                        sortingFuncs : [
+                        sortingOpts : [
                             { name: "Current first",  func: kshf.sortFunc_Time_Last },
                             { name: "Past first",  func: kshf.sortFunc_Time_First },
                             { name:" # of Years" }
@@ -51,7 +51,7 @@
                 ],
                 list : {
                     sortColWidth: 58,
-                    sortOpts : [
+                    sortingOpts : [
                         {   name: 'Year',
                             value: function(d){ return d.data[0]; } // first letter in name column
                         }

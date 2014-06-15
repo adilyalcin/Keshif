@@ -36,7 +36,7 @@ $(document).ready( function(){
             {
                 facetTitle: "Department",
                 timeTitle: "Last Meeting",
-                sortingFuncs : [
+                sortingOpts : [
                     { name: "Last meeting.",  func: kshf.sortFunc_Time_Last },
                     { name: "Contact #" }
                 ],
@@ -44,7 +44,7 @@ $(document).ready( function(){
         ],
         list: {
             sortColWidth: 55,
-            sortOpts : [ {name: 'Last Meeting',label: function(d){ 
+            sortingOpts : [ {name: 'Last Meeting',label: function(d){ 
                     if(d.data[7]===null) return "-";
                     return moment(d.data[7]).format('MM/DD/YY'); 
                 } 

@@ -76,7 +76,7 @@ google.setOnLoadCallback(function() {
                 timeTitle: "Publication Date",
                 timeBarShow: true,
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
-                sortingFuncs : [
+                sortingOpts : [
                     { name: "Last pub.",  func: kshf.sortFunc_Time_Last },
                     { name: "First pub.",  func: kshf.sortFunc_Time_First },
                     { name: "Pub. #" }
@@ -127,7 +127,7 @@ google.setOnLoadCallback(function() {
         ],
         list : {
             sortColWidth: 85,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Year',
                     value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); }
                 },{ name: 'Pub. Type',

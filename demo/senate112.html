@@ -45,7 +45,7 @@ function loadChart() {
                     if(d.data[1]===1) { return "1st Session"; }
                     if(d.data[1]===2) { return "2nd Session"; }
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func:kshf.sortFunc_Column_ParseInt_Incr
                     }],
@@ -54,7 +54,7 @@ function loadChart() {
                 facetTitle: "Yea's",
                 catItemMap : function(vote){ return Math.floor(vote.data[billCols['Yea\'s']]/5)*5; },
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Decr
                     }],
@@ -63,7 +63,7 @@ function loadChart() {
                 facetTitle: "Nay's",
                 catItemMap : function(vote){ return Math.floor(vote.data[billCols['Nay\'s']]/5)*5; },
                 catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Decr
                     }],
@@ -72,7 +72,7 @@ function loadChart() {
             ],
         list: {
             sortColWidth: 87,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Vote Date',
                     label: function(d){ 
                         var date=d.data[1];

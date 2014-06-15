@@ -66,7 +66,7 @@ google.setOnLoadCallback(function () {
                     if(d.data[6]===null) return 0;
                     return d.data[6].length;
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func:kshf.sortFunc_Column_ParseInt_Incr
                 }]
@@ -76,7 +76,7 @@ google.setOnLoadCallback(function () {
             sortColWidth: 90,
             detailsToggle : "Multi",
             detailsDefault : false,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Year',
                     value: function(d){ 
                         var yr = d.data[0].substring(7,9);

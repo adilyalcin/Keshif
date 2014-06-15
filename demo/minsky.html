@@ -47,7 +47,7 @@ function loadChart() {
                 facetTitle: "Topic",
                 timeTitle: "Date",
                 timeBarShow: true,
-                sortingFuncs : [
+                sortingOpts : [
                     { name: "Last pub. of topic", func: kshf.sortFunc_Time_Last },
                     { name: "First pub. of topic", func: kshf.sortFunc_Time_First },
                     { name:"# of Pub." }
@@ -64,7 +64,7 @@ function loadChart() {
         ],
         list:{
             sortColWidth: 72,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Year',
                     value: function(d){ return d.data[pubCol['Date']].getFullYear(); }
                 },{ name: 'Pub. Type' },

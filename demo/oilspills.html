@@ -79,7 +79,7 @@ google.setOnLoadCallback( function(){
                 facetTitle: "Size",
                 timeTitle: "Spill Date",
                 timeItemMap :  function(spill){ return spill.data[spillsCol["Date"]] },
-                sortingFuncs : [{ 
+                sortingOpts : [{ 
                     no_resort: true
                 }],
                 timeItemMap : getDate
@@ -117,7 +117,7 @@ google.setOnLoadCallback( function(){
         ],
         list: {
             sortColWidth: 58,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Date',
                     value: function(d){ 
                         var date=getDate(d);

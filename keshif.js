@@ -121,20 +121,16 @@ var kshf = {
         if(b.xMin_Dyn===undefined){ return -1; }
         return 1;
     },
-    compareListItems: function(a, b, sortValueFunc, sortValueType){
-        var dif;
-        var f_a = sortValueFunc(a);
-        var f_b = sortValueFunc(b);
-        if(sortValueType===0) {
-            dif = f_a.localeCompare(f_b);
-        } else if(sortValueType===1) {
-            if(f_a===null) return -1;
-            if(f_b===null) return 1;
-            dif = f_b.getTime() - f_a.getTime();
-        } else {
-            dif = f_b-f_a;
-        }
-        return dif;
+    sortFunc_List_String: function(a, b){
+        return a.localeCompare(b);
+    },
+    sortFunc_List_Date: function(a, b){
+        if(a===null) return -1;
+        if(b===null) return 1;
+        return a.getTime() - b.getTime();
+    },
+    sortFunc_List_Number: function(a, b){
+        return b - a;
     }
 };
 
@@ -174,21 +170,21 @@ kshf.Util = {
         var escaped=false;
         var cell;
         var a=[];
-        for(j=0; j<c.length;j++){
+        c.forEach(function(c_i){
             if(escaped){
-                cell+=","+c[j];
-                if(c[j][c[j].length-1]==="\""){
+                cell+=","+c_i;
+                if(c_i[c_i.length-1]==="\""){
                     escaped=false;
                 } else {
-                    continue;
+                    return;
                 }
             } else {
-                if(c[j][0]==="\""){
+                if(c_i[0]==="\""){
                     escaped = true;
-                    cell = c[j].slice(1,c[j].length-1);
-                    continue;
+                    cell = c_i.slice(1,c_i.length-1);
+                    return;
                 }
-                cell = c[j];
+                cell = c_i;
             }
             // convert to num
             var n=+cell;
@@ -200,7 +196,7 @@ kshf.Util = {
                 if(!isNaN(dt)){ cell = new Date(dt); } */
             }
             a.push(cell);
-        }
+        });
         return a;
     },
     /** You should only display at most 3 digits + k/m/etc */
@@ -531,13 +527,15 @@ kshf.List = function(_kshf, config, root){
     this.dom = {};
     
     // Sorting options
-    this.sortOpts = config.sortOpts;
-    this.sortOpts.forEach(function(sortOpt){
-        if(sortOpt.value===undefined) sortOpt.value = me.getKshf().columnAccessFunc(sortOpt.name);
+    this.sortingOpts = config.sortingOpts;
+    this.sortingOpts.forEach(function(sortOpt){
+        if(sortOpt.value===undefined) sortOpt.value = _kshf.columnAccessFunc(sortOpt.name);
         if(!sortOpt.label) sortOpt.label = sortOpt.value;
-        sortOpt.valueType = me.sortValueType(sortOpt.value);;
+        if(sortOpt.inverse===undefined) sortOpt.inverse = false;
+        if(sortOpt.func===undefined) sortOpt.func = me.getSortFunc(sortOpt.value);
     });
-    this.sortOpt_Active = this.sortOpts[0];
+    this.sortingOpt_Active = this.sortingOpts[0];
+
     this.displayType = 'list';
     if(config.displayType==='grid') this.displayType = 'grid';
 
@@ -606,15 +604,16 @@ kshf.List = function(_kshf, config, root){
                 var v=v.split(" ");
 
                 // go over all the items in the list, search each keyword separately
-                me.getKshf().items.forEach(function(item){
-                    var i=0
+                me.getKshfItems().forEach(function(item){
                     var f = true;
-                    for(i=0 ; i<v.length; i++){
-                        f = f && config.textSearchFunc(item).toLowerCase().indexOf(v[i])!==-1;
-                        if(f===false) break;
+                    v.every(function(v_i){
+                        f = f && config.textSearchFunc(item).toLowerCase().indexOf(v_i)!==-1;
+                        return f;
+                    });
+                    if(item.filters[0] !== f){
+                        item.filters[0] = f;
+                        item.updateSelected();
                     }
-                    item.filters[0] = f;
-                    item.updateSelected();
                 });
                 me.getKshf().update();
                 x.timer = null;
@@ -645,30 +644,13 @@ kshf.List = function(_kshf, config, root){
             });
     }
 
-    var listColumnRow=listHeader.append("div").attr("class","listColumnRow");
+    this.dom.listColumnRow=listHeader.append("div").attr("class","listColumnRow");
 
-    listColumnRow.append("select")
-        .attr("class","listSortOptionSelect")
-        .style("width",(this.sortColWidth)+"px")
-        .on("change", function(){
-            me.sortOpt_Active = me.sortOpts[this.selectedIndex];
-            me.sortItems();
-            me.reorderItemsOnDOM();
-            // update sort column labels
-            me.dom.listItems.selectAll(".listsortcolumn")
-                .html(function(d){ return me.sortOpt_Active.label(d); });
-            me.updateShowListGroupBorder();
-        })
-        .selectAll("input.list_sort_label")
-            .data(this.sortOpts)
-        .enter().append("option")
-            .attr("class", "list_sort_label")
-            .text(function(d){ return d.name; })
-            ;
+    this.insertSortSelect();
 
     // add collapse list feature
     if(this.detailsToggle==="Multi"){
-       var x=listColumnRow.append("div")
+       var x=this.dom.listColumnRow.append("div")
             .attr("class","itemstoggledetails");
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
@@ -684,7 +666,7 @@ kshf.List = function(_kshf, config, root){
             });
     }
 
-    this.dom_filterblocks = listColumnRow.append("span").attr("class","filter-blocks");
+    this.dom_filterblocks = this.dom.listColumnRow.append("span").attr("class","filter-blocks");
 
     this.listDiv.append("div").attr("class","listItemGroup");
 
@@ -721,57 +703,94 @@ kshf.List.prototype = {
             });
 
         if(this.displayType==='list'){
-            this.dom.listItems
-                .append("div")
-                .attr("class","listcell listsortcolumn")
+            this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
                 .style("width",this.sortColWidth+"px")
-                .html(function(d){ return me.sortOpt_Active.label(d); });
+                .html(function(d){ return me.sortingOpt_Active.label(d); });
                 ;
         }
 
-        if(this.detailsToggle!=="Off"){
-            var x= this.dom.listItems
-                .append("div")
-                .attr("class","listcell itemtoggledetails");
-            x.append("span").attr("class","item_details_on").html("[+]")
-                .attr("title","Show details")
-                .on("click", function(d){ me.getKshf().listItemDetailToggleFunc(d);});
-            x.append("span").attr("class","item_details_off").html("[-]")
-                .attr("title","Hide details")
-                .on("click", function(d){ me.getKshf().listItemDetailToggleFunc(d);});
-        }
+        this.insertItemToggleDetails();
 
         this.dom.listItems_Content = this.dom.listItems
             .append("div")
             .attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
     },
+    insertSortSelect: function(){
+        if(this.sortingOpts.length<2) return;
+        this.dom.listColumnRow.append("select")
+            .attr("class","listSortOptionSelect")
+            .style("width",(this.sortColWidth)+"px")
+            .on("change", function(){
+                me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
+                me.sortItems();
+                me.reorderItemsOnDOM();
+                if(me.displayType==='list'){
+                    // update sort column labels
+                    me.dom.listItems.selectAll(".listsortcolumn")
+                        .html(function(d){ return me.sortingOpt_Active.label(d); });
+                }
+                me.updateShowListGroupBorder();
+            })
+            .selectAll("input.list_sort_label")
+                .data(this.sortingOpts)
+            .enter().append("option")
+                .attr("class", "list_sort_label")
+                .text(function(d){ return d.name; })
+                ;
+    },
+    insertItemToggleDetails: function(){
+        var _kshf = this.getKshf();
+        if(this.detailsToggle!=="Off"){
+            var x= this.dom.listItems
+                .append("div")
+                .attr("class","listcell itemtoggledetails");
+            x.append("span").attr("class","item_details_on").html("[+]")
+                .attr("title","Show details")
+                .on("click", function(d){ 
+                    _kshf.listItemDetailToggleFunc(d);
+                })
+                .on("mouseover",function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 's',
+                        fade: true,
+                        offset_y:-5,
+                        offset_x:-2,
+                        className: 'details',
+                        title: function(){ return "Show details"; }
+                    });
+                })
+                .on("mouseout",function(d){
+                    this.tipsy.hide();
+                })
+                ;
+            x.append("span").attr("class","item_details_off").html("[-]")
+                .attr("title","Hide details")
+                .on("click", function(d){ 
+                    _kshf.listItemDetailToggleFunc(d);
+                });
+        }
+    },
     /** after you re-sort the primary table or change item visibility, call this function */
     updateShowListGroupBorder: function(){
         var me = this;
         var items = me.getKshf().items;
         if(this.displayType==='list') {
-            if(this.sortOpt_Active.noGroupBorder !== true){
-                // go over item list
-                var i=0,iPrev=-1;
-                var sortValueFunc = this.sortOpt_Active.value;
-                var sortValueType = this.sortOpt_Active.valueType;
-                for(;i<items.length;i++){
-                    var item = items[i];
-                    // skip unselected items
-                    if(!item.selected) continue;
-                    // show all sort column labels by default 
-                    item.showListSortColumn = true;
-                    // first selected item
-                    if(iPrev===-1){ iPrev=i; continue; }
-                    var pPrev = items[iPrev];
-                    iPrev=i;
-
-                    var showBorder = (kshf.compareListItems(item,pPrev,sortValueFunc,sortValueType)!==0);
-                    item.listItem.style.borderTopWidth = showBorder?"4px":"0px";
-                }
-            } else {
+            if(this.sortingOpt_Active.noGroupBorder===true){
                 this.dom.listItems.style("border-top-width", "0px");
+            } else {
+                // go over item list
+                var pItem=null;
+                var sortValueFunc = this.sortingOpt_Active.value;
+                var sortFunc = this.sortingOpt_Active.func;
+                items.forEach(function(item,i){
+                    if(!item.selected) return;
+                    if(pItem!==null){ 
+                        item.listItem.style.borderTopWidth = 
+                            sortFunc(sortValueFunc(item),sortValueFunc(pItem))!==0?"4px":"0px";
+                    }
+                    pItem = item;
+                });
             }
         }
     },
@@ -784,18 +803,20 @@ kshf.List.prototype = {
     /** Sort all items fiven the active sort option */
     sortItems: function(){
         var me=this;
-        var sortValueFunc = this.sortOpt_Active.value;
-        var sortValueType = this.sortOpt_Active.valueType;
+        var sortValueFunc = this.sortingOpt_Active.value;
+        var sortFunc = this.sortingOpt_Active.func;
+        var inverse = this.sortingOpt_Active.inverse;
         this.parentKshf.items.sort(function(a,b){
             // do not need to process unselected items, their order does not matter
             if(!a.selected||!b.selected){ return 0; }
-            var dif=kshf.compareListItems(a,b,sortValueFunc,sortValueType);
-            if(dif!==0) { return dif; }
-            return b.id()-a.id(); // use unique IDs to add sorting order as the last option
+            var dif=sortFunc(sortValueFunc(a),sortValueFunc(b));
+            if(dif===0){ dif=b.id()-a.id(); }
+            if(inverse) dif = -dif;
+            return dif; // use unique IDs to add sorting order as the last option
         });
     },
     /** Returns the sort value type for fiven sort Value function */
-    sortValueType: function(sortValueFunc){
+    getSortFunc: function(sortValueFunc){
         // 0: string, 1: date, 2: others
         var sortValueType_, sortValueType_temp, same;
         
@@ -809,15 +830,15 @@ kshf.List.prototype = {
             var f = sortValueFunc(item);
             var sortValueType_temp2;
             switch(typeof f){
-            case 'string': sortValueType_temp2 = 0; break;
-            case 'number': sortValueType_temp2 = 2; break;
+            case 'string': sortValueType_temp2 = kshf.sortFunc_List_String; break;
+            case 'number': sortValueType_temp2 = kshf.sortFunc_List_Number; break;
             case 'object': 
                 if(f instanceof Date) 
-                    sortValueType_temp2 = 1; 
+                    sortValueType_temp2 = kshf.sortFunc_List_Date; 
                 else 
-                    sortValueType_temp2=2;
+                    sortValueType_temp2 = kshf.sortFunc_List_Number;
                 break;
-            default: sortValueType_temp2 = 2; break;
+            default: sortValueType_temp2 = kshf.sortFunc_List_Number; break;
             }
 
             if(sortValueType_temp2===sortValueType_temp){
@@ -863,6 +884,9 @@ kshf.listItemDetailToggleFunc2 = function(t){
     }
 };
 
+/**
+ * @constructor
+ */
 kshf.Browser = function(options){
     var me = this;
     // BASIC OPTIONS
@@ -915,9 +939,9 @@ kshf.Browser = function(options){
     
     this.skipFacet = {};
     if(options.columnsSkip){
-        for(var i=0; i<options.columnsSkip.length; i++){
-            this.skipFacet[options.columnsSkip[i]] = true;
-        }
+        options.columnsSkip.forEach(function(c){
+            this.skipFacet[c] = true;
+        });
     }
 
     // itemName
@@ -1473,19 +1497,17 @@ kshf.Browser.prototype = {
     },
     /** load data from memory - ATR - Anne Rose */
     loadSheet_Memory: function(sheet){
-        var i,j;
+        var j;
         var arr = [];
         var idIndex = -1;
         var itemId=0;
         this.createColumnNames(sheet.tableName);
-        for(i=0; i<sheet.data.length; i++){
-            var c = sheet.data[i];
+        sheet.data.forEach(function(c,i){
             if(i===0){ // header 
-                for(j=0; j<c.length;j++){
-                    var colName = c[j];
+                c.forEach(function(colName,j){
                     kshf.insertColumnName(sheet.tableName,colName,j);
                     if(colName===sheet.id){ idIndex = j;}
-                }
+                });
                 if(idIndex===-1){ // id column not found, you need to create your own
                     kshf.insertColumnName(sheet.tableName,sheet.id,j);
                     idIndex = j;
@@ -1495,41 +1517,40 @@ kshf.Browser.prototype = {
                 if(idIndex===c.length) c.push(itemId++);
                 arr.push(new kshf.Item(c,idIndex,sheet.primary));
             }
-        }
+        });
         this.finishDataLoad(sheet,arr);
     },
     /** createTableFromTable */
     createTableFromTable: function(srcData, dstTableName, mapFunc){
         var i,uniqueID=0;
+        var me=this;
         kshf.dt_id[dstTableName] = {};
         kshf.dt[dstTableName] = [];
         var dstTable_Id = kshf.dt_id[dstTableName];
         var dstTable = kshf.dt[dstTableName];
 
-        for(i=0 ; i<srcData.length ; i++){
-            var v = mapFunc(srcData[i]);
-            if(v==="" || v===undefined || v===null) { continue; }
+        srcData.forEach(function(srcData_i){
+            var v = mapFunc(srcData_i);
+            if(v==="" || v===undefined || v===null) return;
             if(v instanceof Array) {
-                for(var j=0; j<v.length; j++){
-                    var v2 = v[j];
-                    if(v==="" || v===undefined || v===null) { continue; }
+                v.forEach(function(v2){
+                    if(v2==="" || v2===undefined || v2===null) return;
                     if(!dstTable_Id[v2]){
-                        var a = [uniqueID++,v2];
-                        var item = new kshf.Item(a,1);
-                        item.browser = this;
+                        var item = new kshf.Item([uniqueID++,v2],1);
+                        item.browser = me;
                         dstTable_Id[v2] = item;
                         dstTable.push(item);
                     }   
-                }
+                });
             } else {
                 if(!dstTable_Id[v]){
-                    var a = [uniqueID++,v];
-                    var item = new kshf.Item(a,1);
+                    var item = new kshf.Item([uniqueID++,v],1);
+                    item.browser = me;
                     dstTable_Id[v] = item;
                     dstTable.push(item);
                 }   
             }
-        }
+        });
     },
     /** finishDataLoad */
     finishDataLoad: function(sheet,arr) {
@@ -1605,8 +1626,8 @@ kshf.Browser.prototype = {
             options.catTableName = this.primaryTableName;
             options.generateRows = true;
         }
-        if(options.sortingFuncs===undefined){
-            options.sortingFuncs = [{ func:kshf.sortFunc_ActiveCount_TotalCount }];
+        if(options.sortingOpts===undefined){
+            options.sortingOpts = [{ func:kshf.sortFunc_ActiveCount_TotalCount }];
         }
         options.rowTextWidth = this.categoryTextWidth;
         this.charts.push(new kshf.BarChart(this,options));
@@ -1694,6 +1715,7 @@ kshf.Browser.prototype = {
 
         // "clear all" filter button
         this.root.select(".filter-block-clear").style("display",(filteredCount>0)?"inline-block":"none");
+        this.root.select("span.filter-blocks").style("display",(filteredCount>0)?"inline-block":"none");
 
         if(this.updateCb) this.updateCb();
     },
@@ -1757,49 +1779,45 @@ kshf.Browser.prototype = {
         // *********************************************************************************
         // left panel ***********************************************************************
         divLineRem = divLineCount;
-        for(i=0; i<this.charts.length; ++i) {
-            var c3=this.charts[i];
-            if(c3.type==='scatterplot' && chartProcessed[i]===true){
-                divLineRem-=c3.rowCount_Total();
-                break;
+        this.charts.forEach(function(chart,i){
+            if(chart.type==='scatterplot' && chartProcessed[i]===true){
+                divLineRem-=chart.rowCount_Total();
             }
-        }
+        });
 
         var finalPass = false;
         while(procBarCharts<barChartCount){
             procBarChartsOld = procBarCharts;
             var targetRowCount = Math.floor(divLineRem/(barChartCount-procBarCharts));
-            for (i=0; i<this.charts.length; ++i) {
-                var c=this.charts[i];
-                if((c.type==='barChart' || c.type==='scatterplot') && chartProcessed[i]===false){
-                    if(divLineRem<c.rowCount_MinTotal()){
-                        c.divRoot.style("display","none");
-                        chartProcessed[i] = true;
-                        procBarCharts++;
-                        c.hidden = true;
-                        continue;
-                    } 
-                    if(c.collapsedTime){
-                        ; //
-                    } else if(c.options.catDispCountFix){
-                        c.setRowCount_VisibleAttribs(c.options.catDispCountFix);
-                    } else if(c.rowCount_MaxTotal()<=targetRowCount){
-                        // you say you have 10 rows available, but I only needed 5. Thanks,
-                        c.setRowCount_VisibleAttribs(c.attribCount_Active);
-                    } else if(finalPass){
-                        c.setRowCount_VisibleAttribs(targetRowCount-c.rowCount_Header()-1);
-                    } else {
-                        continue;
-                    }
-                    if(c.hidden===undefined || c.hidden===true){
-                        c.hidden=false;
-                        c.divRoot.style("display","block");
-                    }
-                    divLineRem-=c.rowCount_Total();
+            this.charts.forEach(function(chart,i){
+                if(chartProcessed[i]) return;
+                if(divLineRem<chart.rowCount_MinTotal()){
+                    chart.divRoot.style("display","none");
                     chartProcessed[i] = true;
                     procBarCharts++;
+                    chart.hidden = true;
+                    return;
+                } 
+                if(chart.collapsedTime){
+                    ; //
+                } else if(chart.options.catDispCountFix){
+                    chart.setRowCount_VisibleAttribs(chart.options.catDispCountFix);
+                } else if(chart.rowCount_MaxTotal()<=targetRowCount){
+                    // you say you have 10 rows available, but I only needed 5. Thanks,
+                    chart.setRowCount_VisibleAttribs(chart.attribCount_Active);
+                } else if(finalPass){
+                    chart.setRowCount_VisibleAttribs(targetRowCount-chart.rowCount_Header()-1);
+                } else {
+                    return;
                 }
-            }
+                if(chart.hidden===undefined || chart.hidden===true){
+                    chart.hidden=false;
+                    chart.divRoot.style("display","block");
+                }
+                divLineRem-=chart.rowCount_Total();
+                chartProcessed[i] = true;
+                procBarCharts++;
+            });
             finalPass = procBarChartsOld===procBarCharts;
         }
 
@@ -1807,27 +1825,27 @@ kshf.Browser.prototype = {
         var allDone = false;
         while(divLineRem>0 && !allDone){
             allDone = true;
-            for (i=0; i < this.charts.length && divLineRem>0; ++i) {
-                var c3=this.charts[i];
-                if(c3.hidden===true) continue;
-                if(c3.collapsed===true) continue;
-                if(c3.attribCount_Active===c3.rowCount_Visible) continue;
-                if(c3.options.catDispCountFix!==undefined) continue;
-                if(c3.type==='scatterplot' && c3.collapsedTime===false) continue;
+            this.charts.every(function(chart){
+                if(chart.hidden) return;
+                if(chart.collapsed) return;
+                if(chart.allAttribsVisible()) return;
+                if(chart.options.catDispCountFix!==undefined) return;
+                if(chart.type==='scatterplot' && chart.collapsedTime===false) return;
                 var tmp=divLineRem;
-                divLineRem+=c3.rowCount_Total();
-                c3.setRowCount_VisibleAttribs(c3.rowCount_Visible+1);
-                divLineRem-=c3.rowCount_Total();
+                divLineRem+=chart.rowCount_Total();
+                chart.setRowCount_VisibleAttribs(chart.rowCount_Visible+1);
+                divLineRem-=chart.rowCount_Total();
                 if(tmp!==divLineRem) allDone=false;
-            }
+                return divLineRem>0;
+            });
         }
 
         this.charts.forEach(function(chart){
             chart.refreshVisibleAttribs(false);
         });
 
-        // adjust layoutRight vertical position
         if(c2.type==='scatterplot'){
+            // adjust layoutRight vertical position
             this.layoutRight
                 .transition().duration(this.layout_animation)
                 .style("top", (c2.rowCount_Total_Right()*this.line_height)+"px");
@@ -1937,12 +1955,10 @@ kshf.Browser.prototype = {
         this.layoutRight.style("left",(this.fullWidthResultSet()?0:this.width_leftPanel_total)+"px");
 
         var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-this.scrollPadding-15; // 15 is padding
-        for (i = 0; i < this.charts.length; ++i){
-            if(this.charts[i].type==='scatterplot'){
-                this.charts[i].setTimeWidth(width_rightPanel_total);
-                break;
-            }
-        }
+
+        this.charts.forEach(function(chart){
+            if(chart.type==='scatterplot') chart.setTimeWidth(width_rightPanel_total);
+        })
 
         // for some reason, on page load, this variable may be null. urgh.
         if(this.listDisplay){
@@ -1987,20 +2003,17 @@ kshf.Browser.prototype = {
         r.itemInfo = itemInfo;
 
         var i;
-        for(i=0; i<this.charts.length; i++){
-            var c = this.charts[i];
+        this.charts.forEach(function(chart,i){
             // include time range if time is filtered
-            if(c.type==='scatterplot'){
-                if(c.isFiltered_Time()) {
-                    r.timeFltr = 1;
-                }
+            if(chart.type==='scatterplot'){
+                if(chart.isFiltered_Time()) r.timeFltr = 1;
             }
-            if(c.attribCount_Selected!==0){
+            if(chart.attribCount_Selected!==0){
                 if(r.filtered!=="") { r.filtered+="x"; r.selected+="x"; }
                 r.filtered+=i;
-                r.selected+=c.attribCount_Selected;
+                r.selected+=chart.attribCount_Selected;
             }
-        }
+        });
 
         if(r.filtered==="") r.filtered=null;
         if(r.selected==="") r.selected=null;
@@ -2027,9 +2040,6 @@ kshf.Browser.prototype = {
             this.lastSelectedItem = d;
         }
     }
-
-
-
 };
 
 
@@ -2061,6 +2071,8 @@ kshf.BarChart = function(_kshf, options){
     this.sortDelay = 450; // ms
     var items = this.getKshf().items;
 
+    this.sortingOpt_Active = options.sortingOpts;
+
     if(!this.options.timeTitle){
         this.type = 'barChart';
         this.filterCount = 1;
@@ -2087,10 +2099,10 @@ kshf.BarChart = function(_kshf, options){
         this.updateAttrib_TimeMinMax();
         var i;
         var d=this.getAttribs();
-        for(i=0; i<d.length; i++){
-            d[i].xMin = d[i].xMin_Dyn;
-            d[i].xMax = d[i].xMax_Dyn;
-        }
+        d.forEach(function(d_i){
+            d_i.xMin = d_i.xMin_Dyn;
+            d_i.xMax = d_i.xMax_Dyn;
+        });
         if(this.options.timeBarShow===undefined){
             this.options.timeBarShow = false;
         }
@@ -2148,6 +2160,10 @@ kshf.BarChart.prototype = {
     rowCount_MinTotal: function(){
         return this.rowCount_Header()+Math.min(this.attribCount_Active,3)+1;
     },
+    /** allAttribsVisble */
+    allAttribsVisible: function(){
+        return this.attribCount_Active===this.rowCount_Visible;
+    },
     /** init_shared */
     init_shared: function(options){
     	// register
@@ -2155,11 +2171,7 @@ kshf.BarChart.prototype = {
 
         this.parentKshf.barMaxWidth = 0;
 
-    	//sorting options
-        //assert(this.options.sorting);
-        // select the first sorting function as default
         this.sortID=0;
-        this.sortInverse=false;
         this.options.timeMaxWidth=0;
 
     	// filter options - must be always specified
@@ -2290,7 +2302,7 @@ kshf.BarChart.prototype = {
             }
         }
 
-        this.showConfig = this.options.sortingFuncs.length>1;
+        this.showConfig = this.options.sortingOpts.length>1;
 
         // Modified internal dataMap function - Skip rows with0 active item count
         if(this.options.dataMap) {
@@ -2484,7 +2496,7 @@ kshf.BarChart.prototype = {
             this.insertTimeChartRows();
             this.insertTimeChartAxis_1();
         }
-        this.updateSorting(true);
+        this.updateSorting();
     },
     /** getAttribs */
     getAttribs: function(){
@@ -2799,7 +2811,7 @@ kshf.BarChart.prototype = {
             .style("left",(this.parentKshf.categoryTextWidth+5)+"px")
             .on("click",function(d){
                 me.sortDelay = 0; 
-                me.updateSorting(true);
+                me.updateSorting();
                 if(sendLog) sendLog(CATID.FacetSort,ACTID_SORT.ResortButton,{facet:me.options.facetTitle});
             })
             ;
@@ -2891,14 +2903,13 @@ kshf.BarChart.prototype = {
                         sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
                             {facet:me.options.facetTitle, funcID:this.selectedIndex});
                     }
-                    me.sortID = this.selectedIndex;
-                    me.sortInverse = false;
+                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
                     me.sortDelay = 0;
                     me.sortSkip = false;
-                    me.updateSorting.call(me,true);
+                    me.updateSorting.call(me);
                 })
             .selectAll("input.sort_label")
-                .data(this.options.sortingFuncs)
+                .data(this.options.sortingOpts)
               .enter().append("option")
                 .attr("class", "sort_label")
                 .text(function(d){ return d.name; })
@@ -2913,7 +2924,8 @@ kshf.BarChart.prototype = {
         }
 
         if(this.showTextSearch){
-            var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX");
+            var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX")
+                .style("white-space","nowrap");
             this.dom.showTextSearch= textSearchRowDOM.append("input")
                 .attr("type","text")
                 .attr("class","chartRowLabelSearch")
@@ -2929,9 +2941,8 @@ kshf.BarChart.prototype = {
                         if(v===""){
                             me.selectAllAttribs(false);
                         } else {
-                            var daat=me.getAttribs(),i,numSelected=0;
-                            for(i=0; i<daat.length ; i++){
-                                var d=daat[i];
+                            var numSelected=0;
+                            me.getAttribs().forEach(function(d){
                                 if(me.options.catLabelText(d).toString().toLowerCase().indexOf(v)!==-1){
                                     d.selected = true;
                                 } else {
@@ -2942,7 +2953,7 @@ kshf.BarChart.prototype = {
                                     }
                                 }
                                 numSelected+=d.selected;
-                            }
+                            });
                             me.attribCount_Selected = numSelected;
                         }
                         // convert state to multiple-or selection
@@ -3432,7 +3443,7 @@ kshf.BarChart.prototype = {
             // ALL of the current selection is in item mappings
             // see how many items return true. If it matches current selected count, then all selections are met for this item
             var t=0;
-            for(j=0;j<m.length;j++) { if(curDtId[m[j]].selected) t++; }
+            m.forEach(function(m_i){ if(curDtId[m_i].selected) t++; })
             item.filters[this.filterId] = (t===this.attribCount_Selected);
         }
     },
@@ -3545,7 +3556,7 @@ kshf.BarChart.prototype = {
                 }
             }
         }
-        if(this.options.sortingFuncs[this.sortID].no_resort!==true){
+        if(this.sortingOpt_Active.no_resort!==true){
             this.divRoot.attr("canResort",this.attribCount_Selected!==this.attribCount_Active&&this.attribCount_Selected!==0);
         }
 
@@ -3836,24 +3847,18 @@ kshf.BarChart.prototype = {
                 return Math.min(me.catBarAxisScale(d.barValueMax),me.parentKshf.barMaxWidth+7); 
             });
     },
-    /** updateSorting */
-    updateSorting: function(force){
+    /** sortAttribs */
+    sortAttribs: function(){
         var me = this;
-        var _kshf = this.getKshf();
-        var no_resort = this.options.sortingFuncs[this.sortID].no_resort;
-    	if(this.sortSkip){
-            this.sortSkip=false;
-    		return;
-    	}
-        if(this.scrollbar.firstRow!==0){ // always scrolls to top row automatically when re-sorted
-            this.scrollbar.firstRow=0;
-            this.refreshScrollbar();
-        }
-    	// sort the data
-        var funcToCall = this.options.sortingFuncs[this.sortID].func;
+        var no_resort = this.sortingOpt_Active.no_resort;
+        var inverse = this.sortingOpt_Active.inverse;
+        if(inverse===undefined) inverse=false;
+        // sort the data
+        var funcToCall = this.sortingOpt_Active.func;
         if(funcToCall===undefined){
             funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
         }
+
         var idCompareFunc = function(a,b){return b-a;};
         if(typeof(this.getAttribs()[0].id())==="string") 
             idCompareFunc = function(a,b){return b.localeCompare(a);};
@@ -3864,12 +3869,9 @@ kshf.BarChart.prototype = {
             if( a_noitems &&  b_noitems) return  0; // Whatever, both won't be visible
             if( a_noitems && !b_noitems) return  1;
             if(!a_noitems &&  b_noitems) return -1;
-            // call the sorting function
             var x=funcToCall(a,b);
-            // use IDs if sorting function doesn't recide on ordering
             if(x===0) x = idCompareFunc(a.id(),b.id());
-            // reverse ordering
-            if(me.sortInverse) x*=-1;
+            if(inverse) x*=-1;
             return x;
         };
         var sortSelectedOnTop = function(a,b){
@@ -3879,22 +3881,31 @@ kshf.BarChart.prototype = {
             return justSortFunc(a,b);
         };
         if(no_resort === true)
-    	    this.getAttribs().sort(justSortFunc);
+            this.getAttribs().sort(justSortFunc);
         else
             this.getAttribs().sort(sortSelectedOnTop);
-    	
-        this.dom.g_row
-    		.data(this.getAttribs(), this._dataMap)
-    		.order()
-    		.transition()
-            .delay(this.sortDelay)
-    		.attr("transform", function(d,i) { return "translate(0,"+((_kshf.line_height*i))+")"; })
-            .each(function(d,i){d.orderIndex = i;})
+        this.getAttribs().forEach(function(d,i){ d.orderIndex=i; });
+    },
+    /** updateSorting */
+    updateSorting: function(){
+        if(this.sortSkip){
+            this.sortSkip=false;
+            return;
+        }
+        var _kshf = this.getKshf();
+        this.sortAttribs();
+        // always scrolls to top row automatically when re-sorted
+        if(this.scrollbar.firstRow!==0){
+            this.scrollbar.firstRow=0;
+            this.refreshScrollbar();
+        }
+        this.dom.g_row.data(this.getAttribs(), this._dataMap)
+            .order()
+            .transition().delay(this.sortDelay)
+            .attr("transform", function(d,i) { return "translate(0,"+((_kshf.line_height*i))+")"; })
             ;
 
-        if(this.type==='scatterplot'){
-            this.refreshBarLineHelper();
-        }
+        if(this.type==='scatterplot') this.refreshBarLineHelper();
         this.divRoot.attr("canResort",false);
         this.sortDelay = 450;
     },
@@ -4397,7 +4408,7 @@ kshf.BarChart.prototype = {
                     me.updateItemFilterState_Time();
                     me.sortSkip = true;
 
-                    if(me.options.sortingFuncs[me.sortID].no_resort!==true)
+                    if(me.sortingOpt_Active.no_resort!==true)
                         me.divRoot.attr("canResort",true);
 
                     me.skipUpdateTimeChartDotConfig = true;

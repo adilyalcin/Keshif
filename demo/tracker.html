@@ -89,7 +89,7 @@ $(document).ready( function(){
                 catItemMap : function(f){ 
                     return f.data[cols['timeFltr']];
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
                 }]
@@ -108,7 +108,7 @@ $(document).ready( function(){
                     }
                     return total;
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
                 }]
@@ -126,7 +126,7 @@ $(document).ready( function(){
 
                     return nums2.length;
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
@@ -140,7 +140,7 @@ $(document).ready( function(){
                     var tsec_approx = Math.floor(tsec/10)*10;
                     return tsec_approx+"-"+(tsec_approx+9);
                 },
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
@@ -149,7 +149,7 @@ $(document).ready( function(){
                 }]
             },{
                 facetTitle: "results",
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
                     func: kshf.sortFunc_Column_ParseInt_Incr
@@ -160,7 +160,7 @@ $(document).ready( function(){
         ],
         list:{
             sortColWidth: 65,
-            sortOpts : [ {name: 'ts' } ],
+            sortingOpts : [ {name: 'ts' } ],
             contentFunc : function(d) {
                 var str="";
                 str+="<div class=\"iteminfo iteminfo_1\"> SesID: "+d.data[cols.sesID]+"</div>";

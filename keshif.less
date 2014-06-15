@@ -490,6 +490,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin-right:10px;
                 height: 18px;
                 float:right;
+                .transition(~"height 500ms ease");
                 svg{
                     position:relative;
                     top:2px;
@@ -742,6 +743,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: none;
             }
         }
+        &[collapsedtime=true] {
+            .config_zoom{
+                height: 0px;
+            }
+        }
         &[filtered_range=true] div.chartClearFilterButton.rangeFilter{
             display:inline-block;
         }
@@ -869,11 +875,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight:bold;
         }
         select.listSortOptionSelect{
-            float:left;
             bottom:0px;
         }
         div.itemstoggledetails{
-            float:left;
             width:20px;
             font-size: 1em;
             color:#222222;
@@ -881,6 +885,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight: 700;
             cursor: pointer;
             padding-left:5px;
+            display: inline-block;
             span{ display:none; }
             span.items_details_on { display:none; }
             span.items_details_off{ display:inline-block; }
@@ -898,7 +903,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     div.listHeader {
         font-weight: bold;
         color: black;
-        padding: 0px 5px 0px 2px;
+        padding: 0px 5px 3px 2px;
 
         .background-image(~"linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%)");
         
@@ -909,7 +914,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         span.filter-blocks{
             font-size: 0.9em;
-            float: left;
+//            float: left;
             display: inline-block;
             span.filter-block{
                 display: inline-block;
@@ -1038,10 +1043,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.listColumnRow {
             font: 500 100% Arial,sans-serif;
             font-size: 0.9em;
-            display: inline-block;
-            clear: left;
-            position: relative;
-            min-height: 20px;
             div.listcell{
                 float:left;
                 position:absolute;
@@ -1415,6 +1416,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .tipsy{
     pointer-events: none;
+    &.details .tipsy-inner{
+        padding: 5px;
+    }
 }
 .tipsy-inner{
     font-family: Helvetica, Arial, sans-serif;

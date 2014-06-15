@@ -16,7 +16,7 @@ $(document).ready( function(){
         chartTitle: "Keshif Demos",
         domID : "#chart_div",
         dirRoot: "../",
-        categoryTextWidth:135,
+        categoryTextWidth:150,
         barChartWidth: 70,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
@@ -34,7 +34,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ facetTitle: "# Categories",
-                sortingFuncs:[
+                sortingOpts:[
                     {   name: "Items"
                     },
                     {   name: "Cat's",
@@ -58,7 +58,7 @@ $(document).ready( function(){
         ],
         list:{
             sortColWidth: 60,
-            sortOpts : [ { 
+            sortingOpts : [ { 
                 name: 'Item#',
                 value: function(d){ 
                     return d.data[1];
@@ -96,7 +96,7 @@ $(document).ready( function(){
                 font-style:italic;
             }
             #chart_div {
-                width: 730px;
+                width: 750px;
                 height: 400px;
             }
             .iteminfo_0 span{

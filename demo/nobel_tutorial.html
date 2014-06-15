@@ -35,7 +35,7 @@ function loadChart() {
         columnsSkip : ["Overall Motivation","laureate_id"],
         list: {
             sortColWidth: 45,
-            sortOpts : [ {name: 'Year'} ],
+            sortingOpts : [ {name: 'Year'} ],
             contentFunc : function(d) {
                 var laureateID = d.data[kshf.dt_ColNames.Prizes.laureate_id];
                 var laureate = kshf.dt_id.Laureates[laureateID];

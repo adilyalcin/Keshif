@@ -15,19 +15,38 @@
 
         <script type="text/javascript">
 
-function resetSize(){
-    $('#chart_div').height($(window).height()-30);
-    $('#chart_div').width (1000);
+function loadMovieData(d){
+    var kshfItem = d.currentTarget.parentNode.__data__;
+    if(kshfItem.dataLoaded===true) return;
+    if(kshfItem.listItem.getAttribute('details')==="false")
+        browser.listItemDetailToggleFunc(kshfItem);
+    var movieName = kshfItem.data[2];
+    if(d3.select(kshfItem.listItem).select(".movieInfo").style("display")==="block") return;
+    $.ajax( {
+        url: "http://www.omdbapi.com/?t="+movieName,
+        dataType: "json",
+        success: function(data){
+            if(data.Error) return;
+            var d3Item = d3.select(kshfItem.listItem);
+            d3Item.select(".moviePoster").attr("src",data.Poster);
+            d3Item.select(".movieInfo").style("display","block");
+            d3Item.select(".Year .value").text(data.Year);
+            d3Item.select(".Rated .value").text(data.Rated);
+            d3Item.select(".Genre .value").text(data.Genre);
+            d3Item.select(".Plot .value").text(data.Plot);
+            d3Item.select(".Awards .value").text(data.Awards);
+            d3Item.select(".imdbRating .value").text(data.imdbRating);
+            d3Item.selectAll("a").attr("href","http://www.imdb.com/title/"+data.imdbID);
+            kshfItem.dataLoaded = true;
+        }
+    });
 }
 
 function loadChart() {
-    resetSize();
-    $(window).resize(function() {
-        resetSize();
-        browser.updateLayout();
-    });
 
-    var m_now = moment();
+    // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
+    var m_now = moment().subtract('days',1);
+
     var m_thisweek = moment().add('days',7);
     var m_nextweek = moment().add('days',14);
 
@@ -44,9 +63,9 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Soon",
-                timeTitle: "Date (Next 2 weeks)",
+                timeTitle: "Screenings in Next 15 Days",
                 removeInactiveAttrib: false,
-                sortingFuncs: [{no_resort: true}],
+                sortingOpts: [{no_resort: true}],
                 catItemMap: function(d){ 
                     var m_scr = moment(d.data[1]);
                     if(m_scr.isBefore(m_now)) return null;
@@ -79,10 +98,9 @@ function loadChart() {
                 catItemMap: function(d){
                     return (moment(d.data[1]).days()+6)%7; 
                 },
-                sortingFuncs : [
+                sortingOpts : [
                     { func: kshf.sortFunc_Column_Int_Decr, no_resort: true },
                 ],
-                
                 catLabelText: function(d){
                     switch(d.data[1]){
                         case 0: return "Monday";
@@ -99,32 +117,25 @@ function loadChart() {
             }
         ],
         readyCb: function(){
-            $(".itemtoggledetails").click(function(d){
-                var kshfItem = d.currentTarget.parentNode.__data__;
-                var movieName = kshfItem.data[2];
-                if(d3.select(kshfItem.listItem).select(".movieInfo").style("display")==="block") return;
-                $.ajax( {
-                    url: "http://www.omdbapi.com/?t="+movieName,
-                    dataType: "json",
-                    success: function(data){
-                        if(data.Error) return;
-                        d3.select(kshfItem.listItem).select(".moviePoster").attr("src",data.Poster);
-                        d3.select(kshfItem.listItem).select(".movieInfo").style("display","block");
-                        d3.select(kshfItem.listItem).select(".Year .value").text(data.Year);
-                        d3.select(kshfItem.listItem).select(".Rated .value").text(data.Rated);
-                        d3.select(kshfItem.listItem).select(".Genre .value").text(data.Genre);
-                        d3.select(kshfItem.listItem).select(".Plot .value").text(data.Plot);
-                        d3.select(kshfItem.listItem).select(".Awards .value").text(data.Awards);
-                        d3.select(kshfItem.listItem).select(".imdbRating .value").text(data.imdbRating);
-                    }
-                });
-            });
+            $(".itemtoggledetails").click(loadMovieData);
+            $(".movieName").click(loadMovieData);
         },
-//        columnsSkip : ["Overall Motivation","laureate_id"],
         list: {
             sortColWidth: 90,
-            sortOpts : [ {
+            sortingOpts : [ {
                 name: 'Date',
+                func: function(a,b){
+                    // a and b are date objects
+                    var a_m = moment(a);
+                    var b_m = moment(b);
+                    var a_isBeforeNow = a_m.isBefore(m_now);
+                    var b_isBeforeNow = b_m.isBefore(m_now);
+                    if(a_isBeforeNow && !b_isBeforeNow) return -1;
+                    if(b_isBeforeNow && !a_isBeforeNow) return 1;
+                    return b.getTime() - a.getTime();
+                    return a_m.isBefore(b_m);
+                },
+                inverse: true,
                 label: function(d){ 
                     return moment(d.data[1]).format('MMM Do, ddd');
                 }
@@ -135,7 +146,7 @@ function loadChart() {
                 var series = kshf.dt_id.Series[d.data[0]];
                 var str="";
                 str+="<span class=\"item_details\">";
-                str+="<img class='moviePoster' src=''>"
+                str+="<a target='_blank'><img class='moviePoster' src=''></a>"
                 str+="</span>"; // item_details
 
                 str+="<span class='movieName'>"+d.data[2]+"</span>";
@@ -151,7 +162,8 @@ function loadChart() {
                     "<span class='Genre'><span class='header'>Genre</span>: <span class='value'></span></span></br>"+
                     "<span class='Plot'><span class='header'>Plot</span>: <span class='value'></span></span></br>"+
                     "<span class='Awards'><span class='header'>Awards</span>: <span class='value'></span></span></br>"+
-                    "<span class='imdbRating'><span class='header'>IMDB Rating</span>: <span class='value'></span></span></br>"+
+                    "<span class='imdbRating'><span class='header'>IMDB Rating</span>: <span class='value'></span>"+
+                        " - <a target='_blank'>Page</a></span></br>"+
                     "</span>" // movieInfo
                     ;
 
@@ -178,13 +190,25 @@ $(document).ready(loadChart);
             border-width: 1px 2px 2px 1px;
             background-color:white;
         }
+        .moviePoster:hover{ 
+            background-color:rgb(240, 232, 194);
+            border-color: #aaaaaa #888888 #888888 #aaaaaa;
+        }
         .movieName{
             font-family: Josefin Slab;
             font-size: 1.3em;
             font-weight: 700;
         }
+        .listItem[details=false] .movieName{
+            cursor: pointer;
+        }
+        .listItem[details=false] .movieName:hover{
+            text-decoration: underline;
+            color:rgb(151, 64, 43);
+        }
         .listsortcolumn{
             font-weight: 300 !important;
+            text-align: right !important;
         }
         .item_details .header{
             font-weight: 300;
@@ -192,6 +216,10 @@ $(document).ready(loadChart);
         .movieInfo{
             border-top: dotted 2px gray;
             font-size: 0.9em;
+        }
+        #chart_div{
+            width:1000px;
+            height: 600px;
         }
     </style>
 	</head>

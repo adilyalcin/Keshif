@@ -37,9 +37,9 @@
                             newdate.setFullYear(newdate.getFullYear() - age);
                             return newdate;
                         },
-                        sortingFuncs : [{ no_resort: true }]
+                        sortingOpts : [{ no_resort: true }]
                     },{ facetTitle: "pclass",
-                        sortingFuncs : [{ 
+                        sortingOpts : [{ 
                             func: function(a,b){
                                 if(a==="3rd") return -1;
                                 if(a==="1st") return 1;
@@ -49,7 +49,7 @@
                             no_resort: true 
                         }]
                     },{ facetTitle: "sex",
-                        sortingFuncs : [{ no_resort: true }]
+                        sortingOpts : [{ no_resort: true }]
                     },{ facetTitle: "age",
                         catItemMap : function(d){
                             var age = d.data[4];
@@ -59,7 +59,7 @@
                             if(age<50) return "30...49";
                             return "50...";
                         },
-                        sortingFuncs : [{ 
+                        sortingOpts : [{ 
                             func:  function(a, b){
                                 var age_a = a.data[1];
                                 var age_b = b.data[1];
@@ -82,8 +82,8 @@
                 ],
                 list : {
                     sortColWidth: 75,
-                    sortOpts : [ {name: 'id'} ],
-                    textSearchFunc: function(d){ return d.data[3]; },
+                    sortingOpts : [ {name: 'id'} ],
+                    textSearch: 'name',
                     content: "name"
                 }
             });

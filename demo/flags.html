@@ -109,7 +109,7 @@ function loadChart() {
 
     logIf.Check = logIf.All();
 
-    new kshf.Browser({
+    browser = new kshf.Browser({
         chartTitle: "World Country Flags",
         domID : "#chart_div",
         dirRoot: "../",
@@ -127,7 +127,7 @@ function loadChart() {
             {
                 facetTitle: "Continent",
                 catLabelText: function(d) { return landmassText(d.data[1]); },
-                sortingFuncs : [
+                sortingOpts : [
                     { name:"Flag #" },
                     { name: "First Flag",  func: kshf.sortFunc_Time_First }
                 ],
@@ -193,7 +193,7 @@ function loadChart() {
                     return (r===0)?0:r;
                 },
                 catLabelText: function(d) { return d.data[1]+" bar"+(d.data[1]>1?"s":""); },
-                sortingFuncs: [{
+                sortingOpts: [{
                     name:"# Bars",
                     no_resort: true,
                     func:kshf.sortFunc_Column_Int_Incr
@@ -207,7 +207,7 @@ function loadChart() {
                     return (r===0)?null:r;
                 },
                 catLabelText: function(d) { return d.data[1]+" stripe"+(d.data[1]>1?"s":""); },
-                sortingFuncs: [
+                sortingOpts: [
                     {   name:"# Stripes",
                         no_resort: true,
                         func:kshf.sortFunc_Column_Int_Incr
@@ -229,9 +229,16 @@ function loadChart() {
                 }
             });*/
         ],
+        readyCb: function(){
+            $(".countryName").click(function(d){
+                var kshfItem = d.currentTarget.parentNode.__data__;
+                if(kshfItem.listItem.getAttribute('details')==="false")
+                    browser.listItemDetailToggleFunc(kshfItem);
+            });
+        },
         list:{
             sortColWidth: 80,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Flag Date',
                     value: function(d){ 
                         var r= d.data[flag_cols.Independence];
@@ -249,7 +256,7 @@ function loadChart() {
                 var str="";
                 // description
                     str+="<img src=\""+d.data[flag_cols.Flag]+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
-                    str+="<span class=\"iteminfo iteminfo_0\">";
+                    str+="<span class=\"iteminfo iteminfo_0 countryName\">";
                     str+=d.data[flag_cols.Country];
                     str+="</span></br>";
                     str+="<span class=\"item_details\">";
@@ -297,6 +304,11 @@ $(document).ready(loadChart);
     #chart_div {
         width:950px;
         height:700px;
+    }
+    .listItem[details=false] .countryName:hover{
+        text-decoration: underline;
+        color: rgb(151, 64, 43) !important;
+        cursor: pointer;
     }
 </style>
 	</head>

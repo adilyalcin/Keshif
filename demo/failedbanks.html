@@ -24,18 +24,19 @@
                     kshf.Util.cellToArray(kshf.dt.Banks, [7], /\//, false);
                 },
                 charts : [
-                    {   facetTitle: "State",
+                    {   
+                        facetTitle: "Loss Share Type",
+                        timeTitle: "Closing Date"
+                    },{ facetTitle: "State",
                         catItemMap: "ST",
                         catTableName: "States",
-                        timeTitle: "Closing Date"
                     },{ facetTitle: "City"
                     },{ facetTitle: "Acquiring Institution"
-                    },{ facetTitle: "Loss Share Type"
                     }
                 ],
                 list : {
                     sortColWidth: 75,
-                    sortOpts : [ {name: 'CERT'} ],
+                    sortingOpts : [ {name: 'CERT'} ],
                     textSearch: "Bank Name",
                     content: "Bank Name"
                 }

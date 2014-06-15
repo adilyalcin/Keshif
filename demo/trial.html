@@ -56,7 +56,7 @@ function loadChart() {
                 timeTitle: "Primary Completion Date",
                 catTableName: "Phases",
                 barClassFunc: function(d) { return "bar_style_phase_"+d.data[0]; },
-                sortingFuncs: [{
+                sortingOpts: [{
                     func:function(a,b){ 
                         var dif=a.data[1].localeCompare(b.data[1]);
                         if(dif===0) { return b.items.length-a.items.length; }
@@ -90,7 +90,7 @@ function loadChart() {
         ],
         list:{
             sortColWidth: 75,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Date',
                     value: function(d){ return d.data[2]; },
                     label: function(d){ 

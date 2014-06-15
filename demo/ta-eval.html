@@ -47,6 +47,9 @@ google.setOnLoadCallback(function () {
         },
         charts: [
             {
+                facetTitle: "Instructor",
+                catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];}
+            },{
                 facetTitle: "Performance",
                 catLabelText: function(d) { return performanceText(d.data[1]); }
             },{
@@ -55,9 +58,6 @@ google.setOnLoadCallback(function () {
                     if(d.data[1]===1) { return "Yes"; }
                     if(d.data[1]===2) { return "No"; }
                 }
-            },{
-                facetTitle: "Instructor",
-                catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];}
             },{
                 facetTitle: "Course"
             },{
@@ -70,7 +70,7 @@ google.setOnLoadCallback(function () {
                 facetTitle: "Class Size",
                 catItemMap : function(ast){return Math.floor(ast.data[TA_cols['Class Size']]/5); },
                 catLabelText: function(d) { return d.data[1]*5;},
-                sortingFuncs: [{
+                sortingOpts: [{
                      no_resort: true,
                      func:kshf.sortFunc_Column_ParseInt_Decr
                 }]
@@ -78,7 +78,7 @@ google.setOnLoadCallback(function () {
         ],
         list:{
             sortColWidth: 90,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Performance',
                     label: function(ast){ return performanceText(ast.data[TA_cols['Performance']]); },
                 }

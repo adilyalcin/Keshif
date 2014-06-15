@@ -50,7 +50,7 @@ google.setOnLoadCallback( function () {
             {
                 facetTitle: "Episode",
                 catItemMap : function(d){ return d.data[5]; },
-                sortingFuncs : [
+                sortingOpts : [
                     { name: "",  func: kshf.sortFunc_Column_Int_Incr },
                 ]
             },*/
@@ -64,12 +64,12 @@ google.setOnLoadCallback( function () {
                     if(v<3) return ""+v;
                     else return "3 or more";
                 },
-                sortingFuncs : [ { name: "Last pub.",  func: kshf.sortFunc_String_Decr } ]
+                sortingOpts : [ { name: "Last pub.",  func: kshf.sortFunc_String_Decr } ]
             }
         ],
         list : {
             sortColWidth: 63,
-            sortOpts : [
+            sortingOpts : [
                 {   name: 'Name',
                     value: function(animal){ return animal.data[0][0]; } // first letter in name column
                 }

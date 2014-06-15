@@ -21,20 +21,19 @@
                     sheets : [ {name:"Singles"} ]
                 },
                 charts : [
-                    {   facetTitle: "Label"
+                    {   facetTitle: "Genre"
+                    },{ facetTitle: "Country", 
+                        catItemMap: function(d){ return d.data[8];}
                     },{ facetTitle: "Sex"
                     },{ facetTitle: "Age"
                     },{ facetTitle: "Type"
                     },{ facetTitle: "Race"
-                    },{ facetTitle: "Country", 
-                        catItemMap: function(d){ return d.data[8];},
-                        catDispCountFix:4
-                    },{ facetTitle: "Genre"
+                    },{ facetTitle: "Label"
                     }
                 ],
                 list : {
-                    sortColWidth: 75,
-                    sortOpts : [ {name: 'Position'} ],
+                    sortColWidth: 45,
+                    sortingOpts : [ {name: 'Position', inverse:true} ],
                     textSearchFunc: function(d){
                         return d.data[2] + " " + d.data[1];
                     },
