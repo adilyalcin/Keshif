@@ -118,12 +118,6 @@ function loadChart() {
                 // name
                     str+="<div class=\"iteminfo iteminfo_0\">Player: "+
                         "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data[2][0]+"/P"+d.data[2]+".htm\">"+d.data[2]+"</a></div>";
-                // full date
-                    str+="<div class=\"iteminfo iteminfo_1\">Full date: "+d.data[0];
-                // type
-                    str+="   Type: "+kshf.dt_id.baseball_trantype[d.data[3]].data[1]+"</div>";
-                // team from & to
-                    str+="<div class=\"iteminfo iteminfo_1\">Teams: From "+d.data[4]+" to "+d.data[5]+"</div>";
                 return str;
             }
         }

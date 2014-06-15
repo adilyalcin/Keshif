@@ -1536,7 +1536,7 @@ kshf.Browser.prototype = {
                 v.forEach(function(v2){
                     if(v2==="" || v2===undefined || v2===null) return;
                     if(!dstTable_Id[v2]){
-                        var item = new kshf.Item([uniqueID++,v2],1);
+                        var item = new kshf.Item([uniqueID++,v2],0);
                         item.browser = me;
                         dstTable_Id[v2] = item;
                         dstTable.push(item);
@@ -1544,7 +1544,7 @@ kshf.Browser.prototype = {
                 });
             } else {
                 if(!dstTable_Id[v]){
-                    var item = new kshf.Item([uniqueID++,v],1);
+                    var item = new kshf.Item([uniqueID++,v],0);
                     item.browser = me;
                     dstTable_Id[v] = item;
                     dstTable.push(item);
@@ -1627,7 +1627,7 @@ kshf.Browser.prototype = {
             options.generateRows = true;
         }
         if(options.sortingOpts===undefined){
-            options.sortingOpts = [{ func:kshf.sortFunc_ActiveCount_TotalCount }];
+            options.sortingOpts = [{}];
         }
         options.rowTextWidth = this.categoryTextWidth;
         this.charts.push(new kshf.BarChart(this,options));
@@ -2071,7 +2071,19 @@ kshf.BarChart = function(_kshf, options){
     this.sortDelay = 450; // ms
     var items = this.getKshf().items;
 
-    this.sortingOpt_Active = options.sortingOpts;
+    options.sortingOpts.forEach(function(opt){
+        // apply defaults
+        if(opt.no_resort===undefined) {
+            opt.no_resort=false;
+        }
+        if(opt.func===undefined){
+            opt.func=kshf.sortFunc_ActiveCount_TotalCount;
+        }
+        if(opt.inverse===undefined){
+            opt.inverse=false;
+        }
+    });
+    this.sortingOpt_Active = options.sortingOpts[0];
 
     if(!this.options.timeTitle){
         this.type = 'barChart';
@@ -2496,7 +2508,6 @@ kshf.BarChart.prototype = {
             this.insertTimeChartRows();
             this.insertTimeChartAxis_1();
         }
-        this.updateSorting();
     },
     /** getAttribs */
     getAttribs: function(){
@@ -2546,7 +2557,7 @@ kshf.BarChart.prototype = {
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Active();
         }
-    	this.updateSorting(false);
+    	this.updateSorting();
     },
     /** updateAttrib_TimeMinMax */
     updateAttrib_TimeMinMax: function(){
@@ -3850,48 +3861,42 @@ kshf.BarChart.prototype = {
     /** sortAttribs */
     sortAttribs: function(){
         var me = this;
-        var no_resort = this.sortingOpt_Active.no_resort;
+        var selectedOnTop = this.sortingOpt_Active.no_resort!==true;
         var inverse = this.sortingOpt_Active.inverse;
-        if(inverse===undefined) inverse=false;
-        // sort the data
-        var funcToCall = this.sortingOpt_Active.func;
-        if(funcToCall===undefined){
-            funcToCall = kshf.sortFunc_ActiveCount_TotalCount;
-        }
+        var sortFunc = this.sortingOpt_Active.func;
 
         var idCompareFunc = function(a,b){return b-a;};
         if(typeof(this.getAttribs()[0].id())==="string") 
             idCompareFunc = function(a,b){return b.localeCompare(a);};
 
-        var justSortFunc = function(a,b){
+        var theSortFunc = function(a,b){
+            if(selectedOnTop){
+                if(!a.selected &&  b.selected) return  1;
+                if( a.selected && !b.selected) return -1;
+            }
+            // skip no items
             var a_noitems = me.noItemOnSelect(a);
             var b_noitems = me.noItemOnSelect(b);
-            if( a_noitems &&  b_noitems) return  0; // Whatever, both won't be visible
+            if( a_noitems &&  b_noitems) return -1; // Whatever, both won't be visible
             if( a_noitems && !b_noitems) return  1;
             if(!a_noitems &&  b_noitems) return -1;
-            var x=funcToCall(a,b);
-            if(x===0) x = idCompareFunc(a.id(),b.id());
-            if(inverse) x*=-1;
+
+            var x;
+            if(me.sortSkip!==true) 
+                x=sortFunc(a,b);
+            if(x===0) 
+                x=idCompareFunc(a.id(),b.id());
+            if(inverse)
+                x=-x;
             return x;
         };
-        var sortSelectedOnTop = function(a,b){
-            // automatically apply selected-top ordering to ALL sorting functions
-            if(!a.selected &&  b.selected) return  1;
-            if( a.selected && !b.selected) return -1;
-            return justSortFunc(a,b);
-        };
-        if(no_resort === true)
-            this.getAttribs().sort(justSortFunc);
-        else
-            this.getAttribs().sort(sortSelectedOnTop);
+        this.getAttribs().sort(theSortFunc);
         this.getAttribs().forEach(function(d,i){ d.orderIndex=i; });
+
+        this.sortSkip=false;
     },
     /** updateSorting */
     updateSorting: function(){
-        if(this.sortSkip){
-            this.sortSkip=false;
-            return;
-        }
         var _kshf = this.getKshf();
         this.sortAttribs();
         // always scrolls to top row automatically when re-sorted
