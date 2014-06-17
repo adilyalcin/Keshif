@@ -920,13 +920,11 @@ kshf.List.prototype = {
         var me=this;
         var sortValueFunc = this.sortingOpt_Active.value;
         var sortFunc = this.sortingOpt_Active.func;
-//        var sortFunc = kshf.sortFunc_ActiveCount_TotalCount;
         var inverse = this.sortingOpt_Active.inverse;
         this.getKshfItems().sort(function(a,b){
             // do not need to process unwanted items, their order does not matter
             if(!a.wanted||!b.wanted){ return 0; }
             var dif=sortFunc(sortValueFunc(a),sortValueFunc(b));
-//            var dif=sortFunc(a,b);
             if(dif===0){ dif=b.id()-a.id(); }
             if(inverse) dif = -dif;
             return dif; // use unique IDs to add sorting order as the last option
@@ -2642,6 +2640,7 @@ kshf.BarChart.prototype = {
         this.divRoot = this.options.layout
             .append("div").attr("class","kshfChart")
             .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
+            .attr("filtered_row",false)
             ;
 
         this.dom_headerGroup = this.divRoot.append("div").attr("class","headerGroup");
@@ -3040,36 +3039,6 @@ kshf.BarChart.prototype = {
         // ************************************************************************************
         // ****** CONFIG LINE *****************************************************************
 
-        var configGroup = header_belowFirstRow.append("div")
-            .attr("class","configGroup leftHeader_XX")
-            .attr("shown","order")
-            .style("height",this.parentKshf.line_height+"px")
-            ;
-
-        if(this.showConfig) {
-            var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
-            sortGr.append("select").attr("class","optionSelect")
-                .on("change", function(){
-                    if(sendLog) {
-                        sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
-                            {facet:me.options.facetTitle, funcID:this.selectedIndex});
-                    }
-                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
-                    me.sortDelay = 0;
-                    me.updateSorting.call(me);
-                })
-            .selectAll("input.sort_label")
-                .data(this.options.sortingOpts)
-              .enter().append("option")
-                .attr("class", "sort_label")
-                .text(function(d){ return d.name; })
-                .attr(function(d){ return d.name; })
-                ;
-            sortGr.append("span").attr("class","optionSelect_Label")
-                .text("Order by")
-                ;
-        }
-
         if(this.showTextSearch){
             var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX")
                 .style("white-space","nowrap");
@@ -3133,6 +3102,37 @@ kshf.BarChart.prototype = {
                   '</g>')
                 ;
         }
+
+        var configGroup = header_belowFirstRow.append("div")
+            .attr("class","configGroup leftHeader_XX")
+            .attr("shown","order")
+            .style("height",this.parentKshf.line_height+"px")
+            ;
+
+        if(this.showConfig) {
+            var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
+            sortGr.append("select").attr("class","optionSelect")
+                .on("change", function(){
+                    if(sendLog) {
+                        sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
+                            {facet:me.options.facetTitle, funcID:this.selectedIndex});
+                    }
+                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
+                    me.sortDelay = 0;
+                    me.updateSorting.call(me);
+                })
+            .selectAll("input.sort_label")
+                .data(this.options.sortingOpts)
+              .enter().append("option")
+                .attr("class", "sort_label")
+                .text(function(d){ return d.name; })
+                .attr(function(d){ return d.name; })
+                ;
+            sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
+        }
+
+
+
     },
     /** refreshTimechartLayout */
     refreshTimechartLayout: function(toUpdate){
@@ -3308,6 +3308,7 @@ kshf.BarChart.prototype = {
             .attr("collapsedTime",this.collapsedTime===false?"false":"true")
             .attr("showscrollbar",this.scrollbar.show)
             .attr("selectType",this.selectType)
+            .attr("hasMultiValueItem",this.hasMultiValueItem)
             ;
         if(this.type!=='scatterplot'){
             this.divRoot
@@ -3848,13 +3849,13 @@ kshf.BarChart.prototype = {
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.barChart.hasMultiValueItem;
                         if(attrib.selected) 
-                            return "<span class='big'>-</span class='big'> Remove "+attribName+" Filter";
+                            return "<span class='big'>-</span class='big'> <span class='action'>Remove</span> "+attribName+" Filter";
                         if(attrib.barChart.attribCount_Selected===0)
-                            return "<span class='big'>+</span> Add "+attribName+" Filter";
+                            return "<span class='big'>+</span> <span class='action'>Add</span> "+attribName+" Filter";
                         if(hasMultiValueItem===false)
-                            return "<span class='big'>&laquo;</span> Change "+attribName+" Filter";
+                            return "<span class='big'>&laquo;</span> <span class='action'>Change</span> "+attribName+" Filter";
                         else
-                            return "<span class='big'>+</span> Add "+attribName+" (<b> ... and </b>)";
+                            return "<span class='big'>+</span> <span class='action'>Add</span> "+attribName+" (<b> ... and </b>)";
                     }
                 });
             })
@@ -3889,8 +3890,8 @@ kshf.BarChart.prototype = {
                     title: function(){
                         var attrib = this.__data__;
                         if(attrib.selected)
-                            return "<span class='big'>+</span> Remove "+me.options.facetTitle+" Filter";
-                        return "<span class='big'>+</span> Add "+me.options.facetTitle+" (<b> ... or </b>)";
+                            return "<span class='big'>+</span> <span class='action'>Remove</span> "+me.options.facetTitle+" Filter";
+                        return "<span class='big'>+</span> <span class='action'>Add</span> "+me.options.facetTitle+" (<b> ... or </b>)";
                     }
                 });
             })
@@ -4033,7 +4034,7 @@ kshf.BarChart.prototype = {
             }
             // put the items with zero active items to the end of list (may not be displayed / inactive)
             if(a.activeItems===0 && b.activeItems!==0) return  1;
-            if(a.activeItems===0 && b.activeItems!==0) return -1;
+            if(b.activeItems===0 && a.activeItems!==0) return -1;
 
             var x=sortFunc(a,b);
             if(x===0) 

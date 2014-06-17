@@ -729,13 +729,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .filter_add_more .remove{ display: block; }
             }
         }
-        &[selecttype="SelectAnd"] .row{
-            &[selected=false]{
+        &[selecttype="SelectAnd"] {
+            .row[selected=false][noitems=false]{
                 .rowSelectBackground_ClickArea{
-                    cursor: cell !important;
+                    cursor: cell;
                 }
             }
         }
+        // When only one item is selected in selectOr
+        &[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] {
+            .row[highlight=true][selected=false] {
+                rect.rowSelectBackground_ClickArea{
+                    cursor: pointer !important;
+                }
+            }
+        }
+
         &[filtered_time=true] {
             div.chartClearFilterButton.timeFilter{
                 display:inline-block;
@@ -1097,7 +1106,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-shadow: 1px 1px lightgray;
             float:left;
             font-weight:500;
-            margin-right: 10px;
+            margin-left: 4px;
         }
         span.listheader_count_bar{
             background-color: rgb(132, 147, 160);
@@ -1115,7 +1124,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 1.1em;
             text-shadow: 1px 1px lightgray;
             float:right;
-            margin-right: 4px;
         }
         div.listColumnRow {
             font: 500 100% Arial,sans-serif;
@@ -1503,6 +1511,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size: 1.2em;
     span.big{
         font-size: 1.4em;
+    }
+    span.action{
+        text-decoration: underline;
     }
 }
 

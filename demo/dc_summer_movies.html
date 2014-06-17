@@ -15,6 +15,18 @@
 
         <script type="text/javascript">
 
+// https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
+function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
+{
+    var degToRad= Math.PI / 180;
+    var phi1= lat1 * degToRad;
+    var phi2= lat2 * degToRad;
+    var lam1= long1 * degToRad;
+    var lam2= long2 * degToRad;
+
+    return  6371.01 * Math.acos( Math.sin(phi1) * Math.sin(phi2) + Math.cos(phi1) * Math.cos(phi2) * Math.cos(lam2 - lam1) );
+}
+
 function loadMovieData(d){
     if(d.target.className==="item_details_off") return;
     var kshfItem = d.currentTarget.__data__;
@@ -23,13 +35,17 @@ function loadMovieData(d){
     if(kshfItem.listItem.getAttribute('details')==="false")
         browser.showListItemDetails(kshfItem);
     if(kshfItem.dataLoaded===true) return;
+    loadMovieData_Name(kshfItem);
+};
+
+function loadMovieData_Name(kshfItem){
     $.ajax( {
         url: "http://www.omdbapi.com/?t="+kshfItem.data[2],
         dataType: "json",
         success: function(data){
             if(data.Error) return;
             var d3Item = d3.select(kshfItem.listItem);
-            d3Item.select(".moviePoster").attr("src",data.Poster);
+            d3Item.select(".moviePoster").attr("src","./img/posters/"+data.imdbID+".jpg");
             d3Item.select(".movieInfo").style("display","block");
             d3Item.select(".Year .value").text(data.Year);
             d3Item.select(".Rated .value").text(data.Rated);
@@ -39,11 +55,45 @@ function loadMovieData(d){
             d3Item.select(".imdbRating .value").text(data.imdbRating);
             d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+data.imdbID);
             kshfItem.dataLoaded = true;
+            console.log(kshfItem.data[2]+", "+data.imdbID+", "+data.Poster);
         }
     });
-}
+};
+
+var i=0;
+
+function loadOneMoreMovie(){
+    if(i===kshf.dt.Screening.length) return;
+    loadMovieData_Name(kshf.dt.Screening[i]);
+    i++;
+    setTimeout(loadOneMoreMovie, 500);
+};
+
+var myLoc=null;
+// coords.latitude
+// coords.longitude
+
+var updateLocationSorting = function(){
+    if(myLoc===undefined) return;
+    if(browser===undefined) return;
+    var me = browser.charts[1];
+    if(me===undefined) return;
+    me.sortingOpt_Active = me.options.sortingOpts[1];
+    me.sortDelay = 0;
+    browser.charts[1].divRoot.select(".optionSelect")[0][0].options[1].selected = true;
+    me.updateSorting.call(me);
+};
 
 function loadChart() {
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            myLoc = position.coords;
+            updateLocationSorting();
+        });
+    } else {
+      /* geolocation IS NOT available */
+    }
 
     // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
     var m_now = moment().subtract('days',1);
@@ -88,11 +138,26 @@ function loadChart() {
                     return d.data[1];
                 },
             },{
-                facetTitle: "City",
-                catItemMap: function(d){ 
-                    var series = kshf.dt_id.Series[d.data[0]];
-                    return series.data[4];
-                }
+                facetTitle: "Series",
+                catTableName: "Series",
+                sortingOpts : [
+                    {   name: "# of Movies"},
+                    {   name: "Distance",  
+                        func: function(a,b){
+                            // lat-long: 10-11
+                            if(myLoc===null) {
+                                return kshf.sortFunc_ActiveCount_TotalCount(a,b);
+                            }
+                            var dist_a = distanceKilometersGreatCircle(
+                                myLoc.latitude,myLoc.longitude,a.data[10],a.data[11]);
+                            var dist_b = distanceKilometersGreatCircle(
+                                myLoc.latitude,myLoc.longitude,b.data[10],b.data[11]);
+                            return dist_a - dist_b;
+                        }
+                    }
+                ]
+            },{
+                facetTitle: "Movie"
             },{
                 facetTitle: "Day Of Week",
                 catItemMap: function(d){
@@ -112,8 +177,6 @@ function loadChart() {
                         case 6: return "Sunday";
                     }
                 }
-            },{
-                facetTitle: "Movie"
             }
         ],
         readyCb: function(){
@@ -121,6 +184,9 @@ function loadChart() {
             $(".listItem")
                 .click(loadMovieData)
                 ;
+
+            if(myLoc)
+            updateLocationSorting();
         },
         list: {
             sortColWidth: 90,
@@ -142,7 +208,7 @@ function loadChart() {
                     return moment(d.data[1]).format('MMM Do, ddd');
                 }
             } ],
-            detailsToggle : "One",
+            detailsToggle : "Multi",
             detailsDefault : false,
             contentFunc : function(d) {
                 var series = kshf.dt_id.Series[d.data[0]];

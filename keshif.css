@@ -790,8 +790,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=true] .filter_add_more .remove {
   display: block;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false] .rowSelectBackground_ClickArea {
-  cursor: cell !important;
+.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false][noitems=false] .rowSelectBackground_ClickArea {
+  cursor: cell;
+}
+.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
+  cursor: pointer !important;
 }
 .kshf .kshfChart[filtered_time=true] div.chartClearFilterButton.timeFilter {
   display: inline-block;
@@ -1164,7 +1167,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-shadow: 1px 1px lightgray;
   float: left;
   font-weight: 500;
-  margin-right: 10px;
+  margin-left: 4px;
 }
 .kshf div.listHeader span.listheader_count_bar {
   background-color: #8493a0;
@@ -1182,7 +1185,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.1em;
   text-shadow: 1px 1px lightgray;
   float: right;
-  margin-right: 4px;
 }
 .kshf div.listHeader div.listColumnRow {
   font: 500 100% Arial, sans-serif;
@@ -1682,4 +1684,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy-inner span.big {
   font-size: 1.4em;
+}
+.tipsy-inner span.action {
+  text-decoration: underline;
 }
