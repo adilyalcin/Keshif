@@ -413,6 +413,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .configGroup {
   display: none;
   position: relative;
+  /*            &[shown=filter] {
+                .chooseConfigGroup circle.filter{
+                    fill: gray;
+                }
+                span.filterOptionSelectGroup{ 
+                    display:block;
+                }
+            }*/
 }
 .kshf .headerGroup .configGroup .chooseConfigGroup {
   float: left;
@@ -456,12 +464,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   fill: gray;
 }
 .kshf .headerGroup .configGroup[shown=order] span.sortOptionSelectGroup {
-  display: block;
-}
-.kshf .headerGroup .configGroup[shown=filter] .chooseConfigGroup circle.filter {
-  fill: gray;
-}
-.kshf .headerGroup .configGroup[shown=filter] span.filterOptionSelectGroup {
   display: block;
 }
 .kshf .headerGroup .barInfo {
