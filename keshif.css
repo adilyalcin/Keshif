@@ -53,9 +53,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost[hidebaraxis=true] .barChartMainInfo {
   display: none;
 }
-.kshfHost[kb_modifier=true] g.row[noitems=false][highlight=true] text.row_label {
-  cursor: cell;
-}
 .kshfHost .subRoot {
   position: relative;
 }
@@ -517,9 +514,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .leftHeader {
   pointer-events: all;
+  float: left;
 }
 .kshf .headerGroup .rightHeader {
-  display: inline-block;
   pointer-events: all;
   float: right;
 }
@@ -626,7 +623,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
   height: 100%;
   position: relative;
-  top: -20px;
+  top: -19px;
   pointer-events: none;
 }
 .kshf .kshfChart svg.chart_root rect.chartBackground {
@@ -787,11 +784,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_row=true] div.chartClearFilterButton.rowFilter {
   display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] g.row[selected=false] .filter_add_more .add {
+.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=false] .filter_add_more .add {
   display: block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] g.row[selected=true] .filter_add_more .remove {
+.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=true] .filter_add_more .remove {
   display: block;
+}
+.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false] .rowSelectBackground_ClickArea {
+  cursor: cell !important;
 }
 .kshf .kshfChart[filtered_time=true] div.chartClearFilterButton.timeFilter {
   display: inline-block;
@@ -867,24 +867,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
 }
 .kshf g.row text.filter_add_more {
-  font-size: 1.1em;
-  cursor: default;
   text-anchor: middle;
-  cursor: pointer;
-  fill: gray;
   display: none;
 }
 .kshf g.row text.filter_add_more:hover {
   fill: orangered;
 }
+.kshf g.row text.filter_add_more.add {
+  cursor: cell;
+}
+.kshf g.row text.filter_add_more.remove {
+  cursor: pointer !important;
+}
 .kshf g.row line.row_bar_line {
   stroke-width: 0.7;
   pointer-events: none;
 }
-.kshf g.row[noitems=false][highlight=true] rect.rowSelectBackground_ClickArea {
-  cursor: pointer;
+.kshf g.row[noitems=false][highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
+  cursor: cell;
 }
-.kshf g.row[noitems=false][highlight=true] rect.total {
+.kshf g.row[noitems=false][highlight=true][selected=true] rect.rowSelectBackground_ClickArea {
   cursor: pointer;
 }
 .kshf g.row[noitems=false][highlight=true] rect.active {
@@ -923,11 +925,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
 }
 .kshf div.listDiv div.itemLinks {
-  width: 100px;
   display: inline-block;
 }
 .kshf div.listDiv div.itemLinks .header {
-  padding-left: 21px;
+  padding-left: 5px;
   font-weight: 700;
   display: inline-block;
 }
@@ -977,45 +978,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listDiv select.listSortOptionSelect {
   bottom: 0px;
 }
-.kshf div.listDiv div.itemstoggledetails {
-  width: 20px;
-  font-size: 1em;
-  color: #222222;
-  text-align: center;
-  font-weight: 700;
-  cursor: pointer;
-  padding-left: 0px;
-  padding-right: 5px;
+.kshf div.listDiv[detailstoggle=Multi] .listHeader div.itemtoggledetails .span {
   display: inline-block;
 }
-.kshf div.listDiv div.itemstoggledetails span {
-  display: none;
-}
-.kshf div.listDiv div.itemstoggledetails span.items_details_on {
-  display: none;
-}
-.kshf div.listDiv div.itemstoggledetails span.items_details_off {
+.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_on {
   display: inline-block;
 }
-.kshf div.listDiv div.itemstoggledetails[details=true] .item_details_off {
-  display: block;
-}
-.kshf div.listDiv .listHeader div.itemstoggledetails span {
+.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_off {
   display: none;
 }
-.kshf div.listDiv[detailstoggle=Multi] .listHeader div.itemstoggledetails .span {
-  display: inline-block;
-}
-.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemstoggledetails span.items_details_on {
-  display: inline-block;
-}
-.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemstoggledetails span.items_details_off {
+.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_on {
   display: none;
 }
-.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemstoggledetails span.items_details_on {
-  display: none;
-}
-.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemstoggledetails span.items_details_off {
+.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_off {
   display: inline-block;
 }
 .kshf div.listDiv div.listItem[details=false] .item_details_off {
@@ -1032,6 +1007,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to top, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
   border-top-left-radius: 20px;
   border-top: solid 2px #c0b899;
+}
+.kshf div.listHeader div.itemtoggledetails {
+  font-size: 1em;
+  color: #222222;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-block;
+}
+.kshf div.listHeader div.itemtoggledetails span {
+  display: none;
+}
+.kshf div.listHeader div.itemtoggledetails[details=true] .item_details_off {
+  display: block;
+}
+.kshf div.listHeader div.itemtoggledetails span {
+  display: none;
 }
 .kshf div.listHeader div.topRow {
   min-height: 22px;
@@ -1061,6 +1053,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: background-color 200ms linear;
   transition: background-color 200ms linear;
 }
+.kshf div.listHeader span.filter-blocks span.filter-block .sdsdsds {
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: block;
+}
 .kshf div.listHeader span.filter-blocks span.filter-block[ready=true] {
   opacity: 1;
 }
@@ -1073,6 +1073,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader span.filter-blocks span.filter-block[filtered=false] {
   display: none;
+}
+.kshf div.listHeader span.filter-blocks span.filter-block .txttt {
+  padding: 1px 0px 1px 0px;
+}
+.kshf div.listHeader span.filter-blocks span.filter-block .filter_item {
+  padding: 1px 0px 1px 0px;
+  display: inline;
 }
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;
@@ -1214,6 +1221,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 2px 2px 2px #474940;
   background-color: #e5b2b2;
 }
+.kshf .itemtoggledetails {
+  width: 25px;
+}
 .kshf div.listItem {
   clear: left;
   cursor: default;
@@ -1222,13 +1232,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top: double 0px gray;
 }
 .kshf div.listItem .itemtoggledetails {
-  padding-right: 3px;
   display: inline-block;
   font-size: 0.8em;
   margin: auto;
   text-align: center;
   font-weight: 700;
-  width: 20px;
   cursor: pointer;
 }
 .kshf div.listItem[details=true] .item_details_on {

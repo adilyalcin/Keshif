@@ -63,10 +63,8 @@ function loadChart() {
         },
         charts : [
             {
-                facetTitle: "Soon",
-                timeTitle: "Screenings in Next 15 Days",
+/*                facetTitle: "Soon",
                 removeInactiveAttrib: false,
-                sortingOpts: [{no_resort: true}],
                 catItemMap: function(d){ 
                     var m_scr = moment(d.data[1]);
                     if(m_scr.isBefore(m_now)) return null;
@@ -74,20 +72,21 @@ function loadChart() {
                     if(m_scr.isBefore(m_nextweek)) return "Next Week";
                     return null;
                 },
-                timeItemMap : function(d){ 
-                    var m_scr = moment(d.data[1]);
-                    if(m_scr.isBefore(m_now)) return null;
-                    if(m_scr.isAfter(m_nextweek)) return null;
-                    return d.data[1];
-                },
 //                catLabelText: function(d) { return getGender(d.data[1]); }
-            },{
+            },{*/
                 facetTitle: "State",
                 removeInactiveAttrib: false,
                 catItemMap: function(d){ 
                     var series = kshf.dt_id.Series[d.data[0]];
                     return series.data[3];
-                }
+                },
+                timeTitle: "Screenings in Next 15 Days",
+                timeItemMap : function(d){ 
+//                    var m_scr = moment(d.data[1]);
+//                    if(m_scr.isBefore(m_now)) return null;
+//                    if(m_scr.isAfter(m_nextweek)) return null;
+                    return d.data[1];
+                },
             },{
                 facetTitle: "City",
                 catItemMap: function(d){ 

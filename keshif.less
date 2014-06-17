@@ -47,9 +47,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         svg>g.x_axis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
-    &[kb_modifier=true] g.row[noitems=false][highlight=true] text.row_label {
-        cursor: cell;
-    }
     .subRoot{
         position:relative;
     }
@@ -477,9 +474,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .leftHeader {
             pointer-events: all;
+            float:left;
         }
         .rightHeader{
-            display:inline-block;
             pointer-events:all;
             float: right;
             span.header_label {
@@ -577,7 +574,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width:100%;
             height:100%;
             position:relative;
-            top: -20px;
+            top: -19px;
             pointer-events: none;
             rect.chartBackground{
                 opacity: 0;
@@ -724,12 +721,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display:inline-block;
             }
         }
-        &[selecttype="SelectOr"][filtered_row=true] g.row{
+        &[selecttype="SelectOr"][filtered_row=true] .row{
             &[selected=false]{
                 .filter_add_more .add{ display: block; }
             }
             &[selected=true]{
                 .filter_add_more .remove{ display: block; }
+            }
+        }
+        &[selecttype="SelectAnd"] .row{
+            &[selected=false]{
+                .rowSelectBackground_ClickArea{
+                    cursor: cell !important;
+                }
             }
         }
         &[filtered_time=true] {
@@ -807,14 +811,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: none;
             }
             &.filter_add_more {
-                font-size: 1.1em;
-                cursor: default;
+//                font-size: 1.1em;
                 text-anchor: middle;
-                cursor: pointer;
-                fill: gray;
                 display: none;
                 &:hover{
                     fill: orangered;
+                }
+                &.add{
+                    cursor: cell;
+                }
+                &.remove{
+                    cursor: pointer !important;
                 }
             }
         }
@@ -823,10 +830,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: none;
         }
         &[noitems=false][highlight=true] {
-            rect.rowSelectBackground_ClickArea{
-                cursor: pointer;
+            &[selected=false] rect.rowSelectBackground_ClickArea{
+                cursor: cell;
             }
-            rect.total{
+            &[selected=true] rect.rowSelectBackground_ClickArea{
                 cursor: pointer;
             }
             rect.active{
@@ -845,9 +852,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill: #8699A8;
         }
         &[noitems=true] {
-            text{
-                fill:gray;
-            }
+            text{ fill:gray; }
         }
         &[itemhighlight=true] text{
             fill: #c32c2c !important;
@@ -866,10 +871,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color: white;
         }
         div.itemLinks{
-            width: 100px;
             display: inline-block;
             .header {
-                padding-left: 21px; // item count width
+                padding-left: 5px; // item count width
                 font-weight: 700;
                 display: inline-block;
             }
@@ -922,35 +926,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         select.listSortOptionSelect{
             bottom:0px;
         }
-        div.itemstoggledetails{
-            width:20px;
-            font-size: 1em;
-            color:#222222;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            padding-left:0px;
-            padding-right:5px;
-            display: inline-block;
-            span{ display:none; }
-            span.items_details_on { display:none; }
-            span.items_details_off{ display:inline-block; }
-            &[details=true] .item_details_off{
-                display:block;
-            }
-        }
-        .listHeader div.itemstoggledetails span{
-            display: none;
-        }
         &[detailstoggle=Multi] {
-            .listHeader div.itemstoggledetails .span{
+            .listHeader div.itemtoggledetails .span{
                 display: inline-block;
             }
-            &[showAll=true] div.itemstoggledetails {
+            &[showAll=true] div.itemtoggledetails {
                 span.items_details_on { display:inline-block; }
                 span.items_details_off{ display:none; }
             }
-            &[showAll=false] div.itemstoggledetails {
+            &[showAll=false] div.itemtoggledetails {
                 span.items_details_on { display:none; }
                 span.items_details_off{ display:inline-block; }
             }
@@ -965,6 +949,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         .background-image(~"linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%)");
         
+        div.itemtoggledetails{
+            font-size: 1em;
+            color:#222222;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-block;
+            span{ display:none; }
+            &[details=true] .item_details_off{
+                display:block;
+            }
+            span{
+                display: none;
+            }
+        }
+
         border-top-left-radius: 20px;
         border-top: solid 2px rgba(192, 184, 153, 1);
         div.topRow {
@@ -986,6 +986,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin-top: 2px;
                 margin-left: 5px;
                 opacity: 0;
+                .sdsdsds{
+                    max-width: 300px;
+                    white-space: nowrap;
+                    max-width: 300px;
+                    overflow: hidden;
+                    -o-text-overflow: ellipsis;
+                    text-overflow: ellipsis;
+                    display: block;
+                }
+
                 .transition(~"opacity 200ms linear");
                 .transition(~"background-color 200ms linear");
                 &[ready=true]{ opacity: 1; }
@@ -996,6 +1006,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 b{ font-weight: 700; }
                 &[filtered=false]{ display: none; }
+                .txttt{
+                    padding:1px 0px 1px 0px;
+                }
+                .filter_item{
+                    padding:1px 0px 1px 0px;
+                    display: inline;
+                }
             }
         }
         span.filter-separator{
@@ -1135,6 +1152,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // listHeader
 
+    .itemtoggledetails{
+        width:25px;
+    }
+
     div.listItem {
         clear:left;
         cursor:default;
@@ -1143,13 +1164,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-top: double 0px gray;
 
         .itemtoggledetails{
-            padding-right:3px;
             display:inline-block; 
             font-size: 0.8em;
             margin : auto; 
             text-align: center;
             font-weight: 700;
-            width:20px;
             cursor: pointer;
         }
 

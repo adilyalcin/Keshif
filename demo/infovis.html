@@ -55,13 +55,20 @@ google.setOnLoadCallback(function () {
 //                facetTitle: "Concepts",
             },{
                 facetTitle: "Index term",
-//            },{
-//                facetTitle: "Author",
             },{
-                facetTitle: "# Internal Citations",
+                facetTitle: "Author",
+            },{
+                facetTitle: "Total Citations",
                 catItemMap: function(d){
-                    if(d.data[6]===null) return 0;
-                    return d.data[6].length;
+                    var v=d.data[10];
+                    if(v===0) return "0";
+                    if(v<=5) return "1-5";
+                    if(v<=10) return "6-10";
+                    if(v<=25) return "11-25";
+                    if(v<=50) return "26-50";
+                    if(v<=100) return "51-100";
+                    return "100+";
+                    return ;
                 },
                 sortingOpts: [{
                     no_resort: true,
@@ -81,8 +88,9 @@ google.setOnLoadCallback(function () {
                     inverse: true
                 }
             ],
-            itemLink: "Citing<br/>Papers",
+            itemLink: "InfoVis Citations",
             itemLinkFunc: function(d){ return d.data[6]; },
+            itemLinkText: function(d){ return d.data[1]; },
             detailsToggle : "One",
             textSearch : 'Title',
             contentFunc : function(d) {

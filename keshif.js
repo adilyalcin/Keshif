@@ -460,7 +460,7 @@ kshf.Item.prototype = {
         this.dirtyFilter = true;
     },
     /**
-     * Updates "selected" state, and notifies all related filter attributes of the change.
+     * Updates wanted state, and notifies all related filter attributes of the change.
      */
     updateSelected: function(){
         if(!this.dirtyFilter) return;
@@ -549,9 +549,11 @@ kshf.Item.prototype = {
 kshf.List = function(_kshf, config, root){
     var me = this;
     this.itemtoggledetailsWidth = 22;
-    this.itemBarWidth_Max = 70;
+    this.itemBarWidth_Max = 50;
     this.parentKshf = _kshf;
     this.dom = {};
+
+    this.linkFilterWidth = 65;
     
     // Sorting options
     this.sortingOpts = config.sortingOpts;
@@ -588,6 +590,7 @@ kshf.List = function(_kshf, config, root){
     this.linkFilterID = 0;
     this.itemLink = config.itemLink;
     this.itemLinkFunc = config.itemLinkFunc;
+    this.itemLinkText = config.itemLinkText;
     if(this.itemLinkFunc===undefined && this.itemLink!==undefined){
         this.itemLinkFunc = this.getKshf().columnAccessFunc(this.itemLink);
     }
@@ -686,16 +689,17 @@ kshf.List = function(_kshf, config, root){
             });
     }
 
-    this.insertItemsToggleDetails();
-    this.insertSortSelect();
-
     if(this.itemLink!==undefined){
         this.insertItemLinkBar_Header();
     }
 
+    this.insertSortSelect();
+    this.insertItemsToggleDetails();
+
     this.dom.filterblocks = this.dom.listColumnRow.append("span").attr("class","filter-blocks");
 
     // apply itemLinkFunc
+    this.filteringItem = null;
     if(this.itemLink){
         var items = this.getKshfItems();
         var itemIDMap = kshf.dt_id[this.getKshf().primaryTableName];
@@ -767,10 +771,6 @@ kshf.List.prototype = {
                 d.nohighlightAll();
             });
         
-        if(this.detailsToggle!=="Off"){
-            this.insertItemToggleDetails();
-        }
-
         if(this.itemLink!==undefined){
             this.insertItemLinkBar();
         }
@@ -782,6 +782,10 @@ kshf.List.prototype = {
                 ;
         }
 
+        if(this.detailsToggle!=="Off"){
+            this.insertItemToggleDetails();
+        }
+
         this.dom.listItems_Content = this.dom.listItems
             .append("div")
             .attr("class","content")
@@ -790,10 +794,15 @@ kshf.List.prototype = {
     /** insertSortSelect */
     insertSortSelect: function(){
         var me=this;
-        if(this.sortingOpts.length<2) return;
+        if(this.sortingOpts.length<2) {
+            this.dom.listColumnRow.append("div").attr("class","listsortcolumn")
+                .style("width",this.sortColWidth+"px")
+                .text(this.sortingOpts[0].name);
+            return;
+        }
         this.dom.listColumnRow.append("select")
             .attr("class","listSortOptionSelect")
-            .style("width",(this.sortColWidth)+"px")
+            .style("width",(this.sortColWidth+5)+"px") // 5 pixel is used for padding in the list part.
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.sortItems();
@@ -851,8 +860,9 @@ kshf.List.prototype = {
     /** insertItemsToggleDetails */
     insertItemsToggleDetails: function(){
         if(this.detailsToggle==="Off") return;
+        var me=this;
         var x=this.dom.listColumnRow.append("div")
-            .attr("class","itemstoggledetails");
+            .attr("class","itemtoggledetails");
         x.append("span").attr("class","items_details_on").html("[+]")
             .attr("title","Show details")
             .on("click", function(d){
@@ -871,10 +881,12 @@ kshf.List.prototype = {
         var _kshf = this.getKshf();
         var x= this.dom.listColumnRow
             .append("div").attr("class","itemLinks")
+            .style("width",this.linkFilterWidth+"px")
             .append("span").attr("class","header")
             .html(this.itemLink)
             ;
-    },    /** after you re-sort the primary table or change item visibility, call this function */
+    },
+    /** after you re-sort the primary table or change item visibility, call this function */
     updateShowListGroupBorder: function(){
         var me = this;
         var items = me.getKshfItems();
@@ -972,7 +984,7 @@ kshf.List.prototype = {
     updateContentWidth: function(contentWidth){
         if(this.detailsToggle!=="Off") contentWidth-=this.itemtoggledetailsWidth;
         contentWidth-=this.sortColWidth;
-        if(this.itemLink!==undefined) contentWidth-=100;
+        if(this.itemLink!==undefined) contentWidth-=this.linkFilterWidth;
         contentWidth-=9; // works for now. TODO: check 
         this.dom.filterblocks.style("width",contentWidth+"px");
         if(this.displayType==='list'){
@@ -983,19 +995,25 @@ kshf.List.prototype = {
     insertItemLinkBar: function(){
         var _kshf = this.getKshf();
         var me=this;
-        var x= this.dom.listItems
-            .append("div")
-            .attr("class","listcell itemLinks")
+        var x= this.dom.listItems.append("div").attr("class","listcell itemLinks")
+            .style("width",this.linkFilterWidth+"px")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity:'s', fade:true, className:'details',
-                    title: function(){ return "Show details"; }
+                    title: function(){ return "Add "+me.itemLink+" filter"; }
                 });
             })
             .on("click",function(item){
+                if(item.activeItems===0) return;
                 me.filterLinks(item);
             })
-            .append("span").attr("class","captureEvents");
+            .on("mouseover",function(){
+                this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+            })
+            .append("span").attr("class","captureEvents")
             ;
         this.dom.listItems_itemLinks_captureEvents = x;
         this.dom.listItems_itemLinks_itemCount = x.append("span").attr("class","itemCount");
@@ -1036,13 +1054,14 @@ kshf.List.prototype = {
         }
     },
     isFiltered_Link: function(){
-        return this.linkFilteringActive;
+        return this.filteringItem!==null;
     },
     filterLinks: function(item_src){
         item_src.selected = !item_src.selected;
         var filterId = this.linkFilterID;
         var curDtId = kshf.dt_id[this.getKshf().primaryTableName];
-        this.linkFilteringActive = true;
+        if(this.filteringItem) this.filteringItem.selected = false;
+        this.filteringItem = item_src;
 
         // if any of the linked items are selected, filtering will pass true
         this.getKshfItems().forEach(function(item){
@@ -1066,7 +1085,9 @@ kshf.List.prototype = {
         this.getKshf().update();
     },
     clearFilterLinks: function(){
-        this.linkFilteringActive = false;
+        if(this.filteringItem===null) return;
+        this.filteringItem.selected = false;
+        this.filteringItem = null;
         this.getKshfItems().forEach(function(item){
             item.setFilter(this.linkFilterID,true);
             item.updateSelected();
@@ -1080,23 +1101,27 @@ kshf.List.prototype = {
             .append("span").attr("class","filter-block")
             .attr("title","Clear filter")
             ;
-        x.append("span").attr("class","txttt");
         x.append("span").attr("class","filter_reset").text("x")
-            .on("mouseover",function(d){
+            .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
                     fade: true,
                     className: 'details',
                     opacity: 1,
                     title: function(){ return "Remove filter"; }
-                });
+                })
+            })
+            .on("mouseover",function(){
+                this.tipsy.show();
             })
             .on("mouseout",function(d,i){
                 this.tipsy.hide();
                 d3.event.stopPropagation();
             })
             ;
-        x.append("span").attr("class","filter_item");
+        var y = x.append("span").attr("class","sdsdsds");
+        y.append("span").attr("class","txttt");
+        y.append("span").attr("class","filter_item");
         // animate appear
         window.getComputedStyle(x[0][0]).opacity;
         x.attr("ready",true);
@@ -1123,8 +1148,9 @@ kshf.List.prototype = {
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
                             me.getKshf().getFilteringState(me.options.facetTitle));
                     });
+                this.filterSummaryBlock.select(".txttt").text(this.itemLink+": ");
                 this.filterSummaryBlock.select(".filter_item")
-                    .html("HEY!")
+                    .html("<b>"+this.itemLinkText(this.filteringItem)+"</b>")
                     ;
             }
         }
@@ -1198,7 +1224,7 @@ kshf.Browser = function(options){
     if(options.itemName!==undefined){
         this.itemName = options.itemName;
     } else {
-        this.itemName = this.primaryTableName;
+        this.itemName = this.source.sheets[0].name;
     }
     // dirRoot 
     this.dirRoot = options.dirRoot;
@@ -1226,14 +1252,6 @@ kshf.Browser = function(options){
             if(e.keyCode===27){ // escchartRowLabelSearchape
                 me.clearAllFilters();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,this.getFilteringState());
-            }
-            if(e.shiftKey || e.altKey || e.ctrlKey || e.ctrlKey){
-                d3.select(this).attr("kb_modifier",true);
-            }
-        }).on("keyup",function(){
-            var e = d3.event;
-            if(e.shiftKey===false && e.altKey===false && e.ctrlKey===false && e.ctrlKey===false){
-                d3.select(this).attr("kb_modifier",false);
             }
         })
         ;
@@ -1937,7 +1955,7 @@ kshf.Browser.prototype = {
         if(this.listDisplay){
             this.listDisplay.updateAfterFiltering();
             // TODO: update filteredCount....
-            filteredCount = this.listDisplay.linkFilteringActive?1:0;
+            filteredCount = this.listDisplay.filteringItem!==null?1:0;
         }
 
         // update each widget within
@@ -2546,7 +2564,7 @@ kshf.BarChart.prototype = {
         this.attribCount_Active = 0;
         this.getAttribs().forEach(function(d){
             if(this._dataMap(d)===null) return;
-            if(this.noItemOnSelect(d)) return;
+            if(this.isAttribVisible(d)===false) return;
             this.attribCount_Active++;
         },this);
     },
@@ -2768,7 +2786,7 @@ kshf.BarChart.prototype = {
             return "("+kshf.Util.formatForItemCount(attrib.barValue)+")"; 
         });
         this.dom.g_row.each(function(attrib){ 
-            this.setAttribute("noitems",me.noItemOnSelect(attrib));
+            this.setAttribute("noitems",!me.isAttribSelectable(attrib));
         });
         this.dom.row_title.text(function(attrib){
             return (attrib.activeItems===0?"No":attrib.activeItems)+" selected "+me.getKshf().itemName+" "+
@@ -3624,21 +3642,34 @@ kshf.BarChart.prototype = {
             if(!item.wanted) item.updateSelected();
         });
     },
-    /**
-     * if returns false, item is not selected!
-     * to return false, all components should be false.
-     * or, if one of the components return true, item can be selected
-     */
-    noItemOnSelect: function(attrib){
+    /** -- */
+    isAttribVisible: function(attrib){
         // Show selected attribute always
-        if(attrib.selected) return false;
+        if(attrib.selected) return true;
         // Show if number of active items is not zero
-        if(attrib.activeItems!==0) return false;
-        // Show if multiple attributes are selected and the facet does not include multi value items
-        // TODO: Small things to fix
-        if(this.attribCount_Selected!==0 && !this.hasMultiValueItem) return false;
-        // Hide
+        if(attrib.activeItems!==0) return true;
+
+        // facet is not filtered yet, cannot click on 0 items
+        if(!this.isFiltered_Attrib()) return attrib.activeItems!==0;
+        
+        // Hide if multiple options are selected and selection is and
+        if(this.selectType==="SelectAnd") return false;
+        // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
+
         return true;
+    },
+    /** -- */
+    isAttribSelectable: function(attrib){
+        // Show selected attribute always
+        if(attrib.selected) return true;
+        // Show if number of active items is not zero
+        if(attrib.activeItems!==0) return true;
+
+        // Show if multiple attributes are selected and the facet does not include multi value items
+        if(this.isFiltered_Attrib() && !this.hasMultiValueItem) return true;
+
+        // Hide
+        return false;
     },
     /** When clicked on an attribute ... */
     filterAttrib: function(attrib, selectOr){
@@ -3784,9 +3815,10 @@ kshf.BarChart.prototype = {
 
     	this.dom.g_row
             .attr("highlight","false")
+            .attr("selected","false")
     		.on("click", function(attrib){
                 me.filterAttrib(attrib);
-                this.tipsy.hide();
+                this.tipsy_active.hide();
 
                 if (this.timer) {
                     // double click
@@ -3815,11 +3847,10 @@ kshf.BarChart.prototype = {
                         var attrib=this.__data__;
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.barChart.hasMultiValueItem;
-                        if(attrib.selected) return "<span class='big'>-</span class='big'> Remove "+attribName+" Filter";
-                        if(attrib.barChart.attribCount_Selected===0){
+                        if(attrib.selected) 
+                            return "<span class='big'>-</span class='big'> Remove "+attribName+" Filter";
+                        if(attrib.barChart.attribCount_Selected===0)
                             return "<span class='big'>+</span> Add "+attribName+" Filter";
-                        }
-
                         if(hasMultiValueItem===false)
                             return "<span class='big'>&laquo;</span> Change "+attribName+" Filter";
                         else
@@ -3828,16 +3859,22 @@ kshf.BarChart.prototype = {
                 });
             })
             .on("mouseover",function(attrib,i){
-                if(me.noItemOnSelect(attrib)) return;    
+                if(!me.isAttribSelectable(attrib)) return;    
                 this.setAttribute("highlight",true);
                 attrib.items.forEach(function(item){if(item.wanted) item.highlightListItem();});
-                this.tipsy.show();
+                this.tipsy_active = this.tipsy;
+                if(attrib.selected===false & me.attribCount_Selected>1 && me.selectType==="SelectOr"
+                    && me.hasMultiValueItem){
+                    // prevent "...and" and show "...or" instead
+                    this.tipsy_active = d3.select(this).select(".filter_add_more")[0][0].tipsy;
+                }
+                this.tipsy_active.show();
             })
             .on("mouseout",function(attrib,i){
-                if(me.noItemOnSelect(attrib)) return;
+                if(!me.isAttribSelectable(attrib)) return;
                 this.setAttribute("highlight",false);
                 attrib.items.forEach(function(item){if(item.wanted) item.nohighlightListItem();});
-                this.tipsy.hide();
+                this.tipsy_active.hide();
             })
             ;
         
@@ -3994,11 +4031,9 @@ kshf.BarChart.prototype = {
                 if(!a.selected &&  b.selected) return  1;
                 if( a.selected && !b.selected) return -1;
             }
-            // skip no items
-            var a_noitems = me.noItemOnSelect(a);
-            var b_noitems = me.noItemOnSelect(b);
-            if( a_noitems && !b_noitems) return  1;
-            if(!a_noitems &&  b_noitems) return -1;
+            // put the items with zero active items to the end of list (may not be displayed / inactive)
+            if(a.activeItems===0 && b.activeItems!==0) return  1;
+            if(a.activeItems===0 && b.activeItems!==0) return -1;
 
             var x=sortFunc(a,b);
             if(x===0) 
@@ -4020,8 +4055,7 @@ kshf.BarChart.prototype = {
             this.refreshScrollbar();
         }
         this.dom.g_row.data(this.getAttribs(), this._dataMap)
-            .order()
-            .transition().delay(this.sortDelay)
+            .order().transition().delay(this.sortDelay)
             .attr("transform", function(attrib,i) { return "translate(0,"+((_kshf.line_height*i))+")"; })
             ;
 
