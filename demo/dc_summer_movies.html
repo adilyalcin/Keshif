@@ -43,7 +43,10 @@ function loadMovieData_Name(kshfItem){
         url: "http://www.omdbapi.com/?t="+kshfItem.data[2],
         dataType: "json",
         success: function(data){
-            if(data.Error) return;
+            if(data.Error) {
+                console.log("Error loading movie: "+kshfItem.data[2])
+                return;
+            }
             var d3Item = d3.select(kshfItem.listItem);
             d3Item.select(".moviePoster").attr("src","./img/posters/"+data.imdbID+".jpg");
             d3Item.select(".movieInfo").style("display","block");
@@ -60,19 +63,16 @@ function loadMovieData_Name(kshfItem){
     });
 };
 
+// batch load script
 var i=0;
-
 function loadOneMoreMovie(){
     if(i===kshf.dt.Screening.length) return;
     loadMovieData_Name(kshf.dt.Screening[i]);
     i++;
-    setTimeout(loadOneMoreMovie, 500);
+    setTimeout(loadOneMoreMovie, 200);
 };
 
 var myLoc=null;
-// coords.latitude
-// coords.longitude
-
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
     if(browser===undefined) return;
@@ -85,14 +85,11 @@ var updateLocationSorting = function(){
 };
 
 function loadChart() {
-
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
             myLoc = position.coords;
             updateLocationSorting();
         });
-    } else {
-      /* geolocation IS NOT available */
     }
 
     // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
@@ -113,17 +110,6 @@ function loadChart() {
         },
         charts : [
             {
-/*                facetTitle: "Soon",
-                removeInactiveAttrib: false,
-                catItemMap: function(d){ 
-                    var m_scr = moment(d.data[1]);
-                    if(m_scr.isBefore(m_now)) return null;
-                    if(m_scr.isBefore(m_thisweek)) return "This Week";
-                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
-                    return null;
-                },
-//                catLabelText: function(d) { return getGender(d.data[1]); }
-            },{*/
                 facetTitle: "State",
                 removeInactiveAttrib: false,
                 catItemMap: function(d){ 
@@ -132,9 +118,6 @@ function loadChart() {
                 },
                 timeTitle: "Screenings in Next 15 Days",
                 timeItemMap : function(d){ 
-//                    var m_scr = moment(d.data[1]);
-//                    if(m_scr.isBefore(m_now)) return null;
-//                    if(m_scr.isAfter(m_nextweek)) return null;
                     return d.data[1];
                 },
             },{
@@ -208,7 +191,7 @@ function loadChart() {
                     return moment(d.data[1]).format('MMM Do, ddd');
                 }
             } ],
-            detailsToggle : "Multi",
+            detailsToggle : "One",
             detailsDefault : false,
             contentFunc : function(d) {
                 var series = kshf.dt_id.Series[d.data[0]];
