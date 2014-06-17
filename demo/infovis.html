@@ -13,21 +13,11 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback(function () {
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-45);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
-        $('#chart_div').width ($(window).width()*0.9);
-        browser.updateLayout();
-    });
-
 	browser = new kshf.Browser({
         chartTitle: "InfoVis Papers",
         domID : "#chart_div",
         dirRoot: "../",
-        categoryTextWidth:140,
+        categoryTextWidth:170,
         source : {
             gdocId : '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
             sheets : [ {name:"Publications"} ]
@@ -37,31 +27,38 @@ google.setOnLoadCallback(function () {
         },
         charts: [
             {
-                facetTitle: "Concepts",
+                facetTitle: "Year",
+                catItemMap: function(d){ 
+                    var yr = d.data[0].substring(7,9);
+                    var dt=new Date(moment(yr,"YY"));
+                    return dt.getFullYear();
+                }
+            },{
+                facetTitle: "Highlights",
+                catItemMap: function(d){
+                    var toRet = [];
+                    if(d.data[8]===true) toRet.push("Best in Year");
+                    if(d.data[6].length>10) toRet.push("Cited +10");
+                    return toRet;
+                }
+            },{
+                facetTitle: "Concept",
 //                facetTitle: "Keywords",
-                timeTitle: "Year",
+/*                timeTitle: "Year",
                 timeItemMap: function(d){
                     var yr = d.data[0].substring(7,9);
 //                    console.log(yr);
 //                    if(isNaN(yr)) return null;
                     return new Date(moment(yr,"YY"));
-                }
+                }*/
 //            },{
 //                facetTitle: "Concepts",
             },{
-                facetTitle: "Index terms",
+                facetTitle: "Index term",
             },{
-                facetTitle: "Authors",
+                facetTitle: "Author",
             },{
-                facetTitle: "Best",
-                catItemMap: function(d){
-                    var toRet = [];
-                    if(d.data[8]===true) toRet.push("Best");
-                    if(d.data[6].length>10) toRet.push("Cited +10");
-                    return toRet;
-                }
-            },{
-                facetTitle: "# Citations",
+                facetTitle: "# Internal Citations",
                 catItemMap: function(d){
                     if(d.data[6]===null) return 0;
                     return d.data[6].length;
@@ -73,9 +70,7 @@ google.setOnLoadCallback(function () {
             }
         ],
         list:{
-            sortColWidth: 90,
-            detailsToggle : "Multi",
-            detailsDefault : false,
+            sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Year',
                     value: function(d){ 
@@ -83,8 +78,12 @@ google.setOnLoadCallback(function () {
                         var dt=new Date(moment(yr,"YY"));
                         return dt.getFullYear();
                     },
+                    inverse: true
                 }
             ],
+            itemLink: "Citing<br/>Papers",
+            itemLinkFunc: function(d){ return d.data[6]; },
+            detailsToggle : "One",
             textSearch : 'Title',
             contentFunc : function(d) {
                 var j;
@@ -113,5 +112,8 @@ google.setOnLoadCallback(function () {
 });
         </script>
 	</head>
+    <style type="text/css" media="screen">
+        #chart_div{ width:1200px; height: 700px;}    
+    </style>
 	<body><div id="chart_div"></div></body>
 </html>

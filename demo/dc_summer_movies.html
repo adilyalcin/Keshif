@@ -16,14 +16,15 @@
         <script type="text/javascript">
 
 function loadMovieData(d){
-    var kshfItem = d.currentTarget.parentNode.__data__;
-    if(kshfItem.dataLoaded===true) return;
+    if(d.target.className==="item_details_off") return;
+    var kshfItem = d.currentTarget.__data__;
+    if(kshfItem===undefined)
+        kshfItem = d.currentTarget.parentNode.__data__;
     if(kshfItem.listItem.getAttribute('details')==="false")
-        browser.listItemDetailToggleFunc(kshfItem);
-    var movieName = kshfItem.data[2];
-    if(d3.select(kshfItem.listItem).select(".movieInfo").style("display")==="block") return;
+        browser.showListItemDetails(kshfItem);
+    if(kshfItem.dataLoaded===true) return;
     $.ajax( {
-        url: "http://www.omdbapi.com/?t="+movieName,
+        url: "http://www.omdbapi.com/?t="+kshfItem.data[2],
         dataType: "json",
         success: function(data){
             if(data.Error) return;
@@ -36,7 +37,7 @@ function loadMovieData(d){
             d3Item.select(".Plot .value").text(data.Plot);
             d3Item.select(".Awards .value").text(data.Awards);
             d3Item.select(".imdbRating .value").text(data.imdbRating);
-            d3Item.selectAll("a").attr("href","http://www.imdb.com/title/"+data.imdbID);
+            d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+data.imdbID);
             kshfItem.dataLoaded = true;
         }
     });
@@ -117,8 +118,10 @@ function loadChart() {
             }
         ],
         readyCb: function(){
-            $(".itemtoggledetails").click(loadMovieData);
-            $(".movieName").click(loadMovieData);
+            $(".itemtoggledetails .item_details_on").click(loadMovieData);
+            $(".listItem")
+                .click(loadMovieData)
+                ;
         },
         list: {
             sortColWidth: 90,
@@ -153,7 +156,7 @@ function loadChart() {
                 str+="<span class=\"item_details\">";
 
                 str+=
-                    "<span class='header'>Screening Series</span>: <a target=\"_blank\" href=\""+series.data[6]+"\">"+
+                    "<span class='header'>Screening Series</span>: <a target=\"_blank\" class='location' href=\""+series.data[6]+"\">"+
                     series.data[1]+"</a></br>"+
                     "<span class='header'>Location</span>: <b>"+series.data[4]+"</b> - "+ series.data[3]+
                     "<span class='movieInfo' style='display:none;'>"+
@@ -199,16 +202,20 @@ $(document).ready(loadChart);
             font-size: 1.3em;
             font-weight: 700;
         }
-        .listItem[details=false] .movieName{
-            cursor: pointer;
+        .listItem[details=false]{
+            cursor: pointer !important;
         }
-        .listItem[details=false] .movieName:hover{
+        .listItem[details=true] .movieName{
+            pointer-events: none;
+        }
+        .listItem[details=false]:hover .movieName{
             text-decoration: underline;
             color:rgb(151, 64, 43);
         }
         .listsortcolumn{
             font-weight: 300 !important;
             text-align: right !important;
+            padding-right: 5px !important;
         }
         .item_details .header{
             font-weight: 300;

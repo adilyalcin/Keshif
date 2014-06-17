@@ -125,6 +125,12 @@ google.setOnLoadCallback(function() {
                 textFilter: 'as'
             }
         ],
+        readyCb: function(){
+            $(".paperName").click(function(d){
+                var kshfItem = d.currentTarget.parentNode.__data__;
+                browser.showListItemDetails(kshfItem);
+            });
+        },
         list : {
             sortColWidth: 85,
             sortingOpts : [
@@ -144,8 +150,8 @@ google.setOnLoadCallback(function() {
                 var str="";
 
                 // paper name
-                    str+="<div class=\"iteminfo iteminfo_0\">";
-                    str+="<span onclick=\"kshf.listItemDetailToggleFunc2(this)\" style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
+                    str+="<div class='iteminfo iteminfo_0 paperName'>";
+                    str+="<span style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
                     if(d.data[pubCol.url].trim()!==""){
                         str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\" "+
                                 "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\">"+

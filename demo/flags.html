@@ -232,8 +232,7 @@ function loadChart() {
         readyCb: function(){
             $(".countryName").click(function(d){
                 var kshfItem = d.currentTarget.parentNode.__data__;
-                if(kshfItem.listItem.getAttribute('details')==="false")
-                    browser.listItemDetailToggleFunc(kshfItem);
+                browser.showListItemDetails(kshfItem);
             });
         },
         list:{
