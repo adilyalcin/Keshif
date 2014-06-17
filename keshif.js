@@ -3914,10 +3914,12 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
             })
             ;
-        this.dom.add_more.append("text").attr("class","filter_add_more add").html("&#8853;")
-            .attr("dy",14).attr("dx",8);
-        this.dom.add_more.append("text").attr("class","filter_add_more remove").html("&#8854;")
-            .attr("dy",14).attr("dx",8);
+        var x= this.dom.add_more.append("text").attr("class","filter_add_more add")
+            .attr("dy",14).attr("dx",8).text("⊕")
+            ;
+        var y= this.dom.add_more.append("text").attr("class","filter_add_more remove")
+            .attr("dy",14).attr("dx",8).text("⊖")
+            ;
 
     	this.dom.rowSelectBackground_Label = this.dom.g_row
     		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
