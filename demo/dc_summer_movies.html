@@ -165,12 +165,11 @@ function loadChart() {
         ],
         readyCb: function(){
             $(".itemtoggledetails .item_details_on").click(loadMovieData);
-            $(".listItem")
-                .click(loadMovieData)
-                ;
-
-            if(myLoc)
-            updateLocationSorting();
+            $(".listItem").click(loadMovieData);
+            if(myLoc) updateLocationSorting();
+            // open the first movie
+            loadMovieData_Name(kshf.dt.Screening[0]);
+            kshf.dt.Screening[0].listItem.setAttribute('details',true);
         },
         list: {
             sortColWidth: 90,
@@ -274,8 +273,29 @@ $(document).ready(loadChart);
             font-size: 0.9em;
         }
         #chart_div{
-            width:900px;
+            width:860px;
             height: 700px;
+        }
+        img.film{
+            position:absolute;
+            left: 10px;
+            bottom: 10px;
+            width:230px;
+            z-index: -2;
+            opacity: 0.8;
+        }
+        img.strip{
+            position:absolute;
+            top: 20px;
+            height:700px;
+            z-index: -3;
+            opacity: 0.7;
+        }
+        img.strip.left{
+            left: 20px;
+        }
+        img.strip.right{
+            right: 20px;
         }
     </style>
 	</head>
@@ -301,6 +321,11 @@ $(document).ready(loadChart);
                 <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
             </div>
         <div class="meny-arrow"></div>
-        <div class="contents"><div id="chart_div"></div></div>
+        <div class="contents">
+            <div id="chart_div"></div>
+            <img class="film" src="img/film.png">
+            <img class="strip left" src="img/strip.png">
+            <img class="strip right" src="img/strip.png">
+            </div>
     </body>
 </html>
