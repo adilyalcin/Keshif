@@ -901,6 +901,7 @@ kshf.List.prototype = {
                 items.forEach(function(item,i){
                     if(!item.wanted) return;
                     if(pItem!==null){ 
+                        if(item.listItem!==undefined)
                         item.listItem.style.borderTopWidth = 
                             sortFunc(sortValueFunc(item),sortValueFunc(pItem))!==0?"4px":"0px";
                     }
@@ -1440,44 +1441,36 @@ kshf.Browser.prototype = {
     insertInfobox: function(){
         var me=this;
         var creditString="";
-        creditString += "<div align=\"center\">";
-        creditString += "Browser created by <span class=\"libName\">Keshif<\/span> library.";
-        creditString += "<\/br>";
-        creditString += " <div align=\"left\" class=\"boxinbox features\">";
-        creditString += " <ul class=\"credits_features\">";
-        creditString += "     <li>Left: categories. Top: time. All: in sync.<\/li>";
-        creditString += "     <li>Mix and match your search. \"And\" selection across different filters, \"or\" inside same filter with multiple categories.<\/li>";
-        creditString += "     <li>Text search: Look up all items in the collections, or filter categories.<\/li>";
-        creditString += "     <li>Time filtering: Drag &amp; drop handles, set your range.<\/li>";
-        creditString += " <\/ul>";
-        creditString += " <\/div>";
-        creditString += "<\/div>";
+        creditString += "<div align='center'>";
+        creditString += "<div class='header'>Browser created by <span class='libName'>Keshif</span> library</div>";
+
+//        creditString += "<div align='center' class='boxinbox' style='font-size:0.9em'>";
+//        creditString += "Get the code from <a href='http://www.github.com/adilyalcin/Keshif' target='_blank'><img alt='github' src='"+this.dirRoot+"img/gitHub.png' height='20' style='position:relative; top:5px'></a> <br/> and use it for your own data.</br>";
+//        creditString += "</div>";
+
+        creditString += "<div align='center' class='boxinbox project_credits'>";
+        creditString += " Developed by:<br/>";
+            creditString += "<div style='float:right;'>"
+            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe><br/>";
+            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe>";
+            creditString += "</div>";
+        creditString += " <a href='http://www.adilyalcin.me' target='_blank'><img src='"+this.dirRoot+"img/credit-1_01.png' style='height:50px'></a>";
+        creditString += " <img src='"+this.dirRoot+"img/credit-1_02.png' style='height:50px; padding:0px 4px 0px 4px'>";
+        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'><img src='"+this.dirRoot+"img/credit-1_03.png' style='height:50px'></a>";
+        creditString += " <img src='"+this.dirRoot+"img/credit-1_04.png' style='height:50px;padding:0px 4px 0px 4px'>";
+        creditString += " <a href='http://www.umd.edu' target='_blank'><img src='"+this.dirRoot+"img/credit-1_05.png' style='height:50px'></a>";
+        creditString += "</div>";
         creditString += "";
-        creditString += "<div align=\"center\" class=\"boxinbox\" style=\"font-size:0.9em\">";
-        creditString += "Get keshif source code from <a href=\"http:\/\/www.github.com\/adilyalcin\/Keshif\" target=\"_blank\"><img alt=\"github\" src=\""+this.dirRoot+"img\/gitHub.png\" height=\"20\" style=\"position:relative; top:5px\"><\/a> and use it on your own page.<\/br>";
-        creditString += "<iframe src=\"http:\/\/ghbtns.com\/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true&size=large\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"152px\" height=\"30px\"><\/iframe>";
-        creditString += "<iframe src=\"http:\/\/ghbtns.com\/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true&size=large\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"152px\" height=\"30px\"><\/iframe>";
-        creditString += "<\/div>";
+        creditString += "<div align='center' class='boxinbox project_credits'>";
+        creditString += " 3rd party libraries and APIs used:<br/>";
+        creditString += " <a href='http://d3js.org/' target='_blank'>D3</a> -";
+        creditString += " <a href='http://jquery.com' target='_blank'>JQuery</a> -";
+        creditString += " <a href='https://developers.google.com/chart/' target='_blank'>Google Charts</a>";
+        creditString += "</div><br/>";
         creditString += "";
-        creditString += "<div style=\"width: 450px;\" align=\"center\" class=\"boxinbox project_credits\">";
-        creditString += " Developed by:<br\/>";
-        creditString += " <a href=\"http:\/\/www.adilyalcin.me\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/credit-1_01.png\" style=\"height:50px\"><\/a>";
-        creditString += " <img src=\""+this.dirRoot+"img\/credit-1_02.png\" style=\"height:50px; padding:0px 4px 0px 4px\">";
-        creditString += " <a href=\"http:\/\/www.cs.umd.edu\/hcil\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/credit-1_03.png\" style=\"height:50px\"><\/a>";
-        creditString += " <img src=\""+this.dirRoot+"img\/credit-1_04.png\" style=\"height:50px;padding:0px 4px 0px 4px\">";
-        creditString += " <a href=\"http:\/\/www.umd.edu\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/credit-1_05.png\" style=\"height:50px\"><\/a>";
-        creditString += "<\/div>";
-        creditString += "";
-        creditString += "<div align=\"center\" class=\"boxinbox project_3rdparty\">";
-        creditString += " 3rd party libraries and APIs:<br\/>";
-        creditString += " <a href=\"http:\/\/d3js.org\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_01.png\" style=\"width:70px; top:0px\"><\/a>";
-        creditString += " <a href=\"http:\/\/jquery.com\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_02.png\" style=\"width:150px; top: -5px;\"><\/a>";
-        creditString += " <a href=\"https:\/\/developers.google.com\/chart\/\" target=\"_blank\"><img src=\""+this.dirRoot+"img\/3rdparty_03.png\" style=\"width:60px\"><\/a>";
-        creditString += "<\/div><br\/>";
-        creditString += "";
-        creditString += "<div align=\"center\" class=\"project_fund\">";
-        creditString += "<i>Keshif<\/i> (<a target=\"_blank\" href=\"http:\/\/translate.google.com\/#auto\/en\/ke%C5%9Fif\">keşif<\/a>) means discovery and exploration in Turkish.<br\/><br\/>";
-        creditString += "Research made practical. Funded in part by <a href=\"http:\/\/www.huawei.com\">Huawei<\/a>. <\/div>";
+        creditString += "<div align='center' class='project_fund'>";
+        creditString += "Keshif (<a target='_blank' href='http://translate.google.com/#auto/en/ke%C5%9Fif'><i>keşif</i></a>) means discovery / exploration in Turkish.<br/>";
+        creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
         this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox");
@@ -1610,9 +1603,7 @@ kshf.Browser.prototype = {
             .attr("title","Show Info & Credits")
             .attr("class","credits")
             .on("click",function(){
-                if(sendLog) sendLog(CATID.Other,ACTID_OTHER.InfoButton);
-                me.root.select(".layout_infobox").style("display","block");
-                me.root.select("div.infobox_credit").style("display","block");
+                me.showInfoBox();
             })
             .text("i");
 
@@ -1637,6 +1628,11 @@ kshf.Browser.prototype = {
                 ;
             }
         this.layoutHeader.append("span").attr("class","title").text(this.chartTitle);
+    },
+    showInfoBox: function(){
+        if(sendLog) sendLog(CATID.Other,ACTID_OTHER.InfoButton);
+        this.root.select(".layout_infobox").style("display","block");
+        this.root.select("div.infobox_credit").style("display","block");
     },
     loadSource: function(){
         if(this.source.callback){
@@ -3595,22 +3591,42 @@ kshf.BarChart.prototype = {
         }
 
         var curDtId=this.getAttribs_wID();
-        var filter_multi = kshf.Util.filter_multi_or;
-        if(this.selectType==="SelectAnd") filter_multi = this.filter_multi_and;
         var filterId = this.filterId;
 
-        this.getKshfItems().forEach(function(item){
-            var m=item.mappedData[filterId];
-            if(m===undefined || m===null || m===""){ 
-                item.setFilter(filterId,false);
-            } else {
-                if(m instanceof Array){
-                    item.setFilter(filterId,filter_multi.call(this,m,curDtId));
+        if(this.selectType==="SelectAnd"){
+            var filter_multi = this.filter_multi_and;
+            this.getKshfItems().forEach(function(item){
+                var m=item.mappedData[filterId];
+                if(m===undefined || m===null || m===""){ 
+                    item.setFilter(filterId,false);
                 } else {
-                    item.setFilter(filterId,curDtId[m].selected);
+                    if(m instanceof Array){
+                        item.setFilter(filterId,filter_multi.call(this,m,curDtId));
+                    } else {
+                        if(this.attribCount_Selected>1){
+                            // more than 1 item is selected, and this item only has 1 mapping.
+                            item.setFilter(filterId,false);
+                        } else {
+                            item.setFilter(filterId,curDtId[m].selected);
+                        }
+                    }
                 }
-            }
-        },this);
+            },this);
+        } else {
+            var filter_multi = kshf.Util.filter_multi_or;
+            this.getKshfItems().forEach(function(item){
+                var m=item.mappedData[filterId];
+                if(m===undefined || m===null || m===""){ 
+                    item.setFilter(filterId,false);
+                } else {
+                    if(m instanceof Array){
+                        item.setFilter(filterId,filter_multi.call(this,m,curDtId));
+                    } else {
+                        item.setFilter(filterId,curDtId[m].selected);
+                    }
+                }
+            },this);
+        }
     },
     /** update ItemFilterState_Time */
     updateItemFilterState_Time: function(){
@@ -3917,9 +3933,9 @@ kshf.BarChart.prototype = {
         var x= this.dom.add_more.append("text").attr("class","filter_add_more add")
             .attr("dy",14).attr("dx",8).text("⊕")
             ;
-        var y= this.dom.add_more.append("text").attr("class","filter_add_more remove")
+/*        var y= this.dom.add_more.append("text").attr("class","filter_add_more remove")
             .attr("dy",14).attr("dx",8).text("⊖")
-            ;
+            ;*/
 
     	this.dom.rowSelectBackground_Label = this.dom.g_row
     		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")

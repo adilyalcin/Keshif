@@ -1,19 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Nobel Prize Winners</title>
+		<title>Nobel Prize Winners</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
-        <!-- Logging features -->
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
         <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
         <script type="text/javascript">
 var demoID = 14;
 
@@ -155,10 +157,32 @@ $(document).ready( function(){
 });
 
 </script>
-        <style>
-            div.listItem{ padding-bottom: 2 px; }
-            #chart_div { height: 700px; width:950px; }
-        </style>
+<style>
+    div.listItem{ padding-bottom: 2 px; }
+    #chart_div { height: 700px; width:950px; }
+</style>
 	</head>
-	<body onmousemove="logIf.setSessionID()"><div id="chart_div"></div></body>
+    <body onmousemove="logIf.setSessionID()">
+        <div class="meny">
+            <span class='developed'>
+                <span class='projectName'>kshf</span> browser developed by:<br>
+                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
+                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
+                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
+                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
+                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
+                <span class='source_code'>
+                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
+                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
+                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
+                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
+                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
+                    </span>
+            </span>
+            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
+                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
+            </div>
+        <div class="meny-arrow"></div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
 </html>

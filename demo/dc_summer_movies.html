@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Summer Outdoor Movies in DC area</title>
+		<title>Summer Outdoor Movies in DC area</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
 
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
         <script type="text/javascript">
 
@@ -273,10 +274,33 @@ $(document).ready(loadChart);
             font-size: 0.9em;
         }
         #chart_div{
-            width:1000px;
-            height: 600px;
+            width:900px;
+            height: 700px;
         }
     </style>
 	</head>
-	<body><div id="chart_div"></div></body>
+	<body>
+        <div class="meny">
+            <u>Notes:</u>
+            <ul>
+                <li type="circle">Movies coming up soon are shown first in the list.</li>
+                <li type="circle">Your location is used to display closest movie locations first.</li>
+            </ul>
+
+            <span class='developed'>
+                <span class='projectName'>kshf</span> browser developed by:<br>
+                <a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a> (
+                    <a href="http://www.twitter.com/adilyalcin">@adilyalcin</a> 
+                ) <br/>
+                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
+                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
+                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
+            </span>
+
+            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
+                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
+            </div>
+        <div class="meny-arrow"></div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
 </html>
