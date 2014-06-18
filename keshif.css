@@ -144,19 +144,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #252112;
   font-weight: 300;
   border: 1px #685b2b solid;
-  background-color: white;
-  padding: 0px 5px 0px 0px;
-  float: left;
+  background-color: #E9E2CE;
+  padding-right: 2px;
+  float: right;
   margin-right: 2px;
-  margin-left: 2px;
-  box-shadow: 1px 1px 1px #474940;
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
 }
 .kshf.layout_header span.filter-block-clear:hover {
+  background-color: white;
   box-shadow: none;
 }
 .kshf.layout_header span.filter-block-clear:hover .allFilter {
   background-color: #B6AF96;
   color: #635d46;
+  padding: 1px;
+  border: none;
 }
 .kshf.layout_header div.filter_header {
   /*    background-color: white;
@@ -171,8 +176,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.layout_header div.filter_header span.filters_text {
   position: relative;
+  top: -1px;
   float: right;
-  font-size: 0.9em;
   font-weight: 700;
   font-style: normal;
   cursor: default;
@@ -225,6 +230,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .chartClearFilterButton:hover {
   background-color: #B6AF96;
   color: #635d46;
+  padding: 1px;
+  border: none;
 }
 .kshf .chartClearFilterButton.alone {
   display: none;
@@ -1068,7 +1075,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
 }
 .kshf div.listHeader span.filter-blocks span.filter-block:hover {
-  box-shadow: inset 1px 1px 1px #4e472b;
   background-color: #ffffff;
 }
 .kshf div.listHeader span.filter-blocks span.filter-block b {

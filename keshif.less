@@ -134,17 +134,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: rgb(37, 33, 18);
             font-weight: 300;
             border: 1px rgb(104, 91, 43) solid;
-            background-color: white;
-            padding: 0px 5px 0px 0px;
-            float: left;
+            background-color: #E9E2CE;
+            padding-right: 2px;
+            float: right;
             margin-right: 2px;
-            margin-left: 2px;
-            box-shadow: 1px 1px 1px #474940;
+            .transition(~"background-color 100ms linear");
             &:hover{ 
+                background-color: white;
                 box-shadow: none;
                 .allFilter{
                     background-color: #B6AF96;
                     color: #635d46;
+                    padding: 1px;
+                    border: none;
                 }
             }
         }
@@ -158,8 +160,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .left_align{ float:left; }
             span.filters_text{
                 position: relative;
+                top:-1px;
                 float: right;
-                font-size: 0.9em;
                 font-weight: 700;
                 font-style: normal;
                 cursor: default;
@@ -208,6 +210,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{
             background-color: #B6AF96;
             color: #635d46;
+            padding:1px;
+            border:none;
         }
 
         &.alone{
@@ -1007,7 +1011,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .transition(~"background-color 200ms linear");
                 &[ready=true]{ opacity: 1; }
                 &:hover{
-                    box-shadow: inset 1px 1px 1px rgb(78, 71, 43);
                     background-color: rgba(255,255,255,1.0);
 //                    border: 2px rgb(104, 91, 43) solid;
                 }

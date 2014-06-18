@@ -800,21 +800,6 @@ return Meny;
 
 
 $( window ).load(function() {
-    $(".bigInfo")
-        .mouseleave(function(){
-            if(this.timer){
-                clearTimeout(this.timer);
-                this.timer = null;
-            }
-        })
-        .mouseenter(function(){
-            this.timer = setTimeout( 
-                function(){ if(browser) browser.showInfoBox(); },
-                750);
-        })
-        .click(function(){ if(browser) browser.showInfoBox(); })
-        ;
-
     var meny = Meny.create({
         menuElement: document.querySelector( '.meny' ),
         contentsElement: document.querySelector( '.contents' ),
