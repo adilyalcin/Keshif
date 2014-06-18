@@ -38,8 +38,8 @@
                             return new Date(moment(d.data[0]+"01-01","YYYY-MM-DD"));
                         },
                         sortingOpts : [
-                            { name: "Current first",  func: kshf.sortFunc_Time_Last },
-                            { name: "Past first",  func: kshf.sortFunc_Time_First },
+                            { name: "Current first",  func: kshf.Util.sortFunc_Time_Last },
+                            { name: "Past first",  func: kshf.Util.sortFunc_Time_First },
                             { name:" # of Years" }
                         ]
                     },{

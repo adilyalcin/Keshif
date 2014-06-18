@@ -131,7 +131,7 @@ function loadChart() {
                 catLabelText: function(d) { return landmassText(d.data[1]); },
                 sortingOpts : [
                     { name:"Flag #" },
-                    { name: "First Flag",  func: kshf.sortFunc_Time_First }
+                    { name: "First Flag",  func: kshf.Util.sortFunc_Time_First }
                 ],
                 timeTitle: "Flag Date",
                 timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
@@ -198,7 +198,7 @@ function loadChart() {
                 sortingOpts: [{
                     name:"# Bars",
                     no_resort: true,
-                    func:kshf.sortFunc_Column_Int_Incr
+                    func:kshf.Util.sortFunc_Column_Int_Incr
                 },{  
                     name:"# Flags"
                 }]
@@ -212,7 +212,7 @@ function loadChart() {
                 sortingOpts: [
                     {   name:"# Stripes",
                         no_resort: true,
-                        func:kshf.sortFunc_Column_Int_Incr
+                        func:kshf.Util.sortFunc_Column_Int_Incr
                     },{ 
                         name:"# Flags"
                     }

@@ -130,7 +130,7 @@ function loadChart() {
                         func: function(a,b){
                             // lat-long: 10-11
                             if(myLoc===null) {
-                                return kshf.sortFunc_ActiveCount_TotalCount(a,b);
+                                return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
                             }
                             var dist_a = distanceKilometersGreatCircle(
                                 myLoc.latitude,myLoc.longitude,a.data[10],a.data[11]);
@@ -148,7 +148,7 @@ function loadChart() {
                     return (moment(d.data[1]).days()+6)%7; 
                 },
                 sortingOpts : [
-                    { func: kshf.sortFunc_Column_Int_Decr, no_resort: true },
+                    { func: kshf.Util.sortFunc_Column_Int_Decr, no_resort: true },
                 ],
                 catLabelText: function(d){
                     switch(d.data[1]){

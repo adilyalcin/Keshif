@@ -77,8 +77,8 @@ google.setOnLoadCallback(function() {
                 timeBarShow: true,
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
                 sortingOpts : [
-                    { name: "Last pub.",  func: kshf.sortFunc_Time_Last },
-                    { name: "First pub.",  func: kshf.sortFunc_Time_First },
+                    { name: "Last pub.",  func: kshf.Util.sortFunc_Time_Last },
+                    { name: "First pub.",  func: kshf.Util.sortFunc_Time_First },
                     { name: "Pub. #" }
                 ],
                 textFilter: 'about'

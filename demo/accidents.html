@@ -109,7 +109,7 @@ function loadChart() {
                 sortingOpts: [{
                     name:"By speed",
                     no_resort: true,
-                    func:kshf.sortFunc_Column_ParseInt_Incr
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 },{
                     name:"By accidents"
                 }]
@@ -117,7 +117,7 @@ function loadChart() {
                 facetTitle: "# of Vehicles",
                 sortingOpts: [{
                     no_resort: true,
-                    func:kshf.sortFunc_Column_ParseInt_Incr
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
             },{
                 facetTitle: "Road Surface",

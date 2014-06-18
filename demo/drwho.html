@@ -53,7 +53,7 @@ google.setOnLoadCallback( function () {
                 facetTitle: "Episode",
                 catItemMap : function(d){ return d.data[5]; },
                 sortingOpts : [
-                    { name: "",  func: kshf.sortFunc_Column_Int_Incr },
+                    { name: "",  func: kshf.Util.sortFunc_Column_Int_Incr },
                 ]
             },*/
             {   facetTitle: "Motivation",
@@ -66,7 +66,7 @@ google.setOnLoadCallback( function () {
                     if(v<3) return ""+v;
                     else return "3 or more";
                 },
-                sortingOpts : [ { name: "Last pub.",  func: kshf.sortFunc_String_Decr } ]
+                sortingOpts : [ { name: "Last pub.",  func: kshf.Util.sortFunc_String_Decr } ]
             }
         ],
         list : {

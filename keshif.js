@@ -57,6 +57,7 @@ var kshf = {
       // Remember the constructor property was set wrong, let's fix it
       sub.prototype.constructor = sub;
     },
+    num_of_charts: 0,
     dt: {},
     dt_id: {},
     dt_ColNames: {},
@@ -68,7 +69,11 @@ var kshf = {
     insertColumnName: function(tableName, colName, index){
         this.dt_ColNames    [tableName][colName] = index;
         this.dt_ColNames_Arr[tableName][index  ] = colName;
-    },
+    }
+};
+
+
+kshf.Util = {
     dif_activeItems: function(a,b){
         return b.activeItems - a.activeItems;
     },
@@ -76,12 +81,9 @@ var kshf = {
         return b.barValue - a.barValue;
     },
     sortFunc_ActiveCount_TotalCount: function(a,b){ 
-        var dif=kshf.dif_activeItems(a,b);
+        var dif=kshf.Util.dif_activeItems(a,b);
         if(dif===0) { return b.items.length-a.items.length; }
         return dif;
-    },
-    sortFunc_BarValue: function(a,b){ 
-        return kshf.dif_barValue(a,b);
     },
     sortFunc_Column_Int_Incr: function(a,b){ 
         return a.data[1] - b.data[1]; 
@@ -131,11 +133,7 @@ var kshf = {
     },
     sortFunc_List_Number: function(a, b){
         return b - a;
-    }
-};
-
-
-kshf.Util = {
+    },
     /** Given a list of columns which hold multiple IDs, breaks them into an array */
     cellToArray: function(dt, cols, splitExpr, convertInt){
         if(splitExpr===undefined){
@@ -945,15 +943,15 @@ kshf.List.prototype = {
             var f = sortValueFunc(item);
             var sortValueType_temp2;
             switch(typeof f){
-            case 'string': sortValueType_temp2 = kshf.sortFunc_List_String; break;
-            case 'number': sortValueType_temp2 = kshf.sortFunc_List_Number; break;
+            case 'string': sortValueType_temp2 = kshf.Util.sortFunc_List_String; break;
+            case 'number': sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
             case 'object': 
                 if(f instanceof Date) 
-                    sortValueType_temp2 = kshf.sortFunc_List_Date; 
+                    sortValueType_temp2 = kshf.Util.sortFunc_List_Date; 
                 else 
-                    sortValueType_temp2 = kshf.sortFunc_List_Number;
+                    sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
                 break;
-            default: sortValueType_temp2 = kshf.sortFunc_List_Number; break;
+            default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
             }
 
             if(sortValueType_temp2===sortValueType_temp){
@@ -970,11 +968,11 @@ kshf.List.prototype = {
         var me=this;
         var showType=this.displayType==='list'?"block":"inline-block";
     	this.dom.listItems.style("display",function(d){return (d.wanted)?showType:"none"; });
-        d3.select(".listheader_count").text(function(){
+        this.listDiv.select(".listheader_count").text(function(){
             if(me.getKshf().itemsSelectedCt===0) { return "No"; }
             return me.getKshf().itemsSelectedCt;
         });
-        d3.select(".listheader_count_bar").transition().style("width",function(){ 
+        this.listDiv.select(".listheader_count_bar").transition().style("width",function(){ 
             return (me.getKshf().listDisplay.sortColWidth*me.getKshf().itemsSelectedCt/me.getKshfItems().length)+"px";
         });
     },
@@ -1163,7 +1161,6 @@ kshf.Browser = function(options){
     // BASIC OPTIONS
     this.chartTitle = options.chartTitle;
 	this.charts = [];
-    this.num_of_charts = 0;
     this.maxFilterID = 1; // 1 is used for global search
     this.barMaxWidth = 0;
 
@@ -1209,6 +1206,7 @@ kshf.Browser = function(options){
     this.loadedCb = options.loadedCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
+    this.dom = {}
 
     this.skipFacet = {};
     if(options.columnsSkip){
@@ -1479,11 +1477,11 @@ kshf.Browser.prototype = {
                 me.layout_infobox.select("div.infobox_credit").style("display","none");
                 me.layout_infobox.select("div.infobox_datasource").style("display","none");
             });
-        var loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
-        loadingBox.append("img").attr("class","status")
+        this.dom.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
+        this.dom.loadingBox.append("img").attr("class","status")
             .attr("src",this.dirRoot+"img/loading.gif")
             ;
-        var hmmm=loadingBox.append("div").attr("class","status_text");
+        var hmmm=this.dom.loadingBox.append("div").attr("class","status_text");
         hmmm.append("span").text("Loading...");
         hmmm.append("div")
             .text(
@@ -1615,8 +1613,8 @@ kshf.Browser.prototype = {
                     if(me.source.gdocId){
                         window.open("https://docs.google.com/spreadsheet/ccc?key="+me.source.gdocId,"_blank");
                     } else {
-                        me.root.select(".layout_infobox").style("display","block");
-                        me.root.select("div.infobox_datasource").style("display","block");
+                        me.layout_infobox.style("display","block");
+                        me.layout_infobox.style("display","block");
                     }
                     if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
                 })
@@ -1629,8 +1627,8 @@ kshf.Browser.prototype = {
     },
     showInfoBox: function(){
         if(sendLog) sendLog(CATID.Other,ACTID_OTHER.InfoButton);
-        this.root.select(".layout_infobox").style("display","block");
-        this.root.select("div.infobox_credit").style("display","block");
+        this.layout_infobox.style("display","block");
+        this.layout_infobox.style("display","block");
     },
     loadSource: function(){
         if(this.source.callback){
@@ -1668,12 +1666,12 @@ kshf.Browser.prototype = {
 
         googleQuery.send( function(response){
             if(response.isError()) {
-                d3.select(".kshf.layout_infobox div.status_text span")
+                this.layout_infobox.select("div.status_text span")
                     .text("Cannot load data");
-                d3.select(".kshf.layout_infobox img")
+                this.layout_infobox.select("img")
                     .attr("src",me.dirRoot+"img/alert.png")
                     .style("height","40px");
-                d3.select(".kshf.layout_infobox div.status_text div")
+                this.layout_infobox.select("div.status_text div")
                     .text("("+response.getMessage()+")");
                 return;
             }
@@ -1827,7 +1825,7 @@ kshf.Browser.prototype = {
     incrementLoadedSheetCount: function(){
         var me=this;
         this.source.loadedTableCount++;
-        d3.select(".kshf.layout_infobox div.status_text div")
+        this.layout_infobox.select("div.status_text div")
             .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
             // finish loading
         if(this.source.loadedTableCount===this.source.sheets.length) {
@@ -1839,9 +1837,9 @@ kshf.Browser.prototype = {
                 mainTable.forEach(function(d){d.barCount=d.data[colId];});
             }
 
-            d3.select(".kshf.layout_infobox div.status_text span")
+            this.layout_infobox.select("div.status_text span")
                 .text("Creating Keshif browser");
-            d3.select(".kshf.layout_infobox div.status_text div")
+            this.layout_infobox.select("div.status_text div")
                 .text("");
             window.setTimeout(function(){ me.loadCharts(); }, 50);
         }
@@ -1870,8 +1868,8 @@ kshf.Browser.prototype = {
         this.update();
 
         // hide infobox
-        d3.select(".kshf.layout_infobox").style("display","none");
-        d3.select("div.infobox_loading").style("display","none");
+        this.layout_infobox.style("display","none");
+        this.dom.loadingBox.style("display","none");
 
         if(this.readyCb!==undefined) this.readyCb();
     },
@@ -2283,9 +2281,8 @@ kshf.Browser.prototype = {
 kshf.BarChart = function(kshf_, options){
     // Call the parent's constructor
     var me = this;
-    this.id=kshf_.num_of_charts;
+    this.id=++kshf.num_of_charts;
     this.parentKshf = kshf_;
-    kshf_.num_of_charts++;
     this.filterId = kshf_.maxFilterID++;
     this.options = options;
 
@@ -2307,7 +2304,7 @@ kshf.BarChart = function(kshf_, options){
             opt.no_resort=false;
         }
         if(opt.func===undefined){
-            opt.func=kshf.sortFunc_ActiveCount_TotalCount;
+            opt.func=kshf.Util.sortFunc_ActiveCount_TotalCount;
         }
         if(opt.inverse===undefined){
             opt.inverse=false;
