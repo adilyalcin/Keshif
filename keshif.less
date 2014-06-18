@@ -128,8 +128,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{ box-shadow: inset 1px 1px 1px #474940; }
         }
         span.filter-block-clear{
-            font-size: 11px;
-            line-height: 15px;
+            font-size: 0.8em;
             display: none;
             cursor: pointer;
             color: rgb(37, 33, 18);
@@ -137,7 +136,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: 1px rgb(104, 91, 43) solid;
             background-color: white;
             padding: 0px 5px 0px 0px;
-            height:14px;
             float: left;
             margin-right: 2px;
             margin-left: 2px;
@@ -145,9 +143,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{ 
                 box-shadow: none;
                 .allFilter{
-                    font-weight:700;
-                    box-shadow: inset 1px 1px 1px #474940;
-                    color: #cb5454;
+                    background-color: #B6AF96;
+                    color: #635d46;
                 }
             }
         }
@@ -189,30 +186,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .background-image(~"linear-gradient(right, rgba(243, 243, 243, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(243, 243, 243, 0) 100%)");
         pointer-events: none;
     }
-    div.chartClearFilterButton{
-        cursor: pointer;
-        font-weight: 500;
-        font-size: 0.7em;
+    .chartClearFilterButton{
         width: 14px;
         height: 14px;
-        box-shadow: 1px 1px 1px #474940;
-        text-align: center;
-        font-size: 0.7em;
-        background-color: rgb(190, 190, 190);
-        color: black;
-        display: none;
-        font-weight:700;
-        border: solid 1px gray;
+
+        display: inline-block;
+        cursor: pointer;
         pointer-events:all;
+
+        font-weight: 700;
+        font-size: 11px;
+
+        text-align: center;
+
+        .transition(~"background-color 100ms linear");
+        .transition(~"color 100ms linear");
+
+        background-color: #635d46;
+        color: #eeebe0;
+        border: solid 1px #635d46;
         &:hover{
-            color: #cb5454;
-            box-shadow: inset 1px 1px 1px #474940;
+            background-color: #B6AF96;
+            color: #635d46;
+        }
+
+        &.alone{
+            display: none;
+            box-shadow: 1px 1px 1px #474940;
+        }
+        &.summary{
+            display:block;
+            float: right;
+            margin-left: 2px;
         }
         &.rowFilter{
-            float: right;
-            margin: 1px 2px 0px 0px;
-        }
-        &.rangeFilter{
             float: right;
             margin: 1px 3px 0px 0px;
         }
@@ -223,16 +230,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.allFilter{
             display: inline-block;
             float: left;
-            font-size: 10px;
-            position: relative;
-            height: 14px;
-            border: solid 0px white;
-            line-height: 13px;
-            margin-right:3px;
-            font-weight:500;
-            color:white;
-            background-color: rgb(121, 117, 101);
-            font-weight:500;
+            margin-right: 2px;
             pointer-events: none;
         }
     }
@@ -717,7 +715,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-            div.chartClearFilterButton.rowFilter{
+            .chartClearFilterButton.rowFilter{
                 display:inline-block;
             }
         }
@@ -746,7 +744,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[filtered_time=true] {
-            div.chartClearFilterButton.timeFilter{
+            .chartClearFilterButton.timeFilter{
                 display:inline-block;
             }
             .selection_bar rect{
@@ -764,7 +762,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 0px;
             }
         }
-        &[filtered_range=true] div.chartClearFilterButton.rangeFilter{
+        &[filtered_range=true] .chartClearFilterButton.rangeFilter{
             display:inline-block;
         }
         &[showscrollbar=false] g.scrollGroup{ display:none; }
@@ -991,7 +989,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border: 1px rgb(104, 91, 43) solid;
                 box-shadow: 1px 1px 1px rgb(78, 71, 43);
                 background-color: rgba(255,255,255,0.5);
-                padding: 0px 1px 0px 2px;
+                padding-left: 2px;
                 margin-top: 2px;
                 margin-left: 5px;
                 opacity: 0;
@@ -1029,27 +1027,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-right:5px;
             display:block;
             float: left;
-        }
-        span.filter_reset {
-            font-weight: 300;
-            display: inline-block;
-            width: 16px;
-            text-align: center;
-            font-size: 0.8em;
-            background-color: #635d46;
-            color: #eeebe0;
-            cursor: pointer;
-            position: relative;
-            left: 1px;
-            float: right;
-            line-height: 15px;
-            margin-left: 2px;
-            opacity: 0.5;
-            .transition(~"opacity 200ms linear");
-            &:hover{
-                font-weight: 700;
-                opacity: 1;
-            }
         }
 
         span.bigTextSearch_wrap {

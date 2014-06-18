@@ -138,8 +138,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: inset 1px 1px 1px #474940;
 }
 .kshf.layout_header span.filter-block-clear {
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 0.8em;
   display: none;
   cursor: pointer;
   color: #252112;
@@ -147,7 +146,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: 1px #685b2b solid;
   background-color: white;
   padding: 0px 5px 0px 0px;
-  height: 14px;
   float: left;
   margin-right: 2px;
   margin-left: 2px;
@@ -157,9 +155,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: none;
 }
 .kshf.layout_header span.filter-block-clear:hover .allFilter {
-  font-weight: 700;
-  box-shadow: inset 1px 1px 1px #474940;
-  color: #cb5454;
+  background-color: #B6AF96;
+  color: #635d46;
 }
 .kshf.layout_header div.filter_header {
   /*    background-color: white;
@@ -204,49 +201,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(243, 243, 243, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(243, 243, 243, 0) 100%);
   pointer-events: none;
 }
-.kshf div.chartClearFilterButton {
-  cursor: pointer;
-  font-weight: 500;
+.kshf .chartClearFilterButton {
   width: 14px;
   height: 14px;
-  box-shadow: 1px 1px 1px #474940;
-  text-align: center;
-  font-size: 0.7em;
-  background-color: #bebebe;
-  color: black;
-  display: none;
-  font-weight: 700;
-  border: solid 1px gray;
+  display: inline-block;
+  cursor: pointer;
   pointer-events: all;
+  font-weight: 700;
+  font-size: 11px;
+  text-align: center;
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
+  -webkit-transition: color 100ms linear;
+  -moz-transition: color 100ms linear;
+  -o-transition: color 100ms linear;
+  transition: color 100ms linear;
+  background-color: #635d46;
+  color: #eeebe0;
+  border: solid 1px #635d46;
 }
-.kshf div.chartClearFilterButton:hover {
-  color: #cb5454;
-  box-shadow: inset 1px 1px 1px #474940;
+.kshf .chartClearFilterButton:hover {
+  background-color: #B6AF96;
+  color: #635d46;
 }
-.kshf div.chartClearFilterButton.rowFilter {
+.kshf .chartClearFilterButton.alone {
+  display: none;
+  box-shadow: 1px 1px 1px #474940;
+}
+.kshf .chartClearFilterButton.summary {
+  display: block;
   float: right;
-  margin: 1px 2px 0px 0px;
+  margin-left: 2px;
 }
-.kshf div.chartClearFilterButton.rangeFilter {
+.kshf .chartClearFilterButton.rowFilter {
   float: right;
   margin: 1px 3px 0px 0px;
 }
-.kshf div.chartClearFilterButton.timeFilter {
+.kshf .chartClearFilterButton.timeFilter {
   float: left;
   margin: 1px 0px 0px 3px;
 }
-.kshf div.chartClearFilterButton.allFilter {
+.kshf .chartClearFilterButton.allFilter {
   display: inline-block;
   float: left;
-  font-size: 10px;
-  position: relative;
-  height: 14px;
-  border: solid 0px white;
-  line-height: 13px;
-  margin-right: 3px;
-  color: white;
-  background-color: #797565;
-  font-weight: 500;
+  margin-right: 2px;
   pointer-events: none;
 }
 .kshf span.leftBlockAdjustSize {
@@ -781,7 +781,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea {
   pointer-events: all;
 }
-.kshf .kshfChart[filtered_row=true] div.chartClearFilterButton.rowFilter {
+.kshf .kshfChart[filtered_row=true] .chartClearFilterButton.rowFilter {
   display: inline-block;
 }
 .kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=false] .filter_add_more .add {
@@ -796,7 +796,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
   cursor: pointer !important;
 }
-.kshf .kshfChart[filtered_time=true] div.chartClearFilterButton.timeFilter {
+.kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
   display: inline-block;
 }
 .kshf .kshfChart[filtered_time=true] .selection_bar rect {
@@ -809,7 +809,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsedtime=true] .config_zoom {
   height: 0px;
 }
-.kshf .kshfChart[filtered_range=true] div.chartClearFilterButton.rangeFilter {
+.kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
 .kshf .kshfChart[showscrollbar=false] g.scrollGroup {
@@ -1043,7 +1043,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: 1px #685b2b solid;
   box-shadow: 1px 1px 1px #4e472b;
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 0px 1px 0px 2px;
+  padding-left: 2px;
   margin-top: 2px;
   margin-left: 5px;
   opacity: 0;
@@ -1089,30 +1089,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-right: 5px;
   display: block;
   float: left;
-}
-.kshf div.listHeader span.filter_reset {
-  font-weight: 300;
-  display: inline-block;
-  width: 16px;
-  text-align: center;
-  font-size: 0.8em;
-  background-color: #635d46;
-  color: #eeebe0;
-  cursor: pointer;
-  position: relative;
-  left: 1px;
-  float: right;
-  line-height: 15px;
-  margin-left: 2px;
-  opacity: 0.5;
-  -webkit-transition: opacity 200ms linear;
-  -moz-transition: opacity 200ms linear;
-  -o-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
-}
-.kshf div.listHeader span.filter_reset:hover {
-  font-weight: 700;
-  opacity: 1;
 }
 .kshf div.listHeader span.bigTextSearch_wrap {
   position: relative;

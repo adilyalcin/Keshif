@@ -1098,9 +1098,9 @@ kshf.List.prototype = {
         var x;
         x = this.dom.filterblocks
             .append("span").attr("class","filter-block")
-            .attr("title","Clear filter")
+            .attr("title","Remove filter")
             ;
-        x.append("span").attr("class","filter_reset").text("x")
+        x.append("span").attr("class","chartClearFilterButton summary").text("x")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -1141,7 +1141,7 @@ kshf.List.prototype = {
             // insert DOM
             if(this.filterSummaryBlock===null || this.filterSummaryBlock===undefined){
                 this.filterSummaryBlock = this.insertFilterSummaryBlock();
-                this.filterSummaryBlock.select(".filter_reset")
+                this.filterSummaryBlock.select(".chartClearFilterButton")
                     .on("click",function(){ 
                         me.clearFilterLinks(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
@@ -1567,12 +1567,12 @@ kshf.Browser.prototype = {
         var s= left_align.append("span")
             .attr("class","filter-block-clear")
             .attr("filtered_row","false")
-            .text("Clear all")
+            .text("Remove filters")
             .on("click",function(){ me.clearAllFilters(); })
             ;
         s.append("div")
             .attr("class","chartClearFilterButton allFilter")
-            .attr("title","Clear all")
+            .attr("title","Remove filters")
             .text("x")
             ;
         dom_filter_header.append("span")
@@ -2941,8 +2941,8 @@ kshf.BarChart.prototype = {
         .append("title").text("Settings");
 
         topRow.append("div")
-            .attr("class","chartClearFilterButton rowFilter")
-            .attr("title","Clear filter")
+            .attr("class","chartClearFilterButton rowFilter alone")
+            .attr("title","Remove filter")
     		.on("click", function(d,i){
                 me.clearAttribFilter();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
@@ -2964,8 +2964,8 @@ kshf.BarChart.prototype = {
                 .on("click",function(){ if(me.collapsedTime) { me.collapseTime(false); } })
                 ;
             poff.append("div")
-                .attr("class","chartClearFilterButton timeFilter")
-                .attr("title","Clear filter")
+                .attr("class","chartClearFilterButton timeFilter alone")
+                .attr("title","Remove filter")
                 .on("click", function(d,i){ 
                     me.clearTimeFilter();
                     if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
@@ -3765,7 +3765,7 @@ kshf.BarChart.prototype = {
             // insert DOM
             if(this.filterSummaryBlock_Row===null || this.filterSummaryBlock_Row===undefined){
                 this.filterSummaryBlock_Row = this.getKshf().listDisplay.insertFilterSummaryBlock();
-                this.filterSummaryBlock_Row.select(".filter_reset")
+                this.filterSummaryBlock_Row.select(".chartClearFilterButton")
                     .on("click",function(){ 
                         me.clearAttribFilter(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
@@ -4642,7 +4642,7 @@ kshf.BarChart.prototype = {
             this.divRoot.select(".zoom_in").attr("disabled","false");
             if(this.filterSummaryBlock_Time===null || this.filterSummaryBlock_Time===undefined){
                 this.filterSummaryBlock_Time = this.getKshf().listDisplay.insertFilterSummaryBlock();
-                this.filterSummaryBlock_Time.select(".filter_reset")
+                this.filterSummaryBlock_Time.select(".chartClearFilterButton")
                     .on("click",function(){ 
                         me.clearTimeFilter(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
