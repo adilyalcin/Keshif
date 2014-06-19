@@ -165,10 +165,12 @@ function loadChart() {
         ],
         readyCb: function(){
             $(".itemtoggledetails .item_details_on").click(loadMovieData);
-            $(".listItem").click(loadMovieData);
+            $(".movieName").click(loadMovieData);
             if(myLoc) updateLocationSorting();
             // open the first movie
-            loadMovieData_Name(kshf.dt.Screening[0]);
+            var firstItem = kshf.dt.Screening[0];
+            browser.showListItemDetails(firstItem);
+            loadMovieData_Name(firstItem);
             kshf.dt.Screening[0].listItem.setAttribute('details',true);
         },
         list: {
@@ -250,7 +252,7 @@ $(document).ready(loadChart);
             font-size: 1.3em;
             font-weight: 700;
         }
-        .listItem[details=false]{
+        .listItem[details=false] .movieName{
             cursor: pointer !important;
         }
         .listItem[details=true] .movieName{

@@ -982,7 +982,7 @@ kshf.List.prototype = {
         if(this.detailsToggle!=="Off") contentWidth-=this.itemtoggledetailsWidth;
         contentWidth-=this.sortColWidth;
         if(this.itemLink!==undefined) contentWidth-=this.linkFilterWidth;
-        contentWidth-=9; // works for now. TODO: check 
+        contentWidth-=12; // works for now. TODO: check 
         this.dom.filterblocks.style("width",contentWidth+"px");
         if(this.displayType==='list'){
             this.dom.listItems_Content.style("width",contentWidth+"px");
@@ -1568,12 +1568,27 @@ kshf.Browser.prototype = {
             .attr("class","filter-block-clear")
             .attr("filtered_row","false")
             .text("Remove all")
-            .on("click",function(){ me.clearAllFilters(); })
             ;
         s.append("div")
             .attr("class","chartClearFilterButton allFilter")
-            .attr("title","Remove all")
-            .text("x")
+            .text("x").attr("title","Remove all")
+            .on("click",function(){ me.clearAllFilters(); })
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n',
+                    fade: true,
+                    className: 'details',
+                    opacity: 1,
+                    title: function(){ return "Remove all filters"; }
+                })
+            })
+            .on("mouseover",function(){
+                this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+                d3.event.stopPropagation();
+            })
             ;
         dom_filter_header.append("span")
             .attr("class","barChartMainInfo")
@@ -2941,13 +2956,29 @@ kshf.BarChart.prototype = {
 
         topRow.append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
-            .attr("title","Remove filter")
+            .text('x').attr("title","Remove filter")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n',
+                    fade: true,
+                    className: 'details',
+                    opacity: 1,
+                    title: function(){ return "Remove filter"; }
+                })
+            })
+            .on("mouseover",function(){
+                this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+                d3.event.stopPropagation();
+            })
     		.on("click", function(d,i){
                 me.clearAttribFilter();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
                     me.getKshf().getFilteringState(me.options.facetTitle));
             })
-            .text('x');
+            ;
         if(this.type==="scatterplot"){
             rightHeader.append("div").attr("class","border_line");
 

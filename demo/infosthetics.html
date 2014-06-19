@@ -17,6 +17,7 @@
         <script type="text/javascript">
 
 var demoID = 13;
+var postCols;
 
 function getNumComments(v){
     if(v==0) return "None";
@@ -31,8 +32,14 @@ function resetSize(){
     $('#chart_div').width (800);
 }
 
+function loadImage(d){
+    if(d.target.className==="item_details_off") return;
+    var kshfItem = d.currentTarget.__data__;
+    var d3Item = d3.select(kshfItem.listItem);
+    d3Item.select(".postImg").attr("src",kshfItem.data[postCols['Img']]);
+}
+
 $(document).ready( function(){
-    var postCols;
     resetSize();
     // set resize callback
     $(window).resize(function() {
@@ -72,6 +79,10 @@ $(document).ready( function(){
                 textFilter: 'by', textGroup: 'authors'
             }
         ],
+        readyCb: function(){
+            $(".itemtoggledetails .item_details_on").click(loadImage);
+            $(".postName").click(loadImage);
+        },
         list:{
             sortColWidth: 55,
             sortingOpts : [
@@ -79,22 +90,30 @@ $(document).ready( function(){
                     value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
                 },{ name: '# of Comments'}
             ],
+            detailsToggle : "One",
+            detailsDefault : false,
             textSearch : "Title",
             contentFunc : function(d) {
                 var str="";
                 
-                str+="<img src=\""+d.data[postCols['Img']]+"\" width=\"80\" style=\"float:left\">";
-                str+="<div style=\"position: relative; left:5px; width:calc(100% - 85px);\">";
+                str+="<span class='item_details'>";
+                    str+="<img width='80' style='float:right' class='postImg'>";
+                str+="</span>"; // item_details
+
+                str+="<div>";
                 // title
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                str+="<a href=\""+d.data[postCols['URL']]+"\" target=\"_blanl\">"+d.data[postCols['Title']]+"<a/>";
+                str+="<div class='iteminfo iteminfo_0 postName'>";
+                str+="<a href='"+d.data[postCols['URL']]+"' target='_blanl'>"+d.data[postCols['Title']]+"<a/>";
                 str+="</div>";
-                // categories
-                str+="<div class=\"iteminfo iteminfo_1\">About: "+d.data[postCols['Category']]+"</div>";
-                // author
-                str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['# of Comments']];
-                str+="</div>";
+
+                str+="<span class='item_details'>";
+                    // categories
+                    str+="<div class='iteminfo iteminfo_1'>About: "+d.data[postCols['Category']]+"</div>";
+                    // author
+                    str+="<div class='iteminfo iteminfo_1'>";
+                    str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['# of Comments']];
+                    str+="</div>";
+                str+="</span>"; // item_details
 
                 str+="</div>";
                 return str;

@@ -140,7 +140,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_header span.filter-block-clear {
   font-size: 0.8em;
   display: none;
-  cursor: pointer;
+  cursor: default;
   color: #252112;
   font-weight: 300;
   border: 1px #685b2b solid;
@@ -156,12 +156,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_header span.filter-block-clear:hover {
   background-color: white;
   box-shadow: none;
-}
-.kshf.layout_header span.filter-block-clear:hover .allFilter {
-  background-color: #B6AF96;
-  color: #635d46;
-  padding: 1px;
-  border: none;
 }
 .kshf.layout_header div.filter_header {
   /*    background-color: white;
@@ -254,7 +248,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   float: left;
   margin-right: 2px;
-  pointer-events: none;
 }
 .kshf span.leftBlockAdjustSize {
   position: relative;

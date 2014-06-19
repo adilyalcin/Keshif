@@ -38,7 +38,14 @@
                 ],
                 list : {
                     sortColWidth: 75,
-                    sortingOpts : [ {name: 'CERT'} ],
+                    sortingOpts : [ {
+                        name: 'State',
+                        value: function(d){ 
+                            var str = kshf.dt_id.States[d.data[2]].data[1];
+                            if(str.length > 9) str = str.substring(0,6)+"...";
+                            return str;
+                        }
+                    } ],
                     textSearch: "Bank Name",
                     content: "Bank Name"
                 }
