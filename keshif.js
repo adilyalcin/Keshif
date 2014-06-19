@@ -427,7 +427,7 @@ kshf.Item = function(d, idIndex, primary){
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
 	this.selected = true;
-    // used by filters
+    // used by attributes
     this.items = []; // set of assigned primary items
 	this.activeItems = 0; // If primary item, activeItems is the number of active linked items
     this.barValue = 0;
@@ -468,6 +468,7 @@ kshf.Item.prototype = {
         var oldSelected = this.wanted;
 
         // checks if all filter results are true
+        // At first "false", breaks the loop
         this.wanted=true;
         this.filters.every(function(f){
             me.wanted=me.wanted&&f;
@@ -1579,7 +1580,7 @@ kshf.Browser.prototype = {
                     fade: true,
                     className: 'details',
                     opacity: 1,
-                    title: function(){ return "Remove all filters"; }
+                    title: function(){ return "Remove all filtering"; }
                 })
             })
             .on("mouseover",function(){
@@ -2086,7 +2087,7 @@ kshf.Browser.prototype = {
             finalPass = procBarChartsOld===procBarCharts;
         }
 
-        // there may be some empty lines remaining, try to give it back to the filters
+        // there may be some empty lines remaining, try to give it back to the facets
         var allDone = false;
         while(divLineRem>0 && !allDone){
             allDone = true;
@@ -3743,7 +3744,7 @@ kshf.BarChart.prototype = {
                     if(selectOr===true){
                         this.updateSelected_SelectOnly();
                     } else {
-                        // Removing previous filters
+                        // Removing previously selected attributes
                         this.unselectAllAttribs();
                         attrib.selected=true;
                         this.attribCount_Selected = 1;
@@ -4620,9 +4621,14 @@ kshf.BarChart.prototype = {
     /** -- */
     yearSetXPos: function() {
         var kshf_ = this.getKshf();
-        // make sure filters do not exceed domain range
+        // make sure filtered range do not exceed domain range
         this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
         this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
+        if(this.timeFilter_ms.min>this.timeFilter_ms.max){
+            var tmp = this.timeFilter_ms.min;
+            this.timeFilter_ms.min = this.timeFilter_ms.max;
+            this.timeFilter_ms.max = tmp;
+        }
 
     	var minX = this.timeScale(this.timeFilter_ms.min);
     	var maxX = this.timeScale(this.timeFilter_ms.max);
