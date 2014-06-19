@@ -939,13 +939,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 2px;
 }
 .kshf div.listDiv div.listsortcolumn {
-  padding-right: 3px;
-  padding-left: 2px;
+  padding-right: 5px;
+  font-weight: 300;
+  text-align: right;
   display: inline-block;
   font-size: 0.8em;
   margin: auto;
-  text-align: center;
-  font-weight: 700;
+  cursor: cell;
+}
+.kshf div.listDiv div.listsortcolumn:hover {
+  color: red;
 }
 .kshf div.listDiv div.listsortcolumn_0 {
   font-weight: bold;
@@ -986,10 +989,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader div.itemtoggledetails {
   font-size: 1em;
   color: #222222;
-  text-align: center;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-block;
 }
 .kshf div.listHeader div.itemtoggledetails span {
   display: none;
@@ -1171,7 +1170,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #e5b2b2;
 }
 .kshf .itemtoggledetails {
-  width: 25px;
+  width: 15px;
+  padding-right: 5px;
+  text-align: right;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8em;
 }
 .kshf div.listItem {
   clear: left;
@@ -1182,11 +1186,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listItem .itemtoggledetails {
   display: inline-block;
-  font-size: 0.8em;
-  margin: auto;
-  text-align: center;
-  font-weight: 700;
-  cursor: pointer;
 }
 .kshf div.listItem[details=true] .item_details_on {
   display: none;

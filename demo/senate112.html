@@ -73,12 +73,12 @@ function loadChart() {
             }
             ],
         list: {
-            sortColWidth: 87,
+            sortColWidth: 73,
             sortingOpts : [
                 {   name: 'Vote Date',
+                    value: function(d){ return d.data[1]; },
                     label: function(d){ 
-                        var date=d.data[1];
-                        return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
+                        return moment(d.data[1]).format('MMM YYYY');
                     }
                 },{ name:'Result' }
             ],

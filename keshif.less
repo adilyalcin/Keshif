@@ -892,13 +892,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         div.listsortcolumn{
-            padding-right:3px;
-            padding-left:2px;
+            padding-right:5px;
+            font-weight: 300;
+            text-align: right;
             display:inline-block; 
             font-size: 0.8em;
             margin : auto; 
-            text-align: center;
-            font-weight: 700;
+            cursor: cell;
+            &:hover{
+                color: red;
+            }
         }
         div.listsortcolumn_0{
             font-weight:bold;
@@ -932,10 +935,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.itemtoggledetails{
             font-size: 1em;
             color:#222222;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-block;
             span{ display:none; }
             &[details=true] .item_details_off{
                 display:block;
@@ -1110,7 +1109,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // listHeader
 
     .itemtoggledetails{
-        width:25px;
+        width:15px;
+        padding-right: 5px;
+        text-align: right;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.8em;
     }
 
     div.listItem {
@@ -1122,11 +1126,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         .itemtoggledetails{
             display:inline-block; 
-            font-size: 0.8em;
-            margin : auto; 
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
         }
 
         &[details=true]{

@@ -656,8 +656,6 @@ kshf.List = function(kshf_, config, root){
                         return f;
                     });
                     item.setFilter(0,f);
-                });
-                me.getKshfItems().forEach(function(item){
                     item.updateSelected();
                 });
                 me.getKshf().update();
@@ -680,8 +678,6 @@ kshf.List = function(kshf_, config, root){
 
                 me.getKshfItems().forEach(function(item){
                     item.setFilter(0,true);
-                });
-                me.getKshfItems().forEach(function(item){
                     item.updateSelected();
                 });
                 me.getKshf().update();
@@ -778,7 +774,30 @@ kshf.List.prototype = {
         if(this.displayType==='list'){
             this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
                 .style("width",this.sortColWidth+"px")
-                .html(function(d){ return me.sortingOpt_Active.label(d); });
+                .html(function(d){ return me.sortingOpt_Active.label(d); })
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'n',
+                        fade: true,
+                        opacity: 1,
+                        title: function(){ 
+                            // TODO: if alredy added, remove filter
+                            if(false)
+                                return "<span class='big'>-</span> <span class='action'>Remove</span> Filter";
+                            return "<span class='big'>+</span> <span class='action'>Add</span> "+me.sortingOpt_Active.name+" Filter"; 
+                        }
+                    })
+                })
+                .on("mouseover",function(){
+                    this.tipsy.show();
+                })
+                .on("mouseout",function(d,i){
+                    this.tipsy.hide();
+                    d3.event.stopPropagation();
+                })
+                .on("click",function(d,i){
+                    var j=this;
+                })
                 ;
         }
 
@@ -997,7 +1016,7 @@ kshf.List.prototype = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity:'s', fade:true, className:'details',
-                    title: function(){ return "Add "+me.itemLink+" filter"; }
+                    title: function(){ return "Add "+me.itemLink+" Filter"; }
                 });
             })
             .on("click",function(item){
@@ -1081,7 +1100,10 @@ kshf.List.prototype = {
         });
         this.getKshf().update();
     },
-    clearFilterLinks: function(){
+    clearFilters_All: function(){
+        this.clearFilter_Links();
+    },
+    clearFilter_Links: function(){
         if(this.filteringItem===null) return;
         this.filteringItem.selected = false;
         this.filteringItem = null;
@@ -1141,7 +1163,7 @@ kshf.List.prototype = {
                 this.filterSummaryBlock = this.insertFilterSummaryBlock();
                 this.filterSummaryBlock.select(".chartClearFilterButton")
                     .on("click",function(){ 
-                        me.clearFilterLinks(); 
+                        me.clearFilter_Links(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
                             me.getKshf().getFilteringState(me.options.facetTitle));
                     });
@@ -1247,7 +1269,7 @@ kshf.Browser = function(options){
         .on("keydown",function(){
             var e = d3.event;
             if(e.keyCode===27){ // escchartRowLabelSearchape
-                me.clearAllFilters();
+                me.clearFilters_All();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,this.getFilteringState());
             }
         })
@@ -1573,7 +1595,7 @@ kshf.Browser.prototype = {
         s.append("div")
             .attr("class","chartClearFilterButton allFilter")
             .text("x").attr("title","Remove all")
-            .on("click",function(){ me.clearAllFilters(); })
+            .on("click",function(){ me.clearFilters_All(); })
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -1598,7 +1620,7 @@ kshf.Browser.prototype = {
             .attr("class","refreshbarscales")
             .attr("width","13")
             .on("click",function(){
-                me.clearAllFilters();
+                me.clearFilters_All();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAll,me.getFilteringState());
             })
             .append("svg")
@@ -1944,9 +1966,10 @@ kshf.Browser.prototype = {
         var chart = this.charts[chartId];
         chart.filterAttrib(chart.getAttribs()[itemId]);
     },
-    /** clearAllFilters */
-    clearAllFilters: function(){
-        this.charts.forEach(function(chart){chart.clearAllFilters();});
+    /** clearFilters_All */
+    clearFilters_All: function(){
+        this.charts.forEach(function(chart){chart.clearFilters_All();});
+        this.listDisplay.clearFilters_All();
         this.update();
     },
     /** update */
@@ -2491,7 +2514,7 @@ kshf.BarChart.prototype = {
         // BIG. Apply row map function
         var curDtId = this.getAttribs_wID();
         this.getKshfItems().forEach(function(item){
-            // assume all filters pass
+            // assume all_filters pass
             for(j=0,f=this.filterId;j<this.filterCount;j++,f++){
                 item.setFilter(f,true);
             }
@@ -2853,13 +2876,13 @@ kshf.BarChart.prototype = {
         this.getAttribs().forEach(function(attrib){ attrib.selected=false; });
     	this.attribCount_Selected = 0;
     },
-    /** clearAllFilters */
-    clearAllFilters: function(){
-        this.clearAttribFilter(false);
-        if(this.type==='scatterplot') this.clearTimeFilter(false);
+    /** clearFilters_All */
+    clearFilters_All: function(){
+        this.clearFilter_Attrib(false);
+        if(this.type==='scatterplot') this.clearFilter_Time(false);
     },
-    /** clearAttribFilter */
-    clearAttribFilter: function(toUpdate){
+    /** clearFilter_Attrib */
+    clearFilter_Attrib: function(toUpdate){
         if(this.attribCount_Selected===0) return;
     	this.unselectAllAttribs();
         this.updateSelected_SelectOnly();
@@ -2867,8 +2890,8 @@ kshf.BarChart.prototype = {
         if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
         if(toUpdate!==false) this.getKshf().update();
     },
-    /** clearTimeFilter */
-    clearTimeFilter: function(toUpdate){
+    /** clearFilter_Time */
+    clearFilter_Time: function(toUpdate){
         this.resetTimeFilter_ms();
         this.resetTimeZoom_ms();
         this.refreshTimechartLayout(toUpdate);
@@ -2975,7 +2998,7 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
             })
     		.on("click", function(d,i){
-                me.clearAttribFilter();
+                me.clearFilter_Attrib();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
                     me.getKshf().getFilteringState(me.options.facetTitle));
             })
@@ -2998,7 +3021,7 @@ kshf.BarChart.prototype = {
                 .attr("class","chartClearFilterButton timeFilter alone")
                 .attr("title","Remove filter")
                 .on("click", function(d,i){ 
-                    me.clearTimeFilter();
+                    me.clearFilter_Time();
                     if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
                         {facet:me.options.timeTitle,results:me.getKshf().itemsSelectedCt});
                 })
@@ -3799,7 +3822,7 @@ kshf.BarChart.prototype = {
                 this.filterSummaryBlock_Row = this.getKshf().listDisplay.insertFilterSummaryBlock();
                 this.filterSummaryBlock_Row.select(".chartClearFilterButton")
                     .on("click",function(){ 
-                        me.clearAttribFilter(); 
+                        me.clearFilter_Attrib(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
                             me.getKshf().getFilteringState(me.options.facetTitle));
                     });
@@ -4678,7 +4701,7 @@ kshf.BarChart.prototype = {
                 this.filterSummaryBlock_Time = this.getKshf().listDisplay.insertFilterSummaryBlock();
                 this.filterSummaryBlock_Time.select(".chartClearFilterButton")
                     .on("click",function(){ 
-                        me.clearTimeFilter(); 
+                        me.clearFilter_Time(); 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
                             me.getKshf().getFilteringState(me.options.facetTitle));
                     });

@@ -97,10 +97,9 @@ $(document).ready( function(){
                 var str="";
                 
                 str+="<span class='item_details'>";
-                    str+="<img width='80' style='float:right' class='postImg'>";
+                    str+="<img width='130' style='float:right' class='postImg'>";
                 str+="</span>"; // item_details
 
-                str+="<div>";
                 // title
                 str+="<div class='iteminfo iteminfo_0 postName'>";
                 str+="<a href='"+d.data[postCols['URL']]+"' target='_blanl'>"+d.data[postCols['Title']]+"<a/>";
@@ -115,7 +114,6 @@ $(document).ready( function(){
                     str+="</div>";
                 str+="</span>"; // item_details
 
-                str+="</div>";
                 return str;
             }
         }
