@@ -558,14 +558,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke-width: 25;
   stroke-miterlimit: 10;
 }
-.kshf .headerGroup .rightHeader .config_zoom[zoom=in] path {
-  fill: url(#SVGID_2_);
-}
 .kshf .headerGroup .rightHeader .config_zoom[zoom=in] .block_bottom {
   display: none;
-}
-.kshf .headerGroup .rightHeader .config_zoom[zoom=out] path {
-  fill: url(#SVGID_1_);
 }
 .kshf .headerGroup .rightHeader .config_zoom[zoom=out] .block_top {
   display: none;
@@ -756,22 +750,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[showconfig=false] .headerGroup svg.settingButton {
   fill: gray;
 }
-.kshf .kshfChart[dotConfig=Solid] .timeDot {
-  fill: #616F7A;
-  stroke: #eee;
-}
-.kshf .kshfChart[dotConfig=Gradient-100] .timeDot {
-  fill: url(#dotGradient100);
-}
-.kshf .kshfChart[dotConfig=Gradient-75] .timeDot {
-  fill: url(#dotGradient75);
-}
-.kshf .kshfChart[dotConfig=Gradient-50] .timeDot {
-  fill: url(#dotGradient50);
-}
-.kshf .kshfChart[dotConfig=Gradient-25] .timeDot {
-  fill: url(#dotGradient25);
-}
 .kshf .kshfChart[collapsedTime=true] .timeDot {
   display: none;
 }
@@ -846,12 +824,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row rect.rowSelectBackground {
   opacity: 0;
   pointer-events: none;
-}
-.kshf g.row rect.rowSelectBackground_Count {
-  fill: url(#gr_rowSelectBackground_Count);
-}
-.kshf g.row rect.rowSelectBackground_Label {
-  fill: url(#gr_rowSelectBackground_Label);
 }
 .kshf g.row rect.rowSelectBackground_ClickArea {
   opacity: 0;

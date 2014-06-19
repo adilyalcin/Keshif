@@ -505,11 +505,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     stroke-miterlimit:10;
                 }
                 &[zoom=in] {
-                    path{ fill:url(#SVGID_2_); }
                     .block_bottom{ display:none; }
                 }
                 &[zoom=out] {
-                    path{ fill:url(#SVGID_1_); }
                     .block_top{ display:none; }
                 }
             }
@@ -681,22 +679,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[collapsed=false]:hover .headerGroup svg.settingButton{
 //            display: block;
         }
-        &[dotConfig=Solid] .timeDot{
-            fill: #616F7A; 
-            stroke: #eee;
-        }
-        &[dotConfig=Gradient-100] .timeDot{
-            fill: url(#dotGradient100);
-        }
-        &[dotConfig=Gradient-75] .timeDot{
-            fill: url(#dotGradient75);
-        }
-        &[dotConfig=Gradient-50] .timeDot{
-            fill: url(#dotGradient50);
-        }
-        &[dotConfig=Gradient-25] .timeDot{
-            fill: url(#dotGradient25);
-        }
 
         &[collapsedTime=true] .timeDot{
             display:none;
@@ -795,12 +777,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         rect.rowSelectBackground{
             opacity:0;
             pointer-events: none;
-        }
-        rect.rowSelectBackground_Count{
-            fill:url(#gr_rowSelectBackground_Count);
-        }
-        rect.rowSelectBackground_Label{
-            fill:url(#gr_rowSelectBackground_Label);
         }
         rect.rowSelectBackground_ClickArea{
             opacity: 0;

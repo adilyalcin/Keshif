@@ -58,6 +58,7 @@ var kshf = {
       sub.prototype.constructor = sub;
     },
     num_of_charts: 0,
+    num_of_browsers: 0,
     dt: {},
     dt_id: {},
     dt_ColNames: {},
@@ -967,7 +968,7 @@ kshf.List.prototype = {
     updateItemVisibility: function(){
         var me=this;
         var showType=this.displayType==='list'?"block":"inline-block";
-    	this.dom.listItems.style("display",function(d){return (d.wanted)?showType:"none"; });
+    	this.dom.listItems.style("display",function(attrib){return (attrib.wanted)?showType:"none"; });
         this.listDiv.select(".listheader_count").text(function(){
             if(me.getKshf().itemsSelectedCt===0) { return "No"; }
             return me.getKshf().itemsSelectedCt;
@@ -1255,7 +1256,10 @@ kshf.Browser = function(options){
         this.insertResize();
     }
 
-    this.insertGradients();
+    // insert gradient defs once into the document
+    kshf.num_of_browsers++;
+    if(kshf.num_of_browsers==1) this.insertGradients();
+
     this.insertInfobox();
 
     if(this.chartTitle!==undefined){
@@ -3179,15 +3183,16 @@ kshf.BarChart.prototype = {
     //        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
 
         if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
-            this.divRoot.attr("dotconfig","Solid");
+            this.dom.timeDots.style("fill","#616F7A");
+            this.dom.timeDots.style("stroke","#EEE");
         } else if(maxDots>numOfItems*1.5){
-            this.divRoot.attr("dotconfig","Gradient-100");
+            this.dom.timeDots.style("fill","url(#dotGradient100)");
         } else if(maxDots>numOfItems*0.8){
-            this.divRoot.attr("dotconfig","Gradient-75");
+            this.dom.timeDots.style("fill","url(#dotGradient75)");
         } else if(maxDots>numOfItems*0.3){
-            this.divRoot.attr("dotconfig","Gradient-50");
+            this.dom.timeDots.style("fill","url(#dotGradient50)");
         } else {
-            this.divRoot.attr("dotconfig","Gradient-25");
+            this.dom.timeDots.style("fill","url(#dotGradient25)");
         }
     },
     /** updateBarAxisScale */
@@ -3935,11 +3940,13 @@ kshf.BarChart.prototype = {
     	this.dom.rowSelectBackground_Label = this.dom.g_row
     		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
     		.attr("x", 0).attr("y", 0)
+            .attr("fill","url(#gr_rowSelectBackground_Label)")
             .attr("height",kshf_.line_height)
     		;
     	this.dom.rowSelectBackground_Count = this.dom.g_row
     		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Count")
             .attr("y", 0)
+            .attr("fill","url(#gr_rowSelectBackground_Count)")
             .attr("width",kshf_.getRowLabelOffset())
             .attr("height",kshf_.line_height)
     		;
@@ -4129,7 +4136,7 @@ kshf.BarChart.prototype = {
             if(!attrib.sortDirty || this.type!=="scatterplot") return;
             attrib.items.sort(timeChartSortFunc);
             this.root.selectAll("g.row").selectAll(".timeDot")
-                .data(function(d) { return d.items; }, function(d){ return d.id(); })
+                .data(function(attrib) { return attrib.items; }, function(attrib){ return attrib.id(); })
                 // calling order will make sure selected ones appear on top of unselected ones.
                 .order()
                 ;
@@ -4171,22 +4178,21 @@ kshf.BarChart.prototype = {
             }
     	// Create bar dots
     	rows.selectAll("g.timeDot")
-    		.data(function(d){ 
-                    return d.items; }, 
-                  function(d){ 
-                    return d.id(); })
+    		.data(function(attrib){ return attrib.items; }, 
+                  function(attrib){ return attrib.id(); })
     		.enter().append("circle")
-            .each(function(d){ d.mappedDots.push(this); })
-    		.attr("class", function(d) {
-                if(me.options.dotClassFunc){ return "timeDot " + me.options.dotClassFunc(d); }
+    		.attr("class", function(attrib) {
+                if(me.options.dotClassFunc){ return "timeDot " + me.options.dotClassFunc(attrib); }
                 return "timeDot";
             })
+            .attr("highlight","false")
             .attr("r", 5)
             .attr("cy", Math.floor(kshf_.line_height / 2 ))
-            .on("mouseover",function(d,i,f){
-                d.highlightAll();
+            .each(function(attrib){ attrib.mappedDots.push(this); })
+            .on("mouseover",function(attrib,i,f){
+                attrib.highlightAll();
                 // update the position of selectVertLine
-                var tm = me.timeScale(me.options.timeItemMap(d));
+                var tm = me.timeScale(me.options.timeItemMap(attrib));
                 var totalLeftWidth = me.parentKshf.barMaxWidth+kshf_.scrollPadding+kshf_.scrollWidth+kshf_.sepWidth+me.parentKshf.getRowTotalTextWidth();
                 me.root.select("line.selectVertLine")
                     .attr("x1",tm+totalLeftWidth)
@@ -4194,14 +4200,13 @@ kshf.BarChart.prototype = {
                     .style("display","block");
                 d3.event.stopPropagation();
             })
-            .on("mouseout",function(d,i){
-                d.nohighlightAll();
-                me.root.select("line.selectVertLine")
-                    .style("display","none");
+            .on("mouseout",function(attrib,i){
+                attrib.nohighlightAll();
+                me.root.select("line.selectVertLine").style("display","none");
                 d3.event.stopPropagation();
             })
-    		.on("click", function(d,i,f) {
-                var itemDate = d.timePos;
+    		.on("click", function(attrib,i,f) {
+                var itemDate = attrib.timePos;
                 var rangeMin = new Date(itemDate);
                 var rangeMax = new Date(itemDate);
 
@@ -4224,7 +4229,7 @@ kshf.BarChart.prototype = {
                 }
                 if(me.timeticks.range === d3.time.days){
                     rangeMin.setDate(rangeMin.getDate()-1);
-                    rangeMax.setDate(rangeMin.getDate()-1);
+                    rangeMax.setDate(rangeMin.getDate()+1);
                 }
 
                 me.timeFilter_ms.min = Date.parse(rangeMin);
@@ -4571,17 +4576,17 @@ kshf.BarChart.prototype = {
             .transition().duration(kshf_.anim_barscale_duration)
     		.attr("cx", function(d){ return totalLeftWidth+me.timeScale(d.timePos) ; });
     },
-    /** getFilterMinDateText */
+    /** -- */
     getFilterMinDateText: function(){
         var dt = new Date(this.timeFilter_ms.min);
         return this.timeticks.format(dt);
     },
-    /** getFilterMaxDateText */
+    /** -- */
     getFilterMaxDateText: function(){
         var dt = new Date(this.timeFilter_ms.max);
         return this.timeticks.format(dt);
     },
-    /** yearSetXPos */
+    /** -- */
     yearSetXPos: function() {
         var kshf_ = this.getKshf();
         // make sure filters do not exceed domain range
@@ -4603,10 +4608,10 @@ kshf.BarChart.prototype = {
     	
     	this.root.selectAll("g.filter_min")
             .transition().duration(kshf_.anim_barscale_duration)
-    		.attr("transform", function(d) { return "translate(" + minX + ",0)"; });
+    		.attr("transform", "translate("+minX+",0)" );
     	this.root.selectAll("g.filter_max")
             .transition().duration(kshf_.anim_barscale_duration)
-    		.attr("transform", function(d) { return "translate(" + maxX + ",0)"; });
+    		.attr("transform", "translate("+maxX+",0)" );
     	this.root.selectAll(".selection_bar rect")
             .transition().duration(kshf_.anim_barscale_duration)
     		.attr("x", minX)
@@ -4618,7 +4623,7 @@ kshf.BarChart.prototype = {
     	this.root.select("g.filter_max .filter_nonselected")
             .transition().duration(kshf_.anim_barscale_duration)
     		.attr("x", 0)
-    		.attr("width", this.options.timeMaxWidth -maxX);
+    		.attr("width", this.options.timeMaxWidth-maxX);
         this.root.select("g.filter_min")
             .attr("filtered",this.timeFilter_ms.min!==this.timeRange_ms.min);
         this.root.select("g.filter_max")
@@ -4626,7 +4631,7 @@ kshf.BarChart.prototype = {
         this.refreshTimeChartFilterText();
         this.refreshTimeChartTooltip();
     },
-    /** refreshTimeChartFilterText */
+    /** -- */
     refreshTimeChartFilterText: function(){
         var me = this;
         this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
