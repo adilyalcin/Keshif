@@ -312,7 +312,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .timeDot[display=false] {
   pointer-events: none;
-  fill: #CCCCCC;
+  fill: #CCCCCC !important;
   opacity: 0.2;
 }
 .kshf .timeDot[display=true]:hover {
@@ -410,14 +410,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .configGroup {
   display: none;
   position: relative;
-  /*            &[shown=filter] {
-                .chooseConfigGroup circle.filter{
-                    fill: gray;
-                }
-                span.filterOptionSelectGroup{ 
-                    display:block;
-                }
-            }*/
 }
 .kshf .headerGroup .configGroup .chooseConfigGroup {
   float: left;
@@ -515,6 +507,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .leftHeader {
   pointer-events: all;
   float: left;
+  position: relative;
 }
 .kshf .headerGroup .rightHeader {
   pointer-events: all;
@@ -1176,6 +1169,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   font-weight: 700;
   font-size: 0.8em;
+  display: inline-block;
 }
 .kshf div.listItem {
   clear: left;
@@ -1183,9 +1177,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   float: none;
   border-top: double 0px gray;
-}
-.kshf div.listItem .itemtoggledetails {
-  display: inline-block;
 }
 .kshf div.listItem[details=true] .item_details_on {
   display: none;
@@ -1627,4 +1618,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy-inner span.action {
   text-decoration: underline;
+}
+.tipsy-inner i {
+  margin-right: 2px;
 }

@@ -117,7 +117,7 @@ function loadChart() {
                     var series = kshf.dt_id.Series[d.data[0]];
                     return series.data[3];
                 },
-                timeTitle: "Screenings in Next 15 Days",
+                timeTitle: "Date",
                 timeItemMap : function(d){ 
                     return d.data[1];
                 },
@@ -142,6 +142,16 @@ function loadChart() {
                 ]
             },{
                 facetTitle: "Movie"
+            },{
+                facetTitle: "Soon",
+                removeInactiveAttrib: false,
+                catItemMap: function(d){
+                    var m_scr = moment(d.data[1]);
+                    if(m_scr.isBefore(m_now)) return null;
+                    if(m_scr.isBefore(m_thisweek)) return "This Week";
+                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                    return null;
+                }
             },{
                 facetTitle: "Day Of Week",
                 catItemMap: function(d){
