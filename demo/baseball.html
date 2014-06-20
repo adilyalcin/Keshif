@@ -35,7 +35,7 @@ function loadChart() {
         domID : "#chart_div",
         dirRoot: "../",
         itemName : "transactions",
-        categoryTextWidth:130,
+        categoryTextWidth:160,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -52,12 +52,12 @@ function loadChart() {
             {
                 facetTitle: "Trans. Type",
                 catTableName: "baseball_trantype",
-                timeTitle: "Transaction Date",
+/*                timeTitle: "Transaction Date",
                 timeItemMap : function(tr){ 
                     var dt = tr.data[0];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
-                },
+                },*/
                 textFilter: 'of type'
             },{
                 facetTitle: "From Team",
