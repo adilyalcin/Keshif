@@ -883,40 +883,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: fill 100ms linear;
   transition: fill 100ms linear;
 }
-.kshf div.listDiv {
-  clear: left;
+.kshf.listDiv {
+  position: absolute;
   box-shadow: 2px 2px 2px #968649;
   margin-left: 6px;
 }
-.kshf div.listDiv div.listItemGroup {
+.kshf.listDiv div.listItemGroup {
   overflow-y: scroll;
   width: calc(100% - 2px);
   border-left: solid 2px #e9e3cd;
   background-color: white;
 }
-.kshf div.listDiv div.itemLinks {
+.kshf.listDiv div.itemLinks {
   display: inline-block;
 }
-.kshf div.listDiv div.itemLinks .header {
+.kshf.listDiv div.itemLinks .header {
   padding-left: 5px;
   font-weight: 700;
   display: inline-block;
 }
-.kshf div.listDiv div.itemLinks .captureEvents {
+.kshf.listDiv div.itemLinks .captureEvents {
   cursor: pointer;
   position: relative;
 }
-.kshf div.listDiv div.itemLinks .captureEvents:hover .itemCount {
+.kshf.listDiv div.itemLinks .captureEvents:hover .itemCount {
   color: orangered;
 }
-.kshf div.listDiv div.itemLinks .captureEvents:hover .itemBar {
+.kshf.listDiv div.itemLinks .captureEvents:hover .itemBar {
   margin: 0px;
   border: solid 2px orangered;
 }
-.kshf div.listDiv div.itemLinks .captureEvents[count="0"] {
+.kshf.listDiv div.itemLinks .captureEvents[count="0"] {
   pointer-events: none;
 }
-.kshf div.listDiv div.itemLinks .itemCount {
+.kshf.listDiv div.itemLinks .itemCount {
   width: 20px;
   display: inline-block;
   text-align: right;
@@ -924,7 +924,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   margin-right: 1px;
 }
-.kshf div.listDiv div.itemLinks .itemBar {
+.kshf.listDiv div.itemLinks .itemBar {
   position: absolute;
   top: 3px;
   background-color: #8699A8;
@@ -933,7 +933,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 2px;
   margin: 2px;
 }
-.kshf div.listDiv div.listsortcolumn {
+.kshf.listDiv div.listsortcolumn {
   padding-right: 5px;
   font-weight: 300;
   text-align: right;
@@ -942,31 +942,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: auto;
   cursor: cell;
 }
-.kshf div.listDiv div.listsortcolumn:hover {
+.kshf.listDiv div.listsortcolumn:hover {
   color: red;
 }
-.kshf div.listDiv div.listsortcolumn_0 {
+.kshf.listDiv div.listsortcolumn_0 {
   font-weight: bold;
 }
-.kshf div.listDiv select.listSortOptionSelect {
+.kshf.listDiv select.listSortOptionSelect {
   bottom: 0px;
 }
-.kshf div.listDiv[detailstoggle=Multi] .listHeader div.itemtoggledetails .span {
+.kshf.listDiv[detailstoggle=Multi] .listHeader div.itemtoggledetails .span {
   display: inline-block;
 }
-.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_on {
+.kshf.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_on {
   display: inline-block;
 }
-.kshf div.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_off {
+.kshf.listDiv[detailstoggle=Multi][showAll=true] div.itemtoggledetails span.items_details_off {
   display: none;
 }
-.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_on {
+.kshf.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_on {
   display: none;
 }
-.kshf div.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_off {
+.kshf.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_off {
   display: inline-block;
 }
-.kshf div.listDiv div.listItem[details=false] .item_details_off {
+.kshf.listDiv div.listItem[details=false] .item_details_off {
   display: none;
 }
 .kshf div.listHeader {

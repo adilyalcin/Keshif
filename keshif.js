@@ -721,7 +721,7 @@ kshf.List = function(kshf_, config, root){
     if(this.detailsDefault === undefined) { this.detailsDefault = false; }
     if(this.detailsToggle==="One") this.detailsDefault=false;
 
-	this.listDiv = root.append("div").attr("class","listDiv")
+	this.listDiv = root
         .attr('showAll',this.detailsDefault?'false':'true')
         .attr('detailsToggle',this.detailsToggle);
     
@@ -1375,7 +1375,7 @@ kshf.Browser = function(options){
         .classed("kshfHost",true)
         .attr("tabindex","1")
         .style("position","relative")
-        .style("overflow-y","hidden")
+//        .style("overflow-y","hidden")
         .on("keydown",function(){
             var e = d3.event;
             if(e.keyCode===27){
@@ -1404,7 +1404,7 @@ kshf.Browser = function(options){
     this.layoutBackground = subRoot.append("div").attr("class","kshf layout_left_background");
     this.layoutTop = subRoot.append("div").attr("class", "kshf layout_top");
     this.layoutLeft  = subRoot.append("div").attr("class", "kshf layout_left");
-    this.layoutRight = subRoot.append("div").attr("class", "kshf layout_right");
+    this.listDiv = subRoot.append("div").attr("class", "kshf listDiv");
 	
     this.loadSource();
 };
@@ -1445,7 +1445,8 @@ kshf.Browser.prototype = {
         // add gradients
         var rowBackgroundColor = "#dadada";
         var otherGradientColor="gray";
-        var gradient_svg = this.root.append("svg").attr("width",0).attr("height",0).append("defs");
+        var gradient_svg = this.root.append("svg").attr("width",0).attr("height",0)
+            .style("display","block").append("defs");
         var dotBackgroundColor = "#616F7A";
         var dotBackgroundColor_Inactive = "#CCCCCC";
 
@@ -1603,11 +1604,6 @@ kshf.Browser.prototype = {
         var creditString="";
         creditString += "<div align='center'>";
         creditString += "<div class='header'>Browser created by <span class='libName'>Keshif</span> library</div>";
-
-//        creditString += "<div align='center' class='boxinbox' style='font-size:0.9em'>";
-//        creditString += "Get the code from <a href='http://www.github.com/adilyalcin/Keshif' target='_blank'><img alt='github' src='"+this.dirRoot+"img/gitHub.png' height='20' style='position:relative; top:5px'></a> <br/> and use it for your own data.</br>";
-//        creditString += "</div>";
-
         creditString += "<div align='center' class='boxinbox project_credits'>";
         creditString += " Developed by:<br/>";
             creditString += "<div style='float:right;'>"
@@ -1819,6 +1815,11 @@ kshf.Browser.prototype = {
         this.source.sheets.forEach(function(sheet){
             if(sheet.id===undefined) sheet.id="id"; // set id column
             if(sheet.tableName===undefined) sheet.tableName = sheet.name; // set table name
+            // if this table name has been loaded, skip this one
+            if(kshf.dt.tableName!==undefined){
+                this.incrementLoadedSheetCount();
+                return;
+            }
             if(this.source.gdocId){
                 this.loadSheet_Google(sheet);
             } else if(this.source.dirPath){
@@ -2000,7 +2001,7 @@ kshf.Browser.prototype = {
         kshf.dt_id[sheet.tableName] = id_table;
         this.incrementLoadedSheetCount();
     },
-    /** incrementLoadedSheetCount */
+    /** -- */
     incrementLoadedSheetCount: function(){
         var me=this;
         this.source.loadedTableCount++;
@@ -2041,7 +2042,7 @@ kshf.Browser.prototype = {
         // TODO: Find the first column that has a date value, set it the time component of first chart
         this.chartDefs.forEach(function(param){ me.addBarChart(param); })
         this.charts.forEach(function(chart){ chart.init_DOM(); });
-        this.listDisplay = new kshf.List(this,this.listDef,this.layoutRight);
+        this.listDisplay = new kshf.List(this,this.listDef,this.listDiv);
         this.loaded = true;
         this.updateLayout();
         this.update();
@@ -2089,6 +2090,9 @@ kshf.Browser.prototype = {
     /** includes label + number */
     getRowTotalTextWidth: function(){
         return this.categoryTextWidth + this.getRowLabelOffset();
+    },
+    getWidth_LeftPanel: function(){
+        return this.getRowTotalTextWidth()+this.width_leftPanel_bar+this.scrollWidth+this.scrollPadding+2;
     },
     /** domHeight */
     domHeight: function(){
@@ -2143,7 +2147,7 @@ kshf.Browser.prototype = {
 
         if(this.updateCb) this.updateCb();
     },
-    /** updateLayout_Height */
+    /** -- */
     updateLayout_Height: function(){
         var chartHeaderHeight = 22;
 
@@ -2151,8 +2155,6 @@ kshf.Browser.prototype = {
         if(this.chartTitle!==undefined){
             divHeight-=chartHeaderHeight;
         }
-
-        this.layoutBackground.style("height",divHeight+"px");
 
         this.divWidth = this.domWidth();
 
@@ -2192,15 +2194,6 @@ kshf.Browser.prototype = {
                 // chartProcessed[0]=true; // categories are not processed
             }
         }
-
-        // TODO: list item header is assumed to be 3 rows, but it may dynamically change!
-        // get height of 
-        var hhhh=parseInt(this.root.select(".listHeader").style("height"));
-
-        this.root.select(".listItemGroup")
-            .transition().duration(this.anim_layout_duration)
-            .style("height",(remHeight-hhhh-15)+"px")
-            ;
 
         // *********************************************************************************
         // left panel ***********************************************************************
@@ -2266,16 +2259,35 @@ kshf.Browser.prototype = {
             });
         }
 
+        var facetsHeight = (divLineCount-divLineRem)*this.line_height;
+
+        this.layoutBackground.style("height",
+            (this.fullWidthResultSet()?facetsHeight:divHeight)+"px");
+
         this.charts.forEach(function(chart){
             chart.refreshVisibleAttribs();
         });
-
-        if(c2.type==='scatterplot'){
-            // adjust layoutRight vertical position
-            this.layoutRight
-                .transition().duration(this.anim_layout_duration)
-                .style("top", (c2.rowCount_Total_Right()*this.line_height)+"px");
+ 
+        var listDivTop = 0;
+        // adjust vertical position
+        if(this.fullWidthResultSet()){
+            listDivTop = facetsHeight;
+        } else {
+            if(c2.type==='scatterplot'){
+                listDivTop = c2.rowCount_Total_Right()*this.line_height;
+            }
         }
+        this.listDiv
+            .transition().duration(this.anim_layout_duration)
+            .style("top", listDivTop+"px");
+
+        // get height of list Header
+        var listHeaderHeight=parseInt(this.root.select(".listHeader").style("height"));
+
+        this.listDiv.select(".listItemGroup")
+            .transition().duration(this.anim_layout_duration)
+            .style("height",(divHeight-listDivTop-listHeaderHeight-15)+"px")
+            ;
 
         this.layoutLeft
             .transition().duration(this.anim_layout_duration)
@@ -2311,7 +2323,8 @@ kshf.Browser.prototype = {
         this.setBarWidthLeftPanel(initBarChartWidth);
         this.updateAllTheWidth();
     },
-    /** Not explicitly called, you can call this maunally to change the text width size after the browser is created */
+
+    /** Not explicitly called, you can call this manually to change the text width size after the browser is created */
     setCategoryTextWidth: function(w){
         this.categoryTextWidth = w;
         this.charts.forEach(function(chart){
@@ -2354,6 +2367,7 @@ kshf.Browser.prototype = {
             this.root.attr("hideBarAxis",true);
         }
     },
+    /** -- */
     setBarWidthLeftPanel: function(v){
         this.setHideBarAxis(v);
         if(this.barMaxWidth===this.width_leftPanel_bar) return;
@@ -2364,17 +2378,23 @@ kshf.Browser.prototype = {
             chart.refreshUIWidth();
         });
     },
+    /** -- */
     fullWidthResultSet: function(){
-        return this.charts.length==1 && this.charts[0].type==='scatterplot';
+        if(this.charts.length==1 && this.charts[0].type==='scatterplot')
+            return true;
+        if(this.getWidth_LeftPanel() + 200 > this.divWidth)
+            return true;
+        return false;
     },
+    /** -- */
     updateAllTheWidth: function(v){
-        this.width_leftPanel_total = this.getRowTotalTextWidth()+this.width_leftPanel_bar+this.scrollWidth+this.scrollPadding+2;
-        var width_rightPanel_total = this.divWidth-this.width_leftPanel_total-this.scrollPadding-15; // 15 is padding
+        var width_leftPanel_total = this.getWidth_LeftPanel();
+        var width_rightPanel_total = this.divWidth-width_leftPanel_total-this.scrollPadding-15; // 15 is padding
 
-        this.layoutBackground.style("width",(this.width_leftPanel_total)+"px");
-        this.root.select("div.filter_header").style("width",(this.width_leftPanel_total-8)+"px");
+        this.layoutBackground.style("width",(width_leftPanel_total)+"px");
+        this.root.select("div.filter_header").style("width",(width_leftPanel_total-8)+"px");
 
-        this.layoutRight.style("left",(this.fullWidthResultSet()?0:this.width_leftPanel_total)+"px");
+        this.listDiv.style("left",(this.fullWidthResultSet()?0:width_leftPanel_total)+"px");
 
         this.charts.forEach(function(chart){
             if(chart.type==='scatterplot') chart.setTimeWidth(width_rightPanel_total);
@@ -2383,10 +2403,10 @@ kshf.Browser.prototype = {
         // for some reason, on page load, this variable may be null. urgh.
         if(this.listDisplay){
             this.listDisplay.listDiv.style("width",
-                ((this.fullWidthResultSet()==false)?width_rightPanel_total+9:this.divWidth-15)+"px");
+                (!this.fullWidthResultSet() ? (width_rightPanel_total+9) : (this.divWidth-12))+"px");
             var contentWidth = (width_rightPanel_total-10);
             if(this.fullWidthResultSet()){
-                contentWidth+=this.width_leftPanel_total;
+                contentWidth+=width_leftPanel_total;
             }
             this.listDisplay.updateContentWidth(contentWidth);
         }
