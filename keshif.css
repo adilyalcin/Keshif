@@ -56,6 +56,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost .subRoot {
   position: relative;
 }
+.kshfHost #kshf_svg_clearText g {
+  fill: gray;
+}
+.kshfHost #kshf_svg_clearText:hover g {
+  fill: #cb5454;
+}
 .kshf {
   font-family: Helvetica, Arial, sans-serif;
   float: left;
@@ -146,8 +152,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
   padding-right: 2px;
-  float: right;
-  margin-right: 2px;
+  float: left;
+  margin-left: 2px;
   -webkit-transition: background-color 100ms linear;
   -moz-transition: background-color 100ms linear;
   -o-transition: background-color 100ms linear;
@@ -598,14 +604,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
 }
-.kshf .kshfChart input.chartRowLabelSearch::-webkit-input-placeholder {
-  text-align: right;
-  font-weight: 500;
-  color: #cb5454;
-}
-.kshf .kshfChart input.chartRowLabelSearch:focus::-webkit-input-placeholder {
-  color: #F3CDCD;
-}
 .kshf .kshfChart svg.chart_root {
   width: 100%;
   height: 100%;
@@ -636,7 +634,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart .resort_button:hover path {
   fill: #cb5454;
 }
-.kshf .kshfChart input.chartRowLabelSearch {
+.kshf .kshfChart .chartRowLabelSearch input {
   text-align: right;
   font-size: 0.7em;
   font-weight: 700;
@@ -648,17 +646,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-bottom: 0px;
   margin-right: 2px;
 }
-.kshf .kshfChart input.chartRowLabelSearch:focus {
+.kshf .kshfChart .chartRowLabelSearch input:focus {
   outline-color: gray;
   outline-width: 4px;
 }
-.kshf .kshfChart input.chartRowLabelSearch:hover {
+.kshf .kshfChart .chartRowLabelSearch input:hover {
   border: solid 1px #cb5454;
   padding: 0px 3px 0px 0px;
   background-color: white;
 }
-.kshf .kshfChart svg.chartRowLabelSearch {
-  vertical-align: middle;
+.kshf .kshfChart .chartRowLabelSearch input::-webkit-input-placeholder {
+  text-align: right;
+  font-weight: 500;
+  color: #cb5454;
+}
+.kshf .kshfChart .chartRowLabelSearch input:focus::-webkit-input-placeholder {
+  color: #F3CDCD;
+}
+.kshf .kshfChart .chartRowLabelSearch svg.clearText {
+  position: absolute;
+  left: 1px;
+  top: 3px;
+  cursor: pointer;
+  display: none;
+}
+.kshf .kshfChart .chartRowLabelSearch svg.searchIcon {
+  position: relative;
+  top: 3px;
 }
 .kshf .kshfChart[collapsed=true] .headerGroup {
   color: gray;
@@ -1067,12 +1081,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 16px;
   height: 16px;
   cursor: pointer;
-}
-.kshf div.listHeader span.bigTextSearch_wrap span svg.clearText g {
-  fill: gray;
-}
-.kshf div.listHeader span.bigTextSearch_wrap span:hover svg g {
-  fill: #cb5454;
 }
 .kshf div.listHeader input.bigTextSearch {
   font-size: 0.8em;

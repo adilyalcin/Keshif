@@ -743,13 +743,7 @@ kshf.List = function(kshf_, config, root){
             .attr("height","12")
             .attr("viewBox","0 0 491.237793 452.9882813")
             .attr("xmlns","http://www.w3.org/2000/svg")
-            .html(
-              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
-               '<g fill-rule="evenodd" clip-rule="evenodd">'+
-                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
-                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
-               '</g>'+
-              '</g>')
+            .append("use").attr("xlink:href","#kshf_svg_search")
             ;
         var bigTextSearch = listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
             .attr("placeholder","Search "+(config.textSearch?config.textSearch:"title"))
@@ -781,18 +775,17 @@ kshf.List = function(kshf_, config, root){
             }, 750);
         });
         listHeaderTopRowTextSearch.append("span")
-            .html('<svg width="15" height="15" viewBox="0 0 48 48" class="clearText">'+
-                  '<g>'+
-                    '<path type="arc" style="fill-opacity:1;" cx="24" cy="24" rx="22" ry="22" d="M 46 24 A 22 22 0 1 1  2,24 A 22 22 0 1 1  46 24 z"/>'+
-                    '<path nodetypes="cc" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 16.221825,16.221825 L 31.778175,31.778175"/>'+
-                    '<path nodetypes="cc" d="M 31.778175,16.221825 L 16.221825,31.778175" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>'+
-                  '</g>'+
-                '</svg>')
+            .append("svg")
+                .attr("class","clearText")
+                .attr("width","15")
+                .attr("height","15")
+                .attr("viewBox","0 0 48 48")
+                .attr("xmlns","http://www.w3.org/2000/svg")
+                .append("use").attr("xlink:href","#kshf_svg_clearText")
             .on("click",function() {
-                d3.select(this).style('display','none');
                 bigTextSearch[0][0].value = '';
                 bigTextSearch[0][0].focus();
-
+                listHeaderTopRowTextSearch.select("span").style('display','none');
                 me.getKshfItems().forEach(function(item){
                     item.setFilter(0,true);
                     item.updateSelected();
@@ -1384,7 +1377,7 @@ kshf.Browser = function(options){
         .style("overflow-y","hidden")
         .on("keydown",function(){
             var e = d3.event;
-            if(e.keyCode===27){ // escchartRowLabelSearchape
+            if(e.keyCode===27){
                 me.clearFilters_All();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearAllEscape,this.getFilteringState());
             }
@@ -1454,6 +1447,26 @@ kshf.Browser.prototype = {
         var gradient_svg = this.root.append("svg").attr("width",0).attr("height",0).append("defs");
         var dotBackgroundColor = "#616F7A";
         var dotBackgroundColor_Inactive = "#CCCCCC";
+
+        gradient_svg.append("symbol").attr("id","kshf_svg_search")
+            .attr("viewbox","0 0 491.237793 452.9882813")
+            .html(
+              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
+               '<g fill-rule="evenodd" clip-rule="evenodd">'+
+                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
+                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
+               '</g>'+
+              '</g>');
+
+        gradient_svg.append("symbol").attr("id","kshf_svg_clearText")
+            .attr("viewbox","0 0 48 48")
+            .html(
+                '<g>'+
+                    '<path type="arc" style="fill-opacity:1;" cx="24" cy="24" rx="22" ry="22" d="M 46 24 A 22 22 0 1 1  2,24 A 22 22 0 1 1  46 24 z"/>'+
+                    '<path nodetypes="cc" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 16.221825,16.221825 L 31.778175,31.778175"/>'+
+                    '<path nodetypes="cc" d="M 31.778175,16.221825 L 16.221825,31.778175" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>'+
+                '</g>'
+                );
 
         var gradient =gradient_svg.append("linearGradient")
             .attr("id","gr_rowSelectBackground_Count")
@@ -1690,6 +1703,7 @@ kshf.Browser.prototype = {
                     me.anim_layout_duration = 0;
                     me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
                     me.updateLayout();
+                    me.anim_layout_duration = 600;
                 }).on("mouseup", function(){
                     if(sendLog) sendLog(CATID.Other,ACTID_OTHER.LeftPanelWidth,{panelWidth:me.width_leftPanel_bar});
                     me.root.style('cursor','default');
@@ -3216,23 +3230,24 @@ kshf.BarChart.prototype = {
 
         if(this.showTextSearch){
             var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX")
-                .style("white-space","nowrap");
+                .attr("class","chartRowLabelSearch")
+                .style("white-space","nowrap").style("position","relative");
             this.dom.showTextSearch= textSearchRowDOM.append("input")
                 .attr("type","text")
-                .attr("class","chartRowLabelSearch")
                 .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
                 .on("input",function(){
                     if(this.timer){
                         clearTimeout(this.timer);
-                        this.timer = null;
                     }
                     var x = this;
                     this.timer = setTimeout( function(){
                         var v=x.value.toLowerCase();
                         if(v===""){
-                            me.unselectAllAttribs();
+                            textSearchRowDOM.select("svg.clearText").style("display","none");                
+                            me.attribFilter.clearFilter(true);
                         } else {
-                            var numSelected=0;
+                            textSearchRowDOM.select("svg.clearText").style("display","block");                     
+                            me.attribCount_Selected=0;
                             me.getAttribs().forEach(function(attrib){
                                 if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
                                     attrib.selected = true;
@@ -3243,15 +3258,17 @@ kshf.BarChart.prototype = {
                                         attrib.selected = false;
                                     }
                                 }
-                                numSelected+=attrib.selected;
+                                me.attribCount_Selected+=attrib.selected;
                             });
-                            me.attribCount_Selected = numSelected;
+                            if(me.attribCount_Selected===0){
+                                me.attribFilter.clearFilter(true);                            
+                            } else {
+                                me.selectType = "SelectOr";
+                                me.updateSelected_All();
+                                me.refreshAttribFilter();
+                                me.attribFilter.addFilter(true);
+                            }
                         }
-                        // convert state to or selection
-                        me.selectType = "SelectOr";
-                        me.updateSelected_All();
-                        me.refreshAttribFilter();
-                        me.attribFilter.addFilter(true);
 
                         if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatTextSearch,me.getKshf().getFilteringState(me.options.facetTitle));
                     }, 750);
@@ -3261,20 +3278,24 @@ kshf.BarChart.prototype = {
                     d3.event.preventDefault();
                 })
                 ;
-            textSearchRowDOM.append("svg")
-                .attr("class","chartRowLabelSearch")
+            textSearchRowDOM.append("svg").attr("class","searchIcon")
                 .attr("width","13")
                 .attr("height","12")
                 .attr("viewBox","0 0 491.237793 452.9882813")
                 .attr("xmlns","http://www.w3.org/2000/svg")
-                .html(
-                  '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
-                   '<g fill-rule="evenodd" clip-rule="evenodd">'+
-                    '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
-                    '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
-                   '</g>'+
-                  '</g>')
-                ;
+                .append("use").attr("xlink:href","#kshf_svg_search")
+            textSearchRowDOM.append("svg").attr("class","clearText")
+                .attr("width","13")
+                .attr("height","13")
+                .attr("viewBox","0 0 48 48")
+                .attr("xmlns","http://www.w3.org/2000/svg")
+                .append("use").attr("xlink:href","#kshf_svg_clearText")
+                .on("click",function() {
+                    textSearchRowDOM.select("svg.clearText").style("display","none");
+                    var inputBox = textSearchRowDOM.select("input")[0][0];
+                    inputBox.value = '';
+                    me.attribFilter.clearFilter(true);
+                });
         }
 
         var configGroup = header_belowFirstRow.append("div")

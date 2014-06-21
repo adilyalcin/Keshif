@@ -50,6 +50,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .subRoot{
         position:relative;
     }
+    #kshf_svg_clearText {
+        g { fill:gray; }
+        &:hover g {
+            fill:#cb5454;
+        }
+    }
 }
 
 .kshf {
@@ -136,8 +142,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: 1px rgb(104, 91, 43) solid;
             background-color: #E9E2CE;
             padding-right: 2px;
-            float: right;
-            margin-right: 2px;
+            float: left;
+            margin-left: 2px;
             .transition(~"background-color 100ms linear");
             &:hover{ 
                 background-color: white;
@@ -547,14 +553,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             pointer-events:none;
         }
-        input.chartRowLabelSearch::-webkit-input-placeholder { 
-            text-align:right; 
-            font-weight: 500;
-            color: #cb5454;
-        }
-        input.chartRowLabelSearch:focus::-webkit-input-placeholder { 
-            color: #F3CDCD;
-        }
 
         svg.chart_root{
             width:100%;
@@ -584,30 +582,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 fill:#cb5454;
             }
         }
-        input.chartRowLabelSearch{
-            text-align: right;
-            font-size: 0.7em;
-            font-weight: 700;
-            border-width: 0px;
-            padding: 1px 4px 1px 1px;
-            border-width:0px;
-            color: #cb5454;
-            background-color:rgba(244, 244, 244,0);
-            pointer-events: all;
-            margin-bottom: 0px;
-            margin-right: 2px;
-            &:focus{
-                outline-color: gray;
-                outline-width: 4px;
+        .chartRowLabelSearch{
+            input {
+                text-align: right;
+                font-size: 0.7em;
+                font-weight: 700;
+                border-width: 0px;
+                padding: 1px 4px 1px 1px;
+                border-width:0px;
+                color: #cb5454;
+                background-color:rgba(244, 244, 244,0);
+                pointer-events: all;
+                margin-bottom: 0px;
+                margin-right: 2px;
+                &:focus{
+                    outline-color: gray;
+                    outline-width: 4px;
+                }
+                &:hover{
+                    border: solid 1px #cb5454;
+                    padding: 0px 3px 0px 0px;
+                    background-color: white;
+                }
+                &::-webkit-input-placeholder { 
+                    text-align:right; 
+                    font-weight: 500;
+                    color: #cb5454;
+                }
+                &:focus::-webkit-input-placeholder { 
+                    color: #F3CDCD;
+                }
             }
-            &:hover{
-                border: solid 1px #cb5454;
-                padding: 0px 3px 0px 0px;
-                background-color: white;
+            svg.clearText{
+                position: absolute;
+                left: 1px;
+                top: 3px;
+                cursor: pointer;
+                display: none;
             }
-        }
-        svg.chartRowLabelSearch{
-            vertical-align: middle;
+            svg.searchIcon{
+                position:relative;
+                top:3px;
+            }
         }
         &[collapsed=true] {
             .headerGroup {
@@ -1006,12 +1022,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 16px;
                 height: 16px;
                 cursor: pointer;
-                svg.clearText {
-                    g { fill:gray; }
-                }
-                &:hover svg g{
-                    fill:#cb5454;
-                }
             }
         }
         input.bigTextSearch{
