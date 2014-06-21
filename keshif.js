@@ -4749,10 +4749,9 @@ kshf.BarChart.prototype = {
     yearSetXPos: function() {
         var kshf_ = this.getKshf();
         // make sure filtered range do not exceed domain range
-        this.timeFilter_ms = {
-            min: Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min),
-            max: Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max)
-        }
+        this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
+        this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
+
         if(this.timeFilter_ms.min>this.timeFilter_ms.max){
             var tmp = this.timeFilter_ms.min;
             this.timeFilter_ms = {
