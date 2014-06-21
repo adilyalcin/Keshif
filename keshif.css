@@ -537,24 +537,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 2px;
   display: none;
 }
-.kshf .headerGroup .rightHeader .config_zoom .block_bottom {
-  display: block;
-}
-.kshf .headerGroup .rightHeader .config_zoom .block_top {
-  display: block;
-}
 .kshf .headerGroup .rightHeader .config_zoom path {
   fill: white;
   display: inline;
   stroke: #000000;
   stroke-width: 25;
   stroke-miterlimit: 10;
-}
-.kshf .headerGroup .rightHeader .config_zoom[zoom=in] .block_bottom {
-  display: none;
-}
-.kshf .headerGroup .rightHeader .config_zoom[zoom=out] .block_top {
-  display: none;
 }
 .kshf .headerGroup .rightHeader .zoom_button {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;

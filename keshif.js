@@ -601,24 +601,18 @@ kshf.Filter.prototype = {
             if(this.filterSummaryBlock===null) {
                 this.filterSummaryBlock = this.insertFilterSummaryBlock();
             }
-            this.filterSummaryBlock.select(".chartClearFilterButton")
-                .on("click",function(){ 
-                    me.clearFilter(true);
-                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
-                        me.kshf_.getFilteringState(me.filterTitle));
-                });
             if(this.text_header!==undefined)
                 this.filterSummaryBlock.select(".txttt").text(this.text_header+": ");
             if(this.text_item!==undefined)
                 this.filterSummaryBlock.select(".filter_item")
-                    .html(function(){ return me.text_item.call(me.owner, me); })
-                    ;
+                    .html(function(){ return me.text_item.call(me.owner, me); });
         }
     },
     /** Inserts a summary block to the list breadcrumb DOM */
     /** Don't call this directly */
     insertFilterSummaryBlock: function(){
         var x;
+        var me=this;
         x = this.kshf_.listDisplay.dom.filterblocks
             .append("span").attr("class","filter-block")
             ;
@@ -632,6 +626,12 @@ kshf.Filter.prototype = {
                         return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"; 
                     }
                 })
+            })
+            .on("click",function(){
+                this.tipsy.hide();
+                me.clearFilter(true);
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
+                    me.kshf_.getFilteringState(me.filterTitle));
             })
             .on("mouseover",function(){
                 this.tipsy.show();
@@ -989,6 +989,7 @@ kshf.List.prototype = {
             ;
         x.append("span").attr("class","item_details_on").html("[+]")
             .on("click", function(d){ 
+                this.tipsy.hide();
                 kshf_.showListItemDetails(d);
             })
             .on("mouseover",function(d){
@@ -1200,7 +1201,7 @@ kshf.List.prototype = {
         this.updateItemVisibility();
         this.updateShowListGroupBorder();
         if(this.itemLink!==undefined){
-            this.updateItemLinks();
+//            this.updateItemLinks();
         }
     },
     getFilteredCount: function(){
@@ -1731,7 +1732,10 @@ kshf.Browser.prototype = {
         s.append("div")
             .attr("class","chartClearFilterButton allFilter")
             .text("x")
-            .on("click",function(){ me.clearFilters_All(); })
+            .on("click",function(){ 
+                this.tipsy.hide();
+                me.clearFilters_All();
+            })
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -3138,6 +3142,7 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
             })
     		.on("click", function(d,i){
+                this.tipsy.hide();
                 me.attribFilter.clearFilter(true);
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
                     me.getKshf().getFilteringState(me.options.facetTitle));
@@ -3175,11 +3180,8 @@ kshf.BarChart.prototype = {
                 .attr("class","zoom_button zoom_in")
                 .attr("disabled","true")
                 .text("⇥ Zoom in ⇤")
-                .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","in");  })
-                .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
                 .on("click",function(d){
-                    me.timeZoom_ms.min = me.timeFilter_ms.min;
-                    me.timeZoom_ms.max = me.timeFilter_ms.max;
+                    me.timeZoom_ms = { min: me.timeFilter_ms.min, max: me.timeFilter_ms.max };
                     me.useCurrentTimeMinMax = true;
                     me.refreshTimechartLayout(true);
                     me.useCurrentTimeMinMax = undefined;
@@ -3191,8 +3193,6 @@ kshf.BarChart.prototype = {
                 .attr("class","zoom_button zoom_out")
                 .attr("disabled","true")
                 .text("⇤ Zoom out ⇥")
-                .on("mouseover",function(e){ d3.select(this.parentNode).attr("zoom","out");  })
-                .on("mouseout",function(){  d3.select(this.parentNode).attr("zoom","none");  })
                 .on("click",function(){
                     me.resetTimeZoom_ms();
                     me.useCurrentTimeMinMax = true;
@@ -3328,7 +3328,7 @@ kshf.BarChart.prototype = {
 
 
     },
-    /** refreshTimechartLayout */
+    /** -- */
     refreshTimechartLayout: function(toUpdate){
         this.setTimeTicks();
         this.updateTimeChartBarsDots();
@@ -3999,8 +3999,8 @@ kshf.BarChart.prototype = {
             .attr("highlight","false")
             .attr("selected","false")
     		.on("click", function(attrib){
-                me.filterAttrib(attrib);
                 this.tipsy_active.hide();
+                me.filterAttrib(attrib);
 
                 if (this.timer) {
                     // double click
@@ -4286,7 +4286,7 @@ kshf.BarChart.prototype = {
     removeXAxis: function(){
         this.root.select("g.x_axis").data([]).exit().remove();
     },
-    /** refreshTimeChartBarDisplay */
+    /** -- */
     refreshTimeChartBarDisplay: function(){
         // key dots are something else
         var me = this;
@@ -4426,7 +4426,7 @@ kshf.BarChart.prototype = {
         this.dom.timeBarTotal  = this.root.selectAll("g.barGroup g.row rect.timeBar.total");
         this.dom.timeDots      = this.root.selectAll('g.barGroup g.row .timeDot');
     },
-    /** setTimeTicks */
+    /** -- */
     setTimeTicks: function(){
         this.timeticks = {};
 
@@ -4505,12 +4505,10 @@ kshf.BarChart.prototype = {
             .rangeRound([0, this.options.timeMaxWidth])
             ;
     },
-    /** insertTimeTicks */
+    /** -- */
     insertTimeTicks: function(){
         var me = this;
         var tickGroup = this.root.select("g.timeAxisGroup g.tickGroup");
-
-        var numTicks = Math.floor(this.options.timeMaxWidth/70);
 
         var xAxis = d3.svg.axis()
             .scale(this.timeScale)
@@ -4534,11 +4532,8 @@ kshf.BarChart.prototype = {
                 var nextTime = me.insertTimeTicks_timeValues[i+1];
                 if(nextTime === undefined){
                     nextTime = me.timeRange_ms.max;
-    //                curTime = me.insertTimeTicks_timeValues[i-1];
                 }
-                me.timeFilter_ms.min = curTime;
-                me.timeFilter_ms.max = nextTime;
-
+                me.timeFilter_ms = {min: curTime, max: nextTime};
                 me.yearSetXPos();
                 me.updateItemFilterState_Time();
                 me.timeFilter.addFilter(true);
@@ -4588,7 +4583,7 @@ kshf.BarChart.prototype = {
                 return (i===0)?"M0 6 L0 20 L12 13 Z":"M0 6 L0 20 L-12 13 Z";
             })
     },
-	/** insertTimeChartAxis */
+	/** -- */
     insertTimeChartAxis: function(){
         var me=this;
         var kshf_ = this.getKshf();
@@ -4709,9 +4704,8 @@ kshf.BarChart.prototype = {
                     if(me.sortingOpt_Active.no_resort!==true) me.divRoot.attr("canResort",true);
     			}).on("mouseup", function(){
                     eeeee.style.stroke = "";
-    				me.divRoot.style( 'cursor', 'default' );
+    				me.divRoot.style('cursor','default');
     				me.x_axis_active_filter = null;
-    				// unregister mouse-move callbacks
     				me.divRoot.on("mousemove", null).on("mouseup", null);
 
                     me.refreshTimeChartDotConfig();
@@ -4725,7 +4719,7 @@ kshf.BarChart.prototype = {
     		});
         this.yearSetXPos();
     },
-    /** updateTimeChartBarsDots */
+    /** -- */
     updateTimeChartBarsDots: function(){
         var kshf_ = this.getKshf();
         var totalLeftWidth = kshf_.barMaxWidth+kshf_.scrollPadding+
@@ -4755,12 +4749,15 @@ kshf.BarChart.prototype = {
     yearSetXPos: function() {
         var kshf_ = this.getKshf();
         // make sure filtered range do not exceed domain range
-        this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
-        this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
+        this.timeFilter_ms = {
+            min: Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min),
+            max: Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max)
+        }
         if(this.timeFilter_ms.min>this.timeFilter_ms.max){
             var tmp = this.timeFilter_ms.min;
-            this.timeFilter_ms.min = this.timeFilter_ms.max;
-            this.timeFilter_ms.max = tmp;
+            this.timeFilter_ms = {
+                min: this.timeFilter_ms.max,
+                max: tmp};
         }
 
     	var minX = this.timeScale(this.timeFilter_ms.min);
@@ -4768,6 +4765,7 @@ kshf.BarChart.prototype = {
 
         if(this.options.timeMaxWidth-minX>190){
             this.divRoot.select(".config_zoom")
+                .transition().duration(kshf_.anim_barscale_duration)
                 .style("float","left")
                 .style("margin-left",minX+"px");
         } else{
@@ -4806,7 +4804,7 @@ kshf.BarChart.prototype = {
     text_item_Time: function(){
         return "from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>";
     },
-    /** refreshTimeChartTooltip */
+    /** -- */
     refreshTimeChartTooltip: function(){
         var titleText = this.getKshf().itemsSelectedCt+ " selected "+this.getKshf().itemName+"from "+
                     this.getFilterMinDateText()+" to "+this.getFilterMaxDateText();
