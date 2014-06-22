@@ -1262,6 +1262,7 @@ kshf.List.prototype = {
     },
     clearFilters_All: function(){
         if(this.linkFilter!==undefined) this.linkFilter.clearFilter(false);
+        if(this.textFilter!==undefined) this.textFilter.clearFilter(false);
         this.sortFilters.forEach( function(filter){
             filter.clearFilter(false); 
         } );
