@@ -464,6 +464,7 @@ kshf.Item.prototype = {
         this.barValue+=item.barCount;
         this.barValueMax+=item.barCount;
         this.sortDirty = true;
+        item.mappedItems.push(this);
     },
     /**
      * Updates wanted state, and notifies all related filter attributes of the change.
@@ -1941,7 +1942,7 @@ kshf.Browser.prototype = {
             }
         });
     },
-    /** finishDataLoad */
+    /** -- */
     finishDataLoad: function(sheet,arr) {
         kshf.dt[sheet.tableName] = arr;
         if(sheet.primary){
@@ -2024,6 +2025,45 @@ kshf.Browser.prototype = {
         var colId = kshf.dt_ColNames[mainTableName][columnName];
         return function(d){ return d.data[colId]; }
     },
+    /** For each primary item
+     *  - Run the mapFunc
+     *  - If result is array, remove duplicates
+     *  - Store result in mappedData[filterId]
+     *  - For each result, add the primary item under that item.
+     */
+    mapItemData: function(mapFunc, targetTable, filterId){
+        this.items.forEach(function(item){
+            var toMap = mapFunc(item);
+            if(toMap===undefined || toMap==="") { 
+                toMap=null;
+            } else if(toMap instanceof Array){
+                // remove duplicate values in the array
+                var found = {};
+                toMap = toMap.filter(function(e){
+                    if(found[e]===undefined){
+                        found[e] = true;
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            item.mappedData[filterId] = toMap;
+            // Iterate through toMap items, and add this item to their items index.
+            if(toMap===null) { return; }
+            if(toMap instanceof Array){
+                toMap.forEach(function(a){
+                    var m=targetTable[a];
+                    if(m==undefined) return;
+                    m.addItem(item);
+                });
+            } else {
+                var m=targetTable[toMap];
+                if(m==undefined) return;
+                m.addItem(item);
+            }
+        });
+    },
+
     /** set x offset to display active number of items */
     getRowLabelOffset: function(){
         if(!this._labelXOffset){
@@ -2635,47 +2675,14 @@ kshf.BarChart.prototype = {
     },
     /** -- */
     mapAttribs: function(options){
-        this.hasMultiValueItem = false;
-        var mapFunc = this.options.catItemMap;
-        var curDtId = this.getAttribs_wID();
         var filterId = this.attribFilter.id;
+        this.getKshf().mapItemData(this.options.catItemMap, this.getAttribs_wID(), filterId);
 
-        var addMappedItem = function(m,item){
-            m.addItem(item);
-            item.mappedItems.push(m);
-        };
-
-        // Apply attrib map function
+        this.hasMultiValueItem = false;
         this.getKshfItems().forEach(function(item){
-            var toMap = mapFunc(item);
-            if(toMap===undefined || toMap==="") { 
-                toMap=null;
-            } else if(toMap instanceof Array){
-                // remove duplicate values in the array
-                var found = {};
-                toMap = toMap.filter(function(e){
-                    if(found[e]===undefined){
-                        found[e] = true;
-                        return true;
-                    }
-                    return false;
-                });
-            }
-            item.mappedData[filterId] = toMap;
-            // Iterate through toMap items, and add this item to their items index.
+            var toMap = item.mappedData[filterId];
             if(toMap===null) { return; }
-            if(toMap instanceof Array){
-                this.hasMultiValueItem = true;
-                toMap.forEach(function(a){
-                    var m=curDtId[a];
-                    if(m==undefined) return;
-                    addMappedItem(m,item);
-                });
-            } else {
-                var m=curDtId[toMap];
-                if(m==undefined) return;
-                addMappedItem(m,item);
-            }
+            if(toMap instanceof Array) this.hasMultiValueItem = true;
         },this);
 
         // Modified internal dataMap function - Skip rows with0 active item count
@@ -3883,40 +3890,40 @@ kshf.BarChart.prototype = {
     filterAttrib: function(attrib, selectOr){
         attrib.selected = !attrib.selected;
         this.attribCount_Selected += attrib.selected?1:-1;
-        if(attrib.selected){
-            // attrib is added to filtering
-            if(this.attribCount_Selected===1){ // only one attribute is selected
-                this.selectType = "SelectOr";
-                this.updateSelected_UnSelectOnly();
-            } else {
-                if(this.hasMultiValueItem){
-                    if(this.attribCount_Selected===2){
-                        this.selectType = (selectOr===undefined)?"SelectAnd":"SelectOr";
-                    }
-                    if(this.selectType==="SelectAnd"){
-                        this.updateSelected_UnSelectOnly();
+
+        if(this.attribCount_Selected===0){
+            this.attribFilter.clearFilter(true);
+        } else {
+            if(attrib.selected){
+                // attrib is added to filtering
+                if(this.attribCount_Selected===1){ // only one attribute is selected
+                    this.selectType = "SelectOr";
+                    this.updateSelected_UnSelectOnly();
+                } else { // more than 1
+                    if(this.hasMultiValueItem){
+                        if(this.attribCount_Selected===2){
+                            this.selectType = (selectOr===undefined)?"SelectAnd":"SelectOr";
+                        }
+                        if(this.selectType==="SelectAnd"){
+                            this.updateSelected_UnSelectOnly();
+                        } else {
+                            this.updateSelected_SelectOnly();
+                        }
                     } else {
-                        this.updateSelected_SelectOnly();
-                    }
-                } else {
-                    // more than 1 attribute is selected now. Figure our what to do
-                    if(selectOr===true){
-                        this.updateSelected_SelectOnly();
-                    } else {
-                        // Removing previously selected attributes
-                        this.unselectAllAttribs();
-                        attrib.selected=true;
-                        this.attribCount_Selected = 1;
-                        this.updateSelected_All();
+                        // more than 1 attribute is selected now. Figure our what to do
+                        if(selectOr===true){
+                            this.updateSelected_SelectOnly();
+                        } else {
+                            // Removing previously selected attributes
+                            this.unselectAllAttribs();
+                            attrib.selected=true;
+                            this.attribCount_Selected = 1;
+                            this.updateSelected_All();
+                        }
                     }
                 }
-            }
-        } else {
-            // attrib is removed from filtering
-            if(this.attribCount_Selected===0){
-                this.selectType = "SelectOr";
-                this.attribFilter.clearFilter(true);
             } else {
+                // attrib is removed from filtering, and there are still some items...
                 if(this.hasMultiValueItem){
                     if(this.selectType==="SelectAnd"){
                         this.updateSelected_SelectOnly();
@@ -3930,16 +3937,14 @@ kshf.BarChart.prototype = {
                     this.updateSelected_UnSelectOnly();
                 }
             }
-        }
-        if(this.attribCount_Selected!==0){
+            if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
+            this.refreshAttribFilter();
             this.attribFilter.addFilter(true);
         }
 
-        this.refreshAttribFilter();
         if(this.sortingOpt_Active.no_resort!==true){
             this.divRoot.attr("canResort",this.attribCount_Selected!==this.attribCount_Active&&this.attribCount_Selected!==0);
         }
-        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
     },
     /** -- */
     refreshAttribFilter: function(){
