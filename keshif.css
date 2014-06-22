@@ -62,26 +62,132 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost #kshf_svg_clearText:hover g {
   fill: #cb5454;
 }
+.kshfHost .filtercrumbs {
+  font-size: 0.8em;
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: top;
+  margin-top: 2px;
+}
+.kshfHost .filtercrumbs span.filter-block {
+  display: inline-block;
+  cursor: default;
+  color: #252112;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  box-shadow: 1px 1px 1px #4e472b;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding-left: 2px;
+  margin-right: 5px;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
+  -webkit-transition: background-color 200ms linear;
+  -moz-transition: background-color 200ms linear;
+  -o-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
+}
+.kshfHost .filtercrumbs span.filter-block .sdsdsds {
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: block;
+}
+.kshfHost .filtercrumbs span.filter-block[ready=true] {
+  opacity: 1;
+}
+.kshfHost .filtercrumbs span.filter-block:hover {
+  background-color: #ffffff;
+}
+.kshfHost .filtercrumbs span.filter-block b {
+  font-weight: 700;
+}
+.kshfHost .filtercrumbs span.filter-block[filtered=false] {
+  display: none;
+}
+.kshfHost .filtercrumbs span.filter-block .txttt {
+  padding: 1px 0px 1px 0px;
+}
+.kshfHost .filtercrumbs span.filter-block .filter_item {
+  padding: 1px 0px 1px 0px;
+  display: inline;
+}
 .kshf {
   font-family: Helvetica, Arial, sans-serif;
   float: left;
   display: inline-block;
 }
+.kshf span.filter-block-clearall {
+  display: none;
+  cursor: default;
+  color: #252112;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  background-color: #E9E2CE;
+  padding-right: 2px;
+  position: absolute;
+  right: 15px;
+  top: 3px;
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
+}
+.kshf span.filter-block-clearall:hover {
+  background-color: white;
+  box-shadow: none;
+}
 .kshf.layout_header {
   width: 100%;
-  height: 21px;
-  font-weight: 700;
-  font-size: 1.05em;
-  text-shadow: 1px 1px 2px white;
   float: none;
-  text-align: center;
+  margin-bottom: 2px;
+  padding-bottom: 2px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMjMlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0icmdiKDIyNCwyMTMsMTcwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iOTElIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
   background-image: -moz-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
   background-image: -o-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
   background-image: linear-gradient(to right , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
   border-bottom: solid 1px #c6bb9e;
-  box-shadow: 0px 0px 10px #b7aa88;
+  box-shadow: 0px 0px 3px #b7aa88;
+}
+.kshf.layout_header span.listheader_count {
+  font-size: 1.1em;
+  font-weight: 700;
+  text-shadow: 1px 1px lightgray;
+  width: 50px;
+  display: inline-block;
+  text-align: right;
+  min-width: 45px;
+  vertical-align: bottom;
+}
+.kshf.layout_header span.listheader_count_bar {
+  background-color: #8493a0;
+  position: absolute;
+  right: 0px;
+  height: 6px;
+  bottom: 0px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.kshf.layout_header span.listheader_count_wrap {
+  display: none;
+  position: absolute;
+  right: 3px;
+  height: 14px;
+  border-bottom: solid 2px rgba(132, 147, 160, 0.5);
+}
+.kshf.layout_header span.listheader_itemName {
+  letter-spacing: 0.1em;
+  font-variant: small-caps;
+  font-size: 1.3em;
+  text-shadow: 1px 1px lightgray;
+  font-weight: 700;
+  margin-left: 4px;
+  vertical-align: top;
 }
 .kshf.layout_header span.title {
   float: left;
@@ -109,6 +215,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_header span.barChartMainInfo:hover {
   color: #cb5454;
 }
+.kshf.layout_header span.rightBoxes {
+  float: right;
+  margin-right: 5px;
+}
 .kshf.layout_header div.credits {
   cursor: pointer;
   font-weight: 500;
@@ -122,7 +232,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   color: black;
   position: relative;
-  margin: 2px 15px 2px 2px;
+  margin: 2px;
   float: right;
   font-weight: bolder;
   font-style: italic;
@@ -143,26 +253,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_header img.datasource:hover {
   box-shadow: inset 1px 1px 1px #474940;
 }
-.kshf.layout_header span.filter-block-clear {
-  font-size: 0.8em;
-  display: none;
-  cursor: default;
-  color: #252112;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  background-color: #E9E2CE;
-  padding-right: 2px;
-  float: left;
-  margin-left: 2px;
-  -webkit-transition: background-color 100ms linear;
-  -moz-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
-}
-.kshf.layout_header span.filter-block-clear:hover {
-  background-color: white;
-  box-shadow: none;
-}
 .kshf.layout_header div.filter_header {
   /*    background-color: white;
             font-size: 0.9em;
@@ -170,6 +260,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: 2px;
   float: left;
   text-shadow: none;
+  position: relative;
 }
 .kshf.layout_header div.filter_header .left_align {
   float: left;
@@ -256,8 +347,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 2px;
 }
 .kshf span.leftBlockAdjustSize {
-  position: relative;
-  float: right;
+  position: absolute;
   right: -3px;
   width: 6px;
   border-bottom: solid 1px lightgray;
@@ -268,6 +358,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -moz-linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%);
   background-image: -o-linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%);
   background-image: linear-gradient(to left, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%);
+  opacity: 0.5;
 }
 .kshf span.leftBlockAdjustSize:hover {
   border-bottom: solid 1px gray;
@@ -973,13 +1064,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: bold;
   color: black;
   padding: 0px 5px 3px 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMjI0LDIxMywxNzApIiBzdG9wLW9wYWNpdHk9IjAuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
-  background-image: -moz-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
-  background-image: -o-linear-gradient(bottom, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
-  background-image: linear-gradient(to top, rgb(224,213,170) 0%, rgba(224,213,170,0.1) 80%);
-  border-top-left-radius: 20px;
-  border-top: solid 2px #c0b899;
+  border-top-left-radius: 5px;
+  font: 500 100% Arial, sans-serif;
+  font-size: 0.9em;
+  position: relative;
+  height: 20px;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMjAwLDIwMCwyMDApIiBzdG9wLW9wYWNpdHk9IjAuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(bottom, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%);
+  background-image: -moz-linear-gradient(bottom, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%);
+  background-image: -o-linear-gradient(bottom, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%);
+  background-image: linear-gradient(to top, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%);
 }
 .kshf div.listHeader div.itemtoggledetails {
   font-size: 1em;
@@ -994,74 +1088,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader div.itemtoggledetails span {
   display: none;
 }
-.kshf div.listHeader div.topRow {
-  min-height: 22px;
-}
-.kshf div.listHeader span.filter-blocks {
-  font-size: 0.9em;
-  display: inline-block;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block {
-  display: inline-block;
-  cursor: default;
-  color: #252112;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  box-shadow: 1px 1px 1px #4e472b;
-  background-color: rgba(255, 255, 255, 0.5);
-  padding-left: 2px;
-  margin-right: 5px;
-  opacity: 0;
-  -webkit-transition: opacity 200ms linear;
-  -moz-transition: opacity 200ms linear;
-  -o-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
-  -webkit-transition: background-color 200ms linear;
-  -moz-transition: background-color 200ms linear;
-  -o-transition: background-color 200ms linear;
-  transition: background-color 200ms linear;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block .sdsdsds {
-  white-space: nowrap;
-  max-width: 300px;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-  display: block;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block[ready=true] {
-  opacity: 1;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block:hover {
-  background-color: #ffffff;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block b {
-  font-weight: 700;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block[filtered=false] {
-  display: none;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block .txttt {
-  padding: 1px 0px 1px 0px;
-}
-.kshf div.listHeader span.filter-blocks span.filter-block .filter_item {
-  padding: 1px 0px 1px 0px;
-  display: inline;
-}
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;
   padding-right: 5px;
   display: block;
   float: left;
 }
-.kshf div.listHeader span.bigTextSearch_wrap {
+.kshf div.listHeader span.mainTextSearch {
   position: relative;
   white-space: nowrap;
 }
-.kshf div.listHeader span.bigTextSearch_wrap svg.searchIcon {
+.kshf div.listHeader span.mainTextSearch svg.searchIcon {
   margin-left: 10px;
 }
-.kshf div.listHeader span.bigTextSearch_wrap span {
+.kshf div.listHeader span.mainTextSearch span {
   position: absolute;
   display: none;
   top: 2px;
@@ -1075,7 +1115,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   color: #cb5454;
   padding-right: 2px;
-  background-color: rgba(244, 244, 244, 0);
+  background-color: rgba(255, 255, 255, 0.2);
   pointer-events: all;
   border-width: 0px;
   border-bottom: dashed 1px #cb5454;
@@ -1096,39 +1136,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader input.bigTextSearch:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf div.listHeader span.listheader_itemName {
-  font-size: 1.1em;
-  text-shadow: 1px 1px lightgray;
-  float: left;
-  font-weight: 500;
-  margin-left: 4px;
-}
-.kshf div.listHeader span.listheader_count_bar {
-  background-color: #8493a0;
-  position: absolute;
-  right: 0px;
-  height: 2px;
-  top: 19px;
-}
-.kshf div.listHeader span.listheader_count_wrap {
-  display: inline-block;
-  float: left;
-  position: relative;
-}
-.kshf div.listHeader span.listheader_count {
-  font-size: 1.1em;
-  text-shadow: 1px 1px lightgray;
-  float: right;
-}
-.kshf div.listHeader div.listColumnRow {
-  font: 500 100% Arial, sans-serif;
-  font-size: 0.9em;
-}
-.kshf div.listHeader div.listColumnRow div.listcell {
+.kshf div.listHeader div.listcell {
   float: left;
   position: absolute;
 }
-.kshf div.listHeader div.listColumnRow div.list-sort-option {
+.kshf div.listHeader div.list-sort-option {
   font-weight: 500;
   cursor: move;
   background-color: white;
@@ -1144,13 +1156,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -khtml-user-drag: element;
   -webkit-user-drag: element;
 }
-.kshf div.listHeader div.listColumnRow div.list-sort-option:hover {
+.kshf div.listHeader div.list-sort-option:hover {
   box-shadow: 2px 2px 2px #474940;
 }
-.kshf div.listHeader div.listColumnRow div.list-sort-option.drag_source {
+.kshf div.listHeader div.list-sort-option.drag_source {
   background-color: #d3e6c9;
 }
-.kshf div.listHeader div.listColumnRow div.list-sort-option.drag_over {
+.kshf div.listHeader div.list-sort-option.drag_over {
   border: solid 1px #000;
   padding: 0px 4px 0px 4px;
   /* remove padding 1 pixel because of border  */
