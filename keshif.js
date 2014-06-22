@@ -433,8 +433,7 @@ kshf.Item = function(d, idIndex, primary){
     this.barValue = 0;
     this.barValueMax = 0;
     if(primary){
-        // 1 value is added for global text search
-        this.filters = [true];
+        this.filterCache = [];
         this.barCount = 1; // 1 by default
         this.wanted = true;
         this.mappedItems = [];
@@ -455,8 +454,8 @@ kshf.Item.prototype = {
     },
     /** -- */
     setFilter: function(index,v){
-        if(this.filters[index]===v) return;
-        this.filters[index] = v;
+        if(this.filterCache[index]===v) return;
+        this.filterCache[index] = v;
         this.dirtyFilter = true;
     },
     addItem: function(item){
@@ -478,7 +477,7 @@ kshf.Item.prototype = {
         // checks if all filter results are true
         // At first "false", breaks the loop
         this.wanted=true;
-        this.filters.every(function(f){
+        this.filterCache.every(function(f){
             me.wanted=me.wanted&&f;
             return me.wanted;
         });
@@ -561,11 +560,12 @@ kshf.Filter = function(opts){
     this.text_item = opts.text_item;
     this.owner = opts.owner;
     this.filterTitle = opts.filterTitle;
+    this.noSummary = opts.noSummary;
 
     this.id = this.kshf_.maxFilterID;
     ++this.kshf_.maxFilterID;
-    this.clearFilter(false);
-    this.init = true;
+    this.isFiltered = false;
+    this.kshf_.items.forEach(function(item){ item.setFilter(this.id,true); },this);
 };
 kshf.Filter.prototype = {
     addFilter: function(forceUpdate){
@@ -579,7 +579,6 @@ kshf.Filter.prototype = {
         if(!this.isFiltered) return;
         this.isFiltered = false;
         this.kshf_.items.forEach(function(item){ item.setFilter(this.id,true); },this);
-        if(this.init===undefined) return;
         this.refreshFilterSummary();
         this.onClear.call(this.owner);
         if(forceUpdate===true){
@@ -593,6 +592,7 @@ kshf.Filter.prototype = {
     /** Don't call this directly */
     refreshFilterSummary: function(){
         var me=this;
+        if(this.noSummary===true) return;
         if(!this.isFiltered){
             var root = this.filterSummaryBlock;
             if(root===null || root===undefined) return;
@@ -812,9 +812,25 @@ kshf.List.prototype = {
     getKshfItems: function(){
         return this.parentKshf.items;
     },
+    /* -- */
     insertTextSearch: function(){
         var me=this;
-        var listHeaderTopRowTextSearch = this.dom.listHeader.append("span").attr("class","mainTextSearch");
+        var listHeaderTopRowTextSearch;
+        var bigTextSearch;
+        var clearTextSearch_cb = function(){
+            bigTextSearch[0][0].value = '';
+            listHeaderTopRowTextSearch.select("span").style('display','none');
+        };
+        this.textFilter = new kshf.Filter({
+            name: "TextSearch",
+            kshf_: this.getKshf(),
+            onClear: clearTextSearch_cb,
+            noSummary: true,
+            owner: this
+        });
+        var filterId = this.textFilter.id;
+
+        listHeaderTopRowTextSearch = this.dom.listHeader.append("span").attr("class","mainTextSearch");
         listHeaderTopRowTextSearch.append("svg")
             .attr("class","searchIcon")
             .attr("width","13")
@@ -823,7 +839,7 @@ kshf.List.prototype = {
             .attr("xmlns","http://www.w3.org/2000/svg")
             .append("use").attr("xlink:href","#kshf_svg_search")
             ;
-        var bigTextSearch = listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
+        bigTextSearch = listHeaderTopRowTextSearch.append("input").attr("class","bigTextSearch")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:"title"))
             .attr("autofocus","true");
         bigTextSearch.on("keydown",function(){
@@ -844,12 +860,12 @@ kshf.List.prototype = {
                         f = f && me.textSearchFunc(item).toLowerCase().indexOf(v_i)!==-1;
                         return f;
                     });
-                    item.setFilter(0,f);
+                    item.setFilter(filterId,f);
                     item.updateSelected();
                 });
-                me.getKshf().update();
                 x.timer = null;
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,me.getKshf().getFilteringState());
+                me.textFilter.addFilter(true);
             }, 750);
         });
         listHeaderTopRowTextSearch.append("span")
@@ -861,14 +877,8 @@ kshf.List.prototype = {
                 .attr("xmlns","http://www.w3.org/2000/svg")
                 .append("use").attr("xlink:href","#kshf_svg_clearText")
             .on("click",function() {
-                bigTextSearch[0][0].value = '';
-                listHeaderTopRowTextSearch.select("span").style('display','none');
-                me.getKshfItems().forEach(function(item){
-                    item.setFilter(0,true);
-                    item.updateSelected();
-                });
-                me.getKshf().update();
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,me.getKshf().getFilteringState());
+                me.textFilter.clearFilter(true);
             });
     },
     /** Insert items into the UI, called once on load */
@@ -1281,7 +1291,7 @@ kshf.Browser = function(options){
     // BASIC OPTIONS
     this.chartTitle = options.chartTitle;
 	this.charts = [];
-    this.maxFilterID = 1; // 1 is used for global search
+    this.maxFilterID = 0;
     this.barMaxWidth = 0;
 
     this.scrollPadding = 5;
