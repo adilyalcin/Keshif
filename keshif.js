@@ -428,7 +428,7 @@ kshf.Item = function(d, idIndex, primary){
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
 	this.selected = true;
     // used by attributes
-    this.items = []; // set of assigned primary items
+    this.items = []; // items which are mapped/related to this item.
 	this.activeItems = 0; // If primary item, activeItems is the number of active linked items
     this.barValue = 0;
     this.barValueMax = 0;
@@ -437,11 +437,12 @@ kshf.Item = function(d, idIndex, primary){
         this.filters = [true];
         this.barCount = 1; // 1 by default
         this.wanted = true;
-        this.mappedRows = [];
         this.mappedItems = [];
-        this.mappedData = [true]; // caching the values this item was mapped to.
-        this.mappedDots = [];
-        this.mappedAttribs = [];
+        // accessed with filterID, the data that's used for mapping this item
+        this.mappedData = [true]; // caching the values this item was mapped to
+        // DOM elements of this primary item
+        this.mappedDotDOMs = [];
+        this.mappedAttribDOMs = [];
         this.dirtyFilter = true;
     }
 };
@@ -457,6 +458,13 @@ kshf.Item.prototype = {
         if(this.filters[index]===v) return;
         this.filters[index] = v;
         this.dirtyFilter = true;
+    },
+    addItem: function(item){
+        this.items.push(item);
+        this.activeItems++;
+        this.barValue+=item.barCount;
+        this.barValueMax+=item.barCount;
+        this.sortDirty = true;
     },
     /**
      * Updates wanted state, and notifies all related filter attributes of the change.
@@ -477,22 +485,24 @@ kshf.Item.prototype = {
         
         if(this.wanted===true && oldSelected===false){
             this.browser.itemsSelectedCt++;
-            this.mappedRows.forEach(function(m){
-                m.activeItems++;
-                m.barValue+=me.barCount;
-                m.sortDirty=true;
+            this.mappedItems.forEach(function(attrib){
+                attrib.activeItems++;
+                attrib.barValue+=me.barCount;
+                attrib.sortDirty=true;
             });
-            this.mappedItems.forEach(function(item){ item.activeItems++; })
-            this.mappedDots.forEach(function(d){d.setAttribute('display',"true");});
+            this.mappedDotDOMs.forEach(function(d){
+                d.setAttribute('display',"true");
+            });
         } else if(this.wanted===false && oldSelected===true){
             this.browser.itemsSelectedCt--;
-            this.mappedRows.forEach(function(m){
-                m.activeItems--;
-                m.barValue-=me.barCount;
-                m.sortDirty=true;
+            this.mappedItems.forEach(function(attrib){
+                attrib.activeItems--;
+                attrib.barValue-=me.barCount;
+                attrib.sortDirty=true;
             });
-            this.mappedItems.forEach(function(item){ item.activeItems--; })
-            this.mappedDots.forEach(function(d){d.setAttribute('display',"false");});
+            this.mappedDotDOMs.forEach(function(d){
+                d.setAttribute('display',"false");
+            });
         }
         this.dirtyFilter = false;
     },
@@ -504,11 +514,11 @@ kshf.Item.prototype = {
     },
     /** Highlights all the time components of this item */
     highlightTime: function(){
-        this.mappedDots.forEach(function(d){d.setAttribute('highlight',true);});
+        this.mappedDotDOMs.forEach(function(d){d.setAttribute('highlight',true);});
     },
     /** Highlights all attributes of this item */
     highlightAttribs: function(){
-        this.mappedAttribs.forEach(function(d){d.setAttribute('highlight',"true");});
+        this.mappedAttribDOMs.forEach(function(d){d.setAttribute('highlight',"true");});
     },
     /** Highlights the list item */
     highlightListItem: function(){
@@ -522,11 +532,11 @@ kshf.Item.prototype = {
     },
     /** Removes higlight from all the time components of this item */
     nohighlightTime: function(){
-        this.mappedDots.forEach(function(d){d.setAttribute('highlight',false);});
+        this.mappedDotDOMs.forEach(function(d){d.setAttribute('highlight',false);});
     },
     /** Removes higlight from all attributes of this item */
     nohighlightAttribs: function(){
-        this.mappedAttribs.forEach(function(d){d.setAttribute('highlight',"false");});
+        this.mappedAttribDOMs.forEach(function(d){d.setAttribute('highlight',"false");});
     },
     /** Removes higlight from the list item */
     nohighlightListItem: function(){
@@ -1277,7 +1287,7 @@ kshf.Browser = function(options){
     this.scrollPadding = 5;
     this.scrollWidth = 10;
     this.sepWidth = 10;
-    this.filters = [];
+    this.filterList = [];
 
     this.anim_barscale_duration_default = 400;
     
@@ -1391,7 +1401,7 @@ kshf.Browser.prototype = {
     createFilter: function(opts){
         // see if it has been created before TODO
         var newFilter = new kshf.Filter(opts);
-        this.filters.push(newFilter);
+        this.filterList.push(newFilter);
         return newFilter;
     },
     insertResize: function(){
@@ -2073,21 +2083,18 @@ kshf.Browser.prototype = {
             return (100*me.itemsSelectedCt/me.items.length)+"px";
         });
 
-
         // update each widget within
         this.charts.forEach(function(chart){
             chart.refreshUI();
             filteredCount += chart.getFilteredCount();
         });
 
-        setTimeout( function(){ me.updateLayout_Height(); }, 800);
-
         // "clear all" filter button : header
         this.root.select(".filter-block-clearall").style("display",(filteredCount>0)?"inline-block":"none");
-        // List thing...
-        this.dom.filtercrumbs.style("display",(filteredCount>0)?"inline-block":"none");
 
         if(this.updateCb) this.updateCb();
+
+        setTimeout( function(){ me.updateLayout_Height(); }, 800);
     },
     /** -- */
     updateLayout_Height: function(){
@@ -2620,14 +2627,11 @@ kshf.BarChart.prototype = {
         this.hasMultiValueItem = false;
         var mapFunc = this.options.catItemMap;
         var curDtId = this.getAttribs_wID();
+        var filterId = this.attribFilter.id;
 
         var addMappedItem = function(m,item){
-            m.items.push(item);
-            m.activeItems++;
-            m.barValue+=item.barCount;
-            m.barValueMax+=item.barCount;
-            m.sortDirty = true;
-            item.mappedRows.push(m);
+            m.addItem(item);
+            item.mappedItems.push(m);
         };
 
         // Apply attrib map function
@@ -2646,7 +2650,7 @@ kshf.BarChart.prototype = {
                     return false;
                 });
             }
-            item.mappedData[this.attribFilter.id] = toMap;
+            item.mappedData[filterId] = toMap;
             // Iterate through toMap items, and add this item to their items index.
             if(toMap===null) { return; }
             if(toMap instanceof Array){
@@ -2679,20 +2683,20 @@ kshf.BarChart.prototype = {
         this.updateAttribCount_Total();
         this.updateAttribCount_Active();
     	this.unselectAllAttribs();
+    },
+    /** -- */
+    updateAttribCount_Total: function(){
+        this.attribCount_Total = 0;
+        this.getAttribs().forEach(function(d){
+            if(this._dataMap(d)!==null) this.attribCount_Total++;
+        },this);
 
         // text search is automatically enabled is num of rows is more than 20.
         // It is NOT dependent on number of displayed rows
         this.showTextSearch = (this.attribCount_Total>=20 && this.options.forceSearch!==false) ||
                                this.options.forceSearch===true;
     },
-    /** updateAttribCount_Total */
-    updateAttribCount_Total: function(){
-        this.attribCount_Total = 0;
-        this.getAttribs().forEach(function(d){
-            if(this._dataMap(d)!==null) this.attribCount_Total++;
-        },this);
-    },
-    /** updateAttribCount_Total */
+    /** -- */
     updateAttribCount_Active: function(){
         this.attribCount_Active = 0;
         this.getAttribs().forEach(function(d){
@@ -2824,7 +2828,7 @@ kshf.BarChart.prototype = {
                 var mee=this;
                 d.barChart = me;
                 // Add this DOM to each item under cats
-                d.items.forEach(function(dd){dd.mappedAttribs.push(mee);});
+                d.items.forEach(function(dd){dd.mappedAttribDOMs.push(mee);});
             })
     		;
         this.dom.g_row = this.root.selectAll('g.row');
@@ -2973,7 +2977,7 @@ kshf.BarChart.prototype = {
     	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
     	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
     },
-    /** unselectAllAttribs */
+    /** -- */
     unselectAllAttribs: function(){
         this.getAttribs().forEach(function(attrib){ attrib.selected=false; });
     	this.attribCount_Selected = 0;
@@ -2985,9 +2989,13 @@ kshf.BarChart.prototype = {
     },
     /** -- */
     clearFilter_Attrib_cb: function(){
+        // if text search is shown, clear that one
+        if(this.showTextSearch){
+            this.dom.clearTextSearch.style("display","none");
+            this.dom.showTextSearch[0][0].value = '';
+        }
         this.unselectAllAttribs();
         this.refreshAttribFilter();
-        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
     },
     /** -- */
     clearFilter_Time_cb: function(){
@@ -3214,7 +3222,7 @@ kshf.BarChart.prototype = {
             var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX")
                 .attr("class","chartRowLabelSearch")
                 .style("white-space","nowrap").style("position","relative");
-            this.dom.showTextSearch= textSearchRowDOM.append("input")
+            this.dom.showTextSearch=textSearchRowDOM.append("input")
                 .attr("type","text")
                 .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
                 .on("input",function(){
@@ -3266,16 +3274,13 @@ kshf.BarChart.prototype = {
                 .attr("viewBox","0 0 491.237793 452.9882813")
                 .attr("xmlns","http://www.w3.org/2000/svg")
                 .append("use").attr("xlink:href","#kshf_svg_search")
-            textSearchRowDOM.append("svg").attr("class","clearText")
+            this.dom.clearTextSearch=textSearchRowDOM.append("svg").attr("class","clearText")
                 .attr("width","13")
                 .attr("height","13")
                 .attr("viewBox","0 0 48 48")
                 .attr("xmlns","http://www.w3.org/2000/svg")
                 .append("use").attr("xlink:href","#kshf_svg_clearText")
                 .on("click",function() {
-                    textSearchRowDOM.select("svg.clearText").style("display","none");
-                    var inputBox = textSearchRowDOM.select("input")[0][0];
-                    inputBox.value = '';
                     me.attribFilter.clearFilter(true);
                 });
         }
@@ -4345,7 +4350,7 @@ kshf.BarChart.prototype = {
             .attr("highlight","false")
             .attr("r", 5)
             .attr("cy", Math.floor(kshf_.line_height / 2 ))
-            .each(function(item){ item.mappedDots.push(this); })
+            .each(function(item){ item.mappedDotDOMs.push(this); })
             .on("mouseover",function(item,i,f){
                 item.highlightAll();
                 // update the position of selectVertLine
