@@ -477,27 +477,19 @@ kshf.Item.prototype = {
         
         if(this.wanted===true && oldSelected===false){
             this.browser.itemsSelectedCt++;
-            this.mappedRows.forEach(function(chartMapping){
-                if(chartMapping === undefined) return;
-                if(chartMapping === true) return;
-                chartMapping.forEach(function(m){
-                    m.activeItems++;
-                    m.barValue+=me.barCount;
-                    m.sortDirty=true;
-                });
+            this.mappedRows.forEach(function(m){
+                m.activeItems++;
+                m.barValue+=me.barCount;
+                m.sortDirty=true;
             });
             this.mappedItems.forEach(function(item){ item.activeItems++; })
             this.mappedDots.forEach(function(d){d.setAttribute('display',"true");});
         } else if(this.wanted===false && oldSelected===true){
             this.browser.itemsSelectedCt--;
-            this.mappedRows.forEach(function(chartMapping){
-                if(chartMapping === undefined) return;
-                if(chartMapping === true) return;
-                chartMapping.forEach(function(m){
-                    m.activeItems--;
-                    m.barValue-=me.barCount;
-                    m.sortDirty=true;
-                });
+            this.mappedRows.forEach(function(m){
+                m.activeItems--;
+                m.barValue-=me.barCount;
+                m.sortDirty=true;
             });
             this.mappedItems.forEach(function(item){ item.activeItems--; })
             this.mappedDots.forEach(function(d){d.setAttribute('display',"false");});
@@ -2435,16 +2427,13 @@ kshf.BarChart = function(kshf_, options){
     this.options = options;
 
     this.selectType = "SelectOr";
-
+    // COLLAPSED
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
-
-    this.scrollbar = {firstRow: 0};
-
+    // COLLAPSED TIME
     this.collapsedTime = false;
     if(options.collapsedTime===true) this.collapsedTime = true;
-    var items = this.getKshfItems();
-
+    // SORTING OPTIONS
     options.sortingOpts.forEach(function(opt){
         // apply defaults
         if(opt.no_resort===undefined) {
@@ -2458,6 +2447,20 @@ kshf.BarChart = function(kshf_, options){
         }
     });
     this.sortingOpt_Active = options.sortingOpts[0];
+    // ATTRTIBUTE MAPPING / FILTERING SETTINGS
+    if(options.showNoneCat===undefined){
+        options.showNoneCat = false;
+    }
+    if(options.removeInactiveAttrib===undefined){
+        options.removeInactiveAttrib = true;
+    }
+    if(options.catLabelText===undefined){
+        // get the 2nd attribute as row text [1st is expected to be the id]
+        options.catLabelText = function(typ){ return typ.data[1]; };
+    }
+
+    this.scrollbar = {firstRow: 0};
+
     this.showConfig = this.options.sortingOpts.length>1;
 
     this.attribFilter = new kshf.Filter({
@@ -2474,6 +2477,60 @@ kshf.BarChart = function(kshf_, options){
         this.type = 'barChart';
     } else {
         this.type = 'scatterplot';
+    }
+
+    this.parentKshf.barMaxWidth = 0;
+    this.options.timeMaxWidth=0;
+
+    if(this.options.catItemMap===undefined){
+        this.options.catItemMap = this.getKshf().columnAccessFunc(this.options.facetTitle);
+    } else if(typeof(this.options.catItemMap)==="string"){
+        this.options.catItemMap = this.getKshf().columnAccessFunc(this.options.catItemMap);
+    }
+    // generate row table if necessary
+    if(this.options.generateRows){
+        this.catTableName = this.options.catTableName+"_h_"+this.id;
+        this.getKshf().createTableFromTable(this.getKshfItems(),this.catTableName, this.options.catItemMap);
+    } else {
+        this.catTableName = this.options.catTableName;
+    }
+    if(this.options.showNoneCat===true){
+        // TODO: Check if a category named "None" exist in table
+        var noneID = 10000;
+        
+        var newItem = new kshf.Item([noneID,"None"],0)
+        newItem.browser = this.getKshf();
+        kshf.dt[this.catTableName].push(newItem);
+        kshf.dt_id[this.catTableName][noneID] = newItem;
+
+        var _catItemMap = this.options.catItemMap;
+        this.options.catItemMap = function(d){
+            var r=_catItemMap(d);
+            if(r===null) return noneID;
+            if(r instanceof Array) if(r.length===0) return noneID;
+            return r;
+        }
+        var _catLabelText = this.options.catLabelText;
+        this.options.catLabelText = function(d){ 
+            if(d.id()===noneID) return "None";
+            return _catLabelText(d);
+        };
+        var _catTooltipText = this.options.catTooltipText;
+        this.options.catTooltipText = function(d){ 
+            if(d.id()===noneID) return "None";
+            return _catTooltipText(d);
+        };
+    }
+
+    this.mapAttribs(options);
+
+    if(this.type === 'barChart'){
+        this.options.display = {row_bar_line:false};
+    } else if(this.type === 'scatterplot'){
+        this.options.display = {row_bar_line:true};
+        if(this.options.timeItemMap===undefined){
+            this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeTitle);
+        }
         this.timeFilter = new kshf.Filter({
             name: this.options.timeTitle,
             kshf_: this.getKshf(),
@@ -2482,17 +2539,11 @@ kshf.BarChart = function(kshf_, options){
             owner: this,
             filterTitle: this.options.timeTitle
         });
-    }
-
-    this.init_shared(options);
-
-    if(!this.options.timeTitle){
-        this.options.display = {row_bar_line:false};
-    } else {
-        this.options.display = {row_bar_line:true};
         this.getKshfItems().forEach(function(item){
             item.mappedData[this.timeFilter.id] = me.options.timeItemMap(item);
         },this)
+
+        this.x_axis_active_filter = null;
         this.timeData_dt = {
             min: d3.min(this.getKshfItems(), this.options.timeItemMap),
             max: d3.max(this.getKshfItems(), this.options.timeItemMap)};
@@ -2564,76 +2615,24 @@ kshf.BarChart.prototype = {
     allAttribsVisible: function(){
         return this.attribCount_Active===this.rowCount_Visible;
     },
-    /** init_shared */
-    init_shared: function(options){
-    	// register
-        var j,f;
-
-        this.parentKshf.barMaxWidth = 0;
-        this.options.timeMaxWidth=0;
-
-        if(this.options.showNoneCat===undefined){
-            this.options.showNoneCat = false;
-        }
-        if(this.options.removeInactiveAttrib===undefined){
-            this.options.removeInactiveAttrib = true;
-        }
-        if(this.type==="scatterplot" && this.options.timeItemMap===undefined){
-            this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeTitle);
-        }
-        if(this.options.catItemMap===undefined){
-            this.options.catItemMap = this.getKshf().columnAccessFunc(this.options.facetTitle);
-        } else if(typeof(this.options.catItemMap)==="string"){
-            this.options.catItemMap = this.getKshf().columnAccessFunc(this.options.catItemMap);
-        }
-
-        // generate row table if necessary
-        if(this.options.generateRows){
-            this.catTableName = this.options.catTableName+"_h_"+this.id;
-            this.getKshf().createTableFromTable(this.getKshfItems(),this.catTableName, this.options.catItemMap);
-        } else {
-            this.catTableName = this.options.catTableName;
-        }
-
-        if(this.options.catLabelText===undefined){
-            // get the 2nd attribute as row text [1st is expected to be the id]
-            options.catLabelText = function(typ){ return typ.data[1]; };
-        }
-
-        if(this.options.showNoneCat===true){
-            // TODO: Check if a category named "None" exist in table
-            var noneID = 1000;
-            var newItem = new kshf.Item([noneID,"None"],0)
-            newItem.browser = this.getKshf();
-            kshf.dt[this.catTableName].push(newItem);
-            kshf.dt_id[this.catTableName][noneID] = newItem;
-
-            var _catLabelText = this.options.catLabelText;
-            var _catTooltipText = this.options.catTooltipText;
-            var _catItemMap = this.options.catItemMap;
-            this.options.catLabelText = function(d){ 
-                if(d.id()===noneID) return "None";
-                return _catLabelText(d);
-            };
-            this.options.catTooltipText = function(d){ 
-                if(d.id()===noneID) return "None";
-                return _catTooltipText(d);
-            };
-            this.options.catItemMap = function(d){
-                var r=_catItemMap(d);
-                if(r===null) return noneID;
-                if(r instanceof Array)
-                    if(r.length===0) return noneID;
-                return r;
-            }
-        }
-
+    /** -- */
+    mapAttribs: function(options){
         this.hasMultiValueItem = false;
-
-        // BIG. Apply row map function
+        var mapFunc = this.options.catItemMap;
         var curDtId = this.getAttribs_wID();
+
+        var addMappedItem = function(m,item){
+            m.items.push(item);
+            m.activeItems++;
+            m.barValue+=item.barCount;
+            m.barValueMax+=item.barCount;
+            m.sortDirty = true;
+            item.mappedRows.push(m);
+        };
+
+        // Apply attrib map function
         this.getKshfItems().forEach(function(item){
-            var toMap = this.options.catItemMap(item);
+            var toMap = mapFunc(item);
             if(toMap===undefined || toMap==="") { 
                 toMap=null;
             } else if(toMap instanceof Array){
@@ -2648,31 +2647,20 @@ kshf.BarChart.prototype = {
                 });
             }
             item.mappedData[this.attribFilter.id] = toMap;
-            var itemList = [];
+            // Iterate through toMap items, and add this item to their items index.
             if(toMap===null) { return; }
             if(toMap instanceof Array){
                 this.hasMultiValueItem = true;
                 toMap.forEach(function(a){
                     var m=curDtId[a];
-                    if(m){
-                        m.items.push(item);
-                        m.activeItems++;
-                        m.barValue+=item.barCount;
-                        m.barValueMax+=item.barCount;
-                        m.sortDirty = true;
-                        itemList.push(m);
-                    }
+                    if(m==undefined) return;
+                    addMappedItem(m,item);
                 });
             } else {
                 var m=curDtId[toMap];
-                m.items.push(item);
-                m.activeItems++;
-                m.barValue+=item.barCount;
-                m.barValueMax+=item.barCount;
-                m.sortDirty = true;
-                itemList.push(curDtId[toMap]);
+                if(m==undefined) return;
+                addMappedItem(m,item);
             }
-            item.mappedRows.push(itemList);
         },this);
 
         // Modified internal dataMap function - Skip rows with0 active item count
@@ -2696,8 +2684,6 @@ kshf.BarChart.prototype = {
         // It is NOT dependent on number of displayed rows
         this.showTextSearch = (this.attribCount_Total>=20 && this.options.forceSearch!==false) ||
                                this.options.forceSearch===true;
-
-        this.x_axis_active_filter = null;
     },
     /** updateAttribCount_Total */
     updateAttribCount_Total: function(){
@@ -4289,7 +4275,7 @@ kshf.BarChart.prototype = {
         // key dots are something else
         var me = this;
         var kshf_ = this.getKshf();
-        var r,j;
+        var r;
         var rows = this.getAttribs();
         var timeFilterId = this.timeFilter.id;
         
