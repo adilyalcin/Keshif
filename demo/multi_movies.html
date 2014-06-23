@@ -16,6 +16,20 @@
 
         <script type="text/javascript">
 
+var movieGenresSplit = false;
+var seriesSplit = false;
+
+function addLinks(){
+    // Add mapped Data
+    var columnTitle = 'Series';
+    var mapFunc_Series = function(d){ return d.data[0]; }; // 0 stores series
+    var mapFunc_Movies = function(d){ return d.data[2]; }; // 2 stores movies
+    // Add filtering for series
+    browserScreenings.mapItemData(mapFunc_Series,kshf.dt_id['Series'],browserScreenings.maxFilterID++);
+    // Add filtering for movies
+    browserScreenings.mapItemData(mapFunc_Movies,kshf.dt_id['Movies'],browserScreenings.maxFilterID++);
+}
+
 // https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
 function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
 {
@@ -34,32 +48,12 @@ function loadMovieData(d){
     if(kshfItem===undefined)
         kshfItem = d.currentTarget.parentNode.__data__;
     if(kshfItem.listItem.getAttribute('details')==="false")
-        browser.showListItemDetails(kshfItem);
+        browserScreenings.showListItemDetails(kshfItem);
     if(kshfItem.dataLoaded===true) return;
     loadMovieData_Name(kshfItem);
 };
 
-function processMovie(kshfItem,data){
-    var d3Item = d3.select(kshfItem.listItem);
-    d3Item.select(".moviePoster").attr("src","./img/posters/"+data.imdbID+".jpg");
-    d3Item.select(".movieInfo").style("display","block");
-    d3Item.select(".Year .value").text(data.Year);
-    d3Item.select(".Rated .value").text(data.Rated);
-    d3Item.select(".Genre .value").text(data.Genre);
-    d3Item.select(".Plot .value").text(data.Plot);
-    d3Item.select(".Awards .value").text(data.Awards);
-    d3Item.select(".imdbRating .value").text(data.imdbRating);
-    d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+data.imdbID);
-    kshfItem.dataLoaded = true;
-    console.log(kshfItem.data[2]+", "+data.imdbID+", "+data.Poster);
-};
-
 function loadMovieData_Name(kshfItem){
-    var curMovie = movieList[kshfItem.data[2]];
-    if(curMovie!==undefined){
-        processMovie(kshfItem,curMovie);
-        return;
-    }
     $.ajax( {
         url: "http://www.omdbapi.com/?t="+kshfItem.data[2],
         dataType: "json",
@@ -68,46 +62,32 @@ function loadMovieData_Name(kshfItem){
                 console.log("Error loading movie: "+kshfItem.data[2])
                 return;
             }
-            movieList[data.Title] = data;
-            processMovie(kshfItem,data);
+            var d3Item = d3.select(kshfItem.listItem);
+            d3Item.select(".moviePoster").attr("src","./img/posters/"+data.imdbID+".jpg");
+            d3Item.select(".movieInfo").style("display","block");
+            d3Item.select(".Year .value").text(data.Year);
+            d3Item.select(".Rated .value").text(data.Rated);
+            d3Item.select(".Genre .value").text(data.Genre);
+            d3Item.select(".Plot .value").text(data.Plot);
+            d3Item.select(".Awards .value").text(data.Awards);
+            d3Item.select(".imdbRating .value").text(data.imdbRating);
+            d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+data.imdbID);
+            kshfItem.dataLoaded = true;
+            console.log(kshfItem.data[2]+", "+data.imdbID+", "+data.Poster);
         }
     });
-};
-
-// batch load script
-var i=0;
-var movieList = {};
-function loadOneMoreMovie(){
-    if(i===kshf.dt.Screening.length) return;
-    loadMovieData_Name(kshf.dt.Screening[i]);
-    i++;
-    setTimeout(loadOneMoreMovie, 200);
-};
-
-var printMovieList = function(){
-    var str = "Title\tGenre\tRated\tYear\timdbID\timdbRating\n";
-    for(movieName in movieList){
-        var movie = movieList[movieName];
-        str+=movie.Title+"\t"+
-            movie.Genre+"\t"+
-            movie.Rated+"\t"+
-            movie.Year+"\t"+
-            movie.imdbID+"\t"+
-            movie.imdbRating+"\n"
-    }
-    console.log(str);
 };
 
 var myLoc=null;
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
-    if(browser===undefined) return;
-    var me = browser.charts[1];
-    if(me===undefined) return;
-    me.sortingOpt_Active = me.options.sortingOpts[1];
-    me.sortDelay = 0;
-    browser.charts[1].divRoot.select(".optionSelect")[0][0].options[1].selected = true;
-    me.updateSorting.call(me);
+    if(browserScreenings===undefined) return;
+    var seriesChart = browserScreenings.charts[3];
+    if(seriesChart===undefined) return;
+    seriesChart.sortingOpt_Active = seriesChart.options.sortingOpts[1];
+    seriesChart.sortDelay = 0;
+    seriesChart.divRoot.select(".optionSelect")[0][0].options[1].selected = true;
+    seriesChart.updateSorting.call(seriesChart);
 };
 
 function loadChart() {
@@ -124,58 +104,36 @@ function loadChart() {
     var m_thisweek = moment().add('days',7);
     var m_nextweek = moment().add('days',14);
 
-    browser = new kshf.Browser({
-        chartTitle: "Outdoor Movies in D.C. area- Summer '14",
-        domID : "#chart_div",
+    browserScreenings = new kshf.Browser({
+        domID : "#div_screenings",
         dirRoot: "../",
         categoryTextWidth: 230,
-        itemName: "Outdoor Movie Screenings",
+        itemName: "Screenings",
         source : {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
-            sheets : [ {name:"Screenings"}, {name:"Series"} ]
+            sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"} ]
+        },
+        loadedCb: function(){
+            // expand cell content - movie genres and series features
+            kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
         },
         charts : [
             {
-                facetTitle: "State",
-                removeInactiveAttrib: false,
-                catItemMap: function(d){ 
-                    var series = kshf.dt_id.Series[d.data[0]];
-                    return series.data[3];
-                },
-                timeTitle: "Date",
-                timeItemMap : function(d){ 
-                    return d.data[1];
-                },
-            },{
-                facetTitle: "Series",
-                catTableName: "Series",
-                sortingOpts : [
-                    {   name: "# of Movies"},
-                    {   name: "Distance",  
-                        func: function(a,b){
-                            // lat-long: 10-11
-                            if(myLoc===null) {
-                                return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
-                            }
-                            var dist_a = distanceKilometersGreatCircle(
-                                myLoc.latitude,myLoc.longitude,a.data[10],a.data[11]);
-                            var dist_b = distanceKilometersGreatCircle(
-                                myLoc.latitude,myLoc.longitude,b.data[10],b.data[11]);
-                            return dist_a - dist_b;
+                facetTitle: "Movies",
+                catTableName: "Movies",
+                catItemMap: function(d){ return d.data[2]; },
+                catLabelText: function(m){ return m.data[0]; },
+                subFilters: {
+                    categoryTextWidth:140,
+                    divHeight: 300,
+                    charts: [
+                        {
+                            facetTitle: "Genre",
+                        },{
+                            facetTitle: "Rated",
                         }
-                    }
-                ]
-            },{
-                facetTitle: "Movie"
-            },{
-                facetTitle: "Soon",
-                removeInactiveAttrib: false,
-                catItemMap: function(d){
-                    var m_scr = moment(d.data[1]);
-                    if(m_scr.isBefore(m_now)) return null;
-                    if(m_scr.isBefore(m_thisweek)) return "This Week";
-                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
-                    return null;
+                    ]
                 }
             },{
                 facetTitle: "Day Of Week",
@@ -196,6 +154,47 @@ function loadChart() {
                         case 6: return "Sunday";
                     }
                 }
+            },{
+                facetTitle: "Soon",
+                removeInactiveAttrib: false,
+                catItemMap: function(d){
+                    var m_scr = moment(d.data[1]);
+                    if(m_scr.isBefore(m_now)) return null;
+                    if(m_scr.isBefore(m_thisweek)) return "This Week";
+                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                    return null;
+                }
+            },{
+                facetTitle: "Series",
+                catTableName: "Series",
+                catItemMap: function(d){ return d.data[0]; },
+                sortingOpts : [
+                    {   name: "# of Movies"},
+                    {   name: "Distance",  
+                        func: function(a,b){
+                            // lat-long: 10-11
+                            if(myLoc===null) {
+                                return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
+                            }
+                            var dist_a = distanceKilometersGreatCircle(
+                                myLoc.latitude,myLoc.longitude,a.data[10],a.data[11]);
+                            var dist_b = distanceKilometersGreatCircle(
+                                myLoc.latitude,myLoc.longitude,b.data[10],b.data[11]);
+                            return dist_a - dist_b;
+                        }
+                    }
+                ],
+                subFilters: {
+                    categoryTextWidth:140,
+                    divHeight: 200,
+                    charts: [
+                        {
+                            facetTitle: "State"
+                        },{
+                            facetTitle: "Features"
+                        }
+                    ]
+                }
             }
         ],
         readyCb: function(){
@@ -204,7 +203,7 @@ function loadChart() {
             if(myLoc) updateLocationSorting();
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
-            browser.showListItemDetails(firstItem);
+            browserScreenings.showListItemDetails(firstItem);
             loadMovieData_Name(firstItem);
             kshf.dt.Screenings[0].listItem.setAttribute('details',true);
         },
@@ -261,17 +260,16 @@ function loadChart() {
         }
     });
 }
+
 $(document).ready(loadChart);
 </script>
     <style type="text/css" media="screen">
-/*        .settingButton { display: none !important;} */
         .listItem{padding: 4px 0px 4px 0px !important;}
         .listItem a{
             color: rgb(95, 62, 21);
         }
         .moviePoster{ 
             float:right; width:120px;
-
             padding:4px;
             border:solid;
             border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
@@ -309,9 +307,23 @@ $(document).ready(loadChart);
             border-top: dotted 2px gray;
             font-size: 0.9em;
         }
-        #chart_div{
-            width:860px;
+        #div_series{
+            margin-top: 28px;
+            width: 230px;
+            height: 230px;
+            vertical-align: top;
+        }
+        #div_movies{
+            margin-top: 28px;
+            width: 230px;
+            height: 400px;
+            vertical-align: top;
+        }
+        #div_screenings{
+            width: 860px;
             height: 700px;
+            display:inline-block;
+            vertical-align: top;
         }
         img.film{
             position:absolute;
@@ -343,7 +355,6 @@ $(document).ready(loadChart);
                 <li type="circle">Movies coming up soon are shown first in the list.</li>
                 <li type="circle">Your location is used to display closest movie locations first.</li>
             </ul>
-
             <span class='developed'>
                 <span class='projectName'>kshf</span> browser developed by:<br>
                 <a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a> (
@@ -359,7 +370,13 @@ $(document).ready(loadChart);
             </div>
         <div class="meny-arrow"></div>
         <div class="contents">
-            <div id="chart_div"></div>
+            <div style="margin: 0px auto; position:relative; width:1100px">
+                <div style="display:inline-block">
+                    <div id="div_movies"></div>
+                    <div id="div_series"></div>
+                    </div>
+                <div id="div_screenings"></div>
+            </div>
             <img class="film" src="img/film.png">
             <img class="strip left" src="img/strip.png">
             <img class="strip right" src="img/strip.png">

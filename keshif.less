@@ -72,7 +72,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color: rgba(255,255,255,0.5);
             padding-left: 2px;
             margin-right: 5px;
-            opacity: 0;
+//            opacity: 0;
+            max-width: 0px;
+            .transition(~"all 300ms linear");
             .sdsdsds{
                 max-width: 300px;
                 white-space: nowrap;
@@ -82,12 +84,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 text-overflow: ellipsis;
                 display: block;
             }
-            .transition(~"opacity 200ms linear");
-            .transition(~"background-color 200ms linear");
-            &[ready=true]{ opacity: 1; }
+            &[ready=true]{ 
+//                opacity: 1;
+                max-width: 200px;
+            }
+            &[ready=false]{ 
+//                opacity: 1;
+                max-width: 0px;
+                .chartClearFilterButton{
+                    display:none;
+                }
+            }
             &:hover{
                 background-color: rgba(255,255,255,1.0);
-//                    border: 2px rgb(104, 91, 43) solid;
             }
             b{ font-weight: 700; }
             &[filtered=false]{ display: none; }
@@ -100,6 +109,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
+    .subBrowsers{
+        position:absolute;
+        top:33px;
+    }
+    .subBrowser{
+        position:absolute;
+        left: 0px;
+        .transition(~"left 500ms ease");
+    }
 }
 
 .kshf {
@@ -107,7 +125,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     float:left;
     display:inline-block;
 
-    span.filter-block-clearall{
+    span.filterClearAll{
         display: none;
         cursor: default;
         color: #252112;
@@ -144,6 +162,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: right;
             min-width: 45px;
             vertical-align: bottom;
+            padding-bottom: 2px;
         }
         span.listheader_count_bar{
             background-color: rgb(132, 147, 160);
@@ -268,7 +287,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         min-height: 100%;
         left: 0px;
-        .background-image(~"linear-gradient(right, rgba(243, 243, 243, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(243, 243, 243, 0) 100%)");
+        .background-image(~"linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%)");
         pointer-events: none;
     }
     .chartClearFilterButton{
@@ -432,6 +451,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .headerGroup{
         pointer-events:none;
         position:relative;
+        .SubFacetText{
+            .rotate(90deg);
+            .transform-origin(0 0);
+            position: absolute;
+            border: solid 1px rgb(134, 131, 120);
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+            padding: 2px 5px;
+            background-color: #EEEAE0;
+            font-size: 0.8em;
+            font-weight: 700;
+            font-variant: small-caps;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            pointer-events: all;
+            &:hover{
+                background-color:white;
+            }
+        }
         span.header_label {
             font-size: 1.0em;
             font-weight: 700;
@@ -618,8 +656,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .kshfChart{
         display:inline-block;
-        float:right;
-        clear:right;
         span.optionSelect_Label{
             float: right;
             font-size: 0.7em;
@@ -1017,7 +1053,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font: 500 100% Arial,sans-serif;
         font-size: 0.9em;
         position: relative;
-        height:20px;
+        min-height:20px;
 
         .background-image(~"linear-gradient(bottom, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%)");
         
