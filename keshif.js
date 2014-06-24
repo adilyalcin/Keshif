@@ -713,7 +713,7 @@ kshf.List = function(kshf_, config, root){
         this.itemLinkFunc = this.getKshf().columnAccessFunc(this.itemLink);
     }
     if(this.itemLink!==undefined){
-        this.linkFilter = new kshf.Filter({
+        this.linkFilter = kshf_.clearFilter({
             name: "listItemLink",
             kshf_: this.getKshf(),
             onClear: this.clearFilter_Links,
@@ -746,7 +746,7 @@ kshf.List = function(kshf_, config, root){
     if(this.displayType==='list'){
         this.sortingOpts.forEach(function(sortingOpt){
             me.sortFilters.push(
-                new kshf.Filter({
+                kshf_.createFilter({
                     name: sortingOpt.name,
                     kshf_: me.getKshf(),
                     onClear: me.clearFilter_Sort,
@@ -818,13 +818,14 @@ kshf.List.prototype = {
     /* -- */
     insertTextSearch: function(){
         var me=this;
+        var kshf_ = this.getKshf();
         var listHeaderTopRowTextSearch;
 
         var clearTextSearch_cb = function(){
             me.dom.bigTextSearch[0][0].value = '';
             listHeaderTopRowTextSearch.select("span").style('display','none');
         };
-        this.textFilter = new kshf.Filter({
+        this.textFilter = kshf_.createFilter({
             name: "TextSearch",
             kshf_: this.getKshf(),
             onClear: clearTextSearch_cb,
@@ -1206,18 +1207,6 @@ kshf.List.prototype = {
 //            this.updateItemLinks();
         }
     },
-    getFilteredCount: function(){
-        var filteredCount = 0;
-        if(this.hideTextSearch!==true) {
-            if(this.dom.bigTextSearch[0][0].value!=="") filteredCount++;
-        }
-        // TODO: update filteredCount....
-        filteredCount += this.filteringItem!==null?1:0;
-        this.sortFilters.forEach(function(filter){
-            filteredCount += filter.isFiltered?1:0;
-        });
-        return filteredCount;
-    },
     isFiltered_Link: function(){
         return this.filteringItem!==null;
     },
@@ -1262,13 +1251,6 @@ kshf.List.prototype = {
 
         sortFilter.value = clickedText;
         sortFilter.addFilter(true);
-    },
-    clearFilters_All: function(){
-        if(this.linkFilter!==undefined) this.linkFilter.clearFilter(false);
-        if(this.textFilter!==undefined) this.textFilter.clearFilter(false);
-        this.sortFilters.forEach( function(filter){
-            filter.clearFilter(false); 
-        } );
     },
     clearFilter_Links: function(){
         if(this.filteringItem===null) return;
@@ -1690,6 +1672,10 @@ kshf.Browser.prototype = {
     insertClearAll: function(){
         var me=this;
         // insert clear all option
+        if(this.listDisplay===undefined) {
+            this.dom.filterClearAll = this.root.select(".ffffffff");
+            return;
+        }
         this.dom.filterClearAll = this.listDisplay.dom.listHeader.append("span").attr("class","filterClearAll")
             .attr("filtered_row","false").text("Show all")
             ;
@@ -2130,17 +2116,16 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearFilters_All: function(force){
-        this.charts.forEach(function(chart){chart.clearFilters_All();});
-        if(this.listDisplay) {
-            this.listDisplay.clearFilters_All();
+        // clear all registered filters
+        this.filterList.forEach(function(filter){ filter.clearFilter(false); })
+        if(force!==false){
+            this.items.forEach(function(item){ item.updateSelected_SelectOnly(); });
+            this.update();
         }
-        this.items.forEach(function(item){ item.updateSelected_SelectOnly(); });
-        this.update();
     },
     /** update */
     update: function () {
         var me=this;
-        var filteredCount=0;
 
         // if running for the first time, do stuff
         if(this.firsttimeupdate === undefined){
@@ -2152,7 +2137,6 @@ kshf.Browser.prototype = {
 
         if(this.listDisplay){
             this.listDisplay.updateAfterFiltering();
-            filteredCount += this.listDisplay.getFilteredCount();
         }
 
         this.dom.listheader_count.text(function(){
@@ -2165,9 +2149,10 @@ kshf.Browser.prototype = {
         // update each widget within
         this.charts.forEach(function(chart){
             chart.refreshUI();
-            filteredCount += chart.getFilteredCount();
         });
 
+        var filteredCount=0;
+        this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
 
         if(this.updateCb) this.updateCb(this);
@@ -2309,10 +2294,12 @@ kshf.Browser.prototype = {
         // get height of list Header
         var listHeaderHeight=23; // Fixed height
 
-        this.listDisplay.dom.listItemGroup
-            .transition().duration(this.anim_layout_duration)
-            .style("height",(divHeight-listDivTop-listHeaderHeight-15)+"px")
-            ;
+        if(this.listDisplay) {
+            this.listDisplay.dom.listItemGroup
+                .transition().duration(this.anim_layout_duration)
+                .style("height",(divHeight-listDivTop-listHeaderHeight-15)+"px")
+                ;
+        }
 
         this.layoutLeft
             .transition().duration(this.anim_layout_duration)
@@ -2442,7 +2429,7 @@ kshf.Browser.prototype = {
         // update list
         this.maxTotalColWidth = width_rightPanel_total*this.listMaxColWidthMult;
     },
-    /** getFilteringState */
+    /** -- */
     getFilteringState: function(facetTitle, itemInfo) {
         var r={
             results : this.itemsSelectedCt,
@@ -2550,7 +2537,7 @@ kshf.BarChart = function(kshf_, options){
 
     this.showConfig = this.options.sortingOpts.length>1;
 
-    this.attribFilter = new kshf.Filter({
+    this.attribFilter = kshf_.createFilter({
         name: this.options.facetTitle,
         kshf_: this.getKshf(),
         onClear: this.clearFilter_Attrib_cb,
@@ -2618,7 +2605,7 @@ kshf.BarChart = function(kshf_, options){
         if(this.options.timeItemMap===undefined){
             this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeTitle);
         }
-        this.timeFilter = new kshf.Filter({
+        this.timeFilter = kshf_.createFilter({
             name: this.options.timeTitle,
             kshf_: this.getKshf(),
             onClear: this.clearFilter_Time_cb,
@@ -2738,14 +2725,14 @@ kshf.BarChart.prototype = {
             return "<b>"+me.subBrowser.itemsSelectedCt+" selected</b>";
         };
 
-        this.subFacetFilter = new kshf.Filter({
+        this.subFacetFilter = kshf_.createFilter({
             name: "SubFacetFilter_"+this.id,
             kshf_: this.getKshf(),
             text_header: this.options.facetTitle,
             onClear: clear_cb,
             text_item: subFacetFilterSummaryTextFunc,
             owner: this,
-            filterTitle: 'link'
+            filterTitle: 'subBrowser_'+this.id
         });
         var firstPass = false;
         this.subBrowser = new kshf.Browser({
@@ -3075,17 +3062,17 @@ kshf.BarChart.prototype = {
     		return (attrib.orderIndex%2===1)?"rgb(200,200,200)":"rgb(80,80,80)";
     	});
     },
-    /** getFilteredCount */
+    /** -- */
     getFilteredCount: function(){
         var r=this.isFiltered_Attrib();
         if(this.type==="scatterplot") r+=this.isFiltered_Time();
         return r;
     },
-    /** isFiltered_Attrib */
+    /** -- */
     isFiltered_Attrib: function(state){
         return this.attribCount_Selected!==0;
     },
-    /** isFiltered_Time */
+    /** -- */
     isFiltered_Time: function(){
     	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
     	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
@@ -3094,11 +3081,6 @@ kshf.BarChart.prototype = {
     unselectAllAttribs: function(){
         this.getAttribs().forEach(function(attrib){ attrib.selected=false; });
     	this.attribCount_Selected = 0;
-    },
-    /** -- */
-    clearFilters_All: function(){
-        this.attribFilter.clearFilter(false);
-        if(this.timeFilter!==undefined) this.timeFilter.clearFilter(false);
     },
     /** -- */
     clearFilter_Attrib_cb: function(){
@@ -4154,7 +4136,7 @@ kshf.BarChart.prototype = {
                     // prevent "...and" and show "...or" instead
                     this.tipsy_active = d3.select(this).select(".filter_add_more")[0][0].tipsy;
                 }
-                thiss.tipsy_active.show()
+                this.tipsy_active.show()
             })
             .on("mouseout",function(attrib,i){
                 if(!me.isAttribSelectable(attrib)) return;
