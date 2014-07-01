@@ -132,7 +132,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: #E9E2CE;
         padding-right: 2px;
         position: absolute;
-        right: 15px;
+        right: 3px;
         top: 3px;
         .transition(~"background-color 100ms linear");
         &:hover{ 
@@ -339,7 +339,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -3px;
+        right:-4px;
+        top:1px;
         width:6px;
         border-bottom: solid 1px lightgray;
         border-top: solid 1px lightgray;
@@ -1016,10 +1017,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:inline-block; 
             font-size: 0.8em;
             margin : auto; 
-            cursor: cell;
-            &:hover{
-                color: red;
-            }
+            cursor: default;
         }
         div.listsortcolumn_0{
             font-weight:bold;
@@ -1046,7 +1044,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     div.listHeader {
         font-weight: bold;
         color: black;
-        padding: 0px 5px 3px 2px;
+        padding: 0px 0px 3px 2px;
         border-top-left-radius: 5px;
         font: 500 100% Arial,sans-serif;
         font-size: 0.9em;
@@ -1191,6 +1189,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: solid 0px lightgray;
             position: relative;
         }
+        div.listsortcolumn{
+            cursor: cell;
+            &:hover{
+                color: red;
+            }
+        }
+
         div.itemNo{
             position: relative;
             padding-left:10px;
