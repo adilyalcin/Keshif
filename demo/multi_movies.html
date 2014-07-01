@@ -200,6 +200,10 @@ function loadChart() {
         readyCb: function(){
             $(".itemtoggledetails .item_details_on").click(loadMovieData);
             $(".movieName").click(loadMovieData);
+
+            browserScreenings.listDisplay.dom.listItemGroup
+                .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
+
             if(myLoc) updateLocationSorting();
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
@@ -326,12 +330,18 @@ $(document).ready(loadChart);
             vertical-align: top;
         }
         img.film{
-            position:absolute;
-            left: 10px;
-            bottom: 10px;
-            width:230px;
-            z-index: -2;
-            opacity: 0.8;
+            position: absolute;
+            right: 15px;
+            bottom: 0px;
+            width: 150px;
+            /* z-index: -2; */
+            opacity: 0.4;
+            -moz-transform: scaleX(-1);
+            -o-transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            filter: FlipH;
+            -ms-filter: "FlipH";
         }
         img.strip{
             position:absolute;
@@ -377,7 +387,6 @@ $(document).ready(loadChart);
                     </div>
                 <div id="div_screenings"></div>
             </div>
-            <img class="film" src="img/film.png">
             <img class="strip left" src="img/strip.png">
             <img class="strip right" src="img/strip.png">
             </div>

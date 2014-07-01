@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Marvin Minsky - Bibliogrpahy</title><meta charset="utf-8">
+		<title>Marvin Minsky - Bibliography</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
@@ -27,7 +27,6 @@ function loadChart() {
     
     // set height of the source dom as 
     browser = new kshf.Browser({
-        chartTitle: "Bibliography of Marvin Minsky",
         domID : "#chart_div",
         dirRoot: "../",
         itemName : "works",
@@ -117,9 +116,7 @@ function loadChart() {
     });
 }
 
-// Set a callback to run when the Google Visualization API is loaded.
 google.setOnLoadCallback(loadChart);
-
 
 </script>
 <style>

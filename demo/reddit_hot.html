@@ -33,7 +33,6 @@ function loadData(browser){
     kshf.dt_ColNames[tableName] = postCols;
     kshf.dt[tableName] = [];
     var arr = kshf.dt[tableName];
-    var i;
 
     $.ajax( {
         url: "http://api.reddit.com/hot.json?limit=100",
@@ -41,8 +40,7 @@ function loadData(browser){
         success: function(data){
             var posts = data.data.children;
 
-            for(i=0; i<posts.length; i++){
-                var p = posts[i].data;
+            posts.forEach(function(p){
                 var c = [];
                 c[postCols.subreddit] = p.subreddit;
                 c[postCols.num_comments] = p.num_comments;
@@ -59,14 +57,11 @@ function loadData(browser){
                 arr.push(item);
             }
 
-            browser.items = kshf.dt[tableName];
+            browser.items = arr;
             browser.itemsSelectedCt = kshf.dt[tableName].length;
 
             var id_table = {};
-            for(j=0; j<arr.length ;j++) {
-                var r=arr[j];
-                id_table[r.id()] = r; 
-            }
+            arr.forEach(function(r){id_table[r.id()] = r;})
             kshf.dt_id[tableName] = id_table;
 
             // finish loading....
@@ -75,19 +70,16 @@ function loadData(browser){
             window.setTimeout(function() { browser.loadCharts(); }, 50);
         }
     });
-}
+};
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        chartTitle: "Hot posts on reddit",
         domID : "#chart_div",
+        itemName: "Reddit Hot Posts",
         dirRoot: "../",
         categoryTextWidth: 150,
         showDataSource : false,
-        source: {
-            callback : loadData,
-            sheets : [ {name:tableName, id:"id"}]
-        },
+        source: { callback : loadData },
         charts : [
             {   facetTitle: "subreddit"
             },{ facetTitle: "num_comments",

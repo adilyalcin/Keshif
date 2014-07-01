@@ -82,7 +82,6 @@ function loadChart() {
     });
     
     browser = new kshf.Browser({
-        chartTitle: "HCIL TechReports / Publications",
         domID : "#chart_div",
         dirRoot: "../",
         itemName : "publications",
@@ -216,7 +215,6 @@ function loadChart() {
     });
 }
 
-// Set a callback to run when the Google Visualization API is loaded.
 google.setOnLoadCallback(loadChart);
 </script>
 <style>
