@@ -14,6 +14,8 @@
 
 var tableName = "posts";
 
+var subreddit = "hot";
+
 var postCols = {
     subreddit: 0,
     num_comments: 1,
@@ -34,13 +36,18 @@ function loadData(browser){
     kshf.dt[tableName] = [];
     var arr = kshf.dt[tableName];
 
+    if(window.location.hash!==""){
+        subreddit = window.location.hash.substring(1);
+    }
+
     $.ajax( {
-        url: "http://api.reddit.com/hot.json?limit=100",
+        url: "http://api.reddit.com/"+subreddit+".json?limit=100",
         dataType: "json",
         success: function(data){
             var posts = data.data.children;
 
             posts.forEach(function(p){
+                p = p.data;
                 var c = [];
                 c[postCols.subreddit] = p.subreddit;
                 c[postCols.num_comments] = p.num_comments;
@@ -55,7 +62,7 @@ function loadData(browser){
                 var item = new kshf.Item(c,postCols.id,true);
                 item.browser = browser;
                 arr.push(item);
-            }
+            });
 
             browser.items = arr;
             browser.itemsSelectedCt = kshf.dt[tableName].length;
