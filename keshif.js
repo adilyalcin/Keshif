@@ -978,6 +978,20 @@ kshf.List.prototype = {
             this.insertItemLinkBar();
         }
         if(this.displayType==='list'){
+            this.insertItemSortCoumn();
+        }
+        if(this.detailsToggle!=="Off"){
+            this.insertItemToggleDetails();
+        }
+
+        this.dom.listItems_Content = this.dom.listItems
+            .append("div")
+            .attr("class","content")
+            .html(function(d){ return me.contentFunc(d);});
+    },
+    /** Insert sort column into list items */
+    insertItemSortCoumn: function(){
+        var me=this;
         this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
             .style("width",this.sortColWidth+"px")
             .html(function(d){ return me.sortingOpt_Active.label(d); })
