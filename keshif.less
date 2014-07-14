@@ -130,9 +130,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-weight: 300;
         border: 1px #685b2b solid;
         background-color: #E9E2CE;
-        padding-right: 2px;
-        position: absolute;
-        right: 3px;
+        float: right;
+        padding-left: 2px;
+        position: relative;
+        right: 1px;
         top: 3px;
         .transition(~"background-color 100ms linear");
         &:hover{ 
@@ -333,8 +334,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &.allFilter{
             display: inline-block;
-            float: left;
-            margin-right: 2px;
+            float: right;
+            margin-left: 2px;
         }
     }
     span.leftBlockAdjustSize{
@@ -830,12 +831,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .rowSelectBackground_ClickArea{
                     cursor: cell;
                 }
+                .rowBar{
+                    cursor: cell;
+                }
             }
         }
         // When only one item is selected in selectOr
         &[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] {
             .row[highlight=true][selected=false] {
                 rect.rowSelectBackground_ClickArea{
+                    cursor: pointer !important;
+                }
+                rect.rowBar{
                     cursor: pointer !important;
                 }
             }
@@ -929,11 +936,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: none;
         }
         &[noitems=false][highlight=true] {
-            &[selected=false] rect.rowSelectBackground_ClickArea{
-                cursor: cell;
+            &[selected=false] {
+                rect.rowSelectBackground_ClickArea{
+                    cursor: cell;
+                }
+                rect.rowBar{
+                    cursor: cell;
+                }
             }
-            &[selected=true] rect.rowSelectBackground_ClickArea{
-                cursor: pointer;
+            &[selected=true] {
+                rect.rowSelectBackground_ClickArea{
+                    cursor: pointer;
+                }
+                rect.rowBar{
+                    cursor: pointer;
+                }
             }
             rect.active{
                 pointer-events: none;
@@ -965,9 +982,84 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-left: 6px;
         div.listItemGroup {
             overflow-y:scroll;
+            overflow-x:hidden;
             width: calc(~"100% - 2px");
             border-left: solid 2px rgb(233, 227, 205);
             background-color: white;
+        }
+        .showMore{
+            cursor: pointer;
+            border: solid 1px lightgray;
+            border-radius: 9px;
+
+            padding: 2px 0px;
+            box-shadow: 2px 2px 2px #D8D8D8;
+            font-weight: 300;
+            font-size: 0.8em;
+            background-color: #eee;
+            height: 20px;
+
+            text-align: center;
+            position:absolute;
+            left: 4px;
+            //bottom: -25px;
+            .transition(~"bottom 400ms ease 50ms");
+
+            .dots {
+                width: 10px;
+                height: 10px;
+                background: gray;
+                border-radius: 50px;
+                margin: 4px;
+                display: inline-block;
+            }
+            span.MoreText{
+                display:inline-block;
+                vertical-align: top;
+                top: 2px;
+                position: relative;
+            }
+            .Count{
+                font-size: 0.9em;
+                top: 3px;
+                position: relative;
+                color:gray;
+            }
+            .CountAbove{
+                float:left;
+                margin-left: 3px;
+            }
+            .CountBelow{
+                float:right;
+                margin-right: 3px;
+            }
+
+            .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
+
+            span.dots{
+
+            }
+            &:hover{
+                //background-color: darken(lightgray,0%);
+                box-shadow: 2px 2px 2px gray;
+                span.MoreText{
+                    text-decoration: underline;
+                }
+                .dots{
+                    //background: black;
+                    .animation(fade 900ms forwards);
+                    .animation-iteration-count(infinite);
+                }
+                .dots_1  {
+                }
+                .dots_2  {
+                    .animation-delay(300ms)
+                }
+                .dots_3  {
+                    .animation-delay(600ms)
+                }
+
+            }
         }
         div.itemLinks{
             display: inline-block;
@@ -1065,6 +1157,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
+        span.scrollToTop{
+            display:inline-block;
+            visibility: hidden;
+            float:right;
+            color: red;
+            position:relative;
+            font-size: 1.1em;
+            top: 3px;
+            cursor: pointer;
+            color: #aaaaaa;
+            .transition(~'color 300ms ease');
+            &:hover{
+                color:#cb5454;
+            }
+        }
+
         span.filter-separator{
             padding-left:10px;
             padding-right:5px;
@@ -1157,11 +1265,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     div.listItem {
+        display:none;
+        opacity: 1;
         clear:left;
         cursor:default;
         overflow: hidden;
         float: none;
+        height: auto;
+        max-height: 200px;
         border-top: double 0px gray;
+        .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
+
+        &[animst=open]{
+            opacity: 0;
+        }
+        &[animst=closed]{
+            max-height: 0px !important;
+            padding: 0px !important;
+            opacity: 0;
+        }
+        &[animst=visible]{
+            // default
+        }
 
         &[details=true]{
             .item_details_on{ display:none; }
@@ -1176,11 +1301,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[highlight=true]{
             background-color:#EEEEEE;
-            .transition(~"background-color 100ms linear");
         }
         &[highlight=false]{
             background-color:white;
-            .transition(~"background-color 100ms linear");
         }
         div{
             float:left;
@@ -1248,20 +1371,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     g.scrollGroup {
         display:inline-block;
-        g.top_arrow{
+        .top_arrow{
             display: none;
-            rect {
-                opacity: 0;
-                cursor: pointer;
-            }
-        }
-        path.top_arrow{
-            pointer-events:none;
             fill:#AAAAAA;
+            cursor: pointer;
+            font-size: 0.8em;
+            .transition(~"fill 200ms ease");
         }
-        g:hover path.top_arrow{
+        g:hover .top_arrow{
             fill: #cb5454;
-            .transition(~"fill 200ms linear");
         }
         rect.background{
             fill:white;

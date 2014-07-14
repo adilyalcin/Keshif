@@ -59,6 +59,7 @@ var kshf = {
     },
     num_of_charts: 0,
     num_of_browsers: 0,
+    maxVisibleItems_default: 50, 
     dt: {},
     dt_id: {},
     dt_ColNames: {},
@@ -305,7 +306,8 @@ var ACTID_OTHER = {
     OpenPage   : 3, // load
     ClosePage  : 4,  // unload
     LeftPanelWidth: 5,
-    Resize     : 6
+    Resize     : 6,
+    ShowMoreResults: 7
 };
 
 // tipsy, facebook style tooltips for jquery
@@ -436,6 +438,7 @@ kshf.Item = function(d, idIndex, primary){
         this.filterCache = [];
         this.barCount = 1; // 1 by default
         this.wanted = true;
+        this.wantedOrder = 0; // some default. Used by listDisplay to adjust animations
         this.mappedItems = [];
         // accessed with filterID, the data that's used for mapping this item
         this.mappedData = [true]; // caching the values this item was mapped to
@@ -685,6 +688,8 @@ kshf.List = function(kshf_, config, root){
     this.dom = {};
 
     this.linkFilterWidth = 65;
+
+    this.maxVisibleItems = kshf.maxVisibleItems_default;
     
     // Sorting options
     this.sortingOpts = config.sortingOpts;
@@ -748,9 +753,30 @@ kshf.List = function(kshf_, config, root){
 	this.listDiv = root
         .attr('showAll',this.detailsDefault?'false':'true')
         .attr('detailsToggle',this.detailsToggle);
-    
-    this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
-    this.dom.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup");
+
+    var xasdad = this.listDiv.append("div")
+        .style("position","relative")
+        .style("overflow","hidden")
+        ;
+
+    this.dom.listHeader=xasdad.append("div").attr("class","listHeader");
+
+    this.dom.scrollToTop = this.dom.listHeader.append("span").attr("class","scrollToTop")
+        .html("⬆")
+        .attr("title","Scroll To Top")
+        .on("click",function(d){
+            me.scollListToTop();
+        });
+
+    this.dom.listItemGroup=xasdad.append("div").attr("class","listItemGroup")
+        .on("scroll",function(d){
+            if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
+                me.dom.showMore.style("bottom","4px");
+            } else{
+                me.dom.showMore.style("bottom","-25px");
+            }
+            me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+        });
 
     if(this.itemLink!==undefined){
         this.insertItemLinkBar_Header();
@@ -819,6 +845,22 @@ kshf.List = function(kshf_, config, root){
 
     this.sortItems();
     this.insertItems();
+
+    // insert "show more" thing...
+    this.dom.showMore = xasdad.append("div").attr("class","showMore")
+        .on("click",function(){
+            me.maxVisibleItems *= 2;
+            me.updateItemVisibility(true);
+            this.style.bottom = "-25px";
+            if(sendLog) sendLog(CATID.Other,ACTID_OTHER.ShowMoreResults);
+        })
+        ;
+    this.dom.showMore.append("span").attr("class","MoreText").html("Show More");
+    this.dom.showMore.append("span").attr("class","Count CountAbove");
+    this.dom.showMore.append("span").attr("class","Count CountBelow");
+    this.dom.showMore.append("span").attr("class","dots dots_1").html("");
+    this.dom.showMore.append("span").attr("class","dots dots_2").html("");
+    this.dom.showMore.append("span").attr("class","dots dots_3").html("");
 };
 kshf.List.prototype = {
     /** get parent keshif */
@@ -829,17 +871,24 @@ kshf.List.prototype = {
     getKshfItems: function(){
         return this.parentKshf.items;
     },
+    updateWantedItemList: function(){
+        var arr = [];
+        var allItems = this.getKshfItems();
+        for(var i=0; i<allItems.length ; i++ ){
+            if(allItems[i].wanted) arr.push();
+        };
+        this.wantedItems = arr;
+    },
     /* -- */
     insertTextSearch: function(){
         var me=this;
-        var kshf_ = this.getKshf();
         var listHeaderTopRowTextSearch;
 
         var clearTextSearch_cb = function(){
             me.dom.bigTextSearch[0][0].value = '';
             listHeaderTopRowTextSearch.select("span").style('display','none');
         };
-        this.textFilter = kshf_.createFilter({
+        this.textFilter = this.getKshf().createFilter({
             name: "TextSearch",
             browser: this.getKshf(),
             onClear: clearTextSearch_cb,
@@ -928,48 +977,37 @@ kshf.List.prototype = {
         if(this.itemLink!==undefined){
             this.insertItemLinkBar();
         }
-
         if(this.displayType==='list'){
-            this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
-                .style("width",this.sortColWidth+"px")
-                .html(function(d){ return me.sortingOpt_Active.label(d); })
-                .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's',
-                        fade: true,
-                        opacity: 1,
-                        title: function(){ 
-                            // If column filter is added, tipsy is not shown.
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
-                                me.sortingOpt_Active.name+"</i> Filter"; 
-                        }
-                    })
+        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
+            .style("width",this.sortColWidth+"px")
+            .html(function(d){ return me.sortingOpt_Active.label(d); })
+            .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    fade: true,
+                    opacity: 1,
+                    title: function(){ 
+                        // If column filter is added, tipsy is not shown.
+                        return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                            me.sortingOpt_Active.name+"</i> Filter"; 
+                    }
                 })
-                .on("mouseover",function(){
-                    if(me.sortFilters[me.sortingOpt_ActiveIndex].isFiltered) return;
-                    this.tipsy.show();
-                })
-                .on("mouseout",function(d,i){
-                    this.tipsy.hide();
-                })
-                .on("click",function(d,i){
-                    if(me.sortFilters[me.sortingOpt_ActiveIndex].isFiltered) return;
-                    this.tipsy.hide();
-                    // get clicked item's html value and pass it to the filter func
-                    me.filterSortCol(this.columnValue);
-                })
-                ;
-        }
-
-        if(this.detailsToggle!=="Off"){
-            this.insertItemToggleDetails();
-        }
-
-        this.dom.listItems_Content = this.dom.listItems
-            .append("div")
-            .attr("class","content")
-            .html(function(d){ return me.contentFunc(d);});
+            })
+            .on("mouseover",function(){
+                if(me.sortFilters[me.sortingOpt_ActiveIndex].isFiltered) return;
+                this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+            })
+            .on("click",function(d,i){
+                if(me.sortFilters[me.sortingOpt_ActiveIndex].isFiltered) return;
+                this.tipsy.hide();
+                // get clicked item's html value and pass it to the filter func
+                me.filterSortCol(this.columnValue);
+            })
+            ;
     },
     /** -- */
     insertSortSelect: function(){
@@ -1037,6 +1075,38 @@ kshf.List.prototype = {
             })
             .on("mouseout",function(d){ this.parentNode.tipsy.hide(); })
             ;
+    },
+    /** -- */
+    insertItemLinkBar: function(){
+        var me=this;
+        var x= this.dom.listItems.append("div").attr("class","listcell itemLinks")
+            .style("width",this.linkFilterWidth+"px")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity:'s', fade:true, className:'details',
+                    title: function(){ 
+                        return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                            me.itemLink+"</i> Filter"; 
+                    }
+                });
+            })
+            .on("click",function(item){
+                if(item.activeItems===0) return;
+                this.tipsy.hide();
+                me.filterLinks(item);
+            })
+            .on("mouseover",function(){
+                this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+            })
+            .append("span").attr("class","captureEvents")
+            ;
+        this.dom.listItems_itemLinks_captureEvents = x;
+        this.dom.listItems_itemLinks_itemCount = x.append("span").attr("class","itemCount");
+        this.dom.listItems_itemLinks_itemBar = x.append("span").attr("class","itemBar");
+        this.updateItemLinks();
     },
     /** -- */
     insertItemsToggleDetails: function(){
@@ -1150,9 +1220,68 @@ kshf.List.prototype = {
         return sortValueType_;
     },
     /** Updates visibility of list items */
-    updateItemVisibility: function(){
+    updateItemVisibility: function(showMoreOnly){
+        var me = this;
         var showType=this.displayType==='list'?"block":"inline-block";
-    	this.dom.listItems.style("display",function(attrib){return (attrib.wanted)?showType:"none"; });
+        var visibleItemCount=0;
+
+        var isInViewNow = function(item){
+            return ;
+        };
+        var isInViewBefore = function(item){
+            return 
+        };
+
+        this.dom.listItems
+            .each(function(item){
+                var domItem = this;
+                // adjust visibleItemCount
+                var isVisible = (item.wantedOrder>=0 && item.wantedOrder<me.maxVisibleItems);
+                if(isVisible) visibleItemCount++;
+
+                if(showMoreOnly){
+                    this.style.display = isVisible?showType:'none';
+                    this.setAttribute("animSt","visible");
+                    return;
+                }
+
+                var isInViewNow = item.wantedOrder>=0 && item.wantedOrder<50;
+                var isInViewBefore = item.wantedOrder_pre>=0 && item.wantedOrder_pre<50;
+
+                // NOTE: Max 100 items can be under animation (in view now, or before), so don't worry about performance!
+
+                if(isInViewNow){
+                    if(isInViewBefore){
+                        // "in view" now, "in view" before
+                        this.setAttribute("animSt","visible");
+                        this.style.display = isVisible?showType:'none';
+                    } else {
+                        this.style.display = showType;
+                        domItem.setAttribute("animSt","closed"); // start from closed state
+                        // "in view" now, but not "in view" before
+                        setTimeout(function(){ domItem.setAttribute("animSt","open") },500);
+                        setTimeout(function(){ domItem.setAttribute("animSt","visible") },1100+item.wantedOrder*10);
+                    }
+                } else {
+                    // item not in view now
+                    if(isInViewBefore && isVisible===false){
+                        // not in view now, but in view before
+                        setTimeout(function(){ domItem.setAttribute("animSt","open") },-item.wantedOrder*10);
+                        setTimeout(function(){ domItem.setAttribute("animSt","closed") },500);
+                        setTimeout(function(){ domItem.style.display = 'none' },1000);
+                    } else {
+                        // not "in view" now or before
+                        this.setAttribute("animSt","visible");
+                        this.style.display = isVisible?showType:'none';
+                    }
+                }
+            });
+
+        var hiddenItemCount = this.getKshf().itemsSelectedCt-visibleItemCount;
+        this.dom.showMore.style("display",
+            (hiddenItemCount===0)?"none":"block");
+        this.dom.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
+        this.dom.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
     },
     /** -- */
     updateContentWidth: function(contentWidth){
@@ -1162,40 +1291,15 @@ kshf.List.prototype = {
         contentWidth-=12; // works for now. TODO: check 
 //        this.dom.filtercrumbs.style("width",(contentWidth-150)+"px");
         if(this.displayType==='list'){
-            this.dom.listItems_Content.style("width",contentWidth+"px");
+            this.dom.listItems_Content.style("width",(contentWidth-10)+"px");
         }
+        this.contentWidth = contentWidth;
     },
     /** -- */
-    insertItemLinkBar: function(){
-        var me=this;
-        var x= this.dom.listItems.append("div").attr("class","listcell itemLinks")
-            .style("width",this.linkFilterWidth+"px")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity:'s', fade:true, className:'details',
-                    title: function(){ 
-                        return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
-                            me.itemLink+"</i> Filter"; 
-                    }
-                });
-            })
-            .on("click",function(item){
-                if(item.activeItems===0) return;
-                this.tipsy.hide();
-                me.filterLinks(item);
-            })
-            .on("mouseover",function(){
-                this.tipsy.show();
-            })
-            .on("mouseout",function(d,i){
-                this.tipsy.hide();
-            })
-            .append("span").attr("class","captureEvents")
-            ;
-        this.dom.listItems_itemLinks_captureEvents = x;
-        this.dom.listItems_itemLinks_itemCount = x.append("span").attr("class","itemCount");
-        this.dom.listItems_itemLinks_itemBar = x.append("span").attr("class","itemBar");
-        this.updateItemLinks();
+    updateTotalWidth: function(totalWidth){
+        this.totalWidth = totalWidth;
+        this.listDiv.style("width",totalWidth+"px");
+        this.dom.showMore.style("width",(totalWidth-30)+"px");
     },
     /** -- */
     updateItemLinks: function(){
@@ -1220,13 +1324,71 @@ kshf.List.prototype = {
             return d.activeItems;
         });
     },
-    /** returns active filter count */
-    updateAfterFiltering: function(){
-        this.updateItemVisibility();
-        this.updateShowListGroupBorder();
+    updateAfterFiltering_do:function(){
+        this.updateVisibleIndex();
+        this.maxVisibleItems = kshf.maxVisibleItems_default;
+        this.updateItemVisibility(false);
+        // this.updateShowListGroupBorder();
         if(this.itemLink!==undefined){
 //            this.updateItemLinks();
         }
+    },
+    scollListToTop: function(){
+        var me=this;
+        // scroll to top
+        var startTime = null;
+        var scrollDom = this.dom.listItemGroup[0][0];
+        var scrollInit = scrollDom.scrollTop;
+        var easeFunc = d3.ease('cubic-in-out');
+        var scrollTime = 500;
+        var animateToTop = function(timestamp){
+            var progress;
+            if(startTime===null) startTime = timestamp;
+            // complete animation in 500 ms
+            progress = (timestamp - startTime)/scrollTime;
+            scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
+            if(scrollDom.scrollTop!==0){
+                window.requestAnimationFrame(animateToTop);
+            }
+        };
+        window.requestAnimationFrame(animateToTop);
+    },
+    /** returns active filter count */
+    updateAfterFiltering: function(){
+        var me=this;
+        // scroll to top
+        var startTime = null;
+        var scrollDom = this.dom.listItemGroup[0][0];
+        var scrollInit = scrollDom.scrollTop;
+        var easeFunc = d3.ease('cubic-in-out');
+        var scrollTime = 1000;
+        var animateToTop = function(timestamp){
+            var progress;
+            if(startTime===null) startTime = timestamp;
+            // complete animation in 500 ms
+            progress = (timestamp - startTime)/scrollTime;
+            scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
+            if(scrollDom.scrollTop===0){
+                me.updateAfterFiltering_do();
+            } else {
+                window.requestAnimationFrame(animateToTop);
+            }
+        };
+        window.requestAnimationFrame(animateToTop);
+    },
+    updateVisibleIndex: function(){
+        var wantedCount = 0;
+        var unwantedCount = 1;
+        this.getKshfItems().forEach(function(item){
+            item.wantedOrder_pre = item.wantedOrder;
+            if(item.wanted){
+                item.wantedOrder = wantedCount;
+                wantedCount++;
+            } else {
+                item.wantedOrder = -unwantedCount;
+                unwantedCount++;
+            }
+        },this);
     },
     isFiltered_Link: function(){
         return this.filteringItem!==null;
@@ -2446,18 +2608,15 @@ kshf.Browser.prototype = {
 
         // for some reason, on page load, this variable may be null. urgh.
         if(this.listDisplay){
+            var width = (this.fullWidthResultSet() ? (this.divWidth-12) : (width_rightPanel_total+9));
             this.listDisplay.listDiv
-                .style("left",(this.fullWidthResultSet()?0:width_leftPanel_total)+"px")
-                .style("width",(!this.fullWidthResultSet() ? (width_rightPanel_total+9) : (this.divWidth-12))+"px");
+                .style("left" ,(this.fullWidthResultSet() ? 0 : width_leftPanel_total)+"px");
+            this.listDisplay.updateTotalWidth(width);
+            
             var contentWidth = (width_rightPanel_total-10);
-            if(this.fullWidthResultSet()){
-                contentWidth+=width_leftPanel_total;
-            }
+            if(this.fullWidthResultSet()) contentWidth+=width_leftPanel_total;
             this.listDisplay.updateContentWidth(contentWidth);
         }
-
-        // update list
-        this.maxTotalColWidth = width_rightPanel_total*this.listMaxColWidthMult;
     },
     /** -- */
     getFilteringState: function(facetTitle, itemInfo) {

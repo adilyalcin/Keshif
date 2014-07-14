@@ -142,9 +142,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
-  padding-right: 2px;
-  position: absolute;
-  right: 3px;
+  float: right;
+  padding-left: 2px;
+  position: relative;
+  right: 1px;
   top: 3px;
   -webkit-transition: background-color 100ms linear;
   -moz-transition: background-color 100ms linear;
@@ -358,8 +359,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .chartClearFilterButton.allFilter {
   display: inline-block;
-  float: left;
-  margin-right: 2px;
+  float: right;
+  margin-left: 2px;
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
@@ -898,7 +899,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false][noitems=false] .rowSelectBackground_ClickArea {
   cursor: cell;
 }
+.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false][noitems=false] .rowBar {
+  cursor: cell;
+}
 .kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
+  cursor: pointer !important;
+}
+.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowBar {
   cursor: pointer !important;
 }
 .kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
@@ -988,7 +995,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.row[noitems=false][highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
   cursor: cell;
 }
+.kshf g.row[noitems=false][highlight=true][selected=false] rect.rowBar {
+  cursor: cell;
+}
 .kshf g.row[noitems=false][highlight=true][selected=true] rect.rowSelectBackground_ClickArea {
+  cursor: pointer;
+}
+.kshf g.row[noitems=false][highlight=true][selected=true] rect.rowBar {
   cursor: pointer;
 }
 .kshf g.row[noitems=false][highlight=true] rect.active {
@@ -1022,9 +1035,91 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.listDiv div.listItemGroup {
   overflow-y: scroll;
+  overflow-x: hidden;
   width: calc(100% - 2px);
   border-left: solid 2px #e9e3cd;
   background-color: white;
+}
+.kshf.listDiv .showMore {
+  cursor: pointer;
+  border: solid 1px lightgray;
+  border-radius: 9px;
+  padding: 2px 0px;
+  box-shadow: 2px 2px 2px #D8D8D8;
+  font-weight: 300;
+  font-size: 0.8em;
+  background-color: #eee;
+  height: 20px;
+  text-align: center;
+  position: absolute;
+  left: 4px;
+  -webkit-transition: bottom 400ms ease 50ms;
+  -moz-transition: bottom 400ms ease 50ms;
+  -o-transition: bottom 400ms ease 50ms;
+  transition: bottom 400ms ease 50ms;
+}
+.kshf.listDiv .showMore .dots {
+  width: 10px;
+  height: 10px;
+  background: gray;
+  border-radius: 50px;
+  margin: 4px;
+  display: inline-block;
+}
+.kshf.listDiv .showMore span.MoreText {
+  display: inline-block;
+  vertical-align: top;
+  top: 2px;
+  position: relative;
+}
+.kshf.listDiv .showMore .Count {
+  font-size: 0.9em;
+  top: 3px;
+  position: relative;
+  color: gray;
+}
+.kshf.listDiv .showMore .CountAbove {
+  float: left;
+  margin-left: 3px;
+}
+.kshf.listDiv .showMore .CountBelow {
+  float: right;
+  margin-right: 3px;
+}
+.kshf.listDiv .showMore lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
+@-moz-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
+@-o-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
+@keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;};
+}
+.kshf.listDiv .showMore:hover {
+  box-shadow: 2px 2px 2px gray;
+}
+.kshf.listDiv .showMore:hover span.MoreText {
+  text-decoration: underline;
+}
+.kshf.listDiv .showMore:hover .dots {
+  -webkit-animation: fade 900ms forwards;
+  -moz-animation: fade 900ms forwards;
+  -o-animation: fade 900ms forwards;
+  animation: fade 900ms forwards;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.kshf.listDiv .showMore:hover .dots_2 {
+  -webkit-animation-delay: 300ms;
+  -moz-animation-delay: 300ms;
+  -o-animation-delay: 300ms;
+  animation-delay: 300ms;
+}
+.kshf.listDiv .showMore:hover .dots_3 {
+  -webkit-animation-delay: 600ms;
+  -moz-animation-delay: 600ms;
+  -o-animation-delay: 600ms;
+  animation-delay: 600ms;
 }
 .kshf.listDiv div.itemLinks {
   display: inline-block;
@@ -1126,6 +1221,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader div.itemtoggledetails span {
   display: none;
 }
+.kshf div.listHeader span.scrollToTop {
+  display: inline-block;
+  visibility: hidden;
+  float: right;
+  color: red;
+  position: relative;
+  font-size: 1.1em;
+  top: 3px;
+  cursor: pointer;
+  color: #aaaaaa;
+  -webkit-transition: color 300ms ease;
+  -moz-transition: color 300ms ease;
+  -o-transition: color 300ms ease;
+  transition: color 300ms ease;
+}
+.kshf div.listHeader span.scrollToTop:hover {
+  color: #cb5454;
+}
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;
   padding-right: 5px;
@@ -1217,11 +1330,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf div.listItem {
+  display: none;
+  opacity: 1;
   clear: left;
   cursor: default;
   overflow: hidden;
   float: none;
+  height: auto;
+  max-height: 200px;
   border-top: double 0px gray;
+  -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+}
+.kshf div.listItem[animst=open] {
+  opacity: 0;
+}
+.kshf div.listItem[animst=closed] {
+  max-height: 0px !important;
+  padding: 0px !important;
+  opacity: 0;
 }
 .kshf div.listItem[details=true] .item_details_on {
   display: none;
@@ -1243,17 +1372,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listItem[highlight=true] {
   background-color: #EEEEEE;
-  -webkit-transition: background-color 100ms linear;
-  -moz-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
 }
 .kshf div.listItem[highlight=false] {
   background-color: white;
-  -webkit-transition: background-color 100ms linear;
-  -moz-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
 }
 .kshf div.listItem div {
   float: left;
@@ -1322,23 +1443,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf g.scrollGroup {
   display: inline-block;
 }
-.kshf g.scrollGroup g.top_arrow {
+.kshf g.scrollGroup .top_arrow {
   display: none;
-}
-.kshf g.scrollGroup g.top_arrow rect {
-  opacity: 0;
-  cursor: pointer;
-}
-.kshf g.scrollGroup path.top_arrow {
-  pointer-events: none;
   fill: #AAAAAA;
+  cursor: pointer;
+  font-size: 0.8em;
+  -webkit-transition: fill 200ms ease;
+  -moz-transition: fill 200ms ease;
+  -o-transition: fill 200ms ease;
+  transition: fill 200ms ease;
 }
-.kshf g.scrollGroup g:hover path.top_arrow {
+.kshf g.scrollGroup g:hover .top_arrow {
   fill: #cb5454;
-  -webkit-transition: fill 200ms linear;
-  -moz-transition: fill 200ms linear;
-  -o-transition: fill 200ms linear;
-  transition: fill 200ms linear;
 }
 .kshf g.scrollGroup rect.background {
   fill: white;
