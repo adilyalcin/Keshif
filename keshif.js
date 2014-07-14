@@ -3050,7 +3050,6 @@ kshf.BarChart.prototype = {
         var totalWidth = this.getWidth_Total()+5;
 
         this.divRoot.style("width",totalWidth+"px");
-        this.dom.chartBackground.attr('width',totalWidth); // svg
         this.dom.clippingRect_Time
             .attr("x",leftPanelWidth)
             .attr("width",this.options.timeMaxWidth+10+7)
@@ -3098,12 +3097,6 @@ kshf.BarChart.prototype = {
 
     	this.root = this.divRoot
             .append("svg").attr("class","chart_root").attr("xmlns","http://www.w3.org/2000/svg");
-        // to capture click/hover mouse events
-        this.dom.chartBackground = this.root.append("rect")
-            .attr("class","chartBackground")
-            .on("mousewheel",this.scrollItemCb.bind(this))
-            .on("mousedown", function (d, i) { d3.event.preventDefault(); })
-        ;
 
         if(this.type==="scatterplot"){
             if(this.options.timeDotConfig!==undefined){
@@ -3838,10 +3831,6 @@ kshf.BarChart.prototype = {
             .attr("transform", "translate("+(kshf_.getRowTotalTextWidth())+",23)")
             ;
 
-        this.dom.chartBackground
-            .attr('height',visibleRowHeight)
-            .attr('y',headerHeight)
-            ;
         this.dom.barGroup_Top.selectAll(".barChartClipPath rect")
             .transition().duration(kshf_.anim_layout_duration)
     		.attr("height",visibleRowHeight)

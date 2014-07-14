@@ -732,9 +732,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: -19px;
   pointer-events: none;
 }
-.kshf .kshfChart svg.chart_root rect.chartBackground {
-  opacity: 0;
-}
 .kshf .kshfChart svg.chart_root > * {
   pointer-events: all;
 }
