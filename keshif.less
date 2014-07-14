@@ -120,6 +120,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf {
 	font-family: Helvetica, Arial, sans-serif;
+    text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
     float:left;
     display:inline-block;
 
@@ -148,7 +149,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-bottom: 2px;
         padding-bottom: 2px;
 
-        .background-image(~"linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%)");
+        .background-image(~"linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%)");
         border-bottom: solid 1px #c6bb9e;
         box-shadow: 0px 0px 3px #b7aa88;
 
@@ -340,7 +341,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right:-4px;
+        right:-8px;
         top:1px;
         width:6px;
         border-bottom: solid 1px lightgray;
@@ -451,6 +452,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .headerGroup{
         pointer-events:none;
         position:relative;
+        margin-bottom: 2px;
         .SubFacetText{
             .rotate(90deg);
             .transform-origin(0 0);
@@ -588,7 +590,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .leftHeader {
             pointer-events: all;
-            float:left;
+            left: 0px;
             position: relative;
         }
         .rightHeader{
@@ -656,6 +658,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .kshfChart{
         display:inline-block;
+        position: relative;
         span.optionSelect_Label{
             float: right;
             font-size: 0.7em;
@@ -665,11 +668,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:none;
         }
 
-        svg.chart_root{
-            width:100%;
-            height:100%;
+        div.chart_root{
             position:relative;
-            top: -19px;
+            span.scrollToTop{
+                position: absolute;
+                top: -19px;
+                right: 1px;
+                font-size: 0.8em;
+            }
+            span.scroll_display_more{
+                font-size: 0.7em;
+                font-style:italic;
+                cursor: pointer;
+                color: gray;
+                opacity:1;
+                text-align: right;
+                position:absolute;
+                bottom: -12px;
+                &[highlight=true]{ color: #cb5454; }
+            }
+        }
+        svg.chart_root2{
+            width:100%;
+            position:absolute;
             pointer-events: none;
             >*{
                 pointer-events: all;
@@ -745,14 +766,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             .header_belowFirstRow{ display: none; }
-            g.scrollGroup{ display: none !important; }
             .resort_button{ display: none !important ; }
             g.x_axis{ display:none; }
-            g.barGroup_Top { display:none; }
             g.timeAxisGroup { display:none; }
             .configGroup{ display: none; }
             select.sortOptionSelect{ display: none; }
-            svg.chart_root{ display: none; }
+            div.chart_root{ display: none; }
         }
         &[collapsedTime=true] {
             .headerGroup .rightHeader {
@@ -761,10 +780,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .rotate(-90deg);
                 }
             }
-            g.scrollGroup g.rightScroll{
-                display: none !important;
-            }
-            g.row {
+            .attrib {
                 line.row_bar_line{
                     display: none;
                 }
@@ -797,11 +813,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill: url(#dotGradient_Inactive);
         }
         &[filtered_row=true] {
-            g.row{
+            .attrib{
                 &[selected=true] {
-                    text{
+                    span{
                         font-weight: 700;
-                        fill: #c32c2c;
+                        color: #c32c2c;
+                    }
+                    span.label{
+                        .background-image(~"linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+                    }
+                    span.item_count{
+                        .background-image(~"linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
                     }
                     rect.rowSelectBackground{
                         opacity:1;
@@ -815,31 +837,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display:inline-block;
             }
         }
-        &[selecttype="SelectOr"][filtered_row=true] .row{
+        &[selecttype="SelectOr"][filtered_row=true] .attrib{
             &[selected=false]{
                 .filter_add_more .add{ display: block; }
             }
             &[selected=true]{
-                .filter_add_more .remove{ display: block; }
+                // .filter_add_more .remove{ display: block; }
             }
         }
         &[selecttype="SelectAnd"] {
-            .row[selected=false][noitems=false]{
-                .rowSelectBackground_ClickArea{
+            .attrib[selected=false][noitems=false]{
+                .clickArea{
                     cursor: cell;
                 }
-                .rowBar{
+                .rowBar.active{
                     cursor: cell;
                 }
             }
         }
         // When only one item is selected in selectOr
         &[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] {
-            .row[highlight=true][selected=false] {
-                rect.rowSelectBackground_ClickArea{
+            .attrib[highlight=true][selected=false] {
+                .clickArea{
                     cursor: pointer !important;
                 }
-                rect.rowBar{
+                .rowBar{
                     cursor: pointer !important;
                 }
             }
@@ -876,17 +898,77 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     }// kshfChart
 
-    g.row {
-        rect.total {
-            fill-opacity:0.2;
-            stroke: white;
-            stroke-width: 0;
-            .transition(~"all 150ms linear");
+    div.attribGroup{
+        position:relative;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    div.attrib {
+        position: absolute;
+        height: 18px;
+        span.filter_add_more{
+            display:inline-block;
+            width: 10px;
+            margin-left: 1px;
+            line-height: 18px;
+            &:hover {
+                color: orangered;
+            }
+            span{
+                display: none;
+            }
+            span.add {
+                cursor: cell;
+            }
+            span.remove {
+                cursor: pointer !important;
+            }
         }
+        span.clickArea{
+            opacity: 0;
+            margin-top:3px;
+            margin-bottom:3px;
+            height: 12px; // total: 18px
+            display: inline-block;
+            position: absolute;
+        }
+        span.label{
+            display:inline-block;
+            height:18px;
+            vertical-align: top;
+            font-size: 0.8em;
+            line-height: 18px;
+            font-weight:300;
+            text-align: right;
+            cursor: default;
+            pointer-events: none;
+        }
+        span.item_count{
+            display:inline-block;
+            height:18px;
+            font-size: 0.7em;
+            line-height: 18px;
+            vertical-align: top;
+            cursor: default;
+            pointer-events: none;
+            padding-left: 3px;
+        }
+        .rowBar {
+            display: inline-block;
+            background-color: #8699A8;
+            border-radius: 2px;
+            .transition(~'opacity 150ms linear, width 300ms ease');
+            position: absolute;
+            &.total {
+                opacity:0.2;
+                pointer-events: none;
+            }
+        }
+        
         rect.timeBar {
             fill: #E0E7EB;
             &.total{
-                fill-opacity:0.2;
+                opacity:0.2;
             }
         }
         rect.rowSelectBackground{
@@ -898,70 +980,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             cursor: default;
         }
-        text{
-            .transition(~"fill 150ms linear");
-            &.item_count {
-                font-size: 0.7em;
-                cursor: default;
-                pointer-events: none;
-            }
-            &.row_label {
-                font-size: 0.8em;
-                text-anchor: end;
-                font-weight:300;
-                cursor: default;
-                pointer-events: none;
-            }
-            &.filter_add_more {
-//                font-size: 1.1em;
-                text-anchor: middle;
-                display: none;
-                &:hover{
-                    fill: orangered;
-                }
-                &.add{
-                    cursor: cell;
-                }
-                &.remove{
-                    cursor: pointer !important;
-                }
-            }
-        }
         line.row_bar_line{
             stroke-width: 0.7;
             pointer-events: none;
         }
         &[noitems=false][highlight=true] {
             &[selected=false] {
-                rect.rowSelectBackground_ClickArea{
+                .clickArea{
                     cursor: cell;
                 }
-                rect.rowBar{
+                .rowBar.active{
                     cursor: cell;
                 }
             }
             &[selected=true] {
-                rect.rowSelectBackground_ClickArea{
+                .clickArea{
                     cursor: pointer;
                 }
-                rect.rowBar{
+                .rowBar{
                     cursor: pointer;
                 }
             }
-            rect.active{
-                pointer-events: none;
-                stroke: orangered;
-                stroke-width: 2;
+            .rowBar.active{
+                box-shadow: inset 0px 0px 0px 2px orangered;
             }
-            text:not(.filter_add_more){
-                fill: orangered !important;
+            span:not(.filter_add_more){
+                color: orangered !important;
             }
             .row_bar_line{
                 stroke: orangered;
             }
-        }
-        rect.rowBar {
-            fill: #8699A8;
         }
         &[noitems=true] {
             text{ fill:gray; }
@@ -970,7 +1018,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill: #c32c2c !important;
             .transition(~"fill 100ms linear");
         }
-    } // g.row
+    } // div.attrib
 
     &.listDiv {
         position: absolute; // exact position is calculated by keshif
@@ -1129,6 +1177,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.listItem[details=false] .item_details_off{ display:none; }
     } // div.listDiv
 
+
+    span.scrollToTop{
+        display:inline-block;
+        visibility: hidden;
+        float:right;
+        color: red;
+        cursor: pointer;
+        color: #aaaaaa;
+        .transition(~'color 300ms ease');
+        &:hover{
+            color:#cb5454;
+        }
+    }
+
     div.listHeader {
         font-weight: bold;
         color: black;
@@ -1154,19 +1216,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         span.scrollToTop{
-            display:inline-block;
-            visibility: hidden;
-            float:right;
-            color: red;
             position:relative;
             font-size: 1.1em;
             top: 3px;
-            cursor: pointer;
-            color: #aaaaaa;
-            .transition(~'color 300ms ease');
-            &:hover{
-                color:#cb5454;
-            }
         }
 
         span.filter-separator{
@@ -1365,76 +1417,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
 
-    g.scrollGroup {
-        display:inline-block;
-        .top_arrow{
-            display: none;
-            fill:#AAAAAA;
-            cursor: pointer;
-            font-size: 0.8em;
-            .transition(~"fill 200ms ease");
-        }
-        g:hover .top_arrow{
-            fill: #cb5454;
-        }
-        rect.background{
-            fill:white;
-            stroke:rgb(202, 202, 202);
-            stroke-width:1;
-            stroke-opacity:1;
-            .transition(~"stroke 200ms linear");
-        }
-        text.row_number{
-            font-size: 0.7em;
-            display:none;
-            text-anchor:end;
-            fill: #cb5454;;
-            cursor:default;
-            pointer-events:none;
-            text-shadow: 1px 1px rgb(219, 219, 219);
-        }
-        text.scroll_display_more{
-            font-size: 0.7em;
-            font-style:italic;
-            cursor: pointer;
-            fill: gray;
-            opacity:1;
-            text-anchor:end;
-            &[highlight=true]{ fill: #cb5454; }
-        }
-        rect.background_fill{
-            opacity: 1;
-            fill: white; 
-            cursor: pointer;
-            .transition(~"fill 0.2s ease-in-out");
-            &:hover{ fill:#EAEAEA; }
-        }
-        rect.handle{
-            fill:#999999;
-            stroke:gray;
-            stroke-width:0.5;
-            fill-opacity:0.2;
-            stroke-opacity:0.2;
-            cursor: pointer;
-            .transition(~"all 0.2s ease-in-out");
-            &[selected=true]{
-                stroke:#444444;
-                stroke-width:1;
-            }
-        }
-        &:hover {
-            rect.handle{
-                fill-opacity: 1;
-                stroke-opacity: 1;
-            }
-            rect.background{
-                stroke:gray;
-            }
-            text.row_number{
-                display:block;
-            }
-        }
-    } // scrollGroup
 
     &.layout_infobox {
         div.infobox_background{

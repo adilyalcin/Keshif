@@ -132,6 +132,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf {
   font-family: Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
   float: left;
   display: inline-block;
 }
@@ -161,11 +162,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float: none;
   margin-bottom: 2px;
   padding-bottom: 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMjMlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0icmdiKDIyNCwyMTMsMTcwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iOTElIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: -moz-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: -o-linear-gradient(left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: linear-gradient(to right , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMjMlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0icmdiKDIyNCwyMTMsMTcwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iOTElIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+  background-image: -moz-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+  background-image: -o-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
+  background-image: linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
   border-bottom: solid 1px #c6bb9e;
   box-shadow: 0px 0px 3px #b7aa88;
 }
@@ -364,7 +365,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
-  right: -4px;
+  right: -8px;
   top: 1px;
   width: 6px;
   border-bottom: solid 1px lightgray;
@@ -480,6 +481,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup {
   pointer-events: none;
   position: relative;
+  margin-bottom: 2px;
 }
 .kshf .headerGroup .SubFacetText {
   -webkit-transform: rotate(90deg);
@@ -647,7 +649,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .leftHeader {
   pointer-events: all;
-  float: left;
+  left: 0px;
   position: relative;
 }
 .kshf .headerGroup .rightHeader {
@@ -716,6 +718,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart {
   display: inline-block;
+  position: relative;
 }
 .kshf .kshfChart span.optionSelect_Label {
   float: right;
@@ -725,14 +728,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
 }
-.kshf .kshfChart svg.chart_root {
-  width: 100%;
-  height: 100%;
+.kshf .kshfChart div.chart_root {
   position: relative;
+}
+.kshf .kshfChart div.chart_root span.scrollToTop {
+  position: absolute;
   top: -19px;
+  right: 1px;
+  font-size: 0.8em;
+}
+.kshf .kshfChart div.chart_root span.scroll_display_more {
+  font-size: 0.7em;
+  font-style: italic;
+  cursor: pointer;
+  color: gray;
+  opacity: 1;
+  text-align: right;
+  position: absolute;
+  bottom: -12px;
+}
+.kshf .kshfChart div.chart_root span.scroll_display_more[highlight=true] {
+  color: #cb5454;
+}
+.kshf .kshfChart svg.chart_root2 {
+  width: 100%;
+  position: absolute;
   pointer-events: none;
 }
-.kshf .kshfChart svg.chart_root > * {
+.kshf .kshfChart svg.chart_root2 > * {
   pointer-events: all;
 }
 .kshf .kshfChart .resort_button {
@@ -811,16 +834,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] .header_belowFirstRow {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] g.scrollGroup {
-  display: none !important;
-}
 .kshf .kshfChart[collapsed=true] .resort_button {
   display: none !important ;
 }
 .kshf .kshfChart[collapsed=true] g.x_axis {
-  display: none;
-}
-.kshf .kshfChart[collapsed=true] g.barGroup_Top {
   display: none;
 }
 .kshf .kshfChart[collapsed=true] g.timeAxisGroup {
@@ -832,7 +849,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] select.sortOptionSelect {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] svg.chart_root {
+.kshf .kshfChart[collapsed=true] div.chart_root {
   display: none;
 }
 .kshf .kshfChart[collapsedTime=true] .headerGroup .rightHeader {
@@ -845,13 +862,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-.kshf .kshfChart[collapsedTime=true] g.scrollGroup g.rightScroll {
-  display: none !important;
-}
-.kshf .kshfChart[collapsedTime=true] g.row line.row_bar_line {
+.kshf .kshfChart[collapsedTime=true] .attrib line.row_bar_line {
   display: none;
 }
-.kshf .kshfChart[collapsedTime=true] g.row rect.timeBar {
+.kshf .kshfChart[collapsedTime=true] .attrib rect.timeBar {
   display: none;
 }
 .kshf .kshfChart[collapsedTime=true] g.timeAxisGroup {
@@ -874,35 +888,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
   fill: url(#dotGradient_Inactive);
 }
-.kshf .kshfChart[filtered_row=true] g.row[selected=true] text {
+.kshf .kshfChart[filtered_row=true] .attrib[selected=true] span {
   font-weight: 700;
-  fill: #c32c2c;
+  color: #c32c2c;
 }
-.kshf .kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground {
+.kshf .kshfChart[filtered_row=true] .attrib[selected=true] span.label {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -moz-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -o-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: linear-gradient(to right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+}
+.kshf .kshfChart[filtered_row=true] .attrib[selected=true] span.item_count {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -moz-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -o-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: linear-gradient(to right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+}
+.kshf .kshfChart[filtered_row=true] .attrib[selected=true] rect.rowSelectBackground {
   opacity: 1;
 }
-.kshf .kshfChart[filtered_row=true] g.row[selected=true] rect.rowSelectBackground_ClickArea {
+.kshf .kshfChart[filtered_row=true] .attrib[selected=true] rect.rowSelectBackground_ClickArea {
   pointer-events: all;
 }
 .kshf .kshfChart[filtered_row=true] .chartClearFilterButton.rowFilter {
   display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=false] .filter_add_more .add {
+.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .attrib[selected=false] .filter_add_more .add {
   display: block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .row[selected=true] .filter_add_more .remove {
-  display: block;
-}
-.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false][noitems=false] .rowSelectBackground_ClickArea {
+.kshf .kshfChart[selecttype="SelectAnd"] .attrib[selected=false][noitems=false] .clickArea {
   cursor: cell;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] .row[selected=false][noitems=false] .rowBar {
+.kshf .kshfChart[selecttype="SelectAnd"] .attrib[selected=false][noitems=false] .rowBar.active {
   cursor: cell;
 }
-.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
+.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .attrib[highlight=true][selected=false] .clickArea {
   cursor: pointer !important;
 }
-.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .row[highlight=true][selected=false] rect.rowBar {
+.kshf .kshfChart[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] .attrib[highlight=true][selected=false] .rowBar {
   cursor: pointer !important;
 }
 .kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
@@ -927,95 +952,120 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
   display: none;
 }
-.kshf g.row rect.total {
-  fill-opacity: 0.2;
-  stroke: white;
-  stroke-width: 0;
-  -webkit-transition: all 150ms linear;
-  -moz-transition: all 150ms linear;
-  -o-transition: all 150ms linear;
-  transition: all 150ms linear;
+.kshf div.attribGroup {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-.kshf g.row rect.timeBar {
+.kshf div.attrib {
+  position: absolute;
+  height: 18px;
+}
+.kshf div.attrib span.filter_add_more {
+  display: inline-block;
+  width: 10px;
+  margin-left: 1px;
+  line-height: 18px;
+}
+.kshf div.attrib span.filter_add_more:hover {
+  color: orangered;
+}
+.kshf div.attrib span.filter_add_more span {
+  display: none;
+}
+.kshf div.attrib span.filter_add_more span.add {
+  cursor: cell;
+}
+.kshf div.attrib span.filter_add_more span.remove {
+  cursor: pointer !important;
+}
+.kshf div.attrib span.clickArea {
+  opacity: 0;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  height: 12px;
+  display: inline-block;
+  position: absolute;
+}
+.kshf div.attrib span.label {
+  display: inline-block;
+  height: 18px;
+  vertical-align: top;
+  font-size: 0.8em;
+  line-height: 18px;
+  font-weight: 300;
+  text-align: right;
+  cursor: default;
+  pointer-events: none;
+}
+.kshf div.attrib span.item_count {
+  display: inline-block;
+  height: 18px;
+  font-size: 0.7em;
+  line-height: 18px;
+  vertical-align: top;
+  cursor: default;
+  pointer-events: none;
+  padding-left: 3px;
+}
+.kshf div.attrib .rowBar {
+  display: inline-block;
+  background-color: #8699A8;
+  border-radius: 2px;
+  -webkit-transition: opacity 150ms linear, width 300ms ease;
+  -moz-transition: opacity 150ms linear, width 300ms ease;
+  -o-transition: opacity 150ms linear, width 300ms ease;
+  transition: opacity 150ms linear, width 300ms ease;
+  position: absolute;
+}
+.kshf div.attrib .rowBar.total {
+  opacity: 0.2;
+  pointer-events: none;
+}
+.kshf div.attrib rect.timeBar {
   fill: #E0E7EB;
 }
-.kshf g.row rect.timeBar.total {
-  fill-opacity: 0.2;
+.kshf div.attrib rect.timeBar.total {
+  opacity: 0.2;
 }
-.kshf g.row rect.rowSelectBackground {
+.kshf div.attrib rect.rowSelectBackground {
   opacity: 0;
   pointer-events: none;
 }
-.kshf g.row rect.rowSelectBackground_ClickArea {
+.kshf div.attrib rect.rowSelectBackground_ClickArea {
   opacity: 0;
   pointer-events: all;
   cursor: default;
 }
-.kshf g.row text {
-  -webkit-transition: fill 150ms linear;
-  -moz-transition: fill 150ms linear;
-  -o-transition: fill 150ms linear;
-  transition: fill 150ms linear;
-}
-.kshf g.row text.item_count {
-  font-size: 0.7em;
-  cursor: default;
-  pointer-events: none;
-}
-.kshf g.row text.row_label {
-  font-size: 0.8em;
-  text-anchor: end;
-  font-weight: 300;
-  cursor: default;
-  pointer-events: none;
-}
-.kshf g.row text.filter_add_more {
-  text-anchor: middle;
-  display: none;
-}
-.kshf g.row text.filter_add_more:hover {
-  fill: orangered;
-}
-.kshf g.row text.filter_add_more.add {
-  cursor: cell;
-}
-.kshf g.row text.filter_add_more.remove {
-  cursor: pointer !important;
-}
-.kshf g.row line.row_bar_line {
+.kshf div.attrib line.row_bar_line {
   stroke-width: 0.7;
   pointer-events: none;
 }
-.kshf g.row[noitems=false][highlight=true][selected=false] rect.rowSelectBackground_ClickArea {
+.kshf div.attrib[noitems=false][highlight=true][selected=false] .clickArea {
   cursor: cell;
 }
-.kshf g.row[noitems=false][highlight=true][selected=false] rect.rowBar {
+.kshf div.attrib[noitems=false][highlight=true][selected=false] .rowBar.active {
   cursor: cell;
 }
-.kshf g.row[noitems=false][highlight=true][selected=true] rect.rowSelectBackground_ClickArea {
+.kshf div.attrib[noitems=false][highlight=true][selected=true] .clickArea {
   cursor: pointer;
 }
-.kshf g.row[noitems=false][highlight=true][selected=true] rect.rowBar {
+.kshf div.attrib[noitems=false][highlight=true][selected=true] .rowBar {
   cursor: pointer;
 }
-.kshf g.row[noitems=false][highlight=true] rect.active {
-  pointer-events: none;
-  stroke: orangered;
-  stroke-width: 2;
+.kshf div.attrib[noitems=false][highlight=true] .rowBar.active {
+  box-shadow: inset 0px 0px 0px 2px orangered;
 }
-.kshf g.row[noitems=false][highlight=true] text:not(.filter_add_more) {
-  fill: orangered !important;
+.kshf div.attrib[noitems=false][highlight=true] span:not(.filter_add_more) {
+  color: orangered !important;
 }
-.kshf g.row[noitems=false][highlight=true] .row_bar_line {
+.kshf div.attrib[noitems=false][highlight=true] .row_bar_line {
   stroke: orangered;
 }
-.kshf g.row rect.rowBar {
-  fill: #8699A8;
-}
-.kshf g.row[noitems=true] text {
+.kshf div.attrib[noitems=true] text {
   fill: gray;
 }
-.kshf g.row[itemhighlight=true] text {
+.kshf div.attrib[itemhighlight=true] text {
   fill: #c32c2c !important;
   -webkit-transition: fill 100ms linear;
   -moz-transition: fill 100ms linear;
@@ -1187,6 +1237,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv div.listItem[details=false] .item_details_off {
   display: none;
 }
+.kshf span.scrollToTop {
+  display: inline-block;
+  visibility: hidden;
+  float: right;
+  color: red;
+  cursor: pointer;
+  color: #aaaaaa;
+  -webkit-transition: color 300ms ease;
+  -moz-transition: color 300ms ease;
+  -o-transition: color 300ms ease;
+  transition: color 300ms ease;
+}
+.kshf span.scrollToTop:hover {
+  color: #cb5454;
+}
 .kshf div.listHeader {
   font-weight: bold;
   color: black;
@@ -1216,22 +1281,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf div.listHeader span.scrollToTop {
-  display: inline-block;
-  visibility: hidden;
-  float: right;
-  color: red;
   position: relative;
   font-size: 1.1em;
   top: 3px;
-  cursor: pointer;
-  color: #aaaaaa;
-  -webkit-transition: color 300ms ease;
-  -moz-transition: color 300ms ease;
-  -o-transition: color 300ms ease;
-  transition: color 300ms ease;
-}
-.kshf div.listHeader span.scrollToTop:hover {
-  color: #cb5454;
 }
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;
@@ -1433,90 +1485,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listItem div.groupMe {
   overflow: hidden;
   float: none;
-}
-.kshf g.scrollGroup {
-  display: inline-block;
-}
-.kshf g.scrollGroup .top_arrow {
-  display: none;
-  fill: #AAAAAA;
-  cursor: pointer;
-  font-size: 0.8em;
-  -webkit-transition: fill 200ms ease;
-  -moz-transition: fill 200ms ease;
-  -o-transition: fill 200ms ease;
-  transition: fill 200ms ease;
-}
-.kshf g.scrollGroup g:hover .top_arrow {
-  fill: #cb5454;
-}
-.kshf g.scrollGroup rect.background {
-  fill: white;
-  stroke: #cacaca;
-  stroke-width: 1;
-  stroke-opacity: 1;
-  -webkit-transition: stroke 200ms linear;
-  -moz-transition: stroke 200ms linear;
-  -o-transition: stroke 200ms linear;
-  transition: stroke 200ms linear;
-}
-.kshf g.scrollGroup text.row_number {
-  font-size: 0.7em;
-  display: none;
-  text-anchor: end;
-  fill: #cb5454;
-  cursor: default;
-  pointer-events: none;
-  text-shadow: 1px 1px #dbdbdb;
-}
-.kshf g.scrollGroup text.scroll_display_more {
-  font-size: 0.7em;
-  font-style: italic;
-  cursor: pointer;
-  fill: gray;
-  opacity: 1;
-  text-anchor: end;
-}
-.kshf g.scrollGroup text.scroll_display_more[highlight=true] {
-  fill: #cb5454;
-}
-.kshf g.scrollGroup rect.background_fill {
-  opacity: 1;
-  fill: white;
-  cursor: pointer;
-  -webkit-transition: fill 0.2s ease-in-out;
-  -moz-transition: fill 0.2s ease-in-out;
-  -o-transition: fill 0.2s ease-in-out;
-  transition: fill 0.2s ease-in-out;
-}
-.kshf g.scrollGroup rect.background_fill:hover {
-  fill: #EAEAEA;
-}
-.kshf g.scrollGroup rect.handle {
-  fill: #999999;
-  stroke: gray;
-  stroke-width: 0.5;
-  fill-opacity: 0.2;
-  stroke-opacity: 0.2;
-  cursor: pointer;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-}
-.kshf g.scrollGroup rect.handle[selected=true] {
-  stroke: #444444;
-  stroke-width: 1;
-}
-.kshf g.scrollGroup:hover rect.handle {
-  fill-opacity: 1;
-  stroke-opacity: 1;
-}
-.kshf g.scrollGroup:hover rect.background {
-  stroke: gray;
-}
-.kshf g.scrollGroup:hover text.row_number {
-  display: block;
 }
 .kshf.layout_infobox div.infobox_background {
   width: 100%;

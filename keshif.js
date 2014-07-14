@@ -245,7 +245,30 @@ kshf.Util = {
             return !r;
         });
         return r;
-    }
+    },
+    ignoreScrollEvents: false,
+    scrollToPos_do: function(scrollDom, targetPos){
+        kshf.Util.ignoreScrollEvents = true;
+        // scroll to top
+        var startTime = null;
+        var scrollInit = scrollDom.scrollTop;
+        var easeFunc = d3.ease('cubic-in-out');
+        var scrollTime = 500;
+        var animateToTop = function(timestamp){
+            var progress;
+            if(startTime===null) startTime = timestamp;
+            // complete animation in 500 ms
+            progress = (timestamp - startTime)/scrollTime;
+            var m=easeFunc(progress);
+            scrollDom.scrollTop = (1-m)*scrollInit+m*targetPos;
+            if(scrollDom.scrollTop!==targetPos){
+                window.requestAnimationFrame(animateToTop);
+            } else {
+                kshf.Util.ignoreScrollEvents = false;
+            }
+        };
+        window.requestAnimationFrame(animateToTop);
+    },
 };
 
 
@@ -413,6 +436,8 @@ Tipsy.prototype = {
     tip: function() {
         if(this.jq_tip) return this.jq_tip;
         this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
+        this.jq_tip
+            ;
         this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
         return this.jq_tip;
     },
@@ -765,7 +790,7 @@ kshf.List = function(kshf_, config, root){
         .html("⬆")
         .attr("title","Scroll To Top")
         .on("click",function(d){
-            me.scollListToTop();
+            kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
         });
 
     this.dom.listItemGroup=xasdad.append("div").attr("class","listItemGroup")
@@ -1347,26 +1372,6 @@ kshf.List.prototype = {
 //            this.updateItemLinks();
         }
     },
-    scollListToTop: function(){
-        var me=this;
-        // scroll to top
-        var startTime = null;
-        var scrollDom = this.dom.listItemGroup[0][0];
-        var scrollInit = scrollDom.scrollTop;
-        var easeFunc = d3.ease('cubic-in-out');
-        var scrollTime = 500;
-        var animateToTop = function(timestamp){
-            var progress;
-            if(startTime===null) startTime = timestamp;
-            // complete animation in 500 ms
-            progress = (timestamp - startTime)/scrollTime;
-            scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
-            if(scrollDom.scrollTop!==0){
-                window.requestAnimationFrame(animateToTop);
-            }
-        };
-        window.requestAnimationFrame(animateToTop);
-    },
     /** returns active filter count */
     updateAfterFiltering: function(){
         var me=this;
@@ -1477,7 +1482,7 @@ kshf.Browser = function(options){
     this.barMaxWidth = 0;
 
     this.scrollPadding = 5;
-    this.scrollWidth = 10;
+    this.scrollWidth = 11;
     this.sepWidth = 10;
     this.filterList = [];
 
@@ -2294,19 +2299,18 @@ kshf.Browser.prototype = {
 
     /** set x offset to display active number of items */
     getRowLabelOffset: function(){
-        if(!this._labelXOffset){
-            var maxTotalCount = d3.max(this.charts, function(chart){ 
-                return chart.getMaxBarValueMaxPerAttrib();
-            });
-            this._labelXOffset = 12;
-            var digits = 1;
-            while(maxTotalCount>9){
-                digits++
-                maxTotalCount = Math.floor(maxTotalCount/10);
-            }
-            if(digits>4) digits = 4;
-            this._labelXOffset += digits*6;
+        if(this._labelXOffset) return this._labelXOffset
+        var maxTotalCount = d3.max(this.charts, function(chart){ 
+            return chart.getMaxBarValueMaxPerAttrib();
+        });
+        this._labelXOffset = 10;
+        var digits = 1;
+        while(maxTotalCount>9){
+            digits++
+            maxTotalCount = Math.floor(maxTotalCount/10);
         }
+        if(digits>4) digits = 4;
+        this._labelXOffset += digits*6;
         return this._labelXOffset;
     },
     /** includes label + number */
@@ -3051,33 +3055,10 @@ kshf.BarChart.prototype = {
         this.dom.headerGroup.style('width',totalWidth+"px");
         this.dom.leftHeader.style("width",leftPanelWidth+"px");
     },
-    /** scrollItemCb */
-    scrollItemCb: function(event){
-        var delta = 0;
-        if (!event) { event = window.event; }
-        // normalize the delta
-        if (event.wheelDelta) {
-            // IE and Opera
-            delta = event.wheelDelta / 60;
-        } else if (event.detail) {
-            // W3C
-            delta = -event.detail / 2;
-        }
-        if(delta<-0.05) { 
-            this.setScrollPosition(this.scrollbar.firstRow+1);
-        }
-        if(delta>0.05) { 
-            this.setScrollPosition(this.scrollbar.firstRow-1);
-        }
-        if(event.preventDefault) { //disable default wheel action of scrolling page
-            event.preventDefault();
-        } else {
-            return false;
-        }
-    },
     /** -- */
     init_DOM: function(){
         var me = this;
+        var kshf_ = this.getKshf();
         this.divRoot = this.options.layout
             .append("div").attr("class","kshfChart")
             .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
@@ -3088,45 +3069,79 @@ kshf.BarChart.prototype = {
                
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
-    	this.root = this.divRoot
-            .append("svg").attr("class","chart_root").attr("xmlns","http://www.w3.org/2000/svg");
+        var betweener = this.divRoot.append("div").style("position","relative");
+
+        this.dom.chart_root2 = betweener
+            .append("svg").attr("class","chart_root2").attr("xmlns","http://www.w3.org/2000/svg");
+    	this.dom.chartRoot = betweener
+            .append("div").attr("class","chart_root");
+
+        this.dom.scrollToTop = this.dom.chartRoot.append("span").attr("class","scrollToTop")
+            .html("⬆")
+            .attr("title","Scroll To Top")
+            .on("click",function(d){
+                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); // TODO
+            });
+        this.dom.scroll_display_more = this.dom.chartRoot.append("span").attr("class","scroll_display_more")
+            .style("width",this.options.rowTextWidth+"px")
+            .on("mousedown",function(){
+                var scrollDom = me.dom.attribGroup[0][0];
+                kshf.Util.scrollToPos_do(scrollDom,scrollDom.scrollTop+18);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
+                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
+                }
+            })
+            .on("mouseup",function(){
+            })
+            .on("mouseover",function(e){ 
+                this.setAttribute("highlight",true);
+            })
+            .on("mouseout",function(){ 
+                this.setAttribute("highlight",false);
+            })
+            ;
 
         if(this.type==="scatterplot"){
             if(this.options.timeDotConfig!==undefined){
                 this.divRoot.attr("dotconfig",this.options.timeDotConfig);
             }
         }
-        this.dom.x_axis = this.root.append("g").attr("class", "x_axis")
+        this.dom.x_axis = this.dom.chart_root2.append("g").attr("class", "x_axis")
             .on("mousedown", function (d, i) { d3.event.preventDefault(); });
-        this.dom.barGroup_Top = this.root.append("g")
-            .attr("class","barGroup_Top")
-            .attr("transform","translate(0,20)")
-            ;
-        if(this.type==='scatterplot') { 
-            this.dom.selectVertLine = this.dom.barGroup_Top.append("line")
-                .attr("class","selectVertLine")
-                .attr("x1", 0)
-                .attr("x2", 0)
-                .attr("y1", -this.getKshf().line_height*1.5)
-                ;
-        }
 
-    	this.dom.barGroup = this.dom.barGroup_Top.append("g").attr("class","barGroup");
-    	this.dom.barGroup.selectAll("g.row")
+    	this.dom.attribGroup = this.dom.chartRoot.append("div").attr("class","attribGroup")
+            .on("scroll",function(d){
+                if(kshf.Util.ignoreScrollEvents===true) return;
+                var xx=this;
+                me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+
+                me.updateScrollDisplayMore(Math.round(this.scrollTop / 18.0)+me.rowCount_Visible);
+
+                kshf_.root.on("mouseup", function(){
+                    var targetPos = Math.round(xx.scrollTop/18.0) * 18;
+                    kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],targetPos);
+                    kshf_.root.on("mouseup", null);
+                });
+            })
+            ;
+
+    	this.dom.attribGroup.selectAll("div.attib")
             // removes attributes with no items
     		.data(this.getAttribs(), this._dataMap)
-    	  .enter().append("g").attr("class", "row")
+    	  .enter().append("div").attr("class", "attrib")
             .each(function(d){
                 var mee=this;
                 d.barChart = me;
                 // Add this DOM to each item under cats
                 d.items.forEach(function(dd){dd.mappedAttribDOMs.push(mee);});
+                d.facetDOM = this;
             })
     		;
-        this.dom.g_row = this.dom.barGroup.selectAll('g.row');
+        this.dom.attribs = this.dom.attribGroup.selectAll('div.attrib');
 
         if(this.type==='scatterplot') { 
-        	this.dom.timeAxisGroup = this.root.append("g").attr("class","timeAxisGroup")
+        	this.dom.timeAxisGroup = this.dom.chartRoot.append("g").attr("class","timeAxisGroup")
         		.on("mousedown", function (d, i) { d3.event.preventDefault(); });
             this.dom.tickGroup = this.dom.timeAxisGroup.append("g").attr("class","tickGroup");
         }
@@ -3142,6 +3157,13 @@ kshf.BarChart.prototype = {
             this.insertTimeChartRows();
             this.insertTimeChartAxis_1();
         }
+    },
+    updateScrollDisplayMore: function(bottomItem){
+        var me = this;
+        this.dom.scroll_display_more
+            .style("display",
+                (this.attribCount_Active!==bottomItem)?"inline-block":"none")
+            .text( (this.attribCount_Active-bottomItem)+" more..." );
     },
     /** -- */
     getAttribs: function(){
@@ -3172,11 +3194,13 @@ kshf.BarChart.prototype = {
     },
     /** returns the maximum number of maximum items stored per row in chart data */
     getMaxBarValueMaxPerAttrib: function(){
+        if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
         var dataMapFunc = this._dataMap;
-        return d3.max(this.getAttribs(), function(d){ 
+        this._maxBarValueMaxPerAttrib = d3.max(this.getAttribs(), function(d){ 
             if(dataMapFunc(d)===null) { return null; }
             return d.barValueMax;
         });
+        return this._maxBarValueMaxPerAttrib;
     },
     /** refreshUI */
     refreshUI: function(){
@@ -3212,36 +3236,35 @@ kshf.BarChart.prototype = {
         this.dom.item_count.text(function(attrib){
             return "("+kshf.Util.formatForItemCount(attrib.barValue)+")"; 
         });
-        this.dom.g_row.each(function(attrib){ 
+        this.dom.attribs.each(function(attrib){ 
             this.setAttribute("noitems",!me.isAttribSelectable(attrib));
         });
-        this.dom.row_title.text(function(attrib){
+        this.dom.attribs.attr("title",(function(attrib){
             return (attrib.activeItems===0?"No":attrib.activeItems)+" selected "+me.getKshf().itemName+" "+
                 (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
                 ((me.options.catTooltipText)?me.options.catTooltipText(attrib):me.options.catLabelText(attrib));
-        });
+        }));
     },
-    /** refreshBarHeight */
+    /** -- */
     refreshBarHeight: function(){
     	// Non-selected rows have shorted bar height.
     	this.dom.allRowBars
-    		.attr("height", function(attrib){ return (attrib.activeItems>0)?12:6; })
-    		.attr("y",function(attrib){ return (attrib.activeItems>0)?3:6; });
+    		.style("height", function(attrib){ return ((attrib.activeItems>0)?10:4)+"px"; })
+    		.style("margin-top",function(attrib){ return ((attrib.activeItems>0)?3:6)+"px"; });
         if(this.dom.timeBar){
             this.dom.timeBar
         		.attr("height", function(attrib){ return (attrib.activeItems>0)?12:6; })
         		.attr("y",function(attrib){ return (attrib.activeItems>0)?3:6; });
         }
-    	this.dom.bar_active
-    		.attr("height", function(attrib){ return (attrib.activeItems>0)?10:4; })
-    		.attr("y",function(attrib){ return (attrib.activeItems>0)?4:7; });
+/*    	this.dom.bar_active
+    		.style("height", function(attrib){ return ((attrib.activeItems>0)?8:2)+"px"; })
+    		.style("margin-top",function(attrib){ return ((attrib.activeItems>0)?4:7)+"px"; });*/
     },
-    /** refreshWidth_Bars_Active */
+    /** -- */
     refreshWidth_Bars_Active: function(){
     	var me=this;
     	this.dom.bar_active
-            .transition().duration(this.getKshf().anim_barscale_duration)
-    		.attr("width", function(attrib){ return me.catBarAxisScale(attrib.barValue);})
+    		.style("width", function(attrib){ return me.catBarAxisScale(attrib.barValue)+"px";})
             ;
     },
     /** Applies alternating color for bar helper lines */
@@ -3637,7 +3660,7 @@ kshf.BarChart.prototype = {
 
         var totalActiveTime_pixLength = 0;
 
-        this.dom.g_row.each(function(attrib) {
+        this.dom.attribs.each(function(attrib) {
             if(me.attribCount_Selected!==0 && !attrib.selected) return;
             if(attrib.xMax_Dyn===undefined || attrib.xMin_Dyn===undefined) return;
             totalActiveTime_pixLength+=me.timeScale(attrib.xMax_Dyn) - me.timeScale(attrib.xMin_Dyn);
@@ -3703,7 +3726,7 @@ kshf.BarChart.prototype = {
             +this.options.timeMaxWidth;
         this.dom.row_bar_line.attr("x2",x2);
     },
-    /** getMaxVisibleFirstRow */
+    /** -- */
     getMaxVisibleFirstRow: function(){
         return this.attribCount_Active-this.rowCount_Visible;
     },
@@ -3717,6 +3740,7 @@ kshf.BarChart.prototype = {
             c = Math.max(c,2);
         }
         this.rowCount_Visible = c;
+        this.updateScrollDisplayMore(this.rowCount_Visible);
     },
     /** -- */
     refreshVisibleAttribs: function(){
@@ -3741,15 +3765,16 @@ kshf.BarChart.prototype = {
                 ;
         }
 
-        this.root
+        this.dom.attribGroup
             .transition().duration(kshf_.anim_layout_duration)
-            .style("height",totalHeight+"px");
+            .style("height",visibleRowHeight+"px");
+        this.dom.chart_root2
+            .transition().duration(kshf_.anim_layout_duration)
+            .style("height",(visibleRowHeight+20)+"px");
 
         // ******************************************************************************
         // Scrollbar stuff
 
-        // scrollbar.firstRow cannot exceed getMaxVisibleFirstRow()
-        this.scrollbar.firstRow = Math.min(this.scrollbar.firstRow,this.getMaxVisibleFirstRow());
         // how much is one row when mapped to the scroll bar?
         this.scrollbar.rowScrollHeight = visibleRowHeight/this.attribCount_Active;
         if(this.rowCount_Visible!==this.attribCount_Active){
@@ -3757,7 +3782,7 @@ kshf.BarChart.prototype = {
 
         this.dom.x_axis
             .transition().duration(kshf_.anim_layout_duration)
-            .attr("transform", "translate("+(kshf_.getRowTotalTextWidth())+",23)")
+            .attr("transform", "translate("+(kshf_.getRowTotalTextWidth()+2)+",0)")
             ;
 
         if(this.type==='scatterplot'){
@@ -3773,9 +3798,11 @@ kshf.BarChart.prototype = {
                 .attr("y",-visibleRowHeight-8)
                 .attr("height", visibleRowHeight)
                 ;
+                /*
             this.dom.selectVertLine
                 .attr("y2", kshf_.line_height*(this.rowCount_Visible+1.5))
                 ;
+                */
         }
         this.dom.x_axis.selectAll("g.tick line")
             .transition().duration(kshf_.anim_layout_duration)
@@ -3958,7 +3985,7 @@ kshf.BarChart.prototype = {
     /** -- */
     refreshAttribFilter: function(){
         this.divRoot.attr("filtered_row",this.isFiltered_Attrib());
-        this.dom.g_row.attr("selected",function(attrib){return attrib.selected;});
+        this.dom.attribs.attr("selected",function(attrib){return attrib.selected;});
     },
     text_item_Attrib: function(){
         var me=this;
@@ -3967,7 +3994,7 @@ kshf.BarChart.prototype = {
         var selectedItemsCount=0;
         var catLabelText = this.options.catLabelText;
         var catTooltipText = this.options.catTooltipText;
-        this.dom.g_row.each( function(attrib){
+        this.dom.attribs.each( function(attrib){
             if(!attrib.selected) return; 
             if(selectedItemsCount!==0) {
                 if(me.selectType==="SelectAnd"){
@@ -3990,37 +4017,58 @@ kshf.BarChart.prototype = {
     	var me = this;
         var kshf_ = this.getKshf();
 
-    	this.dom.g_row
+        var onFilterAttrib = function(attrib){
+            if(attrib.facetDOM.tipsy_active)
+                attrib.facetDOM.tipsy_active.hide();
+            me.filterAttrib(attrib);
+            // get label
+            var attribLabel = me.options.catLabelText(attrib);
+
+            if (this.timer) {
+                // double click
+                clearTimeout(this.timer);
+                this.timer = null;
+                me.unselectAllAttribs();
+                me.filterAttrib(attrib);
+                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatValueExact,
+                    kshf_.getFilteringState(me.options.facetTitle,attribLabel));
+                return;
+            } else if(sendLog){
+                if(sendLog) sendLog(CATID.FacetFilter,(attrib.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
+                    kshf_.getFilteringState(me.options.facetTitle,attribLabel));
+            }
+            var x = this;
+            this.timer = setTimeout(function() { x.timer = null; }, 500);
+        };
+
+        var onMouseOver = function(attrib,i){
+            if(!me.isAttribSelectable(attrib)) return;
+            attrib.facetDOM.setAttribute("highlight",true);
+            attrib.items.forEach(function(item){if(item.wanted) item.highlightListItem();});
+            
+            attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
+            if(attrib.selected===false & me.attribCount_Selected>1 && me.selectType==="SelectOr"
+                && me.hasMultiValueItem){
+                // prevent "...and" and show "...or" instead
+                attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more")[0][0].tipsy;
+            }
+            attrib.facetDOM.tipsy_active.show()
+        };
+        var onMouseOut = function(attrib,i){
+            if(!me.isAttribSelectable(attrib)) return;
+            attrib.facetDOM.setAttribute("highlight",false);
+            attrib.items.forEach(function(item){if(item.wanted) item.nohighlightListItem();});
+            if(attrib.facetDOM.tipsy_active)
+                attrib.facetDOM.tipsy_active.hide();
+        };
+
+    	this.dom.attribs
             .attr("highlight","false")
             .attr("selected","false")
-    		.on("click", function(attrib){
-                this.tipsy_active.hide();
-                me.filterAttrib(attrib);
-                // get label
-                var attribLabel = me.options.catLabelText(attrib);
-
-                if (this.timer) {
-                    // double click
-                    clearTimeout(this.timer);
-                    this.timer = null;
-                    me.unselectAllAttribs();
-                    me.filterAttrib(attrib);
-                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.CatValueExact,
-                        kshf_.getFilteringState(me.options.facetTitle,attribLabel));
-                    return;
-                } else if(sendLog){
-                    if(sendLog) sendLog(CATID.FacetFilter,(attrib.selected)?ACTID_FILTER.CatValueAdd:ACTID_FILTER.CatValueRemove,
-                        kshf_.getFilteringState(me.options.facetTitle,attribLabel));
-                }
-                var x = this;
-                this.timer = setTimeout(function() { x.timer = null; }, 500);
-            })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
-                    offset_y: 9,
                     offset_x: 2,
-                    offset_x: me.parentKshf.getRowTotalTextWidth(),
                     fade: true,
                     title: function(){
                         var attrib=this.__data__;
@@ -4041,28 +4089,9 @@ kshf.BarChart.prototype = {
                     }
                 });
             })
-            .on("mouseover",function(attrib,i){
-                if(!me.isAttribSelectable(attrib)) return;    
-                this.setAttribute("highlight",true);
-                attrib.items.forEach(function(item){if(item.wanted) item.highlightListItem();});
-                this.tipsy_active = this.tipsy;
-                if(attrib.selected===false & me.attribCount_Selected>1 && me.selectType==="SelectOr"
-                    && me.hasMultiValueItem){
-                    // prevent "...and" and show "...or" instead
-                    this.tipsy_active = d3.select(this).select(".filter_add_more")[0][0].tipsy;
-                }
-                this.tipsy_active.show()
-            })
-            .on("mouseout",function(attrib,i){
-                if(!me.isAttribSelectable(attrib)) return;
-                this.setAttribute("highlight",false);
-                attrib.items.forEach(function(item){if(item.wanted) item.nohighlightListItem();});
-                this.tipsy_active.hide();
-            })
             ;
         
-        this.dom.row_title = this.dom.g_row.append("title").attr("class", "row_title");
-        this.dom.add_more = this.dom.g_row.append("g").attr("class", "filter_add_more")
+        this.dom.add_more = this.dom.attribs.append("span").attr("class", "filter_add_more")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'sw',
@@ -4098,63 +4127,45 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
             })
             ;
-        var x= this.dom.add_more.append("text").attr("class","filter_add_more add")
-            .attr("dy",14).attr("dx",8).text("⊕")
-            ;
-/*        var y= this.dom.add_more.append("text").attr("class","filter_add_more remove")
-            .attr("dy",14).attr("dx",8).text("⊖")
-            ;*/
+            var x= this.dom.add_more.append("span").attr("class","add").text("⊕");
+            var y= this.dom.add_more.append("span").attr("class","remove").text("⊖");
 
-    	this.dom.rowSelectBackground_Label = this.dom.g_row
-    		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Label")
-    		.attr("x", 0).attr("y", 0)
-            .attr("fill","url(#gr_rowSelectBackground_Label)")
-            .attr("height",kshf_.line_height)
-    		;
-    	this.dom.rowSelectBackground_Count = this.dom.g_row
-    		.append("rect").attr("class", "rowSelectBackground rowSelectBackground_Count")
-            .attr("y", 0)
-            .attr("fill","url(#gr_rowSelectBackground_Count)")
-            .attr("width",kshf_.getRowLabelOffset())
-            .attr("height",kshf_.line_height)
-    		;
-        this.dom.rowSelectBackground_ClickArea = this.dom.g_row
-            .append("rect").attr("class", "rowSelectBackground_ClickArea")
-            .attr("x", 20).attr("y", 4)
-            .attr("height",kshf_.line_height-8)
+        this.dom.attribs.append("span").attr("class", "clickArea")
+            .style("width",(kshf_.getRowTotalTextWidth()-10)+"px")
+            .on("click", onFilterAttrib)
+            .on("mouseover",onMouseOver)
+            .on("mouseout",onMouseOut)
             ;
-    	this.dom.item_count = this.dom.g_row
-    		.append("text").attr("class", "item_count")
-    		.attr("dy", 13)
-    		;
-    	this.dom.cat_labels = this.dom.g_row
-    		.append("text").attr("class", "row_label")
-    		.attr("dy", 14)
+
+    	this.dom.attribs.append("span").attr("class", "label")
+            .style("width", (this.options.rowTextWidth-11)+"px")
     		.text(this.options.catLabelText);
+        this.dom.item_count = this.dom.attribs.append("span").attr("class", "item_count")
+            .style("width",(this.getKshf().getRowLabelOffset()-1)+"px");
     	// Create helper line
     	if(this.options.display.row_bar_line){
-    		this.dom.row_bar_line = this.dom.g_row.append("line")
+    		this.dom.row_bar_line = this.dom.attribs.append("line")
     			.attr("class", "row_bar_line")
     			.attr("stroke-width","1")
     			.attr("y1", kshf_.line_height/2.0)
     			.attr("y2", kshf_.line_height/2.0);
     	} else{
-            this.dom.row_bar_line = this.root.select(".ffffffff"); // empty
+            this.dom.row_bar_line = this.dom.chartRoot.select(".ffffffff"); // empty
         }
-    	this.dom.bar_active = this.dom.g_row.append("rect")
-            .attr("rx",2).attr("ry",2)
+    	this.dom.bar_active = this.dom.attribs.append("span")
     		.attr("class", function(d,i){ 
     			return "rowBar " +(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" active";
-    		});
-    	this.dom.bar_total = this.dom.g_row.append("rect")
-            .attr("rx",2).attr("ry",2)
+    		})
+            .on("click", onFilterAttrib)
+            .on("mouseover",onMouseOver)
+            .on("mouseout",onMouseOut)
+            ;
+    	this.dom.bar_total = this.dom.attribs.append("span")
     		.attr("class", function(d,i){ 
     			return "rowBar "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"")+" total";
     		});
 
-        this.dom.allRowBars = this.dom.g_row.selectAll('rect.rowBar')
-            .attr("x", kshf_.getRowTotalTextWidth())
-            ;
+        this.dom.allRowBars = this.dom.attribs.selectAll('span.rowBar');
 
         this.refreshTextWidth();
     },
@@ -4164,18 +4175,6 @@ kshf.BarChart.prototype = {
         kshf_.anim_barscale_duration = kshf_.anim_barscale_duration_default;
         var dur=kshf_.anim_barscale_duration;
 
-        this.dom.cat_labels
-            .attr("x", this.options.rowTextWidth);
-        this.dom.rowSelectBackground_Count
-            .attr("x",this.options.rowTextWidth);
-        this.dom.item_count
-            .attr("x", this.options.rowTextWidth+3);
-        this.dom.rowSelectBackground_Label
-            .attr("width",this.options.rowTextWidth);
-        this.dom.rowSelectBackground_ClickArea
-            .attr("width",kshf_.getRowTotalTextWidth()-20);
-        this.dom.allRowBars
-            .attr("x", kshf_.getRowTotalTextWidth());
         this.dom.headerGroup.selectAll(".leftHeader_XX")
             .style("width",this.options.rowTextWidth+"px");
         this.dom.x_axis
@@ -4188,13 +4187,12 @@ kshf.BarChart.prototype = {
         this.dom.row_bar_line
             .attr("x1", kshf_.getRowTotalTextWidth()+2);
     },
-    /** refreshWidth_Bars_Total */
+    /** -- */
     refreshWidth_Bars_Total: function(){
         var me = this;
         this.dom.bar_total
-            .transition().duration(this.getKshf().anim_barscale_duration)
-            .attr("width", function(attrib){
-                return Math.min(me.catBarAxisScale(attrib.barValueMax),me.parentKshf.barMaxWidth+7); 
+            .style("width", function(attrib){
+                return Math.min(me.catBarAxisScale(attrib.barValueMax),me.parentKshf.barMaxWidth+7)+"px";
             });
     },
     /** -- */
@@ -4237,21 +4235,19 @@ kshf.BarChart.prototype = {
 
         setTimeout(function(){
             // always scrolls to top row automatically when re-sorted
-            if(me.scrollbar.firstRow!==0){
-                me.scrollbar.firstRow=0;
-            }
+            kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0);
             if(me.sortedBefore){
-                me.dom.g_row.data(me.getAttribs(), me._dataMap)
+                me.dom.attribs.data(me.getAttribs(), me._dataMap)
                     .order()
                     .transition().duration(600)
                     .delay(function(d, i) { return Math.min(i*10,600); })
-                    .attr("transform", function(attrib,i) { return "translate(0,"+((kshf_.line_height*i))+")"; })
+                    .style("top", function(attrib,i) { return (kshf_.line_height*i)+"px"; })
                     ;
             } else {
-                me.dom.g_row.data(me.getAttribs(), me._dataMap)
+                me.dom.attribs.data(me.getAttribs(), me._dataMap)
                     .order()
                     // no transition
-                    .attr("transform", function(attrib,i) { return "translate(0,"+((kshf_.line_height*i))+")"; })
+                    .style("top", function(attrib,i) { return (kshf_.line_height*i)+"px"; })
                     ;
             }
             
@@ -4309,7 +4305,7 @@ kshf.BarChart.prototype = {
         rows.forEach(function(attrib){
             if(!attrib.sortDirty || this.type!=="scatterplot") return;
             attrib.items.sort(timeChartSortFunc);
-            this.dom.g_row.selectAll(".timeDot")
+            this.dom.attribs.selectAll(".timeDot")
                 .data(function(attrib) { return attrib.items; }, function(attrib){ return attrib.id(); })
                 // calling order will make sure selected ones appear on top of unselected ones.
                 .order()
@@ -4341,7 +4337,7 @@ kshf.BarChart.prototype = {
     	var me = this;
         var kshf_ = this.getKshf();
 
-        var rows = this.dom.g_row.append("g").attr("class","timeLineParts")
+        var rows = this.dom.attribs.append("g").attr("class","timeLineParts")
             ;
         if(this.options.timeBarShow===true){
             rows.append("rect").attr("class","timeBar total" ).attr("rx",2).attr("ry",2);
@@ -4365,15 +4361,15 @@ kshf.BarChart.prototype = {
                 // update the position of selectVertLine
                 var tm = me.timeScale(me.options.timeItemMap(item));
                 var totalLeftWidth = me.parentKshf.barMaxWidth+kshf_.scrollPadding+kshf_.scrollWidth+kshf_.sepWidth+me.parentKshf.getRowTotalTextWidth();
-                me.dom.selectVertLine
+/*                me.dom.selectVertLine
                     .attr("x1",tm+totalLeftWidth)
                     .attr("x2",tm+totalLeftWidth)
-                    .style("display","block");
+                    .style("display","block");*/
                 d3.event.stopPropagation();
             })
             .on("mouseout",function(item,i){
                 item.nohighlightAll();
-                me.dom.selectVertLine.style("display","none");
+                //me.dom.selectVertLine.style("display","none");
                 d3.event.stopPropagation();
             })
     		.on("click", function(item,i,f) {
@@ -4420,10 +4416,10 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
     		})
             ;
-        this.dom.timeBar       = this.dom.g_row.selectAll('rect.timeBar')
-        this.dom.timeBarActive = this.dom.g_row.selectAll("rect.timeBar.active");
-        this.dom.timeBarTotal  = this.dom.g_row.selectAll("rect.timeBar.total");
-        this.dom.timeDots      = this.dom.g_row.selectAll('.timeDot');
+        this.dom.timeBar       = this.dom.attribs.selectAll('rect.timeBar')
+        this.dom.timeBarActive = this.dom.attribs.selectAll("rect.timeBar.active");
+        this.dom.timeBarTotal  = this.dom.attribs.selectAll("rect.timeBar.total");
+        this.dom.timeDots      = this.dom.attribs.selectAll('.timeDot');
     },
     /** -- */
     setTimeTicks: function(){
