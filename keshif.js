@@ -3050,12 +3050,7 @@ kshf.BarChart.prototype = {
         var totalWidth = this.getWidth_Total()+5;
 
         this.divRoot.style("width",totalWidth+"px");
-        this.dom.clippingRect_Time
-            .attr("x",leftPanelWidth)
-            .attr("width",this.options.timeMaxWidth+10+7)
-            ;
         this.dom.headerGroup.style('width',totalWidth+"px");
-        this.dom.clippingRect.attr("width",totalWidth+5);
         this.dom.leftHeader.style("width",leftPanelWidth+"px");
     },
     /** scrollItemCb */
@@ -3105,9 +3100,8 @@ kshf.BarChart.prototype = {
         }
         this.dom.x_axis = this.root.append("g").attr("class", "x_axis")
             .on("mousedown", function (d, i) { d3.event.preventDefault(); });
-    	this.dom.barGroup_Top = this.root.append("g")
-    		.attr("class","barGroup_Top")
-    		.attr("clip-path","url(#kshf_chart_clippath_"+this.id+")")
+        this.dom.barGroup_Top = this.root.append("g")
+            .attr("class","barGroup_Top")
             .attr("transform","translate(0,20)")
             ;
         if(this.type==='scatterplot') { 
@@ -3831,11 +3825,6 @@ kshf.BarChart.prototype = {
             .attr("transform", "translate("+(kshf_.getRowTotalTextWidth())+",23)")
             ;
 
-        this.dom.barGroup_Top.selectAll(".barChartClipPath rect")
-            .transition().duration(kshf_.anim_layout_duration)
-    		.attr("height",visibleRowHeight)
-            ;
-
         if(this.type==='scatterplot'){
             this.refreshTimeAxisPosition();
             // update x axis items
@@ -4258,17 +4247,6 @@ kshf.BarChart.prototype = {
     	var me = this;
         var kshf_ = this.getKshf();
 
-    	// create the clipping area
-    	var clipPaths = this.dom.barGroup_Top
-    		.on("mousedown", function (d, i) { d3.event.preventDefault(); })
-            .on("mousewheel",this.scrollItemCb.bind(this))
-    	.insert("g",":first-child") // insert as first child, modifies DOM in a different way. Whoo!!
-            .attr("class","barChartClipPath");
-        this.dom.clippingRect = clipPaths.insert("clipPath").attr("id","kshf_chart_clippath_"+this.id)
-        	.append("rect").attr("x",0).attr("y",0);
-        this.dom.clippingRect_Time = clipPaths.insert("clipPath").attr("id","kshf_chart_clippathsm_"+this.id)
-            .append("rect").attr("y",0);
-
     	this.dom.g_row
             .attr("highlight","false")
             .attr("selected","false")
@@ -4622,7 +4600,6 @@ kshf.BarChart.prototype = {
         var kshf_ = this.getKshf();
 
         var rows = this.dom.g_row.append("g").attr("class","timeLineParts")
-            .attr("clip-path","url(#kshf_chart_clippathsm_"+this.id+")")
             ;
         if(this.options.timeBarShow===true){
             rows.append("rect").attr("class","timeBar total" ).attr("rx",2).attr("ry",2);
