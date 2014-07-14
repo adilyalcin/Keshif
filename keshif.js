@@ -522,8 +522,8 @@ kshf.Item.prototype = {
     },
     /** Highlights the list item */
     highlightListItem: function(){
-        if(this.listItem)
-            this.listItem.setAttribute("highlight",true);
+        if(this.listItem === undefined) return;
+        this.listItem.setAttribute("highlight",true);
     },
     /** Higlights all relevant UI parts to this UI item - Attributes, dots, and list */
     highlightAll: function(){
@@ -910,6 +910,8 @@ kshf.List.prototype = {
             .append("div")
             .attr("class","listItem")
             .attr("details",this.detailsDefault?"true":"false")
+            .attr("highlight",false)
+            .attr("animSt","visible")
             .attr("itemID",function(d){return d.id();})
             // store the link to DOM in the data item
             .each(function(d){ d.listItem = this; })
@@ -969,7 +971,7 @@ kshf.List.prototype = {
             .attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
     },
-    /** insertSortSelect */
+    /** -- */
     insertSortSelect: function(){
         var me=this;
         if(this.sortingOpts.length<2) {
@@ -1001,7 +1003,7 @@ kshf.List.prototype = {
                 .text(function(d){ return d.name; })
                 ;
     },
-    /** insertItemToggleDetails */
+    /** -- */
     insertItemToggleDetails: function(){
         var kshf_ = this.getKshf();
         var x= this.dom.listItems
@@ -1036,7 +1038,7 @@ kshf.List.prototype = {
             .on("mouseout",function(d){ this.parentNode.tipsy.hide(); })
             ;
     },
-    /** insertItemsToggleDetails */
+    /** -- */
     insertItemsToggleDetails: function(){
         if(this.detailsToggle==="Off") return;
         var me=this;
@@ -1054,7 +1056,7 @@ kshf.List.prototype = {
                 me.listDiv.attr('showAll','true');
             });
     },
-    /** insertItemLinkBar_Header */
+    /** -- */
     insertItemLinkBar_Header: function(){
         this.dom.listHeader.append("div").attr("class","itemLinks")
             .style("width",this.linkFilterWidth+"px")
@@ -1065,7 +1067,7 @@ kshf.List.prototype = {
     /** after you re-sort the primary table or change item visibility, call this function */
     updateShowListGroupBorder: function(){
         var me = this;
-        var items = me.getKshfItems();
+        var items = this.getKshfItems();
         if(this.displayType==='list') {
             if(this.sortingOpt_Active.noGroupBorder===true){
                 this.dom.listItems.style("border-top-width", "0px");
@@ -1086,13 +1088,18 @@ kshf.List.prototype = {
             }
         }
     },
-    /** Reorders items in the DOM */
+    /** Reorders items in the DOM
+     *  Only called after list is re-sorted (not called after filtering)
+     */
     reorderItemsOnDOM: function(){
         this.dom.listItems
             .data(this.getKshfItems(), function(d){ return d.id(); })
             .order();
     },
-    /** Sort all items fiven the active sort option */
+    /** Sort all items fiven the active sort option 
+     *  List items are only sorted on list init and when sorting options change.
+     *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
+     */
     sortItems: function(){
         var me=this;
         var sortValueFunc = this.sortingOpt_Active.value;
@@ -1147,7 +1154,7 @@ kshf.List.prototype = {
         var showType=this.displayType==='list'?"block":"inline-block";
     	this.dom.listItems.style("display",function(attrib){return (attrib.wanted)?showType:"none"; });
     },
-    /** updateContentWidth */
+    /** -- */
     updateContentWidth: function(contentWidth){
         if(this.detailsToggle!=="Off") contentWidth-=this.itemtoggledetailsWidth;
         contentWidth-=this.sortColWidth;
@@ -1816,12 +1823,12 @@ kshf.Browser.prototype = {
                 return;
             }
             if(response.isError()) {
-                this.layout_infobox.select("div.status_text span")
+                me.layout_infobox.select("div.status_text span")
                     .text("Cannot load data");
-                this.layout_infobox.select("img")
+                me.layout_infobox.select("img")
                     .attr("src",me.dirRoot+"img/alert.png")
                     .style("height","40px");
-                this.layout_infobox.select("div.status_text div")
+                me.layout_infobox.select("div.status_text div")
                     .text("("+response.getMessage()+")");
                 return;
             }
@@ -3549,15 +3556,15 @@ kshf.BarChart.prototype = {
         if(animate){
             var scrollHandleHeight=kshf_.line_height*this.rowCount_Visible*this.rowCount_Visible/this.attribCount_Active.toFixed();
             if(scrollHandleHeight<10) { scrollHandleHeight=10;}
-            this.dom.scrollGroup.select("rect.background_up")
+            this.dom.scrollGroup.selectAll("rect.background_up")
                 .transition().duration(kshf_.anim_layout_duration)
                 .attr("height",(handleTopPos));
-            this.dom.scrollGroup.select("rect.background_down")
+            this.dom.scrollGroup.selectAll("rect.background_down")
                 .transition().duration(kshf_.anim_layout_duration)
                 .attr("y",handleTopPos)
                 .attr("height",kshf_.line_height*this.rowCount_Visible-handleTopPos)
             ;
-            this.dom.scrollGroup.select("rect.handle")
+            this.dom.scrollGroup.selectAll("rect.handle")
                 .transition().duration(kshf_.anim_layout_duration)
                 .attr("height",scrollHandleHeight)
                 .attr("y",handleTopPos);
@@ -3566,18 +3573,18 @@ kshf.BarChart.prototype = {
                 .ease(d3.ease("cubic-out"))
                 .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
         } else {
-            this.dom.scrollGroup.select("rect.background_up")
+            this.dom.scrollGroup.selectAll("rect.background_up")
                 .attr("height",(handleTopPos+5));
-            this.dom.scrollGroup.select("rect.background_down")
+            this.dom.scrollGroup.selectAll("rect.background_down")
                 .attr("y",handleTopPos)
                 .attr("height",kshf_.line_height*this.rowCount_Visible-handleTopPos)
             ;
-            this.dom.scrollGroup.select("rect.handle")
+            this.dom.scrollGroup.selectAll("rect.handle")
                 .attr("y",handleTopPos);
             this.dom.barGroup
                 .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
         }
-        this.dom.scrollGroup.select("g.top_arrow").style("display",
+        this.dom.scrollGroup.selectAll(".top_arrow").style("display",
             (this.scrollbar.firstRow!==0)?"inline":"none");
         this.dom.scroll_display_more
             .style("display",
@@ -3586,7 +3593,7 @@ kshf.BarChart.prototype = {
                 if(me.scrollbar.firstRow===me.getMaxVisibleFirstRow()) return "";
                 return (me.attribCount_Active-me.rowCount_Visible-me.scrollbar.firstRow)+" more...";
             });
-        this.dom.scrollGroup.select("text.first_row_number")
+        this.dom.scrollGroup.selectAll("text.first_row_number")
             .text(this.scrollbar.firstRow===0?"":this.scrollbar.firstRow)
             .attr("y",handleTopPos-1)
             ;
@@ -3643,7 +3650,7 @@ kshf.BarChart.prototype = {
         this.scrollbar.rowScrollHeight = visibleRowHeight/this.attribCount_Active;
         if(this.rowCount_Visible!==this.attribCount_Active){
             // update scrollbar height
-            this.dom.scrollGroup.select("rect.background")
+            this.dom.scrollGroup.selectAll("rect.background")
                 .transition().duration(kshf_.anim_layout_duration)
                 .attr("height",visibleRowHeight+1);
             this.dom.scroll_display_more
@@ -3763,24 +3770,18 @@ kshf.BarChart.prototype = {
         var mouseOutFunc = function(){ me.scrollBarUp_Active = false; };
 
     	// scroll to top
-    	var xxx=parentDom.append("g").attr("class","top_arrow")
-            .attr("transform","translate(1,-13)");
-            xxx.append("title")
-                .text("Top");
-            xxx.append("rect")
-                .attr("width",kshf_.scrollWidth)
-                .attr("height",11)
-                .on("click",function(){
-                    me.scrollbar.firstRow=0;
-                    me.refreshScrollbar(true);
-                    if(sendLog) {
-                        sendLog(CATID.FacetScroll,ACTID_SCROLL.ScrollToTop, 
-                            {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-                    }
-                });
-            xxx.append("path").attr("class","top_arrow")
-                .attr("d","M4 0 L0 3 L0 6 L4 3 L8  6 L8  3 Z M4 5 L0 8 L0 11 L4 8 L8 11 L8  8 Z")
-                ;
+    	var xxx=parentDom.append("text").attr("class","top_arrow")
+            .attr("transform","translate(-1,-3)")
+            .html("⬆")
+            .on("click",function(){
+                me.scrollbar.firstRow=0;
+                me.refreshScrollbar(true);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ScrollToTop, 
+                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
+                }
+            })
+            .append("title").text("Top");
     	// the background - static position/size
     	parentDom.append("rect").attr("class", "background")
     		.attr("width",kshf_.scrollWidth+1)
@@ -3884,7 +3885,7 @@ kshf.BarChart.prototype = {
         if(this.type==='scatterplot'){
             this.dom.rightScroll
                 .transition().duration(kshf_.anim_layout_duration)
-                .attr("transform","translate("+(this.getWidth_Total()-kshf_.scrollWidth-3)+",0)");
+                .attr("transform","translate("+(this.getWidth_Total()-kshf_.scrollWidth+4)+",0)");
         }
         this.dom.scroll_display_more
             .transition().duration(kshf_.anim_layout_duration)
@@ -4350,18 +4351,29 @@ kshf.BarChart.prototype = {
         var me = this;
         if(sortDelay===undefined) sortDelay = 450;
         this.sortAttribs();
+
         setTimeout(function(){
             // always scrolls to top row automatically when re-sorted
             if(me.scrollbar.firstRow!==0){
                 me.scrollbar.firstRow=0;
                 me.refreshScrollbar();
             }
-            me.dom.g_row.data(me.getAttribs(), me._dataMap)
-                .order().transition().duration(600)
-                .delay(function(d, i) { return Math.min(i*10,600); })
-                .attr("transform", function(attrib,i) { return "translate(0,"+((kshf_.line_height*i))+")"; })
-                ;
-
+            if(me.sortedBefore){
+                me.dom.g_row.data(me.getAttribs(), me._dataMap)
+                    .order()
+                    .transition().duration(600)
+                    .delay(function(d, i) { return Math.min(i*10,600); })
+                    .attr("transform", function(attrib,i) { return "translate(0,"+((kshf_.line_height*i))+")"; })
+                    ;
+            } else {
+                me.dom.g_row.data(me.getAttribs(), me._dataMap)
+                    .order()
+                    // no transition
+                    .attr("transform", function(attrib,i) { return "translate(0,"+((kshf_.line_height*i))+")"; })
+                    ;
+            }
+            
+            me.sortedBefore = true;
             if(me.type==='scatterplot') me.refreshBarLineHelper();
             me.divRoot.attr("canResort",false);
         },sortDelay);
