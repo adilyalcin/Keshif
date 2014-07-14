@@ -921,9 +921,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
-.kshf .kshfChart[showscrollbar=false] g.scrollGroup {
-  display: none;
-}
 .kshf .kshfChart[canresort=true] .resort_button {
   display: block;
 }

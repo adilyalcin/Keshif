@@ -3044,8 +3044,6 @@ kshf.BarChart.prototype = {
     },
     /** -- */
     refreshUIWidth: function(){
-        this.refreshScrollbarPos();
-
         var leftPanelWidth = this.getWidth_Left();
         var totalWidth = this.getWidth_Total()+5;
 
@@ -3138,8 +3136,6 @@ kshf.BarChart.prototype = {
         }
 
         this.insertHeader();
-
-        this.insertScrollbar();
 
         this.insertAttribs();
         if(this.type==='scatterplot') { 
@@ -3707,57 +3703,6 @@ kshf.BarChart.prototype = {
             +this.options.timeMaxWidth;
         this.dom.row_bar_line.attr("x2",x2);
     },
-    /** refreshScrollbar */
-    refreshScrollbar: function(animate){
-        var me = this;
-        var kshf_ = this.getKshf();
-    	var firstRowHeight = kshf_.line_height*this.scrollbar.firstRow;
-        var handleTopPos = firstRowHeight*(this.rowCount_Visible/this.attribCount_Active.toFixed());
-        if(animate){
-            var scrollHandleHeight=kshf_.line_height*this.rowCount_Visible*this.rowCount_Visible/this.attribCount_Active.toFixed();
-            if(scrollHandleHeight<10) { scrollHandleHeight=10;}
-            this.dom.scrollGroup.selectAll("rect.background_up")
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("height",(handleTopPos));
-            this.dom.scrollGroup.selectAll("rect.background_down")
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("y",handleTopPos)
-                .attr("height",kshf_.line_height*this.rowCount_Visible-handleTopPos)
-            ;
-            this.dom.scrollGroup.selectAll("rect.handle")
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("height",scrollHandleHeight)
-                .attr("y",handleTopPos);
-            this.dom.barGroup
-                .transition().duration(kshf_.anim_layout_duration)
-                .ease(d3.ease("cubic-out"))
-                .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
-        } else {
-            this.dom.scrollGroup.selectAll("rect.background_up")
-                .attr("height",(handleTopPos+5));
-            this.dom.scrollGroup.selectAll("rect.background_down")
-                .attr("y",handleTopPos)
-                .attr("height",kshf_.line_height*this.rowCount_Visible-handleTopPos)
-            ;
-            this.dom.scrollGroup.selectAll("rect.handle")
-                .attr("y",handleTopPos);
-            this.dom.barGroup
-                .attr("transform",function(){return "translate(0,-"+firstRowHeight+")";});
-        }
-        this.dom.scrollGroup.selectAll(".top_arrow").style("display",
-            (this.scrollbar.firstRow!==0)?"inline":"none");
-        this.dom.scroll_display_more
-            .style("display",
-                (this.scrollbar.firstRow!==this.getMaxVisibleFirstRow())?"inline":"none")
-            .text( function(){
-                if(me.scrollbar.firstRow===me.getMaxVisibleFirstRow()) return "";
-                return (me.attribCount_Active-me.rowCount_Visible-me.scrollbar.firstRow)+" more...";
-            });
-        this.dom.scrollGroup.selectAll("text.first_row_number")
-            .text(this.scrollbar.firstRow===0?"":this.scrollbar.firstRow)
-            .attr("y",handleTopPos-1)
-            ;
-    },
     /** getMaxVisibleFirstRow */
     getMaxVisibleFirstRow: function(){
         return this.attribCount_Active-this.rowCount_Visible;
@@ -3786,7 +3731,6 @@ kshf.BarChart.prototype = {
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("showconfig",this.showConfig)
             .attr("collapsedTime",this.collapsedTime===false?"false":"true")
-            .attr("showscrollbar",this.scrollbar.show)
             .attr("selectType",this.selectType)
             .attr("hasMultiValueItem",this.hasMultiValueItem)
             ;
@@ -3809,15 +3753,6 @@ kshf.BarChart.prototype = {
         // how much is one row when mapped to the scroll bar?
         this.scrollbar.rowScrollHeight = visibleRowHeight/this.attribCount_Active;
         if(this.rowCount_Visible!==this.attribCount_Active){
-            // update scrollbar height
-            this.dom.scrollGroup.selectAll("rect.background")
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("height",visibleRowHeight+1);
-            this.dom.scroll_display_more
-//                .transition().duration(kshf_.anim_layout_duration) // For some reason, animation doesn't work here
-                .attr('y',visibleRowHeight+10);
-            this.refreshScrollbarPos();
-            this.refreshScrollbar(true);
         }
 
         this.dom.x_axis
@@ -3849,198 +3784,6 @@ kshf.BarChart.prototype = {
         this.dom.x_axis.selectAll("g.tick text")
             .transition().duration(kshf_.anim_layout_duration)
             .attr("dy",visibleRowHeight+3);
-    },
-    /** -- */
-    setScrollPosition: function(pos) {
-        // clamp
-        if(pos<0) pos=0;
-        if(pos>this.getMaxVisibleFirstRow()) pos=this.getMaxVisibleFirstRow();
-        // if same, do no more
-        if(this.scrollbar.firstRow===pos) return;
-        this.scrollbar.firstRow = pos;
-        this.refreshScrollbar();
-    },
-    /** -- */
-    stepScrollPosition: function(stepSize) {
-        if(this.scrollbar.firstRow===0 && stepSize<0){ return; }
-        if(this.scrollbar.firstRow===this.getMaxVisibleFirstRow() && stepSize>0){ return; }
-        if(!this.scrollBarUp_Active){ return; }
-        this.scrollbar.firstRow+=stepSize;
-        this.refreshScrollbar();
-        this.scrollBarUp_TimeStep-=10;
-        if(this.scrollBarUp_TimeStep<15){ this.scrollBarUp_TimeStep = 15; }
-        window.setTimeout(this.stepScrollPosition.bind(this,stepSize), this.scrollBarUp_TimeStep);
-    },
-    /** -- */
-    insertScrollbar: function(){
-        var me = this;
-
-    	var scrollGroup = this.root.append("g").attr("class","scrollGroup")
-            .attr("transform","translate(0,20)")
-    		.on("mousedown", function () { d3.event.preventDefault(); })
-    		;
-
-        // left scroll
-        this.dom.leftScroll = scrollGroup.append("g").attr("class","leftScroll");
-        this.insertScrollbar_do(this.dom.leftScroll);
-        // right scroll
-        if(this.type==='scatterplot'){
-            this.dom.rightScroll = scrollGroup.append("g").attr("class","rightScroll");
-            this.insertScrollbar_do(this.dom.rightScroll);
-        }
-
-        // "more..." text
-        this.dom.scroll_display_more = scrollGroup.append("text").attr("class","scroll_display_more")
-            .attr("y",0)
-            .on("mousedown",function(){
-                scrollGroup.selectAll("text.row_number").style("display","block");
-                me.scrollBarUp_Active = true; 
-                me.scrollBarUp_TimeStep = 200;
-                me.stepScrollPosition(1);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
-                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-                }
-            })
-            .on("mouseup",function(){ me.scrollBarUp_Active = false; })
-            .on("mouseover",function(e){ 
-                d3.select(this).attr("highlight",true); 
-            })
-            .on("mouseout",function(){ 
-                d3.select(this).attr("highlight",false); 
-                me.scrollBarUp_Active = false; 
-                scrollGroup.selectAll("text.row_number").style("display","none");
-            })
-            ;
-        this.dom.scrollGroup = scrollGroup;
-    },
-    /** -- */
-    insertScrollbar_do: function(parentDom){
-        var me = this;
-        var kshf_ = this.getKshf();
-        var mouseOutFunc = function(){ me.scrollBarUp_Active = false; };
-
-    	// scroll to top
-    	var xxx=parentDom.append("text").attr("class","top_arrow")
-            .attr("transform","translate(-1,-3)")
-            .html("⬆")
-            .on("click",function(){
-                me.scrollbar.firstRow=0;
-                me.refreshScrollbar(true);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ScrollToTop, 
-                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-                }
-            })
-            .append("title").text("Top");
-    	// the background - static position/size
-    	parentDom.append("rect").attr("class", "background")
-    		.attr("width",kshf_.scrollWidth+1)
-    		.attr("rx",4)
-    		.attr("ry",4)
-            .attr("x",-0.5)
-            .attr("y",-0.5)
-            ;
-    	parentDom.append("rect").attr("class", "background_fill background_up")
-    		.attr("width",kshf_.scrollWidth)
-    		.attr("rx",4)
-    		.attr("ry",4)
-            .on("mousedown",function(){
-                me.scrollBarUp_Active = true; 
-                me.scrollBarUp_TimeStep = 200;
-                me.stepScrollPosition(-1);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar,
-                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-                }
-            })
-    		.on("mouseup",function(){
-                me.scrollBarUp_Active = false; 
-            })
-    		.on("mouseout",mouseOutFunc);
-    	parentDom.append("rect").attr("class", "background_fill background_down")
-    		.attr("width",kshf_.scrollWidth)
-    		.attr("rx",4)
-    		.attr("ry",4)
-            .on("mousedown",function(){
-                me.scrollBarUp_Active = true; 
-                me.scrollBarUp_TimeStep = 200;
-                me.stepScrollPosition(1);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickScrollbar, 
-                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-                }
-            })
-    		.on("mouseup",function(){
-                me.scrollBarUp_Active = false; 
-            })
-    		.on("mouseout",mouseOutFunc);
-    	// the handle - very (very) dynamic
-    	parentDom.append("rect")
-    		.attr("class", "handle")
-    		.attr("x",0)
-    		.attr("y",0)
-    		.attr("rx",4)
-    		.attr("ry",4)
-    		.attr("width",kshf_.scrollWidth)
-    		.on("mouseout",mouseOutFunc)
-    		.on("mousedown", function(d, i) {
-    			me.scrollbar.active=true;
-    			d3.select(this).attr("selected",true);
-    			me.root.style( 'cursor', 'pointer' );
-    			var mouseDown_y = d3.mouse(this.parentNode.parentNode.parentNode)[1];
-    			var firstRow = me.scrollbar.firstRow;
-                parentDom.selectAll("text.row_number").style("display","block");
-    			me.root.on("mousemove", function() {
-    				var mouseMove_y = d3.mouse(this)[1];
-    				var mouseDif = mouseMove_y-mouseDown_y;
-    				// update position if necessary
-    				var lineDif = Math.round(mouseDif/me.scrollbar.rowScrollHeight);
-    				if(lineDif!==0){
-    					var hmm=firstRow + lineDif;
-    					if(hmm<0) { hmm=0; }
-    					if(hmm>me.getMaxVisibleFirstRow()) { hmm=me.getMaxVisibleFirstRow(); }
-    					me.scrollbar.firstRow = hmm;
-    					me.refreshScrollbar();
-    				}
-    			}).on("mouseup", function(){
-    				me.root.style( 'cursor', 'default' );
-    				me.scrollbar.active=false;
-    				var btn=me.dom.scrollGroup.select("rect.handle");
-    				btn.attr("selected",false);
-    				// unregister mouse-move callbacks
-                    parentDom.selectAll("text.row_number").style("display","");
-    				me.root.on("mousemove", null).on("mouseup", null);
-                    if(sendLog) sendLog(CATID.FacetScroll,ACTID_SCROLL.DragScrollbar,
-                        {facet:me.options.facetTitle,firstRow:me.scrollbar.firstRow});
-    			});
-    		})
-    		;
-        // number display
-    	parentDom.append("text")
-            .attr("class","first_row_number row_number")
-            .attr("x",kshf_.scrollWidth)
-            ;
-    	parentDom.append("text")
-            .attr("class","last_row_number row_number")
-            .attr("x",kshf_.scrollWidth)
-            ;
-    },
-    /** -- */
-    refreshScrollbarPos: function(){
-        var kshf_ = this.getKshf();
-    	this.dom.leftScroll
-            .transition().duration(kshf_.anim_layout_duration)
-    		.attr("transform","translate("+(kshf_.getRowTotalTextWidth()+kshf_.barMaxWidth+kshf_.scrollPadding)+",0)")
-            ;
-        if(this.type==='scatterplot'){
-            this.dom.rightScroll
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("transform","translate("+(this.getWidth_Total()-kshf_.scrollWidth+4)+",0)");
-        }
-        this.dom.scroll_display_more
-            .transition().duration(kshf_.anim_layout_duration)
-            .attr("x", kshf_.categoryTextWidth);
     },
     /** -- */
     filter_multi_and: function(idList,curDtId) {
@@ -4496,7 +4239,6 @@ kshf.BarChart.prototype = {
             // always scrolls to top row automatically when re-sorted
             if(me.scrollbar.firstRow!==0){
                 me.scrollbar.firstRow=0;
-                me.refreshScrollbar();
             }
             if(me.sortedBefore){
                 me.dom.g_row.data(me.getAttribs(), me._dataMap)
