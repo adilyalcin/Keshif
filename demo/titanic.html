@@ -82,8 +82,8 @@
                     }
                 ],
                 list : {
-                    sortColWidth: 75,
-                    sortingOpts : [ {name: 'id'} ],
+                    sortColWidth: 40,
+                    sortingOpts : [ {name: 'id', inverse:true} ],
                     textSearch: 'name',
                     content: "name"
                 }
@@ -95,6 +95,9 @@
             #chart_div {
                 width: 800px;
                 height: 700px;
+            }
+            #chart_div div.listItem{
+                max-height: 20px;
             }
         </style>
     </head>
