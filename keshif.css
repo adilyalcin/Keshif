@@ -41,16 +41,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost:focus {
   outline: none;
 }
-.kshfHost[hidebars=true] .kshf .headerGroup .barInfo {
+.kshfHost > div[hidebars=true] .kshf .headerGroup .barInfo {
   display: none;
 }
-.kshfHost[hidebars=true] .kshf .barChartMainInfo {
+.kshfHost > div[hidebars=true] .kshf .barChartMainInfo {
   display: none;
 }
-.kshfHost[hidebaraxis=true] svg > g.x_axis {
+.kshfHost > div[hidebaraxis=true] svg > g.x_axis {
   display: none;
 }
-.kshfHost[hidebaraxis=true] .barChartMainInfo {
+.kshfHost > div[hidebaraxis=true] .barChartMainInfo {
   display: none;
 }
 .kshfHost .subRoot {
@@ -365,7 +365,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
-  right: -8px;
+  right: -6px;
   top: 1px;
   width: 6px;
   border-bottom: solid 1px lightgray;
@@ -386,11 +386,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -moz-linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);;
   background-image: -o-linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);;
   background-image: linear-gradient(to left, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);;
-}
-.kshf line.selectVertLine {
-  stroke: #EEDDDE;
-  stroke-width: 2;
-  display: none;
 }
 .kshf .selection_bar rect {
   fill: #788890;
@@ -417,26 +412,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   font-weight: 300;
   cursor: default;
-}
-.kshf .timeDot {
-  cursor: pointer;
-  -webkit-transition: all 100ms linear;
-  -moz-transition: all 100ms linear;
-  -o-transition: all 100ms linear;
-  transition: all 100ms linear;
-}
-.kshf .timeDot[display=false] {
-  pointer-events: none;
-  fill: #CCCCCC !important;
-  opacity: 0.2;
-}
-.kshf .timeDot[display=true]:hover {
-  stroke: orangered !important;
-  stroke-width: 2;
-}
-.kshf .timeDot[highlight=true] {
-  stroke: #c32c2c !important;
-  stroke-width: 2;
 }
 .kshf g.timeAxisGroup text {
   font-size: 0.7em;
@@ -481,7 +456,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup {
   pointer-events: none;
   position: relative;
-  margin-bottom: 2px;
 }
 .kshf .headerGroup .SubFacetText {
   -webkit-transform: rotate(90deg);
@@ -544,6 +518,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
 }
 .kshf .headerGroup .chartFirstLineBackgroundRight {
+  padding-left: 10px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSIzMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwLjMiLz48c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAuMyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
   background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
@@ -648,13 +623,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
 }
 .kshf .headerGroup .leftHeader {
+  display: inline-block;
+  vertical-align: top;
   pointer-events: all;
-  left: 0px;
   position: relative;
 }
 .kshf .headerGroup .rightHeader {
+  display: inline-block;
+  vertical-align: top;
   pointer-events: all;
-  float: right;
+  position: relative;
 }
 .kshf .headerGroup .rightHeader span.header_label {
   float: left;
@@ -664,10 +642,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 10px;
   height: 18px;
   float: right;
-  -webkit-transition: height 500ms ease;
-  -moz-transition: height 500ms ease;
-  -o-transition: height 500ms ease;
-  transition: height 500ms ease;
+  -webkit-transition: height 500ms ease, margin-left 400 ease;
+  -moz-transition: height 500ms ease, margin-left 400 ease;
+  -o-transition: height 500ms ease, margin-left 400 ease;
+  transition: height 500ms ease, margin-left 400 ease;
 }
 .kshf .headerGroup .rightHeader .config_zoom svg {
   position: relative;
@@ -733,9 +711,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart div.chart_root span.scrollToTop {
   position: absolute;
-  top: -19px;
-  right: 1px;
+  top: -17px;
+  right: 0px;
   font-size: 0.8em;
+}
+.kshf .kshfChart div.chart_root span.scrollToTop2 {
+  right: auto;
 }
 .kshf .kshfChart div.chart_root span.scroll_display_more {
   font-size: 0.7em;
@@ -862,10 +843,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-.kshf .kshfChart[collapsedTime=true] .attrib line.row_bar_line {
+.kshf .kshfChart[collapsedTime=true] .attrib span.row_bar_line {
   display: none;
 }
-.kshf .kshfChart[collapsedTime=true] .attrib rect.timeBar {
+.kshf .kshfChart[collapsedTime=true] .attrib .timeLineParts {
   display: none;
 }
 .kshf .kshfChart[collapsedTime=true] g.timeAxisGroup {
@@ -956,90 +937,174 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-transition: height 600ms ease;
+  -moz-transition: height 600ms ease;
+  -o-transition: height 600ms ease;
+  transition: height 600ms ease;
+}
+.kshf div.middleScrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  z-index: 10;
+  -webkit-transition: height 600ms ease;
+  -moz-transition: height 600ms ease;
+  -o-transition: height 600ms ease;
+  transition: height 600ms ease;
+}
+.kshf div.middleScrollbar div.filler {
+  height: 500px;
+  background-color: red;
+  visibility: hidden;
+  width: 20px;
 }
 .kshf div.attrib {
   position: absolute;
   height: 18px;
+  white-space: nowrap;
 }
-.kshf div.attrib span.filter_add_more {
+.kshf div.attrib > span {
   display: inline-block;
-  width: 10px;
-  margin-left: 1px;
+  vertical-align: top;
   line-height: 18px;
+  height: 18px;
 }
-.kshf div.attrib span.filter_add_more:hover {
+.kshf div.attrib > span.filter_add_more {
+  width: 12px;
+  margin-left: 1px;
+}
+.kshf div.attrib > span.filter_add_more:hover {
   color: orangered;
 }
-.kshf div.attrib span.filter_add_more span {
+.kshf div.attrib > span.filter_add_more span {
   display: none;
 }
-.kshf div.attrib span.filter_add_more span.add {
+.kshf div.attrib > span.filter_add_more span.add {
   cursor: cell;
 }
-.kshf div.attrib span.filter_add_more span.remove {
+.kshf div.attrib > span.filter_add_more span.remove {
   cursor: pointer !important;
 }
-.kshf div.attrib span.clickArea {
+.kshf div.attrib > span.clickArea {
   opacity: 0;
   margin-top: 3px;
   margin-bottom: 3px;
-  height: 12px;
-  display: inline-block;
+  height: 12px !important;
   position: absolute;
 }
-.kshf div.attrib span.label {
-  display: inline-block;
-  height: 18px;
-  vertical-align: top;
+.kshf div.attrib > span.label {
   font-size: 0.8em;
-  line-height: 18px;
   font-weight: 300;
   text-align: right;
   cursor: default;
   pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
-.kshf div.attrib span.item_count {
-  display: inline-block;
-  height: 18px;
+.kshf div.attrib > span.item_count {
   font-size: 0.7em;
-  line-height: 18px;
-  vertical-align: top;
   cursor: default;
   pointer-events: none;
   padding-left: 3px;
 }
-.kshf div.attrib .rowBar {
+.kshf div.attrib > span.barGroup span.row_bar_line {
+  border-top-width: 1px;
+  pointer-events: none;
+  top: 7.5px;
+  position: absolute;
+  height: 1px;
+  border-top-style: solid;
+  display: inline-block;
+}
+.kshf div.attrib > span.barGroup .rowBar {
   display: inline-block;
   background-color: #8699A8;
   border-radius: 2px;
-  -webkit-transition: opacity 150ms linear, width 300ms ease;
-  -moz-transition: opacity 150ms linear, width 300ms ease;
-  -o-transition: opacity 150ms linear, width 300ms ease;
-  transition: opacity 150ms linear, width 300ms ease;
+  -webkit-transition: opacity 150ms linear, width 400 ease;
+  -moz-transition: opacity 150ms linear, width 400 ease;
+  -o-transition: opacity 150ms linear, width 400 ease;
+  transition: opacity 150ms linear, width 400 ease;
   position: absolute;
 }
-.kshf div.attrib .rowBar.total {
+.kshf div.attrib > span.barGroup .rowBar.total {
   opacity: 0.2;
   pointer-events: none;
 }
-.kshf div.attrib rect.timeBar {
-  fill: #E0E7EB;
+.kshf div.attrib > span.timeLineParts {
+  position: relative;
+  overflow-x: hidden;
 }
-.kshf div.attrib rect.timeBar.total {
+.kshf div.attrib > span.timeLineParts span.timeBar {
+  position: absolute;
+  border-radius: 10px;
+  display: inline-block;
+  background-color: #E0E7EB;
+  -webkit-transition: left 400ms ease, width 400ms ease;
+  -moz-transition: left 400ms ease, width 400ms ease;
+  -o-transition: left 400ms ease, width 400ms ease;
+  transition: left 400ms ease, width 400ms ease;
+}
+.kshf div.attrib > span.timeLineParts span.timeBar.total {
   opacity: 0.2;
 }
-.kshf div.attrib rect.rowSelectBackground {
-  opacity: 0;
-  pointer-events: none;
+.kshf div.attrib > span.timeLineParts span.timeDot {
+  position: absolute;
+  top: 4px;
+  border-radius: 10px;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
 }
-.kshf div.attrib rect.rowSelectBackground_ClickArea {
-  opacity: 0;
-  pointer-events: all;
-  cursor: default;
+.kshf div.attrib > span.timeLineParts span.timeDot[fill=default] {
+  box-shadow: 0px 0px 0px 1px #EEE;
+  background-color: #616F7A;
 }
-.kshf div.attrib line.row_bar_line {
-  stroke-width: 0.7;
+.kshf div.attrib > span.timeLineParts span.timeDot:not([fill=default]) {
+  box-shadow: none;
+  background-color: none;
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[fill=gradient100] {
+  background-image: 8121991;
+  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
+  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
+  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
+  background-image: radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[fill=gradient75] {
+  background-image: 8121991;
+  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
+  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
+  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
+  background-image: radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[fill=gradient50] {
+  background-image: 8121991;
+  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
+  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
+  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
+  background-image: radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[fill=gradient25] {
+  background-image: 8121991;
+  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
+  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
+  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
+  background-image: radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[display=false] {
   pointer-events: none;
+  background-color: #CCCCCC !important;
+  opacity: 0.2;
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[display=true]:hover {
+  box-shadow: 0px 0px 0px 1px orangered !important;
+}
+.kshf div.attrib > span.timeLineParts span.timeDot[highlight=true] {
+  box-shadow: 0px 0px 0px 1px #c32c2c !important;
+}
+.kshf div.attrib[noitems=false][highlight=true] .bar.active {
+  box-shadow: inset 0px 0px 0px 2px orangered;
 }
 .kshf div.attrib[noitems=false][highlight=true][selected=false] .clickArea {
   cursor: cell;
@@ -1060,7 +1125,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered !important;
 }
 .kshf div.attrib[noitems=false][highlight=true] .row_bar_line {
-  stroke: orangered;
+  border-top-color: orangered !important;
 }
 .kshf div.attrib[noitems=true] text {
   fill: gray;
@@ -1071,6 +1136,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: fill 100ms linear;
   -o-transition: fill 100ms linear;
   transition: fill 100ms linear;
+}
+.kshf span.selectVertLine {
+  display: inline-block;
+  background-color: #EEDDDE;
+  width: 2px;
+  display: none;
+  position: absolute;
 }
 .kshf.listDiv {
   position: absolute;

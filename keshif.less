@@ -34,16 +34,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
 
+
+@color_dot_background : #616F7A;
+@anim_barscale_duration_default: 400;
+
 .kshfHost{
     border: solid 1px lightgray;
     background-color: white;
     &:hover{ box-shadow: 0px 0px 4px gray; }
     &:focus{ outline: none; }
-    &[hidebars=true] .kshf {
+    > div[hidebars=true] .kshf {
         .headerGroup .barInfo { display: none; }
         .barChartMainInfo{ display:none; }
     }
-    &[hidebaraxis=true] {
+    > div[hidebaraxis=true] {
         svg>g.x_axis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
@@ -341,9 +345,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right:-8px;
-        top:1px;
-        width:6px;
+        right: -6px;
+        top: 1px;
+        width: 6px;
         border-bottom: solid 1px lightgray;
         border-top: solid 1px lightgray;
         cursor: col-resize;
@@ -354,12 +358,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-top: solid 1px gray;
             .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
-    }
-
-    line.selectVertLine {
-        stroke: #EEDDDE;
-        stroke-width: 2;
-        display:none;
     }
 
     .selection_bar rect{
@@ -386,23 +384,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             font-weight: 300;
             cursor: default;
-        }
-    }
-    .timeDot{
-        cursor: pointer;
-        .transition(~"all 100ms linear");
-        &[display=false] {
-            pointer-events: none;
-            fill: #CCCCCC !important;
-            opacity: 0.2;
-        }
-        &[display=true]:hover {
-            stroke: orangered !important;
-            stroke-width:2;
-        }
-        &[highlight=true] {
-            stroke: #c32c2c !important;
-            stroke-width:2;
         }
     }
 
@@ -452,7 +433,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .headerGroup{
         pointer-events:none;
         position:relative;
-        margin-bottom: 2px;
         .SubFacetText{
             .rotate(90deg);
             .transform-origin(0 0);
@@ -499,6 +479,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         .chartFirstLineBackgroundRight{
+            padding-left: 10px;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         .configGroup{
@@ -589,13 +570,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             :hover{ color:#cb5454; }
         }
         .leftHeader {
+            display: inline-block;
+            vertical-align: top;
             pointer-events: all;
-            left: 0px;
             position: relative;
         }
         .rightHeader{
+            display: inline-block;
+            vertical-align: top;
             pointer-events:all;
-            float: right;
+            position: relative;
             span.header_label {
                 float:left;
             }
@@ -604,7 +588,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin-right:10px;
                 height: 18px;
                 float:right;
-                .transition(~"height 500ms ease");
+                .transition(~"height 500ms ease, margin-left 400 ease");
                 svg{
                     position:relative;
                     top:2px;
@@ -672,9 +656,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:relative;
             span.scrollToTop{
                 position: absolute;
-                top: -19px;
-                right: 1px;
+                top: -17px;
+                right: 0px;
                 font-size: 0.8em;
+            }
+            span.scrollToTop2{
+                right: auto;
             }
             span.scroll_display_more{
                 font-size: 0.7em;
@@ -781,11 +768,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             .attrib {
-                line.row_bar_line{
+                span.row_bar_line{
                     display: none;
                 }
-                rect.timeBar {
-                    display:none;
+                .timeLineParts{
+                    display: none;
                 }
             }
             g.timeAxisGroup {
@@ -902,15 +889,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:relative;
         overflow-y: auto;
         overflow-x: hidden;
+       .transition(~'height 600 ease');
+    }
+    div.middleScrollbar{
+        overflow-y: auto;
+        overflow-x: hidden;
+        position:absolute;
+        z-index:10;
+        .transition(~'height 600 ease');
+        div.filler{
+            height: 500px;
+            background-color: red;
+            visibility: hidden;
+            width: 20px;
+        }
     }
     div.attrib {
         position: absolute;
         height: 18px;
-        span.filter_add_more{
-            display:inline-block;
-            width: 10px;
-            margin-left: 1px;
+        white-space: nowrap;
+        > span{
+            display: inline-block;
+            vertical-align: top;
             line-height: 18px;
+            height: 18px;
+        }
+        > span.filter_add_more{
+            width: 12px;
+            margin-left: 1px;
             &:hover {
                 color: orangered;
             }
@@ -924,67 +930,114 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 cursor: pointer !important;
             }
         }
-        span.clickArea{
+        > span.clickArea{
             opacity: 0;
             margin-top:3px;
             margin-bottom:3px;
-            height: 12px; // total: 18px
-            display: inline-block;
+            height: 12px !important; // total: 18px
             position: absolute;
         }
-        span.label{
-            display:inline-block;
-            height:18px;
-            vertical-align: top;
+        > span.label{
             font-size: 0.8em;
-            line-height: 18px;
             font-weight:300;
             text-align: right;
             cursor: default;
             pointer-events: none;
+            // display ... when text is too long
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
-        span.item_count{
-            display:inline-block;
-            height:18px;
+        > span.item_count{
             font-size: 0.7em;
-            line-height: 18px;
-            vertical-align: top;
             cursor: default;
             pointer-events: none;
             padding-left: 3px;
         }
-        .rowBar {
-            display: inline-block;
-            background-color: #8699A8;
-            border-radius: 2px;
-            .transition(~'opacity 150ms linear, width 300ms ease');
-            position: absolute;
-            &.total {
-                opacity:0.2;
+        > span.barGroup{
+            span.row_bar_line{
+                border-top-width: 1px;
                 pointer-events: none;
+                top: 7.5px;
+                position: absolute;
+                height: 1px;
+                border-top-style: solid;
+                display: inline-block;
+            }
+            .rowBar {
+                display: inline-block;
+                background-color: #8699A8;
+                border-radius: 2px;
+                .transition(~'opacity 150ms linear, width 400 ease');
+                position: absolute;
+                &.total {
+                    opacity:0.2;
+                    pointer-events: none;
+                }
+            }
+        }
+        > span.scrollbarFiller{
+        }
+        > span.timeLineParts{
+            position:relative;
+            overflow-x: hidden;
+            span.timeBar {
+                position:absolute;
+                border-radius: 10px;
+                display: inline-block;
+                background-color: #E0E7EB;
+                .transition(~'left 400ms ease, width 400ms ease');
+                &.total{
+                    opacity:0.2;
+                }
+            }
+            span.timeDot{
+                position: absolute;
+                top: 4px;
+                border-radius: 10px;
+                width: 10px;
+                height: 10px;
+                cursor: pointer;
+                &[fill=default]{
+                    box-shadow: 0px 0px 0px 1px #EEE;
+                    background-color:#616F7A;
+                }
+                &:not([fill=default]){
+                    box-shadow: none;
+                    background-color:none;
+                }
+                &[fill=gradient100]{
+                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%)");
+                }
+                &[fill=gradient75]{
+                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%)");
+                }
+                &[fill=gradient50]{
+                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%)");
+                }
+                &[fill=gradient25]{
+                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%)");
+                }
+
+                // .transition(~"box-shadow 200ms linear");
+                &[display=false] {
+                    pointer-events: none;
+                    background-color: #CCCCCC !important;
+                    opacity: 0.2;
+                }
+                &[display=true]:hover {
+                    box-shadow: 0px 0px 0px 1px orangered !important;
+                }
+                &[highlight=true] {
+                    box-shadow: 0px 0px 0px 1px #c32c2c !important;
+                }
             }
         }
         
-        rect.timeBar {
-            fill: #E0E7EB;
-            &.total{
-                opacity:0.2;
-            }
-        }
-        rect.rowSelectBackground{
-            opacity:0;
-            pointer-events: none;
-        }
-        rect.rowSelectBackground_ClickArea{
-            opacity: 0;
-            pointer-events: all;
-            cursor: default;
-        }
-        line.row_bar_line{
-            stroke-width: 0.7;
-            pointer-events: none;
-        }
         &[noitems=false][highlight=true] {
+            .bar.active{
+                box-shadow: inset 0px 0px 0px 2px orangered;
+            }
             &[selected=false] {
                 .clickArea{
                     cursor: cell;
@@ -1008,7 +1061,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: orangered !important;
             }
             .row_bar_line{
-                stroke: orangered;
+                border-top-color: orangered !important;
             }
         }
         &[noitems=true] {
@@ -1019,6 +1072,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~"fill 100ms linear");
         }
     } // div.attrib
+
+    span.selectVertLine {
+        display: inline-block;
+        background-color: #EEDDDE;
+        width:2px;
+        display:none;
+        position:absolute;
+    }
 
     &.listDiv {
         position: absolute; // exact position is calculated by keshif
