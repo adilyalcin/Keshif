@@ -2214,15 +2214,15 @@ kshf.Browser.prototype = {
     getWidth_LeftPanel: function(){
         return this.getRowTotalTextWidth()+this.width_leftPanel_bar+this.scrollWidth;
     },
-    /** domHeight */
+    /** -- */
     domHeight: function(){
         return parseInt(this.TopRoot.style("height"));
     },
-    /** domWidth */
+    /** -- */
     domWidth: function(){
         return parseInt(this.TopRoot.style("width"));
     },
-    /** filterFacetAttribute */
+    /** -- */
     filterFacetAttribute: function(chartId, itemId){
         var chart = this.charts[chartId];
         chart.filterAttrib(chart.getAttribs()[itemId]);
@@ -3959,7 +3959,7 @@ kshf.BarChart.prototype = {
             if(attrib.selected===false & me.attribCount_Selected>1 && me.selectType==="SelectOr"
                 && me.hasMultiValueItem){
                 // prevent "...and" and show "...or" instead
-                attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more")[0][0].tipsy;
+                attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more .add")[0][0].tipsy;
             }
             attrib.facetDOM.tipsy_active.show()
         };
@@ -3976,44 +3976,67 @@ kshf.BarChart.prototype = {
             .attr("selected","false")
             ;
         
-        this.dom.add_more = this.dom.attribs.append("span").attr("class", "filter_add_more")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'sw',
-                    offset_y: 5,
-                    offset_x: 1,
-                    fade: true,
-                    title: function(){
-                        var attrib = this.__data__;
-                        if(attrib.selected)
-                            return "<span class='big'>+</span> <span class='action'>Remove</span> <i>"+
-                                me.options.facetTitle+"</i> Filter";
-                        return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
-                                me.options.facetTitle+"</i> (<b> ... or </b>)";
-                    }
+        this.dom.add_more = this.dom.attribs.append("span").attr("class", "filter_add_more");
+            this.dom.add_more.append("span").attr("class","add").text("⊕")
+                .each(function(){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'sw',
+                        offset_y: 5,
+                        offset_x: 1,
+                        fade: true,
+                        title: function(){
+                            var attrib = this.__data__;
+                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                                    me.options.facetTitle+"</i> (<b> ... or </b>)";
+                        }
+                    });
+                })
+                .on("mouseover",function(attrib,i){
+                    this.tipsy.show();
+                    this.parentNode.parentNode.setAttribute("highlight",true);
+                    d3.event.stopPropagation();
+                })
+                .on("mouseout",function(attrib,i){
+                    this.tipsy.hide();
+                    this.parentNode.parentNode.setAttribute("highlight",false);
+                    d3.event.stopPropagation();
+                })
+                .on("click",function(attrib,i){
+                    me.filterAttrib(attrib,true);
+                    this.tipsy.hide();
+                    d3.event.stopPropagation();
                 });
-            })
-            .on("mouseover",function(attrib,i){
-                if(attrib.selected) return;
-                this.tipsy.show();
-                this.parentNode.setAttribute("highlight",true);
-                d3.event.stopPropagation();
-            })
-            .on("mouseout",function(attrib,i){
-                if(attrib.selected) return;
-                this.tipsy.hide();
-                this.parentNode.setAttribute("highlight",false);
-                d3.event.stopPropagation();
-            })
-            .on("click",function(attrib,i){
-                if(attrib.selected) return;
-                me.filterAttrib(attrib,true);
-                this.tipsy.hide();
-                d3.event.stopPropagation();
-            })
-            ;
-            var x= this.dom.add_more.append("span").attr("class","add").text("⊕");
-            var y= this.dom.add_more.append("span").attr("class","remove").text("⊖");
+
+            this.dom.add_more.append("span").attr("class","remove").text("⊖")
+                .each(function(){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'sw',
+                        offset_y: 5,
+                        offset_x: 1,
+                        fade: true,
+                        title: function(){
+                            var attrib = this.__data__;
+                            return "<span class='big'>+</span> <span class='action'>Remove</span> <i>"+
+                                me.options.facetTitle+"</i>";
+                        }
+                    });
+                })
+                .on("mouseover",function(attrib,i){
+                    this.tipsy.show();
+                    this.parentNode.parentNode.setAttribute("highlight",true);
+                    d3.event.stopPropagation();
+                })
+                .on("mouseout",function(attrib,i){
+                    this.tipsy.hide();
+                    this.parentNode.parentNode.setAttribute("highlight",false);
+                    d3.event.stopPropagation();
+                })
+                .on("click",function(attrib,i){
+                    me.filterAttrib(attrib,true);
+                    this.tipsy.hide();
+                    d3.event.stopPropagation();
+                });
+
 
         this.dom.attribs.append("span").attr("class", "clickArea")
             .style("width",(kshf_.getRowTotalTextWidth()-10)+"px")

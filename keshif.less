@@ -832,6 +832,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 // .filter_add_more .remove{ display: block; }
             }
         }
+        &[filtered_row=false]{
+            .attrib:hover{
+                .filter_add_more .remove{ display: block; }   
+            }
+        }
         &[selecttype="SelectAnd"] {
             .attrib[selected=false][noitems=false]{
                 .clickArea{

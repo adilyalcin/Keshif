@@ -899,6 +899,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[selecttype="SelectOr"][filtered_row=true] .attrib[selected=false] .filter_add_more .add {
   display: block;
 }
+.kshf .kshfChart[filtered_row=false] .attrib:hover .filter_add_more .remove {
+  display: block;
+}
 .kshf .kshfChart[selecttype="SelectAnd"] .attrib[selected=false][noitems=false] .clickArea {
   cursor: cell;
 }
