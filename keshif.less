@@ -51,6 +51,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         svg>g.x_axis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
+    > div[noanim=false]{
+        .rowBar {
+            .transition(~'transform 400ms ease-in-out');
+        }
+    }
     .subRoot{
         position:relative;
     }
@@ -71,26 +76,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             color: rgb(37, 33, 18);
             font-weight: 300;
-            border: 1px rgb(104, 91, 43) solid;
+            // border: 1px rgb(104, 91, 43) solid;
             box-shadow: 1px 1px 1px rgb(78, 71, 43);
             background-color: rgba(255,255,255,0.5);
             padding-left: 2px;
             margin-right: 5px;
 //            opacity: 0;
             max-width: 0px;
-            .transition(~"all 300ms linear");
+            .transition(~"all 1000ms linear");
             .sdsdsds{
+                /*
                 max-width: 300px;
-                white-space: nowrap;
                 max-width: 300px;
-                overflow: hidden;
                 -o-text-overflow: ellipsis;
-                text-overflow: ellipsis;
+                text-overflow: ellipsis;*/
                 display: block;
+                // margin-right: 20px;
+                white-space: nowrap;
+                overflow: hidden;
+
             }
             &[ready=true]{ 
 //                opacity: 1;
-                max-width: 200px;
+                max-width: 1000px;
             }
             &[ready=false]{ 
 //                opacity: 1;
@@ -125,7 +133,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf {
 	font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
-    float:left;
     display:inline-block;
 
     span.filterClearAll{
@@ -157,17 +164,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-bottom: solid 1px #c6bb9e;
         box-shadow: 0px 0px 3px #b7aa88;
 
-        span.listheader_count{
-            font-size: 1.1em;
+        span.resultInfo{
+            vertical-align: top;
+            display: inline-block;
+            white-space: nowrap;
+            pointer-events: none;
+            font-size: 1.2em;
             font-weight: 700;
             text-shadow: 1px 1px lightgray;
-            width: 50px;
-            display: inline-block;
-            text-align: right;
-            min-width: 45px;
-            vertical-align: bottom;
-            padding-bottom: 2px;
+            margin-bottom:-3px;
+
+            span.listheader_count{
+                display: inline-block;
+                text-align: right;
+                min-width: 50px;
+                vertical-align: top;
+            }
+            span.listheader_itemName{
+                display: inline;
+                letter-spacing: 0.1em;
+                font-variant: small-caps;
+                margin-left: 4px;
+                vertical-align: top;
+            }
         }
+
         span.listheader_count_bar{
             background-color: rgb(132, 147, 160);
             position: absolute;
@@ -183,15 +204,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             right: 3px;
             height:14px;
             border-bottom: solid 2px rgba(132, 147, 160,0.5);
-        }
-        span.listheader_itemName{
-            letter-spacing: 0.1em;
-            font-variant: small-caps;
-            font-size: 1.3em;
-            text-shadow: 1px 1px lightgray;
-            font-weight:700;
-            margin-left: 4px;
-            vertical-align: top;
         }
 
         span.title{
@@ -275,21 +287,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
-    &.layout_top{
-        display:block;
-        position:absolute;
-    }
     &.layout_left{
-        clear:left;
-        position: absolute;
-        left:0px;
+        //clear:left;
+        //position: absolute;
+        //left:0px;
+        float: left;
     }
     &.layout_right{
         position:relative;
     }
     &.layout_left_background{
         position: absolute;
-        min-height: 100%;
+        // min-height: 100%;
         left: 0px;
         .background-image(~"linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%)");
         pointer-events: none;
@@ -325,7 +334,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             box-shadow: 1px 1px 1px #474940;
         }
         &.summary{
-            display:block;
+            display: inline-block;
             float: right;
             margin-left: 2px;
         }
@@ -346,17 +355,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     span.leftBlockAdjustSize{
         position: absolute;
         right: -6px;
+        pointer-events: all;
         top: 1px;
-        width: 6px;
-        border-bottom: solid 1px lightgray;
-        border-top: solid 1px lightgray;
+        width: 2px;
+        // border-bottom: solid 1px lightgray;
+        // border-top: solid 1px lightgray;
+        border-left-width: 1px;
+        border-left-style: dotted;
+        border-left-color: gray;
         cursor: col-resize;
-        .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
+        // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
         opacity: 0.5;
+        z-index: 10;
         &:hover{
-            border-bottom: solid 1px gray;
-            border-top: solid 1px gray;
-            .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
+            // border-bottom: solid 1px gray;
+            // border-top: solid 1px gray;
+            border-left-width: 2px;
+            // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
 
@@ -369,6 +384,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover { stroke: orangered; }
     }
     g.x_axis {
+        .transition(~'transform 700ms ease-in-out');
         line{
             opacity: 1;
             stroke-width: 0.7;
@@ -483,7 +499,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         .configGroup{
-            display:none;
 //            border-radius: 4px;
 //            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
             position: relative;
@@ -539,20 +554,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-anchor: start;
             font-style: italic;
             font-weight:300;
-        }
-        svg.settingButton{
-            display: none;
-            float: left;
-            margin-top: 2px;
-            cursor: pointer;
-            border-top-left-radius: 7px;
-            border-top-right-radius: 7px;
-            height: 15px;
-            width: 12px;
-            padding-bottom:1px;
-            background: rgba(100,100,100,0);
-            .transition(~"all 250ms linear");
-            :hover{ fill:#cb5454; }
         }
         span.header_label_arrow{
             font-size: 0.8em;
@@ -643,6 +644,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .kshfChart{
         display:inline-block;
         position: relative;
+        overflow: hidden;
+        .transition(~'height 700ms ease-in-out');
         span.optionSelect_Label{
             float: right;
             font-size: 0.7em;
@@ -654,9 +657,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         div.chart_root{
             position:relative;
+            display: inline-block;
+            margin-bottom: 18px;
             span.scrollToTop{
                 position: absolute;
-                top: -17px;
+                top: -18px;
                 right: 0px;
                 font-size: 0.8em;
             }
@@ -664,21 +669,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 right: auto;
             }
             span.scroll_display_more{
-                font-size: 0.7em;
+                font-size: 0.6em;
                 font-style:italic;
                 cursor: pointer;
                 color: gray;
                 opacity:1;
                 text-align: right;
                 position:absolute;
-                bottom: -12px;
+                bottom: -7px;
                 &[highlight=true]{ color: #cb5454; }
             }
         }
         svg.chart_root2{
-            width:100%;
             position:absolute;
             pointer-events: none;
+            height: 2000px; // some very large number
             >*{
                 pointer-events: all;
             }
@@ -761,6 +766,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             div.chart_root{ display: none; }
         }
         &[collapsedTime=true] {
+            .config_zoom{
+                height: 0px;
+            }
             .headerGroup .rightHeader {
                 color: gray;
                 span.header_label_arrow{
@@ -778,67 +786,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             g.timeAxisGroup {
                 display:none;
             }
-        }
-        &[collapsed=false][showconfig=true] .headerGroup svg.settingButton{
-//            display: block;
-            fill: black;
-            background: rgba(100,100,100,0.3);
-        /*    border: solid 1px gray; */
-        }
-        &[showconfig=true]  div.configGroup{ display:block; }
-        &[showconfig=false] .headerGroup svg.settingButton{ 
-            fill: gray;
-        }
-        &[collapsed=false]:hover .headerGroup svg.settingButton{
-//            display: block;
+            .timeDot{
+                display:none;
+            }
+            .middleScrollbar{
+                display: none;
+            }
         }
 
-        &[collapsedTime=true] .timeDot{
-            display:none;
-        }
         &[dotConfig|=Gradient] .timeDot[display=false] {
             fill: url(#dotGradient_Inactive);
         }
-        &[filtered_row=true] {
-            .attrib{
-                &[selected=true] {
-                    span{
-                        font-weight: 700;
-                        color: #c32c2c;
-                    }
-                    span.label{
-                        .background-image(~"linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
-                    }
-                    span.item_count{
-                        .background-image(~"linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
-                    }
-                    rect.rowSelectBackground{
-                        opacity:1;
-                    }
-                    rect.rowSelectBackground_ClickArea{
-                        pointer-events: all;
-                    }
-                }
-            }
+        &[filtered_attrib=true] {
             .chartClearFilterButton.rowFilter{
                 display:inline-block;
             }
         }
-        &[selecttype="SelectOr"][filtered_row=true] .attrib{
-            &[selected=false]{
-                .filter_add_more .add{ display: block; }
+        &[selecttype="SelectOr"][inserted_attrib=true] {
+            .attrib{
+                &[selected='0']{
+                    .filter_add_more .add{ display: inline-block; }
+                }
             }
-            &[selected=true]{
-                // .filter_add_more .remove{ display: block; }
-            }
-        }
-        &[filtered_row=false]{
-            .attrib:hover{
-                .filter_add_more .remove{ display: block; }   
+            &[hasmultivalueitem=false] {
+                .attrib[selected='0'] {
+                    .clickArea{
+                        cursor: pointer !important;
+                    }
+                    .rowBar{
+                        cursor: pointer !important;
+                    }
+                }
             }
         }
         &[selecttype="SelectAnd"] {
-            .attrib[selected=false][noitems=false]{
+            .attrib[selected='0'][noitems=false]{
                 .clickArea{
                     cursor: cell;
                 }
@@ -847,18 +829,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        // When only one item is selected in selectOr
-        &[selecttype="SelectOr"][hasmultivalueitem=false][filtered_row=true] {
-            .attrib[highlight=true][selected=false] {
-                .clickArea{
-                    cursor: pointer !important;
-                }
-                .rowBar{
-                    cursor: pointer !important;
-                }
-            }
-        }
-
         &[filtered_time=true] {
             .chartClearFilterButton.timeFilter{
                 display:inline-block;
@@ -871,11 +841,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[filtered_time=false] {
             .config_zoom .zoom_button{
                 display: none;
-            }
-        }
-        &[collapsedtime=true] {
-            .config_zoom{
-                height: 0px;
             }
         }
         &[filtered_range=true] .chartClearFilterButton.rangeFilter{
@@ -894,14 +859,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:relative;
         overflow-y: auto;
         overflow-x: hidden;
-       .transition(~'height 600 ease');
+        display: inline-block;
+        .transition(~'height 700ms ease-in-out');
     }
     div.middleScrollbar{
         overflow-y: auto;
         overflow-x: hidden;
         position:absolute;
         z-index:10;
-        .transition(~'height 600 ease');
+        .transition(~'height 700ms ease-in-out');
         div.filler{
             height: 500px;
             background-color: red;
@@ -913,6 +879,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         height: 18px;
         white-space: nowrap;
+        .transition(~'transform 400ms ease-in-out');
         > span{
             display: inline-block;
             vertical-align: top;
@@ -920,8 +887,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 18px;
         }
         > span.filter_add_more{
-            width: 12px;
-            margin-left: 1px;
+            position: absolute;
+            left: 1px;
+            white-space: nowrap;
+            z-index: 5;
             &:hover {
                 color: orangered;
             }
@@ -957,24 +926,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             cursor: default;
             pointer-events: none;
-            padding-left: 3px;
+            padding-left: 2px;
         }
         > span.barGroup{
             span.row_bar_line{
                 border-top-width: 1px;
+                border-top-style: dotted;
                 pointer-events: none;
                 top: 7.5px;
                 position: absolute;
                 height: 1px;
-                border-top-style: solid;
                 display: inline-block;
             }
             .rowBar {
                 display: inline-block;
                 background-color: #8699A8;
-                border-radius: 2px;
-                .transition(~'opacity 150ms linear, width 400 ease');
+                //border-radius: 2px;
+                .transform-origin(0% 0%;);
+                width: 1px;
                 position: absolute;
+                height: 10px;
+                margin-top: 4px;
                 &.total {
                     opacity:0.2;
                     pointer-events: none;
@@ -990,10 +962,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position:absolute;
                 border-radius: 10px;
                 display: inline-block;
-                background-color: #E0E7EB;
-                .transition(~'left 400ms ease, width 400ms ease');
+                background-color: #8699A8;
+                .transition(~'left 400ms ease, width 400ms ease-in-out');
+                height: 10px;
+                margin-top: 4px;
+                opacity: 0.2;
                 &.total{
-                    opacity:0.2;
+                    opacity:0.1;
                 }
             }
             span.timeDot{
@@ -1003,6 +978,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 10px;
                 height: 10px;
                 cursor: pointer;
+                .transition(~'transform 400ms ease-in-out');
+
                 &[fill=default]{
                     box-shadow: 0px 0px 0px 1px #EEE;
                     background-color:#616F7A;
@@ -1029,6 +1006,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     pointer-events: none;
                     background-color: #CCCCCC !important;
                     opacity: 0.2;
+                    background-image: none;
                 }
                 &[display=true]:hover {
                     box-shadow: 0px 0px 0px 1px orangered !important;
@@ -1038,43 +1016,68 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        
-        &[noitems=false][highlight=true] {
-            .bar.active{
-                box-shadow: inset 0px 0px 0px 2px orangered;
+
+        &:not([selected="0"]) {
+            span{
+                font-weight: 700;
             }
-            &[selected=false] {
-                .clickArea{
-                    cursor: cell;
+            span.label{
+                .background-image(~"linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+            }
+            span.item_count{
+                .background-image(~"linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
+            }
+        }
+        &[selected="1"]{
+            span{
+                color: #c32c2c;
+            }
+        }
+        &[selected="-1"]{
+            span{
+                color: gray;
+            }
+        }
+        
+        &[noitems=false]{
+            &[selected='0']:hover{
+                .filter_add_more .remove{ display: inline-block; }   
+            }
+            &[highlight=true] {
+                .bar.active{
+                    // box-shadow: inset 0px 0px 0px 2px orangered;
+                    background-color: orangered;
+                }
+                &[selected='0'] {
+                    .clickArea{
+                        cursor: cell;
+                    }
+                    .rowBar.active{
+                        cursor: cell;
+                    }
+                }
+                &[selected='1'] {
+                    .clickArea{
+                        cursor: pointer;
+                    }
+                    .rowBar{
+                        cursor: pointer;
+                    }
                 }
                 .rowBar.active{
-                    cursor: cell;
+                    // box-shadow: inset 0px 0px 0px 2px orangered;
+                    background-color: orangered;
                 }
-            }
-            &[selected=true] {
-                .clickArea{
-                    cursor: pointer;
+                span:not(.filter_add_more){
+                    color: orangered !important;
                 }
-                .rowBar{
-                    cursor: pointer;
+                .row_bar_line{
+                    border-top-color: orangered !important;
                 }
-            }
-            .rowBar.active{
-                box-shadow: inset 0px 0px 0px 2px orangered;
-            }
-            span:not(.filter_add_more){
-                color: orangered !important;
-            }
-            .row_bar_line{
-                border-top-color: orangered !important;
             }
         }
         &[noitems=true] {
-            text{ fill:gray; }
-        }
-        &[itemhighlight=true] text{
-            fill: #c32c2c !important;
-            .transition(~"fill 100ms linear");
+            span{ color:gray; }
         }
     } // div.attrib
 
@@ -1087,15 +1090,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     &.listDiv {
-        position: absolute; // exact position is calculated by keshif
+        // position: absolute; // exact position is calculated by keshif
         box-shadow: 2px 2px 2px rgb(150, 134, 73);
         margin-left: 6px;
+        position: relative;
+        top: 0px;
+        .transition(~'top 700ms ease-in-out');
         div.listItemGroup {
             overflow-y:scroll;
             overflow-x:hidden;
-            width: calc(~"100% - 2px");
+//            width: calc(~"100% - 2px");
             border-left: solid 2px rgb(233, 227, 205);
             background-color: white;
+            .transition(~'height 700ms ease-in-out');
         }
         .showMore{
             cursor: pointer;
@@ -1113,7 +1120,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:absolute;
             left: 4px;
             //bottom: -25px;
-            .transition(~"bottom 400ms ease 50ms");
+            .transition(~"bottom 700ms ease 50ms");
 
             .dots {
                 width: 10px;
@@ -1251,7 +1258,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: red;
         cursor: pointer;
         color: #aaaaaa;
-        .transition(~'color 300ms ease');
+        .transition(~'color 300ms ease-in-out');
         &:hover{
             color:#cb5454;
         }
@@ -1260,14 +1267,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     div.listHeader {
         font-weight: bold;
         color: black;
-        padding: 0px 0px 3px 2px;
+        padding: 0px 0px 1px 2px;
         border-top-left-radius: 5px;
         font: 500 100% Arial,sans-serif;
         font-size: 0.9em;
         position: relative;
         min-height:20px;
 
-        .background-image(~"linear-gradient(bottom, rgb(200,200,200) 0%, rgba(200,200,200,0.1) 80%)");
+        .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%)");
         
         div.itemtoggledetails{
             font-size: 1em;
@@ -1282,9 +1289,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         span.scrollToTop{
-            position:relative;
+            position: absolute;
             font-size: 1.1em;
-            top: 3px;
+            top: 5px;
+            right: 0px;
         }
 
         span.filter-separator{
@@ -1423,8 +1431,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             float:left;
         }
         div.content{
+            display: inline-block;
             border: solid 0px lightgray;
             position: relative;
+
         }
         div.listsortcolumn{
             cursor: cell;
