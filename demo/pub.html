@@ -3,7 +3,7 @@
 	<head>
 		<title>Publication Browser</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -19,7 +19,7 @@ var demoID = 7;
 var BEDERSON_ID = 3;
 
 function resizeChart(){
-    var h=$(window).height()-85;
+    var h=$(window).height()-65;
     var w=$(window).width()-29;
     if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
     $('#chart_div').height(h);
@@ -321,7 +321,7 @@ body {
     <div id="pagecell">
         <div id="pageName">
             <h2>
-            <a href="../index.html">Ben Bederson</a>
+            <a href="http://cs.umd.edu/~bederson/">Ben Bederson</a>
 
             <a target="_blank" href="http://www.github.com/adilyalcin/Keshif" class="KeshifCredit" >Created by Keshif. Click for more...</a>
 

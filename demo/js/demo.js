@@ -813,7 +813,7 @@ $( window ).load(function() {
         transitionEasing: 'ease',
         gradient: 'rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.65) 100%)',
         mouse: true,
-        touch: true
+        touch: false
     });
 
 });
