@@ -243,6 +243,16 @@ kshf.Util = {
         });
         return r;
     },
+    /** Returns true when all current selections appear in the itemList */
+    filter_multi_and: function(itemList) {
+        // ALL of the current selection is in item mappings
+        // see how many items return true. If it matches current inserted count, then all selections are met for this item
+        var t=0;
+        itemList.forEach(function(m){
+            if(m.f_included()) t++;
+        })
+        return (t===this.attribCount_Included);
+    },
     filter_multi_removed: function(itemList){
         return ! itemList.every(function(d){
             return ! d.f_removed();
@@ -497,9 +507,18 @@ kshf.Item.prototype = {
     f_included: function(){ return this.selected === 1; },
     f_removed:  function(){ return this.selected ===-1; },
 
-    f_unselect: function(){ this.selected = 0; },
-    f_include:  function(){ this.selected = 1; },
-    f_remove:   function(){ this.selected =-1; },
+    f_unselect: function(){ 
+        this.selected = 0;
+        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+    },
+    f_include: function(){
+        this.selected = 1;
+        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+    },
+    f_remove: function(){
+        this.selected = -1;
+        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+    },
 
     /** -- */
     addItem: function(item){
@@ -2325,9 +2344,8 @@ kshf.Browser.prototype = {
             return (me.itemsSelectedCt!==0)?me.itemsSelectedCt:"No";
         });
 
-        // update each widget within
         this.charts.forEach(function(chart){
-            chart.refreshUI();
+            chart.refreshAfterFilter();
         });
 
         var filteredCount=0;
@@ -2470,9 +2488,9 @@ kshf.Browser.prototype = {
                 ;
             if(c2.type==='scatterplot' && c2.collapsedTime){
                 var difff = c2.rowCount_Total()*this.line_height-listDivTop;
-                this.listDisplay.listDiv.style("top",(-difff)+"px");
+                this.listDisplay.listDiv.style("margin-top",(-difff)+"px");
             } else {
-                this.listDisplay.listDiv.style("top","0px");
+                this.listDisplay.listDiv.style("margin-top","0px");
             }
         }
     },
@@ -2513,9 +2531,9 @@ kshf.Browser.prototype = {
     setCategoryTextWidth: function(w){
         this.categoryTextWidth = w;
         this.charts.forEach(function(chart){
-            chart.options.rowTextWidth = w;
             chart.refreshTextWidth(w);
-            chart.updateBarWidth();
+            chart.updateBarAxisScale();
+            chart.refreshWidth();
         });
         this.updateAllTheWidth();
     },
@@ -2557,8 +2575,7 @@ kshf.Browser.prototype = {
         this.barMaxWidth = this.width_leftPanel_bar;
         this.charts.forEach(function(chart){
             chart.updateBarAxisScale();
-            chart.refreshWidth_Bars_Active();
-            chart.refreshUIWidth();
+            chart.refreshWidth();
         });
     },
     isSmallWidth: function(){
@@ -2611,10 +2628,8 @@ kshf.Browser.prototype = {
 
         this.charts.forEach(function(chart,i){
             // include time range if time is filtered
-            if(chart.type==='scatterplot'){
-                if(chart.isFiltered_Time()) r.timeFltr = 1;
-            }
-            if(chart.attribCount_Selected!==0){
+            if(chart.isFiltered_Time()) r.timeFltr = 1;
+            if(chart.isFiltered_Attrib()){
                 if(r.filtered!=="") { r.filtered+="x"; r.selected+="x"; }
                 r.filtered+=i;
                 r.selected+=chart.attribCount_Selected;
@@ -2697,8 +2712,6 @@ kshf.BarChart = function(kshf_, options){
         // get the 2nd attribute as row text [1st is expected to be the id]
         options.catLabelText = function(typ){ return typ.data[1]; };
     }
-
-    this.showConfig = this.options.sortingOpts.length>1;
 
     this.attribFilter = kshf_.createFilter({
         name: this.options.facetTitle,
@@ -2798,33 +2811,60 @@ kshf.BarChart = function(kshf_, options){
 };
 
 kshf.BarChart.prototype = {
-    /** getKshf */
+    /** -- */
     getKshf: function(){
         return this.parentKshf;
     },
-    /** getKshfItems */
+    /** -- */
     getKshfItems: function(){
         return this.parentKshf.items;
     },
-    /** rowCount_Header_Left */
+    /** -- */
+    getAttribs: function(){
+        return kshf.dt[this.catTableName];
+    },
+    /** -- */
+    getAttribs_wID: function(){
+        return kshf.dt_id[this.catTableName];
+    },
+    /** -- */
+    getWidth: function(){
+        return this.getWidth_Left()+this.getWidth_Right();
+    },
+    /** -- */
+    getWidth_Left: function(){
+        return this.getKshf().getWidth_LeftPanel();
+    },
+    /** -- */
+    getWidth_Right: function(){
+        var kshf_ = this.getKshf();
+        return (this.type==='scatterplot')?(kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth):0;
+    },
+    /** -- */
+    getFilteredCount: function(){
+        return this.isFiltered_Attrib()+this.isFiltered_Time();
+    },
+    /** -- */
+    isFiltered_Attrib: function(state){
+        return this.attribCount_Selected!==0;
+    },
+    /** -- */
+    rowCount_Header: function(){
+        return Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
+    },
+    /** -- */
     rowCount_Header_Left: function(){
-        var r=1; // title
-        if(this.showConfig) {r++;}
-        if(this.showTextSearch){ r++;}
+        var r=1; // facet title
+        if(this.collapsed) return r;
+        if(this.options.sortingOpts.length>1) r++;
+        if(this.showTextSearch) r++;
         return r;
     },
     /** -- */
     rowCount_Header_Right: function(){
-        if(this.type==='scatterplot'){
-            if(this.collapsedTime) return 1;
-            return 2;
-        }
-        return 0;
-    },
-    /** -- */
-    rowCount_Header: function(){
-        if(this.collapsed) return 1;
-        return Math.max(this.rowCount_Header_Left(),this.rowCount_Header_Right());
+        if(this.type!=='scatterplot') return 0;
+        if(this.collapsedTime) return 1;
+        return 2;
     },
     /** -- */
     rowCount_Total: function(){
@@ -2852,6 +2892,11 @@ kshf.BarChart.prototype = {
     /** -- */
     allAttribsVisible: function(){
         return this.attribCount_Active===this.rowCount_Visible;
+    },
+    /** Use this method to update selectType value */
+    setSelectType: function(t){
+        this.selectType = t;
+        this.divRoot.attr("selectType",this.selectType);
     },
     /** -- */
     insertSubFacets: function(){
@@ -2929,96 +2974,60 @@ kshf.BarChart.prototype = {
         });
         this.subBrowser.dom.filtercrumbs = kshf_.dom.filtercrumbs;
     },
+
     /** -- */
     mapAttribs: function(options){
         var filterId = this.attribFilter.id;
         this.getKshf().mapItemData(this.options.catItemMap, this.getAttribs_wID(), filterId);
 
-        // Check if multiple value mapping
+        // Check if some item is mapped to multiple values
         this.hasMultiValueItem = false;
         this.getKshfItems().forEach(function(item){
             var toMap = item.mappedData[filterId];
-            if(toMap===null) { return; }
-            if(toMap instanceof Array) {
-                if(toMap.length>1) this.hasMultiValueItem = true;
-            }
+            if(toMap===null) return;
+            if(toMap instanceof Array) this.hasMultiValueItem = true;
         },this);
 
-        // Modified internal dataMap function - Skip rows with0 active item count
+        // Modified internal dataMap function - Skip rows with 0 active item count
         if(this.options.dataMap) {
             this._dataMap = function(d){
-                if(d.items.length===0) {
-                    return null; // auto remove empty attributes
-                }
+                // auto remove empty attributes
+                if(d.items.length===0) return null; 
                 return options.dataMap(d);
             };
         } else {
             this._dataMap = function(d){
-                if(d.items.length===0) {
-                    return null; // auto remove empty attributes
-                }
+                // auto remove empty attributes
+                if(d.items.length===0) return null;
                 return d.id();
             };
         }
 
         this.updateAttribCount_Total();
         this.updateAttribCount_Active();
+        if(this.attribCount_Active===1){
+            this.options.catBarScale = "scale_frequency";
+        }
+
     	this.unselectAllAttribs();
     },
     /** -- */
     updateAttribCount_Total: function(){
         this.attribCount_Total = 0;
-        this.getAttribs().forEach(function(d){
-            if(this._dataMap(d)!==null) this.attribCount_Total++;
+        this.getAttribs().forEach(function(attrib){
+            if(this._dataMap(attrib)!==null) this.attribCount_Total++;
         },this);
-
-        // text search is automatically enabled is num of rows is more than 20.
-        // It is NOT dependent on number of displayed rows
-        this.showTextSearch = (this.attribCount_Total>=20 && this.options.forceSearch!==false) ||
-                               this.options.forceSearch===true;
+        // text search is automatically enabled if num of rows is more than 20. NOT dependent on number of displayed rows
+        this.showTextSearch = this.options.forceSearch || (this.options.forceSearch!==false && this.attribCount_Total>=20);
     },
     /** -- */
     updateAttribCount_Active: function(){
         this.attribCount_Active = 0;
-        this.getAttribs().forEach(function(d){
-            if(this._dataMap(d)===null) return;
-            if(this.isAttribVisible(d)===false) return;
+        this.getAttribs().forEach(function(attrib){
+            if(this._dataMap(attrib)===null) return;
+            if(this.isAttribVisible(attrib)===false) return;
             this.attribCount_Active++;
         },this);
-    },
-    /**  */
-    getWidth_Total: function(){
-        return this.getWidth_Left()+this.getWidth_Right();
-    },
-    /** -- */
-    getWidth_Left: function(){
-        return this.getKshf().getWidth_LeftPanel();
-    },
-    /** -- */
-    getWidth_Right: function(){
-        var kshf_ = this.getKshf();
-        return (this.type==='scatterplot')?(kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth):0;
-    },
-    /** -- */
-    refreshUIWidth: function(){
-        var leftWidth = this.getWidth_Left();
-        var rightWidth = this.getWidth_Right();
-        var totalWidth = this.getWidth_Total();
-
-        this.dom.leftHeader.style("width",leftWidth+"px");
-
-        this.dom.chart_root2.style("width",totalWidth+"px");
-        this.dom.attribGroup.style("width",totalWidth+"px");
-
-        if(this.type==="scatterplot"){
-            this.dom.rightHeader.style("width",rightWidth+"px");
-            this.dom.middleScrollbar.style('left',(leftWidth-20)+'px');
-            this.dom.chartRoot.select(".scrollToTop2").style('left',(leftWidth-15)+'px');
-            if(this.collapsedTime){
-                this.dom.attribGroup.style("width",leftWidth+"px");
-                this.dom.chart_root2.style("width",leftWidth+"px");
-            }
-        }
     },
     /** -- */
     init_DOM: function(){
@@ -3040,29 +3049,25 @@ kshf.BarChart.prototype = {
 
         var betweener = this.divRoot.append("div").style("position","relative");
 
-        this.dom.chart_root2 = betweener
-            .append("svg").attr("class","chart_root2").attr("xmlns","http://www.w3.org/2000/svg");
-    	this.dom.chartRoot = betweener
-            .append("div").attr("class","chart_root");
+        this.dom.chart_root2 = betweener.append("svg").attr("class","chart_root2");
+    	this.dom.chartRoot = betweener.append("div").attr("class","chart_root");
 
         this.dom.chartRoot.append("span").attr("class","scrollToTop")
             .html("⬆")
             .attr("title","Scroll To Top")
-            .on("click",function(d){
-                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); // TODO
-            });
+            .on("click",function(d){ kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); });
 
         if(this.type==="scatterplot"){
             if(this.options.timeDotConfig!==undefined){
                 this.divRoot.attr("dotconfig",this.options.timeDotConfig);
             }
         }
-        this.dom.x_axis = this.dom.chart_root2.append("g").attr("class", "x_axis")
-            .on("mousedown", function (d, i) { d3.event.preventDefault(); });
+        this.dom.x_axis = this.dom.chart_root2.append("g").attr("class", "x_axis");
 
         if(this.type==="scatterplot"){
             this.dom.middleScrollbar = this.dom.chartRoot.append("div").attr("class","middleScrollbar")
                 .on("scroll",function(d){
+                    // sync scroll position
                     me.dom.attribGroup[0][0].scrollTop = this.scrollTop;
                 });
             this.dom.middleScrollbar.append("div").attr("class","filler");
@@ -3070,16 +3075,15 @@ kshf.BarChart.prototype = {
             this.dom.chartRoot.append("span").attr("class","scrollToTop scrollToTop2")
                 .html("⬆")
                 .attr("title","Scroll To Top")
-                .on("click",function(d){
-                    kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); // TODO
-                });
+                .on("click",function(d){ kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); });
+
+            this.dom.selectVertLine = this.dom.chartRoot.append("span").attr('class',"selectVertLine");
+
+            this.dom.timeAxisGroup = this.dom.chart_root2.append("g").attr("class","timeAxisGroup");
+            this.dom.tickGroup = this.dom.timeAxisGroup.append("g").attr("class","tickGroup");
         }
 
         this.dom.scrollToTop = this.dom.chartRoot.selectAll(".scrollToTop");
-
-        if(this.type==='scatterplot') { 
-            this.dom.selectVertLine = this.dom.chartRoot.append("span").attr('class',"selectVertLine");
-        }
 
     	this.dom.attribGroup = this.dom.chartRoot.append("div").attr("class","attribGroup")
             .on("scroll",function(d){
@@ -3092,41 +3096,21 @@ kshf.BarChart.prototype = {
                     me.dom.middleScrollbar[0][0].scrollTop = this.scrollTop;
                 }
 
-                me.updateScrollDisplayMore(Math.round(this.scrollTop / 18.0)+me.rowCount_Visible);
-/*
-                kshf_.root.on("mouseup", function(){
-                    var targetPos = Math.round(xx.scrollTop/18.0) * 18;
-                    kshf.Util.scrollToPos_do(this,targetPos);
-                    kshf_.root.on("mouseup", null);
-                });*/
+                me.refreshScrollDisplayMore(Math.round(this.scrollTop / 18.0)+me.rowCount_Visible);
             })
             ;
 
         this.dom.scroll_display_more = this.dom.chartRoot.append("span").attr("class","scroll_display_more")
-            .style("width",this.options.rowTextWidth+"px")
             .on("mousedown",function(){
-                var scrollDom = me.dom.attribGroup[0][0];
-                kshf.Util.scrollToPos_do(scrollDom,scrollDom.scrollTop+18);
+                kshf.Util.scrollToPos_do(scrollDom,me.dom.attribGroup[0][0].scrollTop+18);
                 if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, 
-                        {facet:me.options.facetTitle});
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, {facet:me.options.facetTitle});
                 }
-            })
-            .on("mouseup",function(){
-            })
-            .on("mouseover",function(e){ 
-                this.setAttribute("highlight",true);
-            })
-            .on("mouseout",function(){ 
-                this.setAttribute("highlight",false);
-            })
-            ;
+            });
 
     	this.dom.attribGroup.selectAll("div.attib")
             // removes attributes with no items
-    		.data(this.getAttribs(), function(attrib){ 
-                return attrib.id();
-            })
+    		.data(this.getAttribs(), function(attrib){ return attrib.id(); })
     	  .enter().append("div").attr("class", "attrib")
             .each(function(d){
                 var mee=this;
@@ -3138,38 +3122,14 @@ kshf.BarChart.prototype = {
     		;
         this.dom.attribs = this.dom.attribGroup.selectAll('div.attrib');
 
-        if(this.type==='scatterplot') { 
-        	this.dom.timeAxisGroup = this.dom.chart_root2.append("g").attr("class","timeAxisGroup")
-        		.on("mousedown", function (d, i) { d3.event.preventDefault(); });
-            this.dom.tickGroup = this.dom.timeAxisGroup.append("g").attr("class","tickGroup");
-        }
-
-        if(this.attribCount_Active===1){
-            this.options.catBarScale = "scale_frequency";
-        }
-
         this.insertHeader();
 
         this.insertAttribs();
+
         if(this.type==='scatterplot') { 
             this.insertTimeChartRows();
             this.insertTimeChartAxis_1();
         }
-    },
-    updateScrollDisplayMore: function(bottomItem){
-        var me = this;
-        this.dom.scroll_display_more
-            .style("display",
-                (this.attribCount_Active!==bottomItem)?"block":"none")
-            .text( (this.attribCount_Active-bottomItem)+" more..." );
-    },
-    /** -- */
-    getAttribs: function(){
-        return kshf.dt[this.catTableName];
-    },
-    /** -- */
-    getAttribs_wID: function(){
-        return kshf.dt_id[this.catTableName];
     },
     /** returns the maximum number of total items stored per row in chart data */
     getMaxTotalItemsPerRow: function(){
@@ -3200,96 +3160,29 @@ kshf.BarChart.prototype = {
         });
         return this._maxBarValueMaxPerAttrib;
     },
-    /** -- */
-    refreshUI: function(){
-        this.updateBarAxisScale();
-    	this.refreshActiveItemCount();
-        if(this.type==="scatterplot"){
-            this.refreshTimeChartBarDisplay();
-            this.refreshTimeChartDotConfig();
-        }
-        this.refreshWidth_Bars_Active();
-        if(this.options.removeInactiveAttrib){
-            this.updateAttribCount_Active();
-        }
-    	this.updateSorting();
-    },
-    /** -- */
-    updateAttrib_TimeMinMax: function(){
-        var timeFilterId = this.timeFilter.id;
-        var specFunc = function(item){
-            if(!item.wanted) return undefined; // unwanted items have no time position
-            return item.mappedData[timeFilterId];
-        };
-        this.getAttribs().forEach(function(row){
-            if(row.sortDirty===false) return;
-            row.xMin_Dyn = d3.min(row.items, specFunc);
-            row.xMax_Dyn = d3.max(row.items, specFunc);
-        });
-    },
-    /** refreshActiveItemCount */
-    refreshActiveItemCount: function(){
-        var me = this;
-        this.dom.item_count.text(function(attrib){
-            return "("+kshf.Util.formatForItemCount(attrib.barValue)+")"; 
-        });
-        this.dom.attribs.each(function(attrib){ 
-            this.setAttribute("noitems",!me.isAttribSelectable(attrib));
-        });
-        this.dom.attribs.attr("title",(function(attrib){
-            return (attrib.activeItems===0?"No":attrib.activeItems)+" selected "+me.getKshf().itemName+" "+
-                (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
-                ((me.options.catTooltipText)?me.options.catTooltipText(attrib):me.options.catLabelText(attrib));
-        }));
-    },
-    /** -- */
-    refreshWidth_Bars_Active: function(){
-    	var me=this;
-        this.dom.barGroup.style("width",this.getKshf().width_leftPanel_bar+"px");
-    	this.dom.bar_active
-            .each(function(attrib){
-                var str="scaleX("+me.catBarAxisScale(attrib.barValue)+")";
-                this.style.webkitTransform = str;
-                this.style.MozTransform = str;
-                this.style.msTransform = str;
-                this.style.OTransform = str;
-                this.style.transform = str;
-            })
-            ;
-    },
-    /** Applies alternating color for bar helper lines */
-    refreshBarLineHelper: function(){
-    	this.dom.row_bar_line.style("border-top-color", function(attrib,i) {
-    		return (attrib.orderIndex%2===1)?"gray":"lightgray";
-    	});
-    },
-    /** -- */
-    getFilteredCount: function(){
-        var r=this.isFiltered_Attrib();
-        if(this.type==="scatterplot") r+=this.isFiltered_Time();
-        return r;
-    },
-    /** -- */
-    isFiltered_Attrib: function(state){
-        return this.attribCount_Selected!==0;
-    },
-    /** -- */
-    isFiltered_Time: function(){
-    	return this.timeFilter_ms.min!==this.timeRange_ms.min ||
-    	       this.timeFilter_ms.max!==this.timeRange_ms.max ;
-    },
     attrib_UnselectAll: function(){
-        this.attribCount_Selected = 0;
         this.attribCount_Included = 0;
         this.attribCount_Removed  = 0;
+        if(this.divRoot) this.divRoot.attr("inserted_attrib",false);
+        this._update_Selected();
     },
     attrib_Include: function(v){
-        this.attribCount_Selected+=v;
         this.attribCount_Included+=v;
+        if(this.divRoot) this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
+        this._update_Selected();
     },
     attrib_Remove: function(v){
-        this.attribCount_Selected+=v;
         this.attribCount_Removed+=v;
+        this._update_Selected();
+    },
+    attrib_setIncluded: function(i){
+        this.attribCount_Included=i;
+        if(this.divRoot) this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
+        this._update_Selected();
+    },
+    _update_Selected: function(){
+        this.attribCount_Selected=this.attribCount_Included+this.attribCount_Removed;
+        if(this.divRoot) this.divRoot.attr("filtered_attrib",this.attribCount_Selected>0);
     },
     /** -- */
     unselectAllAttribs: function(){
@@ -3304,23 +3197,6 @@ kshf.BarChart.prototype = {
             this.dom.showTextSearch[0][0].value = '';
         }
         this.unselectAllAttribs();
-        this.refreshAttribFilter();
-    },
-    /** -- */
-    clearFilter_Time_cb: function(){
-        this.resetTimeFilter_ms();
-        this.resetTimeZoom_ms();
-        this.refreshTimechartLayout(true);
-        this.yearSetXPos();
-        this.timeFilter.clearFilter(true);
-    },
-    /** resetTimeFilter_ms */
-    resetTimeFilter_ms: function(){
-        this.timeFilter_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
-    },
-    /** resetTimeZoom_ms */
-    resetTimeZoom_ms: function(){
-        this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
     },
     /** -- */
     collapseAttribs: function(hide){
@@ -3333,25 +3209,9 @@ kshf.BarChart.prototype = {
         this.getKshf().updateLayout_Height();
     },
     /** -- */
-    collapseTime: function(hide){
-        this.collapsedTime = hide;
-        this.getKshf().updateLayout_Height();
-        this.divRoot.attr("collapsedTime",this.collapsedTime===false?"false":"true");
-        this.refreshUIWidth();
-    },
-    /** -- */
-    refreshTimeAxisPosition: function(){
-        var kshf_ = this.getKshf();
-        this.dom.timeAxisGroup
-            .transition().duration(kshf_.anim_layout_duration)
-            .attr("transform","translate("+(kshf_.getWidth_LeftPanel()+kshf_.sepWidth-2)+","+
-                (kshf_.line_height*this.rowCount_Visible)+")");
-    },
-    /** -- */
     insertHeader: function(){
     	var me = this;
         var kshf_ = this.getKshf();
-        var rows_Left = this.rowCount_Header_Left();
 
         if(this.options.subFilters){
             // get titles of all filters
@@ -3381,25 +3241,14 @@ kshf.BarChart.prototype = {
             this.insertRightHeader();
         }
 
-//        this.dom.leftHeader.append("div").attr("class","border_line");
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
         var topRow = topRow_background.append("div").attr("class","leftHeader_XX");
-
-        topRow.append("span").attr("class", "header_label")
-            .attr("title", this.attribCount_Total+" attributes")
-            .html(this.options.facetTitle)
-            .on("click",function(){ 
-                if(me.collapsed) { me.collapseAttribs(false); }
-            })
-            ;
         topRow.append("span").attr("class","header_label_arrow")
             .attr("title","Show/Hide attributes").text("▼")
             .on("click",function(){ me.collapseAttribs(!me.collapsed); })
             ;
-
-
         topRow.append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .text('x').attr("title","Remove filter")
@@ -3413,30 +3262,26 @@ kshf.BarChart.prototype = {
                     }
                 })
             })
-            .on("mouseover",function(){
-                this.tipsy.show();
-            })
-            .on("mouseout",function(d,i){
-                this.tipsy.hide();
-                d3.event.stopPropagation();
-            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
     		.on("click", function(d,i){
                 this.tipsy.hide();
                 me.attribFilter.clearFilter(true);
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
                     me.getKshf().getFilteringState(me.options.facetTitle));
-            })
-            ;
+            });
+        topRow.append("span").attr("class", "header_label")
+            .attr("title", this.attribCount_Total+" attributes")
+            .html(this.options.facetTitle)
+            .on("click",function(){ if(me.collapsed) me.collapseAttribs(false); });
 
+        var header_belowFirstRow = this.dom.leftHeader.append("div").attr("class","header_belowFirstRow leftHeader_XX");
 
-        var header_belowFirstRow = this.dom.leftHeader.append("div").attr("class","header_belowFirstRow");
-
-        var xxx=this.dom.leftHeader.append("svg")
-            .attr("class", "resort_button")
+        var xxx=this.dom.leftHeader.append("svg").attr("class", "resort_button")
             .attr("version","1.1")
             .attr("height","15px")
             .attr("width","15px")
-            .attr("title","Settings")
+            .attr("title","Resort attributes")
             .attr("xml:space","preserve")
             .attr("viewBox","0 0 2000 1000")
             .style("left",(this.parentKshf.categoryTextWidth+5)+"px")
@@ -3455,10 +3300,10 @@ kshf.BarChart.prototype = {
         // ****** CONFIG LINE *****************************************************************
 
         if(this.showTextSearch){
-            var textSearchRowDOM = header_belowFirstRow.append("div").attr("class","leftHeader_XX")
-                .attr("class","chartRowLabelSearch")
-                .style("white-space","nowrap").style("position","relative");
-            this.dom.showTextSearch=textSearchRowDOM.append("input")
+            var textSearchRowDOM = header_belowFirstRow.append("div")
+                .attr("class","attribTextSearch")
+                .style("white-space","nowrap");
+            this.dom.attribTextSearch=textSearchRowDOM.append("input")
                 .attr("type","text")
                 .attr("placeholder","Search: "+this.options.facetTitle.toLowerCase())
                 .on("input",function(){
@@ -3490,9 +3335,8 @@ kshf.BarChart.prototype = {
                             if(!me.isFiltered_Attrib()){
                                 me.attribFilter.clearFilter(true);                            
                             } else {
-                                me.selectType = "SelectOr";
+                                me.setSelectType("SelectOr");
                                 me.updateSelected_All();
-                                me.refreshAttribFilter();
                                 me.attribFilter.addFilter(true);
                             }
                         }
@@ -3520,155 +3364,25 @@ kshf.BarChart.prototype = {
                 .attr("viewBox","0 0 48 48")
                 .attr("xmlns","http://www.w3.org/2000/svg")
                 .append("use").attr("xlink:href","#kshf_svg_clearText")
-                .on("click",function() {
-                    me.attribFilter.clearFilter(true);
-                });
+                .on("click",function() { me.attribFilter.clearFilter(true); });
         }
 
-        var configGroup = header_belowFirstRow.append("div")
-            .attr("class","configGroup leftHeader_XX")
-            .attr("shown","order")
-            ;
-
-        if(this.showConfig) {
-            var sortGr = configGroup.append("span").attr("class","sortOptionSelectGroup");
+        if(this.options.sortingOpts.length>1) {
+            var sortGr = header_belowFirstRow.append("span").attr("class","sortOptionSelectGroup");
+            sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
             sortGr.append("select").attr("class","optionSelect")
                 .on("change", function(){
+                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
+                    me.updateSorting.call(me, 0);
                     if(sendLog) {
                         sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
                             {facet:me.options.facetTitle, funcID:this.selectedIndex});
                     }
-                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
-                    me.updateSorting.call(me, 0);
                 })
-            .selectAll("input.sort_label")
-                .data(this.options.sortingOpts)
-              .enter().append("option")
-                .attr("class", "sort_label")
+            .selectAll("input.sort_label").data(this.options.sortingOpts)
+              .enter().append("option").attr("class", "sort_label")
                 .text(function(d){ return d.name; })
-                .attr(function(d){ return d.name; })
                 ;
-            sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
-        }
-    },
-    /** -- */
-    insertRightHeader: function(){
-        var me=this;
-        this.dom.rightHeader = this.dom.headerGroup.append("span").attr("class","rightHeader");
-
-//        this.dom.rightHeader.append("div").attr("class","border_line");
-
-        var firstLine = this.dom.rightHeader.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
-            firstLine.append("span").attr("class","header_label_arrow")
-                .attr("title","Show/Hide categories").text("▼")
-                .on("click",function(){ me.collapseTime(!me.collapsedTime); })
-                ;
-            firstLine.append("span")
-                .attr("class", "header_label")
-                .text(this.options.timeTitle)
-                .on("click",function(){ if(me.collapsedTime) { me.collapseTime(false); } })
-                ;
-            firstLine.append("div")
-                .attr("class","chartClearFilterButton timeFilter alone")
-                .attr("title","Remove filter")
-                .on("click", function(d,i){ 
-                    me.timeFilter.clearFilter(true);
-                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
-                        {facet:me.options.timeTitle,results:me.getKshf().itemsSelectedCt});
-                })
-                .text('x');
-
-        this.dom.rightHeader.append("div").attr("class","border_line");
-
-        var config_zoom = this.dom.rightHeader.append("div").attr("class","config_zoom");
-
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_in")
-            .attr("disabled","true")
-            .text("⇥ Zoom in ⇤")
-            .on("click",function(d){
-                me.timeZoom_ms = { min: me.timeFilter_ms.min, max: me.timeFilter_ms.max };
-                me.useCurrentTimeMinMax = true;
-                me.refreshTimechartLayout(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","false");
-                me.divRoot.select(".zoom_in").attr("disabled","true");
-            });
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_out")
-            .attr("disabled","true")
-            .text("⇤ Zoom out ⇥")
-            .on("click",function(){
-                me.resetTimeZoom_ms();
-                me.useCurrentTimeMinMax = true;
-                me.refreshTimechartLayout(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","true");
-            })
-            ;
-    },
-    /** -- */
-    refreshTimechartLayout: function(toUpdate){
-        this.setTimeTicks();
-        this.updateTimeChartBarsDots();
-        this.refreshTimeChartBarDisplay();
-        this.insertTimeTicks();
-        this.insertTimeChartAxis();
-        if(toUpdate===true) this.refreshTimeChartDotConfig();
-    },
-    /** -- */
-    setTimeWidth: function(w){
-        w = w-this.getKshf().scrollWidth;
-        this.options.timeMaxWidth = w; // 15px is for scrollbar
-
-        this.refreshTimechartLayout(true);
-        this.refreshUIWidth();
-        this.updateRowBarLineWidth();
-    },
-    /** -- */
-    refreshTimeChartDotConfig: function(){
-        if(this.type!=='scatterplot') return;
-        if(this.options.timeDotConfig !== undefined) return;
-        if(this.skipUpdateTimeChartDotConfig === true) return;
-        var me = this;
-
-        var totalActiveTime_pixLength = 0;
-
-        this.dom.attribs.each(function(attrib) {
-            if(me.isFiltered_Attrib() && !attrib.f_selected()) return;
-            if(attrib.xMax_Dyn===undefined || attrib.xMin_Dyn===undefined) return;
-            totalActiveTime_pixLength+=me.timeScale(attrib.xMax_Dyn) - me.timeScale(attrib.xMin_Dyn);
-        });
-
-        var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
-        var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
-
-        // how much width of time does each dot take?
-        var dotPixelWidth = 12;
-    //        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
-    //        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
-        var maxDots = totalActiveTime_pixLength/dotPixelWidth;
-    //        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
-    //        x*dotTimeWidth = this.options.timeMaxWidth;
-        
-        var numOfItems = this.parentKshf.itemsSelectedCt;
-
-        // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
-    //        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
-
-        if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
-            this.dom.timeDots.attr("fill","default");
-        } else {
-            this.dom.timeDots.attr("fill","gradient100");
-            if(maxDots>numOfItems*1.5){
-                this.dom.timeDots.attr("fill","gradient100");
-            } else if(maxDots>numOfItems*0.8){
-                this.dom.timeDots.attr("fill","gradient75");
-            } else if(maxDots>numOfItems*0.3){
-                this.dom.timeDots.attr("fill","gradient50");
-            } else {
-                this.dom.timeDots.attr("fill","gradient25");
-            }
         }
     },
     /** -- */
@@ -3682,24 +3396,9 @@ kshf.BarChart.prototype = {
                 .domain([0,this.getMaxBarValuePerAttrib()])
                 .rangeRound([0, this.parentKshf.barMaxWidth]);
         }
+        this.refreshWidth_Bars_Active();
         this.refreshWidth_Bars_Total();
         this.insertXAxisTicks();
-    },
-    /** -- */
-    updateBarWidth: function(w){
-        this.updateBarAxisScale();
-        this.refreshWidth_Bars_Active();
-        this.updateRowBarLineWidth();
-        this.refreshUIWidth();
-    },
-    /** -- */
-    updateRowBarLineWidth: function(){
-        var kshf_ = this.getKshf();
-        this.dom.row_bar_line.style("width",(kshf_.barMaxWidth+kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth)+"px");
-    },
-    /** -- */
-    getMaxVisibleFirstRow: function(){
-        return this.attribCount_Active-this.rowCount_Visible;
     },
     /** -- */
     setRowCount_VisibleAttribs: function(c){
@@ -3711,65 +3410,125 @@ kshf.BarChart.prototype = {
             c = Math.max(c,2);
         }
         this.rowCount_Visible = c;
-        this.updateScrollDisplayMore(this.rowCount_Visible);
+        this.refreshScrollDisplayMore(this.rowCount_Visible);
+    },
+    /** -- */
+    refreshAfterFilter: function(){
+        this.updateBarAxisScale();
+        this.refreshActiveItemCount();
+        if(this.options.removeInactiveAttrib){
+            this.updateAttribCount_Active();
+        }
+        this.updateSorting();
+        if(this.type==="scatterplot"){
+            this.refreshTimeChartBarDisplay();
+            this.refreshTimeChartDotConfig();
+        }
+    },
+    /** -- */
+    refreshWidth: function(){
+        var leftWidth = this.getWidth_Left();
+        var rightWidth = this.getWidth_Right();
+        var totalWidth = this.getWidth();
+
+        this.dom.leftHeader.style("width",leftWidth+"px");
+
+        this.dom.chart_root2.style("width",totalWidth+"px");
+        this.dom.attribGroup.style("width",totalWidth+"px");
+
+        if(this.type==="scatterplot"){
+            this.dom.rightHeader.style("width",rightWidth+"px");
+            this.dom.middleScrollbar.style('left',(leftWidth-20)+'px');
+            this.dom.chartRoot.select(".scrollToTop2").style('left',(leftWidth-15)+'px');
+            if(this.collapsedTime){
+                this.dom.chart_root2.style("width",leftWidth+"px");
+                this.dom.attribGroup.style("width",leftWidth+"px");
+            }
+        }
+    },
+    /** -- */
+    refreshActiveItemCount: function(){
+        var me = this;
+        this.dom.item_count.text(function(attrib){
+            return "("+kshf.Util.formatForItemCount(attrib.barValue)+")"; 
+        });
+        this.dom.attribs
+            .attr("noitems",function(attrib){ return !me.isAttribSelectable(attrib); })
+            .attr("title",(function(attrib){
+                return (attrib.activeItems===0?"No":attrib.activeItems)+" selected "+me.getKshf().itemName+" "+
+                    (me.options.textFilter?me.options.textFilter:("- "+me.options.facetTitle+":"))+" "+
+                    ((me.options.catTooltipText)?me.options.catTooltipText(attrib):me.options.catLabelText(attrib));
+            }));
+    },
+    /** -- */
+    refreshWidth_Bars_Active: function(){
+        var me=this;
+        // total width of bar group...
+        this.dom.barGroup.style("width",this.getKshf().width_leftPanel_bar+"px");
+        // active bar width
+        this.dom.bar_active.each(function(attrib){
+            var str="scaleX("+me.catBarAxisScale(attrib.barValue)+")";
+            this.style.webkitTransform = str;
+            this.style.MozTransform = str;
+            this.style.msTransform = str;
+            this.style.OTransform = str;
+            this.style.transform = str;
+        });
+    },
+    /** -- */
+    refreshWidth_Bars_Total: function(){
+        var me = this;
+        this.dom.bar_total
+            .each(function(attrib){
+                var str="scaleX("+Math.min(me.catBarAxisScale(attrib.barValueMax),me.parentKshf.barMaxWidth+7)+")";
+                this.style.webkitTransform = str;
+                this.style.MozTransform = str;
+                this.style.msTransform = str;
+                this.style.OTransform = str;
+                this.style.transform = str;
+            });
+    },
+    /** -- */
+    refreshTextWidth: function(w){
+        this.options.rowTextWidth = w;
+
+        this.dom.headerGroup.selectAll(".leftHeader_XX")
+            .style("width",this.options.rowTextWidth+"px");
+        this.dom.scroll_display_more
+            .style("width",this.options.rowTextWidth+"px")
+        this.dom.attrLabel
+            .style("width",this.options.rowTextWidth+"px")
+        this.dom.x_axis
+            .attr("transform","translate("+(this.getKshf().getRowTotalTextWidth()+3)+",0)");
+        if(this.dom.attribTextSearch) {
+            this.dom.attribTextSearch.style("width",(this.options.rowTextWidth-16)+"px")
+        }
+    },
+    /** -- */
+    refreshScrollDisplayMore: function(bottomItem){
+        this.dom.scroll_display_more
+            .style("display",(this.attribCount_Active!==bottomItem)?"block":"none")
+            .text( (this.attribCount_Active-bottomItem)+" more..." );
     },
     /** -- */
     refreshVisibleAttribs: function(){
         var kshf_ = this.getKshf();
         var totalHeight      = kshf_.line_height*this.rowCount_Total();
         var visibleRowHeight = kshf_.line_height*this.rowCount_Visible;
-        var headerHeight     = kshf_.line_height*this.rowCount_Header();
 
-        this.divRoot.attr("selectType",this.selectType);
         this.divRoot.style("height",totalHeight+"px");
-
         this.dom.attribGroup.style("height",visibleRowHeight+"px");
-        if(this.type==="scatterplot"){
-            this.dom.middleScrollbar.style("height",visibleRowHeight+"px");
-        }
 
         this.dom.x_axis.selectAll("g.tick line")
             .transition().duration(kshf_.anim_layout_duration)
-            .attr("y2", visibleRowHeight)
-            ;
+            .attr("y2", visibleRowHeight);
         this.dom.x_axis.selectAll("g.tick text")
             .transition().duration(kshf_.anim_layout_duration)
             .attr("dy",visibleRowHeight+5);
 
         if(this.type==='scatterplot'){
-            this.refreshTimeAxisPosition();
-            // update x axis items
-            this.dom.timeAxisGroup.selectAll("g.filter_handle line")
-                .transition().duration(kshf_.anim_layout_duration)
-                .attr("y1", -visibleRowHeight-8)
-                .attr("y2", -8)
-                ;
-            this.dom.timeAxisGroup.selectAll("rect.filter_nonselected")
-        //        .transition().duration(kshf_.anim_layout_duration)
-                .attr("y",-visibleRowHeight-8)
-                .attr("height", visibleRowHeight)
-                ;
-            this.dom.selectVertLine
-                .style("height", (kshf_.line_height*(this.rowCount_Visible))+"px")
-                ;
+            this.refreshTimeAxisHeight();
         }
-    },
-    /** Returns true when all current selections appear in the itemList */
-    filter_multi_and: function(itemList) {
-        // ALL of the current selection is in item mappings
-        // see how many items return true. If it matches current inserted count, then all selections are met for this item
-        var t=0;
-        var removed=false;
-        itemList.forEach(function(m){
-            if(removed) return;
-            if(m.f_included()){
-                t++;
-            } else if(m.f_removed()){
-                removed = true; // well, we have a removed item attribute here. BAM!
-            }
-        })
-        if(removed) return false;
-        return (t===this.attribCount_Included);
     },
     /** update ItemFilterState_Attrib */
     updateItemFilterState_Attrib: function(){
@@ -3781,7 +3540,7 @@ kshf.BarChart.prototype = {
 
         var filterId = this.attribFilter.id;
         if(this.selectType==="SelectAnd"){
-            var filter_multi = this.filter_multi_and;
+            var filter_multi = kshf.Util.filter_multi_and;
             this.getKshfItems().forEach(function(item){
                 var attribItem=item.mappedData[filterId];
                 var f = false;
@@ -3867,18 +3626,15 @@ kshf.BarChart.prototype = {
         if(attrib.f_selected()) return true;
         // Show if number of active items is not zero
         if(attrib.activeItems!==0) return true;
-
+        // if inactive attributes are not removed, well, don't remove them...
         if(this.options.removeInactiveAttrib===false) return true;
-
         // facet is not filtered yet, cannot click on 0 items
         if(!this.isFiltered_Attrib()) return attrib.activeItems!==0;
-        
         // Hide if multiple options are selected and selection is and
         if(this.selectType==="SelectAnd") return false;
         // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
 
         if(attrib.wanted===false) return false;
-
         return true;
     },
     /** -- */
@@ -3887,10 +3643,8 @@ kshf.BarChart.prototype = {
         if(attrib.f_selected()) return true;
         // Show if number of active items is not zero
         if(attrib.activeItems!==0) return true;
-
         // Show if multiple attributes are selected and the facet does not include multi value items
         if(this.isFiltered_Attrib() && !this.hasMultiValueItem) return true;
-
         // Hide
         return false;
     },
@@ -3918,8 +3672,7 @@ kshf.BarChart.prototype = {
             this.updateSelected_SelectOnly();
         }
 
-        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
-        this.refreshAttribFilter();
+        if(this.dom.attribTextSearch) this.dom.attribTextSearch[0][0].value="";
         this.attribFilter.addFilter(true);
     },
     /** When clicked on an attribute ... */
@@ -3942,13 +3695,13 @@ kshf.BarChart.prototype = {
         if(attrib.f_included()){
             // attrib is added to filtering
             if(this.attribCount_Included===1){
-                this.selectType = "SelectOr";
+                this.setSelectType("SelectOr");
                 this.updateSelected_UnSelectOnly();
             } else {
                 // this.attribCount_Included > 1
                 if(this.hasMultiValueItem){
                     if(this.attribCount_Included===2){
-                        this.selectType = (selectOr===undefined)?"SelectAnd":"SelectOr";
+                        this.setSelectType((selectOr===undefined)?"SelectAnd":"SelectOr");
                     }
                     if(this.selectType==="SelectAnd"){
                         this.updateSelected_UnSelectOnly();
@@ -3964,8 +3717,7 @@ kshf.BarChart.prototype = {
                         // Removing previously selected attributes
                         this.unselectAllAttribs();
                         attrib.f_include();
-                        this.attribCount_Selected = 1;
-                        this.attribCount_Included = 1;
+                        this.attrib_setIncluded(1);
                         this.updateSelected_All();
                     }
                 }
@@ -3979,22 +3731,14 @@ kshf.BarChart.prototype = {
                     this.updateSelected_UnSelectOnly();
                 }
                 if(this.attribCount_Included===1){
-                    this.selectType = "SelectOr";
+                    this.setSelectType("SelectOr");
                 }
             } else {
                 this.updateSelected_UnSelectOnly();
             }
         }
-        if(this.dom.showTextSearch) this.dom.showTextSearch[0][0].value="";
-        this.refreshAttribFilter();
+        if(this.dom.attribTextSearch) this.dom.attribTextSearch[0][0].value="";
         this.attribFilter.addFilter(true);
-    },
-    /** -- */
-    refreshAttribFilter: function(){
-        this.divRoot.attr("filtered_attrib",this.attribCount_Selected>0);
-        this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
-        // 1, 0, -1
-        this.dom.attribs.attr("selected",function(attrib){ return attrib.selected; });
     },
     /** -- */
     text_item_Attrib: function(){
@@ -4092,8 +3836,8 @@ kshf.BarChart.prototype = {
             .on("mouseout",onMouseOut)
             ;
 
-    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "label")
-            .style("width", (this.options.rowTextWidth)+"px");
+    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "label");
+
         this.dom.add_more = this.dom.attrLabel.append("span").attr("class", "filter_add_more");
             this.dom.add_more.append("span").attr("class","add").text("⊕")
                 .each(function(){
@@ -4111,12 +3855,12 @@ kshf.BarChart.prototype = {
                 })
                 .on("mouseover",function(attrib,i){
                     this.tipsy.show();
-                    this.parentNode.parentNode.setAttribute("highlight",true);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight",true);
                     d3.event.stopPropagation();
                 })
                 .on("mouseout",function(attrib,i){
                     this.tipsy.hide();
-                    this.parentNode.parentNode.setAttribute("highlight",false);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight",false);
                     d3.event.stopPropagation();
                 })
                 .on("click",function(attrib,i){
@@ -4141,12 +3885,12 @@ kshf.BarChart.prototype = {
                 })
                 .on("mouseover",function(attrib,i){
                     this.tipsy.show();
-                    this.parentNode.parentNode.setAttribute("highlight",true);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight",true);
                     d3.event.stopPropagation();
                 })
                 .on("mouseout",function(attrib,i){
                     this.tipsy.hide();
-                    this.parentNode.parentNode.setAttribute("highlight",false);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight",false);
                     d3.event.stopPropagation();
                 })
                 .on("click",function(attrib,i){
@@ -4186,7 +3930,7 @@ kshf.BarChart.prototype = {
         this.dom.barGroup = this.dom.attribs.append("span").attr("class","barGroup");
     	this.dom.bar_active = this.dom.barGroup.append("span")
     		.attr("class", function(d,i){ 
-    			return "bar rowBar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
+    			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		})
             .on("click", onFilterAttrib)
             .on("mouseover",onMouseOver)
@@ -4194,37 +3938,13 @@ kshf.BarChart.prototype = {
             ;
     	this.dom.bar_total = this.dom.barGroup.append("span")
     		.attr("class", function(d,i){ 
-    			return "bar rowBar total "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
+    			return "bar total "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		});
-        this.dom.allRowBars = this.dom.attribs.selectAll('span.rowBar');
+        this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
 
-        this.refreshTextWidth();
+        this.refreshTextWidth(this.options.rowTextWidth);
     },
-    /** -- */
-    refreshTextWidth: function(){
-        var kshf_ = this.getKshf();
 
-        this.dom.headerGroup.selectAll(".leftHeader_XX")
-            .style("width",this.options.rowTextWidth+"px");
-        this.dom.x_axis
-            .attr("transform","translate("+(kshf_.getRowTotalTextWidth()+3)+",0)");
-
-        if(this.dom.showTextSearch)
-            this.dom.showTextSearch.style("width",(this.options.rowTextWidth-20)+"px")
-    },
-    /** -- */
-    refreshWidth_Bars_Total: function(){
-        var me = this;
-        this.dom.bar_total
-            .each(function(attrib){
-                var str="scaleX("+Math.min(me.catBarAxisScale(attrib.barValueMax),me.parentKshf.barMaxWidth+7)+")";
-                this.style.webkitTransform = str;
-                this.style.MozTransform = str;
-                this.style.msTransform = str;
-                this.style.OTransform = str;
-                this.style.transform = str;
-            });
-    },
     /** -- */
     sortAttribs: function(){
         var me = this;
@@ -4254,46 +3974,47 @@ kshf.BarChart.prototype = {
             return x;
         };
         this.getAttribs().sort(theSortFunc);
-        this.getAttribs().forEach(function(attrib,i){ attrib.orderIndex=i; });
+        this.getAttribs().forEach(function(attrib,i){
+            attrib.orderIndex=i;
+        });
     },
     /** -- */
     updateSorting: function(sortDelay){
-        var kshf_ = this.getKshf();
+        var line_height = this.getKshf().line_height;
         var me = this;
         if(sortDelay===undefined) sortDelay = 450;
         this.sortAttribs();
 
-        me.dom.attribs//.data(me.getAttribs(), function(attrib){ return attrib.id(); }).order()
-//          .transition().duration(0)
-//          .delay(function(d, i) { return Math.min(i*10,600); })
-            .each(function(attrib){
-                var i = attrib.orderIndex;
-                var trans = "all 700ms ease-in-out "+Math.min(450+i*20,700)+"ms";
-                var str="translateY("+(kshf_.line_height*i)+"px)";
+        me.dom.attribs.each(function(attrib){
+            var i = attrib.orderIndex;
+            var trans = "all 700ms ease-in-out "+Math.min(sortDelay+i*20,700)+"ms";
+            var str="translateY("+(line_height*i)+"px)";
 
-                this.style.setProperty("-webkit-transform", str);
-                this.style.setProperty("-moz-transform", str);
-                this.style.setProperty("-o-transform", str);
-                this.style.setProperty("-ms-transform", str);
-                this.style.setProperty("transform", str);
+            this.style.setProperty("-webkit-transform", str);
+            this.style.setProperty("-moz-transform", str);
+            this.style.setProperty("-o-transform", str);
+            this.style.setProperty("-ms-transform", str);
+            this.style.setProperty("transform", str);
 
-                this.style.setProperty("-webkit-transition", trans);
-                this.style.setProperty("-moz-transition", trans);
-                this.style.setProperty("-o-transition", trans);
-                this.style.setProperty("transition", trans);
-            })
-            .style('display',function(attrib){
-                return me.isAttribVisible(attrib)?"block":"none";
-            })
-            ;
+            this.style.setProperty("-webkit-transition", trans);
+            this.style.setProperty("-moz-transition", trans);
+            this.style.setProperty("-o-transition", trans);
+            this.style.setProperty("transition", trans);
+        })
+        .style('display',function(attrib){
+            return me.isAttribVisible(attrib)?"block":"none";
+        })
+        ;
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
         kshf.Util.scrollToPos_do(attribGroupScroll,0);
         if(me.type==="scatterplot"){
-            me.dom.middleScrollbar.select(".filler").style("height",attribGroupScroll.scrollHeight+"px");
+            me.refreshBarLineColor();
+            setTimeout(function(){
+                me.dom.middleScrollbar.select(".filler").style("height",attribGroupScroll.scrollHeight+"px");
+            },1500);
             me.dom.middleScrollbar[0][0].scrollTop = attribGroupScroll.scrollTop;
-            me.refreshBarLineHelper();
         }
       me.divRoot.attr("canResort",false);
     },
@@ -4320,9 +4041,183 @@ kshf.BarChart.prototype = {
             .attr("y1","0")
             .attr("y2",this.getKshf().line_height*this.rowCount_Visible);
     },
+
+
+    /** TIMELINE RELATED STUFF *******************************************************
+     *                                                                               *
+     *********************************************************************************/
+
     /** -- */
-    removeXAxis: function(){
-        this.dom.x_axis.data([]).exit().remove();
+    insertRightHeader: function(){
+        var me=this;
+        this.dom.rightHeader = this.dom.headerGroup.append("span").attr("class","rightHeader");
+
+        var firstLine = this.dom.rightHeader.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
+            firstLine.append("span").attr("class","header_label_arrow")
+                .attr("title","Show/Hide categories").text("▼")
+                .on("click",function(){ me.collapseTime(!me.collapsedTime); })
+                ;
+            firstLine.append("span")
+                .attr("class", "header_label")
+                .text(this.options.timeTitle)
+                .on("click",function(){ if(me.collapsedTime) { me.collapseTime(false); } })
+                ;
+            firstLine.append("div")
+                .attr("class","chartClearFilterButton timeFilter alone")
+                .attr("title","Remove filter")
+                .on("click", function(d,i){ 
+                    me.timeFilter.clearFilter(true);
+                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
+                        {facet:me.options.timeTitle,results:me.getKshf().itemsSelectedCt});
+                })
+                .text('x');
+
+        this.dom.rightHeader.append("div").attr("class","border_line");
+
+        var config_zoom = this.dom.rightHeader.append("div").attr("class","config_zoom");
+
+        config_zoom.append("span")
+            .attr("class","zoom_button zoom_in")
+            .attr("disabled","true")
+            .text("⇥ Zoom in ⇤")
+            .on("click",function(d){
+                me.timeZoom_ms = { min: me.timeFilter_ms.min, max: me.timeFilter_ms.max };
+                me.useCurrentTimeMinMax = true;
+                me.refreshTimechartLayout(true);
+                me.useCurrentTimeMinMax = undefined;
+                me.divRoot.select(".zoom_out").attr("disabled","false");
+                me.divRoot.select(".zoom_in").attr("disabled","true");
+            });
+        config_zoom.append("span")
+            .attr("class","zoom_button zoom_out")
+            .attr("disabled","true")
+            .text("⇤ Zoom out ⇥")
+            .on("click",function(){
+                me.resetTimeZoom_ms();
+                me.useCurrentTimeMinMax = true;
+                me.refreshTimechartLayout(true);
+                me.useCurrentTimeMinMax = undefined;
+                me.divRoot.select(".zoom_out").attr("disabled","true");
+            })
+            ;
+    },
+    /** -- */
+    collapseTime: function(hide){
+        this.collapsedTime = hide;
+        this.getKshf().updateLayout_Height();
+        this.divRoot.attr("collapsedTime",this.collapsedTime===false?"false":"true");
+        this.refreshWidth();
+    },
+    /** -- */
+    isFiltered_Time: function(){
+        if(this.type!=="scatterplot") return false;
+        return this.timeFilter_ms.min!==this.timeRange_ms.min ||
+               this.timeFilter_ms.max!==this.timeRange_ms.max ;
+    },
+    /** -- */
+    clearFilter_Time_cb: function(){
+        this.resetTimeFilter_ms();
+        this.resetTimeZoom_ms();
+        this.refreshTimechartLayout(true);
+        this.yearSetXPos();
+        this.timeFilter.clearFilter(true);
+    },
+    /** -- */
+    resetTimeFilter_ms: function(){
+        this.timeFilter_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+    },
+    /** -- */
+    resetTimeZoom_ms: function(){
+        this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+    },
+    /** -- */
+    setTimeWidth: function(w){
+        w = w-this.getKshf().scrollWidth;
+        this.options.timeMaxWidth = w; // 15px is for scrollbar
+
+        this.refreshTimechartLayout(true);
+        this.refreshWidth();
+        this.updateRowBarLineWidth();
+    },
+    /** Applies alternating color for bar helper lines */
+    refreshBarLineColor: function(){
+        this.dom.row_bar_line.style("border-top-color", function(attrib,i) {
+            return (attrib.orderIndex%2===1)?"gray":"lightgray";
+        });
+    },
+    /** -- */
+    updateRowBarLineWidth: function(){
+        var kshf_ = this.getKshf();
+        this.dom.row_bar_line.style("width",
+            (kshf_.barMaxWidth+kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth)+"px");
+    },
+    /** -- */
+    updateAttrib_TimeMinMax: function(){
+        var timeFilterId = this.timeFilter.id;
+        var specFunc = function(item){
+            if(!item.wanted) return undefined; // unwanted items have no time position
+            return item.mappedData[timeFilterId];
+        };
+        this.getAttribs().forEach(function(row){
+            if(row.sortDirty===false) return;
+            row.xMin_Dyn = d3.min(row.items, specFunc);
+            row.xMax_Dyn = d3.max(row.items, specFunc);
+        });
+    },
+    /** -- */
+    refreshTimechartLayout: function(toUpdate){
+        this.setTimeTicks();
+        this.updateTimeChartBarsDots();
+        this.refreshTimeChartBarDisplay();
+        this.insertTimeTicks();
+        this.insertTimeChartAxis();
+        if(toUpdate===true) this.refreshTimeChartDotConfig();
+    },
+    /** -- */
+    refreshTimeChartDotConfig: function(){
+        if(this.type!=='scatterplot') return;
+        if(this.options.timeDotConfig !== undefined) return;
+        if(this.skipUpdateTimeChartDotConfig === true) return;
+        var me = this;
+
+        var totalActiveTime_pixLength = 0;
+
+        this.dom.attribs.each(function(attrib) {
+            if(me.isFiltered_Attrib() && !attrib.f_selected()) return;
+            if(attrib.xMax_Dyn===undefined || attrib.xMin_Dyn===undefined) return;
+            totalActiveTime_pixLength+=me.timeScale(attrib.xMax_Dyn) - me.timeScale(attrib.xMin_Dyn);
+        });
+
+        var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
+        var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
+
+        // how much width of time does each dot take?
+        var dotPixelWidth = 12;
+    //        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
+    //        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
+        var maxDots = totalActiveTime_pixLength/dotPixelWidth;
+    //        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
+    //        x*dotTimeWidth = this.options.timeMaxWidth;
+        
+        var numOfItems = this.parentKshf.itemsSelectedCt;
+
+        // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
+    //        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
+
+        if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
+            this.dom.timeDots.attr("fill","default");
+        } else {
+            this.dom.timeDots.attr("fill","gradient100");
+            if(maxDots>numOfItems*1.5){
+                this.dom.timeDots.attr("fill","gradient100");
+            } else if(maxDots>numOfItems*0.8){
+                this.dom.timeDots.attr("fill","gradient75");
+            } else if(maxDots>numOfItems*0.3){
+                this.dom.timeDots.attr("fill","gradient50");
+            } else {
+                this.dom.timeDots.attr("fill","gradient25");
+            }
+        }
     },
     /** -- */
     refreshTimeChartBarDisplay: function(){
@@ -4385,8 +4280,8 @@ kshf.BarChart.prototype = {
 
         this.dom.timeLineParts = this.dom.attribs.append("span").attr("class","timeLineParts");
         if(this.options.timeBarShow===true){
-            this.dom.timeLineParts.append("span").attr("class","bar timeBar total" );
-            this.dom.timeLineParts.append("span").attr("class","bar timeBar active");
+            this.dom.timeLineParts.append("span").attr("class","bar total" );
+            this.dom.timeLineParts.append("span").attr("class","bar active");
         }
     	// Create bar dots
     	this.dom.timeLineParts.selectAll("span.timeDot")
@@ -4456,9 +4351,9 @@ kshf.BarChart.prototype = {
                 d3.event.stopPropagation();
     		})
             ;
-        this.dom.timeBar       = this.dom.timeLineParts.selectAll('span.timeBar')
-        this.dom.timeBarActive = this.dom.timeLineParts.selectAll("span.timeBar.active");
-        this.dom.timeBarTotal  = this.dom.timeLineParts.selectAll("span.timeBar.total");
+        this.dom.timeBar       = this.dom.timeLineParts.selectAll('span.bar')
+        this.dom.timeBarActive = this.dom.timeLineParts.selectAll("span.bar.active");
+        this.dom.timeBarTotal  = this.dom.timeLineParts.selectAll("span.bar.total");
         this.dom.timeDots      = this.dom.timeLineParts.selectAll('span.timeDot');
     },
     /** -- */
@@ -4612,6 +4507,31 @@ kshf.BarChart.prototype = {
             .attr("d", function(d,i) { 
                 return (i===0)?"M0 6 L0 16 L9 16 Z":"M0 6 L0 16 L-9 16 Z";
             })
+    },
+    /** -- */
+    refreshTimeAxisHeight: function(){
+        var kshf_ = this.getKshf();
+        var visibleRowHeight = kshf_.line_height*this.rowCount_Visible;
+        
+        this.dom.timeAxisGroup
+            .transition().duration(kshf_.anim_layout_duration)
+            .attr("transform","translate("+(kshf_.getWidth_LeftPanel()+kshf_.sepWidth-2)+","+
+                (kshf_.line_height*this.rowCount_Visible)+")");
+        // update x axis items
+        this.dom.timeAxisGroup.selectAll("g.filter_handle line")
+            .transition().duration(kshf_.anim_layout_duration)
+            .attr("y1", -visibleRowHeight-8)
+            .attr("y2", -8)
+            ;
+        this.dom.timeAxisGroup.selectAll("rect.filter_nonselected")
+    //        .transition().duration(kshf_.anim_layout_duration)
+            .attr("y",-visibleRowHeight-8)
+            .attr("height", visibleRowHeight)
+            ;
+        this.dom.selectVertLine
+            .style("height", visibleRowHeight+"px")
+            ;
+        this.dom.middleScrollbar.style("height",visibleRowHeight+"px");
     },
 	/** -- */
     insertTimeChartAxis: function(){
@@ -4836,5 +4756,3 @@ kshf.BarChart.prototype = {
         return "from <b>"+this.getFilterMinDateText()+"</b> to <b>"+this.getFilterMaxDateText()+"</b>";
     },
 };
-
-

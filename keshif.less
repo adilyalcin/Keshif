@@ -52,7 +52,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .barChartMainInfo{ display:none; }
     }
     > div[noanim=false]{
-        .rowBar {
+        .bar {
             .transition(~'transform 400ms ease-in-out, background-color 100ms linear');
         }
     }
@@ -316,8 +316,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         text-align: center;
 
-        .transition(~"background-color 100ms linear");
-        .transition(~"color 100ms linear");
+        .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
 
         background-color: #635d46;
         color: #eeebe0;
@@ -330,7 +329,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &.alone{
-            display: none;
+            opacity: 0;
+            vertical-align: top;
+            pointer-events: none;
             box-shadow: 1px 1px 1px #474940;
         }
         &.summary{
@@ -339,12 +340,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 2px;
         }
         &.rowFilter{
-            float: right;
-            margin: 1px 3px 0px 0px;
+            margin-right: 3px;
         }
         &.timeFilter{
             float: left;
-            margin: 1px 0px 0px 3px;
+            margin-left: 3px;
         }
         &.allFilter{
             display: inline-block;
@@ -474,10 +474,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight: 700;
             cursor: default;
             text-anchor: end;
-            float:right;
             cursor: default;
             font-variant: small-caps;
-            pointer-events: none;
+            pointer-events: all;
             padding-top:1px;
             height:16px;
         }
@@ -491,7 +490,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .chartFirstLineBackground{
             width:100%;
-            height: 18px;
             position: relative;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
@@ -499,53 +497,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 10px;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
-        .configGroup{
-//            border-radius: 4px;
-//            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.5);
-            position: relative;
-            .chooseConfigGroup {
-                float:left;
-                width:25px;
-                position:absolute;
-                left:1px;
-                top: 3px;
-                svg{
-                    margin: 1px;
-                }
-                circle{
-                    fill: lightgray;
-                    cursor: pointer;
-                    stroke: black;
-                    stroke-width: 1;
-                    &:hover{
-                        fill:#cb5454 !important;
-                        .transition(~"fill 250ms linear");
-                    }
-                }
-            }
-            select.optionSelect{
-                float:right;
-                font-size:0.7em;
-                pointer-events:all;
-                clear:right;
-                margin:0px;
-            }
-            span.sortOptionSelectGroup{ 
-                display:none;
-                float:right;
-            }
-            span.filterOptionSelectGroup{ 
-                display:none;
-                float:right;
-            }
-            &[shown=order] {
-                .chooseConfigGroup circle.order{
-                    fill: gray;
-                }
-                span.sortOptionSelectGroup{ 
-                    display:block;
-                }
-            }
+        select.optionSelect{
+            font-size:0.7em;
+            pointer-events:all;
+            clear:right;
+            margin:0px;
+        }
+        span.sortOptionSelectGroup{ 
+            display:block;
+        }
+        span.filterOptionSelectGroup{ 
+            display:none;
+            float:right;
         }
         .barInfo {
             padding-left:20px;
@@ -557,17 +520,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight:300;
         }
         span.header_label_arrow{
-            font-size: 0.8em;
-            float: left;
             display: block;
+            position: absolute;
+            top: 0px;
+            font-size: 0.8em;
             cursor: pointer;
-            vertical-align: baseline;
-            line-height: 18px;
             width: 13px;
-            height:18px;
             transition: all 250ms linear;
-            top: 2px;
-            position: relative;
             .rotate(0deg);
             :hover{ color:#cb5454; }
         }
@@ -576,6 +535,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             vertical-align: top;
             pointer-events: all;
             position: relative;
+            .leftHeader_XX{
+                text-align: right;
+            }
         }
         .rightHeader{
             display: inline-block;
@@ -583,7 +545,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:all;
             position: relative;
             span.header_label {
-                float:left;
+                
             }
             .config_zoom{
                 padding-top: 0px;
@@ -648,10 +610,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: hidden;
         .transition(~'height 700ms ease-in-out');
         span.optionSelect_Label{
-            float: right;
             font-size: 0.7em;
             font-weight: 500;
-            padding: 3px 3px 0px 0px;
+            padding: 3px 1px 0px 0px;
             cursor: default;
             pointer-events:none;
         }
@@ -675,7 +636,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: gray;
                 opacity:1;
                 text-align: right;
-                &[highlight=true]{ color: #cb5454; }
+                &:hover{ color: #cb5454; }
             }
         }
         svg.chart_root2{
@@ -701,13 +662,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 fill:#cb5454;
             }
         }
-        .chartRowLabelSearch{
+        .attribTextSearch{
             input {
                 text-align: right;
                 font-size: 0.7em;
                 font-weight: 700;
                 border-width: 0px;
-                padding: 1px 4px 1px 1px;
+                padding: 1px 0px 1px 1px;
                 border-width:0px;
                 color: #cb5454;
                 background-color:rgba(244, 244, 244,0);
@@ -759,7 +720,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .resort_button{ display: none !important ; }
             g.x_axis{ display:none; }
             g.timeAxisGroup { display:none; }
-            .configGroup{ display: none; }
             select.sortOptionSelect{ display: none; }
             div.chart_root{ display: none; }
         }
@@ -797,7 +757,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[filtered_attrib=true] {
             .chartClearFilterButton.rowFilter{
-                display:inline-block;
+                opacity: 1;
+                pointer-events: all;
             }
         }
         &[selecttype="SelectOr"][inserted_attrib=true] {
@@ -811,7 +772,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .clickArea{
                         cursor: pointer !important;
                     }
-                    .rowBar{
+                    .bar{
                         cursor: pointer !important;
                     }
                 }
@@ -822,7 +783,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .clickArea{
                     cursor: cell;
                 }
-                .rowBar.active{
+                .bar.active{
                     cursor: cell;
                 }
             }
@@ -941,7 +902,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 1px;
                 display: inline-block;
             }
-            .rowBar {
+            .bar {
                 display: inline-block;
                 background-color: #8699A8;
                 //border-radius: 2px;
@@ -956,12 +917,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        > span.scrollbarFiller{
-        }
         > span.timeLineParts{
             position:relative;
             overflow-x: hidden;
-            span.timeBar {
+            span.bar {
                 position:absolute;
                 border-radius: 10px;
                 display: inline-block;
@@ -1055,7 +1014,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .clickArea{
                         cursor: cell;
                     }
-                    .rowBar.active{
+                    .bar.active{
                         cursor: cell;
                     }
                 }
@@ -1063,11 +1022,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .clickArea{
                         cursor: pointer;
                     }
-                    .rowBar{
+                    .bar{
                         cursor: pointer;
                     }
                 }
-                .rowBar.active{
+                .bar.active{
                     // box-shadow: inset 0px 0px 0px 2px orangered;
                     background-color: orangered;
                 }
@@ -1098,7 +1057,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-left: 6px;
         position: relative;
         top: 0px;
-        .transition(~'top 700ms ease-in-out');
+        .transition(~'margin-top 700ms ease-in-out');
         div.listItemGroup {
             overflow-y:scroll;
             overflow-x:hidden;
@@ -1308,8 +1267,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.mainTextSearch {
             position: relative;
             white-space: nowrap;
+            margin-left: 5px;
             svg.searchIcon {
-                margin-left: 10px;
+                top: 2px;
+                position: relative;
             }
             span {
                 position: absolute;
