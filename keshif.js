@@ -1532,7 +1532,7 @@ kshf.List.prototype = {
 kshf.Browser = function(options){
     var me = this;
     // BASIC OPTIONS
-	this.charts = [];
+	this.facets = [];
     this.maxFilterID = 0;
     this.barMaxWidth = 0;
 
@@ -1559,7 +1559,7 @@ kshf.Browser = function(options){
 /*    if(this.categoryTextWidth<115){
         this.categoryTextWidth = 115;
     }*/
-    this.chartDefs = options.charts;
+    this.chartDefs = options.facets;
     this.listDef = options.list;
     this.hideHeaderButtons = options.hideHeaderButtons;
     if(this.hideHeaderButtons===undefined){
@@ -2197,7 +2197,7 @@ kshf.Browser.prototype = {
         }
         // TODO: Find the first column that has a date value, set it the time component of first chart
         this.chartDefs.forEach(function(param){ me.addBarChart(param); })
-        this.charts.forEach(function(chart){ chart.init_DOM(); });
+        this.facets.forEach(function(facet){ facet.init_DOM(); });
         if(this.listDef!==undefined){
             this.listDisplay = new kshf.List(this,this.listDef,
                 this.dom.subRoot.append("div").attr("class", "kshf listDiv")
@@ -2224,7 +2224,7 @@ kshf.Browser.prototype = {
         }
         if(options.sortingOpts===undefined) options.sortingOpts = [{}];
         options.rowTextWidth = this.categoryTextWidth;
-        this.charts.push(new kshf.BarChart(this,options));
+        this.facets.push(new kshf.Facet(this,options));
     },
     /** -- */
     columnAccessFunc: function(column){
@@ -2282,8 +2282,8 @@ kshf.Browser.prototype = {
     /** set x offset to display active number of items */
     getRowLabelOffset: function(){
         if(this._labelXOffset) return this._labelXOffset
-        var maxTotalCount = d3.max(this.charts, function(chart){ 
-            return chart.getMaxBarValueMaxPerAttrib();
+        var maxTotalCount = d3.max(this.facets, function(facet){ 
+            return facet.getMaxBarValueMaxPerAttrib();
         });
         this._labelXOffset = 9;
         var digits = 1;
@@ -2311,9 +2311,9 @@ kshf.Browser.prototype = {
         return parseInt(this.TopRoot.style("width"));
     },
     /** -- */
-    filterFacetAttribute: function(chartId, itemId){
-        var chart = this.charts[chartId];
-        chart.filterAttrib(chart.getAttribs()[itemId]);
+    filterFacetAttribute: function(facetID, itemId){
+        var facet = this.facets[facetID];
+        facet.filterAttrib(facet.getAttribs()[itemId]);
     },
     /** -- */
     clearFilters_All: function(force){
@@ -2344,9 +2344,7 @@ kshf.Browser.prototype = {
             return (me.itemsSelectedCt!==0)?me.itemsSelectedCt:"No";
         });
 
-        this.charts.forEach(function(chart){
-            chart.refreshAfterFilter();
-        });
+        this.facets.forEach(function(facet){ facet.refreshAfterFilter(); });
 
         var filteredCount=0;
         this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
@@ -2367,14 +2365,14 @@ kshf.Browser.prototype = {
 
         var divLineCount = Math.floor(divHeight/this.line_height);
         
-        // number of barcharts, and initialize all charts as not processed yet
+        // number of barcharts, and initialize all facets as not processed yet
         var barChartCount = 0;
         var chartProcessed = [];
         var procBarCharts=0;
         var procBarChartsOld=-1;
 
-        this.charts.forEach(function(chart){
-            if(chart.type==='barChart'){ barChartCount++; }
+        this.facets.forEach(function(facet){
+            if(facet.type==='barChart'){ barChartCount++; }
             chartProcessed.push(false);
         })
         
@@ -2382,7 +2380,7 @@ kshf.Browser.prototype = {
         var usedLines = 0;
 
         // timeline first ******************
-        var c2=this.charts[0];
+        var c2=this.facets[0];
         if(c2.type==='scatterplot'){
             // uncollapse scatterplot only if total chart height is more than 15 rows
             if(divLineRem>15){
@@ -2398,9 +2396,9 @@ kshf.Browser.prototype = {
         // *********************************************************************************
         // left panel ***********************************************************************
         divLineRem = divLineCount;
-        this.charts.forEach(function(chart,i){
-            if(chart.type==='scatterplot' && chartProcessed[i]===true){
-                divLineRem-=chart.rowCount_Total();
+        this.facets.forEach(function(facet,i){
+            if(facet.type==='scatterplot' && chartProcessed[i]===true){
+                divLineRem-=facet.rowCount_Total();
             }
         });
 
@@ -2408,32 +2406,32 @@ kshf.Browser.prototype = {
         while(procBarCharts<barChartCount){
             procBarChartsOld = procBarCharts;
             var targetRowCount = Math.floor(divLineRem/(barChartCount-procBarCharts));
-            this.charts.forEach(function(chart,i){
+            this.facets.forEach(function(facet,i){
                 if(chartProcessed[i]) return;
-                if(divLineRem<chart.rowCount_MinTotal()){
-                    chart.divRoot.style("display","none");
+                if(divLineRem<facet.rowCount_MinTotal()){
+                    facet.divRoot.style("display","none");
                     chartProcessed[i] = true;
                     procBarCharts++;
-                    chart.hidden = true;
+                    facet.hidden = true;
                     return;
                 } 
-                if(chart.collapsedTime){
+                if(facet.collapsedTime){
                     ; //
-                } else if(chart.options.catDispCountFix){
-                    chart.setRowCount_VisibleAttribs(chart.options.catDispCountFix);
-                } else if(chart.rowCount_MaxTotal()<=targetRowCount){
+                } else if(facet.options.catDispCountFix){
+                    facet.setRowCount_VisibleAttribs(facet.options.catDispCountFix);
+                } else if(facet.rowCount_MaxTotal()<=targetRowCount){
                     // you say you have 10 rows available, but I only needed 5. Thanks,
-                    chart.setRowCount_VisibleAttribs(chart.attribCount_Active);
+                    facet.setRowCount_VisibleAttribs(facet.attribCount_Active);
                 } else if(finalPass){
-                    chart.setRowCount_VisibleAttribs(targetRowCount-chart.rowCount_Header()-1);
+                    facet.setRowCount_VisibleAttribs(targetRowCount-facet.rowCount_Header()-1);
                 } else {
                     return;
                 }
-                if(chart.hidden===undefined || chart.hidden===true){
-                    chart.hidden=false;
-                    chart.divRoot.style("display","block");
+                if(facet.hidden===undefined || facet.hidden===true){
+                    facet.hidden=false;
+                    facet.divRoot.style("display","block");
                 }
-                divLineRem-=chart.rowCount_Total();
+                divLineRem-=facet.rowCount_Total();
                 chartProcessed[i] = true;
                 procBarCharts++;
             });
@@ -2444,16 +2442,16 @@ kshf.Browser.prototype = {
         var allDone = false;
         while(divLineRem>0 && !allDone){
             allDone = true;
-            this.charts.every(function(chart){
-                if(chart.hidden) return true;
-                if(chart.collapsed) return true;
-                if(chart.allAttribsVisible()) return true;
-                if(chart.options.catDispCountFix!==undefined) return true;
-                if(chart.type==='scatterplot' && chart.collapsedTime===false) return true;
+            this.facets.every(function(facet){
+                if(facet.hidden) return true;
+                if(facet.collapsed) return true;
+                if(facet.allAttribsVisible()) return true;
+                if(facet.options.catDispCountFix!==undefined) return true;
+                if(facet.type==='scatterplot' && facet.collapsedTime===false) return true;
                 var tmp=divLineRem;
-                divLineRem+=chart.rowCount_Total();
-                chart.setRowCount_VisibleAttribs(chart.rowCount_Visible+1);
-                divLineRem-=chart.rowCount_Total();
+                divLineRem+=facet.rowCount_Total();
+                facet.setRowCount_VisibleAttribs(facet.rowCount_Visible+1);
+                divLineRem-=facet.rowCount_Total();
                 if(tmp!==divLineRem) allDone=false;
                 return divLineRem>0;
             });
@@ -2466,8 +2464,8 @@ kshf.Browser.prototype = {
         this.dom.leftBlockAdjustSize.style("height",
             (this.fullWidthResultSet()?facetsHeight:divHeight)+"px");
 
-        this.charts.forEach(function(chart){
-            chart.refreshVisibleAttribs();
+        this.facets.forEach(function(facet){
+            facet.refreshVisibleAttribs();
         });
  
         var listDivTop = 0;
@@ -2530,10 +2528,10 @@ kshf.Browser.prototype = {
     /** Not explicitly called, you can call this manually to change the text width size after the browser is created */
     setCategoryTextWidth: function(w){
         this.categoryTextWidth = w;
-        this.charts.forEach(function(chart){
-            chart.refreshTextWidth(w);
-            chart.updateBarAxisScale();
-            chart.refreshWidth();
+        this.facets.forEach(function(facet){
+            facet.refreshTextWidth(w);
+            facet.updateBarAxisScale();
+            facet.refreshWidth();
         });
         this.updateAllTheWidth();
     },
@@ -2573,9 +2571,9 @@ kshf.Browser.prototype = {
         this.setHideBarAxis(v);
         if(this.barMaxWidth===this.width_leftPanel_bar) return;
         this.barMaxWidth = this.width_leftPanel_bar;
-        this.charts.forEach(function(chart){
-            chart.updateBarAxisScale();
-            chart.refreshWidth();
+        this.facets.forEach(function(facet){
+            facet.updateBarAxisScale();
+            facet.refreshWidth();
         });
     },
     isSmallWidth: function(){
@@ -2583,8 +2581,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     fullWidthResultSet: function(){
-        if(this.charts.length==1 && this.charts[0].type==='scatterplot')
-            return true;
+        if(this.facets.length==1 && this.facets[0].type==='scatterplot') return true;
         if(this.isSmallWidth()) return true;
         return false;
     },
@@ -2595,8 +2592,8 @@ kshf.Browser.prototype = {
 
         this.layoutBackground.style("width",(width_leftPanel_total)+"px");
 
-        this.charts.forEach(function(chart){
-            if(chart.type==='scatterplot') chart.setTimeWidth(width_rightPanel_total);
+        this.facets.forEach(function(facet){
+            if(facet.type==='scatterplot') facet.setTimeWidth(width_rightPanel_total);
         })
 
         // for some reason, on page load, this variable may be null. urgh.
@@ -2626,13 +2623,13 @@ kshf.Browser.prototype = {
 
         r.itemInfo = itemInfo;
 
-        this.charts.forEach(function(chart,i){
+        this.facets.forEach(function(facet,i){
             // include time range if time is filtered
-            if(chart.isFiltered_Time()) r.timeFltr = 1;
-            if(chart.isFiltered_Attrib()){
+            if(facet.isFiltered_Time()) r.timeFltr = 1;
+            if(facet.isFiltered_Attrib()){
                 if(r.filtered!=="") { r.filtered+="x"; r.selected+="x"; }
                 r.filtered+=i;
-                r.selected+=chart.attribCount_Selected;
+                r.selected+=facet.attribCount_Selected;
             }
         });
 
@@ -2670,7 +2667,7 @@ kshf.Browser.prototype = {
  * KESHIF BAR CHART
  * @constructor
  */
-kshf.BarChart = function(kshf_, options){
+kshf.Facet = function(kshf_, options){
     // Call the parent's constructor
     var me = this;
     this.id = ++kshf.num_of_charts;
@@ -2810,7 +2807,7 @@ kshf.BarChart = function(kshf_, options){
     }
 };
 
-kshf.BarChart.prototype = {
+kshf.Facet.prototype = {
     /** -- */
     getKshf: function(){
         return this.parentKshf;
@@ -2970,7 +2967,7 @@ kshf.BarChart.prototype = {
                 syncBrowser();
                 me.subFacetFilter.addFilter(true);
             },
-            charts: this.options.subFilters.charts
+            facets: this.options.subFilters.facets
         });
         this.subBrowser.dom.filtercrumbs = kshf_.dom.filtercrumbs;
     },
@@ -3215,7 +3212,7 @@ kshf.BarChart.prototype = {
 
         if(this.options.subFilters){
             // get titles of all filters
-            var subFilters = this.options.subFilters.charts;
+            var subFilters = this.options.subFilters.facets;
             var subFilterTitles = "";
             subFilters.forEach(function(filter){
                 subFilterTitles+=filter.facetTitle+",";
