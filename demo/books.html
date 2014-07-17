@@ -30,6 +30,10 @@ var getIndicesWithParent = function(book, parentId){
     return list;
 };
 
+var getImgUrl = function(id){
+    return "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg";
+};
+
 var getIndexTitle = function(i){
     var d = dt_indices[i];
     if(d===undefined) return "--";
@@ -58,7 +62,7 @@ $(document).ready( function(){
         },
         loadedCb: function(){
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Books, [6,7],"-",true);
+            kshf.Util.cellToArray(kshf.dt.Books, [3,4],"-",true);
             kshf.Util.cellToArray(kshf.dt["Book Metadata"], [1,5],"-",false);
             kshf.Util.cellToArray(kshf.dt["Book Indices"], [1],"-",true);
 
@@ -195,8 +199,8 @@ $(document).ready( function(){
             },{ facetTitle: "Other",
                 catItemMap: function(book){
                     var toRet = [];
-                    if(book.data[2]===1) toRet.push("Public Domain");
-                    if(book.data[9]===1) toRet.push("Featured");
+                    if(book.data[1]===1) toRet.push("Public Domain");
+                    if(book.data[6]===1) toRet.push("Featured");
                     return toRet;
                 }
             }
@@ -206,19 +210,27 @@ $(document).ready( function(){
             sortingOpts : [
                 {   name: 'Date Added',
                     label: function(d){
-                        return sortFormat(d.data[8]);
+                        return sortFormat(d.data[5]);
                     }}
             ],
+            displayType: 'grid',
 //            detailsToggle : "One",
 //            detailsDefault : false,
 //            textSearch : "Title",
             contentFunc : function(d){
-                var metadata = kshf.dt_id['Book Metadata'][d.data[0]];
+                var id = d.data[0];
+                var metadata = kshf.dt_id['Book Metadata'][id];
                 if(metadata===undefined){
                     console.log(d);
-                    return d.data[0];
+                    return id;
                 }
-                return metadata.data[2];
+                return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
+                        +id+"&route=text'>"+
+                        "<img>"+
+                        "<span class='title'>"+metadata.data[2]+"</span></a>";
+            },
+            visibleCb: function(d){
+                d3.select(d.listItem).select("img").attr("src",getImgUrl(d.data[0]));
             }
         }
     });
@@ -226,14 +238,47 @@ $(document).ready( function(){
 
 </script>
 <style>
-    div.listItem{ padding-bottom: 4px; }
-    .iteminfo a{
-        color:#606060;
-        font-style:italic;
-    }
     #chart_div{
         width:1000px;
         height:1000px;
+    }
+    div.listItem{
+        padding-bottom: 4px;
+        max-height: 230px !important;
+        vertical-align: top;
+    }
+    div.content{
+        width: 150px;
+    }
+    div.content a{
+        vertical-align: top;
+        color: #496B86;
+    }
+    div.content img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        padding: 3px;
+        border: solid;
+        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+        border-width: 1px 2px 2px 1px;
+        background-color: white;
+        max-width: 130px;
+        transition: background-color 300ms linear;
+        -webkit-transition: background-color 300ms linear;
+        -o-transition: background-color 300ms linear;
+        -moz-transition: background-color 300ms linear;
+    }
+    div.listItem[highlight=true] div.content img{
+        background-color: orangered;
+    }
+    div.content span.title{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2px;
+        text-align: center; */
     }
 </style>
     </head>

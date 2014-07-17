@@ -53,7 +53,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     > div[noanim=false]{
         .rowBar {
-            .transition(~'transform 400ms ease-in-out');
+            .transition(~'transform 400ms ease-in-out, background-color 100ms linear');
         }
     }
     .subRoot{
@@ -146,7 +146,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding-left: 2px;
         position: relative;
         right: 1px;
-        top: 3px;
+        top: 1px;
         .transition(~"background-color 100ms linear");
         &:hover{ 
             background-color: white;
@@ -404,6 +404,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     g.timeAxisGroup{
+        z-index: 20;
         text{
             font-size: 0.7em;
             text-shadow: 1px 1px white;
@@ -658,7 +659,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.chart_root{
             position:relative;
             display: inline-block;
-            margin-bottom: 18px;
             span.scrollToTop{
                 position: absolute;
                 top: -18px;
@@ -675,8 +675,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: gray;
                 opacity:1;
                 text-align: right;
-                position:absolute;
-                bottom: -7px;
                 &[highlight=true]{ color: #cb5454; }
             }
         }
@@ -775,8 +773,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .rotate(-90deg);
                 }
             }
-            .attrib {
-                span.row_bar_line{
+            div.attrib {
+                .row_bar_line{
                     display: none;
                 }
                 .timeLineParts{
@@ -803,13 +801,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[selecttype="SelectOr"][inserted_attrib=true] {
-            .attrib{
+            div.attrib{
                 &[selected='0']{
-                    .filter_add_more .add{ display: inline-block; }
+                    .filter_add_more .add{ display: inline; }
                 }
             }
             &[hasmultivalueitem=false] {
-                .attrib[selected='0'] {
+                div.attrib[selected='0'] {
                     .clickArea{
                         cursor: pointer !important;
                     }
@@ -820,7 +818,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[selecttype="SelectAnd"] {
-            .attrib[selected='0'][noitems=false]{
+            div.attrib[selected='0'][noitems=false]{
                 .clickArea{
                     cursor: cell;
                 }
@@ -859,7 +857,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:relative;
         overflow-y: auto;
         overflow-x: hidden;
-        display: inline-block;
+        display: block;
         .transition(~'height 700ms ease-in-out');
     }
     div.middleScrollbar{
@@ -879,35 +877,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         height: 18px;
         white-space: nowrap;
-        .transition(~'transform 400ms ease-in-out');
+        //.transition(~'all 700ms ease-in-out 450ms');
         > span{
             display: inline-block;
             vertical-align: top;
             line-height: 18px;
             height: 18px;
-        }
-        > span.filter_add_more{
-            position: absolute;
-            left: 1px;
-            white-space: nowrap;
-            z-index: 5;
-            &:hover {
-                color: orangered;
-            }
-            span{
-                display: none;
-            }
-            span.add {
-                cursor: cell;
-            }
-            span.remove {
-                cursor: pointer !important;
-            }
+            .transition(~'color 100ms linear');
         }
         > span.clickArea{
             opacity: 0;
             margin-top:3px;
             margin-bottom:3px;
+            margin-left: 20px;
             height: 12px !important; // total: 18px
             position: absolute;
         }
@@ -916,11 +898,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight:300;
             text-align: right;
             cursor: default;
-            pointer-events: none;
             // display ... when text is too long
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            span.labell{
+                pointer-events: none;
+            }
+            span.filter_add_more{
+                float: left;
+                margin-left: 1px;
+                white-space: nowrap;
+                z-index: 5;
+                pointer-events: all;
+                &:hover {
+                    color: orangered;
+                }
+                span{
+                    display: none;
+                }
+                span.add {
+                    cursor: cell;
+                }
+                span.remove {
+                    cursor: pointer !important;
+                }
+            }
         }
         > span.item_count{
             font-size: 0.7em;
@@ -1041,7 +1044,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         
         &[noitems=false]{
             &[selected='0']:hover{
-                .filter_add_more .remove{ display: inline-block; }   
+                .filter_add_more .remove{ display: inline; }   
             }
             &[highlight=true] {
                 .bar.active{
@@ -1291,7 +1294,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.scrollToTop{
             position: absolute;
             font-size: 1.1em;
-            top: 5px;
+            top: 3px;
             right: 0px;
         }
 

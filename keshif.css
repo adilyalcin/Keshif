@@ -54,10 +54,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshfHost > div[noanim=false] .rowBar {
-  -webkit-transition: -webkit-transform 400ms ease-in-out;
-  -moz-transition: -moz-transform 400ms ease-in-out;
-  -o-transition: -o-transform 400ms ease-in-out;
-  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
+  -webkit-transition: -webkit-transform 400ms ease-in-out, background-color 100ms linear;
+  -moz-transition: -moz-transform 400ms ease-in-out, background-color 100ms linear;
+  -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
+  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
 }
 .kshfHost .subRoot {
   position: relative;
@@ -153,7 +153,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-left: 2px;
   position: relative;
   right: 1px;
-  top: 3px;
+  top: 1px;
   -webkit-transition: background-color 100ms linear;
   -moz-transition: background-color 100ms linear;
   -o-transition: background-color 100ms linear;
@@ -412,6 +412,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   font-weight: 300;
   cursor: default;
+}
+.kshf g.timeAxisGroup {
+  z-index: 20;
 }
 .kshf g.timeAxisGroup text {
   font-size: 0.7em;
@@ -694,7 +697,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart div.chart_root {
   position: relative;
   display: inline-block;
-  margin-bottom: 18px;
 }
 .kshf .kshfChart div.chart_root span.scrollToTop {
   position: absolute;
@@ -712,8 +714,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   opacity: 1;
   text-align: right;
-  position: absolute;
-  bottom: -7px;
 }
 .kshf .kshfChart div.chart_root span.scroll_display_more[highlight=true] {
   color: #cb5454;
@@ -833,10 +833,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-.kshf .kshfChart[collapsedTime=true] .attrib span.row_bar_line {
+.kshf .kshfChart[collapsedTime=true] div.attrib .row_bar_line {
   display: none;
 }
-.kshf .kshfChart[collapsedTime=true] .attrib .timeLineParts {
+.kshf .kshfChart[collapsedTime=true] div.attrib .timeLineParts {
   display: none;
 }
 .kshf .kshfChart[collapsedTime=true] g.timeAxisGroup {
@@ -854,19 +854,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_attrib=true] .chartClearFilterButton.rowFilter {
   display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true] .attrib[selected='0'] .filter_add_more .add {
-  display: inline-block;
+.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true] div.attrib[selected='0'] .filter_add_more .add {
+  display: inline;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] .attrib[selected='0'] .clickArea {
+.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] div.attrib[selected='0'] .clickArea {
   cursor: pointer !important;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] .attrib[selected='0'] .rowBar {
+.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] div.attrib[selected='0'] .rowBar {
   cursor: pointer !important;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] .attrib[selected='0'][noitems=false] .clickArea {
+.kshf .kshfChart[selecttype="SelectAnd"] div.attrib[selected='0'][noitems=false] .clickArea {
   cursor: cell;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] .attrib[selected='0'][noitems=false] .rowBar.active {
+.kshf .kshfChart[selecttype="SelectAnd"] div.attrib[selected='0'][noitems=false] .rowBar.active {
   cursor: cell;
 }
 .kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
@@ -892,7 +892,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  display: inline-block;
+  display: block;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
@@ -918,39 +918,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   height: 18px;
   white-space: nowrap;
-  -webkit-transition: -webkit-transform 400ms ease-in-out;
-  -moz-transition: -moz-transform 400ms ease-in-out;
-  -o-transition: -o-transform 400ms ease-in-out;
-  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
 }
 .kshf div.attrib > span {
   display: inline-block;
   vertical-align: top;
   line-height: 18px;
   height: 18px;
-}
-.kshf div.attrib > span.filter_add_more {
-  position: absolute;
-  left: 1px;
-  white-space: nowrap;
-  z-index: 5;
-}
-.kshf div.attrib > span.filter_add_more:hover {
-  color: orangered;
-}
-.kshf div.attrib > span.filter_add_more span {
-  display: none;
-}
-.kshf div.attrib > span.filter_add_more span.add {
-  cursor: cell;
-}
-.kshf div.attrib > span.filter_add_more span.remove {
-  cursor: pointer !important;
+  -webkit-transition: color 100ms linear;
+  -moz-transition: color 100ms linear;
+  -o-transition: color 100ms linear;
+  transition: color 100ms linear;
 }
 .kshf div.attrib > span.clickArea {
   opacity: 0;
   margin-top: 3px;
   margin-bottom: 3px;
+  margin-left: 20px;
   height: 12px !important;
   position: absolute;
 }
@@ -959,10 +942,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   text-align: right;
   cursor: default;
-  pointer-events: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.kshf div.attrib > span.label span.labell {
+  pointer-events: none;
+}
+.kshf div.attrib > span.label span.filter_add_more {
+  float: left;
+  margin-left: 1px;
+  white-space: nowrap;
+  z-index: 5;
+  pointer-events: all;
+}
+.kshf div.attrib > span.label span.filter_add_more:hover {
+  color: orangered;
+}
+.kshf div.attrib > span.label span.filter_add_more span {
+  display: none;
+}
+.kshf div.attrib > span.label span.filter_add_more span.add {
+  cursor: cell;
+}
+.kshf div.attrib > span.label span.filter_add_more span.remove {
+  cursor: pointer !important;
 }
 .kshf div.attrib > span.item_count {
   font-size: 0.7em;
@@ -1100,7 +1104,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
 }
 .kshf div.attrib[noitems=false][selected='0']:hover .filter_add_more .remove {
-  display: inline-block;
+  display: inline;
 }
 .kshf div.attrib[noitems=false][highlight=true] .bar.active {
   background-color: orangered;
@@ -1355,7 +1359,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.scrollToTop {
   position: absolute;
   font-size: 1.1em;
-  top: 5px;
+  top: 3px;
   right: 0px;
 }
 .kshf div.listHeader span.filter-separator {
