@@ -1312,9 +1312,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf div.listHeader span.scrollToTop {
-  position: absolute;
+  float: right;
   font-size: 1.1em;
   top: 3px;
+  height: 10px;
   right: 0px;
 }
 .kshf div.listHeader span.filter-separator {
