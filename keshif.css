@@ -59,7 +59,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
   transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
 }
-.kshfHost .subRoot {
+.kshfHost > div.subRoot {
   position: relative;
 }
 .kshfHost #kshf_svg_clearText g {
@@ -1233,6 +1233,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 10px;
   border-radius: 2px;
   margin: 2px;
+  width: 1px;
 }
 .kshf.listDiv div.listsortcolumn {
   padding-right: 5px;
