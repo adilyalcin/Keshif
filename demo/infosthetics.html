@@ -72,6 +72,7 @@ $(document).ready( function(){
             },{
                 facetTitle: "Year",
                 catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
+                type: "Categorical",
                 textFilter: 'in'
             },{
                 facetTitle: "Author",

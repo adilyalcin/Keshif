@@ -38,7 +38,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_dot_background : #616F7A;
 @anim_barscale_duration_default: 400;
 
-@layout_animation: ~'transform 700ms ease-in-out';
+@layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
+@color_bars: #8699A8;
+
+@bar_animation: ~'transform 400ms ease-in-out, background-color 100ms linear';
 
 .kshfHost{
     border: solid 1px lightgray;
@@ -55,7 +58,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[noanim=false]{
         .bar {
-            .transition(~'transform 400ms ease-in-out, background-color 100ms linear');
+            .transition(@bar_animation);
+        }
+        .histogram .barGroup_Active {
+            .transition(@bar_animation);
         }
     }
     > div.subRoot{
@@ -767,7 +773,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[dotConfig|=Gradient] .timeDot[display=false] {
             fill: url(#dotGradient_Inactive);
         }
-        &[filtered_attrib=true] {
+        &[filtered=true] {
             .chartClearFilterButton.rowFilter{
                 opacity: 1;
                 pointer-events: all;
@@ -917,7 +923,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .bar {
                 display: inline-block;
-                background-color: #8699A8;
+                background-color: @color_bars;
                 //border-radius: 2px;
                 .transform-origin(0% 0%;);
                 width: 1px;
@@ -937,7 +943,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position:absolute;
                 border-radius: 10px;
                 display: inline-block;
-                background-color: #8699A8;
+                background-color: @color_bars;
                 .transition(~'left 400ms ease, width 400ms ease-in-out');
                 height: 10px;
                 margin-top: 4px;
@@ -1187,7 +1193,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .itemBar{
                 position: absolute;
                 top:3px;
-                background-color: #8699A8;
+                background-color: @color_bars;
                 display: inline-block;
                 height: 10px;
                 border-radius: 2px;
@@ -1471,6 +1477,59 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
+
+    .histogram{
+        position:relative;
+        pointer-events: all;
+        margin: 5px 13px 5px 13px;
+        overflow: hidden;
+        .active{
+            position: absolute;
+            top: 14px;
+            cursor: pointer;
+        }
+        .total{
+            position: absolute;
+            top: 14px;
+        }
+        span.barGroup_Active{
+            display: block;
+            position: absolute;
+            span.item_count{
+                position: absolute;
+                color: black;
+                width: 24px;
+                display: inline-block;
+                top: -1.2em;
+                font-size: 0.7em;
+                text-align: center;
+            }
+        }
+        span.bar {
+            display: inline-block;
+            position:absolute;
+            background-color: @color_bars;;
+            width:1px;
+            height:1px;
+            .transform-origin(0% 0%);
+        }
+        span.barGroup_Active[highlight=true] span.bar{
+            background-color: orangered;
+        }
+        .total span.bar{
+            opacity: 0.2;
+        }
+    }
+
+    .labelGroup{
+        cursor: default;
+        margin: 0px 5px;
+        text{
+            text-anchor: start;
+            font-size: 0.7em;
+            font-weight: 300;
+        }
+    }
 
 
     &.layout_infobox {

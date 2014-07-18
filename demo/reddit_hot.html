@@ -90,18 +90,11 @@ $(document).ready( function(){
         charts : [
             {   facetTitle: "subreddit"
             },{ facetTitle: "num_comments",
-                catItemMap : function(d){ 
-                    var v=d.data[postCols.num_comments];
-                    var v_round = Math.floor(v/200)*200;
-                    return v_round + " - " + (v_round+199);
-                }
+                catItemMap : function(d){ return d.data[postCols.num_comments]; }
             },{ facetTitle: "score",
-                catItemMap : function(d){ 
-                    var v=d.data[postCols.num_comments];
-                    var v_round = Math.floor(v/500)*500;
-                    return v_round + " - " + (v_round+499);
-                }
-            },{ facetTitle: "gilded"
+                catItemMap : function(d){ return d.data[postCols.score]; }
+            },{ facetTitle: "gilded",  
+                type: "categorical"
             }
         ],
         list: {

@@ -16,11 +16,11 @@
         <script type="text/javascript">
 function loadChart() {
     // set div height accordingly 
-    $('#chart_div').height($(window).height()-70);
+//    $('#chart_div').height($(window).height()-70);
     $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-70);
+//        $('#chart_div').height($(window).height()-70);
         $('#chart_div').width ($(window).width()*0.9);
         browser.updateLayout();
     });
@@ -31,6 +31,7 @@ function loadChart() {
         domID : "#chart_div",
         dirRoot: "../",
         itemName : "Roll calls",
+        barChartWidth: 150,
         source : {
             gdocId : '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
             sheets : [ {name:"Senate112"} ]
@@ -58,22 +59,10 @@ function loadChart() {
                 facetTitle: "Bill",
             },{
                 facetTitle: "Yea's",
-                catItemMap : function(vote){ return Math.floor(vote.data[billCols['Yea\'s']]/5)*5; },
-                catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
-                sortingOpts: [{
-                    no_resort: true,
-                    func: kshf.Util.sortFunc_Column_ParseInt_Decr
-                    }],
-                forceSearch: false
+                catItemMap : function(vote){ return vote.data[billCols['Yea\'s']]; },
             },{
                 facetTitle: "Nay's",
-                catItemMap : function(vote){ return Math.floor(vote.data[billCols['Nay\'s']]/5)*5; },
-                catLabelText: function(d) { return (+d.data[1])+"-"+(+d.data[1]+4);  },
-                sortingOpts: [{
-                    no_resort: true,
-                    func: kshf.Util.sortFunc_Column_ParseInt_Decr
-                    }],
-                forceSearch: false
+                catItemMap : function(vote){ return vote.data[billCols['Nay\'s']]; },
             }
             ],
         list: {
@@ -120,6 +109,9 @@ google.setOnLoadCallback(loadChart);
         .iteminfo a{
             color:#606060;
             font-style:italic;
+        }
+        #chart_div{
+            height: 800px;
         }
     </style>
 	</head>

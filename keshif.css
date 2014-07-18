@@ -59,6 +59,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
   transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
 }
+.kshfHost[noanim=false] .histogram .barGroup_Active {
+  -webkit-transition: -webkit-transform 400ms ease-in-out, background-color 100ms linear;
+  -moz-transition: -moz-transform 400ms ease-in-out, background-color 100ms linear;
+  -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
+  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
+}
 .kshfHost > div.subRoot {
   position: relative;
 }
@@ -392,10 +398,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke: orangered;
 }
 .kshf g.x_axis {
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
 .kshf g.x_axis line {
   opacity: 1;
@@ -412,10 +418,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   font-weight: 300;
   cursor: default;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
 .kshf g.timeAxisGroup {
   z-index: 20;
@@ -818,7 +824,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
   fill: url(#dotGradient_Inactive);
 }
-.kshf .kshfChart[filtered_attrib=true] .chartClearFilterButton.rowFilter {
+.kshf .kshfChart[filtered=true] .chartClearFilterButton.rowFilter {
   opacity: 1;
   pointer-events: all;
 }
@@ -954,7 +960,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib > span.barGroup .bar {
   display: inline-block;
-  background-color: #8699A8;
+  background-color: #8699a8;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
@@ -977,7 +983,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   border-radius: 10px;
   display: inline-block;
-  background-color: #8699A8;
+  background-color: #8699a8;
   -webkit-transition: left 400ms ease, width 400ms ease-in-out;
   -moz-transition: left 400ms ease, width 400ms ease-in-out;
   -o-transition: left 400ms ease, width 400ms ease-in-out;
@@ -1243,7 +1249,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv div.itemLinks .itemBar {
   position: absolute;
   top: 3px;
-  background-color: #8699A8;
+  background-color: #8699a8;
   display: inline-block;
   height: 10px;
   border-radius: 2px;
@@ -1536,6 +1542,61 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listItem div.groupMe {
   overflow: hidden;
   float: none;
+}
+.kshf .histogram {
+  position: relative;
+  pointer-events: all;
+  margin: 5px 13px 5px 13px;
+  overflow: hidden;
+}
+.kshf .histogram .active {
+  position: absolute;
+  top: 14px;
+  cursor: pointer;
+}
+.kshf .histogram .total {
+  position: absolute;
+  top: 14px;
+}
+.kshf .histogram span.barGroup_Active {
+  display: block;
+  position: absolute;
+}
+.kshf .histogram span.barGroup_Active span.item_count {
+  position: absolute;
+  color: black;
+  width: 24px;
+  display: inline-block;
+  top: -1.2em;
+  font-size: 0.7em;
+  text-align: center;
+}
+.kshf .histogram span.bar {
+  display: inline-block;
+  position: absolute;
+  background-color: #8699a8;
+  width: 1px;
+  height: 1px;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+}
+.kshf .histogram span.barGroup_Active[highlight=true] span.bar {
+  background-color: orangered;
+}
+.kshf .histogram .total span.bar {
+  opacity: 0.2;
+}
+.kshf .labelGroup {
+  cursor: default;
+  margin: 0px 5px;
+}
+.kshf .labelGroup text {
+  text-anchor: start;
+  font-size: 0.7em;
+  font-weight: 300;
 }
 .kshf.layout_infobox div.infobox_background {
   width: 100%;

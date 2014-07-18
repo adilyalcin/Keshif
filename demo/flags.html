@@ -192,30 +192,13 @@ function loadChart() {
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Bars];
                     return (r===0)?0:r;
-                },
-                catLabelText: function(d) { return d.data[1]+" bar"+(d.data[1]>1?"s":""); },
-                sortingOpts: [{
-                    name:"# Bars",
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_Int_Incr
-                },{  
-                    name:"# Flags"
-                }]
+                }
             },{
                 facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
                     var r=flag.data[flag_cols.Stripes];
                     return (r===0)?null:r;
-                },
-                catLabelText: function(d) { return d.data[1]+" stripe"+(d.data[1]>1?"s":""); },
-                sortingOpts: [
-                    {   name:"# Stripes",
-                        no_resort: true,
-                        func:kshf.Util.sortFunc_Column_Int_Incr
-                    },{ 
-                        name:"# Flags"
-                    }
-                ]
+                }
             } /*,{
                 facetTitle: "Other Properties",
                 catItemMap : function(flag){
