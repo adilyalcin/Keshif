@@ -41,19 +41,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost:focus {
   outline: none;
 }
-.kshfHost > div[hidebars=true] .kshf .headerGroup .barInfo {
+.kshfHost[hidebars=true] .kshf .headerGroup .barInfo {
   display: none;
 }
-.kshfHost > div[hidebars=true] .kshf .barChartMainInfo {
+.kshfHost[hidebars=true] .kshf .barChartMainInfo {
   display: none;
 }
-.kshfHost > div[hidebaraxis=true] svg > g.x_axis {
+.kshfHost[hidebaraxis=true] svg > g.x_axis {
   display: none;
 }
-.kshfHost > div[hidebaraxis=true] .barChartMainInfo {
+.kshfHost[hidebaraxis=true] .barChartMainInfo {
   display: none;
 }
-.kshfHost > div[noanim=false] .bar {
+.kshfHost[noanim=false] .bar {
   -webkit-transition: -webkit-transform 400ms ease-in-out, background-color 100ms linear;
   -moz-transition: -moz-transform 400ms ease-in-out, background-color 100ms linear;
   -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
@@ -141,6 +141,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-family: Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
   display: inline-block;
+}
+.kshf.layout_left .kshfChart {
+  display: block;
 }
 .kshf span.filterClearAll {
   display: none;
@@ -409,6 +412,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   font-weight: 300;
   cursor: default;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
 .kshf g.timeAxisGroup {
   z-index: 20;
@@ -652,13 +659,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart div.chart_root {
   position: relative;
-  display: inline-block;
+  display: block;
+  pointer-events: none;
 }
 .kshf .kshfChart div.chart_root span.scrollToTop {
   position: absolute;
   top: -18px;
   right: 0px;
   font-size: 0.8em;
+  pointer-events: all;
 }
 .kshf .kshfChart div.chart_root span.scrollToTop2 {
   right: auto;
@@ -670,6 +679,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   opacity: 1;
   text-align: right;
+  pointer-events: all;
 }
 .kshf .kshfChart div.chart_root span.scroll_display_more:hover {
   color: #cb5454;
@@ -698,6 +708,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart .resort_button:hover path {
   fill: #cb5454;
+}
+.kshf .kshfChart .attribTextSearch {
+  white-space: nowrap;
+  position: relative;
 }
 .kshf .kshfChart .attribTextSearch input {
   text-align: right;
@@ -847,6 +861,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
   display: block;
+  pointer-events: all;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
@@ -1651,6 +1666,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: nwse-resize;
   width: 0;
   height: 0;
+  z-index: 10;
   border-left: 16px solid transparent;
   border-right: 16px solid lightgray;
   border-top: 16px solid transparent;

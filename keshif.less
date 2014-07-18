@@ -38,20 +38,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_dot_background : #616F7A;
 @anim_barscale_duration_default: 400;
 
+@layout_animation: ~'transform 700ms ease-in-out';
+
 .kshfHost{
     border: solid 1px lightgray;
     background-color: white;
     &:hover{ box-shadow: 0px 0px 4px gray; }
     &:focus{ outline: none; }
-    > div[hidebars=true] .kshf {
+    &[hidebars=true] .kshf {
         .headerGroup .barInfo { display: none; }
         .barChartMainInfo{ display:none; }
     }
-    > div[hidebaraxis=true] {
+    &[hidebaraxis=true] {
         svg>g.x_axis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
-    > div[noanim=false]{
+    &[noanim=false]{
         .bar {
             .transition(~'transform 400ms ease-in-out, background-color 100ms linear');
         }
@@ -134,6 +136,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
     display:inline-block;
+
+    &.layout_left .kshfChart{
+        display: block;
+    }
 
     span.filterClearAll{
         display: none;
@@ -384,7 +390,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover { stroke: orangered; }
     }
     g.x_axis {
-        .transition(~'transform 700ms ease-in-out');
+        .transition(@layout_animation);
         line{
             opacity: 1;
             stroke-width: 0.7;
@@ -400,6 +406,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             font-weight: 300;
             cursor: default;
+            .transition(@layout_animation);
         }
     }
 
@@ -619,12 +626,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         div.chart_root{
             position:relative;
-            display: inline-block;
+            display: block;
+            pointer-events: none;
             span.scrollToTop{
                 position: absolute;
                 top: -18px;
                 right: 0px;
                 font-size: 0.8em;
+                pointer-events: all;
             }
             span.scrollToTop2{
                 right: auto;
@@ -636,6 +645,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: gray;
                 opacity:1;
                 text-align: right;
+                pointer-events: all;
                 &:hover{ color: #cb5454; }
             }
         }
@@ -663,6 +673,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         .attribTextSearch{
+            white-space:nowrap;
+            position: relative;
             input {
                 text-align: right;
                 font-size: 0.7em;
@@ -819,6 +831,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow-y: auto;
         overflow-x: hidden;
         display: block;
+        pointer-events: all;
         .transition(~'height 700ms ease-in-out');
     }
     div.middleScrollbar{
@@ -1588,6 +1601,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor: nwse-resize;
         width: 0;
         height: 0;
+        z-index: 10;
         border-left: 16px solid transparent;
         border-right: 16px solid lightgray;
         border-top: 16px solid transparent;
