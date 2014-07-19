@@ -20,6 +20,7 @@ var demoID = 13;
 var postCols;
 
 function getNumComments(v){
+    return v;
     if(v==0) return "None";
     if(v<6) return "1-5";
     if(v<11) return "6-10";
@@ -56,7 +57,7 @@ $(document).ready( function(){
         categoryTextWidth:130,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
-            sheets : [ {name:"Posts"} ]
+            sheets : [ {name:"Posts"}, {name:"Authors"} ]
         },
         loadedCb: function(){
             postCols = kshf.dt_ColNames.Posts;
@@ -68,7 +69,8 @@ $(document).ready( function(){
                 textFilter: 'about'
             },{
                 facetTitle: "Comment #",
-                catItemMap : function(post){ return getNumComments(post.data[postCols['# of Comments']]); },
+                catItemMap : function(post){ return post.data[postCols['# of Comments']]; },
+//                barScaleType: "log"
             },{
                 facetTitle: "Year",
                 catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
@@ -76,6 +78,7 @@ $(document).ready( function(){
                 textFilter: 'in'
             },{
                 facetTitle: "Author",
+                catTableName: "Authors",
                 catDispCountFix: 6,
                 textFilter: 'by', textGroup: 'authors'
             }

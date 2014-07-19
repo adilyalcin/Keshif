@@ -800,7 +800,7 @@ return Meny;
 
 
 $( window ).load(function() {
-    var meny = Meny.create({
+/*    var meny = Meny.create({
         menuElement: document.querySelector( '.meny' ),
         contentsElement: document.querySelector( '.contents' ),
         position: 'left',
@@ -815,5 +815,5 @@ $( window ).load(function() {
         mouse: true,
         touch: false
     });
-
+*/
 });

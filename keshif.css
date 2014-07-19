@@ -47,23 +47,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost[hidebars=true] .kshf .barChartMainInfo {
   display: none;
 }
-.kshfHost[hidebaraxis=true] svg > g.x_axis {
+.kshfHost[hidebaraxis=true] .attribChartAxis {
   display: none;
 }
 .kshfHost[hidebaraxis=true] .barChartMainInfo {
   display: none;
 }
 .kshfHost[noanim=false] .bar {
-  -webkit-transition: -webkit-transform 400ms ease-in-out, background-color 100ms linear;
-  -moz-transition: -moz-transform 400ms ease-in-out, background-color 100ms linear;
-  -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
-  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
 }
 .kshfHost[noanim=false] .histogram .barGroup_Active {
-  -webkit-transition: -webkit-transform 400ms ease-in-out, background-color 100ms linear;
-  -moz-transition: -moz-transform 400ms ease-in-out, background-color 100ms linear;
-  -o-transition: -o-transform 400ms ease-in-out, background-color 100ms linear;
-  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out, background-color 100ms linear;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+}
+.kshfHost[noanim=false] .attribChartAxis span.tick {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+}
+.kshfHost[noanim=false] .timeDot {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
 }
 .kshfHost > div.subRoot {
   position: relative;
@@ -363,7 +375,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 3px;
 }
 .kshf .chartClearFilterButton.timeFilter {
-  float: left;
   margin-left: 3px;
 }
 .kshf .chartClearFilterButton.allFilter {
@@ -397,31 +408,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .selection_bar rect:hover {
   stroke: orangered;
 }
-.kshf g.x_axis {
+.kshf .attribChartAxis {
+  pointer-events: all;
+  position: absolute;
+  z-index: 2;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
-.kshf g.x_axis line {
-  opacity: 1;
-  stroke-width: 0.7;
-  stroke-dasharray: 3,3;
-  stroke: #b4b4b4;
-  pointer-events: none;
+.kshf .attribChartAxis .tick {
+  opacity: 0;
+  position: absolute;
 }
-.kshf g.x_axis line.minor {
-  stroke-width: 1;
-  stroke: #a0a0a0;
-}
-.kshf g.x_axis text {
+.kshf .attribChartAxis .tick span.text {
+  display: block;
+  position: relative;
+  width: 20px;
+  left: -10px;
+  top: -1px;
+  text-align: center;
   font-size: 0.7em;
   font-weight: 300;
   cursor: default;
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
+}
+.kshf .attribChartAxis .tick span.line {
+  display: block;
+  width: 0px;
+  position: absolute;
+  border-left-style: dashed;
+  border-left-width: 1px;
+  border-left-color: lightgray;
 }
 .kshf g.timeAxisGroup {
   z-index: 20;
@@ -565,6 +582,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   cursor: pointer;
   width: 13px;
+  color: black;
+  -webkit-transition: all 250ms linear;
+  -moz-transition: all 250ms linear;
+  -o-transition: all 250ms linear;
   transition: all 250ms linear;
   -webkit-transform: rotate(0deg);
   -moz-transform: rotate(0deg);
@@ -589,6 +610,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   pointer-events: all;
   position: relative;
+}
+.kshf .headerGroup .rightHeader span.header_label {
+  margin-left: 15px;
 }
 .kshf .headerGroup .rightHeader .config_zoom {
   padding-top: 0px;
@@ -774,15 +798,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
+  color: gray;
 }
 .kshf .kshfChart[collapsed=true] .header_belowFirstRow {
   display: none;
 }
 .kshf .kshfChart[collapsed=true] .resort_button {
   display: none !important ;
-}
-.kshf .kshfChart[collapsed=true] g.x_axis {
-  display: none;
 }
 .kshf .kshfChart[collapsed=true] g.timeAxisGroup {
   display: none;
@@ -844,7 +866,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: cell;
 }
 .kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
-  display: inline-block;
+  opacity: 1;
+  pointer-events: all;
 }
 .kshf .kshfChart[filtered_time=true] .selection_bar rect {
   fill-opacity: 0.5;
@@ -868,15 +891,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-x: hidden;
   display: block;
   pointer-events: all;
+  z-index: 5;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
+.kshf div.belowAttribs {
+  position: relative;
+}
 .kshf div.middleScrollbar {
   overflow-y: auto;
   overflow-x: hidden;
   position: absolute;
+  top: 0px;
   z-index: 10;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
@@ -893,16 +921,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   height: 18px;
   white-space: nowrap;
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
 }
 .kshf div.attrib > span {
   display: inline-block;
   vertical-align: top;
   line-height: 18px;
   height: 18px;
-  -webkit-transition: color 100ms linear;
-  -moz-transition: color 100ms linear;
-  -o-transition: color 100ms linear;
-  transition: color 100ms linear;
 }
 .kshf div.attrib > span.clickArea {
   opacity: 0;
@@ -948,6 +976,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
   padding-left: 2px;
+}
+.kshf div.attrib > span.item_count::before {
+  content: "(";
+}
+.kshf div.attrib > span.item_count::after {
+  content: ")";
 }
 .kshf div.attrib > span.barGroup span.row_bar_line {
   border-top-width: 1px;
@@ -1002,10 +1036,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 10px;
   height: 10px;
   cursor: pointer;
-  -webkit-transition: -webkit-transform 400ms ease-in-out;
-  -moz-transition: -moz-transform 400ms ease-in-out;
-  -o-transition: -o-transform 400ms ease-in-out;
-  transition: -webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
 }
 .kshf div.attrib > span.timeLineParts span.timeDot[fill=default] {
   box-shadow: 0px 0px 0px 1px #EEE;
@@ -1105,7 +1135,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib[noitems=false][highlight=true] .row_bar_line {
   border-top-color: orangered !important;
 }
-.kshf div.attrib[noitems=true] span {
+.kshf div.attrib[noitems=true] {
   color: gray;
 }
 .kshf span.selectVertLine {
@@ -1566,13 +1596,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   color: black;
   width: 24px;
-  display: inline-block;
+  display: block;
   top: -1.2em;
   font-size: 0.7em;
   text-align: center;
 }
 .kshf .histogram span.bar {
-  display: inline-block;
+  display: block;
   position: absolute;
   background-color: #8699a8;
   width: 1px;

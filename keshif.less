@@ -41,7 +41,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @color_bars: #8699A8;
 
-@bar_animation: ~'transform 400ms ease-in-out, background-color 100ms linear';
+@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms';
 
 .kshfHost{
     border: solid 1px lightgray;
@@ -53,7 +53,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .barChartMainInfo{ display:none; }
     }
     &[hidebaraxis=true] {
-        svg>g.x_axis{ display:none; }
+        .attribChartAxis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
     &[noanim=false]{
@@ -61,6 +61,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(@bar_animation);
         }
         .histogram .barGroup_Active {
+            .transition(@bar_animation);
+        }
+        .attribChartAxis span.tick{
+            .transition(@bar_animation);
+        }
+        .timeDot{
             .transition(@bar_animation);
         }
     }
@@ -355,7 +361,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-right: 3px;
         }
         &.timeFilter{
-            float: left;
             margin-left: 3px;
         }
         &.allFilter{
@@ -395,24 +400,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
         &:hover { stroke: orangered; }
     }
-    g.x_axis {
+    .attribChartAxis {
+        pointer-events: all;
+        position:absolute;
+        z-index: 2;
         .transition(@layout_animation);
-        line{
-            opacity: 1;
-            stroke-width: 0.7;
-            stroke-dasharray:3,3;
-            stroke: rgb(180, 180, 180);
-            pointer-events:none;
-            &.minor{
-                stroke-width: 1;
-                stroke: rgb(160, 160, 160);
+        .tick{
+            opacity: 0;
+            position:absolute;
+            span.text{
+                display: block;
+                position: relative;
+                width: 20px;
+                left: -10px;
+                top: -1px;
+                text-align: center;
+                font-size: 0.7em;
+                font-weight: 300;
+                cursor: default;
             }
-        }
-        text{
-            font-size: 0.7em;
-            font-weight: 300;
-            cursor: default;
-            .transition(@layout_animation);
+            span.line{
+                display: block;
+                width: 0px;
+                position: absolute;
+                border-left-style: dashed;
+                border-left-width: 1px;
+                border-left-color: lightgray;
+            }
         }
     }
 
@@ -539,7 +553,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             cursor: pointer;
             width: 13px;
-            transition: all 250ms linear;
+            color:black;
+            .transition(~'all 250ms linear');
             .rotate(0deg);
             :hover{ color:#cb5454; }
         }
@@ -558,7 +573,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:all;
             position: relative;
             span.header_label {
-                
+                margin-left: 15px;   
             }
             .config_zoom{
                 padding-top: 0px;
@@ -732,11 +747,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 .leftHeader span.header_label_arrow{
                     .rotate(-90deg);
+                    color:gray;
                 }
             }
             .header_belowFirstRow{ display: none; }
             .resort_button{ display: none !important ; }
-            g.x_axis{ display:none; }
             g.timeAxisGroup { display:none; }
             select.sortOptionSelect{ display: none; }
             div.chart_root{ display: none; }
@@ -808,7 +823,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[filtered_time=true] {
             .chartClearFilterButton.timeFilter{
-                display:inline-block;
+                opacity: 1;
+                pointer-events: all;
             }
             .selection_bar rect{
                 fill-opacity: 0.5;
@@ -838,12 +854,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow-x: hidden;
         display: block;
         pointer-events: all;
+        z-index: 5;
         .transition(~'height 700ms ease-in-out');
+    }
+    div.belowAttribs{
+        position:relative; 
     }
     div.middleScrollbar{
         overflow-y: auto;
         overflow-x: hidden;
         position:absolute;
+        top: 0px;
         z-index:10;
         .transition(~'height 700ms ease-in-out');
         div.filler{
@@ -857,13 +878,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         height: 18px;
         white-space: nowrap;
-        //.transition(~'all 700ms ease-in-out 450ms');
+        .transition(~'all 700ms ease-in-out');
         > span{
             display: inline-block;
             vertical-align: top;
             line-height: 18px;
             height: 18px;
-            .transition(~'color 100ms linear');
         }
         > span.clickArea{
             opacity: 0;
@@ -910,6 +930,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             pointer-events: none;
             padding-left: 2px;
+            &::before{ content: "("; }
+            &::after{ content: ")"; }
         }
         > span.barGroup{
             span.row_bar_line{
@@ -959,7 +981,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 10px;
                 height: 10px;
                 cursor: pointer;
-                .transition(~'transform 400ms ease-in-out');
 
                 &[fill=default]{
                     box-shadow: 0px 0px 0px 1px #EEE;
@@ -982,7 +1003,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .background-image(~"radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%)");
                 }
 
-                // .transition(~"box-shadow 200ms linear");
                 &[display=false] {
                     pointer-events: none;
                     background-color: #CCCCCC !important;
@@ -1058,7 +1078,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[noitems=true] {
-            span{ color:gray; }
+            color:gray;
         }
     } // div.attrib
 
@@ -1499,14 +1519,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: absolute;
                 color: black;
                 width: 24px;
-                display: inline-block;
+//                left: -25px;
+                display: block;
                 top: -1.2em;
                 font-size: 0.7em;
                 text-align: center;
             }
         }
         span.bar {
-            display: inline-block;
+            display: block;
             position:absolute;
             background-color: @color_bars;;
             width:1px;
