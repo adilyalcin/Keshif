@@ -42,7 +42,7 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Result",
-                timeTitle: "Vote Date",
+//                timeTitle: "Vote Date",
                 textFilter: 'resulting in'
             },{
                 facetTitle: "Session",
@@ -84,9 +84,9 @@ function loadChart() {
                         "<a target=\"_blank\" href=\"http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?"+
                         "congress=112&session="+d.data[billCols['Session']]+"&vote=00"+d.data[billCols['Number']]+"\">"+d.data[billCols['Description']]+"<a/></div>";
                 // bill
-                    str+="<div class=\"iteminfo iteminfo_2\">Bill:"+d.data[billCols['Bill']]+" ---- ";
+                    str+="<div class=\"iteminfo iteminfo_2\">";//Bill:"+d.data[billCols['Bill']]+" ---- ";
                 // question
-                    str+="Question:"+d.data[5]+"</div>";
+//                    str+="Question:"+d.data[5]+"</div>";
                 // yay/nay
                     str+="<div class=\"iteminfo iteminfo_2\">";
                     var r=d.data[billCols['Yea\'s']]/d.data[billCols['Nay\'s']];

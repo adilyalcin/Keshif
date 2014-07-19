@@ -40,8 +40,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @color_bars: #8699A8;
+@color_filtered: #DA9237;
 
-@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms';
+@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
 
 .kshfHost{
     border: solid 1px lightgray;
@@ -57,10 +58,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .barChartMainInfo{ display:none; }
     }
     &[noanim=false]{
-        .bar {
+        .bar{
             .transition(@bar_animation);
         }
-        .histogram .barGroup_Active {
+        .histogram .barGroup_Active{
             .transition(@bar_animation);
         }
         .attribChartAxis span.tick{
@@ -404,6 +405,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: all;
         position:absolute;
         z-index: 2;
+        height: 16px;
         .transition(@layout_animation);
         .tick{
             opacity: 0;
@@ -647,8 +649,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         div.chart_root{
             position:relative;
-            display: block;
-            pointer-events: none;
             span.scrollToTop{
                 position: absolute;
                 top: -18px;
@@ -670,6 +670,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &:hover{ color: #cb5454; }
             }
         }
+
         svg.chart_root2{
             position:absolute;
             pointer-events: none;
@@ -859,6 +860,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     div.belowAttribs{
         position:relative; 
+        pointer-events: none;
     }
     div.middleScrollbar{
         overflow-y: auto;
@@ -873,6 +875,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             visibility: hidden;
             width: 20px;
         }
+    }
+    span.item_count{
+        color: gray;
+        &::before{ content: "("; }
+        &::after{ content: ")"; }
     }
     div.attrib {
         position: absolute;
@@ -930,8 +937,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             pointer-events: none;
             padding-left: 2px;
-            &::before{ content: "("; }
-            &::after{ content: ")"; }
         }
         > span.barGroup{
             span.row_bar_line{
@@ -943,15 +948,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 1px;
                 display: inline-block;
             }
-            .bar {
+            .bar{
                 display: inline-block;
-                background-color: @color_bars;
-                //border-radius: 2px;
-                .transform-origin(0% 0%;);
-                width: 1px;
                 position: absolute;
+                top: 4px;
+                width: 1px;
                 height: 10px;
-                margin-top: 4px;
+                .transform-origin(0% 0%;);
+                background-color: @color_bars;
                 &.total {
                     opacity:0.2;
                     pointer-events: none;
@@ -961,7 +965,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > span.timeLineParts{
             position:relative;
             overflow-x: hidden;
-            span.bar {
+            span.bar{
                 position:absolute;
                 border-radius: 10px;
                 display: inline-block;
@@ -1498,60 +1502,115 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
 
-    .histogram{
-        position:relative;
-        pointer-events: all;
-        margin: 5px 13px 5px 13px;
-        overflow: hidden;
-        .active{
-            position: absolute;
-            top: 14px;
-            cursor: pointer;
-        }
-        .total{
-            position: absolute;
-            top: 14px;
-        }
-        span.barGroup_Active{
-            display: block;
-            position: absolute;
-            span.item_count{
+
+    div.betweener{
+        padding: 2px 12px;
+        .histogram{
+            position:relative;
+            pointer-events: all;
+    //        margin: 5px 13px 1px 13px;
+            overflow: hidden;
+            margin-bottom:2px;
+            .active{
                 position: absolute;
-                color: black;
-                width: 24px;
-//                left: -25px;
+                top: 14px;
+                cursor: pointer;
+            }
+            .total{
+                position: absolute;
+                top: 14px;
+            }
+            span.bar{
                 display: block;
-                top: -1.2em;
+                position:absolute;
+                background-color: @color_bars;;
+                width:1px;
+                height:1px;
+                span.item_count{
+                    display: block;
+                    position: relative;
+                    top: -1.2em;
+                    font-size: 0.7em;
+                    text-align: center;
+                }
+                &[noitem=true] span.item_count{
+                    display: none;
+                }
+                &[highlight=true]{
+                    background-color: orangered;
+                }
+                .transform-origin(0% 0%);
+            }
+            .total span.bar{
+                opacity: 0.2;
+            }
+        }
+
+        .labelGroup{
+            cursor: default;
+            position:relative;
+    //        margin: 0px 13px;
+            height: 15px;
+            span.text{
+                position:absolute;
                 font-size: 0.7em;
+                font-weight: 300;
+                width:20px;
                 text-align: center;
             }
         }
-        span.bar {
-            display: block;
-            position:absolute;
-            background-color: @color_bars;;
-            width:1px;
-            height:1px;
-            .transform-origin(0% 0%);
-        }
-        span.barGroup_Active[highlight=true] span.bar{
-            background-color: orangered;
-        }
-        .total span.bar{
-            opacity: 0.2;
-        }
-    }
 
-    .labelGroup{
-        cursor: default;
-        margin: 0px 5px;
-        text{
-            text-anchor: start;
-            font-size: 0.7em;
-            font-weight: 300;
+        .intervalSlider{
+            position:relative;
+            height: 10px;
+            .base{
+                display: block;
+                position: absolute;
+                height: 6px;
+                box-shadow: inset 0px 0px 2px gray;
+                top: 2px;
+                &.total{
+                    cursor: pointer;
+                    background-color: lightgray;
+                }
+                &.active{
+                    pointer-events: none;
+                    &[filtered=true]{
+                        pointer-events: all;
+                        cursor: col-resize;
+                        background-color: @color_filtered;
+                    }
+                    :hover{
+                        background-color: orangered;
+                    }
+                }
+            }
+            .handle{
+                display:block;
+                position:absolute;
+                width:6px;
+                height:8px;
+                background-color: white;
+                border-width: 1px;
+                border-color: black;
+                border-style: solid;
+                cursor: ew-resize;
+                &:hover{
+                    background-color: rgb(179, 200, 219);
+                }
+                &.min{
+                    border-top-left-radius: 10px;
+                    border-bottom-left-radius: 10px;
+                    left: 20px;
+                }
+                &.max{
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    left: 120px;
+                }
+            }
         }
-    }
-
+    } //
 
     &.layout_infobox {
         div.infobox_background{

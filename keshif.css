@@ -54,28 +54,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshfHost[noanim=false] .bar {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshfHost[noanim=false] .histogram .barGroup_Active {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshfHost[noanim=false] .attribChartAxis span.tick {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshfHost[noanim=false] .timeDot {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshfHost > div.subRoot {
   position: relative;
@@ -412,6 +412,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   position: absolute;
   z-index: 2;
+  height: 16px;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -689,8 +690,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart div.chart_root {
   position: relative;
-  display: block;
-  pointer-events: none;
 }
 .kshf .kshfChart div.chart_root span.scrollToTop {
   position: absolute;
@@ -899,6 +898,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.belowAttribs {
   position: relative;
+  pointer-events: none;
 }
 .kshf div.middleScrollbar {
   overflow-y: auto;
@@ -916,6 +916,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: red;
   visibility: hidden;
   width: 20px;
+}
+.kshf span.item_count {
+  color: gray;
+}
+.kshf span.item_count::before {
+  content: "(";
+}
+.kshf span.item_count::after {
+  content: ")";
 }
 .kshf div.attrib {
   position: absolute;
@@ -977,12 +986,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   padding-left: 2px;
 }
-.kshf div.attrib > span.item_count::before {
-  content: "(";
-}
-.kshf div.attrib > span.item_count::after {
-  content: ")";
-}
 .kshf div.attrib > span.barGroup span.row_bar_line {
   border-top-width: 1px;
   border-top-style: dotted;
@@ -994,16 +997,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib > span.barGroup .bar {
   display: inline-block;
-  background-color: #8699a8;
+  position: absolute;
+  top: 4px;
+  width: 1px;
+  height: 10px;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
-  width: 1px;
-  position: absolute;
-  height: 10px;
-  margin-top: 4px;
+  background-color: #8699a8;
 }
 .kshf div.attrib > span.barGroup .bar.total {
   opacity: 0.2;
@@ -1573,35 +1576,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   float: none;
 }
-.kshf .histogram {
+.kshf div.betweener {
+  padding: 2px 12px;
+}
+.kshf div.betweener .histogram {
   position: relative;
   pointer-events: all;
-  margin: 5px 13px 5px 13px;
   overflow: hidden;
+  margin-bottom: 2px;
 }
-.kshf .histogram .active {
+.kshf div.betweener .histogram .active {
   position: absolute;
   top: 14px;
   cursor: pointer;
 }
-.kshf .histogram .total {
+.kshf div.betweener .histogram .total {
   position: absolute;
   top: 14px;
 }
-.kshf .histogram span.barGroup_Active {
-  display: block;
-  position: absolute;
-}
-.kshf .histogram span.barGroup_Active span.item_count {
-  position: absolute;
-  color: black;
-  width: 24px;
-  display: block;
-  top: -1.2em;
-  font-size: 0.7em;
-  text-align: center;
-}
-.kshf .histogram span.bar {
+.kshf div.betweener .histogram span.bar {
   display: block;
   position: absolute;
   background-color: #8699a8;
@@ -1613,20 +1606,83 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .histogram span.barGroup_Active[highlight=true] span.bar {
+.kshf div.betweener .histogram span.bar span.item_count {
+  display: block;
+  position: relative;
+  top: -1.2em;
+  font-size: 0.7em;
+  text-align: center;
+}
+.kshf div.betweener .histogram span.bar[noitem=true] span.item_count {
+  display: none;
+}
+.kshf div.betweener .histogram span.bar[highlight=true] {
   background-color: orangered;
 }
-.kshf .histogram .total span.bar {
+.kshf div.betweener .histogram .total span.bar {
   opacity: 0.2;
 }
-.kshf .labelGroup {
+.kshf div.betweener .labelGroup {
   cursor: default;
-  margin: 0px 5px;
+  position: relative;
+  height: 15px;
 }
-.kshf .labelGroup text {
-  text-anchor: start;
+.kshf div.betweener .labelGroup span.text {
+  position: absolute;
   font-size: 0.7em;
   font-weight: 300;
+  width: 20px;
+  text-align: center;
+}
+.kshf div.betweener .intervalSlider {
+  position: relative;
+  height: 10px;
+}
+.kshf div.betweener .intervalSlider .base {
+  display: block;
+  position: absolute;
+  height: 6px;
+  box-shadow: inset 0px 0px 2px gray;
+  top: 2px;
+}
+.kshf div.betweener .intervalSlider .base.total {
+  cursor: pointer;
+  background-color: lightgray;
+}
+.kshf div.betweener .intervalSlider .base.active {
+  pointer-events: none;
+}
+.kshf div.betweener .intervalSlider .base.active[filtered=true] {
+  pointer-events: all;
+  cursor: col-resize;
+  background-color: #da9237;
+}
+.kshf div.betweener .intervalSlider .base.active :hover {
+  background-color: orangered;
+}
+.kshf div.betweener .intervalSlider .handle {
+  display: block;
+  position: absolute;
+  width: 6px;
+  height: 8px;
+  background-color: white;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  cursor: ew-resize;
+}
+.kshf div.betweener .intervalSlider .handle:hover {
+  background-color: #b3c8db;
+}
+.kshf div.betweener .intervalSlider .handle.min {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  left: 20px;
+}
+.kshf div.betweener .intervalSlider .handle.max {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  left: 120px;
 }
 .kshf.layout_infobox div.infobox_background {
   width: 100%;

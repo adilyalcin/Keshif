@@ -303,8 +303,7 @@ var ACTID_FILTER = {
     CatValueAdd    : 1,
     CatValueRemove : 2,
     CatValueExact  : 3,
-    ClearOnSummary : 4,
-    ClearOnFacet   : 5,
+    Clear          : 4,
     ClearAll       : 6,
     TimeMinHandle  : 7, // ##
     TimeMaxHandle  : 8, // ##
@@ -637,6 +636,8 @@ kshf.Filter.prototype = {
             });
             this.browser.update(1); // more results
         }
+        if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.Clear,
+            this.browser.getFilteringState(this.name));
     },
 
     /** Don't call this directly */
@@ -697,8 +698,6 @@ kshf.Filter.prototype = {
             .on("click",function(){
                 this.tipsy.hide();
                 me.clearFilter(true);
-                if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnSummary,
-                    kshf_.getFilteringState(me.name));
             })
             .on("mouseover",function(){
                 this.tipsy.show();
@@ -2592,8 +2591,9 @@ kshf.Browser.prototype = {
 
         this.facets.forEach(function(facet,i){
             // include time range if time is filtered
-            if(facet.isFiltered_Time()) r.timeFltr = 1;
-            if(facet.isFiltered_Attrib()){
+            if(facet.isFiltered_Time)
+                if(facet.isFiltered_Time()) r.timeFltr = 1;
+            if(facet.isFiltered()){
                 if(r.filtered!=="") { r.filtered+="x"; r.selected+="x"; }
                 r.filtered+=i;
                 r.selected+=facet.attribCount_Selected;
@@ -2806,10 +2806,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     getFilteredCount: function(){
-        return this.isFiltered_Attrib()+this.isFiltered_Time();
+        return this.isFiltered()+this.isFiltered_Time();
     },
     /** -- */
-    isFiltered_Attrib: function(state){
+    isFiltered: function(state){
         return this.attribCount_Selected!==0;
     },
     /** -- */
@@ -3010,10 +3010,9 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
-        var betweener = this.divRoot.append("div").style("position","relative");
+        this.dom.chartRoot = this.divRoot.append("div").attr("class","chart_root");
 
-        this.dom.chart_root2 = betweener.append("svg").attr("class","chart_root2");
-    	this.dom.chartRoot = betweener.append("div").attr("class","chart_root");
+        this.dom.chart_root2 = this.dom.chartRoot.append("svg").attr("class","chart_root2");
 
         this.dom.chartRoot.append("span").attr("class","scrollToTop")
             .html("⬆")
@@ -3285,7 +3284,7 @@ kshf.Facet_Categorical.prototype = {
                                 }
                                 if(attrib.f_included()) me.attrib_Include(1);
                             });
-                            if(!me.isFiltered_Attrib()){
+                            if(!me.isFiltered()){
                                 me.attribFilter.clearFilter(true);                            
                             } else {
                                 me.setSelectType("SelectOr");
@@ -3488,7 +3487,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** update ItemFilterState_Attrib */
     updateItemFilterState_Attrib: function(){
-        if(!this.isFiltered_Attrib()){
+        if(!this.isFiltered()){
             return;
         }
 
@@ -3574,7 +3573,7 @@ kshf.Facet_Categorical.prototype = {
         // if inactive attributes are not removed, well, don't remove them...
         if(this.options.removeInactiveAttrib===false) return true;
         // facet is not filtered yet, cannot click on 0 items
-        if(!this.isFiltered_Attrib()) return attrib.activeItems!==0;
+        if(!this.isFiltered()) return attrib.activeItems!==0;
         // Hide if multiple options are selected and selection is and
         if(this.selectType==="SelectAnd") return false;
         // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
@@ -3589,7 +3588,7 @@ kshf.Facet_Categorical.prototype = {
         // Show if number of active items is not zero
         if(attrib.activeItems!==0) return true;
         // Show if multiple attributes are selected and the facet does not include multi value items
-        if(this.isFiltered_Attrib() && !this.hasMultiValueItem) return true;
+        if(this.isFiltered() && !this.hasMultiValueItem) return true;
         // Hide
         return false;
     },
@@ -3606,7 +3605,7 @@ kshf.Facet_Categorical.prototype = {
         }
         this.attrib_Remove(attrib.f_removed()?1:-1);
 
-        if(!this.isFiltered_Attrib()){
+        if(!this.isFiltered()){
             this.attribFilter.clearFilter(true);
             return;
         }
@@ -3632,7 +3631,7 @@ kshf.Facet_Categorical.prototype = {
         }
         this.attrib_Include(attrib.f_included()?1:-1);
 
-        if(!this.isFiltered_Attrib()){
+        if(!this.isFiltered()){
             this.attribFilter.clearFilter(true);
             return;
         } 
@@ -3887,6 +3886,11 @@ kshf.Facet_Categorical.prototype = {
     		});
         this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
 
+        if(this.type==="scatterplot"){
+            // Create helper line
+            this.dom.row_bar_line = this.dom.barGroup.insert("span",":first-child").attr("class", "row_bar_line");
+        }
+
         this.refreshTextWidth();
 
         this.updateSorting();
@@ -4007,7 +4011,7 @@ kshf.Facet_Categorical.prototype = {
         tickData_new.append("span").attr("class","line")
             .style("top","-"+visibleRowHeight+"px")
             .style("height",visibleRowHeight+"px");
-        tickData_new.append("span").attr("class","text").html(function(d){return d3.format("s")(d);});
+        tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
 
         // translate the ticks horizontally on scale.
         setTimeout(function(){
@@ -4157,7 +4161,7 @@ kshf.Facet_Categorical.prototype = {
         var totalActiveTime_pixLength = 0;
 
         this.dom.attribs.each(function(attrib) {
-            if(me.isFiltered_Attrib() && !attrib.f_selected()) return;
+            if(me.isFiltered() && !attrib.f_selected()) return;
             if(attrib.xMax_Dyn===undefined || attrib.xMin_Dyn===undefined) return;
             totalActiveTime_pixLength+=me.timeScale(attrib.xMax_Dyn) - me.timeScale(attrib.xMin_Dyn);
         });
@@ -4750,6 +4754,7 @@ kshf.Facet_Interval = function(kshf_, options){
 
     this.options = options;
     this.barGap = 2;
+    this.histogramMargin = 12;
 
     this.dom = {};
 
@@ -4763,14 +4768,13 @@ kshf.Facet_Interval = function(kshf_, options){
         name: this.options.facetTitle,
         browser: this.getKshf(),
         onClear: function(){
-            this.intervalFilter.active = {
-                min: 0,
-                max: 0
-            }
             this.divRoot.attr("filtered",false);
+            this.reserIntervalFilterActive();
+            this.refreshSlider();
             this.intervalFilter.clearFilter(true);
         },
         onFilter: function(filter){
+            this.divRoot.attr("filtered",true);
             var i_min = filter.active.min;
             var i_max = filter.active.max;
             if(!filter.max_inclusive) i_max-=0.01;
@@ -4780,6 +4784,11 @@ kshf.Facet_Interval = function(kshf_, options){
                 item.setFilter(filter.id, (v>=i_min) && (v<=i_max) );
                 item.updateSelected();
             },this);
+
+            console.log(filter.active);
+
+            // update handles
+            this.refreshSlider();
         },
         text_header: this.options.facetTitle,
         text_item: function(filter){
@@ -4788,48 +4797,20 @@ kshf.Facet_Interval = function(kshf_, options){
         cb_this: this
     });
 
-    this.intervalFilter.active = {
-        min:0,
-        max:0
-    };
-
     var filterId = this.intervalFilter.id;
     this.getKshfItems().forEach(function(item){
         item.mappedData[filterId] = this.options.catItemMap(item);
     },this);
 
-    var accessor = function(d){ return d.mappedData[filterId]; };
-
+    var accessor = function(item){ return item.mappedData[filterId]; };
     this.intervalRange = {
         min: d3.min(this.getKshfItems(),accessor),
         max: d3.max(this.getKshfItems(),accessor)
     };
 
-    this.hist_width=280;
+    this.reserIntervalFilterActive();
+
     this.hist_height=60;
-
-    this.optimalBinCount = this.hist_width/25;
-
-    this.intervalScale = d3.scale.linear()
-        .domain([this.intervalRange.min, this.intervalRange.max])
-        .range([0, this.hist_width])
-        .clamp(true)
-        .nice(this.optimalBinCount)
-        ;
-
-    this.intervalTicks = this.intervalScale.ticks(this.optimalBinCount);
-
-    this.histBins = d3.layout.histogram()
-        .value(accessor)
-        .bins(this.intervalTicks)(this.getKshfItems());
-
-    this.barWidth = this.intervalScale(this.intervalRange.min+this.histBins[0].dx)-
-            this.intervalScale(this.intervalRange.min);
-
-
-    this.updateBarScale2Total();
-
-    var sdsds =112121;
 };
 
 kshf.Facet_Interval.prototype = {
@@ -4851,10 +4832,10 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     getFilteredCount: function(){
-        return this.isFiltered_Interval();
+        return this.isFiltered();
     },
     /** -- */
-    isFiltered_Interval: function(state){
+    isFiltered: function(state){
         return this.intervalFilter.active.min!==this.intervalRange.min ||
                this.intervalFilter.active.max!==this.intervalRange.max ;
     },
@@ -4865,56 +4846,219 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     rowCount_Total: function(){
         if(this.collapsed) return 1;
-        return 7; // TODO: return something nice
+        return 8; // TODO: return something nice
     },
     /** -- */
     rowCount_MaxTotal: function(){
-        return 7; // TODO
+        return 8; // TODO
     },
     /** -- */
     rowCount_MinTotal: function(){
-        return 7; // TODO
+        return 8; // TODO
+    },
+    reserIntervalFilterActive: function(){
+        this.intervalFilter.active = {
+            min: this.intervalRange.min,
+            max: this.intervalRange.max
+        };
+    },
+    getMaxBinTotalItems: function(){
+        return d3.max(this.histBins,function(bin){ return bin.length; });
+    },
+    getMaxBinActiveItems: function(){
+        return d3.max(this.histBins,function(bin){ return bin.activeItems; });
+    },
+    getMinBinActiveItems: function(){
+        return d3.min(this.histBins,function(bin){ return bin.activeItems; });
     },
     /** -- */
     init_DOM: function(){
         var me = this;
         var kshf_ = this.getKshf();
-        this.divRoot = this.options.layout
-            .append("div").attr("class","kshfChart")
+        this.divRoot = this.options.layout.append("div").attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("filtered",false)
             ;
 
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-
-        var betweener = this.divRoot.append("div").style("position","relative");
-
-        this.dom.chartRoot = betweener.append("div").attr("class","chart_root");
-        this.dom.labelGroup = betweener.append("svg").attr("class","labelGroup")
-            .style("height",this.hist_height+"px")
-            .style("width",(this.hist_width+16)+"px");
-
         this.insertHeader();
+        this.dom.betweener = this.divRoot.append("div").attr("class","betweener");
 
-        this.refreshTextWidth();
-
-        this.dom.histogram = this.dom.chartRoot.append("div").attr("class","histogram")
+        this.dom.histogram = this.dom.betweener.append("div").attr("class","histogram")
             .style("height",(this.hist_height+14)+"px")
-            .style("width",this.hist_width+"px")
+            ;
+        this.dom.histogram_total = this.dom.histogram.append("div").attr("class","total");
+        this.dom.histogram_active = this.dom.histogram.append("div").attr("class","active");
+
+        this.insertSlider();
+        this.dom.labelGroup = this.dom.betweener.append("div").attr("class","labelGroup");
+
+    },
+    insertSlider: function(){
+        var me=this;
+        var kshf_=this.getKshf();
+        this.dom.intervalSlider = this.dom.betweener.append("div").attr("class","intervalSlider");
+
+        this.dom.intervalSlider.append("span").attr("class","base total")
+            .on("mousedown", function (d, i) {
+                var e=this.parentNode;
+                var initX = d3.mouse(e)[0];
+                var initPos = me.intervalRange.min + 
+                            (me.intervalRange.max - me.intervalRange.min)*(initX/(me.intervalWidth*1.0));
+
+                d3.select("body")
+                    .style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var mouseX = d3.mouse(e)[0];
+                        var targetPos = me.intervalRange.min + 
+                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
+                        me.intervalFilter.active.min=d3.min([initPos,targetPos]);
+                        me.intervalFilter.active.max=d3.max([initPos,targetPos]);
+                        me.intervalFilter.addFilter(true);
+                    }).on("mouseup", function(){
+                        d3.select("body").style('cursor','default');
+                        d3.select("body").on("mousemove", null).on("mouseup", null);
+                    });
+                d3.event.preventDefault();
+            });;
+
+        this.dom.intervalSlider.append("span")
+            .attr("class","base active")
+            .on("mousedown", function (d, i) {
+                if(!me.isFiltered()) return;
+                var e=this.parentNode;
+                var initX = d3.mouse(e)[0];
+                var initMin = me.intervalFilter.active.min;
+                var initMax = me.intervalFilter.active.max;
+                var initRange= initMax - initMin;
+                var initPos = me.intervalRange.min + 
+                            (me.intervalRange.max - me.intervalRange.min)*(initX/(me.intervalWidth*1.0));
+
+                d3.select("body")
+                    .style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var mouseX = d3.mouse(e)[0];
+                        var targetPos = me.intervalRange.min + 
+                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
+                        var targetDif = targetPos-initPos;
+                        me.intervalFilter.active.min = initMin+targetDif;
+                        me.intervalFilter.active.max = initMax+targetDif;
+                        if(me.intervalFilter.active.min<me.intervalRange.min){
+                            me.intervalFilter.active.min=me.intervalRange.min;
+                            me.intervalFilter.active.max=me.intervalRange.min+initRange;
+                        }
+                        if(me.intervalFilter.active.max>me.intervalRange.max){
+                            me.intervalFilter.active.max=me.intervalRange.max;
+                            me.intervalFilter.active.min=me.intervalRange.max-initRange;
+                        }
+                        me.intervalFilter.addFilter(true);
+                    }).on("mouseup", function(){
+                        d3.select("body").style('cursor','default');
+                        d3.select("body").on("mousemove", null).on("mouseup", null);
+                    });
+                d3.event.preventDefault();
+            });
+
+        this.dom.intervalSlider.selectAll("span.handle").data(['min','max']).enter()
+            .append("span").attr("class",function(d){ return "handle "+d; })
+            .on("mousedown", function (d, i) {
+                var e=this.parentNode;
+                d3.select("body")
+                    .style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var mouseX = d3.mouse(e)[0];
+                        var targetPos = me.intervalRange.min + 
+                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
+                        me.intervalFilter.active[d] = targetPos;
+                        me.intervalFilter.addFilter(true);
+                    }).on("mouseup", function(){
+                        d3.select("body").style('cursor','default');
+                        d3.select("body").on("mousemove", null).on("mouseup", null);
+                    });
+                d3.event.preventDefault();
+            });
+    },
+    updateIntervalWidth: function(w){
+        if(this.intervalWidth!==undefined && this.intervalWidth===w) return;
+        this.intervalWidth=w;
+
+        this.optimalBinCount = this.intervalWidth/25;
+        this.intervalScale = d3.scale.linear()
+            .domain([this.intervalRange.min, this.intervalRange.max])
+            .range([0, this.intervalWidth])
+            .clamp(true)
+            .nice(this.optimalBinCount)
             ;
 
-        this.dom.bars_total = this.dom.histogram.append("div").attr("class","total")
-            .selectAll("span.bar").data(this.histBins)
-        .enter()
-            .append("span").attr("class","bar");
+        var ticks = this.intervalScale.ticks(this.optimalBinCount);
 
-        this.dom.bars_active_group = this.dom.histogram.append("div").attr("class","active")
-            .selectAll("span.barGroup_Active").data(this.histBins)
-        .enter()
-            .append("span").attr("class","barGroup_Active")
+        if(this.intervalTicks===undefined || this.intervalTicks.length !== ticks.length){
+            this.updateTicks(ticks);
+        } else{
+            this.barWidth = this.intervalScale(this.intervalRange.min+this.histBins[0].dx)-
+                    this.intervalScale(this.intervalRange.min);
+            this.refreshBars_Active_Translate();
+            this.refreshBars_Active_Scale();
+            this.refreshBars_Total();
+            this.refreshAxisLabels();
+        }
+        this.refreshSlider();
+    },
+    updateTicks: function(ticks){
+        this.intervalTicks = ticks;
+        var filterId = this.intervalFilter.id;
+        var accessor = function(item){ return item.mappedData[filterId]; };
+
+        this.histBins = d3.layout.histogram().bins(this.intervalTicks)
+            .value(accessor)(this.getKshfItems());
+        this.barWidth = this.intervalScale(this.intervalRange.min+this.histBins[0].dx)-
+                this.intervalScale(this.intervalRange.min);
+
+        this.updateActiveItems();
+
+        this.updateBarScale2Total();
+        this.updateBarScale2Active();
+
+        this.insertBins();
+        this.insertAxisLabels();
+    },
+    insertBins: function(){
+        var me=this;
+        // *************************************************************************************
+        // Total Bins **************************************************************************
+        var totalBins = this.dom.histogram_total
+            .selectAll("span.bar").data(this.histBins, function(d,i){ return i; });
+        totalBins.exit()
+            .remove(function(d){
+                var s=sdsdsks82;
+            });
+        totalBins.enter().append("span").attr("class","bar");
+
+        // *************************************************************************************
+        // Active Bins *************************************************************************
+        var activeBins = this.dom.histogram_active
+            .selectAll("span.bar").data(this.histBins, function(d,i){ return i; });
+        activeBins.each(function(bar){
+            var mee=this;
+            bar.forEach(function(item){
+                // TODO: remove old mapping!
+                item.mappedDOMs.push(mee);
+            });
+        })
+        activeBins.exit()
             .each(function(bar){
                 var mee=this;
-                bar.forEach(function(item){item.mappedDOMs.push(mee);});
+                bar.forEach(function(item){
+                    var index = item.mappedDOMs.indexOf(mee);
+                    if(index>-1) item.mappedDOMs.splice(index, 1);
+                });
+            })
+            .remove();
+        activeBins.enter().append("span").attr("class","bar")
+            .each(function(bar){
+                var mee=this;
+                bar.forEach(function(item){
+                    item.mappedDOMs.push(mee);
+                });
             })
             .on("mouseover",function(bar){
                 this.setAttribute("highlight",true);
@@ -4929,16 +5073,12 @@ kshf.Facet_Interval.prototype = {
                 });
             })
             .on("click",function(bar){
-                // FILTER!
-                // $(this).tipsy("hide");
-
-                // remove filtering if this was selected already
-                if(me.intervalFilter.selectedBin===this){
+                if(this.getAttribute("filtered")==="true"){
                     this.setAttribute("filtered",false);
-                    me.intervalFilter.selectedBin = undefined;
                     me.intervalFilter.clearFilter(true);
                     return;
                 }
+                this.setAttribute("filtered","true");
 
                 // store histogram state
                 me.intervalFilter.dom_HistogramBar = this;
@@ -4946,95 +5086,81 @@ kshf.Facet_Interval.prototype = {
                     min: bar.x,
                     max: bar.x+bar.dx
                 };
-
                 // if we are filtering the last bar, make max_score inclusive
                 me.intervalFilter.max_inclusive = (bar.x+bar.dx)===me.intervalRange.max;
-                me.intervalFilter.selectedBin = this;
-
-                this.setAttribute("filtered","true");
-                me.divRoot.attr("filtered",true);
 
                 me.intervalFilter.addFilter(true);
             })
+            .append("span").attr("class","item_count");
 
+        this.dom.bars_active_group = this.dom.histogram.selectAll(".total .bar");
 
-        this.dom.bars_active = this.dom.bars_active_group.append("span").attr("class","bar");
+        this.dom.bars_total = this.dom.histogram.selectAll(".total .bar");
 
-        this.dom.bars_item_count = this.dom.bars_active_group.append("span").attr("class","item_count");
+        this.dom.bars_active = this.dom.histogram.selectAll(".active .bar");
 
-        this.dom.bars_item_count.style("left",(this.barWidth/2.0-12)+"px");
+        this.dom.bars_item_count = this.dom.bars_active.selectAll(".item_count");
 
         this.refreshBars_Total();
         this.refreshBars_Active_Translate();
         this.refreshBars_Active_Scale();
+        this.refreshBars_Item_Count();
 
-        // INSERT TICKS
-
-        var xAxis = d3.svg.axis()
-            .tickSize(0, 0, 0)
-            .orient('bottom')
-            .ticks(this.optimalBinCount)
-            .tickFormat(d3.format("s"))
-            .scale(this.intervalScale);
-
-        this.dom.labelGroup.call(xAxis);
-
-        // no animation! by default it is inserted at 0, we need to update it without animation 
-        this.dom.labelGroup.selectAll("g.tick text").attr("dy",5)
-            .attr("dx",8);
-    },
-    getMaxTotalItems: function(){
-        return d3.max(this.histBins,function(bin){ return bin.length; });
-    },
-    getMaxActiveItems: function(){
-        return d3.max(this.histBins,function(bin){ return bin.activeItems; });
-    },
-    getMinActiveItems: function(){
-        return d3.min(this.histBins,function(bin){ return bin.activeItems; });
-    },
-    getDomainMin: function(){
-        // just. zero. No calories.
-        return 0;
+        this.refreshTextWidth();
     },
     updateBarScale2Total: function(){
         this.barScale = this.barScale
-            .domain([this.getDomainMin(), this.getMaxTotalItems()])
+            .domain([0, this.getMaxBinTotalItems()])
             .range([0, this.hist_height]);
     },
     updateBarScale2Active: function(){
         this.barScale = this.barScale
-            .domain([this.getDomainMin(), this.getMaxActiveItems()])
+            .domain([0, this.getMaxBinActiveItems()])
             .range([0, this.hist_height]);
     },
     updateActiveItems: function(){
         this.histBins.forEach(function(bin){
             bin.activeItems = 0;
-            bin.forEach(function(item){
-                if(item.wanted) bin.activeItems++;
-            });
+            bin.forEach(function(item){ if(item.wanted) bin.activeItems++; });
         });
+    },
+    insertAxisLabels: function(){
+        var me=this;
+        var ddd = this.dom.labelGroup.selectAll("span.text").data(this.intervalTicks);
+        ddd.enter()
+            .append("span").attr("class","text");
+        ddd.exit()
+            .remove();
+
+        this.dom.labelTicks = this.dom.labelGroup.selectAll("span.text")
+            .text(function(d){return d3.format("s")(d);});
+        this.refreshAxisLabels();
+    },
+    refreshAxisLabels: function(){
+        var me=this;
+        this.dom.labelTicks.style("left",function(d){ return (me.intervalScale(d)-10)+"px"; })
     },
     refreshBars_Total: function(){
         var me=this;
-        this.dom.bars_total.each(function(bar){
-            var x=me.intervalScale(bar.x)+me.barGap;
-            var w=me.barWidth-me.barGap*2;
-            var h=me.barScale(bar.y);
-            var y=me.hist_height-me.barScale(bar.y);
-            var transform="translate("+x+"px,"+y+"px) scale("+w+","+h+") ";
-            this.style.webkitTransform = transform;
-            this.style.MozTransform = transform;
-            this.style.msTransform = transform;
-            this.style.OTransform = transform;
-            this.style.transform = transform;
-        });
+        this.dom.bars_total
+            .each(function(bar){
+                var x=me.intervalScale(bar.x)+me.barGap;
+                var y=me.hist_height-me.barScale(bar.y);
+                var w=(me.barWidth-me.barGap*2);
+                var h=me.barScale(bar.y);
+                var transform="translate("+x+"px,"+y+"px) scale("+w+","+h+")";
+                this.style.webkitTransform = transform;
+                this.style.MozTransform = transform;
+                this.style.msTransform = transform;
+                this.style.OTransform = transform;
+                this.style.transform = transform;
+            });
     },
     refreshBars_Active_Translate: function(){
         var me=this;
-        this.dom.bars_active_group.each(function(bar){
+        this.dom.bars_active.each(function(bar){
             var x=me.intervalScale(bar.x)+me.barGap;
             var y=me.hist_height-me.barScale(bar.activeItems);
-            if(!isFinite(y)) y = me.hist_height;
             var transform="translate("+x+"px,"+y+"px)";
             this.style.webkitTransform = transform;
             this.style.MozTransform = transform;
@@ -5045,22 +5171,43 @@ kshf.Facet_Interval.prototype = {
     },
     refreshBars_Active_Scale: function(){
         var me=this;
-        this.dom.bars_active.each(function(bar){
-            var w=me.barWidth-4;
-            var h=me.barScale(bar.activeItems);
-            if(!isFinite(h)) h = 0;
-            var transform="scale("+w+","+h+") ";
-            this.style.webkitTransform = transform;
-            this.style.MozTransform = transform;
-            this.style.msTransform = transform;
-            this.style.OTransform = transform;
-            this.style.transform = transform;
-        });
+        this.dom.bars_active
+            .style("width",(me.barWidth-me.barGap*2)+"px")
+            .style("height",function(bar){ return me.barScale(bar.activeItems)+"px"; });
     },
     refreshBars_Item_Count: function(){
+        this.dom.bars_active.attr("noitem",function(bar){ return bar.activeItems===0; });
         this.dom.bars_item_count.text(function(bar){
-            return "("+kshf.Util.formatForItemCount(bar.activeItems)+")"; 
+            return kshf.Util.formatForItemCount(bar.activeItems); 
         });
+    },
+    refreshSlider: function(){
+        var me=this;
+        var _min = this.intervalScale(this.intervalFilter.active.min);
+        var _max = this.intervalScale(this.intervalFilter.active.max);
+        this.dom.intervalSlider.select(".base.total")
+            .style("width",this.intervalScale.range()[1]+"px");
+        this.dom.intervalSlider.select(".base.active")
+            .attr("filtered",this.isFiltered())
+            .style("left",_min+"px")
+            .style("width",(_max-_min)+"px")
+            ;
+        this.dom.intervalSlider.selectAll(".handle")
+            .style("left",function(d){
+                if(d==="min") return (_min-7)+"px";
+                return _max+"px";
+            })
+    },
+    /** -- */
+    refreshWidth: function(){
+        // TODO;
+        var totalWidth = this.getWidth();
+
+        this.dom.leftHeader.style("width",totalWidth+"px");
+        var wwwww=totalWidth-2*this.histogramMargin;
+        this.dom.betweener.style("width",wwwww+"px");
+
+        this.updateIntervalWidth(wwwww);
     },
     /** returns the maximum number of total items stored per row in chart data */
     getMaxTotalItemsPerRow: function(){
@@ -5104,6 +5251,7 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     insertHeader: function(){
         var me = this;
+        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
         this.dom.leftHeader = this.dom.headerGroup.append("div").attr("class","leftHeader").style("width","0px");
 
@@ -5164,13 +5312,6 @@ kshf.Facet_Interval.prototype = {
         this.refreshBars_Active_Translate();
         this.refreshBars_Active_Scale();
         this.refreshBars_Total();
-    },
-    /** -- */
-    refreshWidth: function(){
-        // TODO;
-        var totalWidth = this.getWidth();
-
-        this.dom.leftHeader.style("width",totalWidth+"px");
     },
     /** -- */
     refreshHistogram: function(){

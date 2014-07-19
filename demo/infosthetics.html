@@ -29,7 +29,8 @@ function getNumComments(v){
 }
 
 function resetSize(){
-    $('#chart_div').height($(window).height()-10);
+//    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').height(800);
     $('#chart_div').width (800);
 }
 
@@ -70,7 +71,7 @@ $(document).ready( function(){
             },{
                 facetTitle: "Comment #",
                 catItemMap : function(post){ return post.data[postCols['# of Comments']]; },
-//                barScaleType: "log"
+                barScaleType: "log"
             },{
                 facetTitle: "Year",
                 catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
