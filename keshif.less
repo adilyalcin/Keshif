@@ -40,7 +40,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @color_bars: #8699A8;
-@color_filtered: #DA9237;
+@color_filtered: #30B8C4;
 
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
 
@@ -69,6 +69,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .timeDot{
             .transition(@bar_animation);
+        }
+        .rangeSlider{
+            .base {
+                .transition(~'transform 700ms ease-in-out');
+            }
+            .handle{
+                .transition(~'transform 700ms ease-in-out');
+            }
         }
     }
     > div.subRoot{
@@ -372,15 +380,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -6px;
+        right: -3px;
         pointer-events: all;
         top: 1px;
-        width: 2px;
+        width: 0px;
         // border-bottom: solid 1px lightgray;
         // border-top: solid 1px lightgray;
-        border-left-width: 1px;
-        border-left-style: dotted;
-        border-left-color: gray;
+        border-width: 0px 1px 0px 0px;
+        border-style: dotted;
+        border-color: gray;
         cursor: col-resize;
         // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
         opacity: 0.5;
@@ -388,7 +396,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{
             // border-bottom: solid 1px gray;
             // border-top: solid 1px gray;
-            border-left-width: 2px;
+            border-width: 0px 2px 0px 0px;
             // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
@@ -432,7 +440,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    g.timeAxisGroup{
+    .timeChartAxis{
+        position:absolute;
+//        pointer-events: none;
         z-index: 20;
         text{
             font-size: 0.7em;
@@ -474,7 +484,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         path.bottom_border{
             fill:lightgray;
         }
-    } // timeAxisGroup
+    } // timeChartAxis
 
     .headerGroup{
         pointer-events:none;
@@ -523,7 +533,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         .chartFirstLineBackgroundRight{
-            padding-left: 10px;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         select.optionSelect{
@@ -565,9 +574,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             vertical-align: top;
             pointer-events: all;
             position: relative;
-            .leftHeader_XX{
-                text-align: right;
-            }
         }
         .rightHeader{
             display: inline-block;
@@ -634,10 +640,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // headerGroup
 
+    .hasLabelWidth{
+        text-align: right;
+    }
+
     .kshfChart{
         display:inline-block;
         position: relative;
-        overflow: hidden;
+        // overflow: hidden;
         .transition(~'height 700ms ease-in-out');
         span.optionSelect_Label{
             font-size: 0.7em;
@@ -647,19 +657,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:none;
         }
 
-        div.chart_root{
+        .facetCategorical{
             position:relative;
-            span.scrollToTop{
+            .scrollToTop{
                 position: absolute;
                 top: -18px;
                 right: 0px;
                 font-size: 0.8em;
                 pointer-events: all;
             }
-            span.scrollToTop2{
+            .scrollToTop2{
                 right: auto;
             }
-            span.scroll_display_more{
+            .scroll_display_more{
                 font-size: 0.6em;
                 font-style:italic;
                 cursor: pointer;
@@ -669,16 +679,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: all;
                 &:hover{ color: #cb5454; }
             }
-        }
-
-        svg.chart_root2{
-            position:absolute;
-            pointer-events: none;
-            height: 2000px; // some very large number
-            >*{
-                pointer-events: all;
-            }
-        }
+        }// facetCategorical
 
         .resort_button{
             position:absolute;
@@ -751,11 +752,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color:gray;
                 }
             }
-            .header_belowFirstRow{ display: none; }
+            .facetControls{ display: none; }
+            .facetCategorical{ display: none; }
             .resort_button{ display: none !important ; }
-            g.timeAxisGroup { display:none; }
+            .timeChartAxis { display:none; }
             select.sortOptionSelect{ display: none; }
-            div.chart_root{ display: none; }
+            div.facetInterval{ display: none; }
         }
         &[collapsedTime=true] {
             .config_zoom{
@@ -775,7 +777,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: none;
                 }
             }
-            g.timeAxisGroup {
+            .timeChartAxis {
                 display:none;
             }
             .timeDot{
@@ -860,7 +862,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     div.belowAttribs{
         position:relative; 
-        pointer-events: none;
     }
     div.middleScrollbar{
         overflow-y: auto;
@@ -902,8 +903,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > span.label{
             font-size: 0.8em;
-            font-weight:300;
-            text-align: right;
+            font-weight: 300;
             cursor: default;
             // display ... when text is too long
             white-space: nowrap;
@@ -936,7 +936,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             cursor: default;
             pointer-events: none;
-            padding-left: 2px;
+            padding-left: 1px;
         }
         > span.barGroup{
             span.row_bar_line{
@@ -965,6 +965,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > span.timeLineParts{
             position:relative;
             overflow-x: hidden;
+            padding: 0px 10px;
             span.bar{
                 position:absolute;
                 border-radius: 10px;
@@ -984,6 +985,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-radius: 10px;
                 width: 10px;
                 height: 10px;
+                // left: -5px; // DON'T! It messes up with translation (scalted translation amount)
                 cursor: pointer;
 
                 &[fill=default]{
@@ -1503,14 +1505,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // listItem
 
 
-    div.betweener{
+    div.facetInterval{
         padding: 2px 12px;
+        overflow: none;
         .histogram{
             position:relative;
             pointer-events: all;
     //        margin: 5px 13px 1px 13px;
             overflow: hidden;
-            margin-bottom:2px;
             .active{
                 position: absolute;
                 top: 14px;
@@ -1546,71 +1548,102 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        .labelGroup{
-            cursor: default;
-            position:relative;
-    //        margin: 0px 13px;
-            height: 15px;
+    } //
+
+    .labelGroup{
+        cursor: default;
+        position:relative;
+//        margin: 0px 13px;
+        height: 15px;
+        margin-top: -1px;
+        span.tick{
+            position:absolute;
             span.text{
-                position:absolute;
                 font-size: 0.7em;
                 font-weight: 300;
-                width:20px;
+                width: 100px;
                 text-align: center;
-            }
-        }
-
-        .intervalSlider{
-            position:relative;
-            height: 10px;
-            .base{
+                position: relative;
+                margin-left: -50px;
                 display: block;
-                position: absolute;
-                height: 6px;
-                box-shadow: inset 0px 0px 2px gray;
-                top: 2px;
-                &.total{
-                    cursor: pointer;
-                    background-color: lightgray;
-                }
-                &.active{
-                    pointer-events: none;
-                    &[filtered=true]{
-                        pointer-events: all;
-                        cursor: col-resize;
-                        background-color: @color_filtered;
-                    }
-                    :hover{
-                        background-color: orangered;
-                    }
-                }
             }
-            .handle{
-                display:block;
-                position:absolute;
-                width:6px;
-                height:8px;
-                background-color: white;
-                border-width: 1px;
-                border-color: black;
-                border-style: solid;
-                cursor: ew-resize;
+            span.line{
+                position: absolute;
+                top: -9px;
+                height: 10px;
+                border-left: solid 1px gray;
+                display: block;
+            }
+        }
+    }
+
+    .rangeSlider{
+        position:relative;
+        height: 10px;
+        pointer-events: all;
+        .base{
+            display: block;
+            position: absolute;
+            box-shadow: inset 0px 0px 2px gray;
+            .transform-origin(0% 0%);
+            &.total{
+                height: 3px;
+                top: 3px;
+                cursor: pointer;
+                background-color: lightgray;
+            }
+            &.active{
+                height: 6px;
+                top: 2px;
+                width:1px;
+                display:none;
+                &[filtered=true]{
+                    display: block;
+                    cursor: col-resize;
+                    background-color: @color_filtered;
+                }
                 &:hover{
-                    background-color: rgb(179, 200, 219);
-                }
-                &.min{
-                    border-top-left-radius: 10px;
-                    border-bottom-left-radius: 10px;
-                    left: 20px;
-                }
-                &.max{
-                    border-top-right-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    left: 120px;
+                    background-color: orangered !important;
                 }
             }
         }
-    } //
+        .handle{
+            display:block;
+            position:absolute;
+            width:6px;
+            height:8px;
+            background-color: white;
+            border-width: 1px;
+            border-color: black;
+            border-style: solid;
+            cursor: ew-resize;
+            z-index: 10;
+            &:hover{
+                background-color: orangered !important;
+            }
+            &.min{
+                left: -7px;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
+            &.max{
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+            span.invalidArea{
+                position: relative;
+                display: block;
+                background-color: lightgray;
+                opacity: 0.3;
+            }
+            &.min span.invalidArea{
+                border-right: double 3px black;
+            }
+            &.max span.invalidArea{
+                border-left: double 3px black;
+            }
+        }
+    } // rangeSlider
 
     &.layout_infobox {
         div.infobox_background{

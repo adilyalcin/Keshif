@@ -284,7 +284,108 @@ kshf.Util = {
     toProperCase: function(str){
         var l=str.toLowerCase();
         return l.charAt(0).toUpperCase() + l.slice(1);
-    }
+    },
+    insertSlider_do: function(root,options){
+        var _isFiltered = function(){
+            return options.filter.active.min!==options.range.min ||
+                   options.filter.active.max!==options.range.max ;
+        };
+        root.append("span").attr("class","base total")
+            .on("mousedown", function (d, i) {
+                if(d3.event.which !== 1) return; // only respond to left-click
+                options.root.attr("noanim",true);
+                var e=this.parentNode;
+                var initX = d3.mouse(e)[0];
+                var initPos = options.range.min + 
+                            (options.range.max-options.range.min)*(initX/(options.range.width*1.0));
+
+                d3.select("body").style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var mouseX = d3.mouse(e)[0];
+                        var targetPos = options.range.min + 
+                            (options.range.max - options.range.min)*(mouseX/(options.range.width*1.0));
+                        options.filter.active.min=d3.min([initPos,targetPos]);
+                        options.filter.active.max=d3.max([initPos,targetPos]);
+                        if(_isFiltered())
+                            options.filter.addFilter(true);
+                        else
+                            options.filter.clearFilter(true);
+                    }).on("mouseup", function(){
+                        options.root.attr("noanim",false);
+                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                    });
+                d3.event.preventDefault();
+            });;
+
+        root.append("span")
+            .attr("class","base active")
+            .on("mousedown", function (d, i) {
+                if(d3.event.which !== 1) return; // only respond to left-click
+                if(!options.filter.isFiltered) return;
+                options.root.attr("noanim",true);
+                var e=this.parentNode;
+                var initX = d3.mouse(e)[0];
+                var initMin = options.filter.active.min;
+                var initMax = options.filter.active.max;
+                var initRange= initMax - initMin;
+                var initPos = options.range.min + 
+                            (options.range.max - options.range.min)*(initX/(options.range.width*1.0));
+
+                d3.select("body").style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var mouseX = d3.mouse(e)[0];
+                        var targetPos = options.range.min + 
+                            (options.range.max - options.range.min)*(mouseX/(options.range.width*1.0));
+                        var targetDif = targetPos-initPos;
+                        options.filter.active.min = initMin+targetDif;
+                        options.filter.active.max = initMax+targetDif;
+                        if(options.filter.active.min<options.range.min){
+                            options.filter.active.min=options.range.min;
+                            options.filter.active.max=options.range.min+initRange;
+                        }
+                        if(options.filter.active.max>options.range.max){
+                            options.filter.active.max=options.range.max;
+                            options.filter.active.min=options.range.max-initRange;
+                        }
+                        if(_isFiltered())
+                            options.filter.addFilter(true);
+                        else
+                            options.filter.clearFilter(true);
+                    }).on("mouseup", function(){
+                        options.root.attr("noanim",false);
+                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                    });
+                d3.event.preventDefault();
+            });
+
+        var handle_cb = function (d, i) {
+            if(d3.event.which !== 1) return; // only respond to left-click
+            options.root.attr("noanim",true);
+            var e=this.parentNode;
+            d3.select("body").style('cursor','ew-resize')
+                .on("mousemove", function() {
+                    var mouseX = d3.mouse(e)[0];
+                    var range=mouseX/(options.range.width*1.0);
+                    range=Math.min(1,Math.max(0,range));
+                    var targetPos = options.range.min + 
+                        (options.range.max - options.range.min)*range;
+                    options.filter.active[d] = targetPos;
+                    if(_isFiltered())
+                        options.filter.addFilter(true);
+                    else
+                        options.filter.clearFilter(true);
+                }).on("mouseup", function(){
+                    options.root.attr("noanim",false);
+                    d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                });
+            d3.event.preventDefault();
+        };
+
+        root.selectAll("span.handle").data(['min','max']).enter()
+            .append("span").attr("class",function(d){ return "handle "+d; })
+            .on("mousedown", handle_cb)
+            .append("span").attr("class","invalidArea");
+    },
 };
 
 
@@ -2174,7 +2275,7 @@ kshf.Browser.prototype = {
         this.insertClearAll();
 
         this.loaded = true;
-        this.initVarChartWidth();
+        this.initBarChartWidth();
         this.update(0,true);
 
         // hide infobox
@@ -2284,7 +2385,7 @@ kshf.Browser.prototype = {
         var maxTotalCount = d3.max(this.facets, function(facet){ 
             return facet.getMaxBarValueMaxPerAttrib();
         });
-        this._labelXOffset = 9;
+        this._labelXOffset = 10;
         var digits = 1;
         while(maxTotalCount>9){
             digits++;
@@ -2339,6 +2440,13 @@ kshf.Browser.prototype = {
         var timeout = 1750;
         if(noWait) timeout=0;
         setTimeout( function(){ me.updateLayout_Height(); }, timeout); // update layout after 1.75 seconds
+    },
+    /** -- */
+    updateLayout: function(){
+        if(this.loaded!==true) return;
+        this.divWidth = this.domWidth();
+        this.updateLayout_Height();
+        this.setBarWidthLeftPanel(this.barChartWidth);
     },
     /** -- */
     updateLayout_Height: function(){
@@ -2464,7 +2572,7 @@ kshf.Browser.prototype = {
             }
         }
     },
-    initVarChartWidth: function(){
+    initBarChartWidth: function(){
         this.divWidth = this.domWidth();
 
         var barChartWidth;
@@ -2480,46 +2588,27 @@ kshf.Browser.prototype = {
         }
         this.setBarWidthLeftPanel(barChartWidth);
     },
-    /** -- */
-    updateLayout: function(){
-        if(this.loaded!==true) return;
-        this.divWidth = this.domWidth();
-        // HEIGHT
-        this.updateLayout_Height();
-        // WIDTH
-        this.updateLayout_Width();
-    },
 
-    /** Not explicitly called, you can call this manually to change the text width size after the browser is created */
-    setCategoryTextWidth: function(w){
-        this.categoryTextWidth = w;
-        this.facets.forEach(function(facet){
-            facet.refreshTextWidth(w);
-            facet.updateBarAxisScale();
-            facet.refreshWidth();
-        });
-        this.updateLayout_Width();
-    },
-    setBarChartWidth: function(v){
-        if(v>200) {
+    /** Called by initBarChartWidth and left panel width adjust 
+     *  @param barChartWidth_ The new bar chart width*/
+    setBarWidthLeftPanel: function(barChartWidth_){
+        if(barChartWidth_>200) {
             this.hideBars = false;
             this.hideBarAxis = false;
-        } else if(v>45){
+        } else if(barChartWidth_>45){
             this.hideBars = false;
             this.hideBarAxis = false;
-        } else if(v>10){
+        } else if(barChartWidth_>10){
             this.hideBars = false;
             this.hideBarAxis = true;
         } else {
             this.hideBars = true;
             this.hideBarAxis = true;
-            v = 0; 
+            barChartWidth_ = 0; // collapse to 0
         }
         if(this.forceHideBarAxis===true){
             this.hideBarAxis = true;
         }
-        this.barChartWidth = v;
-
         if(this.hideBars===false){
             this.root.attr("hidebars",false);
         } else {
@@ -2530,16 +2619,31 @@ kshf.Browser.prototype = {
         } else {
             this.root.attr("hideBarAxis",true);
         }
-    },
-    /** -- */
-    setBarWidthLeftPanel: function(v){
-        this.setBarChartWidth(v);
+
+        this.barChartWidth = barChartWidth_;
+
+        this.facetBackground.style("width",this.getWidth_LeftPanel()+"px");
+
         this.facets.forEach(function(facet){
             if(facet.updateBarAxisScale) facet.updateBarAxisScale();
             if(facet.refreshBarGroupWidth) facet.refreshBarGroupWidth();
+            if(facet.type==='scatterplot') facet.updateTimeWidth();
             facet.refreshWidth();
-        });
-        this.updateLayout_Width();
+        },this);
+
+        // for some reason, on page load, this variable may be null. urgh.
+        if(this.listDisplay){
+            // 5 pixel space from div width
+            var widthListDisplay = this.divWidth-this.getWidth_LeftPanel()-this.scrollPadding-5;
+            var width = (this.fullWidthResultSet() ? (this.divWidth-12) : (widthListDisplay+9));
+            this.listDisplay.updateTotalWidth(width);
+            
+            var contentWidth = (widthListDisplay);
+            if(this.fullWidthResultSet()) contentWidth+=this.getWidth_LeftPanel();
+            this.listDisplay.updateContentWidth(contentWidth);
+
+            this.listDisplay.listDiv.style("width",widthListDisplay+"px");
+        }
     },
     /** -- */
     isSmallWidth: function(){
@@ -2550,29 +2654,6 @@ kshf.Browser.prototype = {
         if(this.facets.length==1 && this.facets[0].type==='scatterplot') return true;
         if(this.isSmallWidth()) return true;
         return false;
-    },
-    /** -- */
-    updateLayout_Width: function(v){
-        var width_leftPanel_total = this.getWidth_LeftPanel();
-        var width_rightPanel_total = this.divWidth-width_leftPanel_total-this.scrollPadding-5; // 15 is padding
-
-        this.facetBackground.style("width",(width_leftPanel_total)+"px");
-
-        this.facets.forEach(function(facet){
-            if(facet.type==='scatterplot') facet.setTimeWidth(width_rightPanel_total);
-        })
-
-        // for some reason, on page load, this variable may be null. urgh.
-        if(this.listDisplay){
-            var width = (this.fullWidthResultSet() ? (this.divWidth-12) : (width_rightPanel_total+9));
-            this.listDisplay.updateTotalWidth(width);
-            
-            var contentWidth = (width_rightPanel_total);
-            if(this.fullWidthResultSet()) contentWidth+=width_leftPanel_total;
-            this.listDisplay.updateContentWidth(contentWidth);
-
-            this.listDisplay.listDiv.style("width",width_rightPanel_total+"px");
-        }
     },
     /** -- */
     getFilteringState: function(facetTitle, itemInfo) {
@@ -2674,7 +2755,6 @@ kshf.Facet_Categorical = function(kshf_, options){
     });
 
     this.parentKshf.barChartWidth = 0;
-    this.options.timeMaxWidth=0;
 
     // generate row table if necessary
     if(this.options.generateRows){
@@ -2719,6 +2799,8 @@ kshf.Facet_Categorical = function(kshf_, options){
         if(options.collapsedTime===true) this.collapsedTime = true;
         if(this.options.timeBarShow===undefined) this.options.timeBarShow = false;
 
+        this.timeRange ={min:0, max:0, width:0}
+
         // How do you access time attribute of item?
         if(this.options.timeItemMap===undefined){
             this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeTitle);
@@ -2731,17 +2813,19 @@ kshf.Facet_Categorical = function(kshf_, options){
             name: this.options.timeTitle,
             browser: this.getKshf(),
             onClear: function(filter){
-                this.resetTimeFilter_ms();
+                this.divRoot.attr("filtered_time",false);
+                this.resetTimeFilterActive();
                 this.resetTimeZoom_ms();
                 this.refreshTimechartLayout(true);
-                this.yearSetXPos();
+                this.refreshTimeChart();
             },
             onFilter: function(filter){
-                this.yearSetXPos();
+                this.divRoot.attr("filtered_time",true);
+                this.refreshTimeChart();
                 this.getKshfItems().forEach(function(item){
                     var timePos = item.mappedData[filter.id];
                     item.setFilter(filter.id,
-                        (timePos>=this.timeFilter_ms.min) && (timePos<=this.timeFilter_ms.max)
+                        (timePos>=this.timeFilter.active.min) && (timePos<=this.timeFilter.active.max)
                     );
                     item.updateSelected();
                 },this);
@@ -2792,17 +2876,8 @@ kshf.Facet_Categorical.prototype = {
         return kshf.dt_id[this.catTableName];
     },
     /** -- */
-    getWidth: function(){
-        return this.getWidth_Left()+this.getWidth_Right();
-    },
-    /** -- */
     getWidth_Left: function(){
         return this.getKshf().getWidth_LeftPanel();
-    },
-    /** -- */
-    getWidth_Right: function(){
-        var kshf_ = this.getKshf();
-        return (this.type==='scatterplot')?(kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth):0;
     },
     /** -- */
     getFilteredCount: function(){
@@ -3010,19 +3085,20 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
-        this.dom.chartRoot = this.divRoot.append("div").attr("class","chart_root");
+        this.dom.facetCategorical = this.divRoot.append("div").attr("class","facetCategorical");
 
-        this.dom.chart_root2 = this.dom.chartRoot.append("svg").attr("class","chart_root2");
-
-        this.dom.chartRoot.append("span").attr("class","scrollToTop")
+        this.dom.facetCategorical.append("span").attr("class","scrollToTop")
             .html("⬆")
             .attr("title","Scroll To Top")
             .on("click",function(d){ kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); });
 
+        this.dom.scrollToTop = this.dom.facetCategorical.selectAll(".scrollToTop");
 
-        this.dom.scrollToTop = this.dom.chartRoot.selectAll(".scrollToTop");
+        if(this.type==='scatterplot'){
+            this.dom.selectVertLine = this.dom.facetCategorical.append("span").attr('class',"selectVertLine");
+        }
 
-    	this.dom.attribGroup = this.dom.chartRoot.append("div").attr("class","attribGroup")
+    	this.dom.attribGroup = this.dom.facetCategorical.append("div").attr("class","attribGroup")
             .on("scroll",function(d){
                 if(kshf.Util.ignoreScrollEvents===true) return;
                 var xx=this;
@@ -3037,17 +3113,9 @@ kshf.Facet_Categorical.prototype = {
             })
             ;
 
-        this.dom.belowAttribs = this.dom.chartRoot.append("div").attr("class","belowAttribs");
+        this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
 
         this.dom.attribChartAxis = this.dom.belowAttribs.append("div").attr("class", "attribChartAxis");
-
-        this.dom.scroll_display_more = this.dom.belowAttribs.append("span").attr("class","scroll_display_more")
-            .on("mousedown",function(){
-                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+18);
-                if(sendLog) {
-                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, {facet:me.options.facetTitle});
-                }
-            });
 
     	this.dom.attribGroup.selectAll("div.attib")
             // removes attributes with no items
@@ -3064,12 +3132,17 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attribs = this.dom.attribGroup.selectAll('div.attrib');
 
         this.insertHeader();
+        if(this.type==="scatterplot"){
+            this.insertRightHeader();
+        }
 
         if(this.type==='scatterplot') { 
             if(this.options.timeDotConfig!==undefined){
                 this.divRoot.attr("dotconfig",this.options.timeDotConfig);
             }
-            this.dom.middleScrollbar = this.dom.chartRoot.append("div").attr("class","middleScrollbar")
+            this.dom.timeChartAxis = this.dom.belowAttribs.append("div").attr("class","timeChartAxis");
+
+            this.dom.middleScrollbar = this.dom.facetCategorical.append("div").attr("class","middleScrollbar")
                 .on("scroll",function(d){
                     // sync scroll position
                     me.dom.attribGroup[0][0].scrollTop = this.scrollTop;
@@ -3077,21 +3150,41 @@ kshf.Facet_Categorical.prototype = {
             this.dom.middleScrollbar.append("div").attr("class","filler");
         }
 
+        this.dom.scroll_display_more = this.dom.belowAttribs.append("span").attr("class","scroll_display_more hasLabelWidth")
+            .on("mousedown",function(){
+                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+18);
+                if(sendLog) {
+                    sendLog(CATID.FacetScroll,ACTID_SCROLL.ClickMore, {facet:me.options.facetTitle});
+                }
+            });
+
         this.insertAttribs();
 
+        if(this.showTextSearch){
+            this.insertLabelTextSearch();
+        }
+
+        if(this.options.sortingOpts.length>1) {
+            this.insertSortingOpts();
+        }
+
+
         if(this.type==='scatterplot') { 
-            this.dom.chartRoot.append("span").attr("class","scrollToTop scrollToTop2")
+            this.dom.facetCategorical.append("span").attr("class","scrollToTop scrollToTop2")
                 .html("⬆")
                 .attr("title","Scroll To Top")
                 .on("click",function(d){ kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); });
 
-            this.dom.selectVertLine = this.dom.chartRoot.append("span").attr('class',"selectVertLine");
-
-            this.dom.timeAxisGroup = this.dom.chart_root2.append("g").attr("class","timeAxisGroup");
-            this.dom.tickGroup = this.dom.timeAxisGroup.append("g").attr("class","tickGroup");
+            this.dom.timeSlider = this.dom.timeChartAxis.append("div").attr("class","timeSlider rangeSlider");
+            kshf.Util.insertSlider_do(this.dom.timeSlider,{
+                'range': this.timeRange,
+                'scale': this.timeScale,
+                'filter': this.timeFilter,
+                'root': kshf_.root
+            });
+            this.dom.timeLabelGroup = this.dom.timeChartAxis.append("div").attr("class","timeLabelGroup labelGroup");
 
             this.insertTimeChartRows();
-            this.insertTimeChartAxis_1();
         }
     },
     /** returns the maximum number of total items stored per row in chart data */
@@ -3190,14 +3283,10 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.leftHeader = this.dom.headerGroup.append("div").attr("class","leftHeader").style("width","0px");
 
-        if(this.type==="scatterplot"){
-            this.insertRightHeader();
-        }
-
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
-        var topRow = topRow_background.append("div").attr("class","leftHeader_XX");
+        var topRow = topRow_background.append("div").attr("class","hasLabelWidth");
         topRow.append("span").attr("class","header_label_arrow")
             .attr("title","Show/Hide attributes").text("▼")
             .on("click",function(){ me.collapseFacet(!me.collapsed); })
@@ -3228,7 +3317,7 @@ kshf.Facet_Categorical.prototype = {
             .html(this.options.facetTitle)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
 
-        var header_belowFirstRow = this.dom.leftHeader.append("div").attr("class","header_belowFirstRow leftHeader_XX");
+        this.dom.facetControls = this.dom.leftHeader.append("div").attr("class","facetControls hasLabelWidth");
 
         var xxx=this.dom.leftHeader.append("svg").attr("class", "resort_button")
             .attr("version","1.1")
@@ -3248,94 +3337,91 @@ kshf.Facet_Categorical.prototype = {
                 "M736 96q0 -12 -10 -24l-319 -319q-10 -9 -23 -9q-12 0 -23 9l-320 320q-15 16 -7 35q8 20 30 20h192v1376q0 14 9 23t23 9h192q14 0 23 -9t9 -23v-1376h192q14 0 23 -9t9 -23zM1792 -32v-192q0 -14 -9 -23t-23 -9h-832q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h832 q14 0 23 -9t9 -23zM1600 480v-192q0 -14 -9 -23t-23 -9h-640q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h640q14 0 23 -9t9 -23zM1408 992v-192q0 -14 -9 -23t-23 -9h-448q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h448q14 0 23 -9t9 -23zM1216 1504v-192q0 -14 -9 -23t-23 -9h-256 q-14 0 -23 9t-9 23v192q0 14 9 23t23 9h256q14 0 23 -9t9 -23z")
             ;
         xxx.append("title").text("Move selected rows to top & re-order");
-
-        // ************************************************************************************
-        // ****** CONFIG LINE *****************************************************************
-
-        if(this.showTextSearch){
-            var textSearchRowDOM = header_belowFirstRow.append("div")
-                .attr("class","attribTextSearch");
-            this.dom.attribTextSearch=textSearchRowDOM.append("input")
-                .attr("type","text")
-                .attr("placeholder","Search in "+kshf.Util.toProperCase(this.options.facetTitle))
-                .on("input",function(){
-                    if(this.timer){
-                        clearTimeout(this.timer);
-                    }
-                    var x = this;
-                    this.timer = setTimeout( function(){
-                        var v=x.value.toLowerCase();
-                        if(v===""){
-                            textSearchRowDOM.select("svg.clearText").style("display","none");                
-                            me.attribFilter.clearFilter(true);
-                        } else {
-                            textSearchRowDOM.select("svg.clearText").style("display","block");                     
-                            me.attrib_UnselectAll();
-                            me.getAttribs().forEach(function(attrib){
-                                if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
-                                    attrib.f_include();
-                                } else {
-                                    if(me.options.catTooltipText){
-                                        if(me.options.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1)
-                                            attrib.f_include();
-                                    } else{
-                                        attrib.f_unselect();
-                                    }
-                                }
-                                if(attrib.f_included()) me.attrib_Include(1);
-                            });
-                            if(!me.isFiltered()){
-                                me.attribFilter.clearFilter(true);                            
+    },
+    insertLabelTextSearch: function(){
+        var me=this;
+        var textSearchRowDOM = this.dom.facetControls.append("div")
+            .attr("class","attribTextSearch");
+        this.dom.attribTextSearch=textSearchRowDOM.append("input")
+            .attr("type","text")
+            .attr("placeholder","Search in "+kshf.Util.toProperCase(this.options.facetTitle))
+            .on("input",function(){
+                if(this.timer){
+                    clearTimeout(this.timer);
+                }
+                var x = this;
+                this.timer = setTimeout( function(){
+                    var v=x.value.toLowerCase();
+                    if(v===""){
+                        textSearchRowDOM.select("svg.clearText").style("display","none");                
+                        me.attribFilter.clearFilter(true);
+                    } else {
+                        textSearchRowDOM.select("svg.clearText").style("display","block");                     
+                        me.attrib_UnselectAll();
+                        me.getAttribs().forEach(function(attrib){
+                            if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
+                                attrib.f_include();
                             } else {
-                                me.setSelectType("SelectOr");
-                                me.updateSelected_All();
-                                me.attribFilter.addFilter(true);
+                                if(me.options.catTooltipText){
+                                    if(me.options.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1)
+                                        attrib.f_include();
+                                } else{
+                                    attrib.f_unselect();
+                                }
                             }
+                            if(attrib.f_included()) me.attrib_Include(1);
+                        });
+                        if(!me.isFiltered()){
+                            me.attribFilter.clearFilter(true);                            
+                        } else {
+                            me.setSelectType("SelectOr");
+                            me.updateSelected_All();
+                            me.attribFilter.addFilter(true);
                         }
-
-                        if(sendLog)
-                            sendLog(CATID.FacetFilter,
-                                ACTID_FILTER.CatTextSearch,
-                                me.getKshf().getFilteringState(me.options.facetTitle));
-                    }, 750);
-                })
-                .on("blur",function(){
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                })
-                ;
-            textSearchRowDOM.append("svg").attr("class","searchIcon")
-                .attr("width","13")
-                .attr("height","12")
-                .attr("viewBox","0 0 491.237793 452.9882813")
-                .attr("xmlns","http://www.w3.org/2000/svg")
-                .append("use").attr("xlink:href","#kshf_svg_search")
-            this.dom.clearTextSearch=textSearchRowDOM.append("svg").attr("class","clearText")
-                .attr("width","13")
-                .attr("height","13")
-                .attr("viewBox","0 0 48 48")
-                .attr("xmlns","http://www.w3.org/2000/svg")
-                .append("use").attr("xlink:href","#kshf_svg_clearText")
-                .on("click",function() { me.attribFilter.clearFilter(true); });
-        }
-
-        if(this.options.sortingOpts.length>1) {
-            var sortGr = header_belowFirstRow.append("span").attr("class","sortOptionSelectGroup");
-            sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
-            sortGr.append("select").attr("class","optionSelect")
-                .on("change", function(){
-                    me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
-                    me.updateSorting.call(me, 0);
-                    if(sendLog) {
-                        sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
-                            {facet:me.options.facetTitle, funcID:this.selectedIndex});
                     }
-                })
-            .selectAll("input.sort_label").data(this.options.sortingOpts)
-              .enter().append("option").attr("class", "sort_label")
-                .text(function(d){ return d.name; })
-                ;
-        }
+
+                    if(sendLog)
+                        sendLog(CATID.FacetFilter,
+                            ACTID_FILTER.CatTextSearch,
+                            me.getKshf().getFilteringState(me.options.facetTitle));
+                }, 750);
+            })
+            .on("blur",function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            })
+            ;
+        textSearchRowDOM.append("svg").attr("class","searchIcon")
+            .attr("width","13")
+            .attr("height","12")
+            .attr("viewBox","0 0 491.237793 452.9882813")
+            .attr("xmlns","http://www.w3.org/2000/svg")
+            .append("use").attr("xlink:href","#kshf_svg_search")
+        this.dom.clearTextSearch=textSearchRowDOM.append("svg").attr("class","clearText")
+            .attr("width","13")
+            .attr("height","13")
+            .attr("viewBox","0 0 48 48")
+            .attr("xmlns","http://www.w3.org/2000/svg")
+            .append("use").attr("xlink:href","#kshf_svg_clearText")
+            .on("click",function() { me.attribFilter.clearFilter(true); });
+    },
+    insertSortingOpts: function(){
+        var me=this;
+        var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup");
+        sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
+        sortGr.append("select").attr("class","optionSelect")
+            .on("change", function(){
+                me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
+                me.updateSorting.call(me, 0);
+                if(sendLog) {
+                    sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
+                        {facet:me.options.facetTitle, funcID:this.selectedIndex});
+                }
+            })
+        .selectAll("input.sort_label").data(this.options.sortingOpts)
+          .enter().append("option").attr("class", "sort_label")
+            .text(function(d){ return d.name; })
+            ;
     },
     /** -- */
     updateBarAxisScale: function(){
@@ -3382,21 +3468,19 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshWidth: function(){
+        var kshf_ = this.getKshf();
         var leftWidth = this.getWidth_Left();
-        var rightWidth = this.getWidth_Right();
-        var totalWidth = this.getWidth();
 
         this.dom.leftHeader.style("width",leftWidth+"px");
 
-        this.dom.chart_root2.style("width",totalWidth+"px");
-        this.dom.attribGroup.style("width",totalWidth+"px");
-
         if(this.type==="scatterplot"){
-            this.dom.rightHeader.style("width",rightWidth+"px");
-            this.dom.middleScrollbar.style('left',(leftWidth-20)+'px');
-            this.dom.chartRoot.select(".scrollToTop2").style('left',(leftWidth-15)+'px');
+            this.dom.rightHeader.style("width",(this.timeRange.width+kshf_.sepWidth+kshf_.scrollWidth)+"px");
+            this.dom.middleScrollbar.style('left',(leftWidth-kshf_.scrollWidth)+'px');
+            this.dom.facetCategorical.select(".scrollToTop2").style('left',(leftWidth-15)+'px');
+            this.dom.timeChartAxis
+                .style("width",this.timeRange.width+"px")
+                .style("left",(leftWidth+kshf_.sepWidth)+"px");
             if(this.collapsedTime){
-                this.dom.chart_root2.style("width",leftWidth+"px");
                 this.dom.attribGroup.style("width",leftWidth+"px");
             }
         }
@@ -3440,21 +3524,17 @@ kshf.Facet_Categorical.prototype = {
             });
     },
     /** -- */
-    refreshTextWidth: function(w){
+    refreshLabelWidth: function(w){
         var kshf_ = this.getKshf();
         var rowTextWidth = this.getKshf().categoryTextWidth;
 
-        this.dom.headerGroup.selectAll(".leftHeader_XX")
-            .style("width",rowTextWidth+"px");
-        this.dom.scroll_display_more
-            .style("width",rowTextWidth+"px")
-        this.dom.attrLabel
-            .style("width",rowTextWidth+"px")
+        this.divRoot.selectAll(".hasLabelWidth").style("width",rowTextWidth+"px");
+
         if(this.dom.attribTextSearch) {
             this.dom.attribTextSearch.style("width",(rowTextWidth-16)+"px")
         }
         this.dom.attribChartAxis.each(function(d){
-            var transform="translate("+(kshf_.getRowTotalTextWidth()+2)+"px,0px)";
+            var transform="translate("+(kshf_.getRowTotalTextWidth())+"px,0px)";
             this.style.webkitTransform = transform;
             this.style.MozTransform = transform;
             this.style.msTransform = transform;
@@ -3780,7 +3860,7 @@ kshf.Facet_Categorical.prototype = {
             .on("mouseout",onMouseOut)
             ;
 
-    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "label");
+    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "label hasLabelWidth");
 
         this.dom.add_more = this.dom.attrLabel.append("span").attr("class", "filter_add_more");
             this.dom.add_more.append("span").attr("class","add").text("⊕")
@@ -3845,7 +3925,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attrLabel.append("span").attr("class","labell").html(this.options.catLabelText);
 
         this.dom.item_count = this.dom.attribs.append("span").attr("class", "item_count")
-            .style("width",(this.getKshf().getRowLabelOffset())+"px")
+            .style("width",(this.getKshf().getRowLabelOffset()-1)+"px")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
@@ -3891,7 +3971,7 @@ kshf.Facet_Categorical.prototype = {
             this.dom.row_bar_line = this.dom.barGroup.insert("span",":first-child").attr("class", "row_bar_line");
         }
 
-        this.refreshTextWidth();
+        this.refreshLabelWidth();
 
         this.updateSorting();
     },
@@ -4031,7 +4111,8 @@ kshf.Facet_Categorical.prototype = {
         var me=this;
         this.divRoot.attr("collapsedTime",this.collapsedTime===false?"false":"true")
 
-        this.dom.rightHeader = this.dom.headerGroup.append("span").attr("class","rightHeader");
+        this.dom.rightHeader = this.dom.headerGroup.append("span").attr("class","rightHeader")
+            .style("margin-left",this.getKshf().sepWidth+"px");
 
         var firstLine = this.dom.rightHeader.append("div").attr("class","chartFirstLineBackground chartFirstLineBackgroundRight");
             firstLine.append("span").attr("class","header_label_arrow")
@@ -4062,7 +4143,7 @@ kshf.Facet_Categorical.prototype = {
             .attr("disabled","true")
             .text("⇥ Zoom in ⇤")
             .on("click",function(d){
-                me.timeZoom_ms = { min: me.timeFilter_ms.min, max: me.timeFilter_ms.max };
+                me.timeZoom_ms = { min: me.timeFilter.active.min, max: me.timeFilter.active.max };
                 me.useCurrentTimeMinMax = true;
                 me.refreshTimechartLayout(true);
                 me.useCurrentTimeMinMax = undefined;
@@ -4092,30 +4173,29 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     isFiltered_Time: function(){
         if(this.type!=="scatterplot") return false;
-        return this.timeFilter_ms.min!==this.timeRange_ms.min ||
-               this.timeFilter_ms.max!==this.timeRange_ms.max ;
+        return this.timeFilter.active.min!==this.timeRange.min ||
+               this.timeFilter.active.max!==this.timeRange.max ;
     },
-    /** -- */
-    resetTimeFilter_ms: function(){
-        this.timeFilter_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+    resetTimeFilterActive: function(){
+        this.timeFilter.active = { 
+            min: this.timeRange.min,
+            max: this.timeRange.max
+        };
     },
     /** -- */
     resetTimeZoom_ms: function(){
-        this.timeZoom_ms = { min: this.timeRange_ms.min, max:this.timeRange_ms.max };
+        this.timeZoom_ms = { min: this.timeRange.min, max:this.timeRange.max };
     },
     /** -- */
-    setTimeWidth: function(w){
-        w = w-this.getKshf().scrollWidth;
+    updateTimeWidth: function(){
         var kshf_ = this.getKshf();
-        this.options.timeMaxWidth = w; // 15px is for scrollbar
+        this.timeRange.width = kshf_.divWidth-kshf_.getWidth_LeftPanel()-kshf_.scrollPadding-2*kshf_.sepWidth-20;
 
         this.refreshTimechartLayout(true);
-        this.refreshWidth();
         this.updateRowBarLineWidth();
 
-        this.dom.timeAxisGroup
-            .attr("transform","translate("+(kshf_.getWidth_LeftPanel()+kshf_.sepWidth-2)+","+
-                (kshf_.line_height*this.rowCount_Visible)+")");
+        this.dom.timeChartAxis.style("width",this.timeRange.width+"px");
+        this.dom.timeLineParts.style("width",this.timeRange.width+"px")
     },
     /** Applies alternating color for bar helper lines */
     refreshBarLineColor: function(){
@@ -4127,7 +4207,7 @@ kshf.Facet_Categorical.prototype = {
     updateRowBarLineWidth: function(){
         var kshf_ = this.getKshf();
         this.dom.row_bar_line.style("width",
-            (kshf_.barChartWidth+kshf_.sepWidth+this.options.timeMaxWidth+kshf_.scrollWidth)+"px");
+            (kshf_.barChartWidth+kshf_.scrollWidth+this.timeRange.width+2*kshf_.sepWidth)+"px");
     },
     /** -- */
     updateAttrib_TimeMinMax: function(){
@@ -4166,21 +4246,14 @@ kshf.Facet_Categorical.prototype = {
             totalActiveTime_pixLength+=me.timeScale(attrib.xMax_Dyn) - me.timeScale(attrib.xMin_Dyn);
         });
 
-        var timeFilterDiff = this.timeFilter_ms.max-this.timeFilter_ms.min;
+        var timeFilterDiff = this.timeFilter.active.max-this.timeFilter.active.min;
         var timeZoomDiff = this.timeZoom_ms.max-this.timeZoom_ms.min;
 
         // how much width of time does each dot take?
         var dotPixelWidth = 12;
-    //        var timeFilterWidth = this.options.timeMaxWidth*(totalActiveTimeRange_ms/timeZoomDiff);
-    //        var maxDotsPerRow = timeFilterWidth/dotPixelWidth;
         var maxDots = totalActiveTime_pixLength/dotPixelWidth;
-    //        var dotTimeWidth = (this.options.timeMaxWidth/10) dots can represent
-    //        x*dotTimeWidth = this.options.timeMaxWidth;
         
         var numOfItems = this.parentKshf.itemsSelectedCt;
-
-        // some metric on number of dots that can fit inside. The bigger, the more items an be shown without overlap
-    //        var mmm = *(totalActiveTime_ms/timeZoomDiff)/10;
 
         if(maxDots>numOfItems*3 || totalActiveTime_pixLength===0){
             this.dom.timeDots.attr("fill","default");
@@ -4229,12 +4302,12 @@ kshf.Facet_Categorical.prototype = {
             // etc...
         },this);
 
-        // update min-max time extents ber timeBar
+        // update min-max time extents
         this.updateAttrib_TimeMinMax();
         if(this.dom.timeBarActive){
             this.dom.timeBarActive
                 .style("left", function(d) {
-                    return ((me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn))+5)+"px";
+                    return ((me.timeScale(d.xMin_Dyn===undefined?d.xMin:d.xMin_Dyn)))+"px";
                 })
                 .style("width", function (d) { 
                     if(d.xMin_Dyn===undefined){ return "0px"; }
@@ -4251,7 +4324,7 @@ kshf.Facet_Categorical.prototype = {
 
         // scrollbar filler
         this.dom.attribs.append("span").attr("class","scrollbarFiller")
-            .style("width",(kshf_.scrollWidth+kshf_.sepWidth-10)+"px"); // -5 if for allowing overflow hidden of timedots
+            .style("width",kshf_.scrollWidth+"px"); // -5 if for allowing overflow hidden of timedots
 
         // Create helper line
         this.dom.row_bar_line = this.dom.barGroup.insert("span",":first-child").attr("class", "row_bar_line");
@@ -4315,10 +4388,15 @@ kshf.Facet_Categorical.prototype = {
                     rangeMax.setDate(rangeMin.getDate()+1);
                 }
 
-                me.timeFilter_ms.min = Date.parse(rangeMin);
-                me.timeFilter_ms.max = Date.parse(rangeMax);
+                me.timeFilter.active.min = Date.parse(rangeMin);
+                me.timeFilter.active.max = Date.parse(rangeMax);
+                me.checkTimeFilterLimits();
 
-                me.timeFilter.addFilter(false);
+                if(me.isFiltered_Time()){
+                    me.timeFilter.addFilter(false);
+                } else {
+                    me.timeFilter.clearFilter(false);
+                }
                 // kshf_.update is done by attribute filtering called below.
 
                 // filter for selected attribute
@@ -4330,7 +4408,6 @@ kshf.Facet_Categorical.prototype = {
                 d3.event.stopPropagation();
     		})
             ;
-        this.dom.timeBar       = this.dom.timeLineParts.selectAll('span.bar')
         this.dom.timeBarActive = this.dom.timeLineParts.selectAll("span.bar.active");
         this.dom.timeBarTotal  = this.dom.timeLineParts.selectAll("span.bar.total");
         this.dom.timeDots      = this.dom.timeLineParts.selectAll('span.timeDot');
@@ -4355,20 +4432,20 @@ kshf.Facet_Categorical.prototype = {
         var diff_Month =  Math.floor(timeZoom_msDiff / _MS_PER_MONTH );
         var diff_Year= Math.floor(timeZoom_msDiff / _MS_PER_YEAR );
 
-        // this.options.timeMaxWidth is the current timeline width
-        var timeWidthSteps = this.options.timeMaxWidth/70;
+        // this.timeRange.width is the current timeline width
+        var timeWidthSteps = this.timeRange.width/70;
 
         // choose range
         if(timeWidthSteps<=diff_Year){
             // YEAR
             this.timeticks.range = d3.time.years;
             this.timeticks.format = d3.time.format.utc("%Y");
-            this.timeticks.stepSize = Math.ceil(diff_Year/(this.options.timeMaxWidth/30));
+            this.timeticks.stepSize = Math.ceil(diff_Year/(this.timeRange.width/30));
         } else if(timeWidthSteps<=diff_Month){
             // MONTH
             this.timeticks.range = d3.time.months;
             this.timeticks.format = d3.time.format.utc("%b '%y");
-            this.timeticks.stepSize = Math.ceil(diff_Month/(this.options.timeMaxWidth/60));
+            this.timeticks.stepSize = Math.ceil(diff_Month/(this.timeRange.width/60));
             // must be 1/2/3/4/6/12
             if(this.timeticks.stepSize>12) { this.timeticks.stepSize = 12;}
             else if(this.timeticks.stepSize>6){ this.timeticks.stepSize = 6;}
@@ -4388,21 +4465,18 @@ kshf.Facet_Categorical.prototype = {
         if(this.useCurrentTimeMinMax===undefined){
             var tempDate;
             if(this.timeticks.range===d3.time.years){
-                this.timeRange_ms = { 
-                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),0,1),
-                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear()+1,0,1)};
+                this.timeRange.min = Date.UTC(this.timeData_dt.min.getUTCFullYear(),0,1);
+                this.timeRange.max = Date.UTC(this.timeData_dt.max.getUTCFullYear()+1,0,1);
             } else if(this.timeticks.range===d3.time.months){
-                this.timeRange_ms = {
-                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),1),
-                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth()+1,1)};
+                this.timeRange.min = Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),1);
+                this.timeRange.max = Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth()+1,1);
             } else if(this.timeticks.range===d3.time.days){
-                this.timeRange_ms = {
-                    min: Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),this.timeData_dt.min.getUTCDate()-1),
-                    max: Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth(),this.timeData_dt.max.getUTCDate()+1)};
+                this.timeRange.min = Date.UTC(this.timeData_dt.min.getUTCFullYear(),this.timeData_dt.min.getUTCMonth(),this.timeData_dt.min.getUTCDate()-1);
+                this.timeRange.max = Date.UTC(this.timeData_dt.max.getUTCFullYear(),this.timeData_dt.max.getUTCMonth(),this.timeData_dt.max.getUTCDate()+1);
             }
 
             this.resetTimeZoom_ms();
-            this.resetTimeFilter_ms();
+            this.resetTimeFilterActive();
         }
         // update the time scale with the new date domain
         this.updateTimeScale();
@@ -4411,27 +4485,31 @@ kshf.Facet_Categorical.prototype = {
     updateTimeScale: function(){
         this.timeScale = d3.time.scale.utc()
             .domain([new Date(this.timeZoom_ms.min), new Date(this.timeZoom_ms.max)])
-            .rangeRound([0, this.options.timeMaxWidth])
+            .rangeRound([0, this.timeRange.width])
             ;
     },
     /** -- */
     insertTimeTicks: function(){
-        var me = this;
+        var me=this;
 
-        var xAxis = d3.svg.axis()
-            .scale(this.timeScale)
-            .orient('bottom')
-            .innerTickSize(6)
-            .outerTickSize(1)
-            .ticks(this.timeticks.range, this.timeticks.stepSize ) // d3.time.years, 2 , no tickValues
-            .tickFormat(this.timeticks.format ) // d3.time.format("%Y")
-            ;
-        ;
-        this.dom.tickGroup.call(xAxis);
+        var timeTicks = this.timeScale.ticks(this.timeticks.range, this.timeticks.stepSize);
+
+        var ddd = this.dom.timeLabelGroup.selectAll("span.tick").data(timeTicks);
+
+        var ddd_enter = ddd.enter().append("span").attr("class","tick");
+        ddd.exit().remove();
+
+        ddd_enter.append("span").attr("class","line");
+        ddd_enter.append("span").attr("class","text");
+
+        this.dom.labelTicks = this.dom.timeLabelGroup.selectAll("span.tick");
+
+        this.dom.labelTicks.selectAll("span.text").text(function(d){return me.timeticks.format(d);});
+        this.dom.labelTicks.style("left",function(d){ return (me.timeScale(d))+"px"; })
 
         this.insertTimeTicks_timeValues = [];
 
-        this.dom.tickGroup.selectAll("text")
+        this.dom.timeLabelGroup.selectAll(".text")
             .each(function(d,i){
                 me.insertTimeTicks_timeValues.push(d);
             })
@@ -4439,206 +4517,32 @@ kshf.Facet_Categorical.prototype = {
                 var curTime  = me.insertTimeTicks_timeValues[i];
                 var nextTime = me.insertTimeTicks_timeValues[i+1];
                 if(nextTime === undefined){
-                    nextTime = me.timeRange_ms.max;
+                    nextTime = me.timeRange.max;
                 }
-                me.timeFilter_ms = {min: curTime, max: nextTime};
-                me.timeFilter.addFilter(true);
+                me.timeFilter.active = {min: curTime, max: nextTime};
+                me.checkTimeFilterLimits();
+                if(me.isFiltered_Time()){
+                    me.timeFilter.addFilter(false);
+                } else {
+                    me.timeFilter.clearFilter(false);
+                }
             })
             ;
-
-        this.dom.tickGroup.selectAll(".tick.major text").style("text-anchor","middle");
-    },
-    /** -- */
-    insertTimeChartAxis_1: function(){
-        var ggg = this.dom.timeAxisGroup.append("g").attr("class","selection_bar")  ;
-        ggg.append("title").attr("class","xaxis_title");
-        ggg.append("rect").attr("y",0).attr("height", 6)
-
-        var axisSubGroup=this.dom.timeAxisGroup.selectAll(".filter_handle")
-            .data([1,2])
-            .enter()
-            .append("g")
-            .attr("class", function(d,i) { return "filter_handle "+((i===0)?"filter_min":"filter_max"); })
-            ;
-        axisSubGroup
-            .append("line")
-            .attr("x1", 0)
-            .attr("x2", 0)
-            .attr("y1", this.getKshf().line_height*1.5-4)
-            ;
-        axisSubGroup
-            .append("rect")
-            .attr("class", "filter_nonselected")
-            .attr("y",0)
-            .attr("height",0)
-            .on("click",function(){ d3.event.stopPropagation(); })
-            ;
-
-        var axisSubGroup=this.dom.timeAxisGroup.selectAll(".filter_handle");
-        
-        var axisSubSubGroup = axisSubGroup.append("g");
-        axisSubSubGroup.append("title").attr("class","xaxis_title");
-        axisSubSubGroup
-            .append("path")
-            .attr("transform",function(d,i) { return "translate("+(i===0?"0":"0")+",-9)";})
-            .attr("d", function(d,i) { 
-                return (i===0)?"M0 6 L0 16 L9 16 Z":"M0 6 L0 16 L-9 16 Z";
-            })
     },
     /** -- */
     refreshTimeAxisHeight: function(){
         var kshf_ = this.getKshf();
         var visibleRowHeight = kshf_.line_height*this.rowCount_Visible;
         
-        this.dom.timeAxisGroup
-            .attr("transform","translate("+(kshf_.getWidth_LeftPanel()+kshf_.sepWidth-2)+","+
-                (kshf_.line_height*this.rowCount_Visible)+")");
-        // update x axis items
-        this.dom.timeAxisGroup.selectAll("g.filter_handle line")
-            .attr("y1", -visibleRowHeight-8)
-            .attr("y2", -8)
-            ;
-        this.dom.timeAxisGroup.selectAll("rect.filter_nonselected")
-            .attr("y",-visibleRowHeight-8)
-            .attr("height", visibleRowHeight)
-            ;
-        this.dom.selectVertLine
-            .style("height", visibleRowHeight+"px")
-            ;
+        this.dom.selectVertLine.style("height", visibleRowHeight+"px");
         this.dom.middleScrollbar.style("height",visibleRowHeight+"px");
+        this.dom.timeChartAxis.selectAll("span.invalidArea")
+            .style("margin-top",(-visibleRowHeight)+"px")
+            .style("height",visibleRowHeight+"px")
     },
 	/** -- */
     insertTimeChartAxis: function(){
-        var me=this;
-        var kshf_ = this.getKshf();
-
-        var axisGroup = this.dom.timeAxisGroup;
-        var msPerTick;
-        switch(this.timeticks.range){
-            case d3.time.years:
-                msPerTick = 31557600000; break;
-            case d3.time.months:
-                msPerTick = 31557600000/12; break;
-            case d3.time.days:
-                msPerTick = 31557600000/(12*30); break;
-            default: break;
-        }
-        this.lengthPerTick = msPerTick*this.timeScale.range()[1]/
-            (this.timeZoom_ms.max-this.timeZoom_ms.min);
-    	
-    	axisGroup.select(".selection_bar rect")
-    		.on("mousedown", function(d, i) {
-                var eeeeee = this;
-                this.style.stroke = "orangered";
-                me.divRoot.style('cursor','pointer');
-                me.root.attr('noanim',true);
-                var mouseDown_x = d3.mouse(axisGroup[0][0])[0];
-                var mousedown_filter = {
-                    min: me.timeFilter_ms.min,
-                    max: me.timeFilter_ms.max
-                };
-    			var timeFilter_ms = me.timeFilter_ms;
-                var olddif=null;
-    			me.divRoot.on("mousemove", function() {
-    				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
-    				var mouseDif = mouseMove_x-mouseDown_x;
-    				var mousemove_filter = timeFilter_ms.min;
-    				var stepDif = Math.round(mouseDif/me.lengthPerTick)*msPerTick;
-    				if(stepDif===olddif ) { return; }
-                    olddif=stepDif;
-    				if(stepDif<0){
-    					timeFilter_ms.min = mousedown_filter.min+stepDif;
-    					if(timeFilter_ms.min<me.timeZoom_ms.min){
-    						timeFilter_ms.min=me.timeZoom_ms.min;
-    					}
-    					timeFilter_ms.max=timeFilter_ms.min+(mousedown_filter.max-mousedown_filter.min);
-    				} else {
-    					timeFilter_ms.max = mousedown_filter.max+stepDif;
-    					if(timeFilter_ms.max>me.timeZoom_ms.max){
-    						timeFilter_ms.max=me.timeZoom_ms.max;
-    					}
-    					timeFilter_ms.min=timeFilter_ms.max-(mousedown_filter.max-mousedown_filter.min);
-    				}
-    				// TODO: make sure you don't exceed the boundaries
-    				if(mousemove_filter.min!==timeFilter_ms.min){
-    					// update filter 
-                        me.timeFilter.addFilter(true);
-    				}
-    			}).on("mouseup", function(){
-                    eeeeee.style.stroke= "";
-                    me.divRoot.style( 'cursor', 'default' );
-                    me.root.attr('noanim',false);
-                    me.x_axis_active_filter = null;
-                    // unregister mouse-move callbacks
-                    me.divRoot.on("mousemove", null).on("mouseup", null);
-                    me.refreshTimeChartDotConfig();
-                    if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.TimeDragRange,kshf_.getFilteringState());
-    			});
-    		});
-    	
-    	// Filter handles
-    	axisGroup.selectAll(".filter_handle g path")
-    		.on("mousedown", function(d, i) {
-                var eeeee = this;
-    			me.x_axis_active_filter = (i===0)?'min':'max';
-                this.style.stroke = 'orangered';
-                me.divRoot.style('cursor','pointer');
-                me.getKshf().root.attr('noanim',true);
-    			var timeFilter_ms = me.timeFilter_ms; // shorthand
-    			me.divRoot.on("mousemove", function() {
-    				var mouseMove_x = d3.mouse(axisGroup[0][0])[0];
-
-                    // convert mouse position to date
-                    var time_ms = Math.floor(
-                        me.timeZoom_ms.min+ 
-                        (me.timeZoom_ms.max-me.timeZoom_ms.min)*(mouseMove_x / me.options.timeMaxWidth)
-                        );
-
-                    var time_dt = new Date(time_ms);
-
-                    var time_ = null;
-                    if(me.timeticks.range===d3.time.years){
-                        time_ = kshf.Util.nearestYear(time_dt);
-                    } else if(me.timeticks.range===d3.time.months){
-                        time_ = kshf.Util.nearestMonth(time_dt);
-                    } else if(me.timeticks.range===d3.time.days){
-                        time_ = kshf.Util.nearestDay(time_dt);
-                    }
-
-                    // if it has the same value after mouse is moved, don't update any filter
-                    if(timeFilter_ms[me.x_axis_active_filter] === time_.getTime()) return;
-                    // update timeFilter_ms
-                    timeFilter_ms[me.x_axis_active_filter] = time_.getTime();
-                    
-                    // Check agains min/max order, sawp if necessary
-                    if(timeFilter_ms.max<timeFilter_ms.min){
-                        eeeee.style.stroke = "";
-                        me.x_axis_active_filter = (me.x_axis_active_filter==='min'?'max':'min');
-                        var tttt= timeFilter_ms.max;
-                        timeFilter_ms.max = timeFilter_ms.min;
-                        timeFilter_ms.min = tttt;
-                    }
-                    // update filter
-                    me.timeFilter.addFilter(true);
-                    
-//                    if(me.sortingOpt_Active.no_resort!==true) me.divRoot.attr("canResort",true);
-    			}).on("mouseup", function(){
-                    eeeee.style.stroke = "";
-    				me.divRoot.style('cursor','default');
-                    me.getKshf().root.attr('noanim',false);
-    				me.x_axis_active_filter = null;
-    				me.divRoot.on("mousemove", null).on("mouseup", null);
-
-                    me.refreshTimeChartDotConfig();
-                    if(sendLog) {
-                        if(me.x_axis_active_filter==="min")
-                            sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMinHandle,kshf_.getFilteringState());
-                        else
-                            sendLog(CATID.FacetFilter,ACTID_FILTER.TimeMaxHandle,kshf_.getFilteringState());
-                    }
-    			});
-    		});
-        this.yearSetXPos();
+        this.refreshTimeChart();
     },
     /** -- */
     updateTimeChartBarsDots: function(){
@@ -4652,72 +4556,83 @@ kshf.Facet_Categorical.prototype = {
             ;
     	this.dom.timeDots
             .each(function(item){
-                var str="translateX("+(me.timeScale(item.mappedData[timeFilterId])-5+5)+"px)";
+                var str="translateX("+(me.timeScale(item.mappedData[timeFilterId])-5)+"px)";
                 this.style.webkitTransform = str;
                 this.style.MozTransform = str;
                 this.style.msTransform = str;
                 this.style.OTransform = str;
                 this.style.transform = str;
             });
-        this.dom.timeLineParts
-            .style("width", (this.options.timeMaxWidth+13)+"px")
     },
     /** -- */
     getFilterMinDateText: function(){
-        var dt = new Date(this.timeFilter_ms.min);
+        var dt = new Date(this.timeFilter.active.min);
         return this.timeticks.format(dt);
     },
     /** -- */
     getFilterMaxDateText: function(){
-        var dt = new Date(this.timeFilter_ms.max);
+        var dt = new Date(this.timeFilter.active.max);
         return this.timeticks.format(dt);
     },
-    /** -- */
-    yearSetXPos: function() {
-        var kshf_ = this.getKshf();
-        // make sure filtered range do not exceed domain range
-        this.timeFilter_ms.min = Math.max(this.timeFilter_ms.min,this.timeZoom_ms.min);
-        this.timeFilter_ms.max = Math.min(this.timeFilter_ms.max,this.timeZoom_ms.max);
+    refreshTimeSlider: function(){
+        var me=this;
+        var _min = this.timeScale(this.timeFilter.active.min);
+        var _max = this.timeScale(this.timeFilter.active.max);
+        this.dom.timeSlider.select(".base.total")
+            .style("width",this.timeScale.range()[1]+"px");
+        this.dom.timeSlider.select(".base.active")
+            .attr("filtered",this.isFiltered_Time())
+            .each(function(d){
+                var transform="translate("+_min+"px,0) scale("+(_max-_min)+",1)";
+                this.style.webkitTransform = transform;
+                this.style.MozTransform = transform;
+                this.style.msTransform = transform;
+                this.style.OTransform = transform;
+                this.style.transform = transform;
+            })
+            ;
+        this.dom.timeSlider.selectAll(".handle")
+            .style("left",function(d){
+                if(d==="min") return (_min-7)+"px";
+                return _max+"px";
+            }).selectAll("span")
+                .style("margin-left",function(d){
+                    if(d==="min") return (-(_min-4))+"px";
+                    return "-1px";
+                })
+                .style("width",function(d){
+                    if(d==="min") return _min+"px";
+                    return ((me.timeScale.range()[1])-_max)+"px";
+                })
+                ;
+    },
+    refreshTimeChart: function(){
+            var minX = this.timeScale(this.timeFilter.active.min);
+            var maxX = this.timeScale(this.timeFilter.active.max);
 
-        if(this.timeFilter_ms.min>this.timeFilter_ms.max){
-            var tmp = this.timeFilter_ms.min;
-            this.timeFilter_ms = {
-                min: this.timeFilter_ms.max,
+            if(this.timeRange.width-minX>190){
+                this.divRoot.select(".config_zoom").style("float","left")
+                    .style("margin-left",minX+"px");
+            } else{
+                this.divRoot.select(".config_zoom").style("float","right");
+            }
+
+            this.refreshTimeSlider();
+
+            this.divRoot.select(".zoom_in").attr("disabled",this.isFiltered_Time()?"false":"true");
+    },
+    checkTimeFilterLimits: function(){
+        // make sure filtered range do not exceed current zoom range
+        this.timeFilter.active.min = Math.max(this.timeFilter.active.min,this.timeZoom_ms.min);
+        this.timeFilter.active.max = Math.min(this.timeFilter.active.max,this.timeZoom_ms.max);
+
+        if(this.timeFilter.active.min>this.timeFilter.active.max){
+            var tmp = this.timeFilter.active.min;
+            this.timeFilter.active = {
+                min: this.timeFilter.active.max,
                 max: tmp};
         }
-
-    	var minX = this.timeScale(this.timeFilter_ms.min);
-    	var maxX = this.timeScale(this.timeFilter_ms.max);
-
-        if(this.options.timeMaxWidth-minX>190){
-            this.divRoot.select(".config_zoom")
-                .style("float","left")
-                .style("margin-left",minX+"px");
-        } else{
-            this.divRoot.select(".config_zoom")
-                .style("float","right")
-                ;
-        }
-    	
-    	this.dom.timeAxisGroup.select("g.filter_min")
-            .attr("filtered",this.timeFilter_ms.min!==this.timeRange_ms.min)
-    		.attr("transform", "translate("+minX+",0)" );
-    	this.dom.timeAxisGroup.select("g.filter_max")
-            .attr("filtered",this.timeFilter_ms.max!==this.timeRange_ms.max)
-    		.attr("transform", "translate("+maxX+",0)" );
-    	this.dom.timeAxisGroup.select(".selection_bar rect")
-    		.attr("x", minX)
-    		.attr("width", (maxX - minX));
-    	this.dom.timeAxisGroup.select("g.filter_min .filter_nonselected")
-    		.attr("x", -minX)
-    		.attr("width", minX);
-    	this.dom.timeAxisGroup.select("g.filter_max .filter_nonselected")
-    		.attr("x", 0)
-    		.attr("width", this.options.timeMaxWidth-maxX);
-        this.divRoot.attr("filtered_time",this.isFiltered_Time()?"true":"false");
-        
-        this.divRoot.select(".zoom_in").attr("disabled",this.isFiltered_Time()?"false":"true");
-    },
+    }
 };
 
 
@@ -4757,6 +4672,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.histogramMargin = 12;
 
     this.dom = {};
+    this.type='interval';
 
     // COLLAPSED
     this.collapsed = false;
@@ -4769,9 +4685,8 @@ kshf.Facet_Interval = function(kshf_, options){
         browser: this.getKshf(),
         onClear: function(){
             this.divRoot.attr("filtered",false);
-            this.reserIntervalFilterActive();
-            this.refreshSlider();
-            this.intervalFilter.clearFilter(true);
+            this.resetIntervalFilterActive();
+            this.refreshIntervalSlider();
         },
         onFilter: function(filter){
             this.divRoot.attr("filtered",true);
@@ -4788,7 +4703,7 @@ kshf.Facet_Interval = function(kshf_, options){
             console.log(filter.active);
 
             // update handles
-            this.refreshSlider();
+            this.refreshIntervalSlider();
         },
         text_header: this.options.facetTitle,
         text_item: function(filter){
@@ -4808,7 +4723,7 @@ kshf.Facet_Interval = function(kshf_, options){
         max: d3.max(this.getKshfItems(),accessor)
     };
 
-    this.reserIntervalFilterActive();
+    this.resetIntervalFilterActive();
 
     this.hist_height=60;
 };
@@ -4846,17 +4761,17 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     rowCount_Total: function(){
         if(this.collapsed) return 1;
-        return 8; // TODO: return something nice
+        return 7; // TODO: return something nice
     },
     /** -- */
     rowCount_MaxTotal: function(){
-        return 8; // TODO
+        return 7; // TODO
     },
     /** -- */
     rowCount_MinTotal: function(){
-        return 8; // TODO
+        return 7; // TODO
     },
-    reserIntervalFilterActive: function(){
+    resetIntervalFilterActive: function(){
         this.intervalFilter.active = {
             min: this.intervalRange.min,
             max: this.intervalRange.max
@@ -4881,110 +4796,32 @@ kshf.Facet_Interval.prototype = {
             ;
 
         this.insertHeader();
-        this.dom.betweener = this.divRoot.append("div").attr("class","betweener");
+        this.dom.facetInterval = this.divRoot.append("div").attr("class","facetInterval");
 
-        this.dom.histogram = this.dom.betweener.append("div").attr("class","histogram")
+        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram")
             .style("height",(this.hist_height+14)+"px")
             ;
         this.dom.histogram_total = this.dom.histogram.append("div").attr("class","total");
         this.dom.histogram_active = this.dom.histogram.append("div").attr("class","active");
 
-        this.insertSlider();
-        this.dom.labelGroup = this.dom.betweener.append("div").attr("class","labelGroup");
+        this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider");
+        kshf.Util.insertSlider_do(this.dom.intervalSlider,{
+            'range': this.intervalRange,
+            'scale': this.intervalScale,
+            'filter': this.intervalFilter,
+            'root': kshf_.root
+        });
 
-    },
-    insertSlider: function(){
-        var me=this;
-        var kshf_=this.getKshf();
-        this.dom.intervalSlider = this.dom.betweener.append("div").attr("class","intervalSlider");
-
-        this.dom.intervalSlider.append("span").attr("class","base total")
-            .on("mousedown", function (d, i) {
-                var e=this.parentNode;
-                var initX = d3.mouse(e)[0];
-                var initPos = me.intervalRange.min + 
-                            (me.intervalRange.max - me.intervalRange.min)*(initX/(me.intervalWidth*1.0));
-
-                d3.select("body")
-                    .style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var mouseX = d3.mouse(e)[0];
-                        var targetPos = me.intervalRange.min + 
-                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
-                        me.intervalFilter.active.min=d3.min([initPos,targetPos]);
-                        me.intervalFilter.active.max=d3.max([initPos,targetPos]);
-                        me.intervalFilter.addFilter(true);
-                    }).on("mouseup", function(){
-                        d3.select("body").style('cursor','default');
-                        d3.select("body").on("mousemove", null).on("mouseup", null);
-                    });
-                d3.event.preventDefault();
-            });;
-
-        this.dom.intervalSlider.append("span")
-            .attr("class","base active")
-            .on("mousedown", function (d, i) {
-                if(!me.isFiltered()) return;
-                var e=this.parentNode;
-                var initX = d3.mouse(e)[0];
-                var initMin = me.intervalFilter.active.min;
-                var initMax = me.intervalFilter.active.max;
-                var initRange= initMax - initMin;
-                var initPos = me.intervalRange.min + 
-                            (me.intervalRange.max - me.intervalRange.min)*(initX/(me.intervalWidth*1.0));
-
-                d3.select("body")
-                    .style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var mouseX = d3.mouse(e)[0];
-                        var targetPos = me.intervalRange.min + 
-                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
-                        var targetDif = targetPos-initPos;
-                        me.intervalFilter.active.min = initMin+targetDif;
-                        me.intervalFilter.active.max = initMax+targetDif;
-                        if(me.intervalFilter.active.min<me.intervalRange.min){
-                            me.intervalFilter.active.min=me.intervalRange.min;
-                            me.intervalFilter.active.max=me.intervalRange.min+initRange;
-                        }
-                        if(me.intervalFilter.active.max>me.intervalRange.max){
-                            me.intervalFilter.active.max=me.intervalRange.max;
-                            me.intervalFilter.active.min=me.intervalRange.max-initRange;
-                        }
-                        me.intervalFilter.addFilter(true);
-                    }).on("mouseup", function(){
-                        d3.select("body").style('cursor','default');
-                        d3.select("body").on("mousemove", null).on("mouseup", null);
-                    });
-                d3.event.preventDefault();
-            });
-
-        this.dom.intervalSlider.selectAll("span.handle").data(['min','max']).enter()
-            .append("span").attr("class",function(d){ return "handle "+d; })
-            .on("mousedown", function (d, i) {
-                var e=this.parentNode;
-                d3.select("body")
-                    .style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var mouseX = d3.mouse(e)[0];
-                        var targetPos = me.intervalRange.min + 
-                            (me.intervalRange.max - me.intervalRange.min)*(mouseX/(me.intervalWidth*1.0));
-                        me.intervalFilter.active[d] = targetPos;
-                        me.intervalFilter.addFilter(true);
-                    }).on("mouseup", function(){
-                        d3.select("body").style('cursor','default');
-                        d3.select("body").on("mousemove", null).on("mouseup", null);
-                    });
-                d3.event.preventDefault();
-            });
+        this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup");
     },
     updateIntervalWidth: function(w){
-        if(this.intervalWidth!==undefined && this.intervalWidth===w) return;
-        this.intervalWidth=w;
+        if(this.intervalRange.width!==undefined && this.intervalRange.width===w) return;
+        this.intervalRange.width=w;
 
-        this.optimalBinCount = this.intervalWidth/25;
+        this.optimalBinCount = this.intervalRange.width/25;
         this.intervalScale = d3.scale.linear()
             .domain([this.intervalRange.min, this.intervalRange.max])
-            .range([0, this.intervalWidth])
+            .range([0, this.intervalRange.width])
             .clamp(true)
             .nice(this.optimalBinCount)
             ;
@@ -5001,7 +4838,7 @@ kshf.Facet_Interval.prototype = {
             this.refreshBars_Total();
             this.refreshAxisLabels();
         }
-        this.refreshSlider();
+        this.refreshIntervalSlider();
     },
     updateTicks: function(ticks){
         this.intervalTicks = ticks;
@@ -5106,7 +4943,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshBars_Active_Scale();
         this.refreshBars_Item_Count();
 
-        this.refreshTextWidth();
+        this.refreshLabelWidth();
     },
     updateBarScale2Total: function(){
         this.barScale = this.barScale
@@ -5126,19 +4963,20 @@ kshf.Facet_Interval.prototype = {
     },
     insertAxisLabels: function(){
         var me=this;
-        var ddd = this.dom.labelGroup.selectAll("span.text").data(this.intervalTicks);
-        ddd.enter()
-            .append("span").attr("class","text");
-        ddd.exit()
-            .remove();
+        var ddd = this.dom.labelGroup.selectAll("span.tick").data(this.intervalTicks);
+        var ddd_enter = ddd.enter().append("span").attr("class","tick");
+        ddd.exit().remove();
+        ddd_enter.append("span").attr("class","line");
+        ddd_enter.append("span").attr("class","text");
 
-        this.dom.labelTicks = this.dom.labelGroup.selectAll("span.text")
-            .text(function(d){return d3.format("s")(d);});
+        this.dom.labelTicks = this.dom.labelGroup.selectAll("span.tick");
+
+        this.dom.labelTicks.selectAll("span.text").text(function(d){return d3.format("s")(d);});
         this.refreshAxisLabels();
     },
     refreshAxisLabels: function(){
         var me=this;
-        this.dom.labelTicks.style("left",function(d){ return (me.intervalScale(d)-10)+"px"; })
+        this.dom.labelTicks.style("left",function(d){ return (me.intervalScale(d))+"px"; })
     },
     refreshBars_Total: function(){
         var me=this;
@@ -5181,7 +5019,7 @@ kshf.Facet_Interval.prototype = {
             return kshf.Util.formatForItemCount(bar.activeItems); 
         });
     },
-    refreshSlider: function(){
+    refreshIntervalSlider: function(){
         var me=this;
         var _min = this.intervalScale(this.intervalFilter.active.min);
         var _max = this.intervalScale(this.intervalFilter.active.max);
@@ -5189,14 +5027,23 @@ kshf.Facet_Interval.prototype = {
             .style("width",this.intervalScale.range()[1]+"px");
         this.dom.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
-            .style("left",_min+"px")
-            .style("width",(_max-_min)+"px")
-            ;
+            .each(function(d){
+                var transform="translate("+_min+"px,0) scale("+(_max-_min)+",1)";
+                this.style.webkitTransform = transform;
+                this.style.MozTransform = transform;
+                this.style.msTransform = transform;
+                this.style.OTransform = transform;
+                this.style.transform = transform;
+            });
         this.dom.intervalSlider.selectAll(".handle")
-            .style("left",function(d){
-                if(d==="min") return (_min-7)+"px";
-                return _max+"px";
-            })
+            .each(function(d){
+                var transform="translate("+((d==="min")?_min:_max)+"px,0)";
+                this.style.webkitTransform = transform;
+                this.style.MozTransform = transform;
+                this.style.msTransform = transform;
+                this.style.OTransform = transform;
+                this.style.transform = transform;
+            });
     },
     /** -- */
     refreshWidth: function(){
@@ -5205,7 +5052,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.leftHeader.style("width",totalWidth+"px");
         var wwwww=totalWidth-2*this.histogramMargin;
-        this.dom.betweener.style("width",wwwww+"px");
+        this.dom.facetInterval.style("width",wwwww+"px");
 
         this.updateIntervalWidth(wwwww);
     },
@@ -5258,7 +5105,7 @@ kshf.Facet_Interval.prototype = {
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
-        var topRow = topRow_background.append("div").attr("class","leftHeader_XX");
+        var topRow = topRow_background.append("div").attr("class","hasLabelWidth");
         topRow.append("span").attr("class","header_label_arrow")
             .attr("title","Show/Hide attributes").text("▼")
             .on("click",function(){ me.collapseFacet(!me.collapsed); })
@@ -5317,10 +5164,10 @@ kshf.Facet_Interval.prototype = {
     refreshHistogram: function(){
         // 
     },
-    refreshTextWidth: function(w){
+    refreshLabelWidth: function(w){
         var rowTextWidth = this.getKshf().categoryTextWidth;
 
-        this.dom.headerGroup.selectAll(".leftHeader_XX")
+        this.dom.headerGroup.selectAll(".hasLabelWidth")
             .style("width",rowTextWidth+"px");
     },
     /** - */

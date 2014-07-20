@@ -17,12 +17,12 @@
 function loadChart() {
     // set div height accordingly 
 //    $('#chart_div').height($(window).height()-70);
-    $('#chart_div').width ($(window).width()*0.9);
+//    $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
 //        $('#chart_div').height($(window).height()-70);
-        $('#chart_div').width ($(window).width()*0.9);
-        browser.updateLayout();
+//        $('#chart_div').width ($(window).width()*0.9);
+//        browser.updateLayout();
     });
     var billCols;
 
@@ -42,7 +42,7 @@ function loadChart() {
         charts : [
             {
                 facetTitle: "Result",
-//                timeTitle: "Vote Date",
+                timeTitle: "Vote Date",
                 textFilter: 'resulting in'
             },{
                 facetTitle: "Session",
@@ -111,7 +111,8 @@ google.setOnLoadCallback(loadChart);
             font-style:italic;
         }
         #chart_div{
-            height: 800px;
+            height: 750px;
+            width: 1282.5px;
         }
     </style>
 	</head>
