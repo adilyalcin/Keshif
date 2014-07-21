@@ -13,13 +13,15 @@
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
         <script type="text/javascript">
 
 google.setOnLoadCallback(function () {
 	browser = new kshf.Browser({
         domID : "#chart_div",
         dirRoot: "../",
-        categoryTextWidth:170,
+        categoryTextWidth:220,
         source : {
             gdocId : '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
             sheets : [ {name:"Publications"} ]
@@ -29,6 +31,8 @@ google.setOnLoadCallback(function () {
         },
         charts: [
             {
+                facetTitle: "Concept",
+            },{
                 facetTitle: "Year",
                 catItemMap: function(d){ 
                     var yr = d.data[0].substring(7,9);
@@ -40,11 +44,17 @@ google.setOnLoadCallback(function () {
                 catItemMap: function(d){
                     var toRet = [];
                     if(d.data[8]===true) toRet.push("Best in Year");
-                    if(d.data[6].length>10) toRet.push("Cited +10");
+//                    if(d.data[6].length>10) toRet.push("Cited +10");
                     return toRet;
                 }
             },{
-                facetTitle: "Concept",
+                facetTitle: "Selected Papers",
+                // these are how the items are related.
+                // X is related to Y (set) => Each Y stores the items it has been mapped to.
+                // That number is shown on display
+                catItemMap: function(d){ return d.data[6]; },
+                // Using the main table name, this will enable linking through items
+                catTableName: "Publications"
 //                facetTitle: "Keywords",
 /*                timeTitle: "Year",
                 timeItemMap: function(d){
@@ -62,15 +72,7 @@ google.setOnLoadCallback(function () {
             },{
                 facetTitle: "Total Citations",
                 catItemMap: function(d){
-                    var v=d.data[10];
-                    if(v===0) return "0";
-                    if(v<=5) return "1-5";
-                    if(v<=10) return "6-10";
-                    if(v<=25) return "11-25";
-                    if(v<=50) return "26-50";
-                    if(v<=100) return "51-100";
-                    return "100+";
-                    return ;
+                    return d.data[10];
                 },
                 sortingOpts: [{
                     no_resort: true,
@@ -79,7 +81,7 @@ google.setOnLoadCallback(function () {
             }
         ],
         list:{
-            sortColWidth: 50,
+            sortColWidth: 100,
             sortingOpts : [
                 {   name: 'Year',
                     value: function(d){ 
@@ -88,11 +90,21 @@ google.setOnLoadCallback(function () {
                         return dt.getFullYear();
                     },
                     inverse: true
+                },
+                {   name: 'Citations -Internal',
+                    value: function(d){ 
+                        return d.barValueMax; // Total citations
+                    }   
+                },
+                {   name: 'Citations -Total',
+                    value: function(d){ 
+                        return d.data[10];
+                    }
                 }
-            ],
-            itemLink: "InfoVis Citations",
+            ],/*
+            itemLink: "Citations",
             itemLinkFunc: function(d){ return d.data[6]; },
-            itemLinkText: function(d){ return d.data[1]; },
+            itemLinkText: function(d){ return d.data[1]; },*/
             detailsToggle : "One",
             textSearch : 'Title',
             contentFunc : function(d) {
@@ -102,8 +114,8 @@ google.setOnLoadCallback(function () {
                 // description
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+=d.data[1];
-                str+="<a target=\"_blank\" href=\"http://dx.doi.org/"+d.data[9]+"\">"+
-                    "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+d.data[9]+"\">"+
+                    "<i class='fa fa-external-link'></i></a>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
@@ -123,7 +135,7 @@ google.setOnLoadCallback(function () {
         </script>
 	</head>
     <style type="text/css" media="screen">
-        #chart_div{ width:1200px; height: 700px;}    
+        #chart_div{ width:1250px; height: 700px;}    
     </style>
     <body>
         <div class="meny">

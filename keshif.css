@@ -41,10 +41,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost:focus {
   outline: none;
 }
-.kshfHost[hidebars=true] .kshf .headerGroup .barInfo {
-  display: none;
-}
-.kshfHost[hidebars=true] .kshf .barChartMainInfo {
+.kshfHost[hidebars=true] .kshf .attrib .barGroup {
   display: none;
 }
 .kshfHost[hidebaraxis=true] .attribChartAxis {
@@ -177,16 +174,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.filterClearAll {
   display: none;
+  float: right;
+  bottom: 1px;
   cursor: default;
   color: #252112;
   font-weight: 300;
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
-  float: right;
   padding-left: 2px;
-  position: relative;
-  right: 1px;
-  top: 1px;
   -webkit-transition: background-color 100ms linear;
   -moz-transition: background-color 100ms linear;
   -o-transition: background-color 100ms linear;
@@ -396,7 +391,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
-  right: -3px;
+  right: -4px;
   pointer-events: all;
   top: 1px;
   width: 0px;
@@ -537,6 +532,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   padding-top: 1px;
   height: 16px;
+}
+.kshf .headerGroup span.isLinkedMark {
+  position: absolute;
+  right: -18px;
 }
 .kshf .headerGroup .border_line {
   position: relative;
@@ -687,6 +686,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart {
   display: inline-block;
   position: relative;
+  overflow: hidden;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
@@ -712,13 +712,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart .facetCategorical .scrollToTop2 {
   right: auto;
 }
+.kshf .kshfChart .facetCategorical .selectAllAttribs {
+  font-size: 0.6em;
+  float: left;
+  margin-left: 2px;
+  font-weight: 300;
+  color: black;
+  border: solid 1px lightgray;
+  border-radius: 10px;
+  padding: 1px 5px 0px 5px;
+  background-color: rgba(150, 150, 100, 0.2);
+  cursor: pointer;
+}
+.kshf .kshfChart .facetCategorical .selectAllAttribs:hover {
+  box-shadow: 0px 0px 1px black;
+}
+.kshf .kshfChart .facetCategorical .selectAllAttribs::before {
+  content: '+ Add Filter with All';
+}
 .kshf .kshfChart .facetCategorical .scroll_display_more {
   font-size: 0.6em;
+  vertical-align: top;
   font-style: italic;
   cursor: pointer;
   color: gray;
   opacity: 1;
-  text-align: right;
   pointer-events: all;
 }
 .kshf .kshfChart .facetCategorical .scroll_display_more:hover {
@@ -746,16 +764,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
 }
 .kshf .kshfChart .attribTextSearch input {
+  width: calc(97%);
   text-align: right;
   font-size: 0.7em;
   font-weight: 700;
-  padding: 1px 0px 1px 1px;
   border-width: 0px;
+  margin-right: 2px;
+  padding: 1px 2px 0px 1px;
+  border-bottom: dashed 1px #cb5454;
   color: #cb5454;
   background-color: rgba(244, 244, 244, 0);
   pointer-events: all;
-  margin-bottom: 0px;
-  margin-right: 2px;
 }
 .kshf .kshfChart .attribTextSearch input:focus {
   outline-color: gray;
@@ -763,7 +782,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart .attribTextSearch input:hover {
   border: solid 1px #cb5454;
-  padding: 0px 3px 0px 0px;
+  padding: 0px 1px 0px 0px;
   background-color: white;
 }
 .kshf .kshfChart .attribTextSearch input::-webkit-input-placeholder {
@@ -782,8 +801,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfChart .attribTextSearch svg.searchIcon {
-  position: relative;
-  top: 3px;
+  position: absolute;
+  right: -16px;
+  top: 4px;
 }
 .kshf .kshfChart[collapsed=true] .headerGroup {
   color: gray;
@@ -988,7 +1008,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   cursor: default;
   pointer-events: none;
-  padding-left: 1px;
+  padding-left: 3px;
 }
 .kshf div.attrib > span.barGroup span.row_bar_line {
   border-top-width: 1px;
@@ -1026,10 +1046,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 10px;
   display: inline-block;
   background-color: #8699a8;
-  -webkit-transition: left 400ms ease, width 400ms ease-in-out;
-  -moz-transition: left 400ms ease, width 400ms ease-in-out;
-  -o-transition: left 400ms ease, width 400ms ease-in-out;
-  transition: left 400ms ease, width 400ms ease-in-out;
   height: 10px;
   margin-top: 4px;
   opacity: 0.2;
@@ -1154,7 +1170,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
 }
 .kshf.listDiv {
-  box-shadow: 2px 2px 2px #968649;
   margin-left: 6px;
   position: relative;
   top: 0px;
@@ -1258,41 +1273,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf.listDiv div.itemLinks .header {
-  padding-left: 5px;
+  font-size: 1.1em;
   font-weight: 700;
-  display: inline-block;
+  text-anchor: end;
+  cursor: default;
+  font-variant: small-caps;
+  pointer-events: all;
+  padding-left: 5px;
+  vertical-align: bottom;
+  display: block;
 }
 .kshf.listDiv div.itemLinks .captureEvents {
   cursor: pointer;
   position: relative;
 }
-.kshf.listDiv div.itemLinks .captureEvents:hover .itemCount {
+.kshf.listDiv div.itemLinks .captureEvents:hover .item_count {
   color: orangered;
 }
 .kshf.listDiv div.itemLinks .captureEvents:hover .itemBar {
-  margin: 0px;
-  border: solid 2px orangered;
+  background-color: orangered !important;
 }
 .kshf.listDiv div.itemLinks .captureEvents[count="0"] {
   pointer-events: none;
 }
-.kshf.listDiv div.itemLinks .itemCount {
-  width: 20px;
+.kshf.listDiv div.itemLinks .item_count {
   display: inline-block;
   text-align: right;
-  font-size: 0.8em;
-  font-weight: 300;
-  margin-right: 1px;
+  margin-right: 2px;
+  font-size: 0.7em;
 }
 .kshf.listDiv div.itemLinks .itemBar {
   position: absolute;
-  top: 3px;
-  background-color: #8699a8;
   display: inline-block;
-  height: 10px;
-  border-radius: 2px;
-  margin: 2px;
+  top: 5px;
   width: 1px;
+  height: 10px;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  background-color: #8699a8;
 }
 .kshf.listDiv div.listsortcolumn {
   padding-right: 5px;
@@ -1357,6 +1378,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
   background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
 }
+.kshf div.listHeader span.selectColumn {
+  float: right;
+  font-size: 1.1em;
+  text-align: right;
+  margin-left: 6px;
+}
+.kshf div.listHeader span.selectColumn .fa {
+  cursor: pointer;
+  margin-left: 3px;
+}
+.kshf div.listHeader span.selectColumn .fa:hover {
+  color: orangered;
+}
+.kshf div.listHeader span.selectColumn .selectSelect {
+  font-size: 0.8em;
+}
 .kshf div.listHeader div.itemtoggledetails {
   font-size: 1em;
   color: #222222;
@@ -1371,11 +1408,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf div.listHeader span.scrollToTop {
-  float: right;
   font-size: 1.1em;
-  top: 3px;
-  height: 10px;
-  right: 0px;
+  float: right;
+  margin-bottom: -4px;
+  width: 15px;
+  text-align: right;
 }
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;
@@ -1517,7 +1554,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
 }
 .kshf div.listItem div {
-  float: left;
+  vertical-align: top;
 }
 .kshf div.listItem div.content {
   display: inline-block;
@@ -1549,8 +1586,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float: none;
   clear: left;
   font-weight: normal;
-  text-indent: -1em;
-  padding-left: 1em;
   margin-bottom: 2px;
 }
 .kshf div.listItem .iteminfo_0 {
@@ -1580,6 +1615,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listItem div.groupMe {
   overflow: hidden;
   float: none;
+}
+.kshf div.listItem span.selectColumn {
+  display: inline-block;
+  text-align: left;
+  padding-left: 2px;
+  vertical-align: top;
+  padding-top: 2px;
+}
+.kshf div.listItem span.selectColumn .fa {
+  cursor: pointer;
+}
+.kshf div.listItem span.selectColumn:hover {
+  color: orangered;
+}
+.kshf div.listItem[selectLinked=true] span.selectColumn .fa-square-o {
+  display: none;
+}
+.kshf div.listItem[selectLinked=true] span.selectColumn .fa-check-square-o {
+  display: block;
+}
+.kshf div.listItem[selectLinked=false] span.selectColumn .fa-square-o {
+  display: block;
+}
+.kshf div.listItem[selectLinked=false] span.selectColumn .fa-check-square-o {
+  display: none;
 }
 .kshf div.facetInterval {
   padding: 2px 12px;
@@ -1632,6 +1692,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 15px;
   margin-top: -1px;
+}
+.kshf .labelGroup.timeLabelGroup {
+  margin-top: -2px;
 }
 .kshf .labelGroup span.tick {
   position: absolute;
@@ -1722,6 +1785,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .rangeSlider .handle.max span.invalidArea {
   border-left: double 3px black;
+}
+.kshf .rangeSlider[filtered=false] span.invalidArea {
+  display: none;
 }
 .kshf.layout_infobox div.infobox_background {
   width: 100%;

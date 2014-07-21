@@ -30,7 +30,7 @@ function getNumComments(v){
 
 function resetSize(){
 //    $('#chart_div').height($(window).height()-10);
-    $('#chart_div').height(800);
+    $('#chart_div').height(700);
     $('#chart_div').width (800);
 }
 
@@ -75,7 +75,7 @@ $(document).ready( function(){
             },{
                 facetTitle: "Year",
                 catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
-                type: "Categorical",
+//                type: "Categorical",
                 textFilter: 'in'
             },{
                 facetTitle: "Author",

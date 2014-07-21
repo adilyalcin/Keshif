@@ -50,8 +50,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &:hover{ box-shadow: 0px 0px 4px gray; }
     &:focus{ outline: none; }
     &[hidebars=true] .kshf {
-        .headerGroup .barInfo { display: none; }
-        .barChartMainInfo{ display:none; }
+        .attrib .barGroup{ display:none; }
     }
     &[hidebaraxis=true] {
         .attribChartAxis{ display:none; }
@@ -164,16 +163,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     span.filterClearAll{
         display: none;
+        float: right;
+        bottom: 1px;
         cursor: default;
         color: #252112;
         font-weight: 300;
         border: 1px #685b2b solid;
         background-color: #E9E2CE;
-        float: right;
         padding-left: 2px;
-        position: relative;
-        right: 1px;
-        top: 1px;
         .transition(~"background-color 100ms linear");
         &:hover{ 
             background-color: white;
@@ -380,7 +377,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -3px;
+        right: -4px;
         pointer-events: all;
         top: 1px;
         width: 0px;
@@ -519,6 +516,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-top:1px;
             height:16px;
         }
+        span.isLinkedMark{
+            position: absolute;
+            right: -18px;
+        }
         .border_line{
             position: relative;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
@@ -647,7 +648,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .kshfChart{
         display:inline-block;
         position: relative;
-        // overflow: hidden;
+        overflow: hidden; // Keep it this way!
         .transition(~'height 700ms ease-in-out');
         span.optionSelect_Label{
             font-size: 0.7em;
@@ -669,13 +670,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .scrollToTop2{
                 right: auto;
             }
+            .selectAllAttribs{
+                font-size: 0.6em;
+                float: left;
+                margin-left: 2px;
+                font-weight: 300;
+                color: black;
+                border: solid 1px lightgray;
+                border-radius: 10px;
+                padding: 1px 5px 0px 5px;
+                background-color: rgba(150,150,100,0.2);
+                cursor: pointer; 
+                &:hover{
+//                    font-weight: 500;
+                    box-shadow: 0px 0px 1px black;
+                }   
+                &::before{
+                    content: '+ Add Filter with All';
+                }
+            }
             .scroll_display_more{
                 font-size: 0.6em;
+                vertical-align: top;
                 font-style:italic;
                 cursor: pointer;
                 color: gray;
                 opacity:1;
-                text-align: right;
                 pointer-events: all;
                 &:hover{ color: #cb5454; }
             }
@@ -699,24 +719,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             white-space:nowrap;
             position: relative;
             input {
+                width: calc(100% - 3px);
                 text-align: right;
                 font-size: 0.7em;
                 font-weight: 700;
                 border-width: 0px;
-                padding: 1px 0px 1px 1px;
-                border-width:0px;
+                margin-right:2px;
+                padding: 1px 2px 0px 1px;
+                border-bottom: dashed 1px #cb5454;
                 color: #cb5454;
                 background-color:rgba(244, 244, 244,0);
                 pointer-events: all;
-                margin-bottom: 0px;
-                margin-right: 2px;
                 &:focus{
                     outline-color: gray;
                     outline-width: 4px;
                 }
                 &:hover{
                     border: solid 1px #cb5454;
-                    padding: 0px 3px 0px 0px;
+                    padding: 0px 1px 0px 0px;
                     background-color: white;
                 }
                 &::-webkit-input-placeholder { 
@@ -736,8 +756,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: none;
             }
             svg.searchIcon{
-                position:relative;
-                top:3px;
+                position: absolute;
+                right: -16px;
+                top: 4px;
             }
         }
         &[collapsed=true] {
@@ -936,7 +957,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             cursor: default;
             pointer-events: none;
-            padding-left: 1px;
+            padding-left: 3px;
         }
         > span.barGroup{
             span.row_bar_line{
@@ -971,7 +992,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-radius: 10px;
                 display: inline-block;
                 background-color: @color_bars;
-                .transition(~'left 400ms ease, width 400ms ease-in-out');
                 height: 10px;
                 margin-top: 4px;
                 opacity: 0.2;
@@ -1098,7 +1118,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     &.listDiv {
         // position: absolute; // exact position is calculated by keshif
-        box-shadow: 2px 2px 2px rgb(150, 134, 73);
+        // box-shadow: 2px 2px 2px rgb(150, 134, 73);
         margin-left: 6px;
         position: relative;
         top: 0px;
@@ -1188,43 +1208,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.itemLinks{
             display: inline-block;
             .header {
-                padding-left: 5px; // item count width
+                font-size: 1.1em;
                 font-weight: 700;
-                display: inline-block;
+                text-anchor: end;
+                cursor: default;
+                font-variant: small-caps;
+                pointer-events: all;
+                padding-left: 5px;
+                vertical-align: bottom;
+                display: block;
             }
             .captureEvents {
                 cursor: pointer;
                 position:relative;
                 &:hover{
-                    .itemCount{
+                    .item_count{
                         color: orangered;
                     }
                     .itemBar{
-                        margin:0px;
-                        border: solid 2px orangered;
+                        background-color: orangered !important;
                     }
                 }
                 &[count="0"]{
                     pointer-events: none;
                 }
             }
-            .itemCount{
-                width:20px;
+            .item_count{
                 display: inline-block;
                 text-align: right;
-                font-size: 0.8em;
-                font-weight: 300;
-                margin-right: 1px;  
+                margin-right: 2px;  
+                font-size: 0.7em;
             }
             .itemBar{
                 position: absolute;
-                top:3px;
-                background-color: @color_bars;
                 display: inline-block;
-                height: 10px;
-                border-radius: 2px;
-                margin:2px;
+                top: 5px;
                 width: 1px;
+                height: 10px;
+                .transform-origin(0% 0%;);
+                background-color: @color_bars;
             }
         }
         div.listsortcolumn{
@@ -1283,6 +1305,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         min-height:20px;
 
         .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%)");
+
+        span.selectColumn{
+            float: right;
+            font-size: 1.1em;
+            text-align: right;
+            margin-left: 6px;
+            .fa{
+                cursor: pointer;
+                margin-left: 3px;
+                &:hover{
+                    color: orangered;
+                }
+            }
+            .selectSelect{
+                font-size: 0.8em;
+            }
+        }
         
         div.itemtoggledetails{
             font-size: 1em;
@@ -1297,11 +1336,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         span.scrollToTop{
-            float: right;
             font-size: 1.1em;
-            top: 3px;
-            height: 10px; // no overflow...
-            right: 0px;
+            float: right;
+            margin-bottom: -4px;
+            width: 15px;
+            text-align: right;
         }
 
         span.filter-separator{
@@ -1439,7 +1478,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color:white;
         }
         div{
-            float:left;
+            vertical-align: top;
         }
         div.content{
             display: inline-block;
@@ -1471,8 +1510,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             float:none;
             clear: left;
             font-weight:normal;
-            text-indent: -1em;
-            padding-left: 1em;
             margin-bottom: 2px;
         }
         .iteminfo_0{
@@ -1500,6 +1537,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.groupMe{
             overflow: hidden;
             float: none;
+        }
+        span.selectColumn{
+            display:inline-block;
+            text-align: left;
+            padding-left: 2px;
+            vertical-align: top;
+            padding-top: 2px;
+            .fa{
+                cursor: pointer;
+            }
+            &:hover{
+                color: orangered;
+            }
+        }
+        &[selectLinked=true] span.selectColumn{
+            .fa-square-o{
+                display: none;
+            }
+            .fa-check-square-o{
+                display: block;
+            }
+        }
+        &[selectLinked=false] span.selectColumn{
+            .fa-square-o{
+                display: block;
+            }
+            .fa-check-square-o{
+                display: none;
+            }
         }
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
@@ -1556,6 +1622,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //        margin: 0px 13px;
         height: 15px;
         margin-top: -1px;
+        &.timeLabelGroup{
+            margin-top: -2px;
+        }
         span.tick{
             position:absolute;
             span.text{
@@ -1641,6 +1710,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &.max span.invalidArea{
                 border-left: double 3px black;
+            }
+        }
+        &[filtered=false]{
+            span.invalidArea{
+                display: none;
             }
         }
     } // rangeSlider
