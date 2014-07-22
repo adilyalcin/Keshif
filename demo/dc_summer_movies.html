@@ -102,11 +102,11 @@ var myLoc=null;
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
     if(browser===undefined) return;
-    var me = browser.charts[1];
+    var me = browser.facets[1];
     if(me===undefined) return;
     me.sortingOpt_Active = me.options.sortingOpts[1];
     me.sortDelay = 0;
-    browser.charts[1].divRoot.select(".optionSelect")[0][0].options[1].selected = true;
+    browser.facets[1].divRoot.select(".optionSelect")[0][0].options[1].selected = true;
     me.updateSorting.call(me);
 };
 
@@ -203,7 +203,7 @@ function loadChart() {
             if(myLoc) updateLocationSorting();
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
-            browser.showListItemDetails(firstItem);
+            browser.listDisplay.showListItemDetails(firstItem);
             loadMovieData_Name(firstItem);
             kshf.dt.Screenings[0].listItem.setAttribute('details',true);
         },

@@ -47,7 +47,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost{
     border: solid 1px lightgray;
     background-color: white;
-    &:hover{ box-shadow: 0px 0px 4px gray; }
+//    &:hover{ box-shadow: 0px 0px 4px gray; }
     &:focus{ outline: none; }
     &[hidebars=true] .kshf {
         .attrib .barGroup{ display:none; }
@@ -161,6 +161,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
     }
 
+    &.layout_top{
+        display:block;
+    }
+
     span.filterClearAll{
         display: none;
         float: right;
@@ -181,7 +185,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &.layout_header{
         width:100%;
         float:none;
-        margin-bottom: 2px;
+        margin-bottom: 0px;
         padding-bottom: 2px;
 
         .background-image(~"linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%)");
@@ -324,6 +328,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         // min-height: 100%;
         left: 0px;
+        top: 2px;
         .background-image(~"linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%)");
         pointer-events: none;
     }
@@ -377,7 +382,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -4px;
+        right: -3px;
         pointer-events: all;
         top: 1px;
         width: 0px;
@@ -646,7 +651,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .kshfChart{
-        display:inline-block;
+        display: block;
         position: relative;
         overflow: hidden; // Keep it this way!
         .transition(~'height 700ms ease-in-out');
@@ -662,8 +667,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:relative;
             .scrollToTop{
                 position: absolute;
-                top: -18px;
-                right: 0px;
+                top: -16px;
+                right: 3px;
                 font-size: 0.8em;
                 pointer-events: all;
             }
@@ -869,6 +874,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
         }
 
+        &:hover{
+            box-shadow: inset 0px 0px 3px gray;
+        }
+
     }// kshfChart
 
     div.attribGroup{
@@ -877,6 +886,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow-x: hidden;
         display: block;
         pointer-events: all;
+        margin-right: 3px; // mouse over list block 
         z-index: 5;
         .transition(~'height 700ms ease-in-out');
     }
@@ -934,7 +944,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             span.filter_add_more{
                 float: left;
-                margin-left: 1px;
+                margin-left: 2px;
                 white-space: nowrap;
                 z-index: 5;
                 pointer-events: all;
@@ -957,6 +967,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             pointer-events: none;
             padding-left: 3px;
+        }
+        &[noitems=true] span.item_count{
+            visibility: hidden;
         }
         > span.barGroup{
             position: relative;
@@ -985,7 +998,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     background-color: orangered;
                     pointer-events: none;
                     .transform(~'scaleX(0)');
-                    .transition(~'transform 200ms ease-in-out');
+                    &[fast]{
+                        .transition(~'transform 200ms ease-in-out');
+                    }
                 }
             }
         }
@@ -1351,16 +1366,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.mainTextSearch {
             position: relative;
             white-space: nowrap;
-            margin-left: 5px;
             svg.searchIcon {
                 top: 2px;
                 position: relative;
+                margin-left: 3px;
             }
             span {
                 position: absolute;
                 display: none;
-                top: 2px;
-                right: 3px;
+                top: 1px;
+                right: 15px;
                 width: 16px;
                 height: 16px;
                 cursor: pointer;
@@ -1370,11 +1385,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             font-weight: 700;
             color: #cb5454;
-            padding-right:2px;
+            padding: 0px 2px;
             background-color:rgba(255, 255, 255,0.2);
             pointer-events: all;
             border-width:0px;
             border-bottom: dashed 1px #cb5454;
+            margin: 0px;
             &:focus{
                 outline-color: gray;
                 outline-width: 4px;
@@ -1382,7 +1398,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{
                 border: solid 1px #cb5454;
                 background-color: white;
-                padding: 0px 0px 1px 0px;
+                padding: 0px 1px;
+//                padding: 0px 0px 1px 0px;
             }
         }
         input.bigTextSearch::-webkit-input-placeholder { 
@@ -1580,28 +1597,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .bins{
                 position: absolute;
                 top: 14px;
-                .bar{
-                    width: 1px;
-                    height: 1px;
-                    position: absolute;
-                    .transform-origin(0% 100%);
-                    &.active{
-                        cursor: pointer;
-                    }
-                    &.total{
-                        opacity:0.1;
-                        pointer-events: none;
-                    }
-                    &.hover {
-                        background-color: orangered;
-                        pointer-events: none;
-                        .transform(~'scaleX(0)');
-                        .transition(~'transform 200ms ease-in-out');
-                    }
-                }
                 .bin{
                     position: absolute;
                     display: block;
+                    .bar{
+                        width: 1px;
+                        height: 1px;
+                        position: absolute;
+                        .transform-origin(0% 100%);
+                        &.active{
+                            cursor: pointer;
+                        }
+                        &.total{
+                            opacity:0.1;
+                            pointer-events: none;
+                        }
+                        &.hover {
+                            background-color: orangered;
+                            pointer-events: none;
+                            .transform(~'scaleX(0)');
+                            &[fast]{
+                                .transition(~'transform 200ms ease-in-out');
+                            }
+                        }
+                    }
+                    span.item_count{
+                        display: block;
+                        position: relative;
+                        top: -1.2em;
+                        font-size: 0.7em;
+                        text-align: center;
+                        .transition(~'transform 700ms ease-in-out');
+                    }
+                    &[noitem=true] span.item_count{
+                        display: none;
+                    }
                 }
             }
             span.bar{
@@ -1610,16 +1640,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 background-color: @color_bars;;
                 width:1px;
                 height:1px;
-                span.item_count{
-                    display: block;
-                    position: relative;
-                    top: -1.2em;
-                    font-size: 0.7em;
-                    text-align: center;
-                }
-                &[noitem=true] span.item_count{
-                    display: none;
-                }
                 &[highlight=true]{
                     background-color: orangered;
                 }

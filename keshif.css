@@ -35,9 +35,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px lightgray;
   background-color: white;
 }
-.kshfHost:hover {
-  box-shadow: 0px 0px 4px gray;
-}
 .kshfHost:focus {
   outline: none;
 }
@@ -172,6 +169,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_left .kshfChart {
   display: block;
 }
+.kshf.layout_top {
+  display: block;
+}
 .kshf span.filterClearAll {
   display: none;
   float: right;
@@ -194,7 +194,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_header {
   width: 100%;
   float: none;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
   padding-bottom: 2px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMjMlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0icmdiKDIyNCwyMTMsMTcwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iOTElIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
@@ -337,6 +337,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_left_background {
   position: absolute;
   left: 0px;
+  top: 2px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
   background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
@@ -391,7 +392,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
-  right: -4px;
+  right: -3px;
   pointer-events: all;
   top: 1px;
   width: 0px;
@@ -684,7 +685,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
 }
 .kshf .kshfChart {
-  display: inline-block;
+  display: block;
   position: relative;
   overflow: hidden;
   -webkit-transition: height 700ms ease-in-out;
@@ -704,8 +705,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart .facetCategorical .scrollToTop {
   position: absolute;
-  top: -18px;
-  right: 0px;
+  top: -16px;
+  right: 3px;
   font-size: 0.8em;
   pointer-events: all;
 }
@@ -909,12 +910,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
   display: none;
 }
+.kshf .kshfChart:hover {
+  box-shadow: inset 0px 0px 3px gray;
+}
 .kshf div.attribGroup {
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
   display: block;
   pointer-events: all;
+  margin-right: 3px;
   z-index: 5;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
@@ -986,7 +991,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib > span.label span.filter_add_more {
   float: left;
-  margin-left: 1px;
+  margin-left: 2px;
   white-space: nowrap;
   z-index: 5;
   pointer-events: all;
@@ -1008,6 +1013,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
   padding-left: 3px;
+}
+.kshf div.attrib[noitems=true] span.item_count {
+  visibility: hidden;
 }
 .kshf div.attrib > span.barGroup {
   position: relative;
@@ -1046,6 +1054,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform: scaleX(0);
   -ms-transform: scaleX(0);
   transform: scaleX(0);
+}
+.kshf div.attrib > span.barGroup .bar.hover[fast] {
   -webkit-transition: -webkit-transform 200ms ease-in-out;
   -moz-transition: -moz-transform 200ms ease-in-out;
   -o-transition: -o-transform 200ms ease-in-out;
@@ -1432,17 +1442,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.mainTextSearch {
   position: relative;
   white-space: nowrap;
-  margin-left: 5px;
 }
 .kshf div.listHeader span.mainTextSearch svg.searchIcon {
   top: 2px;
   position: relative;
+  margin-left: 3px;
 }
 .kshf div.listHeader span.mainTextSearch span {
   position: absolute;
   display: none;
-  top: 2px;
-  right: 3px;
+  top: 1px;
+  right: 15px;
   width: 16px;
   height: 16px;
   cursor: pointer;
@@ -1451,11 +1461,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   font-weight: 700;
   color: #cb5454;
-  padding-right: 2px;
+  padding: 0px 2px;
   background-color: rgba(255, 255, 255, 0.2);
   pointer-events: all;
   border-width: 0px;
   border-bottom: dashed 1px #cb5454;
+  margin: 0px;
 }
 .kshf div.listHeader input.bigTextSearch:focus {
   outline-color: gray;
@@ -1464,7 +1475,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader input.bigTextSearch:hover {
   border: solid 1px #cb5454;
   background-color: white;
-  padding: 0px 0px 1px 0px;
+  padding: 0px 1px;
 }
 .kshf div.listHeader input.bigTextSearch::-webkit-input-placeholder {
   color: #cb5454;
@@ -1663,7 +1674,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   top: 14px;
 }
-.kshf div.facetInterval .histogram .bins .bar {
+.kshf div.facetInterval .histogram .bins .bin {
+  position: absolute;
+  display: block;
+}
+.kshf div.facetInterval .histogram .bins .bin .bar {
   width: 1px;
   height: 1px;
   position: absolute;
@@ -1673,14 +1688,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
 }
-.kshf div.facetInterval .histogram .bins .bar.active {
+.kshf div.facetInterval .histogram .bins .bin .bar.active {
   cursor: pointer;
 }
-.kshf div.facetInterval .histogram .bins .bar.total {
+.kshf div.facetInterval .histogram .bins .bin .bar.total {
   opacity: 0.1;
   pointer-events: none;
 }
-.kshf div.facetInterval .histogram .bins .bar.hover {
+.kshf div.facetInterval .histogram .bins .bin .bar.hover {
   background-color: orangered;
   pointer-events: none;
   -webkit-transform: scaleX(0);
@@ -1688,14 +1703,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform: scaleX(0);
   -ms-transform: scaleX(0);
   transform: scaleX(0);
+}
+.kshf div.facetInterval .histogram .bins .bin .bar.hover[fast] {
   -webkit-transition: -webkit-transform 200ms ease-in-out;
   -moz-transition: -moz-transform 200ms ease-in-out;
   -o-transition: -o-transform 200ms ease-in-out;
   transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
 }
-.kshf div.facetInterval .histogram .bins .bin {
-  position: absolute;
+.kshf div.facetInterval .histogram .bins .bin span.item_count {
   display: block;
+  position: relative;
+  top: -1.2em;
+  font-size: 0.7em;
+  text-align: center;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+}
+.kshf div.facetInterval .histogram .bins .bin[noitem=true] span.item_count {
+  display: none;
 }
 .kshf div.facetInterval .histogram span.bar {
   display: block;
@@ -1708,16 +1735,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
-}
-.kshf div.facetInterval .histogram span.bar span.item_count {
-  display: block;
-  position: relative;
-  top: -1.2em;
-  font-size: 0.7em;
-  text-align: center;
-}
-.kshf div.facetInterval .histogram span.bar[noitem=true] span.item_count {
-  display: none;
 }
 .kshf div.facetInterval .histogram span.bar[highlight=true] {
   background-color: orangered;
