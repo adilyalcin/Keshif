@@ -719,12 +719,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             white-space:nowrap;
             position: relative;
             input {
-                width: calc(100% - 3px);
+                width: 100%;
                 text-align: right;
                 font-size: 0.7em;
                 font-weight: 700;
                 border-width: 0px;
-                margin-right:2px;
                 padding: 1px 2px 0px 1px;
                 border-bottom: dashed 1px #cb5454;
                 color: #cb5454;
@@ -757,7 +756,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             svg.searchIcon{
                 position: absolute;
-                right: -16px;
+                right: -18px;
                 top: 4px;
             }
         }
@@ -960,6 +959,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 3px;
         }
         > span.barGroup{
+            position: relative;
             span.row_bar_line{
                 border-top-width: 1px;
                 border-top-style: dotted;
@@ -980,6 +980,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &.total {
                     opacity:0.2;
                     pointer-events: none;
+                }
+                &.hover {
+                    background-color: orangered;
+                    pointer-events: none;
+                    .transform(~'scaleX(0)');
+                    .transition(~'transform 200ms ease-in-out');
                 }
             }
         }
@@ -1071,10 +1077,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .filter_add_more .remove{ display: inline; }   
             }
             &[highlight=true] {
-                .bar.active{
-                    // box-shadow: inset 0px 0px 0px 2px orangered;
-                    background-color: orangered;
-                }
                 &[selected='0'] {
                     .clickArea{
                         cursor: cell;
@@ -1090,10 +1092,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .bar{
                         cursor: pointer;
                     }
-                }
-                .bar.active{
-                    // box-shadow: inset 0px 0px 0px 2px orangered;
-                    background-color: orangered;
                 }
                 span:not(.filter_add_more){
                     color: orangered !important;
@@ -1579,14 +1577,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
     //        margin: 5px 13px 1px 13px;
             overflow: hidden;
-            .active{
+            .bins{
                 position: absolute;
                 top: 14px;
-                cursor: pointer;
-            }
-            .total{
-                position: absolute;
-                top: 14px;
+                .bar{
+                    width: 1px;
+                    height: 1px;
+                    position: absolute;
+                    .transform-origin(0% 100%);
+                    &.active{
+                        cursor: pointer;
+                    }
+                    &.total{
+                        opacity:0.1;
+                        pointer-events: none;
+                    }
+                    &.hover {
+                        background-color: orangered;
+                        pointer-events: none;
+                        .transform(~'scaleX(0)');
+                        .transition(~'transform 200ms ease-in-out');
+                    }
+                }
+                .bin{
+                    position: absolute;
+                    display: block;
+                }
             }
             span.bar{
                 display: block;

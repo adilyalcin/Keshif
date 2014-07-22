@@ -764,12 +764,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
 }
 .kshf .kshfChart .attribTextSearch input {
-  width: calc(97%);
+  width: 100%;
   text-align: right;
   font-size: 0.7em;
   font-weight: 700;
   border-width: 0px;
-  margin-right: 2px;
   padding: 1px 2px 0px 1px;
   border-bottom: dashed 1px #cb5454;
   color: #cb5454;
@@ -802,7 +801,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart .attribTextSearch svg.searchIcon {
   position: absolute;
-  right: -16px;
+  right: -18px;
   top: 4px;
 }
 .kshf .kshfChart[collapsed=true] .headerGroup {
@@ -1010,6 +1009,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   padding-left: 3px;
 }
+.kshf div.attrib > span.barGroup {
+  position: relative;
+}
 .kshf div.attrib > span.barGroup span.row_bar_line {
   border-top-width: 1px;
   border-top-style: dotted;
@@ -1035,6 +1037,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib > span.barGroup .bar.total {
   opacity: 0.2;
   pointer-events: none;
+}
+.kshf div.attrib > span.barGroup .bar.hover {
+  background-color: orangered;
+  pointer-events: none;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: -webkit-transform 200ms ease-in-out;
+  -moz-transition: -moz-transform 200ms ease-in-out;
+  -o-transition: -o-transform 200ms ease-in-out;
+  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
 }
 .kshf div.attrib > span.timeLineParts {
   position: relative;
@@ -1135,9 +1150,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib[noitems=false][selected='0']:hover .filter_add_more .remove {
   display: inline;
 }
-.kshf div.attrib[noitems=false][highlight=true] .bar.active {
-  background-color: orangered;
-}
 .kshf div.attrib[noitems=false][highlight=true][selected='0'] .clickArea {
   cursor: cell;
 }
@@ -1149,9 +1161,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib[noitems=false][highlight=true][selected='1'] .bar {
   cursor: pointer;
-}
-.kshf div.attrib[noitems=false][highlight=true] .bar.active {
-  background-color: orangered;
 }
 .kshf div.attrib[noitems=false][highlight=true] span:not(.filter_add_more) {
   color: orangered !important;
@@ -1650,14 +1659,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   overflow: hidden;
 }
-.kshf div.facetInterval .histogram .active {
+.kshf div.facetInterval .histogram .bins {
   position: absolute;
   top: 14px;
+}
+.kshf div.facetInterval .histogram .bins .bar {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  -webkit-transform-origin: 0% 100%;
+  -moz-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
+  -ms-transform-origin: 0% 100%;
+  transform-origin: 0% 100%;
+}
+.kshf div.facetInterval .histogram .bins .bar.active {
   cursor: pointer;
 }
-.kshf div.facetInterval .histogram .total {
+.kshf div.facetInterval .histogram .bins .bar.total {
+  opacity: 0.1;
+  pointer-events: none;
+}
+.kshf div.facetInterval .histogram .bins .bar.hover {
+  background-color: orangered;
+  pointer-events: none;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: -webkit-transform 200ms ease-in-out;
+  -moz-transition: -moz-transform 200ms ease-in-out;
+  -o-transition: -o-transform 200ms ease-in-out;
+  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+}
+.kshf div.facetInterval .histogram .bins .bin {
   position: absolute;
-  top: 14px;
+  display: block;
 }
 .kshf div.facetInterval .histogram span.bar {
   display: block;
