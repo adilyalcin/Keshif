@@ -385,6 +385,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         right: -3px;
         pointer-events: all;
         top: 1px;
+        height: 100%;
         width: 0px;
         // border-bottom: solid 1px lightgray;
         // border-top: solid 1px lightgray;
@@ -425,7 +426,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: relative;
                 width: 20px;
                 left: -10px;
-                top: -1px;
                 text-align: center;
                 font-size: 0.7em;
                 font-weight: 300;
@@ -554,23 +554,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:none;
             float:right;
         }
-        .barInfo {
-            padding-left:20px;
-            font-size: 0.7em;
-            cursor: default;
-            fill:gray;
-            text-anchor: start;
-            font-style: italic;
-            font-weight:300;
-        }
         span.header_label_arrow{
             display: block;
             position: absolute;
-            top: 0px;
+            bottom: 1px;
+            left: 0px;
             font-size: 0.8em;
             cursor: pointer;
-            width: 13px;
-            color:black;
             .transition(~'all 250ms linear');
             .rotate(0deg);
             :hover{ color:#cb5454; }
@@ -586,8 +576,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             vertical-align: top;
             pointer-events:all;
             position: relative;
+            .header_label_arrow{
+                margin-left: 10px;
+            }
             span.header_label {
-                margin-left: 15px;   
+                margin-left: 25px;   
             }
             .config_zoom{
                 padding-top: 0px;
@@ -663,7 +656,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:none;
         }
 
-        .facetCategorical{
+        > .facetCategorical{
             position:relative;
             .scrollToTop{
                 position: absolute;
@@ -702,24 +695,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: gray;
                 opacity:1;
                 pointer-events: all;
+                margin-right: 5px;
                 &:hover{ color: #cb5454; }
             }
         }// facetCategorical
 
-        .resort_button{
-            position:absolute;
-            pointer-events:all;
-            bottom:1px;
-            cursor:pointer;
-            display: none;
-            path{
-                fill:#616161;
-                .transition(~"all 250ms linear");
+        .subFacets {
+            position:relative;
+            height: 100%;
+            .wigdhdyt{
+                display: inline-block;
+                position: absolute;
+                height: 100%;
+                width: 9px;
+                border-right: double 3px lightgray;
             }
-            &:hover path{
-                fill:#cb5454;
-            }
-        }
+
+        } // subFacets
+
         .attribTextSearch{
             white-space:nowrap;
             position: relative;
@@ -766,23 +759,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[collapsed=true] {
-            .headerGroup {
+            > .headerGroup {
                 color: gray;
-                .barInfo{ display: none; }
                 span.header_label {
                     cursor: pointer;
                 }
                 .leftHeader span.header_label_arrow{
                     .rotate(-90deg);
-                    color:gray;
                 }
+                .facetControls{ display: none; }
             }
-            .facetControls{ display: none; }
-            .facetCategorical{ display: none; }
-            .resort_button{ display: none !important ; }
-            .timeChartAxis { display:none; }
-            select.sortOptionSelect{ display: none; }
-            div.facetInterval{ display: none; }
+            > .facetCategorical{ display: none; }
+            > .facetInterval{ display: none; }
+//            > .subFacets{ display: none; }
         }
         &[collapsedTime=true] {
             .config_zoom{
@@ -868,14 +857,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:inline-block;
         }
 
-        &[canresort=true] .resort_button{ display: block; }
-
         &[removeinactiveattrib=true] &[noitems=true] {
             display: none;
         }
 
         &:hover{
             box-shadow: inset 0px 0px 3px gray;
+        }
+
+        &[hasFacets=true]{
+            > .headerGroup {
+                font-size: 1.3em;
+                .chartFirstLineBackground {
+                    .background-image(~"linear-gradient(left, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
+                }
+            }
+            > .wigdhdyt{
+                padding-top: 2px;
+            }
         }
 
     }// kshfChart
@@ -1132,7 +1131,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &.listDiv {
         // position: absolute; // exact position is calculated by keshif
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
-        margin-left: 6px;
         position: relative;
         top: 0px;
         .transition(~'margin-top 700ms ease-in-out');
@@ -1140,7 +1138,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow-y:scroll;
             overflow-x:hidden;
 //            width: calc(~"100% - 2px");
-            border-left: solid 2px rgb(233, 227, 205);
+            border-style: solid;
+            border-color: rgb(223, 210, 169);
+            border-width: 0px 2px 2px 2px;
+
             background-color: white;
             .transition(~'height 700ms ease-in-out');
         }
@@ -1311,7 +1312,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-weight: bold;
         color: black;
         padding: 0px 0px 1px 2px;
-        border-top-left-radius: 5px;
         font: 500 100% Arial,sans-serif;
         font-size: 0.9em;
         position: relative;
@@ -1349,7 +1349,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         span.scrollToTop{
-            font-size: 1.1em;
             float: right;
             margin-bottom: -4px;
             width: 15px;

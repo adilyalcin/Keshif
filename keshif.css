@@ -395,6 +395,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: -3px;
   pointer-events: all;
   top: 1px;
+  height: 100%;
   width: 0px;
   border-width: 0px 1px 0px 0px;
   border-style: dotted;
@@ -435,7 +436,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   width: 20px;
   left: -10px;
-  top: -1px;
   text-align: center;
   font-size: 0.7em;
   font-weight: 300;
@@ -579,23 +579,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   float: right;
 }
-.kshf .headerGroup .barInfo {
-  padding-left: 20px;
-  font-size: 0.7em;
-  cursor: default;
-  fill: gray;
-  text-anchor: start;
-  font-style: italic;
-  font-weight: 300;
-}
 .kshf .headerGroup span.header_label_arrow {
   display: block;
   position: absolute;
-  top: 0px;
+  bottom: 1px;
+  left: 0px;
   font-size: 0.8em;
   cursor: pointer;
-  width: 13px;
-  color: black;
   -webkit-transition: all 250ms linear;
   -moz-transition: all 250ms linear;
   -o-transition: all 250ms linear;
@@ -621,8 +611,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   position: relative;
 }
+.kshf .headerGroup .rightHeader .header_label_arrow {
+  margin-left: 10px;
+}
 .kshf .headerGroup .rightHeader span.header_label {
-  margin-left: 15px;
+  margin-left: 25px;
 }
 .kshf .headerGroup .rightHeader .config_zoom {
   padding-top: 0px;
@@ -700,20 +693,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
 }
-.kshf .kshfChart .facetCategorical {
+.kshf .kshfChart > .facetCategorical {
   position: relative;
 }
-.kshf .kshfChart .facetCategorical .scrollToTop {
+.kshf .kshfChart > .facetCategorical .scrollToTop {
   position: absolute;
   top: -16px;
   right: 3px;
   font-size: 0.8em;
   pointer-events: all;
 }
-.kshf .kshfChart .facetCategorical .scrollToTop2 {
+.kshf .kshfChart > .facetCategorical .scrollToTop2 {
   right: auto;
 }
-.kshf .kshfChart .facetCategorical .selectAllAttribs {
+.kshf .kshfChart > .facetCategorical .selectAllAttribs {
   font-size: 0.6em;
   float: left;
   margin-left: 2px;
@@ -725,13 +718,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(150, 150, 100, 0.2);
   cursor: pointer;
 }
-.kshf .kshfChart .facetCategorical .selectAllAttribs:hover {
+.kshf .kshfChart > .facetCategorical .selectAllAttribs:hover {
   box-shadow: 0px 0px 1px black;
 }
-.kshf .kshfChart .facetCategorical .selectAllAttribs::before {
+.kshf .kshfChart > .facetCategorical .selectAllAttribs::before {
   content: '+ Add Filter with All';
 }
-.kshf .kshfChart .facetCategorical .scroll_display_more {
+.kshf .kshfChart > .facetCategorical .scroll_display_more {
   font-size: 0.6em;
   vertical-align: top;
   font-style: italic;
@@ -739,26 +732,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   opacity: 1;
   pointer-events: all;
+  margin-right: 5px;
 }
-.kshf .kshfChart .facetCategorical .scroll_display_more:hover {
+.kshf .kshfChart > .facetCategorical .scroll_display_more:hover {
   color: #cb5454;
 }
-.kshf .kshfChart .resort_button {
+.kshf .kshfChart .subFacets {
+  position: relative;
+  height: 100%;
+}
+.kshf .kshfChart .subFacets .wigdhdyt {
+  display: inline-block;
   position: absolute;
-  pointer-events: all;
-  bottom: 1px;
-  cursor: pointer;
-  display: none;
-}
-.kshf .kshfChart .resort_button path {
-  fill: #616161;
-  -webkit-transition: all 250ms linear;
-  -moz-transition: all 250ms linear;
-  -o-transition: all 250ms linear;
-  transition: all 250ms linear;
-}
-.kshf .kshfChart .resort_button:hover path {
-  fill: #cb5454;
+  height: 100%;
+  width: 9px;
+  border-right: double 3px lightgray;
 }
 .kshf .kshfChart .attribTextSearch {
   white-space: nowrap;
@@ -805,39 +793,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: -18px;
   top: 4px;
 }
-.kshf .kshfChart[collapsed=true] .headerGroup {
+.kshf .kshfChart[collapsed=true] > .headerGroup {
   color: gray;
 }
-.kshf .kshfChart[collapsed=true] .headerGroup .barInfo {
-  display: none;
-}
-.kshf .kshfChart[collapsed=true] .headerGroup span.header_label {
+.kshf .kshfChart[collapsed=true] > .headerGroup span.header_label {
   cursor: pointer;
 }
-.kshf .kshfChart[collapsed=true] .headerGroup .leftHeader span.header_label_arrow {
+.kshf .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
-  color: gray;
 }
-.kshf .kshfChart[collapsed=true] .facetControls {
+.kshf .kshfChart[collapsed=true] > .headerGroup .facetControls {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] .facetCategorical {
+.kshf .kshfChart[collapsed=true] > .facetCategorical {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] .resort_button {
-  display: none !important ;
-}
-.kshf .kshfChart[collapsed=true] .timeChartAxis {
-  display: none;
-}
-.kshf .kshfChart[collapsed=true] select.sortOptionSelect {
-  display: none;
-}
-.kshf .kshfChart[collapsed=true] div.facetInterval {
+.kshf .kshfChart[collapsed=true] > .facetInterval {
   display: none;
 }
 .kshf .kshfChart[collapsedTime=true] .config_zoom {
@@ -904,14 +879,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
-.kshf .kshfChart[canresort=true] .resort_button {
-  display: block;
-}
 .kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
   display: none;
 }
 .kshf .kshfChart:hover {
   box-shadow: inset 0px 0px 3px gray;
+}
+.kshf .kshfChart[hasFacets=true] > .headerGroup {
+  font-size: 1.3em;
+}
+.kshf .kshfChart[hasFacets=true] > .headerGroup .chartFirstLineBackground {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxNTAsIDE1MCwgMTUwKSIgc3RvcC1vcGFjaXR5PSIwLjMiLz48c3RvcCBvZmZzZXQ9IjEwJSIgc3RvcC1jb2xvcj0icmdiKDE1MCwgMTUwLCAxNTApIiBzdG9wLW9wYWNpdHk9IjAuMyIvPjxzdG9wIG9mZnNldD0iOTAlIiBzdG9wLWNvbG9yPSJyZ2IoMTUwLCAxNTAsIDE1MCkiIHN0b3Atb3BhY2l0eT0iMC4zIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTUwLCAxNTAsIDE1MCkiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(left, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);;
+  background-image: -moz-linear-gradient(left, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);;
+  background-image: -o-linear-gradient(left, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);;
+  background-image: linear-gradient(to right, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);;
+}
+.kshf .kshfChart[hasFacets=true] > .wigdhdyt {
+  padding-top: 2px;
 }
 .kshf div.attribGroup {
   position: relative;
@@ -1189,7 +1174,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
 }
 .kshf.listDiv {
-  margin-left: 6px;
   position: relative;
   top: 0px;
   -webkit-transition: margin-top 700ms ease-in-out;
@@ -1200,7 +1184,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv div.listItemGroup {
   overflow-y: scroll;
   overflow-x: hidden;
-  border-left: solid 2px #e9e3cd;
+  border-style: solid;
+  border-color: #dfd2a9;
+  border-width: 0px 2px 2px 2px;
   background-color: white;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
@@ -1386,7 +1372,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: bold;
   color: black;
   padding: 0px 0px 1px 2px;
-  border-top-left-radius: 5px;
   font: 500 100% Arial, sans-serif;
   font-size: 0.9em;
   position: relative;
@@ -1427,7 +1412,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf div.listHeader span.scrollToTop {
-  font-size: 1.1em;
   float: right;
   margin-bottom: -4px;
   width: 15px;
