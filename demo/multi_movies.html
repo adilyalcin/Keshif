@@ -14,21 +14,9 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
         <script type="text/javascript">
-
-var movieGenresSplit = false;
-var seriesSplit = false;
-
-function addLinks(){
-    // Add mapped Data
-    var columnTitle = 'Series';
-    var mapFunc_Series = function(d){ return d.data[0]; }; // 0 stores series
-    var mapFunc_Movies = function(d){ return d.data[2]; }; // 2 stores movies
-    // Add filtering for series
-    browserScreenings.mapItemData(mapFunc_Series,kshf.dt_id['Series'],browserScreenings.maxFilterID++);
-    // Add filtering for movies
-    browserScreenings.mapItemData(mapFunc_Movies,kshf.dt_id['Movies'],browserScreenings.maxFilterID++);
-}
 
 // https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
 function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
@@ -111,59 +99,44 @@ function loadChart() {
         itemName: "Screenings",
         source : {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
-            sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"} ]
+            sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
         },
         loadedCb: function(){
             // expand cell content - movie genres and series features
             kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
             kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
         },
-        charts : [
+        facets : [
             {
                 facetTitle: "Movies",
                 catTableName: "Movies",
                 catItemMap: function(d){ return d.data[2]; },
                 catLabelText: function(m){ return m.data[0]; },
-                subFilters: {
-                    categoryTextWidth:140,
-                    divHeight: 300,
-                    charts: [
-                        {
-                            facetTitle: "Genre",
-                        },{
-                            facetTitle: "Rated",
-                        }
-                    ]
-                }
-            },{
-                facetTitle: "Day Of Week",
-                catItemMap: function(d){
-                    return (moment(d.data[1]).days()+6)%7; 
-                },
-                sortingOpts : [
-                    { func: kshf.Util.sortFunc_Column_Int_Decr, no_resort: true },
-                ],
-                catLabelText: function(d){
-                    switch(d.data[1]){
-                        case 0: return "Monday";
-                        case 1: return "Tuesday";
-                        case 2: return "Wednesday";
-                        case 3: return "Thursday";
-                        case 4: return "Friday";
-                        case 5: return "Saturday";
-                        case 6: return "Sunday";
+                facets: [
+                    {   facetTitle: "Genre",
+                    },{
+                        facetTitle: "Rated",
+                        collapsed: true
                     }
-                }
+                ]
             },{
-                facetTitle: "Soon",
-                removeInactiveAttrib: false,
-                catItemMap: function(d){
-                    var m_scr = moment(d.data[1]);
-                    if(m_scr.isBefore(m_now)) return null;
-                    if(m_scr.isBefore(m_thisweek)) return "This Week";
-                    if(m_scr.isBefore(m_nextweek)) return "Next Week";
-                    return null;
-                }
+                facetTitle: "Time",
+                facets : [{
+                    facetTitle: "Day Of Week",
+                    catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
+                    catTableName: "Weekdays",
+                    collapsed: true
+                },{
+                    facetTitle: "Soon",
+                    removeInactiveAttrib: false,
+                    catItemMap: function(d){
+                        var m_scr = moment(d.data[1]);
+                        if(m_scr.isBefore(m_now)) return null;
+                        if(m_scr.isBefore(m_thisweek)) return "This Week";
+                        if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                        return null;
+                    }
+                }]
             },{
                 facetTitle: "Series",
                 catTableName: "Series",
@@ -172,7 +145,7 @@ function loadChart() {
                     {   name: "# of Movies"},
                     {   name: "Distance",  
                         func: function(a,b){
-                            // lat-long: 10-11
+                            // lat-long columns: 10-11
                             if(myLoc===null) {
                                 return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
                             }
@@ -184,17 +157,13 @@ function loadChart() {
                         }
                     }
                 ],
-                subFilters: {
-                    categoryTextWidth:140,
-                    divHeight: 200,
-                    charts: [
-                        {
-                            facetTitle: "State"
-                        },{
-                            facetTitle: "Features"
-                        }
-                    ]
-                }
+                facets: [
+                    {   facetTitle: "State"
+                    },{
+                        facetTitle: "Features",
+                        collapsed: true
+                    }
+                ]
             }
         ],
         readyCb: function(){
@@ -311,23 +280,11 @@ $(document).ready(loadChart);
             border-top: dotted 2px gray;
             font-size: 0.9em;
         }
-        #div_series{
-            margin-top: 28px;
-            width: 230px;
-            height: 230px;
-            vertical-align: top;
-        }
-        #div_movies{
-            margin-top: 28px;
-            width: 230px;
-            height: 400px;
-            vertical-align: top;
-        }
         #div_screenings{
-            width: 860px;
+            width: 1160px;
             height: 700px;
-            display:inline-block;
             vertical-align: top;
+            margin: 0px auto;
         }
         img.film{
             position: absolute;
@@ -351,10 +308,10 @@ $(document).ready(loadChart);
             opacity: 0.7;
         }
         img.strip.left{
-            left: 20px;
+            left: 10px;
         }
         img.strip.right{
-            right: 20px;
+            right: 10px;
         }
     </style>
 	</head>
@@ -380,13 +337,7 @@ $(document).ready(loadChart);
             </div>
         <div class="meny-arrow"></div>
         <div class="contents">
-            <div style="margin: 0px auto; position:relative; width:1100px">
-                <div style="display:inline-block">
-                    <div id="div_movies"></div>
-                    <div id="div_series"></div>
-                    </div>
-                <div id="div_screenings"></div>
-            </div>
+            <div id="div_screenings"></div>
             <img class="strip left" src="img/strip.png">
             <img class="strip right" src="img/strip.png">
             </div>

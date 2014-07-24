@@ -20,6 +20,7 @@ var BEDERSON_ID = 3;
 
 function resizeChart(){
     var h=$(window).height()-65;
+//    h = 700; // temp
     var w=$(window).width()-29;
     if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
     $('#chart_div').height(h);
@@ -82,6 +83,10 @@ google.setOnLoadCallback(function() {
                 ],
                 textFilter: 'about'
             },{
+                facetTitle: "Publication Type",
+                catTableName: "VenueTypes",
+                textFilter: 'as'
+            },{
                 facetTitle: "Coauthor",
                 catItemMap : function(pub){
                     var authors = pub.data[pubCol.Coauthor];
@@ -96,32 +101,21 @@ google.setOnLoadCallback(function() {
                 showNoneCat: true,
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
-                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
-                textFilter: 'with', textGroup: 'co-authors'
-            },{
-                facetTitle: "Coauthor Type",
-                catTableName: "AuthorTypes",
-                catItemMap : function(pub){
-                    var typeList = {};
-                    var r = [];
-                    var authors = pub.data[pubCol.Coauthor];
-                    for(i=0; i<authors.length; i++){
-                        if(authors[i]===BEDERSON_ID) continue;
-                        var autData=kshf.dt_id.Authors[authors[i]];
-                        var typeID = autData.data[3];
-                        if(!typeList[typeID]){
-                            typeList[typeID] = true;
-                            r.push(typeID);
-                        }
+//                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
+                textFilter: 'with', textGroup: 'co-authors',
+                facets: [
+                    {
+                        facetTitle: "Coauthor Type",
+                        catTableName: "AuthorTypes",
+                        catItemMap : function(coAuth){ 
+                            // remove bederson from the list here..
+                            if(coAuth.data[2]===3) return null; // Bederson
+                            return coAuth.data[3];
+                        },
+//                        barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
+                        textFilter: 'with'
                     }
-                    return r;
-                },
-                barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
-                textFilter: 'with'
-            },{
-                facetTitle: "Publication Type",
-                catTableName: "VenueTypes",
-                textFilter: 'as'
+                ]
             }
         ],
         readyCb: function(){

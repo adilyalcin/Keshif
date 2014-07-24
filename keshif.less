@@ -332,6 +332,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .background-image(~"linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%)");
         pointer-events: none;
     }
+    .chartFilterButtonParent{
+        position:relative;
+    }
     .chartClearFilterButton{
         width: 14px;
         height: 14px;
@@ -369,7 +372,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 2px;
         }
         &.rowFilter{
-            margin-right: 3px;
+            position: absolute;
+            left: -19px;
         }
         &.timeFilter{
             margin-left: 3px;
@@ -389,9 +393,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 0px;
         // border-bottom: solid 1px lightgray;
         // border-top: solid 1px lightgray;
-        border-width: 0px 1px 0px 0px;
+        border-width: 0px 2px 0px 0px;
         border-style: dotted;
-        border-color: gray;
+        border-color: lightgray;
         cursor: col-resize;
         // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
         opacity: 0.5;
@@ -400,6 +404,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // border-bottom: solid 1px gray;
             // border-top: solid 1px gray;
             border-width: 0px 2px 0px 0px;
+            border-style: dashed;
+            border-color: gray;
             // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
@@ -488,6 +494,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // timeChartAxis
 
+    .border_line{
+        position: relative;
+        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
+        height: 1px;
+        margin-bottom: -2px;
+        pointer-events: all;
+        top: -1px;
+    }
+
     .headerGroup{
         pointer-events:none;
         position:relative;
@@ -525,14 +540,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position: absolute;
             right: -18px;
         }
-        .border_line{
-            position: relative;
-            .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
-            height: 1px;
-            margin-bottom: -2px;
-            pointer-events: all;
-            top: -1px;
-        }
         .chartFirstLineBackground{
             width:100%;
             position: relative;
@@ -540,12 +547,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .chartFirstLineBackgroundRight{
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
-        }
-        select.optionSelect{
-            font-size:0.7em;
-            pointer-events:all;
-            clear:right;
-            margin:0px;
         }
         span.sortOptionSelectGroup{ 
             display:block;
@@ -582,55 +583,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             span.header_label {
                 margin-left: 25px;   
             }
-            .config_zoom{
-                padding-top: 0px;
-                margin-right:10px;
-                height: 18px;
-                float:right;
-                .transition(~"height 500ms ease, margin-left 400 ease");
-                svg{
-                    position:relative;
-                    top:2px;
-                    display:none;
-                }
-                path{
-                    fill: white;
-                    display:inline;
-                    stroke:#000000;
-                    stroke-width:25;
-                    stroke-miterlimit:10;
-                }
-            }
-            .zoom_button{
-                font-family: 'Source Sans Pro', Helvetica, Arial ,sans-serif;
-                font-size: 11px;
-                font-weight: 300;
-                background-color: white;
-                border-radius: 7px;
-                padding: 0px 5px 0px 5px;
-                position:relative;
-                top:1px;
-                pointer-events: none;
-                margin-right: 10px;
-                &[disabled=false]{
-                    color: rgb(37, 33, 18);
-                    border: 1px gray solid;
-                    cursor: pointer;
-                    pointer-events: all;
-                    box-shadow: 1px 1px 1px #474940;
-                    background-color: #EEEEEE;
-                    font-weight: 500;
-                    &:hover{
-                        box-shadow: inset 1px 1px 1px #474940;
-                        color: red;
-                    }
-                }
-                &[disabled=true]{
-                    border: 1px lightgray solid;
-                    color: gray;
-                    cursor: default;
-                }
-            }
         }
         span.showFilterText{
             display: inline-block;
@@ -647,17 +599,86 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: relative;
         overflow: hidden; // Keep it this way!
-        .transition(~'height 700ms ease-in-out');
-        span.optionSelect_Label{
-            font-size: 0.7em;
-            font-weight: 500;
-            padding: 3px 1px 0px 0px;
-            cursor: default;
-            pointer-events:none;
-        }
 
         > .facetCategorical{
             position:relative;
+            overflow: hidden;
+            .transition(~'height 700ms ease-in-out');
+
+            > .facetControls{
+                display: none;
+                > span{
+                    display: inline-block;
+                    vertical-align: top;
+                }
+                .sortOptionSelectGroup{
+                    display: inline-block;
+                    select.optionSelect{
+                        font-size:0.7em;
+                        pointer-events:all;
+                        clear:right;
+                        margin:0px;
+                        vertical-align: top;
+                    }
+                    span.optionSelect_Label{
+                        font-size: 0.7em;
+                        font-weight: 500;
+                        vertical-align: middle;
+                        cursor: default;
+                        pointer-events:none;
+                    }
+                }
+                .config_zoom{
+                    padding-top: 0px;
+                    margin-right:10px;
+                    height: 18px;
+                    float:right;
+                    .transition(~"height 500ms ease, margin-left 400 ease");
+                    svg{
+                        position:relative;
+                        top:2px;
+                        display:none;
+                    }
+                    path{
+                        fill: white;
+                        display:inline;
+                        stroke:#000000;
+                        stroke-width:25;
+                        stroke-miterlimit:10;
+                    }
+                }
+                .zoom_button{
+                    font-family: 'Source Sans Pro', Helvetica, Arial ,sans-serif;
+                    font-size: 11px;
+                    font-weight: 300;
+                    background-color: white;
+                    border-radius: 7px;
+                    padding: 0px 5px 0px 5px;
+                    position:relative;
+                    top:1px;
+                    pointer-events: none;
+                    margin-right: 10px;
+                    &[disabled=false]{
+                        color: rgb(37, 33, 18);
+                        border: 1px gray solid;
+                        cursor: pointer;
+                        pointer-events: all;
+                        box-shadow: 1px 1px 1px #474940;
+                        background-color: #EEEEEE;
+                        font-weight: 500;
+                        &:hover{
+                            box-shadow: inset 1px 1px 1px #474940;
+                            color: red;
+                        }
+                    }
+                    &[disabled=true]{
+                        border: 1px lightgray solid;
+                        color: gray;
+                        cursor: default;
+                    }
+                }
+            }
+
             .scrollToTop{
                 position: absolute;
                 top: -16px;
@@ -707,8 +728,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: inline-block;
                 position: absolute;
                 height: 100%;
-                width: 9px;
-                border-right: double 3px lightgray;
+                width: 16px;
+                border-right: solid 1px lightgray;
+                .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+                span{
+                    .transform-origin(50% 50%);
+                    .transform(~"rotate(90deg)");
+                    white-space: nowrap;
+                    display: block;
+                    font-size: 0.9em;
+                    font-variant: small-caps;
+                    font-weight: 700;
+                    padding-bottom: 2px;
+                    padding-left: 3px;
+                    pointer-events: none;
+                }
             }
 
         } // subFacets
@@ -722,11 +756,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 font-size: 0.7em;
                 font-weight: 700;
                 border-width: 0px;
-                padding: 1px 2px 0px 1px;
-                border-bottom: dashed 1px #cb5454;
+                padding: 0px 2px 0px 1px;
+                // border-bottom: dashed 1px #cb5454;
                 color: #cb5454;
                 background-color:rgba(244, 244, 244,0);
                 pointer-events: all;
+                margin: 0px;
                 &:focus{
                     outline-color: gray;
                     outline-width: 4px;
@@ -769,8 +804,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 .facetControls{ display: none; }
             }
-            > .facetCategorical{ display: none; }
-            > .facetInterval{ display: none; }
+            > .facetCategorical{
+                > div { display: none; }
+                > span { display: none; }
+            }
+            > .facetInterval{ 
+                > div { display: none; }
+                > span { display: none; }
+            }
+            > .subFacets {
+                .wigdhdyt span{
+                    display: none;
+                }
+            }
 //            > .subFacets{ display: none; }
         }
         &[collapsedTime=true] {
@@ -867,9 +913,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[hasFacets=true]{
             > .headerGroup {
-                font-size: 1.3em;
                 .chartFirstLineBackground {
-                    .background-image(~"linear-gradient(left, rgba(150, 150, 150, 0.3) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
+                    font-size: 1.3em;
+                }
+                .chartFirstLineBackground {
+                    .background-image(~"linear-gradient(left, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
                 }
             }
             > .wigdhdyt{
@@ -885,18 +933,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow-x: hidden;
         display: block;
         pointer-events: all;
-        margin-right: 3px; // mouse over list block 
+//        margin-right: 3px; // mouse over list block 
         z-index: 5;
+        border-top: dotted 1px lightgray;
+        //border-bottom: dotted 1px lightgray;
+        top: -1px;
         .transition(~'height 700ms ease-in-out');
     }
     div.belowAttribs{
         position:relative; 
+        .border_line{
+            opacity: 0.6;
+        }
     }
-    div.middleScrollbar{
+    span.middleScrollbar{
+        display: inline-block;
         overflow-y: auto;
         overflow-x: hidden;
         position:absolute;
-        top: 0px;
         z-index:10;
         .transition(~'height 700ms ease-in-out');
         div.filler{
@@ -923,11 +977,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 18px;
         }
         > span.clickArea{
+            // Note: The height of clickable area is the same as height of the bar!
             opacity: 0;
-            margin-top:3px;
+            margin-top:4px;
             margin-bottom:3px;
             margin-left: 20px;
-            height: 12px !important; // total: 18px
+            height: 10px !important; // total: 18px
             position: absolute;
         }
         > span.label{
@@ -1133,6 +1188,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
         position: relative;
         top: 0px;
+        z-index: 100; // on top of scatterplot during time collapse animation
         .transition(~'margin-top 700ms ease-in-out');
         div.listItemGroup {
             overflow-y:scroll;

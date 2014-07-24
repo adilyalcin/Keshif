@@ -76,9 +76,6 @@ kshf.Util = {
     dif_activeItems: function(a,b){
         return b.activeItems - a.activeItems;
     },
-    dif_barValue: function(a,b){
-        return b.barValue - a.barValue;
-    },
     sortFunc_ActiveCount_TotalCount: function(a,b){ 
         var dif=kshf.Util.dif_activeItems(a,b);
         if(dif===0) { return b.items.length-a.items.length; }
@@ -574,12 +571,9 @@ kshf.Item = function(d, idIndex){
     this.items = []; // items which are mapped/related to this item.
 	this.activeItems = 0; // If primary item, activeItems is the number of active linked items
     this.highlightedItems=0;
-    this.barValue = 0;
-    this.barValueMax = 0;
     // An item can be loaded as non-primary first, but used as primary for another chart, so, always incldue this info
 //    if(primary){
         this.filterCache = [];
-        this.barCount = 1; // 1 by default
         this.wanted = true;
         this.wantedOrder = 0; // some default. Used by listDisplay to adjust animations
         this.mappedItems = [];
@@ -628,19 +622,17 @@ kshf.Item.prototype = {
     addItem: function(item){
         this.items.push(item);
         this.activeItems++;
-        this.barValue+=item.barCount;
-        this.barValueMax+=item.barCount;
         this.sortDirty = true;
         item.mappedItems.push(this);
     },
     /**
      * Updates wanted state, and notifies all related filter attributes of the change.
      */
-    updateSelected: function(){
+    updateSelected: function(recursive){
         if(!this.dirtyFilter) return;
 
         var me=this;
-        var oldSelected = this.wanted;
+        var oldWanted = this.wanted;
 
         // checks if all filter results are true
         // At first "false", breaks the loop
@@ -650,46 +642,83 @@ kshf.Item.prototype = {
             return me.wanted;
         });
         
-        if(this.wanted===true && oldSelected===false){
+        if(this.wanted===true && oldWanted===false){
             this.mappedItems.forEach(function(attrib){
                 attrib.activeItems++;
-                attrib.barValue+=me.barCount;
+                if(recursive!==attrib.barChart && attrib.activeItems===1){
+                    // it is now selected, see other DOM items it has and increment their count too
+                    attrib.mappedDOMs.forEach(function(dom){
+                        dom.__data__.activeItems++;
+                    });
+                }
                 attrib.sortDirty=true;
             });
             this.mappedDotDOMs.forEach(function(d){ d.setAttribute('display',"true"); });
-        } else if(this.wanted===false && oldSelected===true){
-            this.mappedItems.forEach(function(attrib){
-                attrib.activeItems--;
-                attrib.barValue-=me.barCount;
-                attrib.sortDirty=true;
-            });
+        } else if(this.wanted===false && oldWanted===true){
+            if(this.barChart===undefined || (this.activeItems>0) ) {
+                this.mappedItems.forEach(function(attrib){
+                    attrib.activeItems--;
+                    if(recursive!==attrib.barChart && attrib.activeItems===0){
+                        // it is now not selected, see other DOM items it has and increment their count too
+                        attrib.mappedDOMs.forEach(function(dom){
+                            dom.__data__.activeItems--;
+                        });
+                    }
+                    attrib.sortDirty=true;
+                });
+            } else {
+                x=123213;
+            }
             this.mappedDotDOMs.forEach(function(d){ d.setAttribute('display',"false"); });
         }
         this.dirtyFilter = false;
     },
-    updateSelected_SelectOnly: function(){
-        if(!this.wanted) this.updateSelected();
+    updateSelected_SelectOnly: function(recursive){
+        if(!this.wanted) this.updateSelected(recursive);
     },
-    updateSelected_UnSelectOnly: function(){
-        if(this.wanted) this.updateSelected();
+    updateSelected_UnSelectOnly: function(recursive){
+        if(this.wanted) this.updateSelected(recursive);
     },
     /** Highlights the list item */
     highlightListItem: function(){
         if(this.listItem) this.listItem.setAttribute("highlight",true);
     },
-    highlightAdvanced: function(){
+    highlightAdvanced: function(noRecurse){
+        if(this.highlightDone) return;
+        this.highlightDone = true;
         this.highlightListItem();
+        // if an item facet has a facetDOM, it is part of filtering
+        if(this.facetDOM && this.activeItems>0){
+            this.facetDOM.setAttribute("highlight",true);
+            // see the main items stored under this one...
+            this.items.forEach(function(item){
+                item.highlightAdvanced(noRecurse);
+            });
+        }
         this.mappedData.forEach(function(m){
             if(m===null) return;
             if(m instanceof Array) {
                 m.forEach(function(item){
                     item.highlightedItems++;
+                    if(item.highlightedItems===1 && item.barChart!==noRecurse){
+                        // TODO: Don't go under the current one, if any
+                        item.mappedDOMs.forEach(function(d){
+                            d.__data__.highlightedItems++;
+                        });
+                    }
                 });
             } else {
-                if(m.highlightedItems !==undefined)
+                if(m.highlightedItems!==undefined){
                     m.highlightedItems++;
-                else if(m.b)
+                    if(m.highlightedItems===1 && m.barChart!==noRecurse){
+                        // TODO: Don't go under the current one, if any
+                        m.mappedDOMs.forEach(function(d){
+                            d.__data__.highlightedItems++;
+                        });
+                    }
+                } else if(m.b) {// histogram bin
                     m.b.highlightedItems++;
+                }
             }
         });
     },
@@ -702,19 +731,39 @@ kshf.Item.prototype = {
     nohighlightListItem: function(){
         if(this.listItem) this.listItem.setAttribute("highlight",false);
     },
-    nohighlightAdvanced: function(){
+    nohighlightAdvanced: function(noRecurse){
+        if(this.highlightDone) return;
+        this.highlightDone = true;
         this.nohighlightListItem();
+        if(this.facetDOM && this.activeItems>0){
+            this.facetDOM.setAttribute("highlight",false);
+            // see the main items stored under this one...
+            this.items.forEach(function(item){
+                item.nohighlightAdvanced(noRecurse);
+            });
+        }
         this.mappedData.forEach(function(m){
             if(m===null) return;
             if(m instanceof Array) {
                 m.forEach(function(item){
                     item.highlightedItems--;
+                    if(item.highlightedItems===0 && item.barChart!==noRecurse){
+                        item.mappedDOMs.forEach(function(d){
+                            d.__data__.highlightedItems--;
+                        });
+                    }
                 });
             } else {
-                if(m.highlightedItems !==undefined)
+                if(m.highlightedItems!==undefined){
                     m.highlightedItems--;
-                else if(m.b)
+                    if(m.highlightedItems===0 && m.barChart!==noRecurse){
+                        m.mappedDOMs.forEach(function(d){
+                            d.__data__.highlightedItems--;
+                        });
+                    }
+                } else if(m.b) {// histogram bin
                     m.b.highlightedItems--;
+                }
             }
         });
     },
@@ -750,31 +799,67 @@ kshf.Filter = function(id, opts){
     },this);
 };
 kshf.Filter.prototype = {
-    addFilter: function(forceUpdate){
+    addFilter: function(forceUpdate,recursive){
         var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = true;
+
+        if(recursive===undefined) recursive=true;
+        if(this.onFilter) this.onFilter.call(this.cb_this, this, recursive);
+
+        // if this has a parent facet, link selection from this to the main table
+        var hasParent = this.cb_this.parentFacet!==undefined;
+        if(hasParent){
+            var fct=this.cb_this.parentFacet;
+            if(fct.hasAttribs()){
+                fct.updateAttribCount_Wanted();
+                fct.attribFilter.how = "All";
+                // re-run the parents attribute filter...
+                fct.attribFilter.addFilter(false,fct); // This filter will update the browser later if forceUpdate===true
+            }
+        }
+
         this.refreshFilterSummary();
-        if(this.onFilter) this.onFilter.call(this.cb_this, this);
-        this.browser.updateItemSelectedCt();
+
         if(forceUpdate===true){
+            this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
-            if(itemsSelectedCt_!==this.browser.itemsSelectedCt)
+//            if(itemsSelectedCt_!==this.browser.itemsSelectedCt)
                 this.browser.update(-1); // fewer results, probably!
         }
     },
-    clearFilter: function(forceUpdate){
+    clearFilter: function(forceUpdate,recursive){
         if(!this.isFiltered) return;
         var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = false;
-        this.filteredItems.forEach(function(item){
-            item.setFilter(this.id,true);
-        },this);
-        this.refreshFilterSummary();
+
+        this.filteredItems.forEach(function(item){ item.setFilter(this.id,true); },this);
+
+        if(recursive===undefined) recursive=true;
         this.onClear.call(this.cb_this,this);
+
+        this.refreshFilterSummary();
+
+        this.filteredItems.forEach(function(item){
+            item.updateSelected_SelectOnly(recursive);
+        });
+
         if(forceUpdate===true){
-            this.filteredItems.forEach(function(item){
-                item.updateSelected_SelectOnly();
-            });
+            if(this.cb_this.parentFacet){
+                var fct=this.cb_this.parentFacet;
+                if(fct.hasAttribs()){
+                    fct.updateAttribCount_Wanted();
+                    fct.attribFilter.how = "All";
+                    if(fct.attribCount_Wanted===fct.attribCount_Total){
+                        fct.attribFilter.clearFilter(false,fct); // force update
+                    } else {
+                        // re-run the parents attribute filter...
+                        fct.attribFilter.addFilter(false,fct); // force update
+                    }
+                }
+            }
+
+            this.browser.updateItemSelectedCt();
+
             this.browser.refreshFilterClearAll();
 //            if(itemsSelectedCt_!==this.browser.itemsSelectedCt)
                 this.browser.update(1); // more results
@@ -880,7 +965,7 @@ kshf.List = function(kshf_, config, root){
 
     this.contentFunc = config.contentFunc;
     if(config.content!==undefined){
-        this.contentFunc = this.browser.columnAccessFunc(config.content);
+        this.contentFunc = this.browser.getColumnData(this.browser.primaryTableName,config.content);
     }
 
     this.maxVisibleItems = kshf.maxVisibleItems_default;
@@ -896,11 +981,13 @@ kshf.List = function(kshf_, config, root){
     // Sorting options
     this.sortingOpts = config.sortingOpts;
     this.sortingOpts.forEach(function(sortOpt){
-        if(sortOpt.value===undefined) sortOpt.value = kshf_.columnAccessFunc(sortOpt.name);
+        if(sortOpt.value===undefined) {
+            sortOpt.value = this.browser.getColumnData(this.browser.primaryTableName,sortOpt.name);
+        }
         if(!sortOpt.label) sortOpt.label = sortOpt.value;
         if(sortOpt.inverse===undefined) sortOpt.inverse = false;
         if(sortOpt.func===undefined) sortOpt.func = me.getSortFunc(sortOpt.value);
-    });
+    },this);
     this.sortingOpt_Active = this.sortingOpts[0];
 
     this.displayType = 'list';
@@ -914,7 +1001,7 @@ kshf.List = function(kshf_, config, root){
     this.textSearchFunc = config.textSearchFunc;
     if(this.textSearch!==undefined){
         if(this.textSearchFunc===undefined){
-            this.textSearchFunc = this.browser.columnAccessFunc(this.textSearch);
+            this.textSearchFunc = this.browser.getColumnData(this.browser.primaryTableName,this.textSearch);
         }
         if(this.textSearch[0]==="*")
             this.textSearch = this.textSearch.substring(1);
@@ -944,7 +1031,7 @@ kshf.List = function(kshf_, config, root){
                 me.dom.showMore.style("bottom","-27px");
             }
             // scrollTop display
-            me.dom.scrollToTop.style("opacity", this.scrollTop>0?"1":"0");
+            me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
         });
 
     // TODO: if sorting column is shown...
@@ -960,14 +1047,14 @@ kshf.List = function(kshf_, config, root){
                     onClear: function(filter){
                         filter.filterValue = "";
                     },
-                    onFilter: function(filter){
+                    onFilter: function(filter, recursive){
                         // what is current sorting column?
                         var labelFunc=this.sortingOpt_Active.label;
                         // if any of the linked items are selected, filtering will pass true
                         // Note: items can only have one mapping (no list stuff here...)
                         filter.filteredItems.forEach(function(item){
                             item.setFilter(filter.id,(labelFunc(item)===filter.filterValue));
-                            item.updateSelected();
+                            item.updateSelected(recursive);
                         });
                     },
                     text_header: sortingOpt.name,
@@ -1034,7 +1121,7 @@ kshf.List.prototype = {
                 this.dom.bigTextSearch[0][0].value = "";
                 listHeaderTopRowTextSearch.select("span").style('display','none');
             },
-            onFilter: function(filter){
+            onFilter: function(filter,recursive){
                 // split the search string, search for each item individually
                 filter.filterStr=filter.filterStr.split(" ");
                 listHeaderTopRowTextSearch.select("span").style('display','inline-block');
@@ -1044,7 +1131,7 @@ kshf.List.prototype = {
                         return me.textSearchFunc(item).toLowerCase().indexOf(v_i)===-1;
                     });
                     item.setFilter(filter.id,f);
-                    item.updateSelected();
+                    item.updateSelected(recursive);
                 });
             },
             hideCrumb: true,
@@ -1740,7 +1827,17 @@ kshf.Browser.prototype = {
         ++this.maxFilterID;
         this.filterList.push(newFilter);
         return newFilter;
-    },
+    },/*
+    passChanges: function(){
+        this.facets.forEach(function(facet){
+            if(!facet.hasAttribs() || !facet.hasFacets()) return;
+            fct.updateAttribCount_Wanted();
+            fct.attribFilter.how = "All";
+            // re-run the parents attribute filter...
+            fct.attribFilter.addFilter(false,false); // This filter will update the browser later if forceUpdate===true
+            this.hasAttribs();
+        });
+    },*/
     /** -- */
     insertResize: function(){
         var me=this;
@@ -2178,14 +2275,6 @@ kshf.Browser.prototype = {
                 }
             },this);
 
-            // update primary item stuff if necessary
-            if(typeof this.primItemCatValue =='string'){
-                var barCountFunc = columnAccessFunc(this.primItemCatValue);
-                kshf.dt[this.primaryTableName].forEach(function(d){
-                    d.barCount=barCountFunc(d);
-                });
-            }
-
             this.layout_infobox.select("div.status_text span")
                 .text("Creating Keshif...");
             this.layout_infobox.select("div.status_text div")
@@ -2218,7 +2307,7 @@ kshf.Browser.prototype = {
 
         // TODO: Find the first column that has a date value, set it the time component of first chart
         this.facetDefs.forEach(function(facetDescr){ 
-            me.addFacet(facetDescr);
+            me.addFacet(facetDescr,this.primaryTableName);
         },this);
 
         // Init facet DOMs after all facets are added / data mappings are completed
@@ -2235,6 +2324,7 @@ kshf.Browser.prototype = {
         this.initBarChartWidth();
         this.refreshFilterClearAll();
         this.update(0,true);
+        this.updateLayout_Height();
 
         // hide infobox
         this.layout_infobox.style("display","none");
@@ -2243,22 +2333,40 @@ kshf.Browser.prototype = {
         if(this.readyCb!==undefined) this.readyCb(this);
     },
     /** -- */
-    addFacet: function(options){
+    addFacet: function(options, primTableName){
         // if catTableName is the main table name, this is a self-referencing widget. Adjust listDef
         if(options.catTableName===this.primaryTableName){
             this.listDef.hasLinkedItems = true;
         }
+
         // How do you get the value from items...
         if(options.catItemMap===undefined){
-            if(this.isValidColumnName(options.facetTitle)){
-                // If not defined, access the column named facetTitle
-                options.catItemMap = this.columnAccessFunc(options.facetTitle);
+            // if we have a column name mapping, use that
+            if(kshf.dt_ColNames[primTableName]!==undefined) {
+                var ID = this.getColumnID(primTableName,options.facetTitle);
+                if(ID!==undefined)
+                    options.catItemMap = function(d){ return d.data[ID]; };
+            } else {
+                // see if items have the given facet title as a data property
+                if(kshf.dt[primTableName][0].data[options.facetTitle]){
+                    options.catItemMap = function(d){ return d.data[options.facetTitle]; };
+                }
             }
         } else if(typeof(options.catItemMap)==="string"){
-            if(this.isValidColumnName(options.catItemMap)){
-                // If defined as string, use the given string as the column name
-                options.catItemMap = this.columnAccessFunc(options.catItemMap);
+            options.catItemMap = this.getColumnData(primTableName,options.catItemMap);
+        }
+        if(options.timeTitle){
+            // How do you access time attribute of item?
+            if(options.timeItemMap===undefined){
+                options.timeItemMap = this.getColumnData(primTableName,options.timeTitle);
+            } else if(typeof(options.timeItemMap)==="string"){
+                options.timeItemMap = this.getColumnData(primTableName,options.timeItemMap);
             }
+        }
+
+
+        if(options.items===undefined){
+            options.items = this.items;
         }
 
         if(options.type) {
@@ -2267,7 +2375,7 @@ kshf.Browser.prototype = {
             // If certain options are defined, load categorical
             if(options.catLabelText || options.timeTitle || options.catTableName ){
                 options.type="categorical";
-            } else if(options.catItemMap!==undefined && typeof(options.catItemMap(this.items[0]))==="number"){
+            } else if(options.catItemMap!==undefined && typeof(options.catItemMap(kshf.dt[primTableName][0]))==="number"){
                 options.type="interval";
             } else {
                 // undefined catItemMap means it's a hierarchical facet (most probably)
@@ -2284,8 +2392,9 @@ kshf.Browser.prototype = {
     addFacet_Categorical: function(options){
         if(options.layout===undefined)
             options.layout = (options.timeTitle!==undefined)?this.layoutTop:this.layoutLeft;
+        if(options.sortingOpts===undefined) options.sortingOpts = [{}];
 
-        var fct=new kshf.Facet_Categorical(this,this.items,options);
+        var fct=new kshf.Facet_Categorical(this,options);
         this.facets.push(fct);
         if(fct.isLinked) this.linkedFacets.push(fct);
         return fct;
@@ -2293,30 +2402,29 @@ kshf.Browser.prototype = {
     addFacet_Interval: function(options){
         if(options.layout===undefined)
             options.layout = this.layoutLeft;
-        var fct=new kshf.Facet_Interval(this,this.items,options);
+        var fct=new kshf.Facet_Interval(this,options);
         this.facets.push(fct);
         return fct;
     },
-    isValidColumnName: function(columnName){
-        if(kshf.dt_ColNames[this.primaryTableName]===undefined) return false;
-        return kshf.dt_ColNames[this.primaryTableName][columnName] != undefined;
+    getColumnID: function(tableName, columnName){
+        if(kshf.dt_ColNames[tableName]===undefined) return undefined;
+        return kshf.dt_ColNames[tableName][columnName];
     },
-    /** -- */
-    columnAccessFunc: function(column){
-        // If dt_ColNames is defined for primaryTable, run through mapping
-        if(kshf.dt_ColNames[this.primaryTableName]!==undefined)
-            column = kshf.dt_ColNames[this.primaryTableName][column];
-        return function(d){ return d.data[column]; }
+    getColumnData: function(tableName, columnName){
+        var ID = this.getColumnID(tableName, columnName);
+        if(ID===undefined) {
+            return function(d){ return d.data[columnName]; };
+        }
+        return function(d){ return d.data[ID]; };
     },
-
     /** For each primary item
      *  - Run the mapFunc
      *  - If result is array, remove duplicates
      *  - Store result in mappedData[filterId]
      *  - For each result, add the primary item under that item.
      */
-    mapItemData: function(mapFunc, targetTable, filterId){
-        this.items.forEach(function(item){
+    mapItemData: function(items, mapFunc, targetTable, filterId){
+        items.forEach(function(item){
             var toMap = mapFunc(item);
             item.mappedData[filterId] = null;
             if(toMap===undefined || toMap==="" || toMap===null) { 
@@ -2379,10 +2487,11 @@ kshf.Browser.prototype = {
         // clear all registered filters
         this.filterList.forEach(function(filter){ filter.clearFilter(false); })
         if(force!==false){
-            this.items.forEach(function(item){ item.updateSelected_SelectOnly(); });
+            this.items.forEach(function(item){ item.updateSelected_SelectOnly(true); });
             this.refreshFilterClearAll();
             this.update(1); // more results
         }
+        setTimeout( function(){ me.browser.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
     },
     updateItemSelectedCt: function(){
         this.itemsSelectedCt = 0;
@@ -2399,7 +2508,7 @@ kshf.Browser.prototype = {
 
         // if running for the first time, do stuff
         if(this.firsttimeupdate === undefined){
-            this.items.forEach(function(item){item.updateSelected();});
+            this.items.forEach(function(item){item.updateSelected(true);});
             this.firsttimeupdate = true; 
         }
 
@@ -2412,10 +2521,6 @@ kshf.Browser.prototype = {
         if(this.listDisplay) this.listDisplay.updateAfterFiltering();
 
         if(this.updateCb) this.updateCb(this);
-
-        var timeout = 1750;
-        if(noWait) timeout=0;
-        setTimeout( function(){ me.updateLayout_Height(); }, timeout); // update layout after 1.75 seconds
     },
     refreshFilterClearAll: function(){
         var filteredCount=0;
@@ -2527,6 +2632,7 @@ kshf.Browser.prototype = {
                     this.listDisplay.listDiv.style("margin-top",(-difff+3)+"px");
                 } else {
                     this.listDisplay.listDiv.style("margin-top","3px");
+                    targetHeight-=5; // 5 is the additional height I give to timeline. see getHeight_Content
                 }
                 targetHeight-=3;
             }
@@ -2665,14 +2771,17 @@ kshf.Browser.prototype = {
  * KESHIF FACET - Categorical
  * @constructor
  */
-kshf.Facet_Categorical = function(kshf_, items_, options){
+kshf.Facet_Categorical = function(kshf_, options){
     // Call the parent's constructor
     var me = this;
     this.id = ++kshf.num_of_charts;
     this.browser = kshf_;
-    this.filteredItems = items_
+    this.filteredItems = options.items;
 
     this.options = options;
+
+    this.sortingOpts = options.sortingOpts.slice();
+    this.parentFacet = options.parentFacet;
 
     this.dom = {};
 
@@ -2683,7 +2792,7 @@ kshf.Facet_Categorical = function(kshf_, items_, options){
     }
 
     this.scrollTop_cache=0;
-    this._rowCount_Header_Left=1;
+    this.configRowCount=0;
 
     // COLLAPSED
     this.collapsed = false;
@@ -2696,17 +2805,9 @@ kshf.Facet_Categorical = function(kshf_, items_, options){
     if(this.hasAttribs()){
         this.initAttribs(options);
     }
-
-    if(this.options.subFilters){
-        this.insertSubFacets();
-    }
 };
 
 kshf.Facet_Categorical.prototype = {
-    /** -- */
-    getKshf: function(){
-        return this.browser;
-    },
     /** -- */
     getAttribs: function(){
         return kshf.dt[this.catTableName];
@@ -2717,7 +2818,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     getWidth_Left: function(){
-        return this.getKshf().getWidth_LeftPanel()-this.getWidth_LeftOffset();
+        return this.browser.getWidth_LeftPanel()-this.getWidth_LeftOffset();
     },
     /** -- */
     getHeight_Header: function(){
@@ -2730,33 +2831,37 @@ kshf.Facet_Categorical.prototype = {
     getHeight_Right: function(){
         if(!this.hasAttribs()) return 0;
         if(this.type!=='scatterplot') return 0;
-        if(this.collapsedTime===true || this.collapsed===true) return 1*this.getKshf().line_height;
-        return (this.rowCount_Header_Right()+1)*this.getKshf().line_height+this.attribHeight;
+        if(this.collapsedTime===true || this.collapsed===true) return 1*this.browser.line_height;
+        return (this.rowCount_Header_Right()+1)*this.browser.line_height+this.attribHeight;
     },
     /** -- */
     getHeight_RangeMax: function(){
-        if(!this.hasAttribs()) return this.getKshf().line_height;
-        return this.getHeight_Header()+(this.attribCount_Active+1)*this.getKshf().line_height;
+        if(!this.hasAttribs()) return this.browser.line_height;
+        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Active+1)*this.browser.line_height;
     },
     /** -- */
     getHeight_RangeMin: function(){
-        if(!this.hasAttribs()) return this.getKshf().line_height;
-        return this.getHeight_Header()+(Math.min(this.attribCount_Active,3)+1)*this.getKshf().line_height;
+        if(!this.hasAttribs()) return this.browser.line_height;
+        return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Active,3)+1)*this.browser.line_height;
     },
     /** -- */
     getHeight_Total: function(){
         if(!this.hasAttribs()) return this.getHeight_Header();
         if(this.collapsed) return this.getHeight_Header();
         // need 1 more row at the bottom is scrollbar is shown, or barInfoText is set
+        return this.getHeight_Header() + this.getHeight_Content();
+    },
+    getHeight_Content: function(){
         var bottomRow=0;
         if(!this.allAttribsVisible() || this.browser.hideBarAxis===false ||
             (this.type==="scatterplot"&&this.collapsedTime===false)) bottomRow=1;
-        return this.getHeight_Header() + this.attribHeight + bottomRow*this.getKshf().line_height;
+        return this.attribHeight + (this.configRowCount+bottomRow)*this.browser.line_height+
+            (this.type==="scatterplot"?5:0);
     },
     getWidth_LeftOffset: function(){
         var offset=0;
-        if(this.options.parentFacet){
-            offset+=13;
+        if(this.parentFacet){
+            offset+=17;
         }
         return offset;
     },
@@ -2766,7 +2871,8 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     isFiltered: function(state){
-        return this.attribCount_Selected!==0;
+        return this.attribCount_Selected !== 0 || 
+               this.attribCount_Wanted !== this.attribCount_Total;
     },
     /** -- */
     rowCount_Header_Right: function(){
@@ -2791,14 +2897,13 @@ kshf.Facet_Categorical.prototype = {
     },
     initAttribs: function(options){
         // ATTRIBUTE SORTING OPTIONS
-        if(options.sortingOpts===undefined) options.sortingOpts = [{}];
-        options.sortingOpts.forEach(function(opt){
+        this.sortingOpts.forEach(function(opt){
             // apply defaults
             if(opt.no_resort===undefined) opt.no_resort=false;
             if(opt.func===undefined) opt.func=kshf.Util.sortFunc_ActiveCount_TotalCount;
             if(opt.inverse===undefined)  opt.inverse=false;
         });
-        this.sortingOpt_Active = options.sortingOpts[0];
+        this.sortingOpt_Active = this.sortingOpts[0];
 
         // ATTRIBUTE MAPPING / FILTERING SETTINGS
         if(this.options.showNoneCat===undefined) this.options.showNoneCat = false;
@@ -2811,13 +2916,13 @@ kshf.Facet_Categorical.prototype = {
         // generate row table if necessary
         if(this.options.catTableName===undefined){
             this.catTableName = this.options.facetTitle+"_h_"+this.id;
-            this.getKshf().createTableFromTable(this.filteredItems,this.catTableName, this.options.catItemMap,
+            this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.options.catItemMap,
                 this.options.attribNameFunc);
         } else {
-            if(this.options.catTableName===this.getKshf().primaryTableName){
+            if(this.options.catTableName===this.browser.primaryTableName){
                 this.isLinked=true;
                 this.options.catTableName = this.options.facetTitle+"_h_"+this.id;
-                kshf.dt_id[this.options.catTableName] = kshf.dt_id[this.getKshf().primaryTableName];
+                kshf.dt_id[this.options.catTableName] = kshf.dt_id[this.browser.primaryTableName];
                 kshf.dt[this.options.catTableName] = this.filteredItems.slice();
             }
             this.catTableName = this.options.catTableName;
@@ -2850,9 +2955,9 @@ kshf.Facet_Categorical.prototype = {
             };
         }
 
-        this.attribFilter = this.getKshf().createFilter({
+        this.attribFilter = this.browser.createFilter({
             name: this.options.facetTitle,
-            browser: this.getKshf(),
+            browser: this.browser,
             filteredItems: this.filteredItems,
             cb_this: this,
             onClear: function(filter){
@@ -2863,15 +2968,15 @@ kshf.Facet_Categorical.prototype = {
                 }
                 this.unselectAllAttribs();
             },
-            onFilter: function(filter){
+            onFilter: function(filter,recursive){
                 this.updateItemFilterState_Attrib();
                 switch(filter.how){
                     case "All":
-                        filter.filteredItems.forEach(function(item){ item.updateSelected(); }); break;
+                        filter.filteredItems.forEach(function(item){ item.updateSelected(recursive); }); break;
                     case "UnSelectOnly":
-                        filter.filteredItems.forEach(function(item){ item.updateSelected_UnSelectOnly(); }); break;
+                        filter.filteredItems.forEach(function(item){ item.updateSelected_UnSelectOnly(recursive); }); break;
                     case "SelectOnly":
-                        filter.filteredItems.forEach(function(item){ item.updateSelected_SelectOnly(); }); break;
+                        filter.filteredItems.forEach(function(item){ item.updateSelected_SelectOnly(recursive); }); break;
                 }
             },
             text_header: (this.options.textFilter?this.options.textFilter:this.options.facetTitle),
@@ -2890,17 +2995,9 @@ kshf.Facet_Categorical.prototype = {
 
             this.timeRange ={min:0, max:0, width:0}
 
-            // How do you access time attribute of item?
-            if(this.options.timeItemMap===undefined){
-                this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeTitle);
-            } else if(typeof(this.options.timeItemMap)==="string"){
-                // If defined as string, use the given string as the column name
-                this.options.timeItemMap = this.getKshf().columnAccessFunc(this.options.timeItemMap);
-            }
-
-            this.timeFilter = this.getKshf().createFilter({
+            this.timeFilter = this.browser.createFilter({
                 name: this.options.timeTitle,
-                browser: this.getKshf(),
+                browser: this.browser,
                 filteredItems: this.filteredItems,
                 cb_this: this,
                 onClear: function(filter){
@@ -2911,7 +3008,7 @@ kshf.Facet_Categorical.prototype = {
                     this.refreshTimechartLayout(true);
                     this.refreshTimeChart();
                 },
-                onFilter: function(filter){
+                onFilter: function(filter,recursive){
                     this.dom.timeSlider.attr("filtered",true);
                     this.divRoot.attr("filtered_time",true);
                     this.refreshTimeChart();
@@ -2920,7 +3017,7 @@ kshf.Facet_Categorical.prototype = {
                         item.setFilter(filter.id,
                             (timePos>=this.timeFilter.active.min) && (timePos<=this.timeFilter.active.max)
                         );
-                        item.updateSelected();
+                        item.updateSelected(recursive);
                     },this);
                 },
                 text_item: function(){
@@ -2929,7 +3026,7 @@ kshf.Facet_Categorical.prototype = {
             });
 
             this.filteredItems.forEach(function(item){
-                item.mappedData[this.timeFilter.id] = me.options.timeItemMap(item);
+                item.mappedData[this.timeFilter.id] = this.options.timeItemMap(item);
             },this)
 
             this.x_axis_active_filter = null;
@@ -2945,100 +3042,36 @@ kshf.Facet_Categorical.prototype = {
             });
         }
     },
-    insertFacets: function(){
+    insertSubFacets: function(){
         this.subFacets = [];
         var x=this.divRoot.append("div").attr("class","subFacets");
 
-        x.append("span").attr("class","wigdhdyt");
+        x.append("span").attr("class","wigdhdyt").append("span").text("["+this.options.facetTitle+"]");
 
-        this.options.facets.forEach(function(facetDescr){
-            facetDescr.layout = x;
-            facetDescr.parentFacet = this;
-            var fct=this.getKshf().addFacet(facetDescr);
-            this.subFacets.push(fct);
-        },this);
+        if(!this.hasAttribs()){
+            this.options.facets.forEach(function(facetDescr){
+                facetDescr.layout = x;
+                facetDescr.parentFacet = this;
+                var fct=this.browser.addFacet(facetDescr,this.browser.primaryTableName);
+                this.subFacets.push(fct);
+            },this);
+        } else {
+            this.options.facets.forEach(function(facetDescr){
+                facetDescr.layout = x;
+                facetDescr.parentFacet = this;
+                facetDescr.items = this.getAttribs();
+                var fct=this.browser.addFacet(facetDescr,this.catTableName);
+                this.subFacets.push(fct);
+            },this);
+        }
 
         // Init facet DOMs after all facets are added / data mappings are completed
         this.subFacets.forEach(function(facet){ facet.init_DOM(); });
     },
     /** -- */
-    insertSubFacets: function(){
-        var domID="kshf_subfacet_"+this.id;
-        var me=this;
-        var kshf_ = this.getKshf();
-        this.subBrowserDom = kshf_.TopRoot.select(".subBrowsers").append("div").attr("id",domID).attr("class","subBrowser")
-            .style("width","260px")
-            .style("height",this.options.subFilters.divHeight+"px")
-            ;
-        var syncBrowser = function(){
-            var attribTable = me.getAttribs_wID();
-            var filterId = 5;
-            me.filteredItems.forEach(function(item){
-                var attribId = me.options.catItemMap(item);
-                var attrib = attribTable[attribId];
-                var f=false;
-                if(attrib){ 
-                    f = attrib.wanted;
-                }
-                item.setFilter(filterId,f);
-                item.updateSelected();
-            });
-        };
-        var subFacetFilterSummaryTextFunc = function(){
-            return "<b>"+me.subBrowser.itemsSelectedCt+" selected</b>";
-        };
-
-        this.subFacetFilter = kshf_.createFilter({
-            name: "SubFacetFilter_"+this.id,
-            browser: this.getKshf(),
-            filteredItems: this.filteredItems,
-            cb_this: this,
-            onClear: function(filter){
-                firstPass=false; // pass next time updateCb is called
-                me.subBrowser.clearFilters_All(false);
-                syncBrowser();
-            },
-            onFilter: function(filter){
-                //
-            },
-            // Do not show filtercrumb
-            hideCrumb: true,
-        });
-        var firstPass = false;
-        this.subBrowser = new kshf.Browser({
-            domID : "#"+domID,
-            dirRoot : kshf_.dirRoot,
-            itemName : this.options.facetTitle,
-            hideHeaderButtons: true,
-            categoryTextWidth: this.options.subFilters.categoryTextWidth,
-            subBrowser: true,
-            source: { callback: function(browser){
-                browser.primaryTableName = me.catTableName;
-                browser.items = kshf.dt[browser.primaryTableName];
-                browser.itemsSelectedCt = browser.items.length;
-                browser.loadCharts();
-            } },
-            updateCb: function(browser){
-                if(firstPass===false){
-                    firstPass = true;
-                    return;
-                }
-                if(browser.itemsSelectedCt===browser.items.length){
-                    me.subFacetFilter.clearFilter(true);
-                    return;
-                }
-                syncBrowser();
-                me.subFacetFilter.addFilter(true);
-            },
-            facets: this.options.subFilters.facets
-        });
-        this.subBrowser.dom.filtercrumbs = kshf_.dom.filtercrumbs;
-    },
-
-    /** -- */
     mapAttribs: function(options){
         var filterId = this.attribFilter.id;
-        this.getKshf().mapItemData(this.options.catItemMap, this.getAttribs_wID(), filterId);
+        this.browser.mapItemData(this.filteredItems,this.options.catItemMap, this.getAttribs_wID(), filterId);
 
         // Check if some item is mapped to multiple values
         this.hasMultiValueItem = false;
@@ -3087,8 +3120,16 @@ kshf.Facet_Categorical.prototype = {
         this.getAttribs().forEach(function(attrib){
             if(this._dataMap(attrib)!==null) this.attribCount_Total++;
         },this);
+        this.attribCount_Wanted = this.attribCount_Total;
         // text search is automatically enabled if num of rows is more than 20. NOT dependent on number of displayed rows
         this.showTextSearch = this.options.forceSearch || (this.options.forceSearch!==false && this.attribCount_Total>=20);
+    },
+    updateAttribCount_Wanted: function(){
+        this.attribCount_Wanted = 0;
+        this.getAttribs().forEach(function(attrib){
+            if(attrib.items.length===0) return;
+            if(attrib.wanted) this.attribCount_Wanted++;
+        },this);
     },
     /** -- */
     updateAttribCount_Active: function(){
@@ -3113,9 +3154,9 @@ kshf.Facet_Categorical.prototype = {
                 if(me.skipSorting && me.hasAttribs()){
                     me.skipSorting = false;
                     me.updateBarAxisScale();
-                    me.updateSorting(0);
-                    setTimeout( function(){ me.getKshf().updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
+                    setTimeout( function(){ me.updateSorting(0); }, 750);
                 }
+                setTimeout( function(){ me.browser.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
             })
             ;
 
@@ -3131,24 +3172,61 @@ kshf.Facet_Categorical.prototype = {
 
         if(this.options.facets){
             this.divRoot.attr("hasFacets",true);
-            this.insertFacets();
+            this.insertSubFacets();
             // no-attrib facets (hierarchy parents) still need to adjust their header position
             this.refreshLabelWidth();
         }
     },
     init_DOM_Attrib: function(){
         var me=this;
+        this.dom.facetCategorical = this.divRoot.append("div").attr("class","facetCategorical");
+
+        this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
+
+        this.dom.leftControls = this.dom.facetControls.append("span").attr("class","leftControls");
+        if(this.sortingOpts.length>1) {
+            this.insertSortingOpts();
+            this.configRowCount++;
+        }
         // update header components
         if(this.showTextSearch){
             this.insertLabelTextSearch();
-            this._rowCount_Header_Left++;
+            this.configRowCount++;
         }
-        if(this.options.sortingOpts.length>1) {
-            this.insertSortingOpts();
-            this._rowCount_Header_Left++;
+        if(this.type==="scatterplot"){
+            if(this.configRowCount===0) this.configRowCount=1;
+            this.dom.rightControls = this.dom.facetControls.append("span").attr("class","rightControls");
+            var config_zoom = this.dom.rightControls.append("span").attr("class","config_zoom");
+
+            config_zoom.append("span")
+                .attr("class","zoom_button zoom_in")
+                .attr("disabled","true")
+                .text("⇥ Zoom in ⇤")
+                .on("click",function(d){
+                    me.timeZoom_ms = { min: me.timeFilter.active.min, max: me.timeFilter.active.max };
+                    me.useCurrentTimeMinMax = true;
+                    me.refreshTimechartLayout(true);
+                    me.useCurrentTimeMinMax = undefined;
+                    me.divRoot.select(".zoom_out").attr("disabled","false");
+                    me.divRoot.select(".zoom_in").attr("disabled","true");
+                });
+            config_zoom.append("span")
+                .attr("class","zoom_button zoom_out")
+                .attr("disabled","true")
+                .text("⇤ Zoom out ⇥")
+                .on("click",function(){
+                    me.resetTimeZoom_ms();
+                    me.useCurrentTimeMinMax = true;
+                    me.refreshTimechartLayout(true);
+                    me.useCurrentTimeMinMax = undefined;
+                    me.divRoot.select(".zoom_out").attr("disabled","true");
+                })
+                ;
+        }
+        if(this.configRowCount>0){
+            this.dom.facetControls.style("display","block");
         }
 
-        this.dom.facetCategorical = this.divRoot.append("div").attr("class","facetCategorical");
         this.dom.facetCategorical.append("span").attr("class","scrollToTop").html("⬆")
             .attr("title","Scroll To Top")
             .on("click",function(d){ kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0); });
@@ -3156,6 +3234,12 @@ kshf.Facet_Categorical.prototype = {
         this.dom.scrollToTop = this.dom.facetCategorical.selectAll(".scrollToTop");
 
         if(this.type==='scatterplot'){
+            this.dom.middleScrollbar = this.dom.facetCategorical.append("span").attr("class","middleScrollbar")
+                .on("scroll",function(d){
+                    // sync scroll position
+                    me.dom.attribGroup[0][0].scrollTop = this.scrollTop;
+                });
+            this.dom.middleScrollbar.append("div").attr("class","filler");
             this.dom.selectVertLine = this.dom.facetCategorical.append("span").attr('class',"selectVertLine");
         }
 
@@ -3170,11 +3254,13 @@ kshf.Facet_Categorical.prototype = {
                     me.dom.middleScrollbar[0][0].scrollTop = this.scrollTop;
                 }
 
+                me.scrollTop_cache = this.scrollTop;
                 me.refreshScrollDisplayMore(Math.round(this.scrollTop / 18.0)+me.attribCount_InDisplay);
             })
             ;
 
         this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
+        this.dom.belowAttribs.append("div").attr("class", "border_line");
         this.dom.attribChartAxis = this.dom.belowAttribs.append("div").attr("class", "attribChartAxis");
 
         this.dom.attribs = this.dom.attribGroup.selectAll("div.attib")
@@ -3195,13 +3281,6 @@ kshf.Facet_Categorical.prototype = {
                 this.divRoot.attr("dotconfig",this.options.timeDotConfig);
             }
             this.dom.timeChartAxis = this.dom.belowAttribs.append("div").attr("class","timeChartAxis");
-
-            this.dom.middleScrollbar = this.dom.facetCategorical.append("div").attr("class","middleScrollbar")
-                .on("scroll",function(d){
-                    // sync scroll position
-                    me.dom.attribGroup[0][0].scrollTop = this.scrollTop;
-                });
-            this.dom.middleScrollbar.append("div").attr("class","filler");
         }
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
@@ -3235,7 +3314,7 @@ kshf.Facet_Categorical.prototype = {
                 'range': this.timeRange,
                 'scale': this.timeScale,
                 'filter': this.timeFilter,
-                'root': this.getKshf().root
+                'root': this.browser.root
             });
             this.dom.timeLabelGroup = this.dom.timeChartAxis.append("div").attr("class","timeLabelGroup labelGroup");
 
@@ -3258,7 +3337,7 @@ kshf.Facet_Categorical.prototype = {
         var dataMapFunc = this._dataMap;
         return d3.max(this.getAttribs(), function(d){ 
             if(dataMapFunc(d)===null) { return null; }
-            return d.barValue;
+            return d.activeItems;
         });
     },
     /** returns the maximum number of maximum items stored per row in chart data */
@@ -3268,7 +3347,7 @@ kshf.Facet_Categorical.prototype = {
         var dataMapFunc = this._dataMap;
         this._maxBarValueMaxPerAttrib = d3.max(this.getAttribs(), function(d){ 
             if(dataMapFunc(d)===null) { return null; }
-            return d.barValueMax;
+            return d.items.length;
         });
         return this._maxBarValueMaxPerAttrib;
     },
@@ -3324,7 +3403,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     collapseFacet: function(hide){
         this.setCollapsed(hide);
-        this.getKshf().updateLayout_Height();
+        this.browser.updateLayout_Height();
         if(sendLog) {
             if(hide===true) sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Collapse,{facet:this.options.facetTitle});
             else            sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Show,{facet:this.options.facetTitle});
@@ -3334,7 +3413,7 @@ kshf.Facet_Categorical.prototype = {
     insertHeader: function(){
     	var me = this;
 
-        this.dom.leftHeader = this.dom.headerGroup.append("div").attr("class","leftHeader").style("width","0px");
+        this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader").style("width","0px");
 
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
@@ -3345,8 +3424,9 @@ kshf.Facet_Categorical.prototype = {
             .attr("title","Show/Hide attributes").text("▼")
             .on("click",function(){ me.collapseFacet(!me.collapsed); })
             ;
-        topRow.append("div")
+        topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
+            .style("top","calc(40% - 7px)")
             .text('x').attr("title","Remove filter")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
@@ -3364,27 +3444,24 @@ kshf.Facet_Categorical.prototype = {
                 this.tipsy.hide();
                 me.attribFilter.clearFilter(true);
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
-                    me.getKshf().getFilteringState(me.options.facetTitle));
+                    me.browser.getFilteringState(me.options.facetTitle));
             });
 
         var headerLabel=this.options.facetTitle;
-        if(this.options.parentFacet) headerLabel+=" <i class='fa fa-level-up'></i>";
+        if(this.parentFacet) headerLabel+=" <i class='fa fa-level-up'></i>";
         topRow.append("span").attr("class", "header_label")
             .attr("title", this.attribCount_Total+" attributes")
             .html(headerLabel)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
         if(this.isLinked)
             topRow.append("span").attr("class", "isLinkedMark").html("<i class='fa fa-check-square-o'></i>");
-
-        this.dom.facetControls = this.dom.leftHeader.append("div").attr("class","facetControls hasLabelWidth");
     },
     insertLabelTextSearch: function(){
         var me=this;
-        var textSearchRowDOM = this.dom.facetControls.append("div")
-            .attr("class","attribTextSearch");
+        var textSearchRowDOM = this.dom.leftControls.append("div").attr("class","attribTextSearch hasLabelWidth");
         this.dom.attribTextSearch=textSearchRowDOM.append("input")
             .attr("type","text")
-            .attr("placeholder","Search")// in "+kshf.Util.toProperCase(this.options.facetTitle))
+            .attr("placeholder","Search in ...")// "+kshf.Util.toProperCase(this.options.facetTitle))
             .on("input",function(){
                 if(this.timer){
                     clearTimeout(this.timer);
@@ -3423,7 +3500,7 @@ kshf.Facet_Categorical.prototype = {
                     if(sendLog)
                         sendLog(CATID.FacetFilter,
                             ACTID_FILTER.CatTextSearch,
-                            me.getKshf().getFilteringState(me.options.facetTitle));
+                            me.browser.getFilteringState(me.options.facetTitle));
                 }, 750);
             })
             .on("blur",function(){
@@ -3447,18 +3524,18 @@ kshf.Facet_Categorical.prototype = {
     },
     insertSortingOpts: function(){
         var me=this;
-        var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup");
+        var sortGr = this.dom.leftControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
         sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
         sortGr.append("select").attr("class","optionSelect")
             .on("change", function(){
-                me.sortingOpt_Active = me.options.sortingOpts[this.selectedIndex];
+                me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.updateSorting_do.call(me, 0);
                 if(sendLog) {
                     sendLog(CATID.FacetSort,ACTID_SORT.ChangeSortFunc,
                         {facet:me.options.facetTitle, funcID:this.selectedIndex});
                 }
             })
-        .selectAll("input.sort_label").data(this.options.sortingOpts)
+        .selectAll("input.sort_label").data(this.sortingOpts)
           .enter().append("option").attr("class", "sort_label")
             .text(function(d){ return d.name; })
             ;
@@ -3489,10 +3566,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     setHeight: function(cc){
-        var c = cc-this.getHeight_Header()-this.getKshf().line_height;
+        var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
         if(!this.hasAttribs()) return;
-        this.attribHeight = Math.min(c,this.getKshf().line_height*this.attribCount_Active);
-        c = Math.floor(c / this.getKshf().line_height);
+        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Active);
+        c = Math.floor(c / this.browser.line_height);
         if(c<0) c=1;
         if(c>this.attribCount_Active) c=this.attribCount_Active;
         if(this.attribCount_Active<=2){ 
@@ -3522,14 +3599,17 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshWidth: function(){
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         var leftWidth = this.getWidth_Left();
-        var totalWidth = this.getKshf().getWidth_Total();
+        var totalWidth = this.browser.getWidth_Total();
 
         this.dom.leftHeader.style("width",leftWidth+"px");
+        if(this.hasAttribs())
+            this.dom.leftControls.style("width",leftWidth+"px");
 
         if(this.type==="scatterplot"){
             this.dom.rightHeader.style("width",(totalWidth-leftWidth)+"px");
+            this.dom.rightControls.style("width",(totalWidth-leftWidth)+"px");
             this.dom.middleScrollbar.style('left',(leftWidth-kshf_.scrollWidth+1)+'px');
             this.dom.facetCategorical.select(".scrollToTop2").style('left',(leftWidth-15)+'px');
             this.dom.timeChartAxis
@@ -3546,19 +3626,19 @@ kshf.Facet_Categorical.prototype = {
     refreshActiveItemCount: function(){
         var me = this;
         var formatFunc = kshf.Util.formatForItemCount;
-        this.dom.item_count.text(function(d){ return formatFunc(d.barValue);  });
+        this.dom.item_count.text(function(d){ return formatFunc(d.activeItems);  });
         this.dom.attribs.attr("noitems",function(d){ return !me.isAttribSelectable(d); });
     },
     refreshBarGroupWidth: function(){
         // total width of bar group...
-        this.dom.barGroup.style("width",this.getKshf().barChartWidth+"px");
+        this.dom.barGroup.style("width",this.browser.barChartWidth+"px");
     },
     /** -- */
     refreshWidth_Bars_Active: function(){
         var me=this;
         // active bar width
         this.dom.bar_active.each(function(attrib){
-            var transform="scaleX("+me.catBarAxisScale(attrib.barValue)+")";
+            var transform="scaleX("+me.catBarAxisScale(attrib.activeItems)+")";
             this.style.webkitTransform = transform;
             this.style.MozTransform = transform;
             this.style.msTransform = transform;
@@ -3571,7 +3651,7 @@ kshf.Facet_Categorical.prototype = {
         var me = this;
         this.dom.bar_total
             .each(function(attrib){
-                var transform="scaleX("+me.catBarAxisScale(attrib.barValueMax)+")";
+                var transform="scaleX("+me.catBarAxisScale(attrib.items.length)+")";
                 this.style.webkitTransform = transform;
                 this.style.MozTransform = transform;
                 this.style.msTransform = transform;
@@ -3595,15 +3675,16 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshLabelWidth: function(w){
-        var kshf_ = this.getKshf();
-        var rowTextWidth = this.getKshf().categoryTextWidth;
+        var kshf_ = this.browser;
+        var rowTextWidth = this.browser.categoryTextWidth;
         var offset=this.getWidth_LeftOffset();
 
         this.divRoot.style("margin-left",offset+"px");
         rowTextWidth-=offset;
 
         if(this.hasAttribs()){
-            this.divRoot.selectAll(".hasLabelWidth").style("width",rowTextWidth+"px");
+            this.dom.headerGroup.selectAll(".hasLabelWidth").style("width",rowTextWidth+"px");
+            this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",rowTextWidth+"px");
             this.dom.attribChartAxis.each(function(d){
                 var transform="translateX("+(kshf_.getRowTotalTextWidth()-offset)+"px)";
                 this.style.webkitTransform = transform;
@@ -3619,7 +3700,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
         this.dom.scroll_display_more
-            .style("display",(this.attribCount_Active!==bottomItem)?"inline":"none")
+            .style("display",(this.attribCount_Active>bottomItem)?"inline":"none")
             .text( (this.attribCount_Active-bottomItem)+" more..." );
     },
     /** -- */
@@ -3627,8 +3708,8 @@ kshf.Facet_Categorical.prototype = {
         // Note: if this has attributes, the total height is computed from height of the children by html layout engine.
         // So far, should be pretty nice.
         if(this.hasAttribs()){
-            this.divRoot.style("height",this.getHeight_Total()+"px");
-            this.dom.attribGroup.style("height",this.attribHeight+"px");
+            this.dom.facetCategorical.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
+            this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
             this.dom.attribChartAxis.selectAll("span.line")
                 .style("top","-"+(this.attribHeight-8)+"px")
@@ -3682,20 +3763,31 @@ kshf.Facet_Categorical.prototype = {
                         if(this.attribCount_Removed>0 && filter_multi_removed.call(this,attribItem)){
                             f = false;
                         } else {
-                            if(this.attribCount_Included>0)
+                            if(this.attribCount_Included>0) {
                                 f = filter_multi.call(this,attribItem);
-                            else
-                                f = true;
+                            } else {
+                                if(this.attribCount_Wanted<this.attribCount_Total){
+                                    // say OK if any is wanted...
+                                    f = !attribItem.every(function(f){ return !f.wanted; })
+                                } else {
+                                    f = true;
+                                }
+                            }
                         }
                     } else {
                         // one mapped value only
                         if(attribItem.f_removed()){
                             //f = false;
                         } else {
-                            if(this.attribCount_Included===0)
-                                f = true;
-                            else
+                            if(this.attribCount_Included===0){
+                                if(this.attribCount_Wanted<this.attribCount_Total){
+                                    f = attribItem.wanted;
+                                } else {
+                                    f = true;
+                                }
+                            } else {
                                 f = attribItem.f_included();
+                            }
                         }
                     }
                 }
@@ -3713,6 +3805,8 @@ kshf.Facet_Categorical.prototype = {
         if(attrib.f_selected()) return true;
         // Show if number of active items is not zero
         if(attrib.activeItems!==0) return true;
+        // Show if item has been "wanted" by some active sub-filtering
+        if(this.attribCount_Wanted < this.attribCount_Total && !attrib.wanted) return false;
         // if inactive attributes are not removed, well, don't remove them...
         if(this.options.removeInactiveAttrib===false) return true;
         // facet is not filtered yet, cannot click on 0 items
@@ -3741,7 +3835,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.f_unselect();
         } else {
             // if number of items in this attrib equals to current result count, do nothing!
-            if(attrib.barValue===this.getKshf().itemsSelectedCt){
+            if(attrib.activeItems===this.browser.itemsSelectedCt){
                 alert("Removing this attribute would make an empty result set, so it is not allowed.");
                 return;
             }
@@ -3862,7 +3956,7 @@ kshf.Facet_Categorical.prototype = {
     /** - */
     insertAttribs: function(){
     	var me = this;
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
 
         var onFilterAttrib = function(attrib){
             if(attrib.facetDOM.tipsy_active)
@@ -3892,11 +3986,17 @@ kshf.Facet_Categorical.prototype = {
         var onMouseOver = function(attrib,i){
             if(!me.isAttribSelectable(attrib)) return;
             attrib.facetDOM.setAttribute("highlight",true);
-            // items Problem with subFiltering
+            
+            me.browser.items.forEach(function(item){ item.highlightDone = false; })
+            attrib.items.forEach(function(item){ item.highlightDone = false; })
+
             attrib.items.forEach(function(item){
-                if(item.wanted) item.highlightAdvanced();
+                if(item.wanted) item.highlightAdvanced(me.parentFacet);
             });
-            me.getKshf().refreshWidth_Bars_Highlight();
+            // this part highlights subfacet categories...
+            attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",true); });
+
+            me.browser.refreshWidth_Bars_Highlight();
             
             attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".item_count")[0][0].tipsy;
             if(!attrib.f_selected() & me.attribCount_Included>1 && me.attribFilter.selectType==="SelectOr"
@@ -3905,7 +4005,7 @@ kshf.Facet_Categorical.prototype = {
                 attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more .add")[0][0].tipsy;
             }
             // calculate the offset...
-            attrib.facetDOM.tipsy_active.options.offset_x = (me.getKshf().hideBars)?0:me.catBarAxisScale(attrib.barValueMax);
+            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:me.catBarAxisScale(attrib.activeItems);
             attrib.facetDOM.tipsy_active.show()
         };
         var onMouseOut = function(attrib,i){
@@ -3915,11 +4015,17 @@ kshf.Facet_Categorical.prototype = {
             }
             if(!me.isAttribSelectable(attrib)) return;
             attrib.facetDOM.setAttribute("highlight",false);
-            // filteredItems Problem with subFiltering
+
+            me.browser.items.forEach(function(item){ item.highlightDone = false; })
+            attrib.items.forEach(function(item){ item.highlightDone = false; })
+
             attrib.items.forEach(function(item){
-                if(item.wanted) item.nohighlightAdvanced();
+                if(item.wanted) item.nohighlightAdvanced(me.parentFacet);
             });
-            me.getKshf().refreshWidth_Bars_Highlight();
+            attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",false); });
+
+            me.browser.refreshWidth_Bars_Highlight();
+
             if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
         };
 
@@ -4008,7 +4114,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attrLabel.append("span").attr("class","labell").html(this.options.catLabelText);
 
         this.dom.item_count = this.dom.attribs.append("span").attr("class", "item_count")
-            .style("width",(this.getKshf().getRowLabelOffset()-3)+"px") // 3 is padding
+            .style("width",(this.browser.getRowLabelOffset()-3)+"px") // 3 is padding
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
@@ -4062,6 +4168,9 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     sortAttribs: function(){
         var me = this;
+        if(this.sortingOpt_Active===undefined){
+            this.sortingOpt_Active = this.sortingOpts[0];
+        }
         var selectedOnTop = this.sortingOpt_Active.no_resort!==true;
         var inverse = this.sortingOpt_Active.inverse;
         var sortFunc = this.sortingOpt_Active.func;
@@ -4101,11 +4210,12 @@ kshf.Facet_Categorical.prototype = {
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Active();
         }
+        this.refreshScrollDisplayMore(this.attribCount_InDisplay);
         this.updateSorting_do(sortDelay);
     },
     /** -- */
     updateSorting_do: function(sortDelay){
-        var line_height = this.getKshf().line_height;
+        var line_height = this.browser.line_height;
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortAttribs();
@@ -4168,9 +4278,9 @@ kshf.Facet_Categorical.prototype = {
         var tickData = this.dom.attribChartAxis.selectAll("span.tick")
             .data(tickValues,function(i){ return i; });
 
-        var noanim=this.getKshf().root.attr("noanim");
+        var noanim=this.browser.root.attr("noanim");
 
-        if(noanim!=="true") this.getKshf().root.attr("noanim",true);
+        if(noanim!=="true") this.browser.root.attr("noanim",true);
         var transformFunc=function(d){
             var transform = "translate("+me.catBarAxisScale(d)+"px,0px)";
             this.style.webkitTransform = transform;
@@ -4182,7 +4292,7 @@ kshf.Facet_Categorical.prototype = {
 
         var tickData_new=tickData.enter().append("span").attr("class","tick")
             .each(transformFunc);
-        if(noanim!=="true") this.getKshf().root.attr("noanim",false);
+        if(noanim!=="true") this.browser.root.attr("noanim",false);
 
         tickData_new.append("span").attr("class","line")
             .style("top","-"+visibleRowHeight+"px")
@@ -4225,43 +4335,16 @@ kshf.Facet_Categorical.prototype = {
                 .on("click", function(d,i){ 
                     me.timeFilter.clearFilter(true);
                     if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet, 
-                        {facet:me.options.timeTitle,results:me.getKshf().itemsSelectedCt});
+                        {facet:me.options.timeTitle,results:me.browser.itemsSelectedCt});
                 })
                 .text('x');
 
         this.dom.rightHeader.append("div").attr("class","border_line");
-
-        var config_zoom = this.dom.rightHeader.append("div").attr("class","config_zoom");
-
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_in")
-            .attr("disabled","true")
-            .text("⇥ Zoom in ⇤")
-            .on("click",function(d){
-                me.timeZoom_ms = { min: me.timeFilter.active.min, max: me.timeFilter.active.max };
-                me.useCurrentTimeMinMax = true;
-                me.refreshTimechartLayout(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","false");
-                me.divRoot.select(".zoom_in").attr("disabled","true");
-            });
-        config_zoom.append("span")
-            .attr("class","zoom_button zoom_out")
-            .attr("disabled","true")
-            .text("⇤ Zoom out ⇥")
-            .on("click",function(){
-                me.resetTimeZoom_ms();
-                me.useCurrentTimeMinMax = true;
-                me.refreshTimechartLayout(true);
-                me.useCurrentTimeMinMax = undefined;
-                me.divRoot.select(".zoom_out").attr("disabled","true");
-            })
-            ;
     },
     /** -- */
     collapseTime: function(hide){
         this.collapsedTime = hide;
-        this.getKshf().updateLayout_Height();
+        this.browser.updateLayout_Height();
         this.divRoot.attr("collapsedTime",this.collapsedTime===false?"false":"true");
         this.refreshWidth();
     },
@@ -4283,7 +4366,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateTimeWidth: function(){
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         this.timeRange.width = kshf_.divWidth-kshf_.getWidth_LeftPanel()-2*kshf_.sepWidth-20;
 
         this.refreshTimechartLayout(true);
@@ -4300,7 +4383,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateRowBarLineWidth: function(){
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         this.dom.row_bar_line.style("width",
             (kshf_.barChartWidth+kshf_.scrollWidth+this.timeRange.width+kshf_.sepWidth)+"px");
     },
@@ -4313,8 +4396,8 @@ kshf.Facet_Categorical.prototype = {
         };
         this.getAttribs().forEach(function(row){
             if(row.sortDirty===false) return;
-            row.xMin_Dyn = d3.min(row.filteredItems, specFunc);
-            row.xMax_Dyn = d3.max(row.filteredItems, specFunc);
+            row.xMin_Dyn = d3.min(row.items, specFunc);
+            row.xMax_Dyn = d3.max(row.items, specFunc);
         });
     },
     /** -- */
@@ -4369,7 +4452,7 @@ kshf.Facet_Categorical.prototype = {
     refreshTimeChartBarDisplay: function(){
         // key dots are something else
         var me = this;
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         var r;
         var rows = this.getAttribs();
         var timeFilterId = this.timeFilter.id;
@@ -4420,7 +4503,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     insertTimeChartRows: function(){
     	var me = this;
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
 
         // scrollbar filler
         this.dom.attribs.append("span").attr("class","scrollbarFiller")
@@ -4628,7 +4711,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshTimeAxisHeight: function(){
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         
         this.dom.selectVertLine.style("height", this.attribHeight+"px");
         this.dom.middleScrollbar.style("height",this.attribHeight+"px");
@@ -4642,7 +4725,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateTimeChartBarsDots: function(){
-        var kshf_ = this.getKshf();
+        var kshf_ = this.browser;
         var totalLeftWidth = kshf_.getWidth_LeftPanel()+kshf_.sepWidth;
     	var me = this;
         var timeFilterId = this.timeFilter.id;
@@ -4715,7 +4798,7 @@ kshf.Facet_Categorical.prototype = {
 
             if(this.timeRange.width-minX>190){
                 this.divRoot.select(".config_zoom").style("float","left")
-                    .style("margin-left",minX+"px");
+                    .style("margin-left",(minX+this.browser.sepWidth)+"px");
             } else{
                 this.divRoot.select(".config_zoom").style("float","right");
             }
@@ -4769,7 +4852,7 @@ kshf.Facet_Interval = function(kshf_, options){
     var me = this;
     this.id = ++kshf.num_of_charts;
     this.browser = kshf_;
-    this.filteredItems = items_;
+    this.filteredItems = options.items;
 
     this.options = options;
     this.barGap = 2;
@@ -4794,7 +4877,7 @@ kshf.Facet_Interval = function(kshf_, options){
             this.resetIntervalFilterActive();
             this.refreshIntervalSlider();
         },
-        onFilter: function(filter){
+        onFilter: function(filter, recursive){
             this.divRoot.attr("filtered",true);
             var i_min = filter.active.min;
             var i_max = filter.active.max;
@@ -4803,7 +4886,7 @@ kshf.Facet_Interval = function(kshf_, options){
             filter.filteredItems.forEach(function(item){
                 var v = item.mappedData[filter.id].v;
                 item.setFilter(filter.id, (v>=i_min) && (v<=i_max) );
-                item.updateSelected();
+                item.updateSelected(recursive);
             },this);
 
             console.log(filter.active);
@@ -4839,10 +4922,13 @@ kshf.Facet_Interval.prototype = {
         return this.browser.getWidth_LeftPanel();
     },
     getHeight_Header: function(){
-        return 18;
+        if(this._height_header==undefined) {
+            this._height_header = this.dom.headerGroup[0][0].offsetHeight;
+        }
+        return this._height_header;
     },
     getHeight_Total: function(){
-        if(this.collapsed) return getHeight_Header();
+        if(this.collapsed) return this.getHeight_Header();
         return 7*18; // TODO: return something nice
     },
     /** -- */
@@ -4988,16 +5074,22 @@ kshf.Facet_Interval.prototype = {
             })
             .on("mouseover",function(bar){
                 this.setAttribute("highlight",true);
+
+                bar.forEach(function(item){ item.highlightDone = false; })
                 bar.forEach(function(item){
-                    if(item.wanted) item.highlightAdvanced();
+                    if(item.wanted) item.highlightAdvanced(false);
                 });
+
                 me.browser.refreshWidth_Bars_Highlight();
             })
             .on("mouseout",function(bar){
                 this.setAttribute("highlight",false);
+
+                bar.forEach(function(item){ item.highlightDone = false; })
                 bar.forEach(function(item){
-                    if(item.wanted) item.nohighlightAdvanced();
+                    if(item.wanted) item.nohighlightAdvanced(false);
                 });
+
                 me.browser.refreshWidth_Bars_Highlight();
             })
             .on("click",function(bar){
@@ -5205,10 +5297,13 @@ kshf.Facet_Interval.prototype = {
     refreshHeight: function(){
         this.divRoot.style("height",this.getHeight_Total()+"px");
     },
+    setCollapsed: function(v){
+        this.collapsed = v;
+        this.divRoot.attr("collapsed",this.collapsed===false?"false":"true");
+    },
     /** -- */
     collapseFacet: function(hide){
-        this.collapsed = hide;
-        this.divRoot.attr("collapsed",this.collapsed===false?"false":"true");
+        this.setCollapsed(hide);
         this.browser.updateLayout_Height();
         if(sendLog) {
             if(hide===true) sendLog(CATID.FacetCollapse,ACTID_COLLAPSE.Collapse,{facet:this.options.facetTitle});
@@ -5220,7 +5315,7 @@ kshf.Facet_Interval.prototype = {
         var me = this;
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
-        this.dom.leftHeader = this.dom.headerGroup.append("div").attr("class","leftHeader").style("width","0px");
+        this.dom.leftHeader = this.dom.headerGroup.append("div").attr("class","leftHeader");
 
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
