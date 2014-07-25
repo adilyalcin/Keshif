@@ -219,7 +219,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 100% 0%;
   right: 0px;
 }
-.kshf.layout_leftttt div.attrib > span.item_count {
+.kshf.layout_leftttt div.attrib > span.item_count_wrapper {
   padding-right: 3px;
   text-align: right;
 }
@@ -230,7 +230,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
   background-image: linear-gradient(to left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
 }
-.kshf.layout_leftttt div.attrib:not([selected="0"]) span.item_count {
+.kshf.layout_leftttt div.attrib:not([selected="0"]) span.item_count_wrapper {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
   background-image: -moz-linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
@@ -308,7 +308,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 0% 0%;
   left: 0px;
 }
-.kshf:not(.layout_leftttt) div.attrib > span.item_count {
+.kshf:not(.layout_leftttt) div.attrib > span.item_count_wrapper {
   padding-left: 3px;
   text-align: left;
 }
@@ -319,7 +319,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
   background-image: linear-gradient(to right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
 }
-.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.item_count {
+.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.item_count_wrapper {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
   background-image: -moz-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
@@ -1054,7 +1054,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib > span.label span.filter_add_more span.remove {
   cursor: pointer !important;
 }
-.kshf div.attrib > span.item_count {
+.kshf div.attrib > span.item_count_wrapper {
   font-size: 0.7em;
   cursor: default;
   pointer-events: none;

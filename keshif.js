@@ -3397,9 +3397,12 @@ kshf.Facet_Categorical.prototype = {
     },
     /** returns the maximum number of items stored per row in chart data */
     getMaxBarValuePerAttrib: function(){
-        return d3.max(this.getAttribs(), function(d){ 
-            return d.activeItems;
-        });
+        if(this._getMaxBarValuePerAttrib===undefined) {
+            this._getMaxBarValuePerAttrib = d3.max(this.getAttribs(), function(d){ 
+                return d.activeItems;
+            });
+        }
+        return this._getMaxBarValuePerAttrib;
     },
     /** returns the maximum number of maximum items stored per row in chart data */
     getMaxBarValueMaxPerAttrib: function(){
@@ -3510,14 +3513,18 @@ kshf.Facet_Categorical.prototype = {
         if(this.parentFacet) {
             if(this.parentFacet.hasAttribs())
                 headerLabel = this.parentFacet.options.facetTitle+" <i class='fa fa-chevron-right'></i> "+headerLabel;
-            headerLabel=headerLabel+" <i class='fa fa-level-up'></i>";
         }
         topRow.append("span").attr("class", "header_label")
             .attr("title", this.attribCount_Total+" attributes")
             .html(headerLabel)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
-        if(this.isLinked)
+        if(this.isLinked) {
             topRow.append("span").attr("class", "isLinkedMark").html("<i class='fa fa-check-square-o'></i>");
+        } else {
+            if(this.parentFacet){
+                topRow.append("span").attr("class", "isLinkedMark").html("<i class='fa fa-level-up'></i>");
+            }
+        }
     },
     insertLabelTextSearch: function(){
         var me=this;
@@ -4076,14 +4083,16 @@ kshf.Facet_Categorical.prototype = {
 
             me.browser.refreshWidth_Bars_Highlight();
             
-            attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".item_count")[0][0].tipsy;
+            attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
             if(!attrib.f_selected() & me.attribCount_Included>1 && me.attribFilter.selectType==="SelectOr"
                 && me.hasMultiValueItem){
                 // prevent "...and" and show "...or" instead
                 attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more .add")[0][0].tipsy;
             }
             // calculate the offset...
-            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:me.catBarAxisScale(attrib.activeItems);
+            var sadsds = me.catBarAxisScale(attrib.activeItems);
+            sadsds = me.catBarAxisScale.range()[1] - sadsds;
+            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:-sadsds;
             attrib.facetDOM.tipsy_active.show()
         };
         var onMouseOut = function(attrib,i){
@@ -4117,7 +4126,29 @@ kshf.Facet_Categorical.prototype = {
                 this.style.msTransform = transform;
                 this.style.OTransform = transform;
                 this.style.transform = transform;
-            });
+            })
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w',
+                    offset_x: 2,
+                    offset_y: -1,
+                    fade: true,
+                    title: function(){
+                        var attrib=this.__data__;
+                        var attribName=me.options.facetTitle;
+                        var hasMultiValueItem=attrib.barChart.hasMultiValueItem;
+                        if(attrib.f_included() || attrib.f_removed())
+                            return "<span class='big'>-</span class='big'> <span class='action'>Remove</span> from filter";
+                        if(attrib.barChart.attribCount_Included===0)
+                            return "<span class='big'>+</span> <span class='action'>Add</span> <i> filter";
+                        if(hasMultiValueItem===false)
+                            return "<span class='big'>&laquo;</span> <span class='action'>Change</span> filter";
+                        else
+                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                                attribName+"</i> (<b> ... and </b>)";
+                    }
+                });
+            })
             ;
         
         this.dom.attribs.append("span").attr("class", "clickArea")
@@ -4191,31 +4222,10 @@ kshf.Facet_Categorical.prototype = {
                 });
         this.dom.attrLabel.append("span").attr("class","labell").html(this.options.catLabelText);
 
-        this.dom.item_count = this.dom.attribs.append("span").attr("class", "item_count")
+        this.dom.item_count_wrapper = this.dom.attribs.append("span").attr("class", "item_count_wrapper")
             .style("width",(this.browser.getRowLabelOffset()-3)+"px") // 3 is padding
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w',
-                    offset_x: 2,
-                    offset_y: -1,
-                    fade: true,
-                    title: function(){
-                        var attrib=this.__data__;
-                        var attribName=me.options.facetTitle;
-                        var hasMultiValueItem=attrib.barChart.hasMultiValueItem;
-                        if(attrib.f_included() || attrib.f_removed())
-                            return "<span class='big'>-</span class='big'> <span class='action'>Remove</span> from filter";
-                        if(attrib.barChart.attribCount_Included===0)
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i> filter";
-                        if(hasMultiValueItem===false)
-                            return "<span class='big'>&laquo;</span> <span class='action'>Change</span> filter";
-                        else
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
-                                attribName+"</i> (<b> ... and </b>)";
-                    }
-                });
-            })
-            ;
+        ;
+        this.dom.item_count = this.dom.item_count_wrapper.append("span").attr("class", "item_count");
         this.dom.barGroup = this.dom.attribs.append("span").attr("class","barGroup");
     	this.dom.bar_active = this.dom.barGroup.append("span")
     		.attr("class", function(d,i){ 
