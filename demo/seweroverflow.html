@@ -24,7 +24,7 @@ function loadData(browser){
     var arr = kshf.dt[tableName];
 
     $.ajax( {
-        url: "./data/seweroverflows.json",
+        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
         dataType: "json",
         success: function(data){
             // data.meta includes meta information
