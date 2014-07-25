@@ -4944,6 +4944,7 @@ kshf.Facet_Interval = function(kshf_, options){
 
     this.options = options;
     this.layoutStr = options.layout;
+    this.parentFacet = options.parentFacet;
 
     this.barGap = 2;
     this.histogramMargin = 12;
@@ -5009,7 +5010,14 @@ kshf.Facet_Interval = function(kshf_, options){
 kshf.Facet_Interval.prototype = {
     /** -- */
     getWidth: function(){
-        return this.browser.getWidth_LeftPanel();
+        return this.browser.getWidth_LeftPanel() - this.getWidth_Offset();
+    },
+    getWidth_Offset: function(){
+        var offset=0;
+        if(this.parentFacet){
+            offset+=17;
+        }
+        return offset;
     },
     getHeight_Header: function(){
         if(this._height_header==undefined) {
