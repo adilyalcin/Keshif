@@ -31,9 +31,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
-.kshfHost {
-  border: solid 1px lightgray;
-  background-color: white;
+.kshfHost:hover {
+  box-shadow: 0px 0px 4px gray;
 }
 .kshfHost:focus {
   outline: none;
@@ -174,8 +173,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.filterClearAll {
   display: none;
-  float: right;
-  bottom: 1px;
+  position: absolute;
+  right: 55px;
+  top: 2px;
   cursor: default;
   color: #252112;
   font-weight: 300;
@@ -191,158 +191,181 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   box-shadow: none;
 }
-.kshf.layout_header {
-  width: 100%;
-  float: none;
-  margin-bottom: 0px;
-  padding-bottom: 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMjMlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0icmdiKDIyNCwyMTMsMTcwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9InJnYigyMjQsMjEzLDE3MCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iOTElIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDI1NSwyNTUpIiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: -moz-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: -o-linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  background-image: linear-gradient(to left , rgb(255,255,255) 23%, rgb(224,213,170) 40%, rgb(224,213,170) 60%, rgb(255,255,255) 91%);
-  border-bottom: solid 1px #c6bb9e;
-  box-shadow: 0px 0px 3px #b7aa88;
+.kshf.layout_leftttt {
+  float: left;
 }
-.kshf.layout_header span.resultInfo {
-  vertical-align: top;
-  display: inline-block;
-  white-space: nowrap;
-  pointer-events: none;
-  font-size: 1.2em;
-  font-weight: 700;
-  text-shadow: 1px 1px lightgray;
-  margin-bottom: -3px;
+.kshf.layout_leftttt .hasLabelWidth {
+  text-align: left;
 }
-.kshf.layout_header span.resultInfo span.listheader_count {
-  display: inline-block;
-  text-align: right;
-  min-width: 50px;
-  vertical-align: top;
+.kshf.layout_leftttt .headerGroup .header_label_arrow {
+  right: 1px;
 }
-.kshf.layout_header span.resultInfo span.listheader_itemName {
-  display: inline;
-  letter-spacing: 0.1em;
-  font-variant: small-caps;
-  margin-left: 4px;
-  vertical-align: top;
+.kshf.layout_leftttt .headerGroup .chartFirstLineBackground {
+  direction: rtl;
 }
-.kshf.layout_header span.listheader_count_bar {
-  background-color: #8493a0;
-  position: absolute;
+.kshf.layout_leftttt .attribGroup {
+  direction: rtl;
+  margin-left: 3px;
+}
+.kshf.layout_leftttt div.attrib > span.label span.filter_add_more {
+  float: right;
+  margin-right: 2px;
+}
+.kshf.layout_leftttt div.attrib > span.barGroup .bar {
+  -webkit-transform-origin: 100% 0%;
+  -moz-transform-origin: 100% 0%;
+  -o-transform-origin: 100% 0%;
+  -ms-transform-origin: 100% 0%;
+  transform-origin: 100% 0%;
   right: 0px;
-  height: 6px;
-  bottom: 0px;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
 }
-.kshf.layout_header span.listheader_count_wrap {
-  display: none;
-  position: absolute;
-  right: 3px;
-  height: 14px;
-  border-bottom: solid 2px rgba(132, 147, 160, 0.5);
+.kshf.layout_leftttt div.attrib > span.item_count {
+  padding-right: 3px;
+  text-align: right;
 }
-.kshf.layout_header span.title {
-  float: left;
-  margin-left: 20px;
-  font-size: 1.2em;
-  letter-spacing: 0.1em;
-  font-variant: small-caps;
+.kshf.layout_leftttt div.attrib:not([selected="0"]) span.label {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -moz-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -o-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: linear-gradient(to left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
 }
-.kshf.layout_header span.barChartMainInfo {
-  font-size: 0.8em;
-  font-weight: 500;
-  color: gray;
-  cursor: default;
-  font-size: 0.7em;
-  position: relative;
-  padding-left: 10px;
-  float: left;
-  font-variant: small-caps;
-  margin-bottom: -2px;
+.kshf.layout_leftttt div.attrib:not([selected="0"]) span.item_count {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -moz-linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -o-linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: linear-gradient(to left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
 }
-.kshf.layout_header span.barChartMainInfo .refreshbarscales {
-  cursor: pointer;
-  display: none;
+.kshf.layout_leftttt .leftControls {
+  direction: rtl;
 }
-.kshf.layout_header span.barChartMainInfo:hover {
-  color: #cb5454;
+.kshf.layout_leftttt .leftControls .attribTextSearch input {
+  direction: ltr;
+  text-align: left;
 }
-.kshf.layout_header span.rightBoxes {
+.kshf.layout_leftttt .leftControls .attribTextSearch input::-webkit-input-placeholder {
+  text-align: left;
+}
+.kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.kshf.layout_leftttt .belowAttribs {
+  direction: rtl;
+}
+.kshf.layout_leftttt .belowAttribs .scroll_display_more {
+  direction: ltr;
+}
+.kshf.layout_leftttt .subFacets .wigdhdyt {
+  right: 0px;
+}
+.kshf.layout_leftttt .subFacets .kshfChart {
+  margin-right: 17px;
+}
+.kshf.layout_leftttt .chartClearFilterButton.rowFilter {
+  left: 2px;
+}
+.kshf.layout_leftttt .attribChartAxis {
+  direction: ltr;
+}
+.kshf.layout_leftttt .facetCategorical .scrollToTop {
+  left: 3px;
+}
+.kshf.layout_right {
   float: right;
-  margin-right: 5px;
-}
-.kshf.layout_header div.credits {
-  cursor: pointer;
-  font-weight: 500;
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 10px;
-  box-shadow: 1px 1px 1px #474940;
-  text-align: center;
-  font-size: 0.9em;
-  background-color: white;
-  color: black;
-  position: relative;
-  margin: 2px;
-  float: right;
-  font-weight: bolder;
-  font-style: italic;
-}
-.kshf.layout_header div.credits:hover {
-  box-shadow: inset 1px 1px 1px #474940;
-  background-color: #EEEEEE;
-}
-.kshf.layout_header img.datasource {
-  height: 14px;
-  cursor: pointer;
-  float: left;
-  margin-right: 3px;
-  box-shadow: 1px 1px 1px #474940;
-  border: solid 1px black;
-  background-color: white;
-}
-.kshf.layout_header img.datasource:hover {
-  box-shadow: inset 1px 1px 1px #474940;
-}
-.kshf.layout_header div.filter_header {
-  /*    background-color: white;
-            font-size: 0.9em;
-            box-shadow: 0px 0px 4px 1px gray; */
-  margin-top: 2px;
-  float: left;
-  text-shadow: none;
-  position: relative;
-}
-.kshf.layout_header div.filter_header .left_align {
-  float: left;
-}
-.kshf.layout_header div.filter_header span.filters_text {
-  position: relative;
-  top: -1px;
-  float: right;
-  font-weight: 700;
-  font-style: normal;
-  cursor: default;
-  font-variant: small-caps;
+  vertical-align: top;
 }
 .kshf.layout_left {
   float: left;
+  vertical-align: top;
 }
-.kshf.layout_right {
-  position: relative;
+.kshf:not(.layout_leftttt) .hasLabelWidth {
+  text-align: right;
+}
+.kshf:not(.layout_leftttt) .headerGroup span.header_label_arrow {
+  left: 1px;
+}
+.kshf:not(.layout_leftttt) .headerGroup .chartFirstLineBackground {
+  direction: ltr;
+}
+.kshf:not(.layout_leftttt) .attribGroup {
+  direction: ltr;
+  margin-right: 3px;
+}
+.kshf:not(.layout_leftttt) div.attrib > span.label span.filter_add_more {
+  float: left;
+  margin-left: 2px;
+}
+.kshf:not(.layout_leftttt) div.attrib > span.barGroup .bar {
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  left: 0px;
+}
+.kshf:not(.layout_leftttt) div.attrib > span.item_count {
+  padding-left: 3px;
+  text-align: left;
+}
+.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.label {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -moz-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: -o-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: linear-gradient(to right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+}
+.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.item_count {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -moz-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: -o-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: linear-gradient(to right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+}
+.kshf:not(.layout_leftttt) .leftControls {
+  direction: ltr;
+}
+.kshf:not(.layout_leftttt) .leftControls .attribTextSearch input {
+  text-align: right;
+}
+.kshf:not(.layout_leftttt) .leftControls .attribTextSearch input::-webkit-input-placeholder {
+  text-align: right;
+}
+.kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.kshf:not(.layout_leftttt) .belowAttribs {
+  direction: ltr;
+}
+.kshf:not(.layout_leftttt) .subFacets .wigdhdyt {
+  left: 0px;
+}
+.kshf:not(.layout_leftttt) .subFacets .kshfChart {
+  margin-left: 17px;
+}
+.kshf:not(.layout_leftttt) .chartClearFilterButton.rowFilter {
+  left: -19px;
+}
+.kshf:not(.layout_leftttt) .facetCategorical .scrollToTop {
+  right: 3px;
 }
 .kshf.layout_left_background {
   position: absolute;
   left: 0px;
   top: 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
-  background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
-  background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
-  background-image: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 1) 100%);
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
+  background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
   pointer-events: none;
 }
 .kshf .chartFilterButtonParent {
@@ -545,7 +568,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup span.header_label {
   font-size: 1.0em;
   font-weight: 700;
-  text-anchor: end;
   cursor: default;
   font-variant: small-caps;
   pointer-events: all;
@@ -583,7 +605,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
   bottom: 1px;
-  left: 0px;
   font-size: 0.8em;
   cursor: pointer;
   -webkit-transition: all 250ms linear;
@@ -630,39 +651,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   overflow: hidden;
 }
-.kshf .kshfChart > .facetCategorical {
+.kshf .kshfChart > .wrapper {
   position: relative;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical {
   overflow: hidden;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls {
   display: none;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls > span {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > span {
   display: inline-block;
   vertical-align: top;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .sortOptionSelectGroup {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortOptionSelectGroup {
   display: inline-block;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .sortOptionSelectGroup select.optionSelect {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortOptionSelectGroup select.optionSelect {
   font-size: 0.7em;
   pointer-events: all;
   clear: right;
   margin: 0px;
   vertical-align: top;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .sortOptionSelectGroup span.optionSelect_Label {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortOptionSelectGroup span.optionSelect_Label {
   font-size: 0.7em;
   font-weight: 500;
   vertical-align: middle;
   cursor: default;
   pointer-events: none;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .config_zoom {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom {
   padding-top: 0px;
   margin-right: 10px;
   height: 18px;
@@ -672,19 +695,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 500ms ease, margin-left 400 ease;
   transition: height 500ms ease, margin-left 400 ease;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .config_zoom svg {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom svg {
   position: relative;
   top: 2px;
   display: none;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .config_zoom path {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom path {
   fill: white;
   display: inline;
   stroke: #000000;
   stroke-width: 25;
   stroke-miterlimit: 10;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .zoom_button {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
   font-size: 11px;
   font-weight: 300;
@@ -696,7 +719,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   margin-right: 10px;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .zoom_button[disabled=false] {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=false] {
   color: #252112;
   border: 1px gray solid;
   cursor: pointer;
@@ -705,26 +728,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #EEEEEE;
   font-weight: 500;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .zoom_button[disabled=false]:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=false]:hover {
   box-shadow: inset 1px 1px 1px #474940;
   color: red;
 }
-.kshf .kshfChart > .facetCategorical > .facetControls .zoom_button[disabled=true] {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=true] {
   border: 1px lightgray solid;
   color: gray;
   cursor: default;
 }
-.kshf .kshfChart > .facetCategorical .scrollToTop {
-  position: absolute;
-  top: -16px;
-  right: 3px;
+.kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop {
+  margin-top: -16px;
   font-size: 0.8em;
   pointer-events: all;
+  position: absolute;
 }
-.kshf .kshfChart > .facetCategorical .scrollToTop2 {
+.kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop2 {
   right: auto;
 }
-.kshf .kshfChart > .facetCategorical .selectAllAttribs {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs {
   font-size: 0.6em;
   float: left;
   margin-left: 2px;
@@ -736,13 +758,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(150, 150, 100, 0.2);
   cursor: pointer;
 }
-.kshf .kshfChart > .facetCategorical .selectAllAttribs:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs:hover {
   box-shadow: 0px 0px 1px black;
 }
-.kshf .kshfChart > .facetCategorical .selectAllAttribs::before {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs::before {
   content: '+ Add Filter with All';
 }
-.kshf .kshfChart > .facetCategorical .scroll_display_more {
+.kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more {
   font-size: 0.6em;
   vertical-align: top;
   font-style: italic;
@@ -752,7 +774,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   margin-right: 5px;
 }
-.kshf .kshfChart > .facetCategorical .scroll_display_more:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more:hover {
   color: #cb5454;
 }
 .kshf .kshfChart .subFacets {
@@ -783,7 +805,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
   white-space: nowrap;
-  display: block;
+  display: none;
   font-size: 0.9em;
   font-variant: small-caps;
   font-weight: 700;
@@ -797,7 +819,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart .attribTextSearch input {
   width: 100%;
-  text-align: right;
   font-size: 0.7em;
   font-weight: 700;
   border-width: 0px;
@@ -817,7 +838,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
 }
 .kshf .kshfChart .attribTextSearch input::-webkit-input-placeholder {
-  text-align: right;
   font-weight: 500;
   color: #cb5454;
 }
@@ -831,31 +851,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   display: none;
 }
-.kshf .kshfChart .attribTextSearch svg.searchIcon {
-  position: absolute;
-  right: -18px;
-  top: 4px;
-}
 .kshf .kshfChart[collapsed=true] > .headerGroup {
   color: gray;
 }
 .kshf .kshfChart[collapsed=true] > .headerGroup span.header_label {
   cursor: pointer;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
 .kshf .kshfChart[collapsed=true] > .headerGroup .facetControls {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .facetCategorical > div {
+.kshf .kshfChart[collapsed=true] > .wrapper .facetCategorical > div {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .facetCategorical > span {
+.kshf .kshfChart[collapsed=true] > .wrapper .facetCategorical > span {
   display: none;
 }
 .kshf .kshfChart[collapsed=true] > .facetInterval > div {
@@ -898,7 +906,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
   fill: url(#dotGradient_Inactive);
 }
-.kshf .kshfChart[filtered=true] .chartClearFilterButton.rowFilter {
+.kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton.rowFilter {
   opacity: 1;
   pointer-events: all;
 }
@@ -998,7 +1006,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib {
   position: absolute;
-  height: 18px;
   white-space: nowrap;
   -webkit-transition: all 700ms ease-in-out;
   -moz-transition: all 700ms ease-in-out;
@@ -1031,8 +1038,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
 }
 .kshf div.attrib > span.label span.filter_add_more {
-  float: left;
-  margin-left: 2px;
   white-space: nowrap;
   z-index: 5;
   pointer-events: all;
@@ -1053,9 +1058,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   cursor: default;
   pointer-events: none;
-  padding-left: 3px;
 }
-.kshf div.attrib[noitems=true] span.item_count {
+.kshf div.attrib[activeItems='0'] span.item_count {
   visibility: hidden;
 }
 .kshf div.attrib > span.barGroup {
@@ -1071,16 +1075,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf div.attrib > span.barGroup .bar {
-  display: inline-block;
+  display: inline;
   position: absolute;
   top: 4px;
   width: 1px;
   height: 10px;
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
   background-color: #8699a8;
 }
 .kshf div.attrib > span.barGroup .bar.total {
@@ -1178,27 +1177,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib:not([selected="0"]) span {
   font-weight: 700;
 }
-.kshf div.attrib:not([selected="0"]) span.label {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: -moz-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: -o-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: linear-gradient(to right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-}
-.kshf div.attrib:not([selected="0"]) span.item_count {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: -moz-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: -o-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: linear-gradient(to right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-}
 .kshf div.attrib[selected="1"] span {
   color: #c32c2c;
 }
 .kshf div.attrib[selected="-1"] span {
   color: gray;
 }
-.kshf div.attrib[noitems=false][selected='0']:hover .filter_add_more .remove {
+.kshf div.attrib:not([activeItems='0']):hover .remove {
   display: inline;
 }
 .kshf div.attrib[noitems=false][highlight=true][selected='0'] .clickArea {
@@ -1337,7 +1322,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv div.itemLinks .header {
   font-size: 1.1em;
   font-weight: 700;
-  text-anchor: end;
   cursor: default;
   font-variant: small-caps;
   pointer-events: all;
@@ -1386,8 +1370,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: auto;
   cursor: default;
 }
-.kshf.listDiv div.listsortcolumn_0 {
-  font-weight: bold;
+.kshf.listDiv div.listsortcolumn .sortBy {
+  float: left;
+  margin-left: 2px;
+  font-weight: 700;
 }
 .kshf.listDiv select.listSortOptionSelect {
   bottom: 0px;
@@ -1413,7 +1399,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span.scrollToTop {
   display: inline-block;
   visibility: hidden;
-  float: right;
   color: red;
   cursor: pointer;
   color: #aaaaaa;
@@ -1428,19 +1413,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader {
   font-weight: bold;
   color: black;
-  padding: 0px 0px 1px 2px;
   font: 500 100% Arial, sans-serif;
   font-size: 0.9em;
   position: relative;
+  border-style: solid;
+  border-color: #dfd2a9;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border-width: 0px 2px;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjMsIDIxMCwgMTY5KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyNTUsMjU1LDI1NSkiIHN0b3Atb3BhY2l0eT0iMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+  background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+  background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+  background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+}
+.kshf div.listHeader .bottomRow {
   min-height: 20px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjMsIDIxMCwgMTY5KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMC4xIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
-  background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
-  background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
-  background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(200,200,200,0.1) 80%);
 }
 .kshf div.listHeader span.selectColumn {
-  float: right;
+  position: absolute;
+  right: 18px;
+  bottom: 0px;
   font-size: 1.1em;
   text-align: right;
   margin-left: 6px;
@@ -1469,9 +1462,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf div.listHeader span.scrollToTop {
-  float: right;
-  margin-bottom: -4px;
-  width: 15px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
   text-align: right;
 }
 .kshf div.listHeader span.filter-separator {
@@ -1481,8 +1474,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float: left;
 }
 .kshf div.listHeader span.mainTextSearch {
-  position: relative;
   white-space: nowrap;
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: bottom;
+}
+.kshf div.listHeader span.mainTextSearch input {
+  font-size: 0.8em;
+  font-weight: 700;
+  color: #cb5454;
+  padding: 0px 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  pointer-events: all;
+  border-width: 0px;
+  border-bottom: dashed 1px #cb5454;
+  margin: 0px;
+}
+.kshf div.listHeader span.mainTextSearch input:focus {
+  outline-color: gray;
+  outline-width: 4px;
+}
+.kshf div.listHeader span.mainTextSearch input:hover {
+  border: solid 1px #cb5454;
+  background-color: white;
+  padding: 0px 1px;
+}
+.kshf div.listHeader span.mainTextSearch input::-webkit-input-placeholder {
+  color: #cb5454;
+  font-weight: 300;
+}
+.kshf div.listHeader span.mainTextSearch input:focus::-webkit-input-placeholder {
+  color: #F3CDCD;
 }
 .kshf div.listHeader span.mainTextSearch svg.searchIcon {
   top: 2px;
@@ -1498,65 +1520,65 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 16px;
   cursor: pointer;
 }
-.kshf div.listHeader input.bigTextSearch {
-  font-size: 0.8em;
-  font-weight: 700;
-  color: #cb5454;
-  padding: 0px 2px;
-  background-color: rgba(255, 255, 255, 0.2);
-  pointer-events: all;
-  border-width: 0px;
-  border-bottom: dashed 1px #cb5454;
-  margin: 0px;
-}
-.kshf div.listHeader input.bigTextSearch:focus {
-  outline-color: gray;
-  outline-width: 4px;
-}
-.kshf div.listHeader input.bigTextSearch:hover {
-  border: solid 1px #cb5454;
-  background-color: white;
-  padding: 0px 1px;
-}
-.kshf div.listHeader input.bigTextSearch::-webkit-input-placeholder {
-  color: #cb5454;
-  font-weight: 300;
-}
-.kshf div.listHeader input.bigTextSearch:focus::-webkit-input-placeholder {
-  color: #F3CDCD;
-}
-.kshf div.listHeader div.listcell {
-  float: left;
+.kshf div.listHeader span.rightBoxes {
   position: absolute;
+  right: 10px;
 }
-.kshf div.listHeader div.list-sort-option {
+.kshf div.listHeader span.rightBoxes div.credits {
+  cursor: pointer;
   font-weight: 500;
-  cursor: move;
-  background-color: white;
-  padding: 1px 5px 1px 5px;
-  box-shadow: 1px 1px 1px #474940;
   display: inline-block;
-  width: calc(90%);
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  /* Required to make elements draggable in old WebKit */
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px #474940;
+  text-align: center;
+  font-size: 0.9em;
+  background-color: white;
+  color: black;
+  position: relative;
+  margin: 2px;
+  float: right;
+  font-weight: bolder;
+  font-style: italic;
 }
-.kshf div.listHeader div.list-sort-option:hover {
-  box-shadow: 2px 2px 2px #474940;
+.kshf div.listHeader span.rightBoxes div.credits:hover {
+  box-shadow: inset 1px 1px 1px #474940;
+  background-color: #EEEEEE;
 }
-.kshf div.listHeader div.list-sort-option.drag_source {
-  background-color: #d3e6c9;
+.kshf div.listHeader span.rightBoxes img.datasource {
+  height: 14px;
+  cursor: pointer;
+  float: left;
+  margin-right: 3px;
+  box-shadow: 1px 1px 1px #474940;
+  border: solid 1px black;
+  background-color: white;
 }
-.kshf div.listHeader div.list-sort-option.drag_over {
-  border: solid 1px #000;
-  padding: 0px 4px 0px 4px;
-  /* remove padding 1 pixel because of border  */
-  box-shadow: 2px 2px 2px #474940;
-  background-color: #e5b2b2;
+.kshf div.listHeader span.rightBoxes img.datasource:hover {
+  box-shadow: inset 1px 1px 1px #474940;
+}
+.kshf div.listHeader span.resultInfo {
+  vertical-align: top;
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-shadow: 1px 1px lightgray;
+  margin-bottom: -3px;
+}
+.kshf div.listHeader span.resultInfo span.listheader_count {
+  display: inline-block;
+  text-align: right;
+  vertical-align: top;
+}
+.kshf div.listHeader span.resultInfo span.listheader_itemName {
+  display: inline;
+  letter-spacing: 0.1em;
+  font-variant: small-caps;
+  margin-left: 4px;
+  vertical-align: top;
 }
 .kshf .itemtoggledetails {
   width: 15px;

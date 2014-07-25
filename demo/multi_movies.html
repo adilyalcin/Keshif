@@ -70,7 +70,7 @@ var myLoc=null;
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
     if(browserScreenings===undefined) return;
-    var seriesChart = browserScreenings.facets[3];
+    var seriesChart = browserScreenings.facets[2];
     if(seriesChart===undefined) return;
     seriesChart.sortingOpt_Active = seriesChart.options.sortingOpts[1];
     seriesChart.sortDelay = 0;
@@ -95,37 +95,35 @@ function loadChart() {
     browserScreenings = new kshf.Browser({
         domID : "#div_screenings",
         dirRoot: "../",
-        categoryTextWidth: 230,
-        itemName: "Screenings",
         source : {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
             sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
         },
         loadedCb: function(){
-            // expand cell content - movie genres and series features
+            // expand cell content - movie*genres and series*features
             kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
             kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
         },
+        categoryTextWidth: 230,
         facets : [
             {
-                facetTitle: "Movies",
+                facetTitle: "Movie",
                 catTableName: "Movies",
                 catItemMap: function(d){ return d.data[2]; },
                 catLabelText: function(m){ return m.data[0]; },
                 facets: [
                     {   facetTitle: "Genre",
                     },{
-                        facetTitle: "Rated",
-                        collapsed: true
+                        facetTitle: "Rated"
                     }
                 ]
             },{
                 facetTitle: "Time",
+                layout: "right",
                 facets : [{
                     facetTitle: "Day Of Week",
                     catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
-                    catTableName: "Weekdays",
-                    collapsed: true
+                    catTableName: "Weekdays"
                 },{
                     facetTitle: "Soon",
                     removeInactiveAttrib: false,
@@ -138,7 +136,8 @@ function loadChart() {
                     }
                 }]
             },{
-                facetTitle: "Series",
+                facetTitle: "Location",
+                layout: "right",
                 catTableName: "Series",
                 catItemMap: function(d){ return d.data[0]; },
                 sortingOpts : [
@@ -160,8 +159,7 @@ function loadChart() {
                 facets: [
                     {   facetTitle: "State"
                     },{
-                        facetTitle: "Features",
-                        collapsed: true
+                        facetTitle: "Features"
                     }
                 ]
             }

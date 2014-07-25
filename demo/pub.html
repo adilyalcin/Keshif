@@ -12,6 +12,8 @@
         <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
 
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
         <script type="text/javascript">
 
 var demoID = 7;
@@ -44,7 +46,7 @@ google.setOnLoadCallback(function() {
     browser = new kshf.Browser({
         domID : "#chart_div",
         listMaxColWidthMult: 0.4,
-        categoryTextWidth:175,
+        categoryTextWidth:185,
         dirRoot: "../",
         source : {
             // google spreadsheet ID
@@ -105,7 +107,7 @@ google.setOnLoadCallback(function() {
                 textFilter: 'with', textGroup: 'co-authors',
                 facets: [
                     {
-                        facetTitle: "Coauthor Type",
+                        facetTitle: "Type",
                         catTableName: "AuthorTypes",
                         catItemMap : function(coAuth){ 
                             // remove bederson from the list here..

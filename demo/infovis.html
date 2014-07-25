@@ -55,14 +55,15 @@ google.setOnLoadCallback(function () {
                 catItemMap: function(d){ return d.data[6]; },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications"
-//                facetTitle: "Keywords",
-/*                timeTitle: "Year",
+            }/*,{
+//              facetTitle: "Keywords",
+                timeTitle: "Year",
                 timeItemMap: function(d){
                     var yr = d.data[0].substring(7,9);
 //                    console.log(yr);
 //                    if(isNaN(yr)) return null;
                     return new Date(moment(yr,"YY"));
-                }*/
+                }
 //            },{
 //                facetTitle: "Concepts",
 //            },{
@@ -78,7 +79,7 @@ google.setOnLoadCallback(function () {
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            }
+            }*/
         ],
         list:{
             sortColWidth: 100,

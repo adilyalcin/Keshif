@@ -184,10 +184,15 @@ $(document).ready( function(){
             }
         ],
         list:{
-            sortColWidth: 100,
+            sortColWidth: 120,
             sortingOpts : [
                 { name: 'Date Added', label: function(d){ return sortFormat(d.data[5]); }}
             ],
+            textSearchFunc : function(d){ 
+                var metadata = kshf.dt_id['Book Metadata'][d.data[0]];
+                if(metadata===undefined) return "";
+                return metadata.data[2];
+            },
             displayType: 'grid',
             contentFunc : function(d){
                 var id = d.data[0];

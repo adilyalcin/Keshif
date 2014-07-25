@@ -89,11 +89,13 @@ $(document).ready( function(){
             $(".postName").click(loadImage);
         },
         list:{
-            sortColWidth: 55,
+            sortColWidth: 95,
             sortingOpts : [
                 {   name: 'Date',
                     value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
-                },{ name: '# of Comments'}
+                },{ name: '#Comments',
+                    value: function(d){ return d.data[5]; }
+                }
             ],
             detailsToggle : "One",
             detailsDefault : false,
