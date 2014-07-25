@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Sewer overflows in Maryland, USA</title><meta charset="utf-8">
+        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+var tableName = "Overflow";
+
+// You can load data on keshif callback, or before you initialize keshif.
+function loadData(browser){
+    browser.primaryTableName = tableName;
+
+    kshf.dt[tableName] = [];
+    var arr = kshf.dt[tableName];
+
+    $.ajax( {
+        url: "./data/seweroverflows",
+        dataType: "json",
+        success: function(data){
+            // data.meta includes meta information
+            // If you want to, you can extract Keshif facet information from the metadata
+            // See facets parameters in keshif init. In this case, you'll need to load data before and generate facets list and configuration yourself.
+            // In this example, I manually created facets & hierarchices that I thought can provide insights.
+            var overflows = data.data;
+
+            overflows.forEach(function(overflow){
+                arr.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
+            });
+
+            browser.items = arr;
+            browser.itemsSelectedCt = kshf.dt[tableName].length;
+
+            var id_table = {};
+            arr.forEach(function(r){id_table[r.id()] = r;})
+            kshf.dt_id[tableName] = id_table;
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
+
+var getDuration_TotalMinutes = function(overflow){ 
+    var days = parseInt(overflow.data[13]);
+    var hours = parseInt(overflow.data[14]);
+    var minutes = parseInt(overflow.data[15]);
+    if(isNaN(days)) days=0;
+    if(isNaN(minutes)) minutes=0;
+    if(isNaN(hours)) hours=0;
+    var total_minutes = minutes + 60*hours + 60*24*days;
+    return total_minutes; 
+};
+
+var getDuration_Human = function(overflow){
+    var days = parseInt(overflow.data[13]);
+    var hours = parseInt(overflow.data[14]);
+    var minutes = parseInt(overflow.data[15]);
+    if(isNaN(days)) days=0;
+    if(isNaN(minutes)) minutes=0;
+    if(isNaN(hours)) hours=0;
+    var total_hours = hours + 24*days;
+    var total_minutes = minutes + 60*hours + 60*24*days;
+    if(total_minutes===0) return "N/A";
+    if(total_minutes>=60*24) return "1 or more days";
+    if(total_minutes>=60*5 ) return "5-24 hours";
+    if(total_minutes> 60 ) return "1-5 hours";
+    if(minutes>30) return "30-60 minutes";
+    if(minutes>15) return "15-30 minutes";
+    return "< 15 minutes";
+};
+
+$(document).ready( function(){
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Sewer Overflows",
+        dirRoot: "../",
+        categoryTextWidth: 200,
+        showDataSource : true,
+        source: { callback : loadData },
+        facets : [
+            {   facetTitle: "Overflow Type",
+                catItemMap : function(overflow){ return overflow.data[8]; }
+            },{ facetTitle: "Cause",
+                catItemMap : function(overflow){ return overflow.data[21]; }
+//            },{ facetTitle: "NPDES #",
+//                catItemMap : function(overflow){ return overflow.data[10]; }
+            },{ facetTitle: "Year Discovered", 
+                catItemMap : function(overflow){ 
+                    return moment(overflow.data[11]).year();
+                }
+//            },{ facetTitle: "Time Discovered",  
+            },{ facetTitle: "Duration",
+                catItemMap : getDuration_Human
+            },{ facetTitle: "Location",
+                layout: 'right',
+                facets: [
+                    { facetTitle: "Zip Code", 
+                        catItemMap: function(overflow){ return overflow.data[17]; } },
+                    { facetTitle: "County", 
+                        catItemMap: function(overflow){ return overflow.data[23]; } },
+                    { facetTitle: "Municipality/Facility",
+                        catItemMap : function(overflow){ return overflow.data[9]; }
+                    }
+                ]
+            }
+        ],
+        list: {
+            sortColWidth: 80,
+            sortingOpts : [
+                {   name: 'Duration',
+                    value: getDuration_TotalMinutes,
+                    label: getDuration_Human},
+                { name: 'id',  value: function(d){ return d.data[0]; } }
+            ],
+            contentFunc : function(d){
+                // return location
+                return d.data[16] + " -- "+getDuration_TotalMinutes(d)+" minutes";
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+        div.listItem{
+            padding-bottom: 4px;
+        }
+        #chart_div {
+            width:1200px;
+            height:700px;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body></html>
