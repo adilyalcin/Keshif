@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -35,8 +36,8 @@ $(document).ready( function(){
 
 	new kshf.Browser({
         domID : "#chart_div",
-        dirRoot: "../",
-        categoryTextWidth: 250,
+        itemName: "Winners",
+        categoryTextWidth: 190,
         source : {
             gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
             sheets : [ {name:"Prizes"},{name:"Laureates"} ]
@@ -68,12 +69,14 @@ $(document).ready( function(){
                 textGroup: 'countries'
             }, {
                 facetTitle: "Affiliation",
+                layout: 'right',
                 catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
                 }
             }, {
                 facetTitle: "Joint Awards",
+                layout: 'right',
                 catDispCountFix: 2,
                 catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
             }, {

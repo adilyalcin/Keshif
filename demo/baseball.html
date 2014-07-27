@@ -6,6 +6,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -32,7 +33,6 @@ function loadChart() {
 
     browser = new kshf.Browser({
         domID : "#chart_div",
-        dirRoot: "../",
         itemName : "transactions",
         categoryTextWidth:160,
         source : {
@@ -59,39 +59,49 @@ function loadChart() {
                 },*/
                 textFilter: 'of type'
             },{
-                facetTitle: "From Team",
-                catTableName: "baseball_teams_1",
-                barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
-                barInfoText: "Color:League",
-                textFilter : 'from', textGroup  : 'teams'
+                facetTitle: "From",
+                facets: [
+                    {
+                        facetTitle: "From Team",
+                        catTableName: "baseball_teams_1",
+                        barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
+                        barInfoText: "Color:League",
+                        textFilter : 'from', textGroup  : 'teams'
+                    },{
+                        facetTitle: "From League",
+                        catTableName: "baseball_leagues_1",
+                        catItemMap : function(tr){
+                            var x=tr.data[4];
+                            if(x==="") return null;
+                            return kshf.dt_id.baseball_teams_1[x].data[2];
+                        },
+                        barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
+                        barInfoText: "Color:League",
+                        textFilter: 'from'
+                    }
+                ]
             },{
-                facetTitle: "From League",
-                catTableName: "baseball_leagues_1",
-                catItemMap : function(tr){
-                    var x=tr.data[4];
-                    if(x==="") return null;
-                    return kshf.dt_id.baseball_teams_1[x].data[2];
-                },
-                barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
-                barInfoText: "Color:League",
-                textFilter: 'from'
-            },{
-                facetTitle: "To Team",
-                catTableName: "baseball_teams_2",
-                barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
-                barInfoText: "Color:League",
-                textFilter : 'to', textGroup  : 'teams'
-            },{
-                facetTitle: "To League",
-                catTableName: "baseball_leagues_2",
-                catItemMap : function(tr){
-                    var x=tr.data[5];
-                    if(x==="") return null;
-                    return kshf.dt_id.baseball_teams_1[x].data[2];
-                },
-                barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
-                barInfoText: "Color:League",
-                textFilter: 'to'
+                facetTitle: "To",
+                facets: [
+                    {
+                        facetTitle: "To Team",
+                        catTableName: "baseball_teams_2",
+                        barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
+                        barInfoText: "Color:League",
+                        textFilter : 'to', textGroup  : 'teams'
+                    },{
+                        facetTitle: "To League",
+                        catTableName: "baseball_leagues_2",
+                        catItemMap : function(tr){
+                            var x=tr.data[5];
+                            if(x==="") return null;
+                            return kshf.dt_id.baseball_teams_1[x].data[2];
+                        },
+                        barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
+                        barInfoText: "Color:League",
+                        textFilter: 'to'
+                    }
+                ]
             }
         ],
         list: {

@@ -171,26 +171,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_top {
   display: block;
 }
-.kshf span.filterClearAll {
-  display: none;
-  position: absolute;
-  right: 55px;
-  top: 2px;
-  cursor: default;
-  color: #252112;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  background-color: #E9E2CE;
-  padding-left: 2px;
-  -webkit-transition: background-color 100ms linear;
-  -moz-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
-}
-.kshf span.filterClearAll:hover {
-  background-color: white;
-  box-shadow: none;
-}
 .kshf.layout_leftttt {
   float: left;
 }
@@ -336,11 +316,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
 }
 .kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 .kshf:not(.layout_leftttt) .belowAttribs {
   direction: ltr;
@@ -844,12 +824,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart .attribTextSearch input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .kshfChart .attribTextSearch svg.clearText {
+.kshf .kshfChart .attribTextSearch i.fa.clearText {
   position: absolute;
   left: 1px;
   top: 3px;
   cursor: pointer;
+  font-size: 0.8em;
+  color: gray;
   display: none;
+}
+.kshf .kshfChart .attribTextSearch i.fa.clearText:hover {
+  color: #cb5454;
+}
+.kshf .kshfChart .attribTextSearch i.searchIcon {
+  color: #cb5454;
+  font-size: 0.8em;
+  top: -1px;
+  position: relative;
 }
 .kshf .kshfChart[collapsed=true] > .headerGroup {
   color: gray;
@@ -1214,6 +1205,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   position: absolute;
 }
+.kshf .loading_dots {
+  width: 10px;
+  height: 10px;
+  background: gray;
+  border-radius: 50px;
+  margin: 4px;
+  display: inline-block;
+}
+.kshf .loading_dots[anim] {
+  -webkit-animation: fade 900ms forwards;
+  -moz-animation: fade 900ms forwards;
+  -o-animation: fade 900ms forwards;
+  animation: fade 900ms forwards;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.kshf .loading_dots[anim].loading_dots_2 {
+  -webkit-animation-delay: 300ms;
+  -moz-animation-delay: 300ms;
+  -o-animation-delay: 300ms;
+  animation-delay: 300ms;
+}
+.kshf .loading_dots[anim].loading_dots_3 {
+  -webkit-animation-delay: 600ms;
+  -moz-animation-delay: 600ms;
+  -o-animation-delay: 600ms;
+  animation-delay: 600ms;
+}
 .kshf.listDiv {
   position: relative;
   top: 0px;
@@ -1253,14 +1274,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: bottom 700ms ease 50ms;
   transition: bottom 700ms ease 50ms;
 }
-.kshf.listDiv .showMore .dots {
-  width: 10px;
-  height: 10px;
-  background: gray;
-  border-radius: 50px;
-  margin: 4px;
-  display: inline-block;
-}
 .kshf.listDiv .showMore span.MoreText {
   display: inline-block;
   vertical-align: top;
@@ -1293,28 +1306,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.listDiv .showMore:hover span.MoreText {
   text-decoration: underline;
-}
-.kshf.listDiv .showMore:hover .dots {
-  -webkit-animation: fade 900ms forwards;
-  -moz-animation: fade 900ms forwards;
-  -o-animation: fade 900ms forwards;
-  animation: fade 900ms forwards;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  -o-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-}
-.kshf.listDiv .showMore:hover .dots_2 {
-  -webkit-animation-delay: 300ms;
-  -moz-animation-delay: 300ms;
-  -o-animation-delay: 300ms;
-  animation-delay: 300ms;
-}
-.kshf.listDiv .showMore:hover .dots_3 {
-  -webkit-animation-delay: 600ms;
-  -moz-animation-delay: 600ms;
-  -o-animation-delay: 600ms;
-  animation-delay: 600ms;
 }
 .kshf.listDiv div.itemLinks {
   display: inline-block;
@@ -1418,8 +1409,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   border-style: solid;
   border-color: #dfd2a9;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
+  border-top-left-radius: 19px;
+  border-top-right-radius: 19px;
   border-width: 0px 2px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjMsIDIxMCwgMTY5KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyNTUsMjU1LDI1NSkiIHN0b3Atb3BhY2l0eT0iMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
@@ -1478,6 +1469,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-left: 10px;
   display: inline-block;
   vertical-align: bottom;
+  position: relative;
 }
 .kshf div.listHeader span.mainTextSearch input {
   font-size: 0.8em;
@@ -1506,57 +1498,65 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.mainTextSearch input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf div.listHeader span.mainTextSearch svg.searchIcon {
-  top: 2px;
-  position: relative;
-  margin-left: 3px;
+.kshf div.listHeader span.mainTextSearch .searchIcon {
+  color: #cb5454;
 }
-.kshf div.listHeader span.mainTextSearch span {
+.kshf div.listHeader span.mainTextSearch i.fa.clearText {
   position: absolute;
   display: none;
+  right: 2px;
   top: 1px;
-  right: 15px;
-  width: 16px;
-  height: 16px;
   cursor: pointer;
+  color: gray;
+}
+.kshf div.listHeader span.mainTextSearch i.fa.clearText:hover {
+  color: #cb5454;
 }
 .kshf div.listHeader span.rightBoxes {
   position: absolute;
-  right: 10px;
+  right: 2px;
 }
-.kshf div.listHeader span.rightBoxes div.credits {
+.kshf div.listHeader span.rightBoxes i.credits {
   cursor: pointer;
-  font-weight: 500;
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 10px;
-  box-shadow: 1px 1px 1px #474940;
-  text-align: center;
-  font-size: 0.9em;
-  background-color: white;
-  color: black;
+  font-size: 1.2em;
+  color: #806215;
   position: relative;
-  margin: 2px;
+  margin: 2px 0px;
   float: right;
-  font-weight: bolder;
-  font-style: italic;
 }
-.kshf div.listHeader span.rightBoxes div.credits:hover {
-  box-shadow: inset 1px 1px 1px #474940;
-  background-color: #EEEEEE;
+.kshf div.listHeader span.rightBoxes i.credits:hover {
+  color: #cb5454;
 }
-.kshf div.listHeader span.rightBoxes img.datasource {
-  height: 14px;
+.kshf div.listHeader span.rightBoxes .datasource {
   cursor: pointer;
+  text-decoration: none;
   float: left;
-  margin-right: 3px;
-  box-shadow: 1px 1px 1px #474940;
-  border: solid 1px black;
-  background-color: white;
+  color: #806215;
+  font-size: 1.3em;
 }
-.kshf div.listHeader span.rightBoxes img.datasource:hover {
-  box-shadow: inset 1px 1px 1px #474940;
+.kshf div.listHeader span.rightBoxes .datasource:hover {
+  color: #cb5454;
+}
+.kshf div.listHeader span.filterClearAll {
+  display: none;
+  position: absolute;
+  right: 45px;
+  top: 2px;
+  cursor: default;
+  color: #252112;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  background-color: #E9E2CE;
+  padding-left: 2px;
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
+}
+.kshf div.listHeader span.filterClearAll:hover {
+  background-color: white;
+  box-shadow: none;
 }
 .kshf div.listHeader span.resultInfo {
   vertical-align: top;
@@ -1952,15 +1952,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 1043;
 }
 .kshf.layout_infobox div.infobox_loading {
-  width: 350px;
-  height: 70px;
+  width: 300px;
+  height: 35px;
 }
-.kshf.layout_infobox div.infobox_loading img.status {
-  margin: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 25px;
+.kshf.layout_infobox div.infobox_loading .loadinggg {
+  position: relative;
+  top: 8px;
+  left: 10px;
+}
+.kshf.layout_infobox div.infobox_loading .loadinggg i.fa-warning {
+  margin-left: 20px;
+  font-size: 1.5em;
 }
 .kshf.layout_infobox div.infobox_loading div.status_text {
   margin: auto;
@@ -1969,10 +1971,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 70px;
   height: 20px;
 }
-.kshf.layout_infobox div.infobox_loading div.status_text div {
+.kshf.layout_infobox div.infobox_loading div.status_text span {
   margin-left: 5px;
-  margin-top: 5px;
-  font-size: 0.8em;
 }
 .kshf.layout_infobox div.infobox_credit {
   display: none;
@@ -2025,6 +2025,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.boxinbox.project_credits {
   font-size: 0.9em;
   font-style: italic;
+}
+.kshf div.boxinbox.project_credits a.myName {
+  display: inline-block;
+  margin: 17px 10px;
+  vertical-align: top;
+  color: black;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
 }
 .kshf div.boxinbox.project_3rdparty img {
   position: relative;

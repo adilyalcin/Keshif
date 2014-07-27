@@ -55,7 +55,6 @@ var kshf = {
       sub.prototype.constructor = sub;
     },
     num_of_charts: 0,
-    num_of_browsers: 0,
     maxVisibleItems_default: 50, 
     dt: {},
     dt_id: {},
@@ -1110,13 +1109,19 @@ kshf.List = function(kshf_, config, root){
             this.style.bottom = "-25px";
             if(sendLog) sendLog(CATID.Other,ACTID_OTHER.ShowMoreResults);
         })
+        .on("mouseenter",function(){
+            d3.select(this).selectAll(".loading_dots").attr("anim",true);
+        })
+        .on("mouseleave",function(){
+            d3.select(this).selectAll(".loading_dots").attr("anim",null);
+        })
         ;
     this.dom.showMore.append("span").attr("class","MoreText").html("Show More");
     this.dom.showMore.append("span").attr("class","Count CountAbove");
     this.dom.showMore.append("span").attr("class","Count CountBelow");
-    this.dom.showMore.append("span").attr("class","dots dots_1");
-    this.dom.showMore.append("span").attr("class","dots dots_2");
-    this.dom.showMore.append("span").attr("class","dots dots_3");
+    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_1");
+    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_2");
+    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_3");
 };
 kshf.List.prototype = {
     /* -- */
@@ -1133,12 +1138,12 @@ kshf.List.prototype = {
             onClear: function(filter){
                 filter.filterStr = "";
                 this.dom.mainTextSearch[0][0].value = "";
-                listHeaderTopRowTextSearch.select("span").style('display','none');
+                listHeaderTopRowTextSearch.select("i").style('display','none');
             },
             onFilter: function(filter,recursive){
                 // split the search string, search for each item individually
                 filter.filterStr=filter.filterStr.split(" ");
-                listHeaderTopRowTextSearch.select("span").style('display','inline-block');
+                listHeaderTopRowTextSearch.select("i").style('display','inline-block');
                 // go over all the items in the list, search each keyword separately
                 filter.filteredItems.forEach(function(item){
                     var f = ! filter.filterStr.every(function(v_i){
@@ -1152,14 +1157,7 @@ kshf.List.prototype = {
         });
 
         listHeaderTopRowTextSearch = this.dom.listHeader_TopRow.append("span").attr("class","mainTextSearch");
-        listHeaderTopRowTextSearch.append("svg")
-            .attr("class","searchIcon")
-            .attr("width","13")
-            .attr("height","12")
-            .attr("viewBox","0 0 491.237793 452.9882813")
-            .attr("xmlns","http://www.w3.org/2000/svg")
-            .append("use").attr("xlink:href","#kshf_svg_search")
-            ;
+        listHeaderTopRowTextSearch.append("i").attr("class","fa fa-search searchIcon");;
         this.dom.mainTextSearch = listHeaderTopRowTextSearch.append("input")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:"title"))
             .attr("autofocus","true")
@@ -1180,14 +1178,7 @@ kshf.List.prototype = {
                     if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,me.browser.getFilteringState());
                 }, 750);
             });
-        listHeaderTopRowTextSearch.append("span")
-            .append("svg")
-                .attr("class","clearText")
-                .attr("width","15")
-                .attr("height","15")
-                .attr("viewBox","0 0 48 48")
-                .attr("xmlns","http://www.w3.org/2000/svg")
-                .append("use").attr("xlink:href","#kshf_svg_clearText")
+        listHeaderTopRowTextSearch.append("i").attr("class","fa fa-times-circle clearText")
             .on("click",function() {
                 me.textFilter.clearFilter(true);
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.MainTextSearch,me.browser.getFilteringState());
@@ -1743,9 +1734,6 @@ kshf.Browser = function(options){
     // primItemCatValue
     this.primItemCatValue = null;
     if(typeof options.catValue === 'string'){ this.primItemCatValue = options.catValue; }
-    // dirRoot 
-    this.dirRoot = options.dirRoot;
-    if(this.dirRoot === undefined) this.dirRoot = "./";
     // showDataSource
     this.showDataSource = true;
     if(options.showDataSource!==undefined) this.showDataSource = options.showDataSource;
@@ -1770,10 +1758,6 @@ kshf.Browser = function(options){
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
     var rootDomNode = this.TopRoot[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
-
-    // insert gradient defs once into the document
-    kshf.num_of_browsers++;
-    if(kshf.num_of_browsers==1) this.insertSVGDefs();
 
     this.root = this.TopRoot.attr("noanim",false);
 
@@ -1888,56 +1872,30 @@ kshf.Browser.prototype = {
                d3.event.preventDefault();
            });
     },
-    /** -- */
-    insertSVGDefs: function(){
-        // add gradients
-        var gradient_svg = this.TopRoot.append("svg").attr("width",0).attr("height",0)
-            .style("display","block").append("defs");
-
-        gradient_svg.append("symbol").attr("id","kshf_svg_search")
-            .attr("viewbox","0 0 491.237793 452.9882813")
-            .html(
-              '<g fill-rule="nonzero" clip-rule="nonzero" fill="#0F238C" stroke="#cb5454" stroke-miterlimit="4">'+
-               '<g fill-rule="evenodd" clip-rule="evenodd">'+
-                '<path fill="#cb5454" id="path3472" d="m328.087402,256.780273c-5.591797,8.171875 -13.280273,17.080078 -22.191406,25.296875c-9.685547,8.931641 -20.244141,16.550781 -27.433594,20.463867l163.125977,150.447266l49.649414,-45.783203l-163.150391,-150.424805z"/>'+
-                '<path fill="#cb5454" id="path3474" d="m283.82959,45.058109c-65.175781,-60.07764 -169.791023,-60.07764 -234.966309,0c-65.150881,60.100582 -65.150881,156.570309 0,216.671383c65.175285,60.100586 169.790527,60.100586 234.966309,0c65.175781,-60.101074 65.175781,-156.570801 0,-216.671383zm-34.198242,31.535152c-46.204102,-42.606934 -120.390625,-42.606934 -166.570305,0c-46.204594,42.583496 -46.204594,110.994141 0,153.601074c46.17968,42.606445 120.366203,42.606445 166.570305,0c46.205078,-42.606934 46.205078,-111.017578 0,-153.601074z"/>'+
-               '</g>'+
-              '</g>');
-
-        gradient_svg.append("symbol").attr("id","kshf_svg_clearText")
-            .attr("viewbox","0 0 48 48")
-            .html(
-                '<g>'+
-                    '<path type="arc" style="fill-opacity:1;" cx="24" cy="24" rx="22" ry="22" d="M 46 24 A 22 22 0 1 1  2,24 A 22 22 0 1 1  46 24 z"/>'+
-                    '<path nodetypes="cc" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 16.221825,16.221825 L 31.778175,31.778175"/>'+
-                    '<path nodetypes="cc" d="M 31.778175,16.221825 L 16.221825,31.778175" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ffffff;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>'+
-                '</g>'
-                );
-    },
     /* -- */
     insertInfobox: function(){
         var me=this;
         var creditString="";
         creditString += "<div align='center'>";
-        creditString += "<div class='header'>This data browser is created by <span class='libName'>Keshif</span></div>";
+        creditString += "<div class='header'>This data browser is created by <span class='libName'>Keshif</span>.</div>";
         creditString += "<div align='center' class='boxinbox project_credits'>";
-        creditString += " ... and is developed by<br/>";
-            creditString += "<div style='float:right;'>"
-            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe><br/>";
-            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe>";
-            creditString += "</div>";
-        creditString += " <a href='http://www.adilyalcin.me' target='_blank'><img src='"+this.dirRoot+"img/credit-1_01.png' style='height:50px'></a>";
-        creditString += " <img src='"+this.dirRoot+"img/credit-1_02.png' style='height:50px; padding:0px 4px 0px 4px'>";
-        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'><img src='"+this.dirRoot+"img/credit-1_03.png' style='height:50px'></a>";
-        creditString += " <img src='"+this.dirRoot+"img/credit-1_04.png' style='height:50px;padding:0px 4px 0px 4px'>";
-        creditString += " <a href='http://www.umd.edu' target='_blank'><img src='"+this.dirRoot+"img/credit-1_05.png' style='height:50px'></a>";
+        creditString += "<div>Developed by</div>";
+        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'><img src='https://wiki.umiacs.umd.edu/hcil/images/1/10/HCIL_logo_small_no_border.gif' style='height:50px'></a>";
+        creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a>";
+        creditString += " <a href='http://www.umd.edu' target='_blank'><img src='http://www.trademarks.umd.edu/marks/gr/informal.gif' style='height:50px'></a>";
         creditString += "</div>";
         creditString += "";
         creditString += "<div align='center' class='boxinbox project_credits'>";
+            creditString += "<div style='float:right; text-align: right'>"
+            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe><br/>";
+            creditString += "</div>";
+            creditString += "<div style='float:left; padding-left: 10px'>"
+            creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true' allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe>";
+            creditString += "</div>";
         creditString += " 3rd party libraries and APIs:<br/>";
         creditString += " <a href='http://d3js.org/' target='_blank'>D3</a> -";
         creditString += " <a href='http://jquery.com' target='_blank'>JQuery</a> -";
-        creditString += " <a href='https://developers.google.com/chart/' target='_blank'>Google Charts</a>";
+        creditString += " <a href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a>";
         creditString += "</div><br/>";
         creditString += "";
         creditString += "<div align='center' class='project_fund'>";
@@ -1954,12 +1912,15 @@ kshf.Browser.prototype = {
                 me.layout_infobox.select("div.infobox_datasource").style("display","none");
             });
         this.dom.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
-        this.dom.loadingBox.append("img").attr("class","status")
-            .attr("src",this.dirRoot+"img/loading.gif")
-            ;
+//        this.dom.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
+        var ssdsd = this.dom.loadingBox.append("span").attr("class","loadinggg");
+        ssdsd.append("span").attr("class","loading_dots loading_dots_1").attr("anim",true);
+        ssdsd.append("span").attr("class","loading_dots loading_dots_2").attr("anim",true);
+        ssdsd.append("span").attr("class","loading_dots loading_dots_3").attr("anim",true);
+
         var hmmm=this.dom.loadingBox.append("div").attr("class","status_text");
-        hmmm.append("span").text("Loading...");
-        hmmm.append("div")
+        hmmm.append("span").attr("class","info").text("Loading data sources...");
+        hmmm.append("span").attr("class","dynamic")
             .text(
                 (this.source.sheets!==undefined)?
                 "("+this.source.loadedTableCount+"/"+this.source.sheets.length+")":
@@ -2004,7 +1965,7 @@ kshf.Browser.prototype = {
             return;
         }
         this.dom.filterClearAll = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","filterClearAll")
-            .text("Clear all filtering");
+            .text("Show all");
         this.dom.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
             .text("x")
             .each(function(d){
@@ -2086,12 +2047,11 @@ kshf.Browser.prototype = {
                 return;
             }
             if(response.isError()) {
-                me.layout_infobox.select("div.status_text span")
+                me.layout_infobox.select("div.status_text .info")
                     .text("Cannot load data");
-                me.layout_infobox.select("img")
-                    .attr("src",me.dirRoot+"img/alert.png")
-                    .style("height","40px");
-                me.layout_infobox.select("div.status_text div")
+                me.layout_infobox.select("span.loadinggg").selectAll("span").remove();
+                me.layout_infobox.select("span.loadinggg").append('i').attr("class","fa fa-warning");
+                me.layout_infobox.select("div.status_text .dynamic")
                     .text("("+response.getMessage()+")");
                 return;
             }
@@ -2254,7 +2214,7 @@ kshf.Browser.prototype = {
     incrementLoadedSheetCount: function(){
         var me=this;
         this.source.loadedTableCount++;
-        this.layout_infobox.select("div.status_text div")
+        this.layout_infobox.select("div.status_text .dynamic")
             .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
             // finish loading
         if(this.source.loadedTableCount===this.source.sheets.length) {
@@ -2265,10 +2225,8 @@ kshf.Browser.prototype = {
                 }
             },this);
 
-            this.layout_infobox.select("div.status_text span")
-                .text("Creating Keshif...");
-            this.layout_infobox.select("div.status_text div")
-                .text("");
+            this.layout_infobox.select("div.status_text .info").text("Creating browser...");
+            this.layout_infobox.select("div.status_text .dynamic").text("");
             window.setTimeout(function(){ me.loadCharts(); }, 50);
         }
     },
@@ -2322,26 +2280,31 @@ kshf.Browser.prototype = {
             if(this.hideHeaderButtons===false){
                 var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
                 // Info & Credits
-                rightSpan.append("div").attr("class","credits")
-                    .text("i").attr("title","Show Info & Credits")
+                rightSpan.append("i").attr("class","fa fa-info-circle credits")
+                    .attr("title","Show Info & Credits")
                     .on("click",function(){ me.showInfoBox();});
                 // TODO: implement popup for file-based resources
                 if(this.showDataSource !== false){
-                    rightSpan.append("div")
+                    var datasource;
+                    if(me.source.url)
+                        datasource = rightSpan.append("a").attr("class","fa fa-table datasource")
+                            .attr("href",me.source.url).attr("target","_blank");
+                    else 
+                        datasource = rightSpan.append("i").attr("class","fa fa-table datasource");    
+                    datasource
+                        .attr("title","Show data source")
                         .style("float","right")
                         .style("margin","2px")
                         .on("click",function(){
                             if(me.source.gdocId){
                                 window.open("https://docs.google.com/spreadsheet/ccc?key="+me.source.gdocId,"_blank");
-                            } else {
+                            } else if(me.source.dirPath){
                                 me.layout_infobox.style("display","block");
                                 me.layout_infobox.style("display","block");
                             }
                             if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
                         })
-                      .append("img").attr("class","datasource")
-                        .attr("title","Open Data Source")
-                        .attr("src",this.dirRoot+"img/datasource.png");
+                      ;
                 }
             }
 
@@ -2521,6 +2484,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearFilters_All: function(force){
+        var me=this;
         // clear all registered filters
         this.filterList.forEach(function(filter){ filter.clearFilter(false); })
         if(force!==false){
@@ -2600,11 +2564,22 @@ kshf.Browser.prototype = {
         var doLayout = function(divHeight,facets){
             var finalPass = false;
             var processedFacets=0;
+            var lastRound = false;
             while(true){
                 var remainingFacetCount = facets.length-processedFacets;
-                if(remainingFacetCount===0) break;
+                if(remainingFacetCount===0 && divHeight<10) {
+                    break;
+                }
                 var processedFacets_pre = processedFacets;
                 facets.forEach(function(facet){
+                    // in last round, if you have more attribs than visible, you may increase your height!
+                    if(lastRound===true && !facet.collapsed && facet.attribCount_Total!==undefined){
+                        if(facet.attribCount_InDisplay<facet.attribCount_Total){
+                            divHeight+=facet.getHeight_Total();
+                            facet.setHeight(divHeight);
+                            return;
+                        }
+                    }
                     if(facet.heightProcessed) return;
                     if(remainingFacetCount===0) return;
                     // auto-collapse facet if you do not have enough space
@@ -2627,6 +2602,7 @@ kshf.Browser.prototype = {
                             facet.setHeight(facet.getHeight_RangeMax());
                         } else if(finalPass){
                             facet.setHeight(targetHeight);
+                        } else if(lastRound){
                         } else {
                             return;
                         }
@@ -2637,6 +2613,8 @@ kshf.Browser.prototype = {
                     remainingFacetCount--;
                 },this);
                 finalPass = processedFacets_pre===processedFacets;
+                if(lastRound===true) break;
+                if(remainingFacetCount===0) lastRound = true;
             }
             return divHeight;
         };
@@ -3397,12 +3375,9 @@ kshf.Facet_Categorical.prototype = {
     },
     /** returns the maximum number of items stored per row in chart data */
     getMaxBarValuePerAttrib: function(){
-        if(this._getMaxBarValuePerAttrib===undefined) {
-            this._getMaxBarValuePerAttrib = d3.max(this.getAttribs(), function(d){ 
-                return d.activeItems;
-            });
-        }
-        return this._getMaxBarValuePerAttrib;
+        return d3.max(this.getAttribs(), function(d){ 
+            return d.activeItems;
+        });
     },
     /** returns the maximum number of maximum items stored per row in chart data */
     getMaxBarValueMaxPerAttrib: function(){
@@ -3542,7 +3517,7 @@ kshf.Facet_Categorical.prototype = {
                     if(v===""){
                         me.attribFilter.clearFilter(true);
                     } else {
-                        textSearchRowDOM.select("svg.clearText").style("display","block");                     
+                        textSearchRowDOM.select("i.fa").style("display","block");                     
                         me.attrib_UnselectAll();
                         me.getAttribs().forEach(function(attrib){
                             if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
@@ -3578,18 +3553,8 @@ kshf.Facet_Categorical.prototype = {
                 d3.event.preventDefault();
             })
             ;
-        textSearchRowDOM.append("svg").attr("class","searchIcon")
-            .attr("width","13")
-            .attr("height","12")
-            .attr("viewBox","0 0 491.237793 452.9882813")
-            .attr("xmlns","http://www.w3.org/2000/svg")
-            .append("use").attr("xlink:href","#kshf_svg_search")
-        this.dom.clearTextSearch=textSearchRowDOM.append("svg").attr("class","clearText")
-            .attr("width","13")
-            .attr("height","13")
-            .attr("viewBox","0 0 48 48")
-            .attr("xmlns","http://www.w3.org/2000/svg")
-            .append("use").attr("xlink:href","#kshf_svg_clearText")
+        textSearchRowDOM.append("i").attr("class","fa fa-search searchIcon");
+        this.dom.clearTextSearch=textSearchRowDOM.append("i").attr("class","fa fa-times-circle clearText")
             .on("click",function() { me.attribFilter.clearFilter(true); });
     },
     insertSortingOpts: function(){
@@ -3636,8 +3601,8 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     setHeight: function(cc){
-        var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
         if(!this.hasAttribs()) return;
+        var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
         this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Active);
         c = Math.floor(c / this.browser.line_height);
         if(c<0) c=1;
@@ -5268,7 +5233,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.labelTicks = this.dom.labelGroup.selectAll("span.tick");
 
-        this.dom.labelTicks.selectAll("span.text").text(function(d){return d;});
+        this.dom.labelTicks.selectAll("span.text").text(function(d){return d3.format("s")(d);});
 //        this.dom.labelTicks.selectAll("span.text").text(function(d){return d3.format("s")(d);});
         this.refreshAxisLabels();
     },
@@ -5333,9 +5298,8 @@ kshf.Facet_Interval.prototype = {
     },
     refreshBars_Item_Count: function(){
         this.dom.histogram_bins.attr("noitem",function(bar){ return bar.activeItems===0; });
-        this.dom.bars_item_count.text(function(bar){
-            return kshf.Util.formatForItemCount(bar.activeItems); 
-        });
+        var formatFunc = kshf.Util.formatForItemCount;
+        this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.activeItems);  });
     },
     refreshIntervalSlider: function(){
         var me=this;

@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
 		<link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -46,15 +47,6 @@ function timeOfDayText(d){
 }
 
 function loadChart() {
-    // set div height accordingly 
-    $('#chart_div').height(1200);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-//        $('#chart_div').height(1500);
-        $('#chart_div').width ($(window).width()*0.9);
-        browser.updateLayout();
-    });
 
     var query = 'select *';
     var sheetInfo = {name:"Accidents"};
@@ -66,7 +58,6 @@ function loadChart() {
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
-        dirRoot: "../",
         categoryTextWidth:170,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
@@ -102,15 +93,8 @@ function loadChart() {
                 },
                 catLabelText: function(d){ return timeOfDayText(d.data[1]); }
             },{
-                facetTitle: "Speed Limit",
-                catLabelText: function(d) { return d.data[1]+" mph";},
-                sortingOpts: [{
-                    name:"By speed",
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                },{
-                    name:"By accidents"
-                }]
+                facetTitle: "Speed Limit (mph)",
+                catItemMap: function(d){ return d.data[7]; }
             },{
                 facetTitle: "# of Vehicles",
                 sortingOpts: [{
@@ -126,14 +110,17 @@ function loadChart() {
                 }
             },{
                 facetTitle: "Light Condition",
+                layout: 'right',
                 catTableName: "LightCond",
                 catTooltipText: function(d) { return d.data[2]; }
             },{
                 facetTitle: "Weather Condition",
+                layout: 'right',
                 catTableName: "WeatherCond",
                 catTooltipText: function(d) { return d.data[2];}
             },{
                 facetTitle: "Special Condition",
+                layout: 'right',
                 catTableName: "SpecCond",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Special Condition']];
@@ -142,6 +129,7 @@ function loadChart() {
                 catTooltipText: function(d) { return d.data[2]; }
             },{
                 facetTitle: "Junction Detail",
+                layout: 'right',
                 catTableName: "JuncDet",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Junction Detail']];
@@ -150,6 +138,7 @@ function loadChart() {
                 collapsed: true
             },{
                 facetTitle: "Junction Control",
+                layout: 'right',
                 catTableName: "JuncCont",
                 catItemMap : function(accident){
                     var c=accident.data[accCol['Junction Control']];
@@ -168,7 +157,8 @@ function loadChart() {
                         }
                     }
                 ],
-                detailsToggle : "Multi"
+                detailsToggle : "Multi",
+                content: 'Accident_Index'
             }
     });
 }
@@ -181,6 +171,10 @@ google.setOnLoadCallback(loadChart);
 .iteminfo a{
     color:#606060;
     font-style:italic;
+}
+#chart_div{
+    height: 700px;
+    width: 1100px;
 }
 
 </style>

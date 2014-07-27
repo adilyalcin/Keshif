@@ -165,23 +165,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display:block;
     }
 
-    span.filterClearAll{
-        display: none;
-        position: absolute;
-        right: 55px;
-        top: 2px;cursor: default;
-        color: #252112;
-        font-weight: 300;
-        border: 1px #685b2b solid;
-        background-color: #E9E2CE;
-        padding-left: 2px;
-        .transition(~"background-color 100ms linear");
-        &:hover{ 
-            background-color: white;
-            box-shadow: none;
-        }
-    }
-
 //    &:not(.layout_right){
     &.layout_leftttt{
         float: left;
@@ -307,7 +290,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .kshfChart[collapsed=true] {
             > .headerGroup {
-                .leftHeader span.header_label_arrow{ .rotate(90deg); }
+                .leftHeader span.header_label_arrow{ .rotate(-90deg); }
             }
         }
         .belowAttribs{ direction: ltr; }
@@ -781,16 +764,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: #F3CDCD;
                 }
             }
-            svg.clearText{
+            i.fa.clearText{
                 position: absolute;
                 left: 1px;
                 top: 3px;
                 cursor: pointer;
+                font-size: 0.8em;
+                color: gray;
                 display: none;
+                &:hover{
+                    color: #cb5454;
+                }
             }
-            svg.searchIcon{
-//                position: absolute;
-//                top: 4px;
+            i.searchIcon{
+                color: #cb5454;
+                font-size: 0.8em;
+                top: -1px;
+                position: relative;
             }
         }
         &[collapsed=true] {
@@ -1169,6 +1159,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:absolute;
     }
 
+    .loading_dots {
+        width: 10px;
+        height: 10px;
+        background: gray;
+        border-radius: 50px;
+        margin: 4px;
+        display: inline-block;
+        &[anim]{
+            //background: black;
+            .animation(fade 900ms forwards);
+            .animation-iteration-count(infinite);
+            &.loading_dots_1 {
+            }
+            &.loading_dots_2 {
+                .animation-delay(300ms)
+            }
+            &.loading_dots_3 {
+                .animation-delay(600ms)
+            }
+        }
+    }
+
     &.listDiv {
         // position: absolute; // exact position is calculated by keshif
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
@@ -1205,14 +1217,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             //bottom: -25px;
             .transition(~"bottom 700ms ease 50ms");
 
-            .dots {
-                width: 10px;
-                height: 10px;
-                background: gray;
-                border-radius: 50px;
-                margin: 4px;
-                display: inline-block;
-            }
             span.MoreText{
                 display:inline-block;
                 vertical-align: top;
@@ -1236,29 +1240,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
-            span.dots{
-
-            }
             &:hover{
                 //background-color: darken(lightgray,0%);
                 box-shadow: 2px 2px 2px gray;
                 span.MoreText{
                     text-decoration: underline;
                 }
-                .dots{
-                    //background: black;
-                    .animation(fade 900ms forwards);
-                    .animation-iteration-count(infinite);
-                }
-                .dots_1  {
-                }
-                .dots_2  {
-                    .animation-delay(300ms)
-                }
-                .dots_3  {
-                    .animation-delay(600ms)
-                }
-
             }
         }
         div.itemLinks{
@@ -1358,8 +1345,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         border-style: solid;
         border-color: #dfd2a9;
-        border-top-left-radius: 30px;
-        border-top-right-radius: 30px;
+        border-top-left-radius: 19px;
+        border-top-right-radius: 19px;
         border-width: 0px 2px;
 
         .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%)");
@@ -1421,6 +1408,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 10px;
             display: inline-block;
             vertical-align: bottom;
+            position: relative;
             input{
                 font-size: 0.8em;
                 font-weight: 700;
@@ -1450,59 +1438,61 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: #F3CDCD;
             }
 
-            svg.searchIcon {
-                top: 2px;
-                position: relative;
-                margin-left: 3px;
+            .searchIcon {
+                color: #cb5454;
             }
-            span {
+            i.fa.clearText{
                 position: absolute;
                 display: none;
+                right: 2px;
                 top: 1px;
-                right: 15px;
-                width: 16px;
-                height: 16px;
                 cursor: pointer;
+                color:gray;
+                &:hover{
+                    color: #cb5454;
+                }
             }
         }
 
         span.rightBoxes{
             position: absolute;
-            right: 10px;
-            div.credits{
+            right: 2px;
+            i.credits{
                 cursor: pointer;
-                font-weight: 500;
                 display: inline-block;
-                width: 16px;
-                height: 16px;
-                border-radius: 10px;
-                box-shadow: 1px 1px 1px #474940;
-                text-align: center;
-                font-size: 0.9em;
-                background-color: white;
-                color: black;
+                font-size: 1.2em;
+                color: rgb(128, 98, 21);
                 position: relative;
-                margin:2px;
-                float:right;
-                font-weight: bolder;
-                font-style:italic;
-                &:hover{
-                    box-shadow: inset 1px 1px 1px #474940;
-                    background-color: #EEEEEE;
-                }
+                margin: 2px 0px;
+                float: right;
+                &:hover{ color: #cb5454; }
             }
-            img.datasource{
-                height:14px;
-                cursor:pointer;
-                float:left;
-                margin-right: 3px;
-                box-shadow: 1px 1px 1px #474940;
-                border: solid 1px black;
-                background-color:white;
-                &:hover{ box-shadow: inset 1px 1px 1px #474940; }
+            .datasource{
+                cursor: pointer;
+                text-decoration: none;
+                float: left;
+                color: rgb(128, 98, 21);
+                font-size: 1.3em;
+                &:hover{ color: #cb5454; }
             }
         }
 
+        span.filterClearAll{
+            display: none;
+            position: absolute;
+            right: 45px;
+            top: 2px;cursor: default;
+            color: #252112;
+            font-weight: 300;
+            border: 1px #685b2b solid;
+            background-color: #E9E2CE;
+            padding-left: 2px;
+            .transition(~"background-color 100ms linear");
+            &:hover{ 
+                background-color: white;
+                box-shadow: none;
+            }
+        }
 
         span.resultInfo{
             vertical-align: top;
@@ -1885,14 +1875,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             z-index: 1043;
         }
         div.infobox_loading{
-            width: 350px;
-            height: 70px;
-            img.status{
-                margin: auto;
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 25px;
+            width: 300px;
+            height: 35px;
+            .loadinggg{
+                position: relative;
+                top: 8px;
+                left: 10px;
+                i.fa-warning{
+                    margin-left: 20px;
+                    font-size: 1.5em;
+                }
             }
             div.status_text{
                 margin: auto;
@@ -1900,10 +1892,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 top: 10px;
                 left: 70px;
                 height:20px;
-                div{
+                span{
                     margin-left:5px;
-                    margin-top:5px;
-                    font-size: 0.8em;
                 }
             }
         }
@@ -1959,6 +1949,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.project_credits{
             font-size: 0.9em;
             font-style: italic;
+            a.myName{
+                display: inline-block;
+                margin: 17px 10px;
+                vertical-align: top;
+                color: black;
+                font-weight: 700;
+                font-style: normal;
+                text-decoration: none;
+            }
         }
         &.project_3rdparty img{
             position:relative;

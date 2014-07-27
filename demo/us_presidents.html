@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -17,7 +18,6 @@
     	google.setOnLoadCallback( function(){
             new kshf.Browser({
                 chartTitle: "U.S. Presidents",
-                dirRoot: "../",
                 domID : "#chart_div",
                 categoryTextWidth:160,
                 source : {
@@ -33,13 +33,13 @@
                         },
                     },{ facetTitle: "State of Birth",
                     },{ facetTitle: "Occupation",
-                    },{ facetTitle: "College",
-                    },{ facetTitle: "Religion",
-                    },{ facetTitle: "Notes",
+                    },{ facetTitle: "College", layout: 'right'
+                    },{ facetTitle: "Religion", layout: 'right'
+                    },{ facetTitle: "Notes", layout: 'right'
                     }
                 ],
                 list : {
-                    sortColWidth: 60,
+                    sortColWidth: 80,
                     textSearch: 'Name',
                     sortingOpts : [
                         {   name: 'Term',
@@ -54,7 +54,7 @@
         </script>
         <style>
             #chart_div {
-                width: 650px;
+                width: 950px;
                 height: 700px;
             }
             div.content img{

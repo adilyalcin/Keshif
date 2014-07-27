@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -26,10 +27,8 @@ google.setOnLoadCallback(function () {
     });
     
 	browser = new kshf.Browser({
-        dirRoot: "../",
         domID : "#chart_div",
         categoryTextWidth:300,
-        showDataSource : false,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFVvN1otMW1VdzhubkZuWFZIWHZhZVE',
             sheets : [ {name:"Grants", range:"A1:U4000"} ]
@@ -37,13 +36,13 @@ google.setOnLoadCallback(function () {
         charts : [
             {
                 facetTitle: "Main Category RFCD",
-                catDispCountFix: 6,
+                catDispCountFix: 6,/*
                 timeTitle: "App Year",
                 timeItemMap : function(d){ 
                     var y=d.data[10];
                     if(y===null) return null;
                     return new Date(moment(y+"01-01","YYYY-MM-DD"));
-                }
+                }*/
             },{
                 facetTitle: "Broad Research Area", catDispCountFix: 2
             },{

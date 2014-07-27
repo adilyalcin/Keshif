@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -17,7 +18,6 @@
 
         google.setOnLoadCallback(function(){
             new kshf.Browser({
-                dirRoot: "../",
                 domID : "#chart_div",
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
@@ -54,31 +54,12 @@
                     },{ facetTitle: "age",
                         catItemMap : function(d){
                             var age = d.data[4];
-                            if(age===null) return "NA";
-                            if(age<18) return "0...18";
-                            if(age<30) return "19...29";
-                            if(age<50) return "30...49";
-                            return "50...";
-                        },
-                        sortingOpts : [{ 
-                            func:  function(a, b){
-                                var age_a = a.data[1];
-                                var age_b = b.data[1];
-                                if(age_a === "NA") return 1;
-                                if(age_b === "NA") return -1;
-                                if(age_a === "0...18") return -1;
-                                if(age_b === "0...18") return 1;
-                                if(age_a === "50...") return 1;
-                                if(age_b === "50...") return -1;
-                                if(age_a === "30...49") return 1;
-                                if(age_b === "30...49") return -1;
-                                return 0;
-                            },
-                            no_resort: true
-                        }]
-                    },{ facetTitle: "embarked"
-                    },{ facetTitle: "boat", collapsed:true
-                    },{ facetTitle: "room"
+                            if(age===null) return null;
+                            return age;
+                        }
+                    },{ facetTitle: "boat", type: 'categorical'
+                    },{ facetTitle: "embarked", layout: 'right'
+                    },{ facetTitle: "room", layout: 'right'
                     }
                 ],
                 list : {
@@ -93,7 +74,7 @@
         
         <style>
             #chart_div {
-                width: 800px;
+                width: 900px;
                 height: 700px;
             }
             #chart_div div.listItem{
