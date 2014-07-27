@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>World Factbook</title><meta charset="utf-8">
+        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+var tableName = "Country";
+
+var factBrowser;
+
+var notCountries = {
+    'xx' : 'World',
+    'ee' : 'European Union',
+    'ay' : 'Antarctica',
+    'oo' : 'Southern Ocean',
+    'xo' : 'Indian Ocean',
+    'xq' : 'Arctic Ocean',
+    'zh' : 'Atlantic Ocean',
+    'zn' : 'Pacific Ocean'
+};
+
+function cleanUpText(n){
+    n = n.replace(/( \d*\.*\d*\%)/g, ''); // Remove LANG 2.232% - percentage
+    n = n.replace(/ \(.*\)/g, ''); // Remove things inside paranthesis
+    n = n.replace(/\(|\)/g, ''); // remove any remainign paranthesis characters
+    if(n.length>20) return null; // Probably an improper string
+    return kshf.Util.toProperCase(n);
+};
+
+function loadFactbook(facts){
+    factBrowser.primaryTableName = tableName;
+    kshf.dt[tableName] = [];
+    kshf.dt.Category = [];
+    var arr = kshf.dt[tableName];
+    var arr_cat = kshf.dt.Category;
+    arr_cat_id = {};
+
+    $(facts).find("> factbook > category").each(function(){
+        var catName = this.getAttribute("name");
+        $(this).find("> field").each(function(){
+            var catData = {};
+            catData.Name = this.getAttribute("name");
+            catData.id = this.getAttribute("id");
+            catData.Unit = this.getAttribute("unit");
+            catData['Rank Order'] = this.getAttribute("rankorder");
+            catData.Description = $(this).find("description").text();
+            // TODO: some categories include fields, and store info per each country! like population, etc
+
+            var item = new kshf.Item(catData,"id");
+            arr_cat.push(item);
+            arr_cat_id[catData.id] = item;
+        });
+    });
+
+    $(facts).find('> factbook > region').each(function(){
+        var region = this;
+        var regionName = region.getAttribute("name");
+        var regionID = region.getAttribute("id");
+        $(this).find("> country").each(function(){
+            var country = this;
+            var cData = {};
+            cData.id = this.getAttribute("id"); // ag, tr, us, ...
+            if(notCountries[cData.id]!==undefined) return; // Not a country
+            cData.Name = this.getAttribute("name");
+            cData.Region = regionName;
+            cData.RegionID = regionID;
+            cData.Flag = this.getAttribute("flag"); // if "1", country has a flag in the database
+            $(this).find("> field").each(function(){
+                var field = this;
+                var ref = this.getAttribute("ref");
+                info = arr_cat_id[ref].data;
+                var columnName = info.Name;
+                switch(ref){
+                    case 'f2111': // Natural resources
+                        cData[columnName] = [];
+                        this.textContent.split(", ").forEach(function(n){
+                            cData[columnName].push(kshf.Util.toProperCase(n));
+                        });
+                        break;
+                    case 'f2098': // Languages
+                        cData[columnName] = [];
+                        this.textContent.split(", ").forEach(function(n){
+                            var lang = cleanUpText(n);
+                            if(lang===null) return;
+                            lang = lang.replace(" (official)","");
+                            lang = lang.replace(" (official","");
+                            // if there's a number component at the end, remove it
+                            cData[columnName].push(lang);
+                        });
+                        break;
+                    case 'f2122': // Religions
+                        cData[columnName] = [];
+                        this.textContent.split(", ").forEach(function(n){
+                            var rlgn = cleanUpText(n);
+                            cData[columnName].push(rlgn);
+                        });
+                        break;
+                    case 'f2096':
+                        cData["Border countries"] = [];
+                        var dataIndex=-1;
+                        for(var i=0; i<this.childNodes.length; i++) {
+                            var node = this.childNodes[i];
+                            if(i===dataIndex){
+                                countriesStr = node.textContent;
+                                if(countriesStr==="") return;
+                                countriesStr.split(", ").forEach(function(n){
+                                    cData["Border countries"].push(n.replace(/ (\d|,|\.)* km/g,''));
+                                });
+                            }
+                            if(node.tagName!==undefined){
+                                if(node.getAttribute("name")==="border countries:") {
+                                    dataIndex = i+1;
+                                }
+                            }
+                        };
+                        break;
+                    case 'f2109': // Independence
+                        cData["Independence"] = this.textContent;
+                        break;
+                    case 'f2057': // Capital
+                        cData.Capital = this.childNodes[1].textContent;
+                        break;
+                    case 'f2177': // Median age
+                        if(this.childNodes!==undefined && this.childNodes[1]!==undefined){
+                            // remove years, turn it into string
+                            var age = this.childNodes[1].textContent.replace(" years","");
+                            age = parseFloat(age);
+                            if(age!==NaN) cData['Median Age'] = age;
+                        }
+                        break;
+                    case 'f2119': // Population
+                        // remove (estimate...) and comma's
+                        var n = this.textContent.replace(/,|\.|(\(.*\))/g,'');
+                        n = parseInt(n);
+                        if(n===NaN) return;
+                        cData.Population = n;
+                        break;
+                    case 'f2206': //  EDUCATION EXPENDITURES
+                        var n = this.textContent.replace(/\% of GDP (\(.*\))/g,'');
+                        n = parseFloat(n);
+                        if(n===NaN) return;
+                        cData["Education Expenditures"] = n;
+                        break;
+                    default:
+                        break;
+
+                }
+//                var fieldInfo = categories.find(">field[id='"+ref+"']");
+//                var fieldName = 232;
+            });
+
+            arr.push(new kshf.Item(cData,"id"));
+        });
+    });
+
+    factBrowser.items = kshf.dt[factBrowser.primaryTableName];
+    factBrowser.itemsSelectedCt = factBrowser.items.length;
+    factBrowser.loadCharts();   
+};
+
+$(document).ready( function(){
+	new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Countries",
+        categoryTextWidth: 200,
+        source: { url: "http://jmatchparser.sourceforge.net/",
+            callback: function(browser){
+            factBrowser = browser;
+            $.ajax( {
+                url:"./data/factbook.xml",
+                type:"GET",
+                dataType:"xml",
+                async: false,
+                success: function(facts){ return loadFactbook(facts); }
+            });
+        } },
+        facets : [
+            {   facetTitle: "Region"
+            },{
+                facetTitle: "Natural resources"
+            },{
+                facetTitle: "Education Expenditures"
+            },{
+                facetTitle: "Population"
+//            },{
+//                facetTitle: "Languages"
+            },{
+                facetTitle: "Religions", layout: "right"
+            },{
+                facetTitle: "Border countries", layout: "right"
+//            },{
+//                facetTitle: "Independence", layout: "right"
+            },{
+                facetTitle: "Median Age", layout: "right"
+            }
+        ],
+        list: {
+            sortColWidth: 80,
+            sortingOpts : [
+//                { name: 'id' },
+                { name: 'Population',
+                  label: function(d){ return d3.format(".4s")(d.data.Population);}
+                  },
+                { name: 'Education Expenditures'}
+            ],
+            textSearch: 'Name',
+            contentFunc : function(d){
+                var str="";
+                // Country locator
+                str +="<img class='locator' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/locator/"
+                    +d.data.RegionID+"/"+d.data.id+"_large_locator.gif'/>"; 
+                // Country flag
+                str += "<img class='flag' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/flags/large/"+d.data.id+"-lgflag.gif'/>"; 
+                // Country name
+                str += "<div class='name'>"+d.data.Name+" <a target='_blank' href='"+
+                    "https://www.cia.gov/library/publications/the-world-factbook/geos/"+d.data.id+".html' class='fa fa-external-link'></a></div>";
+                // Country capital
+                str +="<div class='capital'> Capital: <span>"+d.data.Capital+"</span></div>";
+                
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+        div.listItem{
+            padding-bottom: 4px;
+        }
+        #chart_div {
+            width:1200px;
+            height:700px;
+        }
+        .content .name{
+            font-weight: 700;
+        }
+        .content .name a{
+            text-decoration: none;
+            color: black;
+            font-weight: 300;
+            font-size: 0.8em;
+            vertical-align: middle;
+        }
+        .content .name a:hover{
+            color: red;
+            font-weight: 700;
+        }
+        .content .flag{
+            float: right;
+            width: 80px;
+        }
+        .content .locator{
+            float: left;
+            width: 60px;
+            margin-right: 5px;
+        }
+        .content .capital{
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .content .capital.span{
+            font-weight: 300;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body></html>
