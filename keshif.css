@@ -31,6 +31,16 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
+.kshfHost {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.kshfHost * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 .kshfHost[hidebars=true] .kshf .attrib .barGroup {
   display: none;
 }
@@ -194,7 +204,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 0px;
 }
 .kshf.layout_leftttt div.attrib > span.item_count_wrapper {
-  margin-right: 3px;
+  padding-right: 3px;
   text-align: right;
 }
 .kshf.layout_leftttt div.attrib:not([selected="0"]) span.attribLabel {
@@ -283,7 +293,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
 }
 .kshf:not(.layout_leftttt) div.attrib > span.item_count_wrapper {
-  margin-left: 3px;
+  padding-left: 3px;
   text-align: left;
 }
 .kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.attribLabel {

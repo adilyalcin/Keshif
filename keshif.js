@@ -1741,7 +1741,7 @@ kshf.Browser = function(options){
 
     this.TopRoot = d3.select(this.domID)
         .classed("kshfHost",true)
-        .attr("tabindex","1")
+//        .attr("tabindex","1")
         .style("position","relative")
         .style("overflow-y","hidden")
         .on("keydown",function(){
@@ -2289,8 +2289,8 @@ kshf.Browser.prototype = {
                 if(datasource) datasource
                     .attr("title","Show data source")
                     .on("click",function(){
-                        if(this.source.dirPath){
-                            this.layout_infobox.style("display","block");
+                        if(me.source.dirPath){
+                            me.layout_infobox.style("display","block");
                         }
                         if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
                     })
@@ -3608,7 +3608,7 @@ kshf.Facet_Categorical.prototype = {
     setHeight: function(cc){
         if(!this.hasAttribs()) return;
         var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
-        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Active);
+        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Active)+1; // 1 is for upper border
         c = Math.floor(c / this.browser.line_height);
         if(c<0) c=1;
         if(c>this.attribCount_Active) c=this.attribCount_Active;
@@ -4062,6 +4062,7 @@ kshf.Facet_Categorical.prototype = {
             // calculate the offset...
             var sadsds = me.catBarAxisScale(attrib.activeItems);
             sadsds = me.catBarAxisScale.range()[1] - sadsds;
+            if(me.type==="scatterplot") sadsds += me.timeRange.width + me.browser.scrollWidth;
             attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:-sadsds;
             attrib.facetDOM.tipsy_active.show()
         };
@@ -4193,7 +4194,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
         this.dom.item_count_wrapper = this.dom.attribs.append("span").attr("class", "item_count_wrapper")
-            .style("width",(this.browser.getRowLabelOffset()-3)+"px") // 3 is padding
+            .style("width",(this.browser.getRowLabelOffset())+"px") // 3 is padding
         ;
         this.dom.item_count = this.dom.item_count_wrapper.append("span").attr("class", "item_count");
         this.dom.barGroup = this.dom.attribs.append("span").attr("class","barGroup");
@@ -5352,10 +5353,11 @@ kshf.Facet_Interval.prototype = {
         var totalWidth = this.getWidth();
 
         this.dom.leftHeader.style("width",totalWidth+"px");
-        var wwwww=totalWidth-2*this.histogramMargin;
-        this.dom.facetInterval.style("width",wwwww+"px");
+        // No longer subtracting padding width, since we are using border-box-model.
+        this.dom.facetInterval.style("width",totalWidth+"px");
 
         if(this.isEmpty) return;
+        var wwwww=totalWidth-2*this.histogramMargin;
         this.updateIntervalWidth(wwwww);
     },
     /** returns the maximum number of total items stored per row in chart data */

@@ -49,6 +49,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //    background-color: white;
 //    &:hover{ box-shadow: 0px 0px 4px gray; }
 //    &:focus{ outline: none; }
+    .box-sizing(border-box);
+    *{
+        .box-sizing(border-box);  
+    }
     &[hidebars=true] .kshf {
         .attrib .barGroup{ display:none; }
     }
@@ -187,7 +191,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 right: 0px;
             }
             > span.item_count_wrapper{ 
-                margin-right: 3px;
+                padding-right: 3px;
                 text-align: right;
             }
             &:not([selected="0"]) {
@@ -267,7 +271,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 left: 0px;
             }
             > span.item_count_wrapper{
-                margin-left: 3px;
+                padding-left: 3px;
                 text-align: left;
             }
             &:not([selected="0"]) {
