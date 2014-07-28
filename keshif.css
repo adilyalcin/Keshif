@@ -31,12 +31,6 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
-.kshfHost:hover {
-  box-shadow: 0px 0px 4px gray;
-}
-.kshfHost:focus {
-  outline: none;
-}
 .kshfHost[hidebars=true] .kshf .attrib .barGroup {
   display: none;
 }
@@ -185,9 +179,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.layout_leftttt .attribGroup {
   direction: rtl;
-  margin-left: 3px;
+  margin-left: 2px;
 }
-.kshf.layout_leftttt div.attrib > span.label span.filter_add_more {
+.kshf.layout_leftttt div.attrib > span.attribLabel span.filter_add_more {
   float: right;
   margin-right: 2px;
 }
@@ -200,10 +194,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 0px;
 }
 .kshf.layout_leftttt div.attrib > span.item_count_wrapper {
-  padding-right: 3px;
+  margin-right: 3px;
   text-align: right;
 }
-.kshf.layout_leftttt div.attrib:not([selected="0"]) span.label {
+.kshf.layout_leftttt div.attrib:not([selected="0"]) span.attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
   background-image: -moz-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
@@ -274,9 +268,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf:not(.layout_leftttt) .attribGroup {
   direction: ltr;
-  margin-right: 3px;
+  margin-right: 2px;
 }
-.kshf:not(.layout_leftttt) div.attrib > span.label span.filter_add_more {
+.kshf:not(.layout_leftttt) div.attrib > span.attribLabel span.filter_add_more {
   float: left;
   margin-left: 2px;
 }
@@ -289,10 +283,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
 }
 .kshf:not(.layout_leftttt) div.attrib > span.item_count_wrapper {
-  padding-left: 3px;
+  margin-left: 3px;
   text-align: left;
 }
-.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.label {
+.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
   background-image: -moz-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
@@ -341,11 +335,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   left: 0px;
   top: 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3RvcC1jb2xvcj0icmdiKDI0MywgMjQzLCAyNDMpIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsIDI1NSwgMjU1KSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
-  background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
-  background-image: -o-linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
-  background-image: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%);
   pointer-events: none;
 }
 .kshf .chartFilterButtonParent {
@@ -399,9 +388,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
-  right: -3px;
+  right: -2px;
   pointer-events: all;
-  top: 1px;
   height: 100%;
   width: 0px;
   border-width: 0px 2px 0px 0px;
@@ -414,7 +402,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span.leftBlockAdjustSize:hover {
   border-width: 0px 2px 0px 0px;
   border-style: dashed;
-  border-color: gray;
+  border-color: black;
 }
 .kshf .selection_bar rect {
   fill: #788890;
@@ -554,9 +542,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-top: 1px;
   height: 16px;
 }
-.kshf .headerGroup span.isLinkedMark {
-  position: absolute;
-  right: -18px;
+.kshf .headerGroup span.facetIcons {
+  margin-left: 3px;
+  font-size: 0.9em;
+  color: gray;
+}
+.kshf .headerGroup span.facetIcons span.facetDescription {
+  cursor: pointer;
+}
+.kshf .headerGroup span.facetIcons span.facetDescription:hover {
+  color: #cb5454;
 }
 .kshf .headerGroup .chartFirstLineBackground {
   width: 100%;
@@ -597,7 +592,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
-.kshf .headerGroup span.header_label_arrow :hover {
+.kshf .headerGroup span.header_label_arrow:hover {
   color: #cb5454;
 }
 .kshf .headerGroup .leftHeader {
@@ -837,10 +832,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
 }
 .kshf .kshfChart .attribTextSearch i.searchIcon {
-  color: #cb5454;
-  font-size: 0.8em;
-  top: -1px;
   position: relative;
+  top: -1px;
+  left: 2px;
+  color: #cb5454;
+  font-size: 0.7em;
 }
 .kshf .kshfChart[collapsed=true] > .headerGroup {
   color: gray;
@@ -1017,7 +1013,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 10px !important;
   position: absolute;
 }
-.kshf div.attrib > span.label {
+.kshf div.attrib > span.attribLabel {
   font-size: 0.8em;
   font-weight: 300;
   cursor: default;
@@ -1025,24 +1021,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf div.attrib > span.label span.labell {
+.kshf div.attrib > span.attribLabel span.theLabel {
   pointer-events: none;
 }
-.kshf div.attrib > span.label span.filter_add_more {
+.kshf div.attrib > span.attribLabel span.filter_add_more {
   white-space: nowrap;
   z-index: 5;
   pointer-events: all;
 }
-.kshf div.attrib > span.label span.filter_add_more:hover {
+.kshf div.attrib > span.attribLabel span.filter_add_more:hover {
   color: orangered;
 }
-.kshf div.attrib > span.label span.filter_add_more span {
+.kshf div.attrib > span.attribLabel span.filter_add_more span {
   display: none;
 }
-.kshf div.attrib > span.label span.filter_add_more span.add {
+.kshf div.attrib > span.attribLabel span.filter_add_more span.add {
   cursor: cell;
 }
-.kshf div.attrib > span.label span.filter_add_more span.remove {
+.kshf div.attrib > span.attribLabel span.filter_add_more span.remove {
   cursor: pointer !important;
 }
 .kshf div.attrib > span.item_count_wrapper {
@@ -1362,9 +1358,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
 }
 .kshf.listDiv div.listsortcolumn .sortBy {
-  float: left;
   margin-left: 2px;
+  margin-right: 2px;
   font-weight: 700;
+  vertical-align: bottom;
+  display: inline-block;
 }
 .kshf.listDiv select.listSortOptionSelect {
   bottom: 0px;
@@ -1515,15 +1513,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.rightBoxes {
   position: absolute;
   right: 2px;
+  font-size: 1.3em;
+  color: #635d46;
 }
 .kshf div.listHeader span.rightBoxes i.credits {
   cursor: pointer;
-  display: inline-block;
-  font-size: 1.2em;
-  color: #806215;
-  position: relative;
   margin: 2px 0px;
-  float: right;
 }
 .kshf div.listHeader span.rightBoxes i.credits:hover {
   color: #cb5454;
@@ -1531,9 +1526,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.rightBoxes .datasource {
   cursor: pointer;
   text-decoration: none;
-  float: left;
-  color: #806215;
-  font-size: 1.3em;
+  margin: 2px 3px;
+  color: #635d46;
 }
 .kshf div.listHeader span.rightBoxes .datasource:hover {
   color: #cb5454;
@@ -1977,7 +1971,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_infobox div.infobox_credit {
   display: none;
   width: 390px;
-  height: 210px;
+  height: 260px;
 }
 .kshf.layout_infobox div.infobox_credit div.all-the-credits {
   margin: auto;
@@ -2058,19 +2052,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   padding: 5px;
   z-index: 100000;
+  pointer-events: none;
 }
-.tipsy-inner {
+.tipsy.details .tipsy-inner {
+  padding: 5px;
+}
+.tipsy .tipsy-inner {
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 2px;
+  font-size: 1.2em;
   background-color: #000;
   color: #FFF;
   max-width: 200px;
-  padding: 5px 8px 4px 8px;
   text-align: center;
-}
-/* Rounded corners */
-.tipsy-inner {
   border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
 }
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
@@ -2161,17 +2156,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-left: none;
   border-top-color: transparent;
   border-bottom-color: transparent;
-}
-.tipsy {
-  pointer-events: none;
-}
-.tipsy.details .tipsy-inner {
-  padding: 5px;
-}
-.tipsy-inner {
-  font-family: Helvetica, Arial, sans-serif;
-  padding: 0px 5px 2px 2px;
-  font-size: 1.2em;
 }
 .tipsy-inner span.big {
   font-size: 1.4em;

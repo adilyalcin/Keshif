@@ -47,8 +47,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost{
 //    border: solid 1px lightgray;
 //    background-color: white;
-    &:hover{ box-shadow: 0px 0px 4px gray; }
-    &:focus{ outline: none; }
+//    &:hover{ box-shadow: 0px 0px 4px gray; }
+//    &:focus{ outline: none; }
     &[hidebars=true] .kshf {
         .attrib .barGroup{ display:none; }
     }
@@ -175,10 +175,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .attribGroup{ 
             direction:rtl;
-            margin-left: 3px;
+            margin-left: 2px;
         }
         div.attrib {
-            > span.label span.filter_add_more{
+            > span.attribLabel span.filter_add_more{
                 float: right;
                 margin-right: 2px;
             }
@@ -187,11 +187,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 right: 0px;
             }
             > span.item_count_wrapper{ 
-                padding-right: 3px;
+                margin-right: 3px;
                 text-align: right;
             }
             &:not([selected="0"]) {
-                span.label{
+                span.attribLabel{
                     .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
                 }
                 span.item_count_wrapper{
@@ -255,10 +255,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .attribGroup{
             direction:ltr;
-            margin-right: 3px;
+            margin-right: 2px;
         }
         div.attrib {
-            > span.label span.filter_add_more{
+            > span.attribLabel span.filter_add_more{
                 float: left;
                 margin-left: 2px;
             }
@@ -267,11 +267,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 left: 0px;
             }
             > span.item_count_wrapper{
-                padding-left: 3px;
+                margin-left: 3px;
                 text-align: left;
             }
             &:not([selected="0"]) {
-                span.label{
+                span.attribLabel{
                     .background-image(~"linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
                 }
                 span.item_count_wrapper{
@@ -314,7 +314,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // min-height: 100%;
         left: 0px;
         top: 2px;
-        .background-image(~"linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%)");
+//        .background-image(~"linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%)");
         pointer-events: none;
     }
     .chartFilterButtonParent{
@@ -371,9 +371,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -3px;
+        right: -2px;
         pointer-events: all;
-        top: 1px;
         height: 100%;
         width: 0px;
         // border-bottom: solid 1px lightgray;
@@ -390,7 +389,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // border-top: solid 1px gray;
             border-width: 0px 2px 0px 0px;
             border-style: dashed;
-            border-color: gray;
+            border-color: black;
             // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
@@ -520,9 +519,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-top:1px;
             height:16px;
         }
-        span.isLinkedMark{
-            position: absolute;
-            right: -18px;
+        span.facetIcons{
+            margin-left: 3px;
+            font-size: 0.9em;
+            color: gray;
+            span.isLinkedMark{
+            }
+            span.facetDescription{
+                cursor: pointer;
+                &:hover{ color:#cb5454; }
+            }
         }
         .chartFirstLineBackground{
             width:100%;
@@ -547,7 +553,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: pointer;
             .transition(~'all 250ms linear');
             .rotate(0deg);
-            :hover{ color:#cb5454; }
+            &:hover{ color:#cb5454; }
         }
         .leftHeader {
             display: inline-block;
@@ -777,10 +783,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             i.searchIcon{
-                color: #cb5454;
-                font-size: 0.8em;
-                top: -1px;
                 position: relative;
+                top: -1px;
+                left: 2px;
+                color: #cb5454;
+                font-size: 0.7em;
             }
         }
         &[collapsed=true] {
@@ -970,7 +977,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 10px !important; // total: 18px
             position: absolute;
         }
-        > span.label{
+        > span.attribLabel{
             font-size: 0.8em;
             font-weight: 300;
             cursor: default;
@@ -978,7 +985,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
-            span.labell{
+            span.theLabel{
                 pointer-events: none;
             }
             span.filter_add_more{
@@ -1300,9 +1307,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin : auto; 
             cursor: default;
             .sortBy{
-                float: left;
                 margin-left: 2px;
+                margin-right: 2px;
                 font-weight: 700;
+                vertical-align: bottom;
+                display: inline-block;
             }
         }
         select.listSortOptionSelect{
@@ -1457,22 +1466,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.rightBoxes{
             position: absolute;
             right: 2px;
+            font-size: 1.3em;
+            color: #635d46;
             i.credits{
                 cursor: pointer;
-                display: inline-block;
-                font-size: 1.2em;
-                color: rgb(128, 98, 21);
-                position: relative;
                 margin: 2px 0px;
-                float: right;
                 &:hover{ color: #cb5454; }
             }
             .datasource{
                 cursor: pointer;
                 text-decoration: none;
-                float: left;
-                color: rgb(128, 98, 21);
-                font-size: 1.3em;
+                margin: 2px 3px;
+                color: #635d46; // if dom type is a, it will show visited links in different color
                 &:hover{ color: #cb5454; }
             }
         }
@@ -1900,7 +1905,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div.infobox_credit{
             display:none;
             width: 390px;
-            height: 210px;
+            height: 260px;
             div.all-the-credits{
                 margin: auto;
             }
@@ -1979,11 +1984,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 }
 
-.tipsy { font-size: 10px; position: absolute; padding: 5px; z-index: 100000; }
-.tipsy-inner { background-color: #000; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+.tipsy { 
+    font-size: 10px; 
+    position: absolute; 
+    padding: 5px;
+    z-index: 100000;
+    pointer-events: none;
+    &.details .tipsy-inner{
+        padding: 5px;
+    }
+    .tipsy-inner { 
+        font-family: Helvetica, Arial, sans-serif;
+        padding: 2px;
+        font-size: 1.2em;
+        background-color: #000; 
+        color: #FFF;
+        max-width: 200px;
+        text-align: center;
+        border-radius: 3px;
+    }
 
-/* Rounded corners */
-.tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+}
 
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
@@ -2006,16 +2027,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
 
 .tipsy{
-    pointer-events: none;
-    &.details .tipsy-inner{
-        padding: 5px;
-    }
 }
 .tipsy-inner{
-    font-family: Helvetica, Arial, sans-serif;
-    padding: 0px 5px 2px 2px;
-//    font-variant: small-caps;
-    font-size: 1.2em;
     span.big{
         font-size: 1.4em;
     }

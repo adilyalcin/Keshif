@@ -1189,6 +1189,7 @@ kshf.List.prototype = {
         var me=this;
         var x = this.dom.listHeader_BottomRow.append("div").attr("class","listsortcolumn")
             .style("width",this.sortColWidth+"px")
+            .style('white-space','nowrap');
         // just insert it as text
         if(me.displayType==='grid'){
             x.append("span").attr("class","sortBy").text("Sort by: ");
@@ -1728,9 +1729,6 @@ kshf.Browser = function(options){
     } else {
         this.itemName = this.source.sheets[0].name;
     }
-    // hideHeaderButtons
-    this.hideHeaderButtons = options.hideHeaderButtons;
-    if(this.hideHeaderButtons===undefined) this.hideHeaderButtons = false;
     // primItemCatValue
     this.primItemCatValue = null;
     if(typeof options.catValue === 'string'){ this.primItemCatValue = options.catValue; }
@@ -2018,6 +2016,7 @@ kshf.Browser.prototype = {
                 return;
             }
             if(this.source.gdocId){
+                this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
                 this.loadSheet_Google(sheet);
             } else if(this.source.dirPath){
                 this.loadSheet_File(sheet);
@@ -2277,37 +2276,30 @@ kshf.Browser.prototype = {
 
             this.dom.filtercrumbs = this.listDisplay.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
 
-            if(this.hideHeaderButtons===false){
-                var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
-                // Info & Credits
-                rightSpan.append("i").attr("class","fa fa-info-circle credits")
-                    .attr("title","Show Info & Credits")
-                    .on("click",function(){ me.showInfoBox();});
-                // TODO: implement popup for file-based resources
-                if(this.showDataSource !== false){
-                    var datasource;
-                    if(me.source.url)
-                        datasource = rightSpan.append("a").attr("class","fa fa-table datasource")
-                            .attr("href",me.source.url).attr("target","_blank");
-                    else 
-                        datasource = rightSpan.append("i").attr("class","fa fa-table datasource");    
-                    datasource
-                        .attr("title","Show data source")
-                        .style("float","right")
-                        .style("margin","2px")
-                        .on("click",function(){
-                            if(me.source.gdocId){
-                                window.open("https://docs.google.com/spreadsheet/ccc?key="+me.source.gdocId,"_blank");
-                            } else if(me.source.dirPath){
-                                me.layout_infobox.style("display","block");
-                                me.layout_infobox.style("display","block");
-                            }
-                            if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
-                        })
-                      ;
+            var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
+            // TODO: implement popup for file-based resources
+            if(this.showDataSource !== false){
+                var datasource = null;
+                if(this.source.url){
+                    datasource = rightSpan.append("a").attr("class","fa fa-table datasource")
+                        .attr("href",this.source.url).attr("target","_blank");
+                } else if(this.source.dirPath){
+                    datasource = rightSpan.append("i").attr("class","fa fa-table datasource");    
                 }
+                if(datasource) datasource
+                    .attr("title","Show data source")
+                    .on("click",function(){
+                        if(this.source.dirPath){
+                            this.layout_infobox.style("display","block");
+                        }
+                        if(sendLog) sendLog(CATID.Other,ACTID_OTHER.DataSource);
+                    })
+                  ;
             }
-
+            // Info & Credits
+            rightSpan.append("i").attr("class","fa fa-info-circle credits")
+                .attr("title","Show Info & Credits")
+                .on("click",function(){ me.showInfoBox();});
         }
         this.insertClearAll();
 
@@ -2662,7 +2654,7 @@ kshf.Browser.prototype = {
 
         var barChartWidth;
         if(this.fullWidthResultSet() && this.isSmallWidth()){
-            barChartWidth = this.divWidth-this.getRowTotalTextWidth()-20;
+            barChartWidth = this.divWidth-this.getRowTotalTextWidth()-this.scrollWidth;
         } else {
             // first time
             barChartWidth = this.barChartWidthInit;
@@ -2726,12 +2718,12 @@ kshf.Browser.prototype = {
             var marginRight = 0;
             if(!this.fullWidthResultSet()) {
                 if(this.facetsLeft.length>0){
-                    marginLeft=4;
-                    widthListDisplay-=this.getWidth_LeftPanel()+4;
+                    marginLeft=2;
+                    widthListDisplay-=this.getWidth_LeftPanel()+2;
                 }
                 if(this.facetsRight.length>0){
-                    marginRight=4;
-                    widthListDisplay-=this.getWidth_LeftPanel()+4;
+                    marginRight=2;
+                    widthListDisplay-=this.getWidth_LeftPanel()+2;
                 }
             }
             this.listDisplay.updateContentWidth(widthListDisplay);
@@ -3456,7 +3448,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.leftHeader.append("div").attr("class","border_line");
 
         var topRow = topRow_background.append("div").attr("class","hasLabelWidth")
-            .style("position","relative");
+            .style("position","relative").style("display","inline-block");
         topRow_background.append("span").attr("class","header_label_arrow")
             .attr("title","Show/Hide attributes").text("▼")
             .on("click",function(){ me.collapseFacet(!me.collapsed); })
@@ -3493,11 +3485,24 @@ kshf.Facet_Categorical.prototype = {
             .attr("title", this.attribCount_Total+" attributes")
             .html(headerLabel)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
+        var facetIcons = topRow_background.append("span").attr("class","facetIcons");
+        if(this.options.description){
+            facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'nw',
+                        fade: true,
+                        title: function(){ return me.options.description; }
+                    });
+                })
+                .on("mouseover",function(d){ this.tipsy.show(); })
+                .on("mouseout" ,function(d){ this.tipsy.hide(); });
+        }
         if(this.isLinked) {
-            topRow.append("span").attr("class", "isLinkedMark").html("<i class='fa fa-check-square-o'></i>");
+            facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
         } else {
             if(this.parentFacet){
-                topRow.append("span").attr("class", "isLinkedMark").html("<i class='fa fa-level-up'></i>");
+                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
             }
         }
     },
@@ -4103,13 +4108,13 @@ kshf.Facet_Categorical.prototype = {
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.barChart.hasMultiValueItem;
                         if(attrib.f_included() || attrib.f_removed())
-                            return "<span class='big'>-</span class='big'> <span class='action'>Remove</span> from filter";
+                            return "<span class='fa fa-minus'></span> <span class='action'>Remove</span> from filter";
                         if(attrib.barChart.attribCount_Included===0)
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i> filter";
+                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i> filter";
                         if(hasMultiValueItem===false)
                             return "<span class='big'>&laquo;</span> <span class='action'>Change</span> filter";
                         else
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
                                 attribName+"</i> (<b> ... and </b>)";
                     }
                 });
@@ -4117,13 +4122,13 @@ kshf.Facet_Categorical.prototype = {
             ;
         
         this.dom.attribs.append("span").attr("class", "clickArea")
-            .style("width",(kshf_.getRowTotalTextWidth()-20)+"px")
+            .style("width",(kshf_.getRowTotalTextWidth()-20)+"px") // 20 is margin-left
             .on("click", onFilterAttrib)
             .on("mouseover",onMouseOver)
             .on("mouseout",onMouseOut)
             ;
 
-    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "label hasLabelWidth");
+    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "attribLabel hasLabelWidth");
 
         this.dom.add_more = this.dom.attrLabel.append("span").attr("class", "filter_add_more");
             this.dom.add_more.append("span").attr("class","add").text("⊕")
@@ -4185,7 +4190,7 @@ kshf.Facet_Categorical.prototype = {
                     this.tipsy.hide();
                     d3.event.stopPropagation();
                 });
-        this.dom.attrLabel.append("span").attr("class","labell").html(this.options.catLabelText);
+        this.dom.attrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
         this.dom.item_count_wrapper = this.dom.attribs.append("span").attr("class", "item_count_wrapper")
             .style("width",(this.browser.getRowLabelOffset()-3)+"px") // 3 is padding
@@ -4967,9 +4972,16 @@ kshf.Facet_Interval = function(kshf_, options){
         max: d3.max(this.filteredItems,accessor)
     };
 
-    this.resetIntervalFilterActive();
-
     this.hist_height=65;
+
+    if(this.intervalRange.min===undefined){
+        this.isEmpty = true;
+        return;
+    } else {
+        this.isEmpty = false;
+    }
+
+    this.resetIntervalFilterActive();
 };
 
 kshf.Facet_Interval.prototype = {
@@ -5286,6 +5298,7 @@ kshf.Facet_Interval.prototype = {
         .style("width",(me.barWidth-me.barGap*2)+"px");
     },
     refreshResultPreview: function(){
+        if(this.isEmpty) return;
         var me=this;
         this.dom.bars_highlight.each(function(bar){
             var transform="scale("+(me.barWidth-me.barGap*2)+","+me.barScale(bar.highlightedItems)+")";
@@ -5342,6 +5355,7 @@ kshf.Facet_Interval.prototype = {
         var wwwww=totalWidth-2*this.histogramMargin;
         this.dom.facetInterval.style("width",wwwww+"px");
 
+        if(this.isEmpty) return;
         this.updateIntervalWidth(wwwww);
     },
     /** returns the maximum number of total items stored per row in chart data */
@@ -5431,6 +5445,7 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshAfterFilter: function(resultChange){
         var me = this;
+        if(this.isEmpty) return;
         if(resultChange<0 && false){
             this.updateActiveItems();
             this.refreshBars_Item_Count();
