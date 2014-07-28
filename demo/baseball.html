@@ -19,8 +19,7 @@ http://www.infochimps.com/datasets/retrosheet-transactions-in-major-league-baseb
 ttp://www.retrosheet.org/transactions/index.html  
 */
 
-function loadChart() {
-    
+$(document).ready(function() {
     // set div height accordingly 
     $('#chart_div').height($(window).height()-45);
     $('#chart_div').width ($(window).width()*0.9);
@@ -133,10 +132,7 @@ function loadChart() {
             }
         }
     });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-$(document).ready(loadChart);
+});
 
 </script>
 <style>
