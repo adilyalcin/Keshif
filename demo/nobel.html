@@ -96,7 +96,7 @@ $(document).ready( function(){
                 textFilter: 'in', textGroup: 'decades'
             }
         ],
-        list: {
+        result: {
             sortColWidth: 55,
             sortingOpts : [ {name: 'Year'} ],
             detailsToggle : "Multi",
@@ -115,7 +115,7 @@ $(document).ready( function(){
                 var imgUrl="./nobel_photo/"+surname_short+".jpg";
 
                 if(laureate.data[lautCols.gender]!==3){
-                    str+="<img class=\"item_details\" src=\""+imgUrl+"\" width=\"70\" style=\"float:right;\">";
+                    str+="<img class=\"item_details\" style=\"float:right;\">";
                 } else {
                 }
                 str+="<div style=\"float:left; width:calc(80%);\">";
@@ -153,38 +153,28 @@ $(document).ready( function(){
                 str+="</span>";
 
                 return str;
+            },
+            visibleCb: function(d){
+                // insert the image url
+                var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
+                var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
+                surname_short = surname_short.replace("von_","").replace("la_","");
+                var imgUrl="./nobel_photo/"+surname_short+".jpg";
+                if(laureate.data[lautCols.gender]!==3){
+                    $(this).find("img").attr("src",imgUrl);
+                }
             }
         }
     });
 });
-
-</script>
-<style>
-    div.listItem{ padding-bottom: 2 px; }
-    #chart_div { height: 700px; width:1150px; }
-</style>
+        </script>
+        <style>
+            div.listItem{ padding-bottom: 2 px; }
+            div.listItem img{ width: 60px;}
+            #chart_div { height: 700px; width:1150px; }
+        </style>
 	</head>
     <body onmousemove="logIf.setSessionID()">
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>
