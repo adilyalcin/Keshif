@@ -46,7 +46,7 @@ function timeOfDayText(d){
     }
 }
 
-function loadChart() {
+google.setOnLoadCallback( function(){
 
     var query = 'select *';
     var sheetInfo = {name:"Accidents"};
@@ -69,7 +69,7 @@ function loadChart() {
         loadedCb: function(){
             accCol = kshf.dt_ColNames.Accidents;
         },
-        charts : [
+        facets : [
             {
                 facetTitle: "Road Type",
                 catTableName: "RoadType",
@@ -146,24 +146,22 @@ function loadChart() {
                 },
                 collapsed: true
             }
-            ],
-            list: {
-                sortColWidth: 70,
-                sortingOpts : [
-                    {   name: 'Date',
-                        label: function(accident){ 
-                            var date=accident.data[accCol.Date];
-                            return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
-                        }
+        ],
+        itemDisplay: {
+            sortColWidth: 70,
+            sortingOpts : [
+                {   name: 'Date',
+                    label: function(accident){ 
+                        var date=accident.data[accCol.Date];
+                        return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
                     }
-                ],
-                detailsToggle : "Multi",
-                content: 'Accident_Index'
-            }
+                }
+            ],
+            detailsToggle : "Multi",
+            content: 'Accident_Index'
+        }
     });
-}
-
-google.setOnLoadCallback(loadChart);
+});
 
 </script>
 <style>
@@ -179,26 +177,6 @@ google.setOnLoadCallback(loadChart);
 </style>
 	</head>
     <body>
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

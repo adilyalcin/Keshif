@@ -61,9 +61,9 @@ google.setOnLoadCallback( function(){
     logIf.Check = logIf.All();
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 180,
-        source : {
+        source: {
             gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
             sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
         },
@@ -74,7 +74,7 @@ google.setOnLoadCallback( function(){
             kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
             kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol['During Activity']], /\/\s*/, false);
         },
-        charts : [
+        facets: [
             {
                 facetTitle: "Size",
                 timeTitle: "Spill Date",
@@ -115,7 +115,7 @@ google.setOnLoadCallback( function(){
                 textFilter: 'at'
             }
         ],
-        list: {
+        itemDisplay: {
             sortColWidth: 58,
             sortingOpts : [
                 {   name: 'Date',
@@ -167,8 +167,7 @@ google.setOnLoadCallback( function(){
         }
     });
 });
-
-</script>
+        </script>
         <style>
             div.kshf.layout_header span.title{
                 letter-spacing: 0em;
@@ -180,26 +179,6 @@ google.setOnLoadCallback( function(){
         </style>
 	</head>
     <body onmousemove="logIf.setSessionID()">
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

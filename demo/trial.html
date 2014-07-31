@@ -25,10 +25,10 @@ function loadChart() {
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
-        categoryTextWidth:170,
-        itemName : "clinical trials",
-        source : {
+        domID: "#chart_div",
+        categoryTextWidth: 170,
+        itemName: "clinical trials",
+        source: {
 //            gdocId : '0Ai6LdDWgaqgNdG1RYzVDRjJObFRuaEZBQUVEeUdIYlE', // small
           gdocId : '0Ai6LdDWgaqgNdEtNaVZkaVNVMklJR1ZVbk1BYTc3QVE', // big
             sheets : [
@@ -52,7 +52,7 @@ function loadChart() {
                 trial.data[6].push(condID);
             }
         },
-        charts:[
+        facets: [
             {
                 facetTitle: "Phase Type",
                 timeTitle: "Primary Completion Date",
@@ -90,7 +90,7 @@ function loadChart() {
                 textFilter: 'by', textGroup: 'companies'
             }
         ],
-        list:{
+        itemDisplay: {
             sortColWidth: 75,
             sortingOpts : [
                 {   name: 'Date',

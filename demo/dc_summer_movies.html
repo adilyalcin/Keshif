@@ -92,18 +92,13 @@ function loadChart() {
     var m_nextweek = moment().add('days',14);
 
     browserScreenings = new kshf.Browser({
-        domID : "#div_screenings",
-        source : {
+        domID: "#div_screenings",
+        categoryTextWidth: 230,
+        source: {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
             sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
         },
-        loadedCb: function(){
-            // expand cell content - movie*genres and series*features
-            kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
-            kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
-        },
-        categoryTextWidth: 230,
-        facets : [
+        facets: [
             {
                 facetTitle: "Movie",
                 catTableName: "Movies",
@@ -162,6 +157,11 @@ function loadChart() {
                 ]
             }
         ],
+        loadedCb: function(){
+            // expand cell content - movie*genres and series*features
+            kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
+        },
         readyCb: function(){
             $(".itemtoggledetails .item_details_on").click(loadMovieData);
             $(".movieName").click(loadMovieData);
@@ -176,7 +176,7 @@ function loadChart() {
             loadMovieData_Name(firstItem);
             kshf.dt.Screenings[0].listItem.setAttribute('details',true);
         },
-        list: {
+        itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [ {
                 name: 'Date',

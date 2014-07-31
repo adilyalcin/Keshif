@@ -13,7 +13,7 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
 
-function loadChart() {
+$(document).ready( function() {
     // set div height accordingly 
     $('#chart_div').height($(window).height()-45);
     $('#chart_div').width ($(window).width()*0.9);
@@ -25,14 +25,14 @@ function loadChart() {
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
-        categoryTextWidth:200,
-        source : {
+        domID: "#chart_div",
+        categoryTextWidth: 200,
+        source: {
             dirPath: 'data/',
             fileType: 'csv',
             sheets : [ {name:"tablets", id:"ASIN"} ]
         },
-        charts : [
+        facets: [
             {
                 facetTitle: "Brand Name",
                 sortingOpts:[
@@ -80,7 +80,7 @@ function loadChart() {
                 catItemMap: function(d) { return d.data[1]; }
             }
         ],
-        list:{
+        itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [
                 {   name: 'Rating',
@@ -118,11 +118,9 @@ function loadChart() {
             }
         }
     });
-}
+});
 
-$(document).ready(loadChart);
-
-</script>
+        </script>
         <style>
         .iteminfo a{
             color:#606060;

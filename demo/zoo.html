@@ -25,14 +25,13 @@
             });
             
         	browser = new kshf.Browser({
-                domID : "#chart_div",
-                categoryTextWidth:135,
-//                showDataSource : false,
-                source : {
+                domID: "#chart_div",
+                categoryTextWidth: 135,
+                source: {
                     gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
                     sheets : [ {name:"Animals"} ]
                 },
-                charts :[
+                facets: [
                     {   facetTitle: "# of Legs"
                     },{ facetTitle: "Properties",
                         catItemMap: function(d){
@@ -55,7 +54,7 @@
                         catDispCountFix: 6
                     }
                 ],
-                list : {
+                itemDisplay: {
                     sortColWidth: 50,
                     sortingOpts : [
                         {   name: 'Name',

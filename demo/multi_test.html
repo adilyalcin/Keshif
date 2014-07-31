@@ -17,13 +17,13 @@
         <script type="text/javascript">
     	google.setOnLoadCallback( function(){
             new kshf.Browser({
-                domID : "#chart_div",
-                categoryTextWidth:160,
-                source : {
+                domID: "#chart_div",
+                categoryTextWidth: 160,
+                source: {
                     gdocId : '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
                     sheets : [ {name:"Presidents"} ]
                 },
-                charts : [
+                facets: [
                     {   facetTitle: "Party", 
                         timeTitle: "Term Start",
                         timeItemMap : function(d){
@@ -37,7 +37,7 @@
                     },{ facetTitle: "Notes",
                     }
                 ],
-                list : {
+                itemDisplay: {
                     sortColWidth: 60,
                     textSearch: 'Name',
                     sortingOpts : [
@@ -51,15 +51,15 @@
             });
 
             new kshf.Browser({
-                domID : "#chart_div2",
+                domID: "#chart_div2",
                 dirRoot: "../",
-                categoryTextWidth:150,
+                categoryTextWidth: 150,
                 barChartWidth: 70,
                 source : {
                     gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
                     sheets : [ {name:"Examples"} ]
                 },
-                charts: [
+                facets: [
                     {
                         facetTitle: "Features",
                         timeTitle: "Authored",
@@ -93,7 +93,7 @@
                         facetTitle: "Highlights",
                     }
                 ],
-                list:{
+                itemDisplay: {
                     sortColWidth: 60,
                     sortingOpts : [ { 
                         name: 'Item#',

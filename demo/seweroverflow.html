@@ -15,44 +15,100 @@
 
         <script type="text/javascript">
 
-var tableName = "Overflow";
-
 // You can load data on keshif callback, or before you initialize keshif.
 function loadData(browser){
-    browser.primaryTableName = tableName;
+    browser.primaryTableName = "Overflow";
 
-    kshf.dt[tableName] = [];
-    var arr = kshf.dt[tableName];
+    kshf.dt.Overflow = [];
+    kshf.dt_id.Overflow = {};
 
     $.ajax( {
+//      To use dynamic data loaded from maryland.gov, use the following link instead
 //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
         url: "./data/seweroverflows.json",
         dataType: "json",
         success: function(data){
             // data.meta includes meta information
-            // If you want to, you can extract Keshif facet information from the metadata
-            // See facets parameters in keshif init. In this case, you'll need to load data before and generate facets list and configuration yourself.
-            // In this example, I manually created facets & hierarchices that I thought can provide insights.
+            // If you want to, you can extract Keshif facet information from the metadata too.
+            // In this example, I manually create facets & hierarchices that I thought can provide insights below in keshif
+            // browser description.
             var overflows = data.data;
 
             overflows.forEach(function(overflow){
-                arr.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
+                kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
             });
 
-            browser.items = arr;
-            browser.itemsSelectedCt = kshf.dt[tableName].length;
+            if(browser){
+                browser.items = kshf.dt.Overflow;
+                browser.itemsSelectedCt = browser.items.length;
 
-            var id_table = {};
-            arr.forEach(function(r){id_table[r.id()] = r;})
-            kshf.dt_id[tableName] = id_table;
-
-            // finish loading....
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 50);
+                // finish loading....
+                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                d3.select(".kshf.layout_infobox div.status_text div").text("");
+                window.setTimeout(function() { browser.loadCharts(); }, 50);
+            }
         }
     });
 };
+
+$(document).ready(function(){
+    // after web page is loaded, you can inspect browser object (on browser developer tools)
+    // to see the data / functions it includes
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Sewer Overflows",
+        categoryTextWidth: 200,
+        showDataSource : true,
+        source: { 
+            callback : loadData,
+            url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
+        },
+        facets: [
+            {   facetTitle: "Overflow Type",
+                catItemMap : function(overflow){ return overflow.data[8]; }
+            },{ facetTitle: "Cause",
+                catItemMap : function(overflow){ return overflow.data[21]; }
+            },{
+                facetTitle: "Time",
+                facets: [
+                    {
+                        facetTitle: "Year Discovered", 
+                        catItemMap : function(overflow){ 
+                            // parses the date string and returns the year
+                            return moment(overflow.data[11]).year();
+                        }
+                    },{ 
+                        facetTitle: "Duration",
+                        catItemMap : getDuration_Human
+                    }
+                ]
+            },{ facetTitle: "Location",
+                layout: 'right', // put this facet on the right side.
+                facets: [
+                    { facetTitle: "Zip Code", 
+                        catItemMap: function(overflow){ return overflow.data[17]; } },
+                    { facetTitle: "County", 
+                        catItemMap: function(overflow){ return overflow.data[23]; } },
+                    { facetTitle: "Municipality/Facility",
+                        catItemMap : function(overflow){ return overflow.data[9]; }
+                    }
+                ]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts : [
+                {   name: 'Duration',
+                    value: getDuration_TotalMinutes,
+                    label: getDuration_Human},
+                { name: 'id',  value: function(d){ return d.data[0]; } }
+            ],
+            contentFunc : function(d){
+                return d.data[16] + " -- "+getDuration_TotalMinutes(d)+" minutes";
+            }
+        }
+    });
+});
 
 var getDuration_TotalMinutes = function(overflow){ 
     var days = parseInt(overflow.data[13]);
@@ -82,70 +138,16 @@ var getDuration_Human = function(overflow){
     if(minutes>15) return "15-30 minutes";
     return "< 15 minutes";
 };
-
-$(document).ready( function(){
-	browser = new kshf.Browser({
-        domID : "#chart_div",
-        itemName: "Sewer Overflows",
-        categoryTextWidth: 200,
-        showDataSource : true,
-        source: { 
-            callback : loadData,
-            url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
-        },
-        facets : [
-            {   facetTitle: "Overflow Type",
-                catItemMap : function(overflow){ return overflow.data[8]; }
-            },{ facetTitle: "Cause",
-                catItemMap : function(overflow){ return overflow.data[21]; }
-//            },{ facetTitle: "NPDES #",
-//                catItemMap : function(overflow){ return overflow.data[10]; }
-            },{ facetTitle: "Year Discovered", 
-                catItemMap : function(overflow){ 
-                    return moment(overflow.data[11]).year();
-                }
-//            },{ facetTitle: "Time Discovered",  
-            },{ facetTitle: "Duration",
-                catItemMap : getDuration_Human
-            },{ facetTitle: "Location",
-                layout: 'right',
-                facets: [
-                    { facetTitle: "Zip Code", 
-                        catItemMap: function(overflow){ return overflow.data[17]; } },
-                    { facetTitle: "County", 
-                        catItemMap: function(overflow){ return overflow.data[23]; } },
-                    { facetTitle: "Municipality/Facility",
-                        catItemMap : function(overflow){ return overflow.data[9]; }
-                    }
-                ]
+        </script>
+        <style>
+            div.listItem{
+                padding-bottom: 4px;
             }
-        ],
-        list: {
-            sortColWidth: 80,
-            sortingOpts : [
-                {   name: 'Duration',
-                    value: getDuration_TotalMinutes,
-                    label: getDuration_Human},
-                { name: 'id',  value: function(d){ return d.data[0]; } }
-            ],
-            contentFunc : function(d){
-                // return location
-                return d.data[16] + " -- "+getDuration_TotalMinutes(d)+" minutes";
+            #chart_div {
+                width:1200px;
+                height:700px;
             }
-        }
-    });
-});
-
-</script>
-    <style>
-        div.listItem{
-            padding-bottom: 4px;
-        }
-        #chart_div {
-            width:1200px;
-            height:700px;
-        }
-    </style>
+        </style>
 	</head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

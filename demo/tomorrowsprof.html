@@ -14,32 +14,19 @@
 
         <script type="text/javascript">
 
-function getNumComments(v){
-    if(v==0) return "None";
-    if(v<6) return "1-5";
-    if(v<11) return "6-10";
-    if(v<21) return "11-20";
-    return ">20";
-}
-
 function resetSize(){
     $('#chart_div').height($(window).height()-40);
     $('#chart_div').width (1100);
-}
+};
 
 $(document).ready( function(){
     var postCols, catCols, tNow;
     resetSize();
-    // set resize callback
-    $(window).resize(function() {
-//        resetSize();
-//        kshf.updateLayout();
-    });
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
-        categoryTextWidth:160,
-        source : {
+        domID: "#chart_div",
+        categoryTextWidth: 160,
+        source: {
             gdocId : '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
             sheets : [ {name:"Posts"}, {name:"Categories"} ]
         },
@@ -47,7 +34,7 @@ $(document).ready( function(){
             postCols = kshf.dt_ColNames.Posts;
             catCols = kshf.dt_ColNames.Categories;
         },
-        charts: [ {
+        facets: [ {
             facetTitle: "Category", 
             timeTitle: "Date",
             timeItemMap : function(d){
@@ -57,11 +44,10 @@ $(document).ready( function(){
             },
             catTableName: "Categories"
         } ],
-        list:{
+        itemDisplay: {
             sortColWidth: 70,
             sortingOpts : [ 
-                {   name: 'id',
-                    noGroupBorder: true
+                {   name: 'id', noGroupBorder: true
                 },{
                     name:"Category"
                 }],
@@ -89,7 +75,14 @@ $(document).ready( function(){
     });
 });
 
-</script>
+function getNumComments(v){
+    if(v==0) return "None";
+    if(v<6) return "1-5";
+    if(v<11) return "6-10";
+    if(v<21) return "11-20";
+    return ">20";
+};
+        </script>
         <style>
             div.listItem{
                 padding-bottom: 4px;
@@ -101,26 +94,6 @@ $(document).ready( function(){
         </style>
     </head>
     <body>
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

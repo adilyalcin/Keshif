@@ -13,34 +13,33 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-        google.setOnLoadCallback(function(){
-            browser = new kshf.Browser({
-                domID : "#chart_div",
-                barChartWidth:100,
-                source : {
-                    gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
-                    sheets : [ {name:"Singles"} ]
-                },
-                charts : [
-                    {   facetTitle: "Genre"
-                    },{ facetTitle: "Country", 
-                        description: "Country of origin"
-                    },{ facetTitle: "Sex"
-                    },{ facetTitle: "Age"
-                    },{ facetTitle: "Type"
-                    },{ facetTitle: "Race", collapsed: true
-                    },{ facetTitle: "Label"
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 100,
+                    source: {
+                        gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
+                        sheets : [ {name:"Singles"} ]
+                    },
+                    facets: [
+                        {   facetTitle: "Genre"
+                        },{ facetTitle: "Country", 
+                            description: "Country of origin"
+                        },{ facetTitle: "Sex"
+                        },{ facetTitle: "Age"
+                        },{ facetTitle: "Type"
+                        },{ facetTitle: "Race", collapsed: true
+                        },{ facetTitle: "Label"
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 45,
+                        sortingOpts : [ {name: 'Position', inverse:true, noGroupBorder: true} ],
+                        textSearchFunc: function(d){return d.data[2]+" "+d.data[1]; },
+                        contentFunc: function(d){ return d.data[2]+" - "+d.data[1]; }
                     }
-                ],
-                list : {
-                    sortColWidth: 45,
-                    sortingOpts : [ {name: 'Position', inverse:true, noGroupBorder: true} ],
-                    textSearchFunc: function(d){return d.data[2]+" "+d.data[1]; },
-                    contentFunc: function(d){ return d.data[2]+" - "+d.data[1]; }
-                }
+                });
             });
-        });
         </script>
         <style>
             #chart_div {

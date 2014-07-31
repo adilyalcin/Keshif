@@ -71,7 +71,7 @@ function drawCharts(){
     }
 }
 
-function loadChart() {
+google.setOnLoadCallback( function() {
     // set div height accordingly 
     $('#chart_div').height($(window).height()-45);
     $('#chart_div').width ($(window).width()*0.9);
@@ -83,10 +83,10 @@ function loadChart() {
     });
     
     browser = new kshf.Browser({
-        domID : "#chart_div",
-        itemName : "publications",
+        domID: "#chart_div",
+        itemName: "publications",
         categoryTextWidth: 180,
-        source : {
+        source: {
             gdocId : '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
             sheets : [
                 {name:"trs",query:'select A,D,E,F,G,M,N,O,P'},
@@ -101,7 +101,7 @@ function loadChart() {
             ]
         },
         loadedCb: drawCharts,
-        charts: [
+        facets: [
             {
                 facetTitle: "Topic",
                 catTableName: "topics",
@@ -146,7 +146,7 @@ function loadChart() {
                 textFilter: 'within', textGroup: 'projects'
             }
         ],
-        list: {
+        itemDisplay: {
             sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Year',
@@ -213,41 +213,18 @@ function loadChart() {
             }
         }
     });
-}
-
-google.setOnLoadCallback(loadChart);
-</script>
-<style>
-
-#chart_div {
-    width: 100%;
-}
-div.listItem{
-    padding-bottom:3px;
-}
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 100%;
+            }
+            div.listItem{
+                padding-bottom:3px;
+            }
 		</style>
 	</head>
     <body>
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

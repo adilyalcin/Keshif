@@ -133,7 +133,7 @@ function loadChart() {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
             sheets : [ {name:"Screenings"}, {name:"Series"} ]
         },
-        charts : [
+        facets : [
             {
                 facetTitle: "State",
                 removeInactiveAttrib: false,
@@ -207,7 +207,7 @@ function loadChart() {
             loadMovieData_Name(firstItem);
             kshf.dt.Screenings[0].listItem.setAttribute('details',true);
         },
-        list: {
+        itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [ {
                 name: 'Date',

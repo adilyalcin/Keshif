@@ -15,31 +15,21 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-function loadChart() {
-    // set div height accordingly 
-//    $('#chart_div').height($(window).height()-70);
-//    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-//        $('#chart_div').height($(window).height()-70);
-//        $('#chart_div').width ($(window).width()*0.9);
-//        browser.updateLayout();
-    });
+google.setOnLoadCallback( function(){
     var billCols;
 
 	browser = new kshf.Browser({
-        chartTitle: "U.S. Senate 112th Roll Data Browser",
-        domID : "#chart_div",
-        itemName : "Roll calls",
+        domID: "#chart_div",
+        itemName: "Roll calls",
         barChartWidth: 150,
-        source : {
+        source: {
             gdocId : '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
             sheets : [ {name:"Senate112"} ]
         },
         loadedCb: function(){
             billCols = kshf.dt_ColNames.Senate112;
         },
-        charts : [
+        facets: [
             {
                 facetTitle: "Result",
                 timeTitle: "Vote Date",
@@ -64,15 +54,13 @@ function loadChart() {
                 facetTitle: "Nay's",
                 catItemMap : function(vote){ return vote.data[billCols['Nay\'s']]; },
             }
-            ],
-        list: {
+        ],
+        itemDisplay: {
             sortColWidth: 73,
             sortingOpts : [
                 {   name: 'Vote Date',
                     value: function(d){ return d.data[1]; },
-                    label: function(d){ 
-                        return moment(d.data[1]).format('MMM YYYY');
-                    }
+                    label: function(d){ return moment(d.data[1]).format('MMM YYYY'); }
                 },{ name:'Result' }
             ],
             textSearchFunc : function (vote) { return vote.data[7]; },
@@ -99,44 +87,20 @@ function loadChart() {
             }
         }
     });
-}
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(loadChart);
-
-</script>
-    <style>
-        .iteminfo a{
-            color:#606060;
-            font-style:italic;
-        }
-        #chart_div{
-            height: 750px;
-            width: 1282.5px;
-        }
-    </style>
+});
+        </script>
+        <style>
+            .iteminfo a{
+                color:#606060;
+                font-style:italic;
+            }
+            #chart_div{
+                height: 750px;
+                width: 1282.5px;
+            }
+        </style>
 	</head>
     <body>
-        <div class="meny">
-            <span class='developed'>
-                <span class='projectName'>kshf</span> browser developed by:<br>
-                <span class='me'><a href="http://www.adilyalcin.me" target='_blank'>M. Adil Yalçın</a></span> 
-                    (<a href="http://www.twitter.com/adilyalcin">@adilyalcin</a>)<br/>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank">Human Computer Interaction Lab</a><br>
-                <a href="http://www.umd.edu/" target="_blank">University of Maryland, College Park</a>
-                <a href="http://www.cs.umd.edu/hcil/" target="_blank"><img src="img/HCIL.gif" class="hcil_img"></a>
-                <span class='source_code'>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' 
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true'
-                        allowtransparency='true' frameborder='0' scrolling='0' width='80px' height='20px'></iframe>
-                    <span class='descr'>Source code is on github.<br/> Browse your data now. </span>
-                    </span>
-            </span>
-            <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
-                <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
-            </div>
-        <div class="meny-arrow"></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

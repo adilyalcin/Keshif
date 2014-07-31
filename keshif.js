@@ -1718,8 +1718,8 @@ kshf.Browser = function(options){
     this.subBrowser = options.subBrowser;
     this.facetDefs = options.facets;
     if(options.charts) this.facetDefs = options.charts;
-    this.listDef = options.list;
-    if(options.result) this.listDef = options.result
+    this.listDef = options.itemDisplay;
+    if(options.list) this.listDef = options.list;
 
     if(options.listMaxColWidthMult){
         this.listMaxColWidthMult = options.listMaxColWidthMult;
@@ -2652,10 +2652,11 @@ kshf.Browser.prototype = {
             if(firstFacet.type==='scatterplot'){
                 if(firstFacet.collapsedTime){
                     var difff = firstFacet.getHeight_Total()-listDivTop;
-                    this.listDisplay.listDiv.style("padding-top",(-difff+3)+"px");
+                    this.listDisplay.listDiv.style("margin-top",(-difff+3)+"px");
+                    targetHeight-=3;
                 } else {
-                    this.listDisplay.listDiv.style("padding-top","3px");
-                    targetHeight-=3; // 5 is the additional height I give to timeline. see getHeight_Content
+                    this.listDisplay.listDiv.style("margin-top","3px");
+                    targetHeight-=3;
                 }
             }
             this.listDisplay.dom.listItemGroup.style("height",targetHeight+"px");
@@ -2887,7 +2888,7 @@ kshf.Facet_Categorical.prototype = {
         if(!this.allAttribsVisible() || this.browser.hideBarAxis===false ||
             (this.type==="scatterplot"&&this.collapsedTime===false)) bottomRow=1;
         return this.attribHeight + (this.configRowCount+bottomRow)*this.browser.line_height+
-            (this.type==="scatterplot"?5:0);
+            (this.type==="scatterplot"?5:0); // add 5 more pixels for scatterplot
     },
     getWidth_LeftOffset: function(){
         var offset=0;
@@ -3757,9 +3758,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-        this.dom.scroll_display_more
-            .style("display",(this.attribCount_Active>this.attribCount_InDisplay)?"inline-block":"none")
-            .text(this.attribCount_Active+" total / "+(this.attribCount_Active-bottomItem)+" more..." );
+        var txt = this.attribCount_Active+" total";
+        var more = this.attribCount_Active-bottomItem;
+        if(more>0) txt+=" / "+(more)+" more...";
+        this.dom.scroll_display_more.text(txt);
     },
     /** -- */
     refreshHeight: function(){
@@ -3767,6 +3769,9 @@ kshf.Facet_Categorical.prototype = {
         // So far, should be pretty nice.
         if(this.hasAttribs()){
             this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
+            if(this.type==="scatterplot"){
+                this.dom.scroll_display_more.style("height","22px");
+            }
             this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
             this.dom.attribChartAxis.selectAll("span.line")
