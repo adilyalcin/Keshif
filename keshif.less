@@ -81,6 +81,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .transition(~'transform 700ms ease-in-out');
             }
         }
+        .facetInterval .histogram .bin{
+            .transition(@bar_animation);
+        }
     }
     > div.subRoot{
         position:relative;
@@ -226,9 +229,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .wigdhdyt{ right: 0px; }
             .kshfChart{ margin-right: 17px; }
         }
-        .chartClearFilterButton.rowFilter{
-            left: 2px;
-        }
         .attribChartAxis{
             direction: ltr; 
         }
@@ -303,9 +303,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .wigdhdyt{ left: 0px; }
             .kshfChart{ margin-left: 17px; }
         }
-        .chartClearFilterButton.rowFilter{
-            left: -19px;
-        }
         .facetCategorical{
             .scrollToTop{
                 right: 3px;
@@ -359,10 +356,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline-block;
             float: right;
             margin-left: 2px;
-        }
-        &.rowFilter{
-            position: absolute;
-            left: -19px;
         }
         &.timeFilter{
             margin-left: 3px;
@@ -598,124 +591,201 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // so that absolute positioned elements will not overflow
         }
 
-        > .wrapper > .facetCategorical{
-            overflow: hidden;
+        > .wrapper {
             .transition(~'height 700ms ease-in-out');
 
-            > .facetControls{
-                display: none;
-                > span{
-                    display: inline-block;
-                    vertical-align: top;
-                }
-                .sortOptionSelectGroup{
-                    display: inline-block;
-                    select.optionSelect{
-                        font-size:0.7em;
-                        pointer-events:all;
-                        clear:right;
-                        margin:0px;
+            > .facetCategorical{
+                overflow: hidden;
+
+                > .facetControls{
+                    display: none;
+                    > span{
+                        display: inline-block;
                         vertical-align: top;
                     }
-                    span.optionSelect_Label{
-                        font-size: 0.7em;
-                        font-weight: 500;
-                        vertical-align: middle;
-                        cursor: default;
-                        pointer-events:none;
-                    }
-                }
-                .config_zoom{
-                    padding-top: 0px;
-                    margin-right:10px;
-                    height: 18px;
-                    float:right;
-                    .transition(~"height 500ms ease, margin-left 400 ease");
-                    svg{
-                        position:relative;
-                        top:2px;
-                        display:none;
-                    }
-                    path{
-                        fill: white;
-                        display:inline;
-                        stroke:#000000;
-                        stroke-width:25;
-                        stroke-miterlimit:10;
-                    }
-                }
-                .zoom_button{
-                    font-family: 'Source Sans Pro', Helvetica, Arial ,sans-serif;
-                    font-size: 11px;
-                    font-weight: 300;
-                    background-color: white;
-                    border-radius: 7px;
-                    padding: 0px 5px 0px 5px;
-                    position:relative;
-                    top:1px;
-                    pointer-events: none;
-                    margin-right: 10px;
-                    &[disabled=false]{
-                        color: rgb(37, 33, 18);
-                        border: 1px gray solid;
-                        cursor: pointer;
-                        pointer-events: all;
-                        box-shadow: 1px 1px 1px #474940;
-                        background-color: #EEEEEE;
-                        font-weight: 500;
-                        &:hover{
-                            box-shadow: inset 1px 1px 1px #474940;
-                            color: red;
+                    .sortOptionSelectGroup{
+                        display: inline-block;
+                        select.optionSelect{
+                            font-size:0.7em;
+                            pointer-events:all;
+                            clear:right;
+                            margin:0px;
+                            vertical-align: top;
+                        }
+                        span.optionSelect_Label{
+                            font-size: 0.7em;
+                            font-weight: 500;
+                            vertical-align: middle;
+                            cursor: default;
+                            pointer-events:none;
                         }
                     }
-                    &[disabled=true]{
-                        border: 1px lightgray solid;
-                        color: gray;
-                        cursor: default;
+                    .config_zoom{
+                        padding-top: 0px;
+                        margin-right:10px;
+                        height: 18px;
+                        float:right;
+                        .transition(~"height 500ms ease, margin-left 400 ease");
+                        svg{
+                            position:relative;
+                            top:2px;
+                            display:none;
+                        }
+                        path{
+                            fill: white;
+                            display:inline;
+                            stroke:#000000;
+                            stroke-width:25;
+                            stroke-miterlimit:10;
+                        }
+                    }
+                    .zoom_button{
+                        font-family: 'Source Sans Pro', Helvetica, Arial ,sans-serif;
+                        font-size: 11px;
+                        font-weight: 300;
+                        background-color: white;
+                        border-radius: 7px;
+                        padding: 0px 5px 0px 5px;
+                        position:relative;
+                        top:1px;
+                        pointer-events: none;
+                        margin-right: 10px;
+                        &[disabled=false]{
+                            color: rgb(37, 33, 18);
+                            border: 1px gray solid;
+                            cursor: pointer;
+                            pointer-events: all;
+                            box-shadow: 1px 1px 1px #474940;
+                            background-color: #EEEEEE;
+                            font-weight: 500;
+                            &:hover{
+                                box-shadow: inset 1px 1px 1px #474940;
+                                color: red;
+                            }
+                        }
+                        &[disabled=true]{
+                            border: 1px lightgray solid;
+                            color: gray;
+                            cursor: default;
+                        }
                     }
                 }
-            }
 
-            .scrollToTop{
-                margin-top: -16px;
-                font-size: 0.8em;
-                pointer-events: all;
-                position: absolute;
-            }
-            .scrollToTop2{
-                right: auto;
-            }
-            .selectAllAttribs{
-                font-size: 0.6em;
-                float: left;
-                margin-left: 2px;
-                font-weight: 300;
-                color: black;
-                border: solid 1px lightgray;
-                border-radius: 10px;
-                padding: 1px 5px 0px 5px;
-                background-color: rgba(150,150,100,0.2);
-                cursor: pointer; 
-                &:hover{
-//                    font-weight: 500;
-                    box-shadow: 0px 0px 1px black;
-                }   
-                &::before{
-                    content: '+ Add Filter with All';
+                .scrollToTop{
+                    margin-top: -16px;
+                    font-size: 0.8em;
+                    pointer-events: all;
+                    position: absolute;
                 }
-            }
-            .scroll_display_more{
-                font-size: 0.6em;
-                vertical-align: top;
-                font-style:italic;
-                cursor: pointer;
-                color: gray;
-                opacity:1;
-                pointer-events: all;
-                margin-right: 5px;
-                &:hover{ color: #cb5454; }
-            }
-        }// facetCategorical
+                .scrollToTop2{
+                    right: auto;
+                }
+                .selectAllAttribs{
+                    font-size: 0.6em;
+                    float: left;
+                    margin-left: 2px;
+                    font-weight: 300;
+                    color: black;
+                    border: solid 1px lightgray;
+                    border-radius: 10px;
+                    padding: 1px 5px 0px 5px;
+                    background-color: rgba(150,150,100,0.2);
+                    cursor: pointer; 
+                    &:hover{
+    //                    font-weight: 500;
+                        box-shadow: 0px 0px 1px black;
+                    }   
+                    &::before{
+                        content: '+ Add Filter with All';
+                    }
+                }
+                .scroll_display_more{
+                    font-size: 0.6em;
+                    vertical-align: top;
+                    font-style:italic;
+                    cursor: pointer;
+                    color: gray;
+                    opacity:1;
+                    pointer-events: all;
+                    margin-right: 5px;
+                    &:hover{ color: #cb5454; }
+                }
+            }// facetCategorical
+
+            div.facetInterval{
+                padding: 0px 12px;
+                overflow: none;
+                .histogram{
+                    position:relative;
+                    pointer-events: all;
+            //        margin: 5px 13px 1px 13px;
+                    overflow: hidden; // necessary, because after bin height is scaled, they can extend beyond.
+                    .bins{
+                        position: absolute;
+                        top: 14px;
+                        .bin{
+                            position: absolute;
+                            display: block;
+                            .bar{
+                                width: 1px;
+                                height: 1px;
+                                position: absolute;
+                                .transform-origin(0% 100%);
+                                &.active{
+                                    cursor: pointer;
+                                }
+                                &.total{
+                                    opacity:0.1;
+                                    pointer-events: none;
+                                }
+                                &.hover {
+                                    background-color: orangered;
+                                    pointer-events: none;
+                                    .transform(~'scaleX(0)');
+                                    &[fast]{
+                                        .transition(~'transform 200ms ease-in-out');
+                                    }
+                                }
+                            }
+                            span.item_count{
+                                top: -1em;
+                                display: block;
+                                position: relative;
+                                width:26px;
+                                margin-left: -13px;
+                                font-size: 0.7em;
+                                text-align: center;
+                                cursor: pointer;
+                                .transition(~'transform 700ms ease-in-out');
+                            }
+                            &[noitem=true] span.item_count{
+                                display: none;
+                            }
+                            &[highlight=true]{
+                                span.item_count{
+                                    color: orangered;
+                                }
+                            }
+                        }
+                    }
+                    span.bar{
+                        display: block;
+                        position:absolute;
+                        background-color: @color_bars;;
+                        width:1px;
+                        height:1px;
+                        &[highlight=true]{
+                            // background-color: orangered;
+                        }
+                        .transform-origin(0% 0%);
+                    }
+                    .total span.bar{
+                        opacity: 0.2;
+                    }
+                }
+            } // facetInterval
+
+        }
 
         .subFacets {
             position:relative;
@@ -853,6 +923,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .chartClearFilterButton.rowFilter{
                 opacity: 1;
                 pointer-events: all;
+                margin: 0px 2px;
+                height: 16px;
+                width: 16px;
             }
         }
         &[selecttype="SelectOr"][inserted_attrib=true] {
@@ -1050,63 +1123,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        > span.timeLineParts{
-            position:relative;
+        > span.timeLineParts_Overflow{
             overflow-x: hidden;
-            padding: 0px 10px;
-            span.bar{
-                position:absolute;
-                border-radius: 10px;
+            span.timeLineParts{
                 display: inline-block;
-                background-color: @color_bars;
-                height: 10px;
-                margin-top: 4px;
-                opacity: 0.2;
-                &.total{
-                    opacity:0.1;
-                }
-            }
-            span.timeDot{
-                position: absolute;
-                top: 4px;
-                border-radius: 10px;
-                width: 10px;
-                height: 10px;
-                // left: -5px; // DON'T! It messes up with translation (scalted translation amount)
-                cursor: pointer;
-
-                &[fill=default]{
-                    box-shadow: 0px 0px 0px 1px #EEE;
-                    background-color:#616F7A;
-                }
-                &:not([fill=default]){
-                    box-shadow: none;
-                    background-color:none;
-                }
-                &[fill=gradient100]{
-                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%)");
-                }
-                &[fill=gradient75]{
-                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%)");
-                }
-                &[fill=gradient50]{
-                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%)");
-                }
-                &[fill=gradient25]{
-                    .background-image(~"radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%)");
-                }
-
-                &[display=false] {
-                    pointer-events: none;
-                    background-color: #CCCCCC !important;
+                position:relative;
+                vertical-align: top;
+                line-height: 18px;
+                height: 18px;
+                margin: 0px 10px;
+                span.bar{
+                    position:absolute;
+                    border-radius: 10px;
+                    display: inline-block;
+                    background-color: @color_bars;
+                    height: 10px;
+                    margin-top: 4px;
                     opacity: 0.2;
-                    background-image: none;
+                    &.total{
+                        opacity:0.1;
+                    }
                 }
-                &[display=true]:hover {
-                    box-shadow: 0px 0px 0px 1px orangered !important;
-                }
-                &[highlight=true] {
-                    box-shadow: 0px 0px 0px 1px #c32c2c !important;
+                span.timeDot{
+                    position: absolute;
+                    top: 4px;
+                    border-radius: 10px;
+                    width: 10px;
+                    height: 10px;
+                    // left: -5px; // DON'T! It messes up with translation (scalted translation amount)
+                    cursor: pointer;
+
+                    &[fill=default]{
+                        box-shadow: 0px 0px 0px 1px #EEE;
+                        background-color:#616F7A;
+                    }
+                    &:not([fill=default]){
+                        box-shadow: none;
+                        background-color:none;
+                    }
+                    &[fill=gradient100]{
+                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%)");
+                    }
+                    &[fill=gradient75]{
+                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%)");
+                    }
+                    &[fill=gradient50]{
+                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%)");
+                    }
+                    &[fill=gradient25]{
+                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%)");
+                    }
+
+                    &[display=false] {
+                        pointer-events: none;
+                        background-color: #CCCCCC !important;
+                        opacity: 0.2;
+                        background-image: none;
+                    }
+                    &[display=true]:hover {
+                        box-shadow: 0px 0px 0px 1px orangered !important;
+                    }
+                    &[highlight=true] {
+                        box-shadow: 0px 0px 0px 1px #c32c2c !important;
+                    }
                 }
             }
         }
@@ -1215,7 +1294,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: solid 1px lightgray;
             border-radius: 9px;
 
-            padding: 2px 0px;
+            padding: 0px;
             box-shadow: 2px 2px 2px #D8D8D8;
             font-weight: 300;
             font-size: 0.8em;
@@ -1530,7 +1609,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // listHeader
 
     .itemtoggledetails{
-        width:15px;
+        width:20px; // includes the padding, using box model...
         padding-right: 5px;
         text-align: right;
         cursor: pointer;
@@ -1674,72 +1753,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // listItem
 
 
-    div.facetInterval{
-        padding: 2px 12px;
-        overflow: none;
-        .histogram{
-            position:relative;
-            pointer-events: all;
-    //        margin: 5px 13px 1px 13px;
-            overflow: hidden;
-            .bins{
-                position: absolute;
-                top: 14px;
-                .bin{
-                    position: absolute;
-                    display: block;
-                    .bar{
-                        width: 1px;
-                        height: 1px;
-                        position: absolute;
-                        .transform-origin(0% 100%);
-                        &.active{
-                            cursor: pointer;
-                        }
-                        &.total{
-                            opacity:0.1;
-                            pointer-events: none;
-                        }
-                        &.hover {
-                            background-color: orangered;
-                            pointer-events: none;
-                            .transform(~'scaleX(0)');
-                            &[fast]{
-                                .transition(~'transform 200ms ease-in-out');
-                            }
-                        }
-                    }
-                    span.item_count{
-                        display: block;
-                        position: relative;
-                        top: -1.2em;
-                        font-size: 0.7em;
-                        text-align: center;
-                        .transition(~'transform 700ms ease-in-out');
-                    }
-                    &[noitem=true] span.item_count{
-                        display: none;
-                    }
-                }
-            }
-            span.bar{
-                display: block;
-                position:absolute;
-                background-color: @color_bars;;
-                width:1px;
-                height:1px;
-                &[highlight=true]{
-                    background-color: orangered;
-                }
-                .transform-origin(0% 0%);
-            }
-            .total span.bar{
-                opacity: 0.2;
-            }
-        }
-
-    } //
-
     .labelGroup{
         cursor: default;
         position:relative;
@@ -1774,6 +1787,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:relative;
         height: 10px;
         pointer-events: all;
+        .selectedItemValue{
+            position:absolute;
+            z-index: 20;
+            top: 1px;
+            display: none;
+            .circlee{
+                border-radius: 20px;
+                width: 8px;
+                height: 8px;
+                background-color: rgba(255, 69, 0, 0.29);
+                border: solid 2px orangered;
+                left: -4px;
+                position: relative;
+            }
+        }
         .base{
             display: block;
             position: absolute;
@@ -1786,8 +1814,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 background-color: lightgray;
             }
             &.active{
-                height: 6px;
-                top: 2px;
+                height: 8px;
+                top: 1px;
                 width:1px;
                 display:none;
                 &[filtered=true]{
@@ -1811,11 +1839,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-style: solid;
             cursor: ew-resize;
             z-index: 10;
+            top:1px;
             &:hover{
                 background-color: orangered !important;
             }
             &.min{
-                left: -7px;
+                left: -5px;
                 border-top-left-radius: 10px;
                 border-bottom-left-radius: 10px;
             }
