@@ -18,7 +18,7 @@ $(document).ready( function(){
     var dataColumns;
 	broser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 150,
+        categoryTextWidth: 160,
         barChartWidth: 70,
         source: {
             gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
@@ -29,6 +29,16 @@ $(document).ready( function(){
         },
         facets: [
             {
+                facetTitle: "Highlighted",
+                catItemMap: function(d){
+                    if(d.data[dataColumns['Highlighted']]){
+                        return "Highlighted";
+                    } else {
+                        return "Other";
+                    }
+                },
+                timeTitle: "Authored",
+            },{
                 facetTitle: "Code complexity",
                 catItemMap: function(d){
                     switch(d.data[dataColumns['Code Complexity']]){
@@ -40,7 +50,6 @@ $(document).ready( function(){
                     }
                     return null;
                 },
-                timeTitle: "Authored",
             },{
                 facetTitle: "Features",
                 catItemMap: function(d){
@@ -61,16 +70,16 @@ $(document).ready( function(){
                     return r;
                 }
             },{
-                facetTitle: "Highlighted",
-            },{
-                facetTitle: "Source"
+                facetTitle: "Source",
+                layout: 'right',
             },{
                 facetTitle: "# Items",
+                layout: 'right',
                 intervalScale: 'log'
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
+            sortColWidth: 45,
             sortingOpts : [ { 
                 name: 'Item#',
                 value: function(d){ 
@@ -81,6 +90,7 @@ $(document).ready( function(){
             contentFunc : function(d){
                 var str='';
                 // Demo name
+                str+="<img style='float: right; width: 50px;'>";
                 str+="<div class=\"iteminfo iteminfo_0\">";
                 str+=d.data[dataColumns["Name"]]+" - ";
                 // Live
@@ -93,6 +103,9 @@ $(document).ready( function(){
                 str+="<div class=\"iteminfo iteminfo_1\">";
                 str+="</div>";
                 return str;
+            },
+            visibleCb: function(d){
+                d3.select(this).select("img").attr("src","demo_img/"+d.data[dataColumns["Link"]]+".jpg");
             }
         }
     });
@@ -100,8 +113,8 @@ $(document).ready( function(){
         </script>
         <style>
             #chart_div {
-                width: 750px;
-                height: 700px;
+                width: 1050px;
+                height: 380px;
             }
             div.listItem{
                 padding-bottom: 4px;
