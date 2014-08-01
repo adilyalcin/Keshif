@@ -43,10 +43,10 @@ $(document).ready( function(){
                 catItemMap: function(d){
                     switch(d.data[dataColumns['Code Complexity']]){
                         case 1: return "A breeze / *";
-                        case 2: return "Moderately simple / **";
-                        case 3: return "Learn new things / ***";
-                        case 4: return "Work it / ****";
-                        case 5: return "Full power / *****";
+                        case 2: return "Simple / **"; 
+                        case 3: return "Intermediate / ***";
+                        case 4: return "Detailed / ****";
+                        case 5: return "Fully featured / *****";
                     }
                     return null;
                 },
