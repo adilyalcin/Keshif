@@ -3206,7 +3206,6 @@ kshf.Facet_Categorical.prototype = {
             })
             ;
 
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
         this.insertHeader();
         if(this.type==="scatterplot"){
             this.insertRightHeader();
@@ -3456,7 +3455,8 @@ kshf.Facet_Categorical.prototype = {
     insertHeader: function(){
     	var me = this;
 
-        this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader").style("width","0px");
+        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
+        this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader");
 
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
@@ -3464,7 +3464,7 @@ kshf.Facet_Categorical.prototype = {
         var topRow = topRow_background.append("div").attr("class","hasLabelWidth")
             .style("position","relative").style("display","inline-block");
         topRow_background.append("span").attr("class","header_label_arrow")
-            .attr("title","Show/Hide attributes").text("▼")
+            .attr("title","Show/Hide").text("▼")
             .on("click",function(){ me.collapseFacet(!me.collapsed); })
             ;
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
@@ -3473,12 +3473,8 @@ kshf.Facet_Categorical.prototype = {
             .text('x').attr("title","Remove filter")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    fade: true,
-                    opacity: 1,
-                    title: function(){ 
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"; 
-                    }
+                    gravity: 'n', fade: true,
+                    title: "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -3496,7 +3492,6 @@ kshf.Facet_Categorical.prototype = {
                 headerLabel = this.parentFacet.options.facetTitle+" <i class='fa fa-chevron-right'></i> "+headerLabel;
         }
         topRow.append("span").attr("class", "header_label")
-            .attr("title", this.attribCount_Total+" attributes")
             .html(headerLabel)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
         var facetIcons = topRow_background.append("span").attr("class","facetIcons");
@@ -3504,9 +3499,8 @@ kshf.Facet_Categorical.prototype = {
             facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'nw',
-                        fade: true,
-                        title: function(){ return me.options.description; }
+                        gravity: 'nw', fade: true,
+                        title: me.options.description
                     });
                 })
                 .on("mouseover",function(d){ this.tipsy.show(); })
@@ -5466,26 +5460,27 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     insertHeader: function(){
         var me = this;
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
 
+        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
         this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader");
 
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
         var topRow = topRow_background.append("div").attr("class","hasLabelWidth")
-            .style("position","relative");
+            .style("position","relative").style("display","inline-block");
+        topRow_background.append("span").attr("class","header_label_arrow")
+            .attr("title","Show/Hide facet").text("▼")
+            .on("click",function(){ me.collapseFacet(!me.collapsed); })
+            ;
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
+            .style("top","calc(40% - 7px)")
             .text('x').attr("title","Remove filter")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    fade: true,
-                    opacity: 1,
-                    title: function(){ 
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"; 
-                    }
+                    gravity: 'n', fade: true,
+                    title: "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -5496,16 +5491,33 @@ kshf.Facet_Interval.prototype = {
                 if(sendLog) sendLog(CATID.FacetFilter,ACTID_FILTER.ClearOnFacet,
                     me.browser.getFilteringState(me.options.facetTitle));
             });
+
+        var headerLabel=this.options.facetTitle;
+        if(this.parentFacet) {
+            if(this.parentFacet.hasAttribs())
+                headerLabel = this.parentFacet.options.facetTitle+" <i class='fa fa-chevron-right'></i> "+headerLabel;
+        }
         topRow.append("span").attr("class", "header_label")
-            .attr("title", this.attribCount_Total+" attributes")
-            .html(this.options.facetTitle)
+            .html(headerLabel)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
-
-        topRow_background.append("span").attr("class","header_label_arrow")
-            .attr("title","Show/Hide attributes").text("▼")
-            .on("click",function(){ me.collapseFacet(!me.collapsed); })
-            ;
-
+        var facetIcons = topRow_background.append("span").attr("class","facetIcons");
+        if(this.options.description){
+            facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'nw', fade: true, title: me.options.description
+                    });
+                })
+                .on("mouseover",function(d){ this.tipsy.show(); })
+                .on("mouseout" ,function(d){ this.tipsy.hide(); });
+        }
+        if(this.isLinked) {
+            facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
+        } else {
+            if(this.parentFacet){
+                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
+            }
+        }
     },
     /** -- */
     refreshAfterFilter: function(resultChange){
