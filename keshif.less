@@ -171,13 +171,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &.layout_top{
         display:block;
     }
+    &.layout_bottom{
+        display:block;
+    }
 
 //    &:not(.layout_right){
     &.layout_leftttt{
         float: left;
         .hasLabelWidth{ text-align: left; }
         .headerGroup {
-            .header_label_arrow{ right: 1px; }
+            .header_label_arrow{ right: 0px; }
             .chartFirstLineBackground{ direction: rtl; }
         }
         .attribGroup{ 
@@ -251,7 +254,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .hasLabelWidth{ text-align: right; }
         .headerGroup {
             span.header_label_arrow{
-                left: 1px;
+                left: 0px;
             }
             .chartFirstLineBackground{
                 direction: ltr;
@@ -791,28 +794,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .subFacets {
             position:relative;
             height: 100%;
-            .wigdhdyt{
-                display: inline-block;
-                position: absolute;
-                height: 100%;
-                width: 16px;
-                border-right: solid 1px lightgray;
-                .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
-                span{
-                    .transform-origin(50% 50%);
-                    .transform(~"rotate(90deg)");
-                    white-space: nowrap;
-                    display: none; // TODO: maybe show later...
-                    font-size: 0.9em;
-                    font-variant: small-caps;
-                    font-weight: 700;
-                    padding-bottom: 2px;
-                    padding-left: 3px;
-                    pointer-events: none;
-                }
-            }
-
         } // subFacets
+
+        .facetGroupBar{
+            display: inline-block;
+            position: absolute;
+            height: 100%;
+            width: 16px;
+            border-right: solid 1px lightgray;
+            .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+            span{
+                height: 100%;
+                width: 1px;
+                margin: auto;
+                background-color: black;
+            }
+        }
 
         .attribTextSearch{
             white-space:nowrap;
@@ -1277,6 +1274,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
         position: relative;
         top: 0px;
+        overflow: hidden;
         z-index: 100; // on top of scatterplot during time collapse animation
         .transition(~'margin-top 700ms ease-in-out');
         div.listItemGroup {
@@ -1438,8 +1436,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         border-style: solid;
         border-color: #dfd2a9;
-        border-top-left-radius: 19px;
-        border-top-right-radius: 19px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
         border-width: 0px 2px;
 
         .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%)");
@@ -1549,18 +1547,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         span.rightBoxes{
             position: absolute;
-            right: 2px;
+            right: 0px;
+            top: -2px;
             font-size: 1.3em;
             color: #635d46;
             i.credits{
                 cursor: pointer;
-                margin: 2px 0px;
+                margin: 0px;
                 &:hover{ color: #cb5454; }
             }
             .datasource{
                 cursor: pointer;
                 text-decoration: none;
-                margin: 2px 3px;
+                margin: 0px 3px;
                 color: #635d46; // if dom type is a, it will show visited links in different color
                 &:hover{ color: #cb5454; }
             }
@@ -1630,6 +1629,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         max-height: 200px;
         border-top: double 0px gray;
         .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
+
+        &[details=true]{
+            max-height: none;
+        }
 
         &[animst=open]{
             opacity: 0;

@@ -6,6 +6,7 @@
         <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css" type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
@@ -44,7 +45,7 @@ $(document).ready( function() {
                 ],
                 timeTitle: "Release Date",
                 timeItemMap : function(tablet){ 
-                    var dt = tablet.data[7];
+                    var dt = tablet.data['Date First Available'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 },
@@ -52,13 +53,12 @@ $(document).ready( function() {
             },{
                 facetTitle: "Operating System",
             },{
-                facetTitle: "Reviews",
-                catItemMap : function(tablet){ return tablet.data[6]; }
+                facetTitle: "Customer Reviews"
             },{
                 facetTitle: "Flash Memory Size (GB)",
                 layout: 'right',
                 catItemMap : function(tablet){
-                    var n= parseFloat(tablet.data[8]);
+                    var n= parseFloat(tablet.data['Flash Memory Size']);
                     if(n<1) return null;
                     return n;
                 },
@@ -66,54 +66,43 @@ $(document).ready( function() {
             },{
                 facetTitle: "Screen Size (inches)",
                 catItemMap : function(tablet){
-                    var x= parseFloat(tablet.data[20]);
+                    var x= parseFloat(tablet.data['Screen Size']);
                     if(isNaN(x)) { return null; }
                     return x;
                 }
             },{
                 facetTitle: "Weight (ounces)",
                 layout: 'right',
-                catItemMap : function(tablet){ return tablet.data[12]; }
+                catItemMap : function(tablet){ return tablet.data['Weight']; }
             },{
                 facetTitle: "Battery Life (hours)",
                 layout: 'right',
-                catItemMap: function(d) { return d.data[1]; }
+                catItemMap: function(d) { return d.data['Battery Life']; }
             }
         ],
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [
                 {   name: 'Rating',
-                    value: function(d){ return d.data[6]; }
+                    value: function(d){ return d.data['Customer Reviews']; }
                 },
                 {   name: 'Op. Sys',
                     value: function(d){ 
-                        if(d.data[14]==='') { return 'N/A';}
-                        if(d.data[14].length>12){
-                            return d.data[14].slice(0,11)+"...";
+                        var v = d.data['Operating System']
+                        if(v==='') { return 'N/A';}
+                        if(v.length>12){
+                            return v.slice(0,11)+"...";
                         }
-                        return d.data[14]; 
+                        return v; 
                     }
                 }
             ],
-            textSearchFunc : function (tablet) { return tablet.data[24]; },
+            textSearchFunc : function (tablet) { return tablet.data.name; },
             contentFunc : function(d){
                 var j;
                 var str="";
                 // name
-                    str+="<div class=\"iteminfo iteminfo_0\"><a target=\"_blank\" href=\""+d.data[25]+"\">"+d.data[24]+"</a></div>";
-                // size and weight
-                if(d.data[11]!==""&&d.data[11]!==null){
-                    str+="<div class=\"iteminfo iteminfo_1\">Size: "+d.data[11]+"</div>";
-                }
-                // Color
-                if(d.data[12]!==""&&d.data[12]!==null){
-                    str+="<div class=\"iteminfo iteminfo_1\">Color: "+d.data[12]+"</div>";
-                }
-                // Wireless
-                if(d.data[22]!==""&&d.data[22]!==null){
-                    str+="<div class=\"iteminfo iteminfo_1\">Wireless: "+d.data[22]+"</div>";
-                }
+                    str+="<div class=\"iteminfo iteminfo_0\"><a target=\"_blank\" href=\""+d.data.url+"\">"+d.data.name+"</a></div>";
                 return str;
             }
         }

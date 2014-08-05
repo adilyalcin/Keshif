@@ -181,6 +181,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_top {
   display: block;
 }
+.kshf.layout_bottom {
+  display: block;
+}
 .kshf.layout_leftttt {
   float: left;
 }
@@ -188,7 +191,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: left;
 }
 .kshf.layout_leftttt .headerGroup .header_label_arrow {
-  right: 1px;
+  right: 0px;
 }
 .kshf.layout_leftttt .headerGroup .chartFirstLineBackground {
   direction: rtl;
@@ -274,7 +277,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
 }
 .kshf:not(.layout_leftttt) .headerGroup span.header_label_arrow {
-  left: 1px;
+  left: 0px;
 }
 .kshf:not(.layout_leftttt) .headerGroup .chartFirstLineBackground {
   direction: ltr;
@@ -849,7 +852,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 100%;
 }
-.kshf .kshfChart .subFacets .wigdhdyt {
+.kshf .kshfChart .facetGroupBar {
   display: inline-block;
   position: absolute;
   height: 100%;
@@ -861,25 +864,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
   background-image: linear-gradient(to left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
 }
-.kshf .kshfChart .subFacets .wigdhdyt span {
-  -webkit-transform-origin: 50% 50%;
-  -moz-transform-origin: 50% 50%;
-  -o-transform-origin: 50% 50%;
-  -ms-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-  white-space: nowrap;
-  display: none;
-  font-size: 0.9em;
-  font-variant: small-caps;
-  font-weight: 700;
-  padding-bottom: 2px;
-  padding-left: 3px;
-  pointer-events: none;
+.kshf .kshfChart .facetGroupBar span {
+  height: 100%;
+  width: 1px;
+  margin: auto;
+  background-color: black;
 }
 .kshf .kshfChart .attribTextSearch {
   white-space: nowrap;
@@ -1336,6 +1325,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv {
   position: relative;
   top: 0px;
+  overflow: hidden;
   z-index: 100;
   -webkit-transition: margin-top 700ms ease-in-out;
   -moz-transition: margin-top 700ms ease-in-out;
@@ -1509,8 +1499,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   border-style: solid;
   border-color: #dfd2a9;
-  border-top-left-radius: 19px;
-  border-top-right-radius: 19px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   border-width: 0px 2px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjMsIDIxMCwgMTY5KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyNTUsMjU1LDI1NSkiIHN0b3Atb3BhY2l0eT0iMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
@@ -1614,13 +1604,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader span.rightBoxes {
   position: absolute;
-  right: 2px;
+  right: 0px;
+  top: -2px;
   font-size: 1.3em;
   color: #635d46;
 }
 .kshf div.listHeader span.rightBoxes i.credits {
   cursor: pointer;
-  margin: 2px 0px;
+  margin: 0px;
 }
 .kshf div.listHeader span.rightBoxes i.credits:hover {
   color: #cb5454;
@@ -1628,7 +1619,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.rightBoxes .datasource {
   cursor: pointer;
   text-decoration: none;
-  margin: 2px 3px;
+  margin: 0px 3px;
   color: #635d46;
 }
 .kshf div.listHeader span.rightBoxes .datasource:hover {
@@ -1699,6 +1690,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+}
+.kshf div.listItem[details=true] {
+  max-height: none;
 }
 .kshf div.listItem[animst=open] {
   opacity: 0;

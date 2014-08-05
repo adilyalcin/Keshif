@@ -5,6 +5,7 @@
         <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
@@ -38,7 +39,7 @@ $(document).ready(function() {
             dirPath: 'data/',
             fileType: 'csv',
             sheets : [
-                {name:"baseball"},
+                {name:"baseball", id:"Transact.ID"},
                 {name:"baseball_trantype"},
                 {name:"baseball_teams", tableName: "baseball_teams_1"},
                 {name:"baseball_teams", tableName: "baseball_teams_2"},
@@ -49,10 +50,12 @@ $(document).ready(function() {
         facets: [
             {
                 facetTitle: "Trans. Type",
-                catTableName: "baseball_trantype",
+                catLabelText: function(d){
+                    return kshf.dt_id.baseball_trantype[d.data[1]].data.info;
+                },
                 timeTitle: "Transaction Date",
                 timeItemMap : function(tr){ 
-                    var dt = tr.data[0];
+                    var dt = tr.data['primary-date'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 },
@@ -60,44 +63,51 @@ $(document).ready(function() {
                 facetTitle: "From",
                 facets: [
                     {
-                        facetTitle: "From Team",
+                        facetTitle: "Team",
                         catTableName: "baseball_teams_1",
-                        barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[2];},
-                        barInfoText: "Color:League",
+                        catItemMap: function(d){
+                            return d.data['From Team'];
+                        },
+                        catLabelText: function(d){
+                            return d.data.name;
+                        },
                         textFilter : 'from', textGroup  : 'teams'
                     },{
-                        facetTitle: "From League",
+                        facetTitle: "League",
                         catTableName: "baseball_leagues_1",
                         catItemMap : function(tr){
-                            var x=tr.data[4];
+                            var x = tr.data['From Team'];
                             if(x==="") return null;
-                            return kshf.dt_id.baseball_teams_1[x].data[2];
+                            return kshf.dt_id.baseball_teams_1[x].data.league;
                         },
-                        barClassFunc: function(d) {return "bar_style_teamleague_"+d.data[0];},
-                        barInfoText: "Color:League",
+                        catLabelText: function(d){ return d.data.name; },
                         textFilter: 'from'
                     }
                 ]
             },{
                 facetTitle: "To",
+                layout: 'right',
                 facets: [
                     {
-                        facetTitle: "To Team",
+                        facetTitle: "Team",
                         catTableName: "baseball_teams_2",
-                        barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[2];},
-                        barInfoText: "Color:League",
+                        catItemMap: function(d){
+                            return d.data['To Team'];
+                        },
+                        catLabelText: function(d){
+                            return d.data.name;
+                        },
                         textFilter : 'to', textGroup  : 'teams'
                     },{
-                        facetTitle: "To League",
+                        facetTitle: "League",
                         catTableName: "baseball_leagues_2",
                         catItemMap : function(tr){
-                            var x=tr.data[5];
+                            var x = tr.data['To Team'];
                             if(x==="") return null;
-                            return kshf.dt_id.baseball_teams_1[x].data[2];
+                            return kshf.dt_id.baseball_teams_2[x].data.league;
                         },
-                        barClassFunc: function(d){ return "bar_style_teamleague_"+d.data[0];},
-                        barInfoText: "Color:League",
-                        textFilter: 'to'
+                        catLabelText: function(d){ return d.data.name; },
+                        textFilter: 'from'
                     }
                 ]
             }
@@ -107,14 +117,14 @@ $(document).ready(function() {
             sortingOpts : [
                 {   name: 'Date',
                     value: function(d){ 
-                        var dt = d.data[0];
+                        var dt = d.data['primary-date'];
                         if(dt===""){ return null; }
                         dt = new Date(moment(dt,"MM/DD/YYYY"));
                         dt = new Date(dt.getUTCFullYear(),dt.getUTCMonth());
                         return dt.getTime();
                     },
                     label: function(d){
-                        var dt = d.data[0];
+                        var dt = d.data['primary-date'];
                         if(dt===""){ return null; }
                         return moment(dt,"MM/DD/YYYY").format("MMM YYYY"); 
                     }
@@ -125,7 +135,8 @@ $(document).ready(function() {
                 var str="";
                 // name
                     str+="<div class=\"iteminfo iteminfo_0\">Player: "+
-                        "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data[2][0]+"/P"+d.data[2]+".htm\">"+d.data[2]+"</a></div>";
+                        "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data.player[0]+"/P"+
+                        d.data.player+".htm\">"+d.data.player+"</a></div>";
                 return str;
             }
         }

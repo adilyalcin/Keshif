@@ -9238,7 +9238,7 @@
     return d.getUTCDay() && d.getUTCDate() != 1;
   } ], [ "%b %d", function(d) {
     return d.getUTCDate() != 1;
-  } ], [ "%B", function(d) {
+  } ], [ "%b", function(d) {
     return d.getUTCMonth();
   } ], [ "%Y", d3_true ] ]);
   d3_time_scaleUtcMethods.year = d3_time.year.utc;
