@@ -357,20 +357,17 @@ kshf.Util = {
             var e=this.parentNode;
             d3.select("body").style('cursor','ew-resize')
                 .on("mousemove", function() {
+                    options.owner.browser.pauseStopPreview = true;
                     var mouseX = d3.mouse(e)[0];
-                    var range=mouseX/(options.range.width*1.0);
-                    range=Math.min(1,Math.max(0,range));
-//                    var targetPos = options.range.min + 
-//                        (options.range.max - options.range.min)*range;
-
                     var targetPos = options.owner[options.scale].invert(mouseX);
-                    targetPos = Math.round(targetPos);
+//                    targetPos = Math.round(targetPos);
                     options.filter.active[d] = targetPos;
                     if(_isFiltered())
                         options.filter.addFilter(true);
                     else
                         options.filter.clearFilter(true);
                 }).on("mouseup", function(){
+                    options.owner.browser.pauseStopPreview = false;
                     options.root.attr("noanim",false);
                     d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                 });
@@ -758,8 +755,6 @@ kshf.Item.prototype = {
         if(this.listItem) this.listItem.setAttribute("highlight",false);
     },
     nohighlightAdvanced: function(noRecurse){
-        if(this.highlightDone) return;
-        this.highlightDone = true;
         this.nohighlightListItem();
         if(this.facetDOM && this.itemCount_Active>0){
             this.facetDOM.setAttribute("highlight",false);
@@ -771,34 +766,6 @@ kshf.Item.prototype = {
                 });
             }
         }
-        this.mappedDataCache.forEach(function(m){
-            if(m===null) return;
-            if(m instanceof Array) {
-                m.forEach(function(item){
-                    item.itemCount_Preview--;
-                    if(item.barChart && !item.barChart.isLinked){
-                        if(item.itemCount_Preview===0 && item.barChart!==noRecurse){
-                            item.mappedDOMs.forEach(function(d){
-                                d.__data__.itemCount_Preview--;
-                            });
-                        }
-                    }
-                });
-            } else {
-                if(m.itemCount_Preview!==undefined){
-                    m.itemCount_Preview--;
-                    if(m.barChart && !m.barChart.isLinked){
-                        if(m.itemCount_Preview===0 && m.barChart!==noRecurse){
-                            m.mappedDOMs.forEach(function(d){
-                                d.__data__.itemCount_Preview--;
-                            });
-                        }
-                    }
-                } else if(m.b) {// histogram bin
-                    m.b.itemCount_Preview--;
-                }
-            }
-        });
     },
     /** Removes higlight from all relevant UI parts to this UI item - Attributes, dots, and list */
     nohighlightAll: function(){
@@ -860,8 +827,9 @@ kshf.Filter.prototype = {
         if(forceUpdate===true){
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
-//            if(itemsSelectedCt_!==this.browser.itemsSelectedCt)
+            if(itemsSelectedCt_!==this.browser.itemsSelectedCt) {
                 this.browser.update(-1); // fewer results, probably!
+            }
         }
     },
     clearFilter: function(forceUpdate,recursive){
@@ -1721,6 +1689,7 @@ kshf.Browser = function(options){
     this.sepWidth = 10;
     this.line_height = 18;
     this.filterList = [];
+    this.pauseStopPreview = false;
 
     this.columnsSkip = options.columnsSkip;
 
@@ -2548,6 +2517,9 @@ kshf.Browser.prototype = {
         this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
+    clearResultPreview: function(){
+        this.facets.forEach(function(facet){ facet.clearResultPreview(); });
+    },
     refreshResultPreview: function(){
         this.facets.forEach(function(facet){ facet.refreshResultPreview(); });
     },
@@ -2850,6 +2822,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     }
 
     this.scrollTop_cache=0;
+    this.attrib_InDisplay_First = 0;
     this.configRowCount=0;
 
     // COLLAPSED
@@ -3341,7 +3314,8 @@ kshf.Facet_Categorical.prototype = {
                 }
 
                 me.scrollTop_cache = this.scrollTop;
-                me.refreshScrollDisplayMore(Math.round(this.scrollTop / 18.0)+me.attribCount_InDisplay);
+                me.attrib_InDisplay_First = Math.floor(this.scrollTop / (me.browser.line_height*1.0));
+                me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.attribCount_InDisplay);
             })
             ;
 
@@ -3755,12 +3729,32 @@ kshf.Facet_Categorical.prototype = {
             });
     },
     /** -- */
+    clearResultPreview: function(){
+        if(!this.hasAttribs()) return;
+        if(this.collapsed) return;
+        var me = this;
+        this.dom.bar_highlight
+            .each(function(attrib){
+                if(attrib.orderIndex<me.attrib_InDisplay_First) return;
+                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+3) return;
+                attrib.itemCount_Preview=0;
+                var transform="scaleX(0)";
+                this.style.webkitTransform = transform;
+                this.style.MozTransform = transform;
+                this.style.msTransform = transform;
+                this.style.OTransform = transform;
+                this.style.transform = transform;
+            });
+    },
+    /** -- */
     refreshResultPreview: function(){
         if(!this.hasAttribs()) return;
         if(this.collapsed) return;
         var me = this;
         this.dom.bar_highlight
             .each(function(attrib){
+                if(attrib.orderIndex<me.attrib_InDisplay_First) return;
+                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+3) return;
                 var transform="scaleX("+me.catBarAxisScale(attrib.itemCount_Preview)+")";
                 this.style.webkitTransform = transform;
                 this.style.MozTransform = transform;
@@ -4097,17 +4091,19 @@ kshf.Facet_Categorical.prototype = {
             if(!me.isAttribSelectable(attrib)) return;
             attrib.facetDOM.setAttribute("highlight",true);
 
-            me.browser.items.forEach(function(item){ item.highlightDone = false; })
-            attrib.items.forEach(function(item){ item.highlightDone = false; })
+            if(!me.browser.pauseStopPreview){
+                me.browser.items.forEach(function(item){ item.highlightDone = false; })
+                attrib.items.forEach(function(item){ item.highlightDone = false; })
 
-            attrib.items.forEach(function(item){
-                if(item.isWanted) item.highlightAdvanced(me.parentFacet);
-            });
+                attrib.items.forEach(function(item){
+                    if(item.isWanted) item.highlightAdvanced(me.parentFacet);
+                });
 
-            // this part highlights sub-facet attributes...
-            attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",true); });
+                // this part highlights sub-facet attributes...
+                attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",true); });
 
-            me.browser.refreshResultPreview();
+                me.browser.refreshResultPreview();
+            }
 
             // Rest is about tooltip...
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
@@ -4130,17 +4126,15 @@ kshf.Facet_Categorical.prototype = {
             if(!me.isAttribSelectable(attrib)) return;
             attrib.facetDOM.setAttribute("highlight",false);
 
-            me.browser.items.forEach(function(item){ item.highlightDone = false; })
-            attrib.items.forEach(function(item){ item.highlightDone = false; })
+            if(!me.browser.pauseStopPreview){
+                attrib.items.forEach(function(item){
+                    if(item.isWanted) item.nohighlightAdvanced(me.parentFacet);
+                });
 
-            attrib.items.forEach(function(item){
-                if(item.isWanted) item.nohighlightAdvanced(me.parentFacet);
-            });
+                attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",false); });
 
-            // this part un-highlights sub-facet attributes...
-            attrib.mappedDOMs.forEach(function(d){ d.setAttribute("highlight",false); });
-
-            me.browser.refreshResultPreview();
+                me.browser.clearResultPreview();
+            }
 
             if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
         };
@@ -5008,21 +5002,25 @@ kshf.Facet_Interval = function(kshf_, options){
             this.refreshIntervalSlider();
         },
         onFilter: function(filter, recursive){
-            this.divRoot.attr("filtered",true);
+            if(this.divRoot.attr("filtered")!=="true")
+                this.divRoot.attr("filtered",true);
+
             var i_min = filter.active.min;
             var i_max = filter.active.max;
             if(!filter.max_inclusive) i_max-=0.01;
+            var checkFilter = function(v){
+                return v>=i_min && v<=i_max;
+            };
 
             filter.filteredItems.forEach(function(item){
                 var v = item.mappedDataCache[filter.id].v;
                 if(v===null)
                     item.setFilter(filter.id, false);
                 else
-                    item.setFilter(filter.id, (v>=i_min) && (v<=i_max) );
+                    item.setFilter(filter.id, checkFilter(v) );
+                // TODO: Check if the interval scale is extending/shrinking or completely updated...
                 item.updateWanted(recursive);
             },this);
-
-            console.log(filter.active);
 
             // update handles
             this.refreshIntervalSlider();
@@ -5077,10 +5075,10 @@ kshf.Facet_Interval = function(kshf_, options){
     this.resetIntervalFilterActive();
 };
 
-kshf.Facet_Interval.prototype = {
+kshf.Facet_Interval.prototype = { 
     /** -- */
     getWidth: function(){
-        if(this.options.layout==='left')
+        if(this.options.layout==='left' || this.options.layout==='right')
             return this.browser.getWidth_LeftPanel() - this.getWidth_Offset();
         return this.browser.getWidth_Total()-this.getWidth_Offset();
     },
@@ -5263,30 +5261,30 @@ kshf.Facet_Interval.prototype = {
             });
 
         var onMouseOver = function(bar){
-            this.parentNode.setAttribute("highlight",true);
+            if(!me.browser.pauseStopPreview){
+                this.parentNode.setAttribute("highlight",true);
 
-            me.browser.items.forEach(function(item){ item.highlightDone = false; })
-            bar.forEach(function(item){ item.highlightDone = false; });
+                me.browser.items.forEach(function(item){ item.highlightDone = false; })
+                bar.forEach(function(item){ item.highlightDone = false; });
 
-            bar.forEach(function(item){
-                if(item.isWanted) item.highlightAdvanced(me.parentFacet);
-            });
-            // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
+                bar.forEach(function(item){
+                    if(item.isWanted) item.highlightAdvanced(me.parentFacet);
+                });
+                // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
 
-            me.browser.refreshResultPreview();
+                me.browser.refreshResultPreview();
+            }
         };
         var onMouseOut = function(bar){
-            this.parentNode.setAttribute("highlight",false);
+            if(!me.browser.pauseStopPreview){
+                this.parentNode.setAttribute("highlight",false);
 
-            me.browser.items.forEach(function(item){ item.highlightDone = false; })
-            bar.forEach(function(item){ item.highlightDone = false; });
+                bar.forEach(function(item){
+                    if(item.isWanted) item.nohighlightAdvanced(me.parentFacet);
+                });
 
-            bar.forEach(function(item){
-                if(item.isWanted) item.nohighlightAdvanced(me.parentFacet);
-            });
-            // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
-
-            me.browser.refreshResultPreview();
+                me.browser.clearResultPreview();
+            }
         };
         var onClick = function(bar){
             if(this.parentNode.getAttribute("filtered")==="true"){
@@ -5298,10 +5296,17 @@ kshf.Facet_Interval.prototype = {
 
             // store histogram state
             me.intervalFilter.dom_HistogramBar = this;
-            me.intervalFilter.active = {
-                min: bar.x,
-                max: bar.x+bar.dx
-            };
+            if(me.options.intervalScale!=='time'){
+                me.intervalFilter.active = {
+                    min: bar.x,
+                    max: bar.x+bar.dx
+                };
+            } else {
+                me.intervalFilter.active = {
+                    min: bar.x,
+                    max: new Date(bar.x.getTime()+bar.dx)
+                };
+            }
             // if we are filtering the last bar, make max_score inclusive
             me.intervalFilter.max_inclusive = (bar.x+bar.dx)===me.intervalRange.max;
 
@@ -5403,6 +5408,20 @@ kshf.Facet_Interval.prototype = {
         });
         this.dom.bars_item_count.each(function(bar){
             var transform="translate("+(me.barWidth/2)+"px,"+(-me.barScale(bar.itemCount_Active))+"px)";
+            this.style.webkitTransform = transform;
+            this.style.MozTransform = transform;
+            this.style.msTransform = transform;
+            this.style.OTransform = transform;
+            this.style.transform = transform;
+        });
+    },
+    clearResultPreview: function(){
+        if(this.isEmpty) return;
+        if(this.collapsed) return;
+        var me=this;
+        this.dom.bars_highlight.each(function(bar){
+            bar.itemCount_Preview=0;
+            var transform="scale("+(me.barWidth-me.barGap*2)+",0)";
             this.style.webkitTransform = transform;
             this.style.MozTransform = transform;
             this.style.msTransform = transform;
