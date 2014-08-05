@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>NSF Awards, with ElementCode(s): 7364,7367,7495</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+// Source: http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true
+
+google.setOnLoadCallback(function () {
+    
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Active NSF Awards",
+        categoryTextWidth: 200,
+        source: {
+            dirPath: './data/',
+            fileType: 'csv',
+            sheets: [ {name:"awards", id:"AwardNumber", preview: 0}, {name:"states", id:"id"} ]
+        },
+        facets: [
+            {
+                facetTitle: "Program(s)"
+            },{
+                facetTitle: "AwardInstrument",
+            },{
+                facetTitle: "Start Date",
+                catItemMap: function(d){
+                    var dt = d.data.StartDate;
+                    if(dt===""){ return null; }
+                    var m = moment(dt,"MM/DD/YYYY");
+                    return new Date(m);
+                },
+                intervalScale: 'time',
+                layout: 'bottom'
+            },{
+                facetTitle: "NSFOrganization", collapsed: true
+            },{
+                facetTitle: "NSFDirectorate", collapsed: true
+            },{
+                facetTitle: "ProgramManager", collapsed: true
+            },{
+                facetTitle: "Awarded Amount ($)",
+                catItemMap: function(d){ 
+                    var v = d.data.AwardedAmountToDate;// "$333,360.00"
+                    return Number(v.replace(/[^0-9\.]+/g,""));
+                },
+                intervalScale: 'log'
+            },{
+                facetTitle: "PrincipalInvestigator",
+                layout: 'right'
+            },{
+                facetTitle: "-Organization-",
+                layout: 'right',
+                facets: [
+                    {   facetTitle: "Organization Name",
+                        catItemMap: function(d){ return d.data.Organization; }
+                    },{
+                        facetTitle: "OrganizationState",
+                        catLabelText: function(d){
+                            return kshf.dt_id.states[d.data[1]].data.name;
+                        }
+                    },{
+                        facetTitle: "OrganizationCity", collapsed: true
+                    }
+                ]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 85,
+            sortingOpts : [
+                { name: 'Amount', 
+                    value: function(d){ 
+                        var v = d.data.AwardedAmountToDate;// "$333,360.00"
+                        return Number(v.replace(/[^0-9\.]+/g,""));
+                    },
+                    label: function(d){ 
+                        var v=d.data.AwardedAmountToDate;
+                        return v.slice(0,v.length-3);
+                    }
+                },
+                { name: 'AwardNo', value: function(d){ return d.data.AwardNumber; } },
+            ],
+            textSearch : 'Title',
+            detailsToggle : "Single",
+            detailsDefault : false,
+            contentFunc : function(d){
+                var str="";
+                str+= d.data.Title;
+                str+="<span class='item_details iteminfo_2'>"+d.data.Abstract+"</span>";
+                return str;
+            }
+        }
+    });
+});
+        </script>
+        <style> #chart_div { height: 700px; width:1250px; } </style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
