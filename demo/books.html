@@ -43,7 +43,7 @@ $(document).ready( function(){
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth:250,
+        categoryTextWidth:175,
         // barChartWidth: 40,
         itemName: "Books in ICDL",
         source : {
@@ -99,17 +99,15 @@ $(document).ready( function(){
                         facetTitle: "Language",
                         catItemMap: function(book){ return getIndicesWithParent(book,3); },
                         catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed:true
-                    },{
-                        facetTitle: "Collection",
-                        catItemMap: function(book){ return getIndicesWithParent(book,473); },
-                        catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed:true
+                        attribNameFunc: getIndexTitle
                     },{
                         facetTitle: "Age",
                         catItemMap: function(book){ return getIndicesWithParent(book,83); },
+                        catLabelText: function(d){ return d.data[2]; },
+                        attribNameFunc: getIndexTitle
+                    },{
+                        facetTitle: "Collection",
+                        catItemMap: function(book){ return getIndicesWithParent(book,473); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed:true
@@ -123,20 +121,19 @@ $(document).ready( function(){
                 ]
             },{
                 facetTitle: "Appearance",
+                layout: 'right',
                 collapsed: true,
                 facets: [
                     {
                         facetTitle: "Format",
                         catItemMap: function(book){ return getIndicesWithParent(book,15); },
                         catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed:true
+                        attribNameFunc: getIndexTitle
                     },{
                         facetTitle: "Length",
                         catItemMap: function(book){ return getIndicesWithParent(book,260); },
                         catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed:true
+                        attribNameFunc: getIndexTitle
                     },{
                         facetTitle: "Cover Color",
                         catItemMap: function(book){ return getIndicesWithParent(book,4); },
@@ -153,20 +150,19 @@ $(document).ready( function(){
                 ]
             },{
                 facetTitle: "Content",
+                layout: 'right',
                 collapsed: true,
                 facets: [
                     {
                         facetTitle: "Countries",
                         catItemMap: function(book){ return getIndicesWithParent(book,359); },
                         catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true,
+                        attribNameFunc: getIndexTitle
                     },{
                         facetTitle: "Characters",
                         catItemMap: function(book){ return getIndicesWithParent(book,257); },
                         catLabelText: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true,
+                        attribNameFunc: getIndexTitle
                     },{
                         facetTitle: "Time Periods - When",
                         catItemMap: function(book){ return getIndicesWithParent(book,287); },
@@ -213,7 +209,7 @@ $(document).ready( function(){
 </script>
 <style>
     #chart_div{
-        width:1000px;
+        width:1300px;
         height:750px;
     }
     div.listItem{
