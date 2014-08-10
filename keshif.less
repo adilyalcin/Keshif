@@ -41,6 +41,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @color_bars: #8699A8;
 @color_filtered: #30B8C4;
+@color_facet_arrow: rgb(231, 215, 97);
+@color_facet_group: #E9E5CB;
+@color_bar_preview: orangered;
 
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
 
@@ -72,14 +75,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .timeDot{
             .transition(@bar_animation);
-        }
-        .rangeSlider{
-            .base {
-                .transition(~'transform 700ms ease-in-out');
-            }
-            .handle{
-                .transition(~'transform 700ms ease-in-out');
-            }
         }
         .facetInterval .histogram .bin{
             .transition(@bar_animation);
@@ -162,7 +157,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf {
 	font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
-    display:inline-block;
+    display: block;
 
     &.layout_left .kshfChart{
         display: block;
@@ -221,7 +216,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .kshfChart[collapsed=true] {
             > .headerGroup {
-                .leftHeader span.header_label_arrow{ .rotate(90deg); }
+                .leftHeader span.header_label_arrow span{ .rotate(90deg); }
             }
         }
         .belowAttribs{
@@ -244,10 +239,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &.layout_right{
         float: right;
         vertical-align: top;
+        position: relative;
     }
     &.layout_left{
         float: left;
         vertical-align: top;
+        position: relative;
     }
     &:not(.layout_leftttt){
 //        float: right;
@@ -297,7 +294,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .kshfChart[collapsed=true] {
             > .headerGroup {
-                .leftHeader span.header_label_arrow{ .rotate(-90deg); }
+                .leftHeader span.header_label_arrow span{ .rotate(-90deg); }
             }
         }
         .belowAttribs{ direction: ltr; }
@@ -315,7 +312,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     &.layout_left_background{
         position: absolute;
-        // min-height: 100%;
+        height: 100%;
         left: 0px;
         top: 2px;
 //        .background-image(~"linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%)");
@@ -489,26 +486,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .headerGroup{
         pointer-events:none;
-        position:relative;
-        .SubFacetText{
-            .rotate(90deg);
-            .transform-origin(0 0);
-            position: absolute;
-            border: solid 1px rgb(134, 131, 120);
-            border-bottom-right-radius: 8px;
-            border-bottom-left-radius: 8px;
-            padding: 2px 5px;
-            background-color: #EEEAE0;
-            font-size: 0.8em;
-            font-weight: 700;
-            font-variant: small-caps;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            pointer-events: all;
-            &:hover{
-                background-color:white;
-            }
-        }
         span.header_label {
             font-size: 1.0em;
             font-weight: 700;
@@ -546,14 +523,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             float:right;
         }
         span.header_label_arrow{
-            display: block;
+            display: inline;
             position: absolute;
-            bottom: 1px;
+            top: 0px;
+            height: 100%;
+            width: 1em;
             font-size: 0.8em;
             cursor: pointer;
-            .transition(~'all 250ms linear');
-            .rotate(0deg);
+            .transition(~'color 250ms linear');
             &:hover{ color:#cb5454; }
+            span{
+                position: absolute;
+                left: 0px;
+                .transition(~'transform 250ms linear');
+                .rotate(0deg);
+            }
         }
         .leftHeader {
             display: inline-block;
@@ -589,6 +573,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         overflow: hidden; // Keep it this way!
 
+        // appers under another keshif chart (subchart)
+        .kshfChart span.header_label_arrow{
+            .background-image(~"linear-gradient(right, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
+        }
+
         > .wrapper{
             position: relative;
             // so that absolute positioned elements will not overflow
@@ -601,6 +590,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 overflow: hidden;
 
                 > .facetControls{
+                    border-bottom: dotted 1px lightgray;
+                    margin-bottom: -1px;
                     display: none;
                     > span{
                         display: inline-block;
@@ -618,6 +609,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         span.optionSelect_Label{
                             font-size: 0.7em;
                             font-weight: 500;
+                            margin-right: 2px;
                             vertical-align: middle;
                             cursor: default;
                             pointer-events:none;
@@ -739,11 +731,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     cursor: pointer;
                                 }
                                 &.total{
-                                    opacity:0.1;
+                                    // opacity:0.1;
+                                    background-color: #DEE2E6;
                                     pointer-events: none;
                                 }
                                 &.hover {
-                                    background-color: orangered;
+                                    background-color: @color_bar_preview;
                                     pointer-events: none;
                                     .transform(~'scaleX(0)');
                                     &[fast]{
@@ -784,7 +777,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         .transform-origin(0% 0%);
                     }
                     .total span.bar{
-                        opacity: 0.2;
+                        // opacity: 0.2;
+                        background-color: #DEE2E6;
                     }
                 }
             } // facetInterval
@@ -800,9 +794,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline-block;
             position: absolute;
             height: 100%;
-            width: 16px;
-            border-right: solid 1px lightgray;
-            .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+            width: 17px;
+            border-right: solid 2px rgb(204,195,195);
+            //background-color: @color_facet_group;
+            .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
             span{
                 height: 100%;
                 width: 1px;
@@ -871,12 +866,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .facetControls{ display: none; }
             }
             > .wrapper .facetCategorical{
-                > div { display: none; }
-                > span { display: none; }
+                > div { display: none !important; }
             }
             > .facetInterval{ 
-                > div { display: none; }
-                > span { display: none; }
+                > div { display: none !important; }
             }
             > .subFacets {
                 .wigdhdyt span{
@@ -891,9 +884,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .headerGroup .rightHeader {
                 color: gray;
-                span.header_label_arrow{
-                    .rotate(-90deg);
-                }
+                span.header_label_arrow span{ .rotate(-90deg); }
             }
             div.attrib {
                 .row_bar_line{
@@ -981,12 +972,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[hasFacets=true]{
+            //border-top: double 3px #87868B;
+            margin-bottom: 2px;
+//            padding-top: 3px;
             > .headerGroup {
                 .chartFirstLineBackground {
                     font-size: 1.3em;
                 }
                 .chartFirstLineBackground {
-                    .background-image(~"linear-gradient(left, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
+                    //.background-image(~"linear-gradient(left, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
+                    //background-color: @color_facet_group;
+//                    .background-image(~"linear-gradient(left, rgba(226,224,235,0) 0%, rgba(226,224,235,1) 20px, rgba(226,224,235,1) 90%, rgba(226,224,235,0) 100%);");
+                }
+                .header_label_arrow{
+                    border-right: solid 2px rgb(204,195,195);
+                    //color: #5947B4;
+                    //background-color: #DFDEE7;
+                    width: 17px;
+                    .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
                 }
             }
             > .wigdhdyt{
@@ -1003,9 +1006,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         pointer-events: all;
         z-index: 5;
-        border-top: dotted 1px lightgray;
-        //border-bottom: dotted 1px lightgray;
-        top: -1px;
         .transition(~'height 700ms ease-in-out');
     }
     div.belowAttribs{
@@ -1108,11 +1108,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 10px;
                 background-color: @color_bars;
                 &.total {
-                    opacity:0.2;
+                    // opacity:0.2;
+                    background-color: #DEE2E6;
                     pointer-events: none;
                 }
                 &.hover {
-                    background-color: orangered;
+                    background-color: @color_bar_preview;
                     pointer-events: none;
                     .transform(~'scaleX(0)');
                     &[fast]{
@@ -1139,7 +1140,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     margin-top: 4px;
                     opacity: 0.2;
                     &.total{
-                        opacity:0.1;
+                        // opacity:0.1;
+                        background-color: #DEE2E6;
                     }
                 }
                 span.timeDot{
@@ -1416,7 +1418,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // div.listDiv
 
 
-    span.scrollToTop{
+    div.scrollToTop{
         display:inline-block;
         visibility: hidden;
         color: red;
@@ -1480,7 +1482,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        span.scrollToTop{
+        div.scrollToTop{
             position: absolute;
             right: 0px;
             bottom: 0px;
@@ -1872,6 +1874,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[filtered=false]{
             span.invalidArea{
                 display: none;
+            }
+        }
+        &[anim=true]{
+            .base {
+                .transition(@bar_animation);
+            }
+            .handle{
+                .transition(@bar_animation);
             }
         }
     } // rangeSlider

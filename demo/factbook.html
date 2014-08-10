@@ -10,10 +10,17 @@
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
+        <!-- Demos - shared -->
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
+        <!-- Logging features -->
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
+
         <script type="text/javascript">
+
+var demoID = 253;
 
 var tableName = "Country";
 
@@ -67,7 +74,8 @@ function loadFactbook(facts){
         var region = this;
         var regionName = region.getAttribute("name");
         var regionID = region.getAttribute("id");
-        $(this).find("> country").each(function(){
+        $(this).find("> country").each(function(d,i){
+            if(d>15) return;
             var country = this;
             var cData = {};
             cData.id = this.getAttribute("id"); // ag, tr, us, ...
@@ -143,13 +151,13 @@ function loadFactbook(facts){
                         // remove (estimate...) and comma's
                         var n = this.textContent.replace(/,|\.|(\(.*\))/g,'');
                         n = parseInt(n);
-                        if(n===NaN) return;
+                        if(isNaN(n)) break;
                         cData.Population = n;
                         break;
                     case 'f2206': //  EDUCATION EXPENDITURES
                         var n = this.textContent.replace(/\% of GDP (\(.*\))/g,'');
                         n = parseFloat(n);
-                        if(n===NaN) return;
+                        if(isNaN(n)) break;
                         cData["Education Expenditures"] = n;
                         break;
                     default:
@@ -170,10 +178,11 @@ function loadFactbook(facts){
 };
 
 $(document).ready( function(){
-	new kshf.Browser({
+	browser = new kshf.Browser({
         domID : "#chart_div",
         itemName: "Countries",
-        categoryTextWidth: 200,
+        categoryTextWidth: 180,
+        barChartWidth: 120,
         source: { url: "http://jmatchparser.sourceforge.net/",
             callback: function(browser){
             factBrowser = browser;
@@ -181,7 +190,7 @@ $(document).ready( function(){
                 url:"./data/factbook.xml",
                 type:"GET",
                 dataType:"xml",
-                async: false,
+                async: true,
                 success: function(facts){ return loadFactbook(facts); }
             });
         } },
@@ -191,21 +200,22 @@ $(document).ready( function(){
                 facetTitle: "Natural resources",
                 description: "This entry lists a country's mineral, petroleum, hydropower, and other resources of commercial importance, such as rare earth elements (REEs). In general, products appear only if they make a significant contribution to the economy, or are likely to do so in the future."
             },{
-                facetTitle: "Education Expenditures",
-                description: "This entry provides the public expenditure on education as a percent of GDP."
-            },{
-                facetTitle: "Population",
-                intervalScale: 'log',
-                description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."
-//            },{
-//                facetTitle: "Languages"
-            },{
-                facetTitle: "Religions", layout: "right",
+                facetTitle: "Religions", layout: "left",
                 description: "This entry is a listing of religions in a country."
             },{
                 facetTitle: "Border countries", layout: "right"
 //            },{
 //                facetTitle: "Independence", layout: "right"
+            },{
+                facetTitle: "Education Expend.s (%)", layout: "right",
+                description: "This entry provides the public expenditure on education as a percent of GDP.",
+                catItemMap: function(d){ return d.data["Education Expenditures"]; }
+            },{
+                facetTitle: "Population", layout: "right",
+                intervalScale: 'log',
+                description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."
+//            },{
+//                facetTitle: "Languages"
             },{
                 facetTitle: "Median Age", layout: "right",
                 description: "This entry is the age that divides a population into two numerically equal groups; that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. Currently, the median age ranges from a low of about 15 in Uganda and Gaza Strip to 40 or more in several European countries and Japan."
@@ -215,9 +225,13 @@ $(document).ready( function(){
             sortColWidth: 80,
             sortingOpts : [
 //                { name: 'id' },
-                { name: 'Population',
-                  label: function(d){ return d3.format(".4s")(d.data.Population);}
-                  },
+                {   name: 'Population',
+                    label: function(d){
+                        var p=d.data.Population;
+                        if(p===undefined) return "-";
+                        return d3.format(".4s")(p);
+                    }
+                },
                 { name: 'Education Expenditures'}
             ],
             textSearch: 'Name',
@@ -282,5 +296,5 @@ $(document).ready( function(){
     </style>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+        <div class="contents"><div id="chart_div" onmousemove="logIf.setSessionID(this)"></div></div>
     </body></html>

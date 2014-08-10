@@ -75,8 +75,9 @@ $(document).ready(function(){
                         facetTitle: "Year Discovered", 
                         catItemMap : function(overflow){ 
                             // parses the date string and returns the year
-                            return moment(overflow.data[11]).year();
-                        }
+                            return new Date(moment(overflow.data[11]));
+                        },
+                        intervalScale: 'time'
                     },{ 
                         facetTitle: "Duration",
                         catItemMap : getDuration_Human

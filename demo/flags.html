@@ -2,9 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>World Country Flags</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
@@ -118,7 +120,7 @@ $(document).ready( function() {
         source : {
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [ {name:"flags"} ]
+            sheets : [ {name:"flags", id:'Country'} ]
         },
 /*        source : {
             gdocId : '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
@@ -133,13 +135,13 @@ $(document).ready( function() {
                     { name: "First Flag",  func: kshf.Util.sortFunc_Time_First }
                 ],
                 timeTitle: "Flag Date",
-                timeItemMap : function(flag){  return new Date(moment(flag.data[flag_cols.Independence],"MM/DD/YYYY")); },
+                timeItemMap : function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
                 timeBarShow: true,
                 textFilter : 'in', textGroup  : 'continents'
             },{
                 facetTitle: "Language",
                 catItemMap : function(flag){
-                    var r= flag.data[flag_cols.Language];
+                    var r= flag.data.Language;
                     if(r===9) return 10;
                     return r;
                 },
@@ -163,13 +165,13 @@ $(document).ready( function() {
                 facetTitle: "Color",
                 catItemMap : function(flag){
                     var toRet = [];
-                    if(flag.data[flag_cols.Red]) toRet.push("Red");
-                    if(flag.data[flag_cols.Green]) toRet.push("Green");
-                    if(flag.data[flag_cols.Blue]) toRet.push("Blue");
-                    if(flag.data[flag_cols.Gold]) toRet.push("Gold / Yellow");
-                    if(flag.data[flag_cols.White]) toRet.push("White");
-                    if(flag.data[flag_cols.Black]) toRet.push("Black");
-                    if(flag.data[flag_cols.Orange]) toRet.push("Orange / Brown");
+                    if(flag.data.Red) toRet.push("Red");
+                    if(flag.data.Green) toRet.push("Green");
+                    if(flag.data.Blue) toRet.push("Blue");
+                    if(flag.data.Gold) toRet.push("Gold / Yellow");
+                    if(flag.data.White) toRet.push("White");
+                    if(flag.data.Black) toRet.push("Black");
+                    if(flag.data.Orange) toRet.push("Orange / Brown");
                     return toRet;
                 },
                 textFilter : 'has color', textGroup  : 'colors'
@@ -177,35 +179,35 @@ $(document).ready( function() {
                 facetTitle: "Shape",
                 catItemMap : function(flag){
                     var toRet = [];
-                    if(flag.data[flag_cols.Circles]) toRet.push("Circle");
-                    if(flag.data[flag_cols.Crosses]) toRet.push("Crosses");
-                    if(flag.data[flag_cols.Saltires]) toRet.push("Saltire");
-                    if(flag.data[flag_cols.Quarters]) toRet.push("Quarter");
-                    if(flag.data[flag_cols.Sunstars]) toRet.push("Sun / star");
-                    if(flag.data[flag_cols.Crescent]) toRet.push("Crescent");
-                    if(flag.data[flag_cols.Triangle]) toRet.push("Triangle");
+                    if(flag.data.Circles) toRet.push("Circle");
+                    if(flag.data.Crosses) toRet.push("Crosses");
+                    if(flag.data.Saltires) toRet.push("Saltire");
+                    if(flag.data.Quarters) toRet.push("Quarter");
+                    if(flag.data.Sunstars) toRet.push("Sun / star");
+                    if(flag.data.Crescent) toRet.push("Crescent");
+                    if(flag.data.Triangle) toRet.push("Triangle");
                     return toRet;
                 },
                 textFilter : 'has shape', textGroup  : 'shapes'
             }, {
                 facetTitle: "# of Bars",
                 catItemMap : function(flag){ 
-                    var r=flag.data[flag_cols.Bars];
+                    var r=flag.data.Bars;
                     return (r===0)?0:r;
                 }
             },{
                 facetTitle: "# of Stripes",
                 catItemMap : function(flag){ 
-                    var r=flag.data[flag_cols.Stripes];
+                    var r=flag.data.Stripes;
                     return (r===0)?null:r;
                 }
             } /*,{
                 facetTitle: "Other Properties",
                 catItemMap : function(flag){
                     var toRet = [];
-                    if(flag.data[flag_cols.Text]!==0) toRet.push("Text");
-                    if(flag.data[flag_cols.Icon]!==0) toRet.push("Icon");
-                    if(flag.data[flag_cols.Animate]!==0) toRet.push("Animate");
+                    if(flag.data.Text!==0) toRet.push("Text");
+                    if(flag.data.Icon!==0) toRet.push("Icon");
+                    if(flag.data.Animate!==0) toRet.push("Animate");
                     return toRet;
                 },
                 filter: {
@@ -224,7 +226,7 @@ $(document).ready( function() {
             sortingOpts : [
                 {   name: 'Flag Date',
                     value: function(d){ 
-                        var r= d.data[flag_cols.Independence];
+                        var r= d.data.Independence;
                         if(r===null) return null;
                         var dt=new Date(moment(r,"MM/DD/YYYY"));
                         return dt.getUTCFullYear();
@@ -238,33 +240,33 @@ $(document).ready( function() {
                 var j;
                 var str="";
                 // description
-                    str+="<img src=\""+d.data[flag_cols.Flag]+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
+                    str+="<img src=\""+d.data.Flag+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
                     str+="<span class=\"iteminfo iteminfo_0 countryName\">";
-                    str+=d.data[flag_cols.Country];
+                    str+=d.data.Country;
                     str+="</span></br>";
                     str+="<span class=\"item_details\">";
                     str+="<span class=\"iteminfo iteminfo_1\"><u>Continent</u>: ";
-                    str+=landmassText(d.data[flag_cols.Landmass]) + " | <u>Language</u>: ";
-                    str+=languageText(d.data[flag_cols.Language]);
-    //                str+=" | <u>Religion</u>:"+religionText(d.data[flag_cols.Religion]);
+                    str+=landmassText(d.data.Landmass) + " | <u>Language</u>: ";
+                    str+=languageText(d.data.Language);
+    //                str+=" | <u>Religion</u>:"+religionText(d.data.Religion);
                     str+="</span></br>";
                     str+="<span class=\"iteminfo iteminfo_2\"> <u>Colors</u>: ";
-                    if(d.data[flag_cols.Red]) str+="Red, ";
-                    if(d.data[flag_cols.Green]) str+="Green, ";
-                    if(d.data[flag_cols.Blue]) str+="Blue, ";
-                    if(d.data[flag_cols.Gold]) str+="Gold / Yellow  , ";
-                    if(d.data[flag_cols.White]) str+="White, ";
-                    if(d.data[flag_cols.Black]) str+="Black, ";
-                    if(d.data[flag_cols.Orange]) str+="Orange / Brown, ";
+                    if(d.data.Red) str+="Red, ";
+                    if(d.data.Green) str+="Green, ";
+                    if(d.data.Blue) str+="Blue, ";
+                    if(d.data.Gold) str+="Gold / Yellow  , ";
+                    if(d.data.White) str+="White, ";
+                    if(d.data.Black) str+="Black, ";
+                    if(d.data.Orange) str+="Orange / Brown, ";
                     str+="</span></br>";
                     str+="<span class=\"iteminfo iteminfo_2\"> <u>Shapes</u>: ";
-                    if(d.data[flag_cols.Circles]) str+="Circles, ";
-                    if(d.data[flag_cols.Crosses]) str+="Crosses, ";
-                    if(d.data[flag_cols.Saltires]) str+="Saltires, ";
-                    if(d.data[flag_cols.Quarters]) str+="Quarters, ";
-                    if(d.data[flag_cols.Sunstars]) str+="Sun / stars, ";
-                    if(d.data[flag_cols.Crescent]) str+="Crescent, ";
-                    if(d.data[flag_cols.Triangle]) str+="Triangle, ";
+                    if(d.data.Circles) str+="Circles, ";
+                    if(d.data.Crosses) str+="Crosses, ";
+                    if(d.data.Saltires) str+="Saltires, ";
+                    if(d.data.Quarters) str+="Quarters, ";
+                    if(d.data.Sunstars) str+="Sun / stars, ";
+                    if(d.data.Crescent) str+="Crescent, ";
+                    if(d.data.Triangle) str+="Triangle, ";
                     str+="</span></br>";
                     str+="</span>"; // item_details
                 return str;

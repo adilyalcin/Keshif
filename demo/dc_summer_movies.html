@@ -9,13 +9,25 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
+        <!-- Demos - shared -->
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <!-- Fancybox -->
+        <script type="text/javascript" src="./js/jquery.fancybox.pack.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="./css/jquery.fancybox.css">
+        <!-- Google font -->
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
+        <!-- Logging features -->
+        <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
+
         <script type="text/javascript">
+
+var demoID = 51;
 
 // https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
 function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
@@ -29,47 +41,11 @@ function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
     return  6371.01 * Math.acos( Math.sin(phi1) * Math.sin(phi2) + Math.cos(phi1) * Math.cos(phi2) * Math.cos(lam2 - lam1) );
 }
 
-function loadMovieData(d){
-    if(d.target.className==="item_details_off") return;
-    var kshfItem = d.currentTarget.__data__;
-    if(kshfItem===undefined)
-        kshfItem = d.currentTarget.parentNode.__data__;
-    if(kshfItem.listItem.getAttribute('details')==="false")
-        browserScreenings.showListItemDetails(kshfItem);
-    if(kshfItem.dataLoaded===true) return;
-    loadMovieData_Name(kshfItem);
-};
-
-function loadMovieData_Name(kshfItem){
-    $.ajax( {
-        url: "http://www.omdbapi.com/?t="+kshfItem.data[2],
-        dataType: "json",
-        success: function(data){
-            if(data.Error) {
-                console.log("Error loading movie: "+kshfItem.data[2])
-                return;
-            }
-            var d3Item = d3.select(kshfItem.listItem);
-            d3Item.select(".moviePoster").attr("src","./img/posters/"+data.imdbID+".jpg");
-            d3Item.select(".movieInfo").style("display","block");
-            d3Item.select(".Year .value").text(data.Year);
-            d3Item.select(".Rated .value").text(data.Rated);
-            d3Item.select(".Genre .value").text(data.Genre);
-            d3Item.select(".Plot .value").text(data.Plot);
-            d3Item.select(".Awards .value").text(data.Awards);
-            d3Item.select(".imdbRating .value").text(data.imdbRating);
-            d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+data.imdbID);
-            kshfItem.dataLoaded = true;
-            console.log(kshfItem.data[2]+", "+data.imdbID+", "+data.Poster);
-        }
-    });
-};
-
 var myLoc=null;
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
     if(browserScreenings===undefined) return;
-    var seriesChart = browserScreenings.facets[2];
+    var seriesChart = browserScreenings.facets[1];
     if(seriesChart===undefined) return;
     seriesChart.sortingOpt_Active = seriesChart.options.sortingOpts[1];
     seriesChart.sortDelay = 0;
@@ -77,7 +53,14 @@ var updateLocationSorting = function(){
     seriesChart.updateSorting.call(seriesChart);
 };
 
-function loadChart() {
+$(document).ready( function() {
+
+    var h=Math.max($(window).height()-70,650);
+//    h = 700; // temp
+    var w=Math.max($(window).width()-80,1100);
+    $('#div_screenings').height(h);
+    $('#div_screenings').width (w);
+
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
             myLoc = position.coords;
@@ -93,7 +76,7 @@ function loadChart() {
 
     browserScreenings = new kshf.Browser({
         domID: "#div_screenings",
-        categoryTextWidth: 230,
+        categoryTextWidth: 210,
         source: {
             gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
             sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
@@ -107,27 +90,14 @@ function loadChart() {
                 facets: [
                     {   facetTitle: "Genre",
                     },{
-                        facetTitle: "Rated"
+                        facetTitle: "Rated",
+                    },{
+                        facetTitle: "IMDB Rating",
+                        catItemMap: function(m){
+                            return m.data[5];
+                        }
                     }
                 ]
-            },{
-                facetTitle: "Time",
-                layout: "right",
-                facets : [{
-                    facetTitle: "Day Of Week",
-                    catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
-                    catTableName: "Weekdays"
-                },{
-                    facetTitle: "Soon",
-                    removeInactiveAttrib: false,
-                    catItemMap: function(d){
-                        var m_scr = moment(d.data[1]);
-                        if(m_scr.isBefore(m_now)) return null;
-                        if(m_scr.isBefore(m_thisweek)) return "This Week";
-                        if(m_scr.isBefore(m_nextweek)) return "Next Week";
-                        return null;
-                    }
-                }]
             },{
                 facetTitle: "Location",
                 layout: "right",
@@ -152,9 +122,32 @@ function loadChart() {
                 facets: [
                     {   facetTitle: "State"
                     },{
-                        facetTitle: "Features"
+                        facetTitle: "Features", collapsed: true,
                     }
                 ]
+            },{
+                facetTitle: "Time",
+                layout: "right",
+                facets : [{
+                    facetTitle: "Soon",
+                    removeInactiveAttrib: false,
+                    catItemMap: function(d){
+                        var m_scr = moment(d.data[1]);
+                        if(m_scr.isBefore(m_now)) return null;
+                        if(m_scr.isBefore(m_thisweek)) return "This Week";
+                        if(m_scr.isBefore(m_nextweek)) return "Next Week";
+                        return null;
+                    }
+                },{
+                    facetTitle: "Day Of Week",
+                    catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
+                    catTableName: "Weekdays"
+                }]
+            },{
+                facetTitle: "Date",
+                layout: "bottom",
+                catItemMap: function(d){ return d.data[1]; },
+                intervalScale: 'time'
             }
         ],
         loadedCb: function(){
@@ -163,8 +156,10 @@ function loadChart() {
             kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
         },
         readyCb: function(){
-            $(".itemtoggledetails .item_details_on").click(loadMovieData);
-            $(".movieName").click(loadMovieData);
+//            $(".itemtoggledetails .item_details_on").click(loadMovieData);
+            $(".movieName").click(function(){
+                browserScreenings.listDisplay.showListItemDetails(this.parentNode.__data__);
+            });
 
             browserScreenings.listDisplay.dom.listItemGroup
                 .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
@@ -173,7 +168,6 @@ function loadChart() {
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
             browserScreenings.listDisplay.showListItemDetails(firstItem);
-            loadMovieData_Name(firstItem);
             kshf.dt.Screenings[0].listItem.setAttribute('details',true);
         },
         itemDisplay: {
@@ -193,7 +187,7 @@ function loadChart() {
                 },
                 inverse: true,
                 label: function(d){ 
-                    return moment(d.data[1]).format('MMM Do, ddd');
+                    return moment(d.data[1]).format('MMM.Do,ddd');
                 }
             } ],
             detailsToggle : "One",
@@ -209,9 +203,9 @@ function loadChart() {
                 str+="<span class=\"item_details\">";
 
                 str+=
-                    "<span class='header'>Screening Series</span>: <a target=\"_blank\" class='location' href=\""+series.data[6]+"\">"+
+                    "<span class='header'>Location</span>: <b>"+series.data[4]+"</b> - "+ series.data[3]+"<br>"+
+                    "<span class='header'>Series</span>: <a target=\"_blank\" class='location' href=\""+series.data[6]+"\">"+
                     series.data[1]+"</a></br>"+
-                    "<span class='header'>Location</span>: <b>"+series.data[4]+"</b> - "+ series.data[3]+
                     "<span class='movieInfo' style='display:none;'>"+
                     "<span class='Year'><span class='header'>Year</span>: <span class='value'></span></span></br>"+
                     "<span class='Rated'><span class='header'>Rated</span>: <span class='value'></span></span></br>"+
@@ -225,12 +219,58 @@ function loadChart() {
 
                 str+="</span>"; // item_details
                 return str;
+            },
+            detailCb: function(item){
+                if(item.dataLoaded===true) return;
+                // some of the data is already included in google spreadshee...
+                var d3Item = d3.select(item.listItem);
+
+                var query="t="+item.data[2];
+                var movieData = kshf.dt_id.Movies[item.data[2]];
+                if(movieData){
+                    d3Item.select(".movieInfo").style("display","block");
+                    d3Item.select(".moviePoster").attr("src","./img/posters/"+movieData.data[4]+".jpg");
+                    d3Item.select(".Genre .value").text(movieData.data[1].toString()); // can be a list
+                    d3Item.select(".Rated .value").text(movieData.data[2]);
+                    d3Item.select(".Year .value" ).text(movieData.data[3]);
+                    d3Item.select(".imdbRating .value").text(movieData.data[5]);
+                    d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+movieData.data[4]);
+                    item.dataLoaded = true;
+                    query = "i="+movieData.data[4];
+                }
+                $.ajax( {
+                    url: "http://www.omdbapi.com/?"+query,
+                    dataType: "json",
+                    success: function(data){
+                        if(data.Error) {
+                            console.log("Error loading extra movie info from API: "+item.data[2])
+                            return;
+                        }
+                        d3Item.select(".Plot .value").text(data.Plot);
+                        d3Item.select(".Awards .value").text(data.Awards);
+                    }
+                });
             }
         }
     });
-}
 
-$(document).ready(loadChart);
+    $(".comment_popup").fancybox({
+        type: 'iframe',
+        width    : 600,
+        height   : 300,
+        closeBtn    : true,
+//        openEffect  : 'none',
+//        closeEffect : 'none',
+        iframe: {
+            preload   : true
+        }
+    });
+
+    $( window ).unload(function() {
+        sendLog(kshf.LOG.CLOSEPAGE);
+    })
+});
+
 </script>
     <style type="text/css" media="screen">
         .listItem{padding: 4px 0px 4px 0px !important;}
@@ -277,16 +317,16 @@ $(document).ready(loadChart);
             font-size: 0.9em;
         }
         #div_screenings{
-            width: 1160px;
+            width: 1100px;
             height: 700px;
             vertical-align: top;
             margin: 0px auto;
         }
         img.film{
             position: absolute;
-            right: 15px;
-            bottom: 0px;
-            width: 150px;
+            right: 18px;
+            bottom: 2px;
+            width: 120px;
             /* z-index: -2; */
             opacity: 0.4;
             -moz-transform: scaleX(-1);
@@ -309,10 +349,72 @@ $(document).ready(loadChart);
         img.strip.right{
             right: 10px;
         }
+        .comment_popup{
+            cursor: pointer;
+            position: absolute;
+            font-variant: normal;
+            white-space: nowrap;
+        }
+        .comment_popup_left{
+            left: 10px;
+        }
+        .comment_popup_right{
+            right: 10px;
+        }
+        .comment_popup .fa-comment{
+            color: rgb(219, 179, 74);
+        }
+        .comment_popup .texttt{
+            font-size: 0.3em;
+        }
+        .comment_popup:hover .fa-comment{
+            color: orangered;
+        }
+        .comment_popup:hover .texttt{
+            color: orangered;
+        }
+        .contents{
+            padding-top: 0px !important;
+        }
+        .pageHeader{
+            font-size: 2.2em;
+            text-shadow: 0px 0px 10px #FFFFFF;
+            font-variant: small-caps;
+            font-weight: 700;
+            font-family: sans-serif;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            padding: 3px 10px;
+            border-bottom: solid 2px rgb(43, 13, 13);
+            margin-bottom: 5px;
+            background-color: rgba(238, 225, 127, 0.2);
+            cursor: default;
+        }
+        .pageHeader::after {
+            background: url('img/strip_vertical.png');
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0.3;
+            z-index: -1;
+            height: 50px;
+            background-size: contain;
+        }
+        .fa-stack{
+            position: relative;
+            display: inline-block;
+            width: 1em;
+            vertical-align: top;
+            line-height: inherit;
+            height: inherit;
+        }
     </style>
 	</head>
 	<body>
-        <div class="meny">
+<!--        <div class="meny">
             <u>Notes:</u>
             <ul>
                 <li type="circle">Movies coming up soon are shown first in the list.</li>
@@ -331,11 +433,23 @@ $(document).ready(loadChart);
             <div class='credit'>Side menu created by:<br> <a href="http://www.twitter.com/hakimel">@hakimel</a> / 
                 <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
             </div>
-        <div class="meny-arrow"></div>
+        <div class="meny-arrow"></div>-->
         <div class="contents">
-            <div id="div_screenings"></div>
-            <img class="strip left" src="img/strip.png">
-            <img class="strip right" src="img/strip.png">
+            <div class="pageHeader">
+                Washington D.C. Area OUTDOOR MOVIES - 2014
+                <span class="comment_popup comment_popup_right"
+                href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
+                    >
+                    <span class="fa-stack" style="float:right; clear:right; height: 35px;margin-top: -5px;">
+                      <i class="fa fa-stack-1x fa-comment"></i>
+                      <i class="fa fa-stack-1x fa-comment-o"></i>
+                    </span>
+                    <span class="texttt" style="float:right; clear:right">Share feedback</span>
+                    </span>
+                </div>
+
+            <div id="div_screenings" onmousemove="logIf.setSessionID(this)"></div>
             </div>
+
     </body>
 </html>

@@ -12,8 +12,8 @@ var isMobile = {
 var logIf = {
     WindowSize : function(){ // minimum 950 x 500 (timeline is shown with 4 categories)
         // Using HTML document size (Device screen.width & screen.height is not important)
-        var w=$(window).width();
-        var h=$(window).height();
+        var w=this.dom.width();
+        var h=this.dom.height();
         return (w>950) && (h>500) /* && (w>h)*/;
     },
     Desktop : function(){ // skip: Android, Blackberry, iPhone, iPad, iPod, Opera Mini, IEMobile
@@ -22,22 +22,22 @@ var logIf = {
     NoTouch : function(){ // skip browsers supporting touch events.
         return !Modernizr.touch; 
     },
-    NotIE : function() { // IE has issues with SVG rendering...
-        return (navigator.appName !== 'Microsoft Internet Explorer');
-    },
-    InlineSVG : function(){ // Specificly, we must make sure that browser upports inline SVG elements
-        return Modernizr.inlineSVG;
-    },
-    setSessionID : function(){
+    setSessionID : function(t){
+        if(this.Check!==undefined) return;
+        if(t!==undefined){
+            this.dom = $(t);
+        }
         document.getElementsByTagName("body")[0].onmousemove = null;
-        this.sessionID = readCookie('sessionId');
-        if(this.sessionID === '') {
+        this.sessionID_Cookie = readCookie('sessionId');
+        if(this.sessionID_Cookie === '') {
             var ran  = window.event.clientX*Math.random();
             var ran2 = window.event.clientY*Math.random();
-            this.sessionID = Math.floor((ran+ran2)*10000000000000);
-            writeCookie('sessionId', this.sessionID, 365);
+            this.sessionID_Cookie = Math.floor((ran+ran2)*10000000000000);
+            writeCookie('sessionId', this.sessionID_Cookie, 365);
+        } else {
+            this.sessionID_Cookie = parseInt(this.sessionID_Cookie);
         }
-        this.sessionID2 = Math.floor(Math.random()*10000000000000);
+        this.sessionID_Now = Math.floor(Math.random()*10000000000000);
         this.All();
     },
     host : function(){
@@ -49,18 +49,20 @@ var logIf = {
     },
     All : function(){
         var tmp = this.Check;
-        this.Check =  this.WindowSize() && this.Desktop() && this.NoTouch() && this.NotIE() && this.host()===true && (this.sessionID!==null);
-        if(this.Check===true && tmp === false) {
-            sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,
-                { height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
+        this.Check =  this.WindowSize() && this.Desktop() && this.NoTouch() && this.host()===true && (this.sessionID_Cookie!==null);
+        if(this.Check===true && tmp === undefined) {
+            this.loadTs = Date.now();
+            sendLog(kshf.LOG.CONFIG,
+                { height:this.dom.height(),width:this.dom.width(),agent:navigator.userAgent}, this.loadTs);
         }
         return this.Check;
     },
-    sessionID: null,
-    sessionID2: null,
-    Check : true
-}
-
+    dom: $(window),
+    sessionID_Cookie: null,
+    sessionID_Now: null,
+    Check : undefined,
+    loadTs: null,
+};
 
 function writeCookie(name,value,days) {
     var date, expires;
@@ -89,31 +91,32 @@ function readCookie(name) {
     return '';
 };
 
-var loadTs = null;
+function noop(){};
 
-function sendLog(catID, actID, dt){
+function sendLog(actID, dt, ts){
     // log only if all is fine
     if(logIf.Check!==true) return;
-    var ts;
-    if(loadTs===null){
-        loadTs = Date.now();
-        ts = loadTs;
-    } else {
-        ts = Date.now()-loadTs;
+    // if timestamp is not defined, take current timestamp, and subtract from page load time.
+    if(ts===undefined){
+        ts = Date.now()-logIf.loadTs;
     }
+    // To be included in all messages...
     var _dt = {
-        'catID' : catID,
         'actID' : actID,
-        'sesID' : logIf.sessionID,
-        'sesID2': logIf.sessionID2,
+        'sesID' : logIf.sessionID_Cookie,
+        'sesID2': logIf.sessionID_Now,
         'ts'    : ts,
         'demoID': demoID
     };
-    if(dt){ for (var key in dt) { _dt[key]=dt[key]; } }
+    if(dt){ 
+        // custom data to be sent
+        for (var key in dt) { _dt[key]=dt[key]; }
+    }
     $.ajax({
         type: "GET",
         dataType: "jsonp",
-        jsonpCallback: "", // no callback / not interested in returned data
+        cache: true,
+        jsonp: false,
         url: postURL,
         data: _dt
     });
