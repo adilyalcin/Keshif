@@ -3,8 +3,8 @@
 	<head>
 		<title>World Country Flags</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -116,7 +116,7 @@ $(document).ready( function() {
 
     browser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 155,
+        categoryTextWidth: 135,
         source : {
             dirPath: 'data/',
             fileType: 'csv',
@@ -134,9 +134,6 @@ $(document).ready( function() {
                     { name:"Flag #" },
                     { name: "First Flag",  func: kshf.Util.sortFunc_Time_First }
                 ],
-                timeTitle: "Flag Date",
-                timeItemMap : function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
-                timeBarShow: true,
                 textFilter : 'in', textGroup  : 'continents'
             },{
                 facetTitle: "Language",
@@ -162,7 +159,7 @@ $(document).ready( function() {
                 filter: { rowConj: 'religion' }
             }); */
             {
-                facetTitle: "Color",
+                facetTitle: "Color", layout: 'right',
                 catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data.Red) toRet.push("Red");
@@ -176,7 +173,7 @@ $(document).ready( function() {
                 },
                 textFilter : 'has color', textGroup  : 'colors'
             },{
-                facetTitle: "Shape",
+                facetTitle: "Shape", layout: 'right',
                 catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data.Circles) toRet.push("Circle");
@@ -190,18 +187,23 @@ $(document).ready( function() {
                 },
                 textFilter : 'has shape', textGroup  : 'shapes'
             }, {
-                facetTitle: "# of Bars",
+                facetTitle: "# of Bars", layout: 'right',
                 catItemMap : function(flag){ 
                     var r=flag.data.Bars;
                     return (r===0)?0:r;
                 }
             },{
-                facetTitle: "# of Stripes",
+                facetTitle: "# of Stripes", layout: 'right',
                 catItemMap : function(flag){ 
                     var r=flag.data.Stripes;
                     return (r===0)?null:r;
                 }
-            } /*,{
+            } ,{
+                facetTitle: "Flag Date", layout: 'left',
+                catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
+                intervalScale: 'time'
+            }
+            /*,{
                 facetTitle: "Other Properties",
                 catItemMap : function(flag){
                     var toRet = [];
@@ -284,8 +286,8 @@ $(document).ready( function() {
                 font-style:italic;
             }
             #chart_div {
-                width:950px;
-                height:700px;
+                width:1050px;
+                height:550px;
             }
             .listItem[details=false] .countryName:hover{
                 text-decoration: underline;

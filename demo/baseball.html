@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Transactions In Major League Baseball</title><meta charset="utf-8">
-        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -52,13 +52,7 @@ $(document).ready(function() {
                 facetTitle: "Trans. Type",
                 catLabelText: function(d){
                     return kshf.dt_id.baseball_trantype[d.data[1]].data.info;
-                },
-                timeTitle: "Transaction Date",
-                timeItemMap : function(tr){ 
-                    var dt = tr.data['primary-date'];
-                    if(dt===""){ return null; }
-                    return new Date(moment(dt,"MM/DD/YYYY"));
-                },
+                }
             },{
                 facetTitle: "From",
                 facets: [
@@ -110,6 +104,15 @@ $(document).ready(function() {
                         textFilter: 'from'
                     }
                 ]
+            },{
+                facetTitle: "Transaction Date",
+                layout: "bottom",
+                catItemMap : function(tr){ 
+                    var dt = tr.data['primary-date'];
+                    if(dt===""){ return null; }
+                    return new Date(moment(dt,"MM/DD/YYYY"));
+                },
+                intervalScale: "time"
             }
         ],
         itemDisplay: {

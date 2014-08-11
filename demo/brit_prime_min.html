@@ -3,8 +3,8 @@
 	<head>
 		<title>British Prime Ministers since 1721</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -26,21 +26,12 @@
                 },
                 facets : [
                     {   facetTitle: "Party", 
-                        timeTitle: "Year",
                         catItemMap : function(d){ 
                             var p1=d.data[2];
                             var p2=d.data[4];
                             if(p2===null || p2 === "") return p1;
                             else return [p1, p2];
-                        },
-                        timeItemMap : function(d){ 
-                            return new Date(moment(d.data[0]+"01-01","YYYY-MM-DD"));
-                        },
-                        sortingOpts : [
-                            { name: "Current first",  func: kshf.Util.sortFunc_Time_Last },
-                            { name: "Past first",  func: kshf.Util.sortFunc_Time_First },
-                            { name:" # of Years" }
-                        ]
+                        }
                     },{
                         facetTitle: "Prime minister",
                         catItemMap : function(d){ 
@@ -49,11 +40,18 @@
                             if(p2===null || p2 === "") return p1;
                             else return [p1, p2];
                         },
+                    },{
+                        facetTitle: "Year",
+                        catItemMap: function(d){ 
+                            return new Date(moment(d.data[0]+"01-01","YYYY-MM-DD"));
+                        },
+                        intervalScale: "time",
+                        layout: "bottom"
                     }
                 ],
                 itemDisplay: {
                     sortColWidth: 58,
-                    sortingOpts : [{ name: 'Year', value: function(d){ return d.data[0]; } }],
+                    sortingOpts : [{ name: 'Year', value: function(d){ return d.data[0]; }, inverse: true }],
                     content: 'Prime minister'
                 }
             });

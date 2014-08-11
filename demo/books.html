@@ -3,8 +3,8 @@
 	<head>
 		<title>International Childrens Digial Library (ICDL) Book Collection</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -199,7 +199,7 @@ $(document).ready( function(){
             visibleCb: function(d){
                 // update image link / load image now
                 var id=d.data[0];
-                d3.select(d.listItem).select("img").attr("src",
+                d3.select(d.resultDOM).select("img").attr("src",
                     "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg");
             }
         }

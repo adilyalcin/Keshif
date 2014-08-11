@@ -3,8 +3,8 @@
 	<head>
 		<title>Keshif Demos</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -37,9 +37,10 @@ $(document).ready( function(){
                         return "Other";
                     }
                 },
-                timeTitle: "Authored",
+                layout: 'left',
             },{
                 facetTitle: "Code complexity",
+                layout: 'right',
                 catItemMap: function(d){
                     switch(d.data[dataColumns['Code Complexity']]){
                         case 1: return "A breeze / *";
@@ -76,6 +77,11 @@ $(document).ready( function(){
                 facetTitle: "# Items",
                 layout: 'right',
                 intervalScale: 'log'
+            },{
+                facetTitle: "Creation Time",
+                catItemMap: function(d){ return d.data[dataColumns['Authored']];},
+                layout: 'left',
+                intervalScale: 'time'
             }
         ],
         itemDisplay: {

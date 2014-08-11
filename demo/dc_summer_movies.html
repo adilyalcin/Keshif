@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Summer Outdoor Movies in DC area</title><meta charset="utf-8">
+		<title>Outdoor Movies in Washington D.C. Area - 2014</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../jquery/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../d3.v3/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -89,6 +89,7 @@ $(document).ready( function() {
                 catLabelText: function(m){ return m.data[0]; },
                 facets: [
                     {   facetTitle: "Genre",
+                        forceSearch: false
                     },{
                         facetTitle: "Rated",
                     },{
@@ -168,7 +169,7 @@ $(document).ready( function() {
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
             browserScreenings.listDisplay.showListItemDetails(firstItem);
-            kshf.dt.Screenings[0].listItem.setAttribute('details',true);
+            kshf.dt.Screenings[0].resultDOM.setAttribute('details',true);
         },
         itemDisplay: {
             sortColWidth: 90,
@@ -223,7 +224,7 @@ $(document).ready( function() {
             detailCb: function(item){
                 if(item.dataLoaded===true) return;
                 // some of the data is already included in google spreadshee...
-                var d3Item = d3.select(item.listItem);
+                var d3Item = d3.select(item.resultDOM);
 
                 var query="t="+item.data[2];
                 var movieData = kshf.dt_id.Movies[item.data[2]];
@@ -363,10 +364,11 @@ $(document).ready( function() {
             right: 10px;
         }
         .comment_popup .fa-comment{
-            color: rgb(219, 179, 74);
+            color: rgb(255, 112, 59);
         }
         .comment_popup .texttt{
             font-size: 0.3em;
+            font-style: italic;
         }
         .comment_popup:hover .fa-comment{
             color: orangered;
@@ -401,7 +403,7 @@ $(document).ready( function() {
             top: 0;
             left: 0;
             width: 100%;
-            opacity: 0.3;
+            opacity: 0.2;
             z-index: -1;
             height: 50px;
             background-size: contain;
@@ -413,6 +415,7 @@ $(document).ready( function() {
             vertical-align: top;
             line-height: inherit;
             height: inherit;
+            margin-left: 3px;
         }
     </style>
 	</head>
@@ -447,7 +450,7 @@ $(document).ready( function() {
                   <i class="fa fa-stack-1x fa-comment"></i>
                   <i class="fa fa-stack-1x fa-comment-o"></i>
                 </span>
-                <span class="texttt" style="float:right; text-align: right;">Share<br>feedback</span>
+                <span class="texttt" style="float:right; text-align: right;">Share your<br>feedback</span>
                 </span>
             </div>
 
