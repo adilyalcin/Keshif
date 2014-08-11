@@ -57,7 +57,7 @@ $(document).ready( function() {
 
     var h=Math.max($(window).height()-70,650);
 //    h = 700; // temp
-    var w=Math.max($(window).width()-80,1100);
+    var w=Math.max($(window).width()-110,1000);
     $('#div_screenings').height(h);
     $('#div_screenings').width (w);
 
@@ -354,6 +354,7 @@ $(document).ready( function() {
             position: absolute;
             font-variant: normal;
             white-space: nowrap;
+            font-size: 1.3em;
         }
         .comment_popup_left{
             left: 10px;
@@ -375,6 +376,8 @@ $(document).ready( function() {
         }
         .contents{
             padding-top: 0px !important;
+            margin-left: 50px;
+            margin-right: 50px;
         }
         .pageHeader{
             font-size: 2.2em;
@@ -434,19 +437,21 @@ $(document).ready( function() {
                 <a href='http://hakim.se' target='_blank'>http://hakim.se</a></div>
             </div>
         <div class="meny-arrow"></div>-->
+
+        <div class="pageHeader">
+            Washington D.C. Area OUTDOOR MOVIES - 2014
+            <span class="comment_popup comment_popup_right"
+            href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
+                >
+                <span class="fa-stack" style="float:right; clear:right; height: 35px;margin-top: -5px;">
+                  <i class="fa fa-stack-1x fa-comment"></i>
+                  <i class="fa fa-stack-1x fa-comment-o"></i>
+                </span>
+                <span class="texttt" style="float:right; text-align: right;">Share<br>feedback</span>
+                </span>
+            </div>
+
         <div class="contents">
-            <div class="pageHeader">
-                Washington D.C. Area OUTDOOR MOVIES - 2014
-                <span class="comment_popup comment_popup_right"
-                href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
-                    >
-                    <span class="fa-stack" style="float:right; clear:right; height: 35px;margin-top: -5px;">
-                      <i class="fa fa-stack-1x fa-comment"></i>
-                      <i class="fa fa-stack-1x fa-comment-o"></i>
-                    </span>
-                    <span class="texttt" style="float:right; clear:right">Share feedback</span>
-                    </span>
-                </div>
 
             <div id="div_screenings" onmousemove="logIf.setSessionID(this)"></div>
             </div>

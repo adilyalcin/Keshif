@@ -346,7 +346,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .chartClearFilterButton {
   width: 14px;
-  height: 14px;
+  height: 100%;
   display: inline-block;
   cursor: pointer;
   pointer-events: all;
@@ -385,6 +385,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   float: right;
   margin-left: 2px;
+  height: 16px;
 }
 .kshf span.leftBlockAdjustSize {
   position: absolute;
@@ -1608,14 +1609,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.filterClearAll {
   display: none;
   position: absolute;
-  right: 45px;
+  right: 41px;
   top: 2px;
   cursor: default;
   color: #252112;
   font-weight: 300;
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
-  padding-left: 2px;
+  padding-left: 1px;
   -webkit-transition: background-color 100ms linear;
   -moz-transition: background-color 100ms linear;
   -o-transition: background-color 100ms linear;

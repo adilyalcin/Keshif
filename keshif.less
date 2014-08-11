@@ -323,7 +323,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .chartClearFilterButton{
         width: 14px;
-        height: 14px;
+        height: 100%;
 
         display: inline-block;
         cursor: pointer;
@@ -364,6 +364,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline-block;
             float: right;
             margin-left: 2px;
+            height: 16px;
         }
     }
     span.leftBlockAdjustSize{
@@ -1570,13 +1571,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.filterClearAll{
             display: none;
             position: absolute;
-            right: 45px;
+            right: 41px;
             top: 2px;cursor: default;
             color: #252112;
             font-weight: 300;
             border: 1px #685b2b solid;
             background-color: #E9E2CE;
-            padding-left: 2px;
+            padding-left: 1px;
             .transition(~"background-color 100ms linear");
             &:hover{ 
                 background-color: white;

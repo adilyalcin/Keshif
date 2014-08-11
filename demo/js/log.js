@@ -102,11 +102,11 @@ function sendLog(actID, dt, ts){
     }
     // To be included in all messages...
     var _dt = {
+        'demoID': demoID,
         'actID' : actID,
-        'sesID' : logIf.sessionID_Cookie,
-        'sesID2': logIf.sessionID_Now,
+        'ses_Cki' : logIf.sessionID_Cookie,
+        'ses_Now': logIf.sessionID_Now,
         'ts'    : ts,
-        'demoID': demoID
     };
     if(dt){ 
         // custom data to be sent

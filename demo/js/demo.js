@@ -800,6 +800,10 @@ return Meny;
 
 
 $( window ).load(function() {
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
+    $("body").append(s);
 /*    var meny = Meny.create({
         menuElement: document.querySelector( '.meny' ),
         contentsElement: document.querySelector( '.contents' ),
