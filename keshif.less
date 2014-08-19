@@ -97,6 +97,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-top: 2px;
         span.filter-block{
             display: inline-block;
+            position: relative;
             cursor: default;
             color: rgb(37, 33, 18);
             font-weight: 300;
@@ -140,6 +141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .filter_item{
                 padding:1px 0px 1px 0px;
                 display: inline;
+                margin-right: 15px;
             }
         }
     }
@@ -354,8 +356,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &.summary{
             display: inline-block;
-            float: right;
+            position: absolute;
+            right: 0px;
             margin-left: 2px;
+            line-height: 0.9em;
         }
         &.timeFilter{
             margin-left: 3px;
@@ -710,41 +714,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }// facetCategorical
 
-            div.facetInterval{
+            > .facetInterval{
                 padding: 0px 12px;
-                overflow: none;
+                overflow: hidden;
                 .histogram{
                     position:relative;
                     pointer-events: all;
             //        margin: 5px 13px 1px 13px;
                     overflow: hidden; // necessary, because after bin height is scaled, they can extend beyond.
+                    .transition(~'height 700ms ease-in-out');
                     .bins{
                         position: absolute;
                         top: 14px;
+                        .transition(@layout_animation);
                         .bin{
                             position: absolute;
                             display: block;
                             .bar{
                                 width: 1px;
                                 height: 1px;
-                                position: absolute;
                                 .transform-origin(0% 100%);
-                                &.active{
-                                    cursor: pointer;
-                                }
-                                &.total{
-                                    // opacity:0.1;
-                                    background-color: #DEE2E6;
-                                    pointer-events: none;
-                                }
-                                &.hover {
-                                    background-color: @color_bar_preview;
-                                    pointer-events: none;
-                                    .transform(~'scaleX(0)');
-                                    &[fast]{
-                                        .transition(~'transform 200ms ease-in-out');
-                                    }
-                                }
                             }
                             span.item_count{
                                 top: -1em;
@@ -767,24 +756,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
-                    span.bar{
-                        display: block;
-                        position:absolute;
-                        background-color: @color_bars;;
-                        width:1px;
-                        height:1px;
-                        &[highlight=true]{
-                            // background-color: orangered;
-                        }
-                        .transform-origin(0% 0%);
-                    }
-                    .total span.bar{
-                        // opacity: 0.2;
-                        background-color: #DEE2E6;
-                    }
                 }
             } // facetInterval
 
+            span.bar{
+                display: block;
+                position: absolute;
+                background-color: @color_bars;
+                .transform-origin(0% 0%);
+                &[highlight=true]{
+                    // background-color: orangered;
+                }
+                &.active{
+                    cursor: pointer;
+                }
+                &.total{
+                    // opacity:0.1;
+                    background-color: #DEE2E6;
+                    pointer-events: none;
+                }
+                &.hover {
+                    background-color: @color_bar_preview;
+                    pointer-events: none;
+                    .transform(~'scaleX(0)');
+                    &[fast]{
+                        .transition(~'transform 200ms ease-in-out');
+                    }
+                }
+            }
         }
 
         .subFacets {
@@ -1103,25 +1102,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: inline-block;
             }
             .bar{
-                display: inline;
-                position: absolute;
                 top: 4px;
                 width: 1px;
                 height: 10px;
-                background-color: @color_bars;
-                &.total {
-                    // opacity:0.2;
-                    background-color: #DEE2E6;
-                    pointer-events: none;
-                }
-                &.hover {
-                    background-color: @color_bar_preview;
-                    pointer-events: none;
-                    .transform(~'scaleX(0)');
-                    &[fast]{
-                        .transition(~'transform 200ms ease-in-out');
-                    }
-                }
             }
         }
         > span.timeLineParts_Overflow{
@@ -1500,7 +1483,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         span.mainTextSearch {
             white-space: nowrap;
-            margin-left: 10px;
+            margin-left: 5px;
             display: inline-block;
             vertical-align: bottom;
             position: relative;
@@ -1633,6 +1616,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: auto;
         max-height: 200px;
         border-top: double 0px gray;
+        position: relative;
         .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
 
         &[details=true]{
@@ -1679,8 +1663,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         div.listsortcolumn{
             cursor: cell;
-            &:hover{
-                color: red;
+            &:hover{ color: red; }
+            .rank{
+                position: absolute;
+                left: 2px;
+                top: 2px;
+                color: gray;
+                font-size: 0.8em;
+            }
+            .columnLabel{
+                float: right;
             }
         }
 

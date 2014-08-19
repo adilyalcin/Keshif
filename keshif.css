@@ -98,6 +98,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshfHost .filtercrumbs span.filter-block {
   display: inline-block;
+  position: relative;
   cursor: default;
   color: #252112;
   font-weight: 300;
@@ -145,6 +146,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost .filtercrumbs span.filter-block .filter_item {
   padding: 1px 0px 1px 0px;
   display: inline;
+  margin-right: 15px;
 }
 .kshfHost .subBrowsers {
   position: absolute;
@@ -375,8 +377,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .chartClearFilterButton.summary {
   display: inline-block;
-  float: right;
+  position: absolute;
+  right: 0px;
   margin-left: 2px;
+  line-height: 0.9em;
 }
 .kshf .chartClearFilterButton.timeFilter {
   margin-left: 3px;
@@ -749,56 +753,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more:hover {
   color: #cb5454;
 }
-.kshf .kshfChart > .wrapper div.facetInterval {
+.kshf .kshfChart > .wrapper > .facetInterval {
   padding: 0px 12px;
-  overflow: none;
+  overflow: hidden;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram {
   position: relative;
   pointer-events: all;
   overflow: hidden;
+  -webkit-transition: height 700ms ease-in-out;
+  -moz-transition: height 700ms ease-in-out;
+  -o-transition: height 700ms ease-in-out;
+  transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins {
   position: absolute;
   top: 14px;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin {
   position: absolute;
   display: block;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin .bar {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin .bar {
   width: 1px;
   height: 1px;
-  position: absolute;
   -webkit-transform-origin: 0% 100%;
   -moz-transform-origin: 0% 100%;
   -o-transform-origin: 0% 100%;
   -ms-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin .bar.active {
-  cursor: pointer;
-}
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin .bar.total {
-  background-color: #DEE2E6;
-  pointer-events: none;
-}
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin .bar.hover {
-  background-color: #ff4500;
-  pointer-events: none;
-  -webkit-transform: scaleX(0);
-  -moz-transform: scaleX(0);
-  -o-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  transform: scaleX(0);
-}
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin .bar.hover[fast] {
-  -webkit-transition: -webkit-transform 200ms ease-in-out;
-  -moz-transition: -moz-transform 200ms ease-in-out;
-  -o-transition: -o-transform 200ms ease-in-out;
-  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
-}
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin span.item_count {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin span.item_count {
   top: -1em;
   display: block;
   position: relative;
@@ -812,26 +801,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin[noitem=true] span.item_count {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[noitem=true] span.item_count {
   display: none;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .bins .bin[highlight=true] span.item_count {
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[highlight=true] span.item_count {
   color: orangered;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram span.bar {
+.kshf .kshfChart > .wrapper span.bar {
   display: block;
   position: absolute;
   background-color: #8699a8;
-  width: 1px;
-  height: 1px;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .kshfChart > .wrapper div.facetInterval .histogram .total span.bar {
+.kshf .kshfChart > .wrapper span.bar.active {
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper span.bar.total {
   background-color: #DEE2E6;
+  pointer-events: none;
+}
+.kshf .kshfChart > .wrapper span.bar.hover {
+  background-color: #ff4500;
+  pointer-events: none;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+}
+.kshf .kshfChart > .wrapper span.bar.hover[fast] {
+  -webkit-transition: -webkit-transform 200ms ease-in-out;
+  -moz-transition: -moz-transform 200ms ease-in-out;
+  -o-transition: -o-transform 200ms ease-in-out;
+  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
 }
 .kshf .kshfChart .subFacets {
   position: relative;
@@ -1129,31 +1135,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf div.attrib > span.barGroup .bar {
-  display: inline;
-  position: absolute;
   top: 4px;
   width: 1px;
   height: 10px;
-  background-color: #8699a8;
-}
-.kshf div.attrib > span.barGroup .bar.total {
-  background-color: #DEE2E6;
-  pointer-events: none;
-}
-.kshf div.attrib > span.barGroup .bar.hover {
-  background-color: #ff4500;
-  pointer-events: none;
-  -webkit-transform: scaleX(0);
-  -moz-transform: scaleX(0);
-  -o-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  transform: scaleX(0);
-}
-.kshf div.attrib > span.barGroup .bar.hover[fast] {
-  -webkit-transition: -webkit-transform 200ms ease-in-out;
-  -moz-transition: -moz-transform 200ms ease-in-out;
-  -o-transition: -o-transform 200ms ease-in-out;
-  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
 }
 .kshf div.attrib > span.timeLineParts_Overflow {
   overflow-x: hidden;
@@ -1538,7 +1522,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader span.mainTextSearch {
   white-space: nowrap;
-  margin-left: 10px;
+  margin-left: 5px;
   display: inline-block;
   vertical-align: bottom;
   position: relative;
@@ -1668,6 +1652,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: auto;
   max-height: 200px;
   border-top: double 0px gray;
+  position: relative;
   -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
@@ -1721,6 +1706,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listItem div.listsortcolumn:hover {
   color: red;
+}
+.kshf div.listItem div.listsortcolumn .rank {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  color: gray;
+  font-size: 0.8em;
+}
+.kshf div.listItem div.listsortcolumn .columnLabel {
+  float: right;
 }
 .kshf div.listItem div.itemNo {
   position: relative;
