@@ -25,6 +25,9 @@
         <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
 
+        <link rel="image_src" href="./img/movie_thumb.png" />
+        <meta property="og:image" content="http://www.cs.umd.edu/hcil/keshif/demo/img/movie_thumb.png" />
+
         <script type="text/javascript">
 
 var demoID = 51;
@@ -278,6 +281,12 @@ $(document).ready( function() {
         .listItem a{
             color: rgb(95, 62, 21);
         }
+        .layout_left{
+            margin-bottom: -1px; /* IE11 fix*/
+        }
+        .layout_right{
+            margin-bottom: -1px; /* IE11 fix*/
+        }
         .moviePoster{ 
             float:right; width:120px;
             padding:4px;
@@ -417,6 +426,16 @@ $(document).ready( function() {
             height: inherit;
             margin-left: 3px;
         }
+        .bestFor{
+            font-size: 0.4em;
+            float: right;
+            text-align: right;
+        }
+        .bestFor a{
+            color: black;
+            text-decoration: none;
+            font-style: italic;
+        }
     </style>
 	</head>
 	<body>
@@ -442,15 +461,16 @@ $(document).ready( function() {
         <div class="meny-arrow"></div>-->
 
         <div class="pageHeader">
+            <span class="bestFor">Best Viewed<br/>Using <a href="http://www.google.com/chrome" target="_blank">Chrome</a></span>
             Washington D.C. Area OUTDOOR MOVIES - 2014
-            <span class="comment_popup comment_popup_right"
+            <span class="comment_popup comment_popup_left"
             href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
                 >
-                <span class="fa-stack" style="float:right; clear:right; height: 35px;margin-top: -5px;">
+                <span class="fa-stack" style="float:left; clear:left; height: 35px;margin-top: -5px;">
                   <i class="fa fa-stack-1x fa-comment"></i>
                   <i class="fa fa-stack-1x fa-comment-o"></i>
                 </span>
-                <span class="texttt" style="float:right; text-align: right;">Share your<br>feedback</span>
+                <span class="texttt" style="float:left; text-align: left;">Share your<br>feedback</span>
                 </span>
             </div>
 

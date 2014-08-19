@@ -26,8 +26,6 @@ function resizeChart(){
     if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
     $('#chart_div').height(h);
     $('#chart_div').width (w);
-    logIf.All();
-    sendLog(CATID.Configuration,ACTID_CONFIG.WindowSize,{ height:$(window).height(),width:$(window).width(),agent:navigator.userAgent });
     return true;
 }
 
@@ -36,8 +34,6 @@ google.setOnLoadCallback(function() {
     $(window).resize(function() {
         if(resizeChart()) browser.updateLayout();
     });
-
-    logIf.Check = logIf.All();
 
     var authorCol, pubCol, keywordCol;
 

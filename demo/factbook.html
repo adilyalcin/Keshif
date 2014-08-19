@@ -75,7 +75,7 @@ function loadFactbook(facts){
         var regionName = region.getAttribute("name");
         var regionID = region.getAttribute("id");
         $(this).find("> country").each(function(d,i){
-            if(d>15) return;
+            // if(d>10) return;
             var country = this;
             var cData = {};
             cData.id = this.getAttribute("id"); // ag, tr, us, ...
@@ -222,7 +222,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 80,
+            sortColWidth: 90,
             sortingOpts : [
 //                { name: 'id' },
                 {   name: 'Population',
@@ -234,6 +234,7 @@ $(document).ready( function(){
                 },
                 { name: 'Education Expenditures'}
             ],
+            showRank: true,
             textSearch: 'Name',
             contentFunc : function(d){
                 var str="";
