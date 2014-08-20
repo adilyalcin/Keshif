@@ -22,11 +22,13 @@
                     sheets : [ {name:"Journalists"} ]
                 },
                 facets: [
-                    {   facetTitle: "Journalists",
-                        catItemMap: function(){ return "All"; }, 
-                        timeTitle: "Date"
-                    },{ facetTitle: "Organization"
+                    {   facetTitle: "Organization"
                     },{ facetTitle: "Location"
+                    },{
+                        facetTitle: "Date",
+                        type: 'interval',
+                        intervalScale: 'time',
+                        layout: 'bottom-mid'
                     }
                 ],
                 itemDisplay: {
@@ -41,7 +43,7 @@
         <style>
             #chart_div {
                 width: 550px;
-                height: 550px;
+                height: 450px;
             }
             div.kshf.layout_header span.title{
                 font-size: 1em;

@@ -73,9 +73,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attribChartAxis span.tick{
             .transition(@bar_animation);
         }
-        .timeDot{
-            .transition(@bar_animation);
-        }
         .facetInterval .histogram .bin{
             .transition(@bar_animation);
         }
@@ -218,7 +215,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .kshfChart[collapsed=true] {
             > .headerGroup {
-                .leftHeader span.header_label_arrow span{ .rotate(90deg); }
+                .leftHeader span.header_label_arrow{ 
+                    opacity: 1; 
+                    span { .rotate(90deg); }
+                }
             }
         }
         .belowAttribs{
@@ -296,7 +296,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .kshfChart[collapsed=true] {
             > .headerGroup {
-                .leftHeader span.header_label_arrow span{ .rotate(-90deg); }
+                .leftHeader span.header_label_arrow{ 
+                    opacity: 1;
+                    span{ .rotate(-90deg); }
+                }
             }
         }
         .belowAttribs{ direction: ltr; }
@@ -360,9 +363,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             right: 0px;
             margin-left: 2px;
             line-height: 0.9em;
-        }
-        &.timeFilter{
-            margin-left: 3px;
         }
         &.allFilter{
             display: inline-block;
@@ -434,52 +434,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .timeChartAxis{
-        position:absolute;
-//        pointer-events: none;
-        z-index: 20;
-        text{
-            font-size: 0.7em;
-            text-shadow: 1px 1px white;
-            font-weight: 300;
-            cursor: pointer;
-        }
-        line{
-            opacity: 1;
-            stroke-width: 2;
-            stroke: rgb(22, 16, 16);
-            &.minor{
-                stroke-width: 1;
-                stroke: rgb(256, 0, 0);
-            }
-        }
-        .filter_handle {
-            path{
-                fill: #CFDADF;
-                stroke: #788890;
-                cursor: pointer;
-                stroke-width: 2;
-                &:hover{ stroke: orangered; }
-            }
-            line{
-                stroke: gray;
-                stroke-width: 1;
-                display:none;
-            /*  stroke-dasharray: 3,2;*/
-            }
-            &[filtered=true] line{
-                display:block;
-            }
-            rect.filter_nonselected{
-                fill: gray;
-                opacity: 0.06;
-            }
-        }
-        path.bottom_border{
-            fill:lightgray;
-        }
-    } // timeChartAxis
-
     .border_line{
         position: relative;
         .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
@@ -535,7 +489,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width: 1em;
             font-size: 0.8em;
             cursor: pointer;
-            .transition(~'color 250ms linear');
+            opacity: 0;
+            .transition(~'color 250ms linear, opacity 100ms linear');
             &:hover{ color:#cb5454; }
             span{
                 position: absolute;
@@ -879,36 +834,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
 //            > .subFacets{ display: none; }
         }
-        &[collapsedTime=true] {
-            .config_zoom{
-                height: 0px;
-            }
-            .headerGroup .rightHeader {
-                color: gray;
-                span.header_label_arrow span{ .rotate(-90deg); }
-            }
-            div.attrib {
-                .row_bar_line{
-                    display: none;
-                }
-                .timeLineParts{
-                    display: none;
-                }
-            }
-            .timeChartAxis {
-                display:none;
-            }
-            .timeDot{
-                display:none;
-            }
-            .middleScrollbar{
-                display: none;
-            }
-        }
 
-        &[dotConfig|=Gradient] .timeDot[display=false] {
-            fill: url(#dotGradient_Inactive);
-        }
         &[filtered=true] > .headerGroup{
             .chartClearFilterButton.rowFilter{
                 opacity: 1;
@@ -945,21 +871,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        &[filtered_time=true] {
-            .chartClearFilterButton.timeFilter{
-                opacity: 1;
-                pointer-events: all;
-            }
-            .selection_bar rect{
-                fill-opacity: 0.5;
-                pointer-events: auto;
-            }
-        }
-        &[filtered_time=false] {
-            .config_zoom .zoom_button{
-                display: none;
-            }
-        }
         &[filtered_range=true] .chartClearFilterButton.rangeFilter{
             display:inline-block;
         }
@@ -970,6 +881,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &:hover{
             box-shadow: inset 0px 0px 3px gray;
+            span.header_label_arrow{
+                opacity: 1;
+            }
         }
 
         &[hasFacets=true]{
@@ -1076,6 +990,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 span.add {
                     cursor: cell;
+                    margin-right: 3px;
                 }
                 span.remove {
                     cursor: pointer !important;
@@ -1107,74 +1022,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 10px;
             }
         }
-        > span.timeLineParts_Overflow{
-            overflow-x: hidden;
-            span.timeLineParts{
-                display: inline-block;
-                position:relative;
-                vertical-align: top;
-                line-height: 18px;
-                height: 18px;
-                margin: 0px 10px;
-                span.bar{
-                    position:absolute;
-                    border-radius: 10px;
-                    display: inline-block;
-                    background-color: @color_bars;
-                    height: 10px;
-                    margin-top: 4px;
-                    opacity: 0.2;
-                    &.total{
-                        // opacity:0.1;
-                        background-color: #DEE2E6;
-                    }
-                }
-                span.timeDot{
-                    position: absolute;
-                    top: 4px;
-                    border-radius: 10px;
-                    width: 10px;
-                    height: 10px;
-                    // left: -5px; // DON'T! It messes up with translation (scalted translation amount)
-                    cursor: pointer;
-
-                    &[fill=default]{
-                        box-shadow: 0px 0px 0px 1px #EEE;
-                        background-color:#616F7A;
-                    }
-                    &:not([fill=default]){
-                        box-shadow: none;
-                        background-color:none;
-                    }
-                    &[fill=gradient100]{
-                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%)");
-                    }
-                    &[fill=gradient75]{
-                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%)");
-                    }
-                    &[fill=gradient50]{
-                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%)");
-                    }
-                    &[fill=gradient25]{
-                        .background-image(~"radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%)");
-                    }
-
-                    &[display=false] {
-                        pointer-events: none;
-                        background-color: #CCCCCC !important;
-                        opacity: 0.2;
-                        background-image: none;
-                    }
-                    &[display=true]:hover {
-                        box-shadow: 0px 0px 0px 1px orangered !important;
-                    }
-                    &[highlight=true] {
-                        box-shadow: 0px 0px 0px 1px #c32c2c !important;
-                    }
-                }
-            }
-        }
-
         &:not([selected="0"]) {
             span{
                 font-weight: 700;
@@ -1760,9 +1607,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //        margin: 0px 13px;
         height: 15px;
         margin-top: -1px;
-        &.timeLabelGroup{
-            margin-top: -2px;
-        }
         span.tick{
             position:absolute;
             span.text{

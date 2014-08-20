@@ -68,12 +68,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
-.kshfHost[noanim=false] .timeDot {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-}
 .kshfHost[noanim=false] .facetInterval .histogram .bin {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
@@ -230,6 +224,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_leftttt .leftControls .attribTextSearch input::-webkit-input-placeholder {
   text-align: left;
 }
+.kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
+  opacity: 1;
+}
 .kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow span {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -317,6 +314,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf:not(.layout_leftttt) .leftControls .attribTextSearch input::-webkit-input-placeholder {
   text-align: right;
 }
+.kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow {
+  opacity: 1;
+}
 .kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow span {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
@@ -381,9 +381,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 0px;
   margin-left: 2px;
   line-height: 0.9em;
-}
-.kshf .chartClearFilterButton.timeFilter {
-  margin-left: 3px;
 }
 .kshf .chartClearFilterButton.allFilter {
   display: inline-block;
@@ -451,50 +448,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-left-width: 1px;
   border-left-color: lightgray;
 }
-.kshf .timeChartAxis {
-  position: absolute;
-  z-index: 20;
-}
-.kshf .timeChartAxis text {
-  font-size: 0.7em;
-  text-shadow: 1px 1px white;
-  font-weight: 300;
-  cursor: pointer;
-}
-.kshf .timeChartAxis line {
-  opacity: 1;
-  stroke-width: 2;
-  stroke: #161010;
-}
-.kshf .timeChartAxis line.minor {
-  stroke-width: 1;
-  stroke: #ff0000;
-}
-.kshf .timeChartAxis .filter_handle path {
-  fill: #CFDADF;
-  stroke: #788890;
-  cursor: pointer;
-  stroke-width: 2;
-}
-.kshf .timeChartAxis .filter_handle path:hover {
-  stroke: orangered;
-}
-.kshf .timeChartAxis .filter_handle line {
-  stroke: gray;
-  stroke-width: 1;
-  display: none;
-  /*  stroke-dasharray: 3,2;*/
-}
-.kshf .timeChartAxis .filter_handle[filtered=true] line {
-  display: block;
-}
-.kshf .timeChartAxis .filter_handle rect.filter_nonselected {
-  fill: gray;
-  opacity: 0.06;
-}
-.kshf .timeChartAxis path.bottom_border {
-  fill: lightgray;
-}
 .kshf .border_line {
   position: relative;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSIxMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI5MCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
@@ -561,10 +514,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1em;
   font-size: 0.8em;
   cursor: pointer;
-  -webkit-transition: color 250ms linear;
-  -moz-transition: color 250ms linear;
-  -o-transition: color 250ms linear;
-  transition: color 250ms linear;
+  opacity: 0;
+  -webkit-transition: color 250ms linear, opacity 100ms linear;
+  -moz-transition: color 250ms linear, opacity 100ms linear;
+  -o-transition: color 250ms linear, opacity 100ms linear;
+  transition: color 250ms linear, opacity 100ms linear;
 }
 .kshf .headerGroup span.header_label_arrow:hover {
   color: #cb5454;
@@ -929,37 +883,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] > .subFacets .wigdhdyt span {
   display: none;
 }
-.kshf .kshfChart[collapsedTime=true] .config_zoom {
-  height: 0px;
-}
-.kshf .kshfChart[collapsedTime=true] .headerGroup .rightHeader {
-  color: gray;
-}
-.kshf .kshfChart[collapsedTime=true] .headerGroup .rightHeader span.header_label_arrow span {
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-.kshf .kshfChart[collapsedTime=true] div.attrib .row_bar_line {
-  display: none;
-}
-.kshf .kshfChart[collapsedTime=true] div.attrib .timeLineParts {
-  display: none;
-}
-.kshf .kshfChart[collapsedTime=true] .timeChartAxis {
-  display: none;
-}
-.kshf .kshfChart[collapsedTime=true] .timeDot {
-  display: none;
-}
-.kshf .kshfChart[collapsedTime=true] .middleScrollbar {
-  display: none;
-}
-.kshf .kshfChart[dotConfig|=Gradient] .timeDot[display=false] {
-  fill: url(#dotGradient_Inactive);
-}
 .kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton.rowFilter {
   opacity: 1;
   pointer-events: all;
@@ -982,17 +905,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[selecttype="SelectAnd"] div.attrib[selected='0'][noitems=false] .bar.active {
   cursor: cell;
 }
-.kshf .kshfChart[filtered_time=true] .chartClearFilterButton.timeFilter {
-  opacity: 1;
-  pointer-events: all;
-}
-.kshf .kshfChart[filtered_time=true] .selection_bar rect {
-  fill-opacity: 0.5;
-  pointer-events: auto;
-}
-.kshf .kshfChart[filtered_time=false] .config_zoom .zoom_button {
-  display: none;
-}
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
@@ -1001,6 +913,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart:hover {
   box-shadow: inset 0px 0px 3px gray;
+}
+.kshf .kshfChart:hover span.header_label_arrow {
+  opacity: 1;
 }
 .kshf .kshfChart[hasFacets=true] {
   margin-bottom: 2px;
@@ -1110,6 +1025,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.attrib > span.attribLabel span.filter_add_more span.add {
   cursor: cell;
+  margin-right: 3px;
 }
 .kshf div.attrib > span.attribLabel span.filter_add_more span.remove {
   cursor: pointer !important;
@@ -1138,85 +1054,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 4px;
   width: 1px;
   height: 10px;
-}
-.kshf div.attrib > span.timeLineParts_Overflow {
-  overflow-x: hidden;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts {
-  display: inline-block;
-  position: relative;
-  vertical-align: top;
-  line-height: 18px;
-  height: 18px;
-  margin: 0px 10px;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.bar {
-  position: absolute;
-  border-radius: 10px;
-  display: inline-block;
-  background-color: #8699a8;
-  height: 10px;
-  margin-top: 4px;
-  opacity: 0.2;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.bar.total {
-  background-color: #DEE2E6;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot {
-  position: absolute;
-  top: 4px;
-  border-radius: 10px;
-  width: 10px;
-  height: 10px;
-  cursor: pointer;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[fill=default] {
-  box-shadow: 0px 0px 0px 1px #EEE;
-  background-color: #616F7A;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot:not([fill=default]) {
-  box-shadow: none;
-  background-color: none;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[fill=gradient100] {
-  background-image: 8121991;
-  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
-  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
-  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
-  background-image: radial-gradient(circle, rgba(97,111,122,0.85) 0%, rgba(97,111,122,0.85) 25%, rgba(97,111,122,0.70) 100%);
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[fill=gradient75] {
-  background-image: 8121991;
-  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
-  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
-  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
-  background-image: radial-gradient(circle, rgba(97,111,122,0.6) 0%, rgba(97,111,122,0.6) 25%, rgba(97,111,122,0.5) 100%);
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[fill=gradient50] {
-  background-image: 8121991;
-  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
-  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
-  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
-  background-image: radial-gradient(circle, rgba(97,111,122,0.4) 0%, rgba(97,111,122,0.4) 25%, rgba(97,111,122,0.3) 100%);
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[fill=gradient25] {
-  background-image: 8121991;
-  background-image: -webkit-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
-  background-image: -moz-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
-  background-image: -o-radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
-  background-image: radial-gradient(circle, rgba(97,111,122,0.25) 0%, rgba(97,111,122,0.25) 25%, rgba(97,111,122,0.2) 100%);
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[display=false] {
-  pointer-events: none;
-  background-color: #CCCCCC !important;
-  opacity: 0.2;
-  background-image: none;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[display=true]:hover {
-  box-shadow: 0px 0px 0px 1px orangered !important;
-}
-.kshf div.attrib > span.timeLineParts_Overflow span.timeLineParts span.timeDot[highlight=true] {
-  box-shadow: 0px 0px 0px 1px #c32c2c !important;
 }
 .kshf div.attrib:not([selected="0"]) span {
   font-weight: 700;
@@ -1796,9 +1633,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 15px;
   margin-top: -1px;
-}
-.kshf .labelGroup.timeLabelGroup {
-  margin-top: -2px;
 }
 .kshf .labelGroup span.tick {
   position: absolute;

@@ -34,16 +34,21 @@ $(document).ready( function(){
             postCols = kshf.dt_ColNames.Posts;
             catCols = kshf.dt_ColNames.Categories;
         },
-        facets: [ {
-            facetTitle: "Category", 
-            timeTitle: "Date",
-            timeItemMap : function(d){
-                var r =new Date(Date.now());
-                r.setDate(r.getDate()-d.data[0]*4);
-                return r;
-            },
-            catTableName: "Categories"
-        } ],
+        facets: [ 
+            {
+                facetTitle: "Category", 
+                catTableName: "Categories"
+            },{
+                facetTitle: "Date",
+                catItemMap : function(d){
+                    var r =new Date(Date.now());
+                    r.setDate(r.getDate()-d.data[0]*4);
+                    return r;
+                },
+                intervalScale: 'time',
+                layout:'bottom'
+            }
+        ],
         itemDisplay: {
             sortColWidth: 70,
             sortingOpts : [ 

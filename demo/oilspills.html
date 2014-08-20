@@ -77,12 +77,9 @@ google.setOnLoadCallback( function(){
         facets: [
             {
                 facetTitle: "Size",
-                timeTitle: "Spill Date",
-                timeItemMap :  function(spill){ return spill.data[spillsCol["Date"]] },
                 sortingOpts : [{ 
                     no_resort: true
-                }],
-                timeItemMap : getDate
+                }]
             },{
                 facetTitle: "Source",
                 catItemMap : getSource
@@ -113,6 +110,11 @@ google.setOnLoadCallback( function(){
                 catTableName: "Districts",
                 collapsed: true,
                 textFilter: 'at'
+            },{
+                facetTitle: "Spill Date",
+                catItemMap: getDate,
+                intervalScale: 'time',
+                layout: 'bottom-mid'
             }
         ],
         itemDisplay: {

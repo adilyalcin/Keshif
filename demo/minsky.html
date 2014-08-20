@@ -46,8 +46,6 @@ google.setOnLoadCallback( function() {
         facets: [
             {
                 facetTitle: "Topic",
-                timeTitle: "Date",
-                timeBarShow: true,
                 sortingOpts : [
                     { name: "Last pub. of topic", func: kshf.Util.sortFunc_Time_Last },
                     { name: "First pub. of topic", func: kshf.Util.sortFunc_Time_First },
@@ -61,6 +59,10 @@ google.setOnLoadCallback( function() {
                 facetTitle: "Pub. Type",
                 forceSearch: false,
                 textFilter: 'as'
+            },{
+                facetTitle: "Date",
+                intervalScale: 'time',
+                layout: 'bottom-mid'
             }
         ],
         itemDisplay: {

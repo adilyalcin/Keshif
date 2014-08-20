@@ -69,14 +69,7 @@ google.setOnLoadCallback(function() {
             {
                 facetTitle: "Topic",
                 catTableName: "Keywords",
-                timeTitle: "Publication Date",
-                timeBarShow: true,
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
-                sortingOpts : [
-                    { name: "Last pub.",  func: kshf.Util.sortFunc_Time_Last },
-                    { name: "First pub.",  func: kshf.Util.sortFunc_Time_First },
-                    { name: "Pub. #" }
-                ],
                 textFilter: 'about'
             },{
                 facetTitle: "Publication Type",
@@ -112,6 +105,10 @@ google.setOnLoadCallback(function() {
                         textFilter: 'with'
                     }
                 ]
+            },{
+                facetTitle: "Publication Date",
+                intervalScale: 'time',
+                layout: 'bottom-mid'
             }
         ],
         readyCb: function(){

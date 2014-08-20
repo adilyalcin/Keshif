@@ -107,8 +107,6 @@ google.setOnLoadCallback( function() {
                 catTableName: "topics",
                 catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
                 catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
-                timeItemMap : function(pub){ return new Date(pub.data[trsCol.Date]); },
-                timeTitle: "Date",
                 textFilter: 'about', textGroup: 'topics',
                 visibleRows: 9
             },{
@@ -144,6 +142,13 @@ google.setOnLoadCallback( function() {
                 catTableName: "projects",
                 catLabelText: function(project) { return project.data[projectsCol.project];  },
                 textFilter: 'within', textGroup: 'projects'
+            },{
+                facetTitle: "Date",
+                layout: "bottom-mid",
+                catItemMap : function(pub){ return new Date(pub.data[trsCol.Date]); },
+                type: 'interval',
+                intervalScale: 'time'
+                
             }
         ],
         itemDisplay: {

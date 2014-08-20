@@ -34,9 +34,9 @@ google.setOnLoadCallback(function () {
                 facetTitle: "Year",
                 catItemMap: function(d){ 
                     var yr = d.data[0].substring(7,9);
-                    var dt=new Date(moment(yr,"YY"));
-                    return dt.getFullYear();
-                }
+                    return new Date(moment(yr,"YY"));
+                },
+                intervalScale: 'time'
             },{
                 facetTitle: "Highlights",
                 catItemMap: function(d){

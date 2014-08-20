@@ -4,7 +4,7 @@
 		<title>Tablet Computers</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css" type="text/css">
@@ -43,12 +43,6 @@ $(document).ready( function() {
                         func: kshf.Util.sortFunc_Time_Last
                     }
                 ],
-                timeTitle: "Release Date",
-                timeItemMap : function(tablet){ 
-                    var dt = tablet.data['Date First Available'];
-                    if(dt===""){ return null; }
-                    return new Date(moment(dt,"MM/DD/YYYY"));
-                },
                 textFilter: 'by', textGroup: 'brands'
             },{
                 facetTitle: "Operating System",
@@ -78,6 +72,19 @@ $(document).ready( function() {
                 facetTitle: "Battery Life (hours)",
                 layout: 'right',
                 catItemMap: function(d) { return d.data['Battery Life']; }
+            },{
+                facetTitle: "Rating",
+                layout: 'right',
+                catItemMap: function(d) { return d.data['Customer Reviews']; }
+            },{
+                facetTitle: "Release Date",
+                catItemMap : function(tablet){ 
+                    var dt = tablet.data['Date First Available'];
+                    if(dt===""){ return null; }
+                    return new Date(moment(dt,"MM/DD/YYYY"));
+                },
+                intervalScale: 'time',
+                layout: 'bottom'
             }
         ],
         itemDisplay: {

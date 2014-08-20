@@ -18,7 +18,7 @@
 
 google.setOnLoadCallback(function () {
     // set div height accordingly 
-    $('#chart_div').height(900);
+    $('#chart_div').height(700);
     $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
@@ -35,8 +35,7 @@ google.setOnLoadCallback(function () {
         },
         facets: [
             {
-                facetTitle: "Main Category RFCD",
-                catDispCountFix: 6,/*
+                facetTitle: "Main Category RFCD",/*
                 timeTitle: "App Year",
                 timeItemMap : function(d){ 
                     var y=d.data[10];
@@ -44,23 +43,23 @@ google.setOnLoadCallback(function () {
                     return new Date(moment(y+"01-01","YYYY-MM-DD"));
                 }*/
             },{
-                facetTitle: "Broad Research Area", catDispCountFix: 2
+                facetTitle: "Broad Research Area", 
             },{
-                facetTitle: "Funding Purpose", catDispCountFix: 2
+                facetTitle: "Funding Purpose", 
             },{
-                facetTitle: "Main Funding Group", catDispCountFix: 2
+                facetTitle: "Main Funding Group", 
             },{
-                facetTitle: "Sector", catDispCountFix: 2
+                facetTitle: "Sector", layout: 'right', 
             },{
-                facetTitle: "Field Of Research / RFCD"
+                facetTitle: "Field Of Research / RFCD", layout: 'right',
             },{
-                facetTitle: "Main Funding Unit Type", catDispCountFix: 3
+                facetTitle: "Main Funding Unit Type", layout: 'right',
             },{
-                facetTitle: "Grant Admin Institution", catDispCountFix: 5
+                facetTitle: "Grant Admin Institution", layout: 'right',
             },{
-                facetTitle: "State", catDispCountFix: 3
+                facetTitle: "State", layout: 'right',
             },{
-                facetTitle: "Main Category RFCD",
+                facetTitle: "Main Category RFCD", layout: 'right',
             }
         ],
         itemDisplay: {

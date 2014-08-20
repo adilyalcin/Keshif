@@ -37,13 +37,7 @@ google.setOnLoadCallback( function () {
         },
         facets: [
             {
-                facetTitle: "Doctor actor", 
-                timeTitle: "Year (First villain appearance)",
-                timeItemMap : function(d){ 
-                    var y=d.data[1];
-                    if(y===null) return null;
-                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
-                }
+                facetTitle: "Doctor actor"
             },
 /*            {
                 facetTitle: "Doctor actor"
@@ -66,6 +60,16 @@ google.setOnLoadCallback( function () {
                     else return "3 or more";
                 },
                 sortingOpts : [ { name: "Last pub.",  func: kshf.Util.sortFunc_String_Decr } ]
+            },{
+                facetTitle: "First Appearance",
+                catItemMap : function(d){ 
+                    var y=d.data[1];
+                    if(y===null) return null;
+                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
+                },
+                type: 'interval',
+                intervalScale: 'time',
+                layout: 'bottom'
             }
         ],
         itemDisplay: {

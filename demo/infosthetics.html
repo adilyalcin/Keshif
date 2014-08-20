@@ -15,6 +15,8 @@
         <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
 
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
         <script type="text/javascript">
 
 var demoID = 13;
@@ -68,13 +70,17 @@ $(document).ready( function(){
 //                timeTitle: "Date",
                 textFilter: 'about'
             },{
-                facetTitle: "Comment #",
-                catItemMap : function(post){ return post.data[postCols['# of Comments']]; },
-                barScaleType: "log"
+                facetTitle: "# Comments",
+                catItemMap : function(post){
+                    var v=post.data[postCols['# of Comments']];
+                    if(v>0) return v;
+                },
+                intervalScale: "log"
             },{
-                facetTitle: "Year",
-                catItemMap : function(post){ return post.data[postCols['Date']].getUTCFullYear(); },
-//                type: "Categorical",
+                facetTitle: "Time",
+                layout: 'bottom',
+                catItemMap : function(post){ return post.data[postCols['Date']]; },
+                intervalScale: 'time',
                 textFilter: 'in'
             },{
                 facetTitle: "Author",
@@ -88,10 +94,15 @@ $(document).ready( function(){
             $(".postName").click(loadImage);
         },
         itemDisplay: {
-            sortColWidth: 95,
+            sortColWidth: 85,
             sortingOpts : [
                 {   name: 'Date',
-                    value: function(d){ return d.data[postCols['Date']].getUTCFullYear(); }
+                    value: function(d){
+                        return d.data[postCols['Date']].getTime();
+                    },
+                    label: function(d){
+                        return moment(d.data[postCols['Date']]).fromNow();
+                    }
                 },{ name: '#Comments',
                     value: function(d){ return d.data[5]; }
                 }

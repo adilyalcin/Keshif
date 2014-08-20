@@ -32,7 +32,6 @@ google.setOnLoadCallback( function(){
         facets: [
             {
                 facetTitle: "Result",
-                timeTitle: "Vote Date",
                 textFilter: 'resulting in'
             },{
                 facetTitle: "Session",
@@ -46,13 +45,17 @@ google.setOnLoadCallback( function(){
                     }],
                 textFilter: 'at'
             },{
-                facetTitle: "Bill",
-            },{
                 facetTitle: "Yea's",
                 catItemMap : function(vote){ return vote.data[billCols['Yea\'s']]; },
             },{
                 facetTitle: "Nay's",
                 catItemMap : function(vote){ return vote.data[billCols['Nay\'s']]; },
+            },{
+                facetTitle: "Bill",
+            },{
+                facetTitle: "Vote Date",
+                intervalScale: 'time',
+                layout: 'bottom-mid'
             }
         ],
         itemDisplay: {

@@ -19,6 +19,7 @@
         google.setOnLoadCallback(function(){
             new kshf.Browser({
                 domID: "#chart_div",
+                rightPanelLabelWidth: 80,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
@@ -29,15 +30,6 @@
                             var s = d.data[2];
                             if(s) return 'Yes';
                             return 'No';
-                        },
-                        timeTitle: "Birthdate",
-                        timeItemMap : function(d){ 
-                            // calculate birthdate from sink date and passenger age
-                            var age = d.data[4];
-                            if(age===null) return null;
-                            var newdate = new Date(sinkDate);
-                            newdate.setFullYear(newdate.getFullYear() - age);
-                            return newdate;
                         },
                         sortingOpts : [{ no_resort: true }]
                     },{ facetTitle: "pclass",
@@ -58,9 +50,21 @@
                             if(age===null) return null;
                             return age;
                         }
-                    },{ facetTitle: "boat", type: 'categorical'
-                    },{ facetTitle: "embarked", layout: 'right'
+                    },{ facetTitle: "embarked",
                     },{ facetTitle: "room", layout: 'right'
+                    },{ facetTitle: "boat", type: 'categorical', layout: 'right'
+                    },{
+                        facetTitle: "Birthdate",
+                        catItemMap : function(d){ 
+                            // calculate birthdate from sink date and passenger age
+                            var age = d.data[4];
+                            if(age===null) return null;
+                            var newdate = new Date(sinkDate);
+                            newdate.setFullYear(newdate.getFullYear() - age);
+                            return newdate;
+                        },
+                        intervalScale: 'time',
+                        layout:'bottom'
                     }
                 ],
                 itemDisplay: {
@@ -74,8 +78,8 @@
         </script>
         <style>
             #chart_div {
-                width: 900px;
-                height: 700px;
+                width: 800px;
+                height: 550px;
             }
             #chart_div div.listItem{
                 max-height: 20px;
