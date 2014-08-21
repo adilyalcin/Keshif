@@ -1,0 +1,999 @@
+[
+	{
+		"id": "Robertson1993",
+		"title": "Document Lens",
+		"year": 1993,
+		"authors": "George G. Robertson and Jock D. Mackinlay",
+		"reference": "George G. Robertson and Jock D. Mackinlay. <i>The Document Lens</i>. Proceedings of the 6th Annual ACM symposium on User Interface Software and Technology, pages 101-108, 1993.",
+		"url": "http://dx.doi.org/10.1145/168642.168652",
+		"categories": ["overview", "navigation", "3d", "document", "text"]
+	},
+	
+	{
+		"id": "Eick1992",
+		"title": "Seesoft",
+		"year": 1992,
+		"authors": "Stephen G. Eick, Joseph L. Steffen, and Eric E. Sumner",
+		"reference": "Stephen G. Eick, Joseph L. Steffen, and Eric E. Sumner. <i>Seesoft - A Tool for Visualizing Line Oriented Software Statistics</i>. IEEE Transactions on Software Engineering, vol. 18, no. 11, pages 957-968, 1992.",
+		"url": "http://dx.doi.org/10.1109/32.177365",
+		"categories": ["overview", "corpora", "document", "2d", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Oelke2007",
+		"title": "Literature Fingerprinting",
+		"year": 2007,
+		"authors": "Daniel A. Keim and Daniela Oelke",
+		"reference": "Daniel A. Keim and Daniela Oelke. <i>Literature Fingerprinting: A New Method for Visual Literary Analysis</i>. Proc. of the IEEE Symp. on Visual Analytics and Technology, pp. 115-122, 2007.",
+		"url": "http://dx.doi.org/10.1109/VAST.2007.4389004",
+		"categories": ["text-summarization", "comparison", "overview", "corpora", "document", "literature", "2d", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Wattenberg2008",
+		"title": "Word Tree",
+		"year": 2008,
+		"authors": "Martin Wattenberg and Fernanda B. Viégas",
+		"reference": "Martin Wattenberg and Fernanda B. Viégas. <i>The Word Tree, an Interactive Visual Concordance</i>. IEEE Transactions on Visualization and Computer Graphics 14, 6, pages 1221-1228, 2008.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2008.172",
+		"categories": ["lexical-analysis", "roi", "document", "networks", "literature", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "AbdulRahman2013",
+		"title": "Poem Viewer",
+		"year": 2013,
+		"authors": "Alfie Abdul-Rahman et al.",
+		"reference": "A. Abdul-Rahman, J. Lein, K. Coles, E. Maguire, M. Meyer, M.Wynne, C. R. Johnson, A. Trefethen, and M. Chen. <i>Rule-based Visual Mappings – with a Case Study on Poetry Visualization</i>. Computer Graphics Forum, vol. 32, issue 3pt4, pp. 381–390, 2013.",
+		"url": "http://dx.doi.org/10.1111/cgf.12125",
+		"categories": ["lexical-analysis", "relation-analysis", "comparison", "navigation", "document", "literature", "2d", "text", "node-link", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Wang2013_1",
+		"title": "Sentiment Helix with Attribute Astrolabe",
+		"year": 2013,
+		"authors": "Changbo Wang et al.",
+		"reference": "Changbo Wang, Zhao Xiao, Yuhua Liu, Yanru Xu, Aoying Zhou, and Kang Zhang. <i>SentiView: Sentiment Analysis and Visualization for Internet Popular Topics</i>. IEEE Transactions on Human-Machine Systems, vol. 43, issue 6, pp.620-630, 2013.",
+		"url": "http://dx.doi.org/10.1109/THMS.2013.2285047",
+		"categories": ["sentiment-analysis", "trend-analysis", "roi", "overview", "time-series", "corpora", "social-media", "2d", "line-plot", "pixel-area", "radial", "linear"]
+	},
+	
+	{
+		"id": "Wang2013_2",
+		"title": "Sentiment Relationship Map",
+		"year": 2013,
+		"authors": "Changbo Wang et al.",
+		"reference": "Changbo Wang, Zhao Xiao, Yuhua Liu, Yanru Xu, Aoying Zhou, and Kang Zhang. <i>SentiView: Sentiment Analysis and Visualization for Internet Popular Topics</i>. IEEE Transactions on Human-Machine Systems, vol. 43, issue 6, pp.620-630, 2013.",
+		"url": "http://dx.doi.org/10.1109/THMS.2013.2285047",
+		"categories": ["sentiment-analysis", "comparison", "networks", "corpora", "social-media", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Gambette2010",
+		"title": "Tree Cloud",
+		"year": 2010,
+		"authors": "Philippe Gambette and Jean Véronis",
+		"reference": "Philippe Gambette and Jean Véronis. <i>Visualising a Text with a Tree Cloud</i>. In Locarek-Junge H. and Weihs C., editors, Classification as a Tool of Research, Proc. of IFCS'09 (11th Conference of the International Federation of Classification Societies), p. 561-569, 2010.",
+		"url": "http://dx.doi.org/10.1007/978-3-642-10745-0_61",
+		"categories": ["text-summarization", "classification", "overview", "document", "networks", "2d", "node-link", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Dou2013",
+		"title": "Hierarchical Topics",
+		"year": 2013,
+		"authors": "Wenwen Dou et al.",
+		"reference": "Wenwen Dou, Li Yu, Xiaoyu Wang, Zhiqiang Ma, and William Ribarsky. <i>HierarchicalTopics: Visually Exploring Large Text Collections Using Topic Hierarchies</i>. IEEE Transactions on Visualization and Computer Graphics, vol.19, no.12, pp.2002-2011, 2013.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2013.162",
+		"categories": ["text-summarization", "classification", "roi", "corpora", "time-series", "networks", "social-media", "editorial-media", "papers", "2d", "node-link", "line-plot", "metric"]
+	},
+	
+	{
+		"id": "Havre2002",
+		"title": "ThemeRiver",
+		"year": 2002,
+		"authors": "Susan Havre et al.",
+		"reference": "Susan Havre, Elizabeth Hetzler, Paul Whitney, and Lucy Nowell. <i>ThemeRiver: visualizing thematic changes in large document collections</i>. IEEE Transactions on Visualization and Computer Graphics, vol.8, no.1, pp.9-20, 2002.",
+		"url": "http://dx.doi.org/10.1109/2945.981848",
+		"categories": ["trend-analysis", "event-analysis", "overview", "roi", "comparison", "corpora", "time-series", "editorial-media", "2d", "line-plot", "metric"]
+	},
+	
+	{
+		"id": "Oelke2013",
+		"title": "Fingerprint Matrices",
+		"year": 2013,
+		"authors": "Daniela Oelke, Dimitrios Kokkinakis, and Daniel A. Keim",
+		"reference": "Daniela Oelke, Dimitrios Kokkinakis, and Daniel A. Keim. <i>Fingerprint Matrices: Uncovering the dynamics of social networks in prose literature</i>. Computer Graphics Forum, 32: 371–380, 2013.",
+		"url": "http://dx.doi.org/10.1111/cgf.12124",
+		"categories": ["text-summarization", "comparison", "overview", "document", "networks", "literature", "2d", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Deller2008",
+		"title": "Document Spaces",
+		"year": 2008,
+		"authors": "Matthias Deller et al.",
+		"reference": "Matthias Deller, Stefan Agne, Achim Ebert, Andreas Dengel, Hans Hagen, Bertin Klein, Michael Bender, Tony Bernardin, and Bernd Hamann. <i>Managing a Document-Based Information Space</i>. In Proceedings of the 13th international conference on Intelligent user interfaces (IUI '08). ACM, New York, NY, USA, pages 119-128, 2008.",
+		"url": "http://dx.doi.org/10.1145/1378773.1378789",
+		"categories": ["classification","overview","navigation","corpora","3d","pixel-area","metric"]
+	},
+	
+	{
+		"id": "Freeman1996",
+		"title": "Lifestreams",
+		"year": 1996,
+		"authors": "Eric Freeman and David Gelernter",
+		"reference": "Eric Freeman and David Gelernter. <i>Lifestreams: A Storage Model for Personal Data</i>. SIGMOD Rec. 25, pages 80-86, 1996.",
+		"url": "http://dx.doi.org/10.1145/381854.381893",
+		"categories": ["navigation","streams","time-series","2d","pixel-area","linear"]
+	},
+	
+	{
+		"id": "Salton1994",
+		"title":"Text Theme",
+		"year": 1994,
+		"authors":"Gerard Salton et al.",
+		"reference": "Gerard Salton, James Allan, Chris Buckley, and Amit Singhal. <i>Automatic Analysis, Theme Generation, and Summarization of Machine-Readable Texts</i>. Science, 264 (5164), pages 1421-1426, 1994.",
+		"url": "http://dx.doi.org/10.1126/science.264.5164.1421",
+		"categories": ["text-summarization","overview","document","2d","node-link","radial"]
+	},
+	
+	{
+		"id": "Lin1992",
+		"title": "Document SOM",
+		"year": 1992,
+		"authors": "Xia Lin",
+		"reference": "Xia Lin. <i>Visualization for the Document Space</i>. Proceedings of the IEEE Conference on Visualization (Visualization '92), pp. 274-281, 1992",
+		"url": "http://dx.doi.org/10.1109/VISUAL.1992.235198",
+		"categories": ["relation-analysis","classification","2d","corpora","maps","metric"]
+	},
+	
+	{
+		"id": "Wise1995",
+		"title": "ThemeScape",
+		"year": 1995,
+		"authors": "James A. Wise et al.",
+		"reference": "James A. Wise, James J. Thomas, Kelly Pennock, David Lantrip, Marc Pottier, Anne Schur, and Vern Crow. <i>Visualizing the Non-Visual: Spatial Analysis and Interaction with Information from Text Documents</i>. Proceedings of the IEEE Conference on Information Visualization (InfoVis '95), pp. 51-58, 1995",
+		"url": "http://dx.doi.org/10.1109/INFVIS.1995.528686",
+		"categories": ["text-summarization","classification","overview","3d","corpora","maps","metric"]
+	},
+	
+	{
+		"id": "Collins2009",
+		"title": "Parallel Tag Clouds",
+		"year": 2009,
+		"authors": "Christopher Collins, Fernanda B. Viégas, and Martin Wattenberg",
+		"reference": "Christopher Collins, Fernanda B. Viégas, and Martin Wattenberg. <i>Parallel Tag Clouds to Explore and Analyze Facted Text Corpora</i>. Proceedings of the IEEE Symp. on Visual Analytics Science and Technology (VAST '09), pp. 91-98, 2009",
+		"url": "http://dx.doi.org/10.1109/VAST.2009.5333443",
+		"categories":["lexical-analysis","relation-analysis","comparison","2d","corpora","clouds","linear"]
+	},
+	
+	{
+		"id": "Lee2010",
+		"title": "SparkClouds",
+		"year": 2010,
+		"authors": "Bongshin Lee et al.",
+		"reference": "Bongshin Lee, Nathalie Henry Riche, Amy K. Karlson, and Sheelagh Carpendale. <i>SparkClouds: Visualizing Trends in Tag Clouds</i>. IEEE Transactions on Visualization and Computer Graphics, 16(6), pp. 1182-1189, 2010",
+		"url": "http://dx.doi.org/10.1109/TVCG.2010.194",
+		"categories": ["relation-analysis","classification","2d","corpora","maps","metric"]
+	},
+	
+	{
+		"id": "Milgram1976",
+		"title": "TagClouds",
+		"year": 1976,
+		"authors": "Stanley Milgram and Denise Jodelet",
+		"reference": "Stanley Milgram and Denise Jodelet. <i>Psychological maps of Paris</i>. Environmental Psychology, 1976",
+		"url": "http://www.wordle.net",
+		"categories": ["relation-analysis","classification","2d","corpora","maps","metric"]
+	},
+	
+	{
+		"id": "Rennison1994",
+		"title": "Galaxy of News",
+		"year": 1994,
+		"authors": "Earl Rennison",
+		"reference": "Earl Rennison. <i>Galaxy of News: An Approach to Visualizing and Understanding Expansive News Landscapes</i>. In  Proceedings of the 7th annual ACM symposium on User Interface Software and Technology (UIST '94), pages 3-12, 1994",
+		"url": "http://dx.doi.org/10.1145/192426.192429",
+		"categories": ["relation-analysis","classification","navigation","editorial-media","2d","corpora","clouds"]
+	},
+	
+	{
+		"id": "Krstajic2013",
+		"title": "Story Tracker",
+		"year": 2013,
+		"authors": "Miloš Krstajić et al.",
+		"reference": "Miloš Krstajić, Mohammad Najm-Araghi, Florian Mansmann, and Daniel A. Keim. <i>Story Tracker: Incremental visual text analytics of news story development</i>. Information Visualization, vol. 12, no. 3-4, pp. 308-323, 2013.",
+		"url": "http://dx.doi.org/10.1177/1473871613493996",
+		"categories": ["text-summarization", "relation-analysis", "classification", "comparison", "streams", "time-series", "editorial-media", "2d", "node-link", "linear"]
+	},
+	
+	{
+		"id": "Gansner2013",
+		"title": "Dynamic Maps",
+		"year": 2013,
+		"authors": "Emden R. Gansner, Yifan Hu, and Stephen C. North",
+		"reference": "Emden R. Gansner, Yifan Hu, and Stephen C. North. <i>Interactive Visualization of Streaming Text Data with Dynamic Maps</i>. Journal of Graph Algorithms and Applications, vol. 17, no. 4, pp. 515-540, 2013.",
+		"url": "http://dx.doi.org/10.7155/jgaa.00302",
+		"categories": ["text-summarization", "relation-analysis", "classification", "streams", "networks", "social-media", "2d", "node-link", "maps", "metric"]
+	},
+	
+	{
+		"id": "Zhang2013_1",
+		"title": "Electron Cloud Model",
+		"year": 2013,
+		"authors": "Chenghai Zhang, Yuhua Liu, and Changbo Wang",
+		"reference": "Chenghai Zhang, Yuhua Liu, and Changbo Wang. <i>Time-space Varying Visual Analysis of Micro-blog Sentiment</i>. Proceedings of the 6th International Symposium on Visual Information Communication and Interaction, pp. 64-71, 2013.",
+		"url": "http://dx.doi.org/10.1145/2493102.2493110",
+		"categories": ["sentiment-analysis", "overview", "corpora", "time-series", "social-media", "2d", "line-plot", "pixel-area", "radial"]
+	},
+	
+	{
+		"id": "Zhang2013_2",
+		"title": "Geographical Layout of Public Sentiment",
+		"year": 2013,
+		"authors": "Chenghai Zhang, Yuhua Liu, and Changbo Wang",
+		"reference": "Chenghai Zhang, Yuhua Liu, and Changbo Wang. <i>Time-space Varying Visual Analysis of Micro-blog Sentiment</i>. Proceedings of the 6th International Symposium on Visual Information Communication and Interaction, pp. 64-71, 2013.",
+		"url": "http://dx.doi.org/10.1145/2493102.2493110",
+		"categories": ["sentiment-analysis", "overview", "roi", "corpora", "geospatial", "networks", "social-media", "2d", "node-link", "maps", "metric"]
+	},
+	
+	{
+		"id": "Ham2009",
+		"title": "Phrase Net",
+		"year": 2009,
+		"authors": "Frank van Ham, Martin Wattenberg, and Fernanda B. Viégas",
+		"reference": "Frank van Ham, Martin Wattenberg, and Fernanda B. Viégas. <i>Mapping Text with Phrase Nets</i>. IEEE Transactions on Visualization and Computer Graphics 15, 6, pp. 1169-1176, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.165",
+		"categories": ["lexical-analysis", "relation-analysis", "overview", "document", "networks", "literature", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Cui2012",
+		"title": "TextWheel",
+		"year": 2012,
+		"authors": "Weiwei Cui et al.",
+		"reference": "Weiwei Cui, Huamin Qu, Hong Zhou, Wenbin Zhang, and Steve Skiena. <i>Watch the Story Unfold with TextWheel: Visualization of Large-Scale News Streams</i>. ACM Transactions on Intelligent Systems and Technology, vol. 3, issue 2, pp. 20:1-20:17, 2012.",
+		"url": "http://dx.doi.org/10.1145/2089094.2089096",
+		"categories": ["sentiment-analysis", "trend-analysis", "relation-analysis", "overview", "roi", "comparison", "navigation", "streams", "time-series", "networks", "editorial-media", "2d", "node-link", "line-plot", "linear", "radial"]
+	},
+	
+	{
+		"id": "Kaban2002",
+		"title": "Topographic Visualisation of Evolving Text",
+		"year": 2002,
+		"authors": "Ata Kabán and Mark A. Girolami",
+		"reference": "Ata Kabán and Mark A. Girolami. <i>A Dynamic Probabilistic Model to Visualise Topic Evolution in Text Streams</i>. Journal of Intelligent Information Systems, vol. 18, no. 2-3, pp. 107-125, 2002.",
+		"url": "http://dx.doi.org/10.1023/A:1013673310093",
+		"categories": ["text-summarization", "classification", "streams", "time-series", "editorial-media", "2d", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Collins2009_2",
+		"title": "Bubble Sets",
+		"year": 2009,
+		"authors": "Christopher Collins, Gerald Penn, and Sheelagh Carpendale",
+		"reference": "Christopher Collins, Gerald Penn, and Sheelagh Carpendale. <i>Bubble Sets: Revealing Set Relations with Isocontours over Existing Visualizations</i>. IEEE Transactions on Visualization and Computer Graphics 15, 6, pp. 1009-1016, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.122",
+		"categories": ["translation-analysis", "relation-analysis", "classification", "uncertainty", "document", "corpora", "networks", "2d", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Collins2009_3",
+		"title": "DocuBurst",
+		"year": 2009,
+		"authors": "Christopher Collins, Sheelagh Carpendale, and Gerald Penn",
+		"reference": "Christopher Collins, Sheelagh Carpendale, and Gerald Penn. <i>DocuBurst: Visualizing Document Content using Language Structure</i>. Computer Graphics Forum, vol. 28, issue 3, pp. 1039–1046, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.122",
+		"categories": ["text-summarization", "relation-analysis", "lexical-analysis", "classification", "overview", "comparison", "navigation", "document", "2d", "pixel-area", "radial"]
+	},
+	
+	{
+		"id": "Paley2002",
+		"title": "TextArc",
+		"year": 2002,
+		"authors": "W. Bradford Paley",
+		"reference": "W. Bradford Paley. <i>TextArc: Showing Word Frequency and Distribution in Text</i>. Proceedings of IEEE Symposium on Information Visualization, Poster Compendium, 2002.",
+		"url": "http://www.textarc.org",
+		"categories": ["text-summarization", "relation-analysis", "lexical-analysis", "overview", "document", "2d", "clouds", "node-link", "radial"]
+	},
+	
+	{
+		"id": "Strobelt2009",
+		"title": "Document Cards",
+		"year": 2009,
+		"authors": "Hendrik Strobelt et al.",
+		"reference": "Hendrik Strobelt, Daniela Oelke, Christian Rohrdantz, Andreas Stoffel, Daniel A. Keim, and Oliver Deussen. <i>Document Cards: A Top Trumps Visualization for Documents</i>. IEEE Transactions on Visualization and Computer Graphics, 15(6):1145-1152, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.139",
+		"categories": ["text-summarization", "corpora", "2d", "overview", "metric", "glyph"]
+	},
+	
+	{
+		"id": "Goerg2013",
+		"title": "Jigsaw",
+		"year": 2013,
+		"authors": "Carsten Görg et al.",
+		"reference": "Carsten Görg, Zhicheng Liu, Jaeyeon Kihm, Jaegul Choo, Haesun Park, and John Stasko. <i>Combining Computational Analyses and Interactive Visualization for Document Exploration and Sensemaking in Jigsaw</i>. IEEE Transactions on Visualization and Computer Graphics, 19(10):1646-1663, 2013.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2012.324",
+		"categories": ["text-summarization", "relation-analysis", "sentiment-analysis", "classification", "overview", "navigation", "comparison", "corpora", "2d", "pixel-area", "node-link", "text", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Bosch2013",
+		"title": "ScatterBlogs2",
+		"year": 2013,
+		"authors": "Harald Bosch et al.",
+		"reference": "Harald Bosch, Dennis Thom, Florian Heimerl, Edwin Püttmann, Steffen Koch, Robert Krüger, Michael Wörner, and Thomas Ertl. <i>ScatterBlogs2: Real-Time Monitoring of Microblog Messages through User-Guided Filtering</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 19, issue 12, pp. 2022–2031, 2013.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2013.186",
+		"categories": ["text-summarization", "event-analysis", "overview", "monitoring", "classification", "uncertainty", "streams", "geospatial", "time-series", "social-media", "2d", "node-link", "clouds", "maps", "text", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Luo2012",
+		"title": "EventRiver",
+		"year": 2012,
+		"authors": "Dongning Luo et al.",
+		"reference": "Dongning Luo, Jing Yang, Miloš Krstajić, William Ribarsky, and Daniel Keim. <i>EventRiver: Visually Exploring Text Collections with Temporal References</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 18, issue 1, pp. 93-105, 2012.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2010.225",
+		"categories": ["text-summarization", "event-analysis", "overview", "navigation", "classification", "comparison", "roi", "corpora", "time-series", "editorial-media", "2d", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Chen2006",
+		"title": "Lexichron",
+		"year": 2006,
+		"authors": "Chaomei Chen et al.",
+		"reference": "Chaomei Chen, Fidelia Ibekwe-SanJuan, Eric SanJuan, and Chris Weaver. <i>Visual Analysis of Conflicting Opinions</i>. Proceedings of IEEE Symposium on Visual Analytics Science and Technology (VAST '06), pages 59-66, 2006.",
+		"url": "http://dx.doi.org/10.1109/VAST.2006.261431",
+		"categories": ["sentiment-analysis", "trend-analysis", "lexical-analysis", "navigation", "classification", "corpora", "reviews", "2d", "node-link", "linear"]
+	},
+	
+	{
+		"id": "Mao2007",
+		"title": "Sequential Document Visualization",
+		"year": 2007,
+		"authors": "Yi Mao, Joshua V. Dillon, and Guy Lebanon",
+		"reference": "Yi Mao, Joshua V. Dillon, and Guy Lebanon. <i>Sequential Document Visualization</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 13, issue 6, pp. 1208-1215, 2007.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2007.70592",
+		"categories": ["trend-analysis", "overview", "document", "time-series", "2d", "line-plot"]
+	},
+	
+	{
+		"id": "Brew2011",
+		"title": "SentireCrowds",
+		"year": 2011,
+		"authors": "Anthony Brew et al.",
+		"reference": "Anthony Brew, Derek Greene, Daniel Archambault, and Pádraig Cunningham. <i>Deriving Insights from National Happiness Indices</i>. Proceedings of IEEE 11th International Conference on Data Mining Workshops (ICDMW), pp. 53-60, 2011.",
+		"url": "http://dx.doi.org/10.1109/ICDMW.2011.61",
+		"categories": ["sentiment-analysis", "text-summarization", "overview", "roi", "comparison", "classification", "corpora", "time-series", "social-media", "2d", "line-plot", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Stoffel2012",
+		"title": "Distorted Document Thumbnails",
+		"year": 2012,
+		"authors": "Andreas Stoffel et al.",
+		"reference": "A. Stoffel, H. Strobelt, O. Deussen and D. A. Keim. <i>Document Thumbnails with Variable Text Scaling</i>. Computer Graphics Forum, vol. 31, issue 3pt3, pp. 1165–1173, 2012.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2012.03109.x",
+		"categories": ["overview", "roi", "document", "2d", "text"]
+	},
+	
+	{
+		"id": "Riehmann2012",
+		"title": "Wordgraph",
+		"year": 2012,
+		"authors": "Patrick Riehmann et al.",
+		"reference": "Patrick Riehmann, Henning Gruendl, Martin Potthast, Martin Trenkmann, Benno Stein, and Bernd Froehlich. <i>WORDGRAPH: Keyword-in-Context Visualization for NETSPEAK's Wildcard Search</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 18, issue 9, pp. 1411-1423, 2012.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2012.96",
+		"categories": ["relation-analysis", "comparison", "navigation", "document", "networks", "literature", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Paulovich2012",
+		"title": "ProjCloud",
+		"year": 2012,
+		"authors": "Fernando V. Paulovich et al.",
+		"reference": "Fernando V. Paulovich, Franklina M. B. Toledo, Guilherme P. Telles, Rosane Minghim, and Luis Gustavo Nonato. <i>Semantic Wordification of Document Collections</i>. Computer Graphics Forum, vol. 31, issue 3pt3, pp. 1145–1153, 2012.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2012.03107.x",
+		"categories": ["text-summarization", "relation-analysis", "overview", "corpora", "2d", "pixel-area", "maps", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Wattenberg2002",
+		"title": "Arc Diagram",
+		"year": 2002,
+		"authors": "Martin Wattenberg",
+		"reference": "Martin Wattenberg. <i>Arc diagrams: visualizing structure in strings</i>. Proceedings of IEEE Symposium on Information Visualization (INFOVIS), pp. 110-116, 2002.",
+		"url": "http://dx.doi.org/10.1109/INFVIS.2002.1173155",
+		"categories": ["trend-analysis", "relation-analysis", "comparison", "overview", "document", "2d", "node-link", "linear"]
+	},
+	
+	{
+		"id": "Wanner2012",
+		"title": "Topic Tracker",
+		"year": 2012,
+		"authors": "Franz Wanner, Andreas Weiler, and Tobias Schreck",
+		"reference": "Franz Wanner, Andreas Weiler, and Tobias Schreck. <i>Topic Tracker: Shape-based Visualization for Trend and Sentiment Tracking in Twitter</i>.  2nd IEEE Workshop on Interactive Visual Text Analytics \"Task-Driven Analysis of Social Media\" as part of the IEEE VisWeek 2012.",
+		"url": "http://research.microsoft.com/en-us/um/people/shliu/tasmc/paper/Topic-Tracker.pdf",
+		"categories": ["trend-analysis", "sentiment-analysis", "text-summarization", "overview", "navigation", "comparison", "corpora", "time-series", "social-media", "2d", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Viegas2009",
+		"title": "Wordle",
+		"year": 2009,
+		"authors": "Fernanda B. Viégas, Martin Wattenberg, and Jonathan Feinberg",
+		"reference": "Fernanda B. Viégas, Martin Wattenberg, and Jonathan Feinberg. <i>Participatory Visualization with Wordle</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 15, issue 6, pp. 1137-1144, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.171",
+		"categories":["text-summarization", "relation-analysis", "overview", "classification", "2d", "corpora", "clouds"]
+	},
+	
+	{
+		"id": "Gretarsson2012",
+		"title": "TopicNets",
+		"year": 2012,
+		"authors": "Brynjar Gretarsson et al.",
+		"reference": "Brynjar Gretarsson, John O’Donovan, Svetlin Bostandjiev, Tobias Höllerer, Arthur Asuncion, David Newman, and Padhraic Smyth. <i>TopicNets: Visual Analysis of Large Text Corpora with Topic Modeling</i>. ACM Transactions on Intelligent Systems and Technology (TIST), vol.3, issue 2, pp. 23:1-23:26, 2012.",
+		"url": "http://dx.doi.org/10.1145/2089094.2089099",
+		"categories":["text-summarization", "relation-analysis", "overview", "classification", "papers", "2d", "document", "corpora", "networks", "node-link", "radial"]
+	},
+	
+	{
+		"id": "Fischer2012",
+		"title": "Relaxed Event Timeline",
+		"year": 2012,
+		"authors": "Fabian Fischer, Florian Mansmann, and Daniel A. Keim",
+		"reference": "Fabian Fischer, Florian Mansmann, and Daniel A. Keim. <i>Real-time Visual Analytics for Event Data Streams</i>. Proceedings of the Annual ACM Symposium on Applied Computing, pp. 801-806, 2012.",
+		"url": "http://dx.doi.org/10.1145/2245276.2245432",
+		"categories":["event-analysis", "monitoring", "overview", "navigation", "2d", "time-series", "streams", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Drieger2012",
+		"title": "Interactive 3D visualization of semantic network",
+		"year": 2012,
+		"authors": "Philipp Drieger",
+		"reference": "Philipp Drieger. <i>Visual Text Analytics using Semantic Networks and Interactive 3D Visualization</i>. Proceedings of EuroVA 2012: International Workshop on Visual Analytics, pp. 43-47, 2012.",
+		"url": "http://dx.doi.org/10.2312/PE/EuroVAST/EuroVA12/043-047",
+		"categories":["relation-analysis", "overview", "roi", "classification", "corpora", "networks", "social-media", "3d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Dou2012",
+		"title": "LeadLine",
+		"year": 2012,
+		"authors": "Wenwen Dou et al.",
+		"reference": "Wenwen Dou, Xiaoyu Wang, Drew Skau, William Ribarsky, and Michelle X. Zhou. <i>LeadLine: Interactive visual analysis of text data through event identification and exploration</i>. Proceedings of IEEE Conference on Visual Analytics Science and Technology (VAST), pp. 93-102, 2012.",
+		"url": "http://dx.doi.org/10.1109/VAST.2012.6400485",
+		"categories": ["text-summarization", "event-analysis", "overview", "roi", "comparison", "streams", "time-series", "geospatial", "social-media", "editorial-media", "2d", "line-plot", "maps", "clouds", "linear", "metric"]
+	},
+	
+	{
+		"id": "Angus2012",
+		"title": "Concept Recurrence Plots",
+		"year": 2012,
+		"authors": "Daniel Angus, Andrew Smith, and Janet Wiles",
+		"reference": "Daniel Angus, Andrew Smith, and Janet Wiles. <i>Conceptual Recurrence Plots: Revealing Patterns in Human Discourse</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 18, issue 6, pp. 988-997, 2012.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2011.100",
+		"categories": ["discourse-analysis", "overview", "comparison", "roi", "document", "communication", "2d", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Alsakran2012",
+		"title": "Streamit",
+		"year": 2012,
+		"authors": "Jamal Alsakran et al.",
+		"reference": "Jamal Alsakran, Yang Chen, Dongning Luo, Ye Zhao, Jing Yang, Wenwen Dou, and Shixia Liu. <i>Real-Time Visualization of Streaming Text with a Force-Based Dynamic System</i>. IEEE Computer Graphics and Applications, vol. 32, issue 1, pp. 34-45, 2012.",
+		"url": "http://dx.doi.org/10.1109/MCG.2011.91",
+		"categories": ["text-summarization", "overview", "monitoring", "comparison", "classification", "streams", "time-series", "editorial-media", "2d", "clouds", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Wu2011",
+		"title": "Semantic-preserving Word Clouds",
+		"year": 2012,
+		"authors": "Yingcai Wu et al.",
+		"reference": "Yingcai Wu, Thomas Provan, Furu Wei, Shixia Liu, and Kwan-Liu Ma. <i>Semantic-Preserving Word Clouds by Seam Carving</i>. Computer Graphics Forum, vol. 30, issue 3, pp. 741-740, 2011.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2011.01923.x",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "2d", "corpora", "papers", "maps", "clouds"]
+	},
+	
+	{
+		"id": "Lee2012",
+		"title": "iVisClustering",
+		"year": 2012,
+		"authors": "Hanseung Lee et al.",
+		"reference": "Hanseung Lee, Jaeyeon Kihm, Jaegul Choo, John Stasko, and Haesun Park. <i>iVisClustering: An Interactive Visual Document Clustering via Topic Modeling</i>. Computer Graphics Forum, vol. 31, issue 3pt3, pp. 1155-1164, 2012.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2012.03108.x",
+		"categories": ["text-summarization", "relation-analysis", "classification", "2d", "corpora", "networks", "papers", "node-link", "line-plot", "metric", "linear"]
+	},
+	
+	{
+		"id": "Correll2011",
+		"title": "TextViewer",
+		"year": 2011,
+		"authors": "M. Correll, M. Witmore, and M. Gleicher",
+		"reference": "M. Correll, M. Witmore, and M. Gleicher. <i>Exploring Collections of Tagged Text for Literary Scholarship</i>. Computer Graphics Forum, vol. 30, issue 3, pp. 731-740, 2011.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2011.01922.x",
+		"categories": ["trend-analysis", "lexical-analysis", "roi", "overview", "2d", "document", "literature", "text", "line-plot", "metric"]
+	},
+	
+	{
+		"id": "Jusufi2014",
+		"title": "Circular Cluster Layout",
+		"year": 2014,
+		"authors": "Ilir Jusufi et al.",
+		"reference": "Ilir Jusufi, Andreas Kerren, Jiayi Liu, and Björn Zimmer. <i>Visual Exploration of Relationships between Document Clusters</i>. Proceedings of the International Conference on Information Visualization Theory and Applications (IVAPP), pp. 195-203, 2014.",
+		"categories": ["text-summarization", "relation-analysis", "classification", "comparison", "overview", "2d", "corpora", "networks", "papers", "node-link", "radial", "metric"]
+	},
+	
+	{
+		"id": "Cao2011",
+		"title": "SolarMap",
+		"year": 2011,
+		"authors": "Nan Cao et al.",
+		"reference": "Nan Cao, David Gotz, Jimeng Sun, Yu-Ru Lin and Huamin Qu. <i>SolarMap: Multifaceted Visual Analytics for Topic Exploration</i>. Proceedings of IEEE 11th International Conference on Data Mining (ICDM), pp. 101-110, 2011.",
+		"url": "http://dx.doi.org/10.1109/ICDM.2011.135",
+		"categories": ["text-summarization", "relation-analysis", "classification", "comparison", "overview", "2d", "corpora", "networks", "node-link", "pixel-area", "radial", "metric"]
+	},
+	
+	{
+		"id": "Krstajic2011",
+		"title": "CloudLines",
+		"year": 2011,
+		"authors": "Miloš Krstajić, Enrico Bertini, and Daniel A. Keim",
+		"reference": "Miloš Krstajić, Enrico Bertini, and Daniel A. Keim. <i>CloudLines: Compact Display of Event Episodes in Multiple Time-Series</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 17, issue 12, pp. 2432-2439, 2011.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2011.179",
+		"categories": ["event-analysis", "roi", "comparison", "streams", "time-series", "editorial-media", "2d", "pixel-area", "linear", "metric"]
+	},
+	
+	{
+		"id": "Xu2013",
+		"title": "Topic Competition Visualization",
+		"year": 2013,
+		"authors": "Panpan Xu et al.",
+		"reference": "Panpan Xu, Yingcai Wu, Enxun Wei, Tai-Quan Peng, Shixia Liu, Jonathan J.H. Zhu, and Huamin Qu. <i>Visual Analysis of Topic Competition on Social Media</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 19, issue 12, pp. 2012-2021, 2013.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2013.221",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "corpora", "time-series", "social-media", "2d", "line-plot", "clouds", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Krstajic2010",
+		"title": "Semantic News Analysis",
+		"year": 2010,
+		"authors": "Miloš Krstajić et al.",
+		"reference": "Miloš Krstajić, Florian Mansmann, Andreas Stoffel, Martin Atkinson, and Daniel A. Keim. <i>Processing online news streams for large-scale semantic analysis</i>. Proceedings of IEEE 26th International Conference on Data Engineering Workshops (ICDEW), pp. 215-220, 2010.",
+		"url": "http://dx.doi.org/10.1109/ICDEW.2010.5452710",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "monitoring", "streams", "time-series", "editorial-media", "2d", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Endert2013",
+		"title": "Typograph",
+		"year": 2013,
+		"authors": "Alex Endert et al.",
+		"reference": "Alex Endert, Russ Burtner, Nick Cramer, Ralph Perko, Shawn Hampton, and Kristin Cook. <i>Typograph: Multiscale spatial exploration of text documents</i>. Proceedings of IEEE International Conference on Big Data, pp. 17-24, 2013.",
+		"url": "http://dx.doi.org/10.1109/BigData.2013.6691709",
+		"categories": ["text-summarization", "overview", "classification", "navigation", "corpora", "editorial-media", "2d", "maps", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Dou2011",
+		"title": "ParallelTopics",
+		"year": 2011,
+		"authors": "Wenwen Dou et al.",
+		"reference": "Wenwen Dou, Xiaoyu Wang, Remco Chang, and William Ribarsky. <i>ParallelTopics: A probabilistic approach to exploring document collections</i>. Proceedings of IEEE Conference on Visual Analytics Science and Technology (VAST), pp. 231-240, 2011.",
+		"url": "http://dx.doi.org/10.1109/VAST.2011.6102461",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "corpora", "time-series", "papers", "2d", "line-plot", "glyph", "clouds", "linear", "metric"]
+	},
+	
+	{
+		"id": "Chou2011",
+		"title": "PaperVis",
+		"year": 2011,
+		"authors": "J. -K. Chou and C. -K. Yang",
+		"reference": "J. -K. Chou and C. -K. Yang. <i>PaperVis: Literature Review Made Easy</i>. Computer Graphics Forum, vol. 30, issue 3, pp. 720-731, 2011.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2011.01921.x",
+		"categories": ["relation-analysis", "roi", "navigation", "overview", "2d", "corpora", "networks", "papers", "node-link", "radial"]
+	},
+	
+	{
+		"id": "Geng2013",
+		"title": "ShakerVis",
+		"year": 2013,
+		"authors": "Zhao Geng et al.",
+		"reference": "Zhao Geng, Tom Cheesman, Robert S. Laramee, Kevin Flanagan, and Stephan Thiel. <i>ShakerVis: Visual analysis of segment variation of German translations of Shakespeare's Othello</i>. Information Visualization, 2013.",
+		"url": "http://dx.doi.org/10.1177/1473871613495845",
+		"categories": ["translation-analysis", "overview", "comparison", "roi", "2d", "corpora", "literature", "line-plot", "pixel-area", "clouds", "linear", "metric"]
+	},
+	
+	{
+		"id": "Cui2011",
+		"title": "TextFlow",
+		"year": 2011,
+		"authors": "Weiwei Cui et al.",
+		"reference": "Weiwei Cui, Shixia Liu, Li Tan, Conglei Shi, Yangqiu Song, Zekai Gao, Huamin Qu, and Xin Tong. <i></i>. IEEE Transactions on Visualization and Computer Graphics, vol. 17, issue 12, pp. 2412-2421, 2011.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2011.239",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "roi", "corpora", "time-series", "papers", "2d", "line-plot", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Cao2010",
+		"title": "FacetAtlas",
+		"year": 2010,
+		"authors": "Nan Cao et al.",
+		"reference": "Nan Cao, Jimeng Sun, Yu-Ru Lin, David Gotz, Shixia Liu, and Huamin Qu. <i>FacetAtlas: Multifaceted Visualization for Rich Text Corpora</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 16, issue 6, pp. 1172-1181, 2010.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2010.154",
+		"categories": ["text-summarization", "relation-analysis", "classification", "comparison", "overview", "navigation", "2d", "corpora", "reviews", "networks", "node-link", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Lescovec2009",
+		"title": "MemeTracker",
+		"year": 2009,
+		"authors": "Jure Leskovec, Lars Backstrom, and Jon Kleinberg",
+		"reference": "Jure Leskovec, Lars Backstrom, and Jon Kleinberg. <i>Meme-tracking and the dynamics of the news cycle</i>. Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and data mining, pp. 497-506, 2009.",
+		"url": "http://dx.doi.org/10.1145/1557019.1557077",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "corpora", "time-series", "social-media", "editorial-media", "2d", "line-plot", "metric"]
+	},
+	
+	{
+		"id": "AlbrechtBuehler2005",
+		"title": "TextPool",
+		"year": 2005,
+		"authors": "Conrad Albrecht-Buehler, Benjamin Watson, and David A. Shamma",
+		"reference": "Conrad Albrecht-Buehler, Benjamin Watson, and David A. Shamma. <i>Visualizing live text streams using motion and temporal pooling</i>. IEEE Computer Graphics and Applications, vol. 25, issue 3, pp. 52-59, 2005.",
+		"url": "http://dx.doi.org/10.1109/MCG.2005.70",
+		"categories": ["text-summarization", "overview", "roi", "monitoring", "streams", "time-series", "editorial-media", "2d", "clouds", "metric"]
+	},
+	
+	{
+		"id": "DeCamp2005",
+		"title": "Gist Icons",
+		"year": 2005,
+		"authors": "Philip DeCamp et al.",
+		"reference": "Philip DeCamp, Amber Frid-Jimenez, Jethran Guiness, and Deb Roy. <i>Gist icons: Seeing meaning in large bodies of literature</i>. Proceedings of IEEE Symposium on Information Visualization, 2005.",
+		"url": "http://media.mit.edu/cogmac/publications/IEEEIcons.pdf",
+		"categories": ["text-summarization", "relation-analysis", "overview", "comparison", "navigation", "corpora", "communication", "patents", "2d", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Gregory2006",
+		"title": "Sentiment Rose Plots",
+		"year": 2006,
+		"authors": "Michelle L. Gregory et al.",
+		"reference": "Michelle L. Gregory, Nancy Chinchor, Paul Whitney, Richard Carter, Elizabeth Hetzler, and Alan Turner. <i>User-directed sentiment analysis: visualizing the affective content of documents</i>. Proceedings of the Workshop on Sentiment and Subjectivity in Text (SST), pp. 23-30, 2006.",
+		"url": "http://dl.acm.org/citation.cfm?id=1654645",
+		"categories": ["sentiment-analysis", "overview", "classification", "comparison", "corpora", "reviews", "2d", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Abbasi2007",
+		"title": "Ink Blots",
+		"year": 2007,
+		"authors": "Ahmed Abbasi and Hsinchun Chen",
+		"reference": "Ahmed Abbasi and Hsinchun Chen. <i>Categorization and analysis of text in computer mediated communication archives using visualization</i>. Proceedings of the 7th ACM/IEEE-CS joint conference on Digital libraries (JCDL '07), pp. 11-18, 2007.",
+		"url": "http://dx.doi.org/10.1145/1255175.1255178",
+		"categories": ["text-summarization", "sentiment-analysis", "trend-analysis", "overview", "classification", "comparison", "corpora", "social-media", "communication", "2d", "text", "pixel-area", "metric"]
+	},
+	
+	{
+		"id": "Don2007",
+		"title": "FeatureLens",
+		"year": 2007,
+		"authors": "Anthony Don et al.",
+		"reference": "Anthony Don, Elena Zheleva, Machon Gregory, Sureyya Tarkan, Loretta Auvil, Tanya Clement, Ben Shneiderman, and Catherine Plaisant. <i>Discovering interesting usage patterns in text collections: integrating text mining with visualization</i>. Proceedings of the 16th ACM conference on information and knowledge management (CIKM '07), pp. 213-222, 2007.",
+		"url": "http://dx.doi.org/10.1145/1321440.1321473",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "classification", "corpora", "time-series", "literature", "editorial-media", "2d", "line-plot", "text", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Benson2008",
+		"title": "Skimmer",
+		"year": 2008,
+		"authors": "Jordan Riley Benson et al.",
+		"reference": "Jordan Riley Benson, Phillip Lafleur, David Crist and Benjamin Watson. <i>Agent-based Visualization of Streaming Text</i>. IEEE Information Visualization Conference Poster, 2008.",
+		"url": "http://www.researchgate.net/publication/254412196_Agent-based_Visualization_of_Streaming_Text",
+		"categories": ["text-summarization", "overview", "monitoring", "classification", "streams", "time-series", "social-media", "2d", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Andrews2002",
+		"title": "InfoSky",
+		"year": 2002,
+		"authors": "Keith Andrews et al.",
+		"reference": "Keith Andrews, Wolfgang Kienreich, Vedran Sabol, Jutta Becker, Georg Droschl, Frank Kappe, Michael Granitzer, Peter Auer, and Klaus Tochtermann. <i>The InfoSky Visual Explorer: Exploiting Hierarchical Structure and Document Similarities</i>. Information Visualization, vol. 1, issue 2-3, pp. 166-181, 2002.",
+		"url": "http://dx.doi.org/10.1057/palgrave.ivs.9500023",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "corpora", "editorial-media", "2d", "clouds", "maps", "metric"]
+	},
+	
+	{
+		"id": "Brandes2003",
+		"title": "Dynamic Discourse Analysis",
+		"year": 2003,
+		"authors": "Ulrik Brandes and Steven R. Corman",
+		"reference": "Ulrik Brandes and Steven R. Corman. <i>Visual Unrolling of Network Evolution and the Analysis of Dynamic Discourse</i>. Information Visualization, vol. 2, issue 1, pp. 40-50, 2003.",
+		"url": "http://dx.doi.org/10.1057/palgrave.ivs.9500037",
+		"categories": ["text-summarization", "discourse-analysis", "overview", "comparison", "navigation", "corpora", "editorial-media", "2d", "3d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Hetzler2004",
+		"title": "IN-SPIRE Galaxies",
+		"year": 2004,
+		"authors": "Elizabeth Hetzler and Alan Turner",
+		"reference": "Elizabeth Hetzler and Alan Turner. <i>Analysis experiences using information visualization</i>. IEEE Computer Graphics and Applications, vol. 24, issue 5, pp. 22-26, 2004.",
+		"url": "http://dx.doi.org/10.1109/MCG.2004.22",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "corpora", "editorial-media", "2d", "clouds", "maps", "metric"]
+	},
+	
+	{
+		"id": "Kerr2003",
+		"title": "Thread Arcs",
+		"year": 2003,
+		"authors": "Bernard Kerr",
+		"reference": "Bernard Kerr. <i>Thread Arcs: an email thread visualization</i>. Proceedings of IEEE Symposium on Information Visualization, pp. 211-218, 2003.",
+		"url": "http://dx.doi.org/10.1109/INFVIS.2003.1249028",
+		"categories": ["trend-analysis", "relation-analysis", "comparison", "overview", "corpora", "communication", "2d", "node-link", "linear"]
+	},
+	
+	{
+		"id": "Paulovich2008",
+		"title": "Hierarchical Document Map",
+		"year": 2008,
+		"authors": "Fernando V. Paulovich and Rosane Minghim",
+		"reference": "Fernando V. Paulovich and Rosane Minghim. <i>HiPP: A Novel Hierarchical Point Placement Strategy and its Application to the Exploration of Document Collections</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 14, issue 6, pp. 1229-1236, 2008.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2008.138",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "corpora", "editorial-media", "papers", "2d", "maps", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Fekete2000",
+		"title": "Compus",
+		"year": 2000,
+		"authors": "Jean-Daniel Fekete and Nicole Dufournaud",
+		"reference": "Jean-Daniel Fekete and Nicole Dufournaud. <i>Compus: visualization and analysis of structured documents for understanding social life in the 16th century</i>. Proceedings of the fifth ACM conference on Digital libraries, pp. 47-55, 2000.",
+		"url": "http://dx.doi.org/10.1145/336597.336632",
+		"categories": ["translation-analysis", "lexical-analysis", "overview", "navigation", "2d", "corpora", "literature", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Monroy2002",
+		"title": "Interactive Timeline Viewer",
+		"year": 2002,
+		"authors": "Carlos Monroy et al.",
+		"reference": "Carlos Monroy, Rajiv Kochumman, Richard Furuta, and Eduardo Urbina. <i>Interactive Timeline Viewer (ItLv): A Tool to Visualize Variants among Documents</i>. Visual Interfaces to Digital Libraries, pp. 39-49, 2002.",
+		"url": "http://dx.doi.org/10.1007/3-540-36222-3_4",
+		"categories": ["translation-analysis", "lexical-analysis", "overview", "navigation", "2d", "corpora", "literature", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Zhao2007",
+		"title": "Content-temporal-social-based event visualization",
+		"year": 2007,
+		"authors": "Qiankun Zhao and Prasenjit Mitra",
+		"reference": "Qiankun Zhao and Prasenjit Mitra. <i>Event Detection and Visualization for Social Text Streams</i>. Proceedings of the International Conference on Weblogs and Social Media (ICWSM), 2007.",
+		"url": "http://www.icwsm.org/papers/3--Zhao-Mitra.pdf",
+		"categories": ["event-analysis", "relation-analysis", "overview", "classification", "corpora", "time-series", "networks", "social-media", "communication", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Makki2014",
+		"title": "Context-Specific Sentiment Lexicon Expansion",
+		"year": 2014,
+		"authors": "Raheleh Makki, Stephen Brooks, and Evangelos E. Milios",
+		"reference": "Raheleh Makki, Stephen Brooks, and Evangelos E. Milios. <i>Context-Specific Sentiment Lexicon Expansion via Minimal User Interaction</i>. Proceedings of the International Conference on Information Visualization Theory and Applications (IVAPP), pp. 178-186, 2014.",
+		"categories": ["sentiment-analysis", "overview", "classification", "comparison", "corpora", "reviews", "2d", "node-link", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Subasic2008",
+		"title": "STORIES",
+		"year": 2008,
+		"authors": "Ilija Subašić and Bettina Berendt",
+		"reference": "Ilija Subašić and Bettina Berendt. <i>Web Mining for Understanding Stories through Graph Visualisation</i>. Proceedings of IEEE International Conference on Data Mining (ICDM), pp. 570-579, 2008.",
+		"url": "http://dx.doi.org/10.1109/ICDM.2008.138",
+		"categories": ["text-summarization", "event-analysis", "relation-analysis", "overview", "roi", "navigation", "corpora", "time-series", "networks", "editorial-media", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Regan2010",
+		"title": "Character Flower",
+		"year": 2010,
+		"authors": "Tim Regan and Linda Becker",
+		"reference": "Tim Regan and Linda Becker. <i>Visualizing the Text of Philip Pullman's Trilogy \"His Dark Materials\"</i>. Proceedings of the Nordic Conference on Human-Computer Interaction (NordiCHI), pp. 759-764, 2010.",
+		"url": "http://dx.doi.org/10.1145/1868914.1869023",
+		"categories": ["relation-analysis", "lexical-analysis", "overview", "comparison", "document", "networks", "literature", "2d", "node-link", "radial"]
+	},
+	
+	{
+		"id": "Oelke2014",
+		"title": "DiTop-View",
+		"year": 2014,
+		"authors": "Daniela Oelke et al.",
+		"reference": "Daniela Oelke, Hendrik Strobelt, Christian Rohrdantz, Iryna Gurevych, and Oliver Deussen. <i>Comparative Exploration of Document Collections: a Visual Analytics Approach</i>. Computer Graphics Forum, vol. 33, issue 3, pp. 201-210, 2014.",
+		"url": "http://dx.doi.org/10.1111/cgf.12376",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "corpora", "editorial-media", "papers", "2d", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Kochtchi2014",
+		"title": "Network of Names",
+		"year": 2014,
+		"authors": "Artjom Kochtchi, Tatiana von Landesberger, and Chris Biemann",
+		"reference": "Artjom Kochtchi, Tatiana von Landesberger, and Chris Biemann. <i>Networks of Names: Visual Exploration and Semi-Automatic Tagging of Social Networks from Newspaper Articles</i>. Computer Graphics Forum, vol. 33, issue 3, pp. 211-220, 2014.",
+		"url": "http://dx.doi.org/10.1111/cgf.12377",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "corpora", "networks", "editorial-media", "2d", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Hoque2014",
+		"title": "ConVis",
+		"year": 2014,
+		"authors": "Enamul Hoque and Giuseppe Carenini",
+		"reference": "Enamul Hoque and Giuseppe Carenini. <i>ConVis: A Visual Text Analytic System for Exploring Blog Conversations</i>. Computer Graphics Forum, vol. 33, issue 3, pp. 221-230, 2014.",
+		"url": "http://dx.doi.org/10.1111/cgf.12378",
+		"categories": ["text-summarization", "discourse-analysis", "sentiment-analysis", "overview", "navigation", "comparison", "corpora", "time-series", "networks", "social-media", "2d", "node-link", "text", "pixel-area", "metric", "radial"]
+	},
+	
+	{
+		"id": "Weiler2014",
+		"title": "Stor-e-Motion",
+		"year": 2014,
+		"authors": "Andreas Weiler et al.",
+		"reference": "Andreas Weiler, Michael Grossniklaus, Franz Wanner, and Marc H. Scholl. <i>The Stor-e-Motion Visualization for Topic Evolution Tracking in Social Media Streams</i>. Eurographics/VGTC Conference on Visualization Poster, 2014.",
+		"categories": ["text-summarization", "sentiment-analysis", "event-analysis", "overview", "roi", "monitoring", "streams", "time-series", "editorial-media", "2d", "line-plot", "clouds", "linear"]
+	},
+	
+	{
+		"id": "Eck2010",
+		"title": "VOSViewer",
+		"year": 2010,
+		"authors": "Nees Jan van Eck and Ludo Waltman",
+		"reference": "Nees Jan van Eck and Ludo Waltman. <i>Software survey: VOSviewer, a computer program for bibliometric mapping</i>. Scientometrics, vol. 84, issue 2, pp. 523-538, 2010.",
+		"url": "http://dx.doi.org/10.1007/s11192-009-0146-3",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "navigation", "corpora", "papers", "2d", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Diakopoulos2014",
+		"title": "Lingoscope",
+		"year": 2014,
+		"authors": "Nicholas Diakopoulos et al.",
+		"reference": "Nicholas Diakopoulos, Amy X. Zhang, Dag Elgesem, and Andrew Salway. <i>Identifying and Analyzing Moral Evaluation Frames in Climate Change Blog Discourse</i>. Proceedings of the International Conference on Weblogs and Social Media (ICWSM), pp. 583-586, 2014.",
+		"categories": ["sentiment-analysis", "discourse-analysis", "overview", "comparison", "navigation", "corpora", "time-series", "social-media", "2d", "line-plot", "text", "linear"]
+	},
+	
+	{
+		"id": "Alexander2013",
+		"title": "Serendip",
+		"year": 2013,
+		"authors": "Eric Alexander et al.",
+		"reference": "Eric Alexander, Joe Kohlmann, Robin Valenza, and Michael Gleicher. <i>Serendip: Turning Topics Back to the Text</i>. IEEE Visualization Poster Proceedings, 2013.",
+		"categories": ["text-summarization", "trend-analysis", "overview", "navigation", "comparison", "uncertainty", "corpora", "literature", "2d", "line-plot", "text", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Choo2013",
+		"title": "UTOPIAN",
+		"year": 2013,
+		"authors": "Jaegul Choo et al.",
+		"reference": "Jaegul Choo, Changhyun Lee, Chandan K. Reddy, and Haesun Park. <i>UTOPIAN: User-Driven Topic Modeling Based on Interactive Nonnegative Matrix Factorization</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 19, issue 12, pp. 1992-2001, 2013.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2013.212",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "navigation", "corpora", "papers", "reviews", "2d", "clouds", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Endert2012",
+		"title": "ForceSPIRE",
+		"year": 2012,
+		"authors": "Alex Endert, Patrick Fiaux, and Chris North",
+		"reference": "Alex Endert, Patrick Fiaux, and Chris North. <i>Semantic interaction for visual text analytics</i>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), pp. 473-482, 2012.",
+		"url": "http://dx.doi.org/10.1145/2207676.2207741",
+		"categories": ["text-summarization", "relation-analysis", "overview", "roi", "navigation", "corpora", "2d", "clouds", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Wanner2009",
+		"title": "RSS News Feeds Sentiment Visualization",
+		"year": 2009,
+		"authors": "Franz Wanner et al.",
+		"reference": "Franz Wanner, Christian Rohrdantz, Florian Mansmann, Daniela Oelke, and Daniel A. Keim. <i>Visual Sentiment Analysis of RSS News Feeds Featuring the US Presidential Election in 2008</i>. Proceedings of the IUI Workshop on Visual Interfaces to the Social and the Semantic Web (VISSW), 2009.",
+		"url": "http://ceur-ws.org/Vol-443/",
+		"categories": ["text-summarization", "sentiment-analysis", "trend-analysis", "overview", "roi", "comparison", "corpora", "time-series", "editorial-media", "2d", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Chen2009",
+		"title": "Exemplar-based Visualization",
+		"year": 2009,
+		"authors": "Yanhua Chen et al.",
+		"reference": "Yanhua Chen, Lijun Wang, Ming Dong, and Jing Hua. <i>Exemplar-based Visualization of Large Document Corpus</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 15, issue 6, pp. 1161-1168, 2009.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2009.140",
+		"categories": ["text-summarization", "overview", "classification", "corpora", "2d", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Kim2011",
+		"title": "WordBridge",
+		"year": 2011,
+		"authors": "KyungTae Kim et al.",
+		"reference": "KyungTae Kim, Sungahn Ko, Niklas Elmqvist, and David S. Ebert. <i>WordBridge: Using Composite Tag Clouds in Node-Link Diagrams for Visualizing Content and Relations in Text Corpora</i>. Proceedings of the Hawaii International Conference on System Sciences (HICSS), pp. 1-8, 2011.",
+		"url": "http://dx.doi.org/10.1109/HICSS.2011.499",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "corpora", "networks", "2d", "node-link", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Rohrdantz2012",
+		"title": "Time Density Plots",
+		"year": 2012,
+		"authors": "Christian Rohrdantz et al.",
+		"reference": "Christian Rohrdantz, Ming C. Hao, Umeshwar Dayal, Lars-Erik Haug, and Daniel A. Keim. <i>Feature-Based Visual Sentiment Analysis of Text Document Streams</i>. ACM Transactions on Intelligent Systems and Technology (TIST), vol. 3, issue 2, pp. 26:1-26:25, 2012.",
+		"url": "http://dx.doi.org/10.1145/2089094.2089102",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "roi", "classification", "comparison", "uncertainty", "streams", "time-series", "editorial-media", "reviews", "2d", "glyph", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Chuang2012",
+		"title": "Stanford Dissertation Browser",
+		"year": 2012,
+		"authors": "Jason Chuang et al.",
+		"reference": "Jason Chuang, Daniel Ramage, Christopher Manning, and Jeffrey Heer. <i>Interpretation and trust: designing model-driven visualizations for text analysis</i>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), pp. 443-452, 2012.",
+		"url": "http://dx.doi.org/10.1145/2207676.2207738",
+		"categories": ["relation-analysis", "overview", "comparison", "navigation", "corpora", "papers", "2d", "clouds", "radial", "metric"]
+	},
+	
+	{
+		"id": "Krstajic2012",
+		"title": "Real-time Twitter Event Detection",
+		"year": 2012,
+		"authors": "Miloš Krstajić et al.",
+		"reference": "Miloš Krstajić, Christian Rohrdantz, Michael Hund, and Andreas Weiler. <i>Getting There First: Real-Time Detection of Real-World Incidents on Twitter</i>. Proceedings of IEEE Workshop on Interactive Visual Text Analytics, 2012.",
+		"url": "http://bib.dbvis.de/publications/details/451",
+		"categories": ["event-analysis", "sentiment-analysis", "monitoring", "streams", "time-series", "social-media", "2d", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Rohrdantz2012_2",
+		"title": "Suffixes Distribution Visualization",
+		"year": 2012,
+		"authors": "Christian Rohrdantz et al.",
+		"reference": "Christian Rohrdantz, Andreas Niekler, Annette Hautli, Miriam Butt, and Daniel A. Keim. <i>Lexical semantics and distribution of suffixes: a visual analysis</i>. Proceedings of the EACL Joint Workshop of LINGVIS & UNCLH (EACL), pp. 7-15, 2012.",
+		"url": "http://dl.acm.org/citation.cfm?id=2388655.2388657",
+		"categories": ["text-summarization", "lexical-analysis", "trend-analysis", "overview", "comparison", "navigation", "corpora", "time-series", "editorial-media", "2d", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Hao2013_1",
+		"title": "Pixel Sentiment Geo Map",
+		"year": 2013,
+		"authors": "Ming C. Hao et al.",
+		"reference": "Ming C. Hao, Christian Rohrdantz, Halldor Janetzko, Daniel A. Keim, Umeshwar Dayal, Lars erik Haug, Meichun Hsu, and Florian Stoffel. <i>Visual sentiment analysis of customer feedback streams using geo-temporal term associations</i>. Information Visualization, vol. 12, issue 3-4, pp. 273-290, 2013.",
+		"url": "http://dx.doi.org/10.1177/1473871613481691",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "roi", "navigation", "streams", "time-series", "geospatial", "reviews", "2d", "maps", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Hao2013_2",
+		"title": "Key Term Geo Map",
+		"year": 2013,
+		"authors": "Ming C. Hao et al.",
+		"reference": "Ming C. Hao, Christian Rohrdantz, Halldor Janetzko, Daniel A. Keim, Umeshwar Dayal, Lars erik Haug, Meichun Hsu, and Florian Stoffel. <i>Visual sentiment analysis of customer feedback streams using geo-temporal term associations</i>. Information Visualization, vol. 12, issue 3-4, pp. 273-290, 2013.",
+		"url": "http://dx.doi.org/10.1177/1473871613481691",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "roi", "navigation", "streams", "time-series", "geospatial", "reviews", "2d", "maps", "clouds", "metric"]
+	},
+	
+	{
+		"id": "Wu2010",
+		"title": "OpinionSeer",
+		"year": 2010,
+		"authors": "Yingcai Wu et al.",
+		"reference": "Yingcai Wu, Furu Wei, Shixia Liu, Norman Au, Weiwei Cui, Hong Zhou, and Huamin Qu. <i>OpinionSeer: Interactive Visualization of Hotel Customer Feedback</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 16, issue 6, pp. 1109-1118, 2010.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2010.183",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "roi", "comparison", "uncertainty", "corpora", "time-series", "geospatial", "reviews", "2d", "pixel-area", "clouds", "radial", "metric"]
+	}
+	
+	
+	
+]

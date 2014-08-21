@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Text Visualization Techniques</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height(670);
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 150,
+        itemName: "Text Vis. Techniques",
+        source : {
+            url: "http://textvis.lnu.se/",
+            callback: function(browser){
+                browser.primaryTableName = "Visualizations";
+
+                kshf.dt.Visualizations = [];
+                kshf.dt_id.Visualizations = {};
+
+                kshf.dt.Categories = [];
+                kshf.dt_id.Categories = {};
+
+                $.ajax( {
+                    url: "./data_private/textvis_content.json",
+                    async: false,
+                    success: function(data){
+                        data.forEach(function(v){
+                            var kshfItem = new kshf.Item(v,'id');
+                            kshf.dt.Visualizations.push(kshfItem);
+                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+                        });
+                    }
+                });
+
+                $.ajax( {
+                    url: "./data_private/textvis_categories.json",
+                    async: false,
+                    success: function(data){
+                        data.forEach(function(c){
+                            var kshfItem = new kshf.Item(c,'title');
+                            kshf.dt.Categories.push(kshfItem);
+                            kshf.dt_id.Categories[kshfItem.id()] = kshfItem;
+                        });
+                    }
+                });
+
+                browser.items = kshf.dt.Visualizations;
+                browser.itemsSelectedCt = browser.items.length;                
+
+                // finish loading....
+                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                d3.select(".kshf.layout_infobox div.status_text div").text("");
+                window.setTimeout(function() { browser.loadCharts(); }, 100);
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Tasks",
+                facets: [
+                    {
+                        facetTitle: "Analytic",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="sentiment-analysis" ||
+                                    c==="text-summarization" ||
+                                    c==="discourse-analysis" ||
+                                    c==="stance-analysis" ||
+                                    c==="event-analysis" ||
+                                    c==="trend-analysis" ||
+                                    c==="lexical-analysis" ||
+                                    c==="relation-analysis" ||
+                                    c==="category-entry";
+                            });
+                        }
+                    },{
+                        facetTitle: "Visualization",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="roi" ||
+                                    c==="classification" ||
+                                    c==="comparison" ||
+                                    c==="overview" ||
+                                    c==="monitoring" ||
+                                    c==="navigation" ||
+                                    c==="uncertainty";
+                            });
+                        }
+                    }
+                ]
+            },{
+                facetTitle: "Data", layout: 'right',
+                facets:[
+                    {
+                        facetTitle: "Source",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="document" ||
+                                    c==="corpora" ||
+                                    c==="streams";
+                            });
+                        }
+                    },{
+                        facetTitle: "Properties",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="geospatial" ||
+                                    c==="time-series" ||
+                                    c==="networks";
+                            });
+                        }
+                    }
+                ]
+            },{
+                facetTitle: "Domain",
+                catItemMap: function(d){
+                    return d.data.categories.filter(function(c){
+                        return c==="social-media" ||
+                            c==="communication" ||
+                            c==="patents" ||
+                            c==="reviews" ||
+                            c==="literature" ||
+                            c==="papers" ||
+                            c==="editorial-media";
+                    });
+                }
+            },{
+                facetTitle: "Visualization", layout: 'right',
+                facets:[
+                    {
+                        facetTitle: "Dimensionality",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="1d" ||
+                                    c==="2d" ||
+                                    c==="3d";
+                            });
+                        }
+                    },{
+                        facetTitle: "Representation",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="line-plot" ||
+                                    c==="pixel-area" ||
+                                    c==="node-link" ||
+                                    c==="clouds" ||
+                                    c==="maps" ||
+                                    c==="text" ||
+                                    c==="glyph";
+                            });
+                        }
+                    },{
+                        facetTitle: "Alignment",
+                        catItemMap: function(d){
+                            return d.data.categories.filter(function(c){
+                                return c==="radial" ||
+                                    c==="linear" ||
+                                    c==="metric";
+                            });
+                        }
+                    }
+                ]
+            },{
+                facetTitle: "Year",
+                catItemMap: function(d){ return new Date(d.data.year,0); },
+                intervalScale: 'time',
+                layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            maxVisibleItems_Default: 28,
+            sortingOpts : [{ name:'year', value: function(d){ return d.data.year; }}],
+            textSearch : "title",
+            autoExpandMore: true,
+            textSearchFunc: function(d){ return d.data.title;},
+            displayType: 'grid',
+            contentFunc : function(d){
+                return "<a target='_blank' href='"+d.data.url+"'><img><span class='title'>"+d.data.title+"</span></a>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src","data_private/textvis/thumbs200_"+d.data.id+".png");
+            }
+        }
+    });
+});
+        </script>
+<style>
+    div.listItem {
+        padding-bottom: 4px;
+        max-height: 230px !important;
+        vertical-align: top;
+    }
+    div.content{
+        width: 100px;
+    }
+    div.content a{
+        vertical-align: top;
+        color: #496B86;
+    }
+    div.content img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        padding: 3px;
+        border: solid;
+        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+        border-width: 1px 2px 2px 1px;
+        border-radius: 10px;
+        background-color: white;
+        max-width: 90px;
+        transition: background-color 300ms linear;
+        -webkit-transition: background-color 300ms linear;
+        -o-transition: background-color 300ms linear;
+        -moz-transition: background-color 300ms linear;
+    }
+    div.listItem[highlight=true] div.content img{
+        background-color: orangered;
+    }
+    div.content span.title{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2px;
+        text-align: center;
+        font-size: 0.8em;
+    }
+
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>

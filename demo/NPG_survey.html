@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Survey on &quot;Online collaboration: Scientists and the social network&quot;</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <!-- Demos - shared -->
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <!-- Logging features -->
+        <script type="text/javascript" src="./js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/log.js" charset="utf-8"></script>
+
+        <!-- Fancybox -->
+        <script type="text/javascript" src="./js/jquery.fancybox.pack.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="./css/jquery.fancybox.css">
+
+        <script type="text/javascript">
+
+var demoID = 89;
+
+var likertSort = function(a,b){
+    a= a.data[1];
+    b= b.data[1];
+    if(b==="Strongly agree") return 1;
+    if(a==="Strongly agree") return -1;
+    if(b==="Somewhat agree") return 1;
+    if(a==="Somewhat agree") return -1;
+    if(b==="Neutral") return 1;
+    if(a==="Neutral") return -1;
+    if(b==="Somewhat disagree") return 1;
+    if(a==="Somewhat disagree") return -1;
+    if(b==="Strongly disagree") return 1;
+    if(a==="Strongly disagree") return -1;
+};
+
+$(document).ready(function() {
+    // set div height accordingly 
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Participant Researchers",
+        categoryTextWidth:250,
+        leftPanelLabelWidth: 230,
+        rightPanelLabelWidth: 270,
+        source : {
+            gdocId : '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
+            sheets : [ {name:"Participants", id:'Participants'}]
+        },
+/*        source : {
+            dirPath: './',
+            fileType: 'csv',
+            sheets : [
+                {name:"NPG_survey", header: false, id:0},
+            ]
+        },*/
+        facets: [
+            {
+                facetTitle: "Capture Link Source", collapsed: true,
+                catItemMap: function(d){ return d.data[7]; }
+            },{
+                facetTitle: "Area of Interest",
+                description: "Which of the following best describes your area of interest?",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[8]!==null) r.push(d.data[8]);
+                    if(d.data[9]!==null) r.push("Other NaturalSci.: "+d.data[9]);
+                    if(d.data[10]!==null) r.push("Other SocialSci.: "+d.data[10]);
+                    return r;
+                }
+            },{
+                facetTitle: "Age",
+                description: "What is your age?",
+                catItemMap: function(d){ return d.data[12]; }
+            },{
+                facetTitle: "Continent", collapsed: true,
+                description: "In which continent do you live?",
+                catItemMap: function(d){ return d.data[13]; }
+            },{
+                facetTitle: "Country",
+                description: "In which country do you live?",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[14]!==null) r.push(d.data[14]);
+                    if(d.data[15]!==null) r.push(d.data[15]);
+                    if(d.data[16]!==null) r.push(d.data[16]);
+                    if(d.data[17]!==null) r.push(d.data[17]);
+                    if(d.data[18]!==null) r.push(d.data[18]);
+                    if(d.data[19]!==null) r.push(d.data[19]);
+                    return r;
+                }
+            },{
+                facetTitle: "Industry",
+                description: "Which category best describes your industry?",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[20]!==null) r.push(d.data[20]);
+                    if(d.data[21]!==null) r.push("Other: "+d.data[21]);
+                    return r;
+                }
+            },{
+                facetTitle: "Job Title",
+                description: "Which job title best applies to you?",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[22]!==null) r.push(d.data[22]);
+                    if(d.data[23]!==null) r.push("Other: "+d.data[23]);
+                    return r;
+                }
+            },{
+                facetTitle: "Research Webpage", collapsed: true, layout: 'right',
+                description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?",
+                catItemMap: function(d){ return d.data[24]; }
+            },{
+                facetTitle: "Self-Maintained R. Webpage", collapsed: true, layout: 'right',
+                description: "Do you personally edit/update this? (research webpage)",
+                catItemMap: function(d){ return d.data[25]; }
+            },{
+                facetTitle: "Written online research posts", layout: 'right',
+                description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
+                catItemMap: function(d){ return d.data[26]; }
+            },{
+                facetTitle: "Social Network - Awareness", layout: 'right',
+                description: "\"I am aware of this site.\"",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[27]!=="NotAware") r.push("Twitter");
+                    if(d.data[28]!=="NotAware") r.push("Facebook");
+                    if(d.data[29]!=="NotAware") r.push("Frontiers");
+                    if(d.data[30]!=="NotAware") r.push("Academia.edu");
+                    if(d.data[31]!=="NotAware") r.push("ResearchGate");
+                    if(d.data[32]!=="NotAware") r.push("LinkedIn");
+                    if(d.data[33]!=="NotAware") r.push("BioMedExperts");
+                    if(d.data[34]!=="NotAware") r.push("Google+");
+                    if(d.data[35]!=="NotAware") r.push("Mendeley");
+                    if(d.data[36]!=="NotAware") r.push("Pubchase");
+                    if(d.data[37]!=="NotAware") r.push("My Science Work");
+                    if(d.data[38]!=="NotAware") r.push("Google Scholar");
+                    if(d.data[39]!=="NotAware") r.push("Microsofot Academic Search");
+                    if(d.data[40]!=="NotAware") r.push("ORCID");
+                    if(d.data[41]!=="NotAware") r.push("ResearcherID");
+                    if(d.data[42]!=="NotAware") r.push("Figshare");
+                    if(d.data[43]!=="NotAware") r.push("MLA Commons");
+                    return r;
+                }
+            },{
+                facetTitle: "Social Network - Regular Use", layout: 'right',
+                description: "\"I visit this site regularly.\"",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[27]==="Aware,Regular") r.push("Twitter");
+                    if(d.data[28]==="Aware,Regular") r.push("Facebook");
+                    if(d.data[29]==="Aware,Regular") r.push("Frontiers");
+                    if(d.data[30]==="Aware,Regular") r.push("Academia.edu");
+                    if(d.data[31]==="Aware,Regular") r.push("ResearchGate");
+                    if(d.data[32]==="Aware,Regular") r.push("LinkedIn");
+                    if(d.data[33]==="Aware,Regular") r.push("BioMedExperts");
+                    if(d.data[34]==="Aware,Regular") r.push("Google+");
+                    if(d.data[35]==="Aware,Regular") r.push("Mendeley");
+                    if(d.data[36]==="Aware,Regular") r.push("Pubchase");
+                    if(d.data[37]==="Aware,Regular") r.push("My Science Work");
+                    if(d.data[38]==="Aware,Regular") r.push("Google Scholar");
+                    if(d.data[39]==="Aware,Regular") r.push("Microsofot Academic Search");
+                    if(d.data[40]==="Aware,Regular") r.push("ORCID");
+                    if(d.data[41]==="Aware,Regular") r.push("ResearcherID");
+                    if(d.data[42]==="Aware,Regular") r.push("Figshare");
+                    if(d.data[43]==="Aware,Regular") r.push("MLA Commons");
+                    return r;
+                }
+            },{
+                facetTitle: "Comment (Log) Length",
+                catItemMap: function(d){ 
+                    if(d.data[11]===null) return;
+                    if(d.data[11].length===0) return;
+                    return d.data[11].length; 
+                },
+                layout: 'bottom-mid',
+                intervalScale: 'log'
+            },{
+                facetTitle: "Information Publicly Shared",
+                description: "What professional information do you make publicly available online?",
+                layout: 'right',
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[44]===1) r.push("Contact details");
+                    if(d.data[45]===1) r.push("Areas of expertise");
+                    if(d.data[46]===1) r.push("Publishing history");
+                    if(d.data[47]===1) r.push("Links to published articles");
+                    if(d.data[48]===1) r.push("Copies of published papers");
+                    if(d.data[49]===1) r.push("Dataset (Published Research)");
+                    if(d.data[50]===1) r.push("Dataset (Unpublised Research)");
+                    if(d.data[51]===1) {
+                        r.push("Other");
+                        r.push("<i>Other</i> - "+d.data[52]);
+                    }
+                    return r;
+                }
+            },{
+                facetTitle: "\"... Profiles are useful\"", collapsed: true,
+                description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
+                layout: 'right',
+                catItemMap: function(d){ return d.data[53]; },
+                sortingOpts : [{ func: likertSort }]
+            },{
+                facetTitle: "\"... I need to promote more online\"", collapsed: true,
+                description: "\"I feel I should probably do more to promote my research using online networks\"",
+                layout: 'right',
+                catItemMap: function(d){ return d.data[54]; },
+                sortingOpts : [{ func: likertSort }]
+            },{
+                facetTitle: "\"... Profiles are not important\"", collapsed: true,
+                description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
+                layout: 'right',
+                catItemMap: function(d){ return d.data[55]; },
+                sortingOpts : [{ func: likertSort }]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 55,
+            autoExpandMore: true,
+            sortingOpts : [{ 
+                name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
+                    if(d.data[11]===null) return 0;
+                    return d.data[11].length; 
+                } }],
+            contentFunc : function(d){ 
+                if(d.data[11]===null) return "-";
+                return "<blockquote>" + d.data[11] + "</blockquote>";
+            }
+        }
+    });
+
+    $(".comment_popup").fancybox({
+        type: 'iframe',
+        width    : 600,
+        height   : 300,
+        closeBtn    : true,
+//        openEffect  : 'none',
+//        closeEffect : 'none',
+        iframe: {
+            preload   : true
+        }
+    });
+
+});
+
+</script>
+        <style>
+            .iteminfo a{
+                color:#606060;
+                font-style:italic;
+            }
+            #chart_div{
+                margin-bottom: 30px;
+            }
+            body{ margin:2px; }
+            blockquote {
+              /*background: #f9f9f9;
+              border-left: 10px solid #ccc;
+              margin: 1.5em 10px;
+              padding: 0.5em 10px;
+              quotes: "\201C""\201D""\2018""\2019";*/
+              quotes: "\201C""\201D""\2018""\2019";
+              margin: 0px;
+              font-style: italic;
+              font-weight: 300;
+            }
+            blockquote:before {
+              color: #ccc;
+              content: open-quote;
+              font-size: 4em;
+              margin-right: 0.1em;
+              margin-left: -0.1em;
+              vertical-align: -0.5em;
+              line-height: 0px;
+            }
+            blockquote:after {
+              color: #ccc;
+              content: close-quote;
+              font-size: 4em;
+              margin-right: 0.1em;
+              margin-left: -0.1em;
+              vertical-align: -0.5em;
+              line-height: 0px;
+            }
+            .qoutes{
+                font-style: italic;
+                font-weight: 300;
+            }
+            .quotes:before{
+                content: "";
+            }
+            .quotes:after{
+                content:'"';
+            }
+            .listItem{
+                max-height: 500px !important;
+            }
+            #infobox{
+                width: 90%;
+                left: 5%;
+                position: fixed;
+                text-align: center;
+                font-weight: 300;
+                font-family: sans-serif;
+                font-size: 0.8em;
+                bottom: 0px;
+                height: 20px;
+                background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+                background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);;
+            }
+            #infobox a{
+                color: black !important;
+                font-weight: 500;
+            }
+            #infobox span.fa{
+                color:gray;
+            }
+            .comment_popup{
+                position: fixed;
+                margin-left: 5px;
+                cursor: pointer;
+            }
+            .comment_popup .fa-stack{
+                float:left;
+                clear:left;
+                height: 1.5em;
+                margin-top: -15px;
+                margin-left: -15px;
+                font-size: 2em;
+            }
+            .comment_popup .fa-comment{
+                color: rgb(255, 205, 46);
+            }
+            .comment_popup .texttt{
+                font-family: sans-serif;
+                font-weight: 300;
+                font-size: 0.8em;
+            }
+            .comment_popup:hover .texttt{
+                color: orangered;
+            }
+            .comment_popup:hover .fa-comment{
+                color: orangered;
+            }
+        </style>
+	</head>
+    <body>
+
+        <span class="comment_popup"
+        href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
+            >
+            <span class="fa-stack" style="">
+              <i class="fa fa-stack-1x fa-comment"></i>
+              <i class="fa fa-stack-1x fa-comment-o"></i>
+            </span><br>
+            <span class="texttt">Share<br>your<br>feedback</span>
+            </span>
+
+        <div class="contents">
+            <div id="chart_div" onmousemove="logIf.setSessionID(this)"></div>
+            </div>
+        
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span> This page uses the survey data from
+            <a href="http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711" target="_blank">Online collaboration: Scientists and the social network</a>, by Richard Van Noorden, published at Nature, 13 August 2014. <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>

@@ -1,0 +1,385 @@
+[
+ 	{
+ 		"type": "category",
+ 		"title": "analytic-tasks",
+ 		"description": "Analytic Tasks",
+ 		"childrenDescription": "Analytic Task: ",
+ 		
+ 		"entries": [
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "text-summarization",
+ 			   "description": "Text Summarization / Topic Analysis / Entity Extraction",
+ 			   "content": "<span class=\"content-entry-icon\"><img src=\"images/topic-analysis.svg\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "discourse-analysis",
+ 			   "description": "Discourse Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-bullhorn\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "stance-analysis",
+ 			   "description": "Stance Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-heart\"></span>",
+ 			   "disabled": true
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "sentiment-analysis",
+ 			   "description": "Sentiment Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-thumbs-up\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "event-analysis",
+ 			   "description": "Event Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-bell\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "trend-analysis",
+ 			   "description": "Trend Analysis / Pattern Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-random\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "lexical-analysis",
+ 			   "description": "Lexical / Syntactical Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-text-width\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "relation-analysis",
+ 			   "description": "Relation / Connection Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-retweet\"></span>"
+ 		   },
+ 		   
+ 		  {
+ 			   "type": "category-entry",
+ 			   "title": "translation-analysis",
+ 			   "description": "Translation / Text Alignment Analysis",
+ 			   "content": "<span class=\"glyphicon glyphicon-edit\"></span>"
+ 		   }
+ 		]
+ 	},
+ 	
+	{
+ 		"type": "category",
+ 		"title": "visualization-tasks",
+ 		"description": "Visualization Tasks",
+ 		"childrenDescription": "Visualization Task: ",
+ 		
+ 		"entries": [
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "roi",
+ 			   "description": "Region of Interest",
+ 			   "content": "<span class=\"glyphicon glyphicon-star\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "classification",
+ 			   "description": "Clustering / Classification / Categorization",
+ 			   "content": "<span class=\"glyphicon glyphicon-tags\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "comparison",
+ 			   "description": "Comparison",
+ 			   "content": "<span class=\"glyphicon glyphicon-sort-by-attributes\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "overview",
+ 			   "description": "Overview",
+ 			   "content": "<span class=\"glyphicon glyphicon-eye-open\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "monitoring",
+ 			   "description": "Monitoring",
+ 			   "content": "<span class=\"content-entry-icon\"><img src=\"images/monitoring.svg\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "navigation",
+ 			   "description": "Navigation / Exploration",
+ 			   "content": "<span class=\"glyphicon glyphicon-move\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "uncertainty",
+ 			   "description": "Uncertainty Tackling",
+ 			   "content": "<span class=\"glyphicon glyphicon-question-sign\"></span>"
+ 		   }
+ 		]
+ 	},
+ 	
+ 	{
+ 		"type": "category",
+ 		"title": "data",
+ 		"description": "Data",
+ 		
+ 		"entries": [
+           {
+ 			   "type": "category",
+ 			   "title": "data-source",
+ 			   "description": "Source",
+ 			   "childrenDescription": "Data Source: ",
+ 			   
+ 			   "entries": [
+					   {
+			 			   "type": "category-entry",
+			 			   "title": "document",
+			 			   "description": "Document",
+			 			   "content": "<span class=\"glyphicon glyphicon-file\"></span>"
+			 		   },
+			 		   
+			 		   {
+			 			   "type": "category-entry",
+			 			   "title": "corpora",
+			 			   "description": "Corpora",
+			 			   "content": "<span class=\"glyphicon glyphicon-folder-open\"></span>"
+			 		   },
+			 		   
+			 		   {
+			 			   "type": "category-entry",
+			 			   "title": "streams",
+			 			   "description": "Streams",
+			 			   "content": "<span class=\"glyphicon glyphicon-cloud-download\"></span>"
+			 		   }
+ 			   ]
+ 		   },         
+ 		   
+ 		   {
+ 			   "type": "category",
+ 			   "title": "data-properties",
+ 			   "description": "Properties",
+ 			   "childrenDescription": "Data Property: ",
+ 			   
+ 			   "entries": [
+ 			         {
+						   "type": "category-entry",
+						   "title": "geospatial",
+						   "description": "Geospatial",
+						   "content": "<span class=\"content-entry-icon\"><img src=\"images/geospatial.svg\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "time-series",
+						   "description": "Time-series",
+						   "content": "<span class=\"glyphicon glyphicon-time\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "networks",
+						   "description": "Networks",
+						   "content": "<span class=\"content-entry-icon\"><img src=\"images/networks.svg\"></span>"
+					 } 
+ 			   ]
+ 		   }
+ 		]
+ 	},
+ 	
+ 	{
+ 		"type": "category",
+ 		"title": "domain",
+ 		"description": "Domain",
+ 		"childrenDescription": "Domain: ",
+ 		
+ 		"entries": [
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "social-media",
+ 			   "description": "Online Social Media",
+ 			   "content": "<span class=\"glyphicon glyphicon-comment\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "communication",
+ 			   "description": "Communication",
+ 			   "content": "<span class=\"glyphicon glyphicon-envelope\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "patents",
+ 			   "description": "Patents",
+ 			   "content": "<span class=\"glyphicon glyphicon-briefcase\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "reviews",
+ 			   "description": "Reviews / (Medical) Reports",
+ 			   "content": "<span class=\"content-entry-icon\"><img src=\"images/reviews.svg\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "literature",
+ 			   "description": "Literature / Poems",
+ 			   "content": "<span class=\"glyphicon glyphicon-book\"></span>"
+ 		   },
+ 		   
+ 		   {
+ 			   "type": "category-entry",
+ 			   "title": "papers",
+ 			   "description": "Scientific Articles / Papers",
+ 			   "content": "<span class=\"glyphicon glyphicon-stats\"></span>"
+ 		   },
+		   
+		   {
+			   "type": "category-entry",
+			   "title": "editorial-media",
+			   "description": "Editorial Media",
+			   "content": "<span class=\"glyphicon glyphicon-registration-mark\"></span>"
+		   }
+ 		]
+ 	},
+ 	
+ 	{
+ 		"type": "category",
+ 		"title": "visualization",
+ 		"description": "Visualization",
+ 		
+ 		"entries": [
+ 		   {
+ 			   "type": "category",
+ 			   "title": "dimensionality",
+ 			   "description": "Dimensionality",
+ 			   "childrenDescription": "Visualization Dimensionality: ",
+ 			   
+ 			   "entries": [
+					{
+						   "type": "category-entry",
+						   "title": "1d",
+						   "description": "1D",
+						   "content": "<span class=\"content-entry-label\">1D</span>",
+						   "disabled": true
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "2d",
+						   "description": "2D",
+						   "content": "<span class=\"content-entry-label\">2D</span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "3d",
+						   "description": "3D",
+						   "content": "<span class=\"content-entry-label\">3D</span>"
+					 } 
+ 			   ]
+ 		   },
+ 		   
+ 		  {
+ 			   "type": "category",
+ 			   "title": "representation",
+ 			   "description": "Representation",
+ 			   "childrenDescription": "Visual Representation: ",
+ 			   
+ 			   "entries": [
+					 {
+						   "type": "category-entry",
+						   "title": "line-plot",
+						   "description": "Line Plot / River",
+						   "content": "<span class=\"content-entry-icon\"><img src=\"images/line-plot.svg\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "pixel-area",
+						   "description": "Pixel / Area / Matrix",
+						   "content": "<span class=\"glyphicon glyphicon-th\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "node-link",
+						   "description": "Node-Link",
+						   "content": "<span class=\"content-entry-icon\"><img src=\"images/node-link.svg\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "clouds",
+						   "description": "Clouds / Galaxies",
+						   "content": "<span class=\"glyphicon glyphicon-cloud\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "maps",
+						   "description": "Maps",
+						   "content": "<span class=\"glyphicon glyphicon-globe\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "text",
+						   "description": "Text",
+						   "content": "<span class=\"glyphicon glyphicon-align-center\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "glyph",
+						   "description": "Glyph / Icon",
+						   "content": "<span class=\"glyphicon glyphicon-leaf\"></span>"
+					 }  
+ 			   ]
+ 		   },
+ 		   
+ 		  {
+ 			   "type": "category",
+ 			   "title": "alignment",
+ 			   "description": "Alignment",
+ 			   "childrenDescription": "Visualization Alignment: ",
+ 			   
+ 			   "entries": [
+					{
+						   "type": "category-entry",
+						   "title": "radial",
+						   "description": "Radial",
+						   "content": "<span class=\"glyphicon glyphicon-record\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "linear",
+						   "description": "Linear / Parallel",
+						   "content": "<span class=\"glyphicon glyphicon-signal\"></span>"
+					 },
+					 
+					 {
+						   "type": "category-entry",
+						   "title": "metric",
+						   "description": "Metric-dependent",
+						   "content": "<span class=\"content-entry-icon\"><img src=\"images/metric.svg\"></span>"
+					 } 
+ 			   ]
+ 		   }
+ 		]
+ 	}
+]
