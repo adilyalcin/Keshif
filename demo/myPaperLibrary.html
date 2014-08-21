@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>My paper library</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+var paperBrowser;
+
+function readBasic(c,item, $item){
+    c.about = item.getAttribute("rdf:about"); // read "about" of Description
+    c['Item Type'] = $item.find("itemType").text();
+    c.Date = $item.find("date").text();
+    // parse date
+    c.Date = moment(c.Date, ["YYYY","MMM D, YYYY","MMM YYYY"]);
+    if(c.Date !== null)
+        c.Date = c.Date.toDate();
+    c.Author = [];
+    $item.find("authors").find("Person").each(function(){
+        var $$this = $(this);
+        c.Author.push($$this.find("surname").text()+", "+$$this.find("givenname").text());
+    });
+    $item.find("title").each(function(){
+        // if title node is not under the main iterm node, skip it (probably title of conference, etc)
+        if(this.parentNode!==item) return;
+        if(c.title===undefined)
+            c.title = this.textContent.trim();
+        else
+            c.venueTitle = this.textContent.trim();
+    });
+    c.Subject = [];
+    $item.find("subject").each(function(person){
+        c.Subject.push($(this).text().trim().toProperCase());
+    });
+
+    var item = new kshf.Item(c,"about");
+    return item;
+};
+
+function loadZotero(zoteroRDF, browser) {
+    zoteroRDF = zoteroRDF.children[0];
+    paperBrowser = browser;
+    browser.primaryTableName = "Papers";
+    kshf.dt["Papers"] = [];
+    var arr = kshf.dt["Papers"];
+
+    $zoteroRDF = $(zoteroRDF);
+
+    $zoteroRDF.find('Description').each (function(){
+        var $this = $(this);
+        var c = {};
+
+        c['Series Title'] = $this.find("Series").find("title").text();
+        c.pages = $this.find("pages").text();
+        c.abstract = $this.find("abstract").text();
+
+        arr.push(readBasic(c,this,$this));
+    });
+
+    $zoteroRDF.find('Article').each (function(){
+        var $this = $(this);
+        var c = {};
+
+        c['Series Title'] = $this.find("Series").find("title").text();
+        c.pages = $this.find("pages").text();
+        c.abstract = $this.find("abstract").text();
+
+        arr.push(readBasic(c,this,$this));
+    });
+
+    $zoteroRDF.find('BookSection').each(function(){
+        var $this = $(this);
+        var c = {};
+        c.pages = $this.find("pages").text();
+        arr.push(readBasic(c,this,$this));
+    });
+
+    $zoteroRDF.find('Report').each(function(){
+        var $this = $(this);
+        var c = {};
+        c.pages = $this.find("pages").text();
+        arr.push(readBasic(c,this,$this));
+    });
+
+    $zoteroRDF.find('Book').each(function(){
+        // make sure this is a book, and does not appear as "isPartOf" for a bookChapter
+        if(this.parentNode!==zoteroRDF) return;
+        var $this = $(this);
+        var c = {};
+        arr.push(readBasic(c,this,$this));
+    });
+
+    $zoteroRDF.find('Thesis').each(function(){
+        var $this = $(this);
+        var c = {};
+        arr.push(readBasic(c,this,$this));
+    });
+
+    var id_table = {};
+    arr.forEach(function(r){id_table[r.id()] = r;})
+    kshf.dt_id.Papers = id_table;
+
+    // process collections
+    $zoteroRDF.find('Collection').each(function(){
+        var $this = $(this);
+        var collectionTitle = $(this).find("title").text();
+        $this.find("hasPart").each(function(){
+            var paperID = this.getAttribute("rdf:resource");
+            var paper = kshf.dt_id.Papers[paperID];
+            if(paper!==undefined)
+                kshf.dt_id.Papers[paperID].data.Collection = collectionTitle;
+            else
+                console.log(paperID);
+        });
+    });
+
+    browser.items = kshf.dt[browser.primaryTableName];
+    browser.itemsSelectedCt = browser.items.length;
+    browser.loadCharts();   
+}
+
+google.setOnLoadCallback(function(){
+    new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Papers",
+        contentType:"application/rdf+xml",
+        categoryTextWidth: 190,
+        source : {
+            callback: function(browser){
+                $.ajax( {
+                    url:"./data/myPaperLibrary.xml",
+                    type:"GET",
+                    dataType:"xml",
+                    async: false,
+                    success: function(zotero){ return loadZotero(zotero,browser); }
+                });
+            }
+        },
+        facets: [
+            {   facetTitle: "Collection", 
+            },{ facetTitle: "Item Type",
+                collapsed: true
+            },{ facetTitle: "Subject", 
+//            },{ facetTitle: "Author", 
+            },{ facetTitle: "Date", 
+                catItemMap: function(d){
+                    if(d.data.Date===null) return;
+                    var y= d.data.Date.getFullYear();
+                    if(y<1990) return;
+                    return d.data.Date;
+                },
+                intervalScale: 'time', layout: 'bottom-mid'
+            },{ facetTitle: 'Series Title', 
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [ {name: 'Date', inverse:false, value: function(d){
+                if(d.data.Date===null) return;
+                return d.data.Date.getFullYear();
+            }} ],
+            textSearch: "title",
+            content: "title"
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1090px;
+                height: 750px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
