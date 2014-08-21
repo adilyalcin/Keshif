@@ -24,6 +24,9 @@ demo/data/xparty_fits.csv
 
 demo/data/xparty_users.csv
 
+demo/data_private/
+
+
 keshif.sublime-project
 
 keshif.sublime-workspace
@@ -37,3 +40,6 @@ demo/huawei_app.html
 personal
 
 out
+
+demo_private
+
