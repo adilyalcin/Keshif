@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
         <!-- Logging features -->
         <script type="text/javascript" src="js/modernizr.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/log.js" charset="utf-8"></script>
@@ -20,9 +22,11 @@ var demoID = 7;
 var BEDERSON_ID = 3;
 
 function resizeChart(){
-    var h=$(window).height()-65;
+    var h=$(window).height()-90;
 //    h = 700; // temp
     var w=$(window).width()-29;
+    h = Math.max(h,500);
+    w = Math.max(w,700);
     if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
     $('#chart_div').height(h);
     $('#chart_div').width (w);
@@ -72,10 +76,6 @@ google.setOnLoadCallback(function() {
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
                 textFilter: 'about'
             },{
-                facetTitle: "Publication Type",
-                catTableName: "VenueTypes",
-                textFilter: 'as'
-            },{
                 facetTitle: "Coauthor",
                 catItemMap : function(pub){
                     var authors = pub.data[pubCol.Coauthor];
@@ -106,6 +106,20 @@ google.setOnLoadCallback(function() {
                     }
                 ]
             },{
+                facetTitle: "Publication Type",
+                catTableName: "VenueTypes",
+                textFilter: 'as'
+            },{
+                facetTitle: "Venue",
+                collapsed: true,
+                catTableName: "Venues",
+                catItemMap : function(pub){
+                    return pub.data[pubCol.Venue];
+                },
+                catTooltipText: function(venue){
+                    return venue.data[2];
+                },
+            },{
                 facetTitle: "Publication Date",
                 intervalScale: 'time',
                 layout: 'bottom-mid'
@@ -118,14 +132,20 @@ google.setOnLoadCallback(function() {
             });
         },
         itemDisplay: {
-            sortColWidth: 85,
+            sortColWidth: 45,
             sortingOpts : [
                 {   name: 'Year',
-                    value: function(d){ return d.data[pubCol['Publication Date']].getFullYear(); }
-                },{ name: 'Pub. Type',
-                    value: function(d){ return kshf.dt_id.VenueTypes[d.data[pubCol['Publication Type']]].data[1];  }
-                },{ name: 'Venue',
-                    value: function(d){ return kshf.dt_id.Venues[d.data[pubCol.Venue]].data[1]; }
+                    value: function(pub){ 
+                        return pub.data[pubCol['Publication Date']].getFullYear();
+                    },
+/*                    value: function(pub){ 
+                        return pub.data[pubCol['Publication Date']];
+                    },
+                    inverse: true,
+                    label: function(pub){ 
+                        var date=pub.data[pubCol['Publication Date']];
+                        return moment(date).fromNow();
+                    }*/
                 }
             ],
             textSearch : 'title',
@@ -233,6 +253,7 @@ div.listItem div.thumbnail2 img{
 
 #chart_div {
     background-color: white;
+    margin-bottom: 20px;
 }
 
 #pagecell{

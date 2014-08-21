@@ -1024,6 +1024,8 @@ kshf.List = function(kshf_, config, root){
 
     this.selectColumnWidth = 17;
 
+    this.config = config;
+
     this.contentFunc = config.contentFunc;
     if(config.content!==undefined){
         this.contentFunc = this.browser.getColumnData(this.browser.primaryTableName,config.content);
@@ -1033,10 +1035,10 @@ kshf.List = function(kshf_, config, root){
     if(config.autoExpandMore)
         this.autoExpandMore = config.autoExpandMore;
 
-    this.maxVisibleItems = kshf.maxVisibleItems_default;
     if(config.maxVisibleItems_Default){
-        this.maxVisibleItems = config.maxVisibleItems_Default;
+        kshf.maxVisibleItems_default = config.maxVisibleItems_Default;
     }
+    this.maxVisibleItems = kshf.maxVisibleItems_default;
 
     this.hasLinkedItems = false
     if(config.hasLinkedItems!==undefined){
@@ -3525,7 +3527,8 @@ kshf.Facet_Categorical.prototype = {
             facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'nw', fade: true,
+                        gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
+                        fade: true,
                         title: function(){return me.options.description;}
                     });
                 })
@@ -4006,10 +4009,11 @@ kshf.Facet_Categorical.prototype = {
             }
             var labelText = catLabelText(attrib);
             if(attrib.f_removed()) labelText = "not " + labelText;
+
             var titleText = labelText;
             if(catTooltipText) titleText = catTooltipText(attrib);
 
-            selectedItemsText+="<b>"+labelText+"</b>";
+            selectedItemsText+="<b>"+titleText+"</b>";
             selectedItemsCount++;
         },this);
         return selectedItemsText;
@@ -4129,6 +4133,12 @@ kshf.Facet_Categorical.prototype = {
                 });
             })
             ;
+
+        if(this.options.catTooltipText){
+            this.dom.attribs.attr("title",function(attrib){
+                return me.options.catTooltipText.call(this,attrib);
+            })
+        }
         
 
         this.dom.attribs.append("span").attr("class", "clickArea")
@@ -5020,7 +5030,9 @@ kshf.Facet_Interval.prototype = {
             facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'nw', fade: true, title: function(){ return me.options.description;}
+                        gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
+                        fade: true, 
+                        title: function(){ return me.options.description;}
                     });
                 })
                 .on("mouseover",function(d){ this.tipsy.show(); })
