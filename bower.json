@@ -1,0 +1,28 @@
+{
+  "name": "Keshif",
+  "main": "keshif.js",
+  "version": "0.6.0",
+  "homepage": "https://github.com/adilyalcin/Keshif",
+  "description": "Data made explorable by all",
+  "keywords": [
+    "visualization",
+    "data",
+    "browser"
+  ],
+  "authors": [
+    "M. Adil Yalcin"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "demo",
+    "demo_private",
+    "index.shtml",
+    "screenshot.png",
+
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
