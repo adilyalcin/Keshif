@@ -35,7 +35,7 @@ $(document).ready( function(){
                 kshf.dt_id.Categories = {};
 
                 $.ajax( {
-                    url: "./data_private/textvis_content.json",
+                    url: "./data/textvis_content.json",
                     async: false,
                     success: function(data){
                         data.forEach(function(v){
@@ -47,7 +47,7 @@ $(document).ready( function(){
                 });
 
                 $.ajax( {
-                    url: "./data_private/textvis_categories.json",
+                    url: "./data/textvis_categories.json",
                     async: false,
                     success: function(data){
                         data.forEach(function(c){
@@ -192,7 +192,7 @@ $(document).ready( function(){
                 return "<a target='_blank' href='"+d.data.url+"'><img><span class='title'>"+d.data.title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src","data_private/textvis/thumbs200_"+d.data.id+".png");
+                d3.select(d.resultDOM).select("img").attr("src","img/textvis/thumbs200_"+d.data.id+".png");
             }
         }
     });
