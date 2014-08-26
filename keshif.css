@@ -318,11 +318,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
 }
 .kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup .leftHeader span.header_label_arrow span {
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 .kshf:not(.layout_leftttt) .belowAttribs {
   direction: ltr;
@@ -366,8 +366,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .chartClearFilterButton:hover {
   background-color: #B6AF96;
   color: #635d46;
-  padding: 1px;
-  border: none;
 }
 .kshf .chartClearFilterButton.alone {
   opacity: 0;
@@ -460,9 +458,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   top: -1px;
 }
-.kshf .headerGroup {
-  pointer-events: none;
-}
 .kshf .headerGroup span.header_label {
   font-size: 1.0em;
   font-weight: 700;
@@ -471,6 +466,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   padding-top: 1px;
   height: 16px;
+  margin-left: 2px;
+}
+.kshf .headerGroup .chartClearFilterButton.rowFilter {
+  pointer-events: none;
+  height: 16px;
+  width: 16px;
+  padding-left: 1px;
 }
 .kshf .headerGroup span.facetIcons {
   margin-left: 3px;
@@ -492,29 +494,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
   background-image: linear-gradient(to left, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
 }
-.kshf .headerGroup .chartFirstLineBackgroundRight {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSIzMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwLjMiLz48c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAuMyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: linear-gradient(to left, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 30%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
-}
-.kshf .headerGroup span.sortOptionSelectGroup {
-  display: block;
-}
-.kshf .headerGroup span.filterOptionSelectGroup {
-  display: none;
-  float: right;
-}
 .kshf .headerGroup span.header_label_arrow {
   display: inline;
   position: absolute;
   top: 0px;
-  height: 100%;
   width: 1em;
-  font-size: 0.8em;
+  font-size: 1em;
   cursor: pointer;
   opacity: 0;
+  z-index: 10;
   -webkit-transition: color 250ms linear, opacity 100ms linear;
   -moz-transition: color 250ms linear, opacity 100ms linear;
   -o-transition: color 250ms linear, opacity 100ms linear;
@@ -526,33 +514,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup span.header_label_arrow span {
   position: absolute;
   left: 0px;
-  -webkit-transition: -webkit-transform 250ms linear;
-  -moz-transition: -moz-transform 250ms linear;
-  -o-transition: -o-transform 250ms linear;
-  transition: -webkit-transform 250ms linear,-moz-transform 250ms linear,-o-transform 250ms linear,transform 250ms linear;
-  -webkit-transform: rotate(0deg);
-  -moz-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
+  -webkit-transition: -webkit-transform 500ms;
+  -moz-transition: -moz-transform 500ms;
+  -o-transition: -o-transform 500ms;
+  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 .kshf .headerGroup .leftHeader {
   display: inline-block;
   vertical-align: top;
   pointer-events: all;
   position: relative;
-}
-.kshf .headerGroup .rightHeader {
-  display: inline-block;
-  vertical-align: top;
-  pointer-events: all;
-  position: relative;
-}
-.kshf .headerGroup .rightHeader .header_label_arrow {
-  margin-left: 10px;
-}
-.kshf .headerGroup .rightHeader span.header_label {
-  margin-left: 25px;
 }
 .kshf .headerGroup span.showFilterText {
   display: inline-block;
@@ -613,68 +589,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   pointer-events: none;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom {
-  padding-top: 0px;
-  margin-right: 10px;
-  height: 18px;
-  float: right;
-  -webkit-transition: height 500ms ease, margin-left 400 ease;
-  -moz-transition: height 500ms ease, margin-left 400 ease;
-  -o-transition: height 500ms ease, margin-left 400 ease;
-  transition: height 500ms ease, margin-left 400 ease;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom svg {
-  position: relative;
-  top: 2px;
-  display: none;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .config_zoom path {
-  fill: white;
-  display: inline;
-  stroke: #000000;
-  stroke-width: 25;
-  stroke-miterlimit: 10;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button {
-  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 300;
-  background-color: white;
-  border-radius: 7px;
-  padding: 0px 5px 0px 5px;
-  position: relative;
-  top: 1px;
-  pointer-events: none;
-  margin-right: 10px;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=false] {
-  color: #252112;
-  border: 1px gray solid;
-  cursor: pointer;
-  pointer-events: all;
-  box-shadow: 1px 1px 1px #474940;
-  background-color: #EEEEEE;
-  font-weight: 500;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=false]:hover {
-  box-shadow: inset 1px 1px 1px #474940;
-  color: red;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .zoom_button[disabled=true] {
-  border: 1px lightgray solid;
-  color: gray;
-  cursor: default;
-}
 .kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop {
   margin-top: -16px;
   font-size: 0.8em;
   pointer-events: all;
   position: absolute;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop2 {
-  right: auto;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribsButton {
   font-size: 0.6em;
   float: left;
   margin-left: 2px;
@@ -686,10 +607,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(150, 150, 100, 0.2);
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribsButton:hover {
   box-shadow: 0px 0px 1px black;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribs::before {
+.kshf .kshfChart > .wrapper > .facetCategorical .selectAllAttribsButton::before {
   content: '+ Add Filter with All';
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more {
@@ -761,10 +682,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[highlight=true] span.item_count {
   color: orangered;
 }
+.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[highlight=selected] .bar.hover {
+  background-color: #cc3700 !important;
+}
 .kshf .kshfChart > .wrapper span.bar {
   display: block;
   position: absolute;
-  background-color: #8699a8;
+  background-color: #98abb9;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
@@ -779,7 +703,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
 }
 .kshf .kshfChart > .wrapper span.bar.hover {
-  background-color: #ff4500;
+  background-color: #ff6a33;
   pointer-events: none;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
@@ -884,11 +808,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton.rowFilter {
-  opacity: 1;
   pointer-events: all;
-  margin: 0px 2px;
-  height: 16px;
-  width: 16px;
+  opacity: 1;
 }
 .kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true] div.attrib[selected='0'] .filter_add_more .add {
   display: inline;
@@ -920,7 +841,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[hasFacets=true] {
   margin-bottom: 2px;
 }
-.kshf .kshfChart[hasFacets=true] > .headerGroup .chartFirstLineBackground {
+.kshf .kshfChart[hasFacets=true] > .headerGroup .chartFirstLineBackground .header_label {
   font-size: 1.3em;
 }
 .kshf .kshfChart[hasFacets=true] > .headerGroup .header_label_arrow {
@@ -1041,15 +962,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib > span.barGroup {
   position: relative;
 }
-.kshf div.attrib > span.barGroup span.row_bar_line {
-  border-top-width: 1px;
-  border-top-style: dotted;
-  pointer-events: none;
-  top: 7.5px;
-  position: absolute;
-  height: 1px;
-  display: inline-block;
-}
 .kshf div.attrib > span.barGroup .bar {
   top: 4px;
   width: 1px;
@@ -1067,23 +979,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.attrib:not([activeItems='0']):hover .remove {
   display: inline;
 }
-.kshf div.attrib[noitems=false][highlight=true][selected='0'] .clickArea {
+.kshf div.attrib[noitems=false][highlight=selected][selected='0'] .clickArea {
   cursor: cell;
 }
-.kshf div.attrib[noitems=false][highlight=true][selected='0'] .bar.active {
+.kshf div.attrib[noitems=false][highlight=selected][selected='0'] .bar.active {
   cursor: cell;
 }
-.kshf div.attrib[noitems=false][highlight=true][selected='1'] .clickArea {
+.kshf div.attrib[noitems=false][highlight=selected][selected='1'] .clickArea {
   cursor: pointer;
 }
-.kshf div.attrib[noitems=false][highlight=true][selected='1'] .bar {
+.kshf div.attrib[noitems=false][highlight=selected][selected='1'] .bar {
   cursor: pointer;
+}
+.kshf div.attrib[noitems=false][highlight=selected] span:not(.filter_add_more) {
+  color: #cc3700 !important;
+  font-weight: 700 !important;
+}
+.kshf div.attrib[noitems=false][highlight=selected] span.bar.hover {
+  background-color: #cc3700 !important;
 }
 .kshf div.attrib[noitems=false][highlight=true] span:not(.filter_add_more) {
   color: orangered !important;
-}
-.kshf div.attrib[noitems=false][highlight=true] .row_bar_line {
-  border-top-color: orangered !important;
+  font-weight: 700 !important;
 }
 .kshf div.attrib[noitems=true] {
   color: gray;
@@ -1241,7 +1158,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
-  background-color: #8699a8;
+  background-color: #98abb9;
 }
 .kshf.listDiv div.listsortcolumn {
   padding-right: 5px;
@@ -1277,9 +1194,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv[detailstoggle=Multi][showAll=false] div.itemtoggledetails span.items_details_off {
   display: inline-block;
 }
-.kshf.listDiv div.listItem[details=false] .item_details_off {
-  display: none;
-}
 .kshf div.scrollToTop {
   display: inline-block;
   visibility: hidden;
@@ -1314,23 +1228,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader .bottomRow {
   min-height: 20px;
 }
-.kshf div.listHeader span.selectColumn {
+.kshf div.listHeader span.headerLinkStateColumn {
   position: absolute;
-  right: 18px;
+  right: 21px;
   bottom: 0px;
   font-size: 1.1em;
   text-align: right;
   margin-left: 6px;
 }
-.kshf div.listHeader span.selectColumn .fa {
+.kshf div.listHeader span.headerLinkStateColumn .fa {
   cursor: pointer;
-  margin-left: 3px;
 }
-.kshf div.listHeader span.selectColumn .fa:hover {
+.kshf div.listHeader span.headerLinkStateColumn .fa:hover {
   color: orangered;
 }
-.kshf div.listHeader span.selectColumn .selectSelect {
+.kshf div.listHeader span.headerLinkStateColumn .fa-link {
+  margin-right: 2px;
+}
+.kshf div.listHeader span.headerLinkStateColumn .linkTitleText {
   font-size: 0.8em;
+  font-variant: small-caps;
+  font-weight: 300;
+  cursor: default;
 }
 .kshf div.listHeader div.itemtoggledetails {
   font-size: 1em;
@@ -1462,22 +1381,51 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   text-align: right;
   vertical-align: top;
+  padding-right: 3px;
 }
 .kshf div.listHeader span.resultInfo span.listheader_itemName {
   display: inline;
   letter-spacing: 0.1em;
   font-variant: small-caps;
-  margin-left: 4px;
   vertical-align: top;
 }
 .kshf .itemtoggledetails {
-  width: 20px;
-  padding-right: 5px;
+  width: 18px;
   text-align: right;
   cursor: pointer;
   font-weight: 700;
-  font-size: 0.8em;
   display: inline-block;
+  position: relative;
+}
+.kshf .itemRank {
+  margin-left: 2px;
+  margin-top: 2px;
+  color: gray;
+  font-size: 0.8em;
+  font-weight: 300;
+  float: left;
+}
+.kshf .itemState {
+  width: 14px;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 700;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.kshf .itemState .fa {
+  display: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+  color: gray;
+}
+.kshf .itemState .fa-bullseye {
+  color: black;
+}
+.kshf .itemState .fa:hover {
+  color: #cc3700;
 }
 .kshf div.listItem {
   display: none;
@@ -1489,6 +1437,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: auto;
   max-height: 200px;
   border-top: double 0px gray;
+  padding-top: 2px;
+  padding-bottom: 0px;
   position: relative;
   -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
@@ -1506,29 +1456,67 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 0px !important;
   opacity: 0;
 }
-.kshf div.listItem[details=true] .item_details_on {
-  display: none;
+.kshf div.listItem > .itemtoggledetails .item_details_toggle {
+  -webkit-transition: -webkit-transform 500ms;
+  -moz-transition: -moz-transform 500ms;
+  -o-transition: -o-transform 500ms;
+  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
+  color: gray;
+  top: 2px;
+  position: absolute;
 }
-.kshf div.listItem[details=true] .item_details_off {
+.kshf div.listItem > .itemtoggledetails .item_details_toggle:hover {
+  color: black;
+}
+.kshf div.listItem[details=true] .item_details_toggle {
   display: block;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 .kshf div.listItem[details=true] .item_details {
   display: block;
 }
-.kshf div.listItem[details=false] .item_details_on {
+.kshf div.listItem[details=false] .item_details_toggle {
   display: block;
-}
-.kshf div.listItem[details=false] .item_details_off {
-  display: none;
 }
 .kshf div.listItem[details=false] .item_details {
   display: none;
 }
-.kshf div.listItem[highlight=true] {
-  background-color: #EEEEEE;
-}
 .kshf div.listItem[highlight=false] {
   background-color: white;
+}
+.kshf div.listItem[highlight=selected] {
+  box-shadow: inset 0px 0px 2px black;
+}
+.kshf div.listItem[highlight=selected] .itemState .fa-bullseye {
+  display: inline;
+}
+.kshf div.listItem[highlight=selected][selectlinked] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+}
+.kshf div.listItem[highlight=selected][selectlinked] .itemLinkIcon {
+  display: inline;
+  color: #cc3700;
+  margin-right: 2px;
+}
+.kshf div.listItem[highlight=selected][selectlinked] .itemLinkIcon:hover {
+  color: orangered;
+}
+.kshf div.listItem[highlight=true] {
+  box-shadow: inset 0px 0px 5px #BBBBBB;
+  background-color: #F8F8F8;
+}
+.kshf div.listItem[highlight=true] .itemLinkIcon {
+  display: inline;
+  color: gray;
+  margin-right: 2px;
 }
 .kshf div.listItem div {
   vertical-align: top;
@@ -1543,13 +1531,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listItem div.listsortcolumn:hover {
   color: red;
-}
-.kshf div.listItem div.listsortcolumn .rank {
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  color: gray;
-  font-size: 0.8em;
 }
 .kshf div.listItem div.listsortcolumn .columnLabel {
   float: right;
@@ -1603,29 +1584,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   float: none;
 }
-.kshf div.listItem span.selectColumn {
+.kshf div.listItem .itemLinkIcon {
+  display: none;
+}
+.kshf div.listItem span.itemLinkStateColumn {
   display: inline-block;
-  text-align: left;
+  text-align: right;
   padding-left: 2px;
   vertical-align: top;
   padding-top: 2px;
+  white-space: nowrap;
 }
-.kshf div.listItem span.selectColumn .fa {
+.kshf div.listItem span.itemLinkStateColumn .fa {
   cursor: pointer;
 }
-.kshf div.listItem span.selectColumn:hover {
+.kshf div.listItem span.itemLinkStateColumn .itemSelectCheckbox {
+  width: 15px;
+  text-align: left;
+}
+.kshf div.listItem span.itemLinkStateColumn .itemSelectCheckbox:hover {
   color: orangered;
 }
-.kshf div.listItem[selectLinked=true] span.selectColumn .fa-square-o {
+.kshf div.listItem[selectLinked=true] span.itemLinkStateColumn .fa-square-o {
   display: none;
 }
-.kshf div.listItem[selectLinked=true] span.selectColumn .fa-check-square-o {
-  display: block;
+.kshf div.listItem[selectLinked=true] span.itemLinkStateColumn .fa-check-square-o {
+  display: inline-block;
 }
-.kshf div.listItem[selectLinked=false] span.selectColumn .fa-square-o {
-  display: block;
+.kshf div.listItem[selectLinked=false] span.itemLinkStateColumn .fa-square-o {
+  display: inline-block;
 }
-.kshf div.listItem[selectLinked=false] span.selectColumn .fa-check-square-o {
+.kshf div.listItem[selectLinked=false] span.itemLinkStateColumn .fa-check-square-o {
   display: none;
 }
 .kshf .labelGroup {
@@ -1907,9 +1896,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 5px;
   z-index: 100000;
   pointer-events: none;
-}
-.tipsy.details .tipsy-inner {
-  padding: 5px;
 }
 .tipsy .tipsy-inner {
   font-family: Helvetica, Arial, sans-serif;

@@ -478,7 +478,7 @@ Tipsy.prototype = {
     defaults: {
         className: null,
         delayOut: 0,
-        fade: false,
+        fade: true,
         fallback: '',
         gravity: 'n',
         offset: 0,
@@ -782,8 +782,12 @@ kshf.Item.prototype = {
      * Higlights all relevant UI parts to this UI item
      */
     highlightAll: function(source,recurse){
-        if(this.resultDOM) this.resultDOM.setAttribute("highlight",true);
-        if(this.facetDOM)  this.facetDOM .setAttribute("highlight",true);
+        if(this.resultDOM) {
+            this.resultDOM.setAttribute("highlight",recurse?"selected":true);
+        }
+        if(this.facetDOM) {
+            this.facetDOM.setAttribute("highlight",recurse?"selected":true);
+        }
 
         if(this.resultDOM && !recurse) return;
         this.mappedDataCache.forEach(function(d){
@@ -794,12 +798,19 @@ kshf.Item.prototype = {
             } else {
                 // categorical facet
                 if(d instanceof Array) {
-                    d.forEach(function(item){ item.highlightAll(source,false); });
+                    d.forEach(function(item){
+                        // skip going through main items that contain a link TO this item
+                        if(this.resultDOM && item.resultDOM)
+                            return;
+                        item.highlightAll(source,false);
+                    },this);
                 } else {
+                    if(this.resultDOM && d.resultDOM)
+                        return;
                     d.highlightAll(source,false);
                 }
             }
-        });
+        },this);
     },
     /** Removes higlight from all relevant UI parts to this UI item */
     nohighlightAll: function(source,recurse){
@@ -807,7 +818,7 @@ kshf.Item.prototype = {
         if(this.facetDOM)  this.facetDOM .setAttribute("highlight",false);
 
         if(this.resultDOM && !recurse) return;
-        this.mappedDataCache.forEach(function(d){
+        this.mappedDataCache.forEach(function(d,i){
             if(d===null) return; // no mapping for this index
             if(d.h!==undefined){
                 // interval facet
@@ -815,12 +826,28 @@ kshf.Item.prototype = {
             } else {
                 // categorical facet
                 if(d instanceof Array) {
-                    d.forEach(function(item){ item.nohighlightAll(source,false); });
+                    d.forEach(function(item){
+                        // skip going through main items that contain a link TO this item
+                        if(this.resultDOM && item.resultDOM) return;
+                        item.nohighlightAll(source,false);
+                    },this);
                 } else {
+                    if(this.resultDOM && d.resultDOM) return;
                     d.nohighlightAll(source,false);
                 }
             }
-        });
+        },this);
+    },
+    setSelectedForLink: function(v){
+        this.selectedForLink = v;
+        if(this.resultDOM){
+            this.resultDOM.setAttribute("selectLinked",v);
+            d3.select(this.resultDOM).select(".itemSelectCheckbox")
+                    .classed("fa-square-o",!v).classed("fa-check-square-o",v);
+        }
+        if(v===false){
+            this.f_unselect();
+        }
     }
 };
 
@@ -972,20 +999,20 @@ kshf.Filter.prototype = {
         x = this.browser.dom.filtercrumbs
             .append("span").attr("class","filter-block")
             ;
-        x.append("span").attr("class","chartClearFilterButton summary").text("x")
+        x.append("span").attr("class","chartClearFilterButton summary")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
-                    fade: true,
-                    opacity: 1,
                     title: function(){ 
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter"; 
+                        return "<span class='action'>Remove</span> filter"; 
                     }
                 })
             })
             .on("click",function(){
                 this.tipsy.hide();
                 me.clearFilter(true);
+                // delay layout height update
+                setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_CRUMB, {id: this.id});
             })
             .on("mouseover",function(){
@@ -995,6 +1022,7 @@ kshf.Filter.prototype = {
                 this.tipsy.hide();
                 d3.event.stopPropagation();
             })
+            .append("span").attr("class","fa fa-times")
             ;
         var y = x.append("span").attr("class","sdsdsds");
         y.append("span").attr("class","txttt");
@@ -1012,12 +1040,13 @@ kshf.Filter.prototype = {
  */
 kshf.List = function(kshf_, config, root){
     var me = this;
-    this.itemtoggledetailsWidth = 20;
     this.browser = kshf_;
     this.dom = {};
 
     this.scrollTop_cache=0;
 
+    this.itemtoggledetailsWidth = 18;
+    this.stateWidth = 15;
     this.linkColumnWidth = 85;
     this.linkColumnWidth_ItemCount = 25;
     this.linkColumnWidth_BarMax = this.linkColumnWidth-this.linkColumnWidth_ItemCount-3;
@@ -1044,6 +1073,13 @@ kshf.List = function(kshf_, config, root){
     if(config.hasLinkedItems!==undefined){
         this.hasLinkedItems = true;
     }
+    if(this.hasLinkedItems){
+        this.selectColumnWidth += 17;
+        this.showSelectBox = false;
+        if(config.showSelectBox===true) this.showSelectBox = true;
+        if(this.showSelectBox)
+            this.selectColumnWidth+=17;
+    }
 
     this.domStyle = config.domStyle;
     
@@ -1066,6 +1102,10 @@ kshf.List = function(kshf_, config, root){
     this.detailCb = config.detailCb;
 
     this.sortColWidth = config.sortColWidth;
+
+    this.linkText = "Related To";
+    if(config.linkText) this.linkText = config.linkText;
+
     this.showRank = config.showRank;
     if(this.showRank===undefined) this.showRank = false;
 
@@ -1084,12 +1124,8 @@ kshf.List = function(kshf_, config, root){
 
     this.detailsToggle = config.detailsToggle;
     if(this.detailsToggle === undefined) { this.detailsToggle = "Off"; }
-    this.detailsDefault = config.detailsDefault;
-    if(this.detailsDefault === undefined) { this.detailsDefault = false; }
-    if(this.detailsToggle==="One") this.detailsDefault=false;
 
 	this.listDiv = root.select("div.listDiv")
-        .attr('showAll',this.detailsDefault?'false':'true')
         .attr('detailsToggle',this.detailsToggle);
 
     this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
@@ -1157,12 +1193,7 @@ kshf.List = function(kshf_, config, root){
             if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
         });
     this.insertHeaderSortSelect();
-    if(this.detailsToggle!=="Off") {
-        this.insertHeaderToggleDetails();
-    }
-    if(this.hasLinkedItems){
-        this.insertHeaderLinkedItems();
-    }
+    this.insertHeaderLinkedItems();
 
     this.sortItems();
     this.insertItems();
@@ -1210,7 +1241,9 @@ kshf.List.prototype = {
                 // go over all the items in the list, search each keyword separately
                 filter.filteredItems.forEach(function(item){
                     var f = ! filter.filterStr.every(function(v_i){
-                        return me.textSearchFunc(item).toLowerCase().indexOf(v_i)===-1;
+                        var v=me.textSearchFunc(item);
+                        if(v===null || v===undefined) return true;
+                        return v.toLowerCase().indexOf(v_i)===-1;
                     });
                     item.setFilter(filter.id,f);
                     item.updateWanted(recursive);
@@ -1250,7 +1283,7 @@ kshf.List.prototype = {
     insertHeaderSortSelect: function(){
         var me=this;
         var x = this.dom.listHeader_BottomRow.append("div").attr("class","listsortcolumn")
-            .style("width",this.sortColWidth+"px")
+            .style("width",(this.sortColWidth)+"px")
             .style('white-space','nowrap');
         // just insert it as text
         if(me.displayType==='grid'){
@@ -1262,7 +1295,7 @@ kshf.List.prototype = {
         }
         x.append("select")
             .attr("class","listSortOptionSelect")
-            .style("width",this.sortColWidth+"px")
+            .style("width",(this.sortColWidth)+"px")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.sortFilter_Active = me.sortFilters[this.selectedIndex];
@@ -1289,71 +1322,58 @@ kshf.List.prototype = {
                 .html(function(d){ return d.name; })
                 ;
     },
-    /** -- */
-    insertHeaderToggleDetails: function(){
-        var me=this;
-        var x=this.dom.listHeader_BottomRow.append("div").attr("class","itemtoggledetails");
-        x.append("span").attr("class","items_details_on").html("[+]")
-            .attr("title","Show details")
-            .on("click", function(d){
-                me.dom.listItems.attr('details', true);
-                me.listDiv.attr('showAll','false');
-            });
-        x.append("span").attr("class","items_details_off").html("[-]")
-            .attr("title","Hide details")
-            .on("click", function(d){
-                me.dom.listItems.attr('details', false);
-                me.listDiv.attr('showAll','true');
-            });
-    },
     insertHeaderLinkedItems: function(){
         var me=this;
-        var xyz = this.dom.listHeader_BottomRow.append("span").attr("class","selectColumn");
-        xyz.append("span").attr("class","selectSelect").text("Select:");
-        xyz.append("i").attr("class","fa fa-square-o")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    fade: true,
-                    opacity: 1,
-                    title: function(){ return "<span class='big'>-</span class='big'> <span class='action'>Unselect</span> all results"; }
+        var x = this.dom.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
+        if(this.hasLinkedItems){
+            x.append("span").attr("class","linkTitleText").text(this.linkText+": ");
+            x.append("span").attr("class","fa fa-link")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'n',
+                        title: function(){ return "<span class='action'>Show</span> all <br>"+me.linkText
+                            +"<br>results"; }
+                    })
                 })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                me.browser.items.forEach(function(item){
-                    if(!item.isWanted) return;// no change
-                    item.selectedForLink = false;
-                    item.resultDOM.setAttribute("selectLinked",false);
+                .on("mouseover",function(){ this.tipsy.show(); })
+                .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                .on("click",function(){
+                    me.browser.items.forEach(function(item){
+                        if(!item.isWanted) return;// no change
+                        item.setSelectedForLink(true);
+                    });
+                    me.browser.clearFilters_All(false);
+                    me.browser.linkedFacets.forEach(function(f){
+                        f.updateSorting(0);
+                        f.selectAllAttribsButton();
+                    });
+                    // delay layout height update
+                    setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
-                me.browser.linkedFacets.forEach(function(f){
-                    f.updateSorting(0);
-                });
-                me.browser.updateLayout_Height();
-            });
-        xyz.append("i").attr("class","fa fa-check-square-o")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    fade: true,
-                    opacity: 1,
-                    title: function(){ return "<span class='big'>+</span class='big'> <span class='action'>Select</span> all results"; }
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                me.browser.items.forEach(function(item){
-                    if(!item.isWanted) return;// no change
-                    item.selectedForLink = true;
-                    item.resultDOM.setAttribute("selectLinked",true);
-                });
-                me.browser.linkedFacets.forEach(function(f){
-                    f.updateSorting(0);
-                });
-                me.browser.updateLayout_Height();
-            });
+
+            if(this.showSelectBox){
+                x.append("span").attr("class","fa fa-check-square-o")
+                    .each(function(d){
+                        this.tipsy = new Tipsy(this, {
+                            gravity: 'n',
+                            title: function(){ return "<span class='action'>Select</span> all results"; }
+                        })
+                    })
+                    .on("mouseover",function(){ this.tipsy.show(); })
+                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                    .on("click",function(){
+                        me.browser.items.forEach(function(item){
+                            if(!item.isWanted) return;// no change
+                            item.setSelectedForLink(true);
+                        });
+                        me.browser.linkedFacets.forEach(function(f){
+                            f.updateSorting(0);
+                        });
+                        // delay layout height update
+                        setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
+                    });
+            }
+        }
     },
     /** Insert items into the UI, called once on load */
     insertItems: function(){
@@ -1369,90 +1389,99 @@ kshf.List.prototype = {
                 if(me.domStyle) str+=" "+me.domStyle.call(this,d);
                 return str;
             })
-            .attr("details",this.detailsDefault?"true":"false")
+            .attr("details","false")
             .attr("highlight",false)
             .attr("animSt","visible")
-            .attr("selectLinked","false")
             .attr("itemID",function(d){return d.id();})
             // store the link to DOM in the data item
             .each(function(d){ d.resultDOM = this; })
             .on("mouseover",function(d,i){
-                d3.select(this).attr("highlight","true");
                 d.highlightAll(me,true);
+                d.items.forEach(function(item){
+                    item.highlightAll(me,false);
+                })
             })
             .on("mouseout",function(d,i){
                 d3.select(this).attr("highlight","false");
                 // find all the things that  ....
                 d.nohighlightAll(me,true);
+                d.items.forEach(function(item){
+                    item.nohighlightAll(me,false);
+                })
             });
-        
+
+        if(this.hasLinkedItems){
+            this.dom.listItems.attr("selectLinked","false")
+        }
         if(this.displayType==='list'){
             this.insertItemSortColumn();
+            if(this.detailsToggle!=="Off"){
+                this.insertItemToggleDetails();
+            }
         }
-        if(this.detailsToggle!=="Off"){
-            this.insertItemToggleDetails();
-        }
-
         this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
 
         if(this.hasLinkedItems){
-            var xyz = this.dom.listItems.append("span").attr("class","selectColumn")
-                .style("width",this.selectColumnWidth+"px");
-            xyz.append("i").attr("class","fa fa-square-o")
+            this.dom.itemLinkStateColumn = this.dom.listItems.append("span").attr("class","itemLinkStateColumn")
+                    .style("width",this.selectColumnWidth+"px");
+            this.dom.itemLinkStateColumn.append("span").attr("class","itemLinkIcon fa fa-link")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
-                        fade: true,
-                        opacity: 1,
-                        title: function(){ return "<span class='big'></span class='big'> <span class='action'>Select</span> item"; }
+                        title: function(){ return "<span class='action'>Show</span> "+me.linkText; }
                     })
                 })
-                .on("mouseover",function(){ this.tipsy.show(); })
+                .on("mouseenter",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(d){
                     this.tipsy.hide();
-                    d.selectedForLink = true;
-                    this.parentNode.parentNode.setAttribute("selectLinked",true);
+                    // unselect all other items
+                    me.browser.items.forEach(function(item){
+                        item.setSelectedForLink(false);
+                    });
+                    d.setSelectedForLink(true);
+                    me.browser.clearFilters_All(false);
                     me.browser.linkedFacets.forEach(function(f){
+                        f.selectAllAttribsButton();
                         f.updateSorting(0);
                     });
-                    me.browser.updateLayout_Height();
+                    // delay layout height update
+                    setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
 
-            xyz.append("i").attr("class","fa fa-check-square-o")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'n',
-                        fade: true,
-                        opacity: 1,
-                        title: function(){ return "<span class='big'>-</span class='big'> <span class='action'>Unselect</span> item"; }
+            if(this.showSelectBox){
+                this.dom.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox fa fa-square-o")
+                    .each(function(d){
+                        this.tipsy = new Tipsy(this, {
+                            gravity: 'n',
+                            title: function(){ return "<span class='action'>Select</span> item"; }
+                        })
                     })
-                })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                .on("click",function(d){
-                    this.tipsy.hide();
-                    d.selectedForLink = false;
-                    this.parentNode.parentNode.setAttribute("selectLinked",false);
-                    me.browser.linkedFacets.forEach(function(f){
-                        f.updateSorting(0);
+                    .on("mouseenter",function(){ this.tipsy.show(); })
+                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                    .on("click",function(d){
+                        this.tipsy.hide();
+                        d.setSelectedForLink(!d.selectedForLink);
+                        me.browser.linkedFacets.forEach(function(f){
+                            f.updateSorting(0);
+                        });
+                        me.browser.updateLayout_Height();
                     });
-                    me.browser.updateLayout_Height();
-                });
-         }
+            }
+        }
     },
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
         var me=this;
-        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listcell listsortcolumn")
+        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listsortcolumn")
             .style("width",this.sortColWidth+"px")
             .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 's', fade: true, opacity: 1,
+                    gravity: 's',
                     title: function(){
-                        return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                        return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
                             me.sortingOpt_Active.name+"</i> Filter"; 
                     }
                 })
@@ -1475,38 +1504,32 @@ kshf.List.prototype = {
             .html(function(d){ return me.sortingOpt_Active.label(d); })
             ;
         if(this.showRank){
-            this.dom.ranks = this.dom.listsortcolumn.append("span").attr("class","rank");
+            this.dom.ranks = this.dom.listsortcolumn.append("span").attr("class","itemRank");
         }
     },
     /** -- */
     insertItemToggleDetails: function(){
         var me=this;
-        var x= this.dom.listItems
-            .append("div")
-            .attr("class","listcell itemtoggledetails")
+        this.dom.listItems.append("div")
+            .attr("class","itemtoggledetails")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity:'s', fade:true, className:'details',
-                    title: function(){ return "Show details"; }
+                    gravity:'s',
                 });
             })
-            ;
-        x.append("span").attr("class","item_details_on").html("[+]")
+        .append("span").attr("class","item_details_toggle fa fa-chevron-down")
             .on("click", function(d){ 
+                if(d.showDetails===true){
+                    me.hideListItemDetails(d);
+                } else {
+                    me.showListItemDetails(d);
+                }
                 this.parentNode.tipsy.hide();
-                me.showListItemDetails(d);
             })
             .on("mouseover",function(d){
-                this.parentNode.tipsy.options.title = function(){ return "Show details"; };
-                this.parentNode.tipsy.show();
-            })
-            .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
-        x.append("span").attr("class","item_details_off").html("[-]")
-            .on("click", function(d){ 
-                me.hideListItemDetails(d);
-            })
-            .on("mouseover",function(d){ 
-                this.parentNode.tipsy.options.title = function(){ return "Hide details"; };
+                this.parentNode.tipsy.options.title = function(){ 
+                    return d.showDetails===true?"Show less":"Show more";
+                };
                 this.parentNode.tipsy.show();
             })
             .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
@@ -1514,17 +1537,20 @@ kshf.List.prototype = {
     /** -- */
     hideListItemDetails: function(item){
         item.resultDOM.setAttribute('details', false);
+        item.showDetails=false;
         this.lastSelectedItem = undefined;
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_OFF, {info:item.id()});
     },
     /** -- */
     showListItemDetails: function(item){
-        item.resultDOM.setAttribute('details', true);
-        if(this.detailsToggle==="One" && this.lastSelectedItem){
+        if(this.lastSelectedItem){
             this.lastSelectedItem.resultDOM.setAttribute("details",false);
+            this.lastSelectedItem.showDetails=false;
         }
-        if(this.detailCb) this.detailCb.call(this, item);
+        item.resultDOM.setAttribute('details', true);
+        item.showDetails=true;
         this.lastSelectedItem = item;
+        if(this.detailCb) this.detailCb.call(this, item);
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_ON,{info:item.id()});
     },
     /** after you re-sort the primary table or change item visibility, call this function */
@@ -1695,21 +1721,20 @@ kshf.List.prototype = {
     /** -- */
     updateContentWidth: function(contentWidth){
         contentWidth-=4; // 2*2 border left&right
+//        contentWidth-=this.stateWidth;
         contentWidth-=this.browser.scrollWidth; // assume scroll is displayed
         // ready for showmore...
         this.dom.showMore.style("width",(contentWidth-5)+"px");
         contentWidth-=this.sortColWidth;
         if(this.detailsToggle!=="Off") 
             contentWidth-=this.itemtoggledetailsWidth;
-        if(this.hasLinkedItems) 
+        this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
+        if(this.hasLinkedItems){
             contentWidth-=this.selectColumnWidth;
+        }
         if(this.displayType==='list'){
             this.dom.listItems_Content.style("width",(contentWidth)+"px");
         }
-        if(this.hasLinkedItems){
-            contentWidth-=75; // 75 pixels for Select all & checkboxes...
-        }
-        this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
     },
     updateAfterFiltering_do:function(){
         this.updateVisibleIndex();
@@ -2070,10 +2095,8 @@ kshf.Browser.prototype = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
-                    fade: true,
-                    opacity: 1,
                     title: function(){ 
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> all filtering"; 
+                        return "<span class='action'>Remove</span> all filters";
                     }
                 })
             })
@@ -2090,7 +2113,7 @@ kshf.Browser.prototype = {
             })
             ;
         this.dom.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
-            .text("x")
+            .append("span").attr("class","fa fa-times")
             ;
     },
     /** -- */
@@ -2353,7 +2376,7 @@ kshf.Browser.prototype = {
             this.listDisplay = new kshf.List(this,this.listDef, this.dom.subRoot);
 
             var resultInfo = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","resultInfo");
-            var listheader_count_width = (this.listDisplay.sortColWidth+5);
+            var listheader_count_width = (this.listDisplay.sortColWidth);
             if(this.listDisplay.detailsToggle!=="Off") listheader_count_width+=15;
             this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
                 .style("width",listheader_count_width+"px");
@@ -2378,7 +2401,7 @@ kshf.Browser.prototype = {
                 if(datasource) datasource
                     .each(function(d){
                         this.tipsy = new Tipsy(this, {
-                            gravity: 'n', fade: true,
+                            gravity: 'n',
                             title: function(){ return "Open Data Source"; }
                         })
                     })
@@ -2393,7 +2416,7 @@ kshf.Browser.prototype = {
             rightSpan.append("i").attr("class","fa fa-info-circle credits")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'n', fade: true,
+                        gravity: 'n',
                         title: function(){ return "Show Info & Credits"; }
                     })
                 })
@@ -2993,10 +3016,9 @@ kshf.Facet_Categorical.prototype = {
         if(this._height_header==undefined) {
             this._height_header = this.dom.headerGroup[0][0].offsetHeight;
             if(this.hasFacets()){
-                // padding below
+                // add some padding below
                 this._height_header+=2;
             }
-
         }
         return this._height_header;
     },
@@ -3373,18 +3395,18 @@ kshf.Facet_Categorical.prototype = {
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
         if(this.isLinked){
-            mmm.append("span").attr('class','selectAllAttribs')
-                .on('click',function(){
-                    me.selectAllAttribs();
-                    me.setSelectType("SelectOr");
-                    me.attribFilter.how="All";
-                    me.attribFilter.addFilter(true);
-                    if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR_ALL, {id: me.attribFilter.id} );
-                });
+            mmm.append("span").attr('class','selectAllAttribsButton')
+                .on('click',function(){ me.selectAllAttribsButton(); });
         }
 
         this.insertAttribs();
-
+    },
+    selectAllAttribsButton: function(){
+        this.selectAllAttribs();
+        this.setSelectType("SelectOr");
+        this.attribFilter.how="All";
+        this.attribFilter.addFilter(true);
+        if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR_ALL, {id: this.attribFilter.id} );
     },
     /** returns the maximum number of total items stored per row in chart data */
     getMaxTotalItemsPerRow: function(){
@@ -3487,23 +3509,31 @@ kshf.Facet_Categorical.prototype = {
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
-        var topRow = topRow_background.append("div").attr("class","hasLabelWidth")
-            .style("position","relative").style("display","inline-block");
-        topRow.append("span").attr("class","header_label_arrow")
-            .attr("title","Show/Hide")
-            .on("click",function(){ me.collapseFacet(!me.collapsed); })
-            .append("span").text("▼")
+        topRow_background.append("span").attr("class","header_label_arrow")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                this.tipsy.hide();
+                me.collapseFacet(!me.collapsed);
+            })
+            .append("span").attr("class","fa fa-chevron-down")
             ;
+
+        var topRow = topRow_background.append("span").attr("class","hasLabelWidth")
+            .style("position","relative").style("display","inline-block");
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .style("top","calc(40% - 7px)")
-            .text('x').attr("title","Remove filter")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', fade: true,
-                    title: function(){ 
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter";
-                    }
+                    gravity: 'n',
+                    title: function(){ return "<span class='action'>Remove</span> filter"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -3512,7 +3542,9 @@ kshf.Facet_Categorical.prototype = {
                 this.tipsy.hide();
                 me.attribFilter.clearFilter(true);
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.attribFilter.id});
-            });
+            })
+            .append("span").attr("class","fa fa-times")
+            ;
 
         var headerLabel=this.options.facetTitle;
         if(this.parentFacet) {
@@ -3528,7 +3560,6 @@ kshf.Facet_Categorical.prototype = {
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                        fade: true,
                         title: function(){return me.options.description;}
                     });
                 })
@@ -3991,7 +4022,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     text_item_Attrib: function(){
         if(this.isLinked){
-            return "<b>"+this.attribCount_Included+"</b>";
+            if(this.attribCount_Included>1)
+                return "<b>"+this.attribCount_Included+" items</b>";
         }
         // go over all items and prepare the list
         var selectedItemsText="";
@@ -4115,7 +4147,6 @@ kshf.Facet_Categorical.prototype = {
                     gravity: 'w',
                     offset_x: 2,
                     offset_y: -1,
-                    fade: true,
                     title: function(){
                         var attrib=this.__data__;
                         var attribName=me.options.facetTitle;
@@ -4125,7 +4156,7 @@ kshf.Facet_Categorical.prototype = {
                         if(attrib.facet.attribCount_Included===0)
                             return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i> filter";
                         if(hasMultiValueItem===false)
-                            return "<span class='big'>&laquo;</span> <span class='action'>Change</span> filter";
+                            return "<span class='fa fa-angle-double-left'></span> <span class='action'>Change</span> filter";
                         else
                             return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
                                 attribName+"</i> (<b>... and ...</b>)";
@@ -4157,17 +4188,16 @@ kshf.Facet_Categorical.prototype = {
                         gravity: 'sw',
                         offset_y: 6,
                         // offset_x: 0, // computed when item is to be shown
-                        fade: true,
                         title: function(){
                             var attrib = this.__data__;
-                            return "<span class='big'>+</span> <span class='action'>Add</span> <i>"+
+                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
                                     me.options.facetTitle+"</i> (<b>... or ...</b>)";
                         }
                     });
                 })
                 .on("mouseover",function(attrib,i){
                     this.tipsy.show();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight",true);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight","selected");
                     d3.event.stopPropagation();
                 })
                 .on("mouseout",function(attrib,i){
@@ -4190,17 +4220,16 @@ kshf.Facet_Categorical.prototype = {
                         gravity: 'sw',
                         offset_y: 5,
                         offset_x: 1,
-                        fade: true,
                         title: function(){
                             var attrib = this.__data__;
-                            return "<span class='big'>+</span> <span class='action'>Remove</span> <i>"+
+                            return "<span class='fa fa-minus'></span> <span class='action'>Remove</span> <i>"+
                                 me.options.facetTitle+"</i>";
                         }
                     });
                 })
                 .on("mouseover",function(attrib,i){
                     this.tipsy.show();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight",true);
+                    this.parentNode.parentNode.parentNode.setAttribute("highlight","selected");
                     d3.event.stopPropagation();
                 })
                 .on("mouseout",function(attrib,i){
@@ -4508,6 +4537,9 @@ kshf.Facet_Interval = function(kshf_, options){
         min: d3.min(this.filteredItems,accessor),
         max: d3.max(this.filteredItems,accessor)
     };
+    if(this.options.intervalScale==='step'){
+        this.intervalRange.max++;
+    }
 
     this.hist_height=65;
 
@@ -4674,7 +4706,7 @@ kshf.Facet_Interval.prototype = {
             this.refreshBins_Translate();
             this.refreshBars_Active_Scale();
             this.refreshBars_Total_Scale();
-            this.refreshAxisLabels();
+            this.refreshAxisLabelPos();
         }
         this.refreshIntervalSlider();
     },
@@ -4724,7 +4756,7 @@ kshf.Facet_Interval.prototype = {
 
         var onMouseOver = function(bar){
             if(!me.browser.pauseResultPreview){
-                this.parentNode.setAttribute("highlight",true);
+                this.parentNode.setAttribute("highlight","selected");
 
                 bar.forEach(function(item){
                     item.updatePreview(me);
@@ -4830,23 +4862,30 @@ kshf.Facet_Interval.prototype = {
         var ddd = this.dom.labelGroup.selectAll("span.tick").data(this.intervalTicks);
         var ddd_enter = ddd.enter().append("span").attr("class","tick");
         ddd.exit().remove();
-        ddd_enter.append("span").attr("class","line");
+        if(this.options.intervalScale!=='step')
+            ddd_enter.append("span").attr("class","line");
         ddd_enter.append("span").attr("class","text");
 
         this.dom.labelTicks = this.dom.labelGroup.selectAll("span.tick");
 
-        this.dom.labelTicks.selectAll("span.text").text(function(d){return me.intervalTickFormat(d);});
-        this.refreshAxisLabels();
+        this.dom.labelTicks.selectAll("span.text").text(
+            function(d){return me.intervalTickFormat(d);
+        });
+        this.refreshAxisLabelPos();
     },
-    refreshAxisLabels: function(){
+    refreshAxisLabelPos: function(){
         var me=this;
-        this.dom.labelTicks.style("left",function(d){ return (me.intervalScale(d))+"px"; })
+        var offset = this.options.intervalScale==='step'?this.barWidth/2:0;
+        this.dom.labelTicks.style("left",function(d){
+            return (me.intervalScale(d)+offset)+"px";
+        });
     },
     refreshBins_Translate: function(){
         var me=this;
+        var offset = this.options.intervalScale==='step'?this.barGap:0;
         kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.barScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
-            kshf.Util.setTransform(this,"translateX("+me.intervalScale(bar.x)+"px)");
+            kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
         });
     },
     refreshBars_Total_Scale: function(){
@@ -4988,25 +5027,34 @@ kshf.Facet_Interval.prototype = {
         this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader");
 
         var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
+        topRow_background.style("text-align","center");
         this.dom.leftHeader.append("div").attr("class","border_line");
 
-        var topRow = topRow_background.append("div").attr("class","hasLabelWidth")
-            .style("position","relative").style("display","inline-block");
-        topRow.append("span").attr("class","header_label_arrow")
-            .attr("title","Show/Hide facet")
-            .on("click",function(){ me.collapseFacet(!me.collapsed); })
-            .append("span").text("▼")
+        topRow_background.append("span").attr("class","header_label_arrow")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                this.tipsy.hide();
+                me.collapseFacet(!me.collapsed);
+            })
+            .append("span").attr("class","fa fa-chevron-down")
             ;
+
+        var topRow = topRow_background.append("span").attr("class","hasLabelWidth")
+            .style("position","relative").style("display","inline-block");
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .style("top","calc(40% - 7px)")
-            .text('x').attr("title","Remove filter")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', fade: true,
-                    title: function(){
-                        return "<span class='big'>x</span class='big'> <span class='action'>Remove</span> filter";
-                    }
+                    gravity: 'n',
+                    title: function(){ return "<span class='action'>Remove</span> filter";}
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -5015,7 +5063,9 @@ kshf.Facet_Interval.prototype = {
                 this.tipsy.hide();
                 me.intervalFilter.clearFilter(true);
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.intervalFilter.id});
-            });
+            })
+            .append("span").attr("class","fa fa-times")
+            ;
 
         var headerLabel=this.options.facetTitle;
         if(this.parentFacet) {
@@ -5031,7 +5081,6 @@ kshf.Facet_Interval.prototype = {
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                        fade: true, 
                         title: function(){ return me.options.description;}
                     });
                 })
@@ -5077,13 +5126,6 @@ kshf.Facet_Interval.prototype = {
         setTimeout(function(){ me.dom.bars_highlight.attr("fast",true); },700);
     },
     refreshLabelWidth: function(w){
-        var offset=this.getWidth_Offset();
-        var labelWidth = this.browser.leftPanelLabelWidth;
-        if(this.options.layout==='right'){
-            labelWidth = this.browser.rightPanelLabelWidth;
-        }
-        this.dom.headerGroup.selectAll(".hasLabelWidth")
-            .style("width",(labelWidth-offset)+"px");
     },
     setSelectedPosition: function(v){
         this.dom.selectedItemValue
