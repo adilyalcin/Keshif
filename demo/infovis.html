@@ -26,16 +26,16 @@ google.setOnLoadCallback(function () {
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Publications, [2, 3, 4, 5, 6, 7], "*", false);
+            kshf.dt.Publications.forEach(function(item){
+                item.data.time = new Date(moment(item.data[0].substring(7,9),"YY"));
+            })
         },
         facets: [
             {
                 facetTitle: "Concept",
             },{
                 facetTitle: "Year",
-                catItemMap: function(d){ 
-                    var yr = d.data[0].substring(7,9);
-                    return new Date(moment(yr,"YY"));
-                },
+                catItemMap: function(d){ return d.data.time; },
                 intervalScale: 'time'
             },{
                 facetTitle: "Highlights",
@@ -46,13 +46,14 @@ google.setOnLoadCallback(function () {
                     return toRet;
                 }
             },{
-                facetTitle: "Selected Papers",
+                facetTitle: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
                 catItemMap: function(d){ return d.data[6]; },
                 // Using the main table name, this will enable linking through items
-                catTableName: "Publications"
+                catTableName: "Publications",
+                collapsed: true
             }/*,{
 //              facetTitle: "Keywords",
                 timeTitle: "Year",
@@ -80,32 +81,26 @@ google.setOnLoadCallback(function () {
             }*/
         ],
         itemDisplay: {
-            sortColWidth: 100,
+            sortColWidth: 85,
             sortingOpts : [
-                {   name: 'Year',
+                {   name: '# Cit.\'s To',
                     value: function(d){ 
-                        var yr = d.data[0].substring(7,9);
-                        var dt=new Date(moment(yr,"YY"));
-                        return dt.getFullYear();
-                    },
-                    inverse: true
-                },
-                {   name: 'Citations -Internal',
-                    value: function(d){ 
-                        return d.barValueMax; // Total citations
+                        return d.items.length;
                     }   
                 },
-                {   name: 'Citations -Total',
+                {   name: 'Year',
+                    value: function(d){ return d.data.time.getFullYear(); }, inverse: true
+                },
+                {   name: '# Cit.\'s- Total',
                     value: function(d){ 
                         return d.data[10];
                     }
                 }
-            ],/*
-            itemLink: "Citations",
-            itemLinkFunc: function(d){ return d.data[6]; },
-            itemLinkText: function(d){ return d.data[1]; },*/
+            ],
             detailsToggle : "One",
             textSearch : 'Title',
+            showRank: true,
+            linkText: 'Citations to',
             contentFunc : function(d) {
                 var j;
                 var str="";
@@ -119,6 +114,7 @@ google.setOnLoadCallback(function () {
 
                 str+="<span class=\"item_details\">";
 
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + d.data.time.getFullYear()+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + d.data[2]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data[3]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data[4]+"</div>";

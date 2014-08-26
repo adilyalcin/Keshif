@@ -42,6 +42,23 @@ var likertSort = function(a,b){
     if(a==="Strongly disagree") return -1;
 };
 
+var ageSort = function(a,b){
+    a= a.data[1];
+    b= b.data[1];
+    if(b==="18 - 24") return 1;
+    if(a==="18 - 24") return -1;
+    if(b==="25 - 34") return 1;
+    if(a==="25 - 34") return -1;
+    if(b==="35 - 44") return 1;
+    if(a==="35 - 44") return -1;
+    if(b==="45 - 54") return 1;
+    if(a==="45 - 54") return -1;
+    if(b==="55 - 64") return 1;
+    if(a==="55 - 64") return -1;
+    if(b==="65 or over") return 1;
+    if(a==="65 or over") return -1;
+};
+
 $(document).ready(function() {
     // set div height accordingly 
     $('#chart_div').height($(window).height()-45);
@@ -55,13 +72,18 @@ $(document).ready(function() {
 
     browser = new kshf.Browser({
         domID : "#chart_div",
-        itemName: "Participant Researchers",
+        itemName: "Participants",
         categoryTextWidth:250,
         leftPanelLabelWidth: 230,
         rightPanelLabelWidth: 270,
         source : {
             gdocId : '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
             sheets : [ {name:"Participants", id:'Participants'}]
+        },
+        readyCb: function(browser){
+            $(".listItem .content").click(function(){
+                browser.listDisplay.showListItemDetails(this.parentNode.__data__);
+            });
         },
 /*        source : {
             dirPath: './',
@@ -87,7 +109,8 @@ $(document).ready(function() {
             },{
                 facetTitle: "Age",
                 description: "What is your age?",
-                catItemMap: function(d){ return d.data[12]; }
+                catItemMap: function(d){ return d.data[12]; },
+                sortingOpts : [{ func: ageSort }]
             },{
                 facetTitle: "Continent", collapsed: true,
                 description: "In which continent do you live?",
@@ -232,8 +255,13 @@ $(document).ready(function() {
             }
         ],
         itemDisplay: {
-            sortColWidth: 55,
+            sortColWidth: 45,
             autoExpandMore: true,
+            detailsToggle : "One",
+            textSearch : 'content',
+            textSearchFunc : function(d){
+                return d.data[11];
+            },
             sortingOpts : [{ 
                 name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
                     if(d.data[11]===null) return 0;
@@ -276,10 +304,14 @@ $(document).ready(function() {
               margin: 1.5em 10px;
               padding: 0.5em 10px;
               quotes: "\201C""\201D""\2018""\2019";*/
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
               quotes: "\201C""\201D""\2018""\2019";
               margin: 0px;
               font-style: italic;
               font-weight: 300;
+              text-align: justify;
             }
             blockquote:before {
               color: #ccc;
@@ -290,6 +322,12 @@ $(document).ready(function() {
               vertical-align: -0.5em;
               line-height: 0px;
             }
+            blockquote:hover:before {
+                color: gray;
+            }
+            blockquote:hover:after {
+                color: gray;
+            }
             blockquote:after {
               color: #ccc;
               content: close-quote;
@@ -298,6 +336,13 @@ $(document).ready(function() {
               margin-left: -0.1em;
               vertical-align: -0.5em;
               line-height: 0px;
+            }
+            .listItem[details=true] blockquote{
+                overflow: visible;
+                white-space: normal;
+            }
+            .listItem .content{
+                cursor: pointer;
             }
             .qoutes{
                 font-style: italic;

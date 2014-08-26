@@ -130,11 +130,13 @@ $(document).ready( function() {
             {
                 facetTitle: "Continent",
                 catLabelText: function(d) { return landmassText(d.data[1]); },
-                sortingOpts : [
-                    { name:"Flag #" },
-                    { name: "First Flag",  func: kshf.Util.sortFunc_Time_First }
-                ],
                 textFilter : 'in', textGroup  : 'continents'
+            },{
+                facetTitle: "Zone", collapsed: true,
+                catItemMap : function(flag){
+                    return flag.data.Zone;
+                },
+                catLabelText: function(d) { return zoneText(d.data[1]); }
             },{
                 facetTitle: "Language",
                 catItemMap : function(flag){
@@ -143,6 +145,13 @@ $(document).ready( function() {
                     return r;
                 },
                 catLabelText: function(d) { return languageText(d.data[1]); }
+            },{
+                facetTitle: "Religion",
+                catItemMap : function(flag){
+                    var r= flag.data.Religion;
+                    return r;
+                },
+                catLabelText: function(d) { return religionText(d.data[1]); }
             },
             /*
             {
@@ -159,7 +168,7 @@ $(document).ready( function() {
                 filter: { rowConj: 'religion' }
             }); */
             {
-                facetTitle: "Color", layout: 'right',
+                facetTitle: "Flag Color", layout: 'right',
                 catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data.Red) toRet.push("Red");
@@ -173,7 +182,7 @@ $(document).ready( function() {
                 },
                 textFilter : 'has color', textGroup  : 'colors'
             },{
-                facetTitle: "Shape", layout: 'right',
+                facetTitle: "Flag Shape", layout: 'right',
                 catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data.Circles) toRet.push("Circle");
@@ -191,7 +200,8 @@ $(document).ready( function() {
                 catItemMap : function(flag){ 
                     var r=flag.data.Bars;
                     return (r===0)?0:r;
-                }
+                },
+                intervalScale: 'step'
             },{
                 facetTitle: "# of Stripes", layout: 'right',
                 catItemMap : function(flag){ 
@@ -202,20 +212,16 @@ $(document).ready( function() {
                 facetTitle: "Flag Date", layout: 'left',
                 catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
                 intervalScale: 'time'
-            }
-            /*,{
-                facetTitle: "Other Properties",
+            },{
+                facetTitle: "Other Properties", layout: 'right', collapsed: true,
                 catItemMap : function(flag){
                     var toRet = [];
                     if(flag.data.Text!==0) toRet.push("Text");
                     if(flag.data.Icon!==0) toRet.push("Icon");
                     if(flag.data.Animate!==0) toRet.push("Animate");
                     return toRet;
-                },
-                filter: {
-                    rowConj: 'with property'
                 }
-            });*/
+            }
         ],
         readyCb: function(){
             $(".countryName").click(function(d){
@@ -226,74 +232,92 @@ $(document).ready( function() {
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [
-                {   name: 'Flag Date',
+                {name:'Country Name', value : function(d){ return d.data.Country;}}
+/*                {   name: 'Flag Date',
                     value: function(d){ 
                         var r= d.data.Independence;
                         if(r===null) return null;
                         var dt=new Date(moment(r,"MM/DD/YYYY"));
                         return dt.getUTCFullYear();
                     }
-                }
+                }*/
             ],
             textSearch : "Country",
             detailsToggle : "Multi",
             detailsDefault : false,
+            displayType: 'grid',
+            maxVisibleItems_Default: 24,
             contentFunc : function(d){
+                return "<img><span class='title'>"+d.data.Country+"</span>";
+            },
+/*            contentFunc : function(d){
                 var j;
                 var str="";
                 // description
-                    str+="<img src=\""+d.data.Flag+"\" width=\"120\" style=\"float:right\" class=\"item_details\">";
+                    str+="<img width=\"120\" style=\"float:right\" class=\"item_details\">";
                     str+="<span class=\"iteminfo iteminfo_0 countryName\">";
                     str+=d.data.Country;
                     str+="</span></br>";
-                    str+="<span class=\"item_details\">";
-                    str+="<span class=\"iteminfo iteminfo_1\"><u>Continent</u>: ";
-                    str+=landmassText(d.data.Landmass) + " | <u>Language</u>: ";
-                    str+=languageText(d.data.Language);
-    //                str+=" | <u>Religion</u>:"+religionText(d.data.Religion);
-                    str+="</span></br>";
-                    str+="<span class=\"iteminfo iteminfo_2\"> <u>Colors</u>: ";
-                    if(d.data.Red) str+="Red, ";
-                    if(d.data.Green) str+="Green, ";
-                    if(d.data.Blue) str+="Blue, ";
-                    if(d.data.Gold) str+="Gold / Yellow  , ";
-                    if(d.data.White) str+="White, ";
-                    if(d.data.Black) str+="Black, ";
-                    if(d.data.Orange) str+="Orange / Brown, ";
-                    str+="</span></br>";
-                    str+="<span class=\"iteminfo iteminfo_2\"> <u>Shapes</u>: ";
-                    if(d.data.Circles) str+="Circles, ";
-                    if(d.data.Crosses) str+="Crosses, ";
-                    if(d.data.Saltires) str+="Saltires, ";
-                    if(d.data.Quarters) str+="Quarters, ";
-                    if(d.data.Sunstars) str+="Sun / stars, ";
-                    if(d.data.Crescent) str+="Crescent, ";
-                    if(d.data.Triangle) str+="Triangle, ";
-                    str+="</span></br>";
-                    str+="</span>"; // item_details
                 return str;
+            },*/
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",d.data.Flag);
             }
         }
     });
 });
         </script>
         <style>
-            div.listItem{
-                padding-bottom: 4px;
+            #chart_div {
+                width:1100px;
+                height:700px;
+            }
+            .listItem{
+                max-height: 230px !important;
+                vertical-align: middle;
+
             }
             .iteminfo a{
                 color:#606060;
                 font-style:italic;
-            }
-            #chart_div {
-                width:1050px;
-                height:550px;
             }
             .listItem[details=false] .countryName:hover{
                 text-decoration: underline;
                 color: rgb(151, 64, 43) !important;
                 cursor: pointer;
             }
+            div.content{
+                width: 123px;
+                margin: 0px 4px 5px 4px;
+            }
+            div.content img{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 3px;
+                border: solid;
+                border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+                border-width: 1px 2px 2px 1px;
+                border-radius: 10px;
+                background-color: white;
+                max-width: 100%;
+                transition: background-color 300ms linear;
+                -webkit-transition: background-color 300ms linear;
+                -o-transition: background-color 300ms linear;
+                -moz-transition: background-color 300ms linear;
+            }
+            div.listItem[highlight=true] div.content img{
+                background-color: orangered;
+            }
+            div.content span.title{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 2px;
+                text-align: center;
+                font-size: 0.8em;
+            }
+
         </style>
 	</head>
     <body onmousemove="logIf.setSessionID()">

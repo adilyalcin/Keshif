@@ -9,41 +9,51 @@
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
+        <!-- Demos - shared -->
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
         <script type="text/javascript">
+        var cols;
         google.setOnLoadCallback(function(){
             browser = new kshf.Browser({
                 domID: "#chart_div",
                 categoryTextWidth: 200,
+                rightPanelLabelWidth: 110,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
                     sheets : [ {name:"Banks"},{name:"States"} ]
                 },
                 loadedCb: function(){
                     kshf.Util.cellToArray(kshf.dt.Banks, [7], /\//, false);
+                    cols = kshf.dt_ColNames.Banks;
                 },
                 facets: [
-                    {   facetTitle: "State",
+                    {
+                        facetTitle: "Loss Share Type"
+                    },{ facetTitle: "State",
                         catItemMap: "ST",
                         catTableName: "States",
+                        layout: 'right',
 //                        timeTitle: "Closing Date"
-                    },{ facetTitle: "Loss Share Type"
-                    },{ facetTitle: "City"
+                    },{ facetTitle: "City", layout: 'right',
                     },{ facetTitle: "Acquiring Institution"
                     },{ facetTitle: "Closing Date", layout: 'bottom', intervalScale: 'time'
                     }
                 ],
                 itemDisplay: {
-                    sortColWidth: 75,
+                    sortColWidth: 90,
                     sortingOpts : [ {
-                        name: 'State',
-                        value: function(d){ 
-                            var str = kshf.dt_id.States[d.data[2]].data[1];
-                            if(str.length > 9) str = str.substring(0,6)+"...";
-                            return str;
-                        }
+                        name: 'Closing Date',
+                        value: function(d){
+                            return d.data[cols['Closing Date']];
+                        },
+                        label: function(d){
+                            return moment(d.data[cols['Closing Date']]).fromNow();
+                        },
+                        inverse: true
                     } ],
                     textSearch: "Bank Name",
                     content: "Bank Name"
@@ -53,7 +63,7 @@
         </script>
         <style>
             #chart_div {
-                width: 720px;
+                width: 920px;
                 height: 650px;
             }
         </style>

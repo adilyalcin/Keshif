@@ -19,7 +19,8 @@
         google.setOnLoadCallback(function(){
             new kshf.Browser({
                 domID: "#chart_div",
-                rightPanelLabelWidth: 80,
+                leftPanelLabelWidth: 100,
+                rightPanelLabelWidth: 70,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
@@ -78,11 +79,11 @@
         </script>
         <style>
             #chart_div {
-                width: 800px;
+                width: 900px;
                 height: 550px;
             }
             #chart_div div.listItem{
-                max-height: 20px;
+                max-height: 40px;
             }
         </style>
     </head>

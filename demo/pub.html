@@ -159,9 +159,8 @@ google.setOnLoadCallback(function() {
                     str+="<div class='iteminfo iteminfo_0 paperName'>";
                     str+="<span style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
                     if(d.data[pubCol.url].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.url]+"\" "+
-                                "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\">"+
-                            "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                        str+=" <a class=\"fa fa-external-link\" target=\"_blank\" href=\""+d.data[pubCol.url]+"\" "+
+                                "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\"></a>";
                     }
                     str+="</div>";
 
@@ -250,6 +249,15 @@ div.listItem div.thumbnail2 img{
     max-height:70px;
     border: solid 1px gray;
 }
+.listItem a {
+    color: gray;
+    text-decoration: none;
+}
+.listItem a:hover {
+    color: orangered !important;
+    text-decoration: none;
+}
+
 
 #chart_div {
     background-color: white;
@@ -321,6 +329,7 @@ body {
     font-size: 0.5em;
     font-style: italic;
 }
+
 
 </style>
 	</head>

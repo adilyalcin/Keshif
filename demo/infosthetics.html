@@ -29,13 +29,19 @@ function getNumComments(v){
     if(v<11) return "6-10";
     if(v<21) return "11-20";
     return ">20";
-}
+};
+
+function getAuthorName(d){
+    var authorID = d.data[postCols['Author']];
+    return kshf.dt_id.Authors[authorID].data[1];
+};
+
 
 function resetSize(){
 //    $('#chart_div').height($(window).height()-10);
     $('#chart_div').height(700);
     $('#chart_div').width (800);
-}
+};
 
 function loadImage(d){
     if(d.target.className==="item_details_off") return;
@@ -127,7 +133,7 @@ $(document).ready( function(){
                     str+="<div class='iteminfo iteminfo_1'>About: "+d.data[postCols['Category']]+"</div>";
                     // author
                     str+="<div class='iteminfo iteminfo_1'>";
-                    str+="Written by: "+d.data[postCols['Author']]+" Comments: "+d.data[postCols['# of Comments']];
+                    str+="Written by: "+getAuthorName(d)+" Comments: "+d.data[postCols['# of Comments']];
                     str+="</div>";
                 str+="</span>"; // item_details
 

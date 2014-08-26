@@ -41,15 +41,20 @@
                     }
                 ],
                 itemDisplay: {
-                    sortColWidth: 80,
+                    sortColWidth: 40,
                     textSearch: 'Name',
+                    autoExpandMore: true,
+                    maxVisibleItems_Default: 5,
                     sortingOpts : [
-                        {   name: 'Term',
+                        {   name: '',
                             value: function(d){ return d.data[0]; }
                         }
                     ],
                     displayType: 'grid',
-                    contentFunc: function(d){ return '<img src=\"'+d.data[11]+'\">'; }
+                    contentFunc: function(d){ return '<img>'; },
+                    visibleCb: function(d){
+                        d3.select(d.resultDOM).select("img").attr("src",d.data[11]);
+                    }
                 }
             });
         });

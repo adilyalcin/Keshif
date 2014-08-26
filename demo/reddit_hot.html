@@ -112,9 +112,8 @@ $(document).ready( function(){
                 // title
                 str+=d.data[postCols.title];
                 // link
-                str+="<a target=\"_blank\" href=\""+d.data[postCols.url]+"\" "+
-                        "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\">"+
-                    "<img src=\"img/url.png\" style=\"width: 15px;height: 15px;padding-left: 5px;\"></a>";
+                str+="<a class='fa fa-external-link' target=\"_blank\" href=\""+d.data[postCols.url]+"\" "+
+                        "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\"></a>";
                 return str;
             }
         }

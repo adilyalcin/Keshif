@@ -18,7 +18,7 @@ $(document).ready( function(){
     var dataColumns;
 	broser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 160,
+        categoryTextWidth: 185,
         barChartWidth: 70,
         source: {
             gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
@@ -29,16 +29,6 @@ $(document).ready( function(){
         },
         facets: [
             {
-                facetTitle: "Highlighted",
-                catItemMap: function(d){
-                    if(d.data[dataColumns['Highlighted']]){
-                        return "Highlighted";
-                    } else {
-                        return "Other";
-                    }
-                },
-                layout: 'left',
-            },{
                 facetTitle: "Code complexity",
                 layout: 'right',
                 catItemMap: function(d){
@@ -51,28 +41,46 @@ $(document).ready( function(){
                     }
                     return null;
                 },
+                sortingOpts : [{ func: function(a,b){
+                        a = a.data[1].split("*").length - 1;
+                        b = b.data[1].split("*").length - 1;
+                        return a-b;
+                    }
+                }]
             },{
                 facetTitle: "Features",
                 catItemMap: function(d){
                     var r = [];
-                    if(d.data[dataColumns['Has Time']]) r.push("Has time");
-                    if(d.data[dataColumns['Multi-Sort']]) r.push("Facet - MultiSort");
-                    if(d.data[dataColumns['Right Column']]) r.push("Facet - Right Column");
-                    if(d.data[dataColumns['Results-Full Width']]) r.push("Results - Full Width");
-                    if(d.data[dataColumns['Linked']]) r.push("Data - Linked / Networked");
-                    if(d.data[dataColumns['Main Text Search']]) r.push("Main Text search");
-                    if(d.data[dataColumns['Results-Details']]) r.push("Results - Details");
+                    if(d.data[dataColumns['Has Time']])
+                        r.push("Has time <span class='fa fa-clock-o'></span>");
+                    if(d.data[dataColumns['Multi-Sort']])
+                        r.push("Facet - MultiSort <span class='fa fa-sort-amount-desc'></span>");
+                    if(d.data[dataColumns['Right Column']])
+                        r.push("Facet - Right Column");
+                    if(d.data[dataColumns['Results-Full Width']])
+                        r.push("Results - Full Width <span class='fa fa-arrows-h'></span>");
+                    if(d.data[dataColumns['Linked']])
+                        r.push("Data - Linked / Networked <span class='fa fa-chain'></span>");
+                    if(d.data[dataColumns['Main Text Search']])
+                        r.push("Main Text search <span class='fa fa-search'></span>");
+                    if(d.data[dataColumns['Results-Details']])
+                        r.push("Results - Details <span class='fa fa-bullseye'></span>");
 //                    if(d.data[dataColumns['Facets - Max Attribs']]) r.push("Facets - Max Attribs");
-                    if(d.data[dataColumns['Facets - Hierarchical']]) r.push("Facets - Hierarchical");
-                    if(d.data[dataColumns['Facets - Histogram']]>0) r.push("Facets - Has Histogram");
-                    if(d.data[dataColumns['Dynamic Sizing']]>0) r.push("Browser - Dynamic Sizing");
-
+                    if(d.data[dataColumns['Facets - Hierarchical']])
+                        r.push("Facets - Hierarchical <span class='fa fa-outdent'></span>");
+                    if(d.data[dataColumns['Facets - Histogram']]>0)
+                        r.push("Facets - Has Histogram <span class='fa fa-bar-chart-o'></span>");
+                    if(d.data[dataColumns['Dynamic Sizing']]>0)
+                        r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
+                    if(d.data[dataColumns['Highlighted']])
+                        r.push("Highlight <span class='fa fa-star'></span>");
                     
                     return r;
                 }
             },{
-                facetTitle: "Source",
+                facetTitle: "Data Source",
                 layout: 'right',
+                catItemMap: function(d){ return d.data[dataColumns['Source']];}
             },{
                 facetTitle: "# Items",
                 layout: 'right',
@@ -98,9 +106,9 @@ $(document).ready( function(){
                 // Demo name
                 str+="<img style='float: right; width: 50px;'>";
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=d.data[dataColumns["Name"]]+" - ";
+                str+=d.data[dataColumns["Name"]]+"<br>";
                 // Live
-                str+="<span>";
+                str+="<span style='margin-left:20px'>";
                 str+="<a target=\"_blank\" href=\"./"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
                 str+="<a target=\"_blank\" href=\"https://github.com/adilyalcin/Keshif/blob/master/demo/"+d.data[dataColumns["Link"]]+".html\">Source</a>";
                 str+="</span>";
@@ -119,8 +127,8 @@ $(document).ready( function(){
         </script>
         <style>
             #chart_div {
-                width: 1050px;
-                height: 380px;
+                width: 950px;
+                height: 400px;
             }
             div.listItem{
                 padding-bottom: 4px;

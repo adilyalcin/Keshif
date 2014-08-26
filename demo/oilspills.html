@@ -47,7 +47,7 @@ function getMaterial(spill){
 
 function resetSize(){
     $('#chart_div').height(750);
-    $('#chart_div').width (950);
+    $('#chart_div').width (1000);
 }
 
 google.setOnLoadCallback( function(){
@@ -62,7 +62,8 @@ google.setOnLoadCallback( function(){
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        categoryTextWidth: 180,
+        categoryTextWidth: 200,
+        leftPanelLabelWidth: 150,
         source: {
             gdocId : '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
             sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
@@ -81,40 +82,78 @@ google.setOnLoadCallback( function(){
                     no_resort: true
                 }]
             },{
+                facetTitle: "Amount",
+                collapsed: true,
+                facets: [
+                    {
+                        facetTitle: "Total Spilled", collapsed: false,
+                        intervalScale: 'log',
+                    },{
+                        facetTitle: "Crude & Condensate", collapsed: true,
+                        catItemMap: function(d){
+                            if(d.data[11]===0) return;
+                            return d.data[11];
+                        },
+                        intervalScale: 'log',
+                    },{
+                        facetTitle: "Refined Petroleum", collapsed: true,
+                        catItemMap: function(d){
+                            if(d.data[12]===0) return;
+                            return d.data[12];
+                        },
+                        intervalScale: 'log',
+                    },{
+                        facetTitle: "Synthetic Base Fluid", collapsed: true,
+                        catItemMap: function(d){
+                            if(d.data[13]===0) return;
+                            return d.data[13];
+                        },
+                        intervalScale: 'log',
+                    },{
+                        facetTitle: "Other Chemicals", collapsed: true,
+                        catItemMap: function(d){
+                            if(d.data[14]===0) return;
+                            return d.data[14];
+                        },
+                        intervalScale: 'log',
+                    }
+                ]
+            },{
                 facetTitle: "Source",
                 catItemMap : getSource
             },{
                 facetTitle: "Material",
                 catItemMap : getMaterial
-            }/*
-            kshf.addRangeChart({
-                facetTitle: "Water Depth",
-                catItemMap :  function(spill){ return spill.data[spillsCol["Water Depth (feet)"]] },
-                filter: { unit: 'feet' }
-            });*/,
-            {
-                facetTitle: "During Activity"
-            },{
-                facetTitle: "Cause"
             },{
                 facetTitle: "Company",
+                layout: 'right',
                 catDispCountFix: 5,
                 textFilter: 'by', textGroup: 'companies'
             },{
+                facetTitle: "District",
+                layout: 'left',
+                catTableName: "Districts",
+                textFilter: 'at'
+            },{
+                facetTitle: "Water Depth (feet)",
+                layout: 'right',
+                intervalScale: 'log'
+            },{
+                facetTitle: "During Activity",
+                layout: 'right'
+            },{
+                facetTitle: "Cause",
+                layout: 'right'
+            },{
                 facetTitle: "Other Properties",
+                layout: 'right',
                 catTableName: "Notes",
                 catItemMap : function(spill){ return spill.data[spillsCol["Notes"]]},
-                collapsed: true
-            },{
-                facetTitle: "District",
-                catTableName: "Districts",
-                collapsed: true,
-                textFilter: 'at'
             },{
                 facetTitle: "Spill Date",
                 catItemMap: getDate,
                 intervalScale: 'time',
-                layout: 'bottom-mid'
+                layout: 'bottom'
             }
         ],
         itemDisplay: {
@@ -128,7 +167,8 @@ google.setOnLoadCallback( function(){
                     label: function(d){ 
                         var date=getDate(d);
                         return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
-                    }
+                    },
+                    inverse: true,
                 },
                 { name: 'Size' }
             ],

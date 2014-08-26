@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>CHI PAPERS '82-'94</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+var paperBrowser;
+
+function loadProceeding(xmlData) {
+    $xmlData = $(xmlData);
+    // add proceeding of this xmlData
+    var xml_proceeding_rec = $xmlData.find('proceeding_rec');
+    var proceedingData = {};
+        proceedingData.id = xml_proceeding_rec.find('proc_id').text();
+        proceedingData.acronym = xml_proceeding_rec.find('acronym').text();
+        proceedingData.year = xml_proceeding_rec.find('copyright_year').text();
+        proceedingData.descr = xml_proceeding_rec.find('proc_desc').text();
+
+    var proceedingItem = new kshf.Item(proceedingData,"id",false);
+    proceedingItem.browser = paperBrowser;
+    kshf.dt.Proceedings.push(proceedingItem);
+
+    // add articles
+    $xmlData.find('article_rec').each(function(){
+        var $this = $(this);
+        var articleData = {};
+            articleData.id = $this.find("article_id").text();
+            articleData.Title = $this.find("title").text();
+            articleData.Subtitle = $this.find("subtitle").text();
+            articleData.doi_number = $this.find("doi_number").text();
+            articleData.URL = $this.find("url").text();
+            // proceeding
+            articleData.Proceeding = proceedingItem;
+            // parse categories
+            articleData.Category = [];
+            $this.find("categories >").each(function(index, category){
+                //primary_category or other_category
+                articleData.Category.push($(category).find("descriptor").text().trim());
+            });
+            // parse general_terms
+            articleData.Term = [];
+            $this.find("general_terms >").each(function(index, term){
+                // gt
+                articleData.Term.push($(term).text().trim());
+            });
+            // parse authors
+            articleData.Author = [];
+            $this.find("authors >").each(function(index, author){
+                // au
+                var xml_author = $(author);
+                var _id = xml_author.find("person_id").text();
+                var authorItem=kshf.dt_id.People[_id];
+                if(authorItem===undefined) {
+                    var authorData = {};
+                        authorData.id = _id;
+                        authorData.first_name = xml_author.find("first_name").text();
+                        authorData.middle_name = xml_author.find("middle_name").text();
+                        authorData.last_name = xml_author.find("last_name").text();
+                        authorData.affiliation = xml_author.find("affiliation").text();
+                    var authorItem = new kshf.Item(authorData,"id");
+                    authorItem.browser = paperBrowser;
+                    kshf.dt.People.push(authorItem);
+                    kshf.dt_id.People[_id] = authorItem;
+                }
+                articleData.Author.push(authorItem);
+            });
+            // parse references
+            articleData.ReferenceTotal = 0;
+            articleData.References = [];
+            $this.find("references >").each(function(index, ref){
+                // ref
+                articleData.ReferenceTotal++;
+                var _id = $(ref).find("ref_obj_id").text();
+                if(_id!=="") articleData.References.push(_id);
+            });
+            // parse cited_by_list
+            articleData.CitedByTotal = 0;
+            articleData.CitedBy = [];
+            $this.find("cited_by_list > cited_by_number").each(function(){
+                articleData.CitedByTotal = this.textContent*1;
+            });
+            $this.find("cited_by_list > cited_by").each(function(index, cited_by){
+                // TODO: Check type!
+                var _id = $(this).find("cited_by_object_id").text();
+                if(_id!=="") articleData.CitedBy.push(_id);
+            });
+
+        var articleItem = new kshf.Item(articleData,"id"); // primary
+        articleItem.browser = paperBrowser;
+        kshf.dt.Articles.push(articleItem);
+    });
+};
+
+google.setOnLoadCallback(function(){
+    
+    kshf.dt.Articles = [];
+    kshf.dt_id.Articles = {};
+
+    kshf.dt.Proceedings = [];
+    
+    kshf.dt.People = [];
+    kshf.dt_id.People = {};
+    
+    new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Articles",
+        categoryTextWidth: 190,
+        source : {
+            callback: function(browser){
+                browser.primaryTableName = "Articles";
+                paperBrowser = browser;
+                var fileList = [
+                    /*"CHI1982",
+                    "CHI1983",
+                    "CHI1985",
+                    "CHI1986",
+                    "CHI1987",
+                    "CHI1988",
+                    "CHI1989",
+                    "CHI1990",
+                    "CHI1991",
+                    "CHI1992",
+                    "CHI1993",*/
+                    "CHI1994",
+                    "CHI1995",
+                    "CHI1996",
+                    "CHI1997",
+                    "CHI1998",
+                    "CHI1999",
+                    "CHI2000",
+                    "CHI2001",
+                    "CHI2002",
+                    /*"CHI2003",
+                    "CHI2004"*/
+                ];
+                fileList.forEach(function(fileName){
+                    $.ajax( {
+                        url:"./data_private/"+fileName+".xml",
+                        type:"GET",
+                        dataType:"xml",
+                        async: false,
+                        success: function(xmlData){ return loadProceeding(xmlData); }
+                    });
+                });
+                paperBrowser.items = kshf.dt.Articles;
+                paperBrowser.itemsSelectedCt = kshf.dt.Articles.length;
+                
+                // finish loading....
+                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                d3.select(".kshf.layout_infobox div.status_text div").text("");
+                window.setTimeout(function() { paperBrowser.loadCharts(); }, 50);
+            }
+        },
+        facets: [
+            {   facetTitle: "Proceeding",
+                catItemMap: function(paper){
+                    return paper.data.Proceeding.data.acronym;
+                }
+/*            },{ facetTitle: "Author",
+                catItemMap: function(paper){
+                    var toRet = [];
+                    paper.data.Author.forEach(function(auth){ 
+                        toRet.push(auth.data.last_name+", "+auth.data.first_name);
+                    });
+                    return toRet;
+                }
+            },{ facetTitle: "Category"*/
+            },{ facetTitle: "Term"
+            },{ facetTitle: "References In",
+                catItemMap: function(paper){ return paper.data.ReferenceTotal; }
+            },{ facetTitle: "# Citations",
+                catItemMap: function(paper){ return paper.data.CitedByTotal; },
+                barScaleType: "log"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [ {name: 'id', inverse:false} ],
+            textSearch: "Title",
+            content: "Title"
+        }
+    });
+});
+</script>
+<style>
+    #chart_div {
+        width: 1090px;
+        height: 750px;
+    }
+</style>
+</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>

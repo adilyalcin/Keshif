@@ -3,6 +3,7 @@
 	<head>
 		<title>Clinical Trial Browser</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -131,7 +132,7 @@ function loadChart() {
                     var companyData = kshf.dt_id.Companies[companyID];
                     str+=
                         "<div class=\"iteminfo iteminfo_1\" style=\"display:inline-block;\">"+companyData.data[1]+
-                        " - Market Cap:"+kshf.convertToReadable(companyData.data[2])+
+//                        " - Market Cap:"+kshf.convertToReadable(companyData.data[2])+
                         " <a target=\"_blank\" href=\"http://finance.yahoo.com/echarts?s="+companyID+"\">Stock info</a> " 
                     +"</div>";
                 // phase

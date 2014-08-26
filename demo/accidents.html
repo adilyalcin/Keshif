@@ -73,8 +73,6 @@ google.setOnLoadCallback( function(){
             {
                 facetTitle: "Road Type",
                 catTableName: "RoadType",
-                timeTitle: "Date",
-                textFilter : 'on', textGroup: 'road types'
             },{
                 facetTitle: "Severity",
                 catTableName: "Severity",
@@ -145,6 +143,9 @@ google.setOnLoadCallback( function(){
                     return (c===-1)?null:c; // skip if 0
                 },
                 collapsed: true
+            },{
+                facetTitle: "Date",
+                intervalScale: 'time'
             }
         ],
         itemDisplay: {

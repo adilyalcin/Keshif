@@ -17,18 +17,19 @@
             new kshf.Browser({
                 domID: "#chart_div",
                 categoryTextWidth: 130,
+                rightPanelLabelWidth: 100,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
                     sheets : [ {name:"Journalists"} ]
                 },
                 facets: [
                     {   facetTitle: "Organization"
-                    },{ facetTitle: "Location"
+                    },{ facetTitle: "Location", layout: 'right'
                     },{
                         facetTitle: "Date",
                         type: 'interval',
                         intervalScale: 'time',
-                        layout: 'bottom-mid'
+                        layout: 'bottom'
                     }
                 ],
                 itemDisplay: {
@@ -42,7 +43,7 @@
         </script>
         <style>
             #chart_div {
-                width: 550px;
+                width: 750px;
                 height: 450px;
             }
             div.kshf.layout_header span.title{
