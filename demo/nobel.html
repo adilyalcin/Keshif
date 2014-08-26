@@ -101,7 +101,6 @@ $(document).ready( function(){
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
                 var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
-                var imgUrl="./nobel_photo/"+surname_short+".jpg";
 
                 if(laureate.data[lautCols.gender]!==3){
                     str+="<img class=\"item_details\" style=\"float:right;\">";
@@ -143,12 +142,12 @@ $(document).ready( function(){
 
                 return str;
             },
-            visibleCb: function(d){
+            detailCb: function(d){
                 // insert the image url
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
                 var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
-                var imgUrl="./nobel_photo/"+surname_short+".jpg";
+                var imgUrl="./img/nobel_photo/"+surname_short+".jpg";
                 if(laureate.data[lautCols.gender]!==3){
                     $(this).find("img").attr("src",imgUrl);
                 }
