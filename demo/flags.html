@@ -223,12 +223,6 @@ $(document).ready( function() {
                 }
             }
         ],
-        readyCb: function(){
-            $(".countryName").click(function(d){
-                var kshfItem = d.currentTarget.parentNode.__data__;
-                browser.showListItemDetails(kshfItem);
-            });
-        },
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [
@@ -250,16 +244,6 @@ $(document).ready( function() {
             contentFunc : function(d){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
-/*            contentFunc : function(d){
-                var j;
-                var str="";
-                // description
-                    str+="<img width=\"120\" style=\"float:right\" class=\"item_details\">";
-                    str+="<span class=\"iteminfo iteminfo_0 countryName\">";
-                    str+=d.data.Country;
-                    str+="</span></br>";
-                return str;
-            },*/
             visibleCb: function(d){
                 d3.select(d.resultDOM).select("img").attr("src",d.data.Flag);
             }
@@ -275,16 +259,10 @@ $(document).ready( function() {
             .listItem{
                 max-height: 230px !important;
                 vertical-align: middle;
-
             }
             .iteminfo a{
                 color:#606060;
                 font-style:italic;
-            }
-            .listItem[details=false] .countryName:hover{
-                text-decoration: underline;
-                color: rgb(151, 64, 43) !important;
-                cursor: pointer;
             }
             div.content{
                 width: 123px;

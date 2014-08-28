@@ -16,7 +16,9 @@
             google.setOnLoadCallback(function(){
                 browser = new kshf.Browser({
                     domID: "#chart_div",
-                    barChartWidth: 100,
+                    barChartWidth: 90,
+                    leftPanelLabelWidth: 100,
+                    rightPanelLabelWidth: 90,
                     source: {
                         gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
                         sheets : [ {name:"Singles"} ]
@@ -34,6 +36,7 @@
                     ],
                     itemDisplay: {
                         sortColWidth: 45,
+                        detailsToggle : "Zoom",
                         sortingOpts : [ {name: 'Position', inverse:true, noGroupBorder: true} ],
                         textSearchFunc: function(d){return d.data[2]+" "+d.data[1]; },
                         contentFunc: function(d){ return d.data[2]+" - "+d.data[1]; }
