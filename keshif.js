@@ -900,9 +900,11 @@ kshf.Filter.prototype = {
         if(forceUpdate===true){
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
-            if(itemsSelectedCt_!==this.browser.itemsSelectedCt) {
+            // Note: Sometimes a new filter can result in the same number of results
+            // TODO: Find better way to see if result list has been really updated
+//            if(itemsSelectedCt_!==this.browser.itemsSelectedCt) {
                 this.browser.update(-1); // fewer results, probably!
-            }
+//            }
             if(sendLog) {
                 sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilteringState());
             }
@@ -1123,10 +1125,45 @@ kshf.List = function(kshf_, config, root){
     this.hideTextSearch = (this.textSearchFunc===undefined);
 
     this.detailsToggle = config.detailsToggle;
-    if(this.detailsToggle === undefined) { this.detailsToggle = "Off"; }
+    if(this.detailsToggle === undefined) { 
+        this.detailsToggle = "off";
+    } else{
+        this.detailsToggle = this.detailsToggle.toLowerCase();
+    }
 
 	this.listDiv = root.select("div.listDiv")
-        .attr('detailsToggle',this.detailsToggle);
+        .attr('detailsToggle',this.detailsToggle)
+        .attr('displayType',this.displayType);
+
+    this.dom.leftBlockAdjustSize = this.listDiv.append("span").attr("class","leftBlockAdjustSize")
+        .attr("title","Drag to adjust panel width")
+        .on("mousedown", function (d, i) {
+            if(d3.event.which !== 1) return; // only respond to left-click
+            me.browser.root.style('cursor','ew-resize');
+            me.browser.root.attr('noanim',true);
+            var mouseDown_x = d3.mouse(this.parentNode.parentNode)[0];
+            var mouseDown_width = me.browser.barChartWidth;
+            me.browser.root.on("mousemove", function() {
+                var mouseMove_x = d3.mouse(this)[0];
+                var mouseDif = mouseMove_x-mouseDown_x;
+                var oldhideBarAxis = me.hideBarAxis;
+                me.browser.setBarWidthLeftPanel(mouseDown_width+mouseDif);
+                if(me.browser.hideBarAxis!==oldhideBarAxis){
+                    me.browser.updateLayout_Height();
+                }
+            }).on("mouseup", function(){
+                me.browser.root.style('cursor','default');
+                me.browser.root.attr('noanim',false);
+                // unregister mouse-move callbacks
+                me.browser.root.on("mousemove", null).on("mouseup", null);
+                if(sendLog) sendLog(kshf.LOG.BARCHARTWIDTH,{info:me.browser.barChartWidth});
+            });
+            d3.event.preventDefault();
+        })
+        .on("click",function(){
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+        });    
 
     this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
 
@@ -1287,7 +1324,7 @@ kshf.List.prototype = {
             .style('white-space','nowrap');
         // just insert it as text
         if(me.displayType==='grid'){
-            x.append("span").attr("class","sortBy").text("Sort by: ");
+            x.append("span").attr("class","sortBy fa fa-sort-amount-desc");
         }
         if(this.sortingOpts.length===1){
             x.append("span").html(this.sortingOpts[0].name);
@@ -1295,7 +1332,7 @@ kshf.List.prototype = {
         }
         x.append("select")
             .attr("class","listSortOptionSelect")
-            .style("width",(this.sortColWidth)+"px")
+            .style("width",(this.sortColWidth-(me.displayType==='grid'?15:0))+"px")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.sortFilter_Active = me.sortFilters[this.selectedIndex];
@@ -1415,9 +1452,9 @@ kshf.List.prototype = {
         }
         if(this.displayType==='list'){
             this.insertItemSortColumn();
-            if(this.detailsToggle!=="Off"){
-                this.insertItemToggleDetails();
-            }
+        }
+        if(this.detailsToggle!=="off"){
+            this.insertItemToggleDetails();
         }
         this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
@@ -1510,29 +1547,47 @@ kshf.List.prototype = {
     /** -- */
     insertItemToggleDetails: function(){
         var me=this;
-        this.dom.listItems.append("div")
-            .attr("class","itemtoggledetails")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity:'s',
-                });
-            })
-        .append("span").attr("class","item_details_toggle fa fa-chevron-down")
-            .on("click", function(d){ 
-                if(d.showDetails===true){
-                    me.hideListItemDetails(d);
-                } else {
-                    me.showListItemDetails(d);
-                }
-                this.parentNode.tipsy.hide();
-            })
-            .on("mouseover",function(d){
-                this.parentNode.tipsy.options.title = function(){ 
-                    return d.showDetails===true?"Show less":"Show more";
-                };
-                this.parentNode.tipsy.show();
-            })
-            .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
+        if(this.detailsToggle==="one" && this.displayType==='list'){
+            this.dom.listItems.append("div")
+                .attr("class","itemToggleDetails")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity:'s',
+                        title: function(){ return d.showDetails===true?"Show less":"Show more"; }
+                    });
+                })
+            .append("span").attr("class","item_details_toggle fa fa-chevron-down")
+                .on("click", function(d){ 
+                    if(d.showDetails===true){
+                        me.hideListItemDetails(d);
+                    } else {
+                        me.showListItemDetails(d);
+                    }
+                    this.parentNode.tipsy.hide();
+                })
+                .on("mouseover",function(d){ this.parentNode.tipsy.show(); })
+                .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
+        }
+        if(this.detailsToggle==="zoom"){
+            this.dom.listItems.append("div")
+                .attr("class","itemToggleDetails")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity:'s',
+                        title: function(){ return "Zoom into item"; }
+                    });
+                })
+            .append("span").attr("class","item_details_toggle fa fa-bullseye")
+                .on("click", function(d){
+                    this.parentNode.tipsy.hide();
+                    var mousePos = d3.mouse(me.browser.root[0][0]);
+                    me.browser.dom.infobox_itemZoom.style("transform-origin",mousePos[0]+"px "+mousePos[1]+"px");
+                    me.browser.updateItemZoomText(d);
+                    me.browser.layout_infobox.attr("show","itemZoom");
+                })
+                .on("mouseover",function(d){ this.parentNode.tipsy.show(); })
+                .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
+        }
     },
     /** -- */
     hideListItemDetails: function(item){
@@ -1726,7 +1781,7 @@ kshf.List.prototype = {
         // ready for showmore...
         this.dom.showMore.style("width",(contentWidth-5)+"px");
         contentWidth-=this.sortColWidth;
-        if(this.detailsToggle!=="Off") 
+        if(this.detailsToggle!=="off") 
             contentWidth-=this.itemtoggledetailsWidth;
         this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
         if(this.hasLinkedItems){
@@ -1794,6 +1849,8 @@ kshf.List.prototype = {
  */
 kshf.Browser = function(options){
     var me = this;
+    this.options = options;
+
     // BASIC OPTIONS
 	this.facets = [];
     this.facetsTop = [];
@@ -1809,6 +1866,7 @@ kshf.Browser = function(options){
     this.line_height = 18;
     this.filterList = [];
     this.pauseResultPreview = false;
+
 
     this.columnsSkip = options.columnsSkip;
 
@@ -1877,47 +1935,11 @@ kshf.Browser = function(options){
     if(options.showResizeCorner === true) this.insertResize();
     this.insertInfobox();
 
-    this.dom.subRoot = this.root.append("div").attr("class","subRoot");
-
-    this.layoutTop = this.dom.subRoot.append("div").attr("class", "kshf layout_top");
-    this.layoutLeft  = this.dom.subRoot.append("div").attr("class", "kshf layout_left");
-    this.layoutRight  = this.dom.subRoot.append("div").attr("class", "kshf layout_right");
-    this.layoutList =   this.dom.subRoot.append("div").attr("class", "kshf listDiv")
-    this.layoutBottom = this.dom.subRoot.append("div").attr("class", "kshf layout_bottom");
-
-    this.facetBackground = this.layoutLeft.append("div").attr("class","kshf layout_left_background");
-    this.dom.leftBlockAdjustSize = this.facetBackground.append("div")
-        .style("position","relative")
-        .style("height","100%")
-    .append("span").attr("class","leftBlockAdjustSize")
-        .attr("title","Drag to adjust panel width")
-        .on("mousedown", function (d, i) {
-            if(d3.event.which !== 1) return; // only respond to left-click
-            me.root.style('cursor','ew-resize');
-            me.root.attr('noanim',true);
-            var mouseDown_x = d3.mouse(this.parentNode.parentNode)[0];
-            var mouseDown_width = me.barChartWidth;
-            me.root.on("mousemove", function() {
-                var mouseMove_x = d3.mouse(this)[0];
-                var mouseDif = mouseMove_x-mouseDown_x;
-                var oldhideBarAxis = me.hideBarAxis;
-                me.setBarWidthLeftPanel(mouseDown_width+mouseDif);
-                if(me.hideBarAxis!==oldhideBarAxis){
-                    me.updateLayout_Height();
-                }
-            }).on("mouseup", function(){
-                me.root.style('cursor','default');
-                me.root.attr('noanim',false);
-                // unregister mouse-move callbacks
-                me.root.on("mousemove", null).on("mouseup", null);
-                if(sendLog) sendLog(kshf.LOG.BARCHARTWIDTH,{info:me.barChartWidth});
-            });
-            d3.event.preventDefault();
-        })
-        .on("click",function(){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-        });    
+    this.layoutTop = this.root.append("div").attr("class", "kshf layout_top");
+    this.layoutLeft  = this.root.append("div").attr("class", "kshf layout_left");
+    this.layoutRight  = this.root.append("div").attr("class", "kshf layout_right");
+    this.layoutList =   this.root.append("div").attr("class", "kshf listDiv")
+    this.layoutBottom = this.root.append("div").attr("class", "kshf layout_bottom");
 
     this.loadSource();
 };
@@ -2029,14 +2051,12 @@ kshf.Browser.prototype = {
         creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
-        this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox");
-        this.layout_infobox.append("div")
-            .attr("class","infobox_background")
+        this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox").attr("show","loading");
+        this.layout_infobox.append("div").attr("class","background")
             .on("click",function(){
-                me.layout_infobox.style("display","none");
-                me.layout_infobox.select("div.infobox_credit").style("display","none");
-                me.layout_infobox.select("div.infobox_datasource").style("display","none");
-            });
+                me.layout_infobox.attr("show","none");
+            })
+            ;
         this.dom.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
 //        this.dom.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
         var ssdsd = this.dom.loadingBox.append("span").attr("class","loadinggg");
@@ -2053,23 +2073,25 @@ kshf.Browser.prototype = {
                 ""
                 );
 
-        var infobox_credit = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit")
-        infobox_credit.append("div").attr("class","infobox_close_button").text("x")
+        var infobox_credit = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit");
+        infobox_credit.append("div").attr("class","infobox_close_button")
             .on("click",function(){
-                me.layout_infobox.style("display","none");
-                me.layout_infobox.select("div.infobox_credit").style("display","none");
-                me.layout_infobox.select("div.infobox_datasource").style("display","none");
-            });
+                me.layout_infobox.attr("show","none");
+            })
+            .append("span").attr("class","fa fa-times");
         infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
 
-        var infobox_datasource = this.layout_infobox.append("div").attr("class","infobox_content infobox_datasource").text("Datasource files:");
-        infobox_datasource.append("div").attr("class","infobox_close_button").text("x")
+        this.dom.infobox_itemZoom = this.layout_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
+
+        this.dom.infobox_itemZoom.append("div").attr("class","infobox_close_button")
             .on("click",function(){
-                me.layout_infobox.style("display","none");
-                me.layout_infobox.select("div.infobox_credit").style("display","none");
-                me.layout_infobox.select("div.infobox_datasource").style("display","none");
-            });
-        var infobox_datasource_ul = infobox_datasource.append("ul");
+                me.layout_infobox.attr("show","none");
+            })
+            .append("span").attr("class","fa fa-times");
+
+        this.dom.infobox_itemZoom_content = this.dom.infobox_itemZoom.append("span").attr("class","content");
+
+/*        var infobox_datasource_ul = infobox_datasource.append("ul");
         if(this.showDataSource && this.source.gDocId===undefined && this.source.callback===undefined){
             infobox_datasource_ul.selectAll("li")
                 .data(this.source.sheets, this._dataMap)
@@ -2079,7 +2101,24 @@ kshf.Browser.prototype = {
                 .attr("href",function(i){ return me.source.dirPath+i.name+"."+me.source.fileType;})
                 .text(function(i){ return i.name+"."+me.source.fileType;})
                 ;
+        }*/
+    },
+    updateItemZoomText: function(item){
+        var str="";
+        if(kshf.dt_ColNames[this.primaryTableName]){
+            var columnNames = kshf.dt_ColNames[this.primaryTableName];
+            for(var column in columnNames){
+                str+="<b>"+column+":</b> "+ item.data[columnNames[column]].toString()+"<br>";
+            }
+        } else {
+            for(var column in item.data){
+                var v=item.data[column];
+                if(v===undefined || v===null) continue;
+                str+="<b>"+column+":</b> "+ v.toString()+"<br>";
+            }
         }
+        this.dom.infobox_itemZoom_content.html(str);
+//        this.dom.infobox_itemZoom_content.html(item.data.toString());
     },
     /** --- */
     insertClearAll: function(){
@@ -2118,8 +2157,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     showInfoBox: function(){
-        this.layout_infobox.style("display","block");
-        this.layout_infobox.select(".infobox_credit").style("display","block");
+        this.layout_infobox.attr("show","credit");
         if(sendLog) sendLog(kshf.LOG.INFOBOX);
     },
     /** -- */
@@ -2373,11 +2411,11 @@ kshf.Browser.prototype = {
         this.facets.forEach(function(facet){ facet.init_DOM(); });
 
         if(this.listDef!==undefined){
-            this.listDisplay = new kshf.List(this,this.listDef, this.dom.subRoot);
+            this.listDisplay = new kshf.List(this,this.listDef, this.root);
 
             var resultInfo = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","resultInfo");
             var listheader_count_width = (this.listDisplay.sortColWidth);
-            if(this.listDisplay.detailsToggle!=="Off") listheader_count_width+=15;
+            if(this.listDisplay.detailsToggle!=="off") listheader_count_width+=15;
             this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
                 .style("width",listheader_count_width+"px");
             resultInfo.append("span").attr("class","listheader_itemName").html(this.itemName);
@@ -2433,8 +2471,7 @@ kshf.Browser.prototype = {
         this.updateLayout_Height();
 
         // hide infobox
-        this.layout_infobox.style("display","none");
-        this.dom.loadingBox.style("display","none");
+        this.layout_infobox.attr("show","none");
 
         if(this.readyCb!==undefined) this.readyCb(this);
     },
@@ -2495,6 +2532,9 @@ kshf.Browser.prototype = {
                 options.type="categorical";
             }
         }
+
+        if(options.catBarScale===undefined)
+            options.catBarScale = this.options.catBarScale;
 
         var fct;
         if(options.type==="categorical"){
@@ -2637,7 +2677,7 @@ kshf.Browser.prototype = {
      * - If positive, more results are shown
      * - If negative, fewer results are shown
      * - Else, no info is available. */
-    update: function (resultChange, noWait) {
+    update: function (resultChange) {
         var me=this;
 
         // if running for the first time, do stuff
@@ -2856,8 +2896,6 @@ kshf.Browser.prototype = {
         }
 
         this.barChartWidth = barChartWidth_;
-
-        this.facetBackground.style("width",this.getWidth_LeftPanel()+"px");
 
         this.facets.forEach(function(facet){
             if(facet.hasAttribs()){
@@ -3333,18 +3371,14 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
 
-        this.dom.leftControls = this.dom.facetControls.append("span").attr("class","leftControls");
-        if(this.sortingOpts.length>1) {
-            this.insertSortingOpts();
-            this.configRowCount++;
-        }
         // update header components
         if(this.showTextSearch){
             this.insertLabelTextSearch();
             this.configRowCount++;
         }
-        if(this.configRowCount>0){
-            this.dom.facetControls.style("display","block");
+        if(this.sortingOpts.length>1) {
+            this.insertSortingOpts();
+            this.configRowCount++;
         }
 
         this.dom.facetCategorical.append("div").attr("class","scrollToTop").html("⬆")
@@ -3501,13 +3535,11 @@ kshf.Facet_Categorical.prototype = {
     	var me = this;
 
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-        this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader");
 
-        if(this.options.facets)
-            this.dom.leftHeader.append("div").attr("class","border_line").style("height","4px");
+        this.dom.headerGroup.append("div").attr("class","border_line").style("top","0px");
 
-        var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
-        this.dom.leftHeader.append("div").attr("class","border_line");
+        var topRow_background = this.dom.headerGroup.append("div").attr("class","chartFirstLineBackground");
+        this.dom.headerGroup.append("div").attr("class","border_line");
 
         topRow_background.append("span").attr("class","header_label_arrow")
             .each(function(){
@@ -3525,8 +3557,7 @@ kshf.Facet_Categorical.prototype = {
             .append("span").attr("class","fa fa-chevron-down")
             ;
 
-        var topRow = topRow_background.append("span").attr("class","hasLabelWidth")
-            .style("position","relative").style("display","inline-block");
+        var topRow = topRow_background.append("span");
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .style("top","calc(40% - 7px)")
@@ -3576,7 +3607,7 @@ kshf.Facet_Categorical.prototype = {
     },
     insertLabelTextSearch: function(){
         var me=this;
-        var textSearchRowDOM = this.dom.leftControls.append("div").attr("class","attribTextSearch hasLabelWidth");
+        var textSearchRowDOM = this.dom.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
         this.dom.attribTextSearch=textSearchRowDOM.append("input")
             .attr("type","text")
             .attr("placeholder","Search")// " in ...+kshf.Util.toProperCase(this.options.facetTitle))
@@ -3628,7 +3659,7 @@ kshf.Facet_Categorical.prototype = {
     },
     insertSortingOpts: function(){
         var me=this;
-        var sortGr = this.dom.leftControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
+        var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
         sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
         sortGr.append("select").attr("class","optionSelect")
             .on("change", function(){
@@ -3693,13 +3724,8 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshWidth: function(){
-        var kshf_ = this.browser;
-        var leftWidth = this.getWidth();
-        var totalWidth = this.browser.getWidth_Total();
-
-        this.dom.leftHeader.style("width",this.getWidth_Header()+"px");
-        if(this.hasAttribs())
-            this.dom.leftControls.style("width",leftWidth+"px");
+        if(this.dom.facetCategorical)
+            this.dom.facetCategorical.style("width",this.getWidth()+"px");
     },
     /** -- */
     refreshActiveItemCount: function(){
@@ -3771,7 +3797,6 @@ kshf.Facet_Categorical.prototype = {
         var headerTextWidth = labelWidth;
         if(this.hasFacets()) headerTextWidth+=offset;
 
-        this.dom.headerGroup.selectAll(".hasLabelWidth").style("width",headerTextWidth+"px");
         if(this.hasAttribs()){
             this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
             this.dom.attribChartAxis.each(function(d){
@@ -3995,7 +4020,7 @@ kshf.Facet_Categorical.prototype = {
                         // Removing previously selected attributes
                         this.unselectAllAttribs();
                         attrib.f_include();
-                        this.attrib_setIncluded(1);
+                        this.attrib_Include(1);
                         this.attribFilter.how = "All";
                     }
                 }
@@ -4059,6 +4084,10 @@ kshf.Facet_Categorical.prototype = {
         var onFilterAttrib = function(attrib){
             if(attrib.facetDOM.tipsy_active)
                 attrib.facetDOM.tipsy_active.hide();
+
+            if(attrib.itemCount_Active===0 && me.attribFilter.selectType==="SelectAnd" && me.hasMultiValueItem){
+                return;
+            }
 
             if (this.timer) { // double click
                 me.unselectAllAttribs();
@@ -4964,7 +4993,6 @@ kshf.Facet_Interval.prototype = {
         // TODO;
         var totalWidth = this.getWidth();
 
-        this.dom.leftHeader.style("width",totalWidth+"px");
         // No longer subtracting padding width, since we are using border-box-model.
         this.dom.facetInterval.style("width",totalWidth+"px");
 
@@ -5024,11 +5052,12 @@ kshf.Facet_Interval.prototype = {
         var me = this;
 
         this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-        this.dom.leftHeader = this.dom.headerGroup.append("span").attr("class","leftHeader");
 
-        var topRow_background = this.dom.leftHeader.append("div").attr("class","chartFirstLineBackground");
+        this.dom.headerGroup.append("div").attr("class","border_line").style("top","0px");
+
+        var topRow_background = this.dom.headerGroup.append("div").attr("class","chartFirstLineBackground");
         topRow_background.style("text-align","center");
-        this.dom.leftHeader.append("div").attr("class","border_line");
+        this.dom.headerGroup.append("div").attr("class","border_line");
 
         topRow_background.append("span").attr("class","header_label_arrow")
             .each(function(){
@@ -5046,8 +5075,7 @@ kshf.Facet_Interval.prototype = {
             .append("span").attr("class","fa fa-chevron-down")
             ;
 
-        var topRow = topRow_background.append("span").attr("class","hasLabelWidth")
-            .style("position","relative").style("display","inline-block");
+        var topRow = topRow_background.append("span");
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .style("top","calc(40% - 7px)")
@@ -5128,6 +5156,7 @@ kshf.Facet_Interval.prototype = {
     refreshLabelWidth: function(w){
     },
     setSelectedPosition: function(v){
+        if(this.intervalScale===undefined) return;
         this.dom.selectedItemValue
             .style("left",(this.intervalScale(v))+"px")
             .style("display","block");

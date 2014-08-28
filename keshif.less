@@ -79,9 +79,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(@bar_animation);
         }
     }
-    > div.subRoot{
-        position:relative;
-    }
     #kshf_svg_clearText {
         g { fill:gray; }
         &:hover g {
@@ -168,7 +165,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display:block;
     }
     &.layout_bottom{
-        display:block;
+        display:inline-block;
     }
 
 //    &:not(.layout_right){
@@ -205,7 +202,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        .leftControls{
+        .facetControls{
             direction: rtl;
             .attribTextSearch input{
                 direction: ltr;
@@ -216,11 +213,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         .kshfChart[collapsed=true] {
-            > .headerGroup {
-                .leftHeader span.header_label_arrow{ 
-                    opacity: 1; 
-                    span { .rotate(90deg); }
-                }
+            > .headerGroup span.header_label_arrow{ 
+                opacity: 1; 
+                span { .rotate(90deg); }
             }
         }
         .belowAttribs{
@@ -287,7 +282,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        .leftControls{
+        .facetControls{
             direction: ltr;
             .attribTextSearch input{
                 text-align: right;
@@ -297,11 +292,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         .kshfChart[collapsed=true] {
-            > .headerGroup {
-                .leftHeader span.header_label_arrow{ 
-                    opacity: 1;
-                    span{ .rotate(0deg); }
-                }
+            > .headerGroup span.header_label_arrow{ 
+                opacity: 1;
+                span{ .rotate(0deg); }
             }
         }
         .belowAttribs{ direction: ltr; }
@@ -317,14 +310,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    &.layout_left_background{
-        position: absolute;
-        height: 100%;
-        left: 0px;
-        top: 2px;
-//        .background-image(~"linear-gradient(right, rgba(255, 255, 255, 0) 0%, rgba(243, 243, 243, 1) 5%, rgba(243, 243, 243, 1) 60%, rgba(255, 255, 255, 0) 100%)");
-        pointer-events: none;
-    }
     .chartFilterButtonParent{
         position:relative;
     }
@@ -373,7 +358,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     span.leftBlockAdjustSize{
         position: absolute;
-        right: -2px;
+        left: 0px;
         pointer-events: all;
         height: 100%;
         width: 0px;
@@ -390,8 +375,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // border-bottom: solid 1px gray;
             // border-top: solid 1px gray;
             border-width: 0px 2px 0px 0px;
-            border-style: dashed;
-            border-color: black;
+            border-style: dotted;
+            border-color: gray;
             // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
@@ -475,6 +460,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .chartFirstLineBackground{
             width:100%;
             position: relative;
+            text-align: center;
+            padding-top: 1px;
             .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         span.header_label_arrow{
@@ -495,12 +482,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .rotate(180deg);
             }
         }
-        .leftHeader {
-            display: inline-block;
-            vertical-align: top;
-            pointer-events: all;
-            position: relative;
-        }
         span.showFilterText{
             display: inline-block;
             float: left;
@@ -514,6 +495,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .kshfChart{
         display: block;
+        border-radius: 4px;
         position: relative;
         overflow: hidden; // Keep it this way!
 
@@ -536,27 +518,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .facetControls{
                     border-bottom: dotted 1px lightgray;
                     margin-bottom: -1px;
-                    display: none;
                     > span{
                         display: inline-block;
                         vertical-align: top;
                     }
                     .sortOptionSelectGroup{
                         display: inline-block;
+                        font-size: 0.7em;
+                        font-weight: 300;
+                        position: relative;
+                        right: -15px;
                         select.optionSelect{
-                            font-size:0.7em;
-                            pointer-events:all;
-                            clear:right;
-                            margin:0px;
-                            vertical-align: top;
+                            -webkit-appearance: none;
+                            -moz-appearance: none;
+                            background: transparent;
+                            appearance: none;
+                            font-weight: 300;
+                            border-width: 0px;
+                            cursor: pointer;
+                            padding-right: 12px;
+                            margin: 0px;
+                            vertical-align: middle;
+                            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10px' height='15px'><polyline points='0,2 10,2, 5,11'/></svg>") no-repeat top right;
+                            &:hover{
+                                color: orangered;
+                            }
                         }
                         span.optionSelect_Label{
-                            font-size: 0.7em;
-                            font-weight: 500;
                             margin-right: 2px;
-                            vertical-align: middle;
+                            vertical-align: bottom;
                             cursor: default;
-                            pointer-events:none;
+                            pointer-events: none;
+                            &:after{
+                                content: ':';
+                                vertical-align: bottom;
+                            }
                         }
                     }
                 }
@@ -595,7 +591,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: gray;
                     opacity:1;
                     pointer-events: all;
-                    margin-right: 5px;
                     display: inline-block;
                     &:hover{ color: #cb5454; }
                 }
@@ -704,7 +699,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 font-size: 0.7em;
                 font-weight: 700;
                 border-width: 0px;
-                padding: 0px 2px 0px 1px;
                 // border-bottom: dashed 1px #cb5454;
                 color: #cb5454;
                 background-color:rgba(244, 244, 244,0);
@@ -716,7 +710,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 &:hover{
                     border: solid 1px #cb5454;
-                    padding: 0px 1px 0px 0px;
+                    padding: 0px 0px 0px 0px;
                     background-color: white;
                 }
                 &::-webkit-input-placeholder { 
@@ -724,6 +718,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: #cb5454;
                 }
                 &:focus::-webkit-input-placeholder { 
+                    color: #F3CDCD;
+                }
+                &:hover::-webkit-input-placeholder { 
                     color: #F3CDCD;
                 }
             }
@@ -812,8 +809,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &:hover{
             box-shadow: inset 0px 0px 3px gray;
-            span.header_label_arrow{
-                opacity: 1;
+            > .headerGroup span.header_label_arrow{
+                opacity: 1; 
             }
         }
 
@@ -1037,7 +1034,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
         position: relative;
         top: 0px;
-        overflow: hidden;
+        overflow: hidden; // Don't remove!
+        float: left;
         z-index: 100; // on top of scatterplot during time collapse animation
         .transition(~'margin-top 700ms ease-in-out');
         div.listItemGroup {
@@ -1155,28 +1153,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin-left: 2px;
                 margin-right: 2px;
                 font-weight: 700;
-                vertical-align: bottom;
                 display: inline-block;
             }
         }
         select.listSortOptionSelect{
             bottom:0px;
         }
-        &[detailstoggle=Multi] {
-            .listHeader div.itemtoggledetails .span{
-                display: inline-block;
-            }
-            &[showAll=true] div.itemtoggledetails {
-                span.items_details_on { display:inline-block; }
-                span.items_details_off{ display:none; }
-            }
-            &[showAll=false] div.itemtoggledetails {
-                span.items_details_on { display:none; }
-                span.items_details_off{ display:inline-block; }
-            }
+        &[displaytype="grid"] div.listItem .itemToggleDetails{
+            position: absolute;
+            z-index: 10;
         }
     } // div.listDiv
-
 
     div.scrollToTop{
         display:inline-block;
@@ -1233,18 +1220,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         
-        div.itemtoggledetails{
-            font-size: 1em;
-            color:#222222;
-            span{ display:none; }
-            &[details=true] .item_details_off{
-                display:block;
-            }
-            span{
-                display: none;
-            }
-        }
-
         div.scrollToTop{
             position: absolute;
             right: 0px;
@@ -1374,16 +1349,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // listHeader
 
-    .itemtoggledetails{
-        width:18px; // includes the padding, using box model...
-//        padding-right: 5px;
-        text-align: right;
-        cursor: pointer;
-        font-weight: 700;
-        display:inline-block; 
-        position: relative;
-    }
-
     .itemRank{
         margin-left: 2px;
         margin-top: 2px;
@@ -1446,12 +1411,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[animst=visible]{
             // default
         }
-        > .itemtoggledetails{
+        > .itemToggleDetails{
+            width:18px; // includes the padding, using box model...
+            cursor: pointer;
+            font-weight: 700;
+            display:inline-block; 
+            position: relative;
             .item_details_toggle{
                 .transition(~'transform 500ms');
                 color: gray;
                 top: 2px;
-                position: absolute;
+                left: 1px;
+                position: relative;
                 &:hover{
                     color:black;
                 }
@@ -1460,7 +1431,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[details=true]{
             .item_details_toggle{
-                display:block;
+                display:inline;
                 .rotate(180deg);
             }
             .item_details{
@@ -1510,11 +1481,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         div{
             vertical-align: top;
         }
+        span{
+            vertical-align: top;
+        }
         div.content{
             display: inline-block;
             border: solid 0px lightgray;
             position: relative;
-
         }
         div.listsortcolumn{
             cursor: cell;
@@ -1577,7 +1550,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: right;
             padding-left: 2px;
             vertical-align: top;
-            padding-top: 2px;
             white-space: nowrap;
             .fa{
                 cursor: pointer;
@@ -1732,17 +1704,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // rangeSlider
 
     &.layout_infobox {
-        div.infobox_background{
-            width: 100%;
-            height: 100%;
-            z-index: 1042;
-            overflow: hidden;
-            background: #0b0b0b;
-            opacity: 0.8;
-            filter: alpha(opacity=80);
-            position: absolute;
-            transition: all 0.5s;
-        }
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 2000;
+        transform: scale(1);
+        text-align: center;
+        .transition(~'transform 500ms ease-in-out, opacity 500ms');
+
+        .keyframes(~'itemZoom, 0%{transform: scale(0); opacity:1;} 100% {transform: scale(1); opacity:1;}');
+
         div.infobox_close_button{
             position: absolute;
             right: 3px;
@@ -1757,25 +1728,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: white;
             &:hover{ background-color: rgb(111, 111, 111); }
         }
-        div.infobox_content{
-            border: 0px double gray;
-            display: block;
-            float: none;
-            overflow: auto;
-            margin: auto;
+        // DONT MESS WITH THIS
+        > .background{
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: #0b0b0b;
+            opacity: 0.8;
             position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
+            .transition(~'all 0.5s');
+            border-radius: 20px;
+        }
+        > .infobox_content{
+            display: none;
+            margin: auto;
             box-shadow: 0px 0px 20px gray;
             border-radius:15px;
             background-color:white;
             opacity: 1.0;
             z-index: 1043;
+            max-height: 90%;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-        div.infobox_loading{
+
+        > .infobox_loading{
             width: 300px;
             height: 35px;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
             .loadinggg{
-                position: relative;
+                position: absolute;
                 top: 8px;
                 left: 10px;
                 i.fa-warning{
@@ -1794,34 +1777,55 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        div.infobox_credit{
+        > .infobox_credit{
             display:none;
             width: 390px;
             height: 260px;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
             div.all-the-credits{
                 margin: auto;
             }
             div.header{
                 background-color:rgb(216, 221, 212);
-                border-bottom: solid 2px rgb(60, 94, 67);
                 width:100%;
                 padding-top: 5px;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                border-bottom: solid 2px rgb(60, 94, 67);
+            }
+            span.libName{
+                font-size: 1.4em;
+                font-weight: 700;
+            }
+            div.project_fund {
+                font-size: 0.8em;
+                font-weight: 300;
             }
         }
-        div.infobox_datasource{
-            display:none;
-            padding-top:30px;
-            padding-left:20px;
-            width: 300px;
-            height: 200px;
+        > .infobox_itemZoom{
+            position: relative;
+            margin: 20px;
+            padding: 10px;
         }
-        span.libName{
-            font-size: 1.4em;
-            font-weight: 700;
+        &[show=loading] > .infobox_loading{
+            display: inline-block;
         }
-        div.project_fund {
-            font-size: 0.8em;
-            font-weight: 300;
+        &[show=credit] > .infobox_credit{
+            display: inline-block;
+        }
+        &[show=none]{
+            pointer-events: none;
+            //display: none;
+            > .background{ opacity: 0;}
+        }
+        &[show=itemZoom] {
+            > .infobox_itemZoom{
+                .animation(itemZoom 500ms forwards);
+                .animation-iteration-count(1);
+                .animation-timing-function(ease-in-out);
+                display: inline-block;
+            }
         }
     } // layout_infobox
 
