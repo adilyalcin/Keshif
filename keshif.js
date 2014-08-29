@@ -775,8 +775,7 @@ kshf.Item.prototype = {
         var me=this;
         var oldWanted = this.isWanted;
 
-        // checks if all filter results are true
-        // At first "false", breaks the loop
+        // Checks if all filter results are true. At first "false", breaks the loop
         this.isWanted=true;
         this.filterCache.every(function(f){
             me.isWanted=me.isWanted&&f;
@@ -972,6 +971,7 @@ kshf.Filter = function(id, opts){
     this.hideCrumb = opts.hideCrumb;
     this.text_header = opts.text_header;
     this.text_item = opts.text_item;
+    this.how = "All";
     if(opts.facet)
         this.facet = opts.facet;
     else
@@ -989,7 +989,16 @@ kshf.Filter.prototype = {
         this.isFiltered = true;
 
         if(recursive===undefined) recursive=true;
-        if(this.onFilter) this.onFilter.call(this.facet, this, recursive);
+        if(this.onFilter) this.onFilter.call(this.facet, this);
+
+        switch(this.how){
+            case "All":
+                this.filteredItems.forEach(function(item){ item.updateWanted(recursive); }); break;
+            case "LessResults":
+                this.filteredItems.forEach(function(item){ item.updateWanted_Less(recursive); }); break;
+            case "MoreResults":
+                this.filteredItems.forEach(function(item){ item.updateWanted_More(recursive); }); break;
+        }
 
         // if this has a parent facet, link selection from this to the main table
         var hasParent = this.facet.parentFacet!==undefined;
@@ -1307,14 +1316,13 @@ kshf.List = function(kshf_, config, root){
                     onClear: function(filter){
                         filter.filterValue = "";
                     },
-                    onFilter: function(filter, recursive){
+                    onFilter: function(filter){
                         // what is current sorting column?
                         var labelFunc=this.sortingOpt_Active.label;
                         // if any of the linked items are selected, filtering will pass true
                         // Note: items can only have one mapping (no list stuff here...)
                         filter.filteredItems.forEach(function(item){
                             item.setFilter(filter.id,(labelFunc(item)===filter.filterValue));
-                            item.updateWanted(recursive);
                         });
                     },
                     text_header: sortingOpt.name,
@@ -1379,7 +1387,7 @@ kshf.List.prototype = {
                 this.dom.mainTextSearch[0][0].value = "";
                 listHeaderTopRowTextSearch.select(".clearText").style('display','none');
             },
-            onFilter: function(filter,recursive){
+            onFilter: function(filter){
                 // split the search string, search for each item individually
                 filter.filterStr=filter.filterStr.split(" ");
                 listHeaderTopRowTextSearch.select(".clearText").style('display','inline-block');
@@ -1391,7 +1399,6 @@ kshf.List.prototype = {
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
                     item.setFilter(filter.id,f);
-                    item.updateWanted(recursive);
                 });
             },
             hideCrumb: true,
@@ -1906,7 +1913,7 @@ kshf.List.prototype = {
         // this.updateShowListGroupBorder();
     },
     /** returns active filter count */
-    updateAfterFiltering: function(){
+    updateAfterFilter: function(){
         var me=this;
         if(this.scrollTop_cache===0 && false){
             me.updateAfterFiltering_do();
@@ -2575,6 +2582,7 @@ kshf.Browser.prototype = {
         this.loaded = true;
         this.initBarChartWidth();
         this.refreshFilterClearAll();
+        this.items.forEach(function(item){item.updateWanted(true);});
         this.update(0,true);
         this.updateLayout_Height();
 
@@ -2789,19 +2797,13 @@ kshf.Browser.prototype = {
     update: function (resultChange) {
         var me=this;
 
-        // if running for the first time, do stuff
-        if(this.firsttimeupdate === undefined){
-            this.items.forEach(function(item){item.updateWanted(true);});
-            this.firsttimeupdate = true; 
-        }
-
         this.dom.listheader_count.text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
 
         this.facets.forEach(function(facet){
-            facet.refreshAfterFilter(resultChange);
+            facet.updateAfterFilter(resultChange);
         });
 
-        if(this.listDisplay) this.listDisplay.updateAfterFiltering();
+        if(this.listDisplay) this.listDisplay.updateAfterFilter();
 
         if(this.updateCb) this.updateCb(this);
     },
@@ -3291,23 +3293,11 @@ kshf.Facet_Categorical.prototype = {
             facet: this,
             onClear: function(filter){
                 // if text search is shown, clear that one
-                if(this.showTextSearch){
-                    this.dom.clearTextSearch.style("display","none");
-                    this.dom.attribTextSearch[0][0].value = '';
-                }
+                this.clearLabelTextSearch();
                 this.unselectAllAttribs();
             },
-            onFilter: function(filter,recursive){
+            onFilter: function(filter){
                 this.updateItemFilterState_Attrib();
-                switch(filter.how){
-                    case "All":
-                        filter.filteredItems.forEach(function(item){ item.updateWanted(recursive); }); 
-                        break;
-                    case "LessResults":
-                        filter.filteredItems.forEach(function(item){ item.updateWanted_Less(recursive); }); break;
-                    case "MoreResults":
-                        filter.filteredItems.forEach(function(item){ item.updateWanted_More(recursive); }); break;
-                }
             },
             text_header: (this.options.textFilter?this.options.textFilter:this.options.facetTitle),
             text_item: this.text_item_Attrib,
@@ -3688,6 +3678,11 @@ kshf.Facet_Categorical.prototype = {
         this.dom.clearTextSearch=textSearchRowDOM.append("i").attr("class","fa fa-times-circle clearText")
             .on("click",function() { me.attribFilter.clearFilter(true); });
     },
+    clearLabelTextSearch: function(){
+        if(!this.showTextSearch) return;
+        this.dom.clearTextSearch.style("display","none");
+        this.dom.attribTextSearch[0][0].value = '';
+    },
     insertSortingOpts: function(){
         var me=this;
         var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
@@ -3741,7 +3736,7 @@ kshf.Facet_Categorical.prototype = {
         this.refreshScrollDisplayMore(this.attribCount_InDisplay);
     },
     /** -- */
-    refreshAfterFilter: function(resultChange){
+    updateAfterFilter: function(resultChange){
         if(!this.hasAttribs()) return;
         var me=this;
         // arbitrary change
@@ -4002,7 +3997,7 @@ kshf.Facet_Categorical.prototype = {
             this.attribFilter.how = "MoreResults";
         }
 
-        if(this.dom.attribTextSearch) this.dom.attribTextSearch[0][0].value="";
+        this.clearLabelTextSearch();
         this.attribFilter.addFilter(true);
         if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_REMOVE);
     },
@@ -4071,7 +4066,7 @@ kshf.Facet_Categorical.prototype = {
                 this.attribFilter.how = "LessResults";
             }
         }
-        if(this.dom.attribTextSearch) this.dom.attribTextSearch[0][0].value="";
+        this.clearLabelTextSearch();
         if(how) this.attribFilter.how = how;
         this.attribFilter.addFilter(true);
     },
@@ -4516,7 +4511,7 @@ kshf.Facet_Interval = function(kshf_, options){
             this.resetIntervalFilterActive();
             this.refreshIntervalSlider();
         },
-        onFilter: function(filter, recursive){
+        onFilter: function(filter){
             if(this.divRoot.attr("filtered")!=="true")
                 this.divRoot.attr("filtered",true);
 
@@ -4534,7 +4529,6 @@ kshf.Facet_Interval = function(kshf_, options){
                 else
                     item.setFilter(filter.id, checkFilter(v) );
                 // TODO: Check if the interval scale is extending/shrinking or completely updated...
-                item.updateWanted(recursive);
             },this);
 
             // update handles
@@ -5101,7 +5095,7 @@ kshf.Facet_Interval.prototype = {
         }
     },
     /** -- */
-    refreshAfterFilter: function(resultChange){
+    updateAfterFilter: function(resultChange){
         var me = this;
         if(this.isEmpty) return;
         if(resultChange<0 && false){
