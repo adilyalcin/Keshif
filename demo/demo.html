@@ -16,7 +16,7 @@
 
 $(document).ready( function(){
     var dataColumns;
-	broser = new kshf.Browser({
+	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 185,
         barChartWidth: 70,
@@ -49,6 +49,7 @@ $(document).ready( function(){
                 }]
             },{
                 facetTitle: "Features",
+                description: "Various facet features",
                 catItemMap: function(d){
                     var r = [];
                     if(d.data[dataColumns['Has Time']])
@@ -65,7 +66,6 @@ $(document).ready( function(){
                         r.push("Main Text search <span class='fa fa-search'></span>");
                     if(d.data[dataColumns['Results-Details']])
                         r.push("Results - Details <span class='fa fa-bullseye'></span>");
-//                    if(d.data[dataColumns['Facets - Max Attribs']]) r.push("Facets - Max Attribs");
                     if(d.data[dataColumns['Facets - Hierarchical']])
                         r.push("Facets - Hierarchical <span class='fa fa-outdent'></span>");
                     if(d.data[dataColumns['Facets - Histogram']]>0)
@@ -84,7 +84,8 @@ $(document).ready( function(){
             },{
                 facetTitle: "# Items",
                 layout: 'right',
-                intervalScale: 'log'
+                intervalScale: 'log',
+                showPercentile: true
             },{
                 facetTitle: "Creation Time",
                 catItemMap: function(d){ return d.data[dataColumns['Authored']];},

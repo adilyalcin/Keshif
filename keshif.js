@@ -360,7 +360,16 @@ kshf.Util = {
 
         root.append("span")
             .attr("class","base active")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return "Drag to filter" }
+                })
+            })
+//            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
             .on("mousedown", function (d, i) {
+                this.tipsy.hide();
                 if(d3.event.which !== 1) return; // only respond to left-click
                 if(options.owner.options.intervalScale==='time') return; // time is not supported for now.
                 options.owner.dom.intervalSlider.attr("anim",false);
@@ -408,11 +417,13 @@ kshf.Util = {
             });
 
         var handle_cb = function (d, i) {
+            var me = this;
             if(d3.event.which !== 1) return; // only respond to left-click
             options.owner.dom.intervalSlider.attr("anim",false);
             var e=this.parentNode;
             d3.select("body").style('cursor','ew-resize')
                 .on("mousemove", function() {
+                    me.dragging = true;
                     options.owner.browser.pauseResultPreview = true;
                     var targetPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
                     options.filter.active[d] = targetPos;
@@ -440,6 +451,7 @@ kshf.Util = {
                         }
                     },200);
                 }).on("mouseup", function(){
+                    me.dragging = false;
                     options.owner.browser.pauseResultPreview = false;
                     options.owner.dom.intervalSlider.attr("anim",true);
                     d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
@@ -449,7 +461,18 @@ kshf.Util = {
 
         root.selectAll("span.handle").data(['min','max']).enter()
             .append("span").attr("class",function(d){ return "handle "+d; })
-            .on("mousedown", handle_cb)
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return "Drag to filter" }
+                })
+            })
+            .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mousedown", function(d,i){
+                this.tipsy.hide();
+                handle_cb.call(this,d,i);
+            })
             .append("span").attr("class","invalidArea");
 
         root.append("div").attr("class","selectedItemValue").append("div").attr("class","circlee");
@@ -460,7 +483,92 @@ kshf.Util = {
         dom.style.msTransform = transform;
         dom.style.OTransform = transform;
         dom.style.transform = transform;
-    }
+    },
+    /** -- */
+    insertHeader: function(){
+        var me = this;
+
+        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
+
+        this.dom.headerGroup.append("div").attr("class","border_line");
+
+        this.dom.headerGroup.append("span").attr("class","header_label_arrow")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                this.tipsy.hide();
+                me.collapseFacet(!me.collapsed);
+            })
+            .append("span").attr("class","fa fa-chevron-down")
+            ;
+
+        var topRow = this.dom.headerGroup.append("span");
+        topRow.append("span").attr("class","chartFilterButtonParent").append("div")
+            .attr("class","chartClearFilterButton rowFilter alone")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n',
+                    title: function(){ return "<span class='action'>Remove</span> filter";}
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click", function(d,i){
+                this.tipsy.hide();
+                me.facetFilter.clearFilter(true);
+                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.facetFilter.id});
+            })
+            .append("span").attr("class","fa fa-times")
+            ;
+
+        var headerLabel=this.options.facetTitle;
+        if(this.parentFacet) {
+            if(this.parentFacet.hasAttribs())
+                headerLabel = headerLabel+" <i class='fa fa-chevron-right'></i> "+this.parentFacet.options.facetTitle;
+        }
+        topRow.append("span").attr("class", "header_label")
+            .html(headerLabel)
+            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
+
+        var facetIcons = this.dom.headerGroup.append("span").attr("class","facetIcons");
+        facetIcons.append("span").attr("class", "hasMultiMappings fa fa-share-alt")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
+                    title: function(){ return "Multiple features per demo";}
+                });
+            })
+            .on("mouseover",function(d){ this.tipsy.show(); })
+            .on("mouseout" ,function(d){ this.tipsy.hide(); });
+            ;
+        if(this.isLinked) {
+            facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
+        } else {
+            if(this.parentFacet){
+                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
+            }
+        }
+
+        if(this.options.description){
+            facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
+                        title: function(){ return me.options.description;}
+                    });
+                })
+                .on("mouseover",function(d){ this.tipsy.show(); })
+                .on("mouseout" ,function(d){ this.tipsy.hide(); });
+        }
+
+        this.dom.headerGroup.append("div").attr("class","border_line");
+    },
 };
 
 
@@ -2634,7 +2742,8 @@ kshf.Browser.prototype = {
     /** set x offset to display active number of items */
     getWidth_QueryPreview: function(){
         if(this._labelXOffset) return this._labelXOffset
-        var maxTotalCount = d3.max(this.facets, function(facet){ 
+        var maxTotalCount = d3.max(this.facets, function(facet){
+            if(facet.getMaxBarValueMaxPerAttrib===undefined) return 0;
             return facet.getMaxBarValueMaxPerAttrib();
         });
         this._labelXOffset = 13;
@@ -2898,7 +3007,7 @@ kshf.Browser.prototype = {
         this.barChartWidth = barChartWidth_;
 
         this.facets.forEach(function(facet){
-            if(facet.hasAttribs()){
+            if(facet.hasAttribs && facet.hasAttribs()){
                 facet.updateBarAxisScale();
                 facet.refreshBarGroupWidth();
             }
@@ -3092,10 +3201,6 @@ kshf.Facet_Categorical.prototype = {
         return offset;
     },
     /** -- */
-    getFilteredCount: function(){
-        return this.isFiltered();
-    },
-    /** -- */
     isFiltered: function(state){
         return this.attribCount_Selected !== 0 || 
                this.attribCount_Wanted !== this.attribCount_Total;
@@ -3208,6 +3313,7 @@ kshf.Facet_Categorical.prototype = {
             text_item: this.text_item_Attrib,
         });
         this.attribFilter.selectType = "SelectOr";
+        this.facetFilter = this.attribFilter;
 
         // accesses attribFilter
         this.mapAttribs(options);
@@ -3342,7 +3448,7 @@ kshf.Facet_Categorical.prototype = {
             })
             ;
 
-        this.insertHeader();
+        kshf.Util.insertHeader.call(this);
 
         if(this.hasAttribs()){
             this.init_DOM_Attrib();
@@ -3528,81 +3634,6 @@ kshf.Facet_Categorical.prototype = {
         this.browser.updateLayout_Height();
         if(sendLog) {
             sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
-        }
-    },
-    /** -- */
-    insertHeader: function(){
-    	var me = this;
-
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-
-        this.dom.headerGroup.append("div").attr("class","border_line").style("top","0px");
-
-        var topRow_background = this.dom.headerGroup.append("div").attr("class","chartFirstLineBackground");
-        this.dom.headerGroup.append("div").attr("class","border_line");
-
-        topRow_background.append("span").attr("class","header_label_arrow")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                this.tipsy.hide();
-                me.collapseFacet(!me.collapsed);
-            })
-            .append("span").attr("class","fa fa-chevron-down")
-            ;
-
-        var topRow = topRow_background.append("span");
-        topRow.append("span").attr("class","chartFilterButtonParent").append("div")
-            .attr("class","chartClearFilterButton rowFilter alone")
-            .style("top","calc(40% - 7px)")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ return "<span class='action'>Remove</span> filter"; }
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-    		.on("click", function(d,i){
-                this.tipsy.hide();
-                me.attribFilter.clearFilter(true);
-                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.attribFilter.id});
-            })
-            .append("span").attr("class","fa fa-times")
-            ;
-
-        var headerLabel=this.options.facetTitle;
-        if(this.parentFacet) {
-            if(this.parentFacet.hasAttribs())
-                headerLabel = headerLabel+" <i class='fa fa-chevron-right'></i> "+this.parentFacet.options.facetTitle;
-        }
-        topRow.append("span").attr("class", "header_label")
-            .html(headerLabel)
-            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
-        var facetIcons = topRow_background.append("span").attr("class","facetIcons");
-        if(this.options.description){
-            facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                        title: function(){return me.options.description;}
-                    });
-                })
-                .on("mouseover",function(d){ this.tipsy.show(); })
-                .on("mouseout" ,function(d){ this.tipsy.hide(); });
-        }
-        if(this.isLinked) {
-            facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
-        } else {
-            if(this.parentFacet){
-                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
-            }
         }
     },
     insertLabelTextSearch: function(){
@@ -4427,23 +4458,6 @@ kshf.Facet_Categorical.prototype = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * KESHIF FACET - Categorical
  * @constructor
@@ -4459,36 +4473,38 @@ kshf.Facet_Interval = function(kshf_, options){
     this.layoutStr = options.layout;
     this.parentFacet = options.parentFacet;
 
-    this.height_slider = 10;
-    this.height_labels = 16;
+    // pixel width settings...
+    this.height_hist = 65;
     this.height_hist_min = 30;
     this.height_hist_max = 100;
-    this.height_bin_top = 14; // space for text...
-    this.optimumTickWidth = 40;
-    this.tickIntegerOnly = false;
-
+    this.height_slider = 10;
+    this.height_labels = 16;
+    this.height_bin_top = 19; // space for text...
+    this.height_percentile = 0;
     this.barGap = 2;
     this.histogramMargin = 12;
 
     this.dom = {};
-    this.type='interval';
 
-    // COLLAPSED
     this.collapsed = false;
     if(options.collapsed===true)
         this.collapsed = true;
 
-    if(options.optimumTickWidth)
-        this.optimumTickWidth = options.optimumTickWidth;
+    if(options.optimumTickWidth===undefined)
+        options.optimumTickWidth = 40;
 
-    if(this.options.intervalScale===undefined)
-        this.options.intervalScale='linear';
+    if(options.intervalScale===undefined)
+        options.intervalScale='linear';
 
-    if(options.tickIntegerOnly===true){
-        this.tickIntegerOnly = true;
+    if(options.showPercentile===true){
+        this.height_percentile = 14;   
     }
 
-    this.barScale = d3.scale.linear();
+    this.tickIntegerOnly = false;
+    if(options.tickIntegerOnly===true)
+        this.tickIntegerOnly = true;
+
+    this.barHeightScale = d3.scale.linear();
 
     this.intervalFilter = kshf_.createFilter({
         name: this.options.facetTitle,
@@ -4534,6 +4550,7 @@ kshf.Facet_Interval = function(kshf_, options){
         },
     });
     this.intervalFilter.how = "All";
+    this.facetFilter = this.intervalFilter;
 
     var filterId = this.intervalFilter.id;
     this.hasFloat = false;
@@ -4556,12 +4573,26 @@ kshf.Facet_Interval = function(kshf_, options){
             'h': this,
         };
     },this);
-    // remove itms that map to null
-    this.filteredItems = this.filteredItems.filter(function(d){
-        return d.mappedDataCache[filterId].v!==null;
-    })
 
     var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+
+    // remove items that map to null
+    this.filteredItems = this.filteredItems.filter(function(item){
+        var v = accessor(item);
+        if(v===null) return false;
+        if(v===undefined) return false;
+        return true;
+    })
+
+    // sort items in increasing order
+    this.filteredItems.sort(function(a,b){
+        var v_a = accessor(a);
+        var v_b = accessor(b);
+        if(v_a.getTime) v_a = v_a.getTime();
+        if(v_b.getTime) v_b = v_b.getTime();
+        return v_a-v_b;
+    });
+
     this.intervalRange = {
         min: d3.min(this.filteredItems,accessor),
         max: d3.max(this.filteredItems,accessor)
@@ -4569,8 +4600,6 @@ kshf.Facet_Interval = function(kshf_, options){
     if(this.options.intervalScale==='step'){
         this.intervalRange.max++;
     }
-
-    this.hist_height=65;
 
     if(this.intervalRange.min===undefined){
         this.isEmpty = true;
@@ -4594,26 +4623,33 @@ kshf.Facet_Interval.prototype = {
         if(this.options.layout==='bottom-mid')
             return this.browser.getWidth_MidPanel();
     },
+    /** -- */
     getWidth_Offset: function(){
-        var offset=0;
-        if(this.parentFacet){
-            offset+=17;
-        }
-        return offset;
+        return this.parentFacet?17:0;
     },
+    /** -- */
     getHeight_Header: function(){
         if(this._height_header==undefined) {
             this._height_header = this.dom.headerGroup[0][0].offsetHeight;
         }
         return this._height_header;
     },
-    getHeight_Total: function(){
-        if(this.collapsed) return this.getHeight_Header();
-        return this.getHeight_Header()+this.hist_height+this.height_bin_top+this.height_labels+this.height_slider;
+    /** -- */
+    getHeight_Extra : function(){
+        return this.height_bin_top+this.height_labels+this.height_slider+this.height_percentile;
     },
     /** -- */
-    getFilteredCount: function(){
-        return this.isFiltered();
+    getHeight_Total: function(){
+        if(this.collapsed) return this.getHeight_Header();
+        return this.getHeight_Header()+this.height_hist+this.getHeight_Extra();
+    },
+    /** -- */
+    getHeight_RangeMax: function(){
+        return this.getHeight_Header()+this.height_hist_max+this.getHeight_Extra();
+    },
+    /** -- */
+    getHeight_RangeMin: function(){
+        return this.getHeight_Header()+this.height_hist_min+this.getHeight_Extra();
     },
     /** -- */
     isFiltered: function(state){
@@ -4621,27 +4657,19 @@ kshf.Facet_Interval.prototype = {
                this.intervalFilter.active.max!==this.intervalRange.max ;
     },
     /** -- */
-    getHeight_RangeMax: function(){
-        return this.getHeight_Header()+this.height_hist_max+this.height_bin_top+this.height_labels+this.height_slider;
-    },
-    /** -- */
-    getHeight_RangeMin: function(){
-        return this.getHeight_Header()+this.height_hist_min+this.height_bin_top+this.height_labels+this.height_slider;
-    },
     resetIntervalFilterActive: function(){
         this.intervalFilter.active = {
             min: this.intervalRange.min,
             max: this.intervalRange.max
         };
     },
+    /** -- */
     getMaxBinTotalItems: function(){
         return d3.max(this.histBins,function(bin){ return bin.length; });
     },
+    /** -- */
     getMaxBinActiveItems: function(){
         return d3.max(this.histBins,function(bin){ return bin.itemCount_Active; });
-    },
-    getMinBinActiveItems: function(){
-        return d3.min(this.histBins,function(bin){ return bin.itemCount_Active; });
     },
     /** -- */
     init_DOM: function(){
@@ -4664,7 +4692,7 @@ kshf.Facet_Interval.prototype = {
             .attr("filtered",false)
             ;
 
-        this.insertHeader();
+        kshf.Util.insertHeader.call(this);
         this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
         this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
 
@@ -4683,12 +4711,56 @@ kshf.Facet_Interval.prototype = {
         this.dom.selectedItemValue = this.dom.intervalSlider.select(".selectedItemValue");
 
         this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup");
+
+        if(this.options.showPercentile===true){
+            this.dom.percentileGroup = this.dom.facetInterval.append("div").attr("class","percentileGroup");
+
+
+            this.dom.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
+
+            this.dom.quantile = {};
+
+            [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
+                this.dom.quantile[""+qb[0]+"_"+qb[1]] = this.dom.percentileGroup.append("span")
+                    .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
+                    .each(function(){
+                        this.tipsy = new Tipsy(this, {
+                            gravity: 's',
+                            title: function(){ 
+                                return "<span style='font-weight:300'>%"+qb[0]+" - %"+qb[1]+" Percentile: <span style='font-weight:500'>"+
+                                    me.quantile_val[qb[0]]+"-"+me.quantile_val[qb[1]]+"</span></span>"
+                                ;
+                            }
+                        })
+                    })
+                    .on("mouseover",function(){ this.tipsy.show(); })
+                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                    ;
+            },this);
+            
+            [10,20,30,40,50,60,70,80,90].forEach(function(q){
+                this.dom.quantile[q] = this.dom.percentileGroup.append("span")
+                    .attr("class","quantile q_pos q_"+q)
+                    .each(function(){
+                        this.tipsy = new Tipsy(this, {
+                            gravity: 's',
+                            title: function(){ 
+                                return "Median: "+ me.quantile_val[q];
+                            }
+                        })
+                    })
+                    .on("mouseover",function(){ this.tipsy.show(); })
+                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                    ;
+            },this);
+        }
     },
     updateIntervalWidth: function(w){
+        if(this.isEmpty) return;
         if(this.intervalRange.width!==undefined && this.intervalRange.width===w) return;
         this.intervalRange.width=w;
 
-        this.optimalTickCount = Math.floor(this.intervalRange.width/this.optimumTickWidth);
+        this.optimalTickCount = Math.floor(this.intervalRange.width/this.options.optimumTickWidth);
 
         switch(this.options.intervalScale){
             case 'linear':
@@ -4759,9 +4831,6 @@ kshf.Facet_Interval.prototype = {
 
         this.insertBins();
         this.insertAxisLabels();
-    },
-    hasAttribs: function(){
-        return false;
     },
     insertBins: function(){
         var me=this;
@@ -4867,18 +4936,16 @@ kshf.Facet_Interval.prototype = {
         this.refreshBars_Active_Scale();
         this.refreshResultPreview();
         this.refreshBars_Item_Count();
-
-        this.refreshLabelWidth();
     },
     updateBarScale2Total: function(){
-        this.barScale = this.barScale
+        this.barHeightScale = this.barHeightScale
             .domain([0, this.getMaxBinTotalItems()])
-            .range([0, this.hist_height]);
+            .range ([0, this.height_hist]);
     },
     updateBarScale2Active: function(){
-        this.barScale = this.barScale
+        this.barHeightScale = this.barHeightScale
             .domain([0, this.getMaxBinActiveItems()])
-            .range([0, this.hist_height]);
+            .range ([0, this.height_hist]);
     },
     updateActiveItems: function(){
         this.histBins.forEach(function(bin){
@@ -4912,34 +4979,32 @@ kshf.Facet_Interval.prototype = {
     refreshBins_Translate: function(){
         var me=this;
         var offset = this.options.intervalScale==='step'?this.barGap:0;
-        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.barScale.range()[1]+"px)");
+        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.barHeightScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
             kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
         });
     },
     refreshBars_Total_Scale: function(){
+        var me=this;
         var width=this.barWidth-this.barGap*2;
-        var barScale = this.barScale;
         this.dom.bars_total.each(function(bar){
-            kshf.Util.setTransform(this,"scale("+width+","+barScale(bar.y)+")");
+            kshf.Util.setTransform(this,"scale("+width+","+me.barHeightScale(bar.y)+")");
         });
     },
     refreshBars_Active_Scale: function(){
         var me=this;
         var width = this.barWidth-this.barGap*2;
-        var barScale = this.barScale;
         this.dom.bars_active.each(function(bar){
-            kshf.Util.setTransform(this,"scale("+width+","+barScale(bar.itemCount_Active)+")");
+            kshf.Util.setTransform(this,"scale("+width+","+me.barHeightScale(bar.itemCount_Active)+")");
         });
         this.dom.bars_item_count.each(function(bar){
             kshf.Util.setTransform(this,
-                "translate("+(me.barWidth/2)+"px,"+(-me.barScale(bar.itemCount_Active))+"px)");
+                "translate("+(me.barWidth/2)+"px,"+(-me.barHeightScale(bar.itemCount_Active))+"px)");
         });
     },
     clearResultPreview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-//        if(this.options.intervalScale==='time') return;
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_highlight.each(function(bar){
             bar.itemCount_Preview=0;
@@ -4950,12 +5015,11 @@ kshf.Facet_Interval.prototype = {
     refreshResultPreview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-//        if(this.options.intervalScale==='time') return;
-        var barScale=this.barScale;
+        var barHeightScale=this.barHeightScale;
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_highlight.each(function(bar){
             if(bar.itemCount_Preview===0) return;
-            var transform="scale("+width+","+barScale(bar.itemCount_Preview)+")";
+            var transform="scale("+width+","+barHeightScale(bar.itemCount_Preview)+")";
             kshf.Util.setTransform(this,transform);
         });
     },
@@ -4990,15 +5054,9 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     refreshWidth: function(){
-        // TODO;
         var totalWidth = this.getWidth();
-
-        // No longer subtracting padding width, since we are using border-box-model.
         this.dom.facetInterval.style("width",totalWidth+"px");
-
-        if(this.isEmpty) return;
-        var wwwww=totalWidth-2*this.histogramMargin;
-        this.updateIntervalWidth(wwwww);
+        this.updateIntervalWidth(totalWidth-2*this.histogramMargin);
     },
     /** returns the maximum number of total items stored per row in chart data */
     getMaxTotalItemsPerRow: function(){
@@ -5012,13 +5070,9 @@ kshf.Facet_Interval.prototype = {
         return this._maxTotalItemsPerRow;
     },
     /** -- TODO: Inherited from categorical facet. Boo. */
-    getMaxBarValueMaxPerAttrib: function(){
-        return 0;
-    },
-    /** -- TODO: Inherited from categorical facet. Boo. */
     setHeight: function(targetHeight){
-        var c = targetHeight-this.getHeight_Header()-this.height_slider-this.height_labels-this.height_bin_top;
-        this.hist_height = c;
+        var c = targetHeight-this.getHeight_Header()-this.getHeight_Extra();
+        this.height_hist = c;
         this.updateBarScale2Active();
         this.refreshBins_Translate();
         this.refreshBars_Active_Scale();
@@ -5027,17 +5081,16 @@ kshf.Facet_Interval.prototype = {
         this.refreshHeight();
     },
     /** -- TODO: Inherited from categorical facet. Boo. */
-    allAttribsVisible: function(){
-
-    },
-    /** -- TODO: Inherited from categorical facet. Boo. */
     refreshHeight: function(){
-        this.dom.histogram.style("height",(this.hist_height+15)+"px")
-        this.dom.wrapper.style("height",(this.collapsed?"0":(this.hist_height+40))+"px");
+        this.dom.histogram.style("height",(this.height_hist+15)+"px")
+        this.dom.wrapper.style("height",(this.collapsed?"0":(this.height_hist+this.getHeight_Extra()))+"px");
     },
     setCollapsed: function(v){
         this.collapsed = v;
         this.divRoot.attr("collapsed",this.collapsed===false?"false":"true");
+        if(v===false){
+            this.clearResultPreview();
+        }
     },
     /** -- */
     collapseFacet: function(hide){
@@ -5045,82 +5098,6 @@ kshf.Facet_Interval.prototype = {
         this.browser.updateLayout_Height();
         if(sendLog) {
             sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
-        }
-    },
-    /** -- */
-    insertHeader: function(){
-        var me = this;
-
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup");
-
-        this.dom.headerGroup.append("div").attr("class","border_line").style("top","0px");
-
-        var topRow_background = this.dom.headerGroup.append("div").attr("class","chartFirstLineBackground");
-        topRow_background.style("text-align","center");
-        this.dom.headerGroup.append("div").attr("class","border_line");
-
-        topRow_background.append("span").attr("class","header_label_arrow")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                this.tipsy.hide();
-                me.collapseFacet(!me.collapsed);
-            })
-            .append("span").attr("class","fa fa-chevron-down")
-            ;
-
-        var topRow = topRow_background.append("span");
-        topRow.append("span").attr("class","chartFilterButtonParent").append("div")
-            .attr("class","chartClearFilterButton rowFilter alone")
-            .style("top","calc(40% - 7px)")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ return "<span class='action'>Remove</span> filter";}
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click", function(d,i){
-                this.tipsy.hide();
-                me.intervalFilter.clearFilter(true);
-                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.intervalFilter.id});
-            })
-            .append("span").attr("class","fa fa-times")
-            ;
-
-        var headerLabel=this.options.facetTitle;
-        if(this.parentFacet) {
-            if(this.parentFacet.hasAttribs())
-                headerLabel = headerLabel+" <i class='fa fa-chevron-right'></i> "+this.parentFacet.options.facetTitle;
-        }
-        topRow.append("span").attr("class", "header_label")
-            .html(headerLabel)
-            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
-        var facetIcons = topRow_background.append("span").attr("class","facetIcons");
-        if(this.options.description){
-            facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                        title: function(){ return me.options.description;}
-                    });
-                })
-                .on("mouseover",function(d){ this.tipsy.show(); })
-                .on("mouseout" ,function(d){ this.tipsy.hide(); });
-        }
-        if(this.isLinked) {
-            facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
-        } else {
-            if(this.parentFacet){
-                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
-            }
         }
     },
     /** -- */
@@ -5139,7 +5116,10 @@ kshf.Facet_Interval.prototype = {
         } else{
             this.updateActiveItems();
             this.refreshBars_Item_Count();
-            me.animateBarScale2Active();
+            this.animateBarScale2Active();
+            if(this.options.showPercentile){
+                this.updateQuantiles();
+            }
         }
     },
     animateBarScale2Active: function(){
@@ -5153,8 +5133,6 @@ kshf.Facet_Interval.prototype = {
         this.refreshResultPreview();
         setTimeout(function(){ me.dom.bars_highlight.attr("fast",true); },700);
     },
-    refreshLabelWidth: function(w){
-    },
     setSelectedPosition: function(v){
         if(this.intervalScale===undefined) return;
         this.dom.selectedItemValue
@@ -5164,6 +5142,39 @@ kshf.Facet_Interval.prototype = {
     hideSelectedPosition: function(){
          this.dom.selectedItemValue.style("display",null);
     },
+    updateQuantiles: function(){
+        // get active values into an array
+        var values = [];
+
+        var filterId = this.intervalFilter.id;
+        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+
+        // remove items that map to null
+        this.filteredItems = this.filteredItems.filter(function(item){
+            var v = accessor(item);
+            if(v===null) return false;
+            if(v===undefined) return false;
+            return true;
+        })
+
+        this.filteredItems.forEach(function(item){
+            if(!item.isWanted) return;
+            values.push(accessor(item));
+        });
+
+        this.quantile_val = {};
+        this.quantile_pos = {};
+        [10,20,30,40,50,60,70,80,90].forEach(function(q){
+            this.quantile_val[q] = d3.quantile(values,q/100);
+            this.quantile_pos[q] = this.intervalScale(this.quantile_val[q]);
+            kshf.Util.setTransform(this.dom.quantile[q][0][0],"translateX("+this.quantile_pos[q]+"px)");
+        },this);
+
+        [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
+            kshf.Util.setTransform(this.dom.quantile[""+qb[0]+"_"+qb[1]][0][0],
+                "translateX("+(this.quantile_pos[qb[0]])+"px) "+
+                "scaleX("+(this.quantile_pos[qb[1]]-this.quantile_pos[qb[0]])+") ");
+        },this);
+
+    }
 };
-
-

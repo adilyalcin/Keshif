@@ -429,6 +429,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .headerGroup{
+        position: relative;
+        text-align: center;
+        padding-top: 1px;
+        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         span.header_label {
             font-size: 1.0em;
             font-weight: 700;
@@ -447,22 +451,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 1px;
         }
         span.facetIcons{
-            margin-left: 3px;
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: gray;
+            position: absolute;
+            right: 2px;
+            top: 1px;
+            .fa{
+                cursor: pointer;
+                margin-left: 2px;
+                &:hover{ color:black; }
+            }
+            .hasMultiMappings{
+                display: none;
+            }
             span.isLinkedMark{
             }
             span.facetDescription{
-                cursor: pointer;
-                &:hover{ color:#cb5454; }
             }
-        }
-        .chartFirstLineBackground{
-            width:100%;
-            position: relative;
-            text-align: center;
-            padding-top: 1px;
-            .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         }
         span.header_label_arrow{
             display: inline;
@@ -597,7 +602,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }// facetCategorical
 
             > .facetInterval{
-                padding: 0px 12px;
+                padding: 5px 12px 0px 12px;
                 overflow: hidden;
                 .histogram{
                     position:relative;
@@ -812,6 +817,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .headerGroup span.header_label_arrow{
                 opacity: 1; 
             }
+            &[hasmultivalueitem=true] {
+                > .headerGroup .hasMultiMappings{
+                    display: inline-block;
+                }
+            }
         }
 
         &[hasFacets=true]{
@@ -819,13 +829,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-bottom: 2px;
 //            padding-top: 3px;
             > .headerGroup {
-                .chartFirstLineBackground .header_label{
+                .header_label{
                     font-size: 1.3em;
-                }
-                .chartFirstLineBackground {
-                    //.background-image(~"linear-gradient(left, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 0.3) 10%, rgba(150, 150, 150, 0.3) 90%, rgba(150, 150, 150, 0) 100%);");
-                    //background-color: @color_facet_group;
-//                    .background-image(~"linear-gradient(left, rgba(226,224,235,0) 0%, rgba(226,224,235,1) 20px, rgba(226,224,235,1) 90%, rgba(226,224,235,0) 100%);");
                 }
                 .header_label_arrow{
                     border-right: solid 2px rgb(204,195,195);
@@ -1375,6 +1380,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .fa-bullseye{
             color: black;
+            &:hover{ color: orangered; }
         }
         .fa:hover{
             color: @color_bars_selected;
@@ -1602,6 +1608,64 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 10px;
                 border-left: solid 1px gray;
                 display: block;
+            }
+        }
+    }
+
+    .percentileGroup{
+        height: 14px;
+        position: relative;
+        border-style: solid;
+        border-color: lightgray;
+        border-width: 1px 0px;
+        span.percentileTitle{
+            font-size: 0.6em;
+            position: absolute;
+            display: inline-block;
+            font-weight: 300;
+            bottom: 0px;
+            left: 2px;
+            text-shadow: 0px 0px 2px white;
+            z-index: 120;
+        }
+        span.quantile {
+            display: inline-block;
+            position: absolute;
+            height: 12px;
+            width:1px;
+            .transition(~'transform 700ms ease-in-out');
+            .transform-origin(0% 0%);
+            &.q_pos{
+                background-color: rgb(27, 111, 97);
+                margin-left: -0.5px;
+                z-index: 101;
+                pointer-events: none;
+                &.q_50 {
+                    width: 4px;
+                    background-color: rgb(27, 111, 97);
+                    margin-left: -2px;
+                    pointer-events: all;
+                }
+            }
+            &.q_range{
+                &:hover{
+                    border-color: rgb(27, 111, 97);
+                    border-style: solid;
+                    border-width: 1px 0px 1px 0px;
+                    z-index: 100;
+                }
+            }
+            &.q_40_60 {
+                background-color: lighten(rgb(27, 111, 97), 15%);
+            }
+            &.q_30_70 {
+                background-color: lighten(rgb(27, 111, 97), 40%);
+            }
+            &.q_20_80 {
+                background-color: lighten(rgb(27, 111, 97), 60%);
+            }
+            &.q_10_90 {
+                background-color: lighten(rgb(27, 111, 97), 70%);
             }
         }
     }
