@@ -3845,6 +3845,7 @@ kshf.Facet_Categorical.prototype = {
             }
             if(filter.attribs_OR.length>0){
                 item.setFilter(filterId,false);
+                return;
             }
             // only NOT selection
             item.setFilter(filterId,true);
