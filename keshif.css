@@ -87,7 +87,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   margin-top: 2px;
 }
-.kshfHost .filtercrumbs span.filter-block {
+.kshfHost .filtercrumbs > .filter-block {
   display: inline-block;
   position: relative;
   cursor: default;
@@ -95,7 +95,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   box-shadow: 1px 1px 1px #4e472b;
   background-color: rgba(255, 255, 255, 0.5);
-  padding-left: 2px;
   margin-right: 5px;
   max-width: 0px;
   -webkit-transition: all 1000ms linear;
@@ -103,7 +102,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 1000ms linear;
   transition: all 1000ms linear;
 }
-.kshfHost .filtercrumbs span.filter-block .sdsdsds {
+.kshfHost .filtercrumbs > .filter-block .sdsdsds {
   /*
                 max-width: 300px;
                 max-width: 300px;
@@ -113,28 +112,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   overflow: hidden;
 }
-.kshfHost .filtercrumbs span.filter-block[ready=true] {
+.kshfHost .filtercrumbs > .filter-block[ready=true] {
   max-width: 1000px;
 }
-.kshfHost .filtercrumbs span.filter-block[ready=false] {
+.kshfHost .filtercrumbs > .filter-block[ready=false] {
   max-width: 0px;
 }
-.kshfHost .filtercrumbs span.filter-block[ready=false] .chartClearFilterButton {
+.kshfHost .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
   display: none;
 }
-.kshfHost .filtercrumbs span.filter-block:hover {
+.kshfHost .filtercrumbs > .filter-block:hover {
   background-color: #ffffff;
 }
-.kshfHost .filtercrumbs span.filter-block b {
+.kshfHost .filtercrumbs > .filter-block b {
   font-weight: 700;
 }
-.kshfHost .filtercrumbs span.filter-block[filtered=false] {
+.kshfHost .filtercrumbs > .filter-block[filtered=false] {
   display: none;
 }
-.kshfHost .filtercrumbs span.filter-block .txttt {
+.kshfHost .filtercrumbs > .filter-block .txttt {
   padding: 1px 0px 1px 0px;
 }
-.kshfHost .filtercrumbs span.filter-block .filter_item {
+.kshfHost .filtercrumbs > .filter-block .filter_item {
   padding: 1px 0px 1px 0px;
   display: inline;
   margin-right: 15px;
@@ -181,7 +180,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   direction: rtl;
   margin-left: 2px;
 }
-.kshf.layout_leftttt div.attrib > span.attribLabel span.filter_add_more {
+.kshf.layout_leftttt div.attrib > span.attribLabel span.filterButtons {
   float: right;
   margin-right: 2px;
 }
@@ -272,8 +271,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   direction: ltr;
   margin-right: 2px;
 }
-.kshf:not(.layout_leftttt) div.attrib > span.attribLabel span.filter_add_more {
-  float: left;
+.kshf:not(.layout_leftttt) div.attrib > span.attribLabel span.filterButtons {
   margin-left: 2px;
 }
 .kshf:not(.layout_leftttt) div.attrib > span.barGroup .bar {
@@ -289,18 +287,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: left;
 }
 .kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.attribLabel {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: -moz-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: -o-linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
-  background-image: linear-gradient(to right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%);
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
+  background-image: -moz-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
+  background-image: -o-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
+  background-image: linear-gradient(to right, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
 }
 .kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) span.item_count_wrapper {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDAsMjAwLDIwMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwMCwyMDAsMjAwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: -moz-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: -o-linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
-  background-image: linear-gradient(to right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%);
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
+  background-image: -moz-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
+  background-image: -o-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
+  background-image: linear-gradient(to right, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
 }
 .kshf:not(.layout_leftttt) .facetControls {
   direction: ltr;
@@ -478,7 +476,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   color: gray;
   position: absolute;
-  right: 2px;
+  right: 20px;
   top: 1px;
 }
 .kshf .headerGroup span.facetIcons .fa {
@@ -632,6 +630,161 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more:hover {
   color: #cb5454;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  pointer-events: all;
+  z-index: 5;
+  -webkit-transition: height 700ms ease-in-out;
+  -moz-transition: height 700ms ease-in-out;
+  -o-transition: height 700ms ease-in-out;
+  transition: height 700ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
+  position: absolute;
+  white-space: nowrap;
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span {
+  display: inline-block;
+  vertical-align: top;
+  line-height: 18px;
+  pointer-events: none;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.clickArea {
+  pointer-events: all;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  height: 10px !important;
+  position: absolute;
+  font-size: 0.8em;
+  font-weight: 300;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.clickArea > .filterButtons {
+  margin-top: -2px;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.attribLabel {
+  font-size: 0.8em;
+  font-weight: 300;
+  cursor: default;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.attribLabel .theLabel:before {
+  color: white;
+  font-weight: 300;
+  font-size: 0.7em;
+  vertical-align: top;
+  border-radius: 3px;
+  padding: 0px 2px 0px 2px;
+  margin-right: 2px;
+  opacity: 0.4;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.attribLabel > .filterButtons {
+  opacity: 0;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.item_count_wrapper {
+  font-size: 0.7em;
+  cursor: default;
+  pointer-events: none;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.barGroup {
+  position: relative;
+  pointer-events: none;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > span.barGroup .bar {
+  top: 4px;
+  width: 1px;
+  height: 10px;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons {
+  white-space: nowrap;
+  cursor: pointer;
+  vertical-align: top;
+  float: left;
+  margin-left: 2px;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons span {
+  display: none;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons .orButton {
+  margin-right: 1px;
+  vertical-align: top;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons .orButton:hover {
+  color: #1C737A;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons .notButton {
+  cursor: pointer;
+  vertical-align: top;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons .notButton:hover {
+  color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] span.item_count {
+  visibility: hidden;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib:not([selected="0"]) .theLabel {
+  font-weight: 700;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib:not([selected="0"]) .clickArea {
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"] .theLabel {
+  color: #1D4870;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"][show-box=true] .theLabel:before {
+  content: "And";
+  background-color: #1D4870;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"] .theLabel {
+  color: #1C737A;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"][show-box=true] .theLabel:before {
+  content: "Or";
+  background-color: #1C737A;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .clickArea {
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .theLabel {
+  color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"][show-box=true] .theLabel:before {
+  content: "Not";
+  background-color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected] .theLabel {
+  font-weight: 700 !important;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"] .clickArea {
+  cursor: cell;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="and"] .theLabel {
+  color: #1D4870;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="or"] .theLabel {
+  color: #1C737A;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="not"] .theLabel {
+  color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected] .bar.hover {
+  background-color: #ff6a33;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=true] .theLabel {
+  color: #ff6a33;
+  font-weight: 700;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] {
+  color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval {
   padding: 5px 12px 0px 12px;
@@ -818,20 +971,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   opacity: 1;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true] div.attrib[selected='0'] .filter_add_more .add {
-  display: inline;
+.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="0"] .notButton {
+  display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] div.attrib[selected='0'] .clickArea {
-  cursor: pointer !important;
+.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="-1"] {
+  cursor: pointer;
 }
-.kshf .kshfChart[selecttype="SelectOr"][inserted_attrib=true][hasmultivalueitem=false] div.attrib[selected='0'] .bar {
-  cursor: pointer !important;
+.kshf .kshfChart[hasmultivalueitem=false]:not([filtered_or="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="0"] .orButton {
+  display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] div.attrib[selected='0'][noitems=false] .clickArea {
-  cursor: cell;
+.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .notButton {
+  display: inline-block;
 }
-.kshf .kshfChart[selecttype="SelectAnd"] div.attrib[selected='0'][noitems=false] .bar.active {
-  cursor: cell;
+.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .orButton {
+  display: inline-block;
+}
+.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"] .clickArea:hover .orButton {
+  display: inline-block;
 }
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
@@ -866,18 +1022,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[hasFacets=true] > .wigdhdyt {
   padding-top: 2px;
 }
-.kshf div.attribGroup {
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: block;
-  pointer-events: all;
-  z-index: 5;
-  -webkit-transition: height 700ms ease-in-out;
-  -moz-transition: height 700ms ease-in-out;
-  -o-transition: height 700ms ease-in-out;
-  transition: height 700ms ease-in-out;
-}
 .kshf div.belowAttribs {
   position: relative;
 }
@@ -909,111 +1053,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf span.item_count::after {
   content: ")";
-}
-.kshf div.attrib {
-  position: absolute;
-  white-space: nowrap;
-  -webkit-transition: all 700ms ease-in-out;
-  -moz-transition: all 700ms ease-in-out;
-  -o-transition: all 700ms ease-in-out;
-  transition: all 700ms ease-in-out;
-}
-.kshf div.attrib > span {
-  display: inline-block;
-  vertical-align: top;
-  line-height: 18px;
-  height: 18px;
-}
-.kshf div.attrib > span.clickArea {
-  opacity: 0;
-  margin-top: 4px;
-  margin-bottom: 3px;
-  margin-left: 20px;
-  height: 10px !important;
-  position: absolute;
-}
-.kshf div.attrib > span.attribLabel {
-  font-size: 0.8em;
-  font-weight: 300;
-  cursor: default;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.kshf div.attrib > span.attribLabel span.theLabel {
-  pointer-events: none;
-}
-.kshf div.attrib > span.attribLabel span.filter_add_more {
-  white-space: nowrap;
-  z-index: 5;
-  pointer-events: all;
-}
-.kshf div.attrib > span.attribLabel span.filter_add_more:hover {
-  color: orangered;
-}
-.kshf div.attrib > span.attribLabel span.filter_add_more span {
-  display: none;
-}
-.kshf div.attrib > span.attribLabel span.filter_add_more span.add {
-  cursor: cell;
-  margin-right: 3px;
-}
-.kshf div.attrib > span.attribLabel span.filter_add_more span.remove {
-  cursor: pointer !important;
-}
-.kshf div.attrib > span.item_count_wrapper {
-  font-size: 0.7em;
-  cursor: default;
-  pointer-events: none;
-}
-.kshf div.attrib[activeItems='0'] span.item_count {
-  visibility: hidden;
-}
-.kshf div.attrib > span.barGroup {
-  position: relative;
-}
-.kshf div.attrib > span.barGroup .bar {
-  top: 4px;
-  width: 1px;
-  height: 10px;
-}
-.kshf div.attrib:not([selected="0"]) span {
-  font-weight: 700;
-}
-.kshf div.attrib[selected="1"] span {
-  color: #c32c2c;
-}
-.kshf div.attrib[selected="-1"] span {
-  color: gray;
-}
-.kshf div.attrib:not([activeItems='0']):hover .remove {
-  display: inline;
-}
-.kshf div.attrib[noitems=false][highlight=selected][selected='0'] .clickArea {
-  cursor: cell;
-}
-.kshf div.attrib[noitems=false][highlight=selected][selected='0'] .bar.active {
-  cursor: cell;
-}
-.kshf div.attrib[noitems=false][highlight=selected][selected='1'] .clickArea {
-  cursor: pointer;
-}
-.kshf div.attrib[noitems=false][highlight=selected][selected='1'] .bar {
-  cursor: pointer;
-}
-.kshf div.attrib[noitems=false][highlight=selected] span:not(.filter_add_more) {
-  color: #cc3700 !important;
-  font-weight: 700 !important;
-}
-.kshf div.attrib[noitems=false][highlight=selected] span.bar.hover {
-  background-color: #cc3700 !important;
-}
-.kshf div.attrib[noitems=false][highlight=true] span:not(.filter_add_more) {
-  color: orangered !important;
-  font-weight: 700 !important;
-}
-.kshf div.attrib[noitems=true] {
-  color: gray;
 }
 .kshf span.selectVertLine {
   display: inline-block;
@@ -2103,11 +2142,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-color: transparent;
   border-bottom-color: transparent;
 }
+.tipsy-inner {
+  padding-right: 2px;
+}
 .tipsy-inner span.big {
   font-size: 1.4em;
 }
 .tipsy-inner span.action {
-  text-decoration: underline;
+  font-weight: 700;
 }
 .tipsy-inner i {
   margin-right: 2px;

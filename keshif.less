@@ -35,14 +35,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************ */
 
 
-@color_dot_background : #616F7A;
-@anim_barscale_duration_default: 400;
-
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @color_bars: #98ABB9; //#8699A8;
 @color_filtered: #30B8C4;
 @color_bars_selected: darken(orangered, 10%); //#CC2320;
-@color_bars_related: lighten(orangered, 10%); //#B2B227;
+@color_related: lighten(orangered, 10%); //#B2B227;
 @color_facet_arrow: rgb(231, 215, 97);
 @color_facet_group: #E9E5CB;
 @color_bar_preview: orangered;
@@ -91,7 +88,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-left: 5px;
         vertical-align: top;
         margin-top: 2px;
-        span.filter-block{
+        > .filter-block{
             display: inline-block;
             position: relative;
             cursor: default;
@@ -100,7 +97,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // border: 1px rgb(104, 91, 43) solid;
             box-shadow: 1px 1px 1px rgb(78, 71, 43);
             background-color: rgba(255,255,255,0.5);
-            padding-left: 2px;
             margin-right: 5px;
 //            opacity: 0;
             max-width: 0px;
@@ -181,7 +177,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 2px;
         }
         div.attrib {
-            > span.attribLabel span.filter_add_more{
+            > span.attribLabel span.filterButtons{
                 float: right;
                 margin-right: 2px;
             }
@@ -261,8 +257,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-right: 2px;
         }
         div.attrib {
-            > span.attribLabel span.filter_add_more{
-                float: left;
+            > span.attribLabel span.filterButtons{
                 margin-left: 2px;
             }
             > span.barGroup .bar{
@@ -275,10 +270,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &:not([selected="0"]) {
                 span.attribLabel{
-                    .background-image(~"linear-gradient(left, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
+                    .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
                 }
                 span.item_count_wrapper{
-                    .background-image(~"linear-gradient(left, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
+                    .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
                 }
             }
         }
@@ -454,7 +449,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             color: gray;
             position: absolute;
-            right: 2px;
+            right: 20px;
             top: 1px;
             .fa{
                 cursor: pointer;
@@ -599,6 +594,178 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                     &:hover{ color: #cb5454; }
                 }
+
+                > .attribGroup{
+                    position:relative;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    display: block;
+                    pointer-events: all;
+                    z-index: 5;
+                    .transition(~'height 700ms ease-in-out');
+
+                    > .attrib {
+                        position: absolute;
+                        white-space: nowrap;
+                        .transition(~'all 700ms ease-in-out');
+                        > span{
+                            display: inline-block;
+                            vertical-align: top;
+                            line-height: 18px;
+                            pointer-events: none;
+                            &.clickArea{
+                                pointer-events: all;
+                                // Note: The height of clickable area is the same as height of the bar!
+                                margin-top:4px;
+                                margin-bottom:4px;
+                                height: 10px !important; // total: 18px
+                                position: absolute;
+                                font-size: 0.8em;
+                                font-weight: 300;
+                                > .filterButtons {
+                                    margin-top: -2px;
+                                }
+                            }
+                            &.attribLabel{
+                                font-size: 0.8em;
+                                font-weight: 300;
+                                cursor: default;
+                                // display ... when text is too long
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                                .theLabel{
+                                    &:before{
+                                        color: white;
+                                        font-weight: 300;
+                                        font-size: 0.7em;
+                                        vertical-align: top;
+                                        border-radius: 3px;
+                                        padding: 0px 2px 0px 2px;
+                                        margin-right: 2px;
+                                        opacity: 0.4;
+                                    }
+                                }
+                                > .filterButtons{
+                                    opacity: 0;
+                                }
+                            }
+                            &.item_count_wrapper{
+                                font-size: 0.7em;
+                                cursor: default;
+                                pointer-events: none;
+                            }
+                            &.barGroup{
+                                position: relative;
+                                pointer-events: none;
+                                .bar{
+                                    top: 4px;
+                                    width: 1px;
+                                    height: 10px;
+                                }
+                            }
+                        }
+                        .filterButtons{
+                            white-space: nowrap;
+                            cursor: pointer;
+                            vertical-align: top;
+                            float: left;
+                            margin-left: 2px;
+                            span{ display: none; }
+                            .orButton {
+                                margin-right: 1px;
+                                vertical-align: top;
+                                &:hover { color: #1C737A; }
+                            }
+                            .notButton {
+                                cursor: pointer;
+                                vertical-align: top;
+                                &:hover { color: gray; }
+                            }
+                        }
+                        
+                        &[activeItems='0'] span.item_count{
+                            visibility: hidden;
+                        }
+
+                        &:not([selected="0"]) {
+                            .theLabel{
+                                font-weight: 700;
+                            }
+                            .clickArea{
+                                cursor: pointer;
+                            }
+                        }
+                        &[selected="1"]{
+                            .theLabel{
+                                color: #1D4870;
+                            }
+                            &[show-box=true]{
+                                .theLabel:before{
+                                    content: "And";
+                                    background-color: #1D4870;
+                                }
+                            }
+                        }
+                        &[selected="2"]{
+                            .theLabel{
+                                color: #1C737A;
+                            }
+                            &[show-box=true]{
+                                .theLabel:before{
+                                    content: "Or";
+                                    background-color: #1C737A;
+                                }
+                            }
+                        }
+                        &[selected="-1"]{
+                            .clickArea { cursor: pointer; }
+                            .theLabel{
+                                color: gray;
+                            }
+                            &[show-box=true]{
+                                .theLabel:before{
+                                    content: "Not";
+                                    background-color: gray;
+                                }
+                            }
+                        }
+
+                        &[noitems=false]{
+                            &[highlight=selected] {
+                                .theLabel{
+                                    font-weight: 700 !important;
+//                                    color: @color_bars_selected;
+                                }
+                                &[selected="0"] {
+                                    .clickArea { cursor: cell; }
+                                    &[selecttype="and"] .theLabel{
+                                        color: #1D4870;
+                                    }
+                                    &[selecttype="or"] .theLabel{
+                                        color: #1C737A;
+                                    }
+                                    &[selecttype="not"] .theLabel{
+                                        color: gray;
+                                    }
+                                }
+                                .bar.hover{
+                                    background-color: @color_related;
+                                }
+                            }
+                            &[highlight=true] {
+                                .theLabel{
+                                    color: @color_related;
+                                    font-weight: 700;
+                                }
+                            }
+                        }
+                        &[noitems=true] {
+                            color:gray;
+                        }
+                    } // .attrib
+                } // .attribGroup
+
             }// facetCategorical
 
             > .facetInterval{
@@ -665,7 +832,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     pointer-events: none;
                 }
                 &.hover {
-                    background-color: @color_bars_related;
+                    background-color: @color_related;
                     pointer-events: none;
                     .transform(~'scaleX(0)');
                     &[fast]{
@@ -768,7 +935,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: none;
                 }
             }
-//            > .subFacets{ display: none; }
         }
 
         &[filtered=true] > .headerGroup{
@@ -777,30 +943,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 opacity: 1;
             }
         }
-        &[selecttype="SelectOr"][inserted_attrib=true] {
-            div.attrib{
-                &[selected='0']{
-                    .filter_add_more .add{ display: inline; }
+        &[hasmultivalueitem=false]{
+            &[filtered_or="0"]{
+                > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] {
+                    &[selected="0"] .notButton{
+                        display: inline-block;
+                    }
+                    &[selected="-1"] {
+                        cursor: pointer;
+                    }
                 }
             }
-            &[hasmultivalueitem=false] {
-                div.attrib[selected='0'] {
-                    .clickArea{
-                        cursor: pointer !important;
-                    }
-                    .bar{
-                        cursor: pointer !important;
+            &:not([filtered_or="0"]){
+                > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] {
+                    &[selected="0"] .orButton{
+                        display: inline-block;
                     }
                 }
             }
         }
-        &[selecttype="SelectAnd"] {
-            div.attrib[selected='0'][noitems=false]{
-                .clickArea{
-                    cursor: cell;
-                }
-                .bar.active{
-                    cursor: cell;
+        &[hasmultivalueitem=true]{
+            > .wrapper > .facetCategorical > .attribGroup > .attrib {
+                &[selected="0"]{
+                    &[highlight="selected"] {
+                        .notButton{ display: inline-block; }
+                        .orButton{ display: inline-block; }
+                    }
+                    .clickArea:hover{
+                        .orButton{ display: inline-block; }
+                    }
                 }
             }
         }
@@ -847,15 +1018,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     }// kshfChart
 
-    div.attribGroup{
-        position:relative;
-        overflow-y: auto;
-        overflow-x: hidden;
-        display: block;
-        pointer-events: all;
-        z-index: 5;
-        .transition(~'height 700ms ease-in-out');
-    }
     div.belowAttribs{
         position:relative; 
         .border_line{
@@ -881,128 +1043,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &::before{ content: "("; }
         &::after{ content: ")"; }
     }
-    div.attrib {
-        position: absolute;
-        white-space: nowrap;
-        .transition(~'all 700ms ease-in-out');
-        > span{
-            display: inline-block;
-            vertical-align: top;
-            line-height: 18px;
-            height: 18px;
-        }
-        > span.clickArea{
-            // Note: The height of clickable area is the same as height of the bar!
-            opacity: 0;
-            margin-top:4px;
-            margin-bottom:3px;
-            margin-left: 20px;
-            height: 10px !important; // total: 18px
-            position: absolute;
-        }
-        > span.attribLabel{
-            font-size: 0.8em;
-            font-weight: 300;
-            cursor: default;
-            // display ... when text is too long
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            span.theLabel{
-                pointer-events: none;
-            }
-            span.filter_add_more{
-                white-space: nowrap;
-                z-index: 5;
-                pointer-events: all;
-                &:hover {
-                    color: orangered;
-                }
-                span{
-                    display: none;
-                }
-                span.add {
-                    cursor: cell;
-                    margin-right: 3px;
-                }
-                span.remove {
-                    cursor: pointer !important;
-                }
-            }
-        }
-        > span.item_count_wrapper{
-            font-size: 0.7em;
-            cursor: default;
-            pointer-events: none;
-        }
-        &[activeItems='0'] span.item_count{
-            visibility: hidden;
-        }
-        > span.barGroup{
-            position: relative;
-            .bar{
-                top: 4px;
-                width: 1px;
-                height: 10px;
-            }
-        }
-        &:not([selected="0"]) {
-            span{
-                font-weight: 700;
-            }
-        }
-        &[selected="1"]{
-            span{
-                color: #c32c2c;
-            }
-        }
-        &[selected="-1"]{
-            span{
-                color: gray;
-            }
-        }
-
-        &:not([activeItems='0']):hover{
-            .remove {display: inline; }
-        }
-        
-        &[noitems=false]{
-            &[highlight=selected] {
-                &[selected='0'] {
-                    .clickArea{
-                        cursor: cell;
-                    }
-                    .bar.active{
-                        cursor: cell;
-                    }
-                }
-                &[selected='1'] {
-                    .clickArea{
-                        cursor: pointer;
-                    }
-                    .bar{
-                        cursor: pointer;
-                    }
-                }
-                span:not(.filter_add_more){
-                    color: @color_bars_selected !important;
-                    font-weight: 700 !important;
-                }
-                span.bar.hover{
-                    background-color: @color_bars_selected !important;
-                }
-            }
-            &[highlight=true] {
-                span:not(.filter_add_more){
-                    color: orangered !important;
-                    font-weight: 700 !important;
-                }
-            }
-        }
-        &[noitems=true] {
-            color:gray;
-        }
-    } // div.attrib
 
     span.selectVertLine {
         display: inline-block;
@@ -1376,7 +1416,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:relative;
             top: 2px;
             left: 2px;
-            color: gray; //@color_bars_related;
+            color: gray; //@color_related;
         }
         .fa-bullseye{
             color: black;
@@ -1457,8 +1497,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color:white;
         }
         &[highlight=selected]{
-//            background-color: #E0E0E0;
-//            background-color: #F8F2F0;
             box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
             .itemState .fa-bullseye{ display: inline; }
             &[selectlinked]{
@@ -1482,7 +1520,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin-right: 2px;
             }
 //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
-//            box-shadow: inset 0px 0px 4px @color_bars_related;
+//            box-shadow: inset 0px 0px 4px @color_related;
         }
         div{
             vertical-align: top;
@@ -1986,11 +2024,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy{
 }
 .tipsy-inner{
+    padding-right: 2px;
     span.big{
         font-size: 1.4em;
     }
     span.action{
-        text-decoration: underline;
+        font-weight: 700;
     }
     i{
         margin-right: 2px;

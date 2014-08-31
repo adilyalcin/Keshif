@@ -269,29 +269,10 @@ kshf.Util = {
     },
     nearestMinute: function(d){
     },
-    /** -- ANY of the mappins is true */
-    filter_multi_or: function(itemList) {
-        var r=false;
-        itemList.every(function(d){
-            if(d.f_included()) r=true;
-            return !r;
-        });
-        return r;
-    },
-    /** Returns true when all current selections appear in the itemList */
-    filter_multi_and: function(itemList) {
-        // ALL of the current selection is in item mappings
-        // see how many items return true. If it matches current inserted count, then all selections are met for this item
-        var t=0;
-        itemList.forEach(function(m){
-            if(m.f_included()) t++;
-        })
-        return (t===this.attribCount_Included);
-    },
-    filter_multi_removed: function(itemList){
-        return ! itemList.every(function(d){
-            return ! d.f_removed();
-        })
+    clearArray: function(arr){
+        while (arr.length > 0) {
+          arr.pop();
+        }
     },
     ignoreScrollEvents: false,
     scrollToPos_do: function(scrollDom, targetPos){
@@ -743,19 +724,45 @@ kshf.Item.prototype = {
 
     /** -- */
     f_selected: function(){ return this.selected !== 0; },
-    f_included: function(){ return this.selected === 1; },
-    f_removed:  function(){ return this.selected ===-1; },
+    f_included: function(){ return this.selected > 0; },
 
-    f_unselect: function(){ 
-        this.selected = 0;
-        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+    is_NONE:function(){ return this.selected ===0; },
+    is_NOT: function(){ return this.selected ===-1; },
+    is_AND: function(){ return this.selected ===1; },
+    is_OR : function(){ return this.selected ===2; },
+
+    set_NONE: function(){
+        if(this.inList!==undefined) {
+            this.inList.splice(this.inList.indexOf(this),1);
+        }
+        this.inList = undefined;
+        this.selected = 0; this._setFacetDOM();
     },
-    f_include: function(){
-        this.selected = 1;
-        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+    set_NOT: function(l){ 
+        if(this.is_NOT()) return;
+        this._insertToList(l);
+        this.selected =-1; this._setFacetDOM(); 
     },
-    f_remove: function(){
-        this.selected = -1;
+    set_AND: function(l){ 
+        if(this.is_AND()) return;
+        this._insertToList(l);
+        this.selected = 1; this._setFacetDOM();
+    },
+    set_OR: function(l){ 
+        if(this.is_OR()) return;
+        this._insertToList(l);
+        this.selected = 2; this._setFacetDOM();
+    },
+
+    _insertToList: function(l){
+        if(this.inList!==undefined) {
+            this.inList.splice(this.inList.indexOf(this),1);
+        }
+        this.inList = l;
+        l.push(this);
+    },
+
+    _setFacetDOM: function(){
         if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
     },
 
@@ -770,7 +777,7 @@ kshf.Item.prototype = {
      * Updates isWanted state, and notifies all related filter attributes of the change.
      */
     updateWanted: function(recursive){
-        if(!this.dirtyFilter) return;
+        if(!this.dirtyFilter) return false;
 
         var me=this;
         var oldWanted = this.isWanted;
@@ -790,15 +797,10 @@ kshf.Item.prototype = {
                         // it is now selected, see other DOM items it has and increment their count too
                         attrib.mappedDataCache.forEach(function(m){
                             if(m===null) return;
-                            if(m instanceof Array) {
+                            if(m.h) { // interval
+                                if(m.b) m.b.itemCount_Active++;
+                            } else { // categorical
                                 m.forEach(function(item){ item.itemCount_Active++; });
-                            } else {
-                                // The mapped data is histogram bin...
-                                if(m.b) {
-                                    m.b.itemCount_Active++;
-                                } else {
-                                    m.itemCount_Active++;
-                                }
                             }
                         });
                     }
@@ -813,17 +815,12 @@ kshf.Item.prototype = {
                         // it is now not selected, see other DOM items it has and increment their count too
                         attrib.mappedDataCache.forEach(function(m){
                             if(m===null) return;
-                            if(m instanceof Array) {
+                            if(m.h) { // interval
+                                if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Active--;
+                            } else { // categorical
                                 m.forEach(function(item){ 
                                     if(item.itemCount_Active>0) item.itemCount_Active--;
                                 });
-                            } else {
-                                // The mapped data is histogram bin...
-                                if(m.b) {
-                                    if(m.b.itemCount_Active>0) m.b.itemCount_Active--;
-                                } else {
-                                    if(m.itemCount_Active>0) m.itemCount_Active--;
-                                }
                             }
                         });
                     }
@@ -832,14 +829,17 @@ kshf.Item.prototype = {
             });
         }
         this.dirtyFilter = false;
+        return this.isWanted !== oldWanted;
     },
     /** Only updates wanted state if it is currently not wanted (resulting in More wanted items) */
     updateWanted_More: function(recursive){
-        if(!this.isWanted) this.updateWanted(recursive);
+        if(!this.isWanted) return this.updateWanted(recursive);
+        return false;
     },
     /** Only updates wanted state if it is currently wanted (resulting in Less wanted items) */
     updateWanted_Less: function(recursive){
-        if(this.isWanted) this.updateWanted(recursive);
+        if(this.isWanted) return this.updateWanted(recursive);
+        return false;
     },
     updatePreview: function(source){
         if(!this.isWanted) return;
@@ -857,7 +857,9 @@ kshf.Item.prototype = {
 
         this.mappedDataCache.forEach(function(m){
             if(m===null) return;
-            if(m instanceof Array) {
+            if(m.h) {
+                if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Preview++;
+            } else {
                 m.forEach(function(item){
                     item.itemCount_Preview++;
                     if(item.itemCount_Preview===1 && item.facet){
@@ -867,22 +869,8 @@ kshf.Item.prototype = {
                         }
                     }
                 });
-            } else {
-                // The mapped data is histogram bin...
-                if(m.b) {
-                    if(m.b.itemCount_Active>0)
-                        m.b.itemCount_Preview++;
-                } else if(m.itemCount_Preview!==undefined){
-                    m.itemCount_Preview++;
-                    if(m.facet && !m.facet.isLinked){
-                        if(m.itemCount_Preview===1 && m.facet!==source){
-                            // TODO: Don't go under the current one, if any
-                            m.updatePreview(source);
-                        }
-                    }
-                }
             }
-        });
+        },this);
     },
     /** 
      * Called on mouse-over on a primary item type, then recursively on all facets and their sub-facets
@@ -899,23 +887,15 @@ kshf.Item.prototype = {
         if(this.resultDOM && !recurse) return;
         this.mappedDataCache.forEach(function(d){
             if(d===null) return; // no mapping for this index
-            if(d.h!==undefined){
-                // interval facet
+            if(d.h){ // interval facet
                 d.h.setSelectedPosition(d.v);
-            } else {
-                // categorical facet
-                if(d instanceof Array) {
-                    d.forEach(function(item){
-                        // skip going through main items that contain a link TO this item
-                        if(this.resultDOM && item.resultDOM)
-                            return;
-                        item.highlightAll(source,false);
-                    },this);
-                } else {
-                    if(this.resultDOM && d.resultDOM)
+            } else { // categorical facet
+                d.forEach(function(item){
+                    // skip going through main items that contain a link TO this item
+                    if(this.resultDOM && item.resultDOM)
                         return;
-                    d.highlightAll(source,false);
-                }
+                    item.highlightAll(source,false);
+                },this);
             }
         },this);
     },
@@ -927,21 +907,14 @@ kshf.Item.prototype = {
         if(this.resultDOM && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
             if(d===null) return; // no mapping for this index
-            if(d.h!==undefined){
-                // interval facet
+            if(d.h){ // interval facet
                 d.h.hideSelectedPosition(d.v);
-            } else {
-                // categorical facet
-                if(d instanceof Array) {
-                    d.forEach(function(item){
-                        // skip going through main items that contain a link TO this item
-                        if(this.resultDOM && item.resultDOM) return;
-                        item.nohighlightAll(source,false);
-                    },this);
-                } else {
-                    if(this.resultDOM && d.resultDOM) return;
-                    d.nohighlightAll(source,false);
-                }
+            } else { // categorical facet
+                d.forEach(function(item){
+                    // skip going through main items that contain a link TO this item
+                    if(this.resultDOM && item.resultDOM) return;
+                    item.nohighlightAll(source,false);
+                },this);
             }
         },this);
     },
@@ -953,7 +926,7 @@ kshf.Item.prototype = {
                     .classed("fa-square-o",!v).classed("fa-check-square-o",v);
         }
         if(v===false){
-            this.f_unselect();
+            this.set_NONE();
         }
     }
 };
@@ -988,16 +961,25 @@ kshf.Filter.prototype = {
         var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = true;
 
-        if(recursive===undefined) recursive=true;
         if(this.onFilter) this.onFilter.call(this.facet, this);
 
-        switch(this.how){
-            case "All":
-                this.filteredItems.forEach(function(item){ item.updateWanted(recursive); }); break;
-            case "LessResults":
-                this.filteredItems.forEach(function(item){ item.updateWanted_Less(recursive); }); break;
-            case "MoreResults":
-                this.filteredItems.forEach(function(item){ item.updateWanted_More(recursive); }); break;
+        var stateChanged = false;
+        if(recursive===undefined) recursive=true;
+        if(this.how === "All"){
+            this.filteredItems.forEach(function(item){
+                var v = item.updateWanted(recursive);
+                stateChanged = stateChanged || v;
+            });
+        } else if(this.how === "LessResults"){
+            this.filteredItems.forEach(function(item){
+                var v = item.updateWanted_Less(recursive);
+                stateChanged = stateChanged || v;
+            });
+        } else if(this.how === "MoreResults"){
+            this.filteredItems.forEach(function(item){
+                var v = item.updateWanted_More(recursive);
+                stateChanged = stateChanged || v;
+            });
         }
 
         // if this has a parent facet, link selection from this to the main table
@@ -1017,11 +999,7 @@ kshf.Filter.prototype = {
         if(forceUpdate===true){
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
-            // Note: Sometimes a new filter can result in the same number of results
-            // TODO: Find better way to see if result list has been really updated
-//            if(itemsSelectedCt_!==this.browser.itemsSelectedCt) {
-                this.browser.update(-1); // fewer results, probably!
-//            }
+            if(stateChanged) this.browser.update(-1);
             if(sendLog) {
                 sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilteringState());
             }
@@ -1034,14 +1012,14 @@ kshf.Filter.prototype = {
 
         this.filteredItems.forEach(function(item){ item.setFilter(this.id,true); },this);
 
-        if(recursive===undefined) recursive=true;
         this.onClear.call(this.facet,this);
 
-        this.refreshFilterSummary();
-
+        if(recursive===undefined) recursive=true;
         this.filteredItems.forEach(function(item){
             item.updateWanted_More(recursive);
         });
+
+        this.refreshFilterSummary();
 
         if(forceUpdate===true){
             if(this.facet.parentFacet){
@@ -1060,7 +1038,6 @@ kshf.Filter.prototype = {
 
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
-//            if(itemsSelectedCt_!==this.browser.itemsSelectedCt)
             this.browser.update(1); // more results
 
             if(sendLog) {
@@ -1082,11 +1059,6 @@ kshf.Filter.prototype = {
             setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
             this.filterSummaryBlock = null;
         } else {
-            // if this one doesn't have active filtering (i.e. filtered by a sub-facet only) don't show
-            if(this.facet.attribCount_Selected!==undefined){
-                if(this.facet.attribCount_Selected===0)
-                    return;
-            }
             // insert DOM
             if(this.filterSummaryBlock===null) {
                 this.filterSummaryBlock = this.insertFilterSummaryBlock();
@@ -2245,7 +2217,7 @@ kshf.Browser.prototype = {
             return;
         }
         this.dom.filterClearAll = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","filterClearAll")
-            .text("Clear all")
+            .text("Remove all")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -2728,24 +2700,19 @@ kshf.Browser.prototype = {
                 if(toMap.length===0) {
                     return;
                 }
-                if(toMap.length===1) {
-                    toMap = toMap[0]; // array to single item
-                } else {
-                    item.mappedDataCache[filterId] = [];
-                    toMap.forEach(function(a){
-                        var m=targetTable[a];
-                        if(m==undefined) return;
-                        item.mappedDataCache[filterId].push(m);
-                        m.addItem(item);
-                    });
-                    return;
-                }
+            } else {
+                toMap = [toMap];
             }
-            var m=targetTable[toMap];
-            if(m==undefined) return;
-            item.mappedDataCache[filterId] = m;
-            m.addItem(item);
-        });
+            item.mappedDataCache[filterId] = [];
+            var arr=item.mappedDataCache[filterId];
+            toMap.forEach(function(a){
+                var m=targetTable[a];
+                if(m==undefined) return;
+                arr.push(m);
+                m.addItem(item);
+            });
+            return;
+        },this);
     },
     /** set x offset to display active number of items */
     getWidth_QueryPreview: function(){
@@ -2766,7 +2733,7 @@ kshf.Browser.prototype = {
     },
     /** External method - used by demos to auto-select certain features on load -- */
     filterFacetAttribute: function(facetID, itemId){
-        this.facets[facetID].filterAttrib(this.facets[facetID].getAttribs()[itemId],true);
+        this.facets[facetID].filterAttrib(this.facets[facetID].getAttribs()[itemId],"OR");
     },
     /** -- */
     clearFilters_All: function(force){
@@ -3064,22 +3031,13 @@ kshf.Browser.prototype = {
         r.selected="";
         this.filterList.forEach(function(filter){
             if(filter.isFiltered){
-                if(filter.facet.attribCount_Selected!==undefined){
-                    if(filter.facet.attribCount_Selected===0){
-                        return; // no items are selected. abort
-                    }
-                }
                 // set filtered to true for this facet ID
                 if(r.filtered!=="") r.filtered+="x";
                 r.filtered+=filter.id;
                 // include filteing state of facet
                 if(r.selected!=="") r.selected+="x";
-                if(filter.facet.attribCount_Selected)
-                    r.selected+=filter.facet.attribCount_Selected;
-                else
-                    r.selected+=0; // interval filter 
             }
-        });
+        },this);
         if(r.filtered==="") r.filtered=undefined;
         if(r.selected==="") r.selected=undefined;
 
@@ -3204,17 +3162,11 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     isFiltered: function(state){
-        return this.attribCount_Selected !== 0 || 
-               this.attribCount_Wanted !== this.attribCount_Total;
+        return this.attribFilter.attribCount_Total() !== 0 || this.attribCount_Wanted !== this.attribCount_Total;
     },
     /** -- */
     allAttribsVisible: function(){
         return this.attribCount_Active===this.attribCount_InDisplay;
-    },
-    /** Use this method to update selectType value */
-    setSelectType: function(t){
-        this.attribFilter.selectType = t;
-        this.divRoot.attr("selectType",this.attribFilter.selectType);
     },
     hasFacets: function(){
         return this.subFacets!==undefined;
@@ -3227,7 +3179,11 @@ kshf.Facet_Categorical.prototype = {
         this.sortingOpts.forEach(function(opt){
             // apply defaults
             if(opt.no_resort===undefined) opt.no_resort=false;
-            if(opt.func===undefined) opt.func=kshf.Util.sortFunc_ActiveCount_TotalCount;
+            if(opt.func===undefined) {
+                opt.func=kshf.Util.sortFunc_ActiveCount_TotalCount;
+            } else {
+                opt.custom = true;
+            }
             if(opt.inverse===undefined)  opt.inverse=false;
         });
         this.sortingOpt_Active = this.sortingOpts[0];
@@ -3292,17 +3248,23 @@ kshf.Facet_Categorical.prototype = {
             filteredItems: this.filteredItems,
             facet: this,
             onClear: function(filter){
-                // if text search is shown, clear that one
                 this.clearLabelTextSearch();
                 this.unselectAllAttribs();
             },
-            onFilter: function(filter){
-                this.updateItemFilterState_Attrib();
-            },
+            onFilter: this.onAttribFilter,
             text_header: (this.options.textFilter?this.options.textFilter:this.options.facetTitle),
             text_item: this.text_item_Attrib,
         });
-        this.attribFilter.selectType = "SelectOr";
+
+        this.attribFilter.attribs_AND = [];
+        this.attribFilter.attribs_OR = [];
+        this.attribFilter.attribs_NOT = [];
+        this.attribFilter.attribCount_Total = function(){
+            return this.attribs_AND.length + 
+                this.attribs_OR.length + 
+                this.attribs_NOT.length;
+        },
+
         this.facetFilter = this.attribFilter;
 
         // accesses attribFilter
@@ -3339,12 +3301,11 @@ kshf.Facet_Categorical.prototype = {
         var filterId = this.attribFilter.id;
         this.browser.mapItemData(this.filteredItems,this.options.catItemMap, this.getAttribs_wID(), filterId);
 
-        // Check if some item is mapped to multiple values
         this.hasMultiValueItem = false;
         this.filteredItems.forEach(function(item){
-            var toMap = item.mappedDataCache[filterId];
-            if(toMap===null) return;
-            if(toMap instanceof Array) this.hasMultiValueItem = true;
+            var arr=item.mappedDataCache[filterId];
+            if(arr===null) return;
+            if(arr.length>1) this.hasMultiValueItem = true;
         },this);
 
         // Modified internal dataMap function - Skip rows with 0 active item count
@@ -3424,12 +3385,21 @@ kshf.Facet_Categorical.prototype = {
         }
         this.divRoot = root
             .append("div").attr("class","kshfChart")
-            .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
-            .attr("filtered",false)
-            .attr("inserted_attrib",false)
             .attr("collapsed",this.collapsed===false?"false":"true")
+            .attr("filtered",false)
+            .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
+            .attr("filtered_or",0)
+            .attr("filtered_and",0)
+            .attr("filtered_not",0)
             .attr("hasMultiValueItem",this.hasMultiValueItem)
             .on("mouseleave",function(){
+                // check if d3.event.fromElement is parent of d3.event.toElement
+                var parent=d3.event.toElement;
+                while(true){
+                    if(parent===d3.event.fromElement) return;
+                    if(parent===null) break;
+                    parent = parent.parentNode;
+                }
                 if(me.skipSorting && me.hasAttribs()){
                     me.skipSorting = false;
                     setTimeout( function(){ me.updateSorting(0); }, 750);
@@ -3532,8 +3502,11 @@ kshf.Facet_Categorical.prototype = {
         this.insertAttribs();
     },
     selectAllAttribsButton: function(){
-        this.selectAllAttribs();
-        this.setSelectType("SelectOr");
+        this.getAttribs().forEach(function(attrib){ 
+            if(!attrib.selectedForLink) return;
+            attrib.set_OR(this.attribFilter.attribs_OR);
+        },this);
+        this._update_Selected();
         this.attribFilter.how="All";
         this.attribFilter.addFilter(true);
         if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR_ALL, {id: this.attribFilter.id} );
@@ -3565,48 +3538,26 @@ kshf.Facet_Categorical.prototype = {
         return this._maxBarValueMaxPerAttrib;
     },
     attrib_UnselectAll: function(){
-        this.attribCount_Included = 0;
-        this.attribCount_Removed  = 0;
-        if(this.divRoot) this.divRoot.attr("inserted_attrib",false);
-        this._update_Selected();
-    },
-    attrib_Include: function(v){
-        this.attribCount_Included+=v;
-        if(this.divRoot) this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
-        this._update_Selected();
-    },
-    attrib_Remove: function(v){
-        this.attribCount_Removed+=v;
-        this._update_Selected();
-    },
-    attrib_setIncluded: function(i){
-        this.attribCount_Included=i;
-        if(this.divRoot) this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
+        kshf.Util.clearArray(this.attribFilter.attribs_AND);
+        kshf.Util.clearArray(this.attribFilter.attribs_OR);
+        kshf.Util.clearArray(this.attribFilter.attribs_NOT);
         this._update_Selected();
     },
     _update_Selected: function(){
-        this.attribCount_Selected=this.attribCount_Included+this.attribCount_Removed;
-        if(this.divRoot) this.divRoot.attr("filtered",this.attribCount_Selected>0);
-    },
-    /** -- */
-    selectAllAttribs: function(){
-        if(!this.isLinked) return;
-        this.attribCount_Included = 0;
-        this.attribCount_Removed  = 0;
-        this.getAttribs().forEach(function(attrib){ 
-            if(!attrib.selectedForLink) return
-            attrib.f_include();
-            this.attribCount_Included++;
-        },this);
-        if(this.divRoot) this.divRoot.attr("inserted_attrib",this.attribCount_Included>0);
-        this._update_Selected();
+        if(this.divRoot) {
+            this.divRoot
+                .attr("filtered",this.isFiltered())
+                .attr("filtered_or",this.attribFilter.attribs_OR.length)
+                .attr("filtered_and",this.attribFilter.attribs_AND.length)
+                .attr("filtered_not",this.attribFilter.attribs_NOT.length)
+                ;
+        }
     },
     /** -- */
     unselectAllAttribs: function(){
         this.getAttribs().forEach(function(attrib){ 
-            if(attrib.f_selected() && attrib.facetDOM)
-                attrib.facetDOM.setAttribute("highlight",false);
-            attrib.f_unselect();
+            if(attrib.f_selected() && attrib.facetDOM) attrib.facetDOM.setAttribute("highlight",false);
+            attrib.set_NONE();
         });
         this.attrib_UnselectAll();
     },
@@ -3646,22 +3597,23 @@ kshf.Facet_Categorical.prototype = {
                         me.attrib_UnselectAll();
                         me.getAttribs().forEach(function(attrib){
                             if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
-                                attrib.f_include();
+                                attrib.set_OR(me.attribFilter.attribs_OR);
                             } else {
                                 // search in tooltiptext
                                 if(me.options.catTooltipText && 
                                     me.options.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1) {
-                                        attrib.f_include();
+                                        attrib.set_OR(me.attribFilter.attribs_OR);
                                 } else{
-                                    attrib.f_unselect();
+                                    attrib.set_NONE();
                                 }
                             }
-                            if(attrib.f_included()) me.attrib_Include(1);
+                            if(attrib.is_OR()) {
+                                me._update_Selected();
+                            }
                         });
                         if(!me.isFiltered()){
                             me.attribFilter.clearFilter(true);                            
                         } else {
-                            me.setSelectType("SelectOr");
                             me.attribFilter.how = "All";
                             me.attribFilter.addFilter(true);
                             if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id:me.attribFilter.id, info:v});
@@ -3772,17 +3724,20 @@ kshf.Facet_Categorical.prototype = {
         var me=this;
         // active bar width
         this.dom.bar_active.each(function(attrib){
-            var transform="scaleX("+me.catBarAxisScale(attrib.itemCount_Active)+")";
-            kshf.Util.setTransform(this,transform);
+            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.itemCount_Active)+")");
         });
+        var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
+        this.dom.attribClickArea.style("width",function(attrib){
+            return (basicWidth+me.catBarAxisScale(attrib.itemCount_Active))+"px";
+        }); // 20 is margin-left
+
     },
     /** -- */
     refreshWidth_Bars_Total: function(){
         var me = this;
         this.dom.bar_total
             .each(function(attrib){
-                var transform="scaleX("+me.catBarAxisScale(attrib.items.length)+")";
-                kshf.Util.setTransform(this,transform);
+                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.items.length)+")");
             });
     },
     /** -- */
@@ -3852,89 +3807,47 @@ kshf.Facet_Categorical.prototype = {
         }
     },
     /** update ItemFilterState_Attrib */
-    updateItemFilterState_Attrib: function(){
-        if(!this.isFiltered()){
-            return;
-        }
+    onAttribFilter: function(filter){
+        if(!this.isFiltered()) return;
 
-        var filter_multi_removed = kshf.Util.filter_multi_removed;
+        var filterId = filter.id;
 
-        var filterId = this.attribFilter.id;
-        if(this.attribFilter.selectType==="SelectAnd"){
-            var filter_multi = kshf.Util.filter_multi_and;
-            this.filteredItems.forEach(function(item){
-                var attribItem=item.mappedDataCache[filterId];
-                var f = false;
-                if(attribItem!==null){ 
-                    if(attribItem instanceof Array){
-                        if(this.attribCount_Removed>0 && filter_multi_removed.call(this,attribItem)){
-                            f = false;
-                        } else {
-                            if(this.attribCount_Included>0)
-                                f = filter_multi.call(this,attribItem);
-                            else
-                                f = true;
-                        }
-                    } else {
-                        // one mapped value only
-                        // more than 1 item is selected, and this item only has 1 mapping.
-                        f = false;
-                    }
-                } else{
-                    // item is mapped to none. If you don't have anything for insertion, go ahead
-                    if(this.attribCount_Included===0){
-                        f=true;
-                    }
+        this.filteredItems.forEach(function(item){
+            var attribItems=item.mappedDataCache[filterId];
+
+            if(attribItems===null){ // item is mapped to none
+                if(filter.attribs_AND.length>0 || filter.attribs_OR.length>0){
+                    item.setFilter(filterId,false); return;
                 }
-                item.setFilter(filterId,f);
-            },this);
-        } else {
-            // selectType is "SelectOr"
-            var filter_multi = kshf.Util.filter_multi_or;
-            this.filteredItems.forEach(function(item){
-                var attribItem=item.mappedDataCache[filterId];
-                var f = false;
-                if(attribItem!==null){ 
-                    if(attribItem instanceof Array){
-                        if(this.attribCount_Removed>0 && filter_multi_removed.call(this,attribItem)){
-                            f = false;
-                        } else {
-                            if(this.attribCount_Included>0) {
-                                f = filter_multi.call(this,attribItem);
-                            } else {
-                                if(this.attribCount_Wanted<this.attribCount_Total){
-                                    // say OK if any is isWanted...
-                                    f = !attribItem.every(function(f){ return !f.isWanted; })
-                                } else {
-                                    f = true;
-                                }
-                            }
-                        }
-                    } else {
-                        // one mapped value only
-                        if(attribItem.f_removed()){
-                            //f = false;
-                        } else {
-                            if(this.attribCount_Included===0){
-                                if(this.attribCount_Wanted<this.attribCount_Total){
-                                    f = attribItem.isWanted;
-                                } else {
-                                    f = true;
-                                }
-                            } else {
-                                f = attribItem.f_included();
-                            }
-                        }
-                    }
-                } else{
-                    // item is mapped to none. If you don't have anything for insertion, go ahead
-                    if(this.attribCount_Included===0){
-                        f=true;
-                    }
+                item.setFilter(filterId,true);
+                return;
+            }
+            // Check OR selections
+            if(filter.attribs_OR.length>0){
+                if(attribItems.some(function(d){ return (d.is_OR()); })){
+                    item.setFilter(filterId,true); return;
                 }
-                item.setFilter(filterId,f);
-            },this);
-        }
+            }
+            // Check NOT selections
+            if(filter.attribs_NOT.length>0){
+                if(!attribItems.every(function(item){ return !item.is_NOT(); })){
+                    item.setFilter(filterId,false); return;
+                }
+            }
+            // Check AND selections
+            if(filter.attribs_AND.length>0){
+                var t=0;
+                attribItems.forEach(function(m){ if(m.is_AND()) t++; })
+                if(t!==filter.attribs_AND.length){
+                    item.setFilter(filterId,false); return;
+                }
+            }
+            if(filter.attribs_AND.length==0 && filter.attribs_NOT.length==0){
+                item.setFilter(filterId,false);
+            } else {
+                item.setFilter(filterId,true);
+            }
+        },this);
     },
     /** -- */
     isAttribVisible: function(attrib){
@@ -3947,13 +3860,13 @@ kshf.Facet_Categorical.prototype = {
         // Show if number of active items is not zero
         if(attrib.itemCount_Active!==0) return true;
         // Show if item has been "isWanted" by some active sub-filtering
-        if(this.attribCount_Wanted < this.attribCount_Total && !attrib.isWanted) return false;
+        if(this.attribCount_Wanted < this.attribCount_Total && attrib.isWanted) return true;
         // if inactive attributes are not removed, well, don't remove them...
         if(this.options.removeInactiveAttrib===false) return true;
         // facet is not filtered yet, cannot click on 0 items
         if(!this.isFiltered()) return attrib.itemCount_Active!==0;
         // Hide if multiple options are selected and selection is and
-        if(this.attribFilter.selectType==="SelectAnd") return false;
+//        if(this.attribFilter.selectType==="SelectAnd") return false;
         // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
 
         if(attrib.isWanted===false) return false;
@@ -3970,135 +3883,117 @@ kshf.Facet_Categorical.prototype = {
         // Hide
         return false;
     },
-    removeAttrib: function(attrib){
-        this.skipSorting = true;
-        if(attrib.f_removed()){
-            attrib.f_unselect();
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_UNSELECT, {id:this.attribFilter.id, info:attrib.id()});
-        } else {
-            // if number of items in this attrib equals to current result count, do nothing!
-            if(attrib.itemCount_Active===this.browser.itemsSelectedCt){
-                alert("Removing this attribute would make an empty result set, so it is not allowed.");
-                return;
-            }
-            attrib.f_remove();
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_NOT, {id:me.attribFilter.id, info:attrib.id()});
-        }
-        this.attrib_Remove(attrib.f_removed()?1:-1);
-
-        if(!this.isFiltered()){
-            this.attribFilter.clearFilter(true);
-            return;
-        }
-
-        if(attrib.f_removed()){
-            this.attribFilter.how = "LessResults";
-        } else {
-            this.attribFilter.how = "MoreResults";
-        }
-
-        this.clearLabelTextSearch();
-        this.attribFilter.addFilter(true);
-        if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_REMOVE);
-    },
     /** When clicked on an attribute ... */
-    filterAttrib: function(attrib, selectOr, how){
+    /* what: AND / OR / NOT */
+    filterAttrib: function(attrib, what, how){
         this.skipSorting = true;
-        if(attrib.f_included()){
-            attrib.f_unselect();
+        var i=0;
+
+        var preTest = (this.attribFilter.attribs_OR.length>0 && (this.attribFilter.attribs_AND.length>0 ||
+                this.attribFilter.attribs_NOT.length>0));
+
+        // if selection is in same mode, "undo" to NONE.
+        if(what==="NOT" && attrib.is_NOT()) what = "NONE";
+        if(what==="AND" && attrib.is_AND()) what = "NONE";
+        if(what==="OR"  && attrib.is_OR() ) what = "NONE";
+
+        if(what==="NONE"){
+            if(attrib.is_AND() || attrib.is_NOT()){
+                this.attribFilter.how = "MoreResults";
+            }
+            if(attrib.is_OR()){
+                this.attribFilter.how = this.attribFilter.attribs_OR.length===0?"MoreResults":"LessResults";
+            }
+            attrib.set_NONE();
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_UNSELECT, {id:this.attribFilter.id, info:attrib.id()});
-        } else if(attrib.f_removed()){ // if item is already in NOT state
-            this.removeAttrib(attrib);
-            return;
-        } else {
-            attrib.f_include();
         }
-        this.attrib_Include(attrib.f_included()?1:-1);
+        if(what==="NOT"){
+            if(attrib.is_NONE()){
+                // if number of items in this attrib equals to current result count, do nothing!
+                if(attrib.itemCount_Active===this.browser.itemsSelectedCt){
+                    alert("Removing this attribute would make an empty result set, so it is not allowed.");
+                    return;
+                }
+                this.attribFilter.how = "LessResults";
+            } else {
+                this.attribFilter.how = "All";
+            }
+            attrib.set_NOT(this.attribFilter.attribs_NOT);
+            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_NOT, {id:this.attribFilter.id, info:attrib.id()});
+        }
+        if(what==="AND"){
+            attrib.set_AND(this.attribFilter.attribs_AND);
+            this.attribFilter.how = "LessResults";
+            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_AND, {id:this.attribFilter.id, info:attrib.id()});
+        }
+        if(what==="OR"){
+            if(!this.hasMultiValueItem){
+                // remove NOT selections...
+                var temp = [];
+                this.attribFilter.attribs_NOT.forEach(function(a){ temp.push(a); });
+                temp.forEach(function(a){ a.set_NONE(); });
+            }
+            attrib.set_OR(this.attribFilter.attribs_OR);
+            this.attribFilter.how = this.attribFilter.attribs_OR.length===1?"LessResults":"MoreResults";
+            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR, {id:this.attribFilter.id, info:attrib.id()});
+        }
+        if(how) this.attribFilter.how = how;
+
+        if(preTest){
+            this.attribFilter.how = "All";
+        }
+        if(this.attribFilter.attribs_OR.length>0 && (this.attribFilter.attribs_AND.length>0 ||
+                this.attribFilter.attribs_NOT.length>0)){
+            this.attribFilter.how = "All";
+        }
+
+        this.attribFilter.attribs_OR.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_OR.length>1);
+        },this);
+        this.attribFilter.attribs_AND.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_AND.length>1);
+        },this);
+        this.attribFilter.attribs_NOT.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box","true");
+        },this);
+
+        this._update_Selected();
 
         if(!this.isFiltered()){
             this.attribFilter.clearFilter(true);
             return;
-        } 
-
-        if(attrib.f_included()){
-            // attrib is added to filtering
-            if(this.attribCount_Included===1){
-                this.setSelectType("SelectOr");
-                this.attribFilter.how = "LessResults";
-            } else {
-                // this.attribCount_Included > 1
-                if(this.hasMultiValueItem){
-                    if(this.attribCount_Included===2){
-                        this.setSelectType((selectOr)?"SelectOr":"SelectAnd");
-                    }
-                    if(this.attribFilter.selectType==="SelectAnd"){
-                        this.attribFilter.how = "LessResults";
-                    } else {
-                        this.attribFilter.how = "MoreResults";
-                    }
-                } else {
-                    // NO MultiValueItem
-                    if(selectOr===true){
-                        // or selection with multiple items
-                        this.attribFilter.how = "MoreResults";
-                    } else {
-                        attrib.skipMouseOut = true;
-                        // Removing previously selected attributes
-                        this.unselectAllAttribs();
-                        attrib.f_include();
-                        this.attrib_Include(1);
-                        this.attribFilter.how = "All";
-                    }
-                }
-            }
         } else {
-            // attrib is removed from filtering, and there are still some items...
-            if(this.hasMultiValueItem){
-                if(this.attribFilter.selectType==="SelectAnd"){
-                    this.attribFilter.how = "MoreResults";
-                } else {
-                    this.attribFilter.how = "LessResults";
-                }
-                if(this.attribCount_Included===1){
-                    this.setSelectType("SelectOr");
-                }
-            } else {
-                this.attribFilter.how = "LessResults";
-            }
+            this.clearLabelTextSearch();
+            this.attribFilter.addFilter(true);
         }
-        this.clearLabelTextSearch();
-        if(how) this.attribFilter.how = how;
-        this.attribFilter.addFilter(true);
     },
     /** -- */
-    text_item_Attrib: function(){
-        if(this.isLinked){
-            if(this.attribCount_Included>1)
-                return "<b>"+this.attribCount_Included+" items</b>";
-        }
+    text_item_Attrib: function(filter){
         // go over all items and prepare the list
         var selectedItemsText="";
-        var selectedItemsCount=0;
         var catLabelText = this.options.catLabelText;
         var catTooltipText = this.options.catTooltipText;
-        this.getAttribs().forEach( function(attrib){
-            if(!attrib.f_selected()) return; 
-            if(selectedItemsCount!==0) {
-                if(this.attribFilter.selectType==="SelectAnd" || attrib.f_removed()){
-                    selectedItemsText+=" and "; 
-                } else{
-                    selectedItemsText+=" or "; 
-                }
-            }
-            var labelText = catLabelText(attrib);
-            if(attrib.f_removed()) labelText = "not " + labelText;
 
-            var titleText = labelText;
-            if(catTooltipText) titleText = catTooltipText(attrib);
+        var pths = this.attribFilter.attribs_AND.length>0 || this.attribFilter.attribs_NOT.length>0;
 
-            selectedItemsText+="<b>"+titleText+"</b>";
+        var selectedItemsCount=0;
+        if(pths) selectedItemsText+="[ ";
+        this.attribFilter.attribs_AND.forEach(function(attrib){
+            selectedItemsText+=((selectedItemsCount!==0)?" and ":"")+"<b>"+catLabelText(attrib)+"</b>";
             selectedItemsCount++;
-        },this);
+        });
+
+        this.attribFilter.attribs_NOT.forEach(function(attrib){
+            selectedItemsText+=((selectedItemsCount!==0)?" and ":"")+"not <b>"+catLabelText(attrib)+"</b>";
+            selectedItemsCount++;
+        });
+        if(pths) selectedItemsText+=" ]";
+
+        this.attribFilter.attribs_OR.forEach(function(attrib){
+            selectedItemsText+=((selectedItemsCount!==0)?" or ":"")+"<b>"+catLabelText(attrib)+"</b>";
+            selectedItemsCount++;
+        });
+
         return selectedItemsText;
     },
     /** - */
@@ -4108,32 +4003,33 @@ kshf.Facet_Categorical.prototype = {
         var previewTimer = null;
 
         var onFilterAttrib = function(attrib){
-            if(attrib.facetDOM.tipsy_active)
-                attrib.facetDOM.tipsy_active.hide();
+            if(!me.isAttribSelectable(attrib)) return;
 
-            if(attrib.itemCount_Active===0 && me.attribFilter.selectType==="SelectAnd" && me.hasMultiValueItem){
-                return;
-            }
+            if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
 
             if (this.timer) { // double click
                 me.unselectAllAttribs();
-                // You need to force filtering state update to "All"
-                me.filterAttrib(attrib,false,"All");
+                me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR");
                 if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_EXACT,{id: me.attribFilter.id, info: attrib.id()});
                 return;
             } else {
-                me.filterAttrib(attrib,false);
-                if(sendLog) {
-                    // one of the two
-                    // Note: If attribute is un-selected, it is handled inside filterAttrib call
-                    if(attrib.f_selected()){
-                        if(me.attribCount_Selected===1){
-                            sendLog(kshf.LOG.FILTER_ATTR_ADD_ONE, {id:me.attribFilter.id, info:attrib.id()});
-                        } else {
-                        sendLog(
-                            (me.attribFilter.selectType==="SelectOr"?kshf.LOG.FILTER_ATTR_ADD_OR:kshf.LOG.FILTER_ATTR_ADD_AND),
-                            {id: me.attribFilter.id, info: attrib.id()});
+                if(attrib.is_NOT()){
+                    me.filterAttrib(attrib,"NOT");
+                } else if(attrib.is_AND()){
+                    me.filterAttrib(attrib,"AND");
+                } else if(attrib.is_OR()){
+                    me.filterAttrib(attrib,"OR");
+                } else {
+                    // remove the single selection if it is defined with OR
+                    if(!me.hasMultiValueItem && me.attribFilter.attribs_OR.length>0){
+                        if(me.attribFilter.attribs_OR.indexOf(attrib)<0){
+                            var temp = [];
+                            me.attribFilter.attribs_OR.forEach(function(a){ temp.push(a); });
+                            temp.forEach(function(a){ a.set_NONE(); });
                         }
+                        me.filterAttrib(attrib,"OR","All");
+                    } else {
+                        me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR");
                     }
                 }
             }
@@ -4141,36 +4037,35 @@ kshf.Facet_Categorical.prototype = {
             this.timer = setTimeout(function() { x.timer = null; }, 500);
         };
         var onMouseOver = function(attrib,i){
-            if(!me.isAttribSelectable(attrib)) return;
+            if(me.tipsy_active) me.tipsy_active.hide();
+            if(me.isAttribSelectable(attrib)) {
+                attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+                if(!me.browser.pauseResultPreview){
+                    attrib.items.forEach(function(item){
+                        item.updatePreview(me);
+                    },this);
+                    attrib.highlightAll(me,true);
 
-            if(!me.browser.pauseResultPreview){
-                attrib.items.forEach(function(item){
-                    item.updatePreview(me);
-                });
-                attrib.highlightAll(me,true);
-
-                me.browser.refreshResultPreview();
-                if(sendLog) {
-                    if(previewTimer){
-                        clearTimeout(previewTimer);
+                    me.browser.refreshResultPreview();
+                    if(sendLog) {
+                        if(previewTimer){
+                            clearTimeout(previewTimer);
+                        }
+                        previewTimer = setTimeout(function(){
+                            sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
+                        }, 1000); // wait 1 second to see the update fully
                     }
-                    previewTimer = setTimeout(function(){
-                        sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
-                    }, 1000); // wait 1 second to see the update fully
                 }
+            } else {
+                if(this.tipsy_title===undefined) return
             }
 
             // Rest is about tooltip...
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
-            if(!attrib.f_selected() & me.attribCount_Included>1 && me.attribFilter.selectType==="SelectOr" && me.hasMultiValueItem){
-                // prevent "...and" and show "...or" instead
-                attrib.facetDOM.tipsy_active = d3.select(attrib.facetDOM).select(".filter_add_more .add")[0][0].tipsy;
-            }
-            // calculate the offset...
-            var sadsds = me.catBarAxisScale(attrib.itemCount_Active);
-            sadsds = me.catBarAxisScale.range()[1] - sadsds;
-            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:-sadsds;
-            attrib.facetDOM.tipsy_active.show()
+            me.tipsy_active = attrib.facetDOM.tipsy;
+            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
+                (me.catBarAxisScale(attrib.itemCount_Active)-me.catBarAxisScale.range()[1]);
+            attrib.facetDOM.tipsy_active.show();
         };
         var onMouseOut = function(attrib,i){
             if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
@@ -4194,27 +4089,23 @@ kshf.Facet_Categorical.prototype = {
             .attr("highlight","false")
             .attr("selected","0")
             .each(function(attrib,i){
-                var transform="translateY(0px)";
-                kshf.Util.setTransform(this,transform);
-            })
-            .each(function(){
+                kshf.Util.setTransform(this,"translateY(0px)");
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
                     offset_x: 2,
                     offset_y: -1,
                     title: function(){
-                        var attrib=this.__data__;
+                        if(this.tipsy_title) return this.tipsy_title;
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.facet.hasMultiValueItem;
-                        if(attrib.f_included() || attrib.f_removed())
-                            return "<span class='fa fa-minus'></span> <span class='action'>Remove</span> from filter";
-                        if(attrib.facet.attribCount_Included===0)
-                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i> filter";
+                        if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
+                            return "<span class='fa fa-times'></span> <span class='action'>Remove</span>";
+                        if(me.attribFilter.attribs_OR.length===0 && me.attribFilter.attribs_AND.length===0)
+                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> filter";
                         if(hasMultiValueItem===false)
                             return "<span class='fa fa-angle-double-left'></span> <span class='action'>Change</span> filter";
                         else
-                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
-                                attribName+"</i> (<b>... and ...</b>)";
+                            return "<span class='fa fa-plus'></span> <span class='action'>... And ...</span>";
                     }
                 });
             })
@@ -4226,77 +4117,78 @@ kshf.Facet_Categorical.prototype = {
             })
         }
         
-
-        this.dom.attribs.append("span").attr("class", "clickArea")
-            .style("width",(this.getWidth_Label()+kshf_.getWidth_QueryPreview()-20)+"px") // 20 is margin-left
+        this.dom.attribClickArea = this.dom.attribs.append("span").attr("class", "clickArea")
             .on("click", onFilterAttrib)
-            .on("mouseover",onMouseOver)
-            .on("mouseout",onMouseOut)
+            .on("mouseenter",onMouseOver)
+            .on("mouseleave",onMouseOut)
             ;
+
+        var sasdd = this.dom.attribClickArea.append("span").attr("class","filterButtons");
+
+        sasdd.append("span").attr("class","orButton fa fa-plus-square")
+            .on("mouseenter",function(attrib,i){
+                var facetDOM = attrib.facetDOM;
+                facetDOM.tipsy_title = "<span class='fa fa-plus'></span> <span class='action'>... Or ...</span>";
+                facetDOM.tipsy.hide();
+
+                attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
+                me.tipsy_active = attrib.facetDOM.tipsy;
+                attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
+                    (me.catBarAxisScale(attrib.itemCount_Active)-me.catBarAxisScale.range()[1]);
+                attrib.facetDOM.tipsy_active.show();
+
+                facetDOM.tipsy.show();
+                me.tipsy_active = facetDOM.tipsy;
+
+                if(me.attribFilter.attribs_OR.length>0)
+                    me.browser.clearResultPreview();
+
+                attrib.facetDOM.setAttribute("selectType","or");
+                d3.event.stopPropagation();
+            })
+            .on("mouseout",function(attrib,i){
+                this.__data__.facetDOM.tipsy_title = undefined;
+                this.__data__.facetDOM.tipsy.hide();
+                this.__data__.facetDOM.tipsy.show();
+                me.tipsy_active = this.__data__.facetDOM.tipsy;
+                attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+                d3.event.stopPropagation();
+            })
+            .on("click",function(attrib,i){
+                me.filterAttrib(attrib,"OR");
+                this.__data__.facetDOM.tipsy.hide();
+                d3.event.stopPropagation();
+            });
+
+        sasdd.append("span").attr("class","notButton fa fa-minus-square")
+            .on("mouseover",function(attrib,i){
+                this.__data__.facetDOM.tipsy_title = "<span class='fa fa-minus'></span> <span class='action'>Not </span>";
+                this.__data__.facetDOM.tipsy.hide();
+                this.__data__.facetDOM.tipsy.show();
+                attrib.facetDOM.setAttribute("selectType","not");
+                me.tipsy_active = this.__data__.facetDOM.tipsy;
+                d3.event.stopPropagation();
+            })
+            .on("mouseout",function(attrib,i){
+                this.__data__.facetDOM.tipsy_title = undefined;
+                this.__data__.facetDOM.tipsy.hide();
+                this.__data__.facetDOM.tipsy.show();
+                me.tipsy_active = this.__data__.facetDOM.tipsy;
+                attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+                d3.event.stopPropagation();
+            })
+            .on("click",function(attrib,i){
+                me.filterAttrib(attrib,"NOT");
+                this.__data__.facetDOM.tipsy.hide();
+                d3.event.stopPropagation();
+            })
 
     	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "attribLabel hasLabelWidth");
 
-        this.dom.add_more = this.dom.attrLabel.append("span").attr("class", "filter_add_more");
-            this.dom.add_more.append("span").attr("class","add fa fa-plus-square")
-                .each(function(){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'sw',
-                        offset_y: 6,
-                        // offset_x: 0, // computed when item is to be shown
-                        title: function(){
-                            var attrib = this.__data__;
-                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
-                                    me.options.facetTitle+"</i> (<b>... or ...</b>)";
-                        }
-                    });
-                })
-                .on("mouseover",function(attrib,i){
-                    this.tipsy.show();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight","selected");
-                    d3.event.stopPropagation();
-                })
-                .on("mouseout",function(attrib,i){
-                    this.tipsy.hide();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight",false);
-                    d3.event.stopPropagation();
-                })
-                .on("click",function(attrib,i){
-                    me.filterAttrib(attrib,true);
-                    if(sendLog) {
-                        sendLog(kshf.LOG.FILTER_ATTR_ADD_OR,{id: me.attribFilter.id, info: attrib.id()});
-                    }
-                    this.tipsy.hide();
-                    d3.event.stopPropagation();
-                });
+        this.dom.filterButtons = this.dom.attrLabel.append("span").attr("class", "filterButtons");
+        this.dom.filterButtons.append("span").attr("class","orButton fa fa-plus-square");
+        this.dom.filterButtons.append("span").attr("class","notButton fa fa-minus-square");
 
-            this.dom.add_more.append("span").attr("class","remove fa fa-minus-square")
-                .each(function(){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'sw',
-                        offset_y: 5,
-                        offset_x: 1,
-                        title: function(){
-                            var attrib = this.__data__;
-                            return "<span class='fa fa-minus'></span> <span class='action'>Remove</span> <i>"+
-                                me.options.facetTitle+"</i>";
-                        }
-                    });
-                })
-                .on("mouseover",function(attrib,i){
-                    this.tipsy.show();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight","selected");
-                    d3.event.stopPropagation();
-                })
-                .on("mouseout",function(attrib,i){
-                    this.tipsy.hide();
-                    this.parentNode.parentNode.parentNode.setAttribute("highlight",false);
-                    d3.event.stopPropagation();
-                })
-                .on("click",function(attrib,i){
-                    me.removeAttrib(attrib);
-                    this.tipsy.hide();
-                    d3.event.stopPropagation();
-                });
         this.dom.attrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
         this.dom.item_count_wrapper = this.dom.attribs.append("span").attr("class", "item_count_wrapper")
@@ -4312,9 +4204,6 @@ kshf.Facet_Categorical.prototype = {
     		.attr("class", function(d,i){ 
     			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		})
-            .on("click", onFilterAttrib)
-            .on("mouseover",onMouseOver)
-            .on("mouseout",onMouseOut)
             ;
         this.dom.bar_highlight = this.dom.barGroup.append("span")
             .attr("class", "bar hover").attr("fast",true);
@@ -4322,7 +4211,7 @@ kshf.Facet_Categorical.prototype = {
 
         this.refreshLabelWidth();
 
-        this.updateSorting();
+        this.updateSorting(undefined, true);
     },
 
     /** -- */
@@ -4366,7 +4255,8 @@ kshf.Facet_Categorical.prototype = {
         });
     },
     /** -- */
-    updateSorting: function(sortDelay){
+    updateSorting: function(sortDelay,force){
+        if(this.sortingOpt_Active.custom===true&&force!==true) return;
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Active();
         }
@@ -4548,6 +4438,7 @@ kshf.Facet_Interval = function(kshf_, options){
 
     var filterId = this.intervalFilter.id;
     this.hasFloat = false;
+
     this.filteredItems.forEach(function(item){
         var v=this.options.catItemMap(item);
         // if not a number, skip
@@ -4563,8 +4454,8 @@ kshf.Facet_Interval = function(kshf_, options){
             }
         }
         item.mappedDataCache[filterId] = { 
-            'v': v,
-            'h': this,
+            v: v,
+            h: this,
         };
     },this);
 
