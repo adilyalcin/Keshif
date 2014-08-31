@@ -522,7 +522,7 @@ kshf.Util = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                    title: function(){ return "Multiple features per demo";}
+                    title: function(){ return "Multiple "+me.options.facetTitle+"s possible";}
                 });
             })
             .on("mouseover",function(d){ this.tipsy.show(); })
@@ -531,7 +531,7 @@ kshf.Util = {
         if(this.isLinked) {
             facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
         } else {
-            if(this.parentFacet){
+            if(this.parentFacet && this.parentFacet.hasAttribs()){
                 facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
             }
         }
@@ -2217,7 +2217,6 @@ kshf.Browser.prototype = {
             return;
         }
         this.dom.filterClearAll = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","filterClearAll")
-            .text("Remove all")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -2238,6 +2237,7 @@ kshf.Browser.prototype = {
                 me.clearFilters_All();
             })
             ;
+        this.dom.filterClearAll.append("span").attr("class","title").text("Clear");
         this.dom.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
             .append("span").attr("class","fa fa-times")
             ;
@@ -3822,31 +3822,32 @@ kshf.Facet_Categorical.prototype = {
                 item.setFilter(filterId,true);
                 return;
             }
-            // Check OR selections
-            if(filter.attribs_OR.length>0){
-                if(attribItems.some(function(d){ return (d.is_OR()); })){
-                    item.setFilter(filterId,true); return;
-                }
-            }
-            // Check NOT selections
+            // Check NOT selections - If any mapped item is NOT, return false
             if(filter.attribs_NOT.length>0){
                 if(!attribItems.every(function(item){ return !item.is_NOT(); })){
                     item.setFilter(filterId,false); return;
                 }
             }
-            // Check AND selections
+            // Check OR selections - If any mapped item is OR, return true
+            if(filter.attribs_OR.length>0){
+                if(attribItems.some(function(d){ return (d.is_OR()); })){
+                    item.setFilter(filterId,true); return;
+                }
+            }
+            // Check AND selections - If any mapped item is not AND, return false;
             if(filter.attribs_AND.length>0){
                 var t=0;
                 attribItems.forEach(function(m){ if(m.is_AND()) t++; })
                 if(t!==filter.attribs_AND.length){
                     item.setFilter(filterId,false); return;
                 }
-            }
-            if(filter.attribs_AND.length==0 && filter.attribs_NOT.length==0){
-                item.setFilter(filterId,false);
-            } else {
                 item.setFilter(filterId,true);
             }
+            if(filter.attribs_OR.length>0){
+                item.setFilter(filterId,false);
+            }
+            // only NOT selection
+            item.setFilter(filterId,true);
         },this);
     },
     /** -- */
@@ -3974,7 +3975,8 @@ kshf.Facet_Categorical.prototype = {
         var catLabelText = this.options.catLabelText;
         var catTooltipText = this.options.catTooltipText;
 
-        var pths = this.attribFilter.attribs_AND.length>0 || this.attribFilter.attribs_NOT.length>0;
+        var pths = (this.attribFilter.attribs_AND.length>0 || this.attribFilter.attribs_NOT.length>0) &&
+            this.attribFilter.attribs_OR.length>0;
 
         var selectedItemsCount=0;
         if(pths) selectedItemsText+="[ ";
@@ -4009,7 +4011,7 @@ kshf.Facet_Categorical.prototype = {
 
             if (this.timer) { // double click
                 me.unselectAllAttribs();
-                me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR");
+                me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR","All");
                 if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_EXACT,{id: me.attribFilter.id, info: attrib.id()});
                 return;
             } else {
@@ -4105,7 +4107,7 @@ kshf.Facet_Categorical.prototype = {
                         if(hasMultiValueItem===false)
                             return "<span class='fa fa-angle-double-left'></span> <span class='action'>Change</span> filter";
                         else
-                            return "<span class='fa fa-plus'></span> <span class='action'>... And ...</span>";
+                            return "<span class='fa fa-plus'></span> <span class='action'>And ...</span>";
                     }
                 });
             })
@@ -4128,7 +4130,7 @@ kshf.Facet_Categorical.prototype = {
         sasdd.append("span").attr("class","orButton fa fa-plus-square")
             .on("mouseenter",function(attrib,i){
                 var facetDOM = attrib.facetDOM;
-                facetDOM.tipsy_title = "<span class='fa fa-plus'></span> <span class='action'>... Or ...</span>";
+                facetDOM.tipsy_title = "<span class='fa fa-plus'></span> <span class='action'>Or ...</span>";
                 facetDOM.tipsy.hide();
 
                 attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
@@ -4162,7 +4164,7 @@ kshf.Facet_Categorical.prototype = {
 
         sasdd.append("span").attr("class","notButton fa fa-minus-square")
             .on("mouseover",function(attrib,i){
-                this.__data__.facetDOM.tipsy_title = "<span class='fa fa-minus'></span> <span class='action'>Not </span>";
+                this.__data__.facetDOM.tipsy_title = "<span class='fa fa-minus'></span> <span class='action'>Not ...</span>";
                 this.__data__.facetDOM.tipsy.hide();
                 this.__data__.facetDOM.tipsy.show();
                 attrib.facetDOM.setAttribute("selectType","not");
@@ -4613,7 +4615,7 @@ kshf.Facet_Interval.prototype = {
                             gravity: 's',
                             title: function(){ 
                                 return "<span style='font-weight:300'>%"+qb[0]+" - %"+qb[1]+" Percentile: <span style='font-weight:500'>"+
-                                    me.quantile_val[qb[0]]+"-"+me.quantile_val[qb[1]]+"</span></span>"
+                                    me.quantile_val[qb[0]]+" - "+me.quantile_val[qb[1]]+"</span></span>"
                                 ;
                             }
                         })

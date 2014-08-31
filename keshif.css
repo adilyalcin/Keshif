@@ -1392,6 +1392,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   box-shadow: none;
 }
+.kshf div.listHeader span.filterClearAll .title {
+  font-size: 0.8em;
+  vertical-align: middle;
+}
 .kshf div.listHeader span.resultInfo {
   vertical-align: top;
   display: inline-block;
@@ -1685,9 +1689,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   font-weight: 300;
   bottom: 0px;
-  left: 2px;
+  left: -9px;
   text-shadow: 0px 0px 2px white;
   z-index: 120;
+  color: gray;
+  pointer-events: none;
 }
 .kshf .percentileGroup span.quantile {
   display: inline-block;
