@@ -46,11 +46,6 @@ google.setOnLoadCallback( function() {
         facets: [
             {
                 facetTitle: "Topic",
-                sortingOpts : [
-                    { name: "Last pub. of topic", func: kshf.Util.sortFunc_Time_Last },
-                    { name: "First pub. of topic", func: kshf.Util.sortFunc_Time_First },
-                    { name:"# of Pub." }
-                ],
                 textFilter: 'about'
             },{
                 facetTitle: "Co-Author",
@@ -68,9 +63,7 @@ google.setOnLoadCallback( function() {
         itemDisplay: {
             sortColWidth: 72,
             sortingOpts : [
-                {   name: 'Year',
-                    value: function(d){ return d.data[pubCol['Date']].getFullYear(); }
-                },{ name: 'Pub. Type' },
+                {   name: 'Year', value: function(d){ return d.data[pubCol['Date']].getFullYear(); } }
             ],
             textSearch : 'Title',
             detailsToggle : "Multi",

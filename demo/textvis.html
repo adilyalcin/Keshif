@@ -188,6 +188,7 @@ $(document).ready( function(){
             autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'grid',
+            detailsToggle : "Zoom",
             contentFunc : function(d){
                 return "<a target='_blank' href='"+d.data.url+"'><img><span class='title'>"+d.data.title+"</span></a>";
             },

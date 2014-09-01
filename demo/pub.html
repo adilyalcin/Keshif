@@ -23,7 +23,7 @@ var BEDERSON_ID = 3;
 
 function resizeChart(){
     var h=$(window).height()-90;
-//    h = 700; // temp
+    h = 700; // temp
     var w=$(window).width()-29;
     h = Math.max(h,500);
     w = Math.max(w,700);
@@ -73,8 +73,7 @@ google.setOnLoadCallback(function() {
             {
                 facetTitle: "Topic",
                 catTableName: "Keywords",
-                catLabelText: function(cat){ return cat.data[keywordCol.keyword]; },
-                textFilter: 'about'
+                catLabelText: function(cat){ return cat.data[keywordCol.keyword]; }
             },{
                 facetTitle: "Coauthor",
                 catItemMap : function(pub){
@@ -91,7 +90,6 @@ google.setOnLoadCallback(function() {
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
 //                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
-                textFilter: 'with', textGroup: 'co-authors',
                 facets: [
                     {
                         facetTitle: "Type",

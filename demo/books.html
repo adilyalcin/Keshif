@@ -184,6 +184,7 @@ $(document).ready( function(){
                 return metadata.data[2];
             },
             displayType: 'grid',
+            maxVisibleItems_Default: 20,
             contentFunc : function(d){
                 var id = d.data[0];
                 var metadata = kshf.dt_id['Book Metadata'][id];

@@ -25,66 +25,62 @@ var paperBrowser;
 function loadProceeding(xmlData) {
     $xmlData = $(xmlData);
     // add proceeding of this xmlData
-    var xml_proceeding_rec = $xmlData.find('proceeding_rec');
+    var xml_proceeding_rec = $xmlData.find('> proceeding > proceeding_rec');
     var proceedingData = {};
-        proceedingData.id = xml_proceeding_rec.find('proc_id').text();
-        proceedingData.acronym = xml_proceeding_rec.find('acronym').text();
-        proceedingData.year = xml_proceeding_rec.find('copyright_year').text();
-        proceedingData.descr = xml_proceeding_rec.find('proc_desc').text();
+        proceedingData.id = xml_proceeding_rec.find('> proc_id').text();
+        proceedingData.acronym = xml_proceeding_rec.find('> acronym').text();
+        proceedingData.year = xml_proceeding_rec.find('> copyright_year').text()*1;
+        proceedingData.descr = xml_proceeding_rec.find('> proc_desc').text();
 
-    var proceedingItem = new kshf.Item(proceedingData,"id",false);
-    proceedingItem.browser = paperBrowser;
+    var proceedingItem = new kshf.Item(proceedingData,"id");
     kshf.dt.Proceedings.push(proceedingItem);
 
     // add articles
-    $xmlData.find('article_rec').each(function(){
+    $xmlData.find('> proceeding > article_rec').each(function(){
         var $this = $(this);
         var articleData = {};
-            articleData.id = $this.find("article_id").text();
-            articleData.Title = $this.find("title").text();
-            articleData.Subtitle = $this.find("subtitle").text();
-            articleData.doi_number = $this.find("doi_number").text();
-            articleData.URL = $this.find("url").text();
+            articleData.id = $this.find("> article_id").text();
+            articleData.Title = $this.find("> title").text();
+            articleData.Subtitle = $this.find("> subtitle").text();
+            articleData.doi_number = $this.find("> doi_number").text();
             // proceeding
             articleData.Proceeding = proceedingItem;
             // parse categories
             articleData.Category = [];
-            $this.find("categories >").each(function(index, category){
+            $this.find("> categories >").each(function(index, category){
                 //primary_category or other_category
                 articleData.Category.push($(category).find("descriptor").text().trim());
             });
             // parse general_terms
             articleData.Term = [];
-            $this.find("general_terms >").each(function(index, term){
+            $this.find("> general_terms >").each(function(index, term){
                 // gt
                 articleData.Term.push($(term).text().trim());
             });
             // parse authors
             articleData.Author = [];
-            $this.find("authors >").each(function(index, author){
+            $this.find("> authors >").each(function(index, author){
                 // au
                 var xml_author = $(author);
-                var _id = xml_author.find("person_id").text();
-                var authorItem=kshf.dt_id.People[_id];
+                var authorID = xml_author.find("> person_id").text();
+                articleData.Author.push(authorID);
+                var authorItem=kshf.dt_id.People[authorID];
                 if(authorItem===undefined) {
                     var authorData = {};
-                        authorData.id = _id;
-                        authorData.first_name = xml_author.find("first_name").text();
-                        authorData.middle_name = xml_author.find("middle_name").text();
-                        authorData.last_name = xml_author.find("last_name").text();
-                        authorData.affiliation = xml_author.find("affiliation").text();
+                        authorData.id = authorID;
+                        authorData.first_name = xml_author.find("> first_name").text();
+                        authorData.middle_name = xml_author.find("> middle_name").text();
+                        authorData.last_name = xml_author.find("> last_name").text();
+                        authorData.affiliation = xml_author.find("> affiliation").text();
                     var authorItem = new kshf.Item(authorData,"id");
-                    authorItem.browser = paperBrowser;
                     kshf.dt.People.push(authorItem);
-                    kshf.dt_id.People[_id] = authorItem;
+                    kshf.dt_id.People[authorID] = authorItem;
                 }
-                articleData.Author.push(authorItem);
             });
             // parse references
             articleData.ReferenceTotal = 0;
             articleData.References = [];
-            $this.find("references >").each(function(index, ref){
-                // ref
+            $this.find("> references >").each(function(index, ref){
                 articleData.ReferenceTotal++;
                 var _id = $(ref).find("ref_obj_id").text();
                 if(_id!=="") articleData.References.push(_id);
@@ -92,18 +88,17 @@ function loadProceeding(xmlData) {
             // parse cited_by_list
             articleData.CitedByTotal = 0;
             articleData.CitedBy = [];
-            $this.find("cited_by_list > cited_by_number").each(function(){
+            $this.find("> cited_by_list > cited_by_number").each(function(){
                 articleData.CitedByTotal = this.textContent*1;
             });
-            $this.find("cited_by_list > cited_by").each(function(index, cited_by){
-                // TODO: Check type!
+            $this.find("> cited_by_list > cited_by").each(function(index, cited_by){
                 var _id = $(this).find("cited_by_object_id").text();
                 if(_id!=="") articleData.CitedBy.push(_id);
             });
 
-        var articleItem = new kshf.Item(articleData,"id"); // primary
-        articleItem.browser = paperBrowser;
+        var articleItem = new kshf.Item(articleData,"id");
         kshf.dt.Articles.push(articleItem);
+        kshf.dt_id.Articles[articleItem.id()] = articleItem;
     });
 };
 
@@ -117,10 +112,10 @@ google.setOnLoadCallback(function(){
     kshf.dt.People = [];
     kshf.dt_id.People = {};
     
-    new kshf.Browser({
+    browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Articles",
-        categoryTextWidth: 190,
+        categoryTextWidth: 230,
         source : {
             callback: function(browser){
                 browser.primaryTableName = "Articles";
@@ -146,8 +141,8 @@ google.setOnLoadCallback(function(){
                     "CHI2000",
                     "CHI2001",
                     "CHI2002",
-                    /*"CHI2003",
-                    "CHI2004"*/
+                    "CHI2003",
+                    "CHI2004"
                 ];
                 fileList.forEach(function(fileName){
                     $.ajax( {
@@ -158,6 +153,9 @@ google.setOnLoadCallback(function(){
                         success: function(xmlData){ return loadProceeding(xmlData); }
                     });
                 });
+
+                // process through citation links
+
                 paperBrowser.items = kshf.dt.Articles;
                 paperBrowser.itemsSelectedCt = kshf.dt.Articles.length;
                 
@@ -170,29 +168,56 @@ google.setOnLoadCallback(function(){
         facets: [
             {   facetTitle: "Proceeding",
                 catItemMap: function(paper){
-                    return paper.data.Proceeding.data.acronym;
-                }
-/*            },{ facetTitle: "Author",
-                catItemMap: function(paper){
-                    var toRet = [];
-                    paper.data.Author.forEach(function(auth){ 
-                        toRet.push(auth.data.last_name+", "+auth.data.first_name);
-                    });
-                    return toRet;
-                }
-            },{ facetTitle: "Category"*/
-            },{ facetTitle: "Term"
-            },{ facetTitle: "References In",
+                    return paper.data.Proceeding.data.year;
+                },
+                intervalScale: 'step',
+                layout: 'bottom-mid'
+            },{ facetTitle: "Author",
+                catTableName: "People",
+                catLabelText: function(person){
+                    return person.data.last_name+", "+person.data.first_name;
+                },
+                // collapsed: true,
+                facets: [
+                    {
+                        facetTitle: "Affiliaton",
+                        catItemMap: function(person){
+                            return person.data.affiliation;
+                        }
+                    }
+                ]
+            //},{ facetTitle: "Category"
+            }/*,{ facetTitle: "Term"
+            },{ facetTitle: "# of References", collapsed: true,
                 catItemMap: function(paper){ return paper.data.ReferenceTotal; }
-            },{ facetTitle: "# Citations",
-                catItemMap: function(paper){ return paper.data.CitedByTotal; },
-                barScaleType: "log"
-            }
+            },{ facetTitle: "# of Citations",
+                catItemMap: function(paper){
+                    if(paper.data.CitedByTotal===0) return;
+                    return paper.data.CitedByTotal;
+                },
+                intervalScale: "log"
+            },{
+                facetTitle: "Citations to",
+                // these are how the items are related.
+                // X is related to Y (set) => Each Y stores the items it has been mapped to.
+                // That number is shown on display
+                catItemMap: function(d){
+                    return d.data.References;
+                },
+                // Using the main table name, this will enable linking through items
+                catTableName: "Articles"
+            }*/
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [ {name: 'id', inverse:false} ],
+            sortingOpts : [ {
+                name: 'Citations',
+                inverse:false,
+                value: function(d){ return d.data.CitedByTotal; }
+            } ],
             textSearch: "Title",
+            linkText: 'Citations to',
+            detailsToggle : "Zoom",
             content: "Title"
         }
     });

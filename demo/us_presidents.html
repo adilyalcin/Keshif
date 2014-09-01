@@ -31,6 +31,9 @@
                     },{ facetTitle: "Religion", layout: 'right'
                     },{ facetTitle: "Notes", layout: 'right'
                     },{
+                        facetTitle: "Age at inaguration",
+                        layout: 'right'
+                    },{
                         facetTitle: "Term Start",
                         catItemMap : function(d){
                             var year=d.data[3].substr(0,4);
@@ -51,7 +54,9 @@
                         }
                     ],
                     displayType: 'grid',
-                    contentFunc: function(d){ return '<img>'; },
+                    contentFunc: function(d){ 
+                        return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data[15]+"' target='_blank'><img></a>";
+                    },
                     visibleCb: function(d){
                         d3.select(d.resultDOM).select("img").attr("src",d.data[11]);
                     }
@@ -66,7 +71,10 @@
             }
             div.content img{
                 width: 350px;
-                padding-left: 5px;
+                padding-left: 2px;
+            }
+            .mainTextSearch input{
+                width: 80px;
             }
         </style>
 	</head>

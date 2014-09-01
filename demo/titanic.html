@@ -50,8 +50,9 @@
                             var age = d.data[4];
                             if(age===null) return null;
                             return age;
-                        }
-                    },{ facetTitle: "embarked",
+                        },
+                        showPercentile: true
+                    },{ facetTitle: "embarked", layout: 'right'
                     },{ facetTitle: "room", layout: 'right'
                     },{ facetTitle: "boat", type: 'categorical', layout: 'right'
                     },{
@@ -80,7 +81,7 @@
         <style>
             #chart_div {
                 width: 900px;
-                height: 550px;
+                height: 500px;
             }
             #chart_div div.listItem{
                 max-height: 40px;

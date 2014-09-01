@@ -128,99 +128,96 @@ $(document).ready( function() {
         },*/
         facets: [
             {
-                facetTitle: "Continent",
-                catLabelText: function(d) { return landmassText(d.data[1]); },
-                textFilter : 'in', textGroup  : 'continents'
-            },{
-                facetTitle: "Zone", collapsed: true,
-                catItemMap : function(flag){
-                    return flag.data.Zone;
-                },
-                catLabelText: function(d) { return zoneText(d.data[1]); }
-            },{
-                facetTitle: "Language",
-                catItemMap : function(flag){
-                    var r= flag.data.Language;
-                    if(r===9) return 10;
-                    return r;
-                },
-                catLabelText: function(d) { return languageText(d.data[1]); }
-            },{
-                facetTitle: "Religion",
-                catItemMap : function(flag){
-                    var r= flag.data.Religion;
-                    return r;
-                },
-                catLabelText: function(d) { return religionText(d.data[1]); }
+                facetTitle: "-Country-",
+                facets: [
+                    {
+                        facetTitle: "Continent",
+                        catLabelText: function(d) { return landmassText(d.data[1]); },
+                        textFilter : 'in', textGroup  : 'continents'
+                    },{
+                        facetTitle: "Zone", collapsed: true,
+                        catItemMap : function(flag){
+                            return flag.data.Zone;
+                        },
+                        catLabelText: function(d) { return zoneText(d.data[1]); }
+                    },{
+                        facetTitle: "Language",
+                        catItemMap : function(flag){
+                            var r= flag.data.Language;
+                            if(r===9) return 10;
+                            return r;
+                        },
+                        catLabelText: function(d) { return languageText(d.data[1]); }
+                    },{
+                        facetTitle: "Religion",
+                        catItemMap : function(flag){
+                            var r= flag.data.Religion;
+                            return r;
+                        },
+                        catLabelText: function(d) { return religionText(d.data[1]); }
+                    },{
+                        facetTitle: "Flag Date", layout: 'left',
+                        catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
+                        intervalScale: 'time'
+                    }
+                ]
             },
-            /*
-            {
-                facetTitle: "Zone",
-                catItemMap : function(flag){return flag.data[flag_cols.Zone]; },
-                catLabelText: function(d) { return zoneText(d.data[1]); },
-                collapsed: true,
-                filter: { rowConj: 'zone' }
-            },{
-                facetTitle: "Religion",
-                catItemMap : function(flag){return flag.data[flag_cols.Religion]; },
-                catLabelText: function(d) { return religionText(d.data[1]); },
-                collapsed: true,
-                filter: { rowConj: 'religion' }
-            }); */
-            {
-                facetTitle: "Flag Color", layout: 'right',
-                catItemMap : function(flag){
-                    var toRet = [];
-                    if(flag.data.Red) toRet.push("Red");
-                    if(flag.data.Green) toRet.push("Green");
-                    if(flag.data.Blue) toRet.push("Blue");
-                    if(flag.data.Gold) toRet.push("Gold / Yellow");
-                    if(flag.data.White) toRet.push("White");
-                    if(flag.data.Black) toRet.push("Black");
-                    if(flag.data.Orange) toRet.push("Orange / Brown");
-                    return toRet;
-                },
-                textFilter : 'has color', textGroup  : 'colors'
-            },{
-                facetTitle: "Flag Shape", layout: 'right',
-                catItemMap : function(flag){
-                    var toRet = [];
-                    if(flag.data.Circles) toRet.push("Circle");
-                    if(flag.data.Crosses) toRet.push("Crosses");
-                    if(flag.data.Saltires) toRet.push("Saltire");
-                    if(flag.data.Quarters) toRet.push("Quarter");
-                    if(flag.data.Sunstars) toRet.push("Sun / star");
-                    if(flag.data.Crescent) toRet.push("Crescent");
-                    if(flag.data.Triangle) toRet.push("Triangle");
-                    return toRet;
-                },
-                textFilter : 'has shape', textGroup  : 'shapes'
-            }, {
-                facetTitle: "# of Bars", layout: 'right',
-                catItemMap : function(flag){ 
-                    var r=flag.data.Bars;
-                    return (r===0)?0:r;
-                },
-                intervalScale: 'step'
-            },{
-                facetTitle: "# of Stripes", layout: 'right',
-                catItemMap : function(flag){ 
-                    var r=flag.data.Stripes;
-                    return (r===0)?null:r;
-                }
-            } ,{
-                facetTitle: "Flag Date", layout: 'left',
-                catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
-                intervalScale: 'time'
-            },{
-                facetTitle: "Other Properties", layout: 'right', collapsed: true,
-                catItemMap : function(flag){
-                    var toRet = [];
-                    if(flag.data.Text!==0) toRet.push("Text");
-                    if(flag.data.Icon!==0) toRet.push("Icon");
-                    if(flag.data.Animate!==0) toRet.push("Animate");
-                    return toRet;
-                }
+            {   
+                facetTitle: "Flag Properties",
+                layout: 'right',
+                facets: [
+                    {
+                        facetTitle: "Flag Color", 
+                        catItemMap : function(flag){
+                            var toRet = [];
+                            if(flag.data.Red) toRet.push("Red");
+                            if(flag.data.Green) toRet.push("Green");
+                            if(flag.data.Blue) toRet.push("Blue");
+                            if(flag.data.Gold) toRet.push("Gold / Yellow");
+                            if(flag.data.White) toRet.push("White");
+                            if(flag.data.Black) toRet.push("Black");
+                            if(flag.data.Orange) toRet.push("Orange / Brown");
+                            return toRet;
+                        },
+                        textFilter : 'has color', textGroup  : 'colors'
+                    },{
+                        facetTitle: "Flag Shape",
+                        catItemMap : function(flag){
+                            var toRet = [];
+                            if(flag.data.Circles) toRet.push("Circle");
+                            if(flag.data.Crosses) toRet.push("Crosses");
+                            if(flag.data.Saltires) toRet.push("Saltire");
+                            if(flag.data.Quarters) toRet.push("Quarter");
+                            if(flag.data.Sunstars) toRet.push("Sun / star");
+                            if(flag.data.Crescent) toRet.push("Crescent");
+                            if(flag.data.Triangle) toRet.push("Triangle");
+                            return toRet;
+                        },
+                        textFilter : 'has shape', textGroup  : 'shapes'
+                    }, {
+                        facetTitle: "Number of Bars",
+                        catItemMap : function(flag){ 
+                            var r=flag.data.Bars;
+                            return (r===0)?0:r;
+                        },
+                        intervalScale: 'step'
+                    },{
+                        facetTitle: "Number of Stripes",
+                        catItemMap : function(flag){ 
+                            var r=flag.data.Stripes;
+                            return (r===0)?null:r;
+                        }
+                    },{
+                        facetTitle: "Other", collapsed: true,
+                        catItemMap : function(flag){
+                            var toRet = [];
+                            if(flag.data.Text!==0) toRet.push("Text");
+                            if(flag.data.Icon!==0) toRet.push("Icon");
+                            if(flag.data.Animate!==0) toRet.push("Animate");
+                            return toRet;
+                        }
+                    }
+                ]
             }
         ],
         itemDisplay: {
@@ -245,7 +242,7 @@ $(document).ready( function() {
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data.Flag);
+                d3.select(d.resultDOM).select("img").attr("src","img/"+d.data.Flag);
             }
         }
     });

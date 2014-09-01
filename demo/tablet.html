@@ -82,20 +82,10 @@ $(document).ready( function() {
             }
         ],
         itemDisplay: {
-            sortColWidth: 90,
+            sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Rating',
                     value: function(d){ return d.data['Customer Reviews']; }
-                },
-                {   name: 'Op. Sys',
-                    value: function(d){ 
-                        var v = d.data['Operating System']
-                        if(v==='') { return 'N/A';}
-                        if(v.length>12){
-                            return v.slice(0,11)+"...";
-                        }
-                        return v; 
-                    }
                 }
             ],
             textSearchFunc : function (tablet) { return tablet.data.name; },
