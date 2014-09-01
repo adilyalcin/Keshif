@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Military’s Surplus Gear - US</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css" type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="./css/style.css" type="text/css">
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+var getStateName = function(id){
+    switch(id){
+        case 'AL': return 'Alabama';
+        case 'AK': return 'Alaska';
+        case 'AZ': return 'Arizona';
+        case 'AR': return 'Arkansas';
+        case 'CA': return 'California';
+        case 'CO': return 'Colorado';
+        case 'CT': return 'Connecticut';
+        case 'DE': return 'Delaware';
+        case 'DC': return 'District of Columbia';
+        case 'FL': return 'Florida';
+        case 'GA': return 'Georgia';
+        case 'HI': return 'Hawaii';
+        case 'ID': return 'Idaho';
+        case 'IL': return 'Illinois';
+        case 'IN': return 'Indiana';
+        case 'IA': return 'Iowa';
+        case 'KS': return 'Kansas';
+        case 'KY': return 'Kentucky';
+        case 'LA': return 'Louisiana';
+        case 'ME': return 'Maine';
+        case 'MD': return 'Maryland';
+        case 'MA': return 'Massachusetts';
+        case 'MI': return 'Michigan';
+        case 'MN': return 'Minnesota';
+        case 'MS': return 'Mississippi';
+        case 'MO': return 'Missouri';
+        case 'MT': return 'Montana';
+        case 'NE': return 'Nebraska';
+        case 'NV': return 'Nevada';
+        case 'NH': return 'New Hampshire';
+        case 'NJ': return 'New Jersey';
+        case 'NM': return 'New Mexico';
+        case 'NY': return 'New York';
+        case 'NC': return 'North Carolina';
+        case 'ND': return 'North Dakota';
+        case 'OH': return 'Ohio';
+        case 'OK': return 'Oklahoma';
+        case 'OR': return 'Oregon';
+        case 'PA': return 'Pennsylvania';
+        case 'RI': return 'Rhode Island';
+        case 'SC': return 'South Carolina';
+        case 'SD': return 'South Dakota';
+        case 'TN': return 'Tennessee';
+        case 'TX': return 'Texas';
+        case 'UT': return 'Utah';
+        case 'VT': return 'Vermont';
+        case 'VA': return 'Virginia';
+        case 'WA': return 'Washington';
+        case 'WV': return 'West Virginia';
+        case 'WI': return 'Wisconsin';
+        case 'WY': return 'Wyoming';
+        case 'PR': return 'Puerto-Rico';
+        case 'VI': return 'Virgin Islands';
+        case 'GU': return 'GUAM';
+    }
+    return "N/A - "+id;
+};
+
+$(document).ready( function() {
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Counties",
+        categoryTextWidth: 200,
+        leftPanelLabelWidth: 160,
+        source: {
+            fileType: 'tsv',
+            sheets : [ {name:"counties-gear", id:"CombinedName"} ],
+            dirPath: 'data/',
+            // Note: The following page host real data, but browsers do not allow cross-domain requests
+//dirPath: 'http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/',
+            url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
+        },
+        facets: [
+            {
+                facetTitle: "state",
+                catLabelText: function(d){ 
+                    return getStateName(d.data[1]);
+                }
+            },{
+                facetTitle: "Gear Category",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data['Armored Vehicle']>0) r.push('Received Armored Vehicles');
+                    if(d.data['Casspir Armored Vehicle']>0) r.push('Received Armored Vehicles');
+                    if(d.data['Other armored vehicle']>0) r.push('Received Armored Vehicles');
+                    if(d.data['MRAP']>0) r.push('Received Armored Vehicles');
+
+                    if(d.data['Helicopter']>0) r.push('Received Aircraft(s)');
+                    if(d.data['Plane']>0) r.push('Received Aircraft(s)');
+
+                    if(d.data['Grenade Launcher']>0) r.push('Received Grenade Launcher(s)');
+                    if(d.data['Machine Gun']>0) r.push('Received Guns');
+                    if(d.data['Pistol']>0) r.push('Received Guns');
+                    if(d.data['Shotgun']>0) r.push('Received Guns');
+
+//                    if(d.data['Night Vision']>0) r.push('Night Vision');
+//                    if(d.data['Personal Armor']>0) r.push('Body Armor');
+
+//                    if(d.data['Silence']>0) r.push('Silence');
+                    return r;
+                }
+            },{
+                facetTitle: "Gear",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data['Armored Vehicle']>0) r.push('Armored Vehicle');
+                    if(d.data['Bayonet/Knife']>0) r.push('Bayonet/Knife');
+                    if(d.data['Camo']>0) r.push('Camo');
+                    if(d.data['Casspir Armored Vehicle']>0) r.push('Casspir Armored Vehicle');
+                    if(d.data['Grenade Launcher']>0) r.push('Grenade Launcher');
+                    if(d.data['Helicopter']>0) r.push('Helicopter');
+                    if(d.data['Machine Gun']>0) r.push('Machine Gun');
+                    if(d.data['Magazine']>0) r.push('Magazine');
+                    if(d.data['Mine Detection']>0) r.push('Mine Detection');
+                    if(d.data['MRAP']>0) r.push('MRAP');
+                    if(d.data['Night Vision']>0) r.push('Night Vision');
+                    if(d.data['Personal Armor']>0) r.push('Personal Armor');
+                    if(d.data['phon']>0) r.push('phon');
+                    if(d.data['Pistol']>0) r.push('Pistol');
+                    if(d.data['Plane']>0) r.push('Plane');
+                    if(d.data['Robot']>0) r.push('Robot');
+                    if(d.data['Shotgun']>0) r.push('Shotgun');
+                    if(d.data['Silence']>0) r.push('Silence');
+                    if(d.data['Other armored vehicle']>0) r.push('Other armored vehicle');
+                    return r;
+                }
+            },{
+                facetTitle: "Machine Gun", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Machine Gun'];},
+            },{
+                facetTitle: "Pistol", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Pistol'];},
+            },{
+                facetTitle: "Magazine", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Magazine'];},
+            },{
+                facetTitle: "Shotgun", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Shotgun'];},
+            },{
+                facetTitle: "Armored Vehicle", layout: 'right', intervalScale: 'step',
+                catItemMap: function(d){ 
+                    if(d.data['Armored Vehicle']===0) return; // skip 0
+                    return d.data['Armored Vehicle'];
+                },
+                collapsed: true
+            },{
+                facetTitle: "Personal Armor", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Personal Armor'];},
+                collapsed: true
+            },{
+                facetTitle: "Night Vision", layout: 'right', intervalScale: 'log',
+                catItemMap: function(d){ return d.data['Night Vision'];},
+                collapsed: true
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [{ name: 'ZipCode', value: function(d){ return d.data.fips;} }],
+            textSearch : 'County Name',
+            autoExpandMore: true,
+            detailsToggle: 'zoom',
+            textSearchFunc: function(d){ return d.data.county;},
+            content: "CombinedName"
+        }
+    });
+});
+
+        </script>
+        <style>
+        .iteminfo a{
+            color:#606060;
+            font-style:italic;
+        }
+        #chart_div {
+            width: 1000px;
+            height: 700px;
+        }
+        #infobox{
+            width: 90%;
+            left: 5%;
+            position: fixed;
+            text-align: center;
+            font-weight: 300;
+            font-family: sans-serif;
+            font-size: 0.8em;
+            bottom: 0px;
+            height: 40px;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+            background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+            background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+            background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+            background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);;
+        }
+        #infobox a{
+            color: black !important;
+            font-weight: 500;
+        }
+        #infobox span.fa{
+            color:gray;
+        }
+        </style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span> This page uses data from
+            <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">Mapping the Spread of the Military’s Surplus Gear</a>, by Tom Giratikanon, Alicia Parlapiano and Jeremy White<br> Published at New York Times, 15 August 2014. Original source: Department of Defense <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
