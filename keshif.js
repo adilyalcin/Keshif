@@ -691,9 +691,6 @@ kshf.Item = function(d, idIndex){
     this.isWanted = true;
     // Used by listDisplay to adjust animations. Only used by primary entity type for now.
     this.wantedOrder = 0;
-    // The items which are mapped to this item.
-    // If item is of primary entity type, this stores "linked" items (e.g. citing publications of this publication).
-    this.mappedItems = [];
     // The data that's used for mapping this item, used as a cache.
     // This is accessed by filterID
     // Through this, you can also reach mapped DOM items
@@ -770,11 +767,10 @@ kshf.Item.prototype = {
     addItem: function(item){
         this.items.push(item);
         this.itemCount_Active++;
-        this.sortDirty = true;
-        item.mappedItems.push(this);
     },
     /**
      * Updates isWanted state, and notifies all related filter attributes of the change.
+     * With recursive parameter, you avoid updating status under facet passed in as recursive
      */
     updateWanted: function(recursive){
         if(!this.dirtyFilter) return false;
@@ -790,56 +786,69 @@ kshf.Item.prototype = {
         });
         
         if(this.isWanted===true && oldWanted===false){
-            this.mappedItems.forEach(function(attrib){
-                attrib.itemCount_Active++;
-                if(attrib.itemCount_Active===1 && attrib.facet!==undefined){
-                    if(recursive!==attrib.facet && !attrib.facet.isLinked){
-                        // it is now selected, see other DOM items it has and increment their count too
-                        attrib.mappedDataCache.forEach(function(m){
-                            if(m===null) return;
-                            if(m.h) { // interval
-                                if(m.b) m.b.itemCount_Active++;
-                            } else { // categorical
-                                m.forEach(function(item){ item.itemCount_Active++; });
-                            }
-                        });
-                    }
-                }
-                attrib.sortDirty=true;
-            });
-        } else if(this.isWanted===false && oldWanted===true){
-            this.mappedItems.forEach(function(attrib){
-                if(attrib.itemCount_Active>0) attrib.itemCount_Active--;
-                if(attrib.itemCount_Active===0 && attrib.facet!==undefined){
-                    if(recursive!==attrib.facet && !attrib.facet.isLinked){
-                        // it is now not selected, see other DOM items it has and increment their count too
-                        attrib.mappedDataCache.forEach(function(m){
-                            if(m===null) return;
-                            if(m.h) { // interval
-                                if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Active--;
-                            } else { // categorical
-                                m.forEach(function(item){ 
-                                    if(item.itemCount_Active>0) item.itemCount_Active--;
+            this.mappedDataCache.forEach(function(m){
+                if(m===null) return;
+                if(m.h){ // interval
+                    if(m.b) m.b.itemCount_Active++;
+                } else { // categorical
+                    m.forEach(function(attrib){
+                        attrib.itemCount_Active++;
+                        if(attrib.itemCount_Active===1 && attrib.facet){
+                            if(attrib.facet!==recursive && !attrib.facet.isLinked){
+                                // it is now selected, see other DOM items it has and increment their count too
+                                attrib.mappedDataCache.forEach(function(m){
+                                    if(m===null) return;
+                                    if(m.h) { // interval
+                                        if(m.b) m.b.itemCount_Active++;
+                                    } else { // categorical
+                                        m.forEach(function(item){ item.itemCount_Active++; });
+                                    }
                                 });
                             }
-                        });
-                    }
+                        }
+                    },this);
                 }
-                attrib.sortDirty=true;
-            });
+            },this);
+        } else if(this.isWanted===false && oldWanted===true){
+            this.mappedDataCache.forEach(function(m){
+                if(m===null) return;
+                if(m.h){ // interval
+                    if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Active--;
+                } else { // categorical
+                    m.forEach(function(attrib){
+                        if(attrib.itemCount_Active>0) attrib.itemCount_Active--;
+                        if(attrib.itemCount_Active===0 && attrib.facet){
+                            if(attrib.facet!==recursive && !attrib.facet.isLinked){
+                                // it is now not selected. see other DOM items it has and decrement their count too
+                                attrib.mappedDataCache.forEach(function(m){
+                                    if(m===null) return;
+                                    if(m.h) { // interval
+                                        if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Active--;
+                                    } else { // categorical
+                                        m.forEach(function(item){ 
+                                            if(item.itemCount_Active>0) item.itemCount_Active--;
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    },this);
+                }
+            },this);
         }
+
         this.dirtyFilter = false;
         return this.isWanted !== oldWanted;
     },
     /** Only updates wanted state if it is currently not wanted (resulting in More wanted items) */
     updateWanted_More: function(recursive){
-        if(!this.isWanted) return this.updateWanted(recursive);
-        return false;
+        if(this.isWanted) return false;
+        return this.updateWanted(recursive);
     },
     /** Only updates wanted state if it is currently wanted (resulting in Less wanted items) */
     updateWanted_Less: function(recursive){
-        if(this.isWanted) return this.updateWanted(recursive);
-        return false;
+        if(!this.isWanted) return false;
+        return this.updateWanted(recursive);
     },
     updatePreview: function(source){
         if(!this.isWanted) return;
@@ -958,6 +967,7 @@ kshf.Filter = function(id, opts){
 };
 kshf.Filter.prototype = {
     addFilter: function(forceUpdate,recursive){
+        var parentFacet=this.facet.parentFacet;
         var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = true;
 
@@ -965,33 +975,33 @@ kshf.Filter.prototype = {
 
         var stateChanged = false;
         if(recursive===undefined) recursive=true;
-        if(this.how === "All"){
-            this.filteredItems.forEach(function(item){
-                var v = item.updateWanted(recursive);
-                stateChanged = stateChanged || v;
-            });
-        } else if(this.how === "LessResults"){
-            this.filteredItems.forEach(function(item){
-                var v = item.updateWanted_Less(recursive);
-                stateChanged = stateChanged || v;
-            });
-        } else if(this.how === "MoreResults"){
-            this.filteredItems.forEach(function(item){
-                var v = item.updateWanted_More(recursive);
-                stateChanged = stateChanged || v;
-            });
-        }
 
-        // if this has a parent facet, link selection from this to the main table
-        var hasParent = this.facet.parentFacet!==undefined;
-        if(hasParent){
-            var fct=this.facet.parentFacet;
-            if(fct.hasAttribs()){
-                fct.updateAttribCount_Wanted();
-                fct.attribFilter.how = "All";
-                // re-run the parents attribute filter...
-                fct.attribFilter.addFilter(false,fct); // This filter will update the browser later if forceUpdate===true
+        var how=0;
+        if(this.how==="LessResults") how = -1;
+        if(this.how==="MoreResults") how = 1;
+
+        this.filteredItems.forEach(function(item){
+            // if you will show LESS results and item is not wanted, skip
+            // if you will show MORE results and item is wanted, skip
+            if(!(how<0 && !item.isWanted) && !(how>0 && item.isWanted)){
+                var changed = item.updateWanted(recursive);
+                stateChanged = stateChanged || changed;
             }
+            if(parentFacet){
+                if(item.isWanted)
+                    item.set_OR(parentFacet.attribFilter.attribs_OR);
+                else 
+                    item.set_NONE();
+            }
+        },this);
+
+        // if this has a parent facet (multi-level), link selection from this to the parent facet
+        if(parentFacet && parentFacet.hasAttribs()){
+            parentFacet.updateAttribCount_Wanted();
+            parentFacet.attribFilter.how = "All";
+            // re-run the parents attribute filter...
+            parentFacet.attribFilter.addFilter(false,parentFacet); // This filter will update the browser later if forceUpdate===true
+            parentFacet._update_Selected();
         }
 
         this.refreshFilterSummary();
@@ -1007,32 +1017,38 @@ kshf.Filter.prototype = {
     },
     clearFilter: function(forceUpdate,recursive){
         if(!this.isFiltered) return;
+        var parentFacet=this.facet.parentFacet;
         var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = false;
 
+        // clear filter cache - no other logic is necessary
         this.filteredItems.forEach(function(item){ item.setFilter(this.id,true); },this);
 
-        this.onClear.call(this.facet,this);
+        if(this.onClear) this.onClear.call(this.facet,this);
 
         if(recursive===undefined) recursive=true;
         this.filteredItems.forEach(function(item){
-            item.updateWanted_More(recursive);
-        });
+            // if you will show LESS results and item is not wanted, skip
+            // if you will show MORE results and item is wanted, skip
+            if(!item.isWanted){
+                item.updateWanted(recursive);
+            }
+            if(parentFacet && item.isWanted){
+                item.set_OR(parentFacet.attribFilter.attribs_OR);
+            }
+        },this);
 
         this.refreshFilterSummary();
 
         if(forceUpdate===true){
-            if(this.facet.parentFacet){
-                var fct=this.facet.parentFacet;
-                if(fct.hasAttribs()){
-                    fct.updateAttribCount_Wanted();
-                    fct.attribFilter.how = "All";
-                    if(fct.attribCount_Wanted===fct.attribCount_Total){
-                        fct.attribFilter.clearFilter(false,fct); // force update
-                    } else {
-                        // re-run the parents attribute filter...
-                        fct.attribFilter.addFilter(false,fct); // force update
-                    }
+            if(parentFacet && parentFacet.hasAttribs()){
+                parentFacet.updateAttribCount_Wanted();
+                parentFacet.attribFilter.how = "All";
+                if(parentFacet.attribCount_Wanted===parentFacet.attribCount_Total){
+                    parentFacet.attribFilter.clearFilter(false,parentFacet); // force update
+                } else {
+                    // re-run the parents attribute filter...
+                    parentFacet.attribFilter.addFilter(false,parentFacet); // force update
                 }
             }
 
@@ -2069,17 +2085,7 @@ kshf.Browser.prototype = {
         ++this.maxFilterID;
         this.filterList.push(newFilter);
         return newFilter;
-    },/*
-    passChanges: function(){
-        this.facets.forEach(function(facet){
-            if(!facet.hasAttribs() || !facet.hasFacets()) return;
-            fct.updateAttribCount_Wanted();
-            fct.attribFilter.how = "All";
-            // re-run the parents attribute filter...
-            fct.attribFilter.addFilter(false,false); // This filter will update the browser later if forceUpdate===true
-            this.hasAttribs();
-        });
-    },*/
+    },
     /** -- */
     insertResize: function(){
         var me=this;
@@ -2504,7 +2510,8 @@ kshf.Browser.prototype = {
             var listheader_count_width = (this.listDisplay.sortColWidth);
             if(this.listDisplay.detailsToggle!=="off") listheader_count_width+=15;
             this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
-                .style("width",listheader_count_width+"px");
+                .style("width",listheader_count_width+"px")
+                .text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
             resultInfo.append("span").attr("class","listheader_itemName").html(this.itemName);
 
             if(this.listDisplay.hideTextSearch!==true){
@@ -2554,8 +2561,11 @@ kshf.Browser.prototype = {
         this.loaded = true;
         this.initBarChartWidth();
         this.refreshFilterClearAll();
-        this.items.forEach(function(item){item.updateWanted(true);});
-        this.update(0,true);
+
+        this.items.forEach(function(item){item.updateWanted();});
+
+        this.update();
+
         this.updateLayout_Height();
 
         // hide infobox
@@ -3823,8 +3833,18 @@ kshf.Facet_Categorical.prototype = {
                 return;
             }
             // Check NOT selections - If any mapped item is NOT, return false
+            // Note: no other filtering depends on NOT state.
+/*            if(filter.attribs_NOT.length>0){
+                if(!attribItems.every(function(item){ 
+                    return !item.is_NOT() && item.isWanted;
+                })){
+                    item.setFilter(filterId,false); return;
+                }
+            }*/ // THIS THING ABOVE IS FOR MULTI_LEVEL FILTERING AND NOT QUERY
             if(filter.attribs_NOT.length>0){
-                if(!attribItems.every(function(item){ return !item.is_NOT(); })){
+                if(!attribItems.every(function(item){ 
+                    return !item.is_NOT();
+                })){
                     item.setFilter(filterId,false); return;
                 }
             }
@@ -3978,6 +3998,13 @@ kshf.Facet_Categorical.prototype = {
 
         var pths = (this.attribFilter.attribs_AND.length>0 || this.attribFilter.attribs_NOT.length>0) &&
             this.attribFilter.attribs_OR.length>0;
+
+        var totalSelectionCount = this.attribFilter.attribs_AND.length + this.attribFilter.attribs_OR.length + 
+            this.attribFilter.attribs_NOT.length;
+
+        if(totalSelectionCount>4){
+            return "<b>"+totalSelectionCount+"</b> selections";
+        }
 
         var selectedItemsCount=0;
         if(pths) selectedItemsText+="[ ";
@@ -4244,9 +4271,6 @@ kshf.Facet_Categorical.prototype = {
             if(a.itemCount_Active===0 && b.itemCount_Active!==0) return  1;
             if(b.itemCount_Active===0 && a.itemCount_Active!==0) return -1;
 
-            if(!a.isWanted && b.isWanted) return  1;
-            if( a.isWanted &&!b.isWanted) return -1;
-
             var x=sortFunc(a,b);
             if(x===0) x=idCompareFunc(a.id(),b.id());
             if(inverse) x=-x;
@@ -4259,6 +4283,9 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateSorting: function(sortDelay,force){
+        if(this.sortingOpt_Active===undefined){
+            this.sortingOpt_Active = this.sortingOpts[0];
+        }
         if(this.sortingOpt_Active.custom===true&&force!==true) return;
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Active();
@@ -4838,7 +4865,11 @@ kshf.Facet_Interval.prototype = {
     updateActiveItems: function(){
         this.histBins.forEach(function(bin){
             bin.itemCount_Active = 0;
-            bin.forEach(function(item){ if(item.isWanted) bin.itemCount_Active++; });
+            bin.forEach(function(item){
+                if(!item.isWanted) return;  
+                if(item.resultDOM===undefined && item.itemCount_Active===0) return;
+                bin.itemCount_Active++;
+            });
         });
     },
     insertAxisLabels: function(){
@@ -4957,9 +4988,10 @@ kshf.Facet_Interval.prototype = {
         }
         return this._maxTotalItemsPerRow;
     },
-    /** -- TODO: Inherited from categorical facet. Boo. */
+    /** -- */
     setHeight: function(targetHeight){
         var c = targetHeight-this.getHeight_Header()-this.getHeight_Extra();
+        if(this.height_hist===c) return;
         this.height_hist = c;
         this.updateBarScale2Active();
         this.refreshBins_Translate();
@@ -4968,7 +5000,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshResultPreview();
         this.refreshHeight();
     },
-    /** -- TODO: Inherited from categorical facet. Boo. */
+    /** -- */
     refreshHeight: function(){
         this.dom.histogram.style("height",(this.height_hist+15)+"px")
         this.dom.wrapper.style("height",(this.collapsed?"0":(this.height_hist+this.getHeight_Extra()))+"px");
