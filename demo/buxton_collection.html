@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Buxton Collection</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    // set div height accordingly 
+    var targetWidth = Math.max(1050,$(window).width()-100);
+    targetWidth = targetWidth-targetWidth%104-85;
+    $('#chart_div').width (targetWidth);
+
+    new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Devices",
+        categoryTextWidth: 140,
+        barChartWidth: 70,
+        source : {
+            url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
+            callback: function(browser){
+                $.ajax( {
+                    // Cannot load remote resouce because it is in another domain
+                    // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
+                    url:"./data/Pivot_BuxtonCollection.xml",
+                    dataType:"xml",
+                    async: false,
+                    success: function(collection){
+                        var $collection = $(collection);
+                        browser.primaryTableName = "Devices";
+                        kshf.dt["Devices"] = [];
+                        var arr = kshf.dt["Devices"];
+
+                        $collection.find("> Collection > Items > Item").each(function(){
+                            var $this = $(this);
+                            var cData = {};
+                            cData.url = $this.attr("Href");
+                            cData.id = parseInt($this.attr("Id"));
+                            cData.Name = $this.attr("Name");
+                            cData.Description = $this.find("Description").text();
+
+                            $this.find(">Facets>Facet").each(function(d){
+                                var columnName = this.getAttribute("Name");
+                                var $item = $(this);
+                                cData[columnName] = [];
+                                if($item.find(">String").length>0){
+                                    $item.find(">String").each(function(){
+                                        cData[columnName].push(this.getAttribute("Value"));
+                                    })
+                                } else if($item.find(">Number").length>0){
+                                    cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+                                } else{
+                                    cData[columnName] = undefined;
+                                }
+                            })
+
+                            if(cData.Year!==undefined)
+                                cData.Year = new Date(cData.Year, 0);
+//                            if(isNaN(cData.Year)) cData.Year = undefined;
+                            
+                            var imageFix = {
+                                97: "IMG_0206.png",
+                                21: "IMG_0321.png",
+                                233: "IMG_0567.png",
+                                69: "IMG_0637.png",
+                                151: "WowPenJoy.png",
+                                162: "IMG_0960.png",
+                                77: "IMG_0026.png",
+                                28: "IMG_1229.png",
+                                70: "IMG_0044.png",
+                                16: "IMG_0936.png",
+                                91: "IMG_4536.png",
+                                175: "IMG_0903.png",
+                                18: "IMG_0913.png",
+                                15: "IMG_0969.png",
+                                44: "IMG_1196.png",
+                                79: "IMG_0985.png",
+                                78: "IMG_4532.png",
+                                161: "IMG_0913.png",
+                                175: "IMG_0903.png",
+                                35: "IMG_1402.png",
+                                137: "IMG_0344.png",
+                                38: "IMG_1363.png",
+                                214: "IMG_0055.png",
+                                186: "IMG_0358.png",
+                                157: "IMG_0624.png",
+                                109: "IMG_0446.png",
+                                126: "IMG_0415.png",
+                                105: "IMG_0718.png",
+                                225: "EasyBall.png",
+                                120: "IMG_0405.png",
+                                171: "IMG_0353.png",
+                                92: "IMG_1070.png",
+                                29: "IMG_1174.png",
+                                101: "IMG_1097.png",
+                                84: "maltron-2H-kbd.png",
+                                50: "IMG_0865.png",
+                                19: "IMG_0640.png",
+                                17: "IMG_0759.png",
+                                160: "IMG_1071.png",
+                                165: "IMG_1105.png",
+                                30: "IMG_4500.png",
+                                81: "IMG_0601.png",
+                                52: "IMG_0410.png",
+                                99: "IMG_1046.png",
+                                96: "IMG_0804.png",
+                                2: "IMG_0984.png",
+                                12: "IMG_1381.png",
+                                213: "IMG_0579.png",
+                                161: "IMG_0913.png",
+                                156: "IMG_0497.png",
+
+                                53: "IMG_0394.png",
+                                47: "IMG_0312.png",
+                                167: "IMG_1408.png",
+                                158: "IMG_1206.png",
+                                68: "IMG_4475.png",
+                                216: "IMG_0614.png",
+                                215: "IMG_0479.png",
+
+                                191: "IMG_1034.png",
+                                110: "IMG_0465.png",
+                                33: "IMG_0085.png",
+                                228: "IMG_0553.png",
+                                83: "IMG_0127.png",
+                                199: "IMG_0573.png",
+
+                                95: "IMG_1068.png",
+                                238: "IMG_0529.png",
+                                231: "IMG_0739.png",
+                                229: "IMG_0738.png",
+                                217: "IMG_0717.png",
+
+                                212: "IMG_0721.png",
+                                211: "IMG_0448.png",
+                                206: "IMG_4458.png",
+                                205: "IMG_4469.png",
+                                208: "IMG_4456.png",
+
+                                204: "IMG_4459.png",
+                                203: "IMG_4466.png",
+                                197: "IMG_0374.png",
+                                190: "IMG_1115.png",
+                                192: "IMG_0881.png",
+                                193: "IMG_0877.png",
+                                196: "IMG_0540.png",
+                                166: "IMG_1409.png",
+                                155: "IMG_0541.png",
+                                138: "IMG_0141.png",
+                                136: "IMG_0145.png",
+                                121: "IMG_0493.png",
+                                123: "IMG_4498.png",
+                                133: "IMG_1201.png",
+                                94: "IMG_0700.png",
+                                87: "IMG_0154.png",
+                                74: "IMG_0639.png",
+
+                                56: "IMG_1041.png",
+                                80: "IMG_0720.png",
+                                179: "IMG_0011.png",
+                            }
+
+                            if(imageFix[cData.id]) cData['Related Images'] = [imageFix[cData.id]];
+
+                            arr.push(new kshf.Item(cData,"id"));
+                        });
+
+                        browser.items = kshf.dt.Devices;
+                        browser.itemsSelectedCt = browser.items.length;
+                        browser.loadCharts();   
+                    }
+                });
+            }
+        },
+        facets: [
+            {   facetTitle: "Type", 
+            },{ facetTitle: "Year", layout: 'bottom-mid', intervalScale: 'time'
+            },{ facetTitle: "Price ($) [Log]",
+                 catItemMap: function(d){ return d.data.Price; },
+                 intervalScale: "log"
+            },{ facetTitle: "Company", layout: "right" 
+            },{ facetTitle: "Degree of Freedom", 
+                catItemMap: function(d){ return d.data['Degree of Freedom']; },
+                intervalScale: "step"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts : [{
+                name: 'Year', value: function(d){ 
+                    if(d.data.Year===undefined) return 0;
+                    return d.data.Year.getTime();
+                },
+                label: function(d){
+                    if(d.data.Year===undefined) return 0;
+                    return d.data.Year.getFullYear();
+                }
+            },{
+                name: 'Price', value: function(d){ 
+                    if(d.data.Price===undefined) return 0;
+                    return d.data.Price;
+                },
+                label: function(d){
+                    if(d.data.Price===undefined) return "NA";
+                    return d.data.Price+" $";
+                }
+            }],
+            textSearch: "Name",
+            displayType: 'grid',
+            detailsToggle: 'zoom',
+            maxVisibleItems_Default: 40,
+            contentFunc: function(d){
+                return "<a href='"+d.data.url+"' target='_blank'><img><span class='title'>"+d.data.Name+"</span></a>";
+            },
+            visibleCb: function(d){
+                if(d.data['Related Images'].length===0) return;
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
+                    +d.data['Related Images'][0]);
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                height: 700px;
+            }
+            .listItem{
+                vertical-align: top;
+                height: 70px;
+            }
+            div.content{
+                width: 100px;
+                margin: 0px 2px 3px 2px;
+            }
+            div.content img{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 3px 3px 12px 3px;
+                border: solid;
+                border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+                border-width: 1px 2px 2px 1px;
+                border-radius: 10px;
+                background-color: white;
+                max-width: 100%;
+                transition: background-color 300ms linear;
+                -webkit-transition: background-color 300ms linear;
+                -o-transition: background-color 300ms linear;
+                -moz-transition: background-color 300ms linear;
+            }
+            div.listItem[highlight=true] div.content img{
+                background-color: orangered;
+            }
+            div.content span.title{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 2px;
+                text-align: center;
+                font-size: 0.7em;
+                font-weight: 500;
+                color: white;
+                position: absolute;
+                bottom: 1px;
+                text-shadow: 0px 0px 2px black;
+                width: 100%;
+                text-align: center;
+            }
+            div.content:hover span.title{
+                color:orangered;
+            }
+            div.content a{
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
