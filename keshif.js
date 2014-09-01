@@ -1683,9 +1683,18 @@ kshf.List.prototype = {
             .append("span").attr("class","item_details_toggle fa fa-bullseye")
                 .on("click", function(d){
                     this.parentNode.tipsy.hide();
-                    var mousePos = d3.mouse(me.browser.root[0][0]);
-                    me.browser.dom.infobox_itemZoom.style("transform-origin",mousePos[0]+"px "+mousePos[1]+"px");
                     me.browser.updateItemZoomText(d);
+/*
+                    var mousePos = d3.mouse(me.browser.root[0][0]);
+//                    mousePos[0] = me.browser.root[0][0].offsetWidth - mousePos[0];
+                    var origin=mousePos[0]+"px "+mousePos[1]+"px";
+                    var dom=me.browser.dom.infobox_itemZoom[0][0];
+                    dom.style.webkitTransformOrigin = origin;
+                    dom.style.MozTransformOrigin = origin;
+                    dom.style.msTransformOrigin = origin;
+                    dom.style.OTransformOrigin = origin;
+                    dom.style.transformOrigin = origin;
+*/
                     me.browser.layout_infobox.attr("show","itemZoom");
                 })
                 .on("mouseover",function(d){ this.parentNode.tipsy.show(); })
@@ -4486,10 +4495,13 @@ kshf.Facet_Interval = function(kshf_, options){
     var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
     // remove items that map to null
+    var isLog = this.options.intervalScale === 'log';
     this.filteredItems = this.filteredItems.filter(function(item){
         var v = accessor(item);
         if(v===null) return false;
         if(v===undefined) return false;
+        // remove 0-values from log scale
+        if(isLog && v===0) return false;
         return true;
     })
 
@@ -4694,7 +4706,7 @@ kshf.Facet_Interval.prototype = {
         if(this.options.intervalScale==='time'){
             this.intervalTickFormat = this.intervalScale.tickFormat(this.optimalTickCount);
         } else if(this.options.intervalScale==='log'){
-            this.intervalTickFormat = d3.format(".2s");
+            this.intervalTickFormat = d3.format(".1s");
             while(ticks.length > this.optimalTickCount*2){
                 ticks = ticks.filter(function(d,i){return i % 2 === 0;});
             }
