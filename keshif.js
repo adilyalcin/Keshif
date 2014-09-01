@@ -987,7 +987,7 @@ kshf.Filter.prototype = {
                 var changed = item.updateWanted(recursive);
                 stateChanged = stateChanged || changed;
             }
-            if(parentFacet){
+            if(parentFacet && parentFacet.hasAttribs()){
                 if(item.isWanted)
                     item.set_OR(parentFacet.attribFilter.attribs_OR);
                 else 
@@ -1033,7 +1033,7 @@ kshf.Filter.prototype = {
             if(!item.isWanted){
                 item.updateWanted(recursive);
             }
-            if(parentFacet && item.isWanted){
+            if(parentFacet && parentFacet.hasAttribs() && item.isWanted){
                 item.set_OR(parentFacet.attribFilter.attribs_OR);
             }
         },this);
@@ -3032,11 +3032,6 @@ kshf.Browser.prototype = {
             resultCt : this.itemsSelectedCt,
         };
 
-        this.facets.forEach(function(facet,i){
-            if(facet.isFiltered()){
-            }
-        });
-
         r.filtered="";
         r.selected="";
         this.filterList.forEach(function(filter){
@@ -3562,6 +3557,15 @@ kshf.Facet_Categorical.prototype = {
                 .attr("filtered_not",this.attribFilter.attribs_NOT.length)
                 ;
         }
+        this.attribFilter.attribs_OR.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_OR.length>1);
+        },this);
+        this.attribFilter.attribs_AND.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_AND.length>1);
+        },this);
+        this.attribFilter.attribs_NOT.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box","true");
+        },this);
     },
     /** -- */
     unselectAllAttribs: function(){
@@ -3968,16 +3972,6 @@ kshf.Facet_Categorical.prototype = {
                 this.attribFilter.attribs_NOT.length>0)){
             this.attribFilter.how = "All";
         }
-
-        this.attribFilter.attribs_OR.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_OR.length>1);
-        },this);
-        this.attribFilter.attribs_AND.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_AND.length>1);
-        },this);
-        this.attribFilter.attribs_NOT.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box","true");
-        },this);
 
         this._update_Selected();
 
@@ -4710,7 +4704,7 @@ kshf.Facet_Interval.prototype = {
             for(var m=0; m<range; m++){
                 ticks[m] = this.intervalRange.min+m;
             }
-            this.intervalTickFormat = d3.format("s");
+            this.intervalTickFormat = d3.format("d");
         } else {
             this.intervalTickFormat = d3.format(this.tickIntegerOnly?"s":".2s");
         }
