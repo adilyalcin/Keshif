@@ -22,47 +22,19 @@
 var demoID = 13;
 var postCols;
 
-function getNumComments(v){
-    return v;
-    if(v==0) return "None";
-    if(v<6) return "1-5";
-    if(v<11) return "6-10";
-    if(v<21) return "11-20";
-    return ">20";
-};
-
 function getAuthorName(d){
     var authorID = d.data[postCols['Author']];
     return kshf.dt_id.Authors[authorID].data[1];
 };
 
-
-function resetSize(){
-//    $('#chart_div').height($(window).height()-10);
-    $('#chart_div').height(700);
-    $('#chart_div').width (800);
-};
-
-function loadImage(d){
-    if(d.target.className==="item_details_off") return;
-    var kshfItem = d.currentTarget.__data__;
-    var d3Item = d3.select(kshfItem.listItem);
-    d3Item.select(".postImg").attr("src",kshfItem.data[postCols['Img']]);
-}
-
 $(document).ready( function(){
-    resetSize();
-    // set resize callback
-    $(window).resize(function() {
-        resetSize();
-        browser.updateLayout();
-    });
 
     logIf.Check = logIf.All();
     
 	browser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 130,
+        categoryTextWidth: 100,
+        rightPanelLabelWidth: 90,
         source : {
             gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
             sheets : [ {name:"Posts"}, {name:"Authors"} ]
@@ -72,63 +44,47 @@ $(document).ready( function(){
             kshf.Util.cellToArray(kshf.dt.Posts, [postCols['Category']], ",", false);
         },
         facets: [
-            {   facetTitle: "Category",
-//                timeTitle: "Date",
-                textFilter: 'about'
+            {   facetTitle: "Category"
+            },{
+                facetTitle: "Author",
+                catTableName: "Authors", collapsed: false,
+                layout: 'right',
+                catDispCountFix: 6
             },{
                 facetTitle: "# Comments",
                 catItemMap : function(post){
                     var v=post.data[postCols['# of Comments']];
                     if(v>0) return v;
                 },
+                layout: 'right',
                 intervalScale: "log"
             },{
                 facetTitle: "Time",
                 layout: 'bottom',
                 catItemMap : function(post){ return post.data[postCols['Date']]; },
-                intervalScale: 'time',
-                textFilter: 'in'
-            },{
-                facetTitle: "Author",
-                catTableName: "Authors", collapsed: true,
-                catDispCountFix: 6,
-                textFilter: 'by', textGroup: 'authors'
+                intervalScale: 'time'
             }
         ],
-        readyCb: function(){
-            $(".itemtoggledetails .item_details_on").click(loadImage);
-            $(".postName").click(loadImage);
-        },
         itemDisplay: {
             sortColWidth: 85,
             sortingOpts : [
                 {   name: 'Date',
-                    value: function(d){
-                        return d.data[postCols['Date']].getTime();
-                    },
-                    label: function(d){
-                        return moment(d.data[postCols['Date']]).fromNow();
-                    }
+                    value: function(d){ return d.data[postCols['Date']].getTime(); },
+                    label: function(d){ return moment(d.data[postCols['Date']]).format("MMM Do, YY"); }
                 },{ name: '#Comments',
                     value: function(d){ return d.data[5]; }
                 }
             ],
-            detailsToggle : "One",
-            detailsDefault : false,
             textSearch : "Title",
+/*            detailsToggle : "One",
             contentFunc : function(d) {
                 var str="";
                 
-                str+="<span class='item_details'>";
-                    str+="<img width='130' style='float:right' class='postImg'>";
-                str+="</span>"; // item_details
+                str+="<div class='iteminfo iteminfo_0 postName'>"
+                   + "<a href='"+d.data[postCols['URL']]+"' target='_blanl'>"+d.data[postCols['Title']]+"<a/>"
+                   + "</div>";
 
-                // title
-                str+="<div class='iteminfo iteminfo_0 postName'>";
-                str+="<a href='"+d.data[postCols['URL']]+"' target='_blanl'>"+d.data[postCols['Title']]+"<a/>";
-                str+="</div>";
-
-                str+="<span class='item_details'>";
+                str+="<span class='item_details'> <img>";
                     // categories
                     str+="<div class='iteminfo iteminfo_1'>About: "+d.data[postCols['Category']]+"</div>";
                     // author
@@ -138,17 +94,68 @@ $(document).ready( function(){
                 str+="</span>"; // item_details
 
                 return str;
-            }
+            },
+            detailCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
+            },*/
+            displayType: 'grid',
+            maxVisibleItems_Default: 15,
+            detailsToggle : "zoom",
+            contentFunc: function(d){
+                return "<a target='_blank' href='"+d.data[postCols['URL']]+
+                    "'><img><span class='title'>"+d.data[postCols['Title']]+"</span></a>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
+            },
         }
     });
 });
         </script>
         <style>
-            div.listItem{ padding-bottom: 4px; }
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
+#chart_div{
+    width: 900px;
+    height: 600px;
+}
+div.listItem {
+    max-height: 230px !important;
+    vertical-align: top;
+}
+div.content{
+    width: 140px;
+    margin-bottom: 5px;
+}
+div.content a{
+    vertical-align: top;
+    color: #496B86;
+}
+div.content img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    border: solid;
+    border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+    border-width: 1px 2px 2px 1px;
+    border-radius: 10px;
+    background-color: white;
+    width: 90%;
+    transition: background-color 300ms linear;
+    -webkit-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+}
+div.listItem[highlight=true] div.content img{
+    background-color: orangered;
+}
+div.content span.title{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    text-align: center;
+    font-size: 0.8em;
+}
         </style>
     </head>
     <body onmousemove="logIf.setSessionID()">
