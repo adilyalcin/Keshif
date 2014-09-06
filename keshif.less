@@ -98,6 +98,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             box-shadow: 1px 1px 1px rgb(78, 71, 43);
             background-color: rgba(255,255,255,0.5);
             margin-right: 5px;
+            padding-left: 2px;
 //            opacity: 0;
             max-width: 0px;
             .transition(~"all 1000ms linear");
@@ -111,7 +112,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 // margin-right: 20px;
                 white-space: nowrap;
                 overflow: hidden;
-
+                // TODO: Enable cross attribute when mouse is over close button...
+                &[cross]{
+                    text-decoration: line-through;
+                }
             }
             &[ready=true]{ 
 //                opacity: 1;
@@ -1481,7 +1485,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[details=true]{
             .item_details_toggle{
-                display:inline;
+                display:inline-block;
                 .rotate(180deg);
             }
             .item_details{

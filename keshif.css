@@ -96,6 +96,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 1px 1px 1px #4e472b;
   background-color: rgba(255, 255, 255, 0.5);
   margin-right: 5px;
+  padding-left: 2px;
   max-width: 0px;
   -webkit-transition: all 1000ms linear;
   -moz-transition: all 1000ms linear;
@@ -111,6 +112,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   white-space: nowrap;
   overflow: hidden;
+}
+.kshfHost .filtercrumbs > .filter-block .sdsdsds[cross] {
+  text-decoration: line-through;
 }
 .kshfHost .filtercrumbs > .filter-block[ready=true] {
   max-width: 1000px;
@@ -1501,7 +1505,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
 }
 .kshf div.listItem[details=true] .item_details_toggle {
-  display: inline;
+  display: inline-block;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -o-transform: rotate(180deg);

@@ -300,164 +300,6 @@ kshf.Util = {
     toProperCase: function(str){
         return str.toLowerCase().replace(/\b[a-z]/g,function(f){return f.toUpperCase()});
     },
-    insertSlider_do: function(root,options){
-        var _isFiltered = function(){
-            return options.filter.active.min!==options.range.min ||
-                   options.filter.active.max!==options.range.max ;
-        };
-        root.append("span").attr("class","base total")
-            .on("mousedown", function (d, i) {
-                if(d3.event.which !== 1) return; // only respond to left-click
-                options.owner.dom.intervalSlider.attr("anim",false);
-                var e=this.parentNode;
-                var initPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
-                d3.select("body").style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var targetPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
-                        options.filter.active.min=d3.min([initPos,targetPos]);
-                        options.filter.active.max=d3.max([initPos,targetPos]);
-                        options.owner.refreshIntervalSlider();
-                        // wait half second to update
-                        if(this.timer){
-                            clearTimeout(this.timer);
-                            this.timer = null;
-                        }
-                        this.timer = setTimeout(function(){
-                            if(_isFiltered()){
-                                options.filter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
-                                    { id: options.filter.id, 
-                                      info: options.filter.active.min+"x"+options.filter.active.m});
-                            } else {
-                                options.filter.clearFilter(true);
-                            }
-                        },200);
-                    }).on("mouseup", function(){
-                        options.owner.dom.intervalSlider.attr("anim",true);
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                    });
-                d3.event.preventDefault();
-            });;
-
-        root.append("span")
-            .attr("class","base active")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    title: function(){ return "Drag to filter" }
-                })
-            })
-//            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("mousedown", function (d, i) {
-                this.tipsy.hide();
-                if(d3.event.which !== 1) return; // only respond to left-click
-                if(options.owner.options.intervalScale==='time') return; // time is not supported for now.
-                options.owner.dom.intervalSlider.attr("anim",false);
-                var e=this.parentNode;
-                var initMin = options.filter.active.min;
-                var initMax = options.filter.active.max;
-                var initRange= initMax - initMin;
-                var initPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
-
-                d3.select("body").style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var targetPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
-                        var targetDif = targetPos-initPos;
-                        options.filter.active.min = initMin+targetDif;
-                        options.filter.active.max = initMax+targetDif;
-                        if(options.filter.active.min<options.range.min){
-                            options.filter.active.min=options.range.min;
-                            options.filter.active.max=options.range.min+initRange;
-                        }
-                        if(options.filter.active.max>options.range.max){
-                            options.filter.active.max=options.range.max;
-                            options.filter.active.min=options.range.max-initRange;
-                        }
-                        options.owner.refreshIntervalSlider();
-                        // wait half second to update
-                        if(this.timer){
-                            clearTimeout(this.timer);
-                            this.timer = null;
-                        }
-                        this.timer = setTimeout(function(){
-                            if(_isFiltered()){
-                                options.filter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
-                                    { id: options.filter.id,
-                                      info: options.filter.active.min+"x"+options.filter.active.max});
-                            } else{
-                                options.filter.clearFilter(true);
-                            }
-                        },200);
-                    }).on("mouseup", function(){
-                        options.owner.dom.intervalSlider.attr("anim",true);
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                    });
-                d3.event.preventDefault();
-            });
-
-        var handle_cb = function (d, i) {
-            var me = this;
-            if(d3.event.which !== 1) return; // only respond to left-click
-            options.owner.dom.intervalSlider.attr("anim",false);
-            var e=this.parentNode;
-            d3.select("body").style('cursor','ew-resize')
-                .on("mousemove", function() {
-                    me.dragging = true;
-                    options.owner.browser.pauseResultPreview = true;
-                    var targetPos = options.owner.intervalScale.invert(d3.mouse(e)[0]);
-                    options.filter.active[d] = targetPos;
-                    // Swap is min > max
-                    if(options.filter.active.min>options.filter.active.max){
-                        var t=options.filter.active.min;
-                        options.filter.active.min = options.filter.active.max;
-                        options.filter.active.max = t;
-                        if(d==='min') d='max'; else d='min';
-                    }
-                    options.owner.refreshIntervalSlider();
-                    // wait half second to update
-                    if(this.timer){
-                        clearTimeout(this.timer);
-                        this.timer = null;
-                    }
-                    this.timer = setTimeout( function(){
-                        if(_isFiltered()){
-                            if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
-                                { id: options.filter.id,
-                                  info: options.filter.active.min+"x"+options.filter.active.max });
-                            options.filter.addFilter(true);
-                        } else {
-                            options.filter.clearFilter(true);
-                        }
-                    },200);
-                }).on("mouseup", function(){
-                    me.dragging = false;
-                    options.owner.browser.pauseResultPreview = false;
-                    options.owner.dom.intervalSlider.attr("anim",true);
-                    d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                });
-            d3.event.preventDefault();
-        };
-
-        root.selectAll("span.handle").data(['min','max']).enter()
-            .append("span").attr("class",function(d){ return "handle "+d; })
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    title: function(){ return "Drag to filter" }
-                })
-            })
-            .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("mousedown", function(d,i){
-                this.tipsy.hide();
-                handle_cb.call(this,d,i);
-            })
-            .append("span").attr("class","invalidArea");
-
-        root.append("div").attr("class","selectedItemValue").append("div").attr("class","circlee");
-    },
     setTransform: function(dom,transform){
         dom.style.webkitTransform = transform;
         dom.style.MozTransform = transform;
@@ -4132,7 +3974,7 @@ kshf.Facet_Categorical.prototype = {
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.facet.hasMultiValueItem;
                         if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
-                            return "<span class='fa fa-times'></span> <span class='action'>Remove</span>";
+                            return "<span class='fa fa-times'></span> <span class='action'>Remove</span> from filter";
                         if(me.attribFilter.attribs_OR.length===0 && me.attribFilter.attribs_AND.length===0)
                             return "<span class='fa fa-plus'></span> <span class='action'>Add</span> filter";
                         if(hasMultiValueItem===false)
@@ -4441,9 +4283,14 @@ kshf.Facet_Interval = function(kshf_, options){
             var i_min = filter.active.min;
             var i_max = filter.active.max;
             if(!filter.max_inclusive) i_max-=0.01;
-            var checkFilter = function(v){
-                return v>=i_min && v<=i_max;
-            };
+            var checkFilter;
+            if(me.isFiltered_min() && me.isFiltered_max()){
+                checkFilter = function(v){ return v>=i_min && v<=i_max; };
+            } else if(me.isFiltered_min()){
+                checkFilter = function(v){ return v>=i_min; };
+            } else {
+                checkFilter = function(v){ return v<=i_max; };
+            }
 
             filter.filteredItems.forEach(function(item){
                 var v = item.mappedDataCache[filter.id].v;
@@ -4459,11 +4306,22 @@ kshf.Facet_Interval = function(kshf_, options){
         },
         text_header: this.options.facetTitle,
         text_item: function(filter){
+            if(this.options.intervalScale==='step'){
+                if(filter.active.min+1===filter.active.max){
+                    return "<b>"+filter.active.min+"</b>";
+                }
+            }
             if(this.options.intervalScale==='time'){
                 return "<b>"+this.intervalTickFormat(filter.active.min)+
                     "</b> to <b>"+this.intervalTickFormat(filter.active.max)+"</b>";
             }
-            return "<b>"+filter.active.min+"</b> to <b>"+filter.active.max+"</b>";
+            if(me.isFiltered_min() && me.isFiltered_max()){
+                return "<b>"+filter.active.min+"</b> to <b>"+filter.active.max+"</b>";
+            } else if(me.isFiltered_min()){
+                return "at least <b>"+filter.active.min+"</b>";
+            } else {
+                return "at most <b>"+filter.active.max+"</b>";
+            }
         },
     });
     this.intervalFilter.how = "All";
@@ -4573,9 +4431,17 @@ kshf.Facet_Interval.prototype = {
         return this.getHeight_Header()+this.height_hist_min+this.getHeight_Extra();
     },
     /** -- */
-    isFiltered: function(state){
+    isFiltered: function(){
         return this.intervalFilter.active.min!==this.intervalRange.min ||
                this.intervalFilter.active.max!==this.intervalRange.max ;
+    },
+    /** -- */
+    isFiltered_min: function(){
+        return this.intervalFilter.active.min!==this.intervalRange.min;
+    },
+    /** -- */
+    isFiltered_max: function(){
+        return this.intervalFilter.active.max!==this.intervalRange.max;
     },
     /** -- */
     resetIntervalFilterActive: function(){
@@ -4622,13 +4488,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider")
             .attr("anim",true);
-        kshf.Util.insertSlider_do(this.dom.intervalSlider,{
-            'range': this.intervalRange,
-            'scale': 'intervalScale',
-            'owner': this,
-            'filter': this.intervalFilter,
-            'root': kshf_.root
-        });
+        this.insertSlider();
         this.dom.selectedItemValue = this.dom.intervalSlider.select(".selectedItemValue");
 
         this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup");
@@ -4858,6 +4718,178 @@ kshf.Facet_Interval.prototype = {
         this.refreshResultPreview();
         this.refreshBars_Item_Count();
     },
+    fixIntervalFilterRange: function(){
+        if(this.options.intervalScale==='log' || this.options.intervalScale==='step'){
+            this.intervalFilter.active.min=Math.round(this.intervalFilter.active.min);
+            this.intervalFilter.active.max=Math.round(this.intervalFilter.active.max);
+        } else if(this.options.intervalScale==='time'){
+            // TODO
+        } else {
+            if(!this.hasFloat){
+                this.intervalFilter.active.min=Math.round(this.intervalFilter.active.min);
+                this.intervalFilter.active.max=Math.round(this.intervalFilter.active.max);
+            }
+        }
+    },
+    insertSlider: function(){
+        var me=this;
+
+        this.dom.intervalSlider.append("span").attr("class","base total")
+            .on("mousedown", function (d, i) {
+                if(d3.event.which !== 1) return; // only respond to left-click
+                me.dom.intervalSlider.attr("anim",false);
+                var e=this.parentNode;
+                var initPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                d3.select("body").style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                        me.intervalFilter.active.min=d3.min([initPos,targetPos]);
+                        me.intervalFilter.active.max=d3.max([initPos,targetPos]);
+                        me.fixIntervalFilterRange();
+                        me.refreshIntervalSlider();
+                        // wait half second to update
+                        if(this.timer){
+                            clearTimeout(this.timer);
+                            this.timer = null;
+                        }
+                        this.timer = setTimeout(function(){
+                            if(me.isFiltered()){
+                                me.intervalFilter.addFilter(true);
+                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
+                                    { id: me.intervalFilter.id, 
+                                      info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.m});
+                            } else {
+                                me.intervalFilter.clearFilter(true);
+                            }
+                        },250);
+                    }).on("mouseup", function(){
+                        me.dom.intervalSlider.attr("anim",true);
+                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                    });
+                d3.event.preventDefault();
+            });;
+
+        this.dom.intervalSlider.append("span")
+            .attr("class","base active")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return "Drag to filter" }
+                })
+            })
+//            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mousedown", function (d, i) {
+                this.tipsy.hide();
+                if(d3.event.which !== 1) return; // only respond to left-click
+                if(me.options.intervalScale==='time') return; // time is not supported for now.
+                me.dom.intervalSlider.attr("anim",false);
+                var e=this.parentNode;
+                var initMin = me.intervalFilter.active.min;
+                var initMax = me.intervalFilter.active.max;
+                var initRange= initMax - initMin;
+                var initPos = me.intervalScale.invert(d3.mouse(e)[0]);
+
+                d3.select("body").style('cursor','ew-resize')
+                    .on("mousemove", function() {
+                        var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                        var targetDif = targetPos-initPos;
+                        me.intervalFilter.active.min = initMin+targetDif;
+                        me.intervalFilter.active.max = initMax+targetDif;
+                        if(me.intervalFilter.active.min<me.intervalRange.min){
+                            me.intervalFilter.active.min=me.intervalRange.min;
+                            me.intervalFilter.active.max=me.intervalRange.min+initRange;
+                        }
+                        if(me.intervalFilter.active.max>me.intervalRange.max){
+                            me.intervalFilter.active.max=me.intervalRange.max;
+                            me.intervalFilter.active.min=me.intervalRange.max-initRange;
+                        }
+                        me.fixIntervalFilterRange();
+                        me.refreshIntervalSlider();
+                        // wait half second to update
+                        if(this.timer){
+                            clearTimeout(this.timer);
+                            this.timer = null;
+                        }
+                        this.timer = setTimeout(function(){
+                            if(me.isFiltered()){
+                                me.intervalFilter.addFilter(true);
+                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
+                                    { id: me.intervalFilter.id,
+                                      info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.max});
+                            } else{
+                                me.intervalFilter.clearFilter(true);
+                            }
+                        },200);
+                    }).on("mouseup", function(){
+                        me.dom.intervalSlider.attr("anim",true);
+                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                    });
+                d3.event.preventDefault();
+            });
+
+        var handle_cb = function (d, i) {
+            var mee = this;
+            if(d3.event.which !== 1) return; // only respond to left-click
+            me.dom.intervalSlider.attr("anim",false);
+            var e=this.parentNode;
+            d3.select("body").style('cursor','ew-resize')
+                .on("mousemove", function() {
+                    mee.dragging = true;
+                    me.browser.pauseResultPreview = true;
+                    var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                    me.intervalFilter.active[d] = targetPos;
+                    // Swap is min > max
+                    if(me.intervalFilter.active.min>me.intervalFilter.active.max){
+                        var t=me.intervalFilter.active.min;
+                        me.intervalFilter.active.min = me.intervalFilter.active.max;
+                        me.intervalFilter.active.max = t;
+                        if(d==='min') d='max'; else d='min';
+                    }
+                    me.fixIntervalFilterRange();
+                    me.refreshIntervalSlider();
+                    // wait half second to update
+                    if(this.timer){
+                        clearTimeout(this.timer);
+                        this.timer = null;
+                    }
+                    this.timer = setTimeout( function(){
+                        if(me.isFiltered()){
+                            if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
+                                { id: me.intervalFilter.id,
+                                  info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.max });
+                            me.intervalFilter.addFilter(true);
+                        } else {
+                            me.intervalFilter.clearFilter(true);
+                        }
+                    },200);
+                }).on("mouseup", function(){
+                    mee.dragging = false;
+                    me.browser.pauseResultPreview = false;
+                    me.dom.intervalSlider.attr("anim",true);
+                    d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                });
+            d3.event.preventDefault();
+        };
+
+        this.dom.intervalSlider.selectAll("span.handle").data(['min','max']).enter()
+            .append("span").attr("class",function(d){ return "handle "+d; })
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){ return "Drag to filter" }
+                })
+            })
+            .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mousedown", function(d,i){
+                this.tipsy.hide();
+                handle_cb.call(this,d,i);
+            })
+            .append("span").attr("class","invalidArea");
+
+        this.dom.intervalSlider.append("div").attr("class","selectedItemValue").append("div").attr("class","circlee");
+    },
     updateBarScale2Total: function(){
         this.barHeightScale = this.barHeightScale
             .domain([0, this.getMaxBinTotalItems()])
@@ -4933,8 +4965,7 @@ kshf.Facet_Interval.prototype = {
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_highlight.each(function(bar){
             bar.itemCount_Preview=0;
-            var transform="scale("+width+",0)";
-            kshf.Util.setTransform(this,transform);
+            kshf.Util.setTransform(this,"scale("+width+",0)");
         });
     },
     refreshResultPreview: function(){
@@ -4944,8 +4975,7 @@ kshf.Facet_Interval.prototype = {
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_highlight.each(function(bar){
             if(bar.itemCount_Preview===0) return;
-            var transform="scale("+width+","+barHeightScale(bar.itemCount_Preview)+")";
-            kshf.Util.setTransform(this,transform);
+            kshf.Util.setTransform(this,"scale("+width+","+barHeightScale(bar.itemCount_Preview)+")");
         });
     },
     refreshBars_Item_Count: function(){
@@ -4957,24 +4987,23 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         var _min = this.intervalScale(this.intervalFilter.active.min);
         var _max = this.intervalScale(this.intervalFilter.active.max);
+        if(me.intervalFilter.active.min===me.intervalRange.min){
+            _min = me.intervalScale.range()[0];
+        }
+        if(me.intervalFilter.active.max===me.intervalRange.max){
+            _max = me.intervalScale.range()[1];
+        }
+
         this.dom.intervalSlider.select(".base.total")
             .style("width",this.intervalScale.range()[1]+"px");
         this.dom.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
-                var transform="translate("+_min+"px,0) scale("+(_max-_min)+",1)";
-                kshf.Util.setTransform(this,transform);
+                kshf.Util.setTransform(this,"translate("+_min+"px,0) scale("+(_max-_min)+",1)");
             });
         this.dom.intervalSlider.selectAll(".handle")
             .each(function(d){
-                if(me.intervalFilter.active.min===me.intervalRange.min){
-                    _min = me.intervalScale.range()[0];
-                }
-                if(me.intervalFilter.active.max===me.intervalRange.max){
-                    _max = me.intervalScale.range()[1];
-                }
-                var transform="translate("+((d==="min")?_min:_max)+"px,0)";
-                kshf.Util.setTransform(this,transform);
+                kshf.Util.setTransform(this,"translate("+((d==="min")?_min:_max)+"px,0)");
             });
     },
     /** -- */
@@ -5101,6 +5130,5 @@ kshf.Facet_Interval.prototype = {
                 "translateX("+(this.quantile_pos[qb[0]])+"px) "+
                 "scaleX("+(this.quantile_pos[qb[1]]-this.quantile_pos[qb[0]])+") ");
         },this);
-
     }
 };
