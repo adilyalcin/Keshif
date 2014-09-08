@@ -80,68 +80,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshfHost #kshf_svg_clearText:hover g {
   fill: #cb5454;
 }
-.kshfHost .filtercrumbs {
-  font-size: 0.8em;
-  display: inline-block;
-  margin-left: 5px;
-  vertical-align: top;
-  margin-top: 2px;
-}
-.kshfHost .filtercrumbs > .filter-block {
-  display: inline-block;
-  position: relative;
-  cursor: default;
-  color: #252112;
-  font-weight: 300;
-  box-shadow: 1px 1px 1px #4e472b;
-  background-color: rgba(255, 255, 255, 0.5);
-  margin-right: 5px;
-  padding-left: 2px;
-  max-width: 0px;
-  -webkit-transition: all 1000ms linear;
-  -moz-transition: all 1000ms linear;
-  -o-transition: all 1000ms linear;
-  transition: all 1000ms linear;
-}
-.kshfHost .filtercrumbs > .filter-block .sdsdsds {
-  /*
-                max-width: 300px;
-                max-width: 300px;
-                -o-text-overflow: ellipsis;
-                text-overflow: ellipsis;*/
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.kshfHost .filtercrumbs > .filter-block .sdsdsds[cross] {
-  text-decoration: line-through;
-}
-.kshfHost .filtercrumbs > .filter-block[ready=true] {
-  max-width: 1000px;
-}
-.kshfHost .filtercrumbs > .filter-block[ready=false] {
-  max-width: 0px;
-}
-.kshfHost .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
-  display: none;
-}
-.kshfHost .filtercrumbs > .filter-block:hover {
-  background-color: #ffffff;
-}
-.kshfHost .filtercrumbs > .filter-block b {
-  font-weight: 700;
-}
-.kshfHost .filtercrumbs > .filter-block[filtered=false] {
-  display: none;
-}
-.kshfHost .filtercrumbs > .filter-block .txttt {
-  padding: 1px 0px 1px 0px;
-}
-.kshfHost .filtercrumbs > .filter-block .filter_item {
-  padding: 1px 0px 1px 0px;
-  display: inline;
-  margin-right: 15px;
-}
 .kshfHost .subBrowsers {
   position: absolute;
   top: 33px;
@@ -844,9 +782,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[highlight=true] span.item_count {
   color: orangered;
 }
-.kshf .kshfChart > .wrapper > .facetInterval .histogram .bins .bin[highlight=selected] .bar.hover {
-  background-color: #cc3700 !important;
-}
 .kshf .kshfChart > .wrapper span.bar {
   display: block;
   position: absolute;
@@ -1267,10 +1202,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
   background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
 }
-.kshf div.listHeader .bottomRow {
+.kshf div.listHeader > .bottomRow {
   min-height: 20px;
 }
-.kshf div.listHeader span.headerLinkStateColumn {
+.kshf div.listHeader > .bottomRow > .scrollToTop {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  text-align: right;
+}
+.kshf div.listHeader > .bottomRow > .listsortcolumn {
+  vertical-align: bottom;
+}
+.kshf div.listHeader > .bottomRow > .headerLinkStateColumn {
   position: absolute;
   right: 21px;
   bottom: 0px;
@@ -1278,26 +1222,84 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   margin-left: 6px;
 }
-.kshf div.listHeader span.headerLinkStateColumn .fa {
+.kshf div.listHeader > .bottomRow > .headerLinkStateColumn .fa-link {
   cursor: pointer;
-}
-.kshf div.listHeader span.headerLinkStateColumn .fa:hover {
-  color: orangered;
-}
-.kshf div.listHeader span.headerLinkStateColumn .fa-link {
   margin-right: 2px;
 }
-.kshf div.listHeader span.headerLinkStateColumn .linkTitleText {
+.kshf div.listHeader > .bottomRow > .headerLinkStateColumn .fa-link:hover {
+  color: orangered;
+}
+.kshf div.listHeader > .bottomRow > .headerLinkStateColumn .linkTitleText {
   font-size: 0.8em;
   font-variant: small-caps;
   font-weight: 300;
   cursor: default;
 }
-.kshf div.listHeader div.scrollToTop {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  text-align: right;
+.kshf div.listHeader > .bottomRow > .filtercrumbs {
+  font-size: 0.9em;
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: top;
+  margin-top: 2px;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block {
+  display: inline-block;
+  position: relative;
+  cursor: default;
+  color: #252112;
+  font-weight: 300;
+  box-shadow: 1px 1px 1px #4e472b;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-right: 5px;
+  padding-left: 2px;
+  max-width: 0px;
+  -webkit-transition: all 1000ms linear;
+  -moz-transition: all 1000ms linear;
+  -o-transition: all 1000ms linear;
+  transition: all 1000ms linear;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds {
+  /*
+                        max-width: 300px;
+                        max-width: 300px;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;*/
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds[cross] {
+  text-decoration: line-through;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header {
+  padding: 1px 0px 1px 0px;
+  font-size: 0.9em;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header:after {
+  content: ': ';
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_details {
+  padding: 1px 0px 1px 0px;
+  display: inline;
+  margin-right: 15px;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=true] {
+  max-width: 1000px;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] {
+  max-width: 0px;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
+  display: none;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block:hover {
+  background-color: #ffffff;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block b {
+  font-weight: 700;
+}
+.kshf div.listHeader > .bottomRow > .filtercrumbs > .filter-block[filtered=false] {
+  display: none;
 }
 .kshf div.listHeader span.filter-separator {
   padding-left: 10px;

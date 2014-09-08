@@ -82,65 +82,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             fill:#cb5454;
         }
     }
-    .filtercrumbs{
-        font-size: 0.8em;
-        display: inline-block;
-        margin-left: 5px;
-        vertical-align: top;
-        margin-top: 2px;
-        > .filter-block{
-            display: inline-block;
-            position: relative;
-            cursor: default;
-            color: rgb(37, 33, 18);
-            font-weight: 300;
-            // border: 1px rgb(104, 91, 43) solid;
-            box-shadow: 1px 1px 1px rgb(78, 71, 43);
-            background-color: rgba(255,255,255,0.5);
-            margin-right: 5px;
-            padding-left: 2px;
-//            opacity: 0;
-            max-width: 0px;
-            .transition(~"all 1000ms linear");
-            .sdsdsds{
-                /*
-                max-width: 300px;
-                max-width: 300px;
-                -o-text-overflow: ellipsis;
-                text-overflow: ellipsis;*/
-                display: block;
-                // margin-right: 20px;
-                white-space: nowrap;
-                overflow: hidden;
-                // TODO: Enable cross attribute when mouse is over close button...
-                &[cross]{
-                    text-decoration: line-through;
-                }
-            }
-            &[ready=true]{ 
-//                opacity: 1;
-                max-width: 1000px;
-            }
-            &[ready=false]{ 
-//                opacity: 1;
-                max-width: 0px;
-                .chartClearFilterButton{ display:none;}
-            }
-            &:hover{
-                background-color: rgba(255,255,255,1.0);
-            }
-            b{ font-weight: 700; }
-            &[filtered=false]{ display: none; }
-            .txttt{
-                padding:1px 0px 1px 0px;
-            }
-            .filter_item{
-                padding:1px 0px 1px 0px;
-                display: inline;
-                margin-right: 15px;
-            }
-        }
-    }
     .subBrowsers{
         position:absolute;
         top:33px;
@@ -814,7 +755,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             &[highlight=selected]{
                                 .bar.hover{
-                                    background-color: @color_bars_selected !important;
+//                                    background-color: @color_bars_selected !important;
                                 }
                             }
                         }
@@ -1237,43 +1178,104 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         border-width: 0px 2px;
-
         .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%)");
 
-        .topRow{
+        > .topRow{
 //            font-size: 1.2em;
         }
-        .bottomRow{
+        > .bottomRow{
             min-height: 20px;
-        }
-
-        span.headerLinkStateColumn{
-            position:absolute;
-            right: 21px;
-            bottom: 0px;
-            font-size: 1.1em;
-            text-align: right;
-            margin-left: 6px;
-            .fa{
-                cursor: pointer;
-                &:hover{ color: orangered; }
+            > .scrollToTop{
+                position: absolute;
+                right: 0px;
+                bottom: 0px;
+                text-align: right;
             }
-            .fa-link{
-                margin-right: 2px;
+            > .listsortcolumn{
+                vertical-align: bottom;
             }
-            .linkTitleText{
-                font-size: 0.8em;
-                font-variant: small-caps;
-                font-weight: 300;
-                cursor: default;
+            > .headerLinkStateColumn{
+                position:absolute;
+                right: 21px;
+                bottom: 0px;
+                font-size: 1.1em;
+                text-align: right;
+                margin-left: 6px;
+                .fa-link{
+                    cursor: pointer;
+                    margin-right: 2px;
+                    &:hover{ color: orangered; }
+                }
+                .linkTitleText{
+                    font-size: 0.8em;
+                    font-variant: small-caps;
+                    font-weight: 300;
+                    cursor: default;
+                }
             }
-        }
-        
-        div.scrollToTop{
-            position: absolute;
-            right: 0px;
-            bottom: 0px;
-            text-align: right;
+            > .filtercrumbs{
+                font-size: 0.9em;
+                display: inline-block;
+                margin-left: 5px;
+                vertical-align: top;
+                margin-top: 2px;
+                > .filter-block{
+                    display: inline-block;
+                    position: relative;
+                    cursor: default;
+                    color: rgb(37, 33, 18);
+                    font-weight: 300;
+                    // border: 1px rgb(104, 91, 43) solid;
+                    box-shadow: 1px 1px 1px rgb(78, 71, 43);
+                    background-color: rgba(255,255,255,0.5);
+                    margin-right: 5px;
+                    padding-left: 2px;
+        //            opacity: 0;
+                    max-width: 0px;
+                    .transition(~"all 1000ms linear");
+                    > .sdsdsds{
+                        /*
+                        max-width: 300px;
+                        max-width: 300px;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;*/
+                        display: block;
+                        // margin-right: 20px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        // TODO: Enable cross attribute when mouse is over close button...
+                        &[cross]{
+                            text-decoration: line-through;
+                        }
+                        > .summary_header{
+                            padding:1px 0px 1px 0px;
+                            font-size: 0.9em;
+                            &:after{
+                                content: ': ';
+                            }
+                        }
+                        > .summary_details{
+                            padding:1px 0px 1px 0px;
+                            display: inline;
+                            margin-right: 15px;
+                        }
+                    }
+                    &[ready=true]{ 
+        //                opacity: 1;
+                        max-width: 1000px;
+                    }
+                    &[ready=false]{ 
+        //                opacity: 1;
+                        max-width: 0px;
+                        .chartClearFilterButton{ display:none;}
+                    }
+                    &:hover{
+                        background-color: rgba(255,255,255,1.0);
+                    }
+                    b{ font-weight: 700; }
+                    &[filtered=false]{ display: none; }
+                }
+            }
         }
 
         span.filter-separator{
