@@ -76,21 +76,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(@bar_animation);
         }
     }
-    #kshf_svg_clearText {
-        g { fill:gray; }
-        &:hover g {
-            fill:#cb5454;
-        }
-    }
-    .subBrowsers{
-        position:absolute;
-        top:33px;
-    }
-    .subBrowser{
-        position:absolute;
-        left: 0px;
-        .transition(~"left 500ms ease");
-    }
+/*    &[preview-not] .kshf .kshfChart .bar.preview{
+        background-color: lightgray !important;
+    }*/
 }
 
 .kshf {
@@ -98,7 +86,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
     display: block;
 
-    &.layout_left .kshfChart{
+    &.layout_left > .kshfChart{
         display: block;
     }
 
@@ -121,24 +109,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             direction:rtl;
             margin-left: 2px;
         }
-        div.attrib {
-            > span.attribLabel span.filterButtons{
+        .attrib {
+            > .attribLabel .filterButtons{
                 float: right;
                 margin-right: 2px;
             }
-            > span.barGroup .bar{
+            > .barGroup .bar{
                 .transform-origin(100%, 0%);
                 right: 0px;
             }
-            > span.item_count_wrapper{ 
+            > .item_count_wrapper{ 
                 padding-right: 3px;
                 text-align: right;
             }
             &:not([selected="0"]) {
-                span.attribLabel{
+                .attribLabel{
                     .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
                 }
-                span.item_count_wrapper{
+                .item_count_wrapper{
                     .background-image(~"linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
                 }
             }
@@ -209,15 +197,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .transform-origin(0%, 0%);
                 left: 0px;
             }
-            > span.item_count_wrapper{
+            > .item_count_wrapper{
                 padding-left: 3px;
                 text-align: left;
             }
             &:not([selected="0"]) {
-                span.attribLabel{
+                .attribLabel{
                     .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
                 }
-                span.item_count_wrapper{
+                .item_count_wrapper{
                     .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
                 }
             }
@@ -251,7 +239,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .chartFilterButtonParent{
-        position:relative;
+        position: absolute;
+        left: -18px;
     }
     .chartClearFilterButton{
         width: 14px;
@@ -294,30 +283,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             float: right;
             margin-left: 2px;
             height: 16px;
-        }
-    }
-    span.leftBlockAdjustSize{
-        position: absolute;
-        left: 0px;
-        pointer-events: all;
-        height: 100%;
-        width: 0px;
-        // border-bottom: solid 1px lightgray;
-        // border-top: solid 1px lightgray;
-        border-width: 0px 2px 0px 0px;
-        border-style: dotted;
-        border-color: lightgray;
-        cursor: col-resize;
-        // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
-        opacity: 0.5;
-        z-index: 10;
-        &:hover{
-            // border-bottom: solid 1px gray;
-            // border-top: solid 1px gray;
-            border-width: 0px 2px 0px 0px;
-            border-style: dotted;
-            border-color: gray;
-            // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
         }
     }
 
@@ -389,6 +354,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 16px;
             width: 16px;
             padding-left: 1px;
+            margin-right: 3px;
         }
         span.facetIcons{
             font-size: 0.8em;
@@ -463,17 +429,70 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .facetControls{
                     border-bottom: dotted 1px lightgray;
                     margin-bottom: -1px;
-                    > span{
+                    > .attribTextSearch{
                         display: inline-block;
                         vertical-align: top;
-                    }
-                    .sortOptionSelectGroup{
+                        white-space:nowrap;
+                        position: relative;
+                        > .attribTextSearchInput {
+                            width: 100%;
+                            font-size: 0.7em;
+                            font-weight: 700;
+                            border-width: 0px;
+                            // border-bottom: dashed 1px #cb5454;
+                            color: #cb5454;
+                            background-color:rgba(244, 244, 244,0);
+                            pointer-events: all;
+                            margin: 0px;
+                            &:focus{
+                                outline-color: gray;
+                                outline-width: 4px;
+                            }
+                            &:hover{
+                                border: solid 1px #cb5454;
+                                padding: 0px 0px 0px 0px;
+                                background-color: white;
+                            }
+                            &::-webkit-input-placeholder { 
+                                font-weight: 500;
+                                color: #cb5454;
+                            }
+                            &:focus::-webkit-input-placeholder { 
+                                color: #F3CDCD;
+                            }
+                            &:hover::-webkit-input-placeholder { 
+                                color: #F3CDCD;
+                            }
+                        }
+                        > .clearText{
+                            position: absolute;
+                            left: 1px;
+                            top: 3px;
+                            cursor: pointer;
+                            font-size: 0.8em;
+                            color: gray;
+                            display: none;
+                            &:hover{
+                                color: #cb5454;
+                            }
+                        }
+                        > .searchIcon{
+                            position: relative;
+                            top: -1px;
+                            left: 2px;
+                            color: #cb5454;
+                            font-size: 0.7em;
+                        }
+                    } // attribTextSearch
+
+                    > .sortOptionSelectGroup{
+                        vertical-align: top;
                         display: inline-block;
                         font-size: 0.7em;
                         font-weight: 300;
                         position: relative;
                         right: -15px;
-                        select.optionSelect{
+                        > .optionSelect{
                             -webkit-appearance: none;
                             -moz-appearance: none;
                             background: transparent;
@@ -489,7 +508,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 color: orangered;
                             }
                         }
-                        span.optionSelect_Label{
+                        > .optionSelect_Label{
                             margin-right: 2px;
                             vertical-align: bottom;
                             cursor: default;
@@ -500,7 +519,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
-                }
+                } // facetControls
 
                 .scrollToTop{
                     margin-top: -16px;
@@ -553,61 +572,73 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: absolute;
                         white-space: nowrap;
                         .transition(~'all 700ms ease-in-out');
-                        > span{
+                        > .clickArea{
+                            display: inline-block;
+                            vertical-align: top;
+                            line-height: 18px;
+
+                            pointer-events: all;
+                            // Note: The height of clickable area is the same as height of the bar!
+                            margin-top:4px;
+                            margin-bottom:4px;
+                            height: 10px !important; // total: 18px
+                            position: absolute;
+                            font-size: 0.8em;
+                            font-weight: 300;
+                            > .filterButtons {
+                                margin-top: -2px;
+                            }
+                        }
+                        > .attribLabel{
                             display: inline-block;
                             vertical-align: top;
                             line-height: 18px;
                             pointer-events: none;
-                            &.clickArea{
-                                pointer-events: all;
-                                // Note: The height of clickable area is the same as height of the bar!
-                                margin-top:4px;
-                                margin-bottom:4px;
-                                height: 10px !important; // total: 18px
-                                position: absolute;
-                                font-size: 0.8em;
-                                font-weight: 300;
-                                > .filterButtons {
-                                    margin-top: -2px;
+                            
+                            font-size: 0.8em;
+                            font-weight: 300;
+                            cursor: default;
+                            // display ... when text is too long
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            > .theLabel{
+                                &:before{
+                                    color: white;
+                                    font-weight: 300;
+                                    font-size: 0.7em;
+                                    vertical-align: top;
+                                    border-radius: 3px;
+                                    padding: 0px 2px 0px 2px;
+                                    margin-right: 2px;
+                                    opacity: 0.4;
                                 }
                             }
-                            &.attribLabel{
-                                font-size: 0.8em;
-                                font-weight: 300;
-                                cursor: default;
-                                // display ... when text is too long
-                                white-space: nowrap;
-                                text-overflow: ellipsis;
-                                overflow: hidden;
-                                .theLabel{
-                                    &:before{
-                                        color: white;
-                                        font-weight: 300;
-                                        font-size: 0.7em;
-                                        vertical-align: top;
-                                        border-radius: 3px;
-                                        padding: 0px 2px 0px 2px;
-                                        margin-right: 2px;
-                                        opacity: 0.4;
-                                    }
-                                }
-                                > .filterButtons{
-                                    opacity: 0;
-                                }
+                            > .filterButtons{
+                                opacity: 0;
                             }
-                            &.item_count_wrapper{
-                                font-size: 0.7em;
-                                cursor: default;
-                                pointer-events: none;
-                            }
-                            &.barGroup{
-                                position: relative;
-                                pointer-events: none;
-                                .bar{
-                                    top: 4px;
-                                    width: 1px;
-                                    height: 10px;
-                                }
+                        }
+                        > .item_count_wrapper{
+                            display: inline-block;
+                            vertical-align: top;
+                            line-height: 18px;
+                            pointer-events: none;
+                            
+                            font-size: 0.7em;
+                            pointer-events: none;
+                        }
+                        > .barGroup{
+                            display: inline-block;
+                            vertical-align: top;
+                            line-height: 18px;
+                            pointer-events: none;
+                            
+                            position: relative;
+                            pointer-events: none;
+                            > .bar{
+                                top: 4px;
+                                width: 1px;
+                                height: 10px;
                             }
                         }
                         .filterButtons{
@@ -616,25 +647,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             vertical-align: top;
                             float: left;
                             margin-left: 2px;
-                            span{ display: none; }
-                            .orButton {
+                            > .orButton {
+                                display: none;
                                 margin-right: 1px;
                                 vertical-align: top;
                                 &:hover { color: #1C737A; }
                             }
-                            .notButton {
+                            > .notButton {
+                                display: none;
                                 cursor: pointer;
                                 vertical-align: top;
                                 &:hover { color: gray; }
                             }
                         }
                         
-                        &[activeItems='0'] span.item_count{
-                            visibility: hidden;
+                        &[activeItems='0'] {
+                            .item_count{
+                                visibility: hidden;
+                            }
                         }
 
                         &:not([selected="0"]) {
-                            .theLabel{
+                            > .attribLabel > .theLabel{
                                 font-weight: 700;
                             }
                             .clickArea{
@@ -642,22 +676,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                         &[selected="1"]{
-                            .theLabel{
+                            > .attribLabel > .theLabel{
                                 color: #1D4870;
                             }
                             &[show-box=true]{
-                                .theLabel:before{
+                                > .attribLabel > .theLabel:before{
                                     content: "And";
                                     background-color: #1D4870;
                                 }
                             }
                         }
                         &[selected="2"]{
-                            .theLabel{
+                            > span.attribLabel > .theLabel{
                                 color: #1C737A;
                             }
                             &[show-box=true]{
-                                .theLabel:before{
+                                > .attribLabel > .theLabel:before{
                                     content: "Or";
                                     background-color: #1C737A;
                                 }
@@ -669,9 +703,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 color: gray;
                             }
                             &[show-box=true]{
-                                .theLabel:before{
+                                > .attribLabel > .theLabel:before{
                                     content: "Not";
-                                    background-color: gray;
+                                    background-color: black;
                                 }
                             }
                         }
@@ -680,7 +714,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             &[highlight=selected] {
                                 .theLabel{
                                     font-weight: 700 !important;
-//                                    color: @color_bars_selected;
                                 }
                                 &[selected="0"] {
                                     .clickArea { cursor: cell; }
@@ -693,9 +726,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     &[selecttype="not"] .theLabel{
                                         color: gray;
                                     }
-                                }
-                                .bar.hover{
-                                    background-color: @color_related;
                                 }
                             }
                             &[highlight=true] {
@@ -710,31 +740,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     } // .attrib
                 } // .attribGroup
-
             }// facetCategorical
 
             > .facetInterval{
                 padding: 5px 12px 0px 12px;
                 overflow: hidden;
-                .histogram{
+                > .histogram{
                     position:relative;
                     pointer-events: all;
-            //        margin: 5px 13px 1px 13px;
                     overflow: hidden; // necessary, because after bin height is scaled, they can extend beyond.
                     .transition(~'height 700ms ease-in-out');
-                    .bins{
+                    > .bins{
                         position: absolute;
                         top: 14px;
                         .transition(@layout_animation);
-                        .bin{
+                        > .bin{
                             position: absolute;
                             display: block;
-                            .bar{
+                            > .bar{
                                 width: 1px;
                                 height: 1px;
                                 .transform-origin(0% 100%);
                             }
-                            span.item_count{
+                            > .item_count{
                                 top: -1em;
                                 display: block;
                                 position: relative;
@@ -745,25 +773,80 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 cursor: pointer;
                                 .transition(~'transform 700ms ease-in-out');
                             }
-                            &[noitem=true] span.item_count{
+                            &[noitem=true] > .item_count{
                                 display: none;
                             }
                             &[highlight=true]{
-                                span.item_count{
+                                > .item_count{
                                     color: orangered;
-                                }
-                            }
-                            &[highlight=selected]{
-                                .bar.hover{
-//                                    background-color: @color_bars_selected !important;
                                 }
                             }
                         }
                     }
                 }
+                > .percentileGroup{
+                    height: 14px;
+                    position: relative;
+                    border-style: solid;
+                    border-color: lightgray;
+                    border-width: 1px 0px;
+                    > .percentileTitle{
+                        font-size: 0.6em;
+                        position: absolute;
+                        display: inline-block;
+                        font-weight: 300;
+                        bottom: 0px;
+                        left: -9px;
+                        text-shadow: 0px 0px 2px white;
+                        z-index: 120;
+                        color: gray;
+                        pointer-events: none;
+                    }
+                    > .quantile {
+                        display: inline-block;
+                        position: absolute;
+                        height: 12px;
+                        width:1px;
+                        .transition(~'transform 700ms ease-in-out');
+                        .transform-origin(0% 0%);
+                        &.q_pos{
+                            background-color: rgb(27, 111, 97);
+                            margin-left: -0.5px;
+                            z-index: 101;
+                            pointer-events: none;
+                            &.q_50 {
+                                width: 4px;
+                                background-color: rgb(27, 111, 97);
+                                margin-left: -2px;
+                                pointer-events: all;
+                            }
+                        }
+                        &.q_range{
+                            &:hover{
+                                border-color: rgb(27, 111, 97);
+                                border-style: solid;
+                                border-width: 1px 0px 1px 0px;
+                                z-index: 100;
+                            }
+                        }
+                        &.q_40_60 {
+                            background-color: lighten(rgb(27, 111, 97), 15%);
+                        }
+                        &.q_30_70 {
+                            background-color: lighten(rgb(27, 111, 97), 40%);
+                        }
+                        &.q_20_80 {
+                            background-color: lighten(rgb(27, 111, 97), 60%);
+                        }
+                        &.q_10_90 {
+                            background-color: lighten(rgb(27, 111, 97), 70%);
+                        }
+                    }
+                } // percentileGroup
+
             } // facetInterval
 
-            span.bar{
+            .bar{
                 display: block;
                 position: absolute;
                 background-color: @color_bars;
@@ -776,7 +859,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     background-color: #DEE2E6;
                     pointer-events: none;
                 }
-                &.hover {
+                &.preview {
                     background-color: @color_related;
                     pointer-events: none;
                     .transform(~'scaleX(0)');
@@ -785,7 +868,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-        } // kshfChart
+        } // wrapperitem_count_wrapper
 
         .subFacets {
             position:relative;
@@ -808,59 +891,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        .attribTextSearch{
-            white-space:nowrap;
-            position: relative;
-            input {
-                width: 100%;
-                font-size: 0.7em;
-                font-weight: 700;
-                border-width: 0px;
-                // border-bottom: dashed 1px #cb5454;
-                color: #cb5454;
-                background-color:rgba(244, 244, 244,0);
-                pointer-events: all;
-                margin: 0px;
-                &:focus{
-                    outline-color: gray;
-                    outline-width: 4px;
-                }
-                &:hover{
-                    border: solid 1px #cb5454;
-                    padding: 0px 0px 0px 0px;
-                    background-color: white;
-                }
-                &::-webkit-input-placeholder { 
-                    font-weight: 500;
-                    color: #cb5454;
-                }
-                &:focus::-webkit-input-placeholder { 
-                    color: #F3CDCD;
-                }
-                &:hover::-webkit-input-placeholder { 
-                    color: #F3CDCD;
-                }
-            }
-            i.fa.clearText{
-                position: absolute;
-                left: 1px;
-                top: 3px;
-                cursor: pointer;
-                font-size: 0.8em;
-                color: gray;
-                display: none;
-                &:hover{
-                    color: #cb5454;
-                }
-            }
-            i.searchIcon{
-                position: relative;
-                top: -1px;
-                left: 2px;
-                color: #cb5454;
-                font-size: 0.7em;
-            }
-        }
         &[collapsed=true] {
             > .headerGroup {
                 color: gray;
@@ -969,21 +999,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             opacity: 0.6;
         }
     }
-    span.middleScrollbar{
-        display: inline-block;
-        overflow-y: auto;
-        overflow-x: hidden;
-        position:absolute;
-        z-index:10;
-        .transition(~'height 700ms ease-in-out');
-        div.filler{
-            height: 500px;
-            background-color: red;
-            visibility: hidden;
-            width: 20px;
-        }
-    }
-    span.item_count{
+
+    .item_count{
         color: gray;
         &::before{ content: "("; }
         &::after{ content: ")"; }
@@ -1028,10 +1045,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         float: left;
         z-index: 100; // on top of scatterplot during time collapse animation
         .transition(~'margin-top 700ms ease-in-out');
-        div.listItemGroup {
+        > .leftBlockAdjustSize{
+            position: absolute;
+            left: 0px;
+            pointer-events: all;
+            height: 100%;
+            width: 0px;
+            // border-bottom: solid 1px lightgray;
+            // border-top: solid 1px lightgray;
+            border-width: 0px 2px 0px 0px;
+            border-style: dotted;
+            border-color: lightgray;
+            cursor: col-resize;
+            // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
+            opacity: 0.5;
+            z-index: 10;
+            &:hover{
+                // border-bottom: solid 1px gray;
+                // border-top: solid 1px gray;
+                border-width: 0px 2px 0px 0px;
+                border-style: dotted;
+                border-color: gray;
+                // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
+            }
+        }
+        > .listItemGroup {
             overflow-y:scroll;
             overflow-x:hidden;
-//            width: calc(~"100% - 2px");
             border-style: solid;
             border-color: rgb(223, 210, 169);
             border-width: 0px 2px 2px 2px;
@@ -1039,7 +1079,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color: white;
             .transition(~'height 700ms ease-in-out');
         }
-        .showMore{
+        > .showMore{
             cursor: pointer;
             border: solid 1px lightgray;
             border-radius: 9px;
@@ -1056,29 +1096,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             left: 4px;
             //bottom: -25px;
             .transition(~"bottom 700ms ease 50ms");
+            .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
-            span.MoreText{
+            > .MoreText{
                 display:inline-block;
                 vertical-align: top;
                 top: 2px;
                 position: relative;
             }
-            .Count{
+            > .Count{
                 font-size: 0.9em;
                 top: 3px;
                 position: relative;
                 color:gray;
+                &.CountAbove{
+                    float:left;
+                    margin-left: 3px;
+                }
+                &.CountBelow{
+                    float:right;
+                    margin-right: 3px;
+                }
             }
-            .CountAbove{
-                float:left;
-                margin-left: 3px;
-            }
-            .CountBelow{
-                float:right;
-                margin-right: 3px;
-            }
-
-            .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
             &:hover{
                 //background-color: darken(lightgray,0%);
@@ -1088,50 +1127,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        div.itemLinks{
-            display: inline-block;
-            .header {
-                font-size: 1.1em;
-                font-weight: 700;
-                cursor: default;
-                font-variant: small-caps;
-                pointer-events: all;
-                padding-left: 5px;
-                vertical-align: bottom;
-                display: block;
-            }
-            .captureEvents {
-                cursor: pointer;
-                position:relative;
-                &:hover{
-                    .item_count{
-                        color: orangered;
-                    }
-                    .itemBar{
-                        background-color: orangered !important;
-                    }
-                }
-                &[count="0"]{
-                    pointer-events: none;
-                }
-            }
-            .item_count{
-                display: inline-block;
-                text-align: right;
-                margin-right: 2px;  
-                font-size: 0.7em;
-            }
-            .itemBar{
-                position: absolute;
-                display: inline-block;
-                top: 5px;
-                width: 1px;
-                height: 10px;
-                .transform-origin(0% 0%;);
-                background-color: @color_bars;
-            }
-        }
-        div.listsortcolumn{
+        .listsortcolumn{
             padding-right:5px;
             font-weight: 300;
             text-align: right;
@@ -1149,13 +1145,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         select.listSortOptionSelect{
             bottom:0px;
         }
-        &[displaytype="grid"] div.listItem .itemToggleDetails{
+        &[displaytype="grid"] .listItem > .itemToggleDetails{
             position: absolute;
             z-index: 10;
         }
     } // div.listDiv
 
-    div.scrollToTop{
+    .scrollToTop{
         display:inline-block;
         visibility: hidden;
         color: red;
@@ -1184,106 +1180,124 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //            font-size: 1.2em;
         }
         > .bottomRow{
-            min-height: 20px;
-            > .scrollToTop{
-                position: absolute;
-                right: 0px;
-                bottom: 0px;
-                text-align: right;
-            }
-            > .listsortcolumn{
-                vertical-align: bottom;
-            }
-            > .headerLinkStateColumn{
-                position:absolute;
-                right: 21px;
-                bottom: 0px;
-                font-size: 1.1em;
-                text-align: right;
-                margin-left: 6px;
-                .fa-link{
-                    cursor: pointer;
-                    margin-right: 2px;
-                    &:hover{ color: orangered; }
+            display: table;
+            width: 100%;
+            > .bottomRowRow{
+                display: table-row;
+                > .scrollToTop{
+                    display: table-cell;
+                    vertical-align: bottom;
+                    text-align: right;
+                    width: 15px;
+//                    float: right;
+//                    height: 100%;
+//                    margin-bottom: -3px;
                 }
-                .linkTitleText{
-                    font-size: 0.8em;
-                    font-variant: small-caps;
-                    font-weight: 300;
-                    cursor: default;
+                > .listsortcolumn{
+                    display: table-cell;
+                    vertical-align: bottom;
                 }
-            }
-            > .filtercrumbs{
-                font-size: 0.9em;
-                display: inline-block;
-                margin-left: 5px;
-                vertical-align: top;
-                margin-top: 2px;
-                > .filter-block{
-                    display: inline-block;
-                    position: relative;
-                    cursor: default;
-                    color: rgb(37, 33, 18);
-                    font-weight: 300;
-                    // border: 1px rgb(104, 91, 43) solid;
-                    box-shadow: 1px 1px 1px rgb(78, 71, 43);
-                    background-color: rgba(255,255,255,0.5);
-                    margin-right: 5px;
-                    padding-left: 2px;
-        //            opacity: 0;
-                    max-width: 0px;
-                    .transition(~"all 1000ms linear");
-                    > .sdsdsds{
-                        /*
-                        max-width: 300px;
-                        max-width: 300px;
-                        -o-text-overflow: ellipsis;
-                        text-overflow: ellipsis;*/
-                        display: block;
-                        // margin-right: 20px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        // TODO: Enable cross attribute when mouse is over close button...
-                        &[cross]{
-                            text-decoration: line-through;
-                        }
-                        > .summary_header{
-                            padding:1px 0px 1px 0px;
+                > .headerLinkStateColumn{
+                    display: table-cell;
+                    font-size: 1.1em;
+                    text-align: right;
+                    min-width: 80px;
+                    > .linkAll{
+                        > .fa-link{
+                            cursor: pointer;
                             font-size: 0.9em;
-                            &:after{
-                                content: ': ';
+                        }
+                        > .headerLinkColumnAllResults{
+                            cursor: pointer;
+                            margin-right: 2px;
+                            font-size: 0.8em;
+                        }
+                        &:hover{ color: orangered; }
+                    }
+
+                    > .linkTitleText{
+/*                        font-size: 0.8em;
+                        font-variant: small-caps;
+                        font-weight: 300;
+                        cursor: default;*/
+                        display: block;
+                        font-size: 1.0em;
+                        font-weight: 700;
+                        cursor: default;
+                        font-variant: small-caps;
+                        pointer-events: all;
+                        height: 16px;
+                        margin-left: 2px;
+                    }
+                }
+                > .filtercrumbs{
+                    display: table-cell;
+                    font-size: 0.9em;
+                    margin-left: 5px;
+                    vertical-align: top;
+                    margin-top: 2px;
+                    > .filter-block{
+                        display: inline-block;
+                        position: relative;
+                        cursor: pointer;
+                        color: rgb(37, 33, 18);
+                        font-weight: 300;
+                        // border: 1px rgb(104, 91, 43) solid;
+                        box-shadow: 1px 1px 1px rgb(78, 71, 43);
+                        background-color: rgba(255,255,255,0.5);
+                        margin-right: 5px;
+                        padding-left: 2px;
+            //            opacity: 0;
+                        max-width: 0px;
+                        .transition(~"all 250ms linear");
+                        > .sdsdsds{
+                            /*
+                            max-width: 300px;
+                            max-width: 300px;
+                            -o-text-overflow: ellipsis;
+                            text-overflow: ellipsis;*/
+                            display: block;
+                            // margin-right: 20px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            > .summary_header{
+                                padding:1px 0px 1px 0px;
+                                font-size: 0.9em;
+                                &:after{
+                                    content: ': ';
+                                }
+                            }
+                            > .summary_details{
+                                padding:1px 0px 1px 0px;
+                                display: inline;
+                                margin-right: 15px;
                             }
                         }
-                        > .summary_details{
-                            padding:1px 0px 1px 0px;
-                            display: inline;
-                            margin-right: 15px;
+                        &[ready=true]{ 
+            //                opacity: 1;
+                            max-width: 1000px;
                         }
+                        &[ready=false]{ 
+            //                opacity: 1;
+                            max-width: 0px;
+                            .chartClearFilterButton{ display:none;}
+                        }
+                        &:hover{
+                            background-color: rgba(255,255,255,1.0);
+                            .sdsdsds{
+                                text-decoration: line-through;
+                            }
+                            .chartClearFilterButton{
+                                background-color: #B6AF96;
+                                color: #635d46;
+                            }
+                        }
+                        b{ font-weight: 700; }
+                        &[filtered=false]{ display: none; }
                     }
-                    &[ready=true]{ 
-        //                opacity: 1;
-                        max-width: 1000px;
-                    }
-                    &[ready=false]{ 
-        //                opacity: 1;
-                        max-width: 0px;
-                        .chartClearFilterButton{ display:none;}
-                    }
-                    &:hover{
-                        background-color: rgba(255,255,255,1.0);
-                    }
-                    b{ font-weight: 700; }
-                    &[filtered=false]{ display: none; }
                 }
             }
-        }
-
-        span.filter-separator{
-            padding-left:10px;
-            padding-right:5px;
-            display:block;
-            float: left;
-        }
+        } // bottomRow
 
         span.mainTextSearch {
             white-space: nowrap;
@@ -1404,40 +1418,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // listHeader
 
-    .itemRank{
-        margin-left: 2px;
-        margin-top: 2px;
-        color: gray;
-        font-size: 0.8em;
-        font-weight: 300;
-        float: left;
-    }
-
-    .itemState{
-        width: 14px;
-        text-align: left;
-        cursor: pointer;
-        font-weight: 700;
-        display: inline-block;
-        position: relative;
-        white-space: nowrap;
-        .fa{
-            display: none;
-            position:relative;
-            top: 2px;
-            left: 2px;
-            color: gray; //@color_related;
-        }
-        .fa-bullseye{
-            color: black;
-            &:hover{ color: orangered; }
-        }
-        .fa:hover{
-            color: @color_bars_selected;
-        }
-    }
-
-    div.listItem {
+    .listItem {
         display:none;
         opacity: 1;
         clear:left;
@@ -1452,8 +1433,67 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
 
-        &[details=true]{
-            max-height: none;
+        > .listsortcolumn{
+            vertical-align: top;
+            cursor: cell;
+            > .columnLabel{
+                float: right;
+            }
+            > .itemRank{
+                margin-left: 2px;
+                margin-top: 2px;
+                color: gray;
+                font-size: 0.8em;
+                font-weight: 300;
+                float: left;
+            }
+            &:hover{ color: red; }
+        }
+        > .content{
+            vertical-align: top;
+            display: inline-block;
+            border: solid 0px lightgray;
+            position: relative;
+        }
+        > .itemToggleDetails{
+            vertical-align: top;
+            width:18px; // includes the padding, using box model...
+            cursor: pointer;
+            font-weight: 700;
+            display:inline-block; 
+            position: relative;
+            > .item_details_toggle{
+                .transition(~'transform 500ms');
+                color: gray;
+                top: 2px;
+                left: 1px;
+                position: relative;
+                &:hover{ color:black; }
+            }
+        }
+        > .itemLinkStateColumn{
+            vertical-align: top;
+            display:inline-block;
+            float: right;
+            text-align: right;
+            vertical-align: top;
+            white-space: nowrap;
+            padding-right: 2px;
+            > .itemLinkIcon{
+                font-size: 0.8em;
+                display: none;
+                cursor: pointer;
+                margin-right: 2px;
+            }
+            > .item_count{
+                font-size: 0.6em;
+                vertical-align: middle;
+            }
+            > .itemSelectCheckbox{
+                width: 15px;
+                text-align: left;
+                &:hover {color: orangered;}
+            }
         }
 
         &[animst=open]{
@@ -1467,25 +1507,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[animst=visible]{
             // default
         }
-        > .itemToggleDetails{
-            width:18px; // includes the padding, using box model...
-            cursor: pointer;
-            font-weight: 700;
-            display:inline-block; 
-            position: relative;
-            .item_details_toggle{
-                .transition(~'transform 500ms');
-                color: gray;
-                top: 2px;
-                left: 1px;
-                position: relative;
-                &:hover{
-                    color:black;
-                }
-            }
-        }
 
         &[details=true]{
+            max-height: none;
             .item_details_toggle{
                 display:inline-block;
                 .rotate(180deg);
@@ -1508,13 +1532,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[highlight=selected]{
             box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
-            .itemState .fa-bullseye{ display: inline; }
             &[selectlinked]{
                 .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
-                .itemLinkIcon{
+                > .itemLinkStateColumn > .itemLinkIcon{
                     display: inline;
                     color: @color_bars_selected;
-                    margin-right: 2px;
                     &:hover{
                         color: orangered;
                     }
@@ -1524,47 +1546,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[highlight=true]{
             box-shadow: inset 0px 0px 5px #BBBBBB;
             background-color: #F8F8F8;
-            .itemLinkIcon{
+            > .itemLinkStateColumn > .itemLinkIcon{
                 display: inline;
                 color: gray;
-                margin-right: 2px;
             }
 //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
 //            box-shadow: inset 0px 0px 4px @color_related;
         }
-        div{
-            vertical-align: top;
-        }
-        span{
-            vertical-align: top;
-        }
-        div.content{
-            display: inline-block;
-            border: solid 0px lightgray;
-            position: relative;
-        }
-        div.listsortcolumn{
-            cursor: cell;
-            &:hover{ color: red; }
-            .columnLabel{
-                float: right;
+        &[selectLinked=true] .itemLinkStateColumn{
+            .fa-square-o{
+                display: none;
+            }
+            .fa-check-square-o{
+                display: inline-block;
             }
         }
-
-        div.itemNo{
-            position: relative;
-            padding-left:10px;
-            display:block;
-            width:12px;
-            color:white;
+        &[selectLinked=false] .itemLinkStateColumn{
+            .fa-square-o{
+                display: inline-block;
+            }
+            .fa-check-square-o{
+                display: none;
+            }
         }
-        div.icon{
-            position: relative;
-            display:inline-block;
-            width:28px;
-            a{ color:white; }
-        }
-        div.iteminfo{
+        .iteminfo{
             float:none;
             clear: left;
             font-weight:normal;
@@ -1592,44 +1597,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-style:italic;
             font-weight:300;
         }
-        div.groupMe{
-            overflow: hidden;
-            float: none;
-        }
-        .itemLinkIcon{
-            display: none;
-        }
-        span.itemLinkStateColumn{
-            display:inline-block;
-            text-align: right;
-            padding-left: 2px;
-            vertical-align: top;
-            white-space: nowrap;
-            .fa{
-                cursor: pointer;
-            }
-            .itemSelectCheckbox{
-                width: 15px;
-                text-align: left;
-                &:hover {color: orangered;}
-            }
-        }
-        &[selectLinked=true] span.itemLinkStateColumn{
-            .fa-square-o{
-                display: none;
-            }
-            .fa-check-square-o{
-                display: inline-block;
-            }
-        }
-        &[selectLinked=false] span.itemLinkStateColumn{
-            .fa-square-o{
-                display: inline-block;
-            }
-            .fa-check-square-o{
-                display: none;
-            }
-        }
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
 
@@ -1656,66 +1623,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 10px;
                 border-left: solid 1px gray;
                 display: block;
-            }
-        }
-    }
-
-    .percentileGroup{
-        height: 14px;
-        position: relative;
-        border-style: solid;
-        border-color: lightgray;
-        border-width: 1px 0px;
-        span.percentileTitle{
-            font-size: 0.6em;
-            position: absolute;
-            display: inline-block;
-            font-weight: 300;
-            bottom: 0px;
-            left: -9px;
-            text-shadow: 0px 0px 2px white;
-            z-index: 120;
-            color: gray;
-            pointer-events: none;
-        }
-        span.quantile {
-            display: inline-block;
-            position: absolute;
-            height: 12px;
-            width:1px;
-            .transition(~'transform 700ms ease-in-out');
-            .transform-origin(0% 0%);
-            &.q_pos{
-                background-color: rgb(27, 111, 97);
-                margin-left: -0.5px;
-                z-index: 101;
-                pointer-events: none;
-                &.q_50 {
-                    width: 4px;
-                    background-color: rgb(27, 111, 97);
-                    margin-left: -2px;
-                    pointer-events: all;
-                }
-            }
-            &.q_range{
-                &:hover{
-                    border-color: rgb(27, 111, 97);
-                    border-style: solid;
-                    border-width: 1px 0px 1px 0px;
-                    z-index: 100;
-                }
-            }
-            &.q_40_60 {
-                background-color: lighten(rgb(27, 111, 97), 15%);
-            }
-            &.q_30_70 {
-                background-color: lighten(rgb(27, 111, 97), 40%);
-            }
-            &.q_20_80 {
-                background-color: lighten(rgb(27, 111, 97), 60%);
-            }
-            &.q_10_90 {
-                background-color: lighten(rgb(27, 111, 97), 70%);
             }
         }
     }
@@ -2012,6 +1919,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-weight: 300px;
         border-radius: 3px;
     }
+    .tipsy-inner{
+        span.big{
+            font-size: 1.4em;
+        }
+        span.action{
+            font-weight: 700;
+        }
+        i{
+            margin-right: 2px;
+        }
+    }
 
 }
 
@@ -2034,20 +1952,5 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
 .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
-
-.tipsy{
-    .tipsy-inner{
-        span.big{
-            font-size: 1.4em;
-        }
-        span.action{
-            font-weight: 700;
-        }
-        i{
-            margin-right: 2px;
-        }
-    }
-}
-
 
 

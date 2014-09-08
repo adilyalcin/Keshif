@@ -331,7 +331,7 @@ kshf.Util = {
             .append("span").attr("class","fa fa-chevron-down")
             ;
 
-        var topRow = this.dom.headerGroup.append("span");
+        var topRow = this.dom.headerGroup.append("span").style('position','relative');
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .each(function(d){
@@ -944,8 +944,6 @@ kshf.Filter.prototype = {
         var me=this;
         x = this.browser.dom.filtercrumbs
             .append("span").attr("class","filter-block")
-            ;
-        x.append("span").attr("class","chartClearFilterButton summary")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -954,6 +952,14 @@ kshf.Filter.prototype = {
                     }
                 })
             })
+            .on("mouseenter",function(){
+                this.tipsy.show();
+                d3.event.stopPropagation();
+            })
+            .on("mouseleave",function(d,i){
+                this.tipsy.hide();
+                d3.event.stopPropagation();
+            })
             .on("click",function(){
                 this.tipsy.hide();
                 me.clearFilter(true);
@@ -961,13 +967,8 @@ kshf.Filter.prototype = {
                 setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_CRUMB, {id: this.id});
             })
-            .on("mouseover",function(){
-                this.tipsy.show();
-            })
-            .on("mouseout",function(d,i){
-                this.tipsy.hide();
-                d3.event.stopPropagation();
-            })
+            ;
+        x.append("span").attr("class","chartClearFilterButton summary")
             .append("span").attr("class","fa fa-times")
             ;
         var y = x.append("span").attr("class","sdsdsds");
@@ -1020,7 +1021,7 @@ kshf.List = function(kshf_, config, root){
         this.hasLinkedItems = true;
     }
     if(this.hasLinkedItems){
-        this.selectColumnWidth += 17;
+        this.selectColumnWidth += 30;
         this.showSelectBox = false;
         if(config.showSelectBox===true) this.showSelectBox = true;
         if(this.showSelectBox)
@@ -1112,7 +1113,8 @@ kshf.List = function(kshf_, config, root){
     this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
 
     this.dom.listHeader_TopRow = this.dom.listHeader.append("div").attr("class","topRow");
-    this.dom.listHeader_BottomRow = this.dom.listHeader.append("div").attr("class","bottomRow");
+    this.dom.listHeader_BottomRow = this.dom.listHeader.append("div").attr("class","bottomRow")
+        .append("span").attr("class","bottomRowRow");
 
     this.dom.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
         .on("scroll",function(d){
@@ -1165,6 +1167,9 @@ kshf.List = function(kshf_, config, root){
     // **************************************************************************************************
     // Header stuff *************************************************************************************
 
+    this.insertHeaderSortSelect();
+    this.dom.filtercrumbs = this.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
+    this.insertHeaderLinkedItems();
     this.dom.scrollToTop = this.dom.listHeader_BottomRow.append("div").attr("class","scrollToTop")
         .html("⬆")
         .attr("title","Scroll To Top")
@@ -1172,8 +1177,6 @@ kshf.List = function(kshf_, config, root){
             kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
             if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
         });
-    this.insertHeaderSortSelect();
-    this.insertHeaderLinkedItems();
 
     this.sortItems();
     this.insertItems();
@@ -1305,13 +1308,13 @@ kshf.List.prototype = {
         var me=this;
         var x = this.dom.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
         if(this.hasLinkedItems){
-            x.append("span").attr("class","linkTitleText").text(this.linkText+": ");
-            x.append("span").attr("class","fa fa-link")
+            x.append("span").attr("class","linkTitleText").text(this.linkText);
+            var y =x.append("span").attr("class","linkAll")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
-                        title: function(){ return "<span class='action'><span class='fa fa-link'></span> Show</span> all <br>"+me.linkText
-                            +"<br>results"; }
+                        title: function(){ return "<span class='action'><span class='fa fa-link'></span> Show</span> <br>"
+                            +me.linkText+"<br>results"; }
                     })
                 })
                 .on("mouseover",function(){ this.tipsy.show(); })
@@ -1330,6 +1333,9 @@ kshf.List.prototype = {
                     // delay layout height update
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
+
+            y.append("span").attr("class","headerLinkColumnAllResults").text(" All below");
+            y.append("span").attr("class","fa fa-link");
 
             if(this.showSelectBox){
                 x.append("span").attr("class","fa fa-check-square-o")
@@ -1409,7 +1415,7 @@ kshf.List.prototype = {
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
-                        title: function(){ return "<span class='action'>Show</span> "+me.linkText; }
+                        title: function(){ return "<span class='action'>Show</span> "+me.linkText +" this"; }
                     })
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
@@ -1428,6 +1434,11 @@ kshf.List.prototype = {
                     });
                     // delay layout height update
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
+                });
+
+            this.dom.itemLinkStateColumn_Count = this.dom.itemLinkStateColumn.append("span")
+                .attr("class","item_count").text(function(d){
+                    return d.itemCount_Active;
                 });
 
             if(this.showSelectBox){
@@ -1735,7 +1746,7 @@ kshf.List.prototype = {
         contentWidth-=this.sortColWidth;
         if(this.detailsToggle!=="off") 
             contentWidth-=this.itemtoggledetailsWidth;
-        this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
+//        this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
         if(this.hasLinkedItems){
             contentWidth-=this.selectColumnWidth;
         }
@@ -2067,10 +2078,11 @@ kshf.Browser.prototype = {
                     }
                 })
             })
-            .on("mouseover",function(){
+            .on("mouseenter",function(){
                 this.tipsy.show();
+                d3.event.stopPropagation();
             })
-            .on("mouseout",function(d,i){
+            .on("mouseleave",function(d,i){
                 this.tipsy.hide();
                 d3.event.stopPropagation();
             })
@@ -2354,7 +2366,8 @@ kshf.Browser.prototype = {
                 this.listDisplay.insertGlobalTextSearch();
             }
 
-            this.dom.filtercrumbs = this.listDisplay.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
+//            this.dom.filtercrumbs = this.listDisplay.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
+            this.dom.filtercrumbs = this.listDisplay.dom.filtercrumbs;
 
             var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
             // TODO: implement popup for file-based resources
@@ -2627,12 +2640,14 @@ kshf.Browser.prototype = {
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
     clearResultPreview: function(){
+        this.resultPreviewActive = false;
         this.items.forEach(function(item){
             if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
         })
         this.facets.forEach(function(facet){ facet.clearResultPreview(); });
     },
     refreshResultPreview: function(){
+        this.resultPreviewActive = true;
         this.facets.forEach(function(facet){ facet.refreshResultPreview(); });
     },
     /** -- */
@@ -3484,6 +3499,7 @@ kshf.Facet_Categorical.prototype = {
         var me=this;
         var textSearchRowDOM = this.dom.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
         this.dom.attribTextSearch=textSearchRowDOM.append("input")
+            .attr("class","attribTextSearchInput")
             .attr("type","text")
             .attr("placeholder","Search")// " in ...+kshf.Util.toProperCase(this.options.facetTitle))
             .on("input",function(){
@@ -3595,7 +3611,7 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs()) return;
         var me=this;
         // arbitrary change
-        this.refreshActiveItemCount();
+        this.refreshQueryPreview();
         this.updateBarAxisScale();
         if(!this.skipSorting) {
             this.updateSorting();
@@ -3609,14 +3625,19 @@ kshf.Facet_Categorical.prototype = {
             this.dom.facetCategorical.style("width",this.getWidth()+"px");
     },
     /** -- */
-    refreshActiveItemCount: function(){
+    refreshQueryPreview: function(){
         var me = this;
         var formatFunc = kshf.Util.formatForItemCount;
-        this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Active);  });
-        this.dom.attribs
-            .attr("noitems",function(d){ return !me.isAttribSelectable(d); })
-            .attr("itemCount_Active",function(d){ return d.itemCount_Active; })
-            ;
+        this.dom.attribs.attr("noitems",function(d){ return !me.isAttribSelectable(d); });
+        if(this.browser.resultPreviewActive===true){
+            if(this.browser.preview_not){
+                this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Active-d.itemCount_Preview);  });
+            } else {
+                this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Preview);  });
+            }
+        } else {
+            this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Active);  });
+        }
     },
     refreshBarGroupWidth: function(){
         // total width of bar group...
@@ -3656,21 +3677,32 @@ kshf.Facet_Categorical.prototype = {
                 var transform="scaleX(0)";
                 kshf.Util.setTransform(this,transform);
             });
+        this.refreshQueryPreview();
     },
     /** -- */
     refreshResultPreview: function(){
         if(!this.hasAttribs()) return;
         if(this.collapsed) return;
         var me = this;
-        this.dom.bar_highlight
-            .each(function(attrib){
+        if(this.browser.preview_not){
+            this.dom.bar_highlight.each(function(attrib){
                 if(attrib.orderIndex<me.attrib_InDisplay_First)
                     return;
                 if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1)
                     return;
-                var transform="scaleX("+me.catBarAxisScale(attrib.itemCount_Preview)+")";
-                kshf.Util.setTransform(this,transform);
+                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(
+                    attrib.itemCount_Active-attrib.itemCount_Preview)+")");
             });
+        } else {
+            this.dom.bar_highlight.each(function(attrib){
+                if(attrib.orderIndex<me.attrib_InDisplay_First)
+                    return;
+                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1)
+                    return;
+                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.itemCount_Preview)+")");
+            });
+        }
+        this.refreshQueryPreview();
     },
     /** -- */
     refreshLabelWidth: function(w){
@@ -3684,8 +3716,7 @@ kshf.Facet_Categorical.prototype = {
         if(this.hasAttribs()){
             this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
             this.dom.attribChartAxis.each(function(d){
-                var x=(labelWidth+kshf_.getWidth_QueryPreview());
-                kshf.Util.setTransform(this,"translateX("+x+"px)");
+                kshf.Util.setTransform(this,"translateX("+(labelWidth+kshf_.getWidth_QueryPreview())+"px)");
             });
         }
     },
@@ -4043,6 +4074,9 @@ kshf.Facet_Categorical.prototype = {
                 this.__data__.facetDOM.tipsy.show();
                 attrib.facetDOM.setAttribute("selectType","not");
                 me.tipsy_active = this.__data__.facetDOM.tipsy;
+                me.browser.root.attr("preview-not",true);
+                me.browser.preview_not = true;
+                me.browser.refreshResultPreview();
                 d3.event.stopPropagation();
             })
             .on("mouseout",function(attrib,i){
@@ -4051,16 +4085,22 @@ kshf.Facet_Categorical.prototype = {
                 this.__data__.facetDOM.tipsy.show();
                 me.tipsy_active = this.__data__.facetDOM.tipsy;
                 attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+                setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
+                me.browser.preview_not = false;
+                me.browser.refreshResultPreview();
                 d3.event.stopPropagation();
             })
             .on("click",function(attrib,i){
+                me.browser.preview_not = false;
                 me.filterAttrib(attrib,"NOT");
                 this.__data__.facetDOM.tipsy.hide();
+                setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
                 d3.event.stopPropagation();
             })
 
     	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "attribLabel hasLabelWidth");
 
+        // These are "invisible"...
         this.dom.filterButtons = this.dom.attrLabel.append("span").attr("class", "filterButtons");
         this.dom.filterButtons.append("span").attr("class","orButton fa fa-plus-square");
         this.dom.filterButtons.append("span").attr("class","notButton fa fa-minus-square");
@@ -4082,7 +4122,7 @@ kshf.Facet_Categorical.prototype = {
     		})
             ;
         this.dom.bar_highlight = this.dom.barGroup.append("span")
-            .attr("class", "bar hover").attr("fast",true);
+            .attr("class", "bar preview").attr("fast",true);
         this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
 
         this.refreshLabelWidth();
@@ -4714,7 +4754,7 @@ kshf.Facet_Interval.prototype = {
             .on("mouseover",onMouseOver)
             .on("mouseout",onMouseOut)
             .on("click",onClick);
-        xxxx.append("span").attr("class","bar hover").attr("fast",true);
+        xxxx.append("span").attr("class","bar preview").attr("fast",true);
         xxxx.append("span").attr("class","item_count")
             .on("mouseover",onMouseOver)
             .on("mouseout",onMouseOut)
@@ -4723,7 +4763,7 @@ kshf.Facet_Interval.prototype = {
         this.dom.histogram_bin = this.dom.histogram_bins.selectAll("span.bin");
         this.dom.bars_active = this.dom.histogram_bin.selectAll(".bar.active");
         this.dom.bars_total = this.dom.histogram_bin.selectAll(".bar.total");
-        this.dom.bars_highlight = this.dom.histogram_bin.selectAll(".bar.hover");
+        this.dom.bars_highlight = this.dom.histogram_bin.selectAll(".bar.preview");
 
         this.dom.bars_item_count = this.dom.histogram_bin.selectAll(".item_count");
 
@@ -4732,7 +4772,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshBars_Total_Scale();
         this.refreshBars_Active_Scale();
         this.refreshResultPreview();
-        this.refreshBars_Item_Count();
+        this.refreshQueryPreview();
     },
     fixIntervalFilterRange: function(){
         if(this.options.intervalScale==='log' || this.options.intervalScale==='step'){
@@ -4983,6 +5023,7 @@ kshf.Facet_Interval.prototype = {
             bar.itemCount_Preview=0;
             kshf.Util.setTransform(this,"scale("+width+",0)");
         });
+        this.refreshQueryPreview();
     },
     refreshResultPreview: function(){
         if(this.isEmpty) return;
@@ -4993,11 +5034,17 @@ kshf.Facet_Interval.prototype = {
             if(bar.itemCount_Preview===0) return;
             kshf.Util.setTransform(this,"scale("+width+","+barHeightScale(bar.itemCount_Preview)+")");
         });
+        this.refreshQueryPreview();
     },
-    refreshBars_Item_Count: function(){
-        this.dom.histogram_bin.attr("noitem",function(bar){ return bar.itemCount_Active===0; });
+    refreshQueryPreview: function(){
         var formatFunc = kshf.Util.formatForItemCount;
-        this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.itemCount_Active);  });
+        if(this.browser.resultPreviewActive===true){
+            this.dom.histogram_bin.attr("noitem",function(bar){ return bar.itemCount_Preview===0; });
+            this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.itemCount_Preview);  });
+        } else {
+            this.dom.histogram_bin.attr("noitem",function(bar){ return bar.itemCount_Active===0; });
+            this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.itemCount_Active);  });
+        }
     },
     refreshIntervalSlider: function(){
         var me=this;
@@ -5077,7 +5124,7 @@ kshf.Facet_Interval.prototype = {
         if(this.isEmpty) return;
         if(resultChange<0 && false){
             this.updateActiveItems();
-            this.refreshBars_Item_Count();
+            this.refreshQueryPreview();
             // first scale using the existing scale
             this.refreshBins_Translate();
             this.refreshBars_Active_Scale();
@@ -5086,7 +5133,7 @@ kshf.Facet_Interval.prototype = {
             },1000)
         } else{
             this.updateActiveItems();
-            this.refreshBars_Item_Count();
+            this.refreshQueryPreview();
             this.animateBarScale2Active();
             if(this.options.showPercentile){
                 this.updateQuantiles();
