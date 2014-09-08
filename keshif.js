@@ -337,7 +337,7 @@ kshf.Util = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
-                    title: function(){ return "<span class='action'>Remove</span> filter";}
+                    title: function(){ return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter";}
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -950,7 +950,7 @@ kshf.Filter.prototype = {
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
                     title: function(){ 
-                        return "<span class='action'>Remove</span> filter"; 
+                        return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"; 
                     }
                 })
             })
@@ -1310,7 +1310,7 @@ kshf.List.prototype = {
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
-                        title: function(){ return "<span class='action'>Show</span> all <br>"+me.linkText
+                        title: function(){ return "<span class='action'><span class='fa fa-link'></span> Show</span> all <br>"+me.linkText
                             +"<br>results"; }
                     })
                 })
@@ -1461,7 +1461,7 @@ kshf.List.prototype = {
                 this.tipsy = new Tipsy(this, {
                     gravity: 's',
                     title: function(){
-                        return "<span class='fa fa-plus'></span> <span class='action'>Add</span> <i>"+
+                        return "<span class='action'><span class='fa fa-plus'></span> Add</span> <i>"+
                             me.sortingOpt_Active.name+"</i> Filter"; 
                     }
                 })
@@ -2063,7 +2063,7 @@ kshf.Browser.prototype = {
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
                     title: function(){ 
-                        return "<span class='action'>Remove</span> all filters";
+                        return "<span class='action'><span class='fa fa-times'></span> Remove</span> all filters";
                     }
                 })
             })
@@ -3975,13 +3975,13 @@ kshf.Facet_Categorical.prototype = {
                         var attribName=me.options.facetTitle;
                         var hasMultiValueItem=attrib.facet.hasMultiValueItem;
                         if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
-                            return "<span class='fa fa-times'></span> <span class='action'>Remove</span> from filter";
+                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
                         if(me.attribFilter.attribs_OR.length===0 && me.attribFilter.attribs_AND.length===0)
-                            return "<span class='fa fa-plus'></span> <span class='action'>Add</span> filter";
+                            return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter";
                         if(hasMultiValueItem===false)
-                            return "<span class='fa fa-angle-double-left'></span> <span class='action'>Change</span> filter";
+                            return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
                         else
-                            return "<span class='fa fa-plus'></span> <span class='action'>And ...</span>";
+                            return "<span class='action'><span class='fa fa-plus'></span> And ...</span>";
                     }
                 });
             })
@@ -4004,7 +4004,7 @@ kshf.Facet_Categorical.prototype = {
         sasdd.append("span").attr("class","orButton fa fa-plus-square")
             .on("mouseenter",function(attrib,i){
                 var facetDOM = attrib.facetDOM;
-                facetDOM.tipsy_title = "<span class='fa fa-plus'></span> <span class='action'>Or ...</span>";
+                facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or ...</span>";
                 facetDOM.tipsy.hide();
 
                 attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
@@ -4038,7 +4038,7 @@ kshf.Facet_Categorical.prototype = {
 
         sasdd.append("span").attr("class","notButton fa fa-minus-square")
             .on("mouseover",function(attrib,i){
-                this.__data__.facetDOM.tipsy_title = "<span class='fa fa-minus'></span> <span class='action'>Not ...</span>";
+                this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not ...</span>";
                 this.__data__.facetDOM.tipsy.hide();
                 this.__data__.facetDOM.tipsy.show();
                 attrib.facetDOM.setAttribute("selectType","not");
@@ -4630,6 +4630,16 @@ kshf.Facet_Interval.prototype = {
 
         var xxxx=activeBins.enter().append("span").attr("class","bin")
             .each(function(bar){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n',
+                    offset_y: 3,
+                    title: function(){
+                        if(this.getAttribute("filtered")==="true"){
+                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"
+                        }
+                        return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter"
+                    }
+                });
                 bar.itemCount_Preview=0;
                 bar.forEach(function(item){
                     item.mappedDataCache[filterId].b = bar;
@@ -4639,6 +4649,8 @@ kshf.Facet_Interval.prototype = {
         var onMouseOver = function(bar){
             if(!me.browser.pauseResultPreview){
                 this.parentNode.setAttribute("highlight","selected");
+                this.parentNode.tipsy.options.offset_x = (me.barWidth-me.barGap*2)/2-5;
+                this.parentNode.tipsy.show();
 
                 bar.forEach(function(item){
                     item.updatePreview(me);
@@ -4658,6 +4670,7 @@ kshf.Facet_Interval.prototype = {
             }
         };
         var onMouseOut = function(bar){
+            this.parentNode.tipsy.hide();
             if(previewTimer){
                 clearTimeout(previewTimer);
             }
@@ -4880,7 +4893,7 @@ kshf.Facet_Interval.prototype = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 's',
-                    title: function(){ return "Drag to filter" }
+                    title: function(){ return "<span class='action fa fa-arrows-h' style='font-weight: 900;'></span> Drag to filter" }
                 })
             })
             .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })

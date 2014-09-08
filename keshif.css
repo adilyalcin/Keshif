@@ -2057,12 +2057,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy .tipsy-inner {
   font-family: Helvetica, Arial, sans-serif;
-  padding: 2px;
+  padding: 3px;
   font-size: 1.2em;
   background-color: #000;
   color: #FFF;
   max-width: 200px;
   text-align: center;
+  font-weight: 300px;
   border-radius: 3px;
 }
 /* Uncomment for shadow */
@@ -2155,15 +2156,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-color: transparent;
   border-bottom-color: transparent;
 }
-.tipsy-inner {
-  padding-right: 2px;
-}
-.tipsy-inner span.big {
+.tipsy .tipsy-inner span.big {
   font-size: 1.4em;
 }
-.tipsy-inner span.action {
+.tipsy .tipsy-inner span.action {
   font-weight: 700;
 }
-.tipsy-inner i {
+.tipsy .tipsy-inner i {
   margin-right: 2px;
 }

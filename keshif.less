@@ -2003,12 +2003,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pointer-events: none;
     .tipsy-inner { 
         font-family: Helvetica, Arial, sans-serif;
-        padding: 2px;
+        padding: 3px;
         font-size: 1.2em;
         background-color: #000; 
         color: #FFF;
         max-width: 200px;
         text-align: center;
+        font-weight: 300px;
         border-radius: 3px;
     }
 
@@ -2035,18 +2036,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
 
 .tipsy{
+    .tipsy-inner{
+        span.big{
+            font-size: 1.4em;
+        }
+        span.action{
+            font-weight: 700;
+        }
+        i{
+            margin-right: 2px;
+        }
+    }
 }
-.tipsy-inner{
-    padding-right: 2px;
-    span.big{
-        font-size: 1.4em;
-    }
-    span.action{
-        font-weight: 700;
-    }
-    i{
-        margin-right: 2px;
-    }
-}
+
 
 
