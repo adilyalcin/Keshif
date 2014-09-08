@@ -1145,9 +1145,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         select.listSortOptionSelect{
             bottom:0px;
         }
-        &[displaytype="grid"] .listItem > .itemToggleDetails{
-            position: absolute;
-            z-index: 10;
+        &[displaytype="grid"] .listItem {
+            > .itemToggleDetails{
+                position: absolute;
+                z-index: 10;
+            }
+        }
+        &[displaytype="list"] .listItem {
+            width: 100%;
         }
     } // div.listDiv
 
@@ -1181,6 +1186,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .bottomRow{
             display: table;
+            table-layout: fixed;
             width: 100%;
             > .bottomRowRow{
                 display: table-row;
@@ -1195,7 +1201,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .listsortcolumn{
                     display: table-cell;
-                    vertical-align: bottom;
+                    vertical-align: middle;
                 }
                 > .headerLinkStateColumn{
                     display: table-cell;
@@ -1420,6 +1426,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .listItem {
         display:none;
+        table-layout: fixed;
         opacity: 1;
         clear:left;
         cursor:default;
@@ -1433,66 +1440,109 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
 
-        > .listsortcolumn{
-            vertical-align: top;
-            cursor: cell;
-            > .columnLabel{
-                float: right;
+        > .itemRow{
+            display: table-row;
+            width: 100%;
+            > .listsortcolumn{
+                display: table-cell;
+                vertical-align: top;
+                cursor: cell;
+                > .columnLabel{
+                    float: right;
+                }
+                > .itemRank{
+                    margin-left: 2px;
+                    margin-top: 2px;
+                    color: gray;
+                    font-size: 0.8em;
+                    font-weight: 300;
+                    float: left;
+                }
+                &:hover{ color: red; }
             }
-            > .itemRank{
-                margin-left: 2px;
-                margin-top: 2px;
-                color: gray;
-                font-size: 0.8em;
-                font-weight: 300;
-                float: left;
-            }
-            &:hover{ color: red; }
-        }
-        > .content{
-            vertical-align: top;
-            display: inline-block;
-            border: solid 0px lightgray;
-            position: relative;
-        }
-        > .itemToggleDetails{
-            vertical-align: top;
-            width:18px; // includes the padding, using box model...
-            cursor: pointer;
-            font-weight: 700;
-            display:inline-block; 
-            position: relative;
-            > .item_details_toggle{
-                .transition(~'transform 500ms');
-                color: gray;
-                top: 2px;
-                left: 1px;
+            > .content{
+                display: table-cell;
+                vertical-align: top;
+                border: solid 0px lightgray;
                 position: relative;
-                &:hover{ color:black; }
+
+                .iteminfo{
+                    float:none;
+                    clear: left;
+                    font-weight:normal;
+                    margin-bottom: 2px;
+                }
+                .iteminfo_0{
+                    font-size:1.0em;
+                    font-weight:bold;
+                    color: black;
+                    a{ color: #222222; }
+                }
+                .iteminfo_1{
+                    font-size:0.9em;
+                    color: #555555;
+                }
+                .iteminfo_2{
+                    font-size:0.8em;
+                    color: #555555;
+                    font-style:italic;
+                    font-weight:300;
+                }
+                .iteminfo_3{
+                    font-size:0.8em;
+                    color: rgb(167, 31, 31);
+                    font-style:italic;
+                    font-weight:300;
+                }
             }
-        }
-        > .itemLinkStateColumn{
-            vertical-align: top;
-            display:inline-block;
-            float: right;
-            text-align: right;
-            vertical-align: top;
-            white-space: nowrap;
-            padding-right: 2px;
-            > .itemLinkIcon{
-                font-size: 0.8em;
-                display: none;
+            > .itemToggleDetails{
+                display: table-cell;
+                vertical-align: top;
+                width:18px; // includes the padding, using box model...
                 cursor: pointer;
-                margin-right: 2px;
+                font-weight: 700;
+                position: relative;
+                > .item_details_toggle{
+                    .transition(~'transform 500ms');
+                    color: gray;
+                    top: 2px;
+                    left: 1px;
+                    position: relative;
+                    &:hover{ color:black; }
+                }
             }
-            > .item_count{
-                font-size: 0.6em;
-                vertical-align: middle;
-            }
-            > .itemSelectCheckbox{
-                width: 15px;
-                text-align: left;
-                &:hover {color: orangered;}
+            > .itemLinkStateColumn{
+                vertical-align: top;
+                display: table-cell;
+//                float: right;
+                text-align: right;
+                vertical-align: top;
+                white-space: nowrap;
+                padding-right: 2px;
+                > .itemLinkIcon{
+                    font-size: 0.8em;
+                    display: none;
+                    cursor: pointer;
+                    margin-right: 2px;
+                }
+                > .item_count{
+                    font-size: 0.6em;
+                    vertical-align: middle;
+                }
+                > .itemSelectCheckbox{
+                    cursor: pointer;
+                    width: 12px;
+                    text-align: left;
+                    display: inline-block;
+                    font: normal normal normal 14px/1 FontAwesome;
+                    font-size: 0.8em;
+                    padding-left: 2px;
+                    text-rendering: auto;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    color: gray;
+                    &:hover {color: orangered;}
+                }
             }
         }
 
@@ -1505,7 +1555,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             opacity: 0;
         }
         &[animst=visible]{
-            // default
+            display: table;
         }
 
         &[details=true]{
@@ -1534,7 +1584,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
             &[selectlinked]{
                 .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
-                > .itemLinkStateColumn > .itemLinkIcon{
+                > .itemRow > .itemLinkStateColumn > .itemLinkIcon{
                     display: inline;
                     color: @color_bars_selected;
                     &:hover{
@@ -1546,56 +1596,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[highlight=true]{
             box-shadow: inset 0px 0px 5px #BBBBBB;
             background-color: #F8F8F8;
-            > .itemLinkStateColumn > .itemLinkIcon{
+            > .itemRow > .itemLinkStateColumn > .itemLinkIcon{
                 display: inline;
                 color: gray;
             }
 //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
 //            box-shadow: inset 0px 0px 4px @color_related;
         }
-        &[selectLinked=true] .itemLinkStateColumn{
-            .fa-square-o{
-                display: none;
-            }
-            .fa-check-square-o{
-                display: inline-block;
-            }
+        &[selectLinked=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
+            content: "\f046"; // checked
         }
-        &[selectLinked=false] .itemLinkStateColumn{
-            .fa-square-o{
-                display: inline-block;
-            }
-            .fa-check-square-o{
-                display: none;
-            }
-        }
-        .iteminfo{
-            float:none;
-            clear: left;
-            font-weight:normal;
-            margin-bottom: 2px;
-        }
-        .iteminfo_0{
-            font-size:1.0em;
-            font-weight:bold;
-            color: black;
-            a{ color: #222222; }
-        }
-        .iteminfo_1{
-            font-size:0.9em;
-            color: #555555;
-        }
-        .iteminfo_2{
-            font-size:0.8em;
-            color: #555555;
-            font-style:italic;
-            font-weight:300;
-        }
-        .iteminfo_3{
-            font-size:0.8em;
-            color: rgb(167, 31, 31);
-            font-style:italic;
-            font-weight:300;
+        &[selectLinked=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
+            content: "\f096"; // unchecked
         }
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem

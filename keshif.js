@@ -773,8 +773,6 @@ kshf.Item.prototype = {
         this.selectedForLink = v;
         if(this.resultDOM){
             this.resultDOM.setAttribute("selectLinked",v);
-            d3.select(this.resultDOM).select(".itemSelectCheckbox")
-                    .classed("fa-square-o",!v).classed("fa-check-square-o",v);
         }
         if(v===false){
             this.set_NONE();
@@ -1306,15 +1304,15 @@ kshf.List.prototype = {
     },
     insertHeaderLinkedItems: function(){
         var me=this;
-        var x = this.dom.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
         if(this.hasLinkedItems){
+            var x = this.dom.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
             x.append("span").attr("class","linkTitleText").text(this.linkText);
             var y =x.append("span").attr("class","linkAll")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
                         title: function(){ return "<span class='action'><span class='fa fa-link'></span> Show</span> <br>"
-                            +me.linkText+"<br>results"; }
+                            +me.linkText+"<br> all results"; }
                     })
                 })
                 .on("mouseover",function(){ this.tipsy.show(); })
@@ -1337,7 +1335,7 @@ kshf.List.prototype = {
             y.append("span").attr("class","headerLinkColumnAllResults").text(" All below");
             y.append("span").attr("class","fa fa-link");
 
-            if(this.showSelectBox){
+/*            if(this.showSelectBox){
                 x.append("span").attr("class","fa fa-check-square-o")
                     .each(function(d){
                         this.tipsy = new Tipsy(this, {
@@ -1358,7 +1356,7 @@ kshf.List.prototype = {
                         // delay layout height update
                         setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                     });
-            }
+            }*/
         }
     },
     /** Insert items into the UI, called once on load */
@@ -1394,7 +1392,9 @@ kshf.List.prototype = {
                 d.items.forEach(function(item){
                     item.nohighlightAll(me,false);
                 })
-            });
+            });            
+
+        this.dom.listItems_Row = this.dom.listItems.append("span").attr("class","itemRow");
 
         if(this.hasLinkedItems){
             this.dom.listItems.attr("selectLinked","false")
@@ -1405,11 +1405,11 @@ kshf.List.prototype = {
         if(this.detailsToggle!=="off"){
             this.insertItemToggleDetails();
         }
-        this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
+        this.dom.listItems_Content = this.dom.listItems_Row.append("div").attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
 
         if(this.hasLinkedItems){
-            this.dom.itemLinkStateColumn = this.dom.listItems.append("span").attr("class","itemLinkStateColumn")
+            this.dom.itemLinkStateColumn = this.dom.listItems_Row.append("span").attr("class","itemLinkStateColumn")
                     .style("width",this.selectColumnWidth+"px");
             this.dom.itemLinkStateColumn.append("span").attr("class","itemLinkIcon fa fa-link")
                 .each(function(d){
@@ -1442,7 +1442,7 @@ kshf.List.prototype = {
                 });
 
             if(this.showSelectBox){
-                this.dom.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox fa fa-square-o")
+                this.dom.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox")
                     .each(function(d){
                         this.tipsy = new Tipsy(this, {
                             gravity: 'n',
@@ -1465,7 +1465,7 @@ kshf.List.prototype = {
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
         var me=this;
-        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listsortcolumn")
+        this.dom.listsortcolumn = this.dom.listItems_Row.append("div").attr("class","listsortcolumn")
             .style("width",this.sortColWidth+"px")
             .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
             .each(function(d){
@@ -1502,7 +1502,7 @@ kshf.List.prototype = {
     insertItemToggleDetails: function(){
         var me=this;
         if(this.detailsToggle==="one" && this.displayType==='list'){
-            this.dom.listItems.append("div")
+            this.dom.listItems_Row.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
@@ -1523,7 +1523,7 @@ kshf.List.prototype = {
                 .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
         }
         if(this.detailsToggle==="zoom"){
-            this.dom.listItems.append("div")
+            this.dom.listItems_Row.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
@@ -1672,7 +1672,7 @@ kshf.List.prototype = {
     /** Updates visibility of list items */
     updateItemVisibility: function(showMoreOnly){
         var me = this;
-        var showType=this.displayType==='list'?"block":"inline-block";
+        var showType=this.displayType==='list'?"table":"inline-block";
         var visibleItemCount=0;
 
         var isInViewNow = function(item){
@@ -1751,7 +1751,7 @@ kshf.List.prototype = {
             contentWidth-=this.selectColumnWidth;
         }
         if(this.displayType==='list'){
-            this.dom.listItems_Content.style("width",(contentWidth)+"px");
+//            this.dom.listItems_Content.style("width",(contentWidth)+"px");
         }
     },
     updateAfterFiltering_do:function(){

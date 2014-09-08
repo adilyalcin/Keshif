@@ -1161,6 +1161,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   z-index: 10;
 }
+.kshf.listDiv[displaytype="list"] .listItem {
+  width: 100%;
+}
 .kshf .scrollToTop {
   display: inline-block;
   visibility: hidden;
@@ -1194,6 +1197,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader > .bottomRow {
   display: table;
+  table-layout: fixed;
   width: 100%;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow {
@@ -1207,7 +1211,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .listsortcolumn {
   display: table-cell;
-  vertical-align: bottom;
+  vertical-align: middle;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn {
   display: table-cell;
@@ -1430,6 +1434,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listItem {
   display: none;
+  table-layout: fixed;
   opacity: 1;
   clear: left;
   cursor: default;
@@ -1446,14 +1451,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
 }
-.kshf .listItem > .listsortcolumn {
+.kshf .listItem > .itemRow {
+  display: table-row;
+  width: 100%;
+}
+.kshf .listItem > .itemRow > .listsortcolumn {
+  display: table-cell;
   vertical-align: top;
   cursor: cell;
 }
-.kshf .listItem > .listsortcolumn > .columnLabel {
+.kshf .listItem > .itemRow > .listsortcolumn > .columnLabel {
   float: right;
 }
-.kshf .listItem > .listsortcolumn > .itemRank {
+.kshf .listItem > .itemRow > .listsortcolumn > .itemRank {
   margin-left: 2px;
   margin-top: 2px;
   color: gray;
@@ -1461,24 +1471,54 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   float: left;
 }
-.kshf .listItem > .listsortcolumn:hover {
+.kshf .listItem > .itemRow > .listsortcolumn:hover {
   color: red;
 }
-.kshf .listItem > .content {
+.kshf .listItem > .itemRow > .content {
+  display: table-cell;
   vertical-align: top;
-  display: inline-block;
   border: solid 0px lightgray;
   position: relative;
 }
-.kshf .listItem > .itemToggleDetails {
+.kshf .listItem > .itemRow > .content .iteminfo {
+  float: none;
+  clear: left;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+.kshf .listItem > .itemRow > .content .iteminfo_0 {
+  font-size: 1.0em;
+  font-weight: bold;
+  color: black;
+}
+.kshf .listItem > .itemRow > .content .iteminfo_0 a {
+  color: #222222;
+}
+.kshf .listItem > .itemRow > .content .iteminfo_1 {
+  font-size: 0.9em;
+  color: #555555;
+}
+.kshf .listItem > .itemRow > .content .iteminfo_2 {
+  font-size: 0.8em;
+  color: #555555;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf .listItem > .itemRow > .content .iteminfo_3 {
+  font-size: 0.8em;
+  color: #a71f1f;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf .listItem > .itemRow > .itemToggleDetails {
+  display: table-cell;
   vertical-align: top;
   width: 18px;
   cursor: pointer;
   font-weight: 700;
-  display: inline-block;
   position: relative;
 }
-.kshf .listItem > .itemToggleDetails > .item_details_toggle {
+.kshf .listItem > .itemRow > .itemToggleDetails > .item_details_toggle {
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
@@ -1488,32 +1528,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 1px;
   position: relative;
 }
-.kshf .listItem > .itemToggleDetails > .item_details_toggle:hover {
+.kshf .listItem > .itemRow > .itemToggleDetails > .item_details_toggle:hover {
   color: black;
 }
-.kshf .listItem > .itemLinkStateColumn {
-  display: inline-block;
-  float: right;
+.kshf .listItem > .itemRow > .itemLinkStateColumn {
+  display: table-cell;
   text-align: right;
   vertical-align: top;
   white-space: nowrap;
   padding-right: 2px;
 }
-.kshf .listItem > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
   font-size: 0.8em;
   display: none;
   cursor: pointer;
   margin-right: 2px;
 }
-.kshf .listItem > .itemLinkStateColumn > .item_count {
+.kshf .listItem > .itemRow > .itemLinkStateColumn > .item_count {
   font-size: 0.6em;
   vertical-align: middle;
 }
-.kshf .listItem > .itemLinkStateColumn > .itemSelectCheckbox {
-  width: 15px;
+.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemSelectCheckbox {
+  cursor: pointer;
+  width: 12px;
   text-align: left;
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: 0.8em;
+  padding-left: 2px;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: gray;
 }
-.kshf .listItem > .itemLinkStateColumn > .itemSelectCheckbox:hover {
+.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemSelectCheckbox:hover {
   color: orangered;
 }
 .kshf .listItem[animst=open] {
@@ -1523,6 +1571,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   max-height: 0px !important;
   padding: 0px !important;
   opacity: 0;
+}
+.kshf .listItem[animst=visible] {
+  display: table;
 }
 .kshf .listItem[details=true] {
   max-height: none;
@@ -1557,62 +1608,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .listItem[highlight=selected][selectlinked] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .listItem[highlight=selected][selectlinked] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: #cc3700;
 }
-.kshf .listItem[highlight=selected][selectlinked] > .itemLinkStateColumn > .itemLinkIcon:hover {
+.kshf .listItem[highlight=selected][selectlinked] > .itemRow > .itemLinkStateColumn > .itemLinkIcon:hover {
   color: orangered;
 }
 .kshf .listItem[highlight=true] {
   box-shadow: inset 0px 0px 5px #BBBBBB;
   background-color: #F8F8F8;
 }
-.kshf .listItem[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .listItem[highlight=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: gray;
 }
-.kshf .listItem[selectLinked=true] .itemLinkStateColumn .fa-square-o {
-  display: none;
+.kshf .listItem[selectLinked=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
+  content: "\f046";
 }
-.kshf .listItem[selectLinked=true] .itemLinkStateColumn .fa-check-square-o {
-  display: inline-block;
-}
-.kshf .listItem[selectLinked=false] .itemLinkStateColumn .fa-square-o {
-  display: inline-block;
-}
-.kshf .listItem[selectLinked=false] .itemLinkStateColumn .fa-check-square-o {
-  display: none;
-}
-.kshf .listItem .iteminfo {
-  float: none;
-  clear: left;
-  font-weight: normal;
-  margin-bottom: 2px;
-}
-.kshf .listItem .iteminfo_0 {
-  font-size: 1.0em;
-  font-weight: bold;
-  color: black;
-}
-.kshf .listItem .iteminfo_0 a {
-  color: #222222;
-}
-.kshf .listItem .iteminfo_1 {
-  font-size: 0.9em;
-  color: #555555;
-}
-.kshf .listItem .iteminfo_2 {
-  font-size: 0.8em;
-  color: #555555;
-  font-style: italic;
-  font-weight: 300;
-}
-.kshf .listItem .iteminfo_3 {
-  font-size: 0.8em;
-  color: #a71f1f;
-  font-style: italic;
-  font-weight: 300;
+.kshf .listItem[selectLinked=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
+  content: "\f096";
 }
 .kshf .labelGroup {
   cursor: default;
