@@ -351,9 +351,9 @@ kshf.Util = {
             ;
 
         var headerLabel=this.options.facetTitle;
-        if(this.parentFacet) {
-            if(this.parentFacet.hasAttribs())
-                headerLabel = headerLabel+" <i class='fa fa-chevron-right'></i> "+this.parentFacet.options.facetTitle;
+        if(this.parentFacet && this.parentFacet.hasAttribs()) {
+            headerLabel = headerLabel+" <span class='title_of'>of</span> <i class='fa fa-hand-o-right'></i> "
+                +this.parentFacet.options.facetTitle+" <span class='fa fa-level-up'></span>";
         }
         topRow.append("span").attr("class", "header_label")
             .html(headerLabel)
@@ -373,9 +373,9 @@ kshf.Util = {
         if(this.isLinked) {
             facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
         } else {
-            if(this.parentFacet && this.parentFacet.hasAttribs()){
-                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
-            }
+//            if(this.parentFacet && this.parentFacet.hasAttribs()){
+//                facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
+//            }
         }
 
         if(this.options.description){
@@ -1334,29 +1334,6 @@ kshf.List.prototype = {
 
             y.append("span").attr("class","headerLinkColumnAllResults").text(" All below");
             y.append("span").attr("class","fa fa-link");
-
-/*            if(this.showSelectBox){
-                x.append("span").attr("class","fa fa-check-square-o")
-                    .each(function(d){
-                        this.tipsy = new Tipsy(this, {
-                            gravity: 'n',
-                            title: function(){ return "<span class='action'>Select</span> all results"; }
-                        })
-                    })
-                    .on("mouseover",function(){ this.tipsy.show(); })
-                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                    .on("click",function(){
-                        me.browser.items.forEach(function(item){
-                            if(!item.isWanted) return;// no change
-                            item.setSelectedForLink(true);
-                        });
-                        me.browser.linkedFacets.forEach(function(f){
-                            f.updateSorting(0);
-                        });
-                        // delay layout height update
-                        setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
-                    });
-            }*/
         }
     },
     /** Insert items into the UI, called once on load */
@@ -2641,9 +2618,6 @@ kshf.Browser.prototype = {
     },
     clearResultPreview: function(){
         this.resultPreviewActive = false;
-        this.items.forEach(function(item){
-            if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
-        })
         this.facets.forEach(function(facet){ facet.clearResultPreview(); });
     },
     refreshResultPreview: function(){
@@ -2839,7 +2813,6 @@ kshf.Browser.prototype = {
         this.facets.forEach(function(facet){
             if(facet.hasAttribs && facet.hasAttribs()){
                 facet.updateBarAxisScale();
-                facet.refreshBarGroupWidth();
             }
             facet.refreshWidth();
         },this);
@@ -3374,6 +3347,12 @@ kshf.Facet_Categorical.prototype = {
                 me.scrollTop_cache = this.scrollTop;
                 me.attrib_InDisplay_First = Math.floor(this.scrollTop / (me.browser.line_height*1.0));
                 me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.attribCount_InDisplay);
+
+                me.cullAttribs();
+
+                me.browser.pauseResultPreview = true;
+                if(this.pauseTimer) clearTimeout(this.pauseTimer);
+                this.pauseTimer = setTimeout(function(){me.browser.pauseResultPreview=false;}, 200);
             })
             ;
 
@@ -3396,6 +3375,8 @@ kshf.Facet_Categorical.prototype = {
                 d.facetDOM = this;
                 this.isLinked = me.isLinked;
             });
+
+        this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","filler");
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -3584,9 +3565,9 @@ kshf.Facet_Categorical.prototype = {
         this.refreshWidth_Bars_Active();
         this.refreshWidth_Bars_Total();
 
-        this.dom.bar_highlight.attr("fast",null); // take it slow for result preview animations
+        this.dom.bar_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshResultPreview();
-        setTimeout(function(){ me.dom.bar_highlight.attr("fast",true); },700);
+        setTimeout(function(){ me.dom.bar_preview.attr("fast",true); },700);
 
         this.refresh_Bars_Ticks();
     },
@@ -3605,6 +3586,8 @@ kshf.Facet_Categorical.prototype = {
         }
         this.attribCount_InDisplay = c;
         this.refreshScrollDisplayMore(this.attribCount_InDisplay);
+
+        this.cullAttribs();
     },
     /** -- */
     updateAfterFilter: function(resultChange){
@@ -3629,19 +3612,23 @@ kshf.Facet_Categorical.prototype = {
         var me = this;
         var formatFunc = kshf.Util.formatForItemCount;
         this.dom.attribs.attr("noitems",function(d){ return !me.isAttribSelectable(d); });
-        if(this.browser.resultPreviewActive===true){
-            if(this.browser.preview_not){
-                this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Active-d.itemCount_Preview);  });
+
+        this.dom.item_count.each(function(attrib){
+            if(attrib.orderIndex<me.attrib_InDisplay_First) return;
+            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return;
+            var p=attrib.itemCount_Preview;
+            if(me.browser.resultPreviewActive){
+                if(me.browser.preview_not)
+                    p = attrib.itemCount_Active-attrib.itemCount_Preview;
+                else
+                    p = attrib.itemCount_Preview;
             } else {
-                this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Preview);  });
+                p = attrib.itemCount_Active;
             }
-        } else {
-            this.dom.item_count.text(function(d){ return formatFunc(d.itemCount_Active);  });
-        }
-    },
-    refreshBarGroupWidth: function(){
-        // total width of bar group...
-        this.dom.barGroup.style("width",this.browser.barChartWidth+"px");
+            if(attrib.cache_querypreview===p) return;
+            attrib.cache_querypreview=p;
+            this.textContent=formatFunc(p);
+        });
     },
     /** -- */
     refreshWidth_Bars_Active: function(){
@@ -3659,24 +3646,22 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     refreshWidth_Bars_Total: function(){
         var me = this;
-        this.dom.bar_total
-            .each(function(attrib){
-                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.items.length)+")");
-            });
+        this.dom.bar_total.each(function(attrib){
+            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.items.length)+")");
+        });
     },
     /** -- */
     clearResultPreview: function(){
         if(!this.hasAttribs()) return;
         if(this.collapsed) return;
         var me = this;
-        this.dom.bar_highlight
-            .each(function(attrib){
-                attrib.itemCount_Preview=0;
-                if(attrib.orderIndex<me.attrib_InDisplay_First) return;
-                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+3) return;
-                var transform="scaleX(0)";
-                kshf.Util.setTransform(this,transform);
-            });
+        this.dom.bar_preview.each(function(attrib){
+            attrib.itemCount_Preview=0;
+            if(attrib.orderIndex<me.attrib_InDisplay_First) return;
+            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return;
+            if(attrib.cache_preview===0) return;
+            kshf.Util.setTransform(this,"scaleX(0)");
+        });
         this.refreshQueryPreview();
     },
     /** -- */
@@ -3684,24 +3669,15 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs()) return;
         if(this.collapsed) return;
         var me = this;
-        if(this.browser.preview_not){
-            this.dom.bar_highlight.each(function(attrib){
-                if(attrib.orderIndex<me.attrib_InDisplay_First)
-                    return;
-                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1)
-                    return;
-                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(
-                    attrib.itemCount_Active-attrib.itemCount_Preview)+")");
-            });
-        } else {
-            this.dom.bar_highlight.each(function(attrib){
-                if(attrib.orderIndex<me.attrib_InDisplay_First)
-                    return;
-                if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1)
-                    return;
-                kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.itemCount_Preview)+")");
-            });
-        }
+        this.dom.bar_preview.each(function(attrib){
+            if(attrib.orderIndex<me.attrib_InDisplay_First)return;
+            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return;
+            var p=attrib.itemCount_Preview;
+            if(me.browser.preview_not) p = attrib.itemCount_Active-p;
+            attrib.cache_preview = p;
+            if(p===0) return;
+            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(p)+")");
+        });
         this.refreshQueryPreview();
     },
     /** -- */
@@ -3801,6 +3777,7 @@ kshf.Facet_Categorical.prototype = {
             if(attrib.selectedForLink===false) return false;
             return true;
         }
+
         // Show selected attribute always
         if(attrib.f_selected()) return true;
         // Show if number of active items is not zero
@@ -3814,6 +3791,8 @@ kshf.Facet_Categorical.prototype = {
         // Hide if multiple options are selected and selection is and
 //        if(this.attribFilter.selectType==="SelectAnd") return false;
         // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
+
+//        if(attrib.orderIndex===this.attribCount_Total) return true;
 
         if(attrib.isWanted===false) return false;
         return true;
@@ -3947,7 +3926,9 @@ kshf.Facet_Categorical.prototype = {
             if(me.tipsy_active) me.tipsy_active.hide();
             if(me.isAttribSelectable(attrib)) {
                 attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
-                if(!me.browser.pauseResultPreview){
+                if(!me.browser.pauseResultPreview && 
+                  (me.hasMultiValueItem || me.attribFilter.attribs_OR.length===0) ){
+                    // calculate the preview
                     attrib.items.forEach(function(item){
                         item.updatePreview(me);
                     },this);
@@ -3955,23 +3936,21 @@ kshf.Facet_Categorical.prototype = {
 
                     me.browser.refreshResultPreview();
                     if(sendLog) {
-                        if(previewTimer){
-                            clearTimeout(previewTimer);
-                        }
+                        if(previewTimer) clearTimeout(previewTimer);
                         previewTimer = setTimeout(function(){
                             sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
                         }, 1000); // wait 1 second to see the update fully
                     }
                 }
             } else {
-                if(this.tipsy_title===undefined) return
+                if(this.tipsy_title===undefined) return;
             }
 
             // Rest is about tooltip...
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
             me.tipsy_active = attrib.facetDOM.tipsy;
             attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                (me.catBarAxisScale(attrib.itemCount_Active)-me.catBarAxisScale.range()[1]);
+                me.catBarAxisScale(attrib.itemCount_Active);
             attrib.facetDOM.tipsy_active.show();
         };
         var onMouseOut = function(attrib,i){
@@ -3985,6 +3964,9 @@ kshf.Facet_Categorical.prototype = {
             if(previewTimer){
                 clearTimeout(previewTimer);
             }
+            me.browser.items.forEach(function(item){
+                if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
+            })
             if(!me.browser.pauseResultPreview){
                 me.browser.clearResultPreview();
             }
@@ -4121,7 +4103,7 @@ kshf.Facet_Categorical.prototype = {
     			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		})
             ;
-        this.dom.bar_highlight = this.dom.barGroup.append("span")
+        this.dom.bar_preview = this.dom.barGroup.append("span")
             .attr("class", "bar preview").attr("fast",true);
         this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
 
@@ -4187,24 +4169,29 @@ kshf.Facet_Categorical.prototype = {
         this.sortAttribs();
 
         setTimeout(function(){
-            me.dom.attribs
-                .each(function(attrib){
-                    var isVisible = me.isAttribVisible(attrib);
-                    this.style.display = isVisible?"block":"none";
-
-                    if(!isVisible) return;
-
-                    var i = attrib.orderIndex;
-                    var transform="translateY("+(line_height*i)+"px)";
-                    kshf.Util.setTransform(this,transform);
-                });
+            me.cullAttribs();
+            me.dom.attribs.each(function(attrib){
+                kshf.Util.setTransform(this,"translateY("+(line_height*attrib.orderIndex)+"px)");
+            });
         },sortDelay);
+
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Active*line_height-6)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
         if(this.scrollTop_cache!==0)
             kshf.Util.scrollToPos_do(attribGroupScroll,0);
-//      me.divRoot.attr("canResort",false);
+    },
+    cullAttribs: function(){
+        var me=this;
+        this.dom.attribs.style("visibility",function(attrib){
+            var isVisible = me.isAttribVisible(attrib);
+            if(!isVisible) return "hidden";
+            // not visible if it is not within visible range...
+            if(attrib.orderIndex<me.attrib_InDisplay_First) return "hidden";
+            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return "hidden";
+            return "visible";
+        });
     },
     getTicksSkip: function(){
         var ticksSkip = this.browser.barChartWidth/25;
@@ -4232,8 +4219,7 @@ kshf.Facet_Categorical.prototype = {
         var transformFunc=function(d){
             var x=me.catBarAxisScale(d);
 //            if(me.layoutStr==="left") x = -x;
-            var transform="translateX("+x+"px)";
-            kshf.Util.setTransform(this,transform);
+            kshf.Util.setTransform(this,"translateX("+x+"px)");
         };
 
         var tickData_new=tickData.enter().append("span").attr("class","tick")
@@ -4629,8 +4615,7 @@ kshf.Facet_Interval.prototype = {
         } else{
             this.barWidth = this.intervalRange.width/((ticks.length-1)*1.0);
             this.refreshBins_Translate();
-            this.refreshBars_Active_Scale();
-            this.refreshBars_Total_Scale();
+            this.refreshBars_Scale();
             this.refreshAxisLabelPos();
         }
         this.refreshIntervalSlider();
@@ -4717,10 +4702,14 @@ kshf.Facet_Interval.prototype = {
             if(!me.browser.pauseResultPreview){
                 this.parentNode.setAttribute("highlight",false);
 
+                me.browser.items.forEach(function(item){
+                    if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
+                })
                 me.browser.clearResultPreview();
             }
         };
         var onClick = function(bar){
+            this.parentNode.tipsy.hide();
             if(this.parentNode.getAttribute("filtered")==="true"){
                 this.parentNode.setAttribute("filtered",false);
                 me.intervalFilter.clearFilter(true);
@@ -4763,14 +4752,13 @@ kshf.Facet_Interval.prototype = {
         this.dom.histogram_bin = this.dom.histogram_bins.selectAll("span.bin");
         this.dom.bars_active = this.dom.histogram_bin.selectAll(".bar.active");
         this.dom.bars_total = this.dom.histogram_bin.selectAll(".bar.total");
-        this.dom.bars_highlight = this.dom.histogram_bin.selectAll(".bar.preview");
+        this.dom.bars_preview = this.dom.histogram_bin.selectAll(".bar.preview");
 
         this.dom.bars_item_count = this.dom.histogram_bin.selectAll(".item_count");
 
         this.refreshBins_Translate();
 
-        this.refreshBars_Total_Scale();
-        this.refreshBars_Active_Scale();
+        this.refreshBars_Scale();
         this.refreshResultPreview();
         this.refreshQueryPreview();
     },
@@ -4997,6 +4985,11 @@ kshf.Facet_Interval.prototype = {
             kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
         });
     },
+    refreshBars_Scale: function(){
+        this.refreshBars_Total_Scale();
+        this.refreshBars_Active_Scale();
+        this.clearBars_Preview_Scale();
+    },
     refreshBars_Total_Scale: function(){
         var me=this;
         var width=this.barWidth-this.barGap*2;
@@ -5015,24 +5008,32 @@ kshf.Facet_Interval.prototype = {
                 "translate("+(me.barWidth/2)+"px,"+(-me.barHeightScale(bar.itemCount_Active))+"px)");
         });
     },
+    clearBars_Preview_Scale: function(){
+        var width=this.barWidth-this.barGap*2;
+        this.dom.bars_preview.each(function(bar){
+            bar.itemCount_Preview=0;
+            // TODO: assuming all bars are visible...
+            kshf.Util.setTransform(this,"scale("+width+",0)");
+        });
+    },
     clearResultPreview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var width=this.barWidth-this.barGap*2;
-        this.dom.bars_highlight.each(function(bar){
-            bar.itemCount_Preview=0;
-            kshf.Util.setTransform(this,"scale("+width+",0)");
-        });
+        this.clearBars_Preview_Scale();
         this.refreshQueryPreview();
     },
     refreshResultPreview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
+        var preview_not = this.browser.preview_not;
         var barHeightScale=this.barHeightScale;
         var width=this.barWidth-this.barGap*2;
-        this.dom.bars_highlight.each(function(bar){
-            if(bar.itemCount_Preview===0) return;
-            kshf.Util.setTransform(this,"scale("+width+","+barHeightScale(bar.itemCount_Preview)+")");
+        var trnsfrm="scale("+width+",";
+        this.dom.bars_preview.each(function(bar){
+            var p=bar.itemCount_Preview;
+            if(preview_not) p = bar.itemCount_Active-bar.itemCount_Preview;
+            if(p===0) return;
+            kshf.Util.setTransform(this,trnsfrm+barHeightScale(p)+")");
         });
         this.refreshQueryPreview();
     },
@@ -5093,8 +5094,7 @@ kshf.Facet_Interval.prototype = {
         this.height_hist = c;
         this.updateBarScale2Active();
         this.refreshBins_Translate();
-        this.refreshBars_Active_Scale();
-        this.refreshBars_Total_Scale();
+        this.refreshBars_Scale();
         this.refreshResultPreview();
         this.refreshHeight();
     },
@@ -5144,12 +5144,11 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         this.updateBarScale2Active();
         this.refreshBins_Translate();
-        this.refreshBars_Active_Scale();
-        this.refreshBars_Total_Scale();
+        this.refreshBars_Scale();
 
-        this.dom.bars_highlight.attr("fast",null); // take it slow for result preview animations
+        this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshResultPreview();
-        setTimeout(function(){ me.dom.bars_highlight.attr("fast",true); },700);
+        setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
     },
     setSelectedPosition: function(v){
         if(this.intervalScale===undefined) return;

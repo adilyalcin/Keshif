@@ -366,7 +366,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
   background-image: linear-gradient(to left, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);;
 }
-.kshf .headerGroup span.header_label {
+.kshf .headerGroup .header_label {
   font-size: 1.0em;
   font-weight: 700;
   cursor: default;
@@ -375,6 +375,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-top: 1px;
   height: 16px;
   margin-left: 2px;
+}
+.kshf .headerGroup .header_label > .title_of {
+  font-weight: 300;
+}
+.kshf .headerGroup .header_label > .fa-level-up {
+  font-size: 0.9em;
 }
 .kshf .headerGroup .chartClearFilterButton.rowFilter {
   pointer-events: none;
@@ -604,6 +610,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .filler {
+  opacity: 0;
+  width: 1px;
+  display: inline-block;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   position: absolute;
@@ -1211,13 +1222,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .listsortcolumn {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn {
   display: table-cell;
   font-size: 1.1em;
   text-align: right;
-  min-width: 80px;
+  width: 85px;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkAll > .fa-link {
   cursor: pointer;
@@ -1227,6 +1238,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   margin-right: 2px;
   font-size: 0.8em;
+  font-weight: 300;
+  font-family: sans-serif;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkAll:hover {
   color: orangered;
@@ -1269,6 +1282,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: all 250ms linear;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds {
+  pointer-events: none;
   /*
                             max-width: 300px;
                             max-width: 300px;
@@ -1289,6 +1303,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 1px 0px 1px 0px;
   display: inline;
   margin-right: 15px;
+}
+.kshf div.listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
+  pointer-events: none;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[ready=true] {
   max-width: 1000px;

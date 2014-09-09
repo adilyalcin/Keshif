@@ -338,7 +338,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         text-align: center;
         padding-top: 1px;
         .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
-        span.header_label {
+        .header_label {
             font-size: 1.0em;
             font-weight: 700;
             cursor: default;
@@ -348,6 +348,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-top: 1px;
             height: 16px;
             margin-left: 2px;
+            > .title_of{
+                font-weight: 300;
+            }
+            > .fa-level-up{
+                font-size: 0.9em;
+            }
         }
         .chartClearFilterButton.rowFilter{
             pointer-events: none;
@@ -567,6 +573,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     pointer-events: all;
                     z-index: 5;
                     .transition(~'height 700ms ease-in-out');
+
+                    > .filler{
+                        opacity: 0;
+                        width: 1px;
+                        display: inline-block;
+                    }
 
                     > .attrib {
                         position: absolute;
@@ -1201,13 +1213,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .listsortcolumn{
                     display: table-cell;
-                    vertical-align: middle;
+                    vertical-align: bottom;
                 }
                 > .headerLinkStateColumn{
                     display: table-cell;
                     font-size: 1.1em;
                     text-align: right;
-                    min-width: 80px;
+                    width: 85px;
                     > .linkAll{
                         > .fa-link{
                             cursor: pointer;
@@ -1217,6 +1229,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             cursor: pointer;
                             margin-right: 2px;
                             font-size: 0.8em;
+                            font-weight: 300;
+                            font-family: sans-serif;
                         }
                         &:hover{ color: orangered; }
                     }
@@ -1257,6 +1271,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         max-width: 0px;
                         .transition(~"all 250ms linear");
                         > .sdsdsds{
+                            pointer-events: none;
                             /*
                             max-width: 300px;
                             max-width: 300px;
@@ -1279,6 +1294,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 margin-right: 15px;
                             }
                         }
+                        > .chartClearFilterButton.summary{
+                            pointer-events: none;
+                        }
                         &[ready=true]{ 
             //                opacity: 1;
                             max-width: 1000px;
@@ -1286,7 +1304,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         &[ready=false]{ 
             //                opacity: 1;
                             max-width: 0px;
-                            .chartClearFilterButton{ display:none;}
+                            .chartClearFilterButton{
+                                display:none;
+                            }
                         }
                         &:hover{
                             background-color: rgba(255,255,255,1.0);
