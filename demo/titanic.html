@@ -17,10 +17,10 @@
         var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
 
         google.setOnLoadCallback(function(){
-            new kshf.Browser({
+            browser = new kshf.Browser({
                 domID: "#chart_div",
                 leftPanelLabelWidth: 100,
-                rightPanelLabelWidth: 70,
+                rightPanelLabelWidth: 90,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
@@ -36,10 +36,10 @@
                     },{ facetTitle: "pclass",
                         sortingOpts : [{ 
                             func: function(a,b){
-                                if(a==="3rd") return -1;
-                                if(a==="1st") return 1;
-                                if(b==="3rd") return 1;
-                                if(b==="1st") return -1;
+                                if(a==="3rd") return 1;
+                                if(a==="1st") return -1;
+                                if(b==="3rd") return -1;
+                                if(b==="1st") return 1;
                             },
                             no_resort: true 
                         }]
@@ -80,11 +80,29 @@
         </script>
         <style>
             #chart_div {
-                width: 900px;
-                height: 500px;
+                width: 950px;
+                height: 600px;
             }
             #chart_div div.listItem{
                 max-height: 40px;
+            }
+            .layout_bottom > .kshfChart{
+                background-image: url("http://upload.wikimedia.org/wikipedia/commons/d/db/Titanic-Cobh-Harbour-1912.JPG");
+                background-size: 1000px 120px;
+            }
+            .layout_bottom .bar{
+                opacity: 0.6 !important;
+            }
+            .layout_bottom > .kshfChart .facetInterval span{
+                font-weight: 500 !important;
+            }
+            .layout_bottom > .kshfChart .facetInterval .item_count{
+                color: white !important;
+                text-shadow: 0px 0px 2px black;
+            }
+            .layout_bottom > .kshfChart .facetInterval .tick > .text{
+                color: black !important;
+                text-shadow: 0px 0px 2px white;
             }
         </style>
     </head>
