@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>HTML5Rocks - Tutorials</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "HTML5 Rocks Tutorials",
+        categoryTextWidth: 120,
+        source : {
+            url: "http://www.html5rocks.com/en/tutorials/",
+            callback: function(browser){
+                kshf.dt.Tutorials = [];
+                browser.primaryTableName = "Tutorials";
+                $.ajax( {
+                    url:"http://www.html5rocks.com/en/tutorials/",
+//                    url:"./data/html5rocks.html",
+                    async: false,
+                    success: function(doc){
+                        $$doc = $($.parseHTML(doc));
+
+                        $$doc.find("div.articles-list > ul > li").each(function(i){
+                            var $this = $(this);
+                            var d={};
+
+                            d.id = i;
+                            d.URL = $this.find(">a").attr("href");
+                            d.author_id = $this.find(">a > .left .author").attr("data-author_id");
+                            d.author_img = $this.find(">a > .left .author >img").attr("src");
+                            d.Author = $this.find(">a > .left .author >img").attr("title");
+                            d.Date = new Date(moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,"")));
+                            d.Title = $(this).find(">a > .right > .title").text().trim();
+                            d.Description = $(this).find(">a > .right > .description").text().trim();
+                            d.Tags = [];
+                            $(this).find(">a > .right > .tag").each(function(){
+                                d.Tags.push(this.textContent.trim());
+                            })
+                            kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
+                        });
+                        browser.items = kshf.dt.Tutorials;
+
+                        browser.itemsSelectedCt = browser.items.length;
+                        browser.loadCharts();   
+                    },
+                    error: function(error){
+                        var terer=23232;
+                    }
+                });
+            }
+        },
+        facets: [
+            {   facetTitle: "Author", 
+            },{ facetTitle: "Date",
+                intervalScale: 'time',
+                layout: "bottom"
+            },{ facetTitle: "Tags", layout: 'right'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [
+                {   name: 'Date',
+                    value: function(tutorial){ return tutorial.data.Date.getFullYear(); },
+                }
+            ],
+            displayType: 'grid',
+            autoExpandMore: true,
+//            textSearch: "Title",
+            contentFunc: function(tutorial){
+                return "<img class='face'><a href='"+tutorial.data.URL+"' target='_blank'><span class='title'>"+tutorial.data.Title+"</span></a>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://www.html5rocks.com/"+d.data.author_img);
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            .listItem {
+                vertical-align: top;
+                border: solid 1px gray !important;
+                margin: 3px;
+                min-height: 90px;
+            }
+            #chart_div {
+                width: 1090px;
+                height: 750px;
+            }
+            .content {
+                width: 180px;
+                text-align: right;
+                padding-right: 3px;
+                font-size: 0.9em;
+                font-weight: 300;
+            }
+            .content img.face{
+                padding-left: 2px;
+                width: 60px;
+                border: 3px solid #FFF;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                border-radius: 100%;
+                float: left;
+            }
+            .content .title{
+                color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
