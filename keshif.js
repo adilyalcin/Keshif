@@ -4190,6 +4190,9 @@ kshf.Facet_Categorical.prototype = {
             // not visible if it is not within visible range...
             if(attrib.orderIndex<me.attrib_InDisplay_First) return "hidden";
             if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return "hidden";
+            this.style.opacity=0.9;
+            var f=this.offsetHeight;
+            this.style.opacity=1.0;
             return "visible";
         });
     },
@@ -5039,11 +5042,18 @@ kshf.Facet_Interval.prototype = {
     },
     refreshQueryPreview: function(){
         var formatFunc = kshf.Util.formatForItemCount;
+        var me= this;
         if(this.browser.resultPreviewActive===true){
-            this.dom.histogram_bin.attr("noitem",function(bar){ return bar.itemCount_Preview===0; });
-            this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.itemCount_Preview);  });
+            this.dom.bars_item_count.text(function(bar){
+                var p;
+                if(me.browser.preview_not)
+                    p = bar.itemCount_Active-bar.itemCount_Preview;
+                else
+                    p = bar.itemCount_Preview;
+                return formatFunc(p);
+            });
         } else {
-            this.dom.histogram_bin.attr("noitem",function(bar){ return bar.itemCount_Active===0; });
+            this.dom.histogram_bin.attr("noitems",function(bar){ return bar.itemCount_Active===0; });
             this.dom.bars_item_count.text(function(bar){ return formatFunc(bar.itemCount_Active);  });
         }
     },

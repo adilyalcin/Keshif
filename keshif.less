@@ -754,7 +754,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 } // .attribGroup
             }// facetCategorical
 
-            > .facetInterval{
+            > .facetInterval {
                 padding: 5px 12px 0px 12px;
                 overflow: hidden;
                 > .histogram{
@@ -785,7 +785,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 cursor: pointer;
                                 .transition(~'transform 700ms ease-in-out');
                             }
-                            &[noitem=true] > .item_count{
+                            &[noitems=true] > .item_count{
                                 display: none;
                             }
                             &[highlight=true]{
@@ -855,6 +855,127 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 } // percentileGroup
+                > .labelGroup{
+                    cursor: default;
+                    position:relative;
+                    height: 15px;
+                    margin-top: -1px;
+                    > .tick{
+                        position:absolute;
+                        > .text{
+                            font-size: 0.7em;
+                            font-weight: 300;
+                            width: 100px;
+                            text-align: center;
+                            position: relative;
+                            margin-left: -50px;
+                            display: block;
+                        }
+                        > .line{
+                            position: absolute;
+                            top: -9px;
+                            height: 10px;
+                            border-left: solid 1px gray;
+                            display: block;
+                        }
+                    }
+                } // labelGroup
+                > .rangeSlider{
+                    position:relative;
+                    height: 10px;
+                    pointer-events: all;
+                    > .selectedItemValue{
+                        position:absolute;
+                        z-index: 20;
+                        top: 1px;
+                        display: none;
+                        > .circlee{
+                            border-radius: 20px;
+                            width: 8px;
+                            height: 8px;
+                            background-color: rgba(255, 69, 0, 0.29);
+                            border: solid 2px orangered;
+                            left: -4px;
+                            position: relative;
+                        }
+                    }
+                    > .base{
+                        display: block;
+                        position: absolute;
+                        box-shadow: inset 0px 0px 2px gray;
+                        .transform-origin(0% 0%);
+                        &.total{
+                            height: 3px;
+                            top: 3px;
+                            cursor: pointer;
+                            background-color: lightgray;
+                        }
+                        &.active{
+                            height: 8px;
+                            top: 1px;
+                            width:1px;
+                            display:none;
+                            &[filtered=true]{
+                                display: block;
+                                cursor: col-resize;
+                                background-color: @color_filtered;
+                            }
+                            &:hover{
+                                background-color: orangered !important;
+                            }
+                        }
+                    }
+                    > .handle{
+                        display:block;
+                        position:absolute;
+                        width:6px;
+                        height:8px;
+                        background-color: white;
+                        border-width: 1px;
+                        border-color: black;
+                        border-style: solid;
+                        cursor: ew-resize;
+                        z-index: 10;
+                        top:1px;
+                        &:hover{
+                            background-color: orangered !important;
+                        }
+                        &.min{
+                            left: -5px;
+                            border-top-left-radius: 10px;
+                            border-bottom-left-radius: 10px;
+                        }
+                        &.max{
+                            border-top-right-radius: 10px;
+                            border-bottom-right-radius: 10px;
+                        }
+                        > .invalidArea{
+                            position: relative;
+                            display: block;
+                            background-color: lightgray;
+                            opacity: 0.3;
+                        }
+                        &.min > .invalidArea{
+                            border-right: double 3px black;
+                        }
+                        &.max > .invalidArea{
+                            border-left: double 3px black;
+                        }
+                    }
+                    &[filtered=false]{
+                        span.invalidArea{
+                            display: none;
+                        }
+                    }
+                    &[anim=true]{
+                        > .base {
+                            .transition(@bar_animation);
+                        }
+                        > .handle{
+                            .transition(@bar_animation);
+                        }
+                    }
+                } // rangeSlider
 
             } // facetInterval
 
@@ -1486,29 +1607,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border: solid 0px lightgray;
                 position: relative;
 
-                .iteminfo{
+                > .iteminfo{
                     float:none;
                     clear: left;
                     font-weight:normal;
                     margin-bottom: 2px;
                 }
-                .iteminfo_0{
+                > .iteminfo_0{
                     font-size:1.0em;
-                    font-weight:bold;
                     color: black;
-                    a{ color: #222222; }
                 }
-                .iteminfo_1{
+                > .iteminfo_1{
                     font-size:0.9em;
                     color: #555555;
                 }
-                .iteminfo_2{
+                > .iteminfo_2{
                     font-size:0.8em;
                     color: #555555;
                     font-style:italic;
                     font-weight:300;
                 }
-                .iteminfo_3{
+                > .iteminfo_3{
                     font-size:0.8em;
                     color: rgb(167, 31, 31);
                     font-style:italic;
@@ -1632,129 +1751,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
 
-    .labelGroup{
-        cursor: default;
-        position:relative;
-//        margin: 0px 13px;
-        height: 15px;
-        margin-top: -1px;
-        span.tick{
-            position:absolute;
-            span.text{
-                font-size: 0.7em;
-                font-weight: 300;
-                width: 100px;
-                text-align: center;
-                position: relative;
-                margin-left: -50px;
-                display: block;
-            }
-            span.line{
-                position: absolute;
-                top: -9px;
-                height: 10px;
-                border-left: solid 1px gray;
-                display: block;
-            }
-        }
-    }
-
-    .rangeSlider{
-        position:relative;
-        height: 10px;
-        pointer-events: all;
-        .selectedItemValue{
-            position:absolute;
-            z-index: 20;
-            top: 1px;
-            display: none;
-            .circlee{
-                border-radius: 20px;
-                width: 8px;
-                height: 8px;
-                background-color: rgba(255, 69, 0, 0.29);
-                border: solid 2px orangered;
-                left: -4px;
-                position: relative;
-            }
-        }
-        .base{
-            display: block;
-            position: absolute;
-            box-shadow: inset 0px 0px 2px gray;
-            .transform-origin(0% 0%);
-            &.total{
-                height: 3px;
-                top: 3px;
-                cursor: pointer;
-                background-color: lightgray;
-            }
-            &.active{
-                height: 8px;
-                top: 1px;
-                width:1px;
-                display:none;
-                &[filtered=true]{
-                    display: block;
-                    cursor: col-resize;
-                    background-color: @color_filtered;
-                }
-                &:hover{
-                    background-color: orangered !important;
-                }
-            }
-        }
-        .handle{
-            display:block;
-            position:absolute;
-            width:6px;
-            height:8px;
-            background-color: white;
-            border-width: 1px;
-            border-color: black;
-            border-style: solid;
-            cursor: ew-resize;
-            z-index: 10;
-            top:1px;
-            &:hover{
-                background-color: orangered !important;
-            }
-            &.min{
-                left: -5px;
-                border-top-left-radius: 10px;
-                border-bottom-left-radius: 10px;
-            }
-            &.max{
-                border-top-right-radius: 10px;
-                border-bottom-right-radius: 10px;
-            }
-            span.invalidArea{
-                position: relative;
-                display: block;
-                background-color: lightgray;
-                opacity: 0.3;
-            }
-            &.min span.invalidArea{
-                border-right: double 3px black;
-            }
-            &.max span.invalidArea{
-                border-left: double 3px black;
-            }
-        }
-        &[filtered=false]{
-            span.invalidArea{
-                display: none;
-            }
-        }
-        &[anim=true]{
-            .base {
-                .transition(@bar_animation);
-            }
-            .handle{
-                .transition(@bar_animation);
-            }
-        }
-    } // rangeSlider
 
     &.layout_infobox {
         position: absolute;
@@ -1957,9 +1953,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         span.action{
             font-weight: 700;
-        }
-        i{
-            margin-right: 2px;
         }
     }
 

@@ -809,7 +809,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin[noitem=true] > .item_count {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin[noitems=true] > .item_count {
   display: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin[highlight=true] > .item_count {
@@ -878,6 +878,133 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup > .quantile.q_10_90 {
   background-color: #f3fcfb;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup {
+  cursor: default;
+  position: relative;
+  height: 15px;
+  margin-top: -1px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick {
+  position: absolute;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick > .text {
+  font-size: 0.7em;
+  font-weight: 300;
+  width: 100px;
+  text-align: center;
+  position: relative;
+  margin-left: -50px;
+  display: block;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick > .line {
+  position: absolute;
+  top: -9px;
+  height: 10px;
+  border-left: solid 1px gray;
+  display: block;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider {
+  position: relative;
+  height: 10px;
+  pointer-events: all;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue {
+  position: absolute;
+  z-index: 20;
+  top: 1px;
+  display: none;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue > .circlee {
+  border-radius: 20px;
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 69, 0, 0.29);
+  border: solid 2px orangered;
+  left: -4px;
+  position: relative;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base {
+  display: block;
+  position: absolute;
+  box-shadow: inset 0px 0px 2px gray;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.total {
+  height: 3px;
+  top: 3px;
+  cursor: pointer;
+  background-color: lightgray;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active {
+  height: 8px;
+  top: 1px;
+  width: 1px;
+  display: none;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active[filtered=true] {
+  display: block;
+  cursor: col-resize;
+  background-color: #30b8c4;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active:hover {
+  background-color: orangered !important;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle {
+  display: block;
+  position: absolute;
+  width: 6px;
+  height: 8px;
+  background-color: white;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  cursor: ew-resize;
+  z-index: 10;
+  top: 1px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle:hover {
+  background-color: orangered !important;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.min {
+  left: -5px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.max {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle > .invalidArea {
+  position: relative;
+  display: block;
+  background-color: lightgray;
+  opacity: 0.3;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.min > .invalidArea {
+  border-right: double 3px black;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.max > .invalidArea {
+  border-left: double 3px black;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[filtered=false] span.invalidArea {
+  display: none;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .base {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .handle {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshf .kshfChart > .wrapper .bar {
   display: block;
@@ -1497,31 +1624,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 0px lightgray;
   position: relative;
 }
-.kshf .listItem > .itemRow > .content .iteminfo {
+.kshf .listItem > .itemRow > .content > .iteminfo {
   float: none;
   clear: left;
   font-weight: normal;
   margin-bottom: 2px;
 }
-.kshf .listItem > .itemRow > .content .iteminfo_0 {
+.kshf .listItem > .itemRow > .content > .iteminfo_0 {
   font-size: 1.0em;
-  font-weight: bold;
   color: black;
 }
-.kshf .listItem > .itemRow > .content .iteminfo_0 a {
-  color: #222222;
-}
-.kshf .listItem > .itemRow > .content .iteminfo_1 {
+.kshf .listItem > .itemRow > .content > .iteminfo_1 {
   font-size: 0.9em;
   color: #555555;
 }
-.kshf .listItem > .itemRow > .content .iteminfo_2 {
+.kshf .listItem > .itemRow > .content > .iteminfo_2 {
   font-size: 0.8em;
   color: #555555;
   font-style: italic;
   font-weight: 300;
 }
-.kshf .listItem > .itemRow > .content .iteminfo_3 {
+.kshf .listItem > .itemRow > .content > .iteminfo_3 {
   font-size: 0.8em;
   color: #a71f1f;
   font-style: italic;
@@ -1645,133 +1768,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listItem[selectLinked=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f096";
-}
-.kshf .labelGroup {
-  cursor: default;
-  position: relative;
-  height: 15px;
-  margin-top: -1px;
-}
-.kshf .labelGroup span.tick {
-  position: absolute;
-}
-.kshf .labelGroup span.tick span.text {
-  font-size: 0.7em;
-  font-weight: 300;
-  width: 100px;
-  text-align: center;
-  position: relative;
-  margin-left: -50px;
-  display: block;
-}
-.kshf .labelGroup span.tick span.line {
-  position: absolute;
-  top: -9px;
-  height: 10px;
-  border-left: solid 1px gray;
-  display: block;
-}
-.kshf .rangeSlider {
-  position: relative;
-  height: 10px;
-  pointer-events: all;
-}
-.kshf .rangeSlider .selectedItemValue {
-  position: absolute;
-  z-index: 20;
-  top: 1px;
-  display: none;
-}
-.kshf .rangeSlider .selectedItemValue .circlee {
-  border-radius: 20px;
-  width: 8px;
-  height: 8px;
-  background-color: rgba(255, 69, 0, 0.29);
-  border: solid 2px orangered;
-  left: -4px;
-  position: relative;
-}
-.kshf .rangeSlider .base {
-  display: block;
-  position: absolute;
-  box-shadow: inset 0px 0px 2px gray;
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-}
-.kshf .rangeSlider .base.total {
-  height: 3px;
-  top: 3px;
-  cursor: pointer;
-  background-color: lightgray;
-}
-.kshf .rangeSlider .base.active {
-  height: 8px;
-  top: 1px;
-  width: 1px;
-  display: none;
-}
-.kshf .rangeSlider .base.active[filtered=true] {
-  display: block;
-  cursor: col-resize;
-  background-color: #30b8c4;
-}
-.kshf .rangeSlider .base.active:hover {
-  background-color: orangered !important;
-}
-.kshf .rangeSlider .handle {
-  display: block;
-  position: absolute;
-  width: 6px;
-  height: 8px;
-  background-color: white;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
-  cursor: ew-resize;
-  z-index: 10;
-  top: 1px;
-}
-.kshf .rangeSlider .handle:hover {
-  background-color: orangered !important;
-}
-.kshf .rangeSlider .handle.min {
-  left: -5px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-.kshf .rangeSlider .handle.max {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-.kshf .rangeSlider .handle span.invalidArea {
-  position: relative;
-  display: block;
-  background-color: lightgray;
-  opacity: 0.3;
-}
-.kshf .rangeSlider .handle.min span.invalidArea {
-  border-right: double 3px black;
-}
-.kshf .rangeSlider .handle.max span.invalidArea {
-  border-left: double 3px black;
-}
-.kshf .rangeSlider[filtered=false] span.invalidArea {
-  display: none;
-}
-.kshf .rangeSlider[anim=true] .base {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-}
-.kshf .rangeSlider[anim=true] .handle {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshf.layout_infobox {
   position: absolute;
@@ -1996,9 +1992,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy .tipsy-inner span.action {
   font-weight: 700;
-}
-.tipsy .tipsy-inner i {
-  margin-right: 2px;
 }
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
