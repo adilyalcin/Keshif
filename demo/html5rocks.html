@@ -41,7 +41,7 @@ $(document).ready( function(){
                             d.author_id = $this.find(">a > .left .author").attr("data-author_id");
                             d.author_img = $this.find(">a > .left .author >img").attr("src");
                             d.Author = $this.find(">a > .left .author >img").attr("title");
-                            d.Date = new Date(moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,"")));
+                            d.Date = moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,""));
                             d.Title = $(this).find(">a > .right > .title").text().trim();
                             d.Description = $(this).find(">a > .right > .description").text().trim();
                             d.Tags = [];
@@ -64,6 +64,7 @@ $(document).ready( function(){
         facets: [
             {   facetTitle: "Author", 
             },{ facetTitle: "Date",
+                catItemMap: function(tut){ return new Date(tut.data.Date);},
                 intervalScale: 'time',
                 layout: "bottom"
             },{ facetTitle: "Tags", layout: 'right'
@@ -73,7 +74,7 @@ $(document).ready( function(){
             sortColWidth: 60,
             sortingOpts : [
                 {   name: 'Date',
-                    value: function(tutorial){ return tutorial.data.Date.getFullYear(); },
+                    value: function(tutorial){ return tutorial.data.Date.unix(); },
                 }
             ],
             displayType: 'grid',
