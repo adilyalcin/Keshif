@@ -27,6 +27,27 @@
 
 var demoID = 89;
 
+var ageSort = function(a,b){
+    a= a.data[1];
+    b= b.data[1];
+    if(b==="17-24") return 1;
+    if(a==="17-24") return -1;
+    if(b==="25-34") return 1;
+    if(a==="25-34") return -1;
+    if(b==="35-44") return 1;
+    if(a==="35-44") return -1;
+    if(b==="45-54") return 1;
+    if(a==="45-54") return -1;
+    if(b==="55-64") return 1;
+    if(a==="55-64") return -1;
+    if(b==="65-74") return 1;
+    if(a==="65-74") return -1;
+    if(b==="75-84") return 1;
+    if(a==="75-84") return -1;
+    if(b==="85+") return 1;
+    if(a==="85+") return -1;
+};
+
 $(document).ready(function() {
     // set div height accordingly 
     $('#chart_div').height(800);
@@ -53,18 +74,18 @@ $(document).ready(function() {
         readyCb: function(browser){
             $(".listItem .content").click(function(){
                 browser.listDisplay.showListItemDetails(this.parentNode.__data__);
-                kshf.Util.cellToArray(kshf.dt.Participants, 
-                    ['q_08_principaux_problèmes_époque_mondiale+',
-                     'q_19_principes_guider_scientifiques_travaux+',
-                     'q_29_principaux_médias_scientifiques_québécois_consultés+',
-                     'q_30_organismes_scientifiques_connus+',
-                     'q_35_finalités_prioritaires+',
-                     'q_36_domaines_prioritaires+'],
-                    " ", false);
             });
         },
         loadedCb: function(){
             col_s = kshf.dt_ColNames.Participants;
+            kshf.Util.cellToArray(kshf.dt.Participants, 
+                [col_s['q_08_principaux_problèmes_époque_mondiale+'],
+                 col_s['q_19_principes_guider_scientifiques_travaux+'],
+                 col_s['q_29_principaux_médias_scientifiques_québécois_consultés+'],
+                 col_s['q_30_organismes_scientifiques_connus+'],
+                 col_s['q_35_finalités_prioritaires+'],
+                 col_s['q_36_domaines_prioritaires+']],
+                /\b\s+/, false);
         },
         facets: [
             {
@@ -74,7 +95,17 @@ $(document).ready(function() {
             },{
                 facetTitle: "Âge",
                 description: "Votre groupe d'âge",
-                catItemMap: function(d){ return d.data[col_s.q_02_groupe_âge]; }
+                catItemMap: function(d){ 
+                    var v=d.data[col_s.q_02_groupe_âge];
+                    if(v===null || v===undefined) return;
+                    // remove "_ans...."
+                    v = v.substr(0,v.indexOf("_ans"));
+                    // replace "_" with "-"
+                    v = v.replace("_","-");
+                    if(v==="85") v= "85+";
+                    return v;
+                },
+                sortingOpts : [{ func: ageSort }]
             },{
                 facetTitle: "Région Géographique",
                 description: "Votre région de résidence",
