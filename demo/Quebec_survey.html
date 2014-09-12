@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Survey on &quot;Online collaboration: Scientists and the social network&quot;</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <!-- Demos - shared -->
+        <script type="text/javascript" src="../demo/js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../demo/css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
+
+        <!-- Logging features -->
+        <script type="text/javascript" src="../demo/js/modernizr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../demo/js/log.js" charset="utf-8"></script>
+
+        <!-- Fancybox -->
+        <script type="text/javascript" src="../demo/js/jquery.fancybox.pack.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="../demo/css/jquery.fancybox.css">
+
+        <script type="text/javascript">
+
+var demoID = 89;
+
+$(document).ready(function() {
+    // set div height accordingly 
+    $('#chart_div').height(800);
+    $('#chart_div').width (1200);
+/*    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
+        browser.updateLayout();
+    });*/
+
+    var col_s;
+
+    browser = new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Participants",
+        categoryTextWidth:250,
+        leftPanelLabelWidth: 230,
+        rightPanelLabelWidth: 270,
+        source : {
+            gdocId : '1XxWOlo_YwXV8kyMEF1cO4oSFIQI5mw9ldpksK2EVHWQ',
+            sheets : [ {name:"Participants"}]
+        },
+        readyCb: function(browser){
+            $(".listItem .content").click(function(){
+                browser.listDisplay.showListItemDetails(this.parentNode.__data__);
+                kshf.Util.cellToArray(kshf.dt.Participants, 
+                    ['q_08_principaux_problèmes_époque_mondiale+',
+                     'q_19_principes_guider_scientifiques_travaux+',
+                     'q_29_principaux_médias_scientifiques_québécois_consultés+',
+                     'q_30_organismes_scientifiques_connus+',
+                     'q_35_finalités_prioritaires+',
+                     'q_36_domaines_prioritaires+'],
+                    " ", false);
+            });
+        },
+        loadedCb: function(){
+            col_s = kshf.dt_ColNames.Participants;
+        },
+        facets: [
+            {
+                facetTitle: "Sexe",
+                description: "Votre sexe",
+                catItemMap: function(d){ return d.data[col_s.q_01_sexe]; }
+            },{
+                facetTitle: "Âge",
+                description: "Votre groupe d'âge",
+                catItemMap: function(d){ return d.data[col_s.q_02_groupe_âge]; }
+            },{
+                facetTitle: "Région Géographique",
+                description: "Votre région de résidence",
+                catItemMap: function(d){ return d.data[col_s.q_03_région_géographique]; }
+            },{
+                facetTitle: "Diplôme Plus Élevé",
+                description: "Votre diplôme le plus élevé ",
+                catItemMap: function(d){ return d.data[col_s.q_04_diplôme_plus_élevé]; }
+            },{
+                facetTitle: "Diplôme en Cours",
+                description: "Si vous étudiez, quel est votre cycle d’études?",
+                catItemMap: function(d){ return d.data[col_s.q_05_diplôme_en_cours]; }
+            },{
+                facetTitle: "Domaine Formation",
+                description: "Votre principal domaine de formation ou d’études:",
+                catItemMap: function(d){ return d.data[col_s.q_06_domaine_formation]; }
+            },{
+                facetTitle: "Domaine Emploi",
+                description: "Le principal secteur dans lequel vous travaillez :",
+                catItemMap: function(d){ return d.data[col_s.q_07_domaine_emploi]; }
+            },{
+                facetTitle: "Principaux Problèmes Époque Mondiale",
+                description: "Selon vous, quels sont les principaux problèmes de notre époque, à l’échelle mondiale? (en choisir trois au maximum)",
+                catItemMap: function(d){ return d.data[col_s['q_08_principaux_problèmes_époque_mondiale+']]; }
+
+            },{
+                facetTitle: 'L’accès à l’information scientifique',
+                layout: 'right',
+                facets: [
+                    {
+                        facetTitle: "Principes Guider Scientifiques Travaux",
+                        description: "Quels sont les principes essentiels qui devraient guider les scientifiques dans leurs travaux ? (choix de trois au maximum)",
+                        catItemMap: function(d){ return d.data[col_s['q_19_principes_guider_scientifiques_travaux+']]; }
+                    },{
+                        facetTitle: "Respect des Principes",
+                        description: "Croyez-vous que les principes que vous avez choisis sont respectés par la majorité des scientifiques?",
+                        catItemMap: function(d){ return d.data[col_s['q_20_respect_des_principes']]; }
+                    },{
+                        facetTitle: "Indiquer Énoncés Scientifiques",
+                        description: "Quelle est, selon vous, la meilleure attitude possible des scientifiques sur la place publique?",
+                        catItemMap: function(d){ return d.data[col_s['q_21_indiquer_énoncés_scientifiques']]; }
+                    }
+                ]
+            },{
+                facetTitle: 'L’accès à l’information scientifique',
+                layout: 'right',
+                facets: [
+                    {
+                        facetTitle: "Principaux Médias Sci. Québécois Consultés",
+                        description: "Quels sont les médias scientifiques québécois que vous consultez le plus souvent? (en choisir trois au maximum)",
+                        catItemMap: function(d){ return d.data[col_s['q_29_principaux_médias_scientifiques_québécois_consultés+']]; }
+                    },{
+                        facetTitle: "Organismes Scientifiques Connus",
+                        description: "Quels sont les organismes québécois de communication scientifiques que vous connaissez le mieux? (en choisir trois au maximum)",
+                        catItemMap: function(d){ return d.data[col_s['q_30_organismes_scientifiques_connus+']]; }
+                    }
+                ]
+            },{
+                facetTitle: 'La science, l’État et les citoyens',
+                layout: 'right',
+                facets: [
+                    {
+                        facetTitle: "Finalités Prioritaires",
+                        description: "La recherche scientifique peut avoir plusieurs finalités. Quelles sont les finalités qui vous paraissent prioritaires? (en choisir trois au maximum)",
+                        catItemMap: function(d){ return d.data[col_s['q_35_finalités_prioritaires+']]; }
+                    },{
+                        facetTitle: "Domaines Prioritaires",
+                        description: "Choisissez un maximum de cinq domaines de recherche qui devraient mobiliser les gouvernements et les scientifiques de manière prioritaire actuellement : la recherche sur...",
+                        catItemMap: function(d){ return d.data[col_s['q_36_domaines_prioritaires+']]; }
+                    },{
+                        facetTitle: "Financement Privé ou Public",
+                        description: "Selon vous, la recherche scientifique québécoise doit être financée :",
+                        catItemMap: function(d){ return d.data[col_s['q_37_financement_privé_ou_public']]; }
+                    },{
+                        facetTitle: "Vision Influence Politique",
+                        description: "Si le gouvernement décidait de mettre fin à la recherche scientifique sur un sujet qui vous tient à cœur, quelle serait votre position?",
+                        catItemMap: function(d){ return d.data[col_s['q_39_vision_influence_politique']]; }
+                    }
+                ]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            autoExpandMore: true,
+            detailsToggle : "One",
+            textSearch : 'content',
+            textSearchFunc : function(d){
+                return d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+            },
+            sortingOpts : [{ 
+                name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
+                    var v=d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+                    if(v===null) return 0;
+                    return v.length; 
+                } }],
+            contentFunc : function(d){ 
+                var v=d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+                return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
+            }
+        }
+    });
+
+    $(".comment_popup").fancybox({
+        type: 'iframe',
+        width    : 600,
+        height   : 300,
+        closeBtn    : true,
+//        openEffect  : 'none',
+//        closeEffect : 'none',
+        iframe: {
+            preload   : true
+        }
+    });
+
+});
+
+</script>
+        <style>
+            .iteminfo a{
+                color:#606060;
+                font-style:italic;
+            }
+            #chart_div{
+                margin-bottom: 30px;
+            }
+            body{ margin:2px; }
+            blockquote {
+              /*background: #f9f9f9;
+              border-left: 10px solid #ccc;
+              margin: 1.5em 10px;
+              padding: 0.5em 10px;
+              quotes: "\201C""\201D""\2018""\2019";*/
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              quotes: "\201C""\201D""\2018""\2019";
+              margin: 0px;
+              font-style: italic;
+              font-weight: 300;
+              text-align: justify;
+            }
+            blockquote:before {
+              color: #ccc;
+              content: open-quote;
+              font-size: 4em;
+              margin-right: 0.1em;
+              margin-left: -0.1em;
+              vertical-align: -0.5em;
+              line-height: 0px;
+            }
+            blockquote:hover:before {
+                color: gray;
+            }
+            blockquote:hover:after {
+                color: gray;
+            }
+            blockquote:after {
+              color: #ccc;
+              content: close-quote;
+              font-size: 4em;
+              margin-right: 0.1em;
+              margin-left: -0.1em;
+              vertical-align: -0.5em;
+              line-height: 0px;
+            }
+            .listItem[details=true] blockquote{
+                overflow: visible;
+                white-space: normal;
+            }
+            .listItem .content{
+                cursor: pointer;
+            }
+            .qoutes{
+                font-style: italic;
+                font-weight: 300;
+            }
+            .quotes:before{
+                content: "";
+            }
+            .quotes:after{
+                content:'"';
+            }
+            .listItem{
+                max-height: 500px !important;
+            }
+            #infobox{
+                z-index: 1000;
+                width: 90%;
+                left: 5%;
+                position: fixed;
+                text-align: center;
+                font-weight: 300;
+                font-family: sans-serif;
+                font-size: 0.8em;
+                bottom: 0px;
+                height: 20px;
+                background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+                background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+                background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);;
+            }
+            #infobox a{
+                color: black !important;
+                font-weight: 500;
+            }
+            #infobox span.fa{
+                color:gray;
+            }
+            .comment_popup{
+                position: fixed;
+                margin-left: 5px;
+                cursor: pointer;
+            }
+            .comment_popup .fa-stack{
+                float:left;
+                clear:left;
+                height: 1.5em;
+                margin-top: -15px;
+                margin-left: -15px;
+                font-size: 2em;
+            }
+            .comment_popup .fa-comment{
+                color: rgb(255, 205, 46);
+            }
+            .comment_popup .texttt{
+                font-family: sans-serif;
+                font-weight: 300;
+                font-size: 0.8em;
+            }
+            .comment_popup:hover .texttt{
+                color: orangered;
+            }
+            .comment_popup:hover .fa-comment{
+                color: orangered;
+            }
+        </style>
+	</head>
+    <body>
+
+        <span class="comment_popup"
+        href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
+            >
+            <span class="fa-stack" style="">
+              <i class="fa fa-stack-1x fa-comment"></i>
+              <i class="fa fa-stack-1x fa-comment-o"></i>
+            </span><br>
+            <span class="texttt">Share<br>your<br>feedback</span>
+            </span>
+
+        <div class="contents">
+            <div id="chart_div" onmousemove="logIf.setSessionID(this)"></div>
+            </div>
+        <!--
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span> This page uses the survey data from
+            <a href="http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711" target="_blank">Online collaboration: Scientists and the social network</a>, by Richard Van Noorden, published at Nature, 13 August 2014. <span class="fa fa-info-circle"></span>
+            </div> -->
+    </body>
+</html>
