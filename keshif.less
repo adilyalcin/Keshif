@@ -59,7 +59,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attrib .barGroup{ display:none; }
     }
     &[hidebaraxis=true] {
-        .attribChartAxis{ display:none; }
+        .barChartPreviewAxis{ display:none; }
         .barChartMainInfo{ display:none; }
     }
     &[noanim=false]{
@@ -69,7 +69,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .histogram .barGroup_Active{
             .transition(@bar_animation);
         }
-        .attribChartAxis span.tick{
+        .barChartPreviewAxis span.tick{
             .transition(@bar_animation);
         }
         .facetInterval .histogram .bin{
@@ -155,7 +155,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .wigdhdyt{ right: 0px; }
             .kshfChart{ margin-right: 17px; }
         }
-        .attribChartAxis{
+        .barChartPreviewAxis{
             direction: ltr; 
         }
         .facetCategorical{
@@ -294,32 +294,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
         &:hover { stroke: orangered; }
     }
-    .attribChartAxis {
-        pointer-events: all;
+
+    .barChartPreviewAxis {
+        pointer-events: none;
         position:absolute;
         z-index: 2;
-        height: 16px;
         .transition(@layout_animation);
-        .tick{
+        > .tick{
             opacity: 0;
             position:absolute;
-            span.text{
+            > .text{
                 display: block;
                 position: relative;
-                width: 20px;
-                left: -10px;
                 text-align: center;
                 font-size: 0.7em;
                 font-weight: 300;
                 cursor: default;
+                color: gray;
             }
-            span.line{
+            > .line{
                 display: block;
-                width: 0px;
                 position: absolute;
-                border-left-style: dashed;
-                border-left-width: 1px;
-                border-left-color: lightgray;
             }
         }
     }
@@ -553,7 +548,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 .scroll_display_more{
-                    font-size: 0.6em;
+                    font-size: 0.7em;
                     line-height: 1.4em;
                     vertical-align: top;
                     font-style:italic;
@@ -765,6 +760,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .bins{
                         position: absolute;
                         top: 14px;
+                        z-index: 3;
                         .transition(@layout_animation);
                         > .bin{
                             position: absolute;
@@ -795,6 +791,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
+                    > .barChartPreviewAxis {
+                        top: 14px;
+                        > .tick{
+                            > .line{
+                                border-top-style: dashed;
+                                border-top-width: 1px;
+                                border-top-color: lightgray;
+                            }
+                        }
+                    }
+
                 }
                 > .percentileGroup{
                     height: 14px;
@@ -1130,6 +1137,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:relative; 
         .border_line{
             opacity: 0.6;
+        }
+        > .barChartPreviewAxis {
+            > .tick{
+                > .text{
+                    width: 20px;
+                    left: -10px;
+                }
+                > .line{
+                    width: 0px;
+                    border-left-style: dashed;
+                    border-left-width: 1px;
+                    border-left-color: lightgray;
+                }
+            }
         }
     }
 
@@ -1717,7 +1738,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[highlight=false]{
-            background-color:white;
+            //background-color:white;
         }
         &[highlight=selected]{
             box-shadow: inset 0px 0px 2px black; //@color_bars_selected;

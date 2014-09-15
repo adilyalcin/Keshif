@@ -344,7 +344,7 @@ kshf.Util = {
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
             .on("click", function(d,i){
                 this.tipsy.hide();
-                me.facetFilter.clearFilter(true);
+                me.facetFilter.clearFilter();
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.facetFilter.id});
             })
             .append("span").attr("class","fa fa-times")
@@ -352,8 +352,7 @@ kshf.Util = {
 
         var headerLabel=this.options.facetTitle;
         if(this.parentFacet && this.parentFacet.hasAttribs()) {
-            headerLabel = headerLabel+" <span class='title_of'>of</span> <i class='fa fa-hand-o-right'></i> "
-                +this.parentFacet.options.facetTitle+" <span class='fa fa-level-up'></span>";
+            headerLabel = "<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+this.parentFacet.options.facetTitle+":</span> "+"  "+headerLabel;
         }
         topRow.append("span").attr("class", "header_label")
             .html(headerLabel)
@@ -526,7 +525,7 @@ kshf.Item = function(d, idIndex){
     // Previewed item count
     this.itemCount_Preview=0;
     // If true, filter/wanted state is dirty and needs to be updated.
-    this.dirtyFilter = true;
+    this._filterCacheIsDirty = true;
     // Cacheing filter state per eact facet in the system
     this.filterCache = [];
     // Wanted item / not filtered out
@@ -555,10 +554,10 @@ kshf.Item.prototype = {
         return this.data[this.idIndex];
     },
     /** -- */
-    setFilter: function(index,v){
+    setFilterCache: function(index,v){
         if(this.filterCache[index]===v) return;
         this.filterCache[index] = v;
-        this.dirtyFilter = true;
+        this._filterCacheIsDirty = true;
     },
 
     /** -- */
@@ -615,7 +614,7 @@ kshf.Item.prototype = {
      * With recursive parameter, you avoid updating status under facet passed in as recursive
      */
     updateWanted: function(recursive){
-        if(!this.dirtyFilter) return false;
+        if(!this._filterCacheIsDirty) return false;
 
         var me=this;
         var oldWanted = this.isWanted;
@@ -679,7 +678,7 @@ kshf.Item.prototype = {
             },this);
         }
 
-        this.dirtyFilter = false;
+        this._filterCacheIsDirty = false;
         return this.isWanted !== oldWanted;
     },
     /** Only updates wanted state if it is currently not wanted (resulting in More wanted items) */
@@ -802,13 +801,12 @@ kshf.Filter = function(id, opts){
     this.id = id;
     this.isFiltered = false;
     this.filteredItems.forEach(function(item){
-        item.setFilter(this.id,true);
+        item.setFilterCache(this.id,true);
     },this);
 };
 kshf.Filter.prototype = {
     addFilter: function(forceUpdate,recursive){
         var parentFacet=this.facet.parentFacet;
-        var itemsSelectedCt_ = this.browser.itemsSelectedCt;
         this.isFiltered = true;
 
         if(this.onFilter) this.onFilter.call(this.facet, this);
@@ -829,7 +827,7 @@ kshf.Filter.prototype = {
             }
             if(parentFacet && parentFacet.hasAttribs()){
                 if(item.isWanted)
-                    item.set_OR(parentFacet.attribFilter.attribs_OR);
+                    item.set_OR(parentFacet.attribFilter.selected_OR);
                 else 
                     item.set_NONE();
             }
@@ -840,11 +838,12 @@ kshf.Filter.prototype = {
             parentFacet.updateAttribCount_Wanted();
             parentFacet.attribFilter.how = "All";
             // re-run the parents attribute filter...
+            parentFacet.attribFilter.linkFilterSummary = "";
             parentFacet.attribFilter.addFilter(false,parentFacet); // This filter will update the browser later if forceUpdate===true
             parentFacet._update_Selected();
         }
 
-        this.refreshFilterSummary();
+        this._refreshFilterSummary();
 
         if(forceUpdate===true){
             this.browser.updateItemSelectedCt();
@@ -855,42 +854,49 @@ kshf.Filter.prototype = {
             }
         }
     },
-    clearFilter: function(forceUpdate,recursive){
+    clearFilter: function(forceUpdate,recursive, updateWanted){
         if(!this.isFiltered) return;
         var parentFacet=this.facet.parentFacet;
-        var itemsSelectedCt_ = this.browser.itemsSelectedCt;
+        var hasEntityParent = this.facet.hasEntityParent();
+
         this.isFiltered = false;
 
         // clear filter cache - no other logic is necessary
-        this.filteredItems.forEach(function(item){ item.setFilter(this.id,true); },this);
+        this.filteredItems.forEach(function(item){ item.setFilterCache(this.id,true); },this);
 
         if(this.onClear) this.onClear.call(this.facet,this);
 
         if(recursive===undefined) recursive=true;
-        this.filteredItems.forEach(function(item){
-            // if you will show LESS results and item is not wanted, skip
-            // if you will show MORE results and item is wanted, skip
-            if(!item.isWanted){
-                item.updateWanted(recursive);
-            }
-            if(parentFacet && parentFacet.hasAttribs() && item.isWanted){
-                item.set_OR(parentFacet.attribFilter.attribs_OR);
-            }
-        },this);
 
-        this.refreshFilterSummary();
+        if(updateWanted!==false){
+            this.filteredItems.forEach(function(item){
+                if(!item.isWanted){
+                    item.updateWanted(recursive);
+                }
+                if(item.isWanted && hasEntityParent){
+                    item.set_OR(parentFacet.attribFilter.selected_OR);
+                }
+            });
+        }
 
-        if(forceUpdate===true){
-            if(parentFacet && parentFacet.hasAttribs()){
+        this._refreshFilterSummary();
+
+        if(forceUpdate!==false){
+            if(hasEntityParent){
                 parentFacet.updateAttribCount_Wanted();
                 parentFacet.attribFilter.how = "All";
                 if(parentFacet.attribCount_Wanted===parentFacet.attribCount_Total){
                     parentFacet.attribFilter.clearFilter(false,parentFacet); // force update
                 } else {
                     // re-run the parents attribute filter...
+                    parentFacet.attribFilter.linkFilterSummary = "";
                     parentFacet.attribFilter.addFilter(false,parentFacet); // force update
                 }
             }
+
+            this.facet.subFacets.forEach(function(facet){
+                facet.facetFilter.clearFilter(false,false,false);
+            });
 
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
@@ -903,7 +909,7 @@ kshf.Filter.prototype = {
     },
 
     /** Don't call this directly */
-    refreshFilterSummary: function(){
+    _refreshFilterSummary: function(){
         if(this.hideCrumb===undefined && this.browser.subBrowser!==true && this.browser.isSmallWidth()){
             this.hideCrumb = true;
         }
@@ -960,7 +966,7 @@ kshf.Filter.prototype = {
             })
             .on("click",function(){
                 this.tipsy.hide();
-                me.clearFilter(true);
+                me.clearFilter();
                 // delay layout height update
                 setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_CRUMB, {id: this.id});
@@ -1149,7 +1155,7 @@ kshf.List = function(kshf_, config, root){
                         // if any of the linked items are selected, filtering will pass true
                         // Note: items can only have one mapping (no list stuff here...)
                         filter.filteredItems.forEach(function(item){
-                            item.setFilter(filter.id,(labelFunc(item)===filter.filterValue));
+                            item.setFilterCache(filter.id,(labelFunc(item)===filter.filterValue));
                         });
                     },
                     summary_header: sortingOpt.name,
@@ -1226,7 +1232,7 @@ kshf.List.prototype = {
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
-                    item.setFilter(filter.id,f);
+                    item.setFilterCache(filter.id,f);
                 });
             },
             hideCrumb: true,
@@ -1248,16 +1254,14 @@ kshf.List.prototype = {
                     if(me.textFilter.filterStr!=="") {
                         me.textFilter.addFilter(true);
                     } else {
-                        me.textFilter.clearFilter(true);
+                        me.textFilter.clearFilter();
                     }
                     if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id: me.textFilter.id, info: me.textFilter.filterStr});
                     x.timer = null;
                 }, 750);
             });
         listHeaderTopRowTextSearch.append("i").attr("class","fa fa-times-circle clearText")
-            .on("click",function() {
-                me.textFilter.clearFilter(true);
-            });
+            .on("click",function() { me.textFilter.clearFilter(); });
     },
     /** -- */
     insertHeaderSortSelect: function(){
@@ -1332,8 +1336,8 @@ kshf.List.prototype = {
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
 
-            y.append("span").attr("class","headerLinkColumnAllResults").text(" All below");
             y.append("span").attr("class","fa fa-link");
+            y.append("span").attr("class","headerLinkColumnAllResults").html(" All <i class='fa fa-hand-o-down'></i>");
         }
     },
     /** Insert items into the UI, called once on load */
@@ -1392,7 +1396,7 @@ kshf.List.prototype = {
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
-                        title: function(){ return "<span class='action'>Show</span> "+me.linkText +" this"; }
+                        title: function(){ return "<span class='action'>Show</span> "+me.linkText +" <i class='fa fa-hand-o-left'></i> this"; }
                     })
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
@@ -2916,6 +2920,8 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.attrib_InDisplay_First = 0;
     this.configRowCount=0;
 
+    this.subFacets = [];
+
     // COLLAPSED
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
@@ -2930,6 +2936,10 @@ kshf.Facet_Categorical = function(kshf_, options){
 };
 
 kshf.Facet_Categorical.prototype = {
+    hasEntityParent: function(){
+        if(this.parentFacet===undefined) return;
+        return this.parentFacet.hasAttribs();
+    },
     /** -- */
     getAttribs: function(){
         return kshf.dt[this.catTableName];
@@ -2974,12 +2984,12 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     getHeight_RangeMax: function(){
         if(!this.hasAttribs()) return this.browser.line_height;
-        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Active+1)*this.browser.line_height;
+        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Visible+1)*this.browser.line_height;
     },
     /** -- */
     getHeight_RangeMin: function(){
         if(!this.hasAttribs()) return this.browser.line_height;
-        return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Active,3)+1)*this.browser.line_height;
+        return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Visible,3)+1)*this.browser.line_height;
     },
     /** -- */
     getHeight_Total: function(){
@@ -3004,14 +3014,14 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     isFiltered: function(state){
-        return this.attribFilter.attribCount_Total() !== 0 || this.attribCount_Wanted !== this.attribCount_Total;
+        return this.attribFilter.isFiltered;
     },
     /** -- */
     allAttribsVisible: function(){
-        return this.attribCount_Active===this.attribCount_InDisplay;
+        return this.attribCount_Visible===this.attribCount_InDisplay;
     },
     hasFacets: function(){
-        return this.subFacets!==undefined;
+        return this.subFacets.length>0;
     },
     hasAttribs: function(){
         return this.options.catItemMap!==undefined;
@@ -3092,10 +3102,63 @@ kshf.Facet_Categorical.prototype = {
             filteredItems: this.filteredItems,
             facet: this,
             onClear: function(filter){
+                this._update_Selected();
                 this.clearLabelTextSearch();
                 this.unselectAllAttribs();
             },
-            onFilter: this.onAttribFilter,
+            onFilter: function(filter){
+                this._update_Selected();
+
+                var filterId = filter.id;
+
+                this.filteredItems.forEach(function(item){
+                    var attribItems=item.mappedDataCache[filterId];
+
+                    if(attribItems===null){ // item is mapped to none
+                        if(filter.selected_AND.length>0 || filter.selected_OR.length>0){
+                            item.setFilterCache(filterId,false); return;
+                        }
+                        item.setFilterCache(filterId,true); return;
+                    }
+                    // Check NOT selections - If any mapped item is NOT, return false
+                    // Note: no other filtering depends on NOT state.
+        /*            if(filter.selected_NOT.length>0){
+                        if(!attribItems.every(function(item){ 
+                            return !item.is_NOT() && item.isWanted;
+                        })){
+                            item.setFilterCache(filterId,false); return;
+                        }
+                    }*/ // THIS THING ABOVE IS FOR MULTI_LEVEL FILTERING AND NOT QUERY
+                    
+                    if(filter.selected_NOT.length>0){
+                        if(!attribItems.every(function(item){ 
+                            return !item.is_NOT();
+                        })){
+                            item.setFilterCache(filterId,false); return;
+                        }
+                    }
+                    // Check OR selections - If any mapped item is OR, return true
+                    if(filter.selected_OR.length>0){
+                        if(attribItems.some(function(d){ return (d.is_OR()); })){
+                            item.setFilterCache(filterId,true); return;
+                        }
+                    }
+                    // Check AND selections - If any mapped item is not AND, return false;
+                    if(filter.selected_AND.length>0){
+                        var t=0;
+                        attribItems.forEach(function(m){ if(m.is_AND()) t++; })
+                        if(t!==filter.selected_AND.length){
+                            item.setFilterCache(filterId,false); return;
+                        }
+                        item.setFilterCache(filterId,true); return;
+                    }
+                    if(filter.selected_OR.length>0){
+                        item.setFilterCache(filterId,false); return;
+                    }
+                    // only NOT selection
+                    item.setFilterCache(filterId,true);
+                },this);
+            },
             summary_header: (this.options.summaryHeader?this.options.summaryHeader:this.options.facetTitle),
             summary_item_cb: function(){
                 // go over all items and prepare the list
@@ -3103,29 +3166,25 @@ kshf.Facet_Categorical.prototype = {
                 var catLabelText = me.options.catLabelText;
                 var catTooltipText = me.options.catTooltipText;
 
-                var pths = (me.attribFilter.attribs_AND.length>0 || me.attribFilter.attribs_NOT.length>0) &&
-                    me.attribFilter.attribs_OR.length>0;
-
-                var totalSelectionCount = me.attribFilter.attribs_AND.length + me.attribFilter.attribs_OR.length + 
-                    me.attribFilter.attribs_NOT.length;
+                var totalSelectionCount = this.selectedCount_Total();
 
                 if(totalSelectionCount>4){
-                    selectedItemsText = "<b>"+totalSelectionCount+"</b> "+this.browser.itemName;
+                    selectedItemsText = "<b>"+totalSelectionCount+"</b> "+me.getGroupText();
                 } else {
                     var selectedItemsCount=0;
-                    if(pths) selectedItemsText+="[ ";
-                    me.attribFilter.attribs_AND.forEach(function(attrib){
+                    if(this.selected_Any()) selectedItemsText+="[ ";
+                    me.attribFilter.selected_AND.forEach(function(attrib){
                         selectedItemsText+=((selectedItemsCount!==0)?" and ":"")+"<b>"+catLabelText(attrib)+"</b>";
                         selectedItemsCount++;
                     });
 
-                    me.attribFilter.attribs_NOT.forEach(function(attrib){
+                    me.attribFilter.selected_NOT.forEach(function(attrib){
                         selectedItemsText+=((selectedItemsCount!==0)?" and ":"")+"not <b>"+catLabelText(attrib)+"</b>";
                         selectedItemsCount++;
                     });
-                    if(pths) selectedItemsText+=" ]";
+                    if(this.selected_Any()) selectedItemsText+=" ]";
 
-                    me.attribFilter.attribs_OR.forEach(function(attrib){
+                    me.attribFilter.selected_OR.forEach(function(attrib){
                         selectedItemsText+=((selectedItemsCount!==0)?" or ":"")+"<b>"+catLabelText(attrib)+"</b>";
                         selectedItemsCount++;
                     });
@@ -3138,22 +3197,29 @@ kshf.Facet_Categorical.prototype = {
             }
         });
 
-        this.attribFilter.attribs_AND = [];
-        this.attribFilter.attribs_OR = [];
-        this.attribFilter.attribs_NOT = [];
-        this.attribFilter.attribCount_Total = function(){
-            return this.attribs_AND.length + 
-                this.attribs_OR.length + 
-                this.attribs_NOT.length;
-        },
+        this.attribFilter.selected_AND = [];
+        this.attribFilter.selected_OR = [];
+        this.attribFilter.selected_NOT = [];
+        this.attribFilter.selectedCount_Total = function(){
+            return this.selected_AND.length + this.selected_OR.length + this.selected_NOT.length;
+        };
+        this.attribFilter.selected_Any = function(){
+            return this.selected_AND.length>0 + this.selected_OR.length>0 + this.selected_NOT.length>0;
+        };
 
         this.facetFilter = this.attribFilter;
 
         // accesses attribFilter
         this.mapAttribs(options);
     },
+    getGroupText: function(){
+        if(this.isLinked) {
+            return this.browser.itemName;
+        } else {
+            return this.options.facetTitle;
+        }
+    },
     insertSubFacets: function(){
-        this.subFacets = [];
         this.dom.subFacets=this.divRoot.append("div").attr("class","subFacets");
 
         this.dom.subFacets.append("span").attr("class","facetGroupBar").append("span");//.text("["+this.options.facetTitle+"]");
@@ -3217,7 +3283,7 @@ kshf.Facet_Categorical.prototype = {
 
         this.updateAttribCount_Total();
         this.updateAttribCount_Active();
-        if(this.attribCount_Active===1){
+        if(this.attribCount_Visible===1){
             this.options.catBarScale = "scale_frequency";
         }
 
@@ -3244,11 +3310,11 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateAttribCount_Active: function(){
-        this.attribCount_Active = 0;
+        this.attribCount_Visible = 0;
         this.getAttribs().forEach(function(attrib){
             if(this._dataMap(attrib)===null) return;
-            if(this.isAttribVisible(attrib)===false) return;
-            this.attribCount_Active++;
+            attrib.isVisible = this.isAttribVisible(attrib);
+            if(attrib.isVisible) this.attribCount_Visible++;
         },this);
     },
     /** -- */
@@ -3358,7 +3424,7 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
         this.dom.belowAttribs.append("div").attr("class", "border_line");
-        this.dom.attribChartAxis = this.dom.belowAttribs.append("div").attr("class", "attribChartAxis");
+        this.dom.barChartPreviewAxis = this.dom.belowAttribs.append("div").attr("class", "barChartPreviewAxis");
 
         this.dom.attribs = this.dom.attribGroup.selectAll("div.attib")
             // removes attributes with no items
@@ -3384,17 +3450,17 @@ kshf.Facet_Categorical.prototype = {
                 kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+18);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
-        if(this.isLinked){
+/*        if(this.isLinked){
             mmm.append("span").attr('class','selectAllAttribsButton')
                 .on('click',function(){ me.selectAllAttribsButton(); });
-        }
+        }*/
 
         this.insertAttribs();
     },
     selectAllAttribsButton: function(){
         this.getAttribs().forEach(function(attrib){ 
             if(!attrib.selectedForLink) return;
-            attrib.set_OR(this.attribFilter.attribs_OR);
+            attrib.set_OR(this.attribFilter.selected_OR);
         },this);
         this._update_Selected();
         this.attribFilter.how="All";
@@ -3428,27 +3494,26 @@ kshf.Facet_Categorical.prototype = {
         return this._maxBarValueMaxPerAttrib;
     },
     attrib_UnselectAll: function(){
-        kshf.Util.clearArray(this.attribFilter.attribs_AND);
-        kshf.Util.clearArray(this.attribFilter.attribs_OR);
-        kshf.Util.clearArray(this.attribFilter.attribs_NOT);
-        this._update_Selected();
+        kshf.Util.clearArray(this.attribFilter.selected_AND);
+        kshf.Util.clearArray(this.attribFilter.selected_OR);
+        kshf.Util.clearArray(this.attribFilter.selected_NOT);
     },
     _update_Selected: function(){
         if(this.divRoot) {
             this.divRoot
                 .attr("filtered",this.isFiltered())
-                .attr("filtered_or",this.attribFilter.attribs_OR.length)
-                .attr("filtered_and",this.attribFilter.attribs_AND.length)
-                .attr("filtered_not",this.attribFilter.attribs_NOT.length)
+                .attr("filtered_or",this.attribFilter.selected_OR.length)
+                .attr("filtered_and",this.attribFilter.selected_AND.length)
+                .attr("filtered_not",this.attribFilter.selected_NOT.length)
                 ;
         }
-        this.attribFilter.attribs_OR.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_OR.length>1);
+        this.attribFilter.selected_OR.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.selected_OR.length>1);
         },this);
-        this.attribFilter.attribs_AND.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.attribs_AND.length>1);
+        this.attribFilter.selected_AND.forEach(function(attrib){
+            attrib.facetDOM.setAttribute("show-box",this.attribFilter.selected_AND.length>1);
         },this);
-        this.attribFilter.attribs_NOT.forEach(function(attrib){
+        this.attribFilter.selected_NOT.forEach(function(attrib){
             attrib.facetDOM.setAttribute("show-box","true");
         },this);
     },
@@ -3491,31 +3556,29 @@ kshf.Facet_Categorical.prototype = {
                 this.timer = setTimeout( function(){
                     var v=x.value.toLowerCase();
                     if(v===""){
-                        me.attribFilter.clearFilter(true);
+                        me.attribFilter.clearFilter();
                     } else {
                         textSearchRowDOM.select(".clearText").style("display","block");                     
                         me.attrib_UnselectAll();
                         me.getAttribs().forEach(function(attrib){
                             if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
-                                attrib.set_OR(me.attribFilter.attribs_OR);
+                                attrib.set_OR(me.attribFilter.selected_OR);
                             } else {
                                 // search in tooltiptext
                                 if(me.options.catTooltipText && 
                                     me.options.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1) {
-                                        attrib.set_OR(me.attribFilter.attribs_OR);
+                                        attrib.set_OR(me.attribFilter.selected_OR);
                                 } else{
                                     attrib.set_NONE();
                                 }
                             }
-                            if(attrib.is_OR()) {
-                                me._update_Selected();
-                            }
                         });
                         if(!me.isFiltered()){
-                            me.attribFilter.clearFilter(true);                            
+                            me.attribFilter.clearFilter();                            
                         } else {
                             me.attribFilter.how = "All";
                             me.attribFilter.addFilter(true);
+                            me.attribFilter.linkFilterSummary = "";
                             if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id:me.attribFilter.id, info:v});
                         }
                     }
@@ -3528,7 +3591,7 @@ kshf.Facet_Categorical.prototype = {
             ;
         textSearchRowDOM.append("i").attr("class","fa fa-search searchIcon");
         this.dom.clearTextSearch=textSearchRowDOM.append("i").attr("class","fa fa-times-circle clearText")
-            .on("click",function() { me.attribFilter.clearFilter(true); });
+            .on("click",function() { me.attribFilter.clearFilter(); });
     },
     clearLabelTextSearch: function(){
         if(!this.showTextSearch) return;
@@ -3553,14 +3616,14 @@ kshf.Facet_Categorical.prototype = {
     updateBarAxisScale: function(){
         if(!this.hasAttribs()) return; // nothing to do
         var me=this;
-        this.catBarAxisScale = d3.scale.linear()
+        this.chartPreviewAxisScale = d3.scale.linear()
             .rangeRound([0, this.browser.barChartWidth])
             .nice(this.getTicksSkip())
             .clamp(true);
         if(this.options.catBarScale==="scale_frequency"){
-            this.catBarAxisScale.domain([0,this.browser.itemsSelectedCt]);
+            this.chartPreviewAxisScale.domain([0,this.browser.itemsSelectedCt]);
         } else {
-            this.catBarAxisScale.domain([0,this.getMaxBarValuePerAttrib()]);
+            this.chartPreviewAxisScale.domain([0,this.getMaxBarValuePerAttrib()]);
         }
         this.refreshWidth_Bars_Active();
         this.refreshWidth_Bars_Total();
@@ -3569,18 +3632,18 @@ kshf.Facet_Categorical.prototype = {
         this.refreshResultPreview();
         setTimeout(function(){ me.dom.bar_preview.attr("fast",true); },700);
 
-        this.refresh_Bars_Ticks();
+        this.refreshChartPreviewAxis();
     },
     /** -- */
     setHeight: function(cc){
         if(!this.hasAttribs()) return;
         var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
-        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Active);
+        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Visible);
         c = Math.floor(c / this.browser.line_height);
         if(c<0) c=1;
-        if(c>this.attribCount_Active) c=this.attribCount_Active;
-        if(this.attribCount_Active<=2){ 
-            c = this.attribCount_Active;
+        if(c>this.attribCount_Visible) c=this.attribCount_Visible;
+        if(this.attribCount_Visible<=2){ 
+            c = this.attribCount_Visible;
         } else {
             c = Math.max(c,2);
         }
@@ -3635,11 +3698,11 @@ kshf.Facet_Categorical.prototype = {
         var me=this;
         // active bar width
         this.dom.bar_active.each(function(attrib){
-            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.itemCount_Active)+")");
+            kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.itemCount_Active)+")");
         });
         var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
         this.dom.attribClickArea.style("width",function(attrib){
-            return (basicWidth+me.catBarAxisScale(attrib.itemCount_Active))+"px";
+            return (basicWidth+me.chartPreviewAxisScale(attrib.itemCount_Active))+"px";
         }); // 20 is margin-left
 
     },
@@ -3647,7 +3710,7 @@ kshf.Facet_Categorical.prototype = {
     refreshWidth_Bars_Total: function(){
         var me = this;
         this.dom.bar_total.each(function(attrib){
-            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(attrib.items.length)+")");
+            kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.items.length)+")");
         });
     },
     /** -- */
@@ -3675,101 +3738,40 @@ kshf.Facet_Categorical.prototype = {
             var p=attrib.itemCount_Preview;
             if(me.browser.preview_not) p = attrib.itemCount_Active-p;
             attrib.cache_preview = p;
-            if(p===0) return;
-            kshf.Util.setTransform(this,"scaleX("+me.catBarAxisScale(p)+")");
+//            if(p===0) return;
+            kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(p)+")");
         });
         this.refreshQueryPreview();
     },
     /** -- */
     refreshLabelWidth: function(w){
-        var me = this;
+        if(!this.hasAttribs()) return;
         var kshf_ = this.browser;
         var labelWidth = this.getWidth_Label();
-        var offset = this.getWidth_LeftOffset();
-        var headerTextWidth = labelWidth;
-        if(this.hasFacets()) headerTextWidth+=offset;
 
-        if(this.hasAttribs()){
-            this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
-            this.dom.attribChartAxis.each(function(d){
-                kshf.Util.setTransform(this,"translateX("+(labelWidth+kshf_.getWidth_QueryPreview())+"px)");
-            });
-        }
+        this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
+        this.dom.barChartPreviewAxis.each(function(d){
+            kshf.Util.setTransform(this,"translateX("+(labelWidth+kshf_.getWidth_QueryPreview())+"px)");
+        });
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-        var txt = this.attribCount_Active+" total";
-        var more = this.attribCount_Active-bottomItem;
-        if(more>0) txt+=" / "+(more)+" more...";
-        this.dom.scroll_display_more.text(txt);
+        var moreTxt = "";
+        var more = this.attribCount_Visible-bottomItem;
+        if(more>0) moreTxt=" / "+more+" more...";
+        this.dom.scroll_display_more.text(this.attribCount_Visible+" total"+moreTxt);
     },
     /** -- */
     refreshHeight: function(){
         // Note: if this has attributes, the total height is computed from height of the children by html layout engine.
         // So far, should be pretty nice.
-        if(this.hasAttribs()){
-            this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
-            this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
+        if(!this.hasAttribs()) return;
 
-            this.dom.attribChartAxis.selectAll("span.line")
-                .style("top","-"+(this.attribHeight-8)+"px")
-                .style("height",(this.attribHeight-8)+"px");
-        }
-    },
-    /** update ItemFilterState_Attrib */
-    onAttribFilter: function(filter){
-        if(!this.isFiltered()) return;
+        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
+        this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
-        var filterId = filter.id;
-
-        this.filteredItems.forEach(function(item){
-            var attribItems=item.mappedDataCache[filterId];
-
-            if(attribItems===null){ // item is mapped to none
-                if(filter.attribs_AND.length>0 || filter.attribs_OR.length>0){
-                    item.setFilter(filterId,false); return;
-                }
-                item.setFilter(filterId,true);
-                return;
-            }
-            // Check NOT selections - If any mapped item is NOT, return false
-            // Note: no other filtering depends on NOT state.
-/*            if(filter.attribs_NOT.length>0){
-                if(!attribItems.every(function(item){ 
-                    return !item.is_NOT() && item.isWanted;
-                })){
-                    item.setFilter(filterId,false); return;
-                }
-            }*/ // THIS THING ABOVE IS FOR MULTI_LEVEL FILTERING AND NOT QUERY
-            
-            if(filter.attribs_NOT.length>0){
-                if(!attribItems.every(function(item){ 
-                    return !item.is_NOT();
-                })){
-                    item.setFilter(filterId,false); return;
-                }
-            }
-            // Check OR selections - If any mapped item is OR, return true
-            if(filter.attribs_OR.length>0){
-                if(attribItems.some(function(d){ return (d.is_OR()); })){
-                    item.setFilter(filterId,true); return;
-                }
-            }
-            // Check AND selections - If any mapped item is not AND, return false;
-            if(filter.attribs_AND.length>0){
-                var t=0;
-                attribItems.forEach(function(m){ if(m.is_AND()) t++; })
-                if(t!==filter.attribs_AND.length){
-                    item.setFilter(filterId,false); return;
-                }
-                item.setFilter(filterId,true); return;
-            }
-            if(filter.attribs_OR.length>0){
-                item.setFilter(filterId,false); return;
-            }
-            // only NOT selection
-            item.setFilter(filterId,true);
-        },this);
+        var h=this.attribHeight-8;
+        this.dom.barChartPreviewAxis.selectAll("span.line").style("top",(-h)+"px").style("height",h+"px");
     },
     /** -- */
     isAttribVisible: function(attrib){
@@ -3814,8 +3816,8 @@ kshf.Facet_Categorical.prototype = {
         this.skipSorting = true;
         var i=0;
 
-        var preTest = (this.attribFilter.attribs_OR.length>0 && (this.attribFilter.attribs_AND.length>0 ||
-                this.attribFilter.attribs_NOT.length>0));
+        var preTest = (this.attribFilter.selected_OR.length>0 && (this.attribFilter.selected_AND.length>0 ||
+                this.attribFilter.selected_NOT.length>0));
 
         // if selection is in same mode, "undo" to NONE.
         if(what==="NOT" && attrib.is_NOT()) what = "NONE";
@@ -3827,7 +3829,7 @@ kshf.Facet_Categorical.prototype = {
                 this.attribFilter.how = "MoreResults";
             }
             if(attrib.is_OR()){
-                this.attribFilter.how = this.attribFilter.attribs_OR.length===0?"MoreResults":"LessResults";
+                this.attribFilter.how = this.attribFilter.selected_OR.length===0?"MoreResults":"LessResults";
             }
             attrib.set_NONE();
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_UNSELECT, {id:this.attribFilter.id, info:attrib.id()});
@@ -3843,11 +3845,11 @@ kshf.Facet_Categorical.prototype = {
             } else {
                 this.attribFilter.how = "All";
             }
-            attrib.set_NOT(this.attribFilter.attribs_NOT);
+            attrib.set_NOT(this.attribFilter.selected_NOT);
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_NOT, {id:this.attribFilter.id, info:attrib.id()});
         }
         if(what==="AND"){
-            attrib.set_AND(this.attribFilter.attribs_AND);
+            attrib.set_AND(this.attribFilter.selected_AND);
             this.attribFilter.how = "LessResults";
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_AND, {id:this.attribFilter.id, info:attrib.id()});
         }
@@ -3855,11 +3857,11 @@ kshf.Facet_Categorical.prototype = {
             if(!this.hasMultiValueItem){
                 // remove NOT selections...
                 var temp = [];
-                this.attribFilter.attribs_NOT.forEach(function(a){ temp.push(a); });
+                this.attribFilter.selected_NOT.forEach(function(a){ temp.push(a); });
                 temp.forEach(function(a){ a.set_NONE(); });
             }
-            attrib.set_OR(this.attribFilter.attribs_OR);
-            this.attribFilter.how = this.attribFilter.attribs_OR.length===1?"LessResults":"MoreResults";
+            attrib.set_OR(this.attribFilter.selected_OR);
+            this.attribFilter.how = this.attribFilter.selected_OR.length===1?"LessResults":"MoreResults";
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR, {id:this.attribFilter.id, info:attrib.id()});
         }
         if(how) this.attribFilter.how = how;
@@ -3867,20 +3869,18 @@ kshf.Facet_Categorical.prototype = {
         if(preTest){
             this.attribFilter.how = "All";
         }
-        if(this.attribFilter.attribs_OR.length>0 && (this.attribFilter.attribs_AND.length>0 ||
-                this.attribFilter.attribs_NOT.length>0)){
+        if(this.attribFilter.selected_OR.length>0 && (this.attribFilter.selected_AND.length>0 ||
+                this.attribFilter.selected_NOT.length>0)){
             this.attribFilter.how = "All";
         }
 
-        this._update_Selected();
-
-        if(!this.isFiltered()){
-            this.attribFilter.clearFilter(true);
+        if(this.attribFilter.selectedCount_Total()===0){
+            this.attribFilter.clearFilter();
             return;
-        } else {
-            this.clearLabelTextSearch();
-            this.attribFilter.addFilter(true);
         }
+        this.clearLabelTextSearch();
+        this.attribFilter.linkFilterSummary = "";
+        this.attribFilter.addFilter(true);
     },
     /** - */
     insertAttribs: function(){
@@ -3907,10 +3907,10 @@ kshf.Facet_Categorical.prototype = {
                     me.filterAttrib(attrib,"OR");
                 } else {
                     // remove the single selection if it is defined with OR
-                    if(!me.hasMultiValueItem && me.attribFilter.attribs_OR.length>0){
-                        if(me.attribFilter.attribs_OR.indexOf(attrib)<0){
+                    if(!me.hasMultiValueItem && me.attribFilter.selected_OR.length>0){
+                        if(me.attribFilter.selected_OR.indexOf(attrib)<0){
                             var temp = [];
-                            me.attribFilter.attribs_OR.forEach(function(a){ temp.push(a); });
+                            me.attribFilter.selected_OR.forEach(function(a){ temp.push(a); });
                             temp.forEach(function(a){ a.set_NONE(); });
                         }
                         me.filterAttrib(attrib,"OR","All");
@@ -3927,7 +3927,7 @@ kshf.Facet_Categorical.prototype = {
             if(me.isAttribSelectable(attrib)) {
                 attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
                 if(!me.browser.pauseResultPreview && 
-                  (me.hasMultiValueItem || me.attribFilter.attribs_OR.length===0) ){
+                  (me.hasMultiValueItem || me.attribFilter.selected_OR.length===0) ){
                     // calculate the preview
                     attrib.items.forEach(function(item){
                         item.updatePreview(me);
@@ -3950,7 +3950,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
             me.tipsy_active = attrib.facetDOM.tipsy;
             attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                me.catBarAxisScale(attrib.itemCount_Active);
+                me.chartPreviewAxisScale(attrib.itemCount_Active);
             attrib.facetDOM.tipsy_active.show();
         };
         var onMouseOut = function(attrib,i){
@@ -3989,7 +3989,7 @@ kshf.Facet_Categorical.prototype = {
                         var hasMultiValueItem=attrib.facet.hasMultiValueItem;
                         if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
                             return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
-                        if(me.attribFilter.attribs_OR.length===0 && me.attribFilter.attribs_AND.length===0)
+                        if(me.attribFilter.selected_OR.length===0 && me.attribFilter.selected_AND.length===0)
                             return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter";
                         if(hasMultiValueItem===false)
                             return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
@@ -4023,13 +4023,13 @@ kshf.Facet_Categorical.prototype = {
                 attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
                 me.tipsy_active = attrib.facetDOM.tipsy;
                 attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                    (me.catBarAxisScale(attrib.itemCount_Active)-me.catBarAxisScale.range()[1]);
+                    (me.chartPreviewAxisScale(attrib.itemCount_Active)-me.chartPreviewAxisScale.range()[1]);
                 attrib.facetDOM.tipsy_active.show();
 
                 facetDOM.tipsy.show();
                 me.tipsy_active = facetDOM.tipsy;
 
-                if(me.attribFilter.attribs_OR.length>0)
+                if(me.attribFilter.selected_OR.length>0)
                     me.browser.clearResultPreview();
 
                 attrib.facetDOM.setAttribute("selectType","or");
@@ -4175,7 +4175,7 @@ kshf.Facet_Categorical.prototype = {
             });
         },sortDelay);
 
-        this.dom.attribGroupFiller.style("height",(this.attribCount_Active*line_height-6)+"px");
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-6)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -4184,16 +4184,26 @@ kshf.Facet_Categorical.prototype = {
     },
     cullAttribs: function(){
         var me=this;
-        this.dom.attribs.style("visibility",function(attrib){
-            var isVisible = me.isAttribVisible(attrib);
-            if(!isVisible) return "hidden";
+        this.dom.attribs.each(function(attrib){
+            if(!attrib.isVisible) { 
+                attrib.isCulled=true; return;
+            }
             // not visible if it is not within visible range...
-            if(attrib.orderIndex<me.attrib_InDisplay_First) return "hidden";
-            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) return "hidden";
+            if(attrib.orderIndex<me.attrib_InDisplay_First) { 
+                attrib.isCulled=true; return;
+            }
+            if(attrib.orderIndex>me.attrib_InDisplay_First+me.attribCount_InDisplay+1) {
+                attrib.isCulled=true; return;
+            }
+            attrib.isCulled=false;
+        }).style("visibility",function(attrib){
+            if(attrib.isCulled) return "hidden";
             this.style.opacity=0.9;
             var f=this.offsetHeight;
             this.style.opacity=1.0;
             return "visible";
+        }).style("display",function(attrib){
+            return attrib.isCulled?"none":"block";
         });
     },
     getTicksSkip: function(){
@@ -4204,25 +4214,23 @@ kshf.Facet_Categorical.prototype = {
         return ticksSkip;
     },
     /** -- */
-    refresh_Bars_Ticks: function(){
+    refreshChartPreviewAxis: function(){
         var me=this;
 
         var visibleRowHeight = this.attribHeight;
-        var tickValues = this.catBarAxisScale.ticks(this.getTicksSkip());
+        var tickValues = this.chartPreviewAxisScale.ticks(this.getTicksSkip());
 
         // remove non-integer values!
         tickValues = tickValues.filter(function(d){return d % 1 === 0;});
 
-        var tickData = this.dom.attribChartAxis.selectAll("span.tick")
+        var tickData = this.dom.barChartPreviewAxis.selectAll("span.tick")
             .data(tickValues,function(i){ return i; });
 
         var noanim=this.browser.root.attr("noanim");
 
         if(noanim!=="true") this.browser.root.attr("noanim",true);
         var transformFunc=function(d){
-            var x=me.catBarAxisScale(d);
-//            if(me.layoutStr==="left") x = -x;
-            kshf.Util.setTransform(this,"translateX("+x+"px)");
+            kshf.Util.setTransform(this,"translateX("+me.chartPreviewAxisScale(d)+"px)");
         };
 
         var tickData_new=tickData.enter().append("span").attr("class","tick")
@@ -4236,7 +4244,7 @@ kshf.Facet_Categorical.prototype = {
 
         // translate the ticks horizontally on scale.
         setTimeout(function(){
-            me.dom.attribChartAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
+            me.dom.barChartPreviewAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
         });
 
         tickData.exit().remove();
@@ -4294,7 +4302,7 @@ kshf.Facet_Interval = function(kshf_, options){
     if(options.tickIntegerOnly===true)
         this.tickIntegerOnly = true;
 
-    this.barHeightScale = d3.scale.linear();
+    this.chartPreviewAxisScale = d3.scale.linear();
 
     this.intervalFilter = kshf_.createFilter({
         name: this.options.facetTitle,
@@ -4325,9 +4333,9 @@ kshf.Facet_Interval = function(kshf_, options){
             filter.filteredItems.forEach(function(item){
                 var v = item.mappedDataCache[filter.id].v;
                 if(v===null)
-                    item.setFilter(filter.id, false);
+                    item.setFilterCache(filter.id, false);
                 else
-                    item.setFilter(filter.id, checkFilter(v) );
+                    item.setFilterCache(filter.id, checkFilter(v) );
                 // TODO: Check if the interval scale is extending/shrinking or completely updated...
             },this);
 
@@ -4385,7 +4393,7 @@ kshf.Facet_Interval = function(kshf_, options){
     var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
     // remove items that map to null
-    var isLog = this.options.intervalScale === 'log';
+    var isLog = this.options.intervalScale==='log';
     this.filteredItems = this.filteredItems.filter(function(item){
         var v = accessor(item);
         if(v===null) return false;
@@ -4464,8 +4472,7 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     isFiltered: function(){
-        return this.intervalFilter.active.min!==this.intervalRange.min ||
-               this.intervalFilter.active.max!==this.intervalRange.max ;
+        return this.intervalFilter.isFiltered;
     },
     /** -- */
     isFiltered_min: function(){
@@ -4517,6 +4524,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins");
+        this.dom.barChartPreviewAxis = this.dom.histogram.append("div").attr("class", "barChartPreviewAxis");
 
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider")
             .attr("anim",true);
@@ -4578,6 +4586,7 @@ kshf.Facet_Interval.prototype = {
         switch(this.options.intervalScale){
             case 'linear':
             case 'step':
+            case 'percentage':
                 this.intervalScale = d3.scale.linear(); break;
             case 'log':
                 this.intervalScale = d3.scale.log().base(2); break;
@@ -4595,22 +4604,26 @@ kshf.Facet_Interval.prototype = {
         if(this.tickIntegerOnly)
             ticks = ticks.filter(function(d){return d % 1 === 0;});
 
-        if(this.options.intervalScale==='time'){
-            this.intervalTickFormat = this.intervalScale.tickFormat(this.optimalTickCount);
-        } else if(this.options.intervalScale==='log'){
-            this.intervalTickFormat = d3.format(".1s");
-            while(ticks.length > this.optimalTickCount*2){
-                ticks = ticks.filter(function(d,i){return i % 2 === 0;});
-            }
-        } else if(this.options.intervalScale==='step'){
-            var range=this.intervalRange.max-this.intervalRange.min+1;
-            ticks = new Array(range);
-            for(var m=0; m<range; m++){
-                ticks[m] = this.intervalRange.min+m;
-            }
-            this.intervalTickFormat = d3.format("d");
-        } else {
-            this.intervalTickFormat = d3.format(this.tickIntegerOnly?"d":".2s");
+        switch(this.options.intervalScale){
+            case 'time':
+                this.intervalTickFormat = this.intervalScale.tickFormat(this.optimalTickCount);
+                break;
+            case 'log':
+                this.intervalTickFormat = d3.format(".1s");
+                while(ticks.length > this.optimalTickCount*2){
+                    ticks = ticks.filter(function(d,i){return i % 2 === 0;});
+                }
+                break;
+            case 'step':
+                var range=this.intervalRange.max-this.intervalRange.min+1;
+                ticks = new Array(range);
+                for(var m=0; m<range; m++){
+                    ticks[m] = this.intervalRange.min+m;
+                }
+                this.intervalTickFormat = d3.format("d");
+                break;
+            default:
+                this.intervalTickFormat = d3.format(this.tickIntegerOnly?"d":".2s");
         }
 
         if(this.intervalTicks===undefined || this.intervalTicks.length !== ticks.length){
@@ -4715,7 +4728,7 @@ kshf.Facet_Interval.prototype = {
             this.parentNode.tipsy.hide();
             if(this.parentNode.getAttribute("filtered")==="true"){
                 this.parentNode.setAttribute("filtered",false);
-                me.intervalFilter.clearFilter(true);
+                me.intervalFilter.clearFilter();
                 return;
             }
             this.parentNode.setAttribute("filtered","true");
@@ -4806,7 +4819,7 @@ kshf.Facet_Interval.prototype = {
                                     { id: me.intervalFilter.id, 
                                       info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.m});
                             } else {
-                                me.intervalFilter.clearFilter(true);
+                                me.intervalFilter.clearFilter();
                             }
                         },250);
                     }).on("mouseup", function(){
@@ -4865,7 +4878,7 @@ kshf.Facet_Interval.prototype = {
                                     { id: me.intervalFilter.id,
                                       info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.max});
                             } else{
-                                me.intervalFilter.clearFilter(true);
+                                me.intervalFilter.clearFilter();
                             }
                         },200);
                     }).on("mouseup", function(){
@@ -4907,7 +4920,7 @@ kshf.Facet_Interval.prototype = {
                                   info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.max });
                             me.intervalFilter.addFilter(true);
                         } else {
-                            me.intervalFilter.clearFilter(true);
+                            me.intervalFilter.clearFilter();
                         }
                     },200);
                 }).on("mouseup", function(){
@@ -4938,12 +4951,12 @@ kshf.Facet_Interval.prototype = {
         this.dom.intervalSlider.append("div").attr("class","selectedItemValue").append("div").attr("class","circlee");
     },
     updateBarScale2Total: function(){
-        this.barHeightScale = this.barHeightScale
+        this.chartPreviewAxisScale = this.chartPreviewAxisScale
             .domain([0, this.getMaxBinTotalItems()])
             .range ([0, this.height_hist]);
     },
     updateBarScale2Active: function(){
-        this.barHeightScale = this.barHeightScale
+        this.chartPreviewAxisScale = this.chartPreviewAxisScale
             .domain([0, this.getMaxBinActiveItems()])
             .range ([0, this.height_hist]);
     },
@@ -4968,8 +4981,10 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.labelTicks = this.dom.labelGroup.selectAll("span.tick");
 
-        this.dom.labelTicks.selectAll("span.text").text(
-            function(d){return me.intervalTickFormat(d);
+        this.dom.labelTicks.selectAll("span.text").text(function(d){
+            var v=me.intervalTickFormat(d);
+            if(me.options.intervalScale==='percentage') v+="%";
+            return v;
         });
         this.refreshAxisLabelPos();
     },
@@ -4983,7 +4998,8 @@ kshf.Facet_Interval.prototype = {
     refreshBins_Translate: function(){
         var me=this;
         var offset = this.options.intervalScale==='step'?this.barGap:0;
-        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.barHeightScale.range()[1]+"px)");
+        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.chartPreviewAxisScale.range()[1]+"px)");
+        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.chartPreviewAxisScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
             kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
         });
@@ -4997,18 +5013,18 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_total.each(function(bar){
-            kshf.Util.setTransform(this,"scale("+width+","+me.barHeightScale(bar.y)+")");
+            kshf.Util.setTransform(this,"scale("+width+","+me.chartPreviewAxisScale(bar.y)+")");
         });
     },
     refreshBars_Active_Scale: function(){
         var me=this;
         var width = this.barWidth-this.barGap*2;
         this.dom.bars_active.each(function(bar){
-            kshf.Util.setTransform(this,"scale("+width+","+me.barHeightScale(bar.itemCount_Active)+")");
+            kshf.Util.setTransform(this,"scale("+width+","+me.chartPreviewAxisScale(bar.itemCount_Active)+")");
         });
         this.dom.bars_item_count.each(function(bar){
             kshf.Util.setTransform(this,
-                "translate("+(me.barWidth/2)+"px,"+(-me.barHeightScale(bar.itemCount_Active))+"px)");
+                "translate("+(me.barWidth/2)+"px,"+(-me.chartPreviewAxisScale(bar.itemCount_Active))+"px)");
         });
     },
     clearBars_Preview_Scale: function(){
@@ -5029,14 +5045,14 @@ kshf.Facet_Interval.prototype = {
         if(this.isEmpty) return;
         if(this.collapsed) return;
         var preview_not = this.browser.preview_not;
-        var barHeightScale=this.barHeightScale;
+        var chartPreviewAxisScale=this.chartPreviewAxisScale;
         var width=this.barWidth-this.barGap*2;
         var trnsfrm="scale("+width+",";
         this.dom.bars_preview.each(function(bar){
             var p=bar.itemCount_Preview;
             if(preview_not) p = bar.itemCount_Active-bar.itemCount_Preview;
-            if(p===0) return;
-            kshf.Util.setTransform(this,trnsfrm+barHeightScale(p)+")");
+//            if(p===0) return;
+            kshf.Util.setTransform(this,trnsfrm+chartPreviewAxisScale(p)+")");
         });
         this.refreshQueryPreview();
     },
@@ -5107,6 +5123,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshBars_Scale();
         this.refreshResultPreview();
         this.refreshHeight();
+        this.refreshChartPreviewAxis();
     },
     /** -- */
     refreshHeight: function(){
@@ -5202,5 +5219,43 @@ kshf.Facet_Interval.prototype = {
                 "translateX("+(this.quantile_pos[qb[0]])+"px) "+
                 "scaleX("+(this.quantile_pos[qb[1]]-this.quantile_pos[qb[0]])+") ");
         },this);
-    }
+    },
+    /** -- */
+    refreshChartPreviewAxis: function(){
+        var me=this;
+
+        var tickValues = this.chartPreviewAxisScale.ticks(this.getTicksSkip());
+
+        // remove non-integer values!
+        tickValues = tickValues.filter(function(d){return d % 1 === 0;});
+
+        var tickData = this.dom.barChartPreviewAxis.selectAll("span.tick")
+            .data(tickValues,function(i){ return i; });
+
+        var noanim=this.browser.root.attr("noanim");
+
+        if(noanim!=="true") this.browser.root.attr("noanim",true);
+        var transformFunc=function(d){
+            kshf.Util.setTransform(this,"translateY(-"+me.chartPreviewAxisScale(d)+"px)");
+        };
+
+        var tickData_new=tickData.enter().append("span").attr("class","tick").each(transformFunc);
+        if(noanim!=="true") this.browser.root.attr("noanim",false);
+
+        tickData_new.append("span").attr("class","line")
+            .style("left","0px")
+            .style("width",this.intervalRange.width+"px");
+//        tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
+
+        // translate the ticks horizontally on scale.
+        setTimeout(function(){
+            me.dom.barChartPreviewAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
+        });
+
+        tickData.exit().remove();
+    },
+    getTicksSkip: function(){
+        var ticksSkip = this.height_hist/20;
+        return ticksSkip;
+    },
 };
