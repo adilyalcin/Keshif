@@ -75,6 +75,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .facetInterval .histogram .bin{
             .transition(@bar_animation);
         }
+        .attrib{
+            .transition(~'all 700ms ease-in-out');
+        }
     }
 /*    &[preview-not] .kshf .kshfChart .bar.preview{
         background-color: lightgray !important;
@@ -109,7 +112,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             direction:rtl;
             margin-left: 2px;
         }
-        .attrib {
+        .attrib{
             > .attribLabel .filterButtons{
                 float: right;
                 margin-right: 2px;
@@ -189,7 +192,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             direction:ltr;
             margin-right: 2px;
         }
-        div.attrib {
+        .attrib{
             > span.attribLabel span.filterButtons{
                 margin-left: 2px;
             }
@@ -575,10 +578,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         display: inline-block;
                     }
 
-                    > .attrib {
+                    > .attrib{
                         position: absolute;
                         white-space: nowrap;
-                        .transition(~'all 700ms ease-in-out');
                         > .clickArea{
                             display: inline-block;
                             vertical-align: top;
@@ -662,7 +664,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             > .notButton {
                                 display: none;
-                                cursor: pointer;
                                 vertical-align: top;
                                 &:hover { color: gray; }
                             }
@@ -759,7 +760,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .transition(~'height 700ms ease-in-out');
                     > .bins{
                         position: absolute;
-                        top: 14px;
+                        top: 9px;
                         z-index: 3;
                         .transition(@layout_animation);
                         > .bin{
@@ -792,7 +793,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                     > .barChartPreviewAxis {
-                        top: 14px;
+                        top: 9px;
                         > .tick{
                             > .line{
                                 border-top-style: dashed;
@@ -1060,7 +1061,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[hasmultivalueitem=false]{
             &[filtered_or="0"]{
-                > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] {
+                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
                     &[selected="0"] .notButton{
                         display: inline-block;
                     }
@@ -1070,7 +1071,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &:not([filtered_or="0"]){
-                > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] {
+                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
                     &[selected="0"] .orButton{
                         display: inline-block;
                     }
@@ -1691,12 +1692,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .itemSelectCheckbox{
                     cursor: pointer;
-                    width: 12px;
+                    width: 14px;
                     text-align: left;
                     display: inline-block;
-                    font: normal normal normal 14px/1 FontAwesome;
                     font-size: 0.8em;
                     padding-left: 2px;
+                    font: normal normal normal 14px/1 FontAwesome;
                     text-rendering: auto;
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;

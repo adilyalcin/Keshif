@@ -77,6 +77,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
 }
+.kshfHost[noanim=false] .attrib {
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
+}
 .kshf {
   font-family: Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
@@ -198,10 +204,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   direction: ltr;
   margin-right: 2px;
 }
-.kshf:not(.layout_leftttt) div.attrib > span.attribLabel span.filterButtons {
+.kshf:not(.layout_leftttt) .attrib > span.attribLabel span.filterButtons {
   margin-left: 2px;
 }
-.kshf:not(.layout_leftttt) div.attrib > span.barGroup .bar {
+.kshf:not(.layout_leftttt) .attrib > span.barGroup .bar {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
@@ -209,18 +215,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 0% 0%;
   left: 0px;
 }
-.kshf:not(.layout_leftttt) div.attrib > .item_count_wrapper {
+.kshf:not(.layout_leftttt) .attrib > .item_count_wrapper {
   padding-left: 3px;
   text-align: left;
 }
-.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) .attribLabel {
+.kshf:not(.layout_leftttt) .attrib:not([selected="0"]) .attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: -moz-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: -o-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: linear-gradient(to right, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
 }
-.kshf:not(.layout_leftttt) div.attrib:not([selected="0"]) .item_count_wrapper {
+.kshf:not(.layout_leftttt) .attrib:not([selected="0"]) .item_count_wrapper {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: -moz-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
@@ -613,10 +619,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   position: absolute;
   white-space: nowrap;
-  -webkit-transition: all 700ms ease-in-out;
-  -moz-transition: all 700ms ease-in-out;
-  -o-transition: all 700ms ease-in-out;
-  transition: all 700ms ease-in-out;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea {
   display: inline-block;
@@ -694,7 +696,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
   display: none;
-  cursor: pointer;
   vertical-align: top;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:hover {
@@ -770,7 +771,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins {
   position: absolute;
-  top: 14px;
+  top: 9px;
   z-index: 3;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -811,7 +812,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis {
-  top: 14px;
+  top: 9px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick > .line {
   border-top-style: dashed;
@@ -1085,13 +1086,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   opacity: 1;
 }
-.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="0"] .notButton {
+.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
   display: inline-block;
 }
-.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="-1"] {
+.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="-1"] {
   cursor: pointer;
 }
-.kshf .kshfChart[hasmultivalueitem=false]:not([filtered_or="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"][selected="0"] .orButton {
+.kshf .kshfChart[hasmultivalueitem=false]:not([filtered_or="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .orButton {
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .notButton {
@@ -1703,12 +1704,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listItem > .itemRow > .itemLinkStateColumn > .itemSelectCheckbox {
   cursor: pointer;
-  width: 12px;
+  width: 14px;
   text-align: left;
   display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
   font-size: 0.8em;
   padding-left: 2px;
+  font: normal normal normal 14px/1 FontAwesome;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
