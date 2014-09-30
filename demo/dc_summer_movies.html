@@ -58,7 +58,7 @@ var updateLocationSorting = function(){
 
 $(document).ready( function() {
 
-    var h=Math.max($(window).height()-70,650);
+    var h=Math.max($(window).height()-80,650);
 //    h = 700; // temp
     var w=Math.max($(window).width()-110,1000);
     $('#div_screenings').height(h);
@@ -94,7 +94,8 @@ $(document).ready( function() {
                     {   facetTitle: "Genre",
                         forceSearch: false
                     },{
-                        facetTitle: "Rated",
+                        facetTitle: "Rating",
+                        catItemMap:function(movie){ return movie.data[2];}
                     },{
                         facetTitle: "IMDB Rating",
                         catItemMap: function(m){
@@ -144,8 +145,10 @@ $(document).ready( function() {
                     }
                 },{
                     facetTitle: "Day Of Week",
+                    type: 'categorical',
                     catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
-                    catTableName: "Weekdays"
+                    catTableName: "Weekdays",
+                    sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
                 }]
             },{
                 facetTitle: "Date",
@@ -195,7 +198,6 @@ $(document).ready( function() {
                 }
             } ],
             detailsToggle : "One",
-            detailsDefault : false,
             contentFunc : function(d) {
                 var series = kshf.dt_id.Series[d.data[0]];
                 var str="";
