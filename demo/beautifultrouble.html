@@ -13,18 +13,6 @@
 
         <script type="text/javascript">
 
-function resetSize(){
-//    $('#chart_div').height($(window).height()-10);
-    $('#chart_div').height(700);
-    $('#chart_div').width (1000);
-}
-
-function loadImage(d){
-    if(d.target.className==="item_details_off") return;
-    var kshfItem = d.currentTarget.__data__;
-    var d3Item = d3.select(kshfItem.listItem);
-    d3Item.select(".postImg").attr("src",kshfItem.data[postCols['Img']]);
-};
 function getType(d){
     switch(d.data.type){
         case 0: return "Tactics";
@@ -32,21 +20,15 @@ function getType(d){
         case 2: return "Theories";
         case 3: return "Case Studies";
         case 4: return "Practitioners";
+        default: return "-";
     }
-    return "-";
 };
 
 $(document).ready( function(){
-    resetSize();
-    // set resize callback
-    $(window).resize(function() {
-        resetSize();
-        browser.updateLayout();
-    });
-
 	browser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 270,
+        categoryTextWidth: 220,
+        barChartWidth: 110,
         itemName: "Posts",
         source : {
             url: "http://explore.beautifultrouble.org/app/data.json",
@@ -59,14 +41,36 @@ $(document).ready( function(){
                 kshf.dt.Types = [];
                 kshf.dt_id.Types = {};
 
-                $.ajax( {
-                    //      To use dynamic data loaded from maryland.gov, use the following link instead
-                    //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
-                    url: "./data/beautifultrouble.json",
-                    dataType: "json",
-                    success: function(data){
+                var contr = null;
 
+                // contributor data is manually added to this dataset...
+                $.ajax({
+                    url: "./data/beautifultrouble_contr.json",
+                    async: false,
+                    success: function(data){
+                        contr = data[0];
+                    }
+                });
+
+                $.ajax( {
+                    // using original source is not allowed because of access control allow origin settings
+                    //  http://explore.beautifultrouble.org/app/data.json
+                    url: "./data/beautifultrouble.json",
+                    async: false,
+                    success: function(data){
                         data.forEach(function(item){
+                            item.Contributors = contr[item.title];
+/*                            if(item.Contributors){
+                                // change contributor name to X. Lastname
+                                var cc=[];
+                                item.Contributors.forEach(function(c){
+                                    var n=c.split(" ");
+                                    var p="";
+                                    if(n.length>1) p = n[n.length-2][0]+". ";
+                                    cc.push(p+n[n.length-1]);
+                                });
+                                item.Contributors = cc;
+                            }*/
                             var kshfItem = new kshf.Item(item,"id");
                             kshf.dt.Posts.push(kshfItem);
                             kshf.dt_id.Posts[kshfItem.id()] = kshfItem;
@@ -93,56 +97,49 @@ $(document).ready( function(){
             }
         },
         facets: [
-            {   facetTitle: "Type",
+            {   facetTitle: "Category",
                 catItemMap: function(d){ return d.data.type; },
                 catTableName: "Types",
-                domStyle: function(d){ 
-                    return "itemType_"+d.data[0]; // number id
-                },
-                catLabelText: function(d){
-                    return d.data[1]+" <span class='typeImg'></span>";
-                }
+                domStyle: function(d){ return "itemType_"+d.data[0]; },
+                catLabelText: function(d){ return d.data[1]+" <span class='typeImg'></span>"; }
             },{
-                facetTitle: "# of Related Posts",
-                catItemMap: function(d){
-                    return d.data.links.length;
-                },
+                facetTitle: "Contributors",
+            },{
+                facetTitle: "Number of Related Posts",
+                showPercentile: true,
+                catItemMap: function(d){ return d.data.links.length; },
             },{
                 facetTitle: "Related To",
-                catItemMap: function(d){
-                    return d.data.links;
-                },
-                domStyle: function(d){ 
-                    return "itemType_"+d.data.type; // number id
-                },
-                catLabelText: function(d){
-                    return d.data.title+" <span class='typeImg'></span>";
-                },
+                catItemMap: function(d){ return d.data.links; },
+                domStyle: function(d){ return "itemType_"+d.data.type; },
+                catLabelText: function(d){ return d.data.title; },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Posts"
             }
         ],
         itemDisplay: {
-            sortColWidth: 80,
+            sortColWidth: 100,
             sortingOpts : [
+                { name:'First Contr.', inverse: true,
+                    value: function(d){
+                        if(d.data.Contributors===undefined) return "-";
+                        return d.data.Contributors[0];
+                    }
+                },
                 { name:'# Related',
                     value: function(d){ return d.data.links.length}},
-/*                { name:'Type', 
-                    value: function(d){ return d.data.type;}, 
-                    label: function(d){ return getType(d); }},*/
-//                { name:'id' },
             ],
-            showRank: true,
+//            showRank: true,
             autoExpandMore: true,
+            showSelectBox: true,
             domStyle: function(d){ return "itemType_"+d.data.type},
             detailsToggle : "One",
-            detailsDefault : false,
             textSearch : "Title and text",
             textSearchFunc: function(d){ return d.data.title + " " + d.data.text;},
             contentFunc : function(d) {
                 var str="";
 
-                str +="<span class='typeImg'></span> "+d.data.title +" <a target='_blank' href='"+d.data.url+"' class='fa fa-external-link'></a></div>";;
+                str +="<span class='typeImg'></span> "+d.data.title +" <a target='_blank' href='"+d.data.url+"' class='fa fa-external-link viewExternal'>view</a></div>";;
 
                 // add text
                 str+="<span class=\"item_details\">";
@@ -160,85 +157,86 @@ $(document).ready( function(){
     });
 });
         </script>
-        <style>
-            .listItem{ padding-bottom: 4px; }
-            .listItem a{
-                color:gray;
-                text-decoration: none;
-            }
-            .listItem .item_details{
-                font-weight: 300;
-            }
-            .itemImg{
-                width: 200px;
-                float: right;
-            }
-            .listItem a:hover{
-                color:orangered;
-                font-weight: 700;
-                text-decoration: none;
-            }
-            .typeImg{
-                width:17px;
-                height:17px;
-                display: inline-block;
-                background-size: 100% auto;
-                border-radius: 10px;
-            }
-            .attrib .typeImg{
-                width:13px;
-                height:13px;
-                margin-top: 1px;
-                margin-left: 2px;
-                float: right;
-            }
-            .itemType_0 .typeImg{
-                background-color: #e7932e;
-                background-image: url('img/bt_tactic.png');
-            }
-            .itemType_1 .typeImg{
-                background-color: #12A3D9;
-                background-image: url('img/bt_principle.png');
-            }
-            .itemType_2 .typeImg{
-                background-color: #b50035;
-                background-image: url('img/bt_theory.png');
-            }
-            .itemType_3 .typeImg{
-                background-color: #7eb84f;
-                background-image: url('img/bt_case.png');
-            }
-            .itemType_4 .typeImg{
-                background-color: #5F41A3;
-                background-image: url('img/bt_practitioner.png');
-            }/*
-            .itemType_0{
-                color: #e7932e;
-            }
-            .itemType_1{
-                color: #12A3D9;
-            }
-            .itemType_2{
-                color: #b50035;
-            }
-            .itemType_3{
-                color: #7eb84f;
-            }
-            .itemType_4{
-                color: #5F41A3;
-            }*/
-/*            .kshf .kshfChart > .wrapper span.bar{
-                background-color: #A6A6A6;
-            }*/
-            span.mainTextSearch input{
-                width: 200px;
-            }
-            .filter_item .typeImg{
-                display: none;
-            }
-        </style>
+<style>
+    #chart_div{
+        margin-top: 40px;
+        width: 1000px;
+        height: 700px;
+    }
+    .listItem{ padding-bottom: 4px; }
+    .listItem .item_details{
+        font-weight: 300;
+    }
+    .itemImg{
+        width: 200px;
+        float: right;
+    }
+    .listItem a{
+        color:gray;
+        text-decoration: none;
+    }
+    .listItem a:hover{
+        color:orangered;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .typeImg{
+        width:17px;
+        height:17px;
+        display: inline-block;
+        background-size: 100% auto;
+        border-radius: 10px;
+    }
+    .attrib .typeImg{
+        width:13px;
+        height:13px;
+        margin-top: 1px;
+        margin-left: 2px;
+        float: right;
+    }
+    .itemType_0 .typeImg{
+        background-color: #e7932e;
+        background-image: url('img/bt_tactic.png');
+    }
+    .itemType_1 .typeImg{
+        background-color: #12A3D9;
+        background-image: url('img/bt_principle.png');
+    }
+    .itemType_2 .typeImg{
+        background-color: #b50035;
+        background-image: url('img/bt_theory.png');
+    }
+    .itemType_3 .typeImg{
+        background-color: #7eb84f;
+        background-image: url('img/bt_case.png');
+    }
+    .itemType_4 .typeImg{
+        background-color: #5F41A3;
+        background-image: url('img/bt_practitioner.png');
+    }
+    .mainTextSearch > input{
+        width: 160px;
+    }
+    /* When cateogry is filtered, breadcrumb shows category text that includes image. hide the image*/
+    .filter_item .typeImg{
+        display: none;
+    }
+    .filtercrumbs .typeImg{
+        display: none;
+    }
+    .viewExternal{
+        font-size: 0.7em;
+        vertical-align: top;
+        margin-left:5px;
+        margin-top:4px;
+    }
+</style>
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span> This page uses data from
+            <a href="http://www.beautifultrouble.org" target="_blank">Beautiful Trouble</a>, by various authors. <span class="fa fa-info-circle"></span>
+            </div>
     </body>
 </html>
