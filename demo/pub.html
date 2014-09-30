@@ -27,6 +27,7 @@ function resizeChart(){
     var w=$(window).width()-29;
     h = Math.max(h,500);
     w = Math.max(w,700);
+    w-=50;
     if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
     $('#chart_div').height(h);
     $('#chart_div').width (w);
@@ -41,17 +42,14 @@ google.setOnLoadCallback(function() {
 
     var authorCol, pubCol, keywordCol;
 
-    // set height of the source dom as 
     browser = new kshf.Browser({
         domID : "#chart_div",
         listMaxColWidthMult: 0.4,
         categoryTextWidth:185,
         source : {
-            // google spreadsheet ID
-            gdocId : '0Ai6LdDWgaqgNdE0zcUFicnBhSXo0THFFeHJ4aE10UUE',
-            // the sheets to load from the spreadsheet
+            gdocId : '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
             sheets : [
-                {name: "Publications",query:"select A,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R"},
+                {name: "Publications"},
                 {name: "Venues"},
                 {name: "Authors"},
                 {name: "Keywords"},
@@ -64,29 +62,31 @@ google.setOnLoadCallback(function() {
             pubCol = kshf.dt_ColNames.Publications;
             keywordCol = kshf.dt_ColNames.Keywords;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol.Coauthor, pubCol.Topic]);
+            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol.Coauthors, pubCol.Topics]);
         },
         readyCb: function(){
-            browser.updateLayout();
+            $(".paperName").click(function(d){
+                browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+            });
+            browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         facets: [
             {
-                facetTitle: "Topic",
+                facetTitle: "Topics",
                 catTableName: "Keywords",
                 catLabelText: function(cat){ return cat.data[keywordCol.keyword]; }
             },{
-                facetTitle: "Coauthor",
+                facetTitle: "Coauthors",
                 catItemMap : function(pub){
-                    var authors = pub.data[pubCol.Coauthor];
+                    var authors = pub.data[pubCol.Coauthors];
+                    // remove Ben Bederson's ID
                     newAuthors = [];
                     for(i=0 ; i<authors.length ; i++){
                         if(authors[i]!==BEDERSON_ID) newAuthors.push(authors[i]);
                     }
                     return newAuthors;
                 },
-//                selectType:"MultipleOr",
                 catTableName: "Authors",
-                showNoneCat: true,
                 catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
                 catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
 //                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
@@ -94,56 +94,33 @@ google.setOnLoadCallback(function() {
                     {
                         facetTitle: "Type",
                         catTableName: "AuthorTypes",
-                        catItemMap : function(coAuth){ 
-                            // remove bederson from the list here..
-                            if(coAuth.data[2]===3) return null; // Bederson
+                        catItemMap : function(coAuth){
                             return coAuth.data[3];
                         },
 //                        barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
-                        textFilter: 'with'
                     }
                 ]
             },{
                 facetTitle: "Publication Type",
-                catTableName: "VenueTypes",
-                textFilter: 'as'
+                catItemMap: function(pub){ return pub.data[0];},
+                catLabelText: function(d){ return kshf.dt_id.VenueTypes[d.data[1]].data[1]; }
             },{
                 facetTitle: "Venue",
                 collapsed: true,
                 catTableName: "Venues",
-                catItemMap : function(pub){
-                    return pub.data[pubCol.Venue];
-                },
-                catTooltipText: function(venue){
-                    return venue.data[2];
-                },
+                catItemMap : function(pub){ return pub.data[pubCol.Venue]; },
+                catTooltipText: function(venue){ return venue.data[2]; },
             },{
-                facetTitle: "Publication Date",
+                facetTitle: "Date",
                 intervalScale: 'time',
                 layout: 'bottom-mid'
             }
         ],
-        readyCb: function(){
-            $(".paperName").click(function(d){
-                var kshfItem = d.currentTarget.parentNode.__data__;
-                browser.showListItemDetails(kshfItem);
-            });
-        },
         itemDisplay: {
             sortColWidth: 45,
             sortingOpts : [
                 {   name: 'Year',
-                    value: function(pub){ 
-                        return pub.data[pubCol['Publication Date']].getFullYear();
-                    },
-/*                    value: function(pub){ 
-                        return pub.data[pubCol['Publication Date']];
-                    },
-                    inverse: true,
-                    label: function(pub){ 
-                        var date=pub.data[pubCol['Publication Date']];
-                        return moment(date).fromNow();
-                    }*/
+                    value: function(pub){return pub.data[pubCol['Date']].getFullYear();}
                 }
             ],
             textSearch : 'title',
@@ -152,63 +129,61 @@ google.setOnLoadCallback(function() {
                 var j;
                 var str="";
 
-                // paper name
-                    str+="<div class='iteminfo iteminfo_0 paperName'>";
-                    str+="<span style=\"cursor:pointer\">"+d.data[pubCol.title]+"</span>";
-                    if(d.data[pubCol.url].trim()!==""){
-                        str+=" <a class=\"fa fa-external-link\" target=\"_blank\" href=\""+d.data[pubCol.url]+"\" "+
-                                "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\"></a>";
-                    }
-                    str+="</div>";
-
-                str+="<span class=\"item_details\">";
-
-                // thumbnail
-                if(d.data[pubCol.img]) { 
-                    str+="<div class=\"thumbnail2\">";
-                    var strImg="<img src=\"http://hcil2.cs.umd.edu/bederson/pubs/pubs/thumb/"+d.data[pubCol.id]+"/\"/>";
-                    if(d.data[pubCol.pdf].trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+d.data[pubCol.pdf]+"\""+
-                            "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowPDF,{itemID:"+d.id()+"})\">"+strImg+"</a>";
-                    } else {
-                        str+=strImg;
-                    }
-                    str+="</div>";
+                if(d.data[pubCol.img]!==""){
+                    str+="<img class='pdfImage' src='"+d.data[pubCol.img]+"'>";
                 }
 
-                str+="<div style=\"display:inline-block; width:calc(100% - 110px);padding-left: 5px; padding-top: 2px;\"''>"
+                // paper name
+                    str+="<div class=''> <span>";
+                    str+="<span class='paperName'>"+d.data[pubCol.title]+"</span>";
+                    if(d.data[pubCol.pdf]!==""){
+                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data[pubCol.pdf]+"' target='_blank'></a>";
+                    }
+                    if(d.data[pubCol.doi]!==""){
+                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data[pubCol.doi]+"' target='_blank'>[doi]</a>";
+                    }
+                    if(d.data[pubCol.url].trim()!==""){
+                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+d.data[pubCol.url]+"' "+
+                                "onclick='sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})'>external</a>";
+                    }
+                    str+="</div>";
+
+                str+="<span class='item_details'>";
 
                 // author names
-                var authors = d.data[pubCol.Coauthor];
-                    str+="<div class=\"iteminfo iteminfo_1\">";
+                var authors = d.data[pubCol.Coauthors];
+                    str+="<div class=\"authorNames\"><span class='header'></span> ";
                     for(j=0; j<authors.length; j++){
                         var authData=kshf.dt_id.Authors[authors[j]].data;
-                        if(authData[authorCol.id]===BEDERSON_ID) { str+="<b>"; }
+                        if(authData[authorCol.id]===BEDERSON_ID) { str+="<span class='benb'>"; }
                         str+=authData[authorCol.first_names]+" "+authData[authorCol.last_name];
-                        if(authData[authorCol.id]===BEDERSON_ID) { str+="</b>"; }
+                        if(authData[authorCol.id]===BEDERSON_ID) { str+="</span>"; }
                         if(j!==authors.length-1) { str+=', '; }
                     }
                     str+="</div>";
                 // Venue + details
-                    str+="<div class=\"iteminfo iteminfo_1\"><b>"+d.data[pubCol['Publication Date']].getFullYear()+"</b> - "+kshf.dt_id.Venues[d.data[pubCol.Venue]].data[0];
+                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+d.data[pubCol['Date']].getFullYear()+"</span>";
+                    if(d.data[pubCol.Venue]) {
+                        str+=" " + kshf.dt_id.Venues[d.data[pubCol.Venue]].data[2];
+                    }
                     if(d.data[pubCol.details].trim()!=="") {
                         str+=" - " + d.data[pubCol.details];
                     }
                     str+="</div>";
                 // keywords
-                    str+="<div class=\"iteminfo iteminfo_2\"> About: ";
-                    var cats = d.data[pubCol.Topic];
-                    for(j=0; j<cats.length; j++){
-                        str+=kshf.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
-                        if(j!==cats.length-1) { str+=', '; }
+                    var cats = d.data[pubCol.Topics];
+                    if(cats.length>0){
+                        str+="<div class=\"topics\"> <span class='header'>Topics</span>: ";
+                        for(j=0; j<cats.length; j++){
+                            str+=kshf.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
+                            if(j!==cats.length-1) { str+=', '; }
+                        }
+                        str+="</div>";
                     }
-                    str+="</div>";
                 // award
                     if(d.data[pubCol.award]!==""){
                         str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data[pubCol.award]+"</div>";
                     }
-
-                str+="</div>";
 
                 return str;
             }
@@ -219,46 +194,19 @@ google.setOnLoadCallback(function() {
 </script>
 <style>
 
-body {
-    margin: 0px;
-}
-
 #chart_div .bar_style_coauthor_FA{ background-color: #4D8B4D; }
 #chart_div .bar_style_coauthor_ST{ background-color: #FCC240; }
 #chart_div .bar_style_coauthor_RE{ background-color: #BF4B31; }
 #chart_div .bar_style_coauthor_IN{ background-color: #4B3929; }
 
-div.listItem div.thumbnail{
-    float:left;
-    color:#666666;
-    display:none
+.header{
+    font-weight: 700;
+    font-variant: small-caps;
 }
-div.listItem div.thumbnail2{
-    float:left;
-    color:#666666;
-    display: inline-block;
-}
-div.listItem div.thumbnail img{
-    max-height:80px;
-    border: solid 1px gray;
-}
-div.listItem div.thumbnail2 img{
-    max-height:70px;
-    border: solid 1px gray;
-}
-.listItem a {
-    color: gray;
-    text-decoration: none;
-}
-.listItem a:hover {
-    color: orangered !important;
-    text-decoration: none;
-}
-
 
 #chart_div {
     background-color: white;
-    margin-bottom: 20px;
+    margin: 0px 25px 20px 25px;
 }
 
 #pagecell{
@@ -274,25 +222,12 @@ body {
     color: #333333;
     margin: 0px;
     padding: 0px;
-    background: #71828a; /* Old browsers */
-    /* IE10 Consumer Preview */ 
-    background-image: -ms-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
-    /* Mozilla Firefox */ 
-    background-image: -moz-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
-    /* Opera */ 
-    background-image: -o-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
-    /* Webkit (Safari/Chrome 10) */ 
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71828A), color-stop(1, #C5CFD0));
-    /* Webkit (Chrome 11+) */ 
-    background-image: -webkit-linear-gradient(top, #71828A 0%, #C5CFD0 100%);
-    /* W3C Markup, IE10 Release Preview */ 
-    background-image: linear-gradient(to bottom, #71828A 0%, #C5CFD0 100%);
+    background: #cccccc url("http://cs.umd.edu/~bederson/images/bg-grad.jpg") fixed;
 }
 
 #pageName {
     padding: 0px 0px 14px 10px;
     margin: 0px;
-    border-bottom: 1px solid #ccd2d2;
 }
 
 #pageName h2 {
@@ -311,12 +246,12 @@ body {
     z-index:2;
 }
 
-#pageName a:link, a:visited{
+#pageName a.mainTitle:link, a.mainTitle:visited{
     color: #005FA9;
     text-decoration: none;
 }
 
-#pageName a:hover{
+#pageName a.mainTitle:hover{
     text-decoration: underline;
 }
 
@@ -325,7 +260,73 @@ body {
     margin: 15px;
     font-size: 0.5em;
     font-style: italic;
+    color: lightgray;
+    text-decoration: none;
 }
+.KeshifCredit:hover{
+    color: gray;
+}
+
+.paperName{
+    cursor:pointer;
+}
+.paperName:hover{
+    color: orangered;
+}
+.authorNames{
+    font-weight: 300;
+}
+.benb{
+    font-style: italic;
+}
+.doilink{
+    margin-left: 10px;
+    font-size: 0.7em;
+    vertical-align: top;
+}
+.externallink{
+    margin-left: 3px;
+    font-size: 0.7em;
+    vertical-align: top;
+}
+.pdflink{
+    margin-left: 10px;
+    vertical-align: top;
+}
+.item_details{
+    margin-left: 5px;
+}
+.venueInfo{
+    margin-left: 5px;
+    font-size: 0.9em;
+    font-weight: 300;
+}
+.topics{
+    font-size: 0.9em;
+    font-weight: 300;
+    margin-left: 5px;
+    font-variant: small-caps;
+}
+.pubLink{
+    color: #005FA9;
+    display: inline-block;
+    text-decoration: none;
+}
+.pubLink:hover {
+    color: orangered !important;
+    text-decoration: none;
+}
+
+.pdfImage{
+    position:absolute;
+    right: 0px;
+    height: 100%;
+}
+.content{
+    padding-bottom: 4px;
+    padding-right: 40px;
+}
+
 
 
 </style>
@@ -335,7 +336,7 @@ body {
     <div id="pagecell">
         <div id="pageName">
             <h2>
-            <a href="http://cs.umd.edu/~bederson/">Ben Bederson</a>
+            <a href="http://cs.umd.edu/~bederson/" class='mainTitle'>Ben Bederson</a>
 
             <a target="_blank" href="http://www.github.com/adilyalcin/Keshif" class="KeshifCredit" >Created by Keshif. Click for more...</a>
 
