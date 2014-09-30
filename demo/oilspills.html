@@ -83,7 +83,7 @@ google.setOnLoadCallback( function(){
                     no_resort: true
                 }]
             },{
-                facetTitle: "Amount",
+                facetTitle: "Amount (Barrel)",
                 collapsed: true,
                 facets: [
                     {
@@ -103,7 +103,7 @@ google.setOnLoadCallback( function(){
                             return d.data[12];
                         },
                         intervalScale: 'log',
-                    },{
+                    }/*,{
                         facetTitle: "Synthetic Base Fluid", collapsed: true,
                         catItemMap: function(d){
                             if(d.data[13]===0) return;
@@ -117,7 +117,7 @@ google.setOnLoadCallback( function(){
                             return d.data[14];
                         },
                         intervalScale: 'log',
-                    }
+                    }*/
                 ]
             },{
                 facetTitle: "Source",
@@ -139,7 +139,8 @@ google.setOnLoadCallback( function(){
                 intervalScale: 'log'
             },{
                 facetTitle: "During Activity",
-                layout: 'right'
+                layout: 'right',
+                collapsed: true
             },{
                 facetTitle: "Cause",
                 layout: 'right'
@@ -147,6 +148,7 @@ google.setOnLoadCallback( function(){
                 facetTitle: "Other Properties",
                 layout: 'right',
                 catTableName: "Notes",
+                collapsed: true,
                 catItemMap : function(spill){ return spill.data[spillsCol["Notes"]]},
             },{
                 facetTitle: "Spill Date",
@@ -221,5 +223,11 @@ google.setOnLoadCallback( function(){
 	</head>
     <body onmousemove="logIf.setSessionID()">
         <div class="contents"><div id="chart_div"></div></div>
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span> This page uses data from
+            <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
+            oil spill summaries. <span class="fa fa-info-circle"></span>
+            </div>
+
     </body>
 </html>
