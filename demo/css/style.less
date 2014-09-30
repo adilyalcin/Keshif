@@ -107,37 +107,61 @@ body{
 	     -o-transition: opacity 0.4s ease 0.4s;
 	        transition: opacity 0.4s ease 0.4s;
 }
-	.meny-left .meny-arrow {
-		left: 14px;
-		top: 50%;
-		margin-top: -25px;
-		border-left: 25px solid #333;
-	}
-	.meny-right .meny-arrow {
-		right: 14px;
-		top: 50%;
-		margin-top: -25px;
-		border-right: 25px solid #333;
-	}
-	.meny-top .meny-arrow {
-		left: 50%;
-		top: 14px;
-		margin-left: -25px;
-		border-top: 25px solid #333;
-	}
-	.meny-bottom .meny-arrow {
-		left: 50%;
-		bottom: 14px;
-		margin-left: -25px;
-		border-bottom: 25px solid #333;
-	}
-	.meny-active .meny-arrow {
-		opacity: 0;
+.meny-left .meny-arrow {
+	left: 14px;
+	top: 50%;
+	margin-top: -25px;
+	border-left: 25px solid #333;
+}
+.meny-right .meny-arrow {
+	right: 14px;
+	top: 50%;
+	margin-top: -25px;
+	border-right: 25px solid #333;
+}
+.meny-top .meny-arrow {
+	left: 50%;
+	top: 14px;
+	margin-left: -25px;
+	border-top: 25px solid #333;
+}
+.meny-bottom .meny-arrow {
+	left: 50%;
+	bottom: 14px;
+	margin-left: -25px;
+	border-bottom: 25px solid #333;
+}
+.meny-active .meny-arrow {
+	opacity: 0;
 
-		-webkit-transition: opacity 0.2s ease;
-		   -moz-transition: opacity 0.2s ease;
-		    -ms-transition: opacity 0.2s ease;
-		     -o-transition: opacity 0.2s ease;
-		        transition: opacity 0.2s ease;
-	}
+	-webkit-transition: opacity 0.2s ease;
+	   -moz-transition: opacity 0.2s ease;
+	    -ms-transition: opacity 0.2s ease;
+	     -o-transition: opacity 0.2s ease;
+	        transition: opacity 0.2s ease;
+}
 
+
+#infobox{
+    width: 100%;
+    left: 0%;
+    position: fixed;
+    text-align: center;
+    font-weight: 300;
+    font-family: sans-serif;
+    font-size: 0.8em;
+    bottom: 0px;
+    height: 20px;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+    background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+    background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+    background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);
+    background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%);;
+}
+#infobox a{
+    color: black !important;
+    font-weight: 500;
+}
+#infobox span.fa{
+    color:gray;
+}
