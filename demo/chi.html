@@ -130,8 +130,8 @@ google.setOnLoadCallback(function(){
                     "CHI1989",
                     "CHI1990",
                     "CHI1991",
-                    "CHI1992",
-                    "CHI1993",*/
+                    "CHI1992",*/
+                    "CHI1993",
                     "CHI1994",
                     "CHI1995",
                     "CHI1996",
@@ -139,10 +139,10 @@ google.setOnLoadCallback(function(){
                     "CHI1998",
                     "CHI1999",
                     "CHI2000",
-                    "CHI2001",
+                    "CHI2001",/*
                     "CHI2002",
                     "CHI2003",
-                    "CHI2004"
+                    "CHI2004"*/
                 ];
                 fileList.forEach(function(fileName){
                     $.ajax( {
@@ -166,7 +166,8 @@ google.setOnLoadCallback(function(){
             }
         },
         facets: [
-            {   facetTitle: "Proceeding",
+            { facetTitle: "Category"
+            },{ facetTitle: "Proceeding",
                 catItemMap: function(paper){
                     return paper.data.Proceeding.data.year;
                 },
@@ -186,17 +187,17 @@ google.setOnLoadCallback(function(){
                         }
                     }
                 ]
-            //},{ facetTitle: "Category"
-            }/*,{ facetTitle: "Term"
+            },
+            /*,{ facetTitle: "Term"
             },{ facetTitle: "# of References", collapsed: true,
                 catItemMap: function(paper){ return paper.data.ReferenceTotal; }
-            },{ facetTitle: "# of Citations",
+            }*/,{ facetTitle: "# of Citations",
                 catItemMap: function(paper){
                     if(paper.data.CitedByTotal===0) return;
                     return paper.data.CitedByTotal;
                 },
                 intervalScale: "log"
-            },{
+            }/*,{
                 facetTitle: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.

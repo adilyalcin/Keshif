@@ -19,21 +19,21 @@
         google.setOnLoadCallback(function(){
             browser = new kshf.Browser({
                 domID: "#chart_div",
-                leftPanelLabelWidth: 100,
-                rightPanelLabelWidth: 90,
+                leftPanelLabelWidth: 150,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
                 },
                 facets: [
-                    {   facetTitle: "survived",
+                    {   facetTitle: "Survived",
                         catItemMap : function(d){ 
                             var s = d.data[2];
                             if(s) return 'Yes';
                             return 'No';
                         },
                         sortingOpts : [{ no_resort: true }]
-                    },{ facetTitle: "pclass",
+                    },{ facetTitle: "Class",
+                        catItemMap: function(d){ return d.data[1];},
                         sortingOpts : [{ 
                             func: function(a,b){
                                 if(a==="3rd") return 1;
@@ -43,19 +43,21 @@
                             },
                             no_resort: true 
                         }]
-                    },{ facetTitle: "sex",
+                    },{ facetTitle: "Sex",
+                        catItemMap: function(d){ return d.data[10];},
                         sortingOpts : [{ no_resort: true }]
-                    },{ facetTitle: "age",
+                    },{ facetTitle: "Age",
                         catItemMap : function(d){
                             var age = d.data[4];
                             if(age===null) return null;
                             return age;
                         },
+                        layout:'bottom',
                         showPercentile: true
-                    },{ facetTitle: "embarked", layout: 'right'
-                    },{ facetTitle: "room", layout: 'right'
-                    },{ facetTitle: "boat", type: 'categorical', layout: 'right'
-                    },{
+                    },{ facetTitle: "embarked", layout: 'left'
+                    },{ facetTitle: "room", layout: 'left'
+//                    },{ facetTitle: "boat", type: 'categorical', layout: 'right'
+/*                    },{
                         facetTitle: "Birthdate",
                         catItemMap : function(d){ 
                             // calculate birthdate from sink date and passenger age
@@ -66,7 +68,7 @@
                             return newdate;
                         },
                         intervalScale: 'time',
-                        layout:'bottom'
+                        layout:'bottom'*/
                     }
                 ],
                 itemDisplay: {
@@ -80,14 +82,15 @@
         </script>
         <style>
             #chart_div {
-                width: 950px;
-                height: 600px;
+                margin-top: 40px;
+                width: 850px;
+                height: 700px;
             }
             #chart_div div.listItem{
                 max-height: 40px;
             }
-            .layout_bottom > .kshfChart{
-                background-image: url("http://upload.wikimedia.org/wikipedia/commons/d/db/Titanic-Cobh-Harbour-1912.JPG");
+/*            .layout_bottom > .kshfChart{
+                background-image: url("http://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Titanic-Cobh-Harbour-1912.JPG/640px-Titanic-Cobh-Harbour-1912.JPG");
                 background-size: 1000px 120px;
             }
             .layout_bottom .bar{
@@ -103,7 +106,7 @@
             .layout_bottom > .kshfChart .facetInterval .tick > .text{
                 color: black !important;
                 text-shadow: 0px 0px 2px white;
-            }
+            }*/
         </style>
     </head>
     <body>
