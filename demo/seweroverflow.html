@@ -24,8 +24,8 @@ function loadData(browser){
 
     $.ajax( {
 //      To use dynamic data loaded from maryland.gov, use the following link instead
-        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
-//        url: "./data/seweroverflows.json",
+//        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
+        url: "./data/seweroverflows.json",
         dataType: "json",
         success: function(data){
             // data.meta includes meta information
@@ -145,6 +145,7 @@ var getDuration_Human = function(overflow){
                 padding-bottom: 4px;
             }
             #chart_div {
+                margin-top: 20px;
                 width:1200px;
                 height:700px;
             }

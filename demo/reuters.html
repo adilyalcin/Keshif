@@ -68,11 +68,9 @@ google.setOnLoadCallback( function() {
                 }
             },{
                 facetTitle: "Topic",
-                textFilter: 'about'
             },{
                 facetTitle: "Country",
-                catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); },
-                textFilter: 'at'
+                catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); }
             },{
                 facetTitle: "People",
                 catLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
