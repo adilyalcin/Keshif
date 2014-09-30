@@ -182,12 +182,12 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 92,
-            maxVisibleItems_Default: 28,
             sortingOpts : [{ name:'year', value: function(d){ return d.data.year; }}],
             textSearch : "title",
             autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'grid',
+            maxVisibleItems_Default: 28,
             detailsToggle : "Zoom",
             contentFunc : function(d){
                 return "<a target='_blank' href='"+d.data.url+"'><img><span class='title'>"+d.data.title+"</span></a>";

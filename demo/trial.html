@@ -67,19 +67,19 @@ function loadChart() {
                     },
                     no_resort: true // never sort chart again
                 }],
-                textFilter: 'in', textGroup: 'phase types'
+                summaryHeader: 'in', 
             },{
                 facetTitle: "Condition",
                 catTableName: "Conditions" ,
                 catItemMap : function(trial){ return trial.data[6]; },
-                textFilter: 'about', textGroup: 'conditions'
+                summaryHeader: 'about'
             },{
                 facetTitle: "Company Industry",
                 catTableName: "Industries",
                 catItemMap : function(trial){return kshf.dt_id.Companies[trial.data[0]].data[3]; },
                 catLabelText: function(d){ return d.data[2]; },
                 catTooltipText: function(d){ return d.data[1]; },
-                textFilter: 'within', textGroup: 'industries'
+                summaryHeader: 'within',
 //            },{ // range chart!
 //                facetTitle: "Comp. Market Cap",
 //                catItemMap :  function(trial){ return kshf.dt_id.Companies[trial.data[0]].data[2]; }
@@ -88,7 +88,7 @@ function loadChart() {
                 catTableName: "Companies",
                 catTooltipText: function(d){ return d.data[0]; },
                 dotClassFunc: function(d){ return "bar_style_phase_"+ kshf.dt_id.Phases[d.data[4]].data[0]; },
-                textFilter: 'by', textGroup: 'companies'
+                summaryHeader: 'by',
             }
         ],
         itemDisplay: {
