@@ -73,15 +73,6 @@ $(document).ready( function(){
                 facetTitle: "Implementation Status",
                 catItemMap: function(d){ return d.data.impl_status_chrome; }
             },{
-                // Note: don't need the following, since the features are sorted by milestone 
-                // and can be filtered there too
-/*                facetTitle: "Shipped Milestone", 
-                catItemMap: function(d){ return d.data.shipped_milestone; },
-                type: 'categorical',
-                sortingOpts : [{  func: function(a,b){ 
-                        return b.data[1] - a.data[1]; 
-                }}],
-            },{*/
                 facetTitle: "Standardization",
                 catItemMap: function(d){ return d.data.standardization.text; }
             },{
@@ -114,7 +105,6 @@ $(document).ready( function(){
             // shipped_ios_milestone
             // shipped_android_milestone
             // shipped_opera_android_milestone
-
             
         ],
         itemDisplay: {
