@@ -66,7 +66,6 @@ $(document).ready(function() {
                         catLabelText: function(d){
                             return d.data.name;
                         },
-                        textFilter : 'from', textGroup  : 'teams'
                     },{
                         facetTitle: "League",
                         catTableName: "baseball_leagues_1",
@@ -76,7 +75,6 @@ $(document).ready(function() {
                             return kshf.dt_id.baseball_teams_1[x].data.league;
                         },
                         catLabelText: function(d){ return d.data.name; },
-                        textFilter: 'from'
                     }
                 ]
             },{
@@ -92,7 +90,6 @@ $(document).ready(function() {
                         catLabelText: function(d){
                             return d.data.name;
                         },
-                        textFilter : 'to', textGroup  : 'teams'
                     },{
                         facetTitle: "League",
                         catTableName: "baseball_leagues_2",
@@ -102,7 +99,6 @@ $(document).ready(function() {
                             return kshf.dt_id.baseball_teams_2[x].data.league;
                         },
                         catLabelText: function(d){ return d.data.name; },
-                        textFilter: 'from'
                     }
                 ]
             },{
