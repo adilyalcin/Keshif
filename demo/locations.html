@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Locations</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+function resetSize(){
+//    $('#chart_div').height($(window).height()-10);
+    $('#chart_div').height(700);
+    $('#chart_div').width (1000);
+};
+
+$(document).ready( function(){
+    resetSize();
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 300,
+        itemName: "Locations",
+        source : {
+            // http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
+            callback: function(browser){
+                browser.primaryTableName = "Locations";
+
+                kshf.dt.Locations = [];
+                kshf.dt_id.Locations = {};
+
+                $.ajax( {
+                    url: "./data_private/locations.json",
+                    dataType: "json",
+                    async: false,
+                    success: function(data){
+                        // create the categories list
+                        data.locations.forEach(function(location,i){
+                            if(location.l_type==="city") return;
+                            location.id = location.path.substring(location.path.lastIndexOf("/")+1);
+                            location.pos = i;
+                            var kshfItem = new kshf.Item(location,"id");
+                            kshf.dt.Locations.push(kshfItem);
+                            kshf.dt_id.Locations[kshfItem.id()] = kshfItem;
+                        });
+
+                        if(browser){
+                            browser.items = kshf.dt.Locations;
+                            browser.itemsSelectedCt = browser.items.length;
+
+                            // finish loading....
+                            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                            d3.select(".kshf.layout_infobox div.status_text div").text("");
+                            window.setTimeout(function() { browser.loadCharts(); }, 100);
+                        }
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Type",
+                catItemMap: function(location){ return location.data.l_type; }
+            },{
+                facetTitle: "Part of",
+                catTableName: "Locations",
+                catItemMap: function(location){ return location.data.parent_location_uuid; },
+                catLabelText: function(location){ return location.data.name; },
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts : [{ name:'pos'},],
+            linkText: "Part of",
+            content : "name"
+        }
+    });
+});
+        </script>
+        <style>
+        .postImg{
+            max-width: 150px;
+            float: right;
+            display: block;
+            padding: 3px;
+            border: solid;
+            border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+            border-width: 1px 2px 2px 1px;
+            background-color: white;
+        }
+        .postDetail{
+            font-size: 0.9em;
+            font-weight: 300;
+        }
+        .postTitle{
+            font-weight: 300;
+        }
+        .listItem a{
+            color:gray;
+            text-decoration: none;
+        }
+        .listItem a:hover{
+            color:orangered;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .kshf div.listItem[details=true] .item_details{
+            border-top: dotted 1px gray;
+            padding-top: 2px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
