@@ -410,7 +410,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .kshfChart{
         display: block;
-        border-radius: 4px;
+        border-radius: 6px;
         position: relative;
         overflow: hidden; // Keep it this way!
 
@@ -594,9 +594,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             position: absolute;
                             font-size: 0.8em;
                             font-weight: 300;
-                            > .filterButtons {
-                                margin-top: -2px;
-                            }
                         }
                         > .attribLabel{
                             display: inline-block;
@@ -656,6 +653,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             vertical-align: top;
                             float: left;
                             margin-left: 2px;
+                            margin-top: -2px;
+                            margin-bottom: -2px;
+                            font-size: 1.1em;
+                            height: 10px;
                             > .orButton {
                                 display: none;
                                 margin-right: 1px;
@@ -707,11 +708,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         &[selected="-1"]{
                             .clickArea { cursor: pointer; }
-                            .theLabel{
+                            > .attribLabel > .theLabel{
                                 color: gray;
-                            }
-                            &[show-box=true]{
-                                > .attribLabel > .theLabel:before{
+                                &:before{
                                     content: "Not";
                                     background-color: black;
                                 }
@@ -720,24 +719,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                         &[noitems=false]{
                             &[highlight=selected] {
-                                .theLabel{
+                                > .attribLabel > .theLabel{
                                     font-weight: 700 !important;
                                 }
                                 &[selected="0"] {
                                     .clickArea { cursor: cell; }
-                                    &[selecttype="and"] .theLabel{
+                                    &[selecttype="and"] > .attribLabel > .theLabel{
                                         color: #1D4870;
                                     }
-                                    &[selecttype="or"] .theLabel{
+                                    &[selecttype="or"] > .attribLabel > .theLabel{
                                         color: #1C737A;
                                     }
-                                    &[selecttype="not"] .theLabel{
+                                    &[selecttype="not"] > .attribLabel > .theLabel{
                                         color: gray;
                                     }
                                 }
                             }
                             &[highlight=true] {
-                                .theLabel{
+                                > .attribLabel > .theLabel{
                                     color: @color_related;
                                     font-weight: 700;
                                 }
@@ -773,10 +772,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             > .item_count{
                                 top: -1em;
+                                text-shadow: white 0px 0px 2px;
                                 display: block;
                                 position: relative;
                                 width:26px;
-                                margin-left: -13px;
+                                margin-left: -14px;
                                 font-size: 0.7em;
                                 text-align: center;
                                 cursor: pointer;
@@ -796,9 +796,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         top: 9px;
                         > .tick{
                             > .line{
-                                border-top-style: dashed;
-                                border-top-width: 1px;
-                                border-top-color: lightgray;
+                                border-bottom: dashed 1px rgb(182, 179, 179);
                             }
                         }
                     }
@@ -897,6 +895,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         z-index: 20;
                         top: 1px;
                         display: none;
+                        .transition(~'all 250ms ease-out');
                         > .circlee{
                             border-radius: 20px;
                             width: 8px;
@@ -1099,8 +1098,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
         }
 
+/*        &:before{
+            content:''; width:100%; height:100%;
+            position:absolute; top:0; left:0;
+            pointer-events:none;
+        }*/
+
         &:hover{
-            box-shadow: inset 0px 0px 3px gray;
+//            &:before{
+                box-shadow: inset 0px 0px 3px gray;
+//            }
             > .headerGroup span.header_label_arrow{
                 opacity: 1; 
             }
@@ -1134,7 +1141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     }// kshfChart
 
-    div.belowAttribs{
+    .belowAttribs{
         position:relative; 
         .border_line{
             opacity: 0.6;
@@ -1147,9 +1154,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .line{
                     width: 0px;
-                    border-left-style: dashed;
-                    border-left-width: 1px;
-                    border-left-color: lightgray;
+                    border-left: dashed 1px rgb(182, 179, 179);
                 }
             }
         }
@@ -1161,7 +1166,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &::after{ content: ")"; }
     }
 
-    span.selectVertLine {
+    .selectVertLine {
         display: inline-block;
         background-color: #EEDDDE;
         width:2px;
@@ -1681,7 +1686,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 white-space: nowrap;
                 padding-right: 2px;
                 > .itemLinkIcon{
-                    font-size: 0.8em;
+                    font-size: 0.9em;
                     display: none;
                     cursor: pointer;
                     margin-right: 2px;
@@ -1743,7 +1748,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[highlight=selected]{
             box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
-            &[selectlinked]{
+            &[selectedForLink=true]{
                 .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
                 > .itemRow > .itemLinkStateColumn > .itemLinkIcon{
                     display: inline;
@@ -1764,15 +1769,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
 //            box-shadow: inset 0px 0px 4px @color_related;
         }
-        &[selectLinked=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
+        &[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
             content: "\f046"; // checked
         }
-        &[selectLinked=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
+        &[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
             content: "\f096"; // unchecked
         }
-        // &:nth-child(even) { background-color:#f5f5f5; }
     } // listItem
-
 
     &.layout_infobox {
         position: absolute;

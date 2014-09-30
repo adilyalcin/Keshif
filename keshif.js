@@ -318,7 +318,7 @@ kshf.Util = {
         this.dom.headerGroup.append("span").attr("class","header_label_arrow")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 's',
+                    gravity: 'sw',
                     title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
                 })
             })
@@ -553,6 +553,8 @@ kshf.Item = function(d, idIndex){
     this.resultDOM = undefined;
     // If item is used as a filter (can be primary if looking at links), this will be set
     this.facetDOM  = undefined;
+    // If true, updatePreview has propogated changes above
+    this.updatePreview_Cache = false;
 };
 kshf.Item.prototype = {
     /**
@@ -635,6 +637,7 @@ kshf.Item.prototype = {
         });
         
         if(this.isWanted===true && oldWanted===false){
+            // wanted now
             this.mappedDataCache.forEach(function(m){
                 if(m===null) return;
                 if(m.h){ // interval
@@ -661,6 +664,7 @@ kshf.Item.prototype = {
                 }
             },this);
         } else if(this.isWanted===false && oldWanted===true){
+            // unwanted now
             this.mappedDataCache.forEach(function(m){
                 if(m===null) return;
                 if(m.h){ // interval
@@ -701,31 +705,41 @@ kshf.Item.prototype = {
         if(!this.isWanted) return false;
         return this.updateWanted(recursive);
     },
-    updatePreview: function(source){
+    updatePreview: function(parentFacet){
         if(!this.isWanted) return;
+
+        if(this.updatePreview_Cache===false){
+            this.updatePreview_Cache = true;
+        } else {
+            return;
+        }
 
         if(this.resultDOM) this.resultDOM.setAttribute("highlight",true);
 
+        // This is where you pass highlught information to through parent facet (which is primary entity)
         // if this item appears in a facet, it means it's used as a filter itself, propogate above
-        if(this.facetDOM && this.facet===source.parentFacet){
-            // If this is the main item type. If so, don't iterate over!
-            if(!this.facet.isLinked && this.itemCount_Active>0){   
+        if(this.facet && this.facet===parentFacet){
+            // If this is the main item type, don't!
+            // If this has no active item count, don't!
+            if(!this.facet.isLinked && this.itemCount_Active>0){
                 // see the main items stored under this one...
                 this.items.forEach(function(item){ item.updatePreview(this.facet); },this);
             }
         }
 
+        if(parentFacet && this.facet && this.itemCount_Preview===0) return;
         this.mappedDataCache.forEach(function(m){
             if(m===null) return;
             if(m.h) {
                 if(m.b && m.b.itemCount_Active>0) m.b.itemCount_Preview++;
             } else {
+                // if you are a sub-filter, go over the l
                 m.forEach(function(item){
                     item.itemCount_Preview++;
                     if(item.itemCount_Preview===1 && item.facet){
-                        if(!item.facet.isLinked && item.facet!==source){
+                        if(!item.facet.isLinked && item.facet!==parentFacet){
                             // TODO: Don't go under the current one, if any
-                            item.updatePreview(source);
+                            item.updatePreview(parentFacet);
                         }
                     }
                 });
@@ -736,7 +750,7 @@ kshf.Item.prototype = {
      * Called on mouse-over on a primary item type, then recursively on all facets and their sub-facets
      * Higlights all relevant UI parts to this UI item
      */
-    highlightAll: function(source,recurse){
+    highlightAll: function(recurse){
         if(this.resultDOM) {
             this.resultDOM.setAttribute("highlight",recurse?"selected":true);
         }
@@ -754,13 +768,13 @@ kshf.Item.prototype = {
                     // skip going through main items that contain a link TO this item
                     if(this.resultDOM && item.resultDOM)
                         return;
-                    item.highlightAll(source,false);
+                    item.highlightAll(false);
                 },this);
             }
         },this);
     },
     /** Removes higlight from all relevant UI parts to this UI item */
-    nohighlightAll: function(source,recurse){
+    nohighlightAll: function(recurse){
         if(this.resultDOM) this.resultDOM.setAttribute("highlight",false);
         if(this.facetDOM)  this.facetDOM .setAttribute("highlight",false);
 
@@ -773,7 +787,7 @@ kshf.Item.prototype = {
                 d.forEach(function(item){
                     // skip going through main items that contain a link TO this item
                     if(this.resultDOM && item.resultDOM) return;
-                    item.nohighlightAll(source,false);
+                    item.nohighlightAll(false);
                 },this);
             }
         },this);
@@ -781,7 +795,7 @@ kshf.Item.prototype = {
     setSelectedForLink: function(v){
         this.selectedForLink = v;
         if(this.resultDOM){
-            this.resultDOM.setAttribute("selectLinked",v);
+            this.resultDOM.setAttribute("selectedForLink",v);
         }
         if(v===false){
             this.set_NONE();
@@ -867,7 +881,9 @@ kshf.Filter.prototype = {
     clearFilter: function(forceUpdate,recursive, updateWanted){
         if(!this.isFiltered) return;
         var parentFacet=this.facet.parentFacet;
-        var hasEntityParent = this.facet.hasEntityParent();
+        var hasEntityParent = false;
+        if(this.facet.hasEntityParent)
+            hasEntityParent = this.facet.hasEntityParent();
 
         this.isFiltered = false;
 
@@ -883,8 +899,11 @@ kshf.Filter.prototype = {
                 if(!item.isWanted){
                     item.updateWanted(recursive);
                 }
-                if(item.isWanted && hasEntityParent){
-                    item.set_OR(parentFacet.attribFilter.selected_OR);
+                if(parentFacet && parentFacet.hasAttribs()){
+                    if(item.isWanted)
+                        item.set_OR(parentFacet.attribFilter.selected_OR);
+                    else 
+                        item.set_NONE();
                 }
             });
         }
@@ -904,9 +923,21 @@ kshf.Filter.prototype = {
                 }
             }
 
-            this.facet.subFacets.forEach(function(facet){
-                facet.facetFilter.clearFilter(false,false,false);
-            });
+            if(this.facet.subFacets){
+                this.facet.subFacets.forEach(function(facet){
+                    facet.facetFilter.clearFilter(false,false,false);
+                });
+                // if this has sub-facets, it means this also maintains an isWanted state.
+                // Sub facets are cleared, but the attribs isWanted state is NOT updated
+                // Fix that, now.
+                if(this.facet.subFacets.length>0){
+                    this.facet.getAttribs().forEach(function(item){
+                        item.isWanted = true;
+                        item._filterCacheIsDirty = false;
+                    });
+                }
+            }
+
 
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
@@ -1011,7 +1042,6 @@ kshf.List = function(kshf_, config, root){
     this.linkColumnWidth = 85;
     this.linkColumnWidth_ItemCount = 25;
     this.linkColumnWidth_BarMax = this.linkColumnWidth-this.linkColumnWidth_ItemCount-3;
-
     this.selectColumnWidth = 17;
 
     this.config = config;
@@ -1146,7 +1176,6 @@ kshf.List = function(kshf_, config, root){
             me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
         });
 
-    // TODO: if sorting column is shown...
     this.sortFilters = [];
     if(this.displayType==='list'){
         this.sortingOpts.forEach(function(sortingOpt){
@@ -1332,16 +1361,25 @@ kshf.List.prototype = {
                 .on("mouseover",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(){
-                    me.browser.linkedFacets[0].attribFilter.linkFilterSummary = me.browser.getFilterSummary();
-                    me.browser.items.forEach(function(item){
-                        if(!item.isWanted) return;// no change
-                        item.setSelectedForLink(true);
-                    });
+                    var linkedFacet = me.browser.linkedFacets[0];
+                    linkedFacet.attribFilter.linkFilterSummary = me.browser.getFilterSummary();
+
                     me.browser.clearFilters_All(false);
-                    me.browser.linkedFacets.forEach(function(f){
-                        f.updateSorting(0);
-                        f.selectAllAttribsButton();
+
+                    var filter = linkedFacet.attribFilter.selected_OR;
+                    me.browser.items.forEach(function(item){
+                        if(item.isWanted) {
+                            item.setSelectedForLink(true);
+                            item.set_OR(filter);
+                        } else {
+                            item.set_NONE();
+                        }
                     });
+                    linkedFacet.updateSorting(0);
+                    linkedFacet._update_Selected();
+                    linkedFacet.attribFilter.how="All";
+                    linkedFacet.attribFilter.addFilter(true);
+
                     // delay layout height update
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
@@ -1371,24 +1409,37 @@ kshf.List.prototype = {
             // store the link to DOM in the data item
             .each(function(d){ d.resultDOM = this; })
             .on("mouseover",function(d,i){
-                d.highlightAll(me,true);
+                d.highlightAll(true);
+                if(me.hasLinkedItems)
+                    d.resultDOM.setAttribute("selectedForLink",true);
                 d.items.forEach(function(item){
-                    item.highlightAll(me,false);
-                })
+                    item.highlightAll(false);
+                });
+                if(me.hasLinkedItems){
+                    // update result previews
+                    d.items.forEach(function(item){item.updatePreview();});
+                    me.browser.refreshResultPreview();
+                }
             })
             .on("mouseout",function(d,i){
                 d3.select(this).attr("highlight","false");
                 // find all the things that  ....
-                d.nohighlightAll(me,true);
+                if(me.hasLinkedItems)
+                    d.resultDOM.setAttribute("selectedForLink",false);
+                d.nohighlightAll(true);
                 d.items.forEach(function(item){
-                    item.nohighlightAll(me,false);
+                    item.nohighlightAll(false);
                 })
+                // update result previews
+                if(me.hasLinkedItems){
+                    me.browser.clearResultPreview();
+                }
             });            
 
         this.dom.listItems_Row = this.dom.listItems.append("span").attr("class","itemRow");
 
         if(this.hasLinkedItems){
-            this.dom.listItems.attr("selectLinked","false")
+            this.dom.listItems.attr("selectedForLink","false")
         }
         if(this.displayType==='list'){
             this.insertItemSortColumn();
@@ -1547,18 +1598,12 @@ kshf.List.prototype = {
     hideListItemDetails: function(item){
         item.resultDOM.setAttribute('details', false);
         item.showDetails=false;
-        this.lastSelectedItem = undefined;
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_OFF, {info:item.id()});
     },
     /** -- */
     showListItemDetails: function(item){
-        if(this.lastSelectedItem){
-            this.lastSelectedItem.resultDOM.setAttribute("details",false);
-            this.lastSelectedItem.showDetails=false;
-        }
         item.resultDOM.setAttribute('details', true);
         item.showDetails=true;
-        this.lastSelectedItem = item;
         if(this.detailCb) this.detailCb.call(this, item);
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_ON,{info:item.id()});
     },
@@ -1724,18 +1769,7 @@ kshf.List.prototype = {
         contentWidth-=4; // 2*2 border left&right
 //        contentWidth-=this.stateWidth;
         contentWidth-=this.browser.scrollWidth; // assume scroll is displayed
-        // ready for showmore...
         this.dom.showMore.style("width",(contentWidth-5)+"px");
-        contentWidth-=this.sortColWidth;
-        if(this.detailsToggle!=="off") 
-            contentWidth-=this.itemtoggledetailsWidth;
-//        this.browser.dom.filtercrumbs.style("width",(contentWidth-15)+"px");
-        if(this.hasLinkedItems){
-            contentWidth-=this.selectColumnWidth;
-        }
-        if(this.displayType==='list'){
-//            this.dom.listItems_Content.style("width",(contentWidth)+"px");
-        }
     },
     updateAfterFiltering_do:function(){
         this.updateVisibleIndex();
@@ -1895,7 +1929,6 @@ kshf.Browser = function(options){
     this.layoutBottom.on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
     });
-
 
     this.loadSource();
 };
@@ -2363,6 +2396,20 @@ kshf.Browser.prototype = {
             this.dom.filtercrumbs = this.listDisplay.dom.filtercrumbs;
 
             var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
+            if(this.listDef.enableSave){
+                rightSpan.append("i").attr("class","fa fa-save ")
+                    .each(function(d){
+                        this.tipsy = new Tipsy(this, {
+                            gravity: 'n',
+                            title: function(){ return "Save results to Results facet"; }
+                        })
+                    })
+                    .on("mouseover",function(){ this.tipsy.show(); })
+                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                    .on("click",function(){
+                        if(sendLog) sendLog(kshf.LOG.DATASOURCE);
+                    })
+            }
             // TODO: implement popup for file-based resources
             if(this.showDataSource !== false){
                 var datasource = null;
@@ -2430,10 +2477,7 @@ kshf.Browser.prototype = {
                 if(ID!==undefined)
                     options.catItemMap = function(d){ return d.data[ID]; };
             } else {
-                // see if items have the given facet title as a data property
-                if(kshf.dt[primTableName][0].data[options.facetTitle]){
-                    options.catItemMap = function(d){ return d.data[options.facetTitle]; };
-                }
+                options.catItemMap = function(d){ return d.data[options.facetTitle]; };
             }
         } else if(typeof(options.catItemMap)==="string"){
             options.catItemMap = this.getColumnData(primTableName,options.catItemMap);
@@ -2491,6 +2535,7 @@ kshf.Browser.prototype = {
             case 'top': this.facetsTop.push(fct); break;
             case 'bottom': this.facetsBottom.push(fct); break;
             case 'bottom-mid':
+                this.layoutLeft.style("height","100%");
                 this.facetsBottom.push(fct); 
                 break;
         }
@@ -2579,7 +2624,10 @@ kshf.Browser.prototype = {
             digits++;
             maxTotalCount = Math.floor(maxTotalCount/10);
         }
-        if(digits>4) digits = 4;
+        if(digits>3) {
+            digits = 3;
+            this._labelXOffset+=4; // "." character is used to split. It takes some space
+        }
         this._labelXOffset += digits*6;
         return this._labelXOffset;
     },
@@ -2591,7 +2639,9 @@ kshf.Browser.prototype = {
     clearFilters_All: function(force){
         var me=this;
         // clear all registered filters
-        this.filterList.forEach(function(filter){ filter.clearFilter(false); })
+        this.filterList.forEach(function(filter){
+            filter.clearFilter(false,false,false);
+        })
         if(force!==false){
             this.items.forEach(function(item){ item.updateWanted_More(true); });
             this.updateItemSelectedCt();
@@ -2634,6 +2684,9 @@ kshf.Browser.prototype = {
     },
     clearResultPreview: function(){
         this.resultPreviewActive = false;
+        this.items.forEach(function(item){
+            item.updatePreview_Cache = false;
+        });
         this.facets.forEach(function(facet){ facet.clearResultPreview(); });
     },
     refreshResultPreview: function(){
@@ -2667,7 +2720,7 @@ kshf.Browser.prototype = {
             this.facetsBottom.forEach(function(fct){
                 fct.setHeight(targetHeight);
                 fct.heightProcessed = true;
-                bottomFacetsHeight = Math.max(bottomFacetsHeight,fct.getHeight_Total()); 
+                bottomFacetsHeight = Math.max(bottomFacetsHeight,fct.getHeight()); 
                 if(fct.options.layout==="bottom"){
                     leftBottomUsed = true;
                     rightBottomUsed = true;
@@ -2695,9 +2748,9 @@ kshf.Browser.prototype = {
                     // in last round, if you have more attribs than visible, you may increase your height!
                     if(lastRound===true && sectionHeight>5/*px*/ && !facet.collapsed && facet.attribCount_Total!==undefined){
                         if(facet.attribCount_InDisplay<facet.attribCount_Total){
-                            sectionHeight+=facet.getHeight_Total();
+                            sectionHeight+=facet.getHeight();
                             facet.setHeight(sectionHeight);
-                            sectionHeight-=facet.getHeight_Total();
+                            sectionHeight-=facet.getHeight();
                             return;
                         }
                     }
@@ -2728,7 +2781,7 @@ kshf.Browser.prototype = {
                             return;
                         }
                     }
-                    sectionHeight-=facet.getHeight_Total();
+                    sectionHeight-=facet.getHeight();
                     facet.heightProcessed = true;
                     processedFacets++;
                     remainingFacetCount--;
@@ -2769,7 +2822,7 @@ kshf.Browser.prototype = {
             var listHeaderHeight=this.listDisplay.dom.listHeader[0][0].offsetHeight;
             var targetHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
             if(this.facetsBottom.length>0){
-                targetHeight-=this.facetsBottom[0].getHeight_Total();
+                targetHeight-=this.facetsBottom[0].getHeight();
             }
             this.listDisplay.dom.listItemGroup.style("height",targetHeight+"px");
         }
@@ -2996,7 +3049,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     getHeight_RangeMax: function(){
         if(!this.hasAttribs()) return this.browser.line_height;
-        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Visible+1)*this.browser.line_height;
+        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Visible+1)*this.browser.line_height-1;
     },
     /** -- */
     getHeight_RangeMin: function(){
@@ -3004,16 +3057,16 @@ kshf.Facet_Categorical.prototype = {
         return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Visible,3)+1)*this.browser.line_height;
     },
     /** -- */
-    getHeight_Total: function(){
-        if(!this.hasAttribs()) return this.getHeight_Header();
-        if(this.collapsed) return this.getHeight_Header();
-        // need 1 more row at the bottom is scrollbar is shown
-        return this.getHeight_Header() + this.getHeight_Content();
+    getHeight: function(){
+        if(!this.hasAttribs()) return this.getHeight_Header()-2;
+        if(this.collapsed) return this.getHeight_Header()-2;
+        // Note: I don't know why I need -2 to match real dom height.
+        return this.getHeight_Header() + this.getHeight_Content()-2;
     },
     getHeight_Content: function(){
-        var bottomRow=0;
-        if(!this.areAllAttribsInDisplay() || this.browser.hideBarAxis===false) bottomRow=1;
-        return this.attribHeight + (this.configRowCount+bottomRow)*this.browser.line_height;
+        var h = this.attribHeight + this.browser.line_height*this.configRowCount;
+        if(!this.areAllAttribsInDisplay() || !this.browser.hideBarAxis) h+=17;
+        return h;
     },
     getWidth_LeftOffset: function(){
         var offset=0;
@@ -3036,6 +3089,9 @@ kshf.Facet_Categorical.prototype = {
         return this.subFacets.length>0;
     },
     hasAttribs: function(){
+        if(this._attribs){
+            if(this._attribs.length===0) return false;
+        }
         return this.options.catItemMap!==undefined;
     },
     initAttribs: function(options){
@@ -3180,7 +3236,11 @@ kshf.Facet_Categorical.prototype = {
 
                 var totalSelectionCount = this.selectedCount_Total();
 
-                if(totalSelectionCount>4){
+                if(this.facet.subFacets.some(function(facet){ return facet.isFiltered();})){
+                    return " <i class='fa fa-hand-o-right'></i>";;
+                }
+
+                if(totalSelectionCount>4 || this.linkFilterSummary){
                     selectedItemsText = "<b>"+totalSelectionCount+"</b> selected";// +me.getGroupText()
                     // Note: Using "selected" because selections can include not, etc (a variety of things)
                 } else {
@@ -3210,7 +3270,7 @@ kshf.Facet_Categorical.prototype = {
                     });
                 }
                 if(this.linkFilterSummary){
-                    selectedItemsText+= " <i class='fa fa-hand-o-left'></i> <i>such that</i> ["+this.linkFilterSummary+"]";
+                    selectedItemsText+= "<i class='fa fa-hand-o-left'></i><br> ["+this.linkFilterSummary+"]";
                 }
 
                 return selectedItemsText;
@@ -3330,7 +3390,6 @@ kshf.Facet_Categorical.prototype = {
     updateAttribCount_Wanted: function(){
         this.attribCount_Wanted = 0;
         this._attribs.forEach(function(attrib){
-            if(attrib.items.length===0) { return; }
             if(attrib.isWanted) this.attribCount_Wanted++;
         },this);
     },
@@ -3405,16 +3464,17 @@ kshf.Facet_Categorical.prototype = {
             this.dom.facetCategorical.style('margin-left','17px');
         }
 
-        this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
-
-        // update header components
-        if(this.showTextSearch){
-            this.insertLabelTextSearch();
-            this.configRowCount++;
-        }
-        if(this.sortingOpts.length>1) {
-            this.insertSortingOpts();
-            this.configRowCount++;
+        // update control components
+        if(this.showTextSearch || this.sortingOpts.length>1) {
+            this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
+            if(this.showTextSearch){
+                this.insertLabelTextSearch();
+                this.configRowCount++;
+            }
+            if(this.sortingOpts.length>1) {
+                this.insertSortingOpts();
+                this.configRowCount++;
+            }
         }
 
         this.dom.facetCategorical.append("div").attr("class","scrollToTop").html("⬆")
@@ -3473,10 +3533,6 @@ kshf.Facet_Categorical.prototype = {
                 kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+18);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
-/*        if(this.isLinked){
-            mmm.append("span").attr('class','selectAllAttribsButton')
-                .on('click',function(){ me.selectAllAttribsButton(); });
-        }*/
 
         this.insertAttribs();
     },
@@ -3521,11 +3577,12 @@ kshf.Facet_Categorical.prototype = {
                 .attr("filtered_not",this.attribFilter.selected_NOT.length)
                 ;
         }
+        var show_box = (this.attribFilter.selected_OR.length+this.attribFilter.selected_AND.length)>1;
         this.attribFilter.selected_OR.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.selected_OR.length>1);
+            attrib.facetDOM.setAttribute("show-box",show_box);
         },this);
         this.attribFilter.selected_AND.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",this.attribFilter.selected_AND.length>1);
+            attrib.facetDOM.setAttribute("show-box",show_box);
         },this);
         this.attribFilter.selected_NOT.forEach(function(attrib){
             attrib.facetDOM.setAttribute("show-box","true");
@@ -3587,7 +3644,7 @@ kshf.Facet_Categorical.prototype = {
                                 }
                             }
                         });
-                        if(!me.isFiltered()){
+                        if(me.attribFilter.selectedCount_Total()===0){
                             me.attribFilter.clearFilter();                            
                         } else {
                             me.attribFilter.how = "All";
@@ -3650,11 +3707,14 @@ kshf.Facet_Categorical.prototype = {
         this.refreshChartPreviewAxis();
     },
     /** -- */
-    setHeight: function(cc){
+    setHeight: function(newHeight){
         if(!this.hasAttribs()) return;
-        var c = cc-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height;
-        this.attribHeight = Math.min(c,this.browser.line_height*this.attribCount_Visible);
-        c = Math.floor(c / this.browser.line_height);
+        this.attribHeight = Math.min(
+            newHeight-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height+1,
+            this.browser.line_height*this.attribCount_Visible);
+
+        // update attribCount_InDisplay
+        var c = Math.floor(this.attribHeight / this.browser.line_height);
         if(c<0) c=1;
         if(c>this.attribCount_Visible) c=this.attribCount_Visible;
         if(this.attribCount_Visible<=2){ 
@@ -3663,6 +3723,7 @@ kshf.Facet_Categorical.prototype = {
             c = Math.max(c,2);
         }
         this.attribCount_InDisplay = c;
+
         this.refreshScrollDisplayMore(this.attribCount_InDisplay);
 
         this.cullAttribs();
@@ -3681,8 +3742,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshWidth: function(){
-        if(this.dom.facetCategorical)
+        if(this.dom.facetCategorical){
             this.dom.facetCategorical.style("width",this.getWidth()+"px");
+//            this.dom.attribGroup.style("width",this.getWidth()+"px");
+        }
     },
     /** -- */
     refreshQueryPreview: function(dontCull){
@@ -3729,6 +3792,9 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     clearResultPreview: function(dontCull){
         if(!this.hasAttribs()) return;
+        this.getAttribs().forEach(function(attrib){
+            attrib.updatePreview_Cache = false;
+        });
         if(this.collapsed) return;
         var me = this;
         this.dom.bar_preview.each(function(attrib){
@@ -3767,8 +3833,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
         var moreTxt = "";
-        var more = this.attribCount_Visible-bottomItem-1;
-        if(more>0) moreTxt=" / "+more+" more...";
+        var below = this.attribCount_Visible-bottomItem-1;
+        if(below>0) moreTxt=" / "+below+" below...";
         this.dom.scroll_display_more.text(this.attribCount_Visible+" total"+moreTxt);
     },
     /** -- */
@@ -3944,10 +4010,8 @@ kshf.Facet_Categorical.prototype = {
                   (me.hasMultiValueItem || me.attribFilter.selected_OR.length===0) &&
                   (!attrib.is_NOT()) ){
                     // calculate the preview
-                    attrib.items.forEach(function(item){
-                        item.updatePreview(me);
-                    },this);
-                    attrib.highlightAll(me,true);
+                    attrib.items.forEach(function(item){item.updatePreview(me.parentFacet);});
+                    attrib.highlightAll(true);
 
                     me.browser.refreshResultPreview();
                     if(sendLog) {
@@ -3974,7 +4038,7 @@ kshf.Facet_Categorical.prototype = {
                 return;
             }
             if(!me.isAttribSelectable(attrib)) return;
-            attrib.nohighlightAll(me,true);
+            attrib.nohighlightAll(true);
 
             if(previewTimer){
                 clearTimeout(previewTimer);
@@ -4200,8 +4264,15 @@ kshf.Facet_Categorical.prototype = {
                     attrib.posY = y;
                     kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
                 }
-                this.style.visibility = "visible";
-                this.style.display = "block";
+                // if item is to appear, move it to the correct y position
+                if(attrib.isVisible && !attrib.isVisible_before){
+                    var y = line_height*attrib.orderIndex;
+                    kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+y+"px)");
+                }
+                if(attrib.isVisible || attrib.isVisible_before){
+                    this.style.visibility = "visible";
+                    this.style.display = "block";
+                }
             });
             // 2. Re-sort
             setTimeout(function(){
@@ -4237,7 +4308,7 @@ kshf.Facet_Categorical.prototype = {
 
         },sortDelay);
 
-        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-6)+"px");
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -4257,10 +4328,9 @@ kshf.Facet_Categorical.prototype = {
             }
             attrib.isCulled=false;
         }).style("visibility",function(attrib){
-            if(attrib.isCulled) return "hidden";
-            return "visible";
+            return (attrib.isCulled || !attrib.isVisible)?"hidden":"visible";
         }).style("display",function(attrib){
-            return attrib.isCulled?"none":"block";
+            return (attrib.isCulled || !attrib.isVisible)?"none":"block";
         });
     },
     getTicksSkip: function(){
@@ -4372,6 +4442,7 @@ kshf.Facet_Interval = function(kshf_, options){
         facet: this,
         onClear: function(){
             this.divRoot.attr("filtered",false);
+            this.intervalFilter.filteredBin=undefined;
             this.resetIntervalFilterActive();
             this.refreshIntervalSlider();
         },
@@ -4473,10 +4544,21 @@ kshf.Facet_Interval = function(kshf_, options){
         return v_a-v_b;
     });
 
-    this.intervalRange = {
-        min: d3.min(this.filteredItems,accessor),
-        max: d3.max(this.filteredItems,accessor)
-    };
+    // this value is static once the histogram is created
+    if(options.intervalRange){
+        this.intervalRange = options.intervalRange;
+    } else {
+        this.intervalRange = {};
+    }
+
+    // if min or max is not defined, do it now.
+    if(this.intervalRange.min===undefined){
+        this.intervalRange.min = d3.min(this.filteredItems,accessor);
+    }
+    if(this.intervalRange.max===undefined){
+        this.intervalRange.max = d3.max(this.filteredItems,accessor);
+    }
+
     if(this.options.intervalScale==='step'){
         this.intervalRange.max++;
     }
@@ -4523,9 +4605,10 @@ kshf.Facet_Interval.prototype = {
         return this.height_bin_top+this.height_labels+this.height_slider+this.height_percentile;
     },
     /** -- */
-    getHeight_Total: function(){
-        if(this.collapsed) return this.getHeight_Header();
-        return this.getHeight_Header()+this.height_hist+this.getHeight_Extra();
+    getHeight: function(){
+        if(this.collapsed) return this.getHeight_Header()-2;
+        // Note: I don't know why I need -2 to match real dom height.
+        return this.getHeight_Header()+this.height_hist+this.getHeight_Extra()-2;
     },
     /** -- */
     getHeight_RangeMax: function(){
@@ -4709,7 +4792,6 @@ kshf.Facet_Interval.prototype = {
         this.histBins = d3.layout.histogram().bins(this.intervalTicks)
             .value(accessor)(this.filteredItems);
 
-//        this.barWidth = this.intervalRange.width/((ticks.length-1)*1.0);
         var firstTickPos = this.intervalScale(ticks[0]);
         var secondTickPos = this.intervalScale(ticks[1]);
         this.barWidth = secondTickPos-firstTickPos;
@@ -4757,9 +4839,7 @@ kshf.Facet_Interval.prototype = {
                 this.parentNode.tipsy.options.offset_x = (me.barWidth-me.barGap*2)/2-5;
                 this.parentNode.tipsy.show();
 
-                bar.forEach(function(item){
-                    item.updatePreview(me);
-                });
+                bar.forEach(function(item){item.updatePreview(me.parentFacet);});
                 // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
 
                 me.browser.refreshResultPreview();
@@ -4790,7 +4870,7 @@ kshf.Facet_Interval.prototype = {
         };
         var onClick = function(bar){
             this.parentNode.tipsy.hide();
-            if(this.parentNode.getAttribute("filtered")==="true"){
+            if(me.intervalFilter.filteredBin===this){
                 this.parentNode.setAttribute("filtered",false);
                 me.intervalFilter.clearFilter();
                 return;
@@ -4813,6 +4893,7 @@ kshf.Facet_Interval.prototype = {
             // if we are filtering the last bar, make max_score inclusive
             me.intervalFilter.max_inclusive = (bar.x+bar.dx)===me.intervalRange.max;
 
+            me.intervalFilter.filteredBin=this;
             me.intervalFilter.addFilter(true);
             if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_BIN, 
                 {id:me.intervalFilter.id, info:me.intervalFilter.active.min+"x"+me.intervalFilter.active.max} );
@@ -4876,6 +4957,7 @@ kshf.Facet_Interval.prototype = {
                             clearTimeout(this.timer);
                             this.timer = null;
                         }
+                        me.intervalFilter.filteredBin=this;
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.intervalFilter.addFilter(true);
@@ -4935,6 +5017,7 @@ kshf.Facet_Interval.prototype = {
                             clearTimeout(this.timer);
                             this.timer = null;
                         }
+                        me.intervalFilter.filteredBin=this;
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.intervalFilter.addFilter(true);
@@ -4977,6 +5060,7 @@ kshf.Facet_Interval.prototype = {
                         clearTimeout(this.timer);
                         this.timer = null;
                     }
+                    me.intervalFilter.filteredBin=this;
                     this.timer = setTimeout( function(){
                         if(me.isFiltered_min() || me.isFiltered_max()){
                             if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
@@ -5025,14 +5109,22 @@ kshf.Facet_Interval.prototype = {
             .range ([0, this.height_hist]);
     },
     updateActiveItems: function(){
-        this.histBins.forEach(function(bin){
-            bin.itemCount_Active = 0;
-            bin.forEach(function(item){
-                if(!item.isWanted) return;  
-                if(item.resultDOM===undefined && item.itemCount_Active===0) return;
-                bin.itemCount_Active++;
+        // indexed items are either primary or secondary
+        if(this.parentFacet && this.parentFacet.hasAttribs()){
+            this.histBins.forEach(function(bin){
+                bin.itemCount_Active = 0;
+                bin.forEach(function(item){
+                    if(item.itemCount_Active>0) bin.itemCount_Active++;
+                });
             });
-        });
+        } else {
+            this.histBins.forEach(function(bin){
+                bin.itemCount_Active = 0;
+                bin.forEach(function(item){
+                    if(item.isWanted) bin.itemCount_Active++;
+                });
+            });
+        }
     },
     insertAxisLabels: function(){
         var me=this;
@@ -5138,13 +5230,13 @@ kshf.Facet_Interval.prototype = {
     },
     refreshIntervalSlider: function(){
         var me=this;
-        var _min = this.intervalScale(this.intervalFilter.active.min);
-        var _max = this.intervalScale(this.intervalFilter.active.max);
+        var minPos = this.intervalScale(this.intervalFilter.active.min);
+        var maxPos = this.intervalScale(this.intervalFilter.active.max);
         if(me.intervalFilter.active.min===me.intervalRange.min){
-            _min = me.intervalScale.range()[0];
+            minPos = me.intervalScale.range()[0];
         }
         if(me.intervalFilter.active.max===me.intervalRange.max){
-            _max = me.intervalScale.range()[1];
+            maxPos = me.intervalScale.range()[1];
         }
 
         this.dom.intervalSlider.select(".base.total")
@@ -5152,11 +5244,11 @@ kshf.Facet_Interval.prototype = {
         this.dom.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
-                kshf.Util.setTransform(this,"translate("+_min+"px,0) scale("+(_max-_min)+",1)");
+                kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
             });
         this.dom.intervalSlider.selectAll(".handle")
             .each(function(d){
-                kshf.Util.setTransform(this,"translate("+((d==="min")?_min:_max)+"px,0)");
+                kshf.Util.setTransform(this,"translateX("+((d==="min")?minPos:maxPos)+"px)");
             });
     },
     /** -- */
@@ -5218,9 +5310,13 @@ kshf.Facet_Interval.prototype = {
         setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
     },
     setSelectedPosition: function(v){
+        if(v===null) return;
         if(this.intervalScale===undefined) return;
+        var translate = "translateX("+(this.intervalScale(v))+"px)";
         this.dom.selectedItemValue
-            .style("left",(this.intervalScale(v))+"px")
+            .each(function(attrib){
+                kshf.Util.setTransform(this,translate);
+            })
             .style("display","block");
     },
     hideSelectedPosition: function(){
@@ -5233,18 +5329,16 @@ kshf.Facet_Interval.prototype = {
         var filterId = this.intervalFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
-        // remove items that map to null
-        this.filteredItems = this.filteredItems.filter(function(item){
-            var v = accessor(item);
-            if(v===null) return false;
-            if(v===undefined) return false;
-            return true;
-        })
-
-        this.filteredItems.forEach(function(item){
-            if(!item.isWanted) return;
-            values.push(accessor(item));
-        });
+        // use this is filteredItems are primary
+        if(this.parentFacet===undefined){
+            this.filteredItems.forEach(function(item){
+                if(item.isWanted) values.push(accessor(item));
+            });
+        } else {
+            this.filteredItems.forEach(function(item){
+                if(item.itemCount_Active>0) values.push(accessor(item));
+            });
+        }
 
         this.quantile_val = {};
         this.quantile_pos = {};
@@ -5285,7 +5379,6 @@ kshf.Facet_Interval.prototype = {
         tickData_new.append("span").attr("class","line")
             .style("left","0px")
             .style("width",this.intervalRange.width+"px");
-//        tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
 
         // translate the ticks horizontally on scale.
         setTimeout(function(){

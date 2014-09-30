@@ -446,9 +446,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart {
   display: block;
-  border-radius: 4px;
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
+  /*        &:before{
+            content:''; width:100%; height:100%;
+            position:absolute; top:0; left:0;
+            pointer-events:none;
+        }*/
 }
 .kshf .kshfChart .kshfChart span.header_label_arrow {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDQsMTk1LDE5NSkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwNCwxOTUsMTk1KSIgc3RvcC1vcGFjaXR5PSIwLjUiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
@@ -632,9 +637,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   font-weight: 300;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea > .filterButtons {
-  margin-top: -2px;
-}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel {
   display: inline-block;
   vertical-align: top;
@@ -685,6 +687,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   float: left;
   margin-left: 2px;
+  margin-top: -2px;
+  margin-bottom: -2px;
+  font-size: 1.1em;
+  height: 10px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton {
   display: none;
@@ -727,29 +733,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .clickArea {
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel {
   color: gray;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"][show-box=true] > .attribLabel > .theLabel:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel:before {
   content: "Not";
   background-color: black;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected] > .attribLabel > .theLabel {
   font-weight: 700 !important;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"] .clickArea {
   cursor: cell;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="and"] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="and"] > .attribLabel > .theLabel {
   color: #1D4870;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="or"] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="or"] > .attribLabel > .theLabel {
   color: #1C737A;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="not"] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="not"] > .attribLabel > .theLabel {
   color: gray;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=true] .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=true] > .attribLabel > .theLabel {
   color: #ff6a33;
   font-weight: 700;
 }
@@ -793,10 +799,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
   top: -1em;
+  text-shadow: white 0px 0px 2px;
   display: block;
   position: relative;
   width: 26px;
-  margin-left: -13px;
+  margin-left: -14px;
   font-size: 0.7em;
   text-align: center;
   cursor: pointer;
@@ -815,9 +822,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 9px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick > .line {
-  border-top-style: dashed;
-  border-top-width: 1px;
-  border-top-color: lightgray;
+  border-bottom: dashed 1px #b6b3b3;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup {
   height: 14px;
@@ -918,6 +923,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 20;
   top: 1px;
   display: none;
+  -webkit-transition: all 250ms ease-out;
+  -moz-transition: all 250ms ease-out;
+  -o-transition: all 250ms ease-out;
+  transition: all 250ms ease-out;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue > .circlee {
   border-radius: 20px;
@@ -1137,21 +1146,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[hasFacets=true] > .wigdhdyt {
   padding-top: 2px;
 }
-.kshf div.belowAttribs {
+.kshf .belowAttribs {
   position: relative;
 }
-.kshf div.belowAttribs .border_line {
+.kshf .belowAttribs .border_line {
   opacity: 0.6;
 }
-.kshf div.belowAttribs > .barChartPreviewAxis > .tick > .text {
+.kshf .belowAttribs > .barChartPreviewAxis > .tick > .text {
   width: 20px;
   left: -10px;
 }
-.kshf div.belowAttribs > .barChartPreviewAxis > .tick > .line {
+.kshf .belowAttribs > .barChartPreviewAxis > .tick > .line {
   width: 0px;
-  border-left-style: dashed;
-  border-left-width: 1px;
-  border-left-color: lightgray;
+  border-left: dashed 1px #b6b3b3;
 }
 .kshf .item_count {
   color: gray;
@@ -1162,7 +1169,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .item_count::after {
   content: ")";
 }
-.kshf span.selectVertLine {
+.kshf .selectVertLine {
   display: inline-block;
   background-color: #EEDDDE;
   width: 2px;
@@ -1693,7 +1700,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-right: 2px;
 }
 .kshf .listItem > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
-  font-size: 0.8em;
+  font-size: 0.9em;
   display: none;
   cursor: pointer;
   margin-right: 2px;
@@ -1752,18 +1759,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listItem[highlight=selected] {
   box-shadow: inset 0px 0px 2px black;
 }
-.kshf .listItem[highlight=selected][selectlinked] {
+.kshf .listItem[highlight=selected][selectedForLink=true] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .listItem[highlight=selected][selectlinked] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .listItem[highlight=selected][selectedForLink=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: #cc3700;
 }
-.kshf .listItem[highlight=selected][selectlinked] > .itemRow > .itemLinkStateColumn > .itemLinkIcon:hover {
+.kshf .listItem[highlight=selected][selectedForLink=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon:hover {
   color: orangered;
 }
 .kshf .listItem[highlight=true] {
@@ -1774,10 +1781,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   color: gray;
 }
-.kshf .listItem[selectLinked=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f046";
 }
-.kshf .listItem[selectLinked=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f096";
 }
 .kshf.layout_infobox {
