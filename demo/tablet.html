@@ -36,7 +36,6 @@ $(document).ready( function() {
         facets: [
             {
                 facetTitle: "Brand Name",
-                textFilter: 'by', textGroup: 'brands'
             },{
                 facetTitle: "Operating System",
             },{
@@ -69,7 +68,8 @@ $(document).ready( function() {
                 facetTitle: "Rating",
                 layout: 'right',
                 catItemMap: function(d) { return d.data['Customer Reviews']; },
-                showPercentile: true
+                showPercentile: true,
+                intervalScale: 'step'
             },{
                 facetTitle: "Release Date",
                 catItemMap : function(tablet){ 
