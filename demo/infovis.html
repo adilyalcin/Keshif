@@ -35,6 +35,7 @@ google.setOnLoadCallback(function () {
                 facetTitle: "Concept",
             },{
                 facetTitle: "Year",
+                layout: "bottom-mid",
                 catItemMap: function(d){ return d.data.time; },
                 intervalScale: 'time'
             },{
@@ -54,6 +55,13 @@ google.setOnLoadCallback(function () {
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
+            },{
+                facetTitle: "Total Citations",
+                catItemMap: function(d){ if(d.data[10]===0) return; return d.data[10]; },
+                intervalScale: 'log'
+            },{
+                facetTitle: "Author",
+                layout: 'right'
             }/*,{
 //              facetTitle: "Keywords",
                 timeTitle: "Year",
@@ -67,18 +75,7 @@ google.setOnLoadCallback(function () {
 //                facetTitle: "Concepts",
 //            },{
 //                facetTitle: "Keyword", // HUGE LIST : 1k keywords
-//            },{
-//                facetTitle: "Author",
-            },{
-                facetTitle: "Total Citations",
-                catItemMap: function(d){
-                    return d.data[10];
-                },
-                sortingOpts: [{
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                }]
-            }*/
+//            }*/
         ],
         itemDisplay: {
             sortColWidth: 85,
@@ -100,6 +97,7 @@ google.setOnLoadCallback(function () {
             detailsToggle : "One",
             textSearch : 'Title',
             showRank: true,
+            showSelectBox: true,
             linkText: 'Citations to',
             contentFunc : function(d) {
                 var j;
@@ -129,7 +127,11 @@ google.setOnLoadCallback(function () {
 });
         </script>
         <style type="text/css" media="screen">
-            #chart_div{ width:1250px; height: 700px;}    
+            #chart_div{ width:1250px; height: 700px; margin-top: 30px;}    
+            .content .fa{
+                font-size: 0.8em;
+                color:gray;
+            }
         </style>
 	</head>
     <body>
