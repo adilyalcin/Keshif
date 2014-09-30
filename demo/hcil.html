@@ -107,15 +107,13 @@ google.setOnLoadCallback( function() {
                 catTableName: "topics",
                 catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
                 catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
-                textFilter: 'about', textGroup: 'topics',
                 visibleRows: 9
             },{
                 facetTitle: "Author",
                 catTableName: "people",
                 catLabelText: function(author) { 
                     return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
-                },
-                textFilter: 'by', textGroup: 'authors'
+                }
             },{
                 facetTitle: "Member Type",
                 catTableName: "member_types",
@@ -136,19 +134,16 @@ google.setOnLoadCallback( function() {
                     return r;
                 },
                 catLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
-                textFilter: 'by', textGroup: 'members'
             },{
                 facetTitle: "Project",
                 catTableName: "projects",
                 catLabelText: function(project) { return project.data[projectsCol.project];  },
-                textFilter: 'within', textGroup: 'projects'
             },{
                 facetTitle: "Date",
                 layout: "bottom-mid",
                 catItemMap : function(pub){ return new Date(pub.data[trsCol.Date]); },
                 type: 'interval',
                 intervalScale: 'time'
-                
             }
         ],
         itemDisplay: {
@@ -159,7 +154,6 @@ google.setOnLoadCallback( function() {
                 }
             ],
             detailsToggle : "Multi",
-            detailsDefault : false,
             textSearch : "title",
             contentFunc : function(pub){
                 var j;

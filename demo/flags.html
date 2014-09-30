@@ -133,7 +133,6 @@ $(document).ready( function() {
                     {
                         facetTitle: "Continent",
                         catLabelText: function(d) { return landmassText(d.data[1]); },
-                        textFilter : 'in', textGroup  : 'continents'
                     },{
                         facetTitle: "Zone", collapsed: true,
                         catItemMap : function(flag){
@@ -179,7 +178,6 @@ $(document).ready( function() {
                             if(flag.data.Orange) toRet.push("Orange / Brown");
                             return toRet;
                         },
-                        textFilter : 'has color', textGroup  : 'colors'
                     },{
                         facetTitle: "Flag Shape",
                         catItemMap : function(flag){
@@ -193,7 +191,6 @@ $(document).ready( function() {
                             if(flag.data.Triangle) toRet.push("Triangle");
                             return toRet;
                         },
-                        textFilter : 'has shape', textGroup  : 'shapes'
                     }, {
                         facetTitle: "Number of Bars",
                         catItemMap : function(flag){ 
