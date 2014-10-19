@@ -32,7 +32,7 @@ $(document).ready( function(){
                 $.ajax( {
                     // http://www.chromestatus.com/data/featurepopularity
                     // http://www.chromestatus.com/features.json
-                    url: "http://www.chromestatus.com/features.json",
+                    url: "./data/chromefeatures.json",
                     async: false,
                     success: function(data){
                         data.forEach(function(v){
@@ -41,16 +41,19 @@ $(document).ready( function(){
                             kshf.dt.Features.push(kshfItem);
                             kshf.dt_id.Features[kshfItem.id()] = kshfItem;
                         });
+
+                        browser.items = kshf.dt.Features;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown ){
+                        console.log(errorThrown);
                     }
                 });
-
-                browser.items = kshf.dt.Features;
-                browser.itemsSelectedCt = browser.items.length;                
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 100);
             }
         },
         facets: [
