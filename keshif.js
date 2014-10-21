@@ -2156,7 +2156,11 @@ kshf.Browser.prototype = {
     },
     loadSheet_Google: function(sheet){
         var me=this;
-        var qString=kshf.queryURL_base+this.source.gdocId+'&headers=1'
+        var headers=1;
+        if(sheet.headers){
+            headers = sheet.headers;
+        }
+        var qString=kshf.queryURL_base+this.source.gdocId+'&headers='+headers;
         if(sheet.sheetID){
             qString+='&gid='+sheet.sheetID;
         } else {
