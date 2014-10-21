@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Supplements - Scientific evidence for popular health supplements</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+        <link rel="stylesheet" href="./css/supplements.css"/ type="text/css">
+
+        <script type="text/javascript">
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    itemName: "Supplements",
+                    leftPanelLabelWidth: 100,
+                    rightPanelLabelWidth: 160,
+                    source: {
+                        url: "http://www.informationisbeautiful.net/play/snake-oil-supplements/",
+                        gdocId : '0Altk3Tn01ZsWdDRVN19EeENwd1pQY1ZyV1AwTnJCMnc',
+                        sheets : [ {name:"apr_2011", headers:2} ]
+                    },
+                    loadedCb: function(){
+                        kshf.Util.cellToArray(kshf.dt.apr_2011, [2, 3], /\b,\s+/, false);
+                    },
+                    facets: [
+                        {   
+                            facetTitle: "<i class='fa fa-heart'></i> Evidence <i class='fa fa-heart'></i>",
+                            description: "Is there scientific evidence for its benefits on a specific health condition?",
+                            catItemMap: function(d){
+                                return d.data[1]*2;
+                            }
+                        },{
+                            facetTitle: "<i class='fa fa-eye'></i> One to Watch <i class='fa fa-eye'></i> ",
+                            description: "Few studies but promising results",
+                            catItemMap: function(d){
+                                if(d.data[4]!=="") return true;
+                            }
+                        },{ facetTitle: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity <i class='fa fa-thumbs-up popularity_icon'></i> ",
+                            description: "Popularity based on Google search results",
+                            catItemMap: function(d){
+                                return d.data[6];
+                            },
+                            intervalScale: "log",
+                        },{ facetTitle: "<i class='fa fa-th-large type_icon'></i> Type <i class='fa fa-th-large type_icon'></i>",
+                            description: "What type of substance is this?",
+                            catItemMap: function(d){
+                                return d.data[5];
+                            }
+                        },{ facetTitle: "Health Category",
+                            description: "The type of condition",
+                            layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[3];
+                            }
+                        },{ facetTitle: "Health Condition",
+                            description: "What condition does the supplement purport to affect?",
+                            layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[2];
+                            }
+                        },{ facetTitle: "Source",
+                            description: "The key study for grading the evidence",
+                            layout: 'right',
+                            collapsed: true,
+                            catItemMap: function(d){
+                                return d.data[7];
+                            }
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 55,
+                        autoExpandMore: true, 
+//                        detailsToggle: 'zoom',
+                        sortingOpts : [ {
+                            name: 'popularity', 
+                            value: function(d){ return d.data[6]; }
+                        }],
+                        textSearchFunc: function(d){ 
+                            return d.data[0];
+                        },
+                        contentFunc: function(d){
+                            var str="";
+                            if(d.data[4]!==""){
+                                // one to watch
+                                str+="<i class='fa fa-eye item_watch' title='One to Watch'></i>";
+                            }
+                            str+="<span class='item_title'>"+d.data[0]+"</span><br>";
+                            // add heartbeat with delay
+                                var delay = Math.round(Math.random()*1000);
+                                var delay_str = "animation-delay:"+delay+"ms;"+
+                                    "-webkit-animation-delay:"+delay+"ms;"+
+                                    "-moz-animation-delay:"+delay+"ms;"+
+                                    "-o-animation-delay:"+delay+"ms;";
+                                var str_heart = "<i class='fa fa-heart' style='"+delay_str+"'></i>";
+                            str+="<span class='item_condition'>";
+                            for(var i=0; i<d.data[1];i++){
+                                str+=str_heart;
+                            }
+                            str+="<span style='margin-left: 5px'>"+d.data[2]+"</span></span>";
+
+
+                            if(d.data[8]){
+                                str+="<span class='item_source'> Study:";
+                                if(d.data[8]){
+                                    str+=" <a href='"+d.data[8]+"' target='_blank' class='fa fa-external-link'></a>";
+                                }
+                                if(d.data[10]){
+                                    str+=" <a href='"+d.data[10]+"' target='_blank' class='fa fa-external-link'></a>";
+                                }
+                                str+="</span>";
+                            }
+                            return str;
+                        }
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>

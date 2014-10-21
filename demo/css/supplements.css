@@ -1,0 +1,71 @@
+#chart_div {
+  width: 950px;
+  height: 550px;
+}
+#chart_div div.listItem {
+  max-height: 20px;
+}
+.item_source {
+  display: inline-block;
+  margin-left: 10px;
+  font-weight: 200;
+  font-size: 0.7em;
+  float: right;
+  margin-right: 5px;
+}
+.item_source a {
+  text-decoration: none !important;
+  color: gray;
+}
+.item_source a:hover {
+  color: black;
+}
+.item_title {
+  font-size: 1.2em;
+}
+.mainTextSearch input {
+  width: 100px;
+}
+.fa-eye {
+  color: #7f3f81;
+}
+.item_watch {
+  position: absolute;
+  font-size: 1.4em;
+  right: 0px;
+}
+.item_condition {
+  font-size: 0.8em;
+  font-weight: 200;
+}
+.fa-heart {
+  color: #ee4545;
+  font-size: 0.8em;
+  text-shadow: 0px 0px 2px #969696;
+  -webkit-animation: heartBeat 700ms alternate;
+  -moz-animation: heartBeat 700ms alternate;
+  -o-animation: heartBeat 700ms alternate;
+  animation: heartBeat 700ms alternate;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  display: inline-block;
+}
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgba(150, 150, 150, 1);}}
+@-moz-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgba(150, 150, 150, 1);}}
+@-o-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgba(150, 150, 150, 1);}}
+@keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgba(150, 150, 150, 1);};
+}
+.popularity_icon {
+  font-size: 0.7em;
+}
+.type_icon {
+  font-size: 0.8em;
+}
