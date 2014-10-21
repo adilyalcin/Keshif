@@ -46,7 +46,7 @@
                     {
                         facetTitle: "Code complexity",
                         description: "Relative code complexity of demo source",
-                        layout: 'left',
+                        layout: 'right',
                         catItemMap: function(d){
                             switch(d.data[dataColumns['Code Complexity']]){
                                 case 1: return "A breeze *";
@@ -134,6 +134,7 @@
                     },{
                         facetTitle: "Creation Time",
                         layout: 'right',
+                        collapsed: true,
                         catItemMap: function(d){ return d.data[dataColumns['Authored']];},
                         intervalScale: 'time'
                     }
@@ -154,7 +155,7 @@
                         str+=d.data[dataColumns["Name"]]+"<br>";
                         // Live
                         str+="<span style='margin-left:20px'>";
-                        str+="<a target=\"_blank\" href=\"./"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
+                        str+="<a target=\"_blank\" href=\"./demo/"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
                         str+="<a target=\"_blank\" href=\"https://github.com/adilyalcin/Keshif/blob/master/demo/"+d.data[dataColumns["Link"]]+".html\">Source</a>";
                         str+="</span>";
                         str+="</div>";
