@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Ben Shneiderman's Publications</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 200,
+        itemName: "Publications of Ben Shneiderman",
+        source : {
+            url: "https://www.cs.umd.edu/users/ben/publications.html",
+            callback: function(browser){
+                browser.primaryTableName = "Publications";
+
+                kshf.dt.Publications = [];
+                kshf.dt_id.Publications = {};
+
+                $.ajax( {
+//                    url:"https://www.cs.umd.edu/users/ben/publications.html",
+                    url:"./data/BenShneiderman.html",
+                    async: false,
+                    success: function(doc){
+                        $$doc = $($.parseHTML(doc));
+
+                        var lastItem;
+
+                        var bibParser = new BibtexParser(function(entry) {
+                            lastItem = entry;
+                            entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
+
+                            // convert text form date to javascript date
+                            var year = entry.Fields.year;
+                            if(year){
+                                if(entry.Fields.month){
+                                    console.log("month: " + entry.Fields.month);
+                                }
+                                entry.Year = new Date(moment(year+"01-01","YYYY-MM-DD"));
+                            } else {
+                                var asd=2323232;
+                            }
+
+                            // process author chunk
+                            if(entry.Fields.author){
+                                entry.Authors = entry.Fields.author.split(" and ")
+                            }
+
+                            if(entry.EntryKey.indexOf('/') === -1 && entry.EntryKey.indexOf('!') === -1){
+                                // read pdf link
+                                $$doc.find('#'+entry.EntryKey+ ' a:last-of-type').each(function(aTag){
+                                    if(this.innerText==="PDF"){
+                                        entry.PDF = this.attributes.href;
+                                    }
+                                });                          
+                                
+                                // read abstract
+                                $$doc.find('#abs_'+entry.EntryKey).each(function(abs){
+                                    entry.Abstract = this.innerText;
+                                });
+                            }
+
+                            kshf.dt.Publications.push(new kshf.Item(entry,"EntryKey"));
+                        });
+
+                        $$doc.find('#qs_table tr.bibtex pre').each(function(){
+                            bibParser.parse(this.innerText);
+                            lastItem.bibTex = this.innerText;
+                        });
+
+                        browser.items = kshf.dt.Publications;
+                        browser.itemsSelectedCt = browser.items.length;
+                        browser.loadCharts();   
+                    },
+                    error: function(jqXHR, textStatus, errorThrown ){
+                        console.log(errorThrown);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Entry Type",
+                catItemMap: function(d){ return d.data.EntryType; }
+            },{
+                facetTitle: "Authors",
+            },{
+                facetTitle: "Journal",
+                catItemMap: function(d){
+                    return d.data.Fields.journal;
+                }
+            },{
+                facetTitle: "Year",
+                catItemMap: function(d){
+                    return d.data.Year;
+                },
+                facetType: 'interval',
+                intervalScale: 'time',
+                layout: "bottom"
+            }
+             // number...
+            // shipped_opera_milestone
+            // shipped_webview_milestone
+            // shipped_ios_milestone
+            // shipped_android_milestone
+            // shipped_opera_android_milestone
+            
+        ],
+        itemDisplay: {
+            sortColWidth: 50,
+            sortingOpts : [{
+                name:'year',
+                inverse: true,
+                value: function(d){ return d.data.Year;},
+                label: function(d){ return d.data.Year.getFullYear(); }
+            }],
+            autoExpandMore: true,
+            textSearch : "title",
+            textSearchFunc: function(d){ return d.data.Fields.title;},
+            displayType: 'list',
+            detailsToggle : "One",
+            contentFunc : function(d){
+                var str="";
+                str+=d.data.Fields.title;
+
+                if(d.data.PDF){
+                    str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data.PDF.value+"' target='_blank'></a>";
+                }
+                if(d.data.Fields.doi){
+                    str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data.Fields.doi+"' target='_blank'>[doi]</a>";
+                }
+
+                str+="<span class='item_details'>";
+
+                // author names
+                var authors = d.data.Authors;
+                if(authors){
+                    str+="<div class=\"authorNames\">";
+                    for(j=0; j<authors.length; j++){
+                        str+=authors[j];
+                        if(j!==authors.length-1) { str+=' & '; }
+                    }
+                    str+="</div>";
+                }
+                // Venue + details
+                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+d.data.Year.getFullYear()+"</span> ";
+                    if(d.data.Fields.journal) {
+                        str+=d.data.Fields.journal+" ";
+                    }
+                    if(d.data.Fields.booktitle) {
+                        str+=d.data.Fields.booktitle+" ";
+                    }
+                    if(d.data.Fields.publisher) {
+                        str+="<b>Publisher:</b> "+d.data.Fields.publisher;
+                    }
+                    str+="</div>";
+
+                // Abstract
+                if(d.data.Abstract){
+                   str+="<div class='venueInfo'><span style='font-weight:bolder;'>Abstract:</span> "+d.data.Abstract.substr(11); 
+                }
+
+                str+="</span>";
+
+                return str;
+            }
+        }
+    });
+});
+        </script>
+<style>
+    #chart_div{
+        margin-top: 20px;
+        width:1150px;
+        height: 650px;
+    }
+    div.listItem {
+        max-height: 230px !important;
+        vertical-align: top;
+    }
+    div.content{
+        margin-bottom: 5px;
+    }
+    div.content a{
+        vertical-align: top;
+        color: #496B86;
+    }
+    div.content span.title{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2px;
+        text-align: left;
+        font-size: 0.8em;
+    }
+
+
+    .paperName{
+        cursor:pointer;
+    }
+    .paperName:hover{
+        color: orangered;
+    }
+    .authorNames{
+        font-weight: 300;
+    }
+    .benb{
+        font-style: italic;
+    }
+    .doilink{
+        margin-left: 10px;
+        font-size: 0.7em;
+        vertical-align: top;
+    }
+    .externallink{
+        margin-left: 3px;
+        font-size: 0.7em;
+        vertical-align: top;
+    }
+    .pdflink{
+        margin-left: 10px;
+        vertical-align: top;
+    }
+    .item_details{
+        margin-left: 5px;
+    }
+    .venueInfo{
+        margin-left: 5px;
+        font-size: 0.9em;
+        font-weight: 300;
+    }
+    .topics{
+        font-size: 0.9em;
+        font-weight: 300;
+        margin-left: 5px;
+        font-variant: small-caps;
+    }
+    .pubLink{
+        color: #005FA9;
+        display: inline-block;
+        text-decoration: none;
+    }
+    .pubLink:hover {
+        color: orangered !important;
+        text-decoration: none;
+    }
+
+    .pdfImage{
+        position:absolute;
+        right: 0px;
+        height: 100%;
+    }
+    .content{
+        padding-bottom: 4px;
+        padding-right: 40px;
+    }
+
+
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            This page uses data from
+            <a href="https://www.cs.umd.edu/users/ben/publications.html" target="_blank">Ben Shneiderman's publications page</a>.
+            All data is parsed from Bibtex.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
