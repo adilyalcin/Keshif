@@ -363,7 +363,7 @@ kshf.Util = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                    title: function(){ return "Multiple "+me.options.facetTitle+"s possible";}
+                    title: function(){ return "Multiple "+me.options.facetTitle+" possible";}
                 });
             })
             .on("mouseover",function(d){ this.tipsy.show(); })
@@ -2074,7 +2074,9 @@ kshf.Browser.prototype = {
         if(kshf.dt_ColNames[this.primaryTableName]){
             var columnNames = kshf.dt_ColNames[this.primaryTableName];
             for(var column in columnNames){
-                str+="<b>"+column+":</b> "+ item.data[columnNames[column]].toString()+"<br>";
+                var d=item.data[columnNames[column]];
+                if(d===null || d===undefined) continue;
+                str+="<b>"+column+":</b> "+ d.toString()+"<br>";
             }
         } else {
             for(var column in item.data){
@@ -2141,7 +2143,8 @@ kshf.Browser.prototype = {
                     return;
                 }
                 if(this.source.gdocId){
-                    this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
+                    if(this.source.url===undefined)
+                        this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
                     this.loadSheet_Google(sheet);
                 } else if(this.source.dirPath){
                     this.loadSheet_File(sheet);
@@ -4424,7 +4427,7 @@ kshf.Facet_Interval = function(kshf_, options){
         this.collapsed = true;
 
     if(options.optimumTickWidth===undefined)
-        options.optimumTickWidth = 40;
+        options.optimumTickWidth = 50;
 
     if(options.intervalScale===undefined)
         options.intervalScale='linear';
