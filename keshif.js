@@ -328,7 +328,7 @@ kshf.Util = {
                 this.tipsy.hide();
                 me.collapseFacet(!me.collapsed);
             })
-            .append("span").attr("class","fa fa-chevron-down")
+            .append("span").attr("class","fa")
             ;
 
         var topRow = this.dom.headerGroup.append("span").style('position','relative');
@@ -2389,7 +2389,6 @@ kshf.Browser.prototype = {
 
             var resultInfo = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","resultInfo");
             var listheader_count_width = (this.listDisplay.sortColWidth);
-            if(this.listDisplay.detailsToggle!=="off") listheader_count_width+=15;
             this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
                 .style("width",listheader_count_width+"px")
                 .text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");

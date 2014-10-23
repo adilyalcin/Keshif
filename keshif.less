@@ -105,8 +105,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         float: left;
         .hasLabelWidth{ text-align: left; }
         .headerGroup {
-            .header_label_arrow{ right: 0px; }
-            .chartFirstLineBackground{ direction: rtl; }
+            .header_label_arrow{
+                right: 0px;
+            }
+            .chartFirstLineBackground{
+                direction: rtl;
+            }
         }
         .attribGroup{ 
             direction:rtl;
@@ -147,7 +151,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .kshfChart[collapsed=true] {
             > .headerGroup span.header_label_arrow{ 
                 opacity: 1; 
-                span { .rotate(90deg); }
+                span.fa { 
+                    .rotate(90deg);
+                    &::before{ content: "\f065"; }
+                }
             }
         }
         .belowAttribs{
@@ -225,7 +232,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .kshfChart[collapsed=true] {
             > .headerGroup span.header_label_arrow{ 
                 opacity: 1;
-                span{ .rotate(0deg); }
+                span.fa{
+                    .rotate(0deg);
+                    &::before{ content: "\f065"; }
+                }
             }
         }
         .belowAttribs{ direction: ltr; }
@@ -390,11 +400,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             z-index: 10;
             .transition(~'color 250ms linear, opacity 100ms linear');
             &:hover{ color:#cb5454; }
-            span{
+            span.fa{
+                .transform(scaleX(-1));
                 position: absolute;
                 left: 0px;
+                font-size: 0.8em;
+                margin:2px;
                 .transition(~'transform 500ms');
                 .rotate(180deg);
+                &::before{
+                    content: "\f066";
+                }
             }
         }
         span.showFilterText{
@@ -1582,6 +1598,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 // min-width: 50px;
                 vertical-align: top;
                 padding-right: 3px;
+                margin-right: 2px;
             }
             span.listheader_itemName{
                 display: inline;

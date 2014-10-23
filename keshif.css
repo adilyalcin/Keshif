@@ -156,12 +156,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow {
   opacity: 1;
 }
-.kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span {
+.kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -o-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
+}
+.kshf.layout_leftttt .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa::before {
+  content: "\f065";
 }
 .kshf.layout_leftttt .belowAttribs {
   direction: rtl;
@@ -245,12 +248,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow {
   opacity: 1;
 }
-.kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span {
+.kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa {
   -webkit-transform: rotate(0deg);
   -moz-transform: rotate(0deg);
   -o-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
+}
+.kshf:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa::before {
+  content: "\f065";
 }
 .kshf:not(.layout_leftttt) .belowAttribs {
   direction: ltr;
@@ -423,9 +429,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup span.header_label_arrow:hover {
   color: #cb5454;
 }
-.kshf .headerGroup span.header_label_arrow span {
+.kshf .headerGroup span.header_label_arrow span.fa {
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -ms-transform: scaleX(-1);
+  transform: scaleX(-1);
   position: absolute;
   left: 0px;
+  font-size: 0.8em;
+  margin: 2px;
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
@@ -435,6 +448,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
+}
+.kshf .headerGroup span.header_label_arrow span.fa::before {
+  content: "\f066";
 }
 .kshf .headerGroup span.showFilterText {
   display: inline-block;
@@ -1590,6 +1606,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   vertical-align: top;
   padding-right: 3px;
+  margin-right: 2px;
 }
 .kshf div.listHeader span.resultInfo span.listheader_itemName {
   display: inline;

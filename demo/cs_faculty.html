@@ -33,10 +33,12 @@
                     },
                     facets: [
                         {   facetTitle: "<i class='fa fa-university'></i> University",
+                            description: "The name of the university they teach",
                             catItemMap: function(d){
                                 return d.data[cols.University];
                             }
                         },{ facetTitle: "<i class='fa fa-sitemap'></i> Subfield",
+                            description: "Main field of research. One of the 20 fields reported by Microsoft Academic",
                             catItemMap: function(d){
                                 return d.data[cols.Subfield];
                             }
@@ -44,24 +46,29 @@
                             catItemMap: function(d){
                                 return d.data[cols.Rank];
                             }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Bachelors", layout: 'right',
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
+                            description: "University they acquired their BSc degree from",
                             catItemMap: function(d){
                                 return d.data[cols.Bachelors];
                             }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Masters", layout: 'right',
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
+                            description: "University they acquired their Masters degree from",
                             catItemMap: function(d){
                                 return d.data[cols.Masters];
                             }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Doctorate", layout: 'right',
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
+                            description: "University they acquired their Doctorate degree from",
                             catItemMap: function(d){
                                 return d.data[cols.Doctorate];
                             }
-                        },{ facetTitle: "<i class='fa fa-exclamation-triangle'></i> Post-Doc", layout: 'right',
+                        },{ facetTitle: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right',
+                            description: "University or Company they did their post-doctoral training",
                             catItemMap: function(d){
                                 return d.data[cols.PostDoc];
                             },
                             collapsed: true
-                        },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',    
+                        },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
+                            description: "For each CS faculty, lists the countries that s/he received her degrees from",
                             catItemMap: function(d){
                                 var r=[];
                                 var a;
@@ -75,7 +82,8 @@
                                 r.push(a[a.length-1].trim());
                                 return r;
                             }
-                        },{ facetTitle: "Joined Year",
+                        },{ facetTitle: "<span class='fa fa-calendar'></span> Joined Year",
+                            description: "When they joined that department of Computer Science as faculty",
                             layout: "bottom",
                             catItemMap: function(d){
                                 return d.data[cols['JoinYear']];
@@ -110,7 +118,7 @@
                                     str+="<i class='fa fa-graduation-cap'></i> Masters: "+d.data[cols.Masters]+"<br>";
                                 str+="<i class='fa fa-graduation-cap'></i> Doctorate: "+d.data[cols.Doctorate]+"<br>";
                                 if(d.data[cols['Post-Doc']])
-                                    str+="<i class='fa fa-exclamation-triangle'></i> Post-Doc   : "+d.data[cols['Post-Doc']];
+                                    str+="<i class='fa fa-suitcase'></i> Post-Doc   : "+d.data[cols['Post-Doc']];
                             str+="</span>";
                             return str;
                         }
@@ -152,10 +160,17 @@
             .item_details .fa{
                 font-size: 0.8em;
             }
+            #chart_div span.listheader_itemName{
+                letter-spacing: 0em;
+                font-variant: normal;
+            }
+            #chart_div .header_label .fa{
+                font-size: 0.8em;
+            }
         </style>
     </head>
     <body>
-        <div class="pageTitle" align="center">2200 faculty in 50 top US Computer Science Programs</div>
+        <div class="pageTitle" align="center">Faculty Members in 50 top US Computer Science Programs</div>
         <div class="contents"><div id="chart_div"></div></div>
 
         <div id="infobox" align="center">
