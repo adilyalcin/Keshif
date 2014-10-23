@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>HBO Recycling - </title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+// Data from:
+// https://github.com/zgrossbart/hborecycling/blob/master/data.json
+
+var DATA = {
+    "Aidan Gillen": [
+        "Game of Thrones",
+        "The Wire"
+    ],
+    "Alexander Skarsgård": [
+        "Generation Kill",
+        "True Blood"
+    ],
+    "Amy Ryan": [
+        "In Treatment",
+        "The Wire"
+    ],
+    "Annie Fitzgerald": [
+        "Big Love",
+        "True Blood"
+    ],
+    "Anwan Glover": [
+        "Treme",
+        "The Wire"
+    ],
+    "Blair Underwood": [
+        "John from Cincinnati",
+        "Sex and the City"
+    ],
+    "Brian F. O'Byrne": [
+        "Oz",
+        "K Street"
+    ],
+    "Chris Bauer": [
+        "True Blood",
+        "The Wire"
+    ],
+    "Clarke Peters": [
+        "Oz",
+        "Treme",
+        "True Blood",
+        "The Wire"
+    ],
+    "Cynthia Ettinger": [
+        "Carnivàle",
+        "Curb Your Enthusiasm",
+        "Deadwood"
+    ],
+    "Cyrus Farmer": [
+        "The Corner",
+        "Oz",
+        "The Wire"
+    ],
+    "Dane DeHaan": [
+        "In Treatment",
+        "True Blood"
+    ],
+    "Dania Remirez": [
+        "Entourage",
+        "The Sopranos"
+    ],
+    "David Costabile": [
+        "Flight of the Conchords",
+        "The Wire"
+    ],
+    "Dayton Callie": [
+        "Deadwood",
+        "In Treatment"
+    ],
+    "Dominic Chianese": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "Domonic Lombardozzi": [
+        "Entourage",
+        "Oz",
+        "The Wire"
+    ],
+    "Don Swayze": [
+        "Carnivàle",
+        "True Blood"
+    ],
+    "Edie Falco": [
+        "Oz",
+        "The Sopranos"
+    ],
+    "Edoardo Ballerini": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "Edwina Findley": [
+        "True Blood",
+        "The Wire"
+    ],
+    "Garret Dillahunt": [
+        "Deadwood",
+        "John from Cincinnati"
+    ],
+    "Glynn Turman": [
+        "John from Cincinnati",
+        "The Wire"
+    ],
+    "Grant Show": [
+        "Big Love",
+        "Six Feet Under"
+    ],
+    "Greg Antonacci": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "J. Smith-Cameron": [
+        "K Street",
+        "True Blood"
+    ],
+    "James Ransone": [
+        "Generation Kill",
+        "Treme",
+        "The Wire"
+    ],
+    "Jamie-Lynn Sigler": [
+        "Entourage",
+        "The Sopranos"
+    ],
+    "Jim Beaver": [
+        "Deadwood",
+        "John from Cincinnati",
+        "Six Feet Under"
+    ],
+    "Jim True-Frost": [
+        "True Blood",
+        "The Wire"
+    ],
+    "J.D. Williams": [
+        "The Wire",
+        "Oz",
+        "Sex and the City"
+    ],
+    "John Carroll Lynch": [
+        "Big Love",
+        "Carnivàle",
+        "How To Make It in America"
+    ],
+    "John Doman": [
+        "Oz",
+        "The Sopranos",
+        "The Wire"
+    ],
+    "John Hawkes": [
+        "Eastbound and Down",
+        "Deadwood"
+    ],
+    "John Seda": [
+        "Oz",
+        "Treme"
+    ],
+    "Kevin Rankin": [
+        "Big Love",
+        "Six Feet Under"
+    ],
+    "Kim Dickens": [
+        "Deadwood",
+        "Treme"
+    ],
+    "Laila Robins": [
+        "In Treatment",
+        "The Sopranos",
+        "Sex and the City",
+        "Bored to Death"
+    ],
+    "Lance Reddick": [
+        "The Wire",
+        "Oz",
+        "The Corner"
+    ],
+    "Louis Lombardi": [
+        "Entourage",
+        "The Sopranos"
+    ],
+    "Luis Guzmán": [
+        "How To Make It in America",
+        "John from Cincinnati",
+        "Oz"
+    ],
+    "Luke Perry": [
+        "Oz",
+        "John from Cincinnati"
+    ],
+    "Mary Kay Place": [
+        "Big Love",
+        "Bored to Death"
+    ],
+    "Matt Winston": [
+        "John from Cincinnati",
+        "Six Feet Under"
+    ],
+    "Method Man": [
+        "Oz",
+        "The Wire"
+    ],
+    "Michael Kenneth William": [
+        "Boardwalk Empire",
+        "The Sopranos",
+        "The Wire"
+    ],
+    "Michelle Forbes": [
+        "In Treatment",
+        "True Blood"
+    ],
+    "Paul Ben-Victor": [
+        "Entourage",
+        "The Wire",
+        "John from Cincinnati",
+        "Curb Your Enthusiasm"
+    ],
+    "Paul Herman": [
+        "Entourage",
+        "The Sopranos"
+    ],
+    "Paula Malcomson": [
+        "Deadwood",
+        "John from Cincinnati",
+        "Six Feet Under"
+    ],
+    "Reg E. Cathey": [
+        "The Wire",
+        "Oz",
+        "The Corner"
+    ],
+    "Robert Clohessy": [
+        "Boardwalk Empire",
+        "Oz"
+    ],
+    "Roxanne Hart": [
+        "Hung",
+        "Oz"
+    ],
+    "Seth Gilliam": [
+        "Oz",
+        "The Wire"
+    ],
+    "Stephen Toblowsky": [
+        "Deadwood",
+        "Curb Your Enthusiasm",
+        "John from Cincinnati"
+    ],
+    "Steve Buscemi": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "Steve Earle": [
+        "The Wire",
+        "Six Feet Under",
+        "Treme"
+    ],
+    "Ted Danson": [
+        "Bored to Death",
+        "Curb Your Enthusiasm"
+    ],
+    "Tom Aldredge": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "Tom Mardirosian": [
+        "Oz",
+        "The Wire"
+    ],
+    "Tom Townsend": [
+        "Entourage",
+        "The Wire"
+    ],
+    "Toni Lewis": [
+        "Oz",
+        "The Wire"
+    ],
+    "Vincent Piazza": [
+        "Boardwalk Empire",
+        "The Sopranos"
+    ],
+    "Wendel Pierce": [
+        "Treme",
+        "The Wire"
+    ],
+    "William Sanderson": [
+        "True Blood",
+        "Deadwood"
+    ],
+    "Willie Garson": [
+        "John from Cincinnati",
+        "Sex and the City"
+    ],
+    "Zeljko Ivanek": [
+        "Big Love",
+        "True Blood",
+        "Oz"
+    ]
+};
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 150,
+        itemName: "Actors",
+        source: {
+            url: "http://grantland.com/features/the-hbo-recycling-program/",
+            // http://zgrossbart.github.io/hborecycling/
+            // https://github.com/zgrossbart/hborecycling
+            callback: function(browser){
+                browser.primaryTableName = "Actors";
+
+                kshf.dt.Actors = [];
+                kshf.dt_id.Actors = {};
+
+                var uniqueID=0;
+                for(var actorName in DATA){
+                    var kshfItem = new kshf.Item( {'Name':actorName, "HBO Shows":DATA[actorName]},'Name');
+                    kshf.dt.Actors.push(kshfItem);
+                }
+
+                browser.items = kshf.dt.Actors;
+                browser.itemsSelectedCt = browser.items.length;                
+
+                // finish loading....
+                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                d3.select(".kshf.layout_infobox div.status_text div").text("");
+                window.setTimeout(function() { browser.loadCharts(); }, 100);
+            }
+        },
+        facets: [
+            {   facetTitle: "HBO Shows" }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            autoExpandMore: true,
+            sortingOpts : [ {
+                name: '# of Shows',
+                value: function(d){ return d.data['HBO Shows'].length; }
+            } ],
+            textSearch: "Name",
+            contentFunc: function(d){
+                // resize d based on # of shows!
+                d.resultDOM.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
+                return d.data.Name;
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 570px;
+                height: 600px;
+            }
+            .mainTextSearch input{
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>

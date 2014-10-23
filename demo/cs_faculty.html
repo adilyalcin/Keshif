@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>2200 faculty in 50 top US Computer Science Programs</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+            var cols = null;
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    itemName: "CS Faculty",
+                    leftPanelLabelWidth: 210,
+                    rightPanelLabelWidth: 240,
+                    source: {
+                        url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
+                        gdocId : '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
+                        sheets : [ {name: "Data"} ]
+                    },
+                    loadedCb: function(){
+                        cols = kshf.dt_ColNames.Data;
+                    },
+                    facets: [
+                        {   facetTitle: "<i class='fa fa-university'></i> University",
+                            catItemMap: function(d){
+                                return d.data[cols.University];
+                            }
+                        },{ facetTitle: "<i class='fa fa-sitemap'></i> Subfield",
+                            catItemMap: function(d){
+                                return d.data[cols.Subfield];
+                            }
+                        },{ facetTitle: "<i class='fa fa-th-large'></i> Rank",
+                            catItemMap: function(d){
+                                return d.data[cols.Rank];
+                            }
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Bachelors", layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[cols.Bachelors];
+                            }
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Masters", layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[cols.Masters];
+                            }
+                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Doctorate", layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[cols.Doctorate];
+                            }
+                        },{ facetTitle: "<i class='fa fa-exclamation-triangle'></i> Post-Doc", layout: 'right',
+                            catItemMap: function(d){
+                                return d.data[cols.PostDoc];
+                            },
+                            collapsed: true
+                        },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',    
+                            catItemMap: function(d){
+                                var r=[];
+                                var a;
+                                a = d.data[5].split(" - ");
+                                r.push(a[a.length-1].trim());
+                                a = d.data[6].split(" - ");
+                                r.push(a[a.length-1].trim());
+                                a = d.data[7].split(" - ");
+                                r.push(a[a.length-1].trim());
+                                a = d.data[8].split(" - ");
+                                r.push(a[a.length-1].trim());
+                                return r;
+                            }
+                        },{ facetTitle: "Joined Year",
+                            layout: "bottom",
+                            catItemMap: function(d){
+                                return d.data[cols['JoinYear']];
+                            }
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 60,
+                        autoExpandMore: true,
+                        sortingOpts : [ {name: 'Join-Year', value: function(d){return d.data[cols.JoinYear];}} ],
+                        textSearch: "Name",
+                        detailsToggle : "One",
+                        contentFunc: function(d){
+                            var str="";
+                            str+=d.data[cols.Name];
+                            str+="<span style='float: right' class='infoList'>";
+                                if(d.data[cols.Sources1]) str+="<a href='"+
+                                    d.data[cols.Sources1]+"' class='fa fa-info-circle' target='_blank'></a>";
+                                if(d.data[cols.Sources2]) str+="<a href='"+
+                                    d.data[cols.Sources2]+"' class='fa fa-info-circle' target='_blank'></a>";
+                                if(d.data[cols.Sources3]) str+="<a href='"+
+                                    d.data[cols.Sources3]+"' class='fa fa-info-circle' target='_blank'></a>";
+                            str+="</span>";
+
+                            str+="<span class='item_details'>";
+                                str+="<i class='fa fa-university'></i> University: "+d.data[cols.University]+"<br>";
+                                str+="<i class='fa fa-sitemap'></i> Subfield: "+d.data[cols.Subfield]+"<br>";
+                                str+="<i class='fa fa-th-large'></i> Rank: "+d.data[cols.Rank]+"<br>";
+                                if(d.data[cols['Bachelors']])
+                                    str+="<i class='fa fa-graduation-cap'></i> Bachelors: "+d.data[cols.Bachelors]+"<br>";
+                                if(d.data[cols['Masters']])
+                                    str+="<i class='fa fa-graduation-cap'></i> Masters: "+d.data[cols.Masters]+"<br>";
+                                str+="<i class='fa fa-graduation-cap'></i> Doctorate: "+d.data[cols.Doctorate]+"<br>";
+                                if(d.data[cols['Post-Doc']])
+                                    str+="<i class='fa fa-exclamation-triangle'></i> Post-Doc   : "+d.data[cols['Post-Doc']];
+                            str+="</span>";
+                            return str;
+                        }
+                    }
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 1100px;
+                height: 650px;
+            }
+            #chart_div div.listItem{
+                max-height: 20px;
+            }
+            #chart_div span.mainTextSearch{
+                display: block;
+                margin-left: 60px;
+            }
+            .infoList .fa-info-circle{
+                color:lightgray;
+                text-decoration: none;
+                margin-right: 4px;
+            }
+            .infoList .fa-info-circle:hover{
+                color:gray;
+            }
+            .pageTitle{
+                font-family: 'Montserrat', sans-serif;
+                font-size: 2em;
+                margin-top: 5px;
+                text-shadow: 3px 3px 0px lightgray;
+                text-transform: capitalize;
+            }
+            .item_details{
+                font-size: 0.8em;
+                font-weight: 300;
+            }
+            .item_details .fa{
+                font-size: 0.8em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">2200 faculty in 50 top US Computer Science Programs</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://cs.brown.edu/people/alexpap/faculty_dataset.html" target='_blank'>Data</a> made available by <b>Alexandra Papoutsaki*, Hua Guo, Danae Metaxa-Kakavouli, Connor Gramazio, Jeff Rasley, Wenting Xie, Guan Wang, Jeff Huang</b>, Brown University, Providence, RI, USA.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>

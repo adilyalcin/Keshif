@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Data Breaches in the U.S.</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+        var typeInfo = {
+            'NAM': 'Name',
+            'PII': 'Personally Identifying Information',
+            'SSN': 'Social Security Number',
+            'DOB': 'Day of Birth',
+            'ADD': 'Address',
+            'EMA': 'Email',
+            'CCN': 'Credit Card Number',
+            'PSS': 'Password',
+            'LOG': 'Log',
+            'MED': 'Medical Records',
+        };
+            var recordFormat = d3.format("s");
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    itemName: "Data Breaches",
+                    leftPanelLabelWidth: 170,
+                    rightPanelLabelWidth: 170,
+                    source: {
+                        url: "http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html",
+                        gdocId : '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
+                        sheets : [ {name:"Breaches"} ]
+                    },
+                    loadedCb: function(){
+                        kshf.Util.cellToArray(kshf.dt.Breaches, [9], /\,/, false);
+                    },
+                    facets: [
+                        {   facetTitle: "Industry"
+                        },{ facetTitle: "# of Records",
+                            intervalScale: "log"
+                        },{ facetTitle: "Source",
+                        },{ facetTitle: "Type",
+                            layout: 'right'
+                        },{ facetTitle: "Data Source",
+                            layout: 'right'
+                        },{ facetTitle: "Record Type",
+                            layout: 'right',
+                            catLabelText: function(d){
+                                if(typeInfo[d.data[1]]) return typeInfo[d.data[1]];
+                                return d.data[1];
+                            }
+                        },{ facetTitle: "Date",
+                            layout: "bottom",
+                            intervalScale: "time"
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 85,
+                        detailsToggle : "Zoom",
+                        autoExpandMore: true,
+                        sortingOpts : [ {
+                            name: 'Date',
+                            label: function(d){ return moment(d.data[1]).format('MMM DD, YYYY'); },
+                            inverse: true,
+                        },{
+                            name: '# Records',
+                            value: function(d){ return d.data[4]; },
+                            label: function(d){ return recordFormat(d.data[4]); }
+                        } ],
+                        textSearchFunc: function(d){return d.data[0]; },
+                        contentFunc: function(d){
+                            var str="";
+                            str+=d.data[0];
+                            if(d.data[13]){
+                                str+="<span class='item_source'>";
+                                str+="<a href='"+d.data[13]+"' target='_blank' class='fa fa-info-circle'></a>";
+                                if(d.data[14])
+                                    str+="<a href='"+d.data[14]+"' target='_blank' class='fa fa-info-circle'></a>";
+                                str+="</span>";
+                            }
+                            return str;
+                        }
+                    }
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 1100px;
+                height: 650px;
+            }
+            #chart_div div.listItem{
+                max-height: 20px;
+            }
+            .item_source{
+                float: right;
+                font-size: 0.8em;
+                color: gray;
+            }
+            .item_source a{
+                color: lightgray !important;
+                text-decoration: none;
+                margin-right: 3px;
+            }
+            .item_source a:hover{
+                color: gray !important;
+            }
+            .item_source::before{
+            }
+            .columnLabel{
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Original work by <a href="https://twitter.com/collinskeith" target='_blank'>Keith Collins</a> &amp; 
+            <a href="https://twitter.com/jordanr1000" target="_blank"> Jordan Robertson</a>
+            Also visualized at
+            <a href="http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html" target="_blank">Data Breaches in the U.S.</a> by <a href="http://www.bloomberg.com/visual-data" target='_blank'>Bloomberg Visual Data</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
