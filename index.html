@@ -141,10 +141,10 @@
             itemDisplay: {
                 sortColWidth: 45,
                 sortingOpts : [ { 
-                    name: '# of Items',
+                    name: '',
                     value: function(d){ 
-                        return d.data[dataColumns['# Items']];
-                    },
+                        return d.id();
+                    }, inverse: true
                 } ],
                 displayType: 'grid',
 contentFunc : function(d){
@@ -426,7 +426,7 @@ visibleCb: function(d){
 <div id="demobox" loaded="false" style="margin:8px" onclick="loadDemoBrowser()">
 	<img id="demoimg" src="./demo/demo_img/demo.png" width="1100">
 	<div id="clicktoLoad">
-		<span align="center"> Click to load the live browser</span>
+		<span align="center"> Click to interactively browse the collection!</span>
 	</div>
 	<div id="livedemo"></div>
 </div>
