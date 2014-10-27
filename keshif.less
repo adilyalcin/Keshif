@@ -100,80 +100,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display:inline-block;
     }
 
-//    &:not(.layout_right){
-    &.layout_leftttt{
-        float: left;
-        .hasLabelWidth{ text-align: left; }
-        .headerGroup {
-            .header_label_arrow{
-                right: 0px;
-            }
-            .chartFirstLineBackground{
-                direction: rtl;
-            }
-        }
-        .attribGroup{ 
-            direction:rtl;
-            margin-left: 2px;
-        }
-        .attrib{
-            > .attribLabel .filterButtons{
-                float: right;
-                margin-right: 2px;
-            }
-            > .barGroup .bar{
-                .transform-origin(100%, 0%);
-                right: 0px;
-            }
-            > .item_count_wrapper{ 
-                padding-right: 3px;
-                text-align: right;
-            }
-            &:not([selected="0"]) {
-                .attribLabel{
-                    .background-image(~"linear-gradient(right, rgba(200,200,200,0) 0%, rgba(200,200,200,1) 100%)");
-                }
-                .item_count_wrapper{
-                    .background-image(~"linear-gradient(right, rgba(200,200,200,1) 0%, rgba(200,200,200,0) 100%)");
-                }
-            }
-        }
-        .facetControls{
-            direction: rtl;
-            .attribTextSearch input{
-                direction: ltr;
-                text-align: left;
-                &::-webkit-input-placeholder { 
-                    text-align:left; 
-                }
-            }
-        }
-        .kshfChart[collapsed=true] {
-            > .headerGroup span.header_label_arrow{ 
-                opacity: 1; 
-                span.fa { 
-                    .rotate(90deg);
-                    &::before{ content: "\f065"; }
-                }
-            }
-        }
-        .belowAttribs{
-            direction: rtl;
-            .scroll_display_more{ direction: ltr; }
-        }
-        .subFacets{
-            .wigdhdyt{ right: 0px; }
-            .kshfChart{ margin-right: 17px; }
-        }
-        .barChartPreviewAxis{
-            direction: ltr; 
-        }
-        .facetCategorical{
-            .scrollToTop{
-                left: 3px;
-            }
-        }
-    }
     &.layout_right{
         float: right;
         vertical-align: top;
@@ -232,8 +158,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .kshfChart[collapsed=true] {
             > .headerGroup span.header_label_arrow{ 
                 opacity: 1;
+                &:hover{
+                    .fa{
+                        .animation-direction(reverse);
+                    }
+                }
                 span.fa{
-                    .rotate(0deg);
+//                    .rotate(0deg);
                     &::before{ content: "\f065"; }
                 }
             }
@@ -398,16 +329,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: pointer;
             opacity: 0;
             z-index: 10;
-            .transition(~'color 250ms linear, opacity 100ms linear');
-            &:hover{ color:#cb5454; }
+            .transition(~'color 250ms linear, opacity 100ms linear ');
+            .transform-origin(50% 50%);
+            &:hover{
+                color:#cb5454;
+                .fa{
+                    .animation(shrink 800ms);
+                    .animation-iteration-count(infinite);
+                    .animation-timing-function(ease-in);
+                }
+            }
             span.fa{
-                .transform(scaleX(-1));
+//                .transform(scaleX(-1));
                 position: absolute;
                 left: 0px;
                 font-size: 0.8em;
                 margin:2px;
-                .transition(~'transform 500ms');
-                .rotate(180deg);
+//                .transition(~'transform 500ms');
+//                .rotate(180deg);
                 &::before{
                     content: "\f066";
                 }
@@ -431,9 +370,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: hidden; // Keep it this way!
 
         // appers under another keshif chart (subchart)
-        .kshfChart span.header_label_arrow{
+/*        .kshfChart span.header_label_arrow{
             .background-image(~"linear-gradient(right, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-        }
+        }*/
 
         > .wrapper{
             position: relative;
@@ -1602,7 +1541,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             span.listheader_itemName{
                 display: inline;
-                letter-spacing: 0.1em;
+//                letter-spacing: 0.1em;
                 font-variant: small-caps;
                 vertical-align: top;
             }
@@ -1618,6 +1557,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: hidden;
         float: none;
         height: auto;
+        vertical-align: top;
         max-height: 200px;
         border-top: double 0px gray;
         padding-top: 2px;
@@ -2020,4 +1960,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
 
+
+.mixi-frames () {
+    from { .transform(scale(1) )}
+    to { .transform(scale(0.5) )}
+}
+@-webkit-keyframes shrink {.mixi-frames;}
+@-moz-keyframes shrink {.mixi-frames;}
+@-ms-keyframes shrink {.mixi-frames;}
+@-o-keyframes shrink {.mixi-frames;}
+@keyframes shrink {.mixi-frames;}
 

@@ -61,7 +61,6 @@ function loadData(browser){
                 c[postCols.url] = p.url;
                 c[postCols.thumbnail] = p.thumbnail;
                 var item = new kshf.Item(c,postCols.id,true);
-                item.browser = browser;
                 arr.push(item);
             });
 

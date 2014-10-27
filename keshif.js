@@ -1930,7 +1930,7 @@ kshf.Browser = function(options){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
     });
 
-    this.loadSource();
+    window.setTimeout(function() { me.loadSource(); }, 50);
 };
 
 kshf.Browser.prototype = {
@@ -2496,7 +2496,6 @@ kshf.Browser.prototype = {
                 options.timeItemMap = this.getColumnData(primTableName,options.timeItemMap);
             }
         }
-
 
         if(options.items===undefined){
             options.items = this.items;
