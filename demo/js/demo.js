@@ -137,8 +137,4 @@ $(window).load(function(){
         s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
         $("body").append(s);
     }
-
-    document.getElementsByClassName("kshfHost")[0].onmousemove = function(){
-        logIf.setSessionID();
-    }
 });

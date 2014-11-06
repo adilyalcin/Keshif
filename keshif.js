@@ -1904,6 +1904,11 @@ kshf.Browser = function(options){
         .classed("kshfHost",true)
         .style("position","relative")
         .style("overflow-y","hidden")
+        .on("mousemove",function(d){
+            if(typeof logIf === "object"){
+                logIf.setSessionID();
+            }
+        })
         ;
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside

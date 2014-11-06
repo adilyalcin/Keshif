@@ -6,14 +6,14 @@
 	<link href="http://www.cs.umd.edu/hcil/_styles/screen.css" rel="stylesheet" type="text/css" media="screen" />
 	<link href="http://www.cs.umd.edu/hcil/_styles/menu.css" rel="stylesheet" type="text/css" />
 
-	<!-- KESHIF STUFF -->
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="./js/d3.v3.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
 	<link rel="stylesheet" href="./keshif.css"/ type="text/css">
 	<link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
-	<!-- KESHIF STUFF DONE -->
+
+    <script type="text/javascript" src="./demo/js/demo.js" charset="utf-8"></script>
 
 	<title>Keshif - Simplicity Driven Visual Faceted Browser</title>
 
@@ -21,173 +21,163 @@
 	<script type="text/javascript">
 	var loaded=false;
 
+    var demoID = 76;
+
 	var loadDemoBrowser = function(){
 		if(loaded) return;
 		loaded=true;
 		d3.select('#demobox').attr("loaded",true);
+        var dataColumns;
 
-		var dataColumns;
-		browser = new kshf.Browser({
-	        domID : "#livedemo",
-	        categoryTextWidth: 150,
-            rightPanelLabelWidth: 140,
-            barChartWidth: 70,
-            itemName: "Datasets Ready for Keshif",
-            catBarScale: "scale_frequency",
-            source: {
-                gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
-                sheets : [ {name:"Demos"} ]
+browser = new kshf.Browser({
+    domID : "#livedemo",
+    categoryTextWidth: 150,
+    rightPanelLabelWidth: 140,
+    barChartWidth: 70,
+    itemName: "Datasets Ready for Keshif",
+    catBarScale: "scale_frequency",
+    source: {
+        gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
+        sheets : [ {name:"Demos"} ]
+    },
+    loadedCb: function(browser){
+        dataColumns = kshf.dt_ColNames.Demos;
+    },
+    facets: [
+        {
+            facetTitle: "Code complexity",
+            description: "Relative code complexity of demo source",
+            layout: 'right',
+            catItemMap: function(d){
+                switch(d.data[dataColumns['Code Complexity']]){
+                    case 1: return "A breeze *";
+                    case 2: return "Simple **"; 
+                    case 3: return "Intermediate ***";
+                    case 4: return "Detailed ****";
+                    case 5: return "Fully featured *****";
+                }
+                return null;
             },
-            loadedCb: function(browser){
-                dataColumns = kshf.dt_ColNames.Demos;
-            },
+            sortingOpts : [{ func: function(a,b){
+                    a = a.data[1].split("*").length - 1;
+                    b = b.data[1].split("*").length - 1;
+                    return a-b;
+                }
+            }]
+        },{
+            facetTitle: "Features",
             facets: [
                 {
-                    facetTitle: "Code complexity",
-                    description: "Relative code complexity of demo source",
-                    layout: 'right',
+                    facetTitle: "Data Structure",
                     catItemMap: function(d){
-                        switch(d.data[dataColumns['Code Complexity']]){
-                            case 1: return "A breeze *";
-                            case 2: return "Simple **"; 
-                            case 3: return "Intermediate ***";
-                            case 4: return "Detailed ****";
-                            case 5: return "Fully featured *****";
-                        }
-                        return null;
-                    },
-                    sortingOpts : [{ func: function(a,b){
-                            a = a.data[1].split("*").length - 1;
-                            b = b.data[1].split("*").length - 1;
-                            return a-b;
-                        }
-                    }]
+                        var r = [];
+                        if(d.data[dataColumns['Linked']])
+                            r.push("Linked/Networked <span class='fa fa-chain'></span>");
+                        if(d.data[dataColumns['Tables']]==="Multi")
+                            r.push("Multiple Tables <span class='fa fa-table'></span>");
+                        // Multiple Values
+                        return r;
+                    }
                 },{
-                    facetTitle: "Features",
-                    facets: [
-                        {
-                            facetTitle: "Data Structure",
-                            catItemMap: function(d){
-                                var r = [];
-                                if(d.data[dataColumns['Linked']])
-                                    r.push("Linked/Networked <span class='fa fa-chain'></span>");
-                                if(d.data[dataColumns['Tables']]==="Multi")
-                                    r.push("Multiple Tables <span class='fa fa-table'></span>");
-                                // Multiple Values
-                                return r;
-                            }
-                        },{
-                            facetTitle: "Facet Types &amp; Features",
-                            catItemMap: function(d){
-                                var r = [];
-                                if(d.data[dataColumns['Facets - Histogram']]>0)
-                                    r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
-                                if(d.data[dataColumns['Facets - Hierarchical']])
-                                    r.push("Hierarchical <span class='fa fa-outdent'></span>");
-                                if(d.data[dataColumns['Has Time']])
-                                    r.push("Time <span class='fa fa-clock-o'></span>");
-                                if(d.data[dataColumns['Multi-Sort']])
-                                    r.push("Multi-Sort <span class='fa fa-sort-amount-desc'></span>");
-                                return r;
-                            }
-                        }, {
-                            facetTitle: "Result Display",
-                            catItemMap: function(d){
-                                var r = [];
-                                if(d.data[dataColumns['Results-Details']])
-                                    r.push("Detail View <span class='fa fa-bullseye'></span>");
-                                if(d.data[dataColumns['Result Display']]==="Grid")
-                                    r.push("Grid <span class='fa fa-th'></span>");
-                                if(d.data[dataColumns['Result Display']]==="List")
-                                    r.push("List <span class='fa fa-list'></span>");
-                                r.push(d.data[dataColumns['R']]);
-                                // More...
-                                return r;
-                            }
-                        }, {
-                            facetTitle: "Other",
-                            catItemMap: function(d){
-                                var r = [];
-                                if(d.data[dataColumns['Right Column']])
-                                    r.push("Right Panel");
-                                if(d.data[dataColumns['Highlighted']])
-                                    r.push("Highlight <span class='fa fa-star'></span>");
-                                if(d.data[dataColumns['Main Text Search']])
-                                    r.push("Main Text search <span class='fa fa-search'></span>");
-                                if(d.data[dataColumns['Dynamic Sizing']]>0)
-                                    r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
-                                // More...
-                                return r;
-                            }
-                        }
-                    ]
-                },{
-                    facetTitle: "Data Source",
-                    layout: 'right',
-                    catItemMap: function(d){ return d.data[dataColumns['Source']];}
-                },{
-                    facetTitle: "# Items",
-                    layout: 'right',
-                    intervalScale: 'log',
-                    showPercentile: true
-                },{
-                    facetTitle: "Creation Time",
-                    layout: 'right',
-                    collapsed: true,
-                    catItemMap: function(d){ return d.data[dataColumns['Authored']];},
-                    intervalScale: 'time'
+                    facetTitle: "Facet Types &amp; Features",
+                    catItemMap: function(d){
+                        var r = [];
+                        if(d.data[dataColumns['Facets - Histogram']]>0)
+                            r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
+                        if(d.data[dataColumns['Facets - Hierarchical']])
+                            r.push("Hierarchical <span class='fa fa-outdent'></span>");
+                        if(d.data[dataColumns['Has Time']])
+                            r.push("Time <span class='fa fa-clock-o'></span>");
+                        if(d.data[dataColumns['Multi-Sort']])
+                            r.push("Multi-Sort <span class='fa fa-sort-amount-desc'></span>");
+                        return r;
+                    }
+                }, {
+                    facetTitle: "Result Display",
+                    catItemMap: function(d){
+                        var r = [];
+                        if(d.data[dataColumns['Results-Details']])
+                            r.push("Detail View <span class='fa fa-bullseye'></span>");
+                        if(d.data[dataColumns['Result Display']]==="Grid")
+                            r.push("Grid <span class='fa fa-th'></span>");
+                        if(d.data[dataColumns['Result Display']]==="List")
+                            r.push("List <span class='fa fa-list'></span>");
+                        r.push(d.data[dataColumns['R']]);
+                        // More...
+                        return r;
+                    }
+                }, {
+                    facetTitle: "Other",
+                    catItemMap: function(d){
+                        var r = [];
+                        if(d.data[dataColumns['Right Column']])
+                            r.push("Right Panel");
+                        if(d.data[dataColumns['Highlighted']])
+                            r.push("Highlight <span class='fa fa-star'></span>");
+                        if(d.data[dataColumns['Main Text Search']])
+                            r.push("Main Text search <span class='fa fa-search'></span>");
+                        if(d.data[dataColumns['Dynamic Sizing']]>0)
+                            r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
+                        // More...
+                        return r;
+                    }
                 }
-            ],
-            itemDisplay: {
-                sortColWidth: 45,
-                sortingOpts : [ { 
-                    name: '',
-                    value: function(d){ 
-                        return d.id();
-                    }, inverse: true
-                } ],
-                displayType: 'grid',
-contentFunc : function(d){
-    var str='';
-    str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-        +d.data[dataColumns["Link"]]+".html'><img class='theImage'></a></span>";
-//                    str+="<div class=\"iteminfo iteminfo_0\">";
-    str+="<span class='title'>"+d.data[dataColumns["Name"]]+"</span>";
-    str+="<span class='icons'>";
-        if(d.data[dataColumns['Linked']]) str+="<span class='fa fa-chain'></span>";
-        if(d.data[dataColumns['Tables']]==="Multi") str+="<span class='fa fa-table'></span>";
-        if(d.data[dataColumns['Facets - Histogram']]) str+="<span class='fa fa-bar-chart-o'></span>";
-        if(d.data[dataColumns['Facets - Hierarchical']]) str+="<span class='fa fa-outdent'></span>";
-        if(d.data[dataColumns['Has Time']]) str+="<span class='fa fa-clock-o'></span>";
-        if(d.data[dataColumns['Multi-Sort']]) str+="<span class='fa fa-sort-amount-desc'></span>";
-        if(d.data[dataColumns['Results-Details']]) str+="<span class='fa fa-bullseye'></span>";
-        if(d.data[dataColumns['Result Display']]==="Grid") str+="<span class='fa fa-th'></span>";
-        if(d.data[dataColumns['Result Display']]==="List") str+="<span class='fa fa-list'></span>";
-        if(d.data[dataColumns['Highlighted']]) str+="<span class='fa fa-star'></span>";
-        if(d.data[dataColumns['Main Text Search']]) str+="<span class='fa fa-search'></span>";
-        if(d.data[dataColumns['Dynamic Sizing']]) str+="<span class='fa fa-arrows-alt'></span>";
-    str+="</span>";
-    str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
-            +d.data[dataColumns["Link"]]+".html' class='fa fa-code'></a></span>";
-//    str+="<span class='codeLink' style='left: 2px'><a target='_blank' href='./demo/"
-//            +d.data[dataColumns["Link"]]+".html' class='fa fa-play'></a></span>";
-    /*                    str++"<br>";
-    // Live
-    str+="<span style='margin-left:20px'>";
-    str+="<a target=\"_blank\" href=\"./demo/"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
-    str+=;
-    str+="</span>";
-    str+="</div>";
-    // Source
-    str+="<div class=\"iteminfo iteminfo_1\">";
-    str+="</div>";*/
-    return str;
-},
-visibleCb: function(d){
-    d3.select(this).select("img").attr("src","demo/demo_img/"+d.data[dataColumns["Link"]]+".jpg");
-}
-            }
-	    });
+            ]
+        },{
+            facetTitle: "Data Source",
+            layout: 'right',
+            catItemMap: function(d){ return d.data[dataColumns['Source']];}
+        },{
+            facetTitle: "# Items",
+            layout: 'right',
+            intervalScale: 'log',
+            showPercentile: true
+        },{
+            facetTitle: "Creation Time",
+            layout: 'right',
+            collapsed: true,
+            catItemMap: function(d){ return d.data[dataColumns['Authored']];},
+            intervalScale: 'time'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ { 
+            name: '',
+            value: function(d){ 
+                return d.id();
+            }, inverse: true
+        } ],
+        displayType: 'grid',
+        contentFunc : function(d){
+            var str='';
+            str+="<span class='thumbnail'><a target='_blank' href='./demo/"
+                +d.data[dataColumns["Link"]]+".html'><img class='theImage'></a></span>";
+//          str+="<div class=\"iteminfo iteminfo_0\">";
+            str+="<span class='title'>"+d.data[dataColumns["Name"]]+"</span>";
+            str+="<span class='icons'>";
+                if(d.data[dataColumns['Linked']]) str+="<span class='fa fa-chain'></span>";
+                if(d.data[dataColumns['Tables']]==="Multi") str+="<span class='fa fa-table'></span>";
+                if(d.data[dataColumns['Facets - Histogram']]) str+="<span class='fa fa-bar-chart-o'></span>";
+                if(d.data[dataColumns['Facets - Hierarchical']]) str+="<span class='fa fa-outdent'></span>";
+                if(d.data[dataColumns['Has Time']]) str+="<span class='fa fa-clock-o'></span>";
+                if(d.data[dataColumns['Multi-Sort']]) str+="<span class='fa fa-sort-amount-desc'></span>";
+                if(d.data[dataColumns['Results-Details']]) str+="<span class='fa fa-bullseye'></span>";
+                if(d.data[dataColumns['Result Display']]==="Grid") str+="<span class='fa fa-th'></span>";
+                if(d.data[dataColumns['Result Display']]==="List") str+="<span class='fa fa-list'></span>";
+                if(d.data[dataColumns['Highlighted']]) str+="<span class='fa fa-star'></span>";
+                if(d.data[dataColumns['Main Text Search']]) str+="<span class='fa fa-search'></span>";
+                if(d.data[dataColumns['Dynamic Sizing']]) str+="<span class='fa fa-arrows-alt'></span>";
+            str+="</span>";
+            str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
+                    +d.data[dataColumns["Link"]]+".html' class='fa fa-code'></a></span>";
+            return str;
+        },
+        visibleCb: function(d){
+            d3.select(this).select("img").attr("src","demo/demo_img/"+d.data[dataColumns["Link"]]+".jpg");
+        }
+    }
+});
 	};
 	</script>
 	<style>
