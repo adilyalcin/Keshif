@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Homicides in the District</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Victims",
+        categoryTextWidth: 150,
+        source: { 
+            url: "http://apps.washingtonpost.com/investigative/homicides/",
+        callback : function(browser){
+            browser.primaryTableName = "Victims";
+
+            kshf.dt.Victims = [];
+            var arr = kshf.dt.Victims;
+
+            $.ajax({
+                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+                // url: "./data_private/dc_homicides.json", // original source
+                url: "./data/dc_homicides.json",
+                error: function(e,f){
+                    console.log(e+" - "+f);
+                },
+                success: function(data){
+                    data.objects.forEach(function(vic){
+                        vic.id = 1*vic.id;
+                        vic.incident_date = moment(vic.incident_date).toDate();
+                        var item = new kshf.Item(vic,"id");
+                        arr.push(item);
+                    });
+
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }},
+        facets: [
+            {   facetTitle: "Age",
+                catItemMap: function(d){ return d.data.age;}
+            },{ facetTitle: "Race",
+                catItemMap: function(d){ return d.data.race;}
+            },{ facetTitle: "Sex",
+                catItemMap: function(d){ return d.data.sex;}
+            },{ facetTitle: "Quadrant", layout: 'right',
+                catItemMap: function(d){ return d.data.quadrant;}
+            },{ facetTitle: "Neighborhood", layout: 'right',
+                catItemMap: function(d){
+                    if(d.data.nbhd) return d.data.nbhd.subhood;
+                }
+            },{ facetTitle: "Jury Trial", layout: 'right',
+                catItemMap: function(d){ return d.data.jury_trial;}
+            },{ facetTitle: "Police Status", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.police_status.name;
+                }
+            },{ facetTitle: "Manner",
+                catItemMap: function(d){
+                    return d.data.manner.name;
+                }
+            },{ facetTitle: "Motive",
+                catItemMap: function(d){
+                    return d.data.motive.name;
+                }
+            },{
+                facetTitle: "Incident Date", layout: "bottom",
+                catItemMap: function(d){
+                    if(d.data.incident_date.getFullYear()>=2000) return d.data.incident_date;
+                },
+                intervalScale: 'time'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [ { name: 'id' } ],
+            autoExpandMore: true,
+            contentFunc : function(d){
+                var str="";
+                // thumbnail
+                str+=d.data.last_name +", "+d.data.first_name;
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+        div.listItem{
+            padding-bottom: 4px;
+        }
+        #chart_div {
+            width:800px;
+            height:700px;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">Homicides in the District (2000-2011)</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the <b>Washington Post</b>. <a href="http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json" target='_blank'>Raw source</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
