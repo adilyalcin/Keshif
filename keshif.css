@@ -1451,7 +1451,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader span.rightBoxes {
   position: absolute;
   right: 0px;
-  top: 0px;
+  top: -2px;
   font-size: 1.3em;
   color: #635d46;
 }

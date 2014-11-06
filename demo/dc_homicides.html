@@ -17,6 +17,8 @@
 
         <script type="text/javascript">
 
+var demoID = 117;
+
 $(document).ready( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -93,6 +95,7 @@ $(document).ready( function(){
             sortColWidth: 60,
             sortingOpts : [ { name: 'id' } ],
             autoExpandMore: true,
+            detailsToggle : "Zoom",
             contentFunc : function(d){
                 var str="";
                 // thumbnail

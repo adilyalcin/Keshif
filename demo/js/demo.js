@@ -1,823 +1,140 @@
-/*!
- * meny 1.4
- * http://lab.hakim.se/meny
- * MIT licensed
- *
- * Created by Hakim El Hattab (http://hakim.se, @hakimel)
- */
+;window.Modernizr=function(a,b,c){function A(a){j.cssText=a}function B(a,b){return A(m.join(a+";")+(b||""))}function C(a,b){return typeof a===b}function D(a,b){return!!~(""+a).indexOf(b)}function E(a,b){for(var d in a){var e=a[d];if(!D(e,"-")&&j[e]!==c)return b=="pfx"?e:!0}return!1}function F(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)return d===!1?a[e]:C(f,"function")?f.bind(d||b):f}return!1}function G(a,b,c){var d=a.charAt(0).toUpperCase()+a.slice(1),e=(a+" "+o.join(d+" ")+d).split(" ");return C(b,"string")||C(b,"undefined")?E(e,b):(e=(a+" "+p.join(d+" ")+d).split(" "),F(e,b,c))}var d="2.7.1",e={},f=!0,g=b.documentElement,h="modernizr",i=b.createElement(h),j=i.style,k,l={}.toString,m=" -webkit- -moz- -o- -ms- ".split(" "),n="Webkit Moz O ms",o=n.split(" "),p=n.toLowerCase().split(" "),q={svg:"http://www.w3.org/2000/svg"},r={},s={},t={},u=[],v=u.slice,w,x=function(a,c,d,e){var f,i,j,k,l=b.createElement("div"),m=b.body,n=m||b.createElement("body");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),l.appendChild(j);return f=["&#173;",'<style id="s',h,'">',a,"</style>"].join(""),l.id=h,(m?l:n).innerHTML+=f,n.appendChild(l),m||(n.style.background="",n.style.overflow="hidden",k=g.style.overflow,g.style.overflow="hidden",g.appendChild(n)),i=c(l,a),m?l.parentNode.removeChild(l):(n.parentNode.removeChild(n),g.style.overflow=k),!!i},y={}.hasOwnProperty,z;!C(y,"undefined")&&!C(y.call,"undefined")?z=function(a,b){return y.call(a,b)}:z=function(a,b){return b in a&&C(a.constructor.prototype[b],"undefined")},Function.prototype.bind||(Function.prototype.bind=function(b){var c=this;if(typeof c!="function")throw new TypeError;var d=v.call(arguments,1),e=function(){if(this instanceof e){var a=function(){};a.prototype=c.prototype;var f=new a,g=c.apply(f,d.concat(v.call(arguments)));return Object(g)===g?g:f}return c.apply(b,d.concat(v.call(arguments)))};return e}),r.touch=function(){var c;return"ontouchstart"in a||a.DocumentTouch&&b instanceof DocumentTouch?c=!0:x(["@media (",m.join("touch-enabled),("),h,")","{#modernizr{top:9px;position:absolute}}"].join(""),function(a){c=a.offsetTop===9}),c},r.cssanimations=function(){return G("animationName")},r.csstransitions=function(){return G("transition")},r.svg=function(){return!!b.createElementNS&&!!b.createElementNS(q.svg,"svg").createSVGRect},r.inlinesvg=function(){var a=b.createElement("div");return a.innerHTML="<svg/>",(a.firstChild&&a.firstChild.namespaceURI)==q.svg};for(var H in r)z(r,H)&&(w=H.toLowerCase(),e[w]=r[H](),u.push((e[w]?"":"no-")+w));return e.addTest=function(a,b){if(typeof a=="object")for(var d in a)z(a,d)&&e.addTest(d,a[d]);else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="function"?b():b,typeof f!="undefined"&&f&&(g.className+=" "+(b?"":"no-")+a),e[a]=b}return e},A(""),i=k=null,function(a,b){function l(a,b){var c=a.createElement("p"),d=a.getElementsByTagName("head")[0]||a.documentElement;return c.innerHTML="x<style>"+b+"</style>",d.insertBefore(c.lastChild,d.firstChild)}function m(){var a=s.elements;return typeof a=="string"?a.split(" "):a}function n(a){var b=j[a[h]];return b||(b={},i++,a[h]=i,j[i]=b),b}function o(a,c,d){c||(c=b);if(k)return c.createElement(a);d||(d=n(c));var g;return d.cache[a]?g=d.cache[a].cloneNode():f.test(a)?g=(d.cache[a]=d.createElem(a)).cloneNode():g=d.createElem(a),g.canHaveChildren&&!e.test(a)&&!g.tagUrn?d.frag.appendChild(g):g}function p(a,c){a||(a=b);if(k)return a.createDocumentFragment();c=c||n(a);var d=c.frag.cloneNode(),e=0,f=m(),g=f.length;for(;e<g;e++)d.createElement(f[e]);return d}function q(a,b){b.cache||(b.cache={},b.createElem=a.createElement,b.createFrag=a.createDocumentFragment,b.frag=b.createFrag()),a.createElement=function(c){return s.shivMethods?o(c,a,b):b.createElem(c)},a.createDocumentFragment=Function("h,f","return function(){var n=f.cloneNode(),c=n.createElement;h.shivMethods&&("+m().join().replace(/[\w\-]+/g,function(a){return b.createElem(a),b.frag.createElement(a),'c("'+a+'")'})+");return n}")(s,b.frag)}function r(a){a||(a=b);var c=n(a);return s.shivCSS&&!g&&!c.hasCSS&&(c.hasCSS=!!l(a,"article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}mark{background:#FF0;color:#000}template{display:none}")),k||q(a,c),a}var c="3.7.0",d=a.html5||{},e=/^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i,f=/^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i,g,h="_html5shiv",i=0,j={},k;(function(){try{var a=b.createElement("a");a.innerHTML="<xyz></xyz>",g="hidden"in a,k=a.childNodes.length==1||function(){b.createElement("a");var a=b.createDocumentFragment();return typeof a.cloneNode=="undefined"||typeof a.createDocumentFragment=="undefined"||typeof a.createElement=="undefined"}()}catch(c){g=!0,k=!0}})();var s={elements:d.elements||"abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video",version:c,shivCSS:d.shivCSS!==!1,supportsUnknownElements:k,shivMethods:d.shivMethods!==!1,type:"default",shivDocument:r,createElement:o,createDocumentFragment:p};a.html5=s,r(b)}(this,b),e._version=d,e._prefixes=m,e._domPrefixes=p,e._cssomPrefixes=o,e.testProp=function(a){return E([a])},e.testAllProps=G,e.testStyles=x,g.className=g.className.replace(/(^|\s)no-js(\s|$)/,"$1$2")+(f?" js "+u.join(" "):""),e}(this,this.document),function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}}(this,document),Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0))};
+// turn on social share by default
+var socialShare = true;
 
-(function( root, factory ) {
-    if( typeof define === 'function' && define.amd ) {
-        // AMD module
-        define( factory );
-    } else {
-        // Browser global
-        root.Meny = factory();
+function writeCookie(name,value,days){
+    var date, expires;
+    if (days) {
+        date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires=" + date.toGMTString();
+    }else{
+        expires = "";
     }
-}(this, function () {
-
-// Date.now polyfill
-if( typeof Date.now !== 'function' ) Date.now = function() { return new Date().getTime(); };
-
-var Meny = {
-
-    // Creates a new instance of Meny
-    create: function( options ) {
-        return (function(){
-
-            // Make sure the required arguments are defined
-            if( !options || !options.menuElement || !options.contentsElement ) {
-                throw 'You need to specify which menu and contents elements to use.';
-            }
-
-            // Make sure the menu and contents have the same parent
-            if( options.menuElement.parentNode !== options.contentsElement.parentNode ) {
-                throw 'The menu and contents elements must have the same parent.';
-            }
-
-            // Constants
-            var POSITION_T = 'top',
-                POSITION_R = 'right',
-                POSITION_B = 'bottom',
-                POSITION_L = 'left';
-
-            // Feature detection for 3D transforms
-            var supports3DTransforms =  'WebkitPerspective' in document.body.style ||
-                                        'MozPerspective' in document.body.style ||
-                                        'msPerspective' in document.body.style ||
-                                        'OPerspective' in document.body.style ||
-                                        'perspective' in document.body.style;
-
-            // Default options, gets extended by passed in arguments
-            var config = {
-                width: 300,
-                height: 300,
-                position: POSITION_L,
-                threshold: 40,
-                angle: 30,
-                overlap: 6,
-                transitionDuration: '0.5s',
-                transitionEasing: 'ease',
-                gradient: 'rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.65) 100%)',
-                mouse: true,
-                touch: true
-            };
-
-            // Cache references to DOM elements
-            var dom = {
-                menu: options.menuElement,
-                contents: options.contentsElement,
-                wrapper: options.menuElement.parentNode,
-                cover: null
-            };
-
-            // State and input
-            var indentX = dom.wrapper.offsetLeft,
-                indentY = dom.wrapper.offsetTop,
-                touchStartX = null,
-                touchStartY = null,
-                touchMoveX = null,
-                touchMoveY = null,
-                isOpen = false,
-                isMouseDown = false;
-
-            // Precalculated transform and style states
-            var menuTransformOrigin,
-                menuTransformClosed,
-                menuTransformOpened,
-                menuStyleClosed,
-                menuStyleOpened,
-
-                contentsTransformOrigin,
-                contentsTransformClosed,
-                contentsTransformOpened,
-                contentsStyleClosed,
-                contentsStyleOpened;
-
-            var originalStyles = {},
-                addedEventListeners = [];
-
-            // Ongoing animations (for fallback mode)
-            var menuAnimation,
-                contentsAnimation,
-                coverAnimation;
-
-            configure( options );
-
-            /**
-             * Initializes Meny with the specified user options,
-             * may be called multiple times as configuration changes.
-             */
-            function configure( o ) {
-                // Extend the default config object with the passed in
-                // options
-                Meny.extend( config, o );
-
-                setupPositions();
-                setupWrapper();
-                setupCover();
-                setupMenu();
-                setupContents();
-
-                bindEvents();
-            }
-
-            /**
-             * Prepares the transforms for the current positioning
-             * settings.
-             */
-            function setupPositions() {
-                menuTransformOpened = '';
-                contentsTransformClosed = '';
-                menuAngle = config.angle;
-                contentsAngle = config.angle / -2;
-
-                switch( config.position ) {
-                    case POSITION_T:
-                        // Primary transform:
-                        menuTransformOrigin = '50% 0%';
-                        menuTransformClosed = 'rotateX( ' + menuAngle + 'deg ) translateY( -100% ) translateY( '+ config.overlap +'px )';
-                        contentsTransformOrigin = '50% 0';
-                        contentsTransformOpened = 'translateY( '+ config.height +'px ) rotateX( ' + contentsAngle + 'deg )';
-
-                        // Position fallback:
-                        menuStyleClosed = { top: '-' + (config.height-config.overlap) + 'px' };
-                        menuStyleOpened = { top: '0px' };
-                        contentsStyleClosed = { top: '0px' };
-                        contentsStyleOpened = { top: config.height + 'px' };
-                        break;
-
-                    case POSITION_R:
-                        // Primary transform:
-                        menuTransformOrigin = '100% 50%';
-                        menuTransformClosed = 'rotateY( ' + menuAngle + 'deg ) translateX( 100% ) translateX( -2px ) scale( 1.01 )';
-                        contentsTransformOrigin = '100% 50%';
-                        contentsTransformOpened = 'translateX( -'+ config.width +'px ) rotateY( ' + contentsAngle + 'deg )';
-
-                        // Position fallback:
-                        menuStyleClosed = { right: '-' + (config.width-config.overlap) + 'px' };
-                        menuStyleOpened = { right: '0px' };
-                        contentsStyleClosed = { left: '0px' };
-                        contentsStyleOpened = { left: '-' + config.width + 'px' };
-                        break;
-
-                    case POSITION_B:
-                        // Primary transform:
-                        menuTransformOrigin = '50% 100%';
-                        menuTransformClosed = 'rotateX( ' + -menuAngle + 'deg ) translateY( 100% ) translateY( -'+ config.overlap +'px )';
-                        contentsTransformOrigin = '50% 100%';
-                        contentsTransformOpened = 'translateY( -'+ config.height +'px ) rotateX( ' + -contentsAngle + 'deg )';
-
-                        // Position fallback:
-                        menuStyleClosed = { bottom: '-' + (config.height-config.overlap) + 'px' };
-                        menuStyleOpened = { bottom: '0px' };
-                        contentsStyleClosed = { top: '0px' };
-                        contentsStyleOpened = { top: '-' + config.height + 'px' };
-                        break;
-
-                    default:
-                        // Primary transform:
-                        menuTransformOrigin = '100% 50%';
-                        menuTransformClosed = 'translateX( -100% ) translateX( '+ config.overlap +'px ) scale( 1.01 ) rotateY( ' + -menuAngle + 'deg )';
-                        contentsTransformOrigin = '0 50%';
-                        contentsTransformOpened = 'translateX( '+ config.width +'px ) rotateY( ' + -contentsAngle + 'deg )';
-
-                        // Position fallback:
-                        menuStyleClosed = { left: '-' + (config.width-config.overlap) + 'px' };
-                        menuStyleOpened = { left: '0px' };
-                        contentsStyleClosed = { left: '0px' };
-                        contentsStyleOpened = { left: config.width + 'px' };
-                        break;
-                }
-            }
-
-            /**
-             * The wrapper element holds the menu and contents.
-             */
-            function setupWrapper() {
-                // Add a class to allow for custom styles based on
-                // position
-                Meny.addClass( dom.wrapper, 'meny-' + config.position );
-
-                originalStyles.wrapper = dom.wrapper.style.cssText;
-
-                dom.wrapper.style[ Meny.prefix( 'perspective' ) ] = '800px';
-                dom.wrapper.style[ Meny.prefix( 'perspectiveOrigin' ) ] = contentsTransformOrigin;
-            }
-
-            /**
-             * The cover is used to obfuscate the contents while
-             * Meny is open.
-             */
-            function setupCover() {
-                if( dom.cover ) {
-                    dom.cover.parentNode.removeChild( dom.cover );
-                }
-
-                dom.cover = document.createElement( 'div' );
-
-                // Disabled until a falback fade in animation is added
-                dom.cover.style.position = 'absolute';
-                dom.cover.style.display = 'block';
-                dom.cover.style.width = '100%';
-                dom.cover.style.height = '100%';
-                dom.cover.style.left = 0;
-                dom.cover.style.top = 0;
-                dom.cover.style.zIndex = 1000;
-                dom.cover.style.visibility = 'hidden';
-                dom.cover.style.opacity = 0;
-
-                // Silence unimportant errors in IE8
-                try {
-                    dom.cover.style.background = 'rgba( 0, 0, 0, 0.4 )';
-                    dom.cover.style.background = '-ms-linear-gradient('+ config.position +','+ config.gradient;
-                    dom.cover.style.background = '-moz-linear-gradient('+ config.position +','+ config.gradient;
-                    dom.cover.style.background = '-webkit-linear-gradient('+ config.position +','+ config.gradient;
-                }
-                catch( e ) {}
-
-                if( supports3DTransforms ) {
-                    dom.cover.style[ Meny.prefix( 'transition' ) ] = 'all ' + config.transitionDuration +' '+ config.transitionEasing;
-                }
-
-                dom.contents.appendChild( dom.cover );
-            }
-
-            /**
-             * The meny element that folds out upon activation.
-             */
-            function setupMenu() {
-                // Shorthand
-                var style = dom.menu.style;
-
-                switch( config.position ) {
-                    case POSITION_T:
-                        style.width = '100%';
-                        style.height = config.height + 'px';
-                        break;
-
-                    case POSITION_R:
-                        style.right = '0';
-                        style.width = config.width + 'px';
-                        style.height = '100%';
-                        break;
-
-                    case POSITION_B:
-                        style.bottom = '0';
-                        style.width = '100%';
-                        style.height = config.height + 'px';
-                        break;
-
-                    case POSITION_L:
-                        style.width = config.width + 'px';
-                        style.height = '100%';
-                        break;
-                }
-
-                originalStyles.menu = style.cssText;
-
-                style.position = 'fixed';
-                style.display = 'block';
-                style.zIndex = 1;
-
-                if( supports3DTransforms ) {
-                    style[ Meny.prefix( 'transform' ) ] = menuTransformClosed;
-                    style[ Meny.prefix( 'transformOrigin' ) ] = menuTransformOrigin;
-                    style[ Meny.prefix( 'transition' ) ] = 'all ' + config.transitionDuration +' '+ config.transitionEasing;
-                }
-                else {
-                    Meny.extend( style, menuStyleClosed );
-                }
-            }
-
-            /**
-             * The contents element which gets pushed aside while
-             * Meny is open.
-             */
-            function setupContents() {
-                // Shorthand
-                var style = dom.contents.style;
-
-                originalStyles.contents = style.cssText;
-
-                if( supports3DTransforms ) {
-                    style[ Meny.prefix( 'transform' ) ] = contentsTransformClosed;
-                    style[ Meny.prefix( 'transformOrigin' ) ] = contentsTransformOrigin;
-                    style[ Meny.prefix( 'transition' ) ] = 'all ' + config.transitionDuration +' '+ config.transitionEasing;
-                }
-                else {
-                    style.position = style.position.match( /relative|absolute|fixed/gi ) ? style.position : 'relative';
-                    Meny.extend( style, contentsStyleClosed );
-                }
-            }
-
-            /**
-             * Attaches all input event listeners.
-             */
-            function bindEvents() {
-
-                if( 'ontouchstart' in window ) {
-                    if( config.touch ) {
-                        Meny.bindEvent( document, 'touchstart', onTouchStart );
-                        Meny.bindEvent( document, 'touchend', onTouchEnd );
-                    }
-                    else {
-                        Meny.unbindEvent( document, 'touchstart', onTouchStart );
-                        Meny.unbindEvent( document, 'touchend', onTouchEnd );
-                    }
-                }
-
-                if( config.mouse ) {
-                    Meny.bindEvent( document, 'mousedown', onMouseDown );
-                    Meny.bindEvent( document, 'mouseup', onMouseUp );
-                    Meny.bindEvent( document, 'mousemove', onMouseMove );
-                }
-                else {
-                    Meny.unbindEvent( document, 'mousedown', onMouseDown );
-                    Meny.unbindEvent( document, 'mouseup', onMouseUp );
-                    Meny.unbindEvent( document, 'mousemove', onMouseMove );
-                }
-            }
-
-            /**
-             * Expands the menu.
-             */
-            function open() {
-                if( !isOpen ) {
-                    isOpen = true;
-
-                    Meny.addClass( dom.wrapper, 'meny-active' );
-
-                    dom.cover.style.height = dom.contents.scrollHeight + 'px';
-                    dom.cover.style.visibility = 'visible';
-
-                    // Use transforms and transitions if available...
-                    if( supports3DTransforms ) {
-                        // 'webkitAnimationEnd oanimationend msAnimationEnd animationend transitionend'
-                        Meny.bindEventOnce( dom.wrapper, 'transitionend', function() {
-                            Meny.dispatchEvent( dom.menu, 'opened' );
-                        } );
-
-                        dom.cover.style.opacity = 1;
-
-                        dom.contents.style[ Meny.prefix( 'transform' ) ] = contentsTransformOpened;
-                        dom.menu.style[ Meny.prefix( 'transform' ) ] = menuTransformOpened;
-                    }
-                    // ...fall back on JS animation
-                    else {
-                        menuAnimation && menuAnimation.stop();
-                        menuAnimation = Meny.animate( dom.menu, menuStyleOpened, 500 );
-                        contentsAnimation && contentsAnimation.stop();
-                        contentsAnimation = Meny.animate( dom.contents, contentsStyleOpened, 500 );
-                        coverAnimation && coverAnimation.stop();
-                        coverAnimation = Meny.animate( dom.cover, { opacity: 1 }, 500 );
-                    }
-
-                    Meny.dispatchEvent( dom.menu, 'open' );
-                }
-            }
-
-            /**
-             * Collapses the menu.
-             */
-            function close() {
-                if( isOpen ) {
-                    isOpen = false;
-
-                    Meny.removeClass( dom.wrapper, 'meny-active' );
-
-                    // Use transforms and transitions if available...
-                    if( supports3DTransforms ) {
-                        // 'webkitAnimationEnd oanimationend msAnimationEnd animationend transitionend'
-                        Meny.bindEventOnce( dom.wrapper, 'transitionend', function() {
-                            Meny.dispatchEvent( dom.menu, 'closed' );
-                        } );
-
-                        dom.cover.style.visibility = 'hidden';
-                        dom.cover.style.opacity = 0;
-
-                        dom.contents.style[ Meny.prefix( 'transform' ) ] = contentsTransformClosed;
-                        dom.menu.style[ Meny.prefix( 'transform' ) ] = menuTransformClosed;
-                    }
-                    // ...fall back on JS animation
-                    else {
-                        menuAnimation && menuAnimation.stop();
-                        menuAnimation = Meny.animate( dom.menu, menuStyleClosed, 500 );
-                        contentsAnimation && contentsAnimation.stop();
-                        contentsAnimation = Meny.animate( dom.contents, contentsStyleClosed, 500 );
-                        coverAnimation && coverAnimation.stop();
-                        coverAnimation = Meny.animate( dom.cover, { opacity: 0 }, 500, function() {
-                            dom.cover.style.visibility = 'hidden';
-                            Meny.dispatchEvent( dom.menu, 'closed' );
-                        } );
-                    }
-                    Meny.dispatchEvent( dom.menu, 'close' );
-                }
-            }
-
-            /**
-             * Unbinds Meny and resets the DOM to the state it
-             * was at before Meny was initialized.
-             */
-            function destroy() {
-                dom.wrapper.style.cssText = originalStyles.wrapper
-                dom.menu.style.cssText = originalStyles.menu;
-                dom.contents.style.cssText = originalStyles.contents;
-
-                if( dom.cover && dom.cover.parentNode ) {
-                    dom.cover.parentNode.removeChild( dom.cover );
-                }
-
-                Meny.unbindEvent( document, 'touchstart', onTouchStart );
-                Meny.unbindEvent( document, 'touchend', onTouchEnd );
-                Meny.unbindEvent( document, 'mousedown', onMouseDown );
-                Meny.unbindEvent( document, 'mouseup', onMouseUp );
-                Meny.unbindEvent( document, 'mousemove', onMouseMove );
-
-                for( var i in addedEventListeners ) {
-                    this.removeEventListener( addedEventListeners[i][0], addedEventListeners[i][1] );
-                }
-
-                addedEventListeners = [];
-            }
-
-
-            /// INPUT: /////////////////////////////////
-
-            function onMouseDown( event ) {
-                isMouseDown = true;
-            }
-
-            function onMouseMove( event ) {
-                // Prevent opening/closing when mouse is down since
-                // the user may be selecting text
-                if( !isMouseDown ) {
-                    var x = event.clientX - indentX,
-                        y = event.clientY - indentY;
-
-                    switch( config.position ) {
-                        case POSITION_T:
-                            if( y > config.height ) {
-                                close();
-                            }
-                            else if( y < config.threshold ) {
-                                open();
-                            }
-                            break;
-
-                        case POSITION_R:
-                            var w = dom.wrapper.offsetWidth;
-                            if( x < w - config.width ) {
-                                close();
-                            }
-                            else if( x > w - config.threshold ) {
-                                open();
-                            }
-                            break;
-
-                        case POSITION_B:
-                            var h = dom.wrapper.offsetHeight;
-                            if( y < h - config.height ) {
-                                close();
-                            }
-                            else if( y > h - config.threshold ) {
-                                open();
-                            }
-                            break;
-
-                        case POSITION_L:
-                            if( x > config.width ) {
-                                close();
-                            }
-                            else if( x < config.threshold ) {
-                                open();
-                            }
-                            break;
-                    }
-                }
-            }
-
-            function onMouseUp( event ) {
-                isMouseDown = false;
-            }
-
-            function onTouchStart( event ) {
-                touchStartX = event.touches[0].clientX - indentX;
-                touchStartY = event.touches[0].clientY - indentY;
-                touchMoveX = null;
-                touchMoveY = null;
-
-                Meny.bindEvent( document, 'touchmove', onTouchMove );
-            }
-
-            function onTouchMove( event ) {
-                touchMoveX = event.touches[0].clientX - indentX;
-                touchMoveY = event.touches[0].clientY - indentY;
-
-                var swipeMethod = null;
-
-                // Check for swipe gestures in any direction
-
-                if( Math.abs( touchMoveX - touchStartX ) > Math.abs( touchMoveY - touchStartY ) ) {
-                    if( touchMoveX < touchStartX - config.threshold ) {
-                        swipeMethod = onSwipeRight;
-                    }
-                    else if( touchMoveX > touchStartX + config.threshold ) {
-                        swipeMethod = onSwipeLeft;
-                    }
-                }
-                else {
-                    if( touchMoveY < touchStartY - config.threshold ) {
-                        swipeMethod = onSwipeDown;
-                    }
-                    else if( touchMoveY > touchStartY + config.threshold ) {
-                        swipeMethod = onSwipeUp;
-                    }
-                }
-
-                if( swipeMethod && swipeMethod() ) {
-                    event.preventDefault();
-                }
-            }
-
-            function onTouchEnd( event ) {
-                Meny.unbindEvent( document, 'touchmove', onTouchMove );
-
-                // If there was no movement this was a tap
-                if( touchMoveX === null && touchMoveY === null ) {
-                    onTap();
-                }
-            }
-
-            function onTap() {
-                var isOverContent = ( config.position === POSITION_T && touchStartY > config.height ) ||
-                                    ( config.position === POSITION_R && touchStartX < dom.wrapper.offsetWidth - config.width ) ||
-                                    ( config.position === POSITION_B && touchStartY < dom.wrapper.offsetHeight - config.height ) ||
-                                    ( config.position === POSITION_L && touchStartX > config.width );
-
-                if( isOverContent ) {
-                    close();
-                }
-            }
-
-            function onSwipeLeft() {
-                if( config.position === POSITION_R && isOpen ) {
-                    close();
-                    return true;
-                }
-                else if( config.position === POSITION_L && !isOpen ) {
-                    open();
-                    return true;
-                }
-            }
-
-            function onSwipeRight() {
-                if( config.position === POSITION_R && !isOpen ) {
-                    open();
-                    return true;
-                }
-                else if( config.position === POSITION_L && isOpen ) {
-                    close();
-                    return true;
-                }
-            }
-
-            function onSwipeUp() {
-                if( config.position === POSITION_B && isOpen ) {
-                    close();
-                    return true;
-                }
-                else if( config.position === POSITION_T && !isOpen ) {
-                    open();
-                    return true;
-                }
-            }
-
-            function onSwipeDown() {
-                if( config.position === POSITION_B && !isOpen ) {
-                    open();
-                    return true;
-                }
-                else if( config.position === POSITION_T && isOpen ) {
-                    close();
-                    return true;
-                }
-            }
-
-
-            /// API: ///////////////////////////////////
-
-            return {
-                configure: configure,
-
-                open: open,
-                close: close,
-                destroy: destroy,
-
-                isOpen: function() {
-                    return isOpen;
-                },
-
-                /**
-                 * Forward event binding to the menu DOM element.
-                 */
-                addEventListener: function( type, listener ) {
-                    addedEventListeners.push( [type, listener] );
-                    dom.menu && Meny.bindEvent( dom.menu, type, listener );
-                },
-                removeEventListener: function( type, listener ) {
-                    dom.menu && Meny.unbindEvent( dom.menu, type, listener );
-                }
-            };
-
-        })();
-    },
-
-    /**
-     * Helper method, changes an element style over time.
-     */
-    animate: function( element, properties, duration, callback ) {
-        return (function() {
-            // Will hold start/end values for all properties
-            var interpolations = {};
-
-            // Format properties
-            for( var p in properties ) {
-                interpolations[p] = {
-                    start: parseFloat( element.style[p] ) || 0,
-                    end: parseFloat( properties[p] ),
-                    unit: ( typeof properties[p] === 'string' && properties[p].match( /px|em|%/gi ) ) ? properties[p].match( /px|em|%/gi )[0] : ''
-                };
-            }
-
-            var animationStartTime = Date.now(),
-                animationTimeout;
-
-            // Takes one step forward in the animation
-            function step() {
-                // Ease out
-                var progress = 1 - Math.pow( 1 - ( ( Date.now() - animationStartTime ) / duration ), 5 );
-
-                // Set style to interpolated value
-                for( var p in interpolations ) {
-                    var property = interpolations[p];
-                    element.style[p] = property.start + ( ( property.end - property.start ) * progress ) + property.unit;
-                }
-
-                // Continue as long as we're not done
-                if( progress < 1 ) {
-                    animationTimeout = setTimeout( step, 1000 / 60 );
-                }
-                else {
-                    callback && callback();
-                    stop();
-                }
-            }
-
-            // Cancels the animation
-            function stop() {
-                clearTimeout( animationTimeout );
-            }
-
-            // Starts the animation
-            step();
-
-
-            /// API: ///////////////////////////////////
-
-            return {
-                stop: stop
-            };
-        })();
-    },
-
-    /**
-     * Extend object a with the properties of object b.
-     * If there's a conflict, object b takes precedence.
-     */
-    extend: function( a, b ) {
-        for( var i in b ) {
-            a[ i ] = b[ i ];
-        }
-    },
-
-    /**
-     * Prefixes a style property with the correct vendor.
-     */
-    prefix: function( property, el ) {
-        var propertyUC = property.slice( 0, 1 ).toUpperCase() + property.slice( 1 ),
-            vendors = [ 'Webkit', 'Moz', 'O', 'ms' ];
-
-        for( var i = 0, len = vendors.length; i < len; i++ ) {
-            var vendor = vendors[i];
-
-            if( typeof ( el || document.body ).style[ vendor + propertyUC ] !== 'undefined' ) {
-                return vendor + propertyUC;
-            }
-        }
-
-        return property;
-    },
-
-    /**
-     * Adds a class to the target element.
-     */
-    addClass: function( element, name ) {
-        element.className = element.className.replace( /\s+$/gi, '' ) + ' ' + name;
-    },
-
-    /**
-     * Removes a class from the target element.
-     */
-    removeClass: function( element, name ) {
-        element.className = element.className.replace( name, '' );
-    },
-
-    /**
-     * Adds an event listener in a browser safe way.
-     */
-    bindEvent: function( element, ev, fn ) {
-        if( element.addEventListener ) {
-            element.addEventListener( ev, fn, false );
-        }
-        else {
-            element.attachEvent( 'on' + ev, fn );
-        }
-    },
-
-    /**
-     * Removes an event listener in a browser safe way.
-     */
-    unbindEvent: function( element, ev, fn ) {
-        if( element.removeEventListener ) {
-            element.removeEventListener( ev, fn, false );
-        }
-        else {
-            element.detachEvent( 'on' + ev, fn );
-        }
-    },
-
-    bindEventOnce: function ( element, ev, fn ) {
-        var me = this;
-        var listener = function() {
-            me.unbindEvent( element, ev, listener );
-            fn.apply( this, arguments );
-        };
-        this.bindEvent( element, ev, listener );
-    },
-
-    /**
-     * Dispatches an event of the specified type from the
-     * menu DOM element.
-     */
-    dispatchEvent: function( element, type, properties ) {
-        if( element ) {
-            var event = document.createEvent( "HTMLEvents", 1, 2 );
-            event.initEvent( type, true, true );
-            Meny.extend( event, properties );
-            element.dispatchEvent( event );
-        }
-    },
-
-    /**
-     * Retrieves query string as a key/value hash.
-     */
-    getQuery: function() {
-        var query = {};
-
-        location.search.replace( /[A-Z0-9]+?=([\w|:|\/\.]*)/gi, function(a) {
-            query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
-        } );
-
-        return query;
-    }
-
+    document.cookie = name + "=" + value + expires + "; path=/";
 };
 
-return Meny;
+function readCookie(name){
+    var i, c, ca, nameEQ = name + "=";
+    ca = document.cookie.split(';');
+    for(i=0;i < ca.length;i++) {
+        c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1,c.length);
+        }
+        if (c.indexOf(nameEQ) == 0) {
+            return c.substring(nameEQ.length,c.length);
+        }
+    }
+    return '';
+};
 
-}));
+function noop(){};
 
+// Logging
+var isMobile = {
+    Android    : function() { return navigator.userAgent.match(/Android/i); },
+    BlackBerry : function() { return navigator.userAgent.match(/BlackBerry/i); },
+    iOS        : function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+    Opera      : function() { return navigator.userAgent.match(/Opera Mini/i); },
+    Windows    : function() { return navigator.userAgent.match(/IEMobile/i); },
+    any        : function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+var logIf = {
+    WindowSize : function(){ // minimum 950 x 500 (timeline is shown with 4 categories)
+        // Using HTML document size (Device screen.width & screen.height is not important)
+        var w=this.dom.width();
+        var h=this.dom.height();
+        return (w>950) && (h>500) /* && (w>h)*/;
+    },
+    Desktop : function(){ // skip: Android, Blackberry, iPhone, iPad, iPod, Opera Mini, IEMobile
+        return isMobile.any()===null;
+    },
+    NoTouch : function(){ // skip browsers supporting touch events.
+        return !Modernizr.touch; 
+    },
+    setSessionID : function(t){
+        if(this.Check!==undefined) return;
+        if(t!==undefined){
+            this.dom = $(t);
+        }
+        document.getElementsByTagName("body")[0].onmousemove = null;
+        this.sessionID_Cookie = readCookie('sessionId');
+        if(this.sessionID_Cookie === '') {
+            var ran  = window.event.clientX*Math.random();
+            var ran2 = window.event.clientY*Math.random();
+            this.sessionID_Cookie = Math.floor((ran+ran2)*10000000000000);
+            writeCookie('sessionId', this.sessionID_Cookie, 365);
+        } else {
+            this.sessionID_Cookie = parseInt(this.sessionID_Cookie);
+        }
+        this.sessionID_Now = Math.floor(Math.random()*10000000000000);
+        this.All();
+    },
+    host : function(){
+        if(document.location.hostname==="localhost") return true;
+        if(document.location.hostname==="adilyalcin.github.io") return true;
+        if(document.location.hostname==="www.cs.umd.edu") return true;
+        if(document.location.hostname==="cs.umd.edu") return true;
+        return false;
+    },
+    All : function(){
+        var tmp = this.Check;
+        this.Check = 
+            (typeof demoID === 'number') && 
+            this.WindowSize() && 
+            this.Desktop() && 
+            this.NoTouch() && 
+            this.host()===true && 
+            (this.sessionID_Cookie!==null)
+            ;
+        if(this.Check===true && tmp === undefined) {
+            this.loadTs = Date.now();
+            sendLog(kshf.LOG.CONFIG,
+                { height:this.dom.height(),width:this.dom.width(),agent:navigator.userAgent}, this.loadTs);
+        }
+        return this.Check;
+    },
+    dom: $(window),
+    sessionID_Cookie: null,
+    sessionID_Now: null,
+    Check : undefined,
+    loadTs: null,
+};
 
-$( window ).load(function() {
-    var s = document.createElement("script");
-    s.type = "text/javascript";
-    s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
-    $("body").append(s);
-/*    var meny = Meny.create({
-        menuElement: document.querySelector( '.meny' ),
-        contentsElement: document.querySelector( '.contents' ),
-        position: 'left',
-        height: 200,
-        width: 260,
-        angle: 30,
-        threshold: 50,
-        overlap: 6,
-        transitionDuration: '0.5s',
-        transitionEasing: 'ease',
-        gradient: 'rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.65) 100%)',
-        mouse: true,
-        touch: false
+var sendLog = function(actID, dt, ts){
+    if(logIf.Check!==true) return;
+    if(ts===undefined){ ts = Date.now()-logIf.loadTs; }
+    var _dt = {
+        'demoID': demoID,
+        'actID' : actID,
+        'ses_Cki' : logIf.sessionID_Cookie,
+        'ses_Now': logIf.sessionID_Now,
+        'ts'    : ts,
+    };
+    // custom data to be sent
+    if(dt){ for (var key in dt) { _dt[key]=dt[key]; } }
+    $.ajax({
+        type: "GET",
+        dataType: "jsonp",
+        cache: true,
+        jsonp: false,
+        url: (document.location.hostname!=="localhost")?"http://keshiftracker.appspot.com":"http://localhost:9090/",
+        data: _dt
     });
-*/
+};;
+
+$(window).load(function(){
+    if(socialShare===true){    
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
+        $("body").append(s);
+    }
+
+    document.getElementsByClassName("kshfHost")[0].onmousemove = function(){
+        logIf.setSessionID();
+    }
 });
