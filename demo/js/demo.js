@@ -74,10 +74,14 @@ var logIf = {
         this.All();
     },
     host : function(){
-        if(document.location.hostname==="localhost") return true;
-        if(document.location.hostname==="adilyalcin.github.io") return true;
-        if(document.location.hostname==="www.cs.umd.edu") return true;
-        if(document.location.hostname==="cs.umd.edu") return true;
+        switch(document.location.hostname){
+            case "localhost": return true;
+            case "adilyalcin.github.io": return true;
+            case "www.cs.umd.edu": return true;
+            case "cs.umd.edu": return true;
+            case "www.keshif.me": return true;
+            case "keshif.me": return true;
+        }
         return false;
     },
     All : function(){
