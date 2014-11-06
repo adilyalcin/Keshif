@@ -2044,8 +2044,8 @@ kshf.Browser.prototype = {
         ssdsd.append("span").attr("class","loading_dots loading_dots_3").attr("anim",true);
 
         var hmmm=this.dom.loadingBox.append("div").attr("class","status_text");
-        hmmm.append("span").attr("class","info").text("Loading data sources...");
-        hmmm.append("span").attr("class","dynamic")
+        hmmm.append("span").attr("class","status_text_sub info").text("Loading data sources...");
+        hmmm.append("span").attr("class","status_text_sub dynamic")
             .text(
                 (this.source.sheets!==undefined)?
                 "("+this.source.loadedTableCount+"/"+this.source.sheets.length+")":""
@@ -3311,7 +3311,8 @@ kshf.Facet_Categorical.prototype = {
     insertSubFacets: function(){
         this.dom.subFacets=this.divRoot.append("div").attr("class","subFacets");
 
-        this.dom.subFacets.append("span").attr("class","facetGroupBar").append("span");//.text("["+this.options.facetTitle+"]");
+        this.dom.subFacets.append("span").attr("class","facetGroupBar").append("span").attr("class","facetGroupBarSub");
+            //.text("["+this.options.facetTitle+"]");
 
         if(!this.hasAttribs()){
             this.options.facets.forEach(function(facetDescr){
@@ -4748,8 +4749,11 @@ kshf.Facet_Interval.prototype = {
         this.intervalScale
             .domain([this.intervalRange.min, this.intervalRange.max])
             .range([0, this.intervalRange.width])
-            .nice(this.optimalTickCount)
             .clamp(true);
+        if(this.options.intervalScale!=='step'){
+            this.intervalScale
+                .nice(this.optimalTickCount);
+        }
 
         var ticks = this.intervalScale.ticks(this.optimalTickCount);
 
@@ -5264,6 +5268,7 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     setHeight: function(targetHeight){
+        if(this.histBins===undefined) return;
         var c = targetHeight-this.getHeight_Header()-this.getHeight_Extra();
         if(this.height_hist===c) return;
         this.height_hist = c;

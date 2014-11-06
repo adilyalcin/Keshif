@@ -32,7 +32,7 @@
 	        categoryTextWidth: 150,
             rightPanelLabelWidth: 140,
             barChartWidth: 70,
-            itemName: "Keshif Demos",
+            itemName: "Datasets Ready for Keshif",
             catBarScale: "scale_frequency",
             source: {
                 gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
@@ -149,7 +149,6 @@
                 displayType: 'grid',
 contentFunc : function(d){
     var str='';
-    // Demo name
     str+="<span class='thumbnail'><a target='_blank' href='./demo/"
         +d.data[dataColumns["Link"]]+".html'><img class='theImage'></a></span>";
 //                    str+="<div class=\"iteminfo iteminfo_0\">";
@@ -365,9 +364,11 @@ visibleCb: function(d){
         color: lightgray;
         position: absolute;
         width: 100%;
-        bottom: 2   px;
         font-size: 0.9em;
+        border-top: solid 1px lightgray;
+        padding-top: 2px;
     }
+
     .content .icons .fa{
         padding: 0px 2px;
     }
@@ -474,7 +475,7 @@ Source code is on <a href="http:\\www.github.com\adilyalcin\Keshif\" target="_bl
 
 <!-- Sponsors -->
 <h2 id="sponsors">Sponsors</h2>
-<p>Funded in part by <a href="http://www.huawei.com/" target="_blank"> Huawei</a>.</p>
+<p>Funded in part by <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014).</p>
 
 <br/><br/>
 </div>

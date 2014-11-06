@@ -172,7 +172,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .belowAttribs{ direction: ltr; }
 
         .subFacets{
-            .wigdhdyt{ left: 0px; }
             .kshfChart{ margin-left: 17px; }
         }
         .facetCategorical{
@@ -978,7 +977,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-right: solid 2px rgb(204,195,195);
             //background-color: @color_facet_group;
             .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-            span{
+            > .facetGroupBarSub{
                 height: 100%;
                 width: 1px;
                 margin: auto;
@@ -986,10 +985,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        &[collapsed=true] {
-            > .headerGroup {
+        &[collapsed=true]{
+            > .headerGroup{
                 color: gray;
-                span.header_label {
+                span.header_label{
                     cursor: pointer;
                 }
                 .facetControls{ display: none; }
@@ -999,11 +998,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             > .facetInterval{ 
                 > div { display: none !important; }
-            }
-            > .subFacets {
-                .wigdhdyt span{
-                    display: none;
-                }
             }
         }
 
@@ -1088,9 +1082,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     width: 17px;
                     .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
                 }
-            }
-            > .wigdhdyt{
-                padding-top: 2px;
             }
         }
 
@@ -1294,7 +1285,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         border-width: 0px 2px;
-        .background-image(~"linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,1) 80%)");
+        .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
 
         > .topRow{
 //            font-size: 1.2em;
@@ -1485,7 +1476,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             top: 0px;
             font-size: 1.3em;
             color: #635d46;
-            i.credits{
+            .credits{
                 cursor: pointer;
                 margin: 0px;
                 &:hover{ color: #cb5454; }
@@ -1539,12 +1530,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 padding-right: 3px;
                 margin-right: 2px;
             }
-            span.listheader_itemName{
+/*            span.listheader_itemName{
                 display: inline;
-//                letter-spacing: 0.1em;
+                letter-spacing: 0.1em;
                 font-variant: small-caps;
                 vertical-align: top;
-            }
+            }*/
         }
     } // listHeader
 
@@ -1804,7 +1795,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 top: 10px;
                 left: 70px;
                 height:20px;
-                span{
+                > .status_text_sub{
                     margin-left:5px;
                 }
             }
