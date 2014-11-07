@@ -4687,7 +4687,6 @@ kshf.Facet_Interval.prototype = {
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider")
             .attr("anim",true);
         this.insertSlider();
-        this.dom.selectedItemValue = this.dom.intervalSlider.select(".selectedItemValue");
 
         this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup");
 
@@ -5110,7 +5109,11 @@ kshf.Facet_Interval.prototype = {
             })
             .append("span").attr("class","invalidArea");
 
-        this.dom.intervalSlider.append("div").attr("class","selectedItemValue").append("div").attr("class","circlee");
+        this.dom.selectedItemValue = this.dom.intervalSlider.append("div").attr("class","selectedItemValue");
+        this.dom.selectedItemValue.append("span").attr("class","circlee");
+        this.dom.selectedItemValueText = this.dom.selectedItemValue
+            .append("span").attr("class","selected-item-value-text")
+            .append("span").attr("class","selected-item-value-text-v");
     },
     updateBarScale2Total: function(){
         this.chartPreviewAxisScale = this.chartPreviewAxisScale
@@ -5145,7 +5148,7 @@ kshf.Facet_Interval.prototype = {
         var ddd = this.dom.labelGroup.selectAll("span.tick").data(this.intervalTicks);
         var ddd_enter = ddd.enter().append("span").attr("class","tick");
         ddd.exit().remove();
-        if(this.options.intervalScale!=='step')
+//        if(this.options.intervalScale!=='step')
             ddd_enter.append("span").attr("class","line");
         ddd_enter.append("span").attr("class","text");
 
@@ -5327,12 +5330,16 @@ kshf.Facet_Interval.prototype = {
     setSelectedPosition: function(v){
         if(v===null) return;
         if(this.intervalScale===undefined) return;
-        var translate = "translateX("+(this.intervalScale(v))+"px)";
+        var offset = this.options.intervalScale==='step'?this.barWidth/2:0;
+        var t="translateX("+(this.intervalScale(v)+offset)+"px)";
         this.dom.selectedItemValue
             .each(function(attrib){
-                kshf.Util.setTransform(this,translate);
+                kshf.Util.setTransform(this,t);
             })
             .style("display","block");
+
+        var dateFormat = d3.time.format("%b %-e,'%y");
+        this.dom.selectedItemValueText.text( (v instanceof Date)?dateFormat(v):v);
     },
     hideSelectedPosition: function(){
          this.dom.selectedItemValue.style("display",null);

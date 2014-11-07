@@ -825,10 +825,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .text{
                             font-size: 0.7em;
                             font-weight: 300;
-                            width: 100px;
-                            text-align: center;
                             position: relative;
-                            margin-left: -50px;
+                            left: -50%;
                             display: block;
                         }
                         > .line{
@@ -851,6 +849,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         display: none;
                         .transition(~'all 250ms ease-out');
                         > .circlee{
+                            display: block;
                             border-radius: 20px;
                             width: 8px;
                             height: 8px;
@@ -858,6 +857,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             border: solid 2px orangered;
                             left: -4px;
                             position: relative;
+                        }
+                        > .selected-item-value-text{
+                            position: relative;
+                            top: -2em;
+                            color: orangered;
+                            text-shadow: 0px 0px 2px white;
+                            font-size: 0.8em;
+                            white-space: nowrap;
+                            > .selected-item-value-text-v{
+                                position: relative;
+                                left: -50%;
+                            }
                         }
                     }
                     > .base{
