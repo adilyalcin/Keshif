@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>NYC Street Trees</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+//http://www.cloudred.com/labprojects/nyctrees/trees/black-locust.png
+
+$(document).ready( function(){
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Tree Types",
+        categoryTextWidth: 450,
+        source: { 
+        url: "http://www.cloudred.com/labprojects/nyctrees/",
+        callback : function(browser){
+            browser.primaryTableName = "TreeTypes";
+
+            kshf.dt.TreeTypes = [];
+            var arr = kshf.dt.TreeTypes;
+
+            $.ajax({
+                //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
+                url: "./data/nyc_trees.json",
+                error: function(e,f){
+                    console.log(e+" - "+f);
+                },
+                success: function(data){
+                    data.forEach(function(treeType){
+                        treeType.Bronx = parseInt(treeType.Bronx);
+                        treeType.Brooklyn = parseInt(treeType.Brooklyn);
+                        treeType.Queens = parseInt(treeType.Queens);
+                        treeType.Manhattan = parseInt(treeType.Manhattan);
+                        treeType['Staten Island'] = parseInt(treeType['Staten Island']);
+                        treeType.Total = treeType.Bronx + treeType.Brooklyn + treeType.Queens
+                            + treeType.Manhattan + treeType['Staten Island'];
+
+                        var item = new kshf.Item(treeType, "Common");
+                        arr.push(item);
+                    });
+
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }},
+        facets: [
+            {   facetTitle: "Total Number of <span class='fa fa-tree'></span>'s",
+                catItemMap: function(d){ return d.data.Total;},
+                intervalScale: "log"
+            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Bronx",
+                catItemMap: function(d){ return d.data.Bronx;},
+                intervalScale: "log"
+            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Brooklyn",
+                catItemMap: function(d){ return d.data.Brooklyn;},
+                intervalScale: "log"
+            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Queens",
+                catItemMap: function(d){ return d.data.Queens;},
+                intervalScale: "log"
+            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Manhattan",
+                catItemMap: function(d){ return d.data.Manhattan;},
+                intervalScale: "log"
+            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Staten Island",
+                catItemMap: function(d){ return d.data['Staten Island'];},
+                intervalScale: "log"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [ { name: 'Total' } ],
+            autoExpandMore: true,
+            detailsToggle : "Zoom",
+            displayType: 'grid',
+            contentFunc : function(d){
+                var str='';
+                str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"'></span>";
+                str+="<span class='authorName'>"+d.data.Latin+"</span>";
+                str+="<span class='title'>"+d.data.Common+"</span>";
+                return str;
+            },
+            visibleCb: function(d){
+                d3.select(this).select("img").attr("src",
+                    "http://www.cloudred.com/labprojects/nyctrees/trees/"+d.data.file);
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+        #chart_div {
+            width:1250px;
+            height:700px;
+        }
+        .listItem{
+            width: 14.2%;
+        }
+        div.content{
+            width: 100%;
+            height: 130px;
+            padding: 5px;
+        }
+        span.thumbnail{
+            height: 70px;
+            display: block;
+            overflow-y: hidden;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 300ms linear;
+            -webkit-transition: background-color 300ms linear;
+            -o-transition: background-color 300ms linear;
+            -moz-transition: background-color 300ms linear;
+        }
+        div.content img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: white;
+            width: 90%;
+            position: absolute;
+            bottom: 2px;
+            background-color: lightgray;
+        }
+        div.listItem{
+            vertical-align: top;
+        }
+        div.listItem[highlight=true] div.content span.thumbnail{
+            background-color: orangered;
+        }
+        div.content span.title{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 2px;
+            text-align: left;
+            font-size: 0.9em;
+            font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+        }
+        .content .authorName{
+            display: block;
+            font-family: Georgia,"Times New Roman",Times,serif;
+            font-style: italic;
+            font-weight: 400;
+            color: gray;
+            font-size: 0.8em;
+            text-align: left;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">NYC Street Trees</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data provided by <a href="https://nycopendata.socrata.com/" target='_blank'>NYV Open Data</a> and curated by <a href="http://www.cloudred.com/labprojects/nyctrees/" target='_blank'>Cloudred Multimedia</a>. <a href="http://www.cloudred.com/labprojects/nyctrees/data/common.json" target='_blank'>Raw source</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
