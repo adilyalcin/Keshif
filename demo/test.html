@@ -53,32 +53,6 @@ browser = new kshf.Browser({
     	var mult = 25;
     	var mult2 = mult*Math.sqrt(2);
 
-/*
-var lineGen = [];
-var arcGen = [];
-for(var i=0; i<10; i++){
-	for (var j=1; j<(10-i); j++) { arcGen.push({'top':i*mult, 'size':j*mult}); }
-}
-d3.select("#container").selectAll("span.arc").data(arcGen).enter()
-	.append("span").attr("class","arc")
-		.style("top",function(d){ return d.top+"px";})
-		.style("width",function(d){ return d.size+"px";})
-		.style("height",function(d){ return d.size+"px";})
-		.style("right",function(d){ return (-d.size/2)+"px";})
-		;
-d3.select("#container").selectAll("span.line").data(lineGen).enter()
-	.append("span").attr("class","line")
-		.style("top",function(d){ return d.top+"px";})
-		.style("width",function(d){ return (d.size+10)+"px";})
-//			.style("height",function(d){ return d.size+"px";})
-		;
-d3.select("#container").selectAll("span.line_2").data(lineGen).enter()
-	.append("span").attr("class","line line_2")
-		.style("top",function(d){ return d.top+"px";})
-		.style("width",function(d){ return (d.size2+10)+"px";})
-//			.style("height",function(d){ return d.size+"px";})
-		;
-*/
 		testArray = kshf.dt['Record Type_h_1'];
 		testArray = browser.facets[0]._attribs;
 
@@ -208,12 +182,6 @@ d3.select("#container").selectAll("span.line_2").data(lineGen).enter()
 						}
 					}
 				}
-
-	//			pos.top += (d.j-d.i)*(mult/2);
-//				pos.left -= (d.j-d.i)*(mult);
-
-//				this.style.left = pos.left+"px";
-//				this.style.top = pos.top+"px";
 			});
 		
 		connectedItems
