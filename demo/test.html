@@ -59,7 +59,7 @@ browser = new kshf.Browser({
 		var useCircle = true;
 		// regular, skewed, or skewed-min
 		var gridType = 'regular';
-		var gridType = 'skewed';
+		//var gridType = 'skewed';
 		var gridType = 'skewed-min';
 
 		// prepare item distribution
@@ -101,15 +101,18 @@ browser = new kshf.Browser({
     		.style('width',function(d){
     			return d.items.length*3+"px";
     		});
-    	rows.append("span").attr("class","line")
+    	rows.append("span").attr("class","line line_1")
     		.style("width",function(d,i){
     			switch(gridType){
     				case 'regular': return ((testArray.length-1)*mult)+"px";
     				case 'skewed': return ((testArray.length-1-i)*mult)+"px";
-    				case 'skewed-min': return ((testArray.length-1-i)*mult2/2)+"px";
+    				case 'skewed-min': return ((testArray.length-1-i)*mult2/2+20)+"px";
     			}
     		})
-    		.style("transform",gridType==="skewed-min"?"rotate(45deg)":"");
+    		.style("transform",gridType==="skewed-min"?"rotate(45deg)":"")
+    		.append("span").attr("class","line_cat")
+    		.append("span").attr("class","label")
+    		.html(function(d){ return getLabel(d); })
     		;
     	if(gridType!=='regular'){
     		rows.append("span").attr("class","line line_2")
@@ -117,7 +120,7 @@ browser = new kshf.Browser({
     				switch(gridType){
     					case 'regular': return (i*mult2)+"px";
     					case 'skewed': return (i*mult2)+"px";
-    					case 'skewed-min': return (i*mult2/2)+"px";
+    					case 'skewed-min': return (i*mult2/2+20)+"px";
     				}
     				
     			})
@@ -163,11 +166,12 @@ browser = new kshf.Browser({
 
 				this.style.lineHeight = this.style.height;
 
+				var id = kshf.dt_id['Record Type_h_1'][d.data[1]].orderIndex;
+
 				if(gridType==='regular'){
 					this.style.left = (260+id*mult)+"px";
 					this.style.top = "0px";
 				} else{
-					var id = kshf.dt_id['Record Type_h_1'][d.data[1]].orderIndex;
 					var pos = {'top': (id*mult), 'left':-0};
 					var dif = parentData.orderIndex - id;
 					if(gridType==='skewed-min'){
@@ -186,7 +190,8 @@ browser = new kshf.Browser({
 		
 		connectedItems
 			.append("span").attr("class","visual connected-center")
-				.style("border-radius",useCircle?"50%":"");
+				.style("border-radius",useCircle?"50%":"")
+				.style("transform",gridType==='skewed-min'?"rotate(45deg)":"");
 		connectedItems
 			.append("span").attr("class","connected-text connected-center item_count")
 				.text(function(d){
@@ -299,6 +304,17 @@ browser = new kshf.Browser({
 	display: none;
 	position: relative;
 	white-space: nowrap;
+	font-size: 0.6em;
+}
+.line_1 .line_cat > .label{
+	left: calc(100% + 0px);
+	transform: rotate(-45deg);
+	transform-origin: 0% 100%;
+}
+.line_2 .line_cat > .label{
+	left: calc(100% + 0px);
+	transform: rotate(45deg);
+	transform-origin: 0% 100%;
 }
 #container[rightAligned=true] .line_cat{
 	right: 0px;
@@ -309,7 +325,6 @@ browser = new kshf.Browser({
 	text-align: right;
 }
 #container[rightAligned=true] .line_cat > .label{
-	left: calc(100% + 20px);
 	text-align: left;
 }
 #container[rightAligned=false] .line_cat > .label{
@@ -371,7 +386,7 @@ browser = new kshf.Browser({
 	top: -50%;
 }
 .connected > .visual{
-	background-color: rgba(200,200,200,0.6);
+	background-color: #98ABB9;
 }
 .connected .connected-text{
 	font-size: 0.7em;
@@ -391,6 +406,6 @@ browser = new kshf.Browser({
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
-        <div id='container' class='kshf' showsecondlabel='false' rightAligned='true'></div>
+        <div id='container' class='kshf' showsecondlabel='true' rightAligned='true'></div>
     </body>
 </html>
