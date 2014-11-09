@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Test</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+var typeInfo = {
+	'NAM': 'Name',
+	'PII': 'Personally Identifying Information',
+	'SSN': 'Social Security Number',
+	'DOB': 'Day of Birth',
+	'ADD': 'Address',
+	'EMA': 'Email',
+	'CCN': 'Credit Card Number',
+	'PSS': 'Password',
+	'LOG': 'Log',
+	'MED': 'Medical Records',
+	'1 MILLAN DOLLAR': "1M $"
+};
+var getLabel = function(d){
+    if(typeInfo[d.data[1]]) return typeInfo[d.data[1]];
+    return d.data[1];
+};
+var recordFormat = d3.format("s");
+browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    itemName: "Data Breaches",
+    leftPanelLabelWidth: 170,
+    rightPanelLabelWidth: 170,
+    source: {
+        url: "http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html",
+        gdocId : '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
+        sheets : [ {name:"Breaches"} ]
+    },
+    loadedCb: function(){
+        kshf.Util.cellToArray(kshf.dt.Breaches, [9], /\,/, false);
+    },
+	readyCb: function(){
+    	var dataGen = [];
+    	var mult = 25;
+    	var mult2 = mult*Math.sqrt(2);
+
+/*
+var lineGen = [];
+var arcGen = [];
+for(var i=0; i<10; i++){
+	for (var j=1; j<(10-i); j++) { arcGen.push({'top':i*mult, 'size':j*mult}); }
+}
+d3.select("#container").selectAll("span.arc").data(arcGen).enter()
+	.append("span").attr("class","arc")
+		.style("top",function(d){ return d.top+"px";})
+		.style("width",function(d){ return d.size+"px";})
+		.style("height",function(d){ return d.size+"px";})
+		.style("right",function(d){ return (-d.size/2)+"px";})
+		;
+d3.select("#container").selectAll("span.line").data(lineGen).enter()
+	.append("span").attr("class","line")
+		.style("top",function(d){ return d.top+"px";})
+		.style("width",function(d){ return (d.size+10)+"px";})
+//			.style("height",function(d){ return d.size+"px";})
+		;
+d3.select("#container").selectAll("span.line_2").data(lineGen).enter()
+	.append("span").attr("class","line line_2")
+		.style("top",function(d){ return d.top+"px";})
+		.style("width",function(d){ return (d.size2+10)+"px";})
+//			.style("height",function(d){ return d.size+"px";})
+		;
+*/
+		testArray = kshf.dt['Record Type_h_1'];
+		testArray = browser.facets[0]._attribs;
+
+		var useCircle = true;
+		// regular, skewed, or skewed-min
+		var gridType = 'regular';
+		var gridType = 'skewed';
+		var gridType = 'skewed-min';
+
+		// prepare item distribution
+		testArray.forEach(function(item){
+			item.subGroups_id = {};
+			item.subGroups = [];
+			item.items.forEach(function(basicItem){
+				basicItem.mappedDataCache[0].forEach(function(m){
+					if(m.id()===item.id()) return; // self
+					var targetItem = item.subGroups_id[m.id()];
+					if(targetItem===undefined){
+						targetItem = new kshf.Item(m.data,0);
+						item.subGroups.push(targetItem);
+						item.subGroups_id[m.id()] = targetItem;
+					}
+					targetItem.addItem(basicItem);
+				});
+			});
+		});
+
+    	var rows = d3.select("#container").selectAll("span.row").data(testArray).enter()
+    		.append("span")
+    		.attr("class",function(d,i){ return "row row_"+i;})
+    		.style("top",function(d,i){ return (i*mult)+"px";})
+    		.on("mouseenter",function(d,i){
+    			this.setAttribute("highlight","selected");
+    			$(this.parentNode).find(".row_"+i+" >.visual").css("background-color","red");
+    		})
+    		.on("mouseleave",function(d,i){
+    			this.setAttribute("highlight",false);
+    			$(this.parentNode).find(".row_"+i+" >.visual").css("background-color","");
+    		})
+    		;
+    	rows.append("span").attr("class","text")
+    		.html(function(d){ return getLabel(d); })
+    		;
+    	rows.append("span").attr("class","bar_top")
+    		.append("span").attr("class","bar")
+    		.style('width',function(d){
+    			return d.items.length*3+"px";
+    		});
+    	rows.append("span").attr("class","line")
+    		.style("width",function(d,i){
+    			switch(gridType){
+    				case 'regular': return ((testArray.length-1)*mult)+"px";
+    				case 'skewed': return ((testArray.length-1-i)*mult)+"px";
+    				case 'skewed-min': return ((testArray.length-1-i)*mult2/2)+"px";
+    			}
+    		})
+    		.style("transform",gridType==="skewed-min"?"rotate(45deg)":"");
+    		;
+    	if(gridType!=='regular'){
+    		rows.append("span").attr("class","line line_2")
+    			.style("width",function(d,i){
+    				switch(gridType){
+    					case 'regular': return (i*mult2)+"px";
+    					case 'skewed': return (i*mult2)+"px";
+    					case 'skewed-min': return (i*mult2/2)+"px";
+    				}
+    				
+    			})
+    			.append("span").attr("class","line_cat")
+    			.append("span").attr("class","label")
+    			.html(function(d){ return getLabel(d); })
+    			;
+    	}
+
+    	var connectedItems = rows.append("span").attr("class","connected-group").selectAll("span.connected").data(
+    		function(d){return d.subGroups;})
+    	.enter()
+    		.append("span").attr("class","connected")
+			.each(function(d,i,j){
+				var parentData = this.parentNode.__data__;
+				var size = d.itemCount_Active*1;
+				if(size===0){
+					this.setAttribute("empty",true);
+				}
+				var w,h;
+				if(useCircle){ // radius
+					if(size===0){
+						w = 5;
+						h = 5;
+					} else{
+						w = (6*(Math.sqrt(size)));
+						h = (6*(Math.sqrt(size)));
+					}
+					if(gridType==='skewed-min'){
+						w /= Math.sqrt(2);
+						h /= Math.sqrt(2);
+					}
+					this.style.width = w+"px";
+					this.style.height = h+"px";
+				} else { // bar
+					this.style.height = "1em";
+					if(size===0){
+						this.style.width = "1em";
+					} else {
+						this.style.width = size+"px";
+					}
+				}
+
+				this.style.lineHeight = this.style.height;
+
+				if(gridType==='regular'){
+					this.style.left = (260+id*mult)+"px";
+					this.style.top = "0px";
+				} else{
+					var id = kshf.dt_id['Record Type_h_1'][d.data[1]].orderIndex;
+					var pos = {'top': (id*mult), 'left':-0};
+					var dif = parentData.orderIndex - id;
+					if(gridType==='skewed-min'){
+						this.style.left = (260+Math.abs(dif)*mult/2)+"px";
+						this.style.top = (-dif*mult/2)+"px";;
+					} else {
+						if(dif>0){
+							this.style.top = (-dif*mult)+"px";
+							this.style.left = 260+(dif*mult)+"px";
+						} else {
+							this.style.left = 260+(-dif*mult)+"px";
+						}
+					}
+				}
+
+	//			pos.top += (d.j-d.i)*(mult/2);
+//				pos.left -= (d.j-d.i)*(mult);
+
+//				this.style.left = pos.left+"px";
+//				this.style.top = pos.top+"px";
+			});
+		
+		connectedItems
+			.append("span").attr("class","visual connected-center")
+				.style("border-radius",useCircle?"50%":"");
+		connectedItems
+			.append("span").attr("class","connected-text connected-center item_count")
+				.text(function(d){
+					return d.itemCount_Active;
+				});
+    },
+    facets: [
+        {   facetTitle: "Record Type",
+            layout: 'left',
+            catLabelText: getLabel
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 85,
+        detailsToggle : "Zoom",
+        autoExpandMore: true,
+        sortingOpts : [ {
+            name: 'Date',
+            label: function(d){ return moment(d.data[1]).format('MMM DD, YYYY'); },
+            inverse: true,
+        },{
+            name: '# Records',
+            value: function(d){ return d.data[4]; },
+            label: function(d){ return recordFormat(d.data[4]); }
+        } ],
+        textSearchFunc: function(d){return d.data[0]; },
+        contentFunc: function(d){
+            var str="";
+            str+=d.data[0];
+            if(d.data[13]){
+                str+="<span class='item_source'>";
+                str+="<a href='"+d.data[13]+"' target='_blank' class='fa fa-info-circle'></a>";
+                if(d.data[14])
+                    str+="<a href='"+d.data[14]+"' target='_blank' class='fa fa-info-circle'></a>";
+                str+="</span>";
+            }
+            return str;
+        }
+    }
+});
+});
+        </script>
+        <style>
+#chart_div {
+    width: 1100px;
+    height: 250px;
+}
+#chart_div div.listItem{
+    max-height: 20px;
+}
+.item_source{
+    float: right;
+    font-size: 0.8em;
+    color: gray;
+}
+.item_source a{
+    color: lightgray !important;
+    text-decoration: none;
+    margin-right: 3px;
+}
+.item_source a:hover{
+    color: gray !important;
+}
+.item_source::before{
+}
+.columnLabel{
+    font-size: 0.9em;
+}
+#container{
+	margin-left: 300px;
+	margin-top: 150px;
+	position: relative;
+	width: 400px;
+	height: 700px;
+}
+.arc{
+	position: absolute;
+	border-radius: 1000px;
+	border-left: solid 1px lightgray;
+	display: none;
+}
+.row{
+	position: absolute;
+	left: 0px;
+	width: 0px;
+	display: block;
+	cursor: default;
+}
+.line{
+	position: absolute;
+	display: block;
+	border-style: dashed;
+	border-color: lightgray;
+	height: 1px;
+	border-width: 1px 0px 0px 1px;
+/*	transform: rotate(-45deg); */
+	transform-origin: 0% 100%;
+	left: 260px;
+	top: 0px;
+}
+.line_2{
+	transform: rotate(-45deg);
+}
+.line_cat{
+	display: inline-block;
+	top: -0.5em;
+	position: absolute;
+}
+.line_cat > .label{
+	display: none;
+	position: relative;
+	white-space: nowrap;
+}
+#container[rightAligned=true] .line_cat{
+	right: 0px;
+	text-align: left;
+}
+#container[rightAligned=false] .line_cat{
+	left: 0px;
+	text-align: right;
+}
+#container[rightAligned=true] .line_cat > .label{
+	left: calc(100% + 20px);
+	text-align: left;
+}
+#container[rightAligned=false] .line_cat > .label{
+	left: calc(-100% - 20px);
+	right: 0px;
+	text-align: left;
+}
+
+#container[showsecondlabel=true] .line_cat > .label {
+	display: block;
+}
+
+.text{
+	position: relative;
+	top: -0.5em;
+	cursor: pointer;
+	white-space: nowrap;
+	width: 250px;
+	text-align: right;
+	display: inline-block;
+}
+.bar_top{
+	position: absolute;
+	left: 0px;
+	top:0px;
+}
+.bar{
+	height: 1em;
+	position: absolute;
+	right: 10px;
+	top: -0.5em;
+	background-color: lightblue;
+}
+.row[highlight=selected] .text{
+	color: red;
+}
+.row[highlight=selected] .visual{
+	background-color: orangered;
+/*	border-width: 2px 0px 0px 2px; */
+}
+.row[highlight=selected] .label{
+	color: red;
+/*	border-width: 2px 0px 0px 2px; */
+}
+.row[highlight=selected] .connected .connected-text{
+	display: block;
+}
+.connected{
+	position: absolute;
+	display: block;
+	top: 0px;
+}
+.connected > .connected-center{
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: -50%;
+	top: -50%;
+}
+.connected > .visual{
+	background-color: rgba(200,200,200,0.6);
+}
+.connected .connected-text{
+	font-size: 0.7em;
+	text-align: center;
+	/* below is needed because some circles are too small*/
+	width: 200%;
+	left: -100%;
+	display: none;
+	color: black !important;
+	text-shadow: 0px 0px 2px white;
+}
+.connected[empty=true] > .visual{
+	background-color: none;
+	border: solid 1px gray;
+}
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+        <div id='container' class='kshf' showsecondlabel='false' rightAligned='true'></div>
+    </body>
+</html>
