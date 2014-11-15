@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>TED Talks</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+var getData = function(){
+    var logStr="";
+    for(var i=1; i<=49;i++){
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: "http://www.ted.com/talks/browse?page="+i,
+            asynch: false,
+            success: function(doc){
+                $($.parseHTML(doc)).find(".m3").each(function(i){
+                    var $this = $(this);
+                    var thumb = $this.find(".thumb__image")[0].getAttribute("src");
+                    var talkDur = $this.find(".talk-link__image > a > span.thumb--crop-top > .thumb__duration")[0].textContent;
+                    var speaker = $this.find(".talk-link__speaker")[0].textContent;
+                    var title = $this.find(".media__message > .m5 > a")[0].textContent.trim();
+                    var link = $this.find(".media__message > .m5 > a")[0].getAttribute("href");
+                    var feelings = $this.find(".media__message >.meta >.meta__row >.meta__val")[0].textContent;
+                        feelings = feelings.replace(", ","+").trim();
+                    var views = $this.find(".media__message >.meta > span:nth-child(1) > .meta__val")[0].textContent.trim();
+                        views = views.replace("\n","").replace("views","").replace(' ',"");
+                    var datee = $this.find(".media__message >.meta > span:nth-child(2) > .meta__val")[0].textContent.trim();
+                    logStr+=link+"\t"+thumb+"\t"+talkDur+"\t"+speaker+"\t"+title+"\t"+feelings+"\t"+views+"\t"+datee+"\n";
+                });
+            },
+            error: function(e, e2, e3){console.log("NO : page:"+i+" code:"+e2); }
+        });
+    }
+    console.log(logStr);    
+};
+
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 90,
+        source: {
+            gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
+            sheets : [ {name:"Talks"} ]
+        },
+        loadedCb: function(){
+            cols = kshf.dt_ColNames.Talks;
+            kshf.Util.cellToArray(kshf.dt.Talks, [cols.Feelings],"+",false);
+            kshf.dt.Talks.forEach(function(d){
+                var views = d.data[cols.Views];
+                if(views[views.length-1]==="M") {
+                    views = 1000000*views.substr(0,views.length-1)
+                } else if(views[views.length-1]==="K") {
+                    views = 1000*views.substr(0,views.length-1)
+                }
+                d.data[cols.Views] = views;
+            })
+        },
+        facets: [
+            {   facetTitle: "Talk Duration",
+                catItemMap: function(d){
+                    var dur = d.data[cols["Duration"]];
+                    return dur[0];
+                }
+            },{ facetTitle: "Feelings"
+            },{ facetTitle: "Views", intervalScale: 'log'
+            },{ facetTitle: "Date", layout: 'bottom',
+                intervalScale: 'time'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts : [ {name: 'Views'}, {name: 'Date', inverse: true} ],
+            textSearch: "Speaker and Title",
+            textSearchFunc: function(d){return d.data[cols.Speaker]+" "+d.data[cols.Title]; },
+            contentFunc: function(d){ return d.data[cols.Speaker]+" "+d.data[cols.Title]; },
+            displayType: 'grid',
+            autoExpandMore: true,
+            contentFunc : function(d){
+                var str='';
+                // Demo name
+                str+="<a target='_blank' href='http://www.ted.com"+d.data[cols.URL]+"'><span class='thumbnail'><img></span></a>";
+//                    str+="<div class=\"iteminfo iteminfo_0\">";
+                str+="<span class='authorName'>"+d.data[cols.Speaker]+"</span>";
+                str+="<span class='title'>"+d.data[cols.Title]+"</span>";
+                /*                    str++"<br>";
+                // Live
+                str+="<span style='margin-left:20px'>";
+                str+="<a target=\"_blank\" href=\"./demo/"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
+                str+="<a target=\"_blank\" href=\"https://github.com/adilyalcin/Keshif/blob/master/demo/"+d.data[dataColumns["Link"]]+".html\">Source</a>";
+                str+="</span>";
+                str+="</div>";
+                // Source
+                str+="<div class=\"iteminfo iteminfo_1\">";
+                str+="</div>";*/
+                return str;
+            },
+            visibleCb: function(d){
+                d3.select(this).select("img").attr("src",d.data[cols.ThumbImg]);
+            }
+        }
+    });
+});
+        </script>
+        <style>
+#chart_div {
+    width: 1000px;
+    height: 650px;
+}
+div.content{
+    width: 143px;
+    height: 150px;
+    padding: 5px;
+}
+span.thumbnail{
+    height: 75px;
+    display: block;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    transition: background-color 300ms linear;
+    -webkit-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+}
+div.content img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    width: 90%;
+}
+div.listItem{
+    vertical-align: top;
+}
+div.listItem[highlight=true] div.content span.thumbnail{
+    background-color: orangered;
+}
+div.content span.title{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    text-align: left;
+    font-size: 0.8em;
+    font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+.content .authorName{
+    display: block;
+    font-family: Georgia,"Times New Roman",Times,serif;
+    font-style: italic;
+    font-weight: 400;
+    color: gray;
+    font-size: 0.9em;
+    text-align: left;
+}
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
