@@ -118,7 +118,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 52,
-            sortingOpts : [{ name:'Year', value: function(d){ return d.data.Year; }}],
+            sortingOpts : [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
             autoExpandMore: false, // images hit rate limits fast!
             displayType: 'grid',
             maxVisibleItems_Default: 104,
@@ -137,7 +137,7 @@ $(document).ready( function(){
 <style>
     #chart_div{
         width:calc(100% - 100px);
-        height:700px;
+        height:670px;
     }
     .listItem[highlight=true]{
         background-color: orangered !important;
@@ -209,6 +209,5 @@ $(document).ready( function(){
         You can also see their interactive visual <a href="http://selfiecity.net/selfiexploratory/" target='_blank'>selfie browser</a>.
         <span class="fa fa-info-circle"></span>
         </div>
-        <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>
