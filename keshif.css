@@ -1047,6 +1047,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"] .clickArea:hover .orButton {
   display: inline-block;
 }
+.kshf .kshfChart[hasmultivalueitem=true] .headerGroup .hasMultiMappings {
+  display: inline-block;
+}
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }

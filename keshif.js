@@ -359,7 +359,7 @@ kshf.Util = {
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
 
         var facetIcons = this.dom.headerGroup.append("span").attr("class","facetIcons");
-        facetIcons.append("span").attr("class", "hasMultiMappings fa fa-share-alt")
+        facetIcons.append("span").attr("class", "hasMultiMappings fa fa-ellipsis-v")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
@@ -521,7 +521,7 @@ kshf.Item = function(d, idIndex){
     // the main data within item
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
-    // Item selection state
+    // Selection state
     //  1: selected for inclusion (AND / OR query)
     // -1: selected for removal (NOT query)
     //  0: not selected
@@ -1224,7 +1224,6 @@ kshf.List = function(kshf_, config, root){
     this.sortItems();
     this.insertItems();
 
-    // insert "show more" thing...
     this.dom.showMore = this.listDiv.append("div").attr("class","showMore")
         .on("click",function(){
             me.showMore();
@@ -1479,9 +1478,7 @@ kshf.List.prototype = {
                 });
 
             this.dom.itemLinkStateColumn_Count = this.dom.itemLinkStateColumn.append("span")
-                .attr("class","item_count").text(function(d){
-                    return d.itemCount_Active;
-                });
+                .attr("class","item_count").text(function(d){return d.itemCount_Active;});
 
             if(this.showSelectBox){
                 this.dom.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox")
@@ -1881,6 +1878,7 @@ kshf.Browser = function(options){
     this.loadedCb = options.loadedCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
+    this.previewCb = options.previewCb;
 
     this.dom = {};
 
@@ -2223,6 +2221,13 @@ kshf.Browser.prototype = {
             for(j=0; j<dataTable.getNumberOfColumns(); j++){
                 kshf.insertColumnName(sheet.tableName,dataTable.getColumnLabel(j).trim(),j);
             }
+
+            if(idIndex===numCols) {
+                // push the 'id' column
+                kshf.dt_ColNames[sheet.tableName][sheet.id] = idIndex;
+                kshf.dt_ColNames_Arr[sheet.tableName][idIndex] = sheet.id;
+            }
+
             me.finishDataLoad(sheet,arr);
         });
     },
@@ -2698,10 +2703,12 @@ kshf.Browser.prototype = {
             item.updatePreview_Cache = false;
         });
         this.facets.forEach(function(facet){ facet.clearResultPreview(); });
+        if(this.previewCb) this.previewCb.call(this,true);
     },
     refreshResultPreview: function(){
         this.resultPreviewActive = true;
         this.facets.forEach(function(facet){ facet.refreshResultPreview(); });
+        if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
     updateLayout: function(){
@@ -3566,9 +3573,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** returns the maximum number of items stored per row in chart data */
     getMaxBarValuePerAttrib: function(){
-        return d3.max(this.getAttribs(), function(d){ 
-            return d.itemCount_Active;
-        });
+        return d3.max(this.getAttribs(), function(d){ return d.itemCount_Active; });
     },
     /** returns the maximum number of maximum items stored per row in chart data */
     getMaxBarValueMaxPerAttrib: function(){
@@ -4096,11 +4101,67 @@ kshf.Facet_Categorical.prototype = {
                 return me.options.catTooltipText.call(this,attrib);
             })
         }
-        
+
+        var dragged;
+        var line_height = this.browser.line_height;
+
         this.dom.attribClickArea = this.dom.attribs.append("span").attr("class", "clickArea")
             .on("click", onFilterAttrib)
             .on("mouseenter",onMouseOver)
             .on("mouseleave",onMouseOut)
+            .attr("draggable",true)
+            .each(function(d){
+                this.addEventListener("dragstart", function( event ) {
+                    // store a ref. on the dragged elem
+                    dragged = event.target;
+                    // make it half transparent
+                    event.target.style.opacity = .5;
+                }, false);
+                this.addEventListener("dragend", function( event ) {
+                    // reset the transparency
+                    event.target.style.opacity = "";
+                }, false);
+                this.addEventListener("dragover", function( event ) {
+                    // prevent default to allow drop
+                    event.preventDefault();
+                }, false);
+                this.addEventListener("dragenter", function( event ) {
+                    // highlight potential drop target when the draggable element enters it
+                    if ( event.target.className == "clickArea" ) {
+                        event.target.style.background = "rgba(0,0,150,0.5)";
+                    }
+                }, false);
+                this.addEventListener("dragleave", function( event ) {
+                    // reset background of potential drop target when the draggable element leaves it
+                    if ( event.target.className == "clickArea" ) {
+                        event.target.style.background = "";
+                    }
+                }, false);
+                this.addEventListener("drop", function( event ) {
+                    // prevent default action (open as link for some elements)
+                    event.preventDefault();
+                    // move dragged elem to the selected drop target
+                    if ( event.target.className == "clickArea" ) {
+                        event.target.style.background = "";
+                        var item1 = dragged.__data__;
+                        var item2 = event.target.__data__;
+                        var attribs = me.getAttribs();
+                        attribs[item2.orderIndex] = item1;
+                        attribs[item1.orderIndex] = item2;
+                        var tmp = item2.orderIndex
+                        item2.orderIndex = item1.orderIndex;
+                        item1.orderIndex = tmp;
+
+                        me.dom.attribs.each(function(attrib){
+                            if(attrib.isVisible){
+                                attrib.posX = 0;
+                                attrib.posY = line_height*attrib.orderIndex;
+                                kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+attrib.posY+"px)");
+                            }
+                        });
+                    }
+                }, false);
+            })
             ;
 
         var sasdd = this.dom.attribClickArea.append("span").attr("class","filterButtons");
@@ -5347,12 +5408,11 @@ kshf.Facet_Interval.prototype = {
     updateQuantiles: function(){
         // get active values into an array
         var values = [];
-
         var filterId = this.intervalFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
         // use this is filteredItems are primary
-        if(this.parentFacet===undefined){
+        if(!this.hasEntityParent()){
             this.filteredItems.forEach(function(item){
                 if(item.isWanted) values.push(accessor(item));
             });
