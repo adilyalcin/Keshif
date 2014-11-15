@@ -199,109 +199,66 @@ browser = new kshf.Browser({
 	          margin-bottom: 10px !important;
 	  }
 
-	  #mypage {
-	          margin-left: auto;
-	          margin-right: auto;
-	          font-size: 1.3em;
-	          /* max-width: 800px; */
-	          width: 1100px;
-	  }
+    #mypage {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1.3em;
+        /* max-width: 800px; */
+        width: 1100px;
+    }
+    #demobox{
+        width: 1100px;
+        height: 400px;
+        position:relative;
+    }
+    #demoimg {
+        cursor: pointer;
+    }
+    #demobox[loaded=true] #demoimg{
+        display: none;
+    }
+    #demobox[loaded=true] #clicktoLoad{
+        display: none;
+    }
+    #demobox #clicktoLoad {
+        cursor: pointer;
+        position: absolute;
+        top: 0px;
+        background-color: rgba(255,255,255,0);
+        width: 1100px;
+        height: 400px;
+        display:none;
+    }
+    #demobox:hover[loaded=false] #clicktoLoad {
+        background-color: rgba(255,255,255,0.7);
+        display:block;
+        font-size: 3em;
+        border: 2px black solid;
+    }
+    #demobox #clicktoLoad span{ 
+        cursor: pointer;
+        line-height: 410px; 
+        vertical-align:middle; 
+        margin-left:auto;
+        margin-right:auto;
+        display:block;
+    }
+    #livedemo {
+        margin: 0 auto;
+        height: 400px;
+        font-size: 12pt;
+    }
+    #demobox[loaded=false] #livedemo{
+        display:none;
+    }
 
-	  #mysidebar {
-	          float: right;
-	          width: 175px;
-	          margin-left: 15px;
-	          background-image: url(../_img/com/bck-pq2.jpg);
-	          background-repeat: no-repeat;
-	          background-position: left bottom;
-	          color: #FFFFFF;
-	          line-height: 1.3em;
-	          padding: 15px 10px 20px 20px;
-	          font-size: 1.0em;
-	          font-weight: normal;
-	          text-transform: none;
-	          letter-spacing: normal;
-	  	line-height: 1.2em;
-	  }
-
-	  #mysidebar a, #mysidebar a:visited {
-	          color: white;
-	  }
-
-	  #mysidebar a:hover {
-	          color: yellow;
-	  }
-
-	  .screenshot {
-	          border: 5px solid #99BB77;
-	          margin-top: 10px;
-	          margin-bottom: 10px;
-	  }
-
-	  .bluebg {
-	          color: white;
-	          background-color: #3A739F;
-	          padding: 3px;
-	  }
-
-	  #demobox{
-	          width: 1100px;
-	          height: 400px;
-	          position:relative;
-	  }
-
-	  #demoimg {
-	          cursor: pointer;
-	  }
-	  #demobox[loaded=true] #demoimg{
-	          display: none;
-	  }
-
-	  #demobox[loaded=true] #clicktoLoad{
-	          display: none;
-	  }
-
-	  #demobox #clicktoLoad {
-	          cursor: pointer;
-	          position: absolute;
-	          top: 0px;
-	          background-color: rgba(255,255,255,0);
-	          width: 1100px;
-	          height: 400px;
-	          display:none;
-	  }
-	  #demobox:hover[loaded=false] #clicktoLoad {
-	          background-color: rgba(255,255,255,0.7);
-	          display:block;
-	          font-size: 3em;
-	          border: 2px black solid;
-	  }
-	  #demobox #clicktoLoad span{ 
-	          cursor: pointer;
-	          line-height: 410px; 
-	          vertical-align:middle; 
-	          margin-left:auto;
-	          margin-right:auto;
-	          display:block;
-	  }
-
-	  .iteminfo a{
-	      color:#606060;
-	      font-style:italic;
-	  }
-	  #livedemo {
-	      margin: 0 auto;
-	      height: 400px;
-	      font-size: 12pt;
-	  }
-
-	  .iteminfo_0 span{
-	      font-size: 0.7em;
-	  }
-
-	  #demobox[loaded=false] #livedemo{
-	          display:none;
-	  }
+    .iteminfo a{
+        color:#606060;
+        font-style:italic;
+    }
+    .iteminfo_0 span{
+        font-size: 0.7em;
+    }
 
     .content{
         width: 131px;
@@ -401,12 +358,8 @@ browser = new kshf.Browser({
 <!--#include virtual="/hcil/_includes/banner.html"-->
 <div style="clear:both"></div>
 
-<div id="mypage">
-<br/>
-<br/>
-<span class='h1'><strong>Keshif</strong></br> Data Made Explorable</span>
-<br/>
-<br/>
+<div id="mypage"><br/><br/>
+<span class='h1'><strong>Keshif</strong></br> Data Made Explorable</span><br/><br/>
 
 <div align="right">
 	<i>Click on the image to load the interactive <b>Keshif</b> browser - 
@@ -440,15 +393,6 @@ Source code is on <a href="http:\\www.github.com\adilyalcin\Keshif\" target="_bl
 <iframe src="http:\\ghbtns.com\github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="80px" height="20px"></iframe>
 </div>
 
-
-<!--
-<h2 id="overview">Focus On Facet Design</h2>
-<h3>Categories</h3>
-<img src="./images/barchart_figure.png" width="660" >
-<h3>Time</h3>
-<img src="./images/timeline_figure.png" width="660">
--->
-
 </br></br>
 <!-- Participants -->
 <h2 id="participants">Participants</h2>
@@ -469,9 +413,6 @@ Source code is on <a href="http:\\www.github.com\adilyalcin\Keshif\" target="_bl
 
 <br/><br/>
 </div>
-
-<!-- footer -->
-<!--#include virtual="/hcil/_includes/footer.html"-->
 
 </body>
 </html>
