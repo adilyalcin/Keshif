@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Time Magazine Covers</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var cols;
+  var timeFormat = d3.time.format("%B %d, %Y");
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 120,
+    source: {
+      gdocId : '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
+      sheets : [ {name:"Covers"} ]
+    },
+    loadedCb: function(){
+      cols = kshf.dt_ColNames.Covers;
+      kshf.Util.cellToArray(kshf.dt.Covers, [cols.Categories],",",false);
+    },
+    facets: [
+    { 
+      facetTitle: "Categories"
+    },{
+      facetTitle: "Credits", layout: 'right',
+    },{
+      facetTitle: "Month", layout: 'right',
+      catItemMap: function(d){
+        return d.data[1].getMonth();
+      },
+      catLabelText: function(d){
+        switch (d.data[1]){
+          case 0: return 'January';
+          case 1: return 'February';
+          case 2: return 'March';
+          case 3: return 'April';
+          case 4: return 'May';
+          case 5: return 'June';
+          case 6: return 'July';
+          case 7: return 'August';
+          case 8: return 'September';
+          case 9: return 'October';
+          case 10: return 'November';
+          case 11: return 'December';
+        }
+      },
+      sortingOpts: [{
+        func: kshf.Util.sortFunc_Column_Int_Incr
+      }]
+    },{
+      facetTitle: "Date", 
+      layout: 'bottom', 
+      type: 'interval',
+      intervalScale: 'time'
+    }
+    ],
+    itemDisplay: {
+      sortColWidth: 120,
+//      detailsToggle : "Zoom",
+      displayType: 'grid',
+      autoExpandMore: true,
+      sortingOpts : [{
+        name: 'Date',
+        label: function(d){ return timeFormat(d.data[1]);}
+      }],
+      textSearchFunc: function(d){return d.data[cols.Info]; },
+      contentFunc: function(d){ 
+        var str='';
+        // Demo name
+        str+="<a target='_blank' href='http://content.time.com"+d.data[cols.MagazineURL]+"'><img></a>";
+        str+="<span class='authorName'>"+timeFormat(d.data[1])+"</span>";
+        str+="<span class='title'>"+d.data[cols.MagazineTitle]+"</span>";
+        return str;
+        return d.data[cols.Ma];
+      },
+      visibleCb: function(d){
+          d3.select(d.resultDOM).select("img").attr("src",d.data[cols.Thumbnail_2]);
+      }
+    }
+  });
+});
+        </script>
+        <style>
+#chart_div {
+  width: calc(100% - 100px);
+  height: 650px;
+}
+.listItem[highlight=true]{
+  background-color: orangered !important;
+}
+.listItem[highlight=true] .content img{
+  border-color: orangered;
+  border-width: 3px;
+}
+.listItem:hover{
+  z-index: 200 !important;
+}
+.listItem .content img:hover{
+  transform: scale(1.5);
+}
+.itemRow{
+  display: block !important;
+  width: 100% !important;
+}
+.listItem > .itemRow{
+  display: block !important;
+  overflow: visible !important;
+}
+.content{
+  width: 100%;
+  margin-bottom: 5px;
+  position: relative;
+}
+.listItem{
+  padding-top: 0px !important;
+  width: 20% !important;
+  overflow: visible !important;
+  max-height: initial !important;
+}
+.content img{
+  display: block;
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 0px;
+  background-color: white;
+  width: 100%;
+  transition: all 200ms linear;
+  -webkit-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+}
+.listItem[highlight=true] .content img{
+  background-color: orangered;
+}
+.content .title{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: left;
+  font-size: 0.8em;
+  font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+.content .authorName{
+  display: block;
+  font-family: Georgia,"Times New Roman",Times,serif;
+  font-style: italic;
+  font-weight: 400;
+  color: gray;
+  font-size: 0.9em;
+  text-align: left;
+}
+        </style>
+    </head>
+    <body>
+      <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
+      
+      <div class="contents"><div id="chart_div"></div></div>
+
+      <div id="infobox" align="center">
+          <span class="fa fa-info-circle"></span>
+          Data from <a href="http://content.time.com/time/coversearch/" target='_blank'>Time Magazine Cover search</a> and
+          <a href="http://www.coverbrowser.com/covers/time/" target='_blank'>Cover Browser</a>.
+          <span class="fa fa-info-circle"></span>
+          </div>
+    </body>
+</html>
