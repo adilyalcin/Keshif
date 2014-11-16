@@ -91,19 +91,8 @@ google.setOnLoadCallback(function(){
                 var str='';
                 // Demo name
                 str+="<a target='_blank' href='http://www.ted.com"+d.data[cols.URL]+"'><span class='thumbnail'><img></span></a>";
-//                    str+="<div class=\"iteminfo iteminfo_0\">";
                 str+="<span class='authorName'>"+d.data[cols.Speaker]+"</span>";
                 str+="<span class='title'>"+d.data[cols.Title]+"</span>";
-                /*                    str++"<br>";
-                // Live
-                str+="<span style='margin-left:20px'>";
-                str+="<a target=\"_blank\" href=\"./demo/"+d.data[dataColumns["Link"]]+".html\">Demo <span class='fa fa-external-link'></span></a> - ";
-                str+="<a target=\"_blank\" href=\"https://github.com/adilyalcin/Keshif/blob/master/demo/"+d.data[dataColumns["Link"]]+".html\">Source</a>";
-                str+="</span>";
-                str+="</div>";
-                // Source
-                str+="<div class=\"iteminfo iteminfo_1\">";
-                str+="</div>";*/
                 return str;
             },
             visibleCb: function(d){

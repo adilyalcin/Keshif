@@ -67,18 +67,6 @@ google.setOnLoadCallback(function(){
                 catLabelText: function(d){
                     return d.data[0]+" "+getIcon(d.data[1]);
                 },
-/*                facets: [
-                    {
-                        facetTitle: "Type",
-                        catItemMap: function(d){
-                            switch(d.data[1]){
-                                case "Energy": return "Energy <i class='fa fa-lightbulb-o'></i>";
-                                case "Transportation": return "Transportation <i class='fa fa-car'></i>";
-                                case "Banking": return "Banking <i class='fa fa-money'></i>";
-                            }
-                        }
-                    }
-                ]*/
             },{
                 facetTitle: "Date",
                 intervalScale: "time",
