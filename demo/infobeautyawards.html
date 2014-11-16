@@ -31,7 +31,7 @@
                         cols = kshf.dt_ColNames.Showcases;
                         kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Categories], /\*/, false);
                         kshf.Util.cellToArray(kshf.dt.Showcases, [cols.RelatedTo], /\*/, true);
-                        kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Credits], /\,\b|and/, false);
+                        kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Credits], ", ", false);
                         kshf.dt.Showcases.forEach(function(d){
                             var t=d.data[cols.Title];
                             var i=t.indexOf(" by ");
@@ -41,7 +41,7 @@
                     },
                     facets: [
                         {   facetTitle: "Categories"
-                        },{ facetTitle: "Award",
+                        },{ facetTitle: "Year",
                             catItemMap: function(d){
                                 return d.data[cols.Award];
                             },
@@ -56,6 +56,7 @@
                         autoExpandMore: true,
 //                        detailsToggle : "Zoom",
                         sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
+                        textSearch : 'Title',
                         contentFunc: function(d){ 
                             var str='';
                             str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img></span></a>";
@@ -77,11 +78,16 @@
             }
             .listItem{
                 width: 16.6%;
+                max-height: inherit !important;
             }
             div.content{
-                width: 100%;
-                height: 150px;
                 padding: 5px;
+                display: block !important;
+                width: 100%;
+            }
+            .kshf .listItem > .itemRow{
+                display: block !important;
+                width: 100%;
             }
             span.thumbnail{
                 height: 95px;
@@ -132,7 +138,7 @@
         </style>
     </head>
     <body>
-        <div class="pageTitle" align="center">kantar Information Is Beautiful Awards...</div>
+        <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
         
         <div class="contents"><div id="chart_div"></div></div>
 
