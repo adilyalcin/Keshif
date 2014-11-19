@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Set Visualization - Comparison</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+//var theDirPath = './data/set_'; 
+var theDirPath = 'http://vcg.github.io/upset/data/simpsons/';
+var sourceURL = 'http://vcg.github.io/upset/';
+
+var simpsons = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"simpsons"}] },
+    facets: [
+        {   facetTitle: "Characteristics",
+            catItemMap: function(d){
+                var r=[];
+                if(d.data.School===1) r.push("Goes to school");
+                if(d.data['Blue Hair']===1) r.push("Has blue hair");
+                if(d.data['Duff Fan']===1) r.push("Duff fan");
+                if(d.data.Evim===1) r.push("Evin");
+                if(d.data.Male===1) r.push("Male");// else r.push("Female");
+                if(d.data['Power Plant']===1) r.push("Power Plant");
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Characteristics",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        },{ facetTitle: "Age"
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        contentFunc: function(d){ return d.data['']; }
+    }
+};
+
+var fruit = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"fruit"}] },
+    facets: [
+        {   facetTitle: "Characteristics",
+            catItemMap: function(d){
+                var r=[];
+                if(d.data.Green===1) r.push("Green");
+                if(d.data.Red===1) r.push("Red");
+                if(d.data.Vegetable===1) r.push("Vegetable");
+                if(d.data.Fruit===1) r.push("Fruit");
+                if(d.data.Delicious===1) r.push("Delicious");
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Characteristics",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        },{ facetTitle: "Taste"
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        contentFunc: function(d){ return d.data['']; }
+    }
+};
+
+var movies = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies"}] },
+    facets: [
+        {   facetTitle: "Genres",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="Name") continue;
+                    if(x==="ReleaseDate") continue;
+                    if(x==="AvgRating") continue;
+                    if(x==="Watches") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Genres",
+            catItemMap: function(d){ return d.data.set_degree; },
+            type: 'interval', intervalScale: 'step'
+        },{ facetTitle: "AvgRating", type: 'interval', layout: 'right'
+        },{ facetTitle: "ReleaseDate", type: 'interval', layout: 'right'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+var movies_radialset = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies_radialset"}] },
+    facets: [
+        {   facetTitle: "Genres",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="Name") continue;
+                    if(x==="ReleaseDate") continue;
+                    if(x==="AvgRating") continue;
+                    if(x==="Watches") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Genres",
+            catItemMap: function(d){ return d.data.set_degree; },
+            type: 'interval', intervalScale: 'step'
+        },{ facetTitle: "AvgRating", type: 'interval', layout: 'right'
+        },{ facetTitle: "ReleaseDate", type: 'interval', layout: 'right'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+
+var mutations = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "Mutations",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"gbm_mutated_top100"}] },
+    facets: [
+        {   facetTitle: "Genes",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="Identifier") continue;
+                    if(x==="id") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Genes",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Identifier; }
+    }
+};
+
+var CpdsVsProteinFam = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "cpds vs protein fam",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinFam", id:'cpd'}] },
+    facets: [
+        {   facetTitle: "Sets",
+
+            catItemMap: function(d){
+                var r=[];
+                if(d.data['']===1) r.push('');
+                if(d.data['Endogenous Protease Inhibitor']===1) r.push('Endogenous Protease Inhibitor');
+                if(d.data['Nuclear Hormone Receptor']===1) r.push('Nuclear Hormone Receptor');
+                if(d.data['Other']===1) r.push('Other');
+                if(d.data['Other Hydrolase']===1) r.push('Other Hydrolase');
+                if(d.data['Other Ligase']===1) r.push('Other Ligase');
+                if(d.data['Other Signal Transducer']===1) r.push('Other Signal Transducer');
+                if(d.data['Other Transcription Regulator']===1) r.push('Other Transcription Regulator');
+                if(d.data['Other Transferase']===1) r.push('Other Transferase');
+                if(d.data['Transcription Factor']===1) r.push('Transcription Factor');
+                if(d.data['Ubiquitin Ligase']===1) r.push('Ubiquitin Ligase');
+                if(d.data['d.data.set_degree = r.length;']===1) r.push('d.data.set_degree = r.length;');
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 45,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.cpd + " -- "+d.data.CPD_SMILES; }
+    }
+};
+
+var CpdsVsProteinTable = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "cpds vs protein table",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinTable", id:''}] },
+    facets: [
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="ALogP") continue;
+                    if(x==="CPD_SMILES") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'log'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data[''] + " -- "+d.data.CPD_SMILES; }
+    }
+};
+
+var countries100 = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 240,
+    itemName: "Countries",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"countries100"}] },
+    facets: [
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="Name") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+var countries = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 240,
+    itemName: "Countries",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"countries"}] },
+    facets: [
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                var r=[];
+                for(x in d.data){
+                    if(x==="Name") continue;
+                    if(d.data[x]==1) r.push(x);
+                }
+                d.data.set_degree = r.length;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+var rand = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "Elements",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"rand"}] },
+    facets:[
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                var r=[];
+                if(d.data['A']===1) r.push('A');
+                if(d.data['B']===1) r.push('B');
+                if(d.data['C']===1) r.push('C');
+                d.data.set_degree = r.length;
+                d.data.r = r;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data[''] + " Sets: "+d.data.r; }
+    }
+};
+
+var socialgraph = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "People",
+    source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"socialgraph", id:"Name"}] },
+    facets:[
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                var r=[];
+                if(d.data['Facebook']===1) r.push('Facebook');
+                if(d.data['Flickr']===1) r.push('Flickr');
+                if(d.data['GMail']===1) r.push('GMail');
+                if(d.data['Google']===1) r.push('Google');
+                if(d.data['LastFM']===1) r.push('LastFM');
+                if(d.data['LinkedIN']===1) r.push('LinkedIN');
+                if(d.data['Twitter']===1) r.push('Twitter');
+                d.data.set_degree = r.length;
+                d.data.r = r;
+                return r;
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){ return d.data.set_degree },
+            type: 'interval', intervalScale: 'step'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+
+google.setOnLoadCallback(function(){
+    $("#set-selector").on("change",function(){
+        switch(this.selectedIndex){
+            case 1: browser = new kshf.Browser(simpsons); return;
+            case 2: browser = new kshf.Browser(fruit); return;
+            case 3: browser = new kshf.Browser(movies); return;
+            case 4: browser = new kshf.Browser(mutations); return;
+            case 5: browser = new kshf.Browser(CpdsVsProteinTable); return;
+            case 6: browser = new kshf.Browser(CpdsVsProteinFam); return;
+            case 7: browser = new kshf.Browser(countries); return;
+            case 8: browser = new kshf.Browser(countries100); return;
+            case 9: browser = new kshf.Browser(rand); return;
+            case 10: browser = new kshf.Browser(socialgraph); return;
+            case 11: browser = new kshf.Browser(movies_radialset); return;
+        }
+    });
+    
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 900px;
+                height: 650px;
+            }
+            #chart_div div.listItem{
+                max-height: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>Load dataset: 
+        <select id="set-selector">
+           <option value="">**</option>
+            <option value="0">Simpsons Characters (6 sets, 1 attributes)</option>
+            <option value="1">Important Information about Fruit (5 sets, 2 attributes)</option>
+            <option value="2">Movies Genres (17 sets, 4 attributes)</option>
+            <option value="3">Mutations in Glioblastoma (100 sets, 1 attributes)</option>
+            <option value="4">Compound - Protein Interaction (100 sets, 3 attributes)</option>
+            <option value="5">Compound - Protein Family Interaction (10 sets, 3 attributes)</option>
+            <option value="6">Exports of Countries by Products (1354 sets, 4 attributes)</option>
+            <option value="7">Exports of Countries by Products (345 sets, 1 attributes)</option>
+            <option value="8">3 Sets, ~2k attributes, randomly distrib. (3 sets, 1 attributes)</option>
+            <option value="9">Social Graph (7 sets, 2 attributes)</option>
+            <option value="10">Movies (From Radial Sets)</option>
+            </select></div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
