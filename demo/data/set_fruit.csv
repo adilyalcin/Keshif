@@ -1,0 +1,11 @@
+;Green;Red;Vegetable;Fruit;Delicious;Taste
+Kiwi;1;0;0;1;0;Sweet
+Cucumber;1;0;1;0;0;Neutral
+Pickle;1;0;1;0;0;Sour
+Apple;1;1;0;1;1;Sweet
+Carrot;0;1;1;0;0;Sweet
+Pepper;1;1;1;0;1;Neutral
+Lemon;0;0;0;1;1;Sour
+Banana;0;0;0;1;1;Mellow
+Strawberry;0;0;0;1;1;Sweet
+Pear;0;0;0;1;1;Sweet
