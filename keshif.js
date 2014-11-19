@@ -1407,7 +1407,7 @@ kshf.List.prototype = {
             .attr("itemID",function(d){return d.id();})
             // store the link to DOM in the data item
             .each(function(d){ d.resultDOM = this; })
-            .on("mouseover",function(d,i){
+            .on("mouseenter",function(d,i){
                 d.highlightAll(true);
                 if(me.hasLinkedItems)
                     d.resultDOM.setAttribute("selectedForLink",true);
@@ -1420,7 +1420,7 @@ kshf.List.prototype = {
                     me.browser.refreshResultPreview();
                 }
             })
-            .on("mouseout",function(d,i){
+            .on("mouseleave",function(d,i){
                 d3.select(this).attr("highlight","false");
                 // find all the things that  ....
                 if(me.hasLinkedItems)
@@ -2248,7 +2248,6 @@ kshf.Browser.prototype = {
                 }
                 var arr = [];
                 var idColumn = sheet.id;
-                var generateUniqueID = idColumn===undefined;
 
                 var config = {};
                 config.dynamicTyping = true;
@@ -2259,8 +2258,7 @@ kshf.Browser.prototype = {
                 var parsedData = Papa.parse(data, config);
 
                 parsedData.data.forEach(function(row,i){
-                    // push unique id as the last column if necessary
-                    if(generateUniqueID) row.push(i);
+                    if(row[idColumn]===undefined) row[idColumn] = i;
                     arr.push(new kshf.Item(row,idColumn));
                 })
 
@@ -3019,7 +3017,7 @@ kshf.Facet_Categorical = function(kshf_, options){
 
 kshf.Facet_Categorical.prototype = {
     hasEntityParent: function(){
-        if(this.parentFacet===undefined) return;
+        if(this.parentFacet===undefined) return; 
         return this.parentFacet.hasAttribs();
     },
     /** -- */
@@ -4107,8 +4105,8 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.attribClickArea = this.dom.attribs.append("span").attr("class", "clickArea")
             .on("click", onFilterAttrib)
-            .on("mouseenter",onMouseOver)
-            .on("mouseleave",onMouseOut)
+            .on("mouseover",onMouseOver)
+            .on("mouseout",onMouseOut)
             .attr("draggable",true)
             .each(function(d){
                 this.addEventListener("dragstart", function( event ) {
