@@ -111,7 +111,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
     }
     &:not(.layout_leftttt){
-//        float: right;
         .hasLabelWidth{ text-align: right; }
         .headerGroup {
             span.header_label_arrow{
@@ -129,9 +128,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > span.attribLabel span.filterButtons{
                 margin-left: 2px;
             }
-            > span.barGroup .bar{
+            > span.barGroup > .bar{
                 .transform-origin(0%, 0%);
-                left: 0px;
             }
             > .item_count_wrapper{
                 padding-left: 3px;
@@ -599,6 +597,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 top: 4px;
                                 width: 1px;
                                 height: 10px;
+                                &.preview_compare{
+                                    width: 2px;
+                                    margin-left: -1px;
+                                }
                             }
                         }
                         .filterButtons{
@@ -723,6 +725,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 width: 1px;
                                 height: 1px;
                                 .transform-origin(0% 100%);
+                                &.preview_compare {
+                                    height: 2px;
+                                }
                             }
                             > .item_count{
                                 top: -1em;
@@ -970,6 +975,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .transform(~'scaleX(0)');
                     &[fast]{
                         .transition(~'transform 200ms ease-in-out');
+                    }
+                }
+                &.preview_compare {
+                    background-color: #222222;
+                    pointer-events: none;
+                    .transition(~'opacity 700ms');
+                    opacity: 1;
+                    &[hidden=true]{
+                        opacity: 0;
                     }
                 }
             }

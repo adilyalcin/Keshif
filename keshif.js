@@ -1844,6 +1844,10 @@ kshf.Browser = function(options){
     this.filterList = [];
     this.pauseResultPreview = false;
 
+    this.resultPreviewActive = false;
+    this.previewIsShown = false;
+    this.refreshPreviewTimeout = null;
+    this.clearPreviewTimeout = null;
 
     this.columnsSkip = options.columnsSkip;
 
@@ -2696,16 +2700,38 @@ kshf.Browser.prototype = {
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
     clearResultPreview: function(){
+        var me=this;
         this.resultPreviewActive = false;
         this.items.forEach(function(item){
             item.updatePreview_Cache = false;
         });
         this.facets.forEach(function(facet){ facet.clearResultPreview(); });
+
+        window.clearTimeout(this.clearPreviewTimeout);
+        window.clearTimeout(this.refreshPreviewTimeout);
+
+        this.clearPreviewTimeout = window.setTimeout(function(){
+            me.previewIsShown = false;
+            me.facets.forEach(function(facet){ facet.clearResultPreview_set(); });
+        },1500);
+
         if(this.previewCb) this.previewCb.call(this,true);
     },
     refreshResultPreview: function(){
+        var me=this;
         this.resultPreviewActive = true;
         this.facets.forEach(function(facet){ facet.refreshResultPreview(); });
+
+        window.clearTimeout(this.clearPreviewTimeout);
+        window.clearTimeout(this.refreshPreviewTimeout);
+
+        if(this.previewIsShown===false){
+            this.refreshPreviewTimeout = window.setTimeout(function(){
+                me.facets.forEach(function(facet){ facet.refreshResultPreview_set(false); });
+                me.previewIsShown = true;
+            },2500);
+        }
+
         if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
@@ -3714,9 +3740,9 @@ kshf.Facet_Categorical.prototype = {
         this.refreshWidth_Bars_Active();
         this.refreshWidth_Bars_Total();
 
-        this.dom.bar_preview.attr("fast",null); // take it slow for result preview animations
+        this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshResultPreview();
-        setTimeout(function(){ me.dom.bar_preview.attr("fast",true); },700);
+        setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
 
         this.refreshChartPreviewAxis();
     },
@@ -3787,7 +3813,7 @@ kshf.Facet_Categorical.prototype = {
     refreshWidth_Bars_Active: function(){
         var me=this;
         // active bar width
-        this.dom.bar_active.each(function(attrib){
+        this.dom.bars_active.each(function(attrib){
             kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.itemCount_Active)+")");
         });
         var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
@@ -3799,19 +3825,35 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     refreshWidth_Bars_Total: function(){
         var me = this;
-        this.dom.bar_total.each(function(attrib){
+        this.dom.bars_total.each(function(attrib){
             kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.items.length)+")");
         });
     },
     /** -- */
+    clearResultPreview_set: function(){
+        this.dom.bars_preview_compare.each(function(attrib){
+            this.setAttribute("hidden",true);
+        });
+    },
+    /** -- */
+    refreshResultPreview_set: function(dontCull){
+        var me=this;
+        this.dom.bars_preview_compare.each(function(attrib){
+            kshf.Util.setTransform(this,"translateX("+
+                me.chartPreviewAxisScale(attrib.cache_preview)+"px)");
+            this.setAttribute('hidden',attrib.cache_preview===0);
+        });
+    },
+    /** -- */
     clearResultPreview: function(dontCull){
+        var me=this;
         if(!this.hasAttribs()) return;
         this.getAttribs().forEach(function(attrib){
             attrib.updatePreview_Cache = false;
         });
         if(this.collapsed) return;
         var me = this;
-        this.dom.bar_preview.each(function(attrib){
+        this.dom.bars_preview.each(function(attrib){
             attrib.itemCount_Preview=0;
             if(attrib.isCulled && dontCull!==true) return;
             if(attrib.cache_preview===0) return;
@@ -3821,10 +3863,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshResultPreview: function(dontCull){
+        var me=this;
         if(!this.hasAttribs()) return;
         if(this.collapsed) return;
-        var me = this;
-        this.dom.bar_preview.each(function(attrib){
+        this.dom.bars_preview.each(function(attrib){
             if(attrib.isCulled && dontCull!==true) return;
             var p=attrib.itemCount_Preview;
             if(me.browser.preview_not) p = attrib.itemCount_Active-p;
@@ -4105,8 +4147,8 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.attribClickArea = this.dom.attribs.append("span").attr("class", "clickArea")
             .on("click", onFilterAttrib)
-            .on("mouseover",onMouseOver)
-            .on("mouseout",onMouseOut)
+            .on("mouseenter",onMouseOver)
+            .on("mouseleave",onMouseOut)
             .attr("draggable",true)
             .each(function(d){
                 this.addEventListener("dragstart", function( event ) {
@@ -4244,17 +4286,19 @@ kshf.Facet_Categorical.prototype = {
         ;
         this.dom.item_count = this.dom.item_count_wrapper.append("span").attr("class", "item_count");
         this.dom.barGroup = this.dom.attribs.append("span").attr("class","barGroup");
-        this.dom.bar_total = this.dom.barGroup.append("span")
+        this.dom.bars_total = this.dom.barGroup.append("span")
             .attr("class", function(d,i){ 
                 return "bar total "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
             });
-    	this.dom.bar_active = this.dom.barGroup.append("span")
+    	this.dom.bars_active = this.dom.barGroup.append("span")
     		.attr("class", function(d,i){ 
     			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		})
             ;
-        this.dom.bar_preview = this.dom.barGroup.append("span")
+        this.dom.bars_preview = this.dom.barGroup.append("span")
             .attr("class", "bar preview").attr("fast",true);
+        this.dom.bars_preview_compare = this.dom.barGroup.append("span")
+            .attr("class", "bar preview_compare").attr("hidden",true);
         this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
 
         this.refreshLabelWidth();
@@ -4791,6 +4835,12 @@ kshf.Facet_Interval.prototype = {
                     ;
             },this);
         }
+
+        // collapse if the mapping is empty
+        // TODO: Make this logic appear earlier and don't deal with the rest of the interface
+        if(this.intervalRange.min===0 && this.intervalRange.max===0){
+            this.setCollapsed(true);
+        }
     },
     updateIntervalWidth: function(w){
         if(this.isEmpty) return;
@@ -4977,6 +5027,8 @@ kshf.Facet_Interval.prototype = {
             .on("mouseout",onMouseOut)
             .on("click",onClick);
         xxxx.append("span").attr("class","bar preview").attr("fast",true);
+        xxxx.append("span").attr("class","bar preview_compare").attr("hidden",true);
+
         xxxx.append("span").attr("class","item_count")
             .on("mouseover",onMouseOver)
             .on("mouseout",onMouseOut)
@@ -4986,6 +5038,7 @@ kshf.Facet_Interval.prototype = {
         this.dom.bars_active = this.dom.histogram_bin.selectAll(".bar.active");
         this.dom.bars_total = this.dom.histogram_bin.selectAll(".bar.total");
         this.dom.bars_preview = this.dom.histogram_bin.selectAll(".bar.preview");
+        this.dom.bars_preview_compare = this.dom.histogram_bin.selectAll(".bar.preview_compare");
 
         this.dom.bars_item_count = this.dom.histogram_bin.selectAll(".item_count");
 
@@ -5258,7 +5311,8 @@ kshf.Facet_Interval.prototype = {
                 "translate("+(me.barWidth/2)+"px,"+(-me.chartPreviewAxisScale(bar.itemCount_Active))+"px)");
         });
     },
-    clearBars_Preview_Scale: function(){
+    clearResultPreview_Bars: function(){
+        var me=this;
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_preview.each(function(bar){
             bar.itemCount_Preview=0;
@@ -5266,13 +5320,38 @@ kshf.Facet_Interval.prototype = {
             kshf.Util.setTransform(this,"scale("+width+",0)");
         });
     },
+    /** -- */
+    clearResultPreview_set: function(){
+        this.dom.bars_preview_compare.each(function(attrib){
+            this.setAttribute("hidden",true);
+        });
+    },
+    /** -- */
+    refreshResultPreview_set: function(){
+        var me=this;
+        if(this.isEmpty) return;
+        if(this.collapsed) return;
+        var chartPreviewAxisScale=this.chartPreviewAxisScale;
+        var preview_not = this.browser.preview_not;
+        var width=this.barWidth-this.barGap*2;
+        var trnsfrm="scale("+width+",";
+        this.dom.bars_preview_compare.each(function(bar){
+            var p=bar.itemCount_Preview;
+            if(preview_not) p = bar.itemCount_Active-bar.itemCount_Preview;
+//            if(p===0) return;
+            kshf.Util.setTransform(this,trnsfrm+"1) translateY(-"+chartPreviewAxisScale(p)+"px)");
+            this.setAttribute('hidden',p===0);
+        });
+    },
     clearResultPreview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        this.clearBars_Preview_Scale();
+        var me=this;
+        this.clearResultPreview_Bars();
         this.refreshQueryPreview();
     },
     refreshResultPreview: function(){
+        var me=this;
         if(this.isEmpty) return;
         if(this.collapsed) return;
         var preview_not = this.browser.preview_not;

@@ -123,13 +123,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf:not(.layout_leftttt) .attrib > span.attribLabel span.filterButtons {
   margin-left: 2px;
 }
-.kshf:not(.layout_leftttt) .attrib > span.barGroup .bar {
+.kshf:not(.layout_leftttt) .attrib > span.barGroup > .bar {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
-  left: 0px;
 }
 .kshf:not(.layout_leftttt) .attrib > .item_count_wrapper {
   padding-left: 3px;
@@ -607,6 +606,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1px;
   height: 10px;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup > .bar.preview_compare {
+  width: 2px;
+  margin-left: -1px;
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons {
   white-space: nowrap;
   cursor: pointer;
@@ -722,6 +725,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 100%;
   -ms-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare {
+  height: 2px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
   top: -1em;
@@ -987,6 +993,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: -moz-transform 200ms ease-in-out;
   -o-transition: -o-transform 200ms ease-in-out;
   transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper .bar.preview_compare {
+  background-color: #222222;
+  pointer-events: none;
+  -webkit-transition: opacity 700ms;
+  -moz-transition: opacity 700ms;
+  -o-transition: opacity 700ms;
+  transition: opacity 700ms;
+  opacity: 1;
+}
+.kshf .kshfChart > .wrapper .bar.preview_compare[hidden=true] {
+  opacity: 0;
 }
 .kshf .kshfChart .subFacets {
   position: relative;
