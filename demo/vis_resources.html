@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Visualization Related Resources</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-60);
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 120,
+        itemName: "Visualization Resources",
+        source : {
+            url: "http://multivis.net/",
+            callback: function(browser){
+                browser.primaryTableName = "Resources";
+
+                kshf.dt.Resources = [];
+                kshf.dt_id.Resources = {};
+
+                $.ajax( {
+                    url: "./data/vis_resources.json",
+                    async: false,
+                    success: function(dataset){
+                        dataset.forEach(function(r){
+                            var kshfItem = new kshf.Item(r,'id');
+                            kshf.dt.Resources.push(kshfItem);
+                            kshf.dt_id.Resources[kshfItem.id()] = kshfItem;
+                        });
+
+                        browser.items = kshf.dt.Resources;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "category",
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{name:'id', inverse: true}],
+            textSearch : "title",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+                return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'><img class='thumbImg'></a>"+
+                    "<span class='title'>"+d.data.title+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",d.data.image_src);
+            }
+        }
+    });
+});
+        </script>
+<style>
+    #chart_div {
+        width: 90%;
+        height: 90px;
+        width: calc(100% - 100px);
+        height: calc(100% - 100px);
+    }
+    .listItem{
+        width: 20%;
+    }
+    .content{
+        padding: 3px;
+    }
+    .thumbnail{
+        height: 105px;
+    }
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+
+            Data from <a href="http://www.visualisingdata.com/index.php/resources/"
+                target='_blank'>VisualizinData.com</a> resources.<br>
+            All rights for the technique images belong to their respective owners.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>

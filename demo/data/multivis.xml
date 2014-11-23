@@ -1,0 +1,1466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<list>
+<item id="Tufte2001" fac="12" gol="R" tec="">
+	<name>Design of data graphics</name>
+	<year>2001</year>
+	<authors>E.R. Tufte</authors>
+	<url>http://www.edwardtufte.com/tufte/books_vdqi</url>
+	<title>The Visual Display of Quantitative Information</title>
+	<publication>2nd ed. Graphics Press, 2001</publication>
+</item>
+<item id="Hansen2004" fac="123" gol="RIA" tec="">
+	<name>Visualization Handbook</name>
+	<year>2004</year>
+	<authors>C. Hansen and C. Johnson, Eds.</authors>
+	<url>http://www.elsevier.com/books/visualization-handbook/hansen/978-0-12-387582-2</url>
+	<title>The Visualization Handbook</title>
+	<publication>Elsevier, 2004</publication>
+</item>
+<item id="MacEachren2004" fac="1" gol="R" tec="">
+	<name>Maps</name>
+	<year>2004</year>
+	<authors>A. MacEachren</authors>
+	<url>http://www.guilford.com/books/How-Maps-Work/Alan-M-MacEachren/9781572300408</url>
+	<title>How Maps Work: Representation, Visualization, and Design</title>
+	<publication>Guilford Press, 2004</publication>
+</item>
+<item id="Andrienko2006" fac="1" gol="RA" tec="">
+	<name>Spatiotemporal analysis</name>
+	<year>2006</year>
+	<authors>N. Andrienko and G. Andrienko</authors>
+	<url>http://www.springer.com/book/978-3-540-25994-7</url>
+	<title>Exploratory analysis of spatial and temporal data: A systematic approach</title>
+	<publication>Springer, 2006</publication>
+</item>
+<item id="Chen2008" fac="12" gol="RA" tec="">
+	<name>Statistical Data Visualization</name>
+	<year>2008</year>
+	<authors>C.-h. Chen, W. H%26auml;rdle, and A. Unwin, Eds.</authors>
+	<url>http://www.springer.com/book/978-3-540-33036-3</url>
+	<title>Handbook of Data Visualization</title>
+	<publication>Springer, 2008</publication>
+</item>
+<item id="Hastie2009" fac="12" gol="A" tec="">
+	<name>Statistical Learning</name>
+	<year>2009</year>
+	<authors>T. Hastie, R. Tibshirani, and J. Friedman</authors>
+	<url>http://statweb.stanford.edu/~tibs/ElemStatLearn</url>
+	<title>The Elements of Statistical Learning</title>
+	<publication>2nd ed. Springer, 2009</publication>
+</item>
+<item id="Ward2010" fac="12" gol="RIA" tec="">
+	<name>Interactive Data Visualization</name>
+	<year>2010</year>
+	<authors>M.O. Ward, G. Grinstein, and D. Keim </authors>
+	<url>http://www.idvbook.com</url>
+	<title>Interactive Data Visualization: Foundations, Techniques, and Applications</title>
+	<publication>A.K. Peters, Ltd, 2010</publication>
+</item>
+<item id="Keim2010" fac="12" gol="RIA" tec="">
+	<name>Visual Analytics</name>
+	<year>2010</year>
+	<authors>D. Keim, J. Kohlhammer, G. Ellis, and F. Mansmann, Eds.</authors>
+	<url>http://www.vismaster.eu/book/</url>
+	<title>Mastering the Information Age: Solving Problems with Visual Analytics</title>
+	<publication>Eurographics Assoc., 2010</publication>
+</item>
+<item id="Aigner2011" fac="1" gol="RIA" tec="">
+	<name>Time-oriented data visualization</name>
+	<year>2011</year>
+	<authors>W. Aigner, S. Miksch, H. Schumann, and C. Tominski</authors>
+	<url>http://timeviz.net</url>
+	<title>Visualization of Time-Oriented Data</title>
+	<publication>Springer, 2011</publication>
+</item>
+<item id="Andrienko2013" fac="1" gol="RA" tec="">
+	<name>Visual Analytics of Movement</name>
+	<year>2013</year>
+	<authors>G. Andrienko, N. Andrienko, P. Bak, D. Keim, and S. Wrobel</authors>
+	<url>http://www.springer.com/book/978-3-642-37582-8</url>
+	<title>Visual Analytics of Movement</title>
+	<publication>Springer, 2013</publication>
+</item>
+<item id="Munzner2014" fac="12" gol="RIA" tec="">
+	<name>Visualization Analysis and Design</name>
+	<year>2014</year>
+	<authors>T. Munzner</authors>
+	<url>http://www.cs.ubc.ca/~tmm/vadbook/</url>
+	<title>Visualization Analysis and Design</title>
+	<publication>A.K. Peters/CRC Press, 2014</publication>
+</item>
+<item id="Wong1997" fac="12" gol="RI" tec="FCNB">
+	<name>Multivariate visualization</name>
+	<year>1997</year>
+	<authors>P.C. Wong and R.D. Bergeron</authors>
+	<url>http://dl.acm.org/citation.cfm?id=725689</url>
+	<title>30 years of multidimensional multivariate visualization</title>
+	<publication>Scientific Visualization: Overviews, Methodologies, and Techniques, pp. 3-33, 1997</publication>
+</item>
+<item id="Keim2002" fac="12" gol="RIA" tec="FCNDBA">
+	<name>Visual data mining</name>
+	<year>2002</year>
+	<authors>D. Keim</authors>
+	<url>http://dx.doi.org/10.1109/2945.981847</url>
+	<title>Information visualization and visual data mining</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 8, no. 1, pp. 1-8, 2002</publication>
+</item>
+<item id="Post2003" fac="1" gol="A" tec="A">
+	<name>Flow feature extraction and tracking</name>
+	<year>2003</year>
+	<authors>F. Post, B. Vrolijk, H. Hauser, R. Laramee, and H. Doleisch</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2003.00723.x</url>
+	<title>The state of the art in flow visualisation: Feature extraction and tracking</title>
+	<publication>Computer Graphics Forum, vol. 22, no. 4, pp. 775-792, 2003</publication>
+</item>
+<item id="Love2005a" fac="4" gol="RA" tec="FCDBA">
+	<name>Visualizing spatial multivalue data</name>
+	<year>2005</year>
+	<authors>A. Love, A. Pang, and D. Kao</authors>
+	<url>http://dx.doi.org/10.1109/MCG.2005.71</url>
+	<title>Visualizing spatial multivalue data</title>
+	<publication>IEEE Computer Graphics and Applications, vol. 25, no. 3, pp. 69-79, 2005</publication>
+</item>
+<item id="Lopez2005" fac="1" gol="A" tec="A">
+	<name>Spatiotemporal aggregation</name>
+	<year>2005</year>
+	<authors>I. L%26oacute;pez, R. Snodgrass, and B. Moon</authors>
+	<url>http://dx.doi.org/10.1109/TKDE.2005.34</url>
+	<title>Spatiotemporal aggregate computation: A survey</title>
+	<publication>IEEE Trans. Knowl. Data Eng., vol. 17, no. 2, pp. 271-286, 2005</publication>
+</item>
+<item id="Hauser2005" fac="12" gol="RI" tec="DB">
+	<name>Generalizing focus+context</name>
+	<year>2005</year>
+	<authors>H. Hauser</authors>
+	<url>http://dx.doi.org/10.1007/3-540-30790-7_18</url>
+	<title>Generalizing focus+context visualization</title>
+	<publication>Scientific Visualization: The Visual Extraction of Knowledge from Data, pp. 305-327, 2005</publication>
+</item>
+<item id="Yi2007" fac="12" gol="I" tec="CNB">
+	<name>The role of interaction</name>
+	<year>2007</year>
+	<authors>J.S. Yi, Y. a. Kang, J.T. Stasko, and J.A. Jacko</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70515</url>
+	<title>Toward a deeper understanding of the role of interaction in information visualization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, no. 6, pp. 1224-1231, 2007</publication>
+</item>
+<item id="Aigner2008" fac="1" gol="RIA" tec="FA">
+	<name>Visual analysis of time-oriented data</name>
+	<year>2008</year>
+	<authors>W. Aigner, S. Miksch, W. M%26uuml;ller, H. Schumann, and C. Tominski</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70415</url>
+	<title>Visual methods for analyzing time-oriented data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 14, no. 1, pp. 47-60, 2008</publication>
+</item>
+<item id="Keim2008" fac="12" gol="IRA" tec="FCNDBA">
+	<name>Visual Analytics</name>
+	<year>2008</year>
+	<authors>D. Keim, G. Andrienko, J.-D. Fekete, C. G%26ouml;rg, J. Kohlhammer, and G. Melan%26ccedil;on</authors>
+	<url>http://dx.doi.org/10.1007/978-3-540-70956-5_7</url>
+	<title>Visual analytics: Definition, process, and challenges</title>
+	<publication>Information Visualization, vol. 4950, pp. 154-175, Springer, 2008</publication>
+</item>
+<item id="Fuchs2009b" fac="23" gol="RI" tec="FCB">
+	<name>Multivariate scientific data vis</name>
+	<year>2009</year>
+	<authors>R. Fuchs and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01429.x</url>
+	<title>Visualization of multivariate scientific data</title>
+	<publication>Computer Graphics Forum, vol. 28, no. 6, pp. 1670-1690, 2009</publication>
+</item>
+<item id="Cockburn2009" fac="12" gol="RI" tec="ND">
+	<name>Overview+detail, zooming, and focus+context</name>
+	<year>2009</year>
+	<authors>A. Cockburn, A. Karlson, and B. Bederson</authors>
+	<url>http://dx.doi.org/10.1145/1456650.1456652</url>
+	<title>A review of overview+detail, zooming, and focus+context interfaces</title>
+	<publication>ACM Computing Surveys, vol. 41, no. 1, pp. 2:1-2:31, 2009</publication>
+</item>
+<item id="Wilson2009" fac="4" gol="RA" tec="FA">
+	<name>Visual analysis of ensemble data</name>
+	<year>2009</year>
+	<authors>A. Wilson and K. Potter</authors>
+	<url>http://dx.doi.org/10.1145/1838544.1838551</url>
+	<title>Toward visual analysis of ensemble data sets</title>
+	<publication>Proc. Ultrascale Visualization Workshop, pp. 48-53, 2009</publication>
+</item>
+<item id="Gleicher2011" fac="1234" gol="RIA" tec="FCA">
+	<name>Comparative visualization</name>
+	<year>2011</year>
+	<authors>M. Gleicher, D. Albers, R. Walker, I. Jusufi, C. Hansen, and J. Roberts</authors>
+	<url>http://dx.doi.org/10.1177/1473871611416549</url>
+	<title>Visual comparison for information visualization</title>
+	<publication>Information Visualization, vol. 10, no. 4, pp. 289–309, 2011</publication>
+</item>
+<item id="Fu2011" fac="1" gol="A" tec="A">
+	<name>Time series data mining</name>
+	<year>2011</year>
+	<authors>T.-C. Fu</authors>
+	<url>http://dx.doi.org/10.1016/j.engappai.2010.09.007</url>
+	<title>A review on time series data mining</title>
+	<publication>Eng. Appl. of Artificial Intelligence, vol. 24, no. 1, pp. 164-181, 2011</publication>
+</item>
+<item id="Brambilla2012" fac="1" gol="R" tec="FD">
+	<name>Illustrative flow visualization</name>
+	<year>2012</year>
+	<authors>A. Brambilla, R. Carnecky, R. Peikert, I. Viola, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.2312/conf/EG2012/stars/075-094</url>
+	<title>Illustrative flow visualization: State of the art, trends and challenges</title>
+	<publication>Eurographics 2012 %26ndash; State of the Art Reports, pp. 75-94, 2012</publication>
+</item>
+<item id="Andrienko2013b" fac="1" gol="RA" tec="FCA">
+	<name>Visual analytics of movement</name>
+	<year>2013</year>
+	<authors>N. Andrienko and G. Andrienko</authors>
+	<url></url>
+	<title>Visual analytics of movement: An overview of methods, tools and procedures</title>
+	<publication>Information Visualization, vol. 12, no. 1, pp. 3-24, 2013</publication>
+</item>
+<item id="Obermaier2014" fac="4" gol="RIA" tec="FCNDBA">
+	<name>Ensemble visualization challenges</name>
+	<year>2014</year>
+	<authors>H. Obermaier and K. Joy</authors>
+	<url>http://dx.doi.org/10.1109/MCG.2014.52</url>
+	<title>Future challenges for ensemble visualization</title>
+	<publication>Computer Graphics and Applications, vol. 34, no. 3, pp. 8-11</publication>
+</item>
+<item id="Tominski2005" fac="12" gol="R" tec="FC">
+	<name>Helix glyphs</name>
+	<year>2005</year>
+	<authors>C. Tominski, P. Schulze-Wollgast, and H. Schumann</authors>
+	<url>http://dx.doi.org/10.1109/IV.2005.3</url>
+	<title>3D information visualization for time-dependent data on maps</title>
+	<publication>Proc. Int'l. Conf. Information Visualization (IV), pp. 175-181, 2005</publication>
+</item>
+<item id="Andrienko2011" fac="1" gol="A" tec="FA">
+	<name>Flow maps</name>
+	<year>2011</year>
+	<authors>N. Andrienko and G. Andrienko</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.44</url>
+	<title>Spatial generalization and aggregation of massive movement data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 2, pp. 205-219, 2011</publication>
+	<related>
+		<entry id="Minard1865">
+			<year>1865</year>
+			<authors>C. Minard</authors>
+			<url></url>
+			<title>Carte figurative et approximative des quantit%26eacute;s de vin fran%26ccedil;ais export%26eacute;s par mer en 1864</title>
+		</entry>
+		<entry id="Phan2005">
+			<year>2005</year>
+			<authors>D. Phan, L. Xiao, R. Yeh, P. Hanrahan, and T. Winograd</authors>
+			<url>http://dx.doi.org/10.1109/INFVIS.2005.1532150</url>
+			<title>Flow map layout</title>
+		</entry>
+	</related>
+</item>
+<item id="Havre2002" fac="1" gol="R" tec="F">
+	<name>ThemeRiver</name>
+	<year>2002</year>
+	<authors>S. Havre, E. Hetzler, P. Whitney, and L. Nowell</authors>
+	<url>http://dx.doi.org/10.1109/2945.981848</url>
+	<title>ThemeRiver: Visualizing thematic changes in large document collections</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 8, no. 1, pp. 9-20, 2002</publication>
+	<related>
+		<entry id="Byron2008">
+			<year>2008</year>
+			<authors>L. Byron and M. Wattenberg</authors>
+			<url>http://dx.doi.org/10.1109/TVCG.2008.166</url>
+			<title>Stacked graphs %26ndash; geometry %26amp; aesthetics</title>
+		</entry>
+	</related>
+</item>
+<item id="Kosara2004" fac="1" gol="R" tec="F">
+	<name>Time Histograms</name>
+	<year>2004</year>
+	<authors>R. Kosara, F. Bendix, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.2312/VisSym/VisSym04/045-054</url>
+	<title>Time Histograms for large, time-dependent data</title>
+	<publication>Proc. Symp. Data Visualization (VisSym), pp. 45-54, 2004</publication>
+</item>
+<item id="Woodring2003" fac="1" gol="R" tec="F">
+	<name>Chronovolumes</name>
+	<year>2003</year>
+	<authors>J. Woodring and H.-W. Shen</authors>
+	<url>http://dx.doi.org/10.1145/827051.827054</url>
+	<title>Chronovolumes: A direct rendering technique for visualizing time-varying data</title>
+	<publication>Proc. Symp. Data Visualization (VisSym), pp. 27-34, 2003</publication>
+</item>
+<item id="Woodring2006" fac="12" gol="RA" tec="FCA">
+	<name>Set and numerical operators</name>
+	<year>2006</year>
+	<authors>J. Woodring and H.-W. Shen</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2006.164</url>
+	<title>Multi-variate, time-varying, and comparative visualization with contextual cues</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 12, pp. 909-916, 2006</publication>
+</item>
+<item id="Joshi2005" fac="1" gol="R" tec="F">
+	<name>Illustrative time visualization</name>
+	<year>2005</year>
+	<authors>A. Joshi and P. Rheingans</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2005.1532857</url>
+	<title>Illustration-inspired techniques for visualizing time-varying data</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 679-686, 2005</publication>
+</item>
+<item id="Svakhine2005" fac="1" gol="R" tec="F">
+	<name>Illustrative flow visualization</name>
+	<year>2005</year>
+	<authors>N.A. Svakhine, Y. Jang, D. Ebert, and K. Gaither</authors>
+	<url>http://dx.doi.org/10.1109/VIS.2005.53</url>
+	<title>Illustration and photography inspired visualization of flows and volumes</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 687-694, 2005</publication>
+</item>	
+<item id="Pagendarm1997" fac="13" gol="RA" tec="FC">
+	<name>Comparative flow visualization</name>
+	<year>1997</year>
+	<authors>H.-G. Pagendarm and F. Post</authors>
+	<url>http://dl.acm.org/citation.cfm?id=725815</url>
+	<title>Studies in comparative visualization of flow features</title>
+	<publication>Scientific Visualization: Overviews, Methodologies, and Techniques, pp. 211-227, 1997</publication>
+</item>
+<item id="Verma2004" fac="13" gol="RA" tec="C">
+	<name>Comparative flow visualization</name>
+	<year>2004</year>
+	<authors>V. Verma and A. Pang</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2004.39</url>
+	<title>Comparative flow visualization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 10, no. 6, pp. 609-624, 2004</publication>
+</item>
+<item id="Saito2005" fac="1" gol="R" tec="CD">
+	<name>Two-tone coloring</name>
+	<year>2005</year>
+	<authors>T. Saito, H.N. Miyamura, M. Yamamoto, H. Saito, Y. Hoshiya, and T. Kaseda</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.2005.1532144</url>
+	<title>Two-tone pseudo coloring: Compact visualization for one-dimensional data</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 173-180, 2005</publication>
+	<related>
+		<entry id="Heer2009">
+			<year>2009</year>
+			<authors>J. Heer, N. Kong, and M. Agrawala</authors>
+			<url>http://dx.doi.org/10.1145/1518701.1518897</url>
+			<title>Sizing the Horizon: The effects of chart size and layering on the graphical perception of time series visualizations</title>
+		</entry>
+	</related>
+</item>
+<item id="JankunKelly2001" fac="1" gol="R" tec="C">
+	<name>Visualization spreadsheets</name>
+	<year>2001</year>
+	<authors>T.J. Jankun-Kelly and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.1109/2945.942695</url>
+	<title>Visualization exploration and encapsulation via a spreadsheet-like interface</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 7, no. 3, pp. 275-287, 2001</publication>
+</item>
+<item id="DaaeLampe2010" fac="12" gol="RA" tec="CA">
+	<name>Interactive difference views</name>
+	<year>2010</year>
+	<authors>O. Daae Lampe, J. Kehrer, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.2312/PE/VMV/VMV10/315-322</url>
+	<title>Visual analysis of multivariate movement data using interactive difference views</title>
+	<publication>Proc. Vision, Modeling, and Visualization (VMV), pp. 315-322, 2010</publication>
+</item>
+<item id="Hao2007" fac="1" gol="RA" tec="DA">
+	<name>Pixel-based multi-resolution techniques</name>
+	<year>2007</year>
+	<authors>M. Hao, D. Keim, U. Dayal, and T. Schreck</authors>
+	<url>http://dx.doi.org/10.2312/VisSym/EuroVis07/027-034</url>
+	<title>Multi-resolution techniques for visual exploration of large time-series data</title>
+	<publication>Proc. Symp. Data Visualization (EuroVis), pp. 27-34, 2007</publication>
+</item>
+<item id="Hochheiser2004" fac="1" gol="I" tec="B">
+	<name>TimeSearcher</name>
+	<year>2004</year>
+	<authors>H. Hochheiser and B. Shneiderman</authors>
+	<url>http://dx.doi.org/10.1145/993176.993177</url>
+	<title>Dynamic query tools for time series data sets: timebox widgets for interactive exploration</title>
+	<publication>Information Visualization, vol. 3, no. 1, pp. 1-18, 2004</publication>
+</item>
+<item id="Buono2005" fac="1" gol="IA" tec="BA">
+	<name>TimeSearcher 2</name>
+	<year>2005</year>
+	<authors>P. Buono, A. Aris, C. Plaisant, A. Khella, and B. Shneiderman</authors>
+	<url>http://www.cs.umd.edu/local-cgi-bin/hcil/rr.pl?number=2004-25</url>
+	<title>Interactive pattern search in time series</title>
+	<publication>Proc. Conf. Visualization and Data Analysis (VDA), pp. 175-18, 2005</publication>
+</item>	
+<item id="Tzeng2005b" fac="1" gol="IA" tec="BA">
+	<name>Machine learning</name>
+	<year>2005</year>
+	<authors>F.-Y. Tzeng and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.1109/SC.2005.37</url>
+	<title>Intelligent feature extraction and tracking for large-scale 4D flow simulations</title>
+	<publication>Proc. Int'l Conf. High Performance Computing, Networking, Storage and Analysis, 2005</publication>
+	<related>
+		<entry id="Ma2007">
+			<year>2007</year>
+			<authors>K.-L. Ma</authors>
+			<url>http://dx.doi.org/10.1109/MCG.2007.129</url>
+			<title>Machine learning to boost the next generation of visualization technology</title>
+		</entry>
+	</related>
+</item>
+<item id="Akiba2006" fac="1" gol="I" tec="FB">
+	<name>Time-dependent transfer function</name>
+	<year>2006</year>
+	<authors>H. Akiba, N. Fout, and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.2312/VisSym/EuroVis06/171-178</url>
+	<title>Simultaneous classification of time-varying volume data based on the Time Histogram</title>
+	<publication>Proc. Symp. Data Visualization (EuroVis), pp. 171-178, 2006</publication>
+</item>
+<item id="Konyha2006" fac="124" gol="I" tec="FDB">
+	<name>Line brushes</name>
+	<year>2006</year>
+	<authors>Z. Konyha, K. Matkovi%26cacute;, D. Gra%26ccaron;anin, M. Jelovi%26cacute;, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2006.99</url>
+	<title>Interactive visual analysis of families of function graphs</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 12, no. 6, pp. 1373-1385, 2006</publication>
+</item>
+<item id="Muigg2008" fac="1" gol="RI" tec="FDB">
+	<name>Multi-level focus+context</name>
+	<year>2008</year>
+	<authors>P. Muigg, J. Kehrer, S. Oeltze, H. Piringer, H. Doleisch, B. Preim, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2008.01207.x</url>
+	<title>A four-level focus+context approach to interactive visual analysis of temporal features in large scientific data</title>
+	<publication>Computer Graphics Forum, vol. 27, no. 3, pp. 775-782, 2008</publication>
+</item>
+<item id="Kehrer2008" fac="12" gol="IA" tec="DBA">
+	<name>Hypothesis generation</name>
+	<year>2008</year>
+	<authors>J. Kehrer, F. Ladst%26auml;dter, P. Muigg, H. Doleisch, A. Steiner, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2008.139</url>
+	<title>Hypothesis generation in climate research with interactive visual data exploration</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 14, no. 6, pp. 1579-1586, 2008</publication>
+</item>
+<item id="Jern2008" fac="12" gol="IA" tec="NDBA">
+	<name>GeoAnalytics tools</name>
+	<year>2008</year>
+	<authors>M. Jern, T. %26Aring;str%26ouml;m, and S. Johansson</authors>
+	<url>http://dx.doi.org/10.1109/IV.2008.27</url>
+	<title>GeoAnalytics tools applied to large geospatial datasets</title>
+	<publication>Proc. Int'l. Conf. Information Visualization (IV), pp. 362-372, 2008</publication>
+</item>
+<item id="Kincaid2010" fac="1" gol="IA" tec="DA">
+	<name>SignalLens</name>
+	<year>2010</year>
+	<authors>R. Kincaid</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.193</url>
+	<title>SignalLens: Focus+context applied to electronic time series</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 6, pp. 900-907, 2010</publication>
+</item>
+<item id="Steinberger2011" fac="123" gol="IA" tec="DA">
+	<name>Context-preserving visual links</name>
+	<year>2011</year>
+	<authors>M. Steinberger, M. Waldner, M. Streit, A. Lex, and D. Schmalstieg</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2011.183</url>
+	<title>Context-preserving visual links</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 12, pp. 2249-2258, 2011</publication>
+</item>
+<item id="vanWijk1999" fac="1" gol="A" tec="A">
+	<name>Cluster and calendar view</name>
+	<year>1999</year>
+	<authors>J. van Wijk and E. van Selow</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.1999.801851</url>
+	<title>Cluster and calendar based visualization of time series data</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 4-9, 1999</publication>
+</item>
+<item id="Nocke2004" fac="1" gol="RA" tec="A">
+	<name>Clustered climate data visualization</name>
+	<year>2004</year>
+	<authors>T. Nocke, H. Schumann, and U. B%26ouml;hm</authors>
+	<url>http://dx.doi.org/10.1007/BF02915277</url>
+	<title>Methods for the visualization of clustered climate data</title>
+	<publication>Computational Statistics, vol. 19, no. 1, pp. 75-94, 2004</publication>
+</item>
+<item id="Woodring2009" fac="1" gol="A" tec="FCBA">
+	<name>Temporal Clustering Visualization Spreadsheet</name>
+	<year>2009</year>
+	<authors>J. Woodring and H.-W. Shen</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2008.69</url>
+	<title>Multiscale time activity data exploration via temporal clustering visualization spread-sheet</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 15, no. 1, pp. 123-137, 2009</publication>
+</item>
+<item id="Agarwal2008" fac="12" gol="A" tec="A">
+	<name>Self-organising maps</name>
+	<year>2008</year>
+	<authors>P. Agarwal and A. Skupin, Eds.</authors>
+	<url>http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470021675.html</url>
+	<title>Self-Organising Maps: Applications in Geographic Information Science</title>
+	<publication>Wiley, 2008</publication>
+	<related>
+		<entry id="Kohonen2001">
+			<year>2001</year>
+			<authors>T. Kohonen</authors>
+			<url>http://www.springer.com/physics/complexity/book/978-3-540-67921-9</url>
+			<title posttext=", 3rd ed. Springer">Self-organizing maps</title>
+		</entry>
+	</related>
+</item>	
+<item id="Andrienko2010" fac="1" gol="A" tec="A">
+	<name>Self-organizing maps</name>
+	<year>2010</year>
+	<authors>G. Andrienko, N. Andrienko, S. Bremm, T. Schreck, T. von Landesberger, P. Bak, and D. Keim</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01664.x</url>
+	<title>Space-in-time and time-in-space self-organizing maps for exploring spatiotemporal patterns</title>
+	<publication>Computer Graphics Forum, vol. 29, no. 3, pp. 913-922, 2010</publication>
+</item>
+<item id="Mueller2006" fac="1" gol="A" tec="A">
+	<name>PCA-based trend analysis</name>
+	<year>2006</year>
+	<authors>W. M%26uuml;ller, T. Nocke, and H. Schumann</authors>
+	<url>http://dl.acm.org/citation.cfm?id=1151903.1151922</url>
+	<title>Enhancing the visualization process with principal component analysis to support the exploration of trends</title>
+	<publication>Proc. Asia Pacific Symp. on Information Visualisation (APVIS '06), pp. 121-130, 2006</publication>
+</item>
+<item id="Oeltze2007" fac="12" gol="IA" tec="BA">
+	<name>PCA-based analysis of perfusion data</name>
+	<year>2007</year>
+	<authors>S. Oeltze, H. Doleisch, H. Hauser, P. Muigg, and B. Preim</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70569</url>
+	<title>Interactive visual analysis of perfusion data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, no. 6, pp. 1392-1399, 2007</publication>
+</item>
+<item id="Willems2010" fac="1" gol="RA" tec="FA">
+	<name>KDE-based visualization of vessel movements</name>
+	<year>2009</year>
+	<authors>N. Willems, H. van de Wetering, and J. van Wijk</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01440.x</url>
+	<title>Visualization of vessel movements</title>
+	<publication>Computer Graphics Forum, vol. 28, num. 3, pp. 959-966, 2009</publication>
+</item>
+<item id="DaaeLampe2011" fac="1" gol="RA" tec="FA">
+	<name>KDE-based visualization of streaming data</name>
+	<year>2011</year>
+	<authors>O. Daae Lampe and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/PACIFICVIS.2011.5742387</url>
+	<title>Interactive visualization of streaming data with kernel density estimation</title>
+	<publication>Proc. IEEE Pacific Visualization Symp., pp. 171-178, 2011</publication>
+</item>
+<item id="Jaenicke2007" fac="12" gol="A" tec="A">
+	<name>Local statistical complexity</name>
+	<year>2007</year>
+	<authors>H. J%26auml;nicke, A. Wiebel, G. Scheuermann, and W. Kollmann</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70615</url>
+	<title>Multifield visualization using local statistical complexity</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, no. 6, pp. 1384-1391, 2007</publication>
+</item>
+<item id="Jaenicke2009" fac="1" gol="A" tec="A">
+	<name>Wavelet Analysis</name>
+	<year>2009</year>
+	<authors>H. J%26auml;nicke, M. B%26ouml;ttinger, U. Mikolajewicz, and G. Scheuermann</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2009.197</url>
+	<title>Visual exploration of climate variability changes using wavelet analysis</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 15, no. 6, pp. 1375-1382, 2009</publication>
+</item>
+<item id="Becker1987" fac="2" gol="RI" tec="FB">
+	<name>Brushing scatterplot matices</name>
+	<year>1987</year>
+	<authors>R. Becker and W. Cleveland</authors>
+	<url>http://dx.doi.org/10.2307/1269768</url>
+	<title>Brushing scatterplots</title>
+	<publication>Technometrics, vol. 29, no. 2, pp. 127-142, 1987</publication>
+</item>
+<item id="Inselberg1985" fac="2" gol="R" tec="F">
+	<name>Parallel coordinates</name>
+	<year>1985</year>
+	<authors>A. Inselberg</authors>
+	<url>http://dx.doi.org/10.1007/BF01898350</url>
+	<title>The plane with parallel coordinates</title>
+	<publication>The Visual Computer, vol. 1, no. 2, pp. 69-91, 1985</publication>
+</item>
+<item id="Treinish1999" fac="2" gol="R" tec="F">
+	<name>Task-specific visualization design</name>
+	<year>1999</year>
+	<authors>L. Treinish</authors>
+	<url>http://dx.doi.org/10.1109/38.788803</url>
+	<title>Task-specific visualization design</title>
+	<publication>IEEE Computer Graphics and Applications, vol. 19, no. 5, pp. 72-77, 1999</publication>
+</item>
+<item id="Treinish2000" fac="23" gol="R" tec="FC">
+	<name>Visual data fusion</name>
+	<year>2000</year>
+	<authors>L. Treinish</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2000.885736</url>
+	<title>Visual data fusion for applications of high-resolution numerical weather prediction</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 477-480, 2000</publication>
+</item>
+<item id="Kirby1999" fac="12" gol="R" tec="F">
+	<name>Layering</name>
+	<year>1999</year>
+	<authors>R. Kirby, H. Marmanis, and D. Laidlaw</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.1999.809905</url>
+	<title>Visualizing multi-valued data from 2D incompressible flows using concepts from painting</title>
+	<publication>Proc. IEEE Visualization, pp. 333-340, 1999</publication>
+</item>
+<item id="Wong2002" fac="12" gol="R" tec="F">
+	<name>Visual fusion</name>
+	<year>2002</year>
+	<authors>P.C. Wong, H. Foote, D.L. Kao, R. Leung, and J. Thomas</authors>
+	<url>http://dx.doi.org/10.1057/palgrave.ivs.9500024</url>
+	<title>Multivariate visualization with data fusion</title>
+	<publication>Information Visualization, vol. 1, no. 3/4, pp. 182-193, 2002</publication>
+</item>
+<item id="Hauser2001" fac="2" gol="R" tec="FD">
+	<name>Two-level volume rendering</name>
+	<year>2001</year>
+	<authors>H. Hauser, L. Mroz, G.-I. Bischi, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/2945.942692</url>
+	<title>Two-level volume rendering</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 7, no. 3, pp. 242-252, 2001</publication>
+	<related>
+		<entry id="Hauser2000">
+			<year>2000</year>
+			<authors>H. Hauser, L. Mroz, G.-I. Bischi, and M.E. Gr%26ouml;ller</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2000.885697</url>
+			<title>Two-level volume rendering %26ndash; fusing MIP and DVR </title>
+		</entry>
+		<entry id="Hadwiger2003a">
+			<year>2003</year>
+			<authors>M. Hadwiger, C. Berger, and H. Hauser</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2003.1250386</url>
+			<title>High-quality two-level volume rendering of segmented data sets on consumer graphics hardware</title>
+		</entry>
+	</related>
+</item>
+<item id="Viola2005" fac="23" gol="R" tec="FD">
+	<name>Importance-driven volume rendering</name>
+	<year>2005</year>
+	<authors>I. Viola, A. Kanitsar, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2005.62</url>
+	<title>Importance-driven feature enhancement in volume visualization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 11, no. 4, pp. 408-418, 2005</publication>
+	<related>
+		<entry id="Viola2004">
+			<year>2004</year>
+			<authors>I. Viola, A. Kanitsar, and M.E. Gr%26ouml;ller</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2004.48</url>
+			<title>Importance-driven volume rendering</title>
+		</entry>
+	</related>
+</item>
+<item id="Rautek2007" fac="2" gol="RI" tec="FDB">
+	<name>Semantic layers</name>
+	<year>2007</year>
+	<authors>P. Rautek, S. Bruckner, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70591</url>
+	<title>Semantic layers for illustrative volume rendering</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, pp. 1336-1343, 2007</publication>
+</item>
+<item id="Healey1999" fac="2" gol="R" tec="F">
+	<name>Combining textures and colors</name>
+	<year>1999</year>
+	<authors>C. Healey and J. Enns</authors>
+	<url>http://dx.doi.org/10.1109/2945.773807</url>
+	<title>Large datasets at a glance: Combining textures and colors in scientific visualization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 5, no. 2, pp. 145-167, 1999</publication>
+</item>
+<item id="Ward2008" fac="2" gol="R" tec="F">
+	<name>Glyph-based visualization</name>
+	<year>2008</year>
+	<authors>M.O. Ward</authors>
+	<url>http://dx.doi.org/10.1007/978-3-540-33037-0_8</url>
+	<title>Multivariate data glyphs: Principles and practice</title>
+	<publication>Handbook of Data Visualization, C.-H. Chen, W. H%26auml;rdle, and A. Unwin, Eds., pp. 179-198. Springer, 2008</publication>
+</item>
+<item id="Ropinski2011" fac="2" gol="RI" tec="F">
+	<name>Glyph-based medical visualization</name>
+	<year>2011</year>
+	<authors>T. Ropinski, S. Oeltze, and B. Preim</authors>
+	<url>http://dx.doi.org/10.1016/j.cag.2011.01.011</url>
+	<title>Survey of glyph-based visualization techniques for spatial multivariate medical data</title>
+	<publication>Computers %26amp; Graphics, vol. 35, no. 2, pp. 392-401, 2011</publication>
+</item>
+<item id="Borgo2013" fac="2" gol="R" tec="F">
+	<name>Glyph-based visualization</name>
+	<year>2013</year>
+	<authors>R. Borgo, J. Kehrer, D.H.S. Chung, E. Maguire, R.S. Laramee, H. Hauser, M.O. Ward, and M. Chen</authors>
+	<url>http://dx.doi.org/10.2312/conf/EG2013/stars/039-063</url>
+	<title>Glyph-based visualization: Foundations, design guidelines, techniques and applications</title>
+	<publication>Eurographics 2013 %26ndash; State of the Art Reports, pp. 39-63, 2013</publication>
+</item>	
+<item id="Kindlmann2004" fac="2" gol="R" tec="F">
+	<name>Tensor glyphs</name>
+	<year>2004</year>
+	<authors>G. Kindlmann</authors>
+	<url>http://dx.doi.org/10.2312/VisSym/VisSym04/147-154</url>
+	<title>Superquadric tensor glyphs</title>
+	<publication>Proc. Symp. Data Visualization (VisSym), pp. 147-154, 2004</publication>
+	<related>
+		<entry id="Kindlmann2006">
+			<year>2006</year>
+			<authors>G. Kindlmann and C.-F. Westin</authors>
+			<url>http://dx.doi.org/10.1109/TVCG.2006.134</url>
+			<title>Diffusion tensor visualization with glyph packing</title>
+		</entry>
+	</related>
+</item>
+<item id="Lie2009" fac="2" gol="R" tec="F">
+	<name>Glyph-based 3D data visualization</name>
+	<year>2009</year>
+	<authors>A.E. Lie, J. Kehrer, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1145/1980462.1980470</url>
+	<title>Critical design and realization aspects of glyph-based 3D data visualization</title>
+	<publication>Proc. Spring Conf. Computer Graphics (SCCG), pp. 27-34, 2009</publication>
+</item>
+<item id="Ward1994" fac="2" gol="RI" tec="CB">
+	<name>XmdvTool</name>
+	<year>1994</year>
+	<authors>M.O. Ward</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.1994.346302</url>
+	<title>XmdvTool: Integrating multiple methods for visualizing multivariate data</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 326-336, 1994</publication>
+</item>
+<item id="Gresh2000" fac="2" gol="RI" tec="CB">
+	<name>WEAVE</name>
+	<year>2000</year>
+	<authors>D. Gresh, B. Rogowitz, R. Winslow, D. Scollan, and C. Yung</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2000.885739</url>
+	<title>WEAVE: A system for visually linking 3D and statistical visualizations applied to cardiac simulation and measurement data</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 489-492, 2000</publication>
+</item>	
+<item id="Stolte2002" fac="12" gol="RIA" tec="CBA">
+	<name>Polaris/Tableau</name>
+	<year>2002</year>
+	<authors>C. Stolte, D. Tang, and P. Hanrahan</authors>
+	<url>http://dx.doi.org/10.1109/2945.981851</url>
+	<title>Polaris: A system for query, analysis, and visualization of multidimensional relational databases</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 8, no. 1, pp. 52-65, 2002</publication>
+	<related>
+		<entry id="Mackinlay2007">
+			<year>2007</year>
+			<authors>J. Mackinlay, P. Hanrahan, and C. Stolte</authors>
+			<url>http://dx.doi.org/10.1109/TVCG.2007.70594</url>
+			<title>Show Me: Automatic presentation for visual analysis</title>
+		</entry>
+	</related>
+</item>	
+<item id="Doleisch2003" fac="12" gol="RI" tec="CDB">
+	<name>SimVis</name>
+	<year>2003</year>
+	<authors>H. Doleisch, M. Gasser, and H. Hauser</authors>
+	<url>http://dl.acm.org/citation.cfm?id=769949</url>
+	<title>Interactive feature specification for focus+context visualization of complex simulation data</title>
+	<publication>Proc. Symp. Data Visualization (VisSym), pp. 239-248, 2003</publication>
+	<related>
+		<entry id="Doleisch2012">
+			<year>2012</year>
+			<authors>H. Doleisch and H. Hauser</authors>
+			<url>http://dx.doi.org/10.1109/MCSE.2012.27</url>
+			<title>Interactive visual exploration and analysis of multivariate simulation data</title>
+		</entry>
+	</related>
+</item>
+<item id="Sauber2006" fac="2" gol="A" tec="CA">
+	<name>Multifield-Graphs</name>
+	<year>2006</year>
+	<authors>N. Sauber, H. Theisel, and H.-P. Seidel</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2006.165</url>
+	<title>Multifield-Graphs: An approach to visualizing correlations in multifield scalar data</title>ouperer
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 12, no. 5, pp. 917-924, 2006</publication>
+</item>
+<item id="Asimov1985" fac="2" gol="A" tec="NA">
+	<name>The grand tour</name>
+	<year>1985</year>
+	<authors>D. Asimov</authors>
+	<url>http://dx.doi.org/10.1137/0906011</url>
+	<title>The grand tour: A tool for viewing multidimensional data</title>
+	<publication>SIAM J. Scientific and Statistical Computing, vol. 6, pp. 128-143, 1985</publication>
+	<related>
+		<entry id="Cook1995">
+			<year>1995</year>
+			<authors>D. Cook, A. Buja, J. Cabrera, and C. Hurley</authors>
+			<url>http://dx.doi.org/10.2307/1390844</url>
+			<title>Grand tour and projection pursuit</title>
+		</entry>
+	</related>
+</item>
+<item id="Elmqvist2008" fac="2" gol="I" tec="N">
+	<name>ScatterDice</name>
+	<year>2008</year>
+	<authors>N. Elmqvist, P. Dragicevic, and J.-D. Fekete</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2008.153</url>
+	<title>Rolling the dice: Multidimensional visual exploration using scatterplot matrix navigation</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 14, no. 6, pp. 1539-1148, 2008</publication>
+</item>
+<item id="Seo2004" fac="2" gol="A" tec="NA">
+	<name>Rank-by-feature framework</name>
+	<year>2004</year>
+	<authors>J. Seo and B. Shneiderman</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.2004.3</url>
+	<title>A rank-by-feature framework for unsupervised multidimensional data exploration using low dimensional projections</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 65-72, 2004</publication>
+</item>
+<item id="Wilkinson2005" fac="2" gol="A" tec="NA">
+	<name>Scagnostics</name>
+	<year>2005</year>
+	<authors>L. Wilkinson, A. Anand, and R. Grossman</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.2005.1532142</url>
+	<title>Graph-theoretic scagnostics</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 157-164, 2005</publication>
+</item>
+<item id="Johansson2009" fac="2" gol="IA" tec="NA">
+	<name>Quality metrics</name>
+	<year>2009</year>
+	<authors>S. Johansson and J. Johansson</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2009.153</url>
+	<title>Interactive dimensionality reduction through user-defined combinations of quality metrics</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 15, no. 6, pp. 993-1000, 2009</publication>
+</item>
+<item id="Tatu2011" fac="2" gol="A" tec="NA">
+	<name>Ranking and quality metrics</name>
+	<year>2011</year>
+	<authors>A. Tatu, G. Albuquerque, M. Eisemann, P. Bak, H. Theisel, M. Magnor, and D. Keim</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.242</url>
+	<title>Automated analytical methods to support visual exploration of high-dimensional data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 5, pp. 584-597, 2011</publication>
+</item>
+<item id="Bertini2011" fac="2" gol="A" tec="NA">
+	<name>Ranking and quality metrics</name>
+	<year>2011</year>
+	<authors>E. Bertini, A. Tatu, and D. Keim</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2011.229</url>
+	<title>Quality metrics in high-dimensional data visualization: An overview and systematization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 12, pp. 2203-2212, 2011</publication>
+</item>
+<item id="Viola2006" fac="23" gol="A" tec="NDA">
+	<name>Viewpoint selection</name>
+	<year>2006</year>
+	<authors>I. Viola, M. Feixas, M. Sbert, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2006.152</url>
+	<title>Importance-driven focus of attention</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 12, pp. 933-940, 2006</publication>
+</item>
+<item id="Novotny2006" fac="2" gol="RA" tec="DA">
+	<name>Outlier-preserving focus+context</name>
+	<year>2006</year>
+	<authors>M. Novotn%26yacute; and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2006.170</url>
+	<title>Outlier-preserving focus+context visualization in parallel coordinates</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 12, no. 5, pp. 893-900, 2006</publication>
+</item>
+<item id="Hauser2002" fac="2" gol="I" tec="B">
+	<name>Angular brushing</name>
+	<year>2002</year>
+	<authors>H. Hauser, F. Ledermann, and H. Doleisch</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.2002.1173157</url>
+	<title>Angular brushing of extended parallel coordinates</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 127-130, 2002</publication>
+</item>
+<item id="Doleisch2002" fac="2" gol="I" tec="DB">
+	<name>Smooth brushing</name>
+	<year>2002</year>
+	<authors>H. Doleisch and H. Hauser</authors>
+	<url>http://www.vrvis.at/publications/PB-VRVis-2002-009</url>
+	<title>Smooth brushing for focus+context visualization of simulation data in 3D</title>
+	<publication>J. WSCG, vol. 10, no. 1, pp. 147-154, 2002</publication>
+</item>
+<item id="Weaver2010" fac="2" gol="I" tec="B">
+	<name>Cross-filtered views</name>
+	<year>2010</year>
+	<authors>C. Weaver</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2009.94</url>
+	<title>Cross-filtered views for multidimensional visual analysis</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 2, pp. 192-204, 2010</publication>
+	<related>
+		<entry id="Weaver2008">
+			<year>2008</year>
+			<authors>C. Weaver</authors>
+			<url>http://dx.doi.org/10.1109/VAST.2008.4677370</url>
+			<title>Multidimensional visual analysis using cross-filtered views</title>
+		</entry>
+	</related>
+</item>
+<item id="Kniss2002" fac="2" gol="I" tec="B">
+	<name>Multi-dimensional transfer functions</name>
+	<year>2002</year>
+	<authors>J. Kniss, G. Kindlmann, and C. Hansen</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2002.1021579</url>
+	<title>Multi-dimensional transfer functions for interactive volume rendering</title>
+	<publication>IEEE Trans. Vis. Comput. Graph., vol. 8, no. 3, pp. 270-285, 2002</publication>
+	<related>
+		<entry id="Kniss2001">
+			<year>2001</year>
+			<authors>J. Kniss, G. Kindlmann, and C. Hansen</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2001.964519</url>
+			<title>Interactive volume rendering using multi-dimensional transfer functions and direct manipulation widgets</title>
+		</entry>
+		<entry id="Kniss2002b">
+			<year>2002</year>
+			<authors>J. Kniss, C. Hansen, M. Grenier, and T. Robinson</authors>
+			<url>http://dl.acm.org/citation.cfm?id=509770</url>
+			<title>Volume rendering multivariate data to visualize meteorological simulations: A case study</title>
+		</entry>
+	</related>
+</item><item id="Tzeng2005" fac="2" gol="IA" tec="BA">
+	<name>Machine learning</name>
+	<year>2005</year>
+	<authors>F.-Y. Tzeng, E. Lum, and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2005.38</url>
+	<title>An intelligent system approach to higher-dimensional classification of volume data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 11, no. 3, pp. 273-284, 2005</publication>
+	<related>
+		<entry id="Tzeng2003">
+			<year>2003</year>
+			<authors>F.-Y. Tzeng, E.B. Lum, and K.-L. Ma</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2003.1250413</url>
+			<title>A novel interface for higher-dimensional classification of volume data</title>
+		</entry>
+		<entry id="Ma2007">
+			<year>2007</year>
+			<authors>K.-L. Ma</authors>
+			<url>http://dx.doi.org/10.1109/MCG.2007.129</url>
+			<title>Machine learning to boost the next generation of visualization technology</title>
+		</entry>
+	</related>
+</item>
+<item id="Fuchs2009" fac="2" gol="IA" tec="BA">
+	<name>Human+machine learning</name>
+	<year>2009</year>
+	<authors>R. Fuchs, J. Waser, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2009.199</url>
+	<title>Visual human+machine learning</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 15, no. 6, pp. 1327-1334, 2009</publication>
+</item>
+<item id="Johansson2005" fac="2" gol="A" tec="A">
+	<name>Clustered parallel coordinates</name>
+	<year>2005</year>
+	<authors>J. Johansson, P. Ljung, M. Jern, and M. Cooper</authors>
+	<url>http://dx.doi.org/10.1109/INFVIS.2005.1532138</url>
+	<title>Revealing structure within clustered parallel coordinates displays</title>
+	<publication>Proc. IEEE Symp. Information Visualization, pp. 125-132, 2005</publication>
+</item>
+<item id="Morrison2003" fac="2" gol="A" tec="A">
+	<name>Multidimensional scaling</name>
+	<year>2003</year>
+	<authors>A. Morrison, G. Ross, and M. Chalmers</authors>
+	<url>http://dx.doi.org/10.1057/palgrave.ivs.9500040</url>
+	<title>Fast multidimensional scaling through sampling, springs and interpolation</title>
+	<publication>Information Visualization, vol. 2, no. 1, pp. 68-77, 2003</publication>
+</item>
+<item id="Buja2008" fac="2" gol="A" tec="A">
+	<name>Multidimensional scaling</name>
+	<year>2008</year>
+	<authors>A. Buja, D. Swayne, M. Littman, N. Dean, H. Hofmann, and L. Chen</authors>
+	<url>http://dx.doi.org/10.1198/106186008X318440</url>
+	<title>Data visualization with multidimensional scaling</title>
+	<publication>J. Computational and Graphical Statistics, vol. 17, no. 2, pp. 444-472, 2008</publication>
+</item>
+<item id="Jaenicke2008" fac="2" gol="IA" tec="BA">
+	<name>Attribute clouds</name>
+	<year>2008</year>
+	<authors>H. J%26auml;nicke, M. B%26ouml;ttinger, and G. Scheuermann</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2008.116</url>
+	<title>Brushing of attribute clouds for the visualization of multivariate data</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 14, no. 6, pp. 1459-1466, 2008</publication>
+</item>
+<item id="Treinish1995" fac="3" gol="R" tec="F">
+	<name>Scattered data</name>
+	<year>1995</year>
+	<authors>L. Treinish</authors>
+	<url>http://dx.doi.org/10.1109/38.391486</url>
+	<title>Visualization of scattered meteorological data</title>
+	<publication>IEEE Computer Graphics and Applications, vol. 15, no. 4, pp. 20-26, 1995</publication>
+	<related>
+		<entry id="Treinish1994">
+			<year>1994</year>
+			<authors>L. Treinish</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.1994.346298</url>
+			<title>Severe rainfall events in Northwestern Peru</title>
+		</entry>
+	</related>
+</item>
+<item id="Treinish1998" fac="3" gol="R" tec="F">
+	<name>Function-based data model</name>
+	<year>1998</year>
+	<authors>L. Treinish</authors>
+	<url></url>
+	<title>A function-based data model for visualization</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 73-76, 1998</publication>
+</item>
+<item id="Cai1999" fac="3" gol="IR" tec="FB">
+	<name>Data intermixing</name>
+	<year>1999</year>
+	<authors>W. Cai and G. Sakas</authors>
+	<url>http://dx.doi.org/10.1111/1467-8659.00356</url>
+	<title>Data intermixing and multivolume rendering</title>
+	<publication>Computer Graphics Forum, vol. 18, no. 3, pp. 359-368, 1999</publication>
+</item>
+<item id="Beyer2007" fac="3" gol="RI" tec="FD">
+	<name>Multimodal volume rendering</name>
+	<year>2007</year>
+	<authors>J. Beyer, M. Hadwiger, S. Wolfsberger, and K. B%26uuml;hler</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70560</url>
+	<title>High-quality multimodal volume rendering for preoperative planning of neurosurgical interventions</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, no. 6, pp. 1696-1703, 2007</publication>
+	<related>
+		<entry id="Hadwiger2003b">
+			<year>2003</year>
+			<authors>M. Hadwiger, C. Berger, and H. Hauser</authors>
+			<url>http://dx.doi.org/10.1109/VISUAL.2003.1250386</url>
+			<title>High-quality two-level volume rendering of segmented data sets on consumer graphics hardware</title>
+		</entry>
+	</related>
+</item>
+<item id="Grimm2004" fac="3" gol="R" tec="FB">
+	<name>Multi-volume rendering</name>
+	<year>2004</year>
+	<authors>S. Grimm, S. Bruckner, A. Kanitsar, and M.E. Gr%26ouml;ller</authors>
+	<url>http://www.cg.tuwien.ac.at/research/publications/2004/GRIMM-2004-FDMX-P/</url>
+	<title>Flexible direct multi-volume rendering in interactive scenes</title>
+	<publication>Proc. Vision, Modeling, and Visualization (VMV), pp. 386-379, 2004</publication>
+</item>
+<item id="Plate2007" fac="3" gol="R" tec="F">
+	<name>Multi-volume shader framework</name>
+	<year>2007</year>
+	<authors>J. Plate, T. Holtk%26auml;mper, and B. Fr%26ouml;hlich</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2007.70534</url>
+	<title>A flexible multi-volume shader framework for arbitrarily intersecting multi-resolution datasets</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 13, no. 6, pp. 1584-1591, 2007</publication>
+</item>
+<item id="Lindholm2009" fac="3" gol="R" tec="F">
+	<name>Multi-volume rendering using BSP</name>
+	<year>2009</year>
+	<authors>S. Lindholm, P. Ljung, M. Hadwiger, and A. Ynnerman</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01465.x</url>
+	<title>Fused multi-volume DVR using binary space partitioning</title>
+	<publication>Computer Graphics Forum, vol. 28, no. 3, pp. 847-854, 2009</publication>
+</item>
+<item id="Burns2007" fac="3" gol="R" tec="FD">
+	<name>Contextual cutaways</name>
+	<year>2007</year>
+	<authors>M. Burns, M. Haidacher, W. Wein, I. Viola, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.2312/VisSym/EuroVis07/275-282</url>
+	<title>Feature emphasis and contextual cutaways for multimodal medical visualization</title>
+	<publication>Proc. Symp. Data Visualization (EuroVis), pp. 275-282, 2007</publication>
+</item>
+<item id="Pluim2003" fac="3" gol="A" tec="A">
+	<name>Multimodal registration</name>
+	<year>2003</year>
+	<authors>J.P.W. Pluim, J.B.A. Maintz, and M.A. Viergever</authors>
+	<url>http://dx.doi.org/10.1109/TMI.2003.815867</url>
+	<title>Mutual-information-based registration of medical images: A survey</title>
+	<publication>IEEE Trans. Medical Imaging, vol. 22, no. 8, pp. 986-1004, 2003</publication>
+</item>
+<item id="Ardeshir2005" fac="3" gol="A" tec="A">
+	<name>Multimodal registration</name>
+	<year>2005</year>
+	<authors>A. Ardeshir Goshtasby</authors>
+	<url>http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0471649546.html</url>
+	<title>2D and 3D image registration for medical, remote sensing, and industrial applications</title>
+	<publication>Wiley, 2005</publication>
+</item>
+<item id="Sahasrabudhe1999" fac="3" gol="A" tec="CA">
+	<name>Image and data comparison metrics</name>
+	<year>1999</year>
+	<authors>N. Sahasrabudhe, J. West, R. Machiraju, and M. Janus</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.1999.809873</url>
+	<title>Structured spatial domain image and data comparison metrics</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 97-515, 1999</publication>
+</item>
+<item id="Zhou2002" fac="3" gol="A" tec="CA">
+	<name>Image comparison metrics</name>
+	<year>2002</year>
+	<authors>H. Zhou, M. Chen, and M. Webster</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2002.1183790</url>
+	<title>Comparative evaluation of visualization and experimental results using image comparison metrics</title>
+	<publication>Proc. IEEE Visualization, pp. 315-322, 2002</publication>
+</item>
+<item id="Kim2001" fac="3" gol="A" tec="CA">
+	<name>Image and data comparison metrics</name>
+	<year>2001</year>
+	<authors>K. Kim, C. Wittenbrink, and A. Pang</authors>
+	<url>http://dx.doi.org/10.1109/2945.965345</url>
+	<title>Extended specifications and test data sets for data level comparisons of direct volume rendering algorithms</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 7, no. 4, pp. 299-317, 2001</publication>
+</item>
+<item id="Malik2010" fac="3" gol="R" tec="FC">
+	<name>Multi-image view</name>
+	<year>2010</year>
+	<authors>M. Malik, C. Heinzl, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.20</url>
+	<title>Comparative visualization for parameter studies of dataset series</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 5, pp. 829-840, 2010</publication>
+</item>
+<item id="Nocke2007" fac="34" gol="RI" tec="FC">
+	<name>Comparison of climate data</name>
+	<year>2007</year>
+	<authors>T. Nocke, M. Flechsig, and U. B%26ouml;hm</authors>
+	<url>http://dx.doi.org/10.1109/WSC.2007.4419664</url>
+	<title>Visual exploration and evaluation of climate-related simulation data</title>
+	<publication>Proc. Winter Simulation Conf., pp. 703-711, 2007</publication>
+</item>
+<item id="Weigle2005" fac="3" gol="R" tec="FC">
+	<name>Nested surfaces</name>
+	<year>2005</year>
+	<authors>C. Weigle and R. Taylor II</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2005.1532835</url>
+	<title>Visualizing intersecting surfaces with nested-surface techniques</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 503-510, 2005</publication>
+</item>
+<item id="Busking2011" fac="3" gol="R" tec="FC">
+	<name>Comparison of nested surfaces</name>
+	<year>2011</year>
+	<authors>S. Busking, C. Botha, L. Ferrarini, J. Milles, and F. Post</authors>
+	<url>http://dx.doi.org/10.1007/s00371-010-0541-z</url>
+	<title>Image-based rendering of intersecting surfaces for dynamic comparative visualization</title>
+	<publication>The Visual Computer, vol. 27, pp. 347-363, 2011</publication>
+</item>
+<item id="Haidacher2011" fac="3" gol="A" tec="BA">
+	<name>Surface similarity</name>
+	<year>2011</year>
+	<authors>M. Haidacher, S. Bruckner, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2011.258</url>
+	<title>Volume analysis using multimodal surface similarity</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 12, pp. 1969-1978, 2011</publication>
+	<related>
+		<entry id="Bruckner2010">
+			<year>2010</year>
+			<authors>S. Bruckner and T. M%26ouml;ller</authors>
+			<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01689.x</url>
+			<title>Isosurface similarity maps</title>
+		</entry>
+	</related>	
+</item>
+<item id="Kao2001" fac="4" gol="R" tec="F">
+	<name>Box plot extension</name>
+	<year>2001</year>
+	<authors>D. Kao, J. Dungan, and A. Pang</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2001.964550</url>
+	<title>Visualizing 2D probability distributions from EOS satellite image-derived data sets: A case study</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 457-460, 2001</publication>
+</item>
+<item id="Potter2010" fac="4" gol="R" tec="F">
+	<name>Summary plot</name>
+	<year>2010</year>
+	<authors>K. Potter, J. Kniss, R. Riesenfeld, and C. Johnson</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01677.x</url>
+	<title>Visualizing summary statistics and uncertainty</title>
+	<publication>Computer Graphics Forum, vol. 29, no. 3, pp. 823-832, 2010</publication>
+</item>
+<item id="Hoellt2014" fac="4" gol="R" tec="F">
+	<name>Ovis</name>
+	<year>2014</year>
+	<authors>T. H%26ouml;llt, A. Magdy, P. Zhan, G. Chen, G. Gopalakrishnan, I. Hoteit, C. Hansen, and M. Hadwiger</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2014.2307892</url>
+	<title>Ovis: A framework for visual analysisof ocean forecast ensembles</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 20, no. 8, pp. 1114-1126, 2014</publication>
+	<related>
+		<entry id="Hoellt2013">
+			<year>2013</year>
+			<authors>T. H%26ouml;llt et al.</authors>
+			<url>http://dx.doi.org/10.1109/PacificVis.2013.6596144</url>
+			<title>Visual analysis of uncertainties in ocean forecasts for planning and operation of off-shore structures</title>
+		</entry>
+	</related>
+</item>
+<item id="Whitaker2013" fac="4" gol="R" tec="F">
+	<name>Contour boxplots</name>
+	<year>2013</year>
+	<authors>R.T. Whitaker, M. Mirzargar, and R.M. Kirby</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2013.143</url>
+	<title>Contour boxplots: A method for characterizing uncertainty in feature sets from simulation ensembles</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 19, no. 12, pp. 2713-2722, 2013</publication>
+</item>
+<item id="Mirzargar2014" fac="4" gol="R" tec="F">
+	<name>Curve boxplot</name>
+	<year>2014</year>
+	<authors>M. Mirzargar, R.T. Whitaker, and R.M. Kirby</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2014.2346455</url>
+	<title>Curve boxplot: Generalization of boxplot for ensembles of curves</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 20, no. 12, 2014</publication>
+</item>
+<item id="Kao2001b" fac="4" gol="R" tec="F">
+	<name>Shape descriptors</name>
+	<year>2001</year>
+	<authors>D. Kao, J. Dungan, and A. Pang</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.2001.964550</url>
+	<title>Visualizing 2D probability distributions from EOS satellite image-derived data sets: A case study</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 457-460, 2001</publication>
+</item>
+<item id="Kao2002" fac="4" gol="R" tec="F">
+	<name>Density estimates</name>
+	<year>2002</year>
+	<authors>D. Kao, A. Luo, J. Dungan, and A. Pang</authors>
+	<url>http://dx.doi.org/10.1109/IV.2002.1028780</url>
+	<title>Visualizing spatially varying distribution data</title>
+	<publication>Proc. Int’l. Conf. Information Visualization (IV), pp. 219-225, 2002</publication>
+</item>
+<item id="Love2005" fac="4" gol="RA" tec="A">
+	<name>Procedural operators</name>
+	<year>2005</year>
+	<authors>A. Love, A. Pang, and D. Kao</authors>
+	<url>http://dx.doi.org/10.1109/MCG.2005.71</url>
+	<title>Visualizing spatial multivalue data</title>
+	<publication>IEEE Computer Graphics and Applications, vol. 25, no. 3, pp. 69-79, 2005</publication>
+</item>
+<item id="Diggle2002" fac="4" gol="R" tec="F">
+	<name>Spaghetti plots</name>
+	<year>2002</year>
+	<authors>P. Diggle, P. Heagerty, K.-Y. Liang, and S. Zeger</authors>
+	<url></url>
+	<title pretext="In ">Analysis of longitudinal data</title>
+	<publication>Oxford University Press, 2002</publication>
+	<related>
+		<entry id="Potter2009a">
+			<year>2009</year>
+			<authors>K. Potter et al.</authors>
+			<url>http://dx.doi.org/10.1109/ICDMW.2009.55</url>
+			<title>EnsembleVis: a framework for the statistical visualization of ensemble data</title>
+		</entry>
+	</related>
+</item>
+<item id="Potter2009" fac="4" gol="RA" tec="FA">
+	<name>EnsembleVis</name>
+	<year>2009</year>
+	<authors>K. Potter, A. Wilson, P.-T. Bremer, D. Williams, C. Doutriaux, V. Pascucci, and C. Johnson</authors>
+	<url>http://dx.doi.org/10.1109/ICDMW.2009.55</url>
+	<title>EnsembleVis: a framework for the statistical visualization of ensemble data</title>
+	<publication>Proc. IEEE Int'l. Conf. on Data Mining Workshops, pp. 233-240, 2009</publication>
+</item>
+<item id="Sanyal2010" fac="4" gol="R" tec="F">
+	<name>Noodles</name>
+	<year>2010</year>
+	<authors>J. Sanyal, S. Zhang, J. Dyer, A. Mercer, P. Amburn, and R. Moorhead</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.181</url>
+	<title>Noodles: A tool for visualization of numerical weather model ensemble uncertainty</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 6, pp. 1421-1430, 2010</publication>
+</item>
+<item id="Pfaffelmoser2011" fac="4" gol="R" tec="F">
+	<name>Isosurface uncertainty visualization</name>
+	<year>2011</year>
+	<authors>T. Pfaffelmoser, M. Reitinger, and R. Westermann</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2011.01944.x</url>
+	<title>Visualizing the positional and geometrical variability of isosurfaces in uncertain scalar fields</title>
+	<publication>Computer Graphics Forum, vol. 30, no. 3, pp. 951-960, 2011</publication>
+</item>
+<item id="Pfaffelmoser2013" fac="4" gol="RA" tec="FA">
+	<name>Gradient uncertainty visualization</name>
+	<year>2013</year>
+	<authors>T. Pfaffelmoser, M. Mihai, and R. Westermann</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2013.92</url>
+	<title>Visualizing the variability of gradients in uncertain 2D scalar fields </title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 19, no. 11, pp. 1948-1961, 2013</publication>
+</item>
+<item id="Alabi2012" fac="4" gol="R" tec="FC">
+	<name>Surface slicing</name>
+	<year>2012</year>
+	<authors>O.S. Alabi, X. Wu, J.M. Harter, M. Phadke, L. Pinto, H. Petersen, S. Bass, M. Keifer, S. Zhong, C.G. Healey, and R.M. Taylor</authors>
+	<url>http://dx.doi.org/10.1117/12.908288</url>
+	<title>Comparative visualization of ensembles using ensemble surface slicing</title>
+	<publication>Proc. SPIE 8294, Visualization and Data Analysis, vol. 8294, 2012</publication>
+</item>
+<item id="Sedlmair2014" fac="4" gol="IA" tec="NA">
+	<name>Parameter space analysis</name>
+	<year>2014</year>
+	<authors>M. Sedlmair, C. Heinzl, S. Bruckner, H. Piringer, T. M%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2014.2346321</url>
+	<title>Visual parameter space analysis: A conceptual framework</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 20, no. 12, 2014</publication>
+</item>	
+<item id="Matkovic2009" fac="4" gol="RIA" tec="FCNDBA">
+	<name>Families of data surfaces</name>
+	<year>2009</year>
+	<authors>K. Matkovi%26cacute;, D. Gra%26ccaron;anin, B. Klarin, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2009.155</url>
+	<title>Interactive visual analysis of complex scientific data as families of data surfaces</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 15, no. 6, pp. 1351-1358, 2009</publication>
+</item>
+<item id="Matkovic2010" fac="4" gol="I" tec="NDB">
+	<name>Simulation model view</name>
+	<year>2010</year>
+	<authors>K. Matkovi%26cacute;, D. Gra%26ccaron;anin, M. Jelovi%26cacute;, A. Ammer, A. Le%26zcaron;, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.171</url>
+	<title>Interactive visual analysis of multiple simulation runs using the simulation model view</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 6, pp. 1449-1457, 2010</publication>
+</item>
+<item id="Unger2009" fac="4" gol="I" tec="CD">
+	<name>Simulation process visualization</name>
+	<year>2009</year>
+	<authors>A. Unger and H. Schumann</authors>
+	<url>http://dx.doi.org/10.1109/PACIFICVIS.2009.4906838</url>
+	<title>Visual support for the understanding of simulation processes</title>
+	<publication>Proc. IEEE Pacific Visualization Symp., pp. 57-64, 2009</publication>
+</item>
+<item id="Matkovic2008" fac="4" gol="I" tec="NB">
+	<name>Visual steering</name>
+	<year>2008</year>
+	<authors>K. Matkovi%26cacute;, D. Gra%26ccaron;anin, M. Jelovi%26cacute;, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2008.145</url>
+	<title>Interactive visual steering %26ndash; rapid visual prototyping of a common rail injection system</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 14, no. 6, pp. 1699-1706, 2008</publication>
+</item>
+<item id="Waser2010" fac="4" gol="I" tec="CNB">
+	<name>World lines</name>
+	<year>2010</year>
+	<authors>J. Waser, R. Fuchs, H. Ribicic, B. Schindler, G. Bl%26ouml;schl, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.223</url>
+	<title>World lines</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 6, pp. 1458-1467, 2010</publication>
+</item>
+<item id="Waser2011" fac="4" gol="I" tec="CNDB">
+	<name>Nodes on Ropes</name>
+	<year>2011</year>
+	<authors>J. Waser, H. Ribi%26ccaron;i%26cacute;, R. Fuchs, C. Hirsch, B. Schindler, G. Blöschl, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2011.225</url>
+	<title>Nodes on ropes: A comprehensive data and control flow for steering ensemble simulations</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 12, pp. 1872-1881, 2011</publication>
+	<related>
+		<entry id="Schindler2013">
+			<year>2013</year>
+			<authors>B. Schindler, J. Waser, H. Ribi%26ccaron;i%26cacute;, R. Fuchs, and R. Peikert</authors>
+			<url>http://dx.doi.org/10.1109/TVCG.2012.296</url>
+			<title>Multiverse data-flow control </title>
+		</entry>
+	</related>
+</item>  
+<item id="Kehrer2010" fac="4" gol="IA" tec="CNDBA">
+	<name>Brushing moments</name>
+	<year>2010</year>
+	<authors>J. Kehrer, P. Filzmoser, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01697.x</url>
+	<title>Brushing moments in interactive visual analysis</title>
+	<publication>Computer Graphics Forum, vol. 29, no. 3, pp. 813-822, 2010</publication>
+</item>
+<item id="Kehrer2011" fac="4" gol="RIA" tec="FCNDBA">
+	<name>Heterogeneous data analysis</name>
+	<year>2011</year>
+	<authors>J. Kehrer, P. Muigg, H. Doleisch, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.111</url>
+	<title>Interactive visual analysis of heterogeneous scientific data across an interface</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 7, pp. 934-946, 2011</publication>
+</item>
+<item id="VanWijk1993" fac="4" gol="I" tec="NA">
+	<name>HyperSlice</name>
+	<year>1993</year>
+	<authors>J. van Wijk and R. van Liere</authors>
+	<url>http://dx.doi.org/10.1109/VISUAL.1993.398859</url>
+	<title>HyperSlice: Visualization of scalar functions of many variables</title>
+	<publication>Proc. IEEE Conf. Visualization, pp. 119-125, 1993</publication>
+</item>
+<item id="Piringer2010" fac="4" gol="IA" tec="CNA">
+	<name>HyperMoVal</name>
+	<year>2010</year>
+	<authors>H. Piringer, W. Berger, and J. Krasser</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01684.x</url>
+	<title>HyperMoVal: Interactive visual validation of regression models for real-time simulation</title>
+	<publication>Computer Graphics Forum, vol. 29, no. 3, pp. 983-992, 2010</publication>
+</item>
+<item id="Berger2011" fac="4" gol="IA" tec="CNA">
+	<name>Uncertainty-aware exploration</name>
+	<year>2011</year>
+	<authors>W. Berger, H. Piringer, P. Filzmoser, and M.E. Gr%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2011.01940.x</url>
+	<title>Uncertainty-aware exploration of continuous parameter spaces using multivariate prediction</title>
+	<publication>Computer Graphics Forum, vol. 30, no. 3, pp. 911-920, 2011</publication>
+</item>
+<item id="Torsney-Weir2011" fac="4" gol="IA" tec="CNA">
+	<name>Parameter space exploration</name>
+	<year>2011</year>
+	<authors>T. Torsney-Weir, A. Saad, T. M%26ouml;ller, H.-C. Hege, B. Weber, and J.-M. Verbavatz</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2011.248</url>
+	<title>Tuner: Principled parameter finding for image segmentation algorithms using visual response surface exploration</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 12, 1892-1901, 2011</publication>
+</item>	
+<item id="Booshehrian2012" fac="4" gol="IA" tec="CNDA">
+	<name>Vismon</name>
+	<year>2012</year>
+	<authors>M. Booshehrian, T. M%26ouml;ller, R.M. Peterman, and T. Munzner</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2012.03116.x</url>
+	<title>Vismon: Facilitating analysis of trade-offs, uncertainty, and sensitivity in fisheries management decision making</title>
+	<publication>Computer Graphics Forum, vol. 31, no. 3, pp. 1235-1244, 2012</publication>
+</item>
+<item id="Bergner2013" fac="4" gol="IA" tec="CNBA">
+	<name>ParaGlide</name>
+	<year>2013</year>
+	<authors>S. Bergner, M. Sedlmair, T. M%26ouml;ller, S.N. Abdolyousefi, and A. Saad</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2013.61</url>
+	<title>ParaGlide: Interactive parameter space partitioning for computer simulations</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 19, no. 9, 1499-1412, 2013</publication>
+</item>
+<item id="Hummel2013" fac="4" gol="IA" tec="CBA">
+	<name>Comparison of Lagrangian transport</name>
+	<year>2013</year>
+	<authors>M. Hummel, H. Obermaier, C. Garth, and K.I. Joy</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2013.141</url>
+	<title>Comparative visual analysis of Lagrangian transport in CFD ensembles</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 19, no. 12, 2743-2752, 2013</publication>
+</item>
+<item id="Coffey2013" fac="4" gol="I" tec="N">
+	<name>Design by Dragging</name>
+	<year>2013</year>
+	<authors>D. Coffey, C.-L. Lin, A.G. Erdman, and D.F. Keefe</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2013.147</url>
+	<title>Design by dragging: An interface for creative forward and inverse design with simulation ensembles </title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 19, no. 12, 2783-2791, 2013</publication>
+</item>
+<item id="Piringer2012" fac="4" gol="IA" tec="CDBA">
+	<name>Comparing 2D function ensembles</name>
+	<year>2012</year>
+	<authors>H. Piringer, S. Pajer, W. Berger, and H. Teichmann</authors>
+	<url>http://dx.doi.org/10.1111/j.1467-8659.2012.03112.x</url>
+	<title>Comparative visual analysis of 2D function ensembles</title>
+	<publication>Computer Graphics Forum, vol. 31, no. 3, pp. 1195-1204, 2012</publication>
+</item>
+<item id="Demir2014" fac="4" gol="A" tec="CDBA">
+	<name>Multi-Charts</name>
+	<year>2014</year>
+	<authors>I. Demir, C. Dick, and R. Westermann</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2014.2346448</url>
+	<title>Multi-Charts for comparative 3D ensemble visualization</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 20, no. 12, 2014</publication>
+</item>	
+<item id="Correa2009" fac="4" gol="A" tec="A">
+	<name>Uncertainty-aware visual analysis</name>
+	<year>2009</year>
+	<authors>C. Correa, Y.-H. Chan, and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.1109/VAST.2009.5332611</url>
+	<title>A framework for uncertainty-aware visual analytics</title>
+	<publication>Proc. IEEE Symp. Visual Analytics Science and Technology (VAST), pp. 51-58, 2009</publication>
+</item>
+<item id="Chan2010" fac="4" gol="A" tec="FA">
+	<name>Flow-based scatterplot</name>
+	<year>2010</year>
+	<authors>Y.-H. Chan, C. Correa, and K.-L. Ma</authors>
+	<url>http://dx.doi.org/10.1109/VAST.2010.5652460</url>
+	<title>Flow-based scatterplots for sensitivity analysis</title>
+	<publication>Proc. IEEE Symp. Visual Analytics Science and Technology (VAST), pp. 43-50, 2010</publication>
+</item>
+<item id="Bordoloi2004" fac="4" gol="A" tec="A">
+	<name>Clustering PDFs</name>
+	<year>2004</year>
+	<authors>U.D. Bordoloi, D.L. Kao, and H.-W. Shen</authors>
+	<url>http://dx.doi.org/10.2481/dsj.3.153</url>
+	<title>Visualization techniques for spatial probability density function data</title>
+	<publication>Data Science J., vol. 3, pp. 153-162, 2004</publication>
+</item>
+<item id="Bruckner2010" fac="4" gol="IA" tec="A">
+	<name>Clustered parameter exploration</name>
+	<year>2010</year>
+	<authors>S. Bruckner and T. M%26ouml;ller</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.190</url>
+	<title>Result-driven exploration of simulation parameter spaces for visual effects design</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 16, no. 6, pp. 1468-1476, 2010</publication>
+</item>
+<item id="Beham2014" fac="4" gol="IA" tec="FDA">
+	<name>Cupid</name>
+	<year>2014</year>
+	<authors>M. Beham, W. Herzner, M.E. Gr%26ouml;ller, and J. Kehrer</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2014.2346626</url>
+	<title>Cupid: Cluster-based exploration of geometry generators with parallel coordinates and radial trees</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 20, no. 12, 2014</publication>
+</item>	
+<item id="Kehrer2011b" fac="5" gol="RIA" tec="FCBA">
+	<name>Multi-model data analysis</name>
+	<year>2011</year>
+	<authors>J. Kehrer, P. Muigg, H. Doleisch, and H. Hauser</authors>
+	<url>http://dx.doi.org/10.1109/TVCG.2010.111</url>
+	<title>Interactive visual analysis of heterogeneous scientific data across an interface</title>
+	<publication>IEEE Trans. Visualization and Computer Graphics, vol. 17, no. 7, pp. 934-946, 2011</publication>
+</item>
+<!-- item id="" fac="" gol="" tec="">
+	<name></name>
+	<year></year>
+	<authors></authors>
+	<url></url>
+	<title></title>
+	<publication></publication>
+</item -->
+</list>
