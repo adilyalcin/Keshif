@@ -18,7 +18,7 @@
 
 $(document).ready( function(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-20);
+    $('#chart_div').height($(window).height()-50);
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
@@ -204,5 +204,13 @@ $(document).ready( function(){
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
+            for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf1.<br>
+            Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
     </body>
 </html>

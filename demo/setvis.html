@@ -18,7 +18,7 @@
 
 $(document).ready( function(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-20);
+    $('#chart_div').height($(window).height()-80);
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
@@ -105,7 +105,9 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src","img/setvis/"+d.data.Key+".png");
+//                http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/alsallakh2013radial.png
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/"+d.data.Key+".png");
             }
         }
     });
@@ -127,51 +129,16 @@ $(document).ready( function(){
     .thumbnail{
         height: 165px;
     }
-    /*
-
-    div.listItem {
-        max-height: 230px !important;
-        vertical-align: top;
-    }
-    div.content{
-        width: 100px;
-        margin-bottom: 5px;
-    }
-    div.content a{
-        vertical-align: top;
-        color: #496B86;
-    }
-    div.content img{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 3px;
-        border: solid;
-        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-        border-width: 1px 2px 2px 1px;
-        border-radius: 10px;
-        background-color: white;
-        max-width: 90px;
-        transition: background-color 300ms linear;
-        -webkit-transition: background-color 300ms linear;
-        -o-transition: background-color 300ms linear;
-        -moz-transition: background-color 300ms linear;
-    }
-    div.listItem[highlight=true] div.content img{
-        background-color: orangered;
-    }
-    div.content span.title{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: center;
-        font-size: 0.8em;
-    }*/
-
 </style>
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data provided by <a href="http://www.cvast.tuwien.ac.at/SetViz" target='_blank'>SetViz survey</a>.<br>
+            All rights for the technique images belong to their respective owners.
+            <span class="fa fa-info-circle"></span>
+            </div>
     </body>
 </html>
