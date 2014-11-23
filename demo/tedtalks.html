@@ -45,11 +45,15 @@ var getData = function(){
 };
 
 google.setOnLoadCallback(function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-20);
+
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 90,
         leftPanelLabelWidth: 100,
         rightPanelLabelWidth: 90,
+        itemName: "TED Talks",
         source: {
             gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
             sheets : [ {name:"Talks"} ]
@@ -90,8 +94,9 @@ google.setOnLoadCallback(function(){
             contentFunc : function(d){
                 var str='';
                 // Demo name
-                str+="<a target='_blank' href='http://www.ted.com"+d.data[cols.URL]+"'><span class='thumbnail'><img></span></a>";
-                str+="<span class='authorName'>"+d.data[cols.Speaker]+"</span>";
+                str+="<a target='_blank' href='http://www.ted.com"+d.data[cols.URL]+"'><span class='thumbnail'>"+
+                    "<img class='thumbImg'></span></a>";
+                str+="<span class='subTitle'>"+d.data[cols.Speaker]+"</span>";
                 str+="<span class='title'>"+d.data[cols.Title]+"</span>";
                 return str;
             },
@@ -103,56 +108,14 @@ google.setOnLoadCallback(function(){
 });
         </script>
         <style>
-#chart_div {
-    width: 1000px;
-    height: 650px;
+.listItem{
+    width: 12.5%;
 }
-div.content{
-    width: 143px;
-    height: 150px;
-    padding: 5px;
+.content{
+    padding: 3px;
 }
 span.thumbnail{
     height: 75px;
-    display: block;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    transition: background-color 300ms linear;
-    -webkit-transition: background-color 300ms linear;
-    -o-transition: background-color 300ms linear;
-    -moz-transition: background-color 300ms linear;
-}
-div.content img{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-    width: 90%;
-}
-div.listItem{
-    vertical-align: top;
-}
-div.listItem[highlight=true] div.content span.thumbnail{
-    background-color: orangered;
-}
-div.content span.title{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 2px;
-    text-align: left;
-    font-size: 0.8em;
-    font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 700;
-}
-.content .authorName{
-    display: block;
-    font-family: Georgia,"Times New Roman",Times,serif;
-    font-style: italic;
-    font-weight: 400;
-    color: gray;
-    font-size: 0.9em;
-    text-align: left;
 }
         </style>
     </head>

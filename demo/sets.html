@@ -22,6 +22,7 @@ var sourceURL = 'http://vcg.github.io/upset/';
 var simpsons = {
     domID: "#chart_div",
     leftPanelLabelWidth: 140,
+    itemName: "Simpsons Characters",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"simpsons"}] },
     facets: [
         {   facetTitle: "Characteristics",
@@ -364,6 +365,67 @@ var socialgraph = {
 };
 
 
+var senate = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "Senators",
+    source:{
+        url: "http://www.cc.gatech.edu/gvu/ii/setvis/onset/",
+        callback:function(browser){
+            browser.primaryTableName = "Senators";
+
+            kshf.dt.Senators = [];
+            var arr = kshf.dt.Senators;
+
+            $.ajax({
+                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+                // url: "./data_private/dc_homicides.json", // original source
+                url: "./data/set_senate_onset.csv",
+                error: function(e,f){
+                    console.log(e+" - "+f);
+                },
+                success: function(data){
+                    data.split("\n").forEach(function(line, i){
+                        var s=line.split(",");
+                        var d={Name:s[0], Votes:[], id:i};
+                        for(var k=1; k<s.length; k++){
+                            s[k] = s[k].trim();
+                            if(s[k]==="") continue;
+                            d.Votes.push(s[k]);
+                        }
+                        var item = new kshf.Item(d,"id");
+                        arr.push(item);
+                    });
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }
+    },
+    facets: [
+        {   facetTitle: "Votes",
+        },{
+            facetTitle: "Number of votes",
+            catItemMap: function(d){
+                return d.data.Votes.length;
+            }
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 65,
+        sortingOpts : [ {name: '# Votes', value:function(d){ return d.data.Votes.length; }} ],
+        autoExpandMore: true,
+        contentFunc: function(d){ return d.data.Name; }
+    }
+};
+
+
+
+
 google.setOnLoadCallback(function(){
     $("#set-selector").on("change",function(){
         switch(this.selectedIndex){
@@ -378,6 +440,7 @@ google.setOnLoadCallback(function(){
             case 9: browser = new kshf.Browser(rand); return;
             case 10: browser = new kshf.Browser(socialgraph); return;
             case 11: browser = new kshf.Browser(movies_radialset); return;
+            case 12: browser = new kshf.Browser(senate); return;
         }
     });
     
@@ -407,7 +470,8 @@ google.setOnLoadCallback(function(){
             <option value="7">Exports of Countries by Products (345 sets, 1 attributes)</option>
             <option value="8">3 Sets, ~2k attributes, randomly distrib. (3 sets, 1 attributes)</option>
             <option value="9">Social Graph (7 sets, 2 attributes)</option>
-            <option value="10">Movies (From Radial Sets)</option>
+            <option value="10">Movies (From Radial Sets project)</option>
+            <option value="11">Senate Votings (From OnSet project)</option>
             </select></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>

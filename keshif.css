@@ -1199,6 +1199,188 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
+.kshf.listDiv > .listItemGroup > .listItem {
+  display: none;
+  opacity: 1;
+  clear: left;
+  cursor: default;
+  overflow: hidden;
+  height: auto;
+  vertical-align: top;
+  max-height: 200px;
+  border-top: double 0px gray;
+  padding-top: 2px;
+  padding-bottom: 0px;
+  position: relative;
+  -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn {
+  display: table-cell;
+  vertical-align: top;
+  cursor: cell;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
+  float: right;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn > .itemRank {
+  margin-left: 2px;
+  margin-top: 2px;
+  color: gray;
+  font-size: 0.8em;
+  font-weight: 300;
+  float: left;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn:hover {
+  color: red;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content {
+  vertical-align: top;
+  border: solid 0px lightgray;
+  position: relative;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content > .iteminfo {
+  float: none;
+  clear: left;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content > .iteminfo_0 {
+  font-size: 1.0em;
+  color: black;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content > .iteminfo_1 {
+  font-size: 0.9em;
+  color: #555555;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content > .iteminfo_2 {
+  font-size: 0.8em;
+  color: #555555;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .content > .iteminfo_3 {
+  font-size: 0.8em;
+  color: #a71f1f;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemToggleDetails {
+  vertical-align: top;
+  width: 18px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle {
+  -webkit-transition: -webkit-transform 500ms;
+  -moz-transition: -moz-transform 500ms;
+  -o-transition: -o-transform 500ms;
+  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
+  color: gray;
+  top: 2px;
+  left: 1px;
+  position: relative;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:hover {
+  color: black;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemLinkStateColumn {
+  display: table-cell;
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+  padding-right: 2px;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemLinkIcon {
+  font-size: 0.9em;
+  display: none;
+  cursor: pointer;
+  margin-right: 2px;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .item_count {
+  font-size: 0.6em;
+  vertical-align: middle;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemSelectCheckbox {
+  cursor: pointer;
+  width: 14px;
+  text-align: left;
+  display: inline-block;
+  font-size: 0.8em;
+  padding-left: 2px;
+  font: normal normal normal 14px/1 FontAwesome;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: gray;
+}
+.kshf.listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemSelectCheckbox:hover {
+  color: orangered;
+}
+.kshf.listDiv > .listItemGroup > .listItem[animst=open] {
+  opacity: 0;
+}
+.kshf.listDiv > .listItemGroup > .listItem[animst=closed] {
+  max-height: 0px !important;
+  padding: 0px !important;
+  opacity: 0;
+}
+.kshf.listDiv > .listItemGroup > .listItem[animst=visible] {
+  display: table;
+}
+.kshf.listDiv > .listItemGroup > .listItem[details=true] {
+  max-height: none;
+}
+.kshf.listDiv > .listItemGroup > .listItem[details=true] .item_details_toggle {
+  display: inline-block;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.kshf.listDiv > .listItemGroup > .listItem[details=true] .item_details {
+  display: block;
+}
+.kshf.listDiv > .listItemGroup > .listItem[details=false] .item_details_toggle {
+  display: block;
+}
+.kshf.listDiv > .listItemGroup > .listItem[details=false] .item_details {
+  display: none;
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=selected] {
+  box-shadow: inset 0px 0px 2px black;
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=selected][selectedForLink=true] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=selected][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
+  display: inline;
+  color: #cc3700;
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=selected][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
+  color: orangered;
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=true] {
+  box-shadow: inset 0px 0px 5px #BBBBBB;
+  background-color: #F8F8F8;
+}
+.kshf.listDiv > .listItemGroup > .listItem[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
+  display: inline;
+  color: gray;
+}
+.kshf.listDiv > .listItemGroup > .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
+  content: "\f046";
+}
+.kshf.listDiv > .listItemGroup > .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
+  content: "\f096";
+}
 .kshf.listDiv > .showMore {
   cursor: pointer;
   border: solid 1px lightgray;
@@ -1268,12 +1450,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf.listDiv select.listSortOptionSelect {
   bottom: 0px;
 }
-.kshf.listDiv[displaytype="grid"] .listItem > .itemToggleDetails {
+.kshf.listDiv[displaytype="grid"] > .listItemGroup {
+  display: block;
+}
+.kshf.listDiv[displaytype="grid"] > .listItemGroup > .listItem {
+  max-height: inherit;
+}
+.kshf.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content {
+  display: block;
+}
+.kshf.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .itemToggleDetails {
+  display: block;
   position: absolute;
   z-index: 10;
 }
-.kshf.listDiv[displaytype="list"] .listItem {
+.kshf.listDiv[displaytype="list"] > .listItemGroup {
+  display: block;
+  table-layout: fixed;
   width: 100%;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem {
+  display: block;
+  width: 100%;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
+  display: table-cell;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .content {
+  display: table-cell;
 }
 .kshf .scrollToTop {
   display: inline-block;
@@ -1549,197 +1753,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   padding-right: 3px;
   margin-right: 2px;
-}
-.kshf .listItem {
-  display: none;
-  table-layout: fixed;
-  opacity: 1;
-  clear: left;
-  cursor: default;
-  overflow: hidden;
-  float: none;
-  height: auto;
-  vertical-align: top;
-  max-height: 200px;
-  border-top: double 0px gray;
-  padding-top: 2px;
-  padding-bottom: 0px;
-  position: relative;
-  -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-}
-.kshf .listItem > .itemRow {
-  display: table-row;
-  width: 100%;
-}
-.kshf .listItem > .itemRow > .listsortcolumn {
-  display: table-cell;
-  vertical-align: top;
-  cursor: cell;
-}
-.kshf .listItem > .itemRow > .listsortcolumn > .columnLabel {
-  float: right;
-}
-.kshf .listItem > .itemRow > .listsortcolumn > .itemRank {
-  margin-left: 2px;
-  margin-top: 2px;
-  color: gray;
-  font-size: 0.8em;
-  font-weight: 300;
-  float: left;
-}
-.kshf .listItem > .itemRow > .listsortcolumn:hover {
-  color: red;
-}
-.kshf .listItem > .itemRow > .content {
-  display: table-cell;
-  vertical-align: top;
-  border: solid 0px lightgray;
-  position: relative;
-}
-.kshf .listItem > .itemRow > .content > .iteminfo {
-  float: none;
-  clear: left;
-  font-weight: normal;
-  margin-bottom: 2px;
-}
-.kshf .listItem > .itemRow > .content > .iteminfo_0 {
-  font-size: 1.0em;
-  color: black;
-}
-.kshf .listItem > .itemRow > .content > .iteminfo_1 {
-  font-size: 0.9em;
-  color: #555555;
-}
-.kshf .listItem > .itemRow > .content > .iteminfo_2 {
-  font-size: 0.8em;
-  color: #555555;
-  font-style: italic;
-  font-weight: 300;
-}
-.kshf .listItem > .itemRow > .content > .iteminfo_3 {
-  font-size: 0.8em;
-  color: #a71f1f;
-  font-style: italic;
-  font-weight: 300;
-}
-.kshf .listItem > .itemRow > .itemToggleDetails {
-  display: table-cell;
-  vertical-align: top;
-  width: 18px;
-  cursor: pointer;
-  font-weight: 700;
-  position: relative;
-}
-.kshf .listItem > .itemRow > .itemToggleDetails > .item_details_toggle {
-  -webkit-transition: -webkit-transform 500ms;
-  -moz-transition: -moz-transform 500ms;
-  -o-transition: -o-transform 500ms;
-  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
-  color: gray;
-  top: 2px;
-  left: 1px;
-  position: relative;
-}
-.kshf .listItem > .itemRow > .itemToggleDetails > .item_details_toggle:hover {
-  color: black;
-}
-.kshf .listItem > .itemRow > .itemLinkStateColumn {
-  display: table-cell;
-  text-align: right;
-  vertical-align: top;
-  white-space: nowrap;
-  padding-right: 2px;
-}
-.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
-  font-size: 0.9em;
-  display: none;
-  cursor: pointer;
-  margin-right: 2px;
-}
-.kshf .listItem > .itemRow > .itemLinkStateColumn > .item_count {
-  font-size: 0.6em;
-  vertical-align: middle;
-}
-.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemSelectCheckbox {
-  cursor: pointer;
-  width: 14px;
-  text-align: left;
-  display: inline-block;
-  font-size: 0.8em;
-  padding-left: 2px;
-  font: normal normal normal 14px/1 FontAwesome;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: gray;
-}
-.kshf .listItem > .itemRow > .itemLinkStateColumn > .itemSelectCheckbox:hover {
-  color: orangered;
-}
-.kshf .listItem[animst=open] {
-  opacity: 0;
-}
-.kshf .listItem[animst=closed] {
-  max-height: 0px !important;
-  padding: 0px !important;
-  opacity: 0;
-}
-.kshf .listItem[animst=visible] {
-  display: table;
-}
-.kshf .listItem[details=true] {
-  max-height: none;
-}
-.kshf .listItem[details=true] .item_details_toggle {
-  display: inline-block;
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-.kshf .listItem[details=true] .item_details {
-  display: block;
-}
-.kshf .listItem[details=false] .item_details_toggle {
-  display: block;
-}
-.kshf .listItem[details=false] .item_details {
-  display: none;
-}
-.kshf .listItem[highlight=selected] {
-  box-shadow: inset 0px 0px 2px black;
-}
-.kshf .listItem[highlight=selected][selectedForLink=true] {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-}
-.kshf .listItem[highlight=selected][selectedForLink=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
-  display: inline;
-  color: #cc3700;
-}
-.kshf .listItem[highlight=selected][selectedForLink=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon:hover {
-  color: orangered;
-}
-.kshf .listItem[highlight=true] {
-  box-shadow: inset 0px 0px 5px #BBBBBB;
-  background-color: #F8F8F8;
-}
-.kshf .listItem[highlight=true] > .itemRow > .itemLinkStateColumn > .itemLinkIcon {
-  display: inline;
-  color: gray;
-}
-.kshf .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
-  content: "\f046";
-}
-.kshf .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
-  content: "\f096";
 }
 .kshf.layout_infobox {
   position: absolute;

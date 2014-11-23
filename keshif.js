@@ -1435,8 +1435,6 @@ kshf.List.prototype = {
                 }
             });            
 
-        this.dom.listItems_Row = this.dom.listItems.append("span").attr("class","itemRow");
-
         if(this.hasLinkedItems){
             this.dom.listItems.attr("selectedForLink","false")
         }
@@ -1446,11 +1444,11 @@ kshf.List.prototype = {
         if(this.detailsToggle!=="off"){
             this.insertItemToggleDetails();
         }
-        this.dom.listItems_Content = this.dom.listItems_Row.append("div").attr("class","content")
+        this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
             .html(function(d){ return me.contentFunc(d);});
 
         if(this.hasLinkedItems){
-            this.dom.itemLinkStateColumn = this.dom.listItems_Row.append("span").attr("class","itemLinkStateColumn")
+            this.dom.itemLinkStateColumn = this.dom.listItems.append("span").attr("class","itemLinkStateColumn")
                     .style("width",this.selectColumnWidth+"px");
             this.dom.itemLinkStateColumn.append("span").attr("class","itemLinkIcon fa fa-link")
                 .each(function(d){
@@ -1504,7 +1502,7 @@ kshf.List.prototype = {
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
         var me=this;
-        this.dom.listsortcolumn = this.dom.listItems_Row.append("div").attr("class","listsortcolumn")
+        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listsortcolumn")
             .style("width",this.sortColWidth+"px")
             .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
             .each(function(d){
@@ -1541,7 +1539,7 @@ kshf.List.prototype = {
     insertItemToggleDetails: function(){
         var me=this;
         if(this.detailsToggle==="one" && this.displayType==='list'){
-            this.dom.listItems_Row.append("div")
+            this.dom.listItems.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
@@ -1562,12 +1560,12 @@ kshf.List.prototype = {
                 .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
         }
         if(this.detailsToggle==="zoom"){
-            this.dom.listItems_Row.append("div")
+            this.dom.listItems.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity:'s',
-                        title: function(){ return "Zoom into item"; }
+                        title: function(){ return "Get more info"; }
                     });
                 })
             .append("span").attr("class","item_details_toggle fa fa-bullseye")
@@ -1705,7 +1703,7 @@ kshf.List.prototype = {
     /** Updates visibility of list items */
     updateItemVisibility: function(showMoreOnly){
         var me = this;
-        var showType=this.displayType==='list'?"table":"inline-block";
+        var showType=this.displayType==='list'?"block":"inline-block";
         var visibleItemCount=0;
 
         this.dom.listItems.each(function(item){

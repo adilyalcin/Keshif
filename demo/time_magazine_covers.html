@@ -77,8 +77,8 @@ google.setOnLoadCallback(function(){
       contentFunc: function(d){ 
         var str='';
         // Demo name
-        str+="<a target='_blank' href='http://content.time.com"+d.data[cols.MagazineURL]+"'><img></a>";
-        str+="<span class='authorName'>"+timeFormat(d.data[1])+"</span>";
+        str+="<a target='_blank' href='http://content.time.com"+d.data[cols.MagazineURL]+"'><img class='thumbImg'></a>";
+        str+="<span class='subTitle'>"+timeFormat(d.data[1])+"</span>";
         str+="<span class='title'>"+d.data[cols.MagazineTitle]+"</span>";
         return str;
         return d.data[cols.Ma];
@@ -109,58 +109,29 @@ google.setOnLoadCallback(function(){
   transform: scale(1.5);
 }
 .itemRow{
-  display: block !important;
   width: 100% !important;
 }
 .listItem > .itemRow{
-  display: block !important;
   overflow: visible !important;
 }
 .content{
-  width: 100%;
   margin-bottom: 5px;
   position: relative;
 }
 .listItem{
-  padding-top: 0px !important;
-  width: 20% !important;
+  width: 20%;
   overflow: visible !important;
-  max-height: initial !important;
 }
-.content img{
-  display: block;
+.content img.thumbImg{
   border: solid;
   border-color: black;
   border-width: 1px;
   border-radius: 0px;
-  background-color: white;
   width: 100%;
   transition: all 200ms linear;
   -webkit-transition: all 200ms linear;
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
-}
-.listItem[highlight=true] .content img{
-  background-color: orangered;
-}
-.content .title{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 2px;
-  text-align: left;
-  font-size: 0.8em;
-  font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
-}
-.content .authorName{
-  display: block;
-  font-family: Georgia,"Times New Roman",Times,serif;
-  font-style: italic;
-  font-weight: 400;
-  color: gray;
-  font-size: 0.9em;
-  text-align: left;
 }
         </style>
     </head>

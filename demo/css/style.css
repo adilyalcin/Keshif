@@ -22,6 +22,48 @@ body {
 #chart_div {
   margin: 0 auto;
 }
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content .thumbnail {
+  display: block;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-transition: background-color 300ms linear;
+  -moz-transition: background-color 300ms linear;
+  -o-transition: background-color 300ms linear;
+  transition: background-color 300ms linear;
+}
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content .thumbnail > .thumbImg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  width: calc(90%);
+}
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content .subTitle {
+  display: block;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: gray;
+  font-size: 0.8em;
+  text-align: left;
+}
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content .title {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: left;
+  font-size: 0.9em;
+  font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem:hover .thumbImg {
+  box-shadow: 0px 0px 4px black;
+}
+.listDiv[displaytype="grid"] > .listItemGroup > .listItem[highlight=true] > .content .thumbnail {
+  background-color: orangered;
+}
 .pageTitle {
   font-family: 'Montserrat', sans-serif;
   font-size: 2em;

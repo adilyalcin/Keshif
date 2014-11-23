@@ -59,8 +59,8 @@
                         textSearch : 'Title',
                         contentFunc: function(d){ 
                             var str='';
-                            str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img></span></a>";
-                            str+="<span class='authorName'>"+d.data[cols.Credits]+"</span>";
+                            str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
+                            str+="<span class='subTitle'>"+d.data[cols.Credits]+"</span>";
                             str+="<span class='title'>"+d.data[cols.Title]+"</span>";
                             return str;
                         },
@@ -77,64 +77,14 @@
                 height: 650px;
             }
             .listItem{
-                width: 16.6%;
-                max-height: inherit !important;
+                width: 16.666%;
             }
-            div.content{
-                padding: 5px;
-                display: block !important;
-                width: 100%;
+            .content{
+                padding: 3px;
             }
-            .kshf .listItem > .itemRow{
-                display: block !important;
-                width: 100%;
-            }
-            span.thumbnail{
+            .content .thumbnail{
                 height: 95px;
-                display: block;
-                overflow-y: hidden;
-                overflow-x: hidden;
-                position: relative;
-                transition: background-color 300ms linear;
-                -webkit-transition: background-color 300ms linear;
-                -o-transition: background-color 300ms linear;
-                -moz-transition: background-color 300ms linear;
             }
-            div.content img{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                background-color: white;
-                width: 90%;
-                position: absolute;
-                bottom: 0px;
-            }
-            div.listItem{
-                vertical-align: top;
-            }
-            div.listItem[highlight=true] div.content span.thumbnail{
-                background-color: orangered;
-            }
-            div.content span.title{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 2px;
-                text-align: left;
-                font-size: 0.9em;
-                font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                font-weight: 700;
-            }
-            .content .authorName{
-                display: block;
-                font-family: Georgia,"Times New Roman",Times,serif;
-                font-style: italic;
-                font-weight: 400;
-                color: gray;
-                font-size: 0.8em;
-                text-align: left;
-            }
-
         </style>
     </head>
     <body>

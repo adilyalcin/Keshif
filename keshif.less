@@ -1204,15 +1204,193 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .listItemGroup {
-            overflow-y:scroll;
-            overflow-x:hidden;
+            overflow-y: scroll;
+            overflow-x: hidden;
             border-style: solid;
             border-color: rgb(223, 210, 169);
             border-width: 0px 2px 2px 2px;
 
             background-color: white;
+            // height is set dynamically by JavaScript
             .transition(~'height 700ms ease-in-out');
-        }
+
+            > .listItem {
+                display: none;
+                opacity: 1;
+                clear: left;
+                cursor: default;
+                overflow: hidden;
+                height: auto;
+                vertical-align: top;
+                max-height: 200px;
+                border-top: double 0px gray;
+                padding-top: 2px;
+                padding-bottom: 0px;
+                position: relative;
+                .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
+
+                > .listsortcolumn{
+                    display: table-cell;
+                    vertical-align: top;
+                    cursor: cell;
+                    > .columnLabel{
+                        float: right;
+                    }
+                    > .itemRank{
+                        margin-left: 2px;
+                        margin-top: 2px;
+                        color: gray;
+                        font-size: 0.8em;
+                        font-weight: 300;
+                        float: left;
+                    }
+                    &:hover{ color: red; }
+                }
+                > .content{
+                    vertical-align: top;
+                    border: solid 0px lightgray;
+                    position: relative;
+
+                    > .iteminfo{
+                        float:none;
+                        clear: left;
+                        font-weight:normal;
+                        margin-bottom: 2px;
+                    }
+                    > .iteminfo_0{
+                        font-size:1.0em;
+                        color: black;
+                    }
+                    > .iteminfo_1{
+                        font-size:0.9em;
+                        color: #555555;
+                    }
+                    > .iteminfo_2{
+                        font-size:0.8em;
+                        color: #555555;
+                        font-style:italic;
+                        font-weight:300;
+                    }
+                    > .iteminfo_3{
+                        font-size:0.8em;
+                        color: rgb(167, 31, 31);
+                        font-style:italic;
+                        font-weight:300;
+                    }
+                }
+                > .itemToggleDetails{
+                    vertical-align: top;
+                    width:18px; // includes the padding, using box model...
+                    cursor: pointer;
+                    font-weight: 700;
+                    > .item_details_toggle{
+                        .transition(~'transform 500ms');
+                        color: gray;
+                        top: 2px;
+                        left: 1px;
+                        position: relative;
+                        &:hover{ color:black; }
+                    }
+                }
+                > .itemLinkStateColumn{
+                    vertical-align: top;
+                    display: table-cell;
+    //                float: right;
+                    text-align: right;
+                    vertical-align: top;
+                    white-space: nowrap;
+                    padding-right: 2px;
+                    > .itemLinkIcon{
+                        font-size: 0.9em;
+                        display: none;
+                        cursor: pointer;
+                        margin-right: 2px;
+                    }
+                    > .item_count{
+                        font-size: 0.6em;
+                        vertical-align: middle;
+                    }
+                    > .itemSelectCheckbox{
+                        cursor: pointer;
+                        width: 14px;
+                        text-align: left;
+                        display: inline-block;
+                        font-size: 0.8em;
+                        padding-left: 2px;
+                        font: normal normal normal 14px/1 FontAwesome;
+                        text-rendering: auto;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                        color: gray;
+                        &:hover {color: orangered;}
+                    }
+                }
+
+                &[animst=open]{
+                    opacity: 0;
+                }
+                &[animst=closed]{
+                    max-height: 0px !important;
+                    padding: 0px !important;
+                    opacity: 0;
+                }
+                &[animst=visible]{
+                    display: table;
+                }
+
+                &[details=true]{
+                    max-height: none;
+                    .item_details_toggle{
+                        display:inline-block;
+                        .rotate(180deg);
+                    }
+                    .item_details{
+                        display:block;
+                    }
+                }
+                &[details=false]{
+                    .item_details_toggle{
+                        display:block;
+                    }
+                    .item_details{
+                        display:none;
+                    }
+                }
+
+                &[highlight=false]{
+                    //background-color:white;
+                }
+                &[highlight=selected]{
+                    box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
+                    &[selectedForLink=true]{
+                        .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
+                        > .itemLinkStateColumn > .itemLinkIcon{
+                            display: inline;
+                            color: @color_bars_selected;
+                            &:hover{
+                                color: orangered;
+                            }
+                        }
+                    }
+                }
+                &[highlight=true]{
+                    box-shadow: inset 0px 0px 5px #BBBBBB;
+                    background-color: #F8F8F8;
+                    > .itemLinkStateColumn > .itemLinkIcon{
+                        display: inline;
+                        color: gray;
+                    }
+        //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
+        //            box-shadow: inset 0px 0px 4px @color_related;
+                }
+                &[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
+                    content: "\f046"; // checked
+                }
+                &[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
+                    content: "\f096"; // unchecked
+                }
+            } // listItem
+        } // listItemGroup
         > .showMore{
             cursor: pointer;
             border: solid 1px lightgray;
@@ -1279,14 +1457,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         select.listSortOptionSelect{
             bottom:0px;
         }
-        &[displaytype="grid"] .listItem {
-            > .itemToggleDetails{
-                position: absolute;
-                z-index: 10;
+        &[displaytype="grid"] {
+            > .listItemGroup {
+                display: block;
+                > .listItem{
+                    max-height: inherit;
+                    > .content{
+                        display: block;
+                        //width: 100%;
+                    }
+                    > .itemToggleDetails{
+                        display: block;
+                        position: absolute;
+                        z-index: 10;
+                    }
+                }
             }
         }
-        &[displaytype="list"] .listItem {
-            width: 100%;
+        &[displaytype="list"] {
+            > .listItemGroup {
+                display: block;
+                table-layout: fixed;
+                width: 100%;
+                > .listItem {
+                    //display: table-row;
+                    display: block;
+                    width: 100%;
+                    > .itemToggleDetails{
+                        //position: absolute;
+                        //z-index: 10;
+                        display: table-cell;
+                    }
+                    > .content{
+                        display: table-cell;
+                    }
+                }
+            }
         }
     } // div.listDiv
 
@@ -1567,191 +1773,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // listHeader
 
-    .listItem {
-        display:none;
-        table-layout: fixed;
-        opacity: 1;
-        clear:left;
-        cursor:default;
-        overflow: hidden;
-        float: none;
-        height: auto;
-        vertical-align: top;
-        max-height: 200px;
-        border-top: double 0px gray;
-        padding-top: 2px;
-        padding-bottom: 0px;
-        position: relative;
-        .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
-
-        > .itemRow{
-            display: table-row;
-            width: 100%;
-            > .listsortcolumn{
-                display: table-cell;
-                vertical-align: top;
-                cursor: cell;
-                > .columnLabel{
-                    float: right;
-                }
-                > .itemRank{
-                    margin-left: 2px;
-                    margin-top: 2px;
-                    color: gray;
-                    font-size: 0.8em;
-                    font-weight: 300;
-                    float: left;
-                }
-                &:hover{ color: red; }
-            }
-            > .content{
-                display: table-cell;
-                vertical-align: top;
-                border: solid 0px lightgray;
-                position: relative;
-
-                > .iteminfo{
-                    float:none;
-                    clear: left;
-                    font-weight:normal;
-                    margin-bottom: 2px;
-                }
-                > .iteminfo_0{
-                    font-size:1.0em;
-                    color: black;
-                }
-                > .iteminfo_1{
-                    font-size:0.9em;
-                    color: #555555;
-                }
-                > .iteminfo_2{
-                    font-size:0.8em;
-                    color: #555555;
-                    font-style:italic;
-                    font-weight:300;
-                }
-                > .iteminfo_3{
-                    font-size:0.8em;
-                    color: rgb(167, 31, 31);
-                    font-style:italic;
-                    font-weight:300;
-                }
-            }
-            > .itemToggleDetails{
-                display: table-cell;
-                vertical-align: top;
-                width:18px; // includes the padding, using box model...
-                cursor: pointer;
-                font-weight: 700;
-                position: relative;
-                > .item_details_toggle{
-                    .transition(~'transform 500ms');
-                    color: gray;
-                    top: 2px;
-                    left: 1px;
-                    position: relative;
-                    &:hover{ color:black; }
-                }
-            }
-            > .itemLinkStateColumn{
-                vertical-align: top;
-                display: table-cell;
-//                float: right;
-                text-align: right;
-                vertical-align: top;
-                white-space: nowrap;
-                padding-right: 2px;
-                > .itemLinkIcon{
-                    font-size: 0.9em;
-                    display: none;
-                    cursor: pointer;
-                    margin-right: 2px;
-                }
-                > .item_count{
-                    font-size: 0.6em;
-                    vertical-align: middle;
-                }
-                > .itemSelectCheckbox{
-                    cursor: pointer;
-                    width: 14px;
-                    text-align: left;
-                    display: inline-block;
-                    font-size: 0.8em;
-                    padding-left: 2px;
-                    font: normal normal normal 14px/1 FontAwesome;
-                    text-rendering: auto;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                    color: gray;
-                    &:hover {color: orangered;}
-                }
-            }
-        }
-
-        &[animst=open]{
-            opacity: 0;
-        }
-        &[animst=closed]{
-            max-height: 0px !important;
-            padding: 0px !important;
-            opacity: 0;
-        }
-        &[animst=visible]{
-            display: table;
-        }
-
-        &[details=true]{
-            max-height: none;
-            .item_details_toggle{
-                display:inline-block;
-                .rotate(180deg);
-            }
-            .item_details{
-                display:block;
-            }
-        }
-        &[details=false]{
-            .item_details_toggle{
-                display:block;
-            }
-            .item_details{
-                display:none;
-            }
-        }
-
-        &[highlight=false]{
-            //background-color:white;
-        }
-        &[highlight=selected]{
-            box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
-            &[selectedForLink=true]{
-                .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
-                > .itemRow > .itemLinkStateColumn > .itemLinkIcon{
-                    display: inline;
-                    color: @color_bars_selected;
-                    &:hover{
-                        color: orangered;
-                    }
-                }
-            }
-        }
-        &[highlight=true]{
-            box-shadow: inset 0px 0px 5px #BBBBBB;
-            background-color: #F8F8F8;
-            > .itemRow > .itemLinkStateColumn > .itemLinkIcon{
-                display: inline;
-                color: gray;
-            }
-//            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
-//            box-shadow: inset 0px 0px 4px @color_related;
-        }
-        &[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
-            content: "\f046"; // checked
-        }
-        &[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
-            content: "\f096"; // unchecked
-        }
-    } // listItem
 
     &.layout_infobox {
         position: absolute;

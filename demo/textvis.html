@@ -22,7 +22,7 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 150,
-        itemName: "Text Vis. Techniques",
+        itemName: "Text Visualization Techniques",
         source : {
             url: "http://textvis.lnu.se/",
             callback: function(browser){
@@ -190,7 +190,8 @@ $(document).ready( function(){
             maxVisibleItems_Default: 28,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-                return "<a target='_blank' href='"+d.data.url+"'><img><span class='title'>"+d.data.title+"</span></a>";
+                return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'><img class='thumbImg'></a></span>"+
+                    "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.resultDOM).select("img").attr("src","img/textvis/thumbs200_"+d.data.id+".png");
@@ -200,6 +201,21 @@ $(document).ready( function(){
 });
         </script>
 <style>
+#chart_div {
+    width: 90%;
+    width: calc(100% - 100px);
+    height: 800px;
+}
+.listItem{
+    width: 20%;
+}
+.content{
+    padding: 3px;
+}
+.thumbnail{
+    height: 45px;
+}
+/*
     div.listItem {
         max-height: 230px !important;
         vertical-align: top;
@@ -239,7 +255,7 @@ $(document).ready( function(){
         text-align: center;
         font-size: 0.8em;
     }
-
+*/
 </style>
     </head>
     <body>
