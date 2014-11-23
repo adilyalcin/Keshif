@@ -1,0 +1,3559 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<list>
+	<item id="Wang2014" dim="2" rep="I" pos="R">
+		<name>Diamond Tree</name>
+		<year>2014</year>
+		<authors>Peng Wang, Kang Zhang, Xiaonan Song, Tianyi Zhou and Dongwei Gong</authors>
+		<url>http://dx.doi.org/10.1109/ICIS.2014.6912178</url>
+		<title>Geometry based visualization of hierarchical structures</title>
+		<publication>ICIS'14: Proceedings of the International Conference on Computer and Information Science, pages 465-470</publication>
+	</item>
+	<item id="Yang2014" dim="2" rep="I" pos="A">
+		<name>Drawer Trees</name>
+		<year>2014</year>
+		<authors>Yalong Yang, Ning Dou, Shuai Zhao, Zhichao Yang, Kang Zhang and Quang Vinh Nguyen</authors>
+		<url>http://dx.doi.org/10.1145/2554850.2554870</url>
+		<title>Visualizing large hierarchies with Drawer Trees</title>
+		<publication>SAC'14: Proceedings of the ACM Symposium on Applied Computing, pages 951-956</publication>
+	</item>
+	<item id="Beck2014" dim="2" rep="I" pos="R">
+		<name>Generalized Pythagoras Trees</name>
+		<year>2014</year>
+		<authors>Fabian Beck, Michael Burch, Tanja Munz, Lorenzo Di Silvestro and Daniel Weiskopf</authors>
+		<url>http://pythagoras.fbeck.com</url>
+		<title>Generalized Pythagoras Trees for visualizing hierarchies</title>
+		<publication>IVAPP'14: Proceedings of the International Conference on Information Visualization Theory and Applications, pages 17-28</publication>
+	</item>
+	<item id="Etemad2014" dim="2" rep="E" pos="R">
+		<name>PaisleyTree</name>
+		<year>2014</year>
+		<authors>Katayoon Etemad, Dominikus Baur, John Brosz, Sheelagh Carpendale and Faramarz F. Samavati</authors>
+		<url>http://eudl.eu/doi/10.4108/ct.1.1.e2</url>
+		<title>PaisleyTrees: A size-invariant tree visualization</title>
+		<publication>EAI Transactions on Creative Technologies, 1(1)</publication>
+		<related>
+			<entry id="Etemad2010">
+				<year>2010</year>
+				<authors>Etemad, Carpendale</authors>
+				<url>http://innovis.cpsc.ucalgary.ca/innovis/uploads/Publications/Publications/symmetry-poster.pdf</url>
+				<title>Symmetry and node focused visualization of large trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Ploeg2013" dim="2" rep="E" pos="A">
+		<name>Non-layered Tidy Trees</name>
+		<year>2013</year>
+		<authors>Atze van der Ploeg</authors>
+		<url>http://dx.doi.org/10.1002/spe.2213</url>
+		<title>Drawing non-layered tidy trees in linear time</title>
+		<publication>Software: Practice and Experience, to appear</publication>
+	</item>
+	<item id="Cao2013" dim="3" rep="I" pos="R">
+		<name>3D Carousel Tree</name>
+		<year>2013</year>
+		<authors>Nan Cao, Shi Xia Liu and Hui Su</authors>
+		<url>http://www.freepatentsonline.com/8621359.html</url>
+		<title>Method and apparatus for generating 3D Carousel Tree data visualization and related device</title>
+		<publication>US Patent 8621359(B2), filed April 25, 2008, issued December 31, 2013</publication>
+	</item>
+	<item id="Auber2013" dim="2" rep="I" pos="F">
+		<name>GosperMap</name>
+		<year>2013</year>
+		<authors>David Auber, Charles Huet, Antoine Lambert, Benjamin Renoust, Arnaud Sallaberry and Agnes Saulnier</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2013.91</url>
+		<title>GosperMap: Using a Gosper curve for laying out hierarchical data</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 19(11), pages 1820-1832</publication>
+	</item>
+	<item id="Viegas2013" dim="2" rep="H" pos="R">
+		<name>Balloon Treemap</name>
+		<year>2013</year>
+		<authors>Fernanda B. Vi%26eacute;gas, Martin Wattenberg, Jack Hebert, Geoffrey Borggaard, Alison Cichowlas, Jonathan Feinberg, Jon Orwant and Christopher R. Wren</authors>
+		<url>http://dl.acm.org/citation.cfm?id=2488504</url>
+		<title>Google+ Ripples: A native visualization of information flow</title>
+		<publication>WWW'13: Proceedings of the International World Wide Web Conference, pages 1389-1398</publication>
+	</item>
+	<item id="Urribarri2013" dim="3" rep="E" pos="R">
+		<name>Gyrolayout</name>
+		<year>2013</year>
+		<authors>Dana K. Urribarri, Silvia M. Castro and Sergio R. Martig</authors>
+		<url>http://www.jucs.org/jucs_19_1/gyrolayout_a_hyperbolic_level</url>
+		<title>Gyrolayout: A hyperbolic level-of-detail tree layout</title>
+		<publication>Journal of Universal Computer Science, 19(1), pages 132-156</publication>
+	</item>
+	<item id="Armitage2013a" dim="2" rep="I" pos="A">
+		<name>Columnar Tree Map</name>
+		<year>2013</year>
+		<authors>John Armitage</authors>
+		<url>http://www.freepatentsonline.com/y2013/0050217.html</url>
+		<title>Method and system for generating a Columnar Tree Map</title>
+		<publication>US Patent Application 2013/0050217(A1), filed August 31, 2011, published February 28, 2013</publication>
+	</item>
+	<item id="Armitage2013b" dim="2" rep="I" pos="A">
+		<name>Navigable Strip Chart</name>
+		<year>2013</year>
+		<authors>John Armitage</authors>
+		<url>http://www.freepatentsonline.com/y2013/0055146.html</url>
+		<title>Navigable visualization of a hierarchical data structure</title>
+		<publication>US Patent Application 2013/0055146(A1), filed August 31, 2011, published February 28, 2013</publication>
+	</item>	
+	<item id="Schulz2013_1" dim="2" rep="I" pos="R">
+		<name>Nested Pietree</name>
+		<year>2013</year>
+		<authors>Hans-J%26ouml;rg Schulz, Zabedul Akbar and Frank Maurer</authors>
+		<url>http://dx.doi.org/10.1109/PacificVis.2013.6596149</url>
+		<title>A generative layout approach for rooted tree drawings</title>
+		<publication>PacificVis'13: Proceedings of the IEEE Pacific Visualization Symposium, pages 225-232</publication>
+	</item>
+	<item id="Schulz2013_2" dim="2" rep="I" pos="R">
+		<name>Cascaded Pietree</name>
+		<year>2013</year>
+		<authors>Hans-J%26ouml;rg Schulz, Zabedul Akbar and Frank Maurer</authors>
+		<url>http://dx.doi.org/10.1109/PacificVis.2013.6596149</url>
+		<title>A generative layout approach for rooted tree drawings</title>
+		<publication>PacificVis'13: Proceedings of the IEEE Pacific Visualization Symposium, pages 225-232</publication>
+	</item>
+	<item id="Tak2013" dim="2" rep="I" pos="A">
+		<name>Hilbert/Moore Treemap</name>
+		<year>2013</year>
+		<authors>Susanne Tak and Andy Cockburn</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2012.108</url>
+		<title>Enhanced spatial stability with Hilbert and Moore Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 19(1), pages 141-148</publication>
+	</item>
+	<item id="Lu2013" dim="2" rep="I" pos="A">
+		<name>Labeled Balanced Treemap</name>
+		<year>2013</year>
+		<authors>Hao Lu, Shi Xia Liu, Martin Wattenberg and Xi Jun Ma</authors>
+		<url>http://www.freepatentsonline.com/8443281.html</url>
+		<title>Constructing a Labeled Treemap with balanced layout</title>
+		<publication>US Patent 8443281(B2), filed April 10, 2007, issued May 14, 2013</publication>
+	</item>
+	<item id="Rosindell2012" dim="2" rep="I" pos="F">
+		<name>OneZoom</name>
+		<year>2012</year>
+		<authors>James Rosindell and Luke J. Harmon</authors>
+		<url>http://dx.doi.org/10.1371/journal.pbio.1001406</url>
+		<title>OneZoom: A fractal explorer for the Tree of Life</title>
+		<publication>PLoS Biology, 10(10), e1001406</publication>
+	</item>
+	<item id="Lam2012" dim="2" rep="I" pos="R">
+		<name>Hyperbolic Wheel</name>
+		<year>2012</year>
+		<authors>Ho-Ching Lam and Ivo D. Dinov</authors>
+		<url>http://dx.doi.org/10.5402/2012/609234</url>
+		<title>Hyperbolic Wheel: A novel hyperbolic space graph viewer for hierarchical information content</title>
+		<publication>ISRN Computer Graphics, 2012, article ID 609234</publication>
+	</item>	
+	<item id="Block2012" dim="2" rep="E" pos="A">
+		<name>DeepTree</name>
+		<year>2012</year>
+		<authors>Florian Block, Michael S. Horn, Brenda Caldwell Phillips, Judy Diamond, E. Margaret Evans and Chia Shen</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2012.272</url>
+		<title>The DeepTree exhibit: Visualizing the Tree of Life to facilitate informal learning</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 18(12), pages 2789-2798</publication>
+		<related>
+			<entry id="Block2012a">
+				<year>2012</year>
+				<authors>Block, Horn, Phillips, Diamond, Evans, Shen</authors>
+				<url>https://lifeonearth.seas.harvard.edu/downloads/DeepTree.pdf</url>
+				<title>Technical appendix: The DeepTree layout and rendering engine</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Baudel2012" dim="2" rep="I" pos="A">
+		<name>Sequential Space-filling Layout</name>
+		<year>2012</year>
+		<authors>Thomas Baudel and Bertjan Broeksema</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2012.205</url>
+		<title>Capturing the design space of Sequential Space-Filling Layouts</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 18(12), pages 2593-2602</publication>
+		<related>
+			<entry id="Baudel2011">
+				<year>2011</year>
+				<authors>Baudel, Broeksema</authors>
+				<url>http://www.cs.rug.nl/~alext/PAPERS/InfoVis11/posterBroeksema.pdf</url>
+				<title>A generic algorithm for Sequential, Rectangular, Space filling Layouts</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Sallaberry2012" dim="2" rep="E" pos="F">
+		<name>ContactTree</name>
+		<year>2012</year>
+		<authors>Arnaud Sallaberry, Yang-Chih Fu, Hwai-Chung Ho and Kwan-Liu Ma</authors>
+		<url>http://www.cs.ucdavis.edu/research/tech-reports/2011/CSE-2012-24.pdf</url>
+		<title>ContactTrees: Ego-centered visualization of social relations</title>
+		<publication>Technical Report, UC Davis</publication>
+		<related>
+			<entry id="Sallaberry2012a">
+				<year>2012</year>
+				<authors>Sallaberry, Ma</authors>
+				<url>http://www.cse.ohio-state.edu/~raghu/teaching/CSE5544/Visweek2012/infovis/posters/sallaberry.pdf</url>
+				<title>Visualizing InfoVis researchers with ContactTrees</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Liang2012" dim="2" rep="I" pos="A">
+		<name>Angular Treemap</name>
+		<year>2012</year>
+		<authors>Jie Liang, Quang Vinh Nguyen, Simeon Simoff and Mao Lin Huang</authors>
+		<url>http://dx.doi.org/10.1109/IV.2012.23</url>
+		<title>Angular Treemaps - A new technique for visualizing and emphasizing hierarchical structures</title>
+		<publication>IV'12: Proceedings of the International Conference on Information Visualisation, pages 74-80</publication>
+		<related>
+			<entry id="Liang2013">
+				<year>2013</year>
+				<authors>Liang, Simoff, Nguyen, Huang</authors>
+				<url>http://dx.doi.org/10.1145/2493102.2493112</url>
+				<title>Visualizing large trees with divide %26amp; conquer partition</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Kobayashi2012" dim="2" rep="I" pos="A">
+		<name>Edge Equalized Treemap</name>
+		<year>2012</year>
+		<authors>Aimi Kobayashi, Kazuo Misue and Jiro Tanaka</authors>
+		<url>http://dx.doi.org/10.1109/IV.2012.12</url>
+		<title>Edge Equalized Treemaps</title>
+		<publication>IV'12: Proceedings of the International Conference on Information Visualisation, pages 7-12</publication>
+	</item>
+	<item id="Brath2012" dim="3" rep="H" pos="R">
+		<name>SphereTree</name>
+		<year>2012</year>
+		<authors>Richard Brath and Peter MacMurchy</authors>
+		<url>http://dx.doi.org/10.1109/IV.2012.11</url>
+		<title>Sphere-based information visualization: Challenges and benefits</title>
+		<publication>IV'12: Proceedings of the International Conference on Information Visualisation, pages 1-6</publication>
+	</item>
+	<item id="Bisson2012" dim="2" rep="E" pos="A">
+		<name>Stacked Tree</name>
+		<year>2012</year>
+		<authors>Gilles Bisson and Renaud Blanch</authors>
+		<url>http://dx.doi.org/10.1145/2254556.2254690</url>
+		<title>Stacked Trees: A new hybrid visualization method</title>
+		<publication>AVI'12: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 709-712</publication>
+		<related>
+			<entry id="Bisson2012a">
+				<year>2012</year>
+				<authors>Bisson, Blanch</authors>
+				<url>http://dx.doi.org/10.1109/IV.2012.45</url>
+				<title>Improving visualization of large hierarchical clustering</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Jusufi2012" dim="2" rep="E" pos="R">
+		<name>Spiral Tree Layout</name>
+		<year>2012</year>
+		<authors>Ilir Jusufi, Andreas Kerren, Vladyslav Aleksakhin and Falk Schreiber</authors>
+		<url>http://dx.doi.org/10.1117/12.906700</url>
+		<title>Visualization of mappings between the gene ontology and cluster trees</title>
+		<publication>VDA'12: Proceedings of the Conference on Visualization and Data Analysis</publication>
+	</item>
+	<item id="Bohnacker2012" dim="2" rep="E" pos="A">
+		<name>Recursive Semicircles</name>
+		<year>2012</year>
+		<authors>Hartmut Bohnacker, Benedikt Gross and Julia Laub</authors>
+		<url>http://www.generative-gestaltung.de/M_5_1_01</url>
+		<title posttext=", page 414">Generative design</title>
+		<publication>Princeton Architectural Press, 2012</publication>
+	</item>	
+	<item id="Bocoup2011" dim="2" rep="E" pos="F">
+		<name>Career Tree</name>
+		<year>2011</year>
+		<authors>Bocoup, LLC</authors>
+		<url>http://weblog.bocoup.com/newsweek-raphaeljs-career-tree-visualization-raphaeljs-burst/</url>
+		<title>Newsweek Career Tree visualization with RaphaelJS and Burst</title>
+		<publication>Bocoup Company Weblog</publication>
+	</item>
+	<item id="Linsen2011" dim="3" rep="H" pos="A">
+		<name>Linked Treemap</name>
+		<year>2011</year>
+		<authors>Lars Linsen and Sabine Behrendt</authors>
+		<url>http://dx.doi.org/10.1007/s00180-011-0272-2</url>
+		<title>Linked Treemap: A 3D Treemap-nodelink layout for visualizing hierarchical structures</title>
+		<publication>Computational Statistics, 26(4), pages 679-697</publication>
+	</item>	
+	<item id="Chuanxi2011" dim="2" rep="E" pos="A">
+		<name>Syntax Tree Layout</name>
+		<year>2011</year>
+		<authors>Chen Chuanxi and Qi Mian</authors>
+		<url>http://dx.doi.org/10.1109/ISIE.2011.68</url>
+		<title>Visualization of Syntax Tree based on VML</title>
+		<publication>ISIE'11: Proceedings of the International Conference on Intelligence Science and Information Engineering, pages 538-541</publication>
+	</item>	
+	<item id="Elzen2011" dim="2" rep="E" pos="A">
+		<name>BaobabView</name>
+		<year>2011</year>
+		<authors>Stef van den Elzen and Jarke J. van Wijk</authors>
+		<url>http://dx.doi.org/10.1109/VAST.2011.6102453</url>
+		<title>BaobabView: Interactive construction and analysis of decision trees</title>
+		<publication>VAST'11: Proceedings of the IEEE Conference on Visual Analytics Science and Technology, pages 151-160</publication>
+	</item>		
+	<item id="Miller2011" dim="2" rep="E" pos="A">
+		<name>StackTree Layout</name>
+		<year>2011</year>
+		<authors>Robert Miller, Vadim Mozhayskiy, Ilias Tagkopoulos and Kwan-Liu Ma</authors>
+		<url>http://dx.doi.org/10.1109/BioVis.2011.6094059</url>
+		<title>EVEVis: A multi-scale visualization system for dense evolutionary data</title>
+		<publication>BioVis'11: Proceedings of the IEEE Symposium on Biological Data Visualization, pages 143-150</publication>
+	</item>
+	<item id="Buchin2011b" dim="2" rep="E" pos="R">
+		<name>Logarithmic Spiral Tree</name>
+		<year>2011</year>
+		<authors>Kevin Buchin, Bettina Speckmann and Kevin Verbeek</authors>
+		<url>http://eurocg11.inf.ethz.ch/abstracts/25.pdf</url>
+		<title>Angle-restricted Steiner Arborescences for Flow Map layout</title>
+		<publication>EuroCG'11: Book of Abstracts of the European Workshop on Computational Geometry, pages 35-38</publication>
+		<related>
+			<entry id="Buchin2011c">
+				<year>2011</year>
+				<authors>Buchin, Speckmann, Verbeek</authors>
+				<url>http://dx.doi.org/10.1109/TVCG.2011.202</url>
+				<title>Flow Map layout via Spiral Trees</title>
+			</entry>
+			<entry id="Verbeek2011">
+				<year>2011</year>
+				<authors>Verbeek, Buchin, Speckmann</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-25591-5_27</url>
+				<title>Angle-restricted Steiner Arborescences for Flow Map layout</title>
+			</entry>
+			<entry id="Buchin2011d">
+				<year>2011</year>
+				<authors>Buchin, Speckmann, Verbeek</authors>
+				<url>http://arxiv.org/abs/1109.3316</url>
+				<title>Angle-restricted Steiner Arborescences for Flow Map layout</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Demaine2011" dim="3" rep="I" pos="F">
+		<name>Stacked Polytopes</name>
+		<year>2011</year>
+		<authors>Erik D. Demaine and Andre Schulz</authors>
+		<url>http://www.siam.org/proceedings/soda/2011/SODA11_088_demainee.pdf</url>
+		<title>Embedding Stacked Polytopes on a polynomial-size grid</title>
+		<publication>SODA'11: Proceedings of the ACM-SIAM Symposium on Discrete Algorithms, pages 1177-1187</publication>
+	</item>
+	<item id="Matela2011" dim="2" rep="I" pos="F">
+		<name>FoamTree</name>
+		<year>2011</year>
+		<authors>Mateusz Matela and Dawid Weiss</authors>
+		<url>http://carrotsearch.com/foamtree</url>
+		<title>FoamTree: Physics-inspired tree map</title>
+		<publication>part of the Carrot2 v3.5.0 and Lingo3G v1.5.0 software releases</publication>
+		<related>
+			<entry id="Matela2010">
+				<year>2010</year>
+				<authors>Matela</authors>
+				<url>http://project.carrot2.org/publications/matela-2010-foamtree.pdf</url>
+				<title>Metody wizualizacji dla zmieniajacych sie w czasie zbiorow danych o strukturze hierarchicznej</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Ukrop2011" dim="3" rep="I" pos="R">
+		<name>Stacked Hemispheres</name>
+		<year>2011</year>
+		<authors>Lubos Ukrop</authors>
+		<url>http://vgg.fiit.stuba.sk/wordpress/2011-03/new-approaches-in-graph-visualization-lubos-ukrop/</url>
+		<title>New approaches in graph visualization</title>
+		<publication>Slovak University of Technology, blog entry, retrieved 18-JUN-2011</publication>
+	</item>
+	<item id="Shin2011" dim="2" rep="I" pos="A">
+		<name>Tablorer</name>
+		<year>2011</year>
+		<authors>HyunJu Shin, GwangHyun Park and JungHyun Han</authors>
+		<url>http://dx.doi.org/10.1111/j.1467-8659.2011.01962.x</url>
+		<title>Tablorer - An interactive tree visualization system for tablet PCs</title>
+		<publication>Computer Graphics Forum, 30(3), pages 1131-1140</publication>
+	</item>
+	<item id="Engel2011" dim="2" rep="E" pos="R">
+		<name>Structural Decomposition Tree</name>
+		<year>2011</year>
+		<authors>Daniel Engel, Rene Rosenbaum, Bernd Hamann and Hans Hagen</authors>
+		<url>http://dx.doi.org/10.1111/j.1467-8659.2011.01941.x</url>
+		<title>Structural Decomposition Trees</title>
+		<publication>Computer Graphics Forum, 30(3), pages 921-930</publication>
+	</item>
+	<item id="Buchin2011" dim="2" rep="I" pos="A">
+		<name>Adjacency-preserving Spatial Treemaps</name>
+		<year>2011</year>
+		<authors>Kevin Buchin, David Eppstein, Maarten L%26ouml;ffler, Martin N%26ouml;llenburg and Rodrigo I. Silveira</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-22300-6_14</url>
+		<title>Adjacency-Preserving Spatial Treemaps</title>
+		<publication>WADS'11: Proceedings of the International Symposium on Algorithms and Data Structures, pages 159-170</publication>
+		<related>
+			<entry id="Buchin2011a">
+				<year>2011</year>
+				<authors>Buchin, Eppstein, L%26ouml;ffler, N%26ouml;llenburg, Silveira</authors>
+				<url>http://arxiv.org/abs/1105.0398v1</url>
+				<title>Adjacency-preserving Spatial Treemaps</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Aydin2011" dim="2" rep="E" pos="A">
+		<name>Descendant-Level-View</name>
+		<year>2011</year>
+		<authors>Burcu Aydin, Gabor Pataki, Haonan Wang, Alim Ladha, Elizabeth Bullitt and J.S. Marron</authors>
+		<url>http://dx.doi.org/10.1214/11-EJS612</url>
+		<title>Visualizing the structure of large trees</title>
+		<publication>Electronic Journal of Statistics, 5, pages 405-420</publication>
+		<related>
+			<entry id="Aydin2010">
+				<year>2010</year>
+				<authors>Aydin, Pataki, Wang, Ladha, Bullitt, Marron</authors>
+				<url>http://arxiv.org/abs/1001.0951v2</url>
+				<title>Visualizing the structure of large trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Marriott2011" dim="2" rep="E" pos="A">
+		<name>Hi-Tree</name>
+		<year>2011</year>
+		<authors>Kim Marriott, Peter Sbarski, Tim van Gelder, Daniel Prager and Andy Bulka</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.45</url>
+		<title>Hi-Trees and their layout</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(3), pages 290-304</publication>
+		<related>
+			<entry id="Dwyer2010">
+				<year>2010</year>
+				<authors>Dwyer, Marriott, Sbarski</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-14600-8_20</url>
+				<title>Hi-Tree layout using quadratic programming</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Mondal2011" dim="2" rep="E" pos="A">
+		<name>Minimum-Layer Drawing</name>
+		<year>2011</year>
+		<authors>Debajyoti Mondal, Muhammad Jawaherul Alam and Md. Saidur Rahman</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-19094-0_23</url>
+		<title>Minimum-Layer Drawings of trees</title>
+		<publication>WALCOM'11: Proceedings of the International Workshop on Algorithms and Computation, pages 221-232</publication>
+	</item>
+	<item id="Choi2011" dim="3" rep="I" pos="R">
+		<name>Strata Treemap</name>
+		<year>2011</year>
+		<authors>Junghong Choi, Oh-hyun Kwon and Kyungwon Lee</authors>
+		<url>http://dx.doi.org/10.1145/2037715.2037813</url>
+		<title>Strata Treemaps</title>
+		<publication>SIGGRAPH'11: Poster at the Special Interest Group on Computer Graphics and Interactive Techniques Conference, page 87</publication>
+		<related>
+			<entry id="Kwon2012">
+				<year>2012</year>
+				<authors>Kwon, Choi, Lee</authors>
+				<url>http://idlab.ajou.ac.kr/stratatreemap/publications/Interaction_Techniques_for_a_Strata_treemap_LDAV2012_Abstract.pdf</url>
+				<title>Interaction techniques for a Strata Treemap</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Cao2011" dim="2" rep="I" pos="A">
+		<name>Visibility-improved Treemap</name>
+		<year>2011</year>
+		<authors>Nan Cao, Shixia Liu, Hao Lu, Xi Jun Ma and Martin M. Wattenberg</authors>
+		<url>http://www.freepatentsonline.com/7870509.html</url>
+		<title>Method and apparatus for improving the visibility of a Treemap</title>
+		<publication>US Patent 7870509(B2), filed April 26, 2007, issued January 11, 2011</publication>
+	</item>
+	<item id="Song2011" dim="2" rep="E" pos="R">
+		<name>Rectangular Tree Browser</name>
+		<year>2011</year>
+		<authors>Hongzhi Song, Xu Cai and Yi Fu</authors>
+		<url>http://www.joics.com/publishedpapers/2011_8_2_354_361.pdf</url>
+		<title>Rectangular Tree Browser: A navigation and visualization tool for large hierarchies</title>
+		<publication>Journal of Information and Computational Science, 8(2), pages 354-361</publication>
+	</item>
+	<item id="Burch2011" dim="2" rep="E" pos="A">
+		<name>TimeEdgeTree</name>
+		<year>2011</year>
+		<authors>Michael Burch and Daniel Weiskopf</authors>
+		<url>http://www.vis.uni-stuttgart.de/uploads/tx_vispublications/Burch2011.pdf</url>
+		<title>Visualizing dynamic quantitative data in hierarchies. TimeEdgeTrees: Attaching dynamic weights to tree edges</title>
+		<publication>IVAPP'11: Proceedings of International Conference on Visualization Theory and Applications, pages 177-186</publication>
+	</item>
+	<item id="Schulz2011_1" dim="3" rep="I" pos="R">
+		<name>3D Sunburst (Wheel)</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_2" dim="3" rep="I" pos="R">
+		<name>3D Polar Steptree</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_3" dim="3" rep="I" pos="R">
+		<name>3D Sunburst (Sphere)</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_4" dim="3" rep="I" pos="R">
+		<name>3D Polar Treemap (Sphere)</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_5" dim="3" rep="I" pos="R">
+		<name>3D Polar Treemap (Cylinder)</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_6" dim="3" rep="I" pos="A">
+		<name>Collector's Box Treemap</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_7" dim="3" rep="I" pos="A">
+		<name>Hybrid Steptree/Treecube</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Schulz2011_8" dim="3" rep="I" pos="A">
+		<name>Spiral Steptree</name>
+		<year>2011</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
+		<title>The design space of implicit hierarchy visualization: A survey</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
+	</item>
+	<item id="Heine2011" dim="2" rep="E" pos="A">
+		<name>Orthogonal Contour Tree Layout</name>
+		<year>2011</year>
+		<authors>Christian Heine, Dominic Schneider, Hamish Carr and Gerik Scheuermann</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.270</url>
+		<title>Drawing contour trees in the plane</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(11), pages 1599-1611</publication>
+	</item>
+	<item id="Berg2011" dim="2" rep="I" pos="A">
+		<name>Treemap with Bounded Aspect Ratio</name>
+		<year>2011</year>
+		<authors>Mark de Berg, Bettina Speckmann and Vincent van der Weele</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-25591-5_28</url>
+		<title>Treemaps with Bounded Aspect Ratio</title>
+		<publication>ISAAC'11: Proceedings of the International Symposium on Algorithms and Computations, pages 260-270</publication>
+		<related>
+			<entry id="Berg2011a">
+				<year>2011</year>
+				<authors>de Berg, Speckmann, van der Weele</authors>
+				<url>http://arxiv.org/abs/1012.1749v2</url>
+				<title>Treemaps with bounded aspect ratio</title>
+			</entry>
+			<entry id="Berg2011b">
+				<year>2011</year>
+				<authors>de Berg, Speckmann, van der Weele</authors>
+				<url>http://eurocg11.inf.ethz.ch/abstracts/62.pdf</url>
+				<title>Convex Treemaps with bounded aspect ratio</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Chen2010" dim="3" rep="I" pos="A">
+		<name>Magic Treemap Cube</name>
+		<year>2010</year>
+		<authors>Xiaowu Chen, Haolin Yang, Yongtao Ma and Bin Zhou</authors>
+		<url>http://www.ijvr.org/issues/issue3-2010/paper2.pdf</url>
+		<title>A Magic Treemap Cube for visualizing Olympic Games data</title>
+		<publication>The International Journal of Virtual Reality, 9(3), pages 9-17</publication>
+	</item>
+	<item id="Steinbruckner2010" dim="3" rep="I" pos="A">
+		<name>Elevated City Map</name>
+		<year>2010</year>
+		<authors>Frank Steinbr%26uuml;ckner and Claus Lewerentz</authors>
+		<url>http://dx.doi.org/10.1145/1879211.1879239</url>
+		<title>Representing development history in software cities</title>
+		<publication>SOFTVIS'10: Proceedings of the International Symposium on Software Visualization, pages 193-202</publication>
+		<related>
+			<entry id="Steinbruckner2012">
+				<year>2012</year>
+				<authors>Steinbr%26uuml;ckner, Lewerentz</authors>
+				<url>http://dx.doi.org/10.1177/1473871612438785</url>
+				<title posttext=", to appear">Understanding software evolution with software cities</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Benson2010" dim="3" rep="I" pos="A">
+		<name>Orthographic Treemap</name>
+		<year>2010</year>
+		<authors>Jordan Riley Benson, Lee Sullvan, Rajiv Ramarajan, Frank Wimmer and Paul Hankey</authors>
+		<url>http://blogs.sas.com/peerrevue/uploads/OrthographicTreeMap-summary.pdf</url>
+		<title>Using orthographic projection and animation to convey Treemap structure</title>
+		<publication>poster presentation at the IEEE Conference on Information Visualization (InfoVis'10)</publication>
+	</item>
+	<item id="Leclair2010" dim="3" rep="I" pos="F">
+		<name>R-Systems Visualization</name>
+		<year>2010</year>
+		<authors>Andrew LeClair</authors>
+		<url>http://www.andrewleclair.com/archive.html</url>
+		<title>Directory Tree, A data visualization mashup</title>
+		<publication>Online portfolio, retrieved 09-JAN-2012</publication>
+	</item>
+	<item id="Tuttle2010" dim="2" rep="E" pos="A">
+		<name>PedVis</name>
+		<year>2010</year>
+		<authors>Claurissa Tuttle, Luis Gustavo Nonato and Claudio Silva</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2010.185</url>
+		<title>PedVis: A structured, space-efficient technique for pedigree visualization</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 16(6), pages 1063-1072</publication>
+		<related>
+			<entry id="Tuttle2012">
+				<year>2012</year>
+				<authors>Tuttle, Silva</authors>
+				<url>http://www.freepatentsonline.com/8229967.html</url>
+				<title>Space efficient visualization of pedigree data</title>
+			</entry>
+			<entry id="Santos2012">
+				<year>2012</year>
+				<authors>Santos, Dias, Santos</authors>
+				<url>http://dx.doi.org/10.1109/IV.2012.15</url>
+				<title>Implementation and evaluation of an enhanced H-tree layout pedigree visualization</title>
+			</entry>
+			<entry id="Santos2013">
+				<year>2013</year>
+				<authors>Santos, Santos, Dias, Silva, Ferreira</authors>
+				<url>http://dx.doi.org/10.1109/IV.2013.56</url>
+				<title>Extending the H-tree layout pedigree: An evaluation</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Duncan2010" dim="2" rep="E" pos="R">
+		<name>Lombardi-style Tree Drawing</name>
+		<year>2010</year>
+		<authors>Christian A. Duncan, David Eppstein, Michael T. Goodrich, Stephen G. Kobourov and Martin N%26ouml;llenburg</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-18469-7_17</url>
+		<title>Drawing trees with perfect angular resolution and polynomial area</title>
+		<publication>GD'10: Proceedings of the International Symposium on Graph Drawing, pages 183-194</publication>
+	</item>
+	<item id="Culy2010" dim="2" rep="E" pos="A">
+		<name>Double Tree</name>
+		<year>2010</year>
+		<authors>Chris Culy and Verena Lyding</authors>
+		<url>http://dx.doi.org/10.1109/IV.2010.24</url>
+		<title>Double Tree: An advanced KWIC visualization for expert users</title>
+		<publication>IV'10: Proceedings of the International Conference on Information Visualisation, pages 98-103</publication>
+	</item>
+	<item id="Adamoli2010" dim="2" rep="I" pos="R">
+		<name>TreVis</name>
+		<year>2010</year>
+		<authors>Andrea Adamoli and Matthias Hauswirth</authors>
+		<url>http://dx.doi.org/10.1145/1879211.1879224</url>
+		<title>Trevis: A Context Tree visualization and analysis framework and its use for classifying performance failure reports</title>
+		<publication>SOFTVIS'10: Proceedings of the International Symposium on Software Visualization, pages 73-82</publication>
+	</item>
+	<item id="Song2010" dim="2" rep="E" pos="A">
+		<name>PittaTree</name>
+		<year>2010</year>
+		<authors>HyunJoo Song, Bohyoung Kim, Bongshin Lee and Jinwook Seo</authors>
+		<url>http://dx.doi.org/10.1145/1753326.1753359</url>
+		<title>A comparative evaluation on tree visualization methods for hierarchical structures with large fan-outs</title>
+		<publication>CHI'10: Proceedings of the International Conference on Human Factors in Computing Systems, pages 223-232</publication>
+	</item>
+	<item id="Chauhan2010" dim="2" rep="I" pos="A">
+		<name>Mondrian Treemap</name>
+		<year>2010</year>
+		<authors>Janki Chauhan</authors>
+		<url>http://search.proquest.com/docview/851128424/abstract</url>
+		<title>Analysis and extension of tree visualization</title>
+		<publication>Master thesis, University of Texas, Dallas</publication>
+	</item>
+	<item id="Hadlak2010" dim="2" rep="I" pos="R">
+		<name>Embedded Spatiotemporal Hierarchies</name>
+		<year>2010</year>
+		<authors>Steffen Hadlak, Christian Tominski, Hans-J%26ouml;rg Schulz and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1080/13658816.2010.510840</url>
+		<title>Visualization of attributed hierarchical structures in a spatiotemporal context</title>
+		<publication>International Journal of Geographical Information Science, 24(10), pages 1497-1513</publication>
+	</item>
+	<item id="Aborisade2010" dim="2" rep="I" pos="A">
+		<name>HierarchyMap</name>
+		<year>2010</year>
+		<authors>D. O. Aborisade and Olanrewaju Jelili Oyelade</authors>
+		<url>http://computerresearch.org/stpr/index.php/gjcst/article/viewArticle/96</url>
+		<title>HierarchyMap: A novel approach to Treemap visualization of hierarchical data</title>
+		<publication>Global Journal of Computer Science and Technology, 9(5 v.2), pages 77-81</publication>
+	</item>
+	<item id="Feinberg2010" dim="2" rep="I" pos="A">
+		<name>Word Treemap</name>
+		<year>2010</year>
+		<authors>Jonathan Feinberg</authors>
+		<url>http://oreilly.com/catalog/0636920000617/</url>
+		<title>Wordle</title>
+		<publication>Steele, Iliinsky (Eds.): Beautiful Visualization, chapter 3, pages 37-58</publication>
+	</item>
+	<item id="Kidd2010" dim="3" rep="E" pos="F">
+		<name>Geophylogentic Tree Visualization</name>
+		<year>2010</year>
+		<authors>David M. Kidd</authors>
+		<url>http://dx.doi.org/10.1093/sysbio/syq043</url>
+		<title>Geophylogenies and the Map of Life</title>
+		<publication>Systematic Biology, 59(6), pages 741-752</publication>
+	</item>	
+	<item id="Brunner2010" dim="2" rep="E" pos="A">
+		<name>Ordered Tree Drawing on k-Grids</name>
+		<year>2010</year>
+		<authors>Wolfgang Brunner and Marco Matzeder</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-18469-7_10</url>
+		<title>Drawing ordered (k-1)-ary trees on k-grids</title>
+		<publication>GD'10: Proceedings of the International Symposium on Graph Drawing, pages 105-116</publication>
+	</item>
+	<item id="Burch2010" dim="2" rep="I" pos="A">
+		<name>Indented Pixel Tree Plots</name>
+		<year>2010</year>
+		<authors>Michael Burch, Michael Raschke and Daniel Weiskopf</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-17289-2_33</url>
+		<title>Indented Pixel Tree Plots</title>
+		<publication>ISVC'10: Proceedings of the International Symposium on Visual Computing, pages 338-349</publication>
+		<related>
+			<entry id="Burch2011a">
+				<year>2011</year>
+				<authors>Burch, Schmauder, Weiskopf</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-24028-7_28</url>
+				<title>Indented Pixel Tree Browser for exploring huge hierarchies</title>
+			</entry>
+			<entry id="Burch2012">
+				<year>2012</year>
+				<authors>Burch, Raschke, Greis, Weiskopf</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-31223-6_14</url>
+				<title>Enriching Indented Pixel Tree Plots with node-oriented quantitative, categorical, relational, and time-series data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Giacomo2010" dim="2" rep="E" pos="F">
+		<name>Minimum Spanning Tree Approximation</name>
+		<year>2010</year>
+		<authors>Emilio Di Giacomo, Walter Didimo, Giuseppe Liotta and Henk Meijer</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-17514-5_6</url>
+		<title>Drawing a tree as a Minimum Spanning Tree Approximation</title>
+		<publication>ISAAC'10: Proceedings of the International Symposium on Algorithms and Computations, pages 61-72</publication>
+		<related>
+			<entry id="Giacomo2012">
+				<year>2012</year>
+				<authors>Giacomo, Didimo, Liotta, Meijer</authors>
+				<url>http://dx.doi.org/10.1016/j.jcss.2011.06.001</url>
+				<title>Drawing a tree as a Minimum Spanning Tree Approximation</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Eppstein2009" dim="2" rep="E" pos="R">
+		<name>Archimedean Spiral Layout</name>
+		<year>2009</year>
+		<authors>David Eppstein</authors>
+		<url>http://11011110.livejournal.com/171440.html</url>
+		<title>Visualizing BFS as a spiral</title>
+		<publication>Blog 0xDE - 11011110's Journal, retrieved 26-APR-2010</publication>
+	</item>
+	<item id="Moret2009" dim="2" rep="I" pos="R">
+		<name>Calling Context Ring Charts</name>
+		<year>2009</year>
+		<authors>Philippe Moret, Walter Binder, Danilo Ansaloni and Alex Villazon</authors>
+		<url>http://dx.doi.org/10.1109/VISSOF.2009.5336425</url>
+		<title>Visualizing Calling Context profiles with Ring Charts</title>
+		<publication>VisSoft'09: Proceedings of the IEEE International Workshop on Visualizing Software for Understanding and Analysis, pages 33-36</publication>
+		<related>
+			<entry id="Moret2010">
+				<year>2010</year>
+				<authors>Moret, Binder, Villazon, Ansaloni, Heydarnoori</authors>
+				<url>http://dx.doi.org/10.1002/spe.985</url>
+				<title>Visualizing and exploring profiles with Calling Context Ring Charts</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Heard2009" dim="2" rep="E" pos="R">
+		<name>Large Tree Visualization</name>
+		<year>2009</year>
+		<authors>Jeff Heard, William Kaufmann and Xiaojun Guan</authors>
+		<url>http://dx.doi.org/10.1093/bioinformatics/btn656</url>
+		<title>A novel method for large tree visualization</title>
+		<publication>Bioinformatics, 25(4), pages 557-558</publication>
+	</item>
+	<item id="Jia2009" dim="3" rep="I" pos="R">
+		<name>Enhanced Radial Space-Filling Layout</name>
+		<year>2009</year>
+		<authors>Ming Jia, Sivakumar Swaminathan, Eve Syrkin Wurtele and Julie Dickerson</authors>
+		<url>http://dx.doi.org/10.1109/BIBMW.2009.5332109</url>
+		<title>MetNetGE: Visualizing biological networks in hierarchical views and 3D tiered layouts</title>
+		<publication>BIBMW'09: Proceedings of the IEEE International Conference on Bioinformatics and Biomedicine Workshops, pages 287-294</publication>
+		<related>
+			<entry id="Jia2010">
+				<year>2010</year>
+				<authors>Jia, Li, Boggess, Wurtele, Dickerson</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-17289-2_34</url>
+				<title>Visualizing multivariate hierarchic data using enhanced radial space-filling layout</title>
+			</entry>
+			<entry id="Jia2010a">
+				<year>2010</year>
+				<authors>Jia, Choi, Reiners, Wurtele, Dickerson</authors>
+				<url>http://dx.doi.org/10.1186/1471-2105-11-469</url>
+				<title>MetNetGE: Interactive views of biological networks and ontologies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Huang2009" dim="2" rep="I" pos="A">
+		<name>TreemapBar</name>
+		<year>2009</year>
+		<authors>Mao Lin Huang, Tze-Haw Huang and Jiawan Zhang</authors>
+		<url>http://dx.doi.org/10.1109/IV.2009.22</url>
+		<title>TreemapBar: Visualizing additional dimensions of data in bar chart</title>
+		<publication>IV'09: Proceedings of the International Conference on Information Visualisation, pages 98-103</publication>
+	</item>
+	<item id="Lee2009" dim="2" rep="E" pos="A">
+		<name>Distance Encoded Tree</name>
+		<year>2009</year>
+		<authors>Bongshin Lee, Lev Nachmanson, George Robertson, Jonathan M. Carlson and David Heckerman</authors>
+		<url>http://dx.doi.org/10.1093/bioinformatics/btp454</url>
+		<title>PhyloDet: A scalable visualization tool for mapping multiple traits to large evolutionary trees</title>
+		<publication>Bioinformatics, 25(19), pages 2611-2612</publication>
+		<related>
+			<entry id="Lee2008">
+				<year>2008</year>
+				<authors>Lee, Nachmanson, Robertson, Carlson, Heckerman</authors>
+				<url>http://research.microsoft.com/apps/pubs/default.aspx?id=70606</url>
+				<title>Det. (Distance Encoded Tree): A scalable visualization tool for mapping multiple traits to large evolutionary trees</title>
+			</entry>
+			<entry id="Lee2009a">
+				<year>2009</year>
+				<authors>Lee, Nachmanson, Robertson</authors>
+				<url>http://www.freepatentsonline.com/y2009/0198725.html</url>
+				<title>Visualizing tree structure with different edge lengths</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Collins2009" dim="2" rep="I" pos="R">
+		<name>DocuBurst</name>
+		<year>2009</year>
+		<authors>Christopher Collins, Sheelagh Carpendale and Gerald Penn</authors>
+		<url>http://dx.doi.org/10.1111/j.1467-8659.2009.01439.x</url>
+		<title>DocuBurst: Visualizing document content using language structure</title>
+		<publication>Computer Graphics Forum, 28(3), pages 1039-1046</publication>
+	</item>
+	<item id="Parks2009" dim="2" rep="E" pos="A">
+		<name>Georeferenced Tree Layout</name>
+		<year>2009</year>
+		<authors>Donovan H. Parks and Robert G. Beiko</authors>
+		<url>http://dx.doi.org/10.1109/GEOINFORMATICS.2009.5293552</url>
+		<title>Quantitative visualizations of hierarchically organized data in a geographic context</title>
+		<publication>Proceedings of the International Conference on GeoInformatics'09</publication>
+		<related>
+			<entry id="Parks2009a">
+				<year>2009</year>
+				<authors>Parks, Porter, Churcher, Wang, Blouin, Whalley, Brooks, Beiko</authors>
+				<url>http://dx.doi.org/10.1101/gr.095612.109</url>
+				<title>GenGIS: A geospatial information system for genomic data</title>
+			</entry>
+			<entry id="Parks2009b">
+				<year>2009</year>
+				<authors>Parks, MacDonald, Beiko</authors>
+				<url>http://dx.doi.org/10.1371/currents.RRN1014</url>
+				<title>Tracking the evolution and geographic spread of Influenza A</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Liggesmeyer2009" dim="3" rep="I" pos="A">
+		<name>3D-Treemap</name>
+		<year>2009</year>
+		<authors>Peter Liggesmeyer, Jens Heidrich, J%26uuml;rgen M%26uuml;nch, Robert Kalckl%26ouml;sch, Henning Barthel and Dirk Zeckzer</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-02574-7_94</url>
+		<title>Visualization of software and systems as support mechanism for integrated software project control</title>
+		<publication>Human-Computer Interaction. Novel Interaction Methods and Techniques: Proceedings of the HCI International, pages 846-855</publication>
+	</item>
+	<item id="Etemad2009" dim="2" rep="I" pos="R">
+		<name>ShamsehTree</name>
+		<year>2009</year>
+		<authors>Katayoon Etemad and Sheelagh Carpendale</authors>
+		<url>http://pages.cpsc.ucalgary.ca/~ketemad/temp/publications/ShamsehTree.pdf</url>
+		<title>ShamsehTrees: Providing hierarchical context for nodes of interest</title>
+		<publication>Bridges'09: Proceedings of the Bridges Conference on Mathematics, Music, Art, Architecture, Culture, pages 293-300</publication>
+		<related>
+			<entry id="Etemad2010">
+				<year>2010</year>
+				<authors>Etemad, Carpendale</authors>
+				<url>http://innovis.cpsc.ucalgary.ca/innovis/uploads/Publications/Publications/symmetry-poster.pdf</url>
+				<title>Symmetry and node focused visualization of large trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Chaudhuri2009" dim="H" rep="I" pos="A">
+		<name>Lifted Treemap</name>
+		<year>2009</year>
+		<authors>Abon Chaudhuri and Han-Wei Shen</authors>
+		<url>http://dx.doi.org/10.1109/PACIFICVIS.2009.4906844</url>
+		<title>A self-adaptive Treemap-based technique for visualizing hierarchical data in 3D</title>
+		<publication>PacificVis'09: Proceedings of the IEEE Pacific Visualization Symposium, pages 105-112</publication>
+	</item>
+	<item id="Dmitrieva2009" dim="3" rep="I" pos="R">
+		<name>Spherical Caps</name>
+		<year>2009</year>
+		<authors>Julia Dmitrieva and Fons J. Verbeek</authors>
+		<url>http://ceur-ws.org/Vol-529/owled2009_submission_9.pdf</url>
+		<title>Node-link and containment methods in ontology visualization</title>
+		<publication>OWLED'09: Proceedings of the International Workshop on OWL: Experiences and Directions</publication>
+	</item>
+	<item id="Schulz2009" dim="2" rep="E" pos="R">
+		<name>Point-based Tree Visualization</name>
+		<year>2009</year>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/PACIFICVIS.2009.4906841</url>
+		<title>Point-based tree representation: A new approach for large hierarchies</title>
+		<publication>PacificVis'09: Proceedings of the IEEE Pacific Visualization Symposium, pages 81-88</publication>
+		<related>
+			<entry id="Schulz2008">
+				<year>2008</year>
+				<authors>Schulz, Hadlak, Schumann</authors>
+				<url>http://www.informatik.uni-rostock.de/~hs162/pdf/schulz2.pdf</url>
+				<title>A Point-based layout for large hierarchies</title>
+			</entry>
+			<entry id="Schulz2011a">
+				<year>2011</year>
+				<authors>Schulz, Hadlak, Schumann</authors>
+				<url>http://dx.doi.org/10.1109/TVCG.2010.89</url>
+				<title>Point-based visualization for large hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Wood2008" dim="2" rep="I" pos="A">
+		<name>Spatially Ordered Treemap</name>
+		<year>2008</year>
+		<authors>Jo Wood and Jason Dykes</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2008.165</url>
+		<title>Spatially Ordered Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 14(6), pages 1348-1355</publication>
+		<related>
+			<entry id="Wood2008a">
+				<year>2008</year>
+				<authors>Wood, Dykes</authors>
+				<url>http://www.geos.ed.ac.uk/~gisteac/proceedingsonline/GISRUK2008/proc_GISRUK2008.pdf</url>
+				<title>From slice and dice to hierarchical cartograms: Spatial referencing of Treemaps</title>
+			</entry>
+			<entry id="Slingsby2008">
+				<year>2008</year>
+				<authors>Slingsby, Wood, Dykes</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500185</url>
+				<title>Using Treemaps for variable selection in spatio-temporal visualisation</title>
+			</entry>
+			<entry id="Slingsby2010">
+				<year>2010</year>
+				<authors>Slingsby, Dykes, Wood</authors>
+				<url>http://dx.doi.org/10.4113/jom.2010.1090</url>
+				<title>Rectangular hierarchical cartograms for socio-economic data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bachmaier2008" dim="2" rep="E" pos="R">
+		<name>Hexagonal Grid Drawing</name>
+		<year>2008</year>
+		<authors>Christian Bachmaier, Franz J. Brandenburg, Wolfgang Brunner, Andreas Hofmeier, Marco Matzeder and Thomas Unfried</authors>
+		<url>http://dx.doi.org/10.1007/978-3-642-00219-9_36</url>
+		<title>Tree drawings on the hexagonal grid</title>
+		<publication>GD'08: Proceedings of the International Symposium on Graph Drawing, pages 372-383</publication>
+	</item>
+	<item id="Lou2008" dim="2" rep="I" pos="R">
+		<name>FanLens</name>
+		<year>2008</year>
+		<authors>Xinghua Lou, Shixia Liu and Tianshu Wang</authors>
+		<url>http://dx.doi.org/10.1109/PACIFICVIS.2008.4475471</url>
+		<title>FanLens: A visual toolkit for dynamically exploring the distribution of hierarchical attributes</title>
+		<publication>PacificVis'08: Proceedings of the IEEE Pacific Visualization Symposium, pages 151-158</publication>
+	</item>
+	<item id="Nadeau2008" dim="3" rep="E" pos="R">
+		<name>3D Cone Tree Layout</name>
+		<year>2008</year>
+		<authors>David Robert Nadeau</authors>
+		<url>scans/Nadeau2008.pdf</url>
+		<title posttext=" (local copy, unavailable from author)">Visualizing large trees and graphs using a 3D Cone Tree Layout</title>
+		<publication>Nadeau Software Consulting Articles</publication>
+	</item>
+	<item id="Leah2008" dim="2" rep="I" pos="A">
+		<name>Treemap with Priorities</name>
+		<year>2008</year>
+		<authors>Robert Leah, Kenneth Parzygnat and Robert Uthe</authors>
+		<url>http://www.freepatentsonline.com/7429987.html</url>
+		<title>Intelligent positioning of items in a Tree Map visualization</title>
+		<publication>US Patent 7429987(B2), filed September 19, 2003, issued September 30, 2008</publication>
+	</item>
+	<item id="Wattenberg2008" dim="2" rep="E" pos="A">
+		<name>Word Tree</name>
+		<year>2009</year>
+		<authors>Martin Wattenberg and Fernanda B. Viegas</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2008.172</url>
+		<title>The Word Tree, an interactive visual concordance</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 14(6), pages 1221-1228</publication>
+	</item>
+	<item id="Lu2008" dim="2" rep="I" pos="A">
+		<name>Cascaded Treemaps</name>
+		<year>2008</year>
+		<authors>Hao R. L%26uuml; and James Fogarty</authors>
+		<url>http://portal.acm.org/citation.cfm?id=1375758</url>
+		<title>Cascaded Treemaps: Examining the visibility and stability of structure in Treemaps</title>
+		<publication>GI'08: Proceedings of the Graphics Interface Conference, pages 259-266</publication>
+		<related>
+			<entry id="Liu2006">
+				<year>2006</year>
+				<authors>Liu, Cao, Lv, Su</authors>
+				<url>http://dx.doi.org/10.1145/1183614.1183778</url>
+				<title>The visual funding navigator: Analysis of the NSF funding information</title>
+			</entry>
+			<entry id="Liu2008">
+				<year>2008</year>
+				<authors>Liu, Cao, Lv</authors>
+				<url>http://dx.doi.org/10.1109/PACIFICVIS.2008.4475475</url>
+				<title>Interactive visual analysis of the NSF funding information</title>
+			</entry>
+			<entry id="Cao2011">
+				<year>2011</year>
+				<authors>Cao, Liu, Lu, Ma, Wattenberg</authors>
+				<url>http://www.freepatentsonline.com/7870509.html</url>
+				<title>Method and apparatus for improving the visibility of a Treemap</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Tekusova2008" dim="3" rep="I" pos="R">
+		<name>Multivariate Hierarchic Plots</name>
+		<year>2008</year>
+		<authors>Tatiana Tekusova and Tobias Schreck</authors>
+		<url>http://dx.doi.org/10.1109/IV.2008.51</url>
+		<title>Visualizing time-dependent data in Multivariate Hierarchic Plots - Design and evaluation of an economic application</title>
+		<publication>IV'08: Proceedings of the International Conference on Information Visualisation, pages 143-150</publication>
+		<related>
+			<entry id="Tekusova2008a">
+				<year>2008</year>
+				<authors>Tekusova, Knuth, Schreck, Kohlhammer</authors>
+				<url>http://bib.dbvis.de/uploadedFiles/infovis08-paper.pdf</url>
+				<title>Data quality visualization for multivariate hierarchic data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Jia2008" dim="2" rep="E" pos="R">
+		<name>Circular Subtree Drawing</name>
+		<year>2008</year>
+		<authors>Yuntao Jia and John C. Hart</authors>
+		<url>http://hdl.handle.net/2142/14068</url>
+		<title>Drawing trees: How many circles to use?</title>
+		<publication>Technical Report, University of Illinois</publication>
+	</item>
+	<item id="Burch2008" dim="2" rep="E" pos="A">
+		<name>Timeline Tree</name>
+		<year>2008</year>
+		<authors>Michael Burch, Fabian Beck and Stephan Diehl</authors>
+		<url>http://dx.doi.org/10.1145/1385569.1385584</url>
+		<title>Timeline Trees: Visualizing sequences of transactions in information hierarchies</title>
+		<publication>AVI'08: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 75-82</publication>
+	</item>
+	<item id="Hong2008" dim="3" rep="E" pos="R">
+		<name>Symmetric 3D Layout</name>
+		<year>2008</year>
+		<authors>Seok-Hee Hong and Peter Eades</authors>
+		<url>http://dx.doi.org/10.1007/s00453-002-1011-4</url>
+		<title>Drawing trees symmetrically in three dimensions</title>
+		<publication>Algorithmica, 36(2), pages 153-178</publication>
+	</item>
+	<item id="Draper2008" dim="2" rep="I" pos="R">
+		<name>Fan Chart</name>
+		<year>2008</year>
+		<authors>Geoffrey M. Draper and Richard F. Riesenfeld</authors>
+		<url>http://fht.byu.edu/prev_workshops/workshop08/papers/1/1-1.pdf</url>
+		<title>Interactive Fan Charts: A space-saving technique for genealogical graph exploration</title>
+		<publication>FHTW'08: Proceedings of the Workshop on Technology for Family History and Genealogical Research</publication>
+	</item>
+	<item id="Onak2008" dim="2" rep="I" pos="F">
+		<name>Circular Partitions</name>
+		<year>2008</year>
+		<authors>Krzysztof Onak and Anastasios Sidiropoulos</authors>
+		<url>http://dx.doi.org/10.1145/1377676.1377683</url>
+		<title>Circular Partitions with applications to visualization and embeddings</title>
+		<publication>SCG'08: Proceedings of the Symposium on Computational Geometry, pages 28-37</publication>
+		<related>
+			<entry id="Berg2013">
+				<year>2013</year>
+				<authors>de Berg, Onak, Sidiropoulos</authors>
+				<url>http://jocg.org/index.php/jocg/article/view/74</url>
+				<title>Fat polygonal partitions with applications to visualization and embeddings</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Schedl2007" dim="3" rep="I" pos="R">
+		<name>3D Sunburst (Cylinder)</name>
+		<year>2007</year>
+		<authors>Markus Schedl, Peter Knees, Gerhard Widmer, Klaus Seyerlehner and Tim Pohle</authors>
+		<url>http://www.cp.jku.at/research/papers/Schedl_etal_Vis_2007.pdf</url>
+		<title>Browsing the web using stacked three-dimensional Sunbursts to visualize term co-occurrences and multimedia content</title>
+		<publication>poster presentation at the IEEE Conference on Information Visualization (InfoVis'07)</publication>
+	</item>
+	<item id="Rafelsberger2007" dim="3" rep="E" pos="F">
+		<name>Rhizome Navigation</name>
+		<year>2007</year>
+		<authors>Walter Rafelsberger</authors>
+		<url>http://www.rafelsberger.at/node/genealogy-visualization</url>
+		<title>3D family tree visualization using Rhizome Navigation</title>
+		<publication>part of a documentary by Benedikt Bjarnason</publication>
+	</item>	
+	<item id="Rusu2007" dim="2" rep="E" pos="R">
+		<name>FastRings</name>
+		<year>2007</year>
+		<authors>Adrian Rusu, Confesor Santiago and Radu Jianu</authors>
+		<url>http://dx.doi.org/10.1109/IV.2007.92</url>
+		<title>Real-time interactive visualization of information hierarchies</title>
+		<publication>IV'07: Proceedings of the International Conference on Information Visualisation, pages 117-123</publication>
+		<related>
+			<entry id="Rusu2011">
+				<year>2011</year>
+				<authors>Rusu, Santiago</authors>
+				<url>http://www.freepatentsonline.com/7984389.html</url>
+				<title>Information visualization system</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Rusu2007a" dim="2" rep="E" pos="A">
+		<name>Non-orthogonal Planar Straight-line Grid Drawing</name>
+		<year>2007</year>
+		<authors>Adrian Rusu and Confesor Santiago</authors>
+		<url>http://dx.doi.org/10.1109/IV.2007.14</url>
+		<title>A practical algorithm for Planar Straight-line Grid Drawings of general trees with linear area and arbitrary aspect ratio</title>
+		<publication>IV'07: Proceedings of the International Conference on Information Visualisation, pages 743-750</publication>
+		<related>
+			<entry id="Rusu2008">
+				<year>2008</year>
+				<authors>Rusu, Yao, Crowell</authors>
+				<url>http://dx.doi.org/10.1109/IV.2008.26</url>
+				<title>A Planar Straight-line Grid Drawing algorithm for high degree general trees with user-specified angular coefficient</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Husken2007" dim="2" rep="E" pos="A">
+		<name>SmartTree</name>
+		<year>2007</year>
+		<authors>Peter H%26uuml;sken and J%26uuml;rgen Ziegler</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-74796-3_12</url>
+		<title>Degree-of-Interest visualization for ontology exploration</title>
+		<publication>INTERACT'07: Proceedings of the IFIP TC13 Conference on Human-Computer Interaction, pages 116-119</publication>
+	</item>
+	<item id="Wettel2007" dim="3" rep="I" pos="A">
+		<name>CodeCity</name>
+		<year>2007</year>
+		<authors>Richard Wettel and Michele Lanza</authors>
+		<url>http://dx.doi.org/10.1109/VISSOF.2007.4290706</url>
+		<title>Visualizing software systems as cities</title>
+		<publication>VisSoft'07: Proceedings of the IEEE International Workshop on Visualizing Software for Understanding and Analysis, pages 92-99</publication>
+		<related>
+			<entry id="Wettel2008">
+				<year>2008</year>
+				<authors>Wettel, Lanza</authors>
+				<url>http://dx.doi.org/10.1145/1409720.1409745</url>
+				<title>Visually localizing design problems with Disharmony Maps</title>
+			</entry>
+			<entry id="Wettel2008a">
+				<year>2008</year>
+				<authors>Wettel</authors>
+				<url>http://www.inf.usi.ch/phd/wettel/download.php?f=Wettel08e-famoosr.pdf</url>
+				<title>Scripting 3D visualizations with CodeCity</title>
+			</entry>
+			<entry id="Wettel2010">
+				<year>2010</year>
+				<authors>Wettel, Lanza, Robbes</authors>
+				<url>http://www.inf.usi.ch/research_publication.htm?id=60</url>
+				<title>Empirical validation of CodeCity: A controlled experiment</title>
+			</entry>
+			<entry id="Wettel2011">
+				<year>2011</year>
+				<authors>Wettel, Lanza, Robbes</authors>
+				<url>http://dx.doi.org/10.1145/1985793.1985868</url>
+				<title>Software systems as cities: A controlled experiment</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Larrea2007" dim="3" rep="E" pos="R">
+		<name>Spherical Layout</name>
+		<year>2007</year>
+		<authors>Martin L. Larrea, Sergio R. Martig and Silvia M. Castro</authors>
+		<url>http://www.iadis.net/dl/Search_list_open.asp?code=3649</url>
+		<title>Spherical Layout for 3D tree visualization</title>
+		<publication>IHCI'07: Proceedings of the IADIS International Conference on Interfaces and Human Computer Interaction, pages 91-98</publication>
+		<related>
+			<entry id="Larrea2009">
+				<year>2009</year>
+				<authors>Larrea, Urribarri, Martig, Castro</authors>
+				<url>http://arxiv.org/abs/0912.3974</url>
+				<title>Spherical Layout implementation using centroidal Voronoi tessellations</title>
+			</entry>
+			<entry id="Larrea2009a">
+				<year>2009</year>
+				<authors>Larrea, Urribarri, Martig, Castro</authors>
+				<url>http://www.iadis.net/dl/Search_list_open.asp?code=6147</url>
+				<title>User experience with Spherical Layout</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Marriott2007" dim="2" rep="E" pos="A">
+		<name>Compact Layered Layout</name>
+		<year>2007</year>
+		<authors>Kim Marriott and Peter Sbarski</authors>
+		<url>http://dl.acm.org/citation.cfm?id=1273751</url>
+		<title>Compact Layout of layered trees</title>
+		<publication>ACSC'07: Proceedings of the Australasian Conference on Computer Science, pages 7-14</publication>
+	</item>
+	<item id="Chevalier2007" dim="2" rep="I" pos="A">
+		<name>Cushioned Icicle Plot</name>
+		<year>2007</year>
+		<authors>Fanny Chevalier, David Auber and Alexandru Telea</authors>
+		<url>http://dx.doi.org/10.1145/1294948.1294971</url>
+		<title>Structural analysis and visualization of C++ code evolution using syntax trees</title>
+		<publication>IWPSE'07: Proceedings of the International Workshop on Principles of Software Evolution, pages 90-97</publication>
+	</item>
+	<item id="Bohanec2007" dim="2" rep="E" pos="A">
+		<name>Quadratic Programming Layout</name>
+		<year>2007</year>
+		<authors>Marko Bohanec</authors>
+		<url>http://kt.ijs.si/MarkoBohanec/pub/IS2007_DEXiTree.pdf</url>
+		<title>DEXiTree: A program for pretty drawing of trees</title>
+		<publication>IS'07: Proceedings of the International Multiconference Information Society, pages 7-10</publication>
+	</item>
+	<item id="Tu2007" dim="2" rep="I" pos="A">
+		<name>Contrast Spiral Treemap</name>
+		<year>2007</year>
+		<authors>Ying Tu and Han-Wei Shen</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2007.70529</url>
+		<title>Visualizing changes of hierarchical data using Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 13(6), pages 1286-1293</publication>
+	</item>
+	<item id="Lin2007b" dim="2" rep="E" pos="F">
+		<name>Spring-Embedder Models</name>
+		<year>2007</year>
+		<authors>Yaw-Ling Lin and Po-Shun Yu</authors>
+		<url>http://www.joc.iecs.fcu.edu.tw/Published%20Vol_18_No_2.files/10_JOC95006_PRINT.pdf</url>
+		<title>Visualizing phylogenetic trees by Spring-Embedder Models</title>
+		<publication>Journal of Computers, 18(2)</publication>
+	</item>
+	<item id="Luboschik2007" dim="3" rep="H" pos="A">
+		<name>Exploded Treemaps</name>
+		<year>2007</year>
+		<authors>Martin Luboschik and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/IV.2007.50</url>
+		<title>Explode to Explain - Illustrative Information Visualization</title>
+		<publication>IV'07: Proceedings of the International Conference on Information Visualisation, pages 301-307</publication>
+	</item>
+	<item id="Huang2007" dim="3" rep="E" pos="A">
+		<name>EncCon Tree 3D</name>
+		<year>2007</year>
+		<authors>Mao Lin Huang, Quang Vinh Nguyen, Wei Lai and Xiaodi Huang</authors>
+		<url>http://dx.doi.org/10.1109/CGIV.2007.82</url>
+		<title>Three-dimensional EncCon Tree</title>
+		<publication>CGIV'07: Proceedings of the Computer Graphics, Imaging and Visualisation, pages 429-433</publication>
+	</item>
+	<item id="Appert2007" dim="2" rep="E" pos="A">
+		<name>ControlTree</name>
+		<year>2007</year>
+		<authors>Caroline Appert and Jean-Daniel Fekete</authors>
+		<url>http://dx.doi.org/10.1145/1541436.1541463</url>
+		<title>Naviguer dans des grands arbres avec ControlTree</title>
+		<publication>IHM'07: Proceedings of the International Conference on Association Francophone d'Interaction Homme-Machine, pages 139-142</publication>
+		<related>
+			<entry id="Appert2006">
+				<year>2006</year>
+				<authors>Appert, Fekete</authors>
+				<url>http://www.acm.org/uist/archive/adjunct/2006/pdf/demos/p47-appert.pdf</url>
+				<title>ControlTree: Navigating and selecting in a large tree</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Blanch2007" dim="2" rep="I" pos="A">
+		<name>Zoomable Treemap</name>
+		<year>2007</year>
+		<authors>Renaud Blanch and Eric Lecolinet</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2007.70540</url>
+		<title>Browsing Zoomable Treemaps: Structure-aware multi-scale navigation techniques</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 13(6), pages 1248-1253</publication>
+		<related>
+			<entry id="Blanch2006">
+				<year>2006</year>
+				<authors>Blanch, Lecolinet</authors>
+				<url>http://www.acm.org/uist/archive/adjunct/2006/pdf/demos/p49-blanch.pdf</url>
+				<title>Navigation techniques for Zoomable Treemaps</title>
+			</entry>
+			<entry id="Blanch2007a">
+				<year>2007</year>
+				<authors>Blanch, Lecolinet</authors>
+				<url>http://dx.doi.org/10.1145/1541436.1541462</url>
+				<title>Treemaps zoomables: Techniques d'interaction multi-echelles pour les Treemaps</title>
+			</entry>
+			<entry id="Kim2014">
+				<year>2014</year>
+				<authors>Kim, Han</authors>
+				<url>http://dx.doi.org/10.1007/978-3-319-07731-4_5</url>
+				<title>Label embedded treemapping: A label overlap prevention technique for Zoomable Treemaps and a user interaction technique</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Kim2007" dim="3" rep="E" pos="A">
+		<name>3-Dimensional Phylogeny Layout</name>
+		<year>2007</year>
+		<authors>Namshin Kim and Christopher Lee</authors>
+		<url>http://dx.doi.org/10.1186/1471-2105-8-213</url>
+		<title>Three-Dimensional Phylogeny Explorer: Distinguishing paralogs, lateral transfer, and violation of "molecular clock" assumption with 3D visualization</title>
+		<publication>BMC Bioinformatics, 8(213)</publication>
+	</item>
+	<item id="Schuffenhauer2007" dim="2" rep="E" pos="A">
+		<name>Scaffold Tree</name>
+		<year>2007</year>
+		<authors>Ansgar Schuffenhauer, Peter Ertl, Silvio Roggo, Stefan Wetzel, Marcus A. Koch and Herbert Waldmann</authors>
+		<url>http://dx.doi.org/10.1021/ci600338x</url>
+		<title>The Scaffold Tree - Visualization of the scaffold universe by hierarchical scaffold classification</title>
+		<publication>Journal of Chemical Information and Modeling, 47(1), pages 47-58</publication>
+	</item>	
+	<item id="Tan2007" dim="2" rep="E" pos="A">
+		<name>AdaptiviTree</name>
+		<year>2007</year>
+		<authors>Desney S. Tan, Greg Smith, Bongshin Lee and George G. Robertson</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2007.70537</url>
+		<title>AdaptiviTree: Adaptive tree visualization for tournament-style brackets</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 13(6), pages 1113-1120</publication>
+		<related>
+			<entry id="Tan2009">
+				<year>2009</year>
+				<authors>Tan, Smith, Lee, Robertson</authors>
+				<url>http://www.freepatentsonline.com/y2009/0098937.html</url>
+				<title>Adaptive tree visualization for tournament-style brackets</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Ahmed2007" dim="3" rep="E" pos="A">
+		<name>Curled Tree</name>
+		<year>2007</year>
+		<authors>Adel Ahmed and Seok-Hee Hong</authors>
+		<url>http://dx.doi.org/10.1109/APVIS.2007.329279</url>
+		<title>Navigation techniques for 2.5D graph layout</title>
+		<publication>APVIS'07: Proceedings of the Asia Pacific Symposium on Information Visualization, pages 81-84</publication>
+	</item>
+	<item id="Otjacques2007" dim="2" rep="I" pos="A">
+		<name>Ellimaps</name>
+		<year>2007</year>
+		<authors>Benoit Otjacques, Monique Noirhomme, Xavier Gobert, Pierre Collin and Fernand Feltz</authors>
+		<url>http://dx.doi.org/10.1109/IV.2007.137</url>
+		<title>Visualizing the activity of a web-based collaborative platform</title>
+		<publication>IV'07: Proceedings of the International Conference on Information Visualisation, pages 251-256</publication>
+		<related>
+			<entry id="Otjacques2007a">
+				<year>2007</year>
+				<authors>Otjacques, Noirhomme, Feltz</authors>
+				<url>http://dx.doi.org/10.1007/978-3-540-74780-2_4</url>
+				<title>Innovative visualization tools to monitor scientific cooperative activities</title>
+			</entry>
+			<entry id="Otjacques2009">
+				<year>2009</year>
+				<authors>Otjacques, Cornil, Noirhomme, Fernand Feltz</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-03658-3_84</url>
+				<title>CGD - A new algorithm to optimize space occupation in Ellimaps</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Cuadros2007" dim="2" rep="E" pos="F">
+		<name>Force-Directed Phylogenetic Tree Layout</name>
+		<year>2007</year>
+		<authors>Ana M. Cuadros, Fernando V. Paulovich, Rosane Minghim and Guilherme P. Telles</authors>
+		<url>http://dx.doi.org/10.1109/VAST.2007.4389002</url>
+		<title>Point placement by phylogenetic trees and its application to visual analysis of document collections</title>
+		<publication>VAST'07: Proceedings of the IEEE Symposium on Visual Analytics Science and Technology, pages 99-106</publication>
+		<related>
+			<entry id="Paiva2011">
+				<year>2011</year>
+				<authors>Paiva, Florian-Cruz, Pedrini, Telles, Minghim</authors>
+				<url>http://dx.doi.org/10.1109/TVCG.2011.212</url>
+				<title>Improved similarity trees and their application to visual data classification</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Hao2007" dim="2" rep="I" pos="R">
+		<name>Radial Edgeless Tree</name>
+		<year>2007</year>
+		<authors>Jie Hao, Kang Zhang and Mao Lin Huang</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-76414-4_34</url>
+		<title>RELT - Visualizing trees on mobile devices</title>
+		<publication>VISUAL'07: Advances in Visual Information Systems, pages 344-357</publication>
+		<related>
+			<entry id="Hao2007a">
+				<year>2007</year>
+				<authors>Hao, Zhang</authors>
+				<url>http://dx.doi.org/10.1109/ISCE.2007.4382214</url>
+				<title>A mobile interface for hierarchical information visualization and navigation</title>
+			</entry>
+			<entry id="Hao2009">
+				<year>2009</year>
+				<authors>Hao, Zhang, Gabrysch, Zhu</authors>
+				<url>http://dx.doi.org/10.1007/978-3-642-00672-2_38</url>
+				<title>Managing hierarchical information on small screens</title>
+			</entry>
+			<entry id="Hao2010">
+				<year>2010</year>
+				<authors>Hao, Gabrysch, Zhao, Zhu, Zhang</authors>
+				<url>http://aia-i.com/ijai/sample/vol2/no1/81-103.pdf</url>
+				<title>Visualizing and navigating hierarchical information on mobile user interfaces</title>
+			</entry>
+			<entry id="Chhetri2012">
+				<year>2012</year>
+				<authors>Chhetri, Zhang</authors>
+				<url>http://dx.doi.org/10.1109/ICIS.2012.73</url>
+				<title>Modified RELT for display and navigation of large hierarchy on handheld touch-screen devices</title>
+			</entry>
+			<entry id="Chhetri2013">
+				<year>2013</year>
+				<authors>Chhetri, Zhang, Jain</authors>
+				<url>http://dx.doi.org/10.1145/2493102.2493109</url>
+				<title>ERELT: A faster alternative to the list-based interfaces for tree exploration and searching in mobile devices</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Sandberg2007" dim="2" rep="E" pos="A">
+		<name>Hilbert Tree Layout</name>
+		<year>2007</year>
+		<authors>Anders Sandberg</authors>
+		<url>http://www.flickr.com/photos/arenamontanus/1916189332/in/set-72157594326128194/</url>
+		<title>Hilbert tree of life</title>
+		<publication>flickr gallery, retrieved 26-APR-2010</publication>
+	</item>
+	<item id="Neumann2006" dim="3" rep="E" pos="R">
+		<name>PhylloTree</name>
+		<year>2006</year>
+		<authors>Petra Neumann, Sheelagh Carpendale and Anand Agarawala</authors>
+		<url>http://dx.doi.org/10.2312/VisSym/EuroVis06/059-066</url>
+		<title>PhylloTrees: Phyllotactic patterns for tree layout</title>
+		<publication>EuroVis'06: Proceedings of the Joint Eurographics/IEEE VGTC Symposium on Visualization, pages 59-66</publication>
+		<related>
+			<entry id="Carpendale2004">
+				<year>2004</year>
+				<authors>Carpendale, Agarawala</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.2004.53</url>
+				<title>PhylloTrees: Harnessing nature's phyllotactic patterns for tree layout</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Schreck2006" dim="2" rep="I" pos="A">
+		<name>Grid TreeMap</name>
+		<year>2006</year>
+		<authors>Tobias Schreck, Daniel Keim and Florian Mansmann</authors>
+		<url>http://www.inf.uni-konstanz.de/gk/pubsys/publishedFiles/ScKeMa06.pdf</url>
+		<title>Regular TreeMap layouts for visual analysis of hierarchical data</title>
+		<publication>SCCG'06: Proceedings of the Spring Conference on Computer Graphics, pages 184-191</publication>
+	</item>
+	<item id="Telea2006" dim="2" rep="I" pos="A">
+		<name>Parametrizable Treemap</name>
+		<year>2006</year>
+		<authors>Alexandru Telea</authors>
+		<url>http://dx.doi.org/10.2312/VisSym/EuroVis06/051-058</url>
+		<title>Combining extended Table Lens and Treemap techniques for visualizing tabular data</title>
+		<publication>EuroVis'06: Proceedings of the Joint Eurographics/IEEE VGTC Symposium on Visualization, pages 51-58</publication>
+	</item>	
+	<item id="Webber2006" dim="2" rep="I" pos="A">
+		<name>Hybrid Sunburst/Treemap</name>
+		<year>2006</year>
+		<authors>Richard Webber, Ric D. Herbert and Wei Jiang</authors>
+		<url>http://ideas.repec.org/p/sce/scecfa/67.html</url>
+		<title>Space-filling techniques in visualizing output from computer based economic models</title>
+		<publication>Computing in Economics and Finance, 2006(67)</publication>
+	</item>
+	<item id="Wang2006" dim="3" rep="I" pos="R">
+		<name>3D Nested Cylinders and Spheres</name>
+		<year>2006</year>
+		<authors>Weixin Wang, Hui Wang, Guozhong Dai and Hongan Wang</authors>
+		<url>http://dx.doi.org/10.1145/1124772.1124851</url>
+		<title>Visualization of large hierarchical data by circle packing</title>
+		<publication>CHI'06: Proceedings of the International Conference on Human Factors in Computing Systems, pages 517-520</publication>
+	</item>
+	<item id="Ishihara2006" dim="2" rep="E" pos="R">
+		<name>Ripple Presentation</name>
+		<year>2006</year>
+		<authors>Masaki Ishihara, Kazuo Misue and Jiro Tanaka</authors>
+		<url>http://portal.acm.org/citation.cfm?id=1151927</url>
+		<title>Ripple Presentation for tree structures with historical information</title>
+		<publication>APVIS'06: Proceedings of the Asia Pacific Symposium on Information Visualization, pages 153-160</publication>
+	</item>
+	<item id="Demian2006" dim="2" rep="I" pos="A">
+		<name>Fisheye Outline Tree</name>
+		<year>2006</year>
+		<authors>Peter Demian and Renate Fruchter</authors>
+		<url>http://dx.doi.org/10.1057/palgrave.ivs.9500114</url>
+		<title>Finding and understanding reusable designs from large hierarchical repositories</title>
+		<publication>Information Visualization, 5(1), pages 28-46</publication>
+	</item>
+	<item id="Song2006" dim="2" rep="E" pos="A">
+		<name>LensTree</name>
+		<year>2006</year>
+		<authors>Hongzhi Song, Yu Qi, Lei Xiao, Tonglin Zhu and Edwin P. Curran</authors>
+		<url>http://dx.doi.org/10.1109/ICAT.2006.81</url>
+		<title>LensTree: Browsing and navigating large hierarchical information structures</title>
+		<publication>ICAT'06: Proceedings of the International Conference on Artificial Reality and Telexistence, pages 682-687</publication>
+	</item>
+	<item id="Tominski2006" dim="2" rep="E" pos="A">
+		<name>Fisheye Tree View</name>
+		<year>2006</year>
+		<authors>Christian Tominski, James Abello, Frank van Ham and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1109/IV.2006.54</url>
+		<title>Fisheye Tree Views and lenses for graph visualization</title>
+		<publication>IV'06: Proceedings of the International Conference on Information Visualisation, pages 17-24</publication>
+	</item>
+	<item id="Band2006" dim="2" rep="I" pos="A">
+		<name>PygmyBrowser</name>
+		<year>2006</year>
+		<authors>Zvi Band and Ryen W. White</authors>
+		<url>http://dx.doi.org/10.1145/1125451.1125562</url>
+		<title>PygmyBrowse: A small screen tree browser</title>
+		<publication>CHI'06: Extended abstracts of the SIGCHI conference on Human Factors in Computing Systems, pages 514-519</publication>
+	</item>
+	<item id="Pavlo2006" dim="2" rep="E" pos="R">
+		<name>Parent-centered Radial Layout</name>
+		<year>2006</year>
+		<authors>Andrew Pavlo, Christopher Homan and Jonathan Schull</authors>
+		<url>http://arxiv.org/abs/cs/0606007v1</url>
+		<title>A parent-centered radial layout algorithm for interactive graph visualization and animation</title>
+		<publication>arXiv.org e-print service, arXiv:cs/0606007v1 [cs.HC]</publication>
+	</item>
+	<item id="Eichhorn2006" dim="2" rep="I" pos="R">
+		<name>Eichhorn-Tree</name>
+		<year>2006</year>
+		<authors>Elisabeth Eichhorn</authors>
+		<url>http://www.elisabetheichhorn.de/_en/projekte/weiter/stammbaum/stammbaum.html</url>
+		<title>Family tree visualization</title>
+		<publication>Interactive Portfolio of Elisabeth Eichhorn on Information Architecture and Visualization, retrieved 26-APR-2010</publication>
+	</item>
+	<item id="Vliegen2006_1" dim="2" rep="I" pos="A">
+		<name>Generalized Treemap (Pyramid)</name>
+		<year>2006</year>
+		<authors>Roel Vliegen, Jarke J. van Wijk and Erik-Jan van der Linden</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2006.200</url>
+		<title>Visualizing business data with Generalized Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics 12(5), pages 789-796</publication>
+	</item>
+	<item id="Vliegen2006_2" dim="2" rep="I" pos="R">
+		<name>Generalized Treemap (Pie)</name>
+		<year>2006</year>
+		<authors>Roel Vliegen, Jarke J. van Wijk and Erik-Jan van der Linden</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2006.200</url>
+		<title>Visualizing business data with Generalized Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics 12(5), pages 789-796</publication>
+	</item>
+	<item id="Vliegen2006_3" dim="2" rep="I" pos="R">
+		<name>Generalized Treemap (Pyramid+Pie)</name>
+		<year>2006</year>
+		<authors>Roel Vliegen, Jarke J. van Wijk and Erik-Jan van der Linden</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2006.200</url>
+		<title>Visualizing business data with Generalized Treemaps</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics 12(5), pages 789-796</publication>
+	</item>
+	<item id="Thorn2006" dim="2" rep="I" pos="A">
+		<name>Treemap with Minimum Cell Size</name>
+		<year>2006</year>
+		<authors>Matthew Thorn and Donald Hoffman</authors>
+		<url>http://www.freepatentsonline.com/7027052.html</url>
+		<title>Treemap display with minimum cell size</title>
+		<publication>US Patent 7027052(B1), filed August 13, 2002, issued April 11, 2006</publication>
+	</item>
+	<item id="Carlson2006" dim="2" rep="E" pos="R">
+		<name>Tree with Convex Faces</name>
+		<year>2006</year>
+		<authors>Josiah Carlson and David Eppstein</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-70904-6_9</url>
+		<title>Trees with Convex Faces and optimal angles</title>
+		<publication>GD'06: Proceedings of the International Symposium on Graph Drawing, pages 77-88</publication>
+	</item>
+	<item id="Kubota2006_1" dim="2" rep="I" pos="F">
+		<name>2D Contour Map</name>
+		<year>2006</year>
+		<authors>Hidekazu Kubota, Toyoaki Nishida and Yasuyuki Sumi</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-69902-6_3</url>
+		<title>Visualization of contents archive by contour map representation</title>
+		<publication>New Frontiers in Artificial Intelligence: Proceedings of the Japanese Society for Artificial Intelligence Conference and Workshops, pages 19-32</publication>
+	</item>
+	<item id="Kubota2006_2" dim="3" rep="I" pos="F">
+		<name>3D Contour Map</name>
+		<year>2006</year>
+		<authors>Hidekazu Kubota, Toyoaki Nishida and Yasuyuki Sumi</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-69902-6_3</url>
+		<title>Visualization of contents archive by contour map representation</title>
+		<publication>New Frontiers in Artificial Intelligence: Proceedings of the Japanese Society for Artificial Intelligence Conference and Workshops, pages 19-32</publication>
+	</item>
+	<item id="MohammadiAragh2005" dim="2" rep="I" pos="R">
+		<name>MoireTrees</name>
+		<year>2005</year>
+		<authors>Mahnas Jean Mohammadi-Aragh and T. J. Jankun-Kelly</authors>
+		<url>http://dx.doi.org/10.2312/VisSym/EuroVis05/231-238</url>
+		<title>MoireTrees: Visualization and interaction for multi-hierarchical data</title>
+		<publication>EuroVis'05: Proceedings of the Joint Eurographics/IEEE VGTC Symposium on Visualization, pages 231-238</publication>
+	</item>
+	<item id="Parsia2005" dim="2" rep="I" pos="R">
+		<name>CropCircles</name>
+		<year>2005</year>
+		<authors>Bijan Parsia, Taowei Wang and Jennifer Golbeck</authors>
+		<url>http://ceur-ws.org/Vol-172/enduserSWI_paper05.pdf</url>
+		<title>Visualizing web ontologies with cropcircles</title>
+		<publication>Proceedings of the ISWC Workshop on End User Semantic Web Interaction 2005</publication>
+		<related>
+			<entry id="Wang2006a">
+				<year>2006</year>
+				<authors>Wang, Parsia</authors>
+				<url>http://dx.doi.org/10.1007/11926078_50</url>
+				<title>CropCircles: Topology Sensitive Visualization of OWL Class Hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Sukla2005" dim="2" rep="I" pos="R">
+		<name>Nested Pie Chart</name>
+		<year>2005</year>
+		<authors>Ambika Sukla and Mohit Sauhta</authors>
+		<url>http://nestedpiechart.sourceforge.net/</url>
+		<title>Nested Pie Chart</title>
+		<publication>Sourceforge page of the Nested Pie Chart Project, retrieved 26-JUL-2011</publication>
+	</item>
+	<item id="Hida2005" dim="2" rep="E" pos="A">
+		<name>Hyperbolic Half-Plane Visualization</name>
+		<year>2005</year>
+		<authors>Yozo Hida, John O. Lamping and Ramana B. Rao</authors>
+		<url>http://www.freepatentsonline.com/6901555.html</url>
+		<title>Tree visualization system and method based upon a compressed half-plane model of hyperbolic geometry</title>
+		<publication>US Patent 6901555(B2), filed July 09, 2001, issued May 31, 2005</publication>
+	</item>
+	<item id="Bachmaier2005_1" dim="2" rep="E" pos="R">
+		<name>Circular Phylogenetic Tree Layout</name>
+		<year>2005</year>
+		<authors>Christian Bachmaier, Ulrik Brandes and Barbara Schlieper</authors>
+		<url>http://dx.doi.org/10.1007/11602613_110</url>
+		<title>Drawing phylogenetic trees</title>
+		<publication>ISAAC'05: Proceedings of the International Symposium on Algorithms and Computations, pages 1110-1121</publication>
+	</item>
+	<item id="Bachmaier2005_2" dim="2" rep="E" pos="R">
+		<name>Radial Phylogenetic Tree Layout</name>
+		<year>2005</year>
+		<authors>Christian Bachmaier, Ulrik Brandes and Barbara Schlieper</authors>
+		<url>http://dx.doi.org/10.1007/11602613_110</url>
+		<title>Drawing phylogenetic trees</title>
+		<publication>ISAAC'05: Proceedings of the International Symposium on Algorithms and Computations, pages 1110-1121</publication>
+	</item>
+	<item id="Langelier2005_1" dim="3" rep="I" pos="A">
+		<name>Treemap/VERSO</name>
+		<year>2005</year>
+		<authors>Guillaume Langelier, Houari Sahraoui and Pierre Poulin</authors>
+		<url>http://dx.doi.org/10.1145/1101908.1101941</url>
+		<title>Visualization-based analysis of quality for large-scale software systems</title>
+		<publication>ASE'05: Proceedings of the IEEE/ACM international Conference on Automated Software Engineering, pages 214-223</publication>
+		<related>
+			<entry id="Langelier2007">
+				<year>2007</year>
+				<authors>Langelier, Dhambri</authors>
+				<url>http://dx.doi.org/10.1109/VISSOF.2007.4290720</url>
+				<title>Visual analysis of Azureus using VERSO</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Langelier2005_2" dim="3" rep="I" pos="R">
+		<name>Sunburst/VERSO</name>
+		<year>2005</year>
+		<authors>Guillaume Langelier, Houari Sahraoui and Pierre Poulin</authors>
+		<url>http://dx.doi.org/10.1145/1101908.1101941</url>
+		<title>Visualization-based analysis of quality for large-scale software systems</title>
+		<publication>ASE'05: Proceedings of the IEEE/ACM international Conference on Automated Software Engineering, pages 214-223</publication>
+		<related>
+			<entry id="Denier2009">
+				<year>2009</year>
+				<authors>Denier, Sahraoui</authors>
+				<url>http://dx.doi.org/10.1109/ESEM.2009.5316016</url>
+				<title>Understanding the use of inheritance with visual patterns</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Holten2005" dim="2" rep="I" pos="A">
+		<name>Textured Treemap</name>
+		<year>2005</year>
+		<authors>Danny Holten, Roel Vliegen and Jarke J. van Wijk</authors>
+		<url>http://dx.doi.org/10.1109/VISSOF.2005.1684299</url>
+		<title>Visual realism for the visualization of software metrics</title>
+		<publication>VisSoft'05: Proceedings of the IEEE International Workshop on Visualizing Software for Understanding and Analysis, pages 27-32</publication>
+	</item>
+	<item id="Zhao2005" dim="2" rep="H" pos="A">
+		<name>Elastic Hierarchies</name>
+		<year>2005</year>
+		<authors>Shengdong Zhao, Michael J. McGuffin and Mark H. Chignell</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2005.1532129</url>
+		<title>Elastic Hierarchies: Combining Treemaps and node-link diagrams</title>
+		<publication>InfoVis'05: Proceedings of the IEEE Symposium on Information Visualization, pages 57-64</publication>
+	</item>
+	<item id="Balzer2005" dim="2" rep="I" pos="F">
+		<name>Voronoi Treemap</name>
+		<year>2005</year>
+		<authors>Michael Balzer and Oliver Deussen</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2005.1532128</url>
+		<title>Voronoi Treemaps</title>
+		<publication>InfoVis'05: Proceedings of the IEEE Symposium on Information Visualization, pages 49-56</publication>
+		<related>
+			<entry id="Bernhardt2009">
+				<year>2009</year>
+				<authors>Bernhardt, Funke, Hecker, Siebourg</authors>
+				<url>http://dx.doi.org/10.1109/ISVD.2009.33</url>
+				<title>Visualizing gene expression data via Voronoi Treemaps</title>
+			</entry>
+			<entry id="Horn2009">
+				<year>2009</year>
+				<authors>Horn, Tobiasz, Shen</authors>
+				<url>http://dx.doi.org/10.1109/ISVD.2009.22</url>
+				<title>Visualizing biodiversity with Voronoi Treemaps</title>
+			</entry>
+			<entry id="Sud2010">
+				<year>2010</year>
+				<authors>Sud, Fisher, Lee</authors>
+				<url>http://dx.doi.org/10.1109/ISVD.2010.16</url>
+				<title>Fast Dynamic Voronoi Treemaps</title>
+			</entry>
+			<entry id="Gotz2011">
+				<year>2011</year>
+				<authors>Gotz</authors>
+				<url>http://domino.watson.ibm.com/library/cyberdig.nsf/papers/82B477237B0FBED485257868004C1635</url>
+				<title>Dynamic Voronoi Treemaps: A visualization technique for time-varying hierarchical data</title>
+			</entry>
+			<entry id="Nocaj2012">
+				<year>2012</year>
+				<authors>Nocaj, Brandes</authors>
+				<url>http://dx.doi.org/10.1111/j.1467-8659.2012.03078.x</url>
+				<title>Computing Voronoi Treemaps: Faster, simpler, and resolution-independent</title>
+			</entry>
+			<entry id="Hahn2014">
+				<year>2014</year>
+				<authors>Hahn, Tr%26uuml;mper, Moritz, D%26ouml;llner</authors>
+				<url>http://www.hpi.uni-potsdam.de/doellner/publications/year/2014/2334/STMD2014.html</url>
+				<title>Visualization of varying hierarchies by stable layout of Voronoi Treemaps</title>
+			</entry>
+		</related>
+	</item>	
+	<item id="Newman2005" dim="2" rep="I" pos="A">
+		<name>Treetable</name>
+		<year>2005</year>
+		<authors>Paula S. Newman and Stuart K. Card</authors>
+		<url>http://www.freepatentsonline.com/6944818.html</url>
+		<title>Method and apparatus for the viewing and exploration of the content of hierarchical information </title>
+		<publication>US Patent 6944818(B2), filed September 01, 2001, issued September 13, 2005</publication>
+		<related>
+			<entry id="Newman2005a">
+				<year>2005</year>
+				<authors>Newman, Card</authors>
+				<url>http://www.freepatentsonline.com/6976212.html</url>
+				<title>Method and apparatus for the construction and use of table-like visualizations of hierarchic material</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Boutin2005" dim="2" rep="H" pos="R">
+		<name>Multilevel Silhouette Tree</name>
+		<year>2005</year>
+		<authors>Francois Boutin, Jerome Thievre and Mountaz Hascoet</authors>
+		<url>http://dx.doi.org/10.1007/11555261_67</url>
+		<title>Multilevel Compound Tree - Construction Visualization and Interaction</title>
+		<publication>INTERACT'05: Proceedings of the IFIP TC13 Conference on Human-Computer Interaction, pages 847-860</publication>
+	</item>
+	<item id="Bagheri2005" dim="2" rep="E" pos="F">
+		<name>Simulated Annealing-based Layout</name>
+		<year>2005</year>
+		<authors>Alireza Bagheri and Mohammadreza Razzazi</authors>
+		<url>http://dx.doi.org/10.3217/jucs-011-06-0804</url>
+		<title>How to draw free trees inside bounded simple polygons</title>
+		<publication>Journal of Universal Computer Science, 11(6), pages 804-829</publication>
+	</item>
+	<item id="Wattenberg2005" dim="2" rep="I" pos="F">
+		<name>Jigsaw Map</name>
+		<year>2005</year>
+		<authors>Martin Wattenberg</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2005.1532145</url>
+		<title>A note on space-filling visualizations and space-filling curves</title>
+		<publication>InfoVis'05: Proceedings of the IEEE Symposium on Information Visualization, pages 181-185</publication>
+	</item>
+	<item id="Ong2005" dim="2" rep="I" pos="A">
+		<name>Fractal Tree</name>
+		<year>2005</year>
+		<authors>TeongJoo Ong, John J. Leggett and Unil Yun</authors>
+		<url>http://dx.doi.org/10.1109/ENC.2005.53</url>
+		<title>Visualizing hierarchies and collection structures with Fractal Trees</title>
+		<publication>ENV'05: Proceedings of the Mexican International Conference on Computer Science, pages 31-40</publication>
+	</item>
+	<item id="Lin2005" dim="2" rep="E" pos="R">
+		<name>Balloon Drawing</name>
+		<year>2005</year>
+		<authors>Chun-Cheng Lin and Hsu-Chun Yen</authors>
+		<url>http://dx.doi.org/10.1007/11618058_26</url>
+		<title>On Balloon Drawings of rooted trees</title>
+		<publication>GD'05: Proceedings of the International Symposium on Graph Drawing, pages 285-296</publication>
+		<related>
+			<entry id="Lin2007">
+				<year>2007</year>
+				<authors>Lin, Yen</authors>
+				<url>http://www.cs.brown.edu/sites/jgaa/accepted/2007/LinYen2007.11.2.pdf</url>
+				<title>On Balloon Drawings of rooted trees</title>
+			</entry>
+			<entry id="Lin2007a">
+				<year>2007</year>
+				<authors>Lin, Yen</authors>
+				<url>http://dx.doi.org/10.1109/IV.2007.30</url>
+				<title>Balloon views of source code and their multiscalable font modes</title>
+			</entry>
+			<entry id="Lin2010">
+				<year>2010</year>
+				<authors>Lin, Yen, Poon, Fan</authors>
+				<url>http://arxiv.org/abs/1004.2338v1</url>
+				<title>Complexity analysis of Balloon Drawing for rooted trees</title>
+			</entry>
+			<entry id="Lin2011">
+				<year>2011</year>
+				<authors>Lin, Yen, Poon, Fan</authors>
+				<url>http://dx.doi.org/10.1016/j.tcs.2010.10.015</url>
+				<title>Complexity analysis of Balloon Drawing for rooted trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Nguyen2004" dim="2" rep="E" pos="A">
+		<name>EncCon Tree 2D</name>
+		<year>2004</year>
+		<authors>Quang Vinh Nguyen and Mao Lin Huang</authors>
+		<url>http://www.actapress.com/PaperInfo.aspx?PaperID=16436</url>
+		<title>Hierarchical Information Visualization using ENCCON Model</title>
+		<publication>SE'04: Proceedings of the IASTED International Conference on Software Engineering</publication>
+		<related>
+			<entry id="Nguyen2004a">
+				<year>2004</year>
+				<authors>Nguyen, Huang</authors>
+				<url>http://portal.acm.org/citation.cfm?id=1082121.1082131</url>
+				<title>Visualising file-systems using EncCon model</title>
+			</entry>
+			<entry id="Nguyen2005">
+				<year>2005</year>
+				<authors>Nguyen, Huang</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500087</url>
+				<title>EncCon: An approach to constructing interactive visualization of large hierarchical data</title>
+			</entry>
+			<entry id="Huang2007a">
+				<year>2007</year>
+				<authors>Huang, Nguyen, Lai</authors>
+				<url>http://dx.doi.org/10.1007/978-3-540-37017-8_27</url>
+				<title>Creating visual browsers for large-scale online auctions</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Joshi2004" dim="3" rep="E" pos="R">
+		<name>Helix Cone Tree</name>
+		<year>2004</year>
+		<authors>Jyoti Joshi, Brendan Cleary and Chris Exton</authors>
+		<url>http://www.dcs.warwick.ac.uk/pvw04/p10.pdf</url>
+		<title>Application of Helix Cone Tree visualizations to dynamic call graph illustration</title>
+		<publication>Proceedings of the Program Visualization Workshop, University of Warwick Research Report CS-RR-407, pages 68-75</publication>
+		<related>
+			<entry id="Cleary2004">
+				<year>2004</year>
+				<authors>Cleary, Exton</authors>
+				<url>http://dx.doi.org/10.1109/WPC.2004.1311074</url>
+				<title>CHIVE - A program source visualisation framework</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bladh2004" dim="3" rep="I" pos="A">
+		<name>StepTree</name>
+		<year>2004</year>
+		<authors>Thomas Bladh, David A. Carr and Jeremiah Scholl</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-27795-8_6</url>
+		<title>Extending Tree-Maps to three dimensions: A comparative study</title>
+		<publication>APCHI'04: Proceedings of the Asia Pacific Conference on Computer Human Interaction, pages 50-59</publication>
+		<related>
+			<entry id="Bladh2005">
+				<year>2005</year>
+				<authors>Bladh, Carr, Kljun</authors>
+				<url>http://dx.doi.org/10.1109/IV.2005.122</url>
+				<title>The effect of animated transitions on user navigation in 3D Tree-maps</title>
+			</entry>
+			<entry id="Trapp2013">
+				<year>2013</year>
+				<authors>Trapp, Schmechel, D%26ouml;llner</authors>
+				<url>http://www.hpi.uni-potsdam.de/doellner/publications/year/2013/2193/TSD2013.html</url>
+				<title>Interactive rendering of complex 3D-Treemaps</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Ganascia2004" dim="2" rep="I" pos="R">
+		<name>Memory Islands</name>
+		<year>2004</year>
+		<authors>Jean-Gabriel Ganascia</authors>
+		<url>http://hal.archives-ouvertes.fr/docs/00/06/25/35/PDF/sic_00001258.pdf</url>
+		<title>RECIT: REpresentation Cartographique et Insulaire de Textes</title>
+		<publication>CIFT'03: Proceedings of the Colloque International sur la Fouille de Texte, pages 59-70</publication>
+		<related>
+			<entry id="Ganascia2006">
+				<year>2006</year>
+				<authors>Ganascia</authors>
+				<url>http://dx.doi.org/10.1007/978-3-540-71027-1_22</url>
+				<title>AC^3 - Automatic Cartography of Cultural Contents</title>
+			</entry>
+			<entry id="Ganascia2012">
+				<year>2012</year>
+				<authors>Ganascia</authors>
+				<url>http://www-poleia.lip6.fr/~polyle/NewEX/v11012012/result.html</url>
+				<title>Memory Islands - Ontology display</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Wesson2004" dim="2" rep="E" pos="A">
+		<name>ZoomTree</name>
+		<year>2004</year>
+		<authors>Janet Wesson, MC du Plessis and Craig Oosthuizen</authors>
+		<url>http://dx.doi.org/10.1145/1029949.1029974</url>
+		<title>A ZoomTree interface for searching genealogical information</title>
+		<publication>AFRIGRAPH'04: Proceedings of the International Conference on Computer Graphics, Virtual Reality, Visualisation and Interaction in Africa, pages 131-136</publication>
+	</item>
+	<item id="Balzer2004" dim="3" rep="I" pos="R">
+		<name>Nested Hemispheres</name>
+		<year>2004</year>
+		<authors>Michael Balzer and Oliver Deussen</authors>
+		<url>http://dx.doi.org/10.1109/VISUAL.2004.39</url>
+		<title>Hierarchy based 3D visualization of large software structures</title>
+		<publication>Visualization'04: Poster Compendium of the IEEE Conference on Visualization, pages 81-82</publication>
+	</item>
+	<item id="Workman2004" dim="2" rep="E" pos="A">
+		<name>Incremental Layout by Boundary Shapes</name>
+		<year>2004</year>
+		<authors>David Workman, Margaret Bernard and Steven Pothoven</authors>
+		<url>http://dx.doi.org/10.1007/978-3-540-24688-6_126</url>
+		<title>An incremental editor for dynamic hierarchical drawing of trees</title>
+		<publication>ICCS'04: Proceedings of the International Conference on Computational Science, pages 986-995</publication>
+	</item>
+	<item id="CliftonBligh2004" dim="2" rep="I" pos="R">
+		<name>Fractal Maps</name>
+		<year>2004</year>
+		<authors>Gervase Clifton-Bligh</authors>
+		<url>http://www.freepatentsonline.com/6775659.html</url>
+		<title>Methods and devices for mapping data files</title>
+		<publication>US Patent 6775659(B2), filed December 28, 1999, issued August 10, 2004</publication>
+		<related>
+			<entry id="CliftonBligh2010">
+				<year>2010</year>
+				<authors>Clifton-Bligh</authors>
+				<url>http://www.freepatentsonline.com/7764272.html</url>
+				<title>Methods and devices for selecting items such as data files</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Grivet2004" dim="2" rep="E" pos="R">
+		<name>Bubble Tree</name>
+		<year>2004</year>
+		<authors>Sebastien Grivet, David Auber, Jean-Philippe Domenger and Guy Melancon</authors>
+		<url>http://dx.doi.org/10.1007/1-4020-4179-9_91</url>
+		<title>Bubble Tree drawing algorithm</title>
+		<publication>ICCVG'04: Proceedings of the International Conference on Computer Vision and Graphics, pages 633-641</publication>
+		<related>
+			<entry id="Melancon1998">
+				<year>1998</year>
+				<authors>Melancon, Herman</authors>
+				<url>http://repository.cwi.nl/search/fullrecord.php?publnr=4602</url>
+				<title>Circular drawings of rooted trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Wattenberg2003" dim="2" rep="I" pos="A">
+		<name>Gestalt Cartoon Treemap</name>
+		<year>2003</year>
+		<authors>Martin Wattenberg and Danyel Fisher</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2003.1249005</url>
+		<title>A model of multi-scale perceptual organization in information graphics</title>
+		<publication>InfoVis'03: Proceedings of the IEEE Symposium on Information Visualization, pages 23-30</publication>
+		<related>
+			<entry id="Wattenberg2004">
+				<year>2004</year>
+				<authors>Wattenberg, Fisher</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500070</url>
+				<title>Analyzing perceptual organization in information graphics</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Yamaguchi2003" dim="2" rep="I" pos="A">
+		<name>Data Jewelry Box / HeiankyoView</name>
+		<year>2003</year>
+		<authors>Yumi Yamaguchi and Takayuki Itoh</authors>
+		<url>http://dx.doi.org/10.1109/CGI.2003.1214461</url>
+		<title>Visualization of distributed processes using Data Jewelry Box algorithm</title>
+		<publication>Proceedings of the Computer Graphics International, pages 162-169</publication>
+		<related>
+			<entry id="Itoh2002">
+				<year>2002</year>
+				<authors>Itoh, Kajinaga, Ikehata, Yamaguchi</authors>
+				<url>http://domino.research.ibm.com/library/cyberdig.nsf/1e4115aea78b6e7c85256b360066f0d4/65ee18867a4cf82385256b870028fa47</url>
+				<title>Data Jewelry Box: A graphics showcase for large-scale hierarchical data visualization</title>
+			</entry>
+			<entry id="Itoh2003">
+				<year>2003</year>
+				<authors>Itoh, Koyamada</authors>
+				<url>http://itolab.is.ocha.ac.jp/~itot/paper/ItotRICPE18.pdf</url>
+				<title>HeiankyoView: Orthogonal representation of large-scale hierarchical data</title>
+			</entry>
+			<entry id="Itoh2004">
+				<year>2004</year>
+				<authors>Itoh, Yamaguchi, Ikehata, Kajinaga</authors>
+				<url>http://dx.doi.org/10.1109/TVCG.2004.1272729</url>
+				<title>Hierarchical data visualization using a fast rectangle-packing algorithm</title>
+			</entry>
+			<entry id="Miyazaki2009">
+				<year>2009</year>
+				<authors>Miyazaki, Itoh</authors>
+				<url>http://dx.doi.org/10.1109/IV.2009.32</url>
+				<title>An occlusion-reduced 3D hierarchical data visualization technique</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Teoh2003" dim="2" rep="E" pos="A">
+		<name>PaintingClass Tree Layout</name>
+		<year>2003</year>
+		<authors>Soon Tee Teoh and Kwan-Liu Ma</authors>
+		<url>http://dx.doi.org/10.1145/956750.956837</url>
+		<title>PaintingClass: Interactive construction, visualization and exploration of decision trees</title>
+		<publication>KDD'03: Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pages 667-672</publication>
+	</item>
+	<item id="Kerr2003" dim="2" rep="E" pos="A">
+		<name>Thread Arcs</name>
+		<year>2003</year>
+		<authors>Bernard Kerr</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2003.1249028</url>
+		<title>Thread Arcs: An email thread visualization</title>
+		<publication>InfoVis'03: Proceedings of the IEEE Symposium on Information Visualization, pages 211-218</publication>
+	</item>
+	<item id="Venolia2003" dim="2" rep="E" pos="A">
+		<name>Indented Linear Timeline</name>
+		<year>2003</year>
+		<authors>Gina Danielle Venolia and Carman Neustaedter</authors>
+		<url>http://dx.doi.org/10.1145/642611.642674</url>
+		<title>Understanding sequence and reply relationships within email conversations: A mixed-model visualization</title>
+		<publication>CHI'03: Proceedings of the International Conference on Human Factors in Computing Systems, pages 361-368</publication>
+	</item>
+	<item id="Wetzel2003" dim="2" rep="I" pos="R">
+		<name>pebbles</name>
+		<year>2003</year>
+		<authors>Kai Wetzel</authors>
+		<url>http://lip.sourceforge.net/ctreemap.html</url>
+		<title>pebbles - using Circular Treemaps to visualize disk usage</title>
+		<publication>Sourceforge page of the Linux Interface Project, retrieved 26-APR-2010</publication>
+		<related>
+			<entry id="Fischer2012">
+				<year>2012</year>
+				<authors>Fischer, Fuchs, Mansmann</authors>
+				<url>http://dx.doi.org/10.2312/PE/EuroVisShort/EuroVisShort2012/097-101</url>
+				<title>ClockMap: Enhancing Circular Treemaps with temporal glyphs for time-series data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Karstens2003" dim="2" rep="E" pos="R">
+		<name>Rectangular View</name>
+		<year>2003</year>
+		<authors>Bernd Karstens, Matthias Kreuseler and Heidrun Schumann</authors>
+		<url>http://vcg.informatik.uni-rostock.de/~schumann/papers/2002+/IMC_2003.pdf</url>
+		<title>Visualization of complex structures on mobile handhelds</title>
+		<publication>IMC'03: Proceedings of the International Workshop Mobile Computing</publication>
+	</item>
+	<item id="Munzner2003" dim="2" rep="E" pos="A">
+		<name>Accordion Drawing</name>
+		<year>2003</year>
+		<authors>Tamara Munzner, Francois Guimbretiere, Serdar Tasiran, Li Zhang and Yunhong Zhou</authors>
+		<url>http://dx.doi.org/10.1145/882262.882291</url>
+		<title>TreeJuxtaposer: Scalable tree comparison using focus+context with guaranteed visibility</title>
+		<publication>ACM Transactions on Graphics, 22(3), pages 453-462</publication>
+		<related>
+			<entry id="Slack2003">
+				<year>2003</year>
+				<authors>Slack, Munzner, Guimbretiere</authors>
+				<url>http://www.cs.ubc.ca/~tmm/papers/contest03/contest.pdf</url>
+				<title>TreeJuxtaposer InfoVis contest entry</title>
+			</entry>
+			<entry id="Beermann2005">
+				<year>2005</year>
+				<authors>Beermann, Munzner, Humphreys</authors>
+				<url>http://diglib.eg.org/EG/DL/WS/VisSym/EuroVis05/037-044.pdf</url>
+				<title>Scalable, robust visualization of very large trees</title>
+			</entry>
+			<entry id="Slack2005">
+				<year>2005</year>
+				<authors>Slack, Hildebrand, Munzner</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.2005.1532127</url>
+				<title>PRISAD: A partitioned rendering infrastructure for scalable accordion drawing</title>
+			</entry>
+			<entry id="Slack2006">
+				<year>2006</year>
+				<authors>Slack, Hildebrand, Munzner</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500118</url>
+				<title>PRISAD: A partitioned rendering infrastructure for scalable accordion drawing (Extended version)</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Tanaka2003" dim="3" rep="I" pos="A">
+		<name>Treecube</name>
+		<year>2003</year>
+		<authors>Yoichi Tanaka, Yoshihiro Okada and Koichi Niijima</authors>
+		<url>http://dx.doi.org/10.1109/IV.2003.1218020</url>
+		<title>Treecube: Visualization tool for browsing 3D multimedia data</title>
+		<publication>IV'03: Proceedings of the International Conference on Information Visualisation, pages 427-432</publication>
+		<related>
+			<entry id="Tanaka2004">
+				<year>2004</year>
+				<authors>Tanaka, Okada, Niijima</authors>
+				<url>http://dx.doi.org/10.1145/989863.989914</url>
+				<title>Interactive interfaces of Treecube for browsing 3D multimedia data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Csallner2003" dim="2" rep="I" pos="A">
+		<name>Context Treemap</name>
+		<year>2003</year>
+		<authors>Christoph Csallner, Marcus Handte, Othmar Lehmann and John Stasko</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2003.1249027</url>
+		<title>FundExplorer: Supporting the diversification of mutual fund portfolios using Context Treemaps</title>
+		<publication>InfoVis'03: Proceedings of the IEEE Symposium on Information Visualization, pages 203-208</publication>
+	</item>
+	<item id="Hong2003" dim="3" rep="E" pos="R">
+		<name>PolyPlane</name>
+		<year>2003</year>
+		<authors>Seok-Hee Hong and Tom Murtagh</authors>
+		<url>http://it.usyd.edu.au/~shhong/hong4.ps</url>
+		<title>PolyPlane: An implementation of a new layout algorithm for trees in three dimensions</title>
+		<publication>InfoVis'03: Poster Compendium of the IEEE Symposium on Information Visualization, pages 90-91</publication>
+	</item>
+	<item id="Sun2003" dim="3" rep="E" pos="F">
+		<name>Force-directed Tree Layout</name>
+		<year>2003</year>
+		<authors>Lisong Sun, Steve Smith and Thomas Preston Caudell</authors>
+		<url>http://www.eece.unm.edu/techreports/trds/eece-tr-03-001.pdf</url>
+		<title>A low complexity recursive force-directed tree layout algorithm based on the Lennard-Jones Potential</title>
+		<publication>Technical Report EECE-TR-03-001, University of New Mexico</publication>
+	</item>
+	<item id="Sun2003a" dim="2" rep="I" pos="F">
+		<name>FROTH</name>
+		<year>2003</year>
+		<authors>Lisong Sun, Steve Smith and Thomas Preston Caudell</authors>
+		<url>http://conferences.computer.org/infovis/files/compendium2003.pdf</url>
+		<title>FROTH - A force-directed representation of tree hierarchies</title>
+		<publication>InfoVis'03: Poster Compendium of the IEEE Symposium on Information Visualization, pages 108-109</publication>
+	</item>
+	<item id="Yang2002" dim="2" rep="I" pos="R">
+		<name>InterRing</name>
+		<year>2002</year>
+		<authors>Jing Yang, Matthew O. Ward and Elke A. Rundensteiner</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2002.1173151</url>
+		<title>InterRing: An interactive tool for visually navigating and manipulating hierarchical structures</title>
+		<publication>InfoVis'02: Proceedings of the IEEE Symposium on Information Visualization, pages 77-84</publication>
+		<related>
+			<entry id="Yang2003">
+				<year>2003</year>
+				<authors>Yang, Ward, Rundensteiner, Patro</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500035</url>
+				<title>InterRing: A visual interface for navigating and manipulating hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Schonlau2002" dim="2" rep="E" pos="A">
+		<name>Clustergram</name>
+		<year>2002</year>
+		<authors>Matthias Schonlau</authors>
+		<url>http://www.stata-journal.com/article.html?article=st0028</url>
+		<title>The Clustergram: A graph for visualizing hierarchical and nonhierarchical cluster analyses</title>
+		<publication>The Stata Journal, 2(4), pages 391-402</publication>
+	</item>
+	<item id="Hasan2002" dim="2" rep="E" pos="A">
+		<name>Compact Box-Drawing</name>
+		<year>2002</year>
+		<authors>Masud Hasan, Md. Saidur Rahman and Takao Nishizeki</authors>
+		<url>http://www.cccg.ca/proceedings/2002/</url>
+		<title>A linear algorithm for Compact Box-Drawings of trees</title>
+		<publication>CCCG'02: Proceedings of the Canadian Conference on Computational Geometry, pages 154-157</publication>
+		<related>
+			<entry id="Hasan2003">
+				<year>2003</year>
+				<authors>Hasan, Rahman, Nishizeki</authors>
+				<url>http://dx.doi.org/10.1002/net.10092</url>
+				<title>A linear algorithm for Compact Box-Drawings of trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Nguyen2002" dim="2" rep="E" pos="R">
+		<name>Space-optimized Tree</name>
+		<year>2002</year>
+		<authors>Quang Vinh Nguyen and Mao Lin Huang</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2002.1173152</url>
+		<title>A space-optimized tree visualization</title>
+		<publication>InfoVis'02: Proceedings of the IEEE Symposium on Information Visualization, pages 85-92</publication>
+		<related>
+			<entry id="Nguyen2002a">
+				<year>2002</year>
+				<authors>Nguyen, Huang</authors>
+				<url>https://dl.acm.org/citation.cfm?id=1164106</url>
+				<title>Improvements of Space-optimized Tree for visualizing and manipulating very large hierarchies</title>
+			</entry>
+			<entry id="Nguyen2003">
+				<year>2003</year>
+				<authors>Nguyen, Huang</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500031</url>
+				<title>Space-optimized tree: a connection+enclosure approach for the visualization of large hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Vernier2002" dim="2" rep="E" pos="R">
+		<name>Hyperbolic Look-alike</name>
+		<year>2002</year>
+		<authors>Frederic Vernier, Neal Lesh and Chia Shen</authors>
+		<url>http://dx.doi.org/10.1145/1556262.1556305</url>
+		<title>Visualization techniques for circular tabletop interfaces</title>
+		<publication>AVI'02: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 257-265</publication>
+	</item>
+	<item id="Andrews2002" dim="2" rep="I" pos="F">
+		<name>InfoSky</name>
+		<year>2002</year>
+		<authors>Keith Andrews, Wolfgang Kienreich, Vedran Sabol, Jutta Becker, Georg Droschl, Frank Kappe, Michael Granitzer, Peter Auer and Klaus Tochtermann</authors>
+		<url>http://dx.doi.org/10.1057/palgrave.ivs.9500023</url>
+		<title>The InfoSky visual explorer: Exploiting hierarchical structure and document similarities</title>
+		<publication>Information Visualization, 1(3/4), pages 166-181</publication>
+		<related>
+			<entry id="Andrews2003">
+				<year>2003</year>
+				<authors>Andrews, Kienreich, Sabol,	Granitzer</authors>
+				<url>http://conferences.computer.org/infovis/files/compendium2003.pdf</url>
+				<title>Visualising large hierarchically structured document repositories with InfoSky</title>
+			</entry>
+			<entry id="Kappe2003">
+				<year>2003</year>
+				<authors>Kappe, Droschl, Kienreich, Sabol, Becker, Andrews, Granitzer, Tochtermann, Auer</authors>
+				<url>scans/Kappe2003.pdf</url>
+				<title posttext=" (local copy, unavailable from publisher and author)">InfoSky: Visual exploration of large hierarchical document repositories</title>
+			</entry>
+			<entry id="Kienreich2003">
+				<year>2003</year>
+				<authors>Kienreich, Sabol, Granitzer, Kappe, Andrews</authors>
+				<url>http://km.aifb.kit.edu/ws/LLWA/fgwm/Resources/FGWM03_02_Wolfgang_Kienreich.pdf</url>
+				<title>InfoSky: A system for visual exploration of very large, hierarchically structured knowledge spaces</title>
+			</entry>
+			<entry id="Andrews2004">
+				<year>2004</year>
+				<authors>Andrews, Kienreich, Sabol,	Granitzer</authors>
+				<url>http://dcgi.felk.cvut.cz/cgg/infoviz04/papers/andrews.pdf</url>
+				<title>The visualisation of large hierarchical document spaces with InfoSky</title>
+			</entry>
+			<entry id="Granitzer2004">
+				<year>2004</year>
+				<authors>Granitzer, Kienreich, Sabol, Andrews, Klieber</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.2004.19</url>
+				<title>Evaluating a system for interactive exploration of large, hierarchically	structured document repositories</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Teoh2002" dim="2" rep="E" pos="R">
+		<name>RINGS</name>
+		<year>2002</year>
+		<authors>Soon Tee Teoh and Kwan-Liu Ma</authors>
+		<url>http://dx.doi.org/10.1007/3-540-36151-0_25</url>
+		<title>RINGS: A technique for visualizing large hierarchies</title>
+		<publication>GD'02: Proceedings of the International Symposium on Graph Drawing, pages 51-73</publication>
+	</item>
+	<item id="Card2002" dim="2" rep="E" pos="A">
+		<name>Degree-of-Interest Tree</name>
+		<year>2002</year>
+		<authors>Stuart K. Card and David Nation</authors>
+		<url>http://dx.doi.org/10.1145/1556262.1556300</url>
+		<title>Degree-of-Interest Trees: A component of an attention-reactive user interface</title>
+		<publication>AVI'02: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 231-245</publication>
+		<related>
+			<entry id="Heer2004">
+				<year>2004</year>
+				<authors>Heer, Card</authors>
+				<url>http://dx.doi.org/10.1145/989863.989941</url>
+				<title>DOITrees revisited: Scalable, space-constrained visualization of hierarchical data</title>
+			</entry>
+			<entry id="Card2005">
+				<year>2005</year>
+				<authors>Card, Nation</authors>
+				<url>http://www.freepatentsonline.com/6944830.html</url>
+				<title>System and method for browsing hierarchically based node-link structures based on an estimated degree of interest</title>
+			</entry>
+			<entry id="Budiu2006">
+				<year>2006</year>
+				<authors>Budiu, Pirolli, Fleetwood</authors>
+				<url>http://dx.doi.org/10.1145/1133265.1133358</url>
+				<title>Navigation in Degree of Interest Trees</title>
+			</entry>
+			<entry id="Card2006">
+				<year>2006</year>
+				<authors>Card, Suh, Pendleton, Heer, Bodnar</authors>
+				<url>http://dx.doi.org/10.1109/VAST.2006.261450</url>
+				<title>TimeTree: Exploring time changing hierarchies</title>
+			</entry>
+			<entry id="Budiu2007">
+				<year>2007</year>
+				<authors>Budiu, Pirolli</authors>
+				<url>http://csjarchive.cogsci.rpi.edu/Proceedings/2007/docs/p845.pdf</url>
+				<title>Modeling navigation in Degree-of-Interest Trees</title>
+			</entry>
+			<entry id="Heer2009">
+				<year>2009</year>
+				<authors>Heer, Card</authors>
+				<url>http://www.freepatentsonline.com/7627599.html</url>
+				<title>Method, apparatus, and program product for visualizing tree structured information</title>
+			</entry>
+			<entry id="Nguyen2014">
+				<year>2014</year>
+				<authors>Nguyen, Simoff, Huang</authors>
+				<url>http://dx.doi.org/10.1109/IV.2014.21</url>
+				<title>Using visual cues on DOITree for visualizing large hierarchical data</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Plaisant2002" dim="2" rep="E" pos="A">
+		<name>SpaceTree</name>
+		<year>2002</year>
+		<authors>Catherine Plaisant, Jesse Grosjean and Benjamin B. Bederson</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2002.1173148</url>
+		<title>SpaceTree: Supporting exploration in large node link tree, Design evolution and empirical evaluation</title>
+		<publication>InfoVis'02: Proceedings of the IEEE Symposium on Information Visualization, pages 57-64</publication>
+	</item>
+	<item id="Ham2002_1" dim="2" rep="I" pos="A">
+		<name>2D Beamtree</name>
+		<year>2002</year>
+		<authors>Frank van Ham and Jarke J. van Wijk</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2002.1173153</url>
+		<title>Beamtrees: Compact visualization of large hierarchies</title>
+		<publication>InfoVis'02: Proceedings of the IEEE Symposium on Information Visualization, pages 93-100</publication>
+	</item>
+	<item id="Ham2002_2" dim="3" rep="I" pos="A">
+		<name>3D Beamtree</name>
+		<year>2002</year>
+		<authors>Frank van Ham and Jarke J. van Wijk</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2002.1173153</url>
+		<title>Beamtrees: Compact visualization of large hierarchies</title>
+		<publication>InfoVis'02: Proceedings of the IEEE Symposium on Information Visualization, pages 93-100</publication>
+	</item>
+	<item id="Cava2002" dim="2" rep="E" pos="R">
+		<name>Bifocal Tree</name>
+		<year>2002</year>
+		<authors>Ricardo A. Cava, Paulo R. G. Luzzardi and Carla M. D. S. Freitas</authors>
+		<url>http://www.irit.fr/~Marco.Winckler/projects/spider/publications/IHC2002-CavaEtAl.pdf</url>
+		<title>The Bifocal Tree: A technique for the visualization of hierarchical information structures</title>
+		<publication>IHC'02: Proceedings of the Workshop on Human factors in Computer Systems</publication>
+	</item>
+	<item id="Song2002" dim="2" rep="E" pos="A">
+		<name>FlexTree</name>
+		<year>2002</year>
+		<authors>Hongzhi Song, Edwin P. Curran and Roy Sterritt</authors>
+		<url>http://dx.doi.org/10.1109/ICSMC.2002.1175707</url>
+		<title>FlexTree: Visualising large quantities of hierarchical information</title>
+		<publication>SMC'02: Proceedings of the IEEE International Conference on Systems, Man and Cybernetics</publication>
+		<related>
+			<entry id="Song2004">
+				<year>2004</year>
+				<authors>Song, Curran, Sterritt</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500065</url>
+				<title>Multiple foci visualisation of large hierarchies with FlexTree</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bederson2001_1" dim="2" rep="I" pos="A">
+		<name>Quantum Treemap</name>
+		<year>2001</year>
+		<authors>Benjamin B. Bederson</authors>
+		<url>http://dx.doi.org/10.1145/502348.502359</url>
+		<title>PhotoMesa: A zoomable image browser using Quantum Treemaps and Bubblemaps</title>
+		<publication>UIST'01: Proceedings of the Annual ACM Symposium on User Interface Software and Technology, pages 71-80</publication>
+		<related>
+			<entry id="Bederson2002">
+				<year>2002</year>
+				<authors>Bederson, Shneiderman, Wattenberg</authors>
+				<url>http://dx.doi.org/10.1145/571647.571649</url>
+				<title>Ordered and Quantum Treemaps: Making effective use of 2D space to display hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Theisen2001" dim="3" rep="E" pos="A">
+		<name>3D Hierarchical Data Representation</name>
+		<year>2001</year>
+		<authors>Karen Theisen and Eugene Jhong</authors>
+		<url>http://www.freepatentsonline.com/6259458.html</url>
+		<title>Method of generating and navigating a 3-D representation of a hierarchical data structure</title>
+		<publication>US Patent 6259458(B1), filed January 29, 1999, issued July 10, 2001</publication>
+	</item>
+	<item id="Bederson2001_2" dim="2" rep="I" pos="A">
+		<name>Bubblemap</name>
+		<year>2001</year>
+		<authors>Benjamin B. Bederson</authors>
+		<url>http://dx.doi.org/10.1145/502348.502359</url>
+		<title>PhotoMesa: A zoomable image browser using Quantum Treemaps and Bubblemaps</title>
+		<publication>UIST'01: Proceedings of the Annual ACM Symposium on User Interface Software and Technology, pages 71-80</publication>
+	</item>
+	<item id="Shneiderman2001" dim="2" rep="I" pos="A">
+		<name>Ordered Treemap</name>
+		<year>2001</year>
+		<authors>Ben Shneiderman and Martin Wattenberg</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2001.963283</url>
+		<title>Ordered Treemap layouts</title>
+		<publication>InfoVis'01: Proceedings of the IEEE Symposium on Information Visualization, pages 73-78</publication>
+		<related>
+			<entry id="Bederson2002">
+				<year>2002</year>
+				<authors>Bederson, Shneiderman, Wattenberg</authors>
+				<url>http://dx.doi.org/10.1145/571647.571649</url>
+				<title>Ordered and Quantum Treemaps: Making effective use of 2D space to display hierarchies</title>
+			</entry>
+			<entry id="Engdahl2005">
+				<year>2005</year>
+				<authors>Engdahl</authors>
+				<url>http://w3.nada.kth.se/utbildning/grukth/exjobb/rapportlistor/2005/rapporter05/engdahl_bjorn_05033.pdf</url>
+				<title>Ordered and Unordered Treemap. Algorithms and their applications on handheld devices</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Dachselt2001" dim="3" rep="I" pos="R">
+		<name>Collapsible Cylindrical Tree</name>
+		<year>2001</year>
+		<authors>Raimund Dachselt and J%26uuml;rgen Ebert</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2001.963284</url>
+		<title>Collapsible Cylindrical Trees: A fast hierarchical navigation technique</title>
+		<publication>InfoVis'01: Proceedings of the IEEE Symposium on Information Visualization, pages 79-86</publication>
+	</item>
+	<item id="Kleiberg2001" dim="3" rep="I" pos="R">
+		<name>Botanical Tree</name>
+		<year>2001</year>
+		<authors>Ernst Kleiberg, Huub van de Wetering and Jarke J. van Wijk</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2001.963285</url>
+		<title>Botanical visualization of huge hierarchies</title>
+		<publication>InfoVis'01: Proceedings of the IEEE Symposium on Information Visualization, pages 87-94</publication>
+	</item>
+	<item id="Vernier2000" dim="2" rep="H" pos="A">
+		<name>Modifiable Treemap</name>
+		<year>2000</year>
+		<authors>Frederic Vernier and Laurence Nigay</authors>
+		<url>http://iihm.imag.fr/publs/2000/Visu2K_Vernier.pdf</url>
+		<title>Modifiable Treemaps containing variable-shaped units</title>
+		<publication>Extended Abstracts of the IEEE Information Visualization 2000</publication>
+	</item>
+	<item id="Boardman2000" dim="2" rep="I" pos="R">
+		<name>Bubble Tree</name>
+		<year>2000</year>
+		<authors>Richard Boardman</authors>
+		<url>http://dx.doi.org/10.1145/633292.633484</url>
+		<title>Bubble Trees - The visualization of hierarchical information structures</title>
+		<publication>CHI'00: Extended abstracts of the SIGCHI conference on Human Factors in Computing Systems, pages 315-316</publication>
+	</item>
+	<item id="Bein2000" dim="3" rep="E" pos="A">
+		<name>3D Grid Embedding</name>
+		<year>2000</year>
+		<authors>Wolfgang W. Bein, Lawrence L. Lamore, Charles O. Shields, Jr. and Ivan Hal Sudborough</authors>
+		<url>http://dx.doi.org/10.1109/ISPAN.2000.900278</url>
+		<title>Three-Dimensional Embedding of binary trees</title>
+		<publication>I-SPAN'00: Proceedings of the International Symposium on Parallel Architectures, Algorithms and Networks, pages 140-147</publication>
+		<related>
+			<entry id="Bein2004">
+				<year>2004</year>
+				<authors>Bein, Lamore, Shields Jr., Sudborough</authors>
+				<url>http://dx.doi.org/10.1142/S0219265904001052</url>
+				<title>Embedding a complete binary tree into a three-dimensional grid</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Nguyen2000" dim="H" rep="E" pos="A">
+		<name>T2.5D</name>
+		<year>2000</year>
+		<authors>Trong Dung Nguyen, Tu Bao Ho and Hiroshi Shimodaira</authors>
+		<url>http://dx.doi.org/10.1109/TAI.2000.889842</url>
+		<title>A visualization tool for interactive learning of large decision trees</title>
+		<publication>ICTAI'00: Proceedings of the Internationals Conference on Tools with Artificial Intelligence, pages 28-35</publication>
+	</item>
+	<item id="Harel2000" dim="2" rep="I" pos="A">
+		<name>Blob Hierarchy Layout</name>
+		<year>2000</year>
+		<authors>David Harel and Gregory Yashchin</authors>
+		<url>http://dx.doi.org/10.1145/345513.345240</url>
+		<title>An algorithm for Blob Hierarchy Layout</title>
+		<publication>AVI'00: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 29-40</publication>
+		<related>
+			<entry id="Harel2002">
+				<year>2002</year>
+				<authors>Harel, Yashchin</authors>
+				<url>http://dx.doi.org/10.1007/s003710100133</url>
+				<title>An algorithm for Blob Hierarchy Layout</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bernstein2000" dim="2" rep="E" pos="A">
+		<name>xps Dynamic Tree Layout</name>
+		<year>2000</year>
+		<authors>Rocky Bernstein</authors>
+		<url>http://www.usenix.org/events/lisa00/bernstein.html</url>
+		<title>xps: Dynamic tree watching under X</title>
+		<publication>LISA'00: Proceedings of the Large Installation System Administration Conference, pages 95-100</publication>
+	</item>
+	<item id="Halachmi2000" dim="2" rep="E" pos="R">
+		<name>Fan-shaped Tree Visualization</name>
+		<year>2000</year>
+		<authors>Avi Halachmi, Michael Jacovi, Menachem Shtalhaim, Sigalit Ur and Yoelle Maarek</authors>
+		<url>http://www.freepatentsonline.com/6104400.html</url>
+		<title>Large tree structure visualization and display system</title>
+		<publication>US Patent 6104400, filed July 28, 1998, issued August 15, 2000</publication>
+	</item>
+	<item id="Stasko2000" dim="2" rep="I" pos="R">
+		<name>Sunburst</name>
+		<year>2000</year>
+		<authors>John Stasko and Eugene Zhang</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.2000.885091</url>
+		<title>Focus+context display and navigation techniques for enhancing radial, space-filling hierarchy visualizations</title>
+		<publication>InfoVis'00: Proceedings of the IEEE Symposium on Information Visualization, pages 57-65</publication>
+		<related>
+			<entry id="Stasko2000a">
+				<year>2000</year>
+				<authors>Stasko, Catrambone, Guzdial, McDonald</authors>
+				<url>http://dx.doi.org/10.1006/ijhc.2000.0420</url>
+				<title>An evaluation of space-filling information visualizations for depiction hierarchical structures</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bruls2000" dim="2" rep="I" pos="A">
+		<name>Squarified Treemap</name>
+		<year>2000</year>
+		<authors>Mark Bruls, Kees Huizing and Jarke van Wijk</authors>
+		<url>http://diglib.eg.org/EG/DL/WS/VisSym/VisSym00/033-042.pdf</url>
+		<title>Squarified Treemaps</title>
+		<publication>VisSym'00: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 33-42</publication>
+		<related>
+			<entry id="Lin2008">
+				<year>2008</year>
+				<authors>Lin</authors>
+				<url>http://web.cs.dal.ca/~farrag/lin.doc</url>
+				<title>Algorithm for improving the aspect ratio of Treemaps</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Dix2000" dim="2" rep="I" pos="R">
+		<name>PieTree</name>
+		<year>2000</year>
+		<authors>Alan Dix, Russell Beale and Andy Wood</authors>
+		<url>http://dx.doi.org/10.1145/345513.345250</url>
+		<title>Architectures to make simple visualisations using simple systems</title>
+		<publication>AVI'00: Proceedings of the Working Conference on Advanced Visual Interfaces, pages 51-60</publication>
+		<related>
+			<entry id="ODonnell2006">
+				<year>2006</year>
+				<authors>O'Donnell, Dix, Ball</authors>
+				<url>http://dx.doi.org/10.1007/978-1-84628-664-3_18</url>
+				<title>Exploring the PieTree for Representing Numerical Hierarchical Data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Bereiter1999" dim="2" rep="H" pos="A">
+		<name>Expandable Tree</name>
+		<year>1999</year>
+		<authors>Thomas W. Bereiter and Doron Gan</authors>
+		<url>http://www.freepatentsonline.com/5917492.html</url>
+		<title>Method and apparatus for the viewing and exploration of the content of hierarchical information</title>
+		<publication>US Patent 5917492, filed March 31, 1997, issued June 29, 1999</publication>
+	</item>
+	<item id="Churcher1999" dim="3" rep="I" pos="A">
+		<name>3D Nested Treemap</name>
+		<year>1999</year>
+		<authors>Neville Churcher, Lachlan Keown and Warwick Irwin</authors>
+		<url>http://www.cosc.canterbury.ac.nz/research/RG/svg/softvis99/softvis99-churcher-keown-irwin.pdf</url>
+		<title>Virtual worlds for software visualisation</title>
+		<publication>SoftVis'99: Proceedings of the Software Visualisation Workshop, pages 9-16</publication>
+	</item>
+	<item id="Herman1999" dim="2" rep="E" pos="A">
+		<name>Skeletal Image</name>
+		<year>1999</year>
+		<authors>Ivan Herman, Scott Marshall, Guy Melancon, David J. Duke, Maylis Delest and Jean-Philippe Domenger</authors>
+		<url>http://diglib.eg.org/EG/DL/WS/VisSym99/Herman.pdf</url>
+		<title>Skeletal images as visual cues in graph visualization</title>
+		<publication>VisSym'99: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 13-22</publication>
+		<related>
+			<entry id="Herman1999a">
+				<year>1999</year>
+				<authors>Herman, Melancon, de Ruiter, Delest</authors>
+				<url>http://dx.doi.org/10.1007/3-540-46648-7_40</url>
+				<title>Latour - A tree visualisation system</title>
+			</entry>
+			<entry id="Herman2000">
+				<year>2000</year>
+				<authors>Herman, Melancon, Marshall</authors>
+				<url>http://dx.doi.org/10.1109/2945.841119</url>
+				<title>Graph visualization and navigation in information visualization: A survey</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Demetrescu1999" dim="2" rep="E" pos="A">
+		<name>Infinite Tree Layout</name>
+		<year>1999</year>
+		<authors>Camil Demetrescu, Giuseppe Di Battista, Irene Finocchi, Giuseppe Liotta, Maurizio Patrignani and Maurizio Pizzonia</authors>
+		<url>http://dx.doi.org/10.1007/3-540-46648-7_39</url>
+		<title>Infinite trees and the future</title>
+		<publication>GD'99: Proceedings of the International Symposium on Graph Drawing, pages 379-391</publication>
+	</item>
+	<item id="Kreuseler1999" dim="3" rep="E" pos="R">
+		<name>Magic Eye View</name>
+		<year>1999</year>
+		<authors>Matthias Kreuseler and Heidrun Schumann</authors>
+		<url>http://dx.doi.org/10.1145/331770.331772</url>
+		<title>Information visualization using a new focus+context technique in	combination with dynamic clustering of information space</title>
+		<publication>NPIV'99: Proceedings of the Workshop on New Paradigms in Information Visualization	and Manipulation, pages 1-5</publication>
+		<related>
+			<entry id="Wu2007">
+				<year>2007</year>
+				<authors>Wu, Hsu</authors>
+				<url>http://dx.doi.org/10.1007/978-3-540-73107-8_20</url>
+				<title>The Perceptual Eye View: A user-defined method for information visualization</title>
+			</entry>		
+			<entry id="Schumann2011">
+				<year>2011</year>
+				<authors>Schumann, Tominski</authors>
+				<url>http://dx.doi.org/10.1016/j.jvlc.2011.03.002</url>
+				<title>Analytical, visual and interactive concepts for geo-visual analytics</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Wattenberg1999" dim="2" rep="I" pos="A">
+		<name>Cluster Treemap</name>
+		<year>1999</year>
+		<authors>Martin Wattenberg</authors>
+		<url>http://dx.doi.org/10.1145/632716.632834</url>
+		<title>Visualizing the stock market</title>
+		<publication>CHI'99: Extended Abstracts of the SIGCHI conference on Human Factors in Computing Systems, pages 188-189</publication>
+		<related>
+			<entry id="Shneiderman2001">
+				<year>2001</year>
+				<authors>Shneiderman, Wattenberg</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.2001.963283</url>
+				<title>Ordered Treemap layouts</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Wilson1999" dim="2" rep="E" pos="R">
+		<name>Dynamically Blended Tree Layout</name>
+		<year>1999</year>
+		<authors>Richard M. Wilson and R. Daniel Bergeron</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1999.801859</url>
+		<title>Dynamic hierarchy specification and visualization</title>
+		<publication>InfoVis'99: Proceedings of the IEEE Symposium on Information Visualization, pages 65-72</publication>
+	</item>
+	<item id="Wijk1999" dim="2" rep="I" pos="A">
+		<name>Cushion Treemap</name>
+		<year>1999</year>
+		<authors>Jarke J. van Wijk and Huub van de Wetering</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1999.801860</url>
+		<title>Cushion Treemaps: Visualization of hierarchical information</title>
+		<publication>InfoVis'99: Proceedings of the IEEE Symposium on Information Visualization, pages 73-78</publication>
+		<related>
+			<entry id="Irani2006">
+				<year>2006</year>
+				<authors>Irani, Slonowsky, Shajahan</authors>
+				<url>http://dx.doi.org/10.1057/palgrave.ivs.9500113</url>
+				<title>Human perception of structure in shaded space-filling visualizations</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Chuah1998_1" dim="2" rep="I" pos="R">
+		<name>Aggregate Tree Map</name>
+		<year>1998</year>
+		<authors>Mei C. Chuah</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1998.729557</url>
+		<title>Dynamic aggregation with circular visual designs</title>
+		<publication>InfoVis'98: Proceedings of the IEEE Symposium on Information Visualization, pages 35-43</publication>
+	</item>
+	<item id="Chuah1998_2" dim="2" rep="I" pos="A">
+		<name>Triangular Aggregate Tree Map</name>
+		<year>1998</year>
+		<authors>Mei C. Chuah</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1998.729557</url>
+		<title>Dynamic aggregation with circular visual designs</title>
+		<publication>InfoVis'98: Proceedings of the IEEE Symposium on Information Visualization, pages 35-43</publication>
+	</item>
+	<item id="Andrews1998" dim="2" rep="H" pos="R">
+		<name>Information Slices</name>
+		<year>1998</year>
+		<authors>Keith Andrews and Helmut Heidegger</authors>
+		<url>http://ftp.iicm.tugraz.at/pub/papers/ivis98.pdf</url>
+		<title>Information Slices: Visualising and exploring large hierarchies using cascading, semi-circular discs</title>
+		<publication>InfoVis'98: Late Breaking Hot Topic Papers of the IEEE Symposium on Information Visualization, pages 9-12</publication>
+	</item>
+	<item id="Jeong1998" dim="3" rep="E" pos="R">
+		<name>Reconfigurable Disc Tree</name>
+		<year>1998</year>
+		<authors>Chang-Sung Jeong and Alex Pang</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1998.729555</url>
+		<title>Reconfigurable disc trees for visualizing large hierarchical information space</title>
+		<publication>InfoVis'98: Proceedings of the IEEE Symposium on Information Visualization, pages 19-25</publication>
+	</item>
+	<item id="EdChi1998" dim="2" rep="E" pos="R">
+		<name>Disk Tree</name>
+		<year>1998</year>
+		<authors>Ed H. Chi, James Pitkow, Jock Mackinlay, Peter Pirolli, Rich Gossweiler and Stuart K. Card</authors>
+		<url>http://dx.doi.org/10.1145/274644.274699</url>
+		<title>Visualizing the evolution of web ecologies</title>
+		<publication>CHI'98: Proceedings of the SIGCHI conference on Human Factors in Computing Systems, pages 400-407</publication>
+	</item>
+	<item id="Keskin1997" dim="3" rep="E" pos="R">
+		<name>Cityscape Metaphor</name>
+		<year>1997</year>
+		<authors>Can Keskin and Volker Vogelmann</authors>
+		<url>http://dx.doi.org/10.1145/275519.275531</url>
+		<title>Effective visualization of hierarchical graphs with the cityscape metaphor</title>
+		<publication>NPIVM'97: Proceedings of the Workshop on New Paradigms in Information Visualization and Manipulation, pages 52-57</publication>
+	</item>
+	<item id="Andrews1997" dim="3" rep="I" pos="A">
+		<name>Information Pyramides</name>
+		<year>1997</year>
+		<authors>Keith Andrews, Josef Wolte and Michael Pichler</authors>
+		<url>http://www.iicm.tugraz.at/liberation/iicm_papers/vis97.pdf</url>
+		<title>Information Pyramids: A new approach to visualising large hierarchies</title>
+		<publication>InfoVis'97: Late Breaking Hot Topic Papers of the IEEE Symposium on Information Visualization, pages 49-52</publication>
+		<related>
+			<entry id="Andrews2002a">
+				<year>2002</year>
+				<authors>Andrews</authors>
+				<url>http://dx.doi.org/10.1109/IV.2002.1028871</url>
+				<title>Visual exploration of large hierarchies with Information Pyramids</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Munzner1997" dim="3" rep="E" pos="R">
+		<name>H3</name>
+		<year>1997</year>
+		<authors>Tamara Munzner</authors>
+		<url>http://dx.doi.org/10.1109/INFVIS.1997.636718</url>
+		<title>H3: Laying out large directed graphs in 3D hyperbolic space</title>
+		<publication>InfoVis'97: Proceedings of the IEEE Symposium on Information Visualization, pages 2-10</publication>
+		<related>
+			<entry id="Munzner1998">
+				<year>1998</year>
+				<authors>Munzner</authors>
+				<url>http://dx.doi.org/10.1109/38.689657</url>
+				<title>Exploring large graphs in 3D hyperbolic space</title>
+			</entry>
+			<entry id="Munzner1998a">
+				<year>1998</year>
+				<authors>Munzner</authors>
+				<url>http://dx.doi.org/10.1007/3-540-37623-2_30</url>
+				<title>Drawing large graphs with H3Viewer and Site Manager</title>
+			</entry>
+			<entry id="Munzner2000">
+				<year>2000</year>
+				<authors>Munzner</authors>
+				<url>http://search.proquest.com/docview/304651820/abstract</url>
+				<title>Interactive visualization of large graphs and networks</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Meier1996" dim="3" rep="I" pos="A">
+		<name>3D Fractal Representation</name>
+		<year>1996</year>
+		<authors>John Meier and Clifford A. Reiter</authors>
+		<url>http://dx.doi.org/10.1016/0097-8493(95)00101-8</url>
+		<title>Fractal representations of Cayley graphs</title>
+		<publication>Computers and Graphics, 20(1), pages 163-170</publication>
+	</item>
+	<item id="Garg1996" dim="2" rep="E" pos="A">
+		<name>Planar Upward Tree Drawing</name>
+		<year>1996</year>
+		<authors>Ashim Garg, Michael T. Goodrich and Roberto Tamassia</authors>
+		<url>http://dx.doi.org/10.1142/S0218195996000228</url>
+		<title>Planar Upward Tree Drawings with planar area</title>
+		<publication>International Journal of Computational Geometry and Applications, 6(3), pages 333-356</publication>
+	</item>
+	<item id="Bowers1996" dim="3" rep="E" pos="A">
+		<name>Perspective Mapping of Tree Layouts</name>
+		<year>1996</year>
+		<authors>Frank H. Bowers and Stuart K. Card</authors>
+		<url>http://www.freepatentsonline.com/5546529.html</url>
+		<title>Method and apparatus for visualization of database search results</title>
+		<publication>US Patent 5546529, filed July 28, 1994, issued August 13, 1996</publication>
+	</item>
+	<item id="Beaudoin1996" dim="2" rep="I" pos="A">
+		<name>Cheops</name>
+		<year>1996</year>
+		<authors>Luc Beaudoin, Marc-Antoine Parent and Louis C. Vroomen</authors>
+		<url>http://dx.doi.org/10.1109/VISUAL.1996.567745</url>
+		<title>Cheops: A compact explorer for complex hierarchies</title>
+		<publication>Visualization'96: Proceedings of the IEEE Conference on Visualization, pages 87-92</publication>
+	</item>
+	<item id="Baker1995" dim="2" rep="I" pos="A">
+		<name>Strip Treemap</name>
+		<year>1995</year>
+		<authors>Marla J. Baker and Stephen G. Eick</authors>
+		<url>http://dx.doi.org/10.1006/jvlc.1995.1007</url>
+		<title>Space-filling software visualization</title>
+		<publication>Journal of Visual Languages and Computing, 6(2), pages 119-133</publication>
+		<related>
+			<entry id="Bederson2001">
+				<year>2001</year>
+				<authors>Bederson</authors>
+				<url>http://dx.doi.org/10.1145/502348.502359</url>
+				<title>PhotoMesa: A zoomable image browser using Quantum Treemaps and Bubblemaps</title>
+			</entry>
+			<entry id="Shneiderman2001">
+				<year>2001</year>
+				<authors>Shneiderman, Wattenberg</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.2001.963283</url>
+				<title>Ordered Treemap layouts</title>
+			</entry>	
+			<entry id="Bederson2002">
+				<year>2002</year>
+				<authors>Bederson, Shneiderman, Wattenberg</authors>
+				<url>http://dx.doi.org/10.1145/571647.571649</url>
+				<title>Ordered and Quantum Treemaps: Making effective use of 2D space to display hierarchies</title>
+			</entry>				
+		</related>
+	</item>
+	<item id="Devroye1995" dim="2" rep="I" pos="F">
+		<name>Botanical Tree Layout</name>
+		<year>1995</year>
+		<authors>Luc Devroye and Paul Kruszewski</authors>
+		<url>http://dx.doi.org/10.1007/BFb0021801</url>
+		<title>The botanical beauty of random binary trees</title>
+		<publication>GD'95: Proceedings of the International Symposium on Graph Drawing, pages 166-177</publication>
+	</item>
+	<item id="Lamping1995" dim="2" rep="E" pos="R">
+		<name>Hyperbolic Browser</name>
+		<year>1995</year>
+		<authors>John Lamping, Ramana Rao and Peter Pirolli</authors>
+		<url>http://dx.doi.org/10.1145/223904.223956</url>
+		<title>A focus+context technique based on hyperbolic geometry for visualizing large hierarchies</title>
+		<publication>CHI'95: Proceedings of the SIGCHI conference on Human Factors in Computing Systems, pages 401-408</publication>
+		<related>
+			<entry id="Lamping1996">
+				<year>1996</year>
+				<authors>Lamping, Rao</authors>
+				<url>http://dx.doi.org/10.1006/jvlc.1996.0003</url>
+				<title>The Hyperbolic Browser: A focus+context technique for visualizing large hierarchies</title>
+			</entry>
+			<entry id="Lamping1996a">
+				<year>1996</year>
+				<authors>Lamping, Rao</authors>
+				<url>http://dx.doi.org/10.1145/257089.257389</url>
+				<title>Visualizing large trees using the Hyperbolic Browser</title>
+			</entry>
+			<entry id="Lamping1996b">
+				<year>1996</year>
+				<authors>Lamping, Rao</authors>
+				<url>http://www.freepatentsonline.com/5590250.html</url>
+				<title>Layout of node-link structures in space with negative curvature</title>
+			</entry>	
+			<entry id="Lamping1997">
+				<year>1997</year>
+				<authors>Lamping, Rao</authors>
+				<url>http://www.freepatentsonline.com/5619632.html</url>
+				<title>Displaying node-link structure with region of greater spacings and peripheral branches</title>
+			</entry>			
+			<entry id="Allen2002">
+				<year>2002</year>
+				<authors>Allen</authors>
+				<url>http://www.infotoday.com/online/may02/allen.htm</url>
+				<title>The hype over Hyperbolic Browsers</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Bhattacharya1994" dim="2" rep="E" pos="A">
+		<name>Recursive Mixed Binary Tree Layout</name>
+		<year>1994</year>
+		<authors>Sourav Bhattacharya and Wei-Tek Tsai</authors>
+		<url>http://dx.doi.org/10.1016/0020-0255(94)90047-7</url>
+		<title>Recursive binary tree layout mixing</title>
+		<publication>Information Sciences, 77(1-2), pages 39-49</publication>
+	</item>	
+	<item id="Rekimoto1993" dim="3" rep="I" pos="A">
+		<name>Information Cube</name>
+		<year>1993</year>
+		<authors>Jun Rekimoto and Mark Green</authors>
+		<url>http://www.sonycsl.co.jp/person/rekimoto/cube/</url>
+		<title>The Information Cube: Using transparency in 3D information visualization</title>
+		<publication>WITS'93: Proceedings of the Workshop on Information Technology and Systems, pages 125-132</publication>
+	</item>
+	<item id="Eades1993_1" dim="2" rep="E" pos="A">
+		<name>Tip-over Convention</name>
+		<year>1993</year>
+		<authors>Peter Eades, Tao Lin and Xuemin Lin</authors>
+		<url>http://dx.doi.org/10.1142/S0218195993000099</url>
+		<title>Two tree drawing conventions</title>
+		<publication>International Journal of Computational Geometry and Applications, 3(2), pages 133-153</publication>
+		<related>
+			<entry id="Penna2002">
+				<year>2002</year>
+				<authors>Penna</authors>
+				<url>http://dx.doi.org/10.1016/S0020-0190(01)00280-0</url>
+				<title>On the approximability of two tree drawing conventions</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Eades1993_2" dim="2" rep="I" pos="A">
+		<name>Inclusion Tree Layout Convention</name>
+		<year>1993</year>
+		<authors>Peter Eades, Tao Lin and Xuemin Lin</authors>
+		<url>http://dx.doi.org/10.1142/S0218195993000099</url>
+		<title>Two tree drawing conventions</title>
+		<publication>International Journal of Computational Geometry and Applications, 3(2), pages 133-153</publication>
+		<related>
+			<entry id="Penna2002">
+				<year>2002</year>
+				<authors>Penna</authors>
+				<url>http://dx.doi.org/10.1016/S0020-0190(01)00280-0</url>
+				<title>On the approximability of two tree drawing conventions</title>
+			</entry>
+			<entry id="Pulo2003">
+				<year>2003</year>
+				<authors>Pulo, Takatsuko</authors>
+				<url>http://portal.acm.org/citation.cfm?id=857084</url>
+				<title>Inclusion Tree Layout Convention: An empirical investigation</title>
+			</entry>
+			<entry id="Pulo2003a">
+				<year>2003</year>
+				<authors>Pulo, Eades, Takatsuko</authors>
+				<url>http://dx.doi.org/10.1109/CMV.2003.1214999</url>
+				<title>Smooth structural zooming of h-v Inclusion Tree Layouts</title>
+			</entry>
+			<entry id="Pulo2003b">
+				<year>2003</year>
+				<authors>Pulo, Eades, Takatsuko</authors>
+				<url>http://www.kev.pulo.com.au/publications/softvis03-poster/softvis03-kpulo-poster.pdf</url>
+				<title>Smooth structural zooming as a tool for navigating large inclusion hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Koike1993" dim="2" rep="E" pos="R">
+		<name>Fractal Tree Layout</name>
+		<year>1993</year>
+		<authors>Hideki Koike and Hirotaka Yoshihara</authors>
+		<url>http://dx.doi.org/10.1109/VL.1993.269566</url>
+		<title>Fractal approaches for visualizing huge hierarchies</title>
+		<publication>VL'93: Proceedings of the IEEE Workshop on Visual Languages, pages 55-60</publication>
+		<related>
+			<entry id="Koike1995">
+				<year>1995</year>
+				<authors>Koike</authors>
+				<url>http://dx.doi.org/10.1145/203052.203065</url>
+				<title>Fractal views: A fractal-based method for controlling information display</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Johnson1993_1" dim="2" rep="I" pos="R">
+		<name>Polar Treemap</name>
+		<year>1993</year>
+		<authors>Brian Johnson</authors>
+		<url>http://search.proquest.com/docview/304079297/abstract</url>
+		<title>Treemaps: Visualizing hierarchical and categorical data</title>
+		<publication>PhD thesis, University of Maryland</publication>
+	</item>
+	<item id="Johnson1993_2" dim="2" rep="I" pos="A">
+		<name>Treemap with Ovals</name>
+		<year>1993</year>
+		<authors>Brian Johnson</authors>
+		<url>http://search.proquest.com/docview/304079297/abstract</url>
+		<title>Treemaps: Visualizing hierarchical and categorical data</title>
+		<publication>PhD thesis, University of Maryland</publication>
+	</item>
+	<item id="Johnson1993_3" dim="3" rep="I" pos="A">
+		<name>3D Treemap</name>
+		<year>1993</year>
+		<authors>Brian Johnson</authors>
+		<url>http://search.proquest.com/docview/304079297/abstract</url>
+		<title>Treemaps: Visualizing hierarchical and categorical data</title>
+		<publication>PhD thesis, University of Maryland</publication>
+	</item>
+	<item id="Johnson1993_4" dim="3" rep="I" pos="R">
+		<name>Nested Columns</name>
+		<year>1993</year>
+		<authors>Brian Johnson</authors>
+		<url>http://search.proquest.com/docview/304079297/abstract</url>
+		<title>Treemaps: Visualizing hierarchical and categorical data</title>
+		<publication>PhD thesis, University of Maryland</publication>
+	</item>
+	<item id="Turo1992" dim="H" rep="I" pos="A">
+		<name>2 1/2-D Treemap</name>
+		<year>1992</year>
+		<authors>David Turo and Brian Johnson</authors>
+		<url>http://dx.doi.org/10.1109/VISUAL.1992.235217</url>
+		<title>Improving the visualization of hierarchies with treemaps: Design issues and experimentation</title>
+		<publication>Visualization'92: Proceedings of the IEEE Conference on Visualization, pages 124-131</publication>
+		<related>
+			<entry id="Johnson1993">
+				<year>1993</year>
+				<authors>Johnson</authors>
+				<url>http://search.proquest.com/docview/304079297/abstract</url>
+				<title>Treemaps: Visualizing hierarchical and categorical data</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Tick1992" dim="2" rep="E" pos="R">
+		<name>Kaleidoscope Visualization</name>
+		<year>1992</year>
+		<authors>Evan Tick and Daesun Park</authors>
+		<url>http://dx.doi.org/10.1109/HICSS.1992.183287</url>
+		<title>Kaleidoscope Visualization of fine-grain parallel programs</title>
+		<publication>HICSS'92: Proceedings of the Hawaii International Conference on System Sciences, vol.2, pages 137-148</publication>
+		<related>
+			<entry id="Fahrenholtz1995">
+				<year>1995</year>
+				<authors>Fahrenholtz, Haarslev</authors>
+				<url>http://dx.doi.org/10.1109/VL.1995.520793</url>
+				<title>Visualization of Strand%26#x2122; processes</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Eades1992_1" dim="2" rep="E" pos="A">
+		<name>Garden Layout</name>
+		<year>1992</year>
+		<authors>Peter Eades</authors>
+		<url>scans/Eades1992.pdf</url>
+		<title posttext=" (local copy, unavailable from publisher and author)">Drawing free trees</title>
+		<publication>Bulletin of the Institute of Combinatorics and its Applications, 5, pages 10-36</publication>
+	</item>
+	<item id="Crescenzi1992" dim="2" rep="E" pos="A">
+		<name>h-v Drawing</name>
+		<year>1992</year>
+		<authors>Pierluigi Crescenzi, Giuseppe Di Battista and Adolfo Piperno</authors>
+		<url>http://dx.doi.org/10.1016/0925-7721(92)90021-J</url>
+		<title>A note on optimal area algorithms for upward drawings of binary trees</title>
+		<publication>Computational Geometry, 2(4), pages 187-200</publication>
+		<related>
+			<entry id="Eades1992a">
+				<year>1992</year>
+				<authors>Eades, Lin, Lin</authors>
+				<url>scans/Eades1992a.pdf</url>
+				<title posttext=" (local copy, unavailable from publisher and author)">Minimum size h-v Drawings</title>
+			</entry>
+			<entry id="Metaxas1994">
+				<year>1994</year>
+				<authors>Metaxas, Pantziou, Symvonis</authors>
+				<url>http://dx.doi.org/10.1007/3-540-58325-4_215</url>
+				<title>Parallel h-v Drawings of binary trees</title>
+			</entry>
+			<entry id="Kim1996">
+				<year>1996</year>
+				<authors>Kim</authors>
+				<url>http://dx.doi.org/10.1142/9789812797995_0006</url>
+				<title>h-v Drawings of binary trees</title>
+			</entry>
+			<entry id="Crescenzi1997">
+				<year>1997</year>
+				<authors>Crescenzi, Penna</authors>
+				<url>http://dx.doi.org/10.1007/3-540-63938-1_82</url>
+				<title>Minimum-area h-v Drawings of complete binary trees</title>
+			</entry>
+			<entry id="Metaxas1998">
+				<year>2006</year>
+				<authors>Metaxas, Pantziou, Symvonis</authors>
+				<url>http://dx.doi.org/10.1016/S0925-7721(96)00018-1</url>
+				<title>A note on parallel algorithms for optimal h-v Drawings of binary	trees</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Tesler1992" dim="3" rep="H" pos="A">
+		<name>3D Information Landscape</name>
+		<year>1992</year>
+		<authors>Joel D. Tesler and Steven L. Strasnick</authors>
+		<url>ftp://ftp.sgi.com/sgi/fsn</url>
+		<title>FSN: The 3D file system navigator</title>
+		<publication>SGI Serious Fun freeware for IRIX 5.3 and above</publication>
+		<related>
+			<entry id="Strasnick1996">
+				<year>1996</year>
+				<authors>Strasnick, Tesler</authors>
+				<url>http://www.freepatentsonline.com/5528735.html</url>
+				<title>Method and apparatus for displaying data within a three-dimensional information landscape</title>
+			</entry>
+			<entry id="Strasnick1996a">
+				<year>1996</year>
+				<authors>Strasnick, Tesler</authors>
+				<url>http://www.freepatentsonline.com/5555354.html</url>
+				<title>Method and apparatus for navigation within three-dimensional information landscape</title>
+			</entry>
+			<entry id="Tesler2000">
+				<year>2000</year>
+				<authors>Tesler</authors>
+				<url>http://www.freepatentsonline.com/6137499.html</url>
+				<title>Method, system, and computer program product for visualizing data using partial hierarchies</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Robertson1991_1" dim="3" rep="E" pos="R">
+		<name>Cone Tree</name>
+		<year>1991</year>
+		<authors>George G. Robertson, Jock D. Mackinlay and Stuart K. Card</authors>
+		<url>http://dx.doi.org/10.1145/108844.108883</url>
+		<title>Cone Trees: Animated 3D visualizations of hierarchical information</title>
+		<publication>CHI'91: Proceedings of the SIGCHI conference on Human Factors in Computing Systems, pages 189-194</publication>
+		<related>
+			<entry id="Robertson1994">
+				<year>1994</year>
+				<authors>Robertson, Mackinlay, Card</authors>
+				<url>http://www.freepatentsonline.com/5295243.html</url>
+				<title>Display of hierarchical three-dimensional structures with rotating substructures</title>
+			</entry>
+			<entry id="Carriere1995">
+				<year>1995</year>
+				<authors>Carriere, Kazman</authors>
+				<url>http://dx.doi.org/10.1109/INFVIS.1995.528689</url>
+				<title>Research report. Interacting with huge hierarchies: Beyond Cone Trees</title>
+			</entry>
+			<entry id="Cockburn2000">
+				<year>2000</year>
+				<authors>Cockburn, McKenzie</authors>
+				<url>http://hdl.handle.net/10092/522</url>
+				<title>An evaluation of Cone Trees</title>
+			</entry>
+			<entry id="Mizukoshi2006">
+				<year>2006</year>
+				<authors>Mizukoshi, Hori, Gotoh</authors>
+				<url>http://wscg.zcu.cz/wscg2006/Papers_2006/Poster/C89-full.pdf</url>
+				<title>Extension models of Cone Tree visualizations to large scale knowledge base with semantic relations</title>
+			</entry>
+			<entry id="Zeckzer2010">
+				<year>2010</year>
+				<authors>Zeckzer, Chen, Hagen</authors>
+				<url>http://dx.doi.org/10.4230/DFU.SciViz.2010.11</url>
+				<title>Computing an optimal layout for Cone Trees</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Robertson1991_2" dim="3" rep="E" pos="R">
+		<name>Cam Tree</name>
+		<year>1991</year>
+		<authors>George G. Robertson, Jock D. Mackinlay and Stuart K. Card</authors>
+		<url>http://dx.doi.org/10.1145/108844.108883</url>
+		<title>Cone Trees: Animated 3D visualizations of hierarchical information</title>
+		<publication>CHI'91: Proceedings of the SIGCHI conference on Human Factors in Computing Systems, pages 189-194</publication>
+		<related>
+			<entry id="Robertson1994">
+				<year>1994</year>
+				<authors>Robertson, Mackinlay, Card</authors>
+				<url>http://www.freepatentsonline.com/5295243.html</url>
+				<title>Display of hierarchical three-dimensional structures with rotating substructures</title>
+			</entry>
+		</related>
+	</item>	
+	<item id="Johnson1991" dim="2" rep="I" pos="A">
+		<name>Treemap (Slice+Dice)</name>
+		<year>1991</year>
+		<authors>Brian Johnson and Ben Shneiderman</authors>
+		<url>http://dx.doi.org/10.1109/VISUAL.1991.175815</url>
+		<title>Tree-Maps: A space-filling approach to the visualization of hierarchical information structures</title>
+		<publication>Visualization'91: Proceedings of the IEEE Conference on Visualization, pages 284-291</publication>
+		<related>
+			<entry id="Shneiderman1992">
+				<year>1992</year>
+				<authors>Shneiderman</authors>
+				<url>http://dx.doi.org/10.1145/102377.115768</url>
+				<title>Tree visualization with tree-maps: 2-d space-filling approach</title>
+			</entry>
+			<entry id="Johnson1992">
+				<year>1992</year>
+				<authors>Johnson</authors>
+				<url>http://dx.doi.org/10.1145/142750.142833</url>
+				<title>TreeViz: Treemap visualization of hierarchically structured information</title>
+			</entry>
+			<entry id="Johnson1993">
+				<year>1993</year>
+				<authors>Johnson</authors>
+				<url>http://search.proquest.com/docview/304079297/abstract</url>
+				<title>Treemaps: Visualizing hierarchical and categorical data</title>
+			</entry>
+			<entry id="Chintalapani2004">
+				<year>2004</year>
+				<authors>Chintalapani, Plaisant, Shneiderman</authors>
+				<url>http://dx.doi.org/10.1109/IV.2004.1320166</url>
+				<title>Extending the utility of Treemaps with flexible hierarchy</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Walker1990" dim="2" rep="E" pos="A">
+		<name>Walker Layout</name>
+		<year>1990</year>
+		<authors>John Q. Walker, II.</authors>
+		<url>http://dx.doi.org/10.1002/spe.4380200705</url>
+		<title>A node-positioning algorithm for general trees</title>
+		<publication>Software - Practice and Experience, 20, 685-705</publication>
+		<related>
+			<entry id="Buchheim2002">
+				<year>2002</year>
+				<authors>Buchheim, J%26uuml;nger, Leipert</authors>
+				<url>http://dx.doi.org/10.1007/3-540-36151-0_32</url>
+				<title>Improving Walker's algorithm to run in linear time</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Moen1990" dim="2" rep="E" pos="A">
+		<name>Dynamic Tree Layout</name>
+		<year>1990</year>
+		<authors>Sven Moen</authors>
+		<url>http://dx.doi.org/10.1109/52.56447</url>
+		<title>Drawing dynamic trees</title>
+		<publication>IEEE Software, 7(4), pages 21-28</publication>
+	</item>
+	<item id="BruggemannKlein1989" dim="2" rep="E" pos="A">
+		<name>TreeTeX Layout</name>
+		<year>1989</year>
+		<authors>Anne Br%26uuml;ggemann-Klein and Derick Wood</authors>
+		<url>http://cajun.cs.nott.ac.uk/compsci/epo/papers/volume2/issue2/epabk022.pdf</url>
+		<title>Drawing trees nicely with TeX</title>
+		<publication>Electronic Publishing, 2(2), pages 101-115</publication>
+	</item>
+	<item id="Gregori1989" dim="2" rep="E" pos="A">
+		<name>Orthogonal Grid Embedding</name>
+		<year>1989</year>
+		<authors>Angelo Gregori</authors>
+		<url>http://dx.doi.org/10.1016/0020-0190(89)90118-X</url>
+		<title>Unit-length embedding of binary trees on a square grid</title>
+		<publication>Information Processing Letters, 31(4), pages 167-173 </publication>
+		<related>
+			<entry id="Lin1999">
+				<year>1999</year>
+				<authors>Lin, Miller, Perkel, Pritikin, Sudborough</authors>
+				<url>http://dx.doi.org/10.1109/ISPAN.1999.778946</url>
+				<title>On mapping complete binary trees into grids and extended grids</title>
+			</entry>
+			<entry id="Opatrny2000">
+				<year>2000</year>
+				<authors> Opatrny, Sotteau</authors>
+				<url>http://dx.doi.org/10.1016/S0166-218X(99)00161-4</url>
+				<title>Embeddings of complete binary trees into grids and extended grids with total vertex-congestion 1</title>
+			</entry>
+			<entry id="Lin2003">
+				<year>2003</year>
+				<authors>Lin, Miller, Perkel, Pritikin, Sudborough</authors>
+				<url>http://dx.doi.org/10.1016/S0166-218X(02)00550-4</url>
+				<title>Expansion of layouts of complete binary trees into grids</title>
+			</entry>
+		</related>
+	</item>	
+	<item id="Youn1988" dim="2" rep="E" pos="A">
+		<name>Extended Grid Embedding</name>
+		<year>1988</year>
+		<authors>Hee Yong Youn and Adit D. Singh</authors>
+		<url>http://dx.doi.org/10.1109/DCS.1988.12503</url>
+		<title>Near optimal embedding of binary tree architecture in VLSI</title>
+		<publication>ICDCS'88: Proceedings of the International Conference on Distributed Computing Systems, pages 86-93</publication>
+		<related>
+			<entry id="Heydemann1996">
+				<year>1996</year>
+				<authors>Heydemann, Sotteau, Opatrny</authors>
+				<url>http://dx.doi.org/10.1080/10637199608915560</url>
+				<title>Embeddings of complete binary trees into extended grids with edge-congestion 1</title>
+			</entry>
+			<entry id="Lin1999">
+				<year>1999</year>
+				<authors>Lin, Miller, Perkel, Pritikin, Sudborough</authors>
+				<url>http://dx.doi.org/10.1109/ISPAN.1999.778946</url>
+				<title>On mapping complete binary trees into grids and extended grids</title>
+			</entry>
+			<entry id="Opatrny2000">
+				<year>2000</year>
+				<authors> Opatrny, Sotteau</authors>
+				<url>http://dx.doi.org/10.1016/S0166-218X(99)00161-4</url>
+				<title>Embeddings of complete binary trees into grids and extended grids with total vertex-congestion 1</title>
+			</entry>
+			<entry id="Lin2003">
+				<year>2003</year>
+				<authors>Lin, Miller, Perkel, Pritikin, Sudborough</authors>
+				<url>http://dx.doi.org/10.1016/S0166-218X(02)00550-4</url>
+				<title>Expansion of layouts of complete binary trees into grids</title>
+			</entry>
+		</related>
+	</item>	
+	<item id="Ahuja1986_1" dim="2" rep="E" pos="A">
+		<name>Triangular Tesselation</name>
+		<year>1986</year>
+		<authors>Narendra Ahuja</authors>
+		<url>http://dx.doi.org/10.1016/S0734-189X(86)80058-5</url>
+		<title>Efficient planar embedding of trees for VLSI layouts</title>
+		<publication>Computer Vision, Graphics, and Image Processing, 34(2), pages 189-203</publication>
+	</item>
+	<item id="Ahuja1986_2" dim="2" rep="E" pos="A">
+		<name>Rectangular Tesselation</name>
+		<year>1986</year>
+		<authors>Narendra Ahuja</authors>
+		<url>http://dx.doi.org/10.1016/S0734-189X(86)80058-5</url>
+		<title>Efficient planar embedding of trees for VLSI layouts</title>
+		<publication>Computer Vision, Graphics, and Image Processing, 34(2), pages 189-203</publication>
+	</item>
+	<item id="Solo1986" dim="2" rep="E" pos="A">
+		<name>Readable Layout</name>
+		<year>1986</year>
+		<authors>David M. Solo</authors>
+		<url>http://hdl.handle.net/1721.1/41166</url>
+		<title>Readable Layout of unbalanced n-ary trees</title>
+		<publication>MIT Artificial Intelligence Laboratory Working Papers, WP-289</publication>
+	</item>
+	<item id="Gordon1984" dim="2" rep="E" pos="A">
+		<name>Hexagonal Grid Embedding</name>
+		<year>1984</year>
+		<authors>Dan Gordon, Israel Koren and Gabriel M. Silberman</authors>
+		<url>http://dx.doi.org/10.1109/TC.1984.5009319</url>
+		<title>Embedding tree structures in VLSI hexagonal arrays</title>
+		<publication>IEEE Transactions on Computers, C-33(1), pages 104-107</publication>
+		<related>
+			<entry id="Gordon1987">
+				<year>1987</year>
+				<authors>Gordon</authors>
+				<url>http://dx.doi.org/10.1109/TC.1987.5009532</url>
+				<title>Efficient embeddings of binary trees in VLSI arrays</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Stockmeyer1983" dim="2" rep="I" pos="A">
+		<name>Slicing Floorplan</name>
+		<year>1983</year>
+		<authors>Larry Stockmeyer</authors>
+		<url>http://dx.doi.org/10.1016/S0019-9958(83)80038-2</url>
+		<title>Optimal orientations of cells in Slicing Floorplan designs</title>
+		<publication>Information and Control, 57(2-3), pages 91-101</publication>
+	</item>
+	<item id="Kruskal1983_1" dim="2" rep="I" pos="A">
+		<name>2D Icicle Plot</name>
+		<year>1983</year>
+		<authors>Joseph B. Kruskal and James M. Landwehr</authors>
+		<url>http://dx.doi.org/10.2307/2685881</url>
+		<title>Icicle plot: Better displays for hierarchical clustering</title>
+		<publication>The American Statistician, 37(2), pages 162-168</publication>
+	</item>
+	<item id="Kruskal1983_2" dim="3" rep="I" pos="A">
+		<name>3D Icicle Plot</name>
+		<year>1983</year>
+		<authors>Joseph B. Kruskal and James M. Landwehr</authors>
+		<url>http://dx.doi.org/10.2307/2685881</url>
+		<title>Icicle plot: Better displays for hierarchical clustering</title>
+		<publication>The American Statistician, 37(2), pages 162-168</publication>
+	</item>
+	<item id="Kleiner1981_1" dim="2" rep="I" pos="A">
+		<name>Trees</name>
+		<year>1981</year>
+		<authors>Beat Kleiner and John A. Hartigan</authors>
+		<url>http://dx.doi.org/10.2307/2287820</url>
+		<title>Representing points in many dimensions by Trees and Castles</title>
+		<publication>Journal of the American Statistical Association, 76(374), pages 260-269</publication>
+		<related>
+			<entry id="Kleiner1981a">
+				<year>1981</year>
+				<authors>Kleiner, Hartigan</authors>
+				<url>http://dx.doi.org/10.2307/2287824</url>
+				<title>Representing points in many dimensions by Trees and Castles - Rejoinder</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Kleiner1981_2" dim="2" rep="I" pos="A">
+		<name>Castles</name>
+		<year>1981</year>
+		<authors>Beat Kleiner and John A. Hartigan</authors>
+		<url>http://dx.doi.org/10.2307/2287820</url>
+		<title>Representing points in many dimensions by Trees and Castles</title>
+		<publication>Journal of the American Statistical Association, 76(374), pages 260-269</publication>
+		<related>
+			<entry id="Kleiner1981a">
+				<year>1981</year>
+				<authors>Kleiner, Hartigan</authors>
+				<url>http://dx.doi.org/10.2307/2287824</url>
+				<title>Representing points in many dimensions by Trees and Castles - Rejoinder</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Reingold1981" dim="2" rep="E" pos="A">
+		<name>Tidier Drawing</name>
+		<year>1981</year>
+		<authors>Edward M. Reingold and John S. Tilford</authors>
+		<url>http://dx.doi.org/10.1109/TSE.1981.234519</url>
+		<title>Tidier Drawings of trees</title>
+		<publication>IEEE Transactions on Software Engineering, SE-7(2), pages 223-228</publication>
+		<related>
+			<entry id="Bloesch1993">
+				<year>1993</year>
+				<authors>Bloesch</authors>
+				<url>http://dx.doi.org/10.1002/spe.4380230802</url>
+				<title>Aesthetic layout of generalized trees</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Vaucher1980" dim="2" rep="E" pos="A">
+		<name>Pretty-printed Trees</name>
+		<year>1980</year>
+		<authors>Jean G. Vaucher</authors>
+		<url>http://dx.doi.org/10.1002/spe.4380100706</url>
+		<title>Pretty-printing of trees</title>
+		<publication>Software: Practice and Experience, 10(7), pages 553-561</publication>
+		<related>
+			<entry id="Bloesch1993">
+				<year>1993</year>
+				<authors>Bloesch</authors>
+				<url>http://dx.doi.org/10.1002/spe.4380230802</url>
+				<title>Aesthetic layout of generalized trees</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Wetherell1979" dim="2" rep="E" pos="A">
+		<name>Tidy Drawing</name>
+		<year>1979</year>
+		<authors>Charles Wetherell and Alfred Shannon</authors>
+		<url>http://dx.doi.org/10.1109/TSE.1979.234212</url>
+		<title>Tidy Drawings of Trees</title>
+		<publication>IEEE Transactions on Software Engineering, SE-5(5), pages 514-520</publication>
+	</item>
+	<item id="Shiloach1976" dim="2" rep="E" pos="A">
+		<name>H-Tree Layout</name>
+		<year>1976</year>
+		<authors>Yossi Shiloach</authors>
+		<url>http://search.proquest.com/docview/302833914/abstract</url>
+		<title>Linear and planar arrangements of graphs</title>
+		<publication>Ph.D. thesis, Weizmann Institute of Science</publication>
+		<related>
+			<entry id="Horowitz1981">
+				<year>1981</year>
+				<authors>Horowitz, Zorat</authors>
+				<url>http://dx.doi.org/10.1109/TC.1981.1675772</url>
+				<title>The binary tree as an interconnection network: Applications to multiprocessor systems and VLSI</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Warnier1974" dim="2" rep="E" pos="A">
+		<name>Warnier-Orr Diagram</name>
+		<year>1974</year>
+		<authors>Jean Dominique Warnier</authors>
+		<url>http://www.worldcat.org/oclc/2792121</url>
+		<title>Logical construction of programs</title>
+		<publication>Van Nostrand Reinhold Company</publication>
+		<related>
+			<entry id="Orr1977">
+				<year>1977</year>
+				<authors>Orr</authors>
+				<url>http://www.worldcat.org/oclc/3615720</url>
+				<title>Structured systems development</title>
+			</entry>
+			<entry id="Warnier1981">
+				<year>1981</year>
+				<authors>Warnier</authors>
+				<url>http://www.worldcat.org/oclc/6555014</url>
+				<title>Logical construction of systems</title>
+			</entry>	
+		</related>
+	</item>
+	<item id="Knuth1968" dim="2" rep="I" pos="A">
+		<name>Indentation</name>
+		<year>1968</year>
+		<authors>Donald Knuth</authors>
+		<url>http://en.wikipedia.org/wiki/The_Art_of_Computer_Programming</url>
+		<title>The Art of Computer Programming, Vol.1: Fundamental Algorithms</title>
+		<publication>Addison-Wesley, 1st Edition</publication>
+	</item>
+	<item id="Bertin1967_1" dim="2" rep="I" pos="A">
+		<name>Ordered Area Representation</name>
+		<year>1967</year>
+		<authors>Jacques Bertin</authors>
+		<url>http://www.editions.ehess.fr/ouvrages/ouvrage/semiologie-graphique/</url>
+		<title>Semiologie graphique. Les diagrammes, les reseaux, les cartes</title>
+		<publication>Editions Gauthier-Villars, Premiere Edition</publication>
+		<related>
+			<entry id="Bertin1981">
+				<year>1981</year>
+				<authors>Bertin</authors>
+				<url>http://dx.doi.org/10.1515/9783110854688</url>
+				<title>Graphics and graphic information processing</title>
+			</entry>
+			<entry id="Bertin1984">
+				<year>1984</year>
+				<authors>Bertin</authors>
+				<url>http://uwpress.wisc.edu/books/0780.htm</url>
+				<title>Semiology of graphics: Diagrams, networks, maps</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Bertin1967_2" dim="3" rep="I" pos="A">
+		<name>Stereogram</name>
+		<year>1967</year>
+		<authors>Jacques Bertin</authors>
+		<url>http://www.editions.ehess.fr/ouvrages/ouvrage/semiologie-graphique/</url>
+		<title>Semiologie graphique. Les diagrammes, les reseaux, les cartes</title>
+		<publication>Editions Gauthier-Villars, Premiere Edition</publication>
+		<related>
+			<entry id="Bertin1981">
+				<year>1981</year>
+				<authors>Bertin</authors>
+				<url>http://dx.doi.org/10.1515/9783110854688</url>
+				<title>Graphics and graphic information processing</title>
+			</entry>
+			<entry id="Bertin1984">
+				<year>1984</year>
+				<authors>Bertin</authors>
+				<url>http://uwpress.wisc.edu/books/0780.htm</url>
+				<title>Semiology of graphics: Diagrams, networks, maps</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Bertin1967_3" dim="2" rep="E" pos="R">
+		<name>Square Sector Construction</name>
+		<year>1967</year>
+		<authors>Jacques Bertin</authors>
+		<url>http://www.editions.ehess.fr/ouvrages/ouvrage/semiologie-graphique/</url>
+		<title>Semiologie graphique. Les diagrammes, les reseaux, les cartes</title>
+		<publication>Editions Gauthier-Villars, Premiere Edition</publication>
+		<related>
+			<entry id="Bertin1981">
+				<year>1981</year>
+				<authors>Bertin</authors>
+				<url>http://dx.doi.org/10.1515/9783110854688</url>
+				<title>Graphics and graphic information processing</title>
+			</entry>
+			<entry id="Bertin1984">
+				<year>1984</year>
+				<authors>Bertin</authors>
+				<url>http://uwpress.wisc.edu/books/0780.htm</url>
+				<title>Semiology of graphics: Diagrams, networks, maps</title>
+			</entry>			
+		</related>
+	</item>
+	<item id="Ernst1985" dim="2" rep="I" pos="F">
+		<name>Pythagoras Tree</name>
+		<year>1942</year>
+		<authors>Albert E. Bosman</authors>
+		<url>http://www.worldcat.org/oclc/064150906</url>
+		<title pretext="reprinted in">Bruno Ernst: Bomen van Pythagoras - Variaties van Jos de Mey</title>
+		<publication>Aramith Uitgevers Amsterdam, 1985</publication>
+		<related>
+			<entry id="Ernst2004">
+				<year>2004</year>
+				<authors>Ernst</authors>
+				<url>http://www.arsetmathesis.nl/bruno0402.htm</url>
+				<title>De ware geschiedenis van de Boom van Pythagoras</title>
+			</entry>
+		</related>
+	</item>
+	<item id="Brinton1939" dim="2" rep="I" pos="R">
+		<name>Hierarchical Sector Chart</name>
+		<year>1921</year>
+		<authors>American Society of Mechanical Engineers</authors>
+		<url>http://www.archive.org/stream/graphicpresentat00brinrich#page/89/mode/1up</url>
+		<title pretext="reprinted in" posttext=", page 89">Willard Cope Brinton: Graphic presentation</title>
+		<publication>Brinton Associates, First Edition, 1939</publication>
+	</item>
+	<item id="Ducheyne2009" dim="2" rep="I" pos="R">
+		<name>Universal Decimal Classification</name>
+		<year>1905</year>
+		<authors>Paul Otlet</authors>
+		<url>http://dx.doi.org/10.1108/00220410910937598</url>
+		<title pretext="reprinted in">Steffen Ducheyne: "To treat of the world": Paul Otlet's ontology and epistemology and the circle of knowledge</title>
+		<publication>Journal of Documentation, 65(2), pages 223-244, 2009</publication>
+	</item>
+	<item id="Gannett1903" dim="2" rep="I" pos="A">
+		<name>Slice-and-Dice Statistical Diagram</name>
+		<year>1903</year>
+		<authors>Henry Gannett</authors>
+		<url>http://www.davidrumsey.com/luna/servlet/detail/RUMSEY~8~1~32140~1151482</url>
+		<title posttext=", plate 87">Twelfth census of the United States, taken in the year 1900. Statistical atlas</title>
+		<publication>U.S. Census Office Washington</publication>
+	</item>
+	<item id="Baron1969" dim="2" rep="I" pos="A">
+		<name>Formal Logic Representation</name>
+		<year>1714</year>
+		<authors>Johann Christian Lange</authors>
+		<url>http://dx.doi.org/10.2307/3614533</url>
+		<title pretext="reprinted in">Margaret E. Baron: A note on the historical development of logic diagrams: Leibniz, Euler and Venn</title>
+		<publication>The Mathematical Gazette, 53(384), pages 113-125, 1969</publication>
+	</item>
+</list>

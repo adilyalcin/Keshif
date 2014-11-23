@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Tree Visualization Techniques</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-20);
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 250,
+        itemName: "Tree Visualization Techniques",
+        source : {
+            url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
+            callback: function(browser){
+                browser.primaryTableName = "Visualizations";
+
+                kshf.dt.Visualizations = [];
+                kshf.dt_id.Visualizations = {};
+
+                $.ajax( {
+                    url: "./data/treevis.xml",
+                    async: false,
+                    success: function(doc){
+                        $doc = $(doc);
+
+
+                        $doc.find("list > item").each(function(i){
+                            var $this = $(this);
+                            var d={};
+                            d.id = this.getAttribute("id");
+                            d.Dimension = this.getAttribute("dim");
+                            switch(d.Dimension){
+                                case "2": d.Dimension = "2-D"; break;
+                                case "3": d.Dimension = "3-D"; break;
+                                case "H": d.Dimension = "Hybrid"; break;
+                            }
+                            d.Representation = this.getAttribute("rep");
+                            switch(d.Representation){
+                                case "I": d.Representation = "Implicit"; break;
+                                case "E": d.Representation = "Explicit"; break;
+                                case "H": d.Representation = "Hybrid"; break;
+                            }
+                            d.Alignment = this.getAttribute("pos");
+                            switch(d.Alignment){
+                                case "A": d.Alignment = "Axis-Parallel"; break;
+                                case "R": d.Alignment = "Radial"; break;
+                                case "F": d.Alignment = "Free"; break;
+                            }
+                            d.Name = $this.find("name")[0].textContent.trim();
+                            d.Year = parseInt($this.find("year")[0].textContent.trim());
+                            if(d.Year<1970) d.Year = undefined;// remove those earlier than 1970
+                            d.Authors = $this.find("authors")[0].textContent.trim();
+                            d.Authors = d.Authors.replace(" and ",", ");
+                            d.Authors = d.Authors.split(", ");
+                            d.URL = $this.find("url")[0].textContent.trim();
+                            d.Title = $this.find("title")[0].textContent.trim();
+                            d.Venue = $this.find("publication")[0].textContent.trim();
+                            var kshfItem = new kshf.Item(d,'id');
+                            kshf.dt.Visualizations.push(kshfItem);
+                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+                        });
+
+                        browser.items = kshf.dt.Visualizations;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Dimension",
+            },{
+                facetTitle: "Representation",
+            },{
+                facetTitle: "Alignment",
+            },{
+                facetTitle: "Authors", collapsed: false
+            },{
+                facetTitle: "Year",
+                layout: "bottom",
+                type: 'interval',
+                intervalScale: 'step'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{ name:'Year'}],
+            textSearch : "Title",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+//                  return d.data.Name;
+//                return d.data.Title;
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/thumbs100png/"+
+                    d.data.id+".png");
+            }
+        }
+    });
+});
+        </script>
+<style>
+    #chart_div {
+        width: 90%;
+        height: 90px;
+        width: calc(100% - 100px);
+        height: calc(100% - 100px);
+    }
+    .listItem{
+        width: 12.5%;
+    }
+    .content{
+        padding: 3px;
+    }
+    .thumbnail{
+        height: 105px;
+    }
+    /*
+
+    div.listItem {
+        max-height: 230px !important;
+        vertical-align: top;
+    }
+    div.content{
+        width: 100px;
+        margin-bottom: 5px;
+    }
+    div.content a{
+        vertical-align: top;
+        color: #496B86;
+    }
+    div.content img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        border: solid;
+        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+        border-width: 1px 2px 2px 1px;
+        border-radius: 10px;
+        background-color: white;
+        max-width: 90px;
+        transition: background-color 300ms linear;
+        -webkit-transition: background-color 300ms linear;
+        -o-transition: background-color 300ms linear;
+        -moz-transition: background-color 300ms linear;
+    }
+    div.listItem[highlight=true] div.content img{
+        background-color: orangered;
+    }
+    div.content span.title{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2px;
+        text-align: center;
+        font-size: 0.8em;
+    }*/
+
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
