@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Dynamic Graph Visualization Techniques</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-20);
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 250,
+        leftPanelLabelWidth: 135,
+        itemName: "Dynamic Graph Vis. Papers",
+        source : {
+            url: "http://dynamicgraphs.fbeck.com/",
+            callback: function(browser){
+                browser.primaryTableName = "Visualizations";
+
+                kshf.dt.Visualizations = [];
+                kshf.dt_id.Visualizations = {};
+
+                $.ajax( {
+                    url: "./data/dyngraphviz.bib",
+                    async: false,
+                    success: function(bibdata){
+                        var entries = BibtexParser(bibdata);
+
+                        entries.entries.forEach(function(entry){
+                            var entryData = {};
+
+                            entryData.Key = entry.EntryKey;
+                            entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
+                            entryData.Type = entry.EntryType;
+                            entryData.Authors = [];
+                            if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+                            entryData.Title = entry.Fields.title;
+                            entryData.Year = entry.Fields.year;
+                            if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
+
+                            entryData.Paradigms = [];
+                            entryData.Applications = [];
+                            entryData.Type = [];
+                            entryData.Time = [];
+                            entryData.Evaluations = [];
+
+                            if(entry.Fields.keywords){
+                                entry.Fields.keywords.split(", ").forEach(function(keyword){
+                                    keyword = keyword.split(":");
+                                    switch(keyword[0]){
+                                        case 'paradigm': entryData.Paradigms.push(keyword[1]); break;
+                                        case 'type': entryData.Type.push(keyword[1]); break;
+                                        case 'time': entryData.Time.push(keyword[1]); break;
+                                        case 'application': entryData.Applications.push(keyword[1]); break;
+                                        case 'evaluation': entryData.Evaluations.push(keyword[1]); break;
+                                    }
+                                });
+/*
+                                'paradigm'
+                                'evaluation'
+                                'time'
+                                'type'
+                                'category'
+                                'application'*/
+                            }
+                            
+                            if(entry.Fields.journal)
+                                entryData.Journal = entry.Fields.journal;
+                            else if(entry.Fields.booktitle)
+                                entryData.Journal = entry.Fields.booktitle;
+
+                            var kshfItem = new kshf.Item(entryData,'Key');
+                            kshf.dt.Visualizations.push(kshfItem);
+                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+                        });
+                        // there will be some entries.errors, for incorrect entry types (like online)
+
+                        browser.items = kshf.dt.Visualizations;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Type",
+            },{
+                facetTitle: "Time",
+            },{
+                facetTitle: "Paradigms",
+            },{
+                facetTitle: "Applications",
+            },{
+                facetTitle: "Evaluations",
+            },{
+                facetTitle: "Authors", layout: 'right'
+            },{
+                facetTitle: "Journal", collapsed: false, layout: 'right'
+            },{
+                facetTitle: "Year",
+                layout: "bottom",
+                type: 'interval',
+                intervalScale: 'step'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{ name:'Year'}],
+            textSearch : "Title",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+//                return d.data.Title;
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://dynamicgraphs.fbeck.com/data/papers_img/"+d.data.Key+".png");
+            }
+        }
+    });
+});
+        </script>
+<style>
+    #chart_div {
+        width: 90%;
+        height: 90px;
+        width: calc(100% - 100px);
+        height: calc(100% - 100px);
+    }
+    .listItem{
+        width: 20%;
+    }
+    .content{
+        padding: 3px;
+    }
+    .thumbnail{
+        height: 105px;
+    }
+    /*
+
+    div.listItem {
+        max-height: 230px !important;
+        vertical-align: top;
+    }
+    div.content{
+        width: 100px;
+        margin-bottom: 5px;
+    }
+    div.content a{
+        vertical-align: top;
+        color: #496B86;
+    }
+    div.content img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        border: solid;
+        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+        border-width: 1px 2px 2px 1px;
+        border-radius: 10px;
+        background-color: white;
+        max-width: 90px;
+        transition: background-color 300ms linear;
+        -webkit-transition: background-color 300ms linear;
+        -o-transition: background-color 300ms linear;
+        -moz-transition: background-color 300ms linear;
+    }
+    div.listItem[highlight=true] div.content img{
+        background-color: orangered;
+    }
+    div.content span.title{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2px;
+        text-align: center;
+        font-size: 0.8em;
+    }*/
+
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
