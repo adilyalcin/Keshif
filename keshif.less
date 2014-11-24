@@ -207,9 +207,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &.alone{
-            opacity: 0;
+            display: none;
             vertical-align: top;
-            pointer-events: none;
+            pointer-events: all;
             box-shadow: 1px 1px 1px #474940;
         }
         &.summary{
@@ -292,7 +292,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         .chartClearFilterButton.rowFilter{
-            pointer-events: none;
+            pointer-events: all;
             height: 16px;
             width: 16px;
             padding-left: 1px;
@@ -727,6 +727,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 .transform-origin(0% 100%);
                                 &.preview_compare {
                                     height: 2px;
+                                    margin-top: 1px;
                                 }
                             }
                             > .item_count{
@@ -1027,9 +1028,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[filtered=true] > .headerGroup{
-            .chartClearFilterButton.rowFilter{
-                pointer-events: all;
-                opacity: 1;
+            .chartClearFilterButton{
+                display: inline-block;
+//                pointer-events: all;
+//                opacity: 1;
             }
         }
         &[hasmultivalueitem=false]{

@@ -204,9 +204,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #635d46;
 }
 .kshf .chartClearFilterButton.alone {
-  opacity: 0;
+  display: none;
   vertical-align: top;
-  pointer-events: none;
+  pointer-events: all;
   box-shadow: 1px 1px 1px #474940;
 }
 .kshf .chartClearFilterButton.summary {
@@ -297,7 +297,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.9em;
 }
 .kshf .headerGroup .chartClearFilterButton.rowFilter {
-  pointer-events: none;
+  pointer-events: all;
   height: 16px;
   width: 16px;
   padding-left: 1px;
@@ -728,6 +728,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare {
   height: 2px;
+  margin-top: 1px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
   top: -1em;
@@ -1043,9 +1044,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] > .facetInterval > div {
   display: none !important;
 }
-.kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton.rowFilter {
-  pointer-events: all;
-  opacity: 1;
+.kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton {
+  display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
   display: inline-block;
