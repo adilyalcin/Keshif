@@ -296,6 +296,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .header_label > .fa-level-up {
   font-size: 0.9em;
 }
+.kshf .headerGroup .save_filter_as_set {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  margin-left: 4px;
+  margin-top: 1px;
+  width: 15px;
+  color: gray;
+}
+.kshf .headerGroup .save_filter_as_set:hover {
+  color: black;
+}
 .kshf .headerGroup .chartClearFilterButton.rowFilter {
   pointer-events: all;
   height: 16px;
@@ -580,8 +592,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   vertical-align: top;
   border-radius: 3px;
-  padding: 0px 2px 0px 2px;
-  margin-right: 2px;
+  padding: 1px 2px 0px 2px;
+  margin: 0px 2px;
   opacity: 0.4;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .filterButtons {
@@ -616,7 +628,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   float: left;
   margin-left: 2px;
-  margin-top: -2px;
+  margin-top: -3px;
   margin-bottom: -2px;
   font-size: 1.1em;
   height: 10px;
@@ -1045,6 +1057,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none !important;
 }
 .kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton {
+  display: inline-block;
+}
+.kshf .kshfChart:not([filtered_total="0"]):not([filtered_total="1"])[hasmultivalueitem=true] > .headerGroup .save_filter_as_set {
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {

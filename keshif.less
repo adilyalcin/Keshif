@@ -291,6 +291,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 font-size: 0.9em;
             }
         }
+        .save_filter_as_set{
+            display: none;
+            position: absolute;
+            cursor: pointer;
+            margin-left: 4px;
+            margin-top: 1px;
+            width: 15px;
+            color: gray;
+            &:hover{
+                color: black;
+            }
+        }
         .chartClearFilterButton.rowFilter{
             pointer-events: all;
             height: 16px;
@@ -567,8 +579,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     font-size: 0.7em;
                                     vertical-align: top;
                                     border-radius: 3px;
-                                    padding: 0px 2px 0px 2px;
-                                    margin-right: 2px;
+                                    padding: 1px 2px 0px 2px;
+                                    margin: 0px 2px;
                                     opacity: 0.4;
                                 }
                             }
@@ -609,7 +621,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             vertical-align: top;
                             float: left;
                             margin-left: 2px;
-                            margin-top: -2px;
+                            margin-top: -3px;
                             margin-bottom: -2px;
                             font-size: 1.1em;
                             height: 10px;
@@ -1027,11 +1039,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        &[filtered=true] > .headerGroup{
+        &[filtered=true] > .headerGroup {
             .chartClearFilterButton{
                 display: inline-block;
-//                pointer-events: all;
-//                opacity: 1;
+            }
+        }
+        &:not([filtered_total="0"]):not([filtered_total="1"])[hasmultivalueitem=true]{
+            > .headerGroup {
+                .save_filter_as_set{
+                    display: inline-block;
+                }
             }
         }
         &[hasmultivalueitem=false]{

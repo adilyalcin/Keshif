@@ -332,12 +332,14 @@ kshf.Util = {
             ;
 
         var topRow = this.dom.headerGroup.append("span").style('position','relative');
+
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter";}
+                    gravity: 'n', title: function(){ 
+                        return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter";
+                    }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -350,13 +352,28 @@ kshf.Util = {
             .append("span").attr("class","fa fa-times")
             ;
 
-        var headerLabel=this.options.facetTitle;
-        if(this.parentFacet && this.parentFacet.hasAttribs()) {
-            headerLabel = "<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+this.parentFacet.options.facetTitle+":</span> "+"  "+headerLabel;
-        }
         topRow.append("span").attr("class", "header_label")
-            .html(headerLabel)
+            .html((this.parentFacet && this.parentFacet.hasAttribs())?
+                ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
+                    this.parentFacet.options.facetTitle+":</span> "+"  "+this.options.facetTitle):
+                this.options.facetTitle)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); });
+
+        topRow.append("span").attr("class", "")
+            .attr("class","save_filter_as_set fa fa-save")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n', title: function(){ return "Save filter as new row"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click", function(d,i){
+                this.tipsy.hide();
+                me.facetFilter.saveFilter();
+                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.facetFilter.id});
+            });
+
 
         var facetIcons = this.dom.headerGroup.append("span").attr("class","facetIcons");
         facetIcons.append("span").attr("class", "hasMultiMappings fa fa-ellipsis-v")
@@ -525,7 +542,7 @@ kshf.Item = function(d, idIndex){
     //  1: selected for inclusion (AND / OR query)
     // -1: selected for removal (NOT query)
     //  0: not selected
-	this.selected = 1;
+	this.selected = 0;
     // Items which are mapped/related to this item
     this.items = []; 
 
@@ -579,13 +596,13 @@ kshf.Item.prototype = {
     },
 
     /** -- */
-    f_selected: function(){ return this.selected !== 0; },
-    f_included: function(){ return this.selected > 0; },
+    f_selected: function(){ return this.selected!==0; },
+    f_included: function(){ return this.selected>0; },
 
-    is_NONE:function(){ return this.selected ===0; },
-    is_NOT: function(){ return this.selected ===-1; },
-    is_AND: function(){ return this.selected ===1; },
-    is_OR : function(){ return this.selected ===2; },
+    is_NONE:function(){ return this.selected===0; },
+    is_NOT: function(){ return this.selected===-1; },
+    is_AND: function(){ return this.selected===1; },
+    is_OR : function(){ return this.selected===2; },
 
     set_NONE: function(){
         if(this.inList!==undefined) {
@@ -941,13 +958,12 @@ kshf.Filter.prototype = {
                 // Sub facets are cleared, but the attribs isWanted state is NOT updated
                 // Fix that, now.
                 if(this.facet.subFacets.length>0){
-                    this.facet.getAttribs().forEach(function(item){
+                    this.facet._attribs.forEach(function(item){
                         item.isWanted = true;
                         item._filterCacheIsDirty = false;
                     });
                 }
             }
-
 
             this.browser.updateItemSelectedCt();
             this.browser.refreshFilterClearAll();
@@ -2658,7 +2674,7 @@ kshf.Browser.prototype = {
     },
     /** External method - used by demos to auto-select certain features on load -- */
     filterFacetAttribute: function(facetID, itemId){
-        this.facets[facetID].filterAttrib(this.facets[facetID].getAttribs()[itemId],"OR");
+        this.facets[facetID].filterAttrib(this.facets[facetID]._attribs[itemId],"OR");
     },
     /** -- */
     clearFilters_All: function(force){
@@ -3190,8 +3206,8 @@ kshf.Facet_Categorical.prototype = {
             var noneID = 10000;
             
             var newItem = new kshf.Item([noneID,"None"],0)
-            kshf.dt[this.catTableName].push(newItem);
-            kshf.dt_id[this.catTableName][noneID] = newItem;
+            this.getAttribs().push(newItem);
+            this.getAttribs_wID()[noneID] = newItem;
 
             var _catItemMap = this.options.catItemMap;
             this.options.catItemMap = function(d){
@@ -3340,6 +3356,27 @@ kshf.Facet_Categorical.prototype = {
             kshf.Util.clearArray(this.selected_OR);
             kshf.Util.clearArray(this.selected_NOT);
         }
+        this.attribFilter.saveFilter = function(){
+            // create new item in the attrib list
+            var newAttrib = new kshf.Item(
+                [me._attribs.length+1,this.summary_item_cb()],
+                0 // id row (first row by default) TODO: check when using a data table..
+            );
+            this.filteredItems.forEach(function(item){
+                if(item.isWanted) {
+                    newAttrib.addItem(item);
+                    item.mappedDataCache[this.id].push(newAttrib);
+                }
+            },this);
+            if(newAttrib.items.length>0){
+                me._attribs.push(newAttrib);
+                me.insertAttribs();
+                me.updateAttribCount_Total();
+                me.refreshLabelWidth();
+                me.updateSorting(0, true);
+            }
+            this.clearFilter();
+        }
 
         this.facetFilter = this.attribFilter;
 
@@ -3369,7 +3406,7 @@ kshf.Facet_Categorical.prototype = {
             this.options.facets.forEach(function(facetDescr){
                 facetDescr.parentFacet = this;
                 facetDescr.layout = this.layoutStr;
-                facetDescr.items = this.getAttribs();
+                facetDescr.items = this._attribs;
                 var fct=this.browser.addFacet(facetDescr,this.catTableName);
                 this.subFacets.push(fct);
             },this);
@@ -3417,7 +3454,7 @@ kshf.Facet_Categorical.prototype = {
             }
         }
 
-        // remove attributes that have no items inside...
+        // remove attributes that have no items inside
         this._attribs = this.getAttribs().filter(function(attrib){
             return (this._dataMap(attrib)!==null);
         },this);
@@ -3439,7 +3476,9 @@ kshf.Facet_Categorical.prototype = {
     },
     updateAttribCount_Wanted: function(){
         this.attribCount_Wanted = 0;
-        this._attribs.forEach(function(attrib){if(attrib.isWanted) this.attribCount_Wanted++;},this);
+        this._attribs.forEach(function(attrib){
+            if(attrib.isWanted) this.attribCount_Wanted++;
+        },this);
     },
     /** -- */
     updateAttribCount_Visible: function(){
@@ -3476,6 +3515,7 @@ kshf.Facet_Categorical.prototype = {
             .attr("filtered_or",0)
             .attr("filtered_and",0)
             .attr("filtered_not",0)
+            .attr("filtered_total",0)
             .attr("hasMultiValueItem",this.hasMultiValueItem)
             .on("mouseleave",function(){
                 if(me.skipSorting && me.hasAttribs()){
@@ -3503,7 +3543,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
 
         if(this.options.facets){
-            this.dom.wrapper.append("span").attr("class","facetGroupBar").append("span");//.text("["+this.options.facetTitle+"]");
+            this.dom.wrapper.append("span").attr("class","facetGroupBar");//.append("span").text("["+this.options.facetTitle+"]");
         }
 
         this.dom.facetCategorical = this.dom.wrapper.append("div").attr("class","facetCategorical");
@@ -3525,14 +3565,13 @@ kshf.Facet_Categorical.prototype = {
             }
         }
 
-        this.dom.facetCategorical.append("div").attr("class","scrollToTop").html("⬆")
+        this.dom.scrollToTop = this.dom.facetCategorical.append("div")
+            .attr("class","scrollToTop fa fa-arrow-up")
             .attr("title","Scroll To Top")
             .on("click",function(d){ 
                 kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
             });
-
-        this.dom.scrollToTop = this.dom.facetCategorical.selectAll(".scrollToTop");
 
         this.dom.attribGroup = this.dom.facetCategorical.append("div").attr("class","attribGroup")
             .on("scroll",function(d){
@@ -3556,24 +3595,8 @@ kshf.Facet_Categorical.prototype = {
         this.dom.belowAttribs.append("div").attr("class", "border_line");
         this.dom.barChartPreviewAxis = this.dom.belowAttribs.append("div").attr("class", "barChartPreviewAxis");
 
-        this.dom.attribs = this.dom.attribGroup.selectAll("div.attib")
-            // removes attributes with no items
-            .data(this._attribs, function(attrib){ return attrib.id(); })
-          .enter().append("div")
-            .attr("class", function(d,d2,d3,d4){
-                var str="attrib";
-                if(me.options.domStyle) str+=" "+me.options.domStyle.call(this,d);
-                return str;
-            })
-            .each(function(attrib){
-                var mee=this;
-                attrib.facet = me;
-                attrib.facetDOM = this;
-                attrib.isVisible = true;
-                this.isLinked = me.isLinked;
-            });
-
-        this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","filler");
+        // this helps us makes sure that the div height is correctly set to visible number of rows
+        //this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","filler");
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -3583,6 +3606,10 @@ kshf.Facet_Categorical.prototype = {
             });
 
         this.insertAttribs();
+
+        this.refreshLabelWidth();
+
+        this.updateSorting(0, true);
     },
     selectAllAttribsButton: function(){
         this._attribs.forEach(function(attrib){ 
@@ -3596,13 +3623,13 @@ kshf.Facet_Categorical.prototype = {
     },
     /** returns the maximum active aggregate value per row in chart data */
     getMaxAggregate_Active: function(){
-        return d3.max(this.getAttribs(), function(d){ return d.aggregate_Active; });
+        return d3.max(this._attribs, function(d){ return d.aggregate_Active; });
     },
     /** returns the maximum total aggregate value stored per row in chart data */
     getMaxAggregate_Total: function(){
         if(!this.hasAttribs()) return 0;
         if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
-        this._maxBarValueMaxPerAttrib = d3.max(this.getAttribs(), function(d){ return d.aggregate_Total;});
+        this._maxBarValueMaxPerAttrib = d3.max(this._attribs, function(d){ return d.aggregate_Total;});
         return this._maxBarValueMaxPerAttrib;
     },
     _update_Selected: function(){
@@ -3612,6 +3639,7 @@ kshf.Facet_Categorical.prototype = {
                 .attr("filtered_or",this.attribFilter.selected_OR.length)
                 .attr("filtered_and",this.attribFilter.selected_AND.length)
                 .attr("filtered_not",this.attribFilter.selected_NOT.length)
+                .attr("filtered_total",this.attribFilter.selectedCount_Total())
                 ;
         }
         var show_box = (this.attribFilter.selected_OR.length+this.attribFilter.selected_AND.length)>1;
@@ -3627,7 +3655,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     unselectAllAttribs: function(){
-        this.getAttribs().forEach(function(attrib){ 
+        this._attribs.forEach(function(attrib){ 
             if(attrib.f_selected() && attrib.facetDOM) attrib.facetDOM.setAttribute("highlight",false);
             attrib.set_NONE();
         });
@@ -3788,6 +3816,7 @@ kshf.Facet_Categorical.prototype = {
     refreshQueryPreview: function(dontCull){
         var me=this;
         var formatFunc = kshf.Util.formatForItemCount;
+
         this.dom.attribs.attr("noitems",function(d){ return !me.isAttribSelectable(d); });
 
         this.dom.item_count.each(function(attrib){
@@ -3845,7 +3874,7 @@ kshf.Facet_Categorical.prototype = {
     clearResultPreview: function(dontCull){
         var me=this;
         if(!this.hasAttribs()) return;
-        this.getAttribs().forEach(function(attrib){
+        this._attribs.forEach(function(attrib){
             attrib.updatePreview_Cache = false;
         });
         if(this.collapsed) return;
@@ -4014,10 +4043,56 @@ kshf.Facet_Categorical.prototype = {
     /** - */
     insertAttribs: function(){
     	var me = this;
-        var kshf_ = this.browser;
         var previewTimer = null;
 
-        var onFilterAttrib = function(attrib){
+        var domAttribs_new = this.dom.attribGroup.selectAll("div.attrib")
+            .data(this._attribs, function(attrib){ 
+                return attrib.id();
+            })
+        .enter().append("div")
+            .attr("class", function(d,d2,d3,d4){
+                var str="attrib";
+                if(me.options.domStyle) str+=" "+me.options.domStyle.call(this,d);
+                return str;
+            })
+            .attr("highlight","false")
+            .attr("selected","0")
+            .each(function(attrib,i){
+                attrib.facet = me;
+                attrib.facetDOM = this;
+                attrib.isVisible = true;
+                this.isLinked = me.isLinked;
+
+                attrib.pos_y = 0;
+                kshf.Util.setTransform(this,"translateY(0px)");
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w',
+                    offset_x: 2,
+                    offset_y: -1,
+                    title: function(){
+                        if(this.tipsy_title) return this.tipsy_title;
+                        var attribName=me.options.facetTitle;
+                        var hasMultiValueItem=attrib.facet.hasMultiValueItem;
+                        if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
+                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
+                        if(!me.attribFilter.selected_Any())
+                            return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter";
+                        if(hasMultiValueItem===false)
+                            return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
+                        else
+                            return "<span class='action'><span class='fa fa-plus'></span> And ...</span>";
+                    }
+                });
+            })
+            ;
+
+        if(this.options.catTooltipText){
+            domAttribs_new.attr("title",function(attrib){
+                return me.options.catTooltipText.call(this,attrib);
+            })
+        }
+
+        var cbAttribClick = function(attrib){
             if(!me.isAttribSelectable(attrib)) return;
 
             if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
@@ -4055,7 +4130,7 @@ kshf.Facet_Categorical.prototype = {
                 this.timer = setTimeout(function() { x.timer = null; }, 500);
             }
         };
-        var onMouseOver = function(attrib,i){
+        var cbAttribEnter = function(attrib,i){
             if(me.tipsy_active) me.tipsy_active.hide();
             if(me.isAttribSelectable(attrib)) {
                 attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
@@ -4085,7 +4160,7 @@ kshf.Facet_Categorical.prototype = {
                 me.chartPreviewAxisScale(attrib.aggregate_Active);
             attrib.facetDOM.tipsy_active.show();
         };
-        var onMouseOut = function(attrib,i){
+        var cbAttribLeave = function(attrib,i){
             if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
                 attrib.skipMouseOut = false;
                 return;
@@ -4105,202 +4180,181 @@ kshf.Facet_Categorical.prototype = {
 
             if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
         };
+        var attribDrag = function(d){
+            this.addEventListener("dragstart", function( event ) {
+                // store a ref. on the dragged elem
+                dragged = event.target;
+                // make it half transparent
+                event.target.style.opacity = .5;
+            }, false);
+            this.addEventListener("dragend", function( event ) {
+                // reset the transparency
+                event.target.style.opacity = "";
+            }, false);
+            this.addEventListener("dragover", function( event ) {
+                // prevent default to allow drop
+                event.preventDefault();
+            }, false);
+            this.addEventListener("dragenter", function( event ) {
+                // highlight potential drop target when the draggable element enters it
+                if ( event.target.className == "clickArea" ) {
+                    event.target.style.background = "rgba(0,0,150,0.5)";
+                }
+            }, false);
+            this.addEventListener("dragleave", function( event ) {
+                // reset background of potential drop target when the draggable element leaves it
+                if ( event.target.className == "clickArea" ) {
+                    event.target.style.background = "";
+                }
+            }, false);
+            this.addEventListener("drop", function( event ) {
+                // prevent default action (open as link for some elements)
+                event.preventDefault();
+                // move dragged elem to the selected drop target
+                if ( event.target.className == "clickArea" ) {
+                    event.target.style.background = "";
+                    var item1 = dragged.__data__;
+                    var item2 = event.target.__data__;
+                    me._attribs[item2.orderIndex] = item1;
+                    me._attribs[item1.orderIndex] = item2;
+                    var tmp = item2.orderIndex
+                    item2.orderIndex = item1.orderIndex;
+                    item1.orderIndex = tmp;
 
-    	this.dom.attribs
-            .attr("highlight","false")
-            .attr("selected","0")
-            .each(function(attrib,i){
-                attrib.pos_y = 0;
-                kshf.Util.setTransform(this,"translateY(0px)");
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w',
-                    offset_x: 2,
-                    offset_y: -1,
-                    title: function(){
-                        if(this.tipsy_title) return this.tipsy_title;
-                        var attribName=me.options.facetTitle;
-                        var hasMultiValueItem=attrib.facet.hasMultiValueItem;
-                        if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
-                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
-                        if(!me.attribFilter.selected_Any())
-                            return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter";
-                        if(hasMultiValueItem===false)
-                            return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
-                        else
-                            return "<span class='action'><span class='fa fa-plus'></span> And ...</span>";
-                    }
-                });
-            })
-            ;
+                    me.dom.attribs.each(function(attrib){
+                        if(attrib.isVisible){
+                            attrib.posX = 0;
+                            attrib.posY = line_height*attrib.orderIndex;
+                            kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+attrib.posY+"px)");
+                        }
+                    });
+                }
+            }, false);
+        };
 
-        if(this.options.catTooltipText){
-            this.dom.attribs.attr("title",function(attrib){
-                return me.options.catTooltipText.call(this,attrib);
-            })
-        }
+        var cbOrEnter = function(attrib,i){
+            var facetDOM = attrib.facetDOM;
+            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or ...</span>";
+            facetDOM.tipsy.hide();
+
+            attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
+            me.tipsy_active = attrib.facetDOM.tipsy;
+            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
+                (me.chartPreviewAxisScale(attrib.aggregate_Active)-me.chartPreviewAxisScale.range()[1]);
+            attrib.facetDOM.tipsy_active.show();
+
+            facetDOM.tipsy.show();
+            me.tipsy_active = facetDOM.tipsy;
+
+            if(me.attribFilter.selected_OR.length>0)
+                me.browser.clearResultPreview();
+
+            attrib.facetDOM.setAttribute("selectType","or");
+            d3.event.stopPropagation();
+        };
+        var cbOrLeave = function(attrib,i){
+            this.__data__.facetDOM.tipsy_title = undefined;
+            this.__data__.facetDOM.tipsy.hide();
+            this.__data__.facetDOM.tipsy.show();
+            me.tipsy_active = this.__data__.facetDOM.tipsy;
+            attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            d3.event.stopPropagation();
+        };
+        var cbOrClick = function(attrib,i){
+            me.filterAttrib(attrib,"OR");
+            this.__data__.facetDOM.tipsy.hide();
+            d3.event.stopPropagation();
+        };
+
+        var cbAndEnter = function(attrib,i){
+            this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not ...</span>";
+            this.__data__.facetDOM.tipsy.hide();
+            this.__data__.facetDOM.tipsy.show();
+            attrib.facetDOM.setAttribute("selectType","not");
+            me.tipsy_active = this.__data__.facetDOM.tipsy;
+            me.browser.root.attr("preview-not",true);
+            me.browser.preview_not = true;
+            me.browser.refreshResultPreview();
+            d3.event.stopPropagation();
+        };
+        var cbAndLeave = function(attrib,i){
+            this.__data__.facetDOM.tipsy_title = undefined;
+            this.__data__.facetDOM.tipsy.hide();
+            this.__data__.facetDOM.tipsy.show();
+            me.tipsy_active = this.__data__.facetDOM.tipsy;
+            attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
+            me.browser.preview_not = false;
+            me.browser.refreshResultPreview();
+            d3.event.stopPropagation();
+        };
+        var cbAndClick = function(attrib,i){
+            me.browser.preview_not = false;
+            me.filterAttrib(attrib,"NOT");
+            this.__data__.facetDOM.tipsy.hide();
+            setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
+            d3.event.stopPropagation();
+        };
 
         var dragged;
         var line_height = this.browser.line_height;
 
-        this.dom.attribClickArea = this.dom.attribs.append("span").attr("class", "clickArea")
-            .on("click", onFilterAttrib)
-            .on("mouseenter",onMouseOver)
-            .on("mouseleave",onMouseOut)
+        var domAttribClickArea = domAttribs_new.append("span").attr("class", "clickArea")
+            .on("click", cbAttribClick)
+            .on("mouseenter",cbAttribEnter)
+            .on("mouseleave",cbAttribLeave)
+            // drag & drop control
             .attr("draggable",true)
-            .each(function(d){
-                this.addEventListener("dragstart", function( event ) {
-                    // store a ref. on the dragged elem
-                    dragged = event.target;
-                    // make it half transparent
-                    event.target.style.opacity = .5;
-                }, false);
-                this.addEventListener("dragend", function( event ) {
-                    // reset the transparency
-                    event.target.style.opacity = "";
-                }, false);
-                this.addEventListener("dragover", function( event ) {
-                    // prevent default to allow drop
-                    event.preventDefault();
-                }, false);
-                this.addEventListener("dragenter", function( event ) {
-                    // highlight potential drop target when the draggable element enters it
-                    if ( event.target.className == "clickArea" ) {
-                        event.target.style.background = "rgba(0,0,150,0.5)";
-                    }
-                }, false);
-                this.addEventListener("dragleave", function( event ) {
-                    // reset background of potential drop target when the draggable element leaves it
-                    if ( event.target.className == "clickArea" ) {
-                        event.target.style.background = "";
-                    }
-                }, false);
-                this.addEventListener("drop", function( event ) {
-                    // prevent default action (open as link for some elements)
-                    event.preventDefault();
-                    // move dragged elem to the selected drop target
-                    if ( event.target.className == "clickArea" ) {
-                        event.target.style.background = "";
-                        var item1 = dragged.__data__;
-                        var item2 = event.target.__data__;
-                        var attribs = me.getAttribs();
-                        attribs[item2.orderIndex] = item1;
-                        attribs[item1.orderIndex] = item2;
-                        var tmp = item2.orderIndex
-                        item2.orderIndex = item1.orderIndex;
-                        item1.orderIndex = tmp;
-
-                        me.dom.attribs.each(function(attrib){
-                            if(attrib.isVisible){
-                                attrib.posX = 0;
-                                attrib.posY = line_height*attrib.orderIndex;
-                                kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+attrib.posY+"px)");
-                            }
-                        });
-                    }
-                }, false);
-            })
+            .each(attribDrag)
             ;
 
-        var sasdd = this.dom.attribClickArea.append("span").attr("class","filterButtons");
+        var domClickFilterButtons = domAttribClickArea.append("span").attr("class","filterButtons");
 
-        sasdd.append("span").attr("class","orButton fa fa-plus-square")
-            .on("mouseenter",function(attrib,i){
-                var facetDOM = attrib.facetDOM;
-                facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or ...</span>";
-                facetDOM.tipsy.hide();
+        domClickFilterButtons.append("span").attr("class","orButton fa fa-plus-square")
+            .on("mouseenter",cbOrEnter)
+            .on("mouseout",cbOrLeave)
+            .on("click",cbOrClick);
 
-                attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
-                me.tipsy_active = attrib.facetDOM.tipsy;
-                attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                    (me.chartPreviewAxisScale(attrib.aggregate_Active)-me.chartPreviewAxisScale.range()[1]);
-                attrib.facetDOM.tipsy_active.show();
+        domClickFilterButtons.append("span").attr("class","notButton fa fa-minus-square")
+            .on("mouseover",cbAndEnter)
+            .on("mouseout",cbAndLeave)
+            .on("click",cbAndClick)
 
-                facetDOM.tipsy.show();
-                me.tipsy_active = facetDOM.tipsy;
-
-                if(me.attribFilter.selected_OR.length>0)
-                    me.browser.clearResultPreview();
-
-                attrib.facetDOM.setAttribute("selectType","or");
-                d3.event.stopPropagation();
-            })
-            .on("mouseout",function(attrib,i){
-                this.__data__.facetDOM.tipsy_title = undefined;
-                this.__data__.facetDOM.tipsy.hide();
-                this.__data__.facetDOM.tipsy.show();
-                me.tipsy_active = this.__data__.facetDOM.tipsy;
-                attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
-                d3.event.stopPropagation();
-            })
-            .on("click",function(attrib,i){
-                me.filterAttrib(attrib,"OR");
-                this.__data__.facetDOM.tipsy.hide();
-                d3.event.stopPropagation();
-            });
-
-        sasdd.append("span").attr("class","notButton fa fa-minus-square")
-            .on("mouseover",function(attrib,i){
-                this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not ...</span>";
-                this.__data__.facetDOM.tipsy.hide();
-                this.__data__.facetDOM.tipsy.show();
-                attrib.facetDOM.setAttribute("selectType","not");
-                me.tipsy_active = this.__data__.facetDOM.tipsy;
-                me.browser.root.attr("preview-not",true);
-                me.browser.preview_not = true;
-                me.browser.refreshResultPreview();
-                d3.event.stopPropagation();
-            })
-            .on("mouseout",function(attrib,i){
-                this.__data__.facetDOM.tipsy_title = undefined;
-                this.__data__.facetDOM.tipsy.hide();
-                this.__data__.facetDOM.tipsy.show();
-                me.tipsy_active = this.__data__.facetDOM.tipsy;
-                attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
-                setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
-                me.browser.preview_not = false;
-                me.browser.refreshResultPreview();
-                d3.event.stopPropagation();
-            })
-            .on("click",function(attrib,i){
-                me.browser.preview_not = false;
-                me.filterAttrib(attrib,"NOT");
-                this.__data__.facetDOM.tipsy.hide();
-                setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
-                d3.event.stopPropagation();
-            })
-
-    	this.dom.attrLabel = this.dom.attribs.append("span").attr("class", "attribLabel hasLabelWidth");
+    	var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
 
         // These are "invisible"...
-        this.dom.filterButtons = this.dom.attrLabel.append("span").attr("class", "filterButtons");
-        this.dom.filterButtons.append("span").attr("class","orButton fa fa-plus-square");
-        this.dom.filterButtons.append("span").attr("class","notButton fa fa-minus-square");
+        var domLabelFilterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
+            domLabelFilterButtons.append("span").attr("class","orButton fa fa-plus-square");
+            domLabelFilterButtons.append("span").attr("class","notButton fa fa-minus-square");
 
-        this.dom.attrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
+        var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
-        this.dom.item_count_wrapper = this.dom.attribs.append("span").attr("class", "item_count_wrapper")
-            .style("width",(this.browser.getWidth_QueryPreview())+"px")
-        ;
-        this.dom.item_count = this.dom.item_count_wrapper.append("span").attr("class", "item_count");
-        this.dom.barGroup = this.dom.attribs.append("span").attr("class","barGroup");
-        this.dom.bars_total = this.dom.barGroup.append("span")
-            .attr("class", function(d,i){ 
+        domTheLabel.append("span").attr("class","AndOrNot");
+
+        var domItemCountWrapper = domAttribs_new.append("span")
+            .attr("class", "item_count_wrapper")
+            .style("width",(this.browser.getWidth_QueryPreview())+"px");
+
+        domItemCountWrapper.append("span").attr("class","item_count");
+        
+        var domBarGroup = domAttribs_new.append("span").attr("class","barGroup");
+        domBarGroup.append("span").attr("class", function(d,i){ 
                 return "bar total "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
             });
-    	this.dom.bars_active = this.dom.barGroup.append("span")
-    		.attr("class", function(d,i){ 
+    	domBarGroup.append("span").attr("class", function(d,i){ 
     			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
     		})
             ;
-        this.dom.bars_preview = this.dom.barGroup.append("span")
-            .attr("class", "bar preview").attr("fast",true);
-        this.dom.bars_preview_compare = this.dom.barGroup.append("span")
-            .attr("class", "bar preview_compare").attr("hidden",true);
-        this.dom.allRowBars = this.dom.attribs.selectAll('span.bar');
+        domBarGroup.append("span").attr("class", "bar preview").attr("fast",true);
+        domBarGroup.append("span").attr("class", "bar preview_compare").attr("hidden",true);
 
-        this.refreshLabelWidth();
-
-        this.updateSorting(0, true);
+        this.dom.attribs = this.dom.attribGroup.selectAll(".attrib")
+        this.dom.attribClickArea = this.dom.attribs.selectAll(".clickArea");
+        this.dom.item_count = this.dom.attribs.selectAll(".item_count_wrapper > .item_count");
+        this.dom.bars_total = this.dom.attribs.selectAll(".barGroup > .total");
+        this.dom.bars_active = this.dom.attribs.selectAll(".barGroup > .active");
+        this.dom.bars_preview = this.dom.attribs.selectAll(".barGroup > .preview");
+        this.dom.bars_preview_compare = this.dom.attribs.selectAll(".barGroup > .preview_compare");
     },
 
     /** -- */
@@ -4419,7 +4473,7 @@ kshf.Facet_Categorical.prototype = {
 
         },sortDelay);
 
-        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
+//        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
