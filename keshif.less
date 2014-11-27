@@ -44,6 +44,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_facet_group: #E9E5CB;
 @color_bar_preview: orangered;
 
+@color_query_and: #1D4870;
+@color_query_or:  #1C737A;
+@color_query_not: gray;
+
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
 
 .kshfHost{
@@ -88,6 +92,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
     display: block;
+
+    .AndOrNot{
+        color: white;
+        display: inline-block;
+        font-weight: 300;
+        font-size: 0.9em;
+        vertical-align: top;
+        border-radius: 3px;
+        padding: 0px 2px 0px 2px;
+        margin-top: 1px;
+        opacity: 0.4;
+        &.AndOrNot_And{
+            background-color: @color_query_and;
+        }
+        &.AndOrNot_Or{
+            background-color: @color_query_or;
+        }
+        &.AndOrNot_Not{
+            background-color: @color_query_not;
+        }
+    }
 
     &.layout_left > .kshfChart{
         display: block;
@@ -545,6 +570,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .attrib{
                         position: absolute;
                         white-space: nowrap;
+                        top: 0px;
                         > .clickArea{
                             display: inline-block;
                             vertical-align: top;
@@ -582,6 +608,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     padding: 1px 2px 0px 2px;
                                     margin: 0px 2px;
                                     opacity: 0.4;
+                                }
+                                .AndOrNot{
+                                    display: inline;
                                 }
                             }
                             > .filterButtons{
@@ -629,7 +658,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 display: none;
                                 margin-right: 1px;
                                 vertical-align: top;
-                                &:hover { color: #1C737A; }
+                                &:hover { color: @color_query_or; }
                             }
                             > .notButton {
                                 display: none;
@@ -654,33 +683,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         &[selected="1"]{
                             > .attribLabel > .theLabel{
-                                color: #1D4870;
+                                color: @color_query_and;
                             }
                             &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
                                     content: "And";
-                                    background-color: #1D4870;
+                                    background-color: @color_query_and;
                                 }
                             }
                         }
                         &[selected="2"]{
                             > span.attribLabel > .theLabel{
-                                color: #1C737A;
+                                color: @color_query_or;
                             }
                             &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
                                     content: "Or";
-                                    background-color: #1C737A;
+                                    background-color: @color_query_or;
                                 }
                             }
                         }
                         &[selected="-1"]{
                             .clickArea { cursor: pointer; }
                             > .attribLabel > .theLabel{
-                                color: gray;
+                                color: @color_query_not;
                                 &:before{
                                     content: "Not";
-                                    background-color: black;
+                                    background-color: @color_query_not;
                                 }
                             }
                         }
@@ -693,13 +722,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 &[selected="0"] {
                                     .clickArea { cursor: cell; }
                                     &[selecttype="and"] > .attribLabel > .theLabel{
-                                        color: #1D4870;
+                                        color: @color_query_and;
                                     }
                                     &[selecttype="or"] > .attribLabel > .theLabel{
-                                        color: #1C737A;
+                                        color: @color_query_or;
                                     }
                                     &[selecttype="not"] > .attribLabel > .theLabel{
-                                        color: gray;
+                                        color: @color_query_not;
                                     }
                                 }
                             }
@@ -1223,6 +1252,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .listItemGroup {
+            width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
             border-style: solid;
@@ -1234,37 +1264,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'height 700ms ease-in-out');
 
             > .listItem {
-                display: none;
                 opacity: 1;
                 clear: left;
                 cursor: default;
                 overflow: hidden;
-                height: auto;
                 vertical-align: top;
-                max-height: 200px;
                 border-top: double 0px gray;
                 padding-top: 2px;
                 padding-bottom: 0px;
                 position: relative;
                 .transition(~"max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease");
 
-                > .listsortcolumn{
-                    display: table-cell;
-                    vertical-align: top;
-                    cursor: cell;
-                    > .columnLabel{
-                        float: right;
-                    }
-                    > .itemRank{
-                        margin-left: 2px;
-                        margin-top: 2px;
-                        color: gray;
-                        font-size: 0.8em;
-                        font-weight: 300;
-                        float: left;
-                    }
-                    &:hover{ color: red; }
-                }
                 > .content{
                     vertical-align: top;
                     border: solid 0px lightgray;
@@ -1354,7 +1364,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     opacity: 0;
                 }
                 &[animst=visible]{
-                    display: table;
+                    display: block;
                 }
 
                 &[details=true]{
@@ -1478,9 +1488,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[displaytype="grid"] {
             > .listItemGroup {
-                display: block;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
                 > .listItem{
-                    max-height: inherit;
+                    display: block;
                     > .content{
                         display: block;
                         //width: 100%;
@@ -1496,19 +1509,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[displaytype="list"] {
             > .listItemGroup {
                 display: block;
-                table-layout: fixed;
-                width: 100%;
                 > .listItem {
-                    //display: table-row;
-                    display: block;
+                    display: flex;
                     width: 100%;
+                    max-height: 200px;
+                    > .listsortcolumn{
+                        vertical-align: top;
+                        cursor: cell;
+                        margin: 2px 0px 0px 0px;
+                        > .columnLabel{
+                            float: right;
+                        }
+                        > .itemRank{
+                            margin-left: 2px;
+                            margin-top: 2px;
+                            color: gray;
+                            font-size: 0.8em;
+                            font-weight: 300;
+                            float: left;
+                        }
+                        &:hover{ color: red; }
+                    }
                     > .itemToggleDetails{
-                        //position: absolute;
-                        //z-index: 10;
-                        display: table-cell;
+                        width: 18px;
                     }
                     > .content{
-                        display: table-cell;
+                        flex: 1;
                     }
                 }
             }
@@ -1631,6 +1657,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .summary_header{
                                 padding:1px 0px 1px 0px;
                                 font-size: 0.9em;
+                                font-weight: 700;
                                 &:after{
                                     content: ': ';
                                 }

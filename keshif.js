@@ -363,7 +363,7 @@ kshf.Util = {
             .attr("class","save_filter_as_set fa fa-save")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ return "Save filter as new row"; }
+                    gravity: 'n', title: function(){ return "Save filter as option"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -539,7 +539,8 @@ kshf.Item = function(d, idIndex){
     this.data = d;
     this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
     // Selection state
-    //  1: selected for inclusion (AND / OR query)
+    //  1: selected for inclusion (AND)
+    //  2: selected for inclusion (OR)
     // -1: selected for removal (NOT query)
     //  0: not selected
 	this.selected = 0;
@@ -1729,7 +1730,6 @@ kshf.List.prototype = {
     /** Updates visibility of list items */
     updateItemVisibility: function(showMoreOnly){
         var me = this;
-        var showType=this.displayType==='list'?"block":"inline-block";
         var visibleItemCount=0;
 
         this.dom.listItems.each(function(item){
@@ -1743,7 +1743,7 @@ kshf.List.prototype = {
             }
 
             if(showMoreOnly){
-                this.style.display = isVisible?showType:'none';
+                this.style.display = isVisible?'':'none';
                 this.setAttribute("animSt","visible");
                 return;
             }
@@ -1757,9 +1757,9 @@ kshf.List.prototype = {
                 if(isInViewBefore){
                     // "in view" now, "in view" before
                     this.setAttribute("animSt","visible");
-                    this.style.display = isVisible?showType:'none';
+                    this.style.display = isVisible?'':'none';
                 } else {
-                    this.style.display = showType;
+                    this.style.display = '';
                     domItem.setAttribute("animSt","closed"); // start from closed state
                     // "in view" now, but not "in view" before
                     setTimeout(function(){ domItem.setAttribute("animSt","open") },500);
@@ -1775,7 +1775,7 @@ kshf.List.prototype = {
                 } else {
                     // not "in view" now or before
                     this.setAttribute("animSt","visible");
-                    this.style.display = isVisible?showType:'none';
+                    this.style.display = isVisible?'':'none';
                 }
             }
         });
@@ -3305,6 +3305,10 @@ kshf.Facet_Categorical.prototype = {
                     return " <i class='fa fa-hand-o-right'></i>";;
                 }
 
+                var query_and = " <span class='AndOrNot AndOrNot_And'>And</span> ";
+                var query_or = " <span class='AndOrNot AndOrNot_Or'>Or</span> ";
+                var query_not = " <span class='AndOrNot AndOrNot_Not'>Not</span> ";
+
                 if(totalSelectionCount>4 || this.linkFilterSummary){
                     selectedItemsText = "<b>"+totalSelectionCount+"</b> selected";// +me.getGroupText()
                     // Note: Using "selected" because selections can include not, etc (a variety of things)
@@ -3316,13 +3320,13 @@ kshf.Facet_Categorical.prototype = {
                         
                         // X and Y and ....
                         me.attribFilter.selected_AND.forEach(function(attrib,i){
-                            selectedItemsText+=((i!==0)?" and ":"")+"<b>"+catLabelText(attrib)+"</b>";
+                            selectedItemsText+=((i!==0)?query_and:"")+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
                             selectedItemsCount++;
                         });
 
                         // X or Y or ....
                         me.attribFilter.selected_OR.forEach(function(attrib,i){
-                            selectedItemsText+=((i!==0 || selectedItemsCount>0)?" or ":"")+"<b>"+catLabelText(attrib)+"</b>";
+                            selectedItemsText+=((i!==0 || selectedItemsCount>0)?query_or:"")+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
                             selectedItemsCount++;
                         });
 
@@ -3330,7 +3334,7 @@ kshf.Facet_Categorical.prototype = {
                     }
 
                     me.attribFilter.selected_NOT.forEach(function(attrib,i){
-                        selectedItemsText+=((selectedItemsCount!==0)?" and ":"")+"not <b>"+catLabelText(attrib)+"</b>";
+                        selectedItemsText+=((selectedItemsCount!==0)?query_and:"")+query_not+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
                         selectedItemsCount++;
                     });
                 }
@@ -3596,7 +3600,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.barChartPreviewAxis = this.dom.belowAttribs.append("div").attr("class", "barChartPreviewAxis");
 
         // this helps us makes sure that the div height is correctly set to visible number of rows
-        //this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","filler");
+        this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","filler");
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -4329,8 +4333,6 @@ kshf.Facet_Categorical.prototype = {
 
         var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
-        domTheLabel.append("span").attr("class","AndOrNot");
-
         var domItemCountWrapper = domAttribs_new.append("span")
             .attr("class", "item_count_wrapper")
             .style("width",(this.browser.getWidth_QueryPreview())+"px");
@@ -4473,7 +4475,7 @@ kshf.Facet_Categorical.prototype = {
 
         },sortDelay);
 
-//        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted

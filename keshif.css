@@ -88,6 +88,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-rendering: optimizeLegibility;
   display: block;
 }
+.kshf .AndOrNot {
+  color: white;
+  display: inline-block;
+  font-weight: 300;
+  font-size: 0.9em;
+  vertical-align: top;
+  border-radius: 3px;
+  padding: 0px 2px 0px 2px;
+  margin-top: 1px;
+  opacity: 0.4;
+}
+.kshf .AndOrNot.AndOrNot_And {
+  background-color: #1d4870;
+}
+.kshf .AndOrNot.AndOrNot_Or {
+  background-color: #1c737a;
+}
+.kshf .AndOrNot.AndOrNot_Not {
+  background-color: #808080;
+}
 .kshf.layout_left > .kshfChart {
   display: block;
 }
@@ -561,6 +581,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   position: absolute;
   white-space: nowrap;
+  top: 0px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea {
   display: inline-block;
@@ -595,6 +616,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 1px 2px 0px 2px;
   margin: 0px 2px;
   opacity: 0.4;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .theLabel .AndOrNot {
+  display: inline;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .filterButtons {
   opacity: 0;
@@ -639,7 +663,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:hover {
-  color: #1C737A;
+  color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
   display: none;
@@ -658,28 +682,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"] > .attribLabel > .theLabel {
-  color: #1D4870;
+  color: #1d4870;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"][show-box=true] > .attribLabel > .theLabel:before {
   content: "And";
-  background-color: #1D4870;
+  background-color: #1d4870;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"] > span.attribLabel > .theLabel {
-  color: #1C737A;
+  color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"][show-box=true] > .attribLabel > .theLabel:before {
   content: "Or";
-  background-color: #1C737A;
+  background-color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .clickArea {
   cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel {
-  color: gray;
+  color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel:before {
   content: "Not";
-  background-color: black;
+  background-color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected] > .attribLabel > .theLabel {
   font-weight: 700 !important;
@@ -688,13 +712,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: cell;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="and"] > .attribLabel > .theLabel {
-  color: #1D4870;
+  color: #1d4870;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="or"] > .attribLabel > .theLabel {
-  color: #1C737A;
+  color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=selected][selected="0"][selecttype="not"] > .attribLabel > .theLabel {
-  color: gray;
+  color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=true] > .attribLabel > .theLabel {
   color: #ff6a33;
@@ -1203,6 +1227,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: gray;
 }
 .kshf.listDiv > .listItemGroup {
+  width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   border-style: solid;
@@ -1215,14 +1240,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: height 700ms ease-in-out;
 }
 .kshf.listDiv > .listItemGroup > .listItem {
-  display: none;
   opacity: 1;
   clear: left;
   cursor: default;
   overflow: hidden;
-  height: auto;
   vertical-align: top;
-  max-height: 200px;
   border-top: double 0px gray;
   padding-top: 2px;
   padding-bottom: 0px;
@@ -1231,25 +1253,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
   transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-}
-.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn {
-  display: table-cell;
-  vertical-align: top;
-  cursor: cell;
-}
-.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
-  float: right;
-}
-.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn > .itemRank {
-  margin-left: 2px;
-  margin-top: 2px;
-  color: gray;
-  font-size: 0.8em;
-  font-weight: 300;
-  float: left;
-}
-.kshf.listDiv > .listItemGroup > .listItem > .listsortcolumn:hover {
-  color: red;
 }
 .kshf.listDiv > .listItemGroup > .listItem > .content {
   vertical-align: top;
@@ -1343,7 +1346,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
 }
 .kshf.listDiv > .listItemGroup > .listItem[animst=visible] {
-  display: table;
+  display: block;
 }
 .kshf.listDiv > .listItemGroup > .listItem[details=true] {
   max-height: none;
@@ -1466,10 +1469,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0px;
 }
 .kshf.listDiv[displaytype="grid"] > .listItemGroup {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 .kshf.listDiv[displaytype="grid"] > .listItemGroup > .listItem {
-  max-height: inherit;
+  display: block;
 }
 .kshf.listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content {
   display: block;
@@ -1481,18 +1487,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf.listDiv[displaytype="list"] > .listItemGroup {
   display: block;
-  table-layout: fixed;
-  width: 100%;
 }
 .kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem {
-  display: block;
+  display: flex;
   width: 100%;
+  max-height: 200px;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn {
+  vertical-align: top;
+  cursor: cell;
+  margin: 2px 0px 0px 0px;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
+  float: right;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .itemRank {
+  margin-left: 2px;
+  margin-top: 2px;
+  color: gray;
+  font-size: 0.8em;
+  font-weight: 300;
+  float: left;
+}
+.kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn:hover {
+  color: red;
 }
 .kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
-  display: table-cell;
+  width: 18px;
 }
 .kshf.listDiv[displaytype="list"] > .listItemGroup > .listItem > .content {
-  display: table-cell;
+  flex: 1;
 }
 .kshf .scrollToTop {
   display: inline-block;
@@ -1614,6 +1638,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header {
   padding: 1px 0px 1px 0px;
   font-size: 0.9em;
+  font-weight: 700;
 }
 .kshf div.listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header:after {
   content: ': ';
