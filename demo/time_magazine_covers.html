@@ -12,9 +12,22 @@
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript">
+
+var cols;
+var timeFormat = d3.time.format("%B %d, %Y");
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-110);
+}
+
 google.setOnLoadCallback(function(){
-  var cols;
-  var timeFormat = d3.time.format("%B %d, %Y");
+  resizeBrowser();
+  $(window).resize(function() {
+      resizeBrowser();
+      browser.updateLayout();
+  });
+
   browser = new kshf.Browser({
     domID: "#chart_div",
     barChartWidth: 90,
@@ -119,7 +132,7 @@ google.setOnLoadCallback(function(){
   position: relative;
 }
 .listItem{
-  width: 20%;
+  max-width: 150px;
   overflow: visible !important;
 }
 .content img.thumbImg{

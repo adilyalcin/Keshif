@@ -16,7 +16,7 @@
 // Data from:
 // https://github.com/zgrossbart/hborecycling/blob/master/data.json
 
-var DATA = {
+var HBO_data = {
     "Aidan Gillen": [
         "Game of Thrones",
         "The Wire"
@@ -312,7 +312,7 @@ google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 90,
-        leftPanelLabelWidth: 150,
+        leftPanelLabelWidth: 200,
         itemName: "Actors",
         source: {
             url: "http://grantland.com/features/the-hbo-recycling-program/",
@@ -325,8 +325,8 @@ google.setOnLoadCallback(function(){
                 kshf.dt_id.Actors = {};
 
                 var uniqueID=0;
-                for(var actorName in DATA){
-                    var kshfItem = new kshf.Item( {'Name':actorName, "HBO Shows":DATA[actorName]},'Name');
+                for(var actorName in HBO_data){
+                    var kshfItem = new kshf.Item( {'Name':actorName, "HBO Shows":HBO_data[actorName]},'Name');
                     kshf.dt.Actors.push(kshfItem);
                 }
 
@@ -343,7 +343,7 @@ google.setOnLoadCallback(function(){
             {   facetTitle: "HBO Shows" }
         ],
         itemDisplay: {
-            sortColWidth: 45,
+            sortColWidth: 65,
             autoExpandMore: true,
             sortingOpts : [ {
                 name: '# of Shows',
@@ -361,7 +361,7 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
             #chart_div {
-                width: 570px;
+                width: 820px;
                 height: 600px;
             }
             .mainTextSearch input{

@@ -97,7 +97,7 @@ $(document).ready(function() {
                 description: "Which of the following best describes your area of interest?",
                 catItemMap: function(d){
                     var r=[];
-                    if(d.data[8]!==null) r.push(d.data[8]);
+                    if(d.data[8]!==null && d.data[9]===null && d.data[10]===null) r.push(d.data[8]);
                     if(d.data[9]!==null) r.push("Other NaturalSci.: "+d.data[9]);
                     if(d.data[10]!==null) r.push("Other SocialSci.: "+d.data[10]);
                     return r;
@@ -129,7 +129,7 @@ $(document).ready(function() {
                 description: "Which category best describes your industry?",
                 catItemMap: function(d){
                     var r=[];
-                    if(d.data[20]!==null) r.push(d.data[20]);
+                    if(d.data[20]!==null && d.data[21]===null) r.push(d.data[20]);
                     if(d.data[21]!==null) r.push("Other: "+d.data[21]);
                     return r;
                 }
@@ -138,7 +138,7 @@ $(document).ready(function() {
                 description: "Which job title best applies to you?",
                 catItemMap: function(d){
                     var r=[];
-                    if(d.data[22]!==null) r.push(d.data[22]);
+                    if(d.data[22]!==null && d.data[23]===null) r.push(d.data[22]);
                     if(d.data[23]!==null) r.push("Other: "+d.data[23]);
                     return r;
                 }

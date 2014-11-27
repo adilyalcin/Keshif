@@ -13,13 +13,19 @@
 
         <script type="text/javascript">
 
-$(document).ready( function(){
-    // set div height accordingly 
-    var targetWidth = Math.max(1050,$(window).width()-100);
-//    targetWidth = targetWidth-targetWidth%104-85;
-    $('#chart_div').width (targetWidth);
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-80);
+}
 
-    new kshf.Browser({
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
         domID : "#chart_div",
         itemName: "Wedding Venues",
         categoryTextWidth: 220,
@@ -136,15 +142,6 @@ $(document).ready( function(){
     });
 });
         </script>
-        <style>
-            #chart_div {
-                height: 700px;
-            }
-            .listItem{
-                vertical-align: top;
-                height: 70px;
-            }
-        </style>
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

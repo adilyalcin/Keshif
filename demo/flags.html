@@ -106,8 +106,17 @@ var flag_cols = {
     Text:30
 };
 
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-30);
+}
 
-$(document).ready( function() {
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 
     logIf.Check = logIf.All();
 
@@ -231,7 +240,7 @@ $(document).ready( function() {
             detailsToggle : "Multi",
             detailsDefault : false,
             displayType: 'grid',
-            maxVisibleItems_Default: 24,
+            maxVisibleItems_Default: 50,
             contentFunc : function(d){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
@@ -243,21 +252,13 @@ $(document).ready( function() {
 });
         </script>
         <style>
-            #chart_div {
-                width:1100px;
-                height:700px;
-            }
             .listItem{
-                max-height: 230px !important;
-                vertical-align: middle;
+                width: 120px;
+                padding: 3px;
             }
             .iteminfo a{
                 color:#606060;
                 font-style:italic;
-            }
-            div.content{
-                width: 123px;
-                margin: 0px 4px 5px 4px;
             }
             div.content img{
                 display: block;

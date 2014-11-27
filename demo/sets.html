@@ -92,6 +92,7 @@ var movies = {
                     if(x==="ReleaseDate") continue;
                     if(x==="AvgRating") continue;
                     if(x==="Watches") continue;
+                    if(x==="id") continue;
                     if(d.data[x]==1) r.push(x);
                 }
                 d.data.set_degree = r.length;
@@ -424,6 +425,70 @@ var senate = {
 };
 
 
+var sharks = {
+    domID: "#chart_div",
+    leftPanelLabelWidth: 140,
+    itemName: "Chemicals",
+    source:{ 
+        callback: function(browser){
+            browser.primaryTableName = "Chemicals";
+
+            kshf.dt.Chemicals = [];
+            kshf.dt_id.Chemicals = {};
+
+            $.ajax( {
+                url: theDirPath+"whaleshark_onset.csv",
+                async: false,
+                success: function(fileContent){
+                    var samples = Papa.parse(fileContent, {header:false});
+                    samples.data.forEach(function(row,rowNo){
+                        var sampleName = row[0];
+                        for(var i=1; i<row.length; i++){
+                            var chemName = row[i];
+                            var theChem = kshf.dt_id.Chemicals[chemName];
+                            if(theChem===undefined){
+                                theChem = new kshf.Item([[],chemName],1);
+                                kshf.dt_id.Chemicals[chemName] = theChem;
+                                kshf.dt.Chemicals.push(theChem);
+                            }
+                            theChem.data[0].push(sampleName);
+                        }
+                    });
+                    browser.items = kshf.dt.Chemicals;
+                    browser.itemsSelectedCt = browser.items.length;                
+
+                    // finish loading....
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 100);
+                }
+            });
+        }
+//        url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"socialgraph", id:"Name"}]
+    },
+    facets:[
+        {   facetTitle: "Sets",
+            catItemMap: function(d){
+                return d.data[0];
+            }
+        },{ facetTitle: "Degree of Sets",
+            catItemMap: function(d){
+                return d.data[0].length;
+            },
+            type: 'interval', intervalScale: 'log'
+        }
+    ],
+    itemDisplay: {
+        sortColWidth: 55,
+        sortingOpts : [ {name: '-'} ],
+        autoExpandMore: true,
+        contentFunc: function(d){
+            return d.data[1];
+        }
+    }
+};
+
+
 
 
 google.setOnLoadCallback(function(){
@@ -441,6 +506,7 @@ google.setOnLoadCallback(function(){
             case 10: browser = new kshf.Browser(socialgraph); return;
             case 11: browser = new kshf.Browser(movies_radialset); return;
             case 12: browser = new kshf.Browser(senate); return;
+            case 13: browser = new kshf.Browser(sharks); return;
         }
     });
     
@@ -472,6 +538,7 @@ google.setOnLoadCallback(function(){
             <option value="9">Social Graph (7 sets, 2 attributes)</option>
             <option value="10">Movies (From Radial Sets project)</option>
             <option value="11">Senate Votings (From OnSet project)</option>
+            <option value="12">Shark Test (Onset)</option>
             </select></div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>

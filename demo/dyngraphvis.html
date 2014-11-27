@@ -16,9 +16,17 @@
 
         <script type="text/javascript">
 
-$(document).ready( function(){
+function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-50);
+    $('#chart_div').height($(window).height()-120);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
@@ -68,13 +76,6 @@ $(document).ready( function(){
                                         case 'evaluation': entryData.Evaluations.push(keyword[1]); break;
                                     }
                                 });
-/*
-                                'paradigm'
-                                'evaluation'
-                                'time'
-                                'type'
-                                'category'
-                                'application'*/
                             }
                             
                             if(entry.Fields.journal)
@@ -143,14 +144,8 @@ $(document).ready( function(){
 });
         </script>
 <style>
-    #chart_div {
-        width: 90%;
-        height: 90px;
-        width: calc(100% - 100px);
-        height: calc(100% - 100px);
-    }
     .listItem{
-        width: 20%;
+        width: 150px;
     }
     .content{
         padding: 3px;
@@ -158,48 +153,6 @@ $(document).ready( function(){
     .thumbnail{
         height: 105px;
     }
-    /*
-
-    div.listItem {
-        max-height: 230px !important;
-        vertical-align: top;
-    }
-    div.content{
-        width: 100px;
-        margin-bottom: 5px;
-    }
-    div.content a{
-        vertical-align: top;
-        color: #496B86;
-    }
-    div.content img{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 3px;
-        border: solid;
-        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-        border-width: 1px 2px 2px 1px;
-        border-radius: 10px;
-        background-color: white;
-        max-width: 90px;
-        transition: background-color 300ms linear;
-        -webkit-transition: background-color 300ms linear;
-        -o-transition: background-color 300ms linear;
-        -moz-transition: background-color 300ms linear;
-    }
-    div.listItem[highlight=true] div.content img{
-        background-color: orangered;
-    }
-    div.content span.title{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: center;
-        font-size: 0.8em;
-    }*/
-
 </style>
     </head>
     <body>

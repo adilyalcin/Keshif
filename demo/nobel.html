@@ -60,7 +60,16 @@ $(document).ready( function(){
                 catItemMap : function(prize){ 
                     var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
                     return laureate.data[lautCols.name];
-                }
+                },
+                facets:[
+                    {
+                        facetTitle:"# of Winners",
+                        catItemMap: function(d){
+                            return d.items.length;
+                        },
+                        type: 'interval', intervalScale: 'log'
+                    }
+                ]
             }, {
                 facetTitle: "Gender",
                 layout: 'right',
@@ -89,13 +98,13 @@ $(document).ready( function(){
             textSearch : "names",
             textSearchFunc : function (d) {
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
-                return laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
+                return laureate.data[lautCols.firstname] + " " + (laureate.data[lautCols.surname] || "");
             },
             contentFunc : function(d) {
                 var j;
                 var str="";
                 var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
-                var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
+                var surname_short = (laureate.data[lautCols.surname]||"").toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
 
                 if(laureate.data[lautCols.gender]!==3){
@@ -106,7 +115,7 @@ $(document).ready( function(){
 
                 // description
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=laureate.data[lautCols.firstname] + " " + laureate.data[lautCols.surname];
+                str+=laureate.data[lautCols.firstname] + " " + (laureate.data[lautCols.surname]||"");
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";

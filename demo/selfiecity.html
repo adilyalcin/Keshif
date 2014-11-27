@@ -18,7 +18,18 @@
 
 var selfieCols;
 
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-130);
+}
+
 $(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function(){
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 150,
@@ -135,11 +146,15 @@ $(document).ready( function(){
 });
         </script>
 <style>
-    #chart_div{
-        width:calc(100% - 100px);
-        height:670px;
+    .listItemGroup{
+        background-color: black !important;
     }
-    
+    .listItem{
+        width: 70px;
+        padding-top: 0px !important;
+        background-color: black !important;
+        overflow: visible !important;
+    }
     .listItem[highlight=true]{
         background-color: orangered !important;
     }
@@ -155,17 +170,6 @@ $(document).ready( function(){
     }
     .listItem > .itemRow{
         display: block !important;
-        overflow: visible !important;
-    }
-    .content{
-        width: 100%;
-        margin-bottom: 5px;
-        position: relative;
-    }
-    .listItem{
-        width: 12.5% !important;
-        padding-top: 0px !important;
-        background-color: black !important;
         overflow: visible !important;
     }
     .content img{

@@ -15,8 +15,18 @@
 
         <script type="text/javascript">
 
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-150);
+}
+
 $(document).ready( function(){
-    new kshf.Browser({
+    resizeBrowser();
+    $(window).resize(function(){
+        resizeBrowser();
+        browser.updateLayout();
+    });
+    browser = new kshf.Browser({
         domID : "#chart_div",
         itemName: "HTML5 Rocks Tutorials",
         categoryTextWidth: 120,
@@ -93,17 +103,10 @@ $(document).ready( function(){
         </script>
         <style>
             .listItem {
-                vertical-align: top;
-                border: solid 1px gray !important;
+                width: 200px;
                 margin: 3px;
-                min-height: 90px;
-            }
-            #chart_div {
-                width: 1090px;
-                height: 750px;
             }
             .content {
-                width: 180px;
                 text-align: right;
                 padding-right: 3px;
                 font-size: 0.9em;

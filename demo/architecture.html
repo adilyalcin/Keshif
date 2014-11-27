@@ -15,7 +15,17 @@
 
         <script type="text/javascript">
 
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-30);
+}
+
 $(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 150,
@@ -94,18 +104,19 @@ $(document).ready( function(){
 });
         </script>
 <style>
-    #chart_div{
-        width:1000px;
-        height:700px;
-    }
     .listItem{
-        width: 25%;
+        width: 100px;
     }
     .content{
         padding: 3px;
     }
     span.thumbnail{
         height: 75px;
+    }
+    .thumbImg{
+        position: absolute;
+        bottom: 0px;
+        left: 5%;
     }
 </style>
     </head>

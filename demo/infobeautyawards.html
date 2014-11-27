@@ -14,77 +14,85 @@
 
         <script type="text/javascript">
 
-        var demoID = 45;
-        var cols=null;
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    leftPanelLabelWidth: 130,
-                    rightPanelLabelWidth: 90,
-                    source: {
-                        url: "http://www.informationisbeautifulawards.com/",
-                        gdocId : '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
-                        sheets : [ {name:"Showcases"} ]
-                    },
-                    loadedCb: function(){
-                        cols = kshf.dt_ColNames.Showcases;
-                        kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Categories], /\*/, false);
-                        kshf.Util.cellToArray(kshf.dt.Showcases, [cols.RelatedTo], /\*/, true);
-                        kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Credits], ", ", false);
-                        kshf.dt.Showcases.forEach(function(d){
-                            var t=d.data[cols.Title];
-                            var i=t.indexOf(" by ");
-                            if(i>0)
-                                d.data[cols.Title] = t.substr(0,i);
-                        });
-                    },
-                    facets: [
-                        {   facetTitle: "Categories"
-                        },{ facetTitle: "Year",
-                            catItemMap: function(d){
-                                return d.data[cols.Award];
-                            },
-                            intervalScale: 'step'
-//                        },{ facetTitle: "RelatedTo"
-                        },{ facetTitle: "Credits", collapsed: true
-                        }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 45,
-                        displayType: 'grid',
-                        autoExpandMore: true,
-//                        detailsToggle : "Zoom",
-                        sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
-                        textSearch : 'Title',
-                        contentFunc: function(d){ 
-                            var str='';
-                            str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
-                            str+="<span class='subTitle'>"+d.data[cols.Credits]+"</span>";
-                            str+="<span class='title'>"+d.data[cols.Title]+"</span>";
-                            return str;
-                        },
-                        visibleCb: function(d){
-                            d3.select(this).select("img").attr("src",d.data[cols.Thumbnail]);
-                        }
-                    }
-                });
+var demoID = 45;
+var cols=null;
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-120);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 130,
+        rightPanelLabelWidth: 90,
+        source: {
+            url: "http://www.informationisbeautifulawards.com/",
+            gdocId : '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
+            sheets : [ {name:"Showcases"} ]
+        },
+        loadedCb: function(){
+            cols = kshf.dt_ColNames.Showcases;
+            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Categories], /\*/, false);
+            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.RelatedTo], /\*/, true);
+            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Credits], ", ", false);
+            kshf.dt.Showcases.forEach(function(d){
+                var t=d.data[cols.Title];
+                var i=t.indexOf(" by ");
+                if(i>0)
+                    d.data[cols.Title] = t.substr(0,i);
             });
+        },
+        facets: [
+            {   facetTitle: "Categories"
+            },{ facetTitle: "Year",
+                catItemMap: function(d){
+                    return d.data[cols.Award];
+                },
+                intervalScale: 'step'
+//                        },{ facetTitle: "RelatedTo"
+            },{ facetTitle: "Credits", collapsed: true
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            displayType: 'grid',
+            autoExpandMore: true,
+//                        detailsToggle : "Zoom",
+            sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
+            textSearch : 'Title',
+            contentFunc: function(d){ 
+                var str='';
+                str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
+                str+="<span class='subTitle'>"+d.data[cols.Credits]+"</span>";
+                str+="<span class='title'>"+d.data[cols.Title]+"</span>";
+                return str;
+            },
+            visibleCb: function(d){
+                d3.select(this).select("img").attr("src",d.data[cols.Thumbnail]);
+            }
+        }
+    });
+});
         </script>
         <style>
-            #chart_div {
-                width: 90%;
-                height: 650px;
-            }
-            .listItem{
-                width: 16.666%;
-            }
-            .content{
-                padding: 3px;
-            }
-            .content .thumbnail{
-                height: 95px;
-            }
+.listItem{
+    width: 150px;
+}
+.content{
+    padding: 3px;
+}
+.content .thumbnail{
+    height: 95px;
+}
         </style>
     </head>
     <body>

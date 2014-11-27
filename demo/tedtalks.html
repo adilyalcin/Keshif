@@ -44,9 +44,17 @@ var getData = function(){
     console.log(logStr);    
 };
 
-google.setOnLoadCallback(function(){
+function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-20);
+    $('#chart_div').height($(window).height()-80);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -109,7 +117,7 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
 .listItem{
-    width: 12.5%;
+    max-width: 150px;
 }
 .content{
     padding: 3px;

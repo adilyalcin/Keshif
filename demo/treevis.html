@@ -16,9 +16,17 @@
 
         <script type="text/javascript">
 
-$(document).ready( function(){
+function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-60);
+    $('#chart_div').height($(window).height()-100);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
@@ -126,14 +134,8 @@ $(document).ready( function(){
 });
         </script>
 <style>
-    #chart_div {
-        width: 90%;
-        height: 90px;
-        width: calc(100% - 100px);
-        height: calc(100% - 100px);
-    }
     .listItem{
-        width: 12.5%;
+        width: 150px;
     }
     .content{
         padding: 3px;

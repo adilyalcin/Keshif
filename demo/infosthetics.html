@@ -25,6 +25,8 @@ function getAuthorName(d){
 };
 
 $(document).ready( function(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-50);
 
     logIf.Check = logIf.All();
     
@@ -96,11 +98,12 @@ $(document).ready( function(){
                 d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
             },*/
             displayType: 'grid',
-            maxVisibleItems_Default: 15,
+            maxVisibleItems_Default: 50,
             detailsToggle : "zoom",
+            autoExpandMore: true,
             contentFunc: function(d){
                 return "<a target='_blank' href='"+d.data[postCols['URL']]+
-                    "'><img><span class='title'>"+d.data[postCols['Title']]+"</span></a>";
+                    "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data[postCols['Title']]+"</span></a>";
             },
             visibleCb: function(d){
                 d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
@@ -114,13 +117,11 @@ $(document).ready( function(){
     width: 900px;
     height: 600px;
 }
-div.listItem {
-    max-height: 230px !important;
-    vertical-align: top;
+.listItem{
+    width: 20%;
 }
-div.content{
-    width: 140px;
-    margin-bottom: 5px;
+.content{
+    padding: 3px;
 }
 div.content a{
     vertical-align: top;
