@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Performance Visualization Techniques</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-120);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 250,
+        itemName: "Performance Visualization Techniques",
+        source : {
+            url: "http://idav.ucdavis.edu/~ki/STAR/",
+            callback: function(browser){
+                browser.primaryTableName = "Visualizations";
+
+                kshf.dt.Visualizations = [];
+                kshf.dt_id.Visualizations = {};
+
+                $.ajax( {
+                    url: "./data/perfviz.bib",
+                    async: false,
+                    success: function(bibdata){
+                        var entries = BibtexParser(bibdata);
+
+                        entries.entries.forEach(function(entry){
+                            var entryData = {};
+
+                            entryData.Key = entry.EntryKey;
+                            entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
+                            entryData.Type = entry.EntryType;
+                            entryData.Authors = [];
+                            if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+                            entryData.Title = entry.Fields.title;
+                            entryData.Year = entry.Fields.year;
+                            if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
+
+                            if(entry.Fields.journal)
+                                entryData.Journal = entry.Fields.journal;
+                            else if(entry.Fields.booktitle)
+                                entryData.Journal = entry.Fields.booktitle;
+
+                            var kshfItem = new kshf.Item(entryData,'Key');
+                            kshf.dt.Visualizations.push(kshfItem);
+                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+                        });
+                        // there will be some entries.errors, for incorrect entry types (like online)
+
+                        browser.items = kshf.dt.Visualizations;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Type", collapsed: true
+            },{
+                facetTitle: "Authors",
+            },{
+                facetTitle: "Journal", collapsed: false
+            },{
+                facetTitle: "Year",
+                layout: "bottom",
+                type: 'interval',
+                intervalScale: 'step'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{ name:'Year'}],
+            textSearch : "Title",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.resultDOM).select("img").attr("src",
+                    "http://idav.ucdavis.edu/~ki/data/papers_img/"+d.data.Key+".png");
+            }
+        }
+    });
+});
+        </script>
+<style>
+    .listItem{
+        width: 160px;
+    }
+    .content{
+        padding: 3px;
+    }
+    .thumbnail{
+        height: 125px;
+    }
+</style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data provided by <a href="http://idav.ucdavis.edu/~ki/STAR/" target='_blank'>State of the Art of Performance Visualization</a> survey.<br>
+            All rights for the technique images belong to their respective owners.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>

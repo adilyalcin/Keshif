@@ -1,0 +1,1872 @@
+@inproceedings{Adamoli2010Trevis,
+  abstract = {When developers profile their applications to identify performance problems, they normally use profilers producing calling context trees. A calling context tree (CCT) represents the caller-callee relationships of a program. A dynamically collected CCT provides method coverage information. The CCTs produced by profilers also include method hot- ness information. Trevis, our context tree visualization and analysis framework, allows users to visualize, compare, cluster, and intersect CCTs produced by profilers. We evaluate Trevis in the context of a novel profiling tool called FlyBy. FlyBy runs transparently on an end-user’s computer and continuously samples the applications’ call stack. When the user perceives the application as sluggish, she presses a “Was Slow!” button to tell FlyBy to file a performance failure re- port. The report contains the CCT based on the call stack samples FlyBy gathered over the last few seconds before the user pressed the button. We show how Trevis allows us to visualize and classify FlyBy bug reports.},
+  acmid = {1879224},
+  address = {New York, NY, USA},
+  author = {Adamoli, Andrea and Hauswirth, Matthias},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879224},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research, name:Trevis, context:software, subcontext:callgraph, sunburst, radial, ensemble, clustering},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {73--82},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Trevis: A Context Tree Visualization \& Analysis Framework and Its Use for Classifying Performance Failure Reports},
+  year = {2010}
+}
+
+@article{Adhianto2010HPCToolkit,
+  abstract = {HPCTOOLKIT is an integrated suite of tools that supports measurement, analysis, attribution, and presentation of application performance for both sequential and parallel programs. HPCTOOLKIT can pinpoint and quantify scalability bottlenecks in fully optimized parallel programs with a measurement overhead of only a few percent. Recently, new capabilities were added to HPCTOOLKIT for collecting call path profiles for fully optimized codes without any compiler support, pinpointing and quantifying bottlenecks in multithreaded programs, exploring performance information and source code using a new user interface, and displaying hierarchical space-time diagrams based on traces of asynchronous call path samples. This paper provides an overview of HPCTOOLKIT and illustrates its utility for performance analysis of parallel applications.},
+  author = {Adhianto, L. and Banerjee, S. and Fagan, M. and Krentel, M. and Marin, G. and Mellor-Crummey, J. and Tallent, N. R.},
+  doi = {10.1002/cpe.1553},
+  issn = {1532-0634},
+  journal = {Concurrency and Computation: Practice and Experience},
+  keywords = {type:research,name:HPCToolkit, context:software, context:tasks, subcontext:callgraph, subcontext:trace, indented tree, timelines, parallel scale:10K},
+  number = {6},
+  pages = {685--701},
+  publisher = {John Wiley \& Sons, Ltd.},
+  title = {HPCTOOLKIT: tools for performance analysis of optimized parallel programs},
+  volume = {22},
+  year = {2010}
+}
+
+@inproceedings{Aftandilian2010,
+  abstract = {Understanding the data structures in a program is crucial to understanding how the program works, or why it doesn’t work. Inspecting the code that implements the data structures, however, is an arduous task and often fails to yield insights into the global organization of a program’s data. Inspecting the actual contents of the heap solves these problems but presents a significant challenge of its own: finding an effective way to present the enormous number of objects it contains. In this paper we present Heapviz, a tool for visualizing and exploring snapshots of the heap obtained from a running Java program. Unlike existing tools, such as traditional debuggers, Heapviz presents a global view of the program state as a graph, together with powerful interactive capabilities for navigating it. Our tool employs several key techniques that help manage the scale of the data. First, we reduce the size and complexity of the graph by using algorithms inspired by static shape analysis to aggregate the nodes that make up a data structure. Second, we introduce a dominator-based layout scheme that emphasizes hierarchical containment and ownership relations. Finally, the interactive interface allows the user to expand and contract regions of the heap to mod- ulate data structure detail, inspect individual objects and field values, and search for objects based on type or connectivity. By applying Heapviz to both constructed and real-world examples, we show that Heapviz provides pro- grammers with a powerful and intuitive tool for exploring program behavior.},
+  acmid = {1879222},
+  address = {New York, NY, USA},
+  author = {Aftandilian, Edward E. and Kelley, Sean and Gramazio, Connor and Ricci, Nathan and Su, Sara L. and Guyer, Samuel Z.},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879222},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research, name:Heapviz, context:software, subcontext:data structures, debugging},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {53--62},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Heapviz: Interactive Heap Visualization for Program Understanding and Debugging},
+  year = {2010}
+}
+
+@inproceedings{Ahn2009STAT,
+  abstract = {We present a scalable temporal order analysis technique that supports debugging of large scale applications by classifying MPI tasks based on their logical program execution order. Our approach combines static analysis techniques with dynamic analysis to determine this temporal order scalably. It uses scalable stack trace analysis techniques to guide selection of critical program execution points in anomalous application runs. Our novel temporal ordering engine then leverages this information along with the application's static control structure to apply data flow analysis techniques to determine key application data such as loop control variables. We then use lightweight techniques to gather the dynamic data that determines the temporal order of the MPI tasks. Our evaluation, which extends the Stack Trace Analysis Tool (STAT), demonstrates that this temporal order analysis technique can isolate bugs in benchmark codes with injected faults as well as a real world hang case with AMG2006.},
+  acmid = {1654104},
+  address = {New York, NY, USA},
+  articleno = {44},
+  author = {Ahn, Dong H. and de Supinski, Bronis R. and Laguna, Ignacio and Lee, Gregory L. and Liblit, Ben and Miller, Barton P. and Schulz, Martin},
+  booktitle = {Proceedings of the Conference on High Performance Computing Networking, Storage and Analysis},
+  doi = {10.1145/1654059.1654104},
+  isbn = {978-1-60558-744-8},
+  keywords = {type:research, name:STAT, context:software, subcontext:callgraph, node-link, parallel scale:1M, debugging},
+  location = {Portland, Oregon},
+  numpages = {11},
+  pages = {44:1--44:11},
+  publisher = {ACM},
+  series = {SC '09},
+  title = {Scalable Temporal Order Analysis for Large Scale Debugging},
+  year = {2009}
+}
+
+@inproceedings{Alpern1990,
+  abstract = {The authors describe a conceptual model, the memory hierarchy framework, and a visual language for using the model. The model is more faithful to the structure of computers than the Von Neumann and Turing models. It addresses the issues of data movement and exposes and unifies storage mechanisms such as cache, translation lookaside buffers, main memory, and disks. The visual language presents the details of a computer's memory hierarchy in a concise drawing composed of rectangles and connecting segments. Using this framework, the authors improved the performance of a matrix multiplication algorithm by more than an order of magnitude. The framework gives insight into computer architecture and performance bottlenecks by making effective use of human visual abilities.},
+  acmid = {949548},
+  address = {Los Alamitos, CA, USA},
+  author = {Alpern, Bowen and Carter, Larry and Selker, Ted},
+  booktitle = {Proceedings of the 1st Conference on Visualization '90},
+  doi = {10.1109/VISUAL.1990.146371},
+  isbn = {0-8186-2083-8},
+  keywords = {type:research, context:hardware, subcontext:memory, nested graphs, node-link},
+  location = {San Francisco, California},
+  numpages = {7},
+  pages = {107--113},
+  publisher = {IEEE Computer Society Press},
+  series = {VIS '90},
+  title = {Visualizing Computer Memory Architectures},
+  year = {1990}
+}
+
+@INPROCEEDINGS{Beck2013,
+  ISSN = {1063-6897},
+  abstract = {Finding and fixing performance bottlenecks requires sound knowledge of the program that is to be optimized. In this paper, we propose an approach for presenting performance-related information to software engineers by visually augmenting source code shown in an editor. Small diagrams at each method declaration and method call visualize the propagation of runtime consumption through the program as well as the interplay of threads in parallelized programs. Advantages of in situ visualization like this over traditional representations, where code and profiling information are shown in different places, promise to be the prevention of a split-attention effect caused by multiple views; information is presented where required, which supports understanding and navigation. We implemented the approach as an IDE plug-in and tested it in a user study with four developers improving the performance of their own programs. The user study provides insights into the process of understanding performance bottlenecks with our approach.},
+  author = {Beck, F. and Moseler, O. and Diehl, S. and Rey, G.D.},
+  booktitle = {Program Comprehension (ICPC), 2013 IEEE 21st International Conference on},
+  doi = {10.1109/ICPC.2013.6613834},
+  keywords = {type:research,context:software, subcontext:code},
+  month = {May},
+  pages = {63-72},
+  title = {In situ understanding of performance bottlenecks through visually augmented code},
+  year = {2013}
+}
+
+@incollection{Bemmerl1992VISTOP,
+  abstract = {Parallel programming is orders of magnitudes more complex than writing sequential programs. This is particularly true for programming distributed memory multiprocessor architectures based on message passing programming models. Understanding the synchronization and communication behavior of parallel programs is one of the most critical issues in programming distributed memory multiprocessors. The paper describes methods and tools for visualization and animation of the dynamic execution of parallel programs. Based on an evaluation and classification of existing visualization environments, the visualization and animation tool VISTOP (VISualization TOol for Parallel Systems) is presented as part of the integrated tool environment TOPSYS (TOols for Parallel SYStems) for pro- gramming distributed memory multiprocessors. VISTOP supports the interactive on-line visualization of message passing programs based on various views, in particular, a process graph based concurrency view for detecting synchronization and communication bugs.},
+  author = {Bemmerl, Thomas and Braun, Peter},
+  booktitle = {Parallel Processing: CONPAR 92-VAPP V},
+  doi = {10.1007/3-540-55895-0_400},
+  editor = {Boug\'e, Luc and Cosnard, Michel and Robert, Yves and Trystram, Denis},
+  isbn = {978-3-540-55895-8},
+  keywords = {type:research,name:VISTOP, context:software, context:hardware, context:tasks, icons, indented tree, matrix, parallel scale:10},
+  pages = {79-90},
+  publisher = {Springer Berlin Heidelberg},
+  series = {Lecture Notes in Computer Science},
+  title = {Visualization of message passing parallel programs},
+  volume = {634},
+  year = {1992}
+}
+
+@inproceedings{Bernardin2008Lumiere,
+  abstract = {We present a visualization system to assist designers of scheduling-based multi-threaded out-of-core algorithms. Our system facilitates the understanding and improving of the algorithm through a stack of visual widgets that effectively correlate the out-of-core system state with scheduling decisions. The stack presents an increasing refinement in the scope of both time and abstraction level; at the top of the stack, the evolution of a derived efficiency measure is shown for the scope of the entire out-of-core system execution and at the bottom the details of a single scheduling decision are displayed. The stack provides much more than a temporal zoom-effect as each widget presents a different view of the scheduling decision data, presenting distinct aspects of the out-of-core system state as well as correlating them with the neighboring widgets in the stack. This approach allows designers to to better understand and more effectively react to problems in scheduling or algorithm design. As a case study we consider a global illumination renderer and show how visualization of the scheduling behavior has led to key improvements of the renderer’s performance.},
+  acmid = {1409746},
+  address = {New York, NY, USA},
+  author = {Bernardin, Tony and Budge, Brian C. and Hamann, Bernd},
+  booktitle = {Proceedings of the 4th ACM Symposium on Software Visualization},
+  doi = {10.1145/1409720.1409746},
+  isbn = {978-1-60558-112-5},
+  keywords = {type:research, name:Lumiere, context:software, subcontext:trace, animation, parallel scale:NR},
+  location = {Ammersee, Germany},
+  numpages = {10},
+  pages = {165--174},
+  publisher = {ACM},
+  series = {SoftVis '08},
+  title = {Stacked-widget Visualization of Scheduling-based Algorithms},
+  year = {2008}
+}
+
+@inproceedings{Bhatele2012,
+  abstract = {Performance analysis of parallel scientific codes is becoming increasingly difficult due to the rapidly growing complexity of applications and architectures. Existing tools fall short in providing intuitive views that facilitate the process of performance debugging and tuning. In this paper, we extend recent ideas of projecting and visualizing performance data for faster, more intuitive analysis of applications. We collect detailed per-level and per-phase measurements for a dynamically load-balanced, structured AMR library and project per-core data collected in the hardware domain on to the application’s communication topology. We show how our projections and visualizations lead to a rapid diagnosis of and mitigation strategy for a previously elusive scaling bottleneck in the library that is hard to detect using conventional tools. Our new insights have resulted in a 22\% performance improvement for a 65,536-core run of the AMR library on an IBM Blue Gene/P system.},
+  acmid = {2389038},
+  address = {Los Alamitos, CA, USA},
+  articleno = {31},
+  author = {Bhatele, Abhinav and Gamblin, Todd and Isaacs, Katherine E. and Gunney, Brian T. N. and Schulz, Martin and Bremer, Peer-Timo and Hamann, Bernd},
+  booktitle = {Proceedings of the International Conference on High Performance Computing, Networking, Storage and Analysis},
+  doi = {10.1109/SC.2012.80},
+  isbn = {978-1-4673-0804-5},
+  keywords = {type:research, context:tasks, subcontext:commgraph, radial tree, node-link, aggregation, parallel scale:10K},
+  location = {Salt Lake City, Utah},
+  numpages = {11},
+  pages = {31:1--31:11},
+  publisher = {IEEE Computer Society Press},
+  series = {SC '12},
+  title = {Novel Views of Performance Data to Analyze Large-scale Adaptive Applications},
+  year = {2012}
+}
+
+@inproceedings{Blochinger2005,
+  abstract = {An important task in parallel programming is the appropriate distribution of work on the processors. This distribution is usually dynamically changing and hard to predict, further it is very sensitive to the change of parameters. Even with advanced analysis tools this problem is hard to be solved. We propose to visualize the program structure as it changes over the execution time. We therefore present a new automatic layout algorithm based on Sugiyama’s framework, which enables the user to detect structural patterns which might be fatal for the performance of the program - patterns which might be impossible to detect in a more analytical way. Furthermore it assists the user to find appropriate timing parameters for load balancing. We integrate our visualization into an integrated development environment that supports the implementation, execution, and analysis of parallel programs.},
+  acmid = {1056036},
+  address = {New York, NY, USA},
+  author = {Blochinger, Wolfgang and Kaufmann, Michael and Siebenhaller, Martin},
+  booktitle = {Proceedings of the 2005 ACM Symposium on Software Visualization},
+  doi = {10.1145/1056018.1056036},
+  isbn = {1-59593-073-6},
+  keywords = {type:research,name:DOTS, context:tasks, subcontext:trace, node-link, layered-layout, threads, parallel scale:10},
+  location = {St. Louis, Missouri},
+  numpages = {10},
+  pages = {125--134},
+  publisher = {ACM},
+  series = {SoftVis '05},
+  title = {Visualizing Structural Properties of Irregular Parallel Computations},
+  year = {2005}
+}
+
+@article{Blochinger2006DOTS,
+  abstract = {This paper deals with a visualization-based approach to performance analyzing and tuning of highly irregular task-parallel applications. At its core lies a novel automatic layout algorithm for execution graphs which is based on Sugiyama's framework. Our visualization enables the application designer to reliably detect manifestations of parallel overhead and to investigate on their individual root causes. We particularly focus on structural properties of task-parallel computations which are hard to detect in a more analytical way, for example, false sharing and false parallelism. In addition, we discuss embedding our visualization into an integrated development environment, realizing a seamless work-flow for implementation, execution, analysis, and tuning of parallel progams.},
+  author = {Blochinger, Wolfgang and Kaufmann, Michael and Siebenhaller, Martin},
+  doi = {10.1057/palgrave.ivs.9500123},
+  journal = {Information Visualization},
+  keywords = {type:research,name:DOTS, context:tasks, subcontext:trace, node-link, layered-layout, threads, parallel scale:10},
+  number = {2},
+  pages = {81-94},
+  title = {Visualization Aided Performance Tuning of Irregular Task-Parallel Computations},
+  volume = {5},
+  year = {2006}
+}
+
+@INPROCEEDINGS{Bosch2000Rivet,
+  abstract = {In this paper, we present an evolving system for the analysis and visualization of parallel application per- formance on shared memory multiprocessors. Our system couples SimOS, a complete machine simulator, with Rivet, a powerful visualization environment. This system demonstrates how visualization is necessary to realize the full power of simulation for performance analysis. We identify several features required of the visualization system, including flexibility, exploratory interaction techniques, and data aggregation schemes. We demonstrate the effectiveness of this parallel analysis and visualization system with a case study. We developed two visualizations within Rivet to study the Argus parallel rendering library, focusing on the memory system and process scheduling activity of Argus respectively. Using these visualizations, we uncovered several unexpected interactions between Argus and the underlying operating system. The results of the analysis led to changes that greatly improved its performance and scalability. Argus had previously been unable to scale beyond 26 processors; after analysis and modification, it achieved linear speedup up to 45 processors.},
+  author = {Bosch, R. and Stolte, C. and Stoll, G. and Rosenblum, M. and Hanrahan, P.},
+  booktitle = {High-Performance Computer Architecture, 2000. HPCA-6. Proceedings. Sixth International Symposium on},
+  doi = {10.1109/HPCA.2000.824365},
+  keywords = {type:research,name:Rivet, visualization toolkit, context:software, context:tasks, code, timelines, small multiples, parallel scale:10},
+  pages = {360-371},
+  title = {Performance analysis and visualization of parallel systems using SimOS and Rivet: a case study},
+  year = {2000}
+}
+
+@book{Bosch2001Thesis,
+  author = {Bosch, R.P. and Stanford University. Computer Science Dept},
+  keywords = {type:thesis, name:Rivet, visualization toolkit, name:SUIF Explorer, context:software, code, name:Thor, context:hardware, subcontext:memory, bar charts, stacked bar charts, name:PipeCleaner, timelines, animation, name:The Visual Computer, space-filling, indented tree, visual analytics, time series, context:tasks, subcontext:trace, parallel scale:10},
+  publisher = {Stanford University},
+  title = {Using visualization to understand the behavior of computer systems},
+  year = {2001}
+}
+
+@incollection{Brunst2010Vampir,
+  abstract = {Vampir 7 is a performance visualization tool that provides a comprehensive view on the runtime behavior of parallel programs. It is a new member of the Vampir tool family. This new generation of performance visualizer combines state-of-the-art parallel data processing techniques with an all-new graphical user interface experience. This includes fast local and remote event data browsing, searching, filtering, clustering, and summarization. The software is ported to Unix, Windows, and Apple platforms. This article gives an overview of the novel techniques and features of Vampir 7.},
+  author = {Brunst, Holger and Hackenberg, Daniel and Juckeland, Guido and Rohling, Heide},
+  booktitle = {Tools for High Performance Computing 2009},
+  doi = {10.1007/978-3-642-11261-4_2},
+  editor = {M\"uller, Matthias S. and Resch, Michael M. and Schulz, Alexander and Nagel, Wolfgang E.},
+  isbn = {978-3-642-11260-7},
+  keywords = {type:research,name:Vampir, context:tasks, subcontext:trace, clustering, Gantt, timelines},
+  pages = {17-29},
+  publisher = {Springer Berlin Heidelberg},
+  title = {Comprehensive Performance Tracking with {Vampir 7}},
+  url = {http://dx.doi.org/10.1007/978-3-642-11261-4_2},
+  year = {2010}
+}
+
+@inproceedings{Brunst2012Vampir,
+  abstract = {The development and maintenance of scalable, state-of-the-art applications in High Performance Computing (HPC) is complex and error-prone. Today, performance debuggers and monitors are mandatory in the software development chain and well established. Like the applications, the tools themselves have to keep track of the developments in system and software engineering. Prominent developments in this regard are for example hybrid, accelerated, and energy aware computing. The ever increasing system complexity requires tools that can be adjusted and focused to user specific interests and questions. This article explains how the performance tool Vampir can be used to detect and highlight user-defined hot spots in HPC applications. This includes the customization and derivation of performance metrics, highly configurable performance data filters and a powerful comparison mode for multiple program runs. The latter allows to keep track of the performance improvements of an application during its evolution.},
+  author = {Holger Brunst and Matthias Weber},
+  booktitle = {Parallel Tools Workshop},
+  doi = {10.1007/978-3-642-37349-7_7},
+  keywords = {type:research,name:Vampir},
+  pages = {95-114},
+  title = {Custom Hot Spot Analysis of HPC Software with the Vampir Performance Tool Suite},
+  year = {2012}
+}
+
+@article{ChassindeKergommeaux2003,
+  abstract = {Performance debugging of parallel and distributed applications can benefit from behavioral visualization tools helping to capture the dynamics of the executions of applications. The Paje generic tool presented in this article provides interactive and scalable behavioral visualizations; because of its genericity, it can be used unchanged in a large variety of contexts.},
+  author = {J. Chassin de Kergommeaux and B. de Oliveira Stein},
+  doi = {10.1016/S0167-739X(02)00181-4},
+  issn = {0167-739X},
+  journal = {Future Generation Computer Systems},
+  keywords = {type:research,name:Paje, context:tasks, subcontext:trace, messages, Gantt, timelines, threads, semaphores, pie charts},
+  note = {Tools for Program Development and Analysis. Best papers from two Technical Sessions, at ICCS2001, San Francisco, CA, USA, and ICCS2002, Amsterdam, The Netherlands},
+  number = {5},
+  pages = {735 - 747},
+  title = {Flexible performance visualization of parallel and distributed applications},
+  volume = {19},
+  year = {2003}
+}
+
+@inproceedings{Cheadle2006GCspy,
+  abstract = {We present generic extensions to the GCspy visualisation frame-work that make it suitable for tracking the way continuous dynamic memory allocators such as dlmalloc or incremental and concurrent garbage collectors make use of heap memory. These extensions include sample-driven client-server communication, incremental stream updates and client-controlled stream update frequency. Additional extensions to the current GCspy client are also described. These include hierarchical driver grouping and hierarchical visualisation, zooming, and the ability to define and view relationships between tiles in different spaces. We also introduce a heuristics engine that is responsible for flipping GCspy from its de-coupled ‘observation’ mode to a synchronous ‘single-step’ mode, and describe a backtrace facility that can trace the server-side call sequence that led to the triggering of a specified event, such as the allocation or freeing of a block of memory. This enables aspects of the allocator (fragmentation, block ordering, splitting and coalescing policies, etc.) to be understood in the context of a particular application and potential optimisations to be identified. The effectiveness of the enhanced framework is demonstrated with a complete integration with dlmalloc. The framework is evaluated in terms of both performance and its ability to explore contrived modifications to dlmalloc’s coalescing policy.},
+  acmid = {1133972},
+  address = {New York, NY, USA},
+  author = {Cheadle, A. M. and Field, A. J. and Ayres, J. W. and Dunn, N. and Hayden, R. A. and Nystrom-Persson, J.},
+  booktitle = {Proceedings of the 5th International Symposium on Memory Management},
+  doi = {10.1145/1133956.1133972},
+  isbn = {1-59593-221-6},
+  keywords = {type:research, name:GCspy, context:hardware, subcontext:memory, 1D array, indented tree, parallel scale:N/A},
+  location = {Ottawa, Ontario, Canada},
+  numpages = {11},
+  pages = {115--125},
+  publisher = {ACM},
+  series = {ISMM '06},
+  title = {Visualising Dynamic Memory Allocators},
+  year = {2006}
+}
+
+@INPROCEEDINGS{Cheng2014TorusVisND,
+  abstract = {Torus networks are widely used in supercomputing. However, due to their complex topology and their large number of nodes, it is difficult for analysts to perceive the messages flow in these networks. We propose a visualization framework called TorusVisND that uses modern information visualization techniques to allow analysts to see the network and its communication patterns in a single display and control the amount of information shown via filtering in the temporal and the topology domains. For this purpose we provide three cooperating visual interfaces. The main interface is the network display. It uses two alternate graph numbering schemes – a sequential curve and a Hilbert curve – to unravel the 5D torus network into a single string of nodes. We then arrange these nodes onto a circle and add the communication links as line bundles in the circle interior. A node selector based on parallel coordinates and a time slicer based on ThemeRiver help users focus on certain processor groups and time slices in the network display. We demonstrate our approach via a small use case.},
+  author = {Cheng, Shenghui and De, Pradipta and Jiang, Shaofeng H.-C. and Mueller, Klaus},
+  booktitle = {Visual Performance Analysis, 1st Workshop on},
+  keywords = {type:research, context:hardware, subcontext:network, name:TorusVisND, torus, 5d torus, theme river, parallel coordinates, circular layout, multiple coordinated views, parallel scale:1k},
+  month = {Nov},
+  title = {{TorusVisND}: Unraveling High-Dimensional Torus Networks for Network Traffic Visualizations},
+  year = {2014}
+}
+
+@Article{Choudhury2008MTV,
+  abstract = {We present the Memory Trace Visualizer (MTV), a tool that provides interactive visualization and analysis of the sequence of memory operations performed by a program as it runs. As improvements in processor performance continue to outpace improvements in memory performance, tools to understand memory access patterns are increasingly important for optimizing data intensive programs such as those found in scientific computing. Using visual representations of abstract data structures, a simulated cache, and animating memory operations, MTV can expose memory performance bottlenecks and guide programmers toward memory system optimization opportunities. Visualization of detailed memory operations provides a powerful and intuitive way to expose patterns and discover bottlenecks, and is an important addition to existing statistical performance measurements.},
+  author = {A.N.M.~Imroz Choudhury and Kristin C.~Potter and Steven G.~Parker},
+  doi = {10.1111/j.1467-8659.2008.01212.x},
+  journal = {Computer Graphics Forum},
+  keywords = {type:research,name:MTV, context:hardware, subcontext:memory, context:application, animation, 1D array, matrix, parallel scale:N/A},
+  month = {May},
+  number = {3},
+  pages = {815--822},
+  title = {Interactive Visualization for Memory Reference Traces},
+  volume = {27},
+  year = {2008}
+}
+
+@INPROCEEDINGS{Choudhury2011,
+  abstract = {We present a system for visualizing memory reference traces, the records of the memory transactions performed by a program at runtime. The visualization consists of a structured layout representing the levels of a cache and a set of data glyphs representing the pieces of data in memory being operated on during application runtime. The data glyphs move in response to events generated by a cache simulator, indicating their changing residency in the various levels of the memory hierarchy. Within the levels, the glyphs arrange themselves into higher-order shapes representing the structure of the cache levels, including the composition of their associative cache sets and eviction ordering. We make careful use of different visual channels, including structure, motion, color, and size, to convey salient events as they occur. Our abstract visualization provides a high-level, global view of memory behavior, while giving insight about important events that may help students or software engineers to better understand their software's performance and behavior.},
+  author = {A. N. M. Imroz Choudhury and Paul Rosen},
+  booktitle = {Proc. 6th IEEE Int. Workshop on Visualizing Software for Understanding and Analysis},
+  doi = {10.1109/VISSOF.2011.6069452},
+  keywords = {type:research, context:hardware, subcontext:memory, memory trace, radial, animation, parallel scale:N/A},
+  title = {Abstract visualization of runtime memory behavior},
+  year = {2011}
+}
+
+@inproceedings{Cornelissen2007ExTraVis,
+  abstract = {The use of dynamic information to aid in software understanding is a common practice nowadays. One of the many approaches concerns the comprehension of execution traces. A major issue in this context is scalability: due to the vast amounts of information, it is a very difficult task to successfully find your way through such traces without getting lost. In this paper, we propose the use of a novel trace visualization method based on a massive sequence and circular bundle view, constructed with scalability in mind. By means of three usage scenarios that were conducted on three different software systems, we show how our approach, implemented in a tool called EXTRAVIS, is applicable to the areas of trace exploration, feature location, and feature comprehension.},
+  acmid = {1271346},
+  address = {Washington, DC, USA},
+  author = {Cornelissen, Bas and Holten, Danny and Zaidman, Andy and Moonen, Leon and van Wijk, Jarke J. and van Deursen, Arie},
+  booktitle = {Proceedings of the 15th IEEE International Conference on Program Comprehension},
+  doi = {10.1109/ICPC.2007.39},
+  isbn = {0-7695-2860-0},
+  keywords = {type:research, name:ExTraVis, context:software, subcontext:trace, radial, edge-bundling, information mural, parallel scale:N/A},
+  numpages = {10},
+  pages = {49--58},
+  publisher = {IEEE Computer Society},
+  series = {ICPC '07},
+  title = {Understanding Execution Traces Using Massive Sequence and Circular Bundle Views},
+  year = {2007}
+}
+
+@article{Couch1993Seeplex,
+  abstract = {To understand the behavior of processors in a large-scale asynchronous execution, we must often consider the global execution context in which each processor is immersed. Global context is best described by scalable execution views that do not change in format, size, meaning, or clarity as processors are added to an execution. One way to produce a scalable view is to categorize processors by behavior and display category statistics. Categorical views are particularly useful when there is an inverse mapping from an arbitrary view region to the subset of processors whose behavior was described in the region. Then the user can define new categories graphically by specifying subregions of views, using graphical attributes such as color and texture to depict category membership. The execution visualization tool Seeplex implements this form of category management to provide scalable execution views.},
+  author = {"A.L. Couch",},
+  doi = {"10.1006/jpdc.1993.1056",},
+  issn = {"0743-7315",},
+  journal = {"Journal of Parallel and Distributed Computing ",},
+  keywords = {type:research, name:Seeplex, context:tasks, visual analytics, scatterplots, multiple coordinated views, filtering, parallel scale:1+},
+  note = {"",},
+  number = {"2",},
+  pages = {"195 - 204",},
+  title = {"Categories and Context in Scalable Execution Visualization ",},
+  volume = {"18",},
+  year = {"1993",}
+}
+
+@INPROCEEDINGS{Cuny1992,
+  abstract = {Visualization tools that display data as it is manipulated by a parallel, MIMD computation must contend with the effects of asynchronous execution. We have developed techniques that manipulate logical time in order to produce coherent animations of par- allel program behavior despite the presence of asynchrony. Our techniques “interpret” program behavior in light of user-defined abstractions and generate animations based on a logical rather than a physical view of time. If this interpretation succeeds, the resulting animation is easily understood; if it fails, the programmer can be assured that the failure was not an artifact of the visualization. Here we demonstrate that these techniques can be generally applied to enhance visual- izations of a variety of types of dataasit is produced by parallel, MIMD computations.},
+  author = {Cuny, J.E. and Hough, A.A. and Kundu, J.},
+  booktitle = {Visualization, 1992. Visualization '92, Proceedings., IEEE Conference on},
+  doi = {10.1109/VISUAL.1992.235209},
+  keywords = {type:research, context:tasks, subcontext:trace, animation, logical time, node-link, parallel scale:1+},
+  pages = {186-193},
+  title = {Logical time in visualizations produced by parallel programs},
+  year = {1992}
+}
+
+@inproceedings{Cuny1993,
+  acmid = {174276},
+  address = {New York, NY, USA},
+  author = {Cuny, Janice and Forman, George and Hough, Alfred and Kundu, Joydip and Lin, Calvin and Snyder, Lawrence and Stemple, David},
+  booktitle = {Proceedings of the 1993 ACM/ONR Workshop on Parallel and Distributed Debugging},
+  doi = {10.1145/174266.174276},
+  isbn = {0-89791-633-6},
+  keywords = {type:research, name:Ariadne, context:tasks, subcontext:trace, logical time, animation, node-link},
+  location = {San Diego, California, USA},
+  numpages = {11},
+  pages = {85--95},
+  publisher = {ACM},
+  series = {PADD '93},
+  title = {The {Ariadne} Debugger: Scalable Application of Event-based Abstraction},
+  year = {1993}
+}
+
+@article{DePauw2009StreamSight,
+  abstract = {Stream processing is a new and important computing paradigm. Innovative streaming applications are being developed in areas ranging from scientific applications (for example, environment monitoring), to business intelligence (for example, fraud detection and trend analysis), to financial markets (for example, algorithmic trading systems). In this paper we describe Streamsight, a new visualization tool built to examine, monitor and help understand the dynamic behavior of streaming applications. Streamsight can handle the complex, distributed and large-scale nature of stream processing applications by using hierarchical graphs, multi-perspective visualizations, and de-cluttering strategies. To address the dynamic and adaptive nature of these applications, Streamsight also provides real-time visualization as well as the capability to record and replay. All these features are used for debugging, for performance optimization, and for management of resources, including capacity planning. More than 100 developers, both inside and outside IBM, have been using Streamsight to help design and implement large-scale stream processing applications.},
+  author = {De Pauw, Wim and Andrade, Henrique},
+  doi = {10.1057/ivs.2009.5},
+  journal = {Information Visualization},
+  keywords = {type:research,name:StreamSight, context:tasks, subcontext:trace, node-link, animation, streaming, parallel scale:1K},
+  number = {2},
+  pages = {87-106},
+  title = {Visualizing Large-Scale Streaming Applications},
+  volume = {8},
+  year = {2009}
+}
+
+@inproceedings{DePauw2010Zinsight,
+  abstract = {Information in event traces from software systems can help developers with performance analysis, debugging and troubleshooting. However, the volume of data contained in these traces can make such tasks a challenge. In this paper we propose a new tool, Zinsight, to visualize event traces from complex systems. Our contribution is a novel combination of visualizations and pattern extraction techniques, enabling user exploration, analysis and understanding of traces containing millions of events. Three complimentary views help the user answer different questions. First, the Event Flow view shows the trace in its entirety or in detail. The user sees visual patterns representing phases of processing and the relative order of events. Second, the Event Statistics view quantifies events, and presents distributions and averages enabling the user to identify outlier behavior. Third, the Sequence Context view extracts patterns of interest from the trace and represents them along with frequency and performance data in succinct execution flow diagrams. The user can navigate from patterns to their constituent instance sequences and even back to individual events in the other views. Questions can be answered and hypotheses tested using the most natural view for the task.},
+  acmid = {1879233},
+  address = {New York, NY, USA},
+  author = {De Pauw, Wim and Heisig, Steve},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879233},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,name:Zinsight, context:software, context:tasks, subcontext:trace, node-link, indented, timelines, parallel scale:100},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {143--152},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Zinsight: A Visual and Analytic Environment for Exploring Large Event Traces},
+  year = {2010}
+}
+
+@inproceedings{DePauw2013VISSOFT,
+  abstract = {In this paper we describe a visualization system that shows the behavior of jobs in large, distributed computing clusters. The system has been in use for two years, and is sufficiently generic to be applied in two quite different domains: a Hadoop MapReduce environment and the Watson DeepQA DUCC cluster. Scalable and flexible data processing systems typically run hundreds or more of simultaneous jobs. The creation, termination, expansion and contraction of these jobs can be very dynamic and transient, and it is difficult to understand this behavior without showing its evolution over time. While traditional monitoring tools typically show either snapshots of the current load balancing or aggregate trends over time, our new visualization technique shows the behavior of each of the jobs over time in the context of the cluster, and in either a real-time or post-mortem view. Its new algorithm runs in real- time mode and can make retroactive adjustments to produce smooth layouts. Moreover, our system allows users to drill down to see details about individual jobs. The visualization has been proven useful for administrators to see the overall occupancy, trends and job allocations in the cluster, and for users to spot errors or to monitor how many resources are given to their jobs.},
+  author = {De Pauw, Wim and Wolf, Joel L. and Balmin, Andrey},
+  booktitle = {VISSOFT},
+  crossref = {DBLP:conf/vissoft/2013},
+  doi = {10.1109/VISSOFT.2013.6650535},
+  keywords = {type:research, context:tasks, subcontext:trace, timelines, parallel scale:1K},
+  pages = {1-10},
+  title = {Visualizing jobs with shared resources in distributed environments},
+  year = {2013}
+}
+
+@inproceedings{DeRose2007,
+  abstract = {Scientific applications should be well balanced in order to achieve high scalability on current and future high end massively parallel systems. However, the identification of sources of load imbalance in such applications is not a trivial exercise, and the current state of the art in performance analysis tools do not provide an efficient mechanism to help users to identify the main areas of load imbalance in an application. In this paper we discuss a new set of metrics that we defined to identify and measure application load imbalance. We then describe the extensions that were made to the Cray performance measurement and analysis infrastructure to detect application load imbalance and present to the user in an insightful way.},
+  author = {DeRose, Luiz and Homer, Bill and Johnson, Dean},
+  booktitle = {Euro-Par},
+  date = {2007-08-30},
+  description = {dblp},
+  doi = {10.1007/978-3-540-74466-5_17},
+  editor = {Kermarrec, Anne-Marie and Boug\'e, Luc and Priol, Thierry},
+  isbn = {978-3-540-74465-8},
+  keywords = {type:research,context:software, subcontext:callgraph, node-link, load-balancing, parallel scale:100},
+  pages = {150--159},
+  publisher = {Springer},
+  series = {Lecture Notes in Computer Science},
+  title = {Detecting Application Load Imbalance on High End Massively Parallel Systems.},
+  volume = {4641,},
+  year = {2007,}
+}
+
+@INPROCEEDINGS{Devaux2014DataTube,
+  ISSN = {1550-6037},
+  abstract = {In this paper we study a 3D tubular visualization of software activity log data, with the aim of supporting multi- threaded software development and debugging. We consider an existing visualization called Datatube2 that has already been used to help various domain experts in the analysis of large amounts of time-dependent data. Since software logs are also time series, DataTube2 has been enhanced to support the specific data and tasks that are currently found in debugging, yielding to a specific visualization that we called DataTube4log. In this visualization, each line in the tube is devoted to the activity of a thread. Dependencies between threads are materialized with arrows. Synchronization objects are also represented. Using a real dataset, we show how a domain expert has solved a debugging problem. In this experiment, we found that DataTube4log can be easily learned and adopted, and that the ability of the tube to efficiently render an overview of large time series was beneficial to the software engineer.},
+  author = {Devaux, S. and Bouali, F. and Venturini, G.},
+  booktitle = {Information Visualisation (IV), 2014 18th International Conference on},
+  doi = {10.1109/IV.2014.73},
+  keywords = {type:research, context:tasks, subcontext:trace, name:DataTube, debugging, 3d, threads, timelines, parallel scale:10},
+  month = {July},
+  pages = {189-195},
+  title = {DataTube4log: A Visual Tool for Mining Multi-threaded Software Logs},
+  year = {2014}
+}
+
+@INPROCEEDINGS{Dosimont2014Ocelotlb,
+  abstract = {Analysts commonly use execution traces collected at runtime to understand the behavior of an application running on distributed and parallel systems. These traces are inspected post mortem using various visualization techniques that, however, do not scale properly for a large number of events. This issue, mainly due to human perception limitations, is also the result of bounded screen resolutions preventing the proper drawing of many graphical objects. This paper proposes a new visualization technique overcoming such limitations by providing a concise overview of the trace behavior as the result of a spatiotemporal data aggregation process. The experimental results show that this approach can help the quick and accurate detection of anomalies in traces containing up to two hundred million events.},
+  author = {Dosimont, Damien and Lamarche-Perrin, Robin and Schnorr, Lucas Mello and Huard, Guillaume and Vincent, Jean-Marc},
+  booktitle = {Cluster Computing (CLUSTER), 2014 IEEE International Conference on},
+  keywords = {type:research, context:tasks, subcontext:trace, name:Ocelotl, aggregation, timelines, gantt, information theory, parallel scale:1k},
+  month = {Sept},
+  title = {A Spatiotemporal Data Aggregation Technique for Performance Analysis of Large-scale Execution Traces},
+  year = {2014}
+}
+
+@inproceedings{Eick1992SeeSoft,
+  abstract = {A visualization technique that makes it possible to display and analyze line count profile data is described. The technique is to make a reduced picture of code with the line execution counts identified with color. Hot spots are shown in red, warm spots in orange, and so on. It is possible to identify nonexecuted code and nonexecutable code such as declarations and static tables},
+  acmid = {949724},
+  address = {Los Alamitos, CA, USA},
+  author = {Eick, Stephen G. and Steffen, Joseph L.},
+  booktitle = {Proceedings of the 3rd Conference on Visualization '92},
+  doi = {10.1109/VISUAL.1992.235206},
+  isbn = {0-8186-2896-0},
+  keywords = {type:research, name:SeeSoft, context:software, subcontext:code, performance, parallel scale:N/A},
+  location = {Boston, Massachusetts},
+  numpages = {8},
+  pages = {210--217},
+  publisher = {IEEE Computer Society Press},
+  series = {VIS '92},
+  title = {Visualizing Code Profiling Line Oriented Statistics},
+  year = {1992}
+}
+
+@article{Eick1996SeeLog,
+  abstract = {Computers generate trace files containing reports on system performance, status and faults. To analyze these trace files more efficiently, we have developed a graphical technique embodied in an interactive system for displaying large trace files. Our system uses abstraction, color, aggregation, filtering, interaction, and a drill-down capability to find patterns among the reports. We apply our system and technique to analyze command accounting trace files from a Unix compute server, showing what commands were executed, by which users, when, and how long the commands ran. We identify resource intensive commands, sequences of commands initiated by a compilations, and commands run with super-user permissions.},
+  author = {EICK, STEPHEN G. and LUCAS, PAUL J.},
+  doi = {10.1002/(SICI)1097-024X(199604)26:4<399::AID-SPE8>3.0.CO;2-J},
+  issn = {1097-024X},
+  journal = {Software: Practice and Experience},
+  keywords = {type:research,name:SeeLog, context:tasks, subcontext:trace, timelines, glyphs, parallel scale:N/A},
+  number = {4},
+  pages = {399--409},
+  publisher = {John Wiley & Sons, Ltd.},
+  title = {Displaying Trace Files},
+  volume = {26},
+  year = {1996}
+}
+
+@inproceedings{Elmqvist2003GrowingSquares,
+  abstract = {We present a novel information visualization technique for the graphical representation of causal relations, that is based on the metaphor of color pools spreading over time on a piece of paper. Messages between processes in the system affect the colors of their respective pool, making it possible to quickly see the influences each process has received. This technique, called Growing Squares, has been evaluated in a comparative user study and shown to be significantly faster and more efficient for sparse data sets than the traditional Hasse diagram visualization. Growing Squares were also more efficient for large data sets, but not significantly so. Test subjects clearly favored Growing Squares over old methods, naming the new technique easier, more efficient, and much more enjoyable to use.},
+  acmid = {774836},
+  address = {New York, NY, USA},
+  author = {Elmqvist, Niklas and Tsigas, Philippas},
+  booktitle = {Proceedings of the 2003 ACM Symposium on Software Visualization},
+  doi = {10.1145/774833.774836},
+  isbn = {1-58113-642-0},
+  keywords = {type:research,name:Growing Squares, context:tasks, subcontext:trace, logical time, animation, 3D, parallel scale:10},
+  location = {San Diego, California},
+  pages = {17--ff},
+  publisher = {ACM},
+  series = {SoftVis '03},
+  title = {Growing Squares: Animated Visualization of Causal Relations},
+  year = {2003}
+}
+
+@INPROCEEDINGS{EzzatiJivan2014,
+  ISSN = {0840-7789},
+  abstract = {One solution to handle large data sets is to organize and visualize them in a hierarchical model. This paper investigates hierarchical management of large trace logs and proposes an interactive zoomable timeline view to visualize the multiple levels of information generated by analyzing the ex- ecution trace logs. The view supports both the semantic (data) zooming and physical (visual) zooming. It displays a coarser layer first and provides some operations to explore and navigate the different layers of data. The method mainly facilitates the comprehension of the execution trace logs and can also be used to improve root cause analysis. The paper also discusses the hierarchical data model designed for organizing and visualizing the information at multiple levels.},
+  author = {Ezzati-Jivan, N. and Dagenais, M.R.},
+  booktitle = {Electrical and Computer Engineering (CCECE), 2014 IEEE 27th Canadian Conference on},
+  doi = {10.1109/CCECE.2014.6901019},
+  keywords = {type:research, context:software, subcontext:trace, 1d array, semantic zoom, timelines, parallel scale:1},
+  month = {May},
+  pages = {1-7},
+  title = {Multiscale navigation in large trace data},
+  year = {2014}
+}
+
+@techreport{Fowler1989Moviola,
+  author = {Fowler, Robert and Bella, Ivan},
+  institution = {DTIC Document},
+  keywords = {type:research,name:Moviola, context:tasks, subcontext:trace, timelines, Gantt, messages, parallel scale:10},
+  title = {The programmer's guide to Moviola: An interactive execution history browser},
+  year = {1989}
+}
+
+@article{Francioni1991,
+  abstract = {Portraying the behavior of parallel programs can be done in a variety of ways. One way is to generate a graphical display related to the program’s behavior so that a user can visualize what happens during the program’s execution. As an alternative to visualization, auralization can also be used to portray the behavior of parallel programs. This paper explores how sound can be used to depict different events that take place during a parallel program’s execution. In particular, the discussion is focused on dis@ibuted- memory parallel programs. Three mappings of execution behavior to sound were studied. The first mapping is related to process communication in a distributed-memory parallel program. The second mapping tracks the load balance of the processors of a system, In the third mapping, the flows-of-control of the parallel processes are mapped to related sounds.},
+  acmid = {122765},
+  address = {New York, NY, USA},
+  author = {Francioni, Joan M. and Albright, Larry and Jackson, Jay Alan},
+  doi = {10.1145/127695.122765},
+  issn = {0362-1340},
+  issue_date = {Dec. 1991},
+  journal = {SIGPLAN Not.},
+  keywords = {type:research, context:tasks, subcontext:trace, sonification, parallel scale:1+},
+  month = {dec,},
+  number = {12},
+  numpages = {8},
+  pages = {68--75},
+  publisher = {ACM},
+  title = {Debugging Parallel Programs Using Sound},
+  volume = {26},
+  year = {1991}
+}
+
+@inproceedings{Frishman2005,
+  abstract = {This paper presents a system for visualizing mobile object frameworks. In such frameworks, the objects can migrate to remote hosts, along with their state and behavior, while the application is running. An innovative graph-based visualization is used to depict the physical and the logical connections in the distributed object network. Scalability is achieved by using a focus+context technique jointly with a user-steered clustering algorithm. In addition, an event synchronization model for mobile objects is presented. The system has been applied to visualizing several mobile object applications.},
+  acmid = {1056038},
+  address = {New York, NY, USA},
+  author = {Frishman, Yaniv and Tal, Ayellet},
+  booktitle = {Proceedings of the 2005 ACM Symposium on Software Visualization},
+  doi = {10.1145/1056018.1056038},
+  isbn = {1-59593-073-6},
+  keywords = {type:research,context:tasks, subcontext:trace, animation, migratable objects, nested graphs, aggregation, distortion, parallel scale:10},
+  location = {St. Louis, Missouri},
+  numpages = {10},
+  pages = {145--154},
+  publisher = {ACM},
+  series = {SoftVis '05},
+  title = {Visualization of Mobile Object Environments},
+  year = {2005}
+}
+
+@incollection{Gao2011Survey,
+  abstract = {Recently the need for extreme scale computing solutions presents demands for powerful and easy to use performance visualization tools. This paper presents a review of existing research on performance visualization for large-scale systems. A general approach to performance visualization is introduced in relation to performance analysis, and issues that need to be addressed throughout the performance visualization process are summarized. Then visualization techniques from 21 performance visualization systems are reviewed and discussed, with the hope of shedding light on the design of visualization tools for ultra-large systems.},
+  author = {Gao, Qin and Zhang, Xuhui and Rau, Pei-LuenPatrick and Maciejewski, AnthonyA. and Siegel, HowardJay},
+  booktitle = {Human-Computer Interaction. Design and Development Approaches},
+  doi = {10.1007/978-3-642-21602-2_49},
+  editor = {Jacko, JulieA.},
+  isbn = {978-3-642-21601-5},
+  keywords = {type:survey},
+  pages = {450-460},
+  publisher = {Springer Berlin Heidelberg},
+  series = {Lecture Notes in Computer Science},
+  title = {Performance Visualization for Large-Scale Computing Systems: A Literature Review},
+  volume = {6761},
+  year = {2011}
+}
+
+@article{Geimer2010Scalasca,
+  abstract = {Scalasca is a performance toolset that has been specifically designed to analyze parallel application execution behavior on large-scale systems with many thousands of processors. It offers an incremental performance-analysis procedure that integrates runtime summaries with in-depth studies of concurrent behavior via event tracing, adopting a strategy of successively refined measurement configurations. Distinctive features are its ability to identify wait states in applications with very large numbers of processes and to combine these with efficiently summarized local measurements. In this article, we review the current toolset architecture, emphasizing its scalable design and the role of the different components in transforming raw measurement data into knowledge of application execution behavior. The scalability and effectiveness of Scalasca are then surveyed from experience measuring and analyzing real-world applications on a range of computer systems.},
+  acmid = {1753234},
+  address = {Chichester, UK},
+  author = {Geimer, Markus and Wolf, Felix and Wylie, Brian J. N. and \'{A}brah\'{a}m, Erika and Becker, Daniel and Mohr, Bernd},
+  doi = {10.1002/cpe.v22:6},
+  issn = {1532-0626},
+  issue_date = {April 2010},
+  journal = {Concurr. Comput. : Pract. Exper.},
+  keywords = {type:research,name:Scalasca, context:software, context:application, subcontext:callgraph, indented tree, mesh, visual analytics, parallel scale:100K},
+  month = {apr,},
+  number = {6},
+  numpages = {18},
+  pages = {702--719},
+  publisher = {John Wiley and Sons Ltd.},
+  title = {The {Scalasca} Performance Toolset Architecture},
+  volume = {22},
+  year = {2010}
+}
+
+@TechReport{George2010ConcurrencyVisualizer,
+  author = {George, Boby and Nagpal, Pooja},
+  keywords = {type:research,name:Concurrency Visualizer, context:tasks, subcontext:trace, threads, timelines},
+  title = {Optimizing Parallel Applications Using Concurrency Visualizer: A Case Study},
+  year = {2010}
+}
+
+@INPROCEEDINGS{Gimenez2014MemAxes,
+  abstract = {Optimizing memory access is critical for performance and power efficiency. CPU manufacturers have developed sampling-based performance measurement units (PMUs) that report precise costs of memory accesses at specific addresses. However, this data is too low-level to be meaningfully interpreted and contains an excessive amount of irrelevant or uninteresting information. We have developed a method to gather fine-grained memory access performance data for specific data objects and regions of code with low overhead and attribute semantic information to the sampled memory accesses. This information provides the context necessary to more effectively interpret the data. We have developed a tool that performs this sampling and attribution and used the tool to discover and diagnose performance problems in real-world applications. Our techniques provide useful insight into the memory behavior of applications and allow programmers to understand the performance ramifications of key design decisions: domain decomposition, multi-threading, and data motion within distributed memory systems.},
+  author = {Gim\'enez, Alfredo and Gamblin, Todd and Rountree, Barry and Bhatele, Abhinav and Jusufi, Ilir and Bremer, Peer-Timo and Hamann, Bernd},
+  booktitle = {International Conference for High Performance Computing, Networking, Storage and Analysis, SC '13},
+  keywords = {type:research, context:hardware, context:application, subcontext:memory, name:MemAxes, parallel scale:1+, parallel coordinates, circular layout, multiple coordinated views},
+  month = {Nov},
+  title = {Dissecting On-Node Memory Access Performance: A Semantic Approach},
+  year = {2014}
+}
+
+@inproceedings{Greevy2006,
+  abstract = {The analysis of the runtime behavior of a software system yields vast amounts of information, making accurate interpretations difficult. Filtering or compression techniques are often applied to reduce the volume of data without loss of key information vital for a specific analysis goal. Alternatively, visualization is generally accepted as a means of effectively representing large amounts of data. The challenge lies in creating effective and expressive visual representations that not only allows for a global picture, but also enables us to inspect the details of the large data sets. We define the focus of our analysis to be the runtime behavior of features. Static structural visualizations of a system are typically represented in two dimensions. We exploit a third dimension to visually represent the dynamic information, namely object instantiations and message sends. We introduce a novel 3D visualization technique that supports animation of feature behavior and integrates zooming, panning, rotating and on-demand details. As proof of concept, we apply our visualization technique to feature execution traces of an example system.},
+  acmid = {1148501},
+  address = {New York, NY, USA},
+  author = {Greevy, Orla and Lanza, Michele and Wysseier, Christoph},
+  booktitle = {Proceedings of the 2006 ACM Symposium on Software Visualization},
+  doi = {10.1145/1148493.1148501},
+  isbn = {1-59593-464-2},
+  keywords = {type:research,context:software, subcontext:trace, 3D, node-link, indented tree, parallel scale:N/A},
+  location = {Brighton, United Kingdom},
+  numpages = {10},
+  pages = {47--56},
+  publisher = {ACM},
+  series = {SoftVis '06},
+  title = {Visualizing Live Software Systems in 3D},
+  year = {2006}
+}
+
+@techreport{Griswold1989,
+  author = {Griswold, R.E. and Townsend, G.M.},
+  institution = {Department of Computer Science. University of Arizona},
+  keywords = {type:research,context:hardware, subcontext:memory, 1D array, parallel scale:N/A},
+  month = {December},
+  number = {TR 89-30},
+  title = {The Visualization of Dynamic Memory Management in the Icon Programming Language},
+  year = {1989}
+}
+
+@INPROCEEDINGS{Gu1995Falcon,
+  abstract = {Falcon is a system for online monitoring and steering of large-scale parallel progmms. The purpose of such progmm steering i sto improve the application’s performance or to affect its execution behavior. Thispaper presents the framework of the Falcon system and its implementation, and then evaluates the performance of the system. A complex sample application, a molecular dynamics simulation program (MD), is used to motivate the research as well os to measure the performance of the Falcon system.},
+  author = {Weiming Gu and Eisenhauer, G. and Kraemer, E. and Schwan, K. and Stasko, J. and Vetter, J. and Mallavarupu, N.},
+  booktitle = {Frontiers of Massively Parallel Computation, 1995. Proceedings. Frontiers '95., Fifth Symposium on the},
+  doi = {10.1109/FMPC.1995.380483},
+  keywords = {type:research,name:Falcon, context:tasks, subcontext:trace, timelines, Gantt, threads},
+  pages = {422-429},
+  title = {Falcon: on-line monitoring and steering of large-scale parallel programs},
+  year = {1995}
+}
+
+@inproceedings{HamouLhadj2004,
+  abstract = {The analysis of large execution traces is almost impossible without efficient tool support. Lately, there has been an increase in the number of tools for analyzing traces generated from object-oriented systems. This interest has been driven by the fact that polymorphism and dynamic binding pose serious limitations to static analysis. However, most of the techniques supported by existing tools are found in the context of very specific visualization schemes, which makes them hard to reuse. It is also very common to have two different tools implement the same techniques using different terminology. This appears to result from the absence of a common framework for trace analysis ap- proaches. This paper presents the state of the art in the area of trace analysis. We do this by analyzing the techniques that are supported by eight trace exploration tools. We also discuss their advantages and limitations and how they can be improved.},
+  acmid = {1034918},
+  author = {Hamou-Lhadj, Abdelwahab and Lethbridge, Timothy C.},
+  booktitle = {Proceedings of the 2004 Conference of the Centre for Advanced Studies on Collaborative Research},
+  keywords = {type:survey},
+  location = {Markham, Ontario, Canada},
+  numpages = {14},
+  pages = {42--55},
+  publisher = {IBM Press},
+  series = {CASCON '04},
+  title = {A Survey of Trace Exploration Tools and Techniques},
+  year = {2004}
+}
+
+@INPROCEEDINGS{Haynes2001,
+  ISSN = {1552-5244},
+  abstract = {This paper describes a unique visualization tool that has been used to analyze performance of the CplantTM clusters at Sandia National Laboratories. As commodity cluster systems grow in size and complexity, understanding performance issues becomes more and more difficult. We have developed a tool that facilitates visual performance analysis within the context of the physical and runtime environment of a system. Combining an abstract system model with color-coding for both performance and job information enables quick fault isolation as well as insight into complex system behavior.},
+  author = {Haynes, R. and Crossno, P. and Russell, E.},
+  booktitle = {Cluster Computing, 2001. Proceedings. 2001 IEEE International Conference on},
+  doi = {10.1109/CLUSTR.2001.959990},
+  keywords = {type:research,context:hardware, subcontext:network, glyphs, 3D, 2D torus, torus, parallel scale:100},
+  pages = {295-302},
+  title = {A visualization tool for analyzing cluster performance data},
+  year = {2001}
+}
+
+@ARTICLE{Heath1991,
+  ISSN = {0740-7459},
+  abstract = {Graphical visualization aids human comprehension of complex phenomena and large volumes of data. The behavior of parallel programs on advanced architectures is often extremely complex, and monitoring the performance of such programs can gener ate vast quantities of data. So it seems natural to use visualization to gain insight into the behavior of parallel programs so we can better understand them and improve their performance. We have developed ParaGraph, a software tool that provides a detailed, dynamic, graphical animation of the behavior of message-passing parallel programs and graphical summaries of their performance.},
+  author = {Heath, M.T. and Etheridge, J.A.},
+  doi = {10.1109/52.84214},
+  journal = {Software, IEEE},
+  keywords = {type:research,name:ParaGraph, context:tasks, adjacency matrix, animation, timelines, visual analytics, parallel scale:100},
+  number = {5},
+  pages = {29-39},
+  title = {Visualizing the performance of parallel programs},
+  volume = {8},
+  year = {1991}
+}
+
+@INPROCEEDINGS{Holten2007,
+  author = {Holten, D. and Cornelissen, B. and van Wijk, J.J.},
+  booktitle = {Visualizing Software for Understanding and Analysis, 2007. VISSOFT 2007. 4th IEEE International Workshop on},
+  doi = {10.1109/VISSOF.2007.4290699},
+  keywords = {type:research,name:ExTraVis, context:software, subcontext:trace, edge-bundling, information mural, tree, parallel scale:N/A},
+  pages = {47-54},
+  title = {Trace Visualization Using Hierarchical Edge Bundles and Massive Sequence Views},
+  year = {2007}
+}
+
+@inproceedings{Hough1988,
+  abstract = {Highly parallel programs are often best understood in terms of logical patterns of interprocess communication. In order to debug such programs, the user must determine the extent to which the intended patterns occur during execution. To facilitate this, we have designed and implemented a pattern-oriented debugger in which abstract, user-defined communication events can be described and animated. We report here on our initial experiences with its use.},
+  acmid = {69234},
+  address = {New York, NY, USA},
+  author = {Hough, Alfred A. and Cuny, Janice E.},
+  booktitle = {Proceedings of the 1988 ACM SIGPLAN and SIGOPS Workshop on Parallel and Distributed Debugging},
+  doi = {10.1145/68210.69234},
+  isbn = {0-89791-296-9},
+  keywords = {type:research,name:Ariadne, name:Belvedere, context:tasks, subcontext:trace, animation, node-link, parallel scale:1+},
+  location = {Madison, Wisconsin, USA},
+  numpages = {11},
+  pages = {195--205},
+  publisher = {ACM},
+  series = {PADD '88},
+  title = {Initial Experiences with a Pattern-oriented Parallel Debugger},
+  year = {1988}
+}
+
+@inproceedings{Ilsche2012Vampir,
+  abstract = {Event tracing is an important tool for understanding the performance of parallel applications. As concurrency in- creases in leadership-class computing systems, the quantity of performance log data can overload the parallel file system, perturbing the application being observed. In this work we present a solution for event tracing at leadership scales. We enhance the I/O forwarding system software to aggregate and reorganize log data prior to writing to the storage sys- tem, significantly reducing the burden on the underlying file system for this type of traffic. Furthermore, we augment the I/O forwarding system with a write buffering capability to limit the impact of artificial perturbations from log data accesses on traced applications. To validate the approach, we modify the Vampir tracing toolset to take advantage of this new capability and show that the approach increases the maximum traced application size by a factor of 5x to more than 200,000 processes.},
+  acmid = {2287085},
+  address = {New York, NY, USA},
+  author = {Ilsche, Thomas and Schuchart, Joseph and Cope, Jason and Kimpe, Dries and Jones, Terry and Kn\"{u}pfer, Andreas and Iskra, Kamil and Ross, Robert and Nagel, Wolfgang E. and Poole, Stephen},
+  booktitle = {Proceedings of the 21st International Symposium on High-Performance Parallel and Distributed Computing},
+  doi = {10.1145/2287076.2287085},
+  isbn = {978-1-4503-0805-2},
+  keywords = {type:research,name:Vampir, context:tasks, subcontext:trace, Gantt, timelines, messages, parallel scale:100K},
+  location = {Delft, The Netherlands},
+  numpages = {12},
+  pages = {49--60},
+  publisher = {ACM},
+  series = {HPDC '12},
+  title = {Enabling Event Tracing at Leadership-class Scale Through I/O Forwarding Middleware},
+  year = {2012}
+}
+
+@inproceedings{Isaacs2012,
+  acmid = {2477134},
+  address = {Washington, DC, USA},
+  author = {Isaacs, Katherine E. and Landge, Aaditya G. and Gamblin, Todd and Bremer, Peer-Timo and Pascucci, Valerio and Hamann, Bernd},
+  booktitle = {Proceedings of the 2012 SC Companion: High Performance Computing, Networking Storage and Analysis},
+  doi = {10.1109/SC.Companion.2012.202},
+  isbn = {978-0-7695-4956-9},
+  keywords = {type:research,name:Boxfish, context:hardware, subcontext:network, visual analytics, parallel scale:NR},
+  numpages = {2},
+  pages = {1380--1381},
+  publisher = {IEEE Computer Society},
+  series = {SCC '12},
+  title = {Abstract: Exploring Performance Data with {Boxfish}},
+  year = {2012}
+}
+
+@article{Isaacs2014Ravel,
+  abstract = {With the continuous rise in complexity of modern supercomputers, optimizing the performance of large-scale parallel programs is becoming increasingly challenging. Simultaneously, the growth in scale magnifies the impact of even minor inefficiencies – potentially millions of compute hours and megawatts in power consumption can be wasted on avoidable mistakes or sub-optimal algorithms. This makes performance analysis and optimization critical elements in the software development process. One of the most common forms of performance analysis is to study execution traces, which record a history of per-process events and inter-process messages in a parallel application. Trace visualizations allow users to browse this event history and search for insights into the observed performance behavior. However, current visualizations are difficult to understand even for small process counts and do not scale gracefully beyond a few hundred processes. Organizing events in time leads to a virtually unintelligible conglomerate of interleaved events and moderately high process counts overtax even the largest display. As an alternative, we present a new trace visualization approach based on transforming the event history into logical time inferred directly from happened-before relationships. This emphasizes the code’s structural behavior, which is much more familiar to the application developer. The original timing data, or other information, is then encoded through color, leading to a more intuitive visualization. Furthermore, we use the discrete nature of logical timelines to cluster processes according to their local behavior leading to a scalable visualization of even long traces on large process counts. We demonstrate our system using two case studies on large-scale parallel codes.},
+  author = {Isaacs, Katherine E. and Bremer, Peer-Timo and Jusufi, Ilir and Gamblin, Todd and Bhatele, Abhinav and Schulz, Martin and Hamann, Bernd},
+  journal = {IEEE Transactions on Visualization and Computer Graphics, Proceedings of InfoVis '14},
+  keywords = {type:research, context:tasks, subcontext:trace, name:Ravel, gantt, timelines, multiple coordinated views, logical time, clustering, parallel scale:10k},
+  number = {12},
+  title = {Combing the communication hairball: Visualizing large-scale parallel execution traces using logical time},
+  year = {2014}
+}
+
+@inproceedings{Isaacs2014STAR,
+  abstract = {Performance visualization comprises techniques that aid developers and analysts in improving the time and energy efficiency of their software.  In this work, we discuss performance as it relates to visualization and survey existing approaches in performance visualization. We present an overview of what types of performance data can be collected and a categorization of the types of goals that performance visualization techniques can address. We develop a taxonomy for the contexts in which different performance visualizations reside and describe the state of the art research pertaining to each. Finally, we discuss unaddressed and future challenges in performance visualization.},
+  author = {Isaacs, K. E. and Gim\'{e}nez, A. and Jusufi, I. and Gamblin, T. and Bhatele, A. and Schulz, M. and Hamann, B. and Bremer, P.-T.},
+  booktitle = {Eurographics/IEEE Conference on Visualization State-of-the-Art Reports},
+  keywords = {type:survey},
+  series = {EuroVis '14},
+  title = {State of the Art of Performance Visualization},
+  year = {2014}
+}
+
+@inproceedings{Jerding1997,
+  abstract = {mplementing, validating, modifying, or reengineering an object-oriented system requires an understanding of the object and class interactions which occur as a program executes. This work seeks to identify, visualize, and analyze interactions in object-oriented program executions as a means for examining and understanding dynamic behavior. We have discovered recurring interaction scenarios in program executions that can be used as abstractions in the understanding process, and have developed a means for identifying these interaction patterns. Our visualizations focus on supporting design recovery, vahdation, and reengineering tasks, and can be applied to both object-oriented and procedural programs.},
+  acmid = {253356},
+  address = {New York, NY, USA},
+  author = {Jerding, Dean F. and Stasko, John T. and Ball, Thomas},
+  booktitle = {Proceedings of the 19th International Conference on Software Engineering},
+  doi = {10.1145/253228.253356},
+  isbn = {0-89791-914-9},
+  keywords = {type:research,name:Polka, context:software, subcontext:trace, information mural, code, node-link, parallel scale:N/A},
+  location = {Boston, Massachusetts, USA},
+  numpages = {11},
+  pages = {360--370},
+  publisher = {ACM},
+  series = {ICSE '97},
+  title = {Visualizing Interactions in Program Executions},
+  year = {1997}
+}
+
+@INPROCEEDINGS{Kale2003Projections,
+  abstract = {Some of the most challenging applications to parallelize scalably are the ones that present a relatively small amount of computation per iteration. Multiple interacting performance challenges must be identified and solved to attain high parallel efficiency in such cases. We present a case study involving NAMD, a parallel molecular dynamics application, and efforts to scale it to run on 3000 processors with Tera-FLOPS level performance. NAMD is implemented in Charm++, and the performance analysis was carried out using "projections", the performance visualization/analysis tool associated with Charm++. We will showcase a series of optimizations facilitated by projections. The resultant performance of NAMD led to a Gordon Bell award at SC2002.},
+  address = {"Melbourne, Australia",},
+  author = {"Laxmikant V. Kal{\'e} and Sameer Kumar and Gengbin Zheng and Chee Wai Lee",},
+  booktitle = {"Terascale Performance Analysis Workshop, International Conference on Computational Science(ICCS)",},
+  group = {Y,},
+  keywords = {type:research,name:Projections, context:tasks, subcontext:trace, Gantt, timelines, parallel scale:10K},
+  month = {"June",},
+  title = {"Scaling Molecular Dynamics to 3000 Processors with Projections: A Performance Analysis Case Study",},
+  year = {"2003",}
+}
+
+@InProceedings{Kale2006,
+  author = {Laxmikant V. Kale and Gengbin Zheng and Chee Wai Lee and Sameer Kumar},
+  booktitle = {Future Generation Computer Systems Special Issue on: Large-Scale System Performance Modeling and Analysis},
+  doi = {10.1016/j.future.2004.11.020},
+  keywords = {type:research,name:Projections, context:tasks, subcontext:trace, timelines, Gantt, messages, scatterplots, parallel scale:10K},
+  month = {February},
+  number = {3},
+  pages = {347-358},
+  title = {Scaling Applications to Massively Parallel Machines Using {Projections} Performance Analysis Tool},
+  volume = {22},
+  year = {2006}
+}
+
+@article{Karavanic1997,
+  abstract = {Performance tuning a parallel application involves integrating performance data from many components of the system, including the message passing library, performance monitoring tool, resource manager. operating system, and the application itself. The current practice of visualizing these data streams using a separate, customized tool for each source is inconvenient from a usability perspective, and there is no easy way to visualize the data in an integrated fashion. We demonstrate a solution to this problem using Devise, a generic visualization tool which is designed to allow an arbitrary number of different but related data streams to be integrated and explored visually in a flexible manner. We display data emanating from a variety of sources side by side in three case studies. First we interface the Paradyn parallel performance tool and Devise, using two simple data export modules and Paradyn’s simple visualization interface. We show several Devise/Paradyn visualizations which are useful for performance tuning parallel codes, and which incorporate data from Unix utilities and application output. Next we describe the visualization of trace data from a parallel application running in a Condor cluster of workstations. Finally we demonstrate the utility of Devise visualizations in a study of Condor cluster activity.},
+  acmid = {260677},
+  address = {Amsterdam, The Netherlands, The Netherlands},
+  author = {Karavanic, Karen L. and Myllymaki, Jussi and Livny, Miron and Miller, Barton P.},
+  doi = {10.1016/S0167-8191(96)00104-4},
+  issn = {0167-8191},
+  issue_date = {April 1997},
+  journal = {Parallel Comput.},
+  keywords = {type:research,name:Devise, name:Paradyn, context:tasks, subcontext:trace, timelines, scatterplots, parallel scale:10},
+  month = {apr,},
+  number = {1-2},
+  numpages = {18},
+  pages = {181--198},
+  publisher = {Elsevier Science Publishers B. V.},
+  title = {Integrated Visualization of Parallel Program Performance Data},
+  volume = {23},
+  year = {1997}
+}
+
+@inproceedings{Karran2013SyncTrace,
+  abstract = {In software comprehension, program traces are important to gain insight into certain aspects of concurrent runtime behavior, e.g., thread-interplay. Here, key tasks are finding usages of blocking operations, such as synchronization and I/O operations, assessing temporal order of such operations, and analyzing their effects. This is a hard task for large and complex program traces due to their size and number of threads involved. In this paper, we present SYNCTRACE, a new visualization technique based on (bended) activity diagrams and edge bundles that allows for parallel analysis of multiple threads and their inter-thread correspondences. We demonstrate how the technique, implemented as a tool, can be applied on real-world trace datasets to support understanding concurrent behavior.},
+  author = { Benjamin Karran and Jonas Trümper and Jürgen Döllner},
+  booktitle = { Proceedings (electronic) of the 1st Working Conference on Software Visualization (VISSOFT)},
+  doi = {10.1109/VISSOFT.2013.6650534},
+  keywords = {type:research,name:SyncTrace, context:tasks, subcontext:trace, icicle timelines, sunburst, thread-centric, threads, parallel scale:100},
+  pages = { 10},
+  publisher = { IEEE Computer Society},
+  title = { SyncTrace: Visual Thread-Interplay Analysis},
+  year = { 2013}
+}
+
+@inproceedings{Karrer2011,
+  abstract = {We present Stacksplorer, a new tool to support source code navigation and comprehension. Stacksplorer computes the call graph of a given piece of code, visualizes relevant parts of it, and allows developers to interactively traverse it. This augments the traditional code editor by offering an additional layer of navigation. Stacksplorer is particularly useful to understand and edit unknown source code because branches of the call graph can be explored and backtracked easily. Visualizing the callers of a method reduces the risk of introducing unintended side effects. In a quantitative study, programmers using Stacksplorer performed three of four software maintenance tasks significantly faster and with higher success rates, and Stacksplorer received a System Usability Scale rating of 85.4 from participants.},
+  acmid = {2047225},
+  address = {New York, NY, USA},
+  author = {Karrer, Thorsten and Kr\"{a}mer, Jan-Peter and Diehl, Jonathan and Hartmann, Bj\"{o}rn and Borchers, Jan},
+  booktitle = {Proceedings of the 24th Annual ACM Symposium on User Interface Software and Technology},
+  doi = {10.1145/2047196.2047225},
+  isbn = {978-1-4503-0716-1},
+  keywords = {type:research, context:software, subcontext:callgraph, name:Stacksplorer, code},
+  location = {Santa Barbara, California, USA},
+  numpages = {8},
+  pages = {217--224},
+  publisher = {ACM},
+  series = {UIST '11},
+  title = {Stacksplorer: Call Graph Navigation Helps Increasing Code Maintenance Efficiency},
+  url = {http://doi.acm.org/10.1145/2047196.2047225},
+  year = {2011}
+}
+
+@inproceedings{Kim2007,
+  abstract = {It is important to debug unintended data races in OpenMP programs efficiently, because such programs are often complex and long-running. Previous tools for detecting the races does not provide any effective facility for understanding the complexity of threads involved in the reported races. This paper presents a thread visualization tool to present a partial order of threads executed in the traced programs with a scalable graph of abstract threads upon a three-dimensional cone. The scalable thread visualization is proved to be effective in debugging races using a set of synthetic programs.},
+  acmid = {1759895},
+  address = {Berlin, Heidelberg},
+  author = {Kim, Young-Joo and Lim, Jae-Seon and Jun, Yong-Kee},
+  booktitle = {Proceedings of the 2nd International Conference on Advances in Grid and Pervasive Computing},
+  doi = {10.1007/978-3-540-72360-8_27},
+  isbn = {978-3-540-72359-2},
+  keywords = {type:research,context:tasks, subcontext:dependencygraph, tree, cone, 3D, threads, openMP, code, data races, parallel scale:1K},
+  location = {Paris, France},
+  numpages = {12},
+  pages = {310--321},
+  publisher = {Springer-Verlag},
+  series = {GPC'07},
+  title = {Scalable Thread Visualization for Debugging Data Races in OpenMP Programs},
+  year = {2007}
+}
+
+@inproceedings{Kohl1996XPVM,
+  abstract = {One of the more bothersome aspects of developing a parallel program is that of monitoring the behavior of the program for debugging and performance tuning. This paper discusses an enhanced tracing facility and tracing tool for PVM (Parallel Virtual Machine), a message passing library for parallel processing in a heterogeneous environment. PVM supports mixed collections of workstation clusters, shared-memory multiprocessors, and MPPs. The upcoming release of PVM, Version 3.4, contains a new and improved tracing facility which provides more flexible and efficient access to run-time program information. This new tracing system supports a buffering mechanism to reduce the perturbation of user applications caused by tracing, and a more flexible trace event definition scheme which is based on a self-defining data format. The new scheme expedites the collection of program execution histories, and allows for integration of user-defined custom trace events. The tracing instrumentation is built into the PVM library, to avoid re-compilation when tracing is desired, and supports on-the-fly adjustments to each task's trace event mask, for control over the level of tracing detail},
+  author = {Kohl, James Arthur and Geist, GA},
+  booktitle = {System Sciences, 1996., Proceedings of the Twenty-Ninth Hawaii International Conference on,},
+  doi = {10.1109/HICSS.1996.495474},
+  keywords = {type:research,name:XPVM, context:tasks, subcontext:trace, visual analytics},
+  organization = {IEEE},
+  pages = {290--299},
+  title = {The PVM 3.4 tracing facility and XPVM 1.1},
+  volume = {1},
+  year = {1996}
+}
+
+@INPROCEEDINGS{Koike1997,
+  ISSN = {1049-2615},
+  abstract = {This paper describes the VisuaLanda system, which is an integration of a Linda server and a visualizer of parallel Linda programs. Since the visualization module is built in the Linda server, programmers do *rutneed to put additional visualization primitives their client programs in order to visualize the behavior of these programs. This framework significantly reduces the programmers' burden in debugging parallel programs, owing to the},
+  author = {Koike, H. and Takada, T. and Masui, T.},
+  booktitle = {Visual Languages, 1997. Proceedings. 1997 IEEE Symposium on},
+  doi = {10.1109/VL.1997.626578},
+  following two , = {features. First, it minimizes "probe effect," which is one of the main concerns in monitoring parallel programs. Second, VisuaLanda uses three-dimensional space to display both the relation between the Linda server and the client programs, and the execution of client programs.  This framework canbe used to display a much larger number of processes than using 2D visualization techiques, see two relations simultaneously, izmprove the visibility of communication lines, and see see each process's state as well as the overview of the execution.},
+  keywords = {type:research,name:VisuaLinda, context:tasks, subcontext:trace, timelines, 3D, Gantt, parallel scale:10},
+  pages = {174-178},
+  title = {VisuaLinda: a framework for visualizing parallel Linda programs},
+  year = {1997}
+}
+
+@article{Kraemer1993,
+  abstract = {Interactive program steering is a promising technique for improving the performance of parallel and distributed applications. Steering decisions are typically based on visual presentations of some subset of the computation’s current state, a historical view of the computation’s behaviol; or views of metrics basedon the program’s performance. As in any endeavor; good decisions require accurate information. However; the distributed nature of the collection process may result in distortions in the portrayal of the program’s execution. These distortions stem from the merging of streams of information from distributed collection points into a single stream without enforcing the ordering relationships that held among the program components that produced the information. An ordering filter placed at the point at which the streams are merged can ensure a valid ordering, leading to more accurate visualizations and better informed steering decisions. In this paper we describe the implementation of such filters in the Falcon interactive steering toolkit, and present a methodology for their specification for automated generation.},
+  acmid = {163533},
+  address = {Orlando, FL, USA},
+  author = {Kraemer, Eileen and Stasko, John T.},
+  doi = {10.1006/jpdc.1993.1050},
+  issn = {0743-7315},
+  issue_date = {June 1993},
+  journal = {J. Parallel Distrib. Comput.},
+  keywords = {type:survey},
+  month = {jun,},
+  number = {2},
+  numpages = {13},
+  pages = {105--117},
+  publisher = {Academic Press, Inc.},
+  title = {The Visualization of Parallel Systems: An Overview},
+  volume = {18},
+  year = {1993}
+}
+
+@article{Kraemer1998PARADE,
+  abstract = {Visualization tools for concurrent systems must support designers in their quest to create visualizations that promote an understanding of concurrent computations and avoid inconsistent or unsynchronized views that mislead users. A visualization system with reorderable, synchronous, and independent displays provides the necessary framework for understanding concurrent computations. This article opens with a discussion of current visualization faults and limitations. We then explain why we find the characteristics mentioned above essential to the analysis of concurrent computations and how we applied them to create a more effective visualization system through our Parade visualization environment and Polka animation toolkit.},
+  acmid = {614078},
+  address = {Piscataway, NJ, USA},
+  author = {Kraemer, Eileen and Stasko, John T.},
+  doi = {10.1109/4434.656778},
+  issn = {1092-3063},
+  issue_date = {January 1998},
+  journal = {IEEE Concurrency},
+  keywords = {type:research,name:PARADE, name:Polka, context:application, context:tasks, animation},
+  month = {jan,},
+  number = {1},
+  numpages = {11},
+  pages = {36--46},
+  publisher = {IEEE Educational Activities Department},
+  title = {Creating an Accurate Portrayal of Concurrent Executions},
+  volume = {6},
+  year = {1998}
+}
+
+@article{Landge2012Boxfish,
+  ISSN = {1077-2626},
+  abstract = {The performance of massively parallel applications is often heavily impacted by the cost of communication among compute nodes. However, determining how to best use the network is a formidable task, made challenging by the ever increasing size and complexity of modern supercomputers. This paper applies visualization techniques to aid parallel application developers in understanding the network activity by enabling a detailed exploration of the flow of packets through the hardware interconnect. In order to visualize this large and complex data, we employ two linked views of the hardware network. The first is a 2D view, that represents the network structure as one of several simplified planar projections. This view is designed to allow a user to easily identify trends and patterns in the network traffic. The second is a 3D view that augments the 2D view by preserving the physical network topology and providing a context that is familiar to the application developers. Using the massively parallel multi-physics code pF3D as a case study, we demonstrate that our tool provides valuable insight that we use to explain and optimize pF3D’s performance on an IBM Blue Gene/P system.},
+  author = {Landge, A.G. and Levine, J.A. and Bhatele, A. and Isaacs, K.E. and Gamblin, T. and Schulz, M. and Langer, S.H. and Bremer, P.-T. and Pascucci, V.},
+  doi = {10.1109/TVCG.2012.286},
+  journal = {Visualization and Computer Graphics, IEEE Transactions on},
+  keywords = {type:research,name:Boxfish, context:hardware, subcontext:network, 3D torus, torus, parallel scale:10K},
+  number = {12},
+  pages = {2467-2476},
+  title = {Visualizing Network Traffic to Understand the Performance of Massively Parallel Simulations},
+  volume = {18},
+  year = {2012}
+}
+
+@article{LeBlanc1990,
+  abstract = {To understand a parallel program’s execution we must be able to analyze lots of information describing complex relationships among many processes. Various techniques have been used, from program replay to program animation, but each has limited applicability and the lack of a common foundation preclues an integrated solution. Our approach to parallel program analysis is based on a multiplicity of views of an execution. We use a synchronization trace captured during execution to construct a graph represnetation of  the program's behavior. A user manipulates this representation to creat eand fine-tune visualizations using an integrated, programmable toolkit. Additional execution details can be recovered as needed using program replay to reconstructan execution from an existing synchronization trace. We presenta framework for describing views of a parallel program’s execution, and ananalysis methodology that relates a sequence of views to the progra mdevelopment cycle. We then describe our toolkit implementation and explain how users construct visualizations using the toolkit. Finally, we present an extended example to illustrate both our methodology and the power of our programmable toolkit.},
+  acmid = {78272},
+  address = {Orlando, FL, USA},
+  author = {LeBlanc, Thomas J. and Mellor-Crummey, John M. and Fowler, Robert J.},
+  doi = {10.1016/0743-7315(90)90046-R},
+  issn = {0743-7315},
+  issue_date = {June 1990},
+  journal = {J. Parallel Distrib. Comput.},
+  keywords = {type:research,name:Moviola, context:application, context:tasks, logical time, timelines, scatterplots, bar charts, visual analytics, parallel scale:10},
+  month = {jun,},
+  number = {2},
+  numpages = {15},
+  pages = {203--217},
+  publisher = {Academic Press, Inc.},
+  title = {Analyzing Parallel Program Executions Using Multiple Views},
+  volume = {9},
+  year = {1990}
+}
+
+@article{Lehr1989PIE,
+  acmid = {74875},
+  address = {Los Alamitos, CA, USA},
+  author = {Lehr, T. and Segall, Z. and Vrsalovic, D. F. and Caplan, E. and Chung, A. L. and Fineman, C. E.},
+  doi = {10.1109/2.42013},
+  issn = {0018-9162},
+  issue_date = {October 1989},
+  journal = {Computer},
+  keywords = {type:research,name:PIE, context:tasks, context:software, dependency graphs, visual analytics, timelines, histograms, parallel scale:10},
+  month = {oct,},
+  number = {10},
+  numpages = {14},
+  pages = {38--51},
+  publisher = {IEEE Computer Society Press},
+  title = {Visualizing Performance Debugging},
+  volume = {22},
+  year = {1989}
+}
+
+@inproceedings{Liao1999,
+  abstract = {The SUIF Explorer is an interactive parallelization tool that is more effective than previous systems in minimizing the number of lines of code that require programmer assistance. First, the interprocedural analyses in the SUIF system is successful in parallelizing many coarse-grain loops, thus minimizing the number of spurious dependences requiring attention. Second, the system uses dynamic execution analyzers to identify those important loops that are likely to be parallelizable. Third, the SUIF Explorer is the first to apply program slicing to aid programmers in interactive parallelization. The system guides the programmer in the parallelization process using a set of sophisticated visualization techniques. This paper demonstrates the effectiveness of the SUIF Explorer with three case studies. The programmer was able to speed up all three programs by examining only a small fraction of the program and privatizing a few variables.},
+  acmid = {301108},
+  address = {New York, NY, USA},
+  author = {Liao, Shih-Wei and Diwan, Amer and Bosch,Jr., Robert P. and Ghuloum, Anwar and Lam, Monica S.},
+  booktitle = {Proceedings of the Seventh ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
+  doi = {10.1145/301104.301108},
+  isbn = {1-58113-100-3},
+  keywords = {type:research,name:SUIF Explorer},
+  location = {Atlanta, Georgia, USA},
+  numpages = {12},
+  pages = {37--48},
+  publisher = {ACM},
+  series = {PPoPP '99},
+  title = {SUIF Explorer: An Interactive and Interprocedural Parallelizer},
+  year = {1999}
+}
+
+@inproceedings{Lin2010,
+  abstract = {Developers must often diagnose anomalies in programs they only have a partial knowledge of. As a result, they must simultaneously reverse engineer parts of the system they are unfamiliar with while interpreting dynamic observation data (performance profiling traces, error-propagation channels, memory leaks), a task particularly difficult. To support developers in this kind of comprehension task, filtering and aggregation have long been suggested as key enabling strategies. Unfortunately, traditional approaches typically only provide a uniform level of aggregation, thus limiting the ability of developers to construct context-dependent representations of a program’s execution. In this paper, we propose a localised approach to navigate and analyse the CPU usage of little-known programs and libraries. Our method exploits the structural information present in profiling call trees to selectively raise or lower the local abstraction level of the performance data. We explain the formalism underpinning our approach, describe a prototype, and present a preliminary user study that shows our tool has the potential to complement more traditional navigation approaches.},
+  acmid = {1879228},
+  address = {New York, NY, USA},
+  author = {Lin, Shen and Ta\"{\i}ani, Fran\c{c}ois and Ormerod, Thomas C. and Ball, Linden J.},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879228},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,context:software, subcontext:callgraph, node-link, indented tree, aggregation, parallel scale:NR},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {103--112},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Towards Anomaly Comprehension: Using Structural Compression to Navigate Profiling Call-trees},
+  year = {2010}
+}
+
+@inproceedings{Liu2013HPCToolkit,
+  abstract = {It is difficult to manually identify opportunities for enhanc- ing data locality. To address this problem, we extended the HPCToolkit performance tools to support data-centric pro- filing of scalable parallel programs. Our tool uses hardware counters to directly measure memory access latency and at- tributes latency metrics to both variables and instructions. Different hardware counters provide insight into different as- pects of data locality (or lack thereof). Unlike prior tools for data-centric analysis, our tool employs scalable measure- ment, analysis, and presentation methods that enable it to analyze the memory access behavior of scalable parallel pro- grams with low runtime and space overhead. We demon- strate the utility of HPCToolkit’s new data-centric analysis capabilities with case studies of five well-known benchmarks. In each benchmark, we identify performance bottlenecks caused by poor data locality and demonstrate non-trivial performance optimizations enabled by this guidance.},
+  acmid = {2503297},
+  address = {New York, NY, USA},
+  articleno = {28},
+  author = {Liu, Xu and Mellor-Crummey, John},
+  booktitle = {Proceedings of the International Conference on High Performance Computing, Networking, Storage and Analysis},
+  doi = {10.1145/2503210.2503297},
+  isbn = {978-1-4503-2378-9},
+  keywords = {type:research,name:HPCToolkit, context:software, subcontext:code, subcontext:calltree, indented tree, parallel scale:10},
+  location = {Denver, Colorado},
+  numpages = {12},
+  pages = {28:1--28:12},
+  publisher = {ACM},
+  series = {SC '13},
+  title = {A Data-centric Profiler for Parallel Programs},
+  year = {2013}
+}
+
+@INPROCEEDINGS{Maletic2002Survey,
+  abstract = {A number of taxonomies to classify and categorize software visualization systems have been proposed in the past. Most notable are those presented by Price [1993] and Roman [1993]. While these taxonomies are an accurate representation of software visualization issues, they are somewhat skewed with respect to current research areas on software visualization. We revisit this important work and propose a number of realignments with respect to addressing the software engineering tasks of large-scale development and maintenance. We propose a framework to emphasize the general tasks of understanding and analysis during development and maintenance of large-scale software systems. Five dimensions relating to the what, where, how, who, and why of software visualization make up this framework. The focus of this work is not so much as to classify software visualization system, but to point out the need for matching the method with the task. Lastly, a number of software visualization systems are examined under our framework to highlight the particular problems each addresses.},
+  author = {Maletic, J.I. and Marcus, A. and Collard, M.L.},
+  booktitle = {Visualizing Software for Understanding and Analysis, 2002. Proceedings. First International Workshop on},
+  doi = {10.1109/VISSOF.2002.1019792},
+  keywords = {type:survey},
+  pages = {32-40},
+  title = {A task oriented view of software visualization},
+  year = {2002}
+}
+
+@ARTICLE{Malony1991Traceview,
+  ISSN = {0740-7459},
+  abstract = {The design, development, and application of Traceview, a general-purpose trace-visualization tool that implements the trace-management and I/O features usually found in special-purpose trace-analysis systems, are described. The aspects of trace visualization that can be incorporated into a reusable tool are identified. The tradeoff in general-purpose design versus semantically based, detailed trace-data analysis is evaluated. Display methods and Traceview applications are discussed.},
+  author = {Malony, A.D. and Hammerslag, D.H. and Jablonowski, D.J.},
+  doi = {10.1109/52.84213},
+  journal = {Software, IEEE},
+  keywords = {type:research,name:Traceview, context:tasks, subcontext:trace, Gantt, time series, parallel scale:10},
+  number = {5},
+  pages = {19-28},
+  title = {Traceview: a trace visualization tool},
+  volume = {8},
+  year = {1991}
+}
+
+@INPROCEEDINGS{McCarthy2014Boxfish,
+  abstract = {Understanding the interactions between a parallel application and the interconnection network over which it exchanges data is critical to optimizing performance in modern supercomputers. However, recent supercomputing architectures use networks that do not have natural low-dimensional representations, making them difficult to comprehend or visualize. In particular, high-dimensional torus networks are common and are used in four of the top ten supercomputers and eight of the top ten on the Graph500 list. We present a new visualization of five-dimensional torus networks. We use four connected views depicting the network at different levels of detail, allowing analysts to observe general large-scale traffic patterns while simultaneously viewing individual links or outliers in any specific section of the network. We demonstrate this approach by analyzing network traffic for a pF3D simulation running on the IBM Blue Gene/Q architecture, and show how it is both intuitive and effective for understanding and optimizing parallel application behavior.},
+  author = {McCarthy, Collin M. and Isaacs, Katherine E. and Bhatele, Abhinav and Bremer, Peer-Timo and Hamann, Bernd},
+  booktitle = {Visual Performance Analysis, 1st Workshop on},
+  keywords = {type:research, context:hardware, subcontext:network, name:Boxfish, torus, 5d torus, multiple coordinated views, parallel scale:1k},
+  month = {Nov},
+  title = {Visualizing the Five-dimensional Torus Network of the {IBM Blue Gene/Q}},
+  year = {2014}
+}
+
+@article{Miller1993,
+  author = {B.P. Miller},
+  doi = {10.1006/jpdc.1993.1063},
+  issn = {0743-7315},
+  journal = {Journal of Parallel and Distributed Computing},
+  keywords = {type:position},
+  number = {2},
+  pages = {265 - 269},
+  title = {What to Draw? When to Draw? An Essay on Parallel Program Visualization},
+  volume = {18},
+  year = {1993}
+}
+
+@incollection{Mohr2003Kojak,
+  abstract = {Today’s parallel computers with SMP nodes provide both multithreading and message passing as their modes of parallel execution. As a consequence, performance analysis and optimization becomes more difficult and creates a need for advanced performance tools that are custom made for this class of computing environments. Current state-of-the-art tools provide valuable assistance in analyzing the performance of mpi and Openmp programs by visualizing the run-time behavior and calculating statistics over the performance data. However, the developer of parallel programs is still required to filter out relevant parts from a huge amount of low-level information shown in numerous displays and map that information onto program abstractions without tool support. The kojak project (Kit for Objective Judgement and Knowledge-based Detection of Performance Bottlenecks) is aiming at the development of a generic automatic performance analysis environment for parallel programs. Performance problems are specified in terms of execution patterns that represent situations of inefficient behavior. These patterns are input for an analysis process that recognizes and quantifies the inefficient behavior in event traces. Mechanisms that hide the complex relationships within event pattern specifications allow a simple description of complex inefficient behavior on a high level of abstraction. The analysis process transforms the event traces into a three-dimensional representation of performance behavior. The first dimension is the kind of behavior. The second dimension describes the behavior’s source-code location and the execution phase during which it occurs. Finally, the third dimension gives information on the distribution of performance losses across different processes or threads. The hierarchical organization of each dimension enables the investigation of performance behavior on varying levels of granularity. Each point of the representation is uniformly mapped onto the corresponding fraction of execution time, allowing the convenient correlation of different behavior using only a single view. In addition, the set of predefined performance problems can be extended to meet individual (e.g., application-specific) needs.},
+  author = {Mohr, Bernd and Wolf, Felix},
+  booktitle = {Euro-Par 2003 Parallel Processing},
+  doi = {10.1007/978-3-540-45209-6_177},
+  editor = {Kosch, Harald and Böszörményi, László and Hellwagner, Hermann},
+  isbn = {978-3-540-40788-1},
+  keywords = {type:research,name:KOJAK, name:Scalasca, context:software, subcontext:callgraph, indented tree},
+  pages = {1301-1304},
+  publisher = {Springer Berlin Heidelberg},
+  series = {Lecture Notes in Computer Science},
+  title = {KOJAK - A Tool Set for Automatic Performance Analysis of Parallel Programs},
+  volume = {2790},
+  year = {2003}
+}
+
+@INPROCEEDINGS{Moreta2007,
+  abstract = {We present a visualization tool for dynamic memory allocation information btained from instrumenting the runtime allocator used by C programs. The goal of the presented visualization techniques is to convey insight in the dynamic behavior of the allocator The purpose is to help the allocator designers understand how the performance and working of the allocator depend on the actual allocation scenarios in order to optimize itsfunctionality by decreasing fragmentation and improving response time. We use an orthogonal dense pixel layout of time versus memory space which can show tens of thousands of allocation events on a single screen. We enhance the basic idea with several new techniques: antialiased metric bars for detecting high and low activity areas; cushion cursors for checking correlations of multiple views; and a view toshow correlation between program structure (functions) and memory allocations. The presented techniques are demonstrated on data from a real application.},
+  author = {Moreta, S. and Telea, A.},
+  booktitle = {Visualizing Software for Understanding and Analysis, 2007. VISSOFT 2007. 4th IEEE International Workshop on},
+  doi = {10.1109/VISSOF.2007.4290697},
+  keywords = {type:research,context:hardware, subcontext:memory, timelines, cushions, parallel scale:N/A},
+  pages = {31-38},
+  title = {Visualizing Dynamic Memory Allocations},
+  year = {2007}
+}
+
+@inproceedings{Mu2003,
+  abstract = {Optimizing the performance of shared-memory NUMA programs remains something of a black art, requiring that application writers possess deep understanding of their programs’ behaviors. This difficulty represents one of the remaining hindrances to the widespread adoption and deployment of these cost-efficient and scalable shared-memory NUMA architectures. To address this problem, we have developed a performance monitoring infrastructure and a corresponding set of tools to aid in visualizing and understanding the subtleties of the memory access behavior of parallel NUMA applications with large datasets. The tools are designed to be general, interoperable, and easily portable. We give detailed examples of the use of one particular tool in the set. We have used this memory access visualization tool profitably on a range of applications, improving performance by around 90\%, on average.},
+  acmid = {774853},
+  address = {New York, NY, USA},
+  author = {Mu, Tao and Tao, Jie and Schulz, Martin and McKee, Sally A.},
+  booktitle = {Proceedings of the 2003 ACM Symposium on Software Visualization},
+  doi = {10.1145/774833.774853},
+  isbn = {1-58113-642-0},
+  keywords = {type:research,context:hardware, subcontext:memory, 3D, 1D array, matrix, bar charts, parallel scale:1K},
+  location = {San Diego, California},
+  pages = {133--ff},
+  publisher = {ACM},
+  series = {SoftVis '03},
+  title = {Interactive Locality Optimization on NUMA Architectures},
+  year = {2003}
+}
+
+@article{Muelder2009,
+  abstract = {In serial computation, program profiling is often helpful for optimization of key sections of code. When moving to parallel computation, not only does the code execution need to be considered but also communication between the different processes which can induce delays that are detrimental to performance. As the number of processes increases, so does the impact of the communication delays on performance. For large-scale parallel applications, it is critical to understand how the communication impacts performance in order to make the code more efficient. There are several tools available for visualizing program execution and communications on parallel systems. These tools generally provide either views which statistically summarize the entire program execution or process-centric views. However, process-centric visualizations do not scale well as the number of processes gets very large. In particular, the most common representation of parallel processes is a Gantt chart with a row for each process. As the number of processes increases, these charts can become difficult to work with and can even exceed screen resolution. We propose a new visualization approach that affords more scalability and then demonstrate it on systems running with up to 16,384 processes.},
+  address = {Los Alamitos, CA, USA},
+  author = {Chris Muelder and Francois Gygi and Kwan-Liu Ma},
+  doi = {10.1109/TVCG.2009.196},
+  issn = {1077-2626},
+  journal = {IEEE Transactions on Visualization and Computer Graphics},
+  keywords = {type:research,context:tasks, subcontext:trace, timelines, opacity scaling, parallel scale:10K},
+  number = {6},
+  pages = {1129-1136},
+  publisher = {IEEE Computer Society},
+  title = {Visual Analysis of Inter-Process Communication for Large-Scale Parallel Computing},
+  volume = {15},
+  year = {2009}
+}
+
+@inproceedings{Muelder2011,
+  abstract = {As supercomputers grow ever larger, so too do application run times and data requirements. The operational patterns of modern parallel I/O systems are far too complex to allow for a direct analysis of their trace logs. Several visualization methods have therefore been developed to address this issue. Traditional, direct visualizations of parallel systems, such as Gantt charts, can be applied to parallel file systems, but do they not capture domain specific properties nor scale up to modern systems. We propose a portable I/O tracing system and visualization methods to analyze the traces we have obtained. We demonstrate the effectiveness of this system on existing parallel storage systems.},
+  acmid = {1996036},
+  address = {New York, NY, USA},
+  author = {Muelder, Christopher and Sigovan, Carmen and Ma, Kwan-Liu and Cope, Jason and Lang, Sam and Iskra, Kamil and Beckman, Pete and Ross, Robert},
+  booktitle = {Proceedings of the Third International Workshop on Large-scale System and Application Performance},
+  doi = {10.1145/1996029.1996036},
+  isbn = {978-1-4503-0703-1},
+  keywords = {type:research,context:tasks, context:hardware, subcontext:trace, timelines, fisheye, IO, opacity scaling, matrix, parallel scale:1K},
+  location = {San Jose, California, USA},
+  numpages = {8},
+  pages = {19--26},
+  publisher = {ACM},
+  series = {LSAP '11},
+  title = {Visual Analysis of I/O System Behavior for High-end Computing},
+  year = {2011}
+}
+
+@inproceedings{Myers2010,
+  abstract = {Visual representations of runtime software structures such as heap memory graphs can aid in debugging and help to develop program understanding. However, such structures may contain thousands of objects and have no obvious spatial organisation. If the program contains flaws the appearance of objects may well differ from the user’s expectations. Navigating these graphs can be challenging to the user as the space is abstract and potentially unfamiliar. To alleviate this problem we employ a systematic approach grounded in the principles of navigational landmarks. We identify subgraphs within the heap that correspond to significant design abstractions and apply various visualization techniques to highlight and organise these structures. The aim is to provide the user with recognisable features that are linked to more familiar representations of the software. We claim that the enhanced representation can sup- port existing memory debugging tools by providing the user with a usable ’map’ of an otherwise abstract data space. The results are demonstrated using data extracted from an instrumented version of the Visualization Tool Kit (VTK), a complex and widely-used architecture for data visualization.},
+  acmid = {1879223},
+  address = {New York, NY, USA},
+  author = {Myers, Colin and Duke, David},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879223},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,context:hardware, heap, debugging, node-link, tree-layout, contours, parallel scale:N/A},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {63--72},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {A Map of the Heap: Revealing Design Abstractions in Runtime Structures},
+  year = {2010}
+}
+
+@article{Nagel1996,
+  author = {W. E. Nagel and A. Arnold and M. Weber and H. C. Hoppe and K. Solchenbach},
+  journal = {Supercomputer},
+  keywords = {type:research,name:Vampir, context:tasks, subcontext:trace, timelines, Gantt, messages, visual analytics, parallel scale:100},
+  number = {1},
+  pages = {69--80},
+  title = {{VAMPIR}: Visualization and Analysis of {MPI} Resources},
+  volume = {12},
+  year = {1996}
+}
+
+@INPROCEEDINGS{Osmari2014SmartTraces,
+  abstract = {Most performance analysis tools focus on presenting an overload of details, with little application-dependent structure, and predefined statistical summaries. This makes the complex relations present in a parallel program not directly recognizable to the user, making the task of identifying performance issues more costly in both time and effort. In this work we investigate the requirements to create visualizations of execution traces of parallel programs modeled as dataflows. We propose the Smart Trace (ST) concept, to encode the structure of the data, and guide the construction of specialized visualizations. A visualization tool can then leverage the relationships in the data to automate a given analysis task. We show with examples the power and flexibility of visualizations we can create to address specific questions formulated about the analysis of the data, with emphasis in parallel dataflow traces.},
+  author = {Osmari, Daniel K. and Vo, Huy T. and Silva, Claudio T. and Comba, Joao L.D. and Lins, Lauro},
+  booktitle = {Graphics, Patterns and Images (SIBGRAPI), 2014 27th SIBGRAPI Conference on},
+  doi = {10.1109/SIBGRAPI.2014.2},
+  keywords = {type:research, context:tasks, context:hardware, subcontext:trace, name:Smart Traces (ST), heterogenous, gantt, node-link, scatterplots, multiple coordinated views, timelines, parallel scale:100},
+  month = {Aug},
+  pages = {165-172},
+  title = {Visualization and Analysis of Parallel Dataflow Execution with Smart Traces},
+  year = {2014}
+}
+
+@article{Paje2000,
+  abstract = {This paper describes Paje, an interactive visualization tool for displaying the execution of parallel applications where a potentially large number of communicating threads of various life-times execute on each node of a distributed memory parallel system. Paje is capable of representing a wide variety of interactions between threads. The main characteristics of Paje, interactivity and scalability, are exempli®ed by the performance tuning of a molecular dynamics application. In order to be easily extensible, the architecture of the system was based on components which are connected in a data flow graph to produce a given visualization tool. Innovative components were designed, in addition to ``classical'' components existing in similar visualization systems, to support scalability and interactivity.},
+  acmid = {357838},
+  address = {Amsterdam, The Netherlands, The Netherlands},
+  author = {J. Chassin de Kergommeaux, B. de Oliveira Stein, and Bernard P.E.},
+  doi = {10.1016/S0167-8191(00)00010-7},
+  issn = {0167-8191},
+  issue_date = {Sept. 2000},
+  journal = {Parallel Comput.},
+  keywords = {type:research,name:Paje, context:tasks, subcontext:trace, messages, Gantt, timelines, threads, semaphores, pie charts, parallel scale:100},
+  month = {sep,},
+  number = {10},
+  numpages = {22},
+  pages = {1253--1274},
+  publisher = {Elsevier Science Publishers B. V.},
+  title = {Paje an Interactive Visualization Tool for Tuning Multi-threaded Parallel Applications},
+  volume = {26},
+  year = {2000}
+}
+
+@inproceedings{Pancake1989,
+  abstract = {The complexity of parallel programming has stimulated the development of a variety of debugging tools. This survey of recent research focuses on debugger visualization systems. The effectiveness of such systems is bounded by the degree to which their representations of runtime behavior correlate with the language structures used to incorporate parallelism, as well as the logical framework adopted by the programmer. Current visualization systems are compared with the conceptual models supported by parallel languages. Attention is drawn to the fact that debuggers are tied to specific models and that this association may restrict their usefulness and acceptability.},
+  acmid = {76334},
+  address = {New York, NY, USA},
+  author = {Pancake, C. M. and Utter, S.},
+  booktitle = {Proceedings of the 1989 ACM/IEEE Conference on Supercomputing},
+  doi = {10.1145/76263.76334},
+  isbn = {0-89791-341-8},
+  keywords = {type:survey},
+  location = {Reno, Nevada, USA},
+  numpages = {10},
+  pages = {627--636},
+  publisher = {ACM},
+  series = {Supercomputing '89},
+  title = {Models for Visualization in Parallel Debuggers},
+  year = {1989}
+}
+
+@inproceedings{Pillet1995,
+  author = {Pillet, Vincent and Labarta, Jes{\'u}s and Cortes, Toni and Girona, Sergi},
+  booktitle = {Proceedings of WoTUG-18: Transputer and occam Developments},
+  keywords = {type:research,name:Paraver, context:tasks, subcontext:trace, timelines, Gantt, messages},
+  pages = {17--31},
+  title = {Paraver: A tool to visualize and analyze parallel code},
+  volume = {44},
+  year = {1995}
+}
+
+@inproceedings{Reed1993Pablo,
+  abstract = {Developers of application codes for massively parallel computer systems face daunting performance tuning and optimization problems that must be solved if massively parallel systems are to fulfill their promise. Recording and analyzing the dynamics of application program, system software, and hardware interactions is the key to understanding and the prerequisite to performance tuning, but this instrumentation and analysis must not unduly perturb program execution. Pablo is a performance analysis environment designed to provide unobtrusive performance data capture, analysis, and presentation across a wide variety of scalable parallel systems. Current efforts include dynamic statistical clustering to reduce the volume of data that must be captured and complete performance data immersion via head-mounted displays},
+  author = {Reed, Daniel A and Roth, PC and Aydt, Ruth A and Shields, KA and Tavera, LF and Noe, RJ and Schwartz, BW},
+  booktitle = {Scalable Parallel Libraries Conference, 1993., Proceedings of the},
+  doi = {10.1109/SPLC.1993.365577},
+  keywords = {type:research,name:Pablo, scatterplots, virtual reality, 3D, 4D, scatterplot array},
+  organization = {IEEE},
+  pages = {104--113},
+  title = {Scalable performance analysis: The Pablo performance analysis environment},
+  year = {1993}
+}
+
+@ARTICLE{Reed1995,
+  ISSN = {0018-9162},
+  abstract = {Recording and analyzing the dynamics of application-program, system-software, and hardware interactions are the keys to understanding and tuning the performance of massively parallel systems. Because such systems contain hundreds or thousands of processors, each potentially with many dynamic performance metrics, the performance data occupies a sparsely populated, high-dimensional space. These dynamic performance metrics define a group of evolving, n-dimensional points. Understanding the dynamic "shape" of the metric movement is possible only if multiple, lower dimensional projections can be examined. The authors have implemented an immersive virtual world, called Avatar, that shows all possible three-dimensional projections of a sparsely populated, n-dimensional metric space. The presentation metaphor is a three-dimensional generalization of a two-dimensional scatterplot matrix. Users can move about scatterplot cubes, control selected characteristics of the scatterplot display, listen to the sounds of statistical data attributes, and interactively modify application behavior and performance in real time.},
+  author = {Reed, D.A. and Shields, K.A. and Scullin, W.H. and Tavera, L.F. and Elford, C.L.},
+  doi = {10.1109/2.471180},
+  journal = {Computer},
+  keywords = {type:research,name:Pablo, virtual reality, 3D, scatterplots, scatterplot cubes, parallel scale:100},
+  number = {11},
+  pages = {57-67},
+  title = {Virtual reality and parallel systems performance analysis},
+  volume = {28},
+  year = {1995}
+}
+
+@INPROCEEDINGS{Reilly1990,
+  abstract = {The paper describes the performance analysis tools developed for Digital Equipment Corporation’s experimental multiprocessor, M31. The tools allow a user to instrument an application, monitor its execution, and analyze the collected event traces. The analysis and presentation tools afford the user a view of the application’s dynamic call tree as well as the flow of control within and between cooperating processes. The paper describes the trajectory of a scientific application through the performance debugging process. Experience with the tools indicates that they can be used to provide insight that results in improved performance of a complex application.},
+  author = {Reilly, M.},
+  booktitle = {System Sciences, 1990., Proceedings of the Twenty-Third Annual Hawaii International Conference on},
+  doi = {10.1109/HICSS.1990.205129},
+  keywords = {type:research,context:tasks, context:software, subcontext:callgraph, subcontext:trace, icicle timelines, node-link, parallel scale:1+},
+  pages = {307-313 vol.1},
+  title = {Presentation tools for performance visualization: the M31 instrumentation experience},
+  volume = {i},
+  year = {1990}
+}
+
+@book{Reinders2005,
+  author = {Reinders, J.},
+  isbn = {9780974364957},
+  keywords = {type:research,name:VTune, visual analytics},
+  publisher = {Intel Press},
+  series = {Engineer to Engineer Series},
+  title = {VTune Performance Analyzer Essentials: Measurement and Tuning Techniques for Software Developers},
+  year = {2005}
+}
+
+@INPROCEEDINGS{Renieris1999ALMOST,
+  abstract = {We built a tool to visualize and explore program execution traces. Our goal was to help programmers without any prior knowledge of a program, quickly get enough knowledge about its structure so that they can make small to medium changes. In the process, a number of problems were faced and tackled concerning the efficient use of screen space, interaction with multiple concurrent views, and linking of asymmetric views},
+  author = {Renieris, M. and Reiss, S. P.},
+  booktitle = {1999 Workshop on New Paradigms in Information Visualization adn Manipulation},
+  doi = {10.1145/331770.331788},
+  keywords = {type:research,name:ALMOST, context:software, subcontext:trace, icicle timelines, spiral, parallel scale:N/A},
+  pages = {70-77},
+  publisher = {ACM},
+  title = {{ALMOST}: Exploring program traces},
+  year = {1999}
+}
+
+@InProceedings{Roberts2005,
+  abstract = {This paper describes TraceVis, a tool for graphically exploring application behavior as it relates to its execution on a microprocessor. Because the human mind can process enormous amounts of visual data–readily identifying trends and patterns -- such a tool facilitates performance analysis by allowing raw data to be inspected rather than summaries of pre-selected characteristics. To this end, TraceVis has been designed to enable interactive navigation of many kinds data useful for studying performance problems including: relating the execution to disassembly and high-level language code, annotating the program trace with events (e.g., branch mispredictions and cache misses), and tracing instruction dependencies. In addition, TraceVis provides mechanisms for searching in traces and annotating traces (to bookmark areas of interest or mark regions previously characterized) to allow an analyst to focus their attention on the desired behaviors and regions. Along with exhibiting TraceVis’s features, this paper demonstrates how these features can be used in conjunction to analyze the performance of a simulated microprocessor’s execution. TraceVis is available in source form for non-commercial use [1].},
+  author = {James Roberts and Craig Zilles},
+  booktitle = {MoBS '05},
+  keywords = {type:research,name:TraceVis, context:software, subcontext:trace, code, instructions, parallel scale:1+},
+  title = {TraceVis: An Execution Trace Visualization Tool},
+  year = {2005}
+}
+
+@inproceedings{Robertson2010,
+  abstract = {A program‟s memory system performance is one of the key determinants of its overall performance. Lack of understanding of a program‟s memory system behavior can lead to performance problems, the most common being memory fragmentation and memory leaks. In this paper, we present AllocRay, a visualization that animates memory allocation event trace information over a time period of execution of a program. Various modes of display with custom color mappings and zooming allow the programmer to see how heaps are used over time (by allocation type, age, size, or thread id). Custom displays also allow the programmer to quickly detect potential memory leaks and fragmentation problems. Composable filters enable the programmer to focus on specific issues. We describe the techniques used to enable processing of a huge number of trace events while enabling rapid response to visualization view changes. We also describe informal interviews with four expert programmers to examine the usability of the AllocRay design.},
+  acmid = {1879221},
+  address = {New York, NY, USA},
+  author = {Robertson, George G. and Chilimbi, Trishul and Lee, Bongshin},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879221},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,name:AllocRay, context:hardware, subcontext:memory, filtering, timelines, parallel scale:N/A},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {43--52},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {AllocRay: Memory Allocation Visualization for Unmanaged Languages},
+  year = {2010}
+}
+
+@InProceedings{Rosen2013,
+  abstract = {We present an approach to investigate the memory behavior of a parallel kernel executing on thousands of threads simultaneously within the CUDA architecture. Our top-down approach allows for quickly identifying any significant differences between the execution of the many blocks and warps. As interesting warps are identified, we allow further investigation of memory behavior by visualizing the shared memory bank conflicts and global memory coalescence, first with an overview of a single warp with many operations and, subsequently, with a detailed view of a single warp and a single operation. We demonstrate the strength of our approach in the context of a parallel matrix transpose kernel and a parallel 1D Haar Wavelet transform kernel.},
+  author = {P. Rosen},
+  booktitle = {Computer Graphics Forum ({EuroVis})},
+  doi = {10.1111/cgf.12103},
+  keywords = {type:research,context:hardware, subcontext:memory, GPUs, threads, context:tasks, parallel scale:100},
+  number = {3},
+  title = {A Visual Approach to Investigating Shared and Global Memory Behavior of {CUDA} Kernels},
+  volume = {32},
+  year = {2013}
+}
+
+@INPROCEEDINGS{Rover1992,
+  abstract = {Observing the activities of a complex parallel computer system is no small feat, and relating these observations to program behavior is even harder: In this paper, we present a general measurement approach that is applicable to a large class of scalable programs and machines, specifically data parallel programs executing on distributed memory computer systems. The combined instrumentation and visualization paradigm, called VISTA, is based on our experiences programming and monitoring applications running on an nCUBE 2 computer and a MasPar MP-1 computer. The key is that performance data are treated similar to any distributed data in the context of the data parallel programming model. Because of the data-parallel mapping of program onto machine, we can view the performance as it relates to each processor, processor cluster; or the processor ensemble and as it relates to the data structures of the program. We illustrate the utility of VISTA by example.},
+  author = {Rover, D.T.},
+  booktitle = {System Sciences, 1992. Proceedings of the Twenty-Fifth Hawaii International Conference on},
+  doi = {10.1109/HICSS.1992.183288},
+  keywords = {type:research,name:VISTA, name:ParaGraph, context:tasks, context:hardware, visual analytics, timelines, messages, small multiples, parallel scale:10},
+  pages = {149-160 vol.2},
+  title = {A performance visualization paradigm for data parallel computing},
+  volume = {ii},
+  year = {1992}
+}
+
+@ARTICLE{Sambasivan2013,
+  ISSN = {1077-2626},
+  abstract = {Distributed systems are complex to develop and administer, and performance problem diagnosis is particularly challenging. When performance degrades, the problem might be in any of the system’s many components or could be a result of poor interactions among them. Recent research efforts have created tools that automatically localize the problem to a small number of potential culprits, but research is needed to understand what visualization techniques work best for helping distributed systems developers understand and explore their results. This paper compares the relative merits of three well-known visualization approaches (side-by-side, diff, and animation) in the context of presenting the results of one proven automated localization technique called request-flow comparison. Via a 26-person user study, which included real distributed systems developers, we identify the unique benefits that each approach provides for different problem types and usage modes.},
+  author = {Sambasivan, R.R. and Shafer, I. and Mazurek, M.L. and Ganger, G.R.},
+  doi = {10.1109/TVCG.2013.233},
+  journal = {Visualization and Computer Graphics, IEEE Transactions on},
+  keywords = {type:research,context:software, subcontext:trace, comparison, timelines, animation, ensemble},
+  number = {12},
+  pages = {2466-2475},
+  title = {Visualizing Request-Flow Comparison to Aid Performance Diagnosis in Distributed Systems},
+  volume = {19},
+  year = {2013}
+}
+
+@article{Sarukkai1993SIEVE,
+  abstract = {This paper describes a new approach to designing performance analysis tools for parallel processing systems. A primary contribution of this work is to explore the way in which application source code structure can be incorporated into an interactive, programmable event trace analyzer. Event histories are organized as a temporal, relational data base. The user interface is based on a simple two dimensional spreadsheet metaphor that provides a direct and flexible view of the data base and also provides a simple but powerful interactive graphics facility.},
+  acmid = {163538},
+  address = {Orlando, FL, USA},
+  author = {Sarukkai, Sekhar R. and Gannon, Dennis},
+  doi = {10.1006/jpdc.1993.1053},
+  issn = {0743-7315},
+  issue_date = {June 1993},
+  journal = {J. Parallel Distrib. Comput.},
+  keywords = {type:research,name:SIEVE, context:tasks, subcontext:trace, timelines, contours, tables, code, bar charts, pie charts, visual analytics, parallel scale:10},
+  month = {jun,},
+  number = {2},
+  numpages = {22},
+  pages = {147--168},
+  publisher = {Academic Press, Inc.},
+  title = {{SIEVE}: A Performance Debugging Environment for Parallel Programs},
+  volume = {18},
+  year = {1993}
+}
+
+@inproceedings{Schaubschlager2003DeWiz,
+  abstract = {Due to the increased complexity of parallel and distributed programs, debugging of them is considered to be the most difficult and time consuming part of the software lifecycle. Tool support is hence a crucial necessity to hide complexity from the user. However, most existing tools seem inadequate as soon as the program under consideration exploits more than a few processors over a long execution time. This problem is addressed by the novel debugging toolDeWiz (DebuggingWizard),whose focus lies on scalability.DeWiz has a modular, scalable architecture, and uses the event graph model as a representation of the investigated program. DeWiz provides a set of modules, which can be combined to generate, analyze, and visualize event graph data.Within this processing pipeline the toolset tries to extract useful information,which is presented to the user at an arbitrary level of abstraction. Additionally, DeWiz is a framework, which can be used to easily implement arbitrary user-defined modules.},
+  author = {Schaubschl\"{a}ger, C. and Kranzlm\"{u}ller, D. and Volkert, J.},
+  booktitle = {Proceedings of the Fifth International Workshop on Automated Debugging AADEBUG2003},
+  keywords = {type:research,name:DeWiz, context:tasks, subcontext:trace, logical time, messages, timelines},
+  title = {Event-based Program Analysis with {DeWiz}},
+  year = {2003}
+}
+
+@INPROCEEDINGS{Schnorr2008,
+  abstract = {Parallel computing is increasingly used to provide more performance to applications that need tremendous computational power. The main characteristics of distributed parallel machines are heterogeneity, dynamism and size. They influence directly the way the application and platform monitoring tasks are performed, especially when analyzing a large quantity of information collected in a topologically complex machine. This paper describes our efforts to provide parallel programmers and Grid users a new way to visualize monitoring data. Using graphics in three dimensions and information visualization techniques, we aim at bringing rich topological information to the rendered scene. It results in an immersible and human readable representation of complex monitoring data, suited to Grid environments. We first review known techniques in information visu- alization context, especially those that address the case of hierarchical information, and we discuss about their use in our context. Then, we propose a new 3D approach that combines the classical space-time visualization of application traces with the representation of the application’s communication pattern. Finally, we present experimental results obtained through the visualization of parallel applications in our prototype.},
+  author = {Schnorr, L.M. and Huard, G. and Navaux, P.O.A.},
+  booktitle = {Grid Computing, 2008 9th IEEE/ACM International Conference on},
+  doi = {10.1109/GRID.2008.4662804},
+  keywords = {type:research,name:Triva, context:tasks, subcontext:trace, timelines, force-directed, 3D, parallel scale:100},
+  pages = {233-241},
+  title = {3D approach to the visualization of parallel applications and Grid monitoring information},
+  year = {2008}
+}
+
+@article{Schnorr2010,
+  abstract = {Parallel applications use grid infrastructures to obtain more performance during their execution. The successful result of these executions depends directly on a performance analysis that takes into account the grid characteristics, such as the network topology and resources location. This paper presents Triva, a software analysis tool that implements a novel technique to visualize the behavior of parallel applications. The proposed technique explores 3D graphics in order to show the application behavior together with a description of the resources, highlighting communication patterns, the net- work topology and a visual representation of a logical organization of the resources. We have used a real grid infrastructure in order to execute and trace applications composed of thousands of processes.},
+  author = {Lucas Mello Schnorr and Guillaume Huard and Philippe O.A. Navaux},
+  doi = {10.1016/j.future.2009.10.006},
+  journal = {Future Generation Computer Systems},
+  keywords = {type:research,name:Triva, context:tasks, subcontext:trace, timelines, force-directed, 3D, treemap, parallel scale:1K},
+  number = {3},
+  pages = {348 - 358},
+  title = {Triva: Interactive 3D visualization for performance analysis of parallel applications},
+  volume = {26},
+  year = {2010}
+}
+
+@article{Schnorr2012,
+  abstract = {The analysis of large-scale parallel applications today has several issues, such as the observation and identification of unusual behavior of processes, expected state of the application, and so on. Performance visualization tools offer a wide spectrum of techniques to visually analyze the monitoring data collected from these applications. The problem is that most of the techniques were not conceived to deal with a high number of processes, in large-scale scenarios. A common example for that is the space–time view, largely used in the performance visualization area, but limited on how much data can be analyzed at the same time. The work presented in this article addresses the problem of visualization scalability in the analysis of parallel applications, through a combination of a temporal integration technique, an aggregation model and treemap representations. Results show that our approach can be used to analyze applications composed of several thousands of processes in large-scale and dynamic scenarios.},
+  author = {Lucas Mello Schnorr and Guillaume Huard and Philippe Olivier Alexandre Navaux},
+  doi = {j.parco.2011.12.001},
+  journal = {Parallel Computing},
+  keywords = {type:research, name:Triva, context:tasks, subcontext:trace, parallel scale:100k, treemap, aggregation},
+  number = {3},
+  pages = {91 - 110},
+  title = {A hierarchical aggregation model to achieve visualization scalability in the analysis of parallel applications},
+  volume = {38},
+  year = {2012}
+}
+
+@INPROCEEDINGS{Schulz2011,
+  ISSN = {0190-3918},
+  abstract = {To exploit the capabilities of current and future systems, developers must understand the interplay between on-node performance, domain decomposition, and an application's intrinsic communication patterns. While tools exist to gather and analyze data for each of these components individually, the resulting information is generally processed in isolation and presented in an abstract, categorical fashion unintuitive to most users. In this paper we present the HAC model, in which we identify the three domains of performance data most familiar to the user: (i)the application domain containing the application's working set, (ii) the hardware domain of the compute and network devices, and (iii) the communication domain of logical data transfers. We show that taking data from each of these domains and projecting, visualizing, and correlating it to the other domains can give valuable insights into the behavior of parallel application codes. The HAC abstraction opens the door for a new generation of tools that can help users more easily and intuitively associate performance data with root causes in the hardware system, the application's structure, and in its communication behavior, and by doing so leads to an improved understanding of the performance of their codes.},
+  author = {Schulz, M. and Levine, J.A. and Bremer, P.-T. and Gamblin, T. and Pascucci, V.},
+  booktitle = {Parallel Processing (ICPP), 2011 International Conference on},
+  doi = {10.1109/ICPP.2011.60},
+  keywords = {type:research,context:application, context:hardware, subcontext:network, 3D torus, torus, simulation, matrix, parallel scale:10K},
+  pages = {206-215},
+  title = {Interpreting Performance Data across Intuitive Domains},
+  year = {2011}
+}
+
+@ARTICLE{Shaffer1999Virtue,
+  ISSN = {0018-9162},
+  abstract = {High-speed, wide-area networks have made it both possible and desirable to interconnect geographically distributed applications that control distributed collections of scientific data, remote scientific instruments, and high-performance computer systems. Historically, performance analysis has focused on monolithic applications executing on large, stand-alone, parallel systems. In such a domain, measurement, postmortem analysis, and code optimization suffice to eliminate performance bottlenecks and optimize applications. Distributed visualization, data mining, and analysis tools allow scientists to collaboratively analyze and understand complex phenomena. Likewise, real-time performance measurement and immersive performance display systems--that is, systems providing large stereoscopic displays of complex data--enable collaborating groups to interact with executing software, tuning its behavior to meet research and performance goals. To satisfy these demands, the authors designed Virtue, a prototype system that integrates collaborative, immersive performance visualization with real-time performance measurement and adaptive control of applications on computational grids. These tools enable physically distributed users to explore and steer the behavior of complex software in real time and to analyze and optimize distributed-application dynamics.},
+  author = {Shaffer, E. and Reed, D.A. and Whitmore, S. and Schaeffer, B.},
+  doi = {10.1109/2.809250},
+  journal = {Computer},
+  keywords = {type:research,name:Virtue, context:tasks, subcontext:trace, 3D, parallel scale:100},
+  number = {12},
+  pages = {44-51},
+  title = {Virtue: performance visualization of parallel and distributed applications},
+  volume = {32},
+  year = {1999}
+}
+
+@book{Sharma1990,
+  abstract = {Parallel programs usually have complex execution behavior which can be studied by visualizing their execution. The run-time visualization captures the dynamic behavior of the program which is otherwise hidden by postmortem visualization. The visualization effort for hierarchical systems such as Cedar requires parallelism to be detected at cluster and processor level simultaneously. We examine the real-time visualization methodology for shared memory multiprocessors. Two applications, visualizing the concurrent processes and matrix-related computations, are used to highlight the importance of visualization in understanding parallel program execution on shared memory multiprocessors.},
+  author = {Sharma, Sanjay},
+  doi = {10.1007/3-540-53065-7_160},
+  keywords = {type:research,context:tasks, subcontext:trace, animation, context:application, matrix},
+  publisher = {Springer},
+  title = {Real-time visualization of concurrent processes},
+  year = {1990}
+}
+
+@article{Sigovan2013,
+  abstract = {Large-scale scientific simulations require execution on parallel computing systems in order to yield useful results in a reasonable time frame. But parallel execution adds communication overhead. The impact that this overhead has on performance may be difficult to gauge, as parallel application behaviors are typically harder to understand than the sequential types. We introduce an animation-based interactive visualization technique for the analysis of communication patterns occurring in parallel application execution. Our method has the advantages of illustrating the dynamic communication patterns in the system as well as a static image of MPI (Message Passing Interface) utilization history. We also devise a data streaming mechanism that allows for the exploration of very large data sets. We demonstrate the effectiveness of our approach scaling up to 16 thousand processes using a series of trace data sets of ScaLAPACK matrix operations functions.},
+  author = {Sigovan, Carmen and Muelder, Chris W. and Ma, Kwan-Liu},
+  doi = {10.1111/cgf.12101},
+  issn = {1467-8659},
+  journal = {Computer Graphics Forum},
+  keywords = {type:research,context:tasks, subcontext:trace, animation, parallel scale:10K},
+  number = {3pt2},
+  pages = {141--150},
+  publisher = {Blackwell Publishing Ltd},
+  title = {Visualizing Large-scale Parallel Communication Traces Using a Particle Animation Technique},
+  volume = {32},
+  year = {2013}
+}
+
+@article{Sigovan2013IO,
+  abstract = {Large-scale scientific simulations require execution on parallel computing systems in order to yield useful results in a reasonable time frame. But parallel execution adds communication overhead. The impact that this overhead has on performance may be difficult to gauge, as parallel application behaviors are typically harder to understand than the sequential types. We introduce an animation-based interactive visualization technique for the analysis of communication patterns occurring in parallel application execution. Our method has the advantages of illustrating the dynamic communication patterns in the system as well as a static image of MPI (Message Passing Interface) utilization history. We also devise a data streaming mechanism that allows for the exploration of very large data sets. We demonstrate the effectiveness of our approach scaling up to 16 thousand processes using a series of trace data sets of ScaLAPACK matrix operations functions.},
+  address = {Los Alamitos, CA, USA},
+  author = {Carmen Sigovan and Chris Muelder and Kwan-Liu Ma and Jason Cope and Kamil Iskra and Robert Ross},
+  doi = {10.1109/IPDPS.2013.96},
+  issn = {1530-2075},
+  journal = {Parallel and Distributed Processing Symposium, International},
+  keywords = {type:research,context:hardware, subcontext:memory, radial, parallel scale:1K},
+  pages = {308-319},
+  publisher = {IEEE Computer Society},
+  title = {A Visual Network Analysis Method for Large-Scale Parallel I/O Systems},
+  volume = {0},
+  year = {2013}
+}
+
+@inproceedings{Sisneros2014,
+  abstract = {For a system the scale of Blue Waters it is of primary importance to minimize high-speed network (HSN) congestion. We hypothesize that the ability to analyze the HSN in a system-wide manner will aid in the detection of network traffic patterns thereby providing a clearer picture of HSN congestion. The benefit of this is obvious we want to eliminate, or at lest minimize HSN congestion and have a better chance of doing so with a more complete understanding. To this end we have developed a visual analytics tool for viewing system-wide traffic patterns. Specifically, we employ a simple representation of Blue Waters’ torus network to visually show congested areas of the network. In this work we will describe the development of this tool and demonstrate its potential uses.},
+  author = {Sisneros, Robert and Chadalavada, Kalyana},
+  booktitle = {Cray User Group Meeting (CUG)},
+  keywords = {type:research, context:hardware, parallel scale:10k, subcontext:network, torus, 3d torus},
+  title = {Toward Understanding Congestion Protection Events on Blue Waters Via Visual Analytics},
+  year = {2014}
+}
+
+@inproceedings{Socha1988Voyeur,
+  abstract = {Voyeur is a prototype system that facilitates the construction of application-specific, visual views of parallel programs. These views range from textual views showing the contents of variables to graphical maps of the state of the computational domain of the program. These views have been instrumental in quickly detecting bugs that would have been difficult to de- tect otherwise.},
+  acmid = {69235},
+  address = {New York, NY, USA},
+  author = {Socha, David and Bailey, Mary L. and Notkin, David},
+  booktitle = {Proceedings of the 1988 ACM SIGPLAN and SIGOPS Workshop on Parallel and Distributed Debugging},
+  doi = {10.1145/68210.69235},
+  isbn = {0-89791-296-9},
+  keywords = {type:research,name:Voyeur, debugging, context:application, context:tasks, subcontext:trace, animation, context:software, subcontext:data structures, node-link},
+  location = {Madison, Wisconsin, USA},
+  numpages = {10},
+  pages = {206--215},
+  publisher = {ACM},
+  series = {PADD '88},
+  title = {Voyeur: Graphical Views of Parallel Programs},
+  year = {1988}
+}
+
+@inproceedings{Spear2011ParaProf,
+  abstract = {With increases in the scale of parallelism the dimensionality and complexity of parallel performance measurements has placed greater challenges on analysis tools. Performance visualization can assist in understanding performance properties and relationships. However, the creation of new visualizations in practice is not supported by existing parallel profiling tools. Users must work with presentation types provided by a tool and have limited means to change its design. Here we present an approach for creating new performance visualizations within an existing parallel profile analysis tool. The approach separates visual layout design from the underlying performance data model, making custom visualizations such as performance over system topologies straightforward to implement and adjust for various use cases.},
+  acmid = {2238458},
+  address = {Berlin, Heidelberg},
+  author = {Spear, Wyatt and Malony, Allen D. and Lee, Chee Wai and Biersdorff, Scott and Shende, Sameer},
+  booktitle = {Proceedings of the 2011 International Conference on Parallel Processing - Volume 2},
+  doi = {10.1007/978-3-642-29740-3\_19},
+  isbn = {978-3-642-29739-7},
+  keywords = {type:research,name:ParaProf, context:tasks, subcontext:profile, scripting, user layout, parallel scale:10K},
+  location = {Bordeaux, France},
+  numpages = {10},
+  pages = {156--165},
+  publisher = {Springer-Verlag},
+  series = {Euro-Par '11},
+  title = {An Approach to Creating Performance Visualizations in a Parallel Profile Analysis Tool},
+  year = {2012}
+}
+
+@article{Stasko1993,
+  abstract = {An application-specific visualization of a parallel program presents the inherent application domain, semantics, and data being manipulated by the program in a manner natural to one′s understanding of the program. In this paper we discuss why application-specific views are necessary for program debugging, and we list several requirements and challenges that a system for application-specific viewing should meet. We also introduce an animation methodology particularly well-suited for application-specific visualizations, and we describe program animations developed using the methodology.},
+  acmid = {163550},
+  address = {Orlando, FL, USA},
+  author = {Stasko, John T. and Kraemer, Eileen},
+  doi = {10.1006/jpdc.1993.1062},
+  issn = {0743-7315},
+  issue_date = {June 1993},
+  journal = {J. Parallel Distrib. Comput.},
+  keywords = {type:position, context:application, methodology, animation},
+  month = {jun,},
+  number = {2},
+  numpages = {7},
+  pages = {258--264},
+  publisher = {Academic Press, Inc.},
+  title = {A Methodology for Building Application-specific Visualizations of Parallel Programs},
+  volume = {18},
+  year = {1993}
+}
+
+@inproceedings{Stone1988ConcurrencyMap,
+  abstract = {This paper describes a graphical representation called a concurency map. It provides a succinct representation of the potentially large collection of possible correct event-orderings for a se1of concurrent processes. The normal problems of monitoring, dehugging and analyzing performnce of single-process programs are compounded for programs with concurrent processes. Although we can observe the behavior of each separate process, we do not know what is occurrin g concurrently in the various processes during successive monlents as execution progresses. Furthermore, unknown timing delays among the processes may cause different program behavior when we rerun the program. The relative time-ordering of event in different concurrent processes is not, in general, fixed, ;incl events that occurred in one order on one occasion on which the program performed correctly might occur in another order on another occasion, with equal correctness. We need to know both how the program behaved during execution and how that behavior might have differed under normal variations of concurrent execution. The concurrency map aids in solving these problems.},
+  acmid = {69237},
+  address = {New York, NY, USA},
+  author = {Stone, Janice M.},
+  booktitle = {Proceedings of the 1988 ACM SIGPLAN and SIGOPS Workshop on Parallel and Distributed Debugging},
+  doi = {10.1145/68210.69237},
+  isbn = {0-89791-296-9},
+  keywords = {type:research,name:Concurrency Map, context:tasks, subcontext:trace, Gantt, timelines, parallel scale:1+},
+  location = {Madison, Wisconsin, USA},
+  numpages = {10},
+  pages = {226--235},
+  publisher = {ACM},
+  series = {PADD '88},
+  title = {A Graphical Representation of Concurrent Processes},
+  year = {1988}
+}
+
+@article{Summers2004,
+  abstract = {We are exploring the development and application of information visualization techniques for the analysis of new massively parallel supercomputer architectures. Modern supercomputers typically comprise very large clusters of commodity SMPs interconnected by possibly dense and often non-standard networks. The scale, complexity, and inherent non-locality of the structure and dynamics of this hardware, and the operating systems and applications distributed over them, challenge traditional analysis methods. As part of the á la carte (A Los Alamos Computer Architecture Toolkit for Extreme-Scale Architecture Simulation) team at Los Alamos National Laboratory, who are simulating these new architectures, we are exploring advanced visualization techniques and creating tools to enhance analysis of these simulations with intuitive three-dimensional representations and interfaces. This work complements existing and emerging algorithmic analysis tools. In this paper, we give background on the problem domain, a description of a prototypical computer architecture of interest (on the order of 10,000 processors connected by a quaternary fat-tree communications network), and a presentation of three classes of visualizations that clearly display the switching fabric and the flow of information in the interconnecting network.},
+  author = {Summers, Kenneth L. and Caudell, Thomas Preston and Berkbigler, Kathryn and Bush, Brian and Davis, Kei and Smith, Steve},
+  doi = {10.1057/palgrave.ivs.9500079},
+  journal = {Information Visualization},
+  keywords = {type:research,context:hardware, subcontext:network, 2.5D, fat tree, 3D, H-tree},
+  number = {3},
+  pages = {209-222},
+  title = {Graph Visualization for the Analysis of the Structure and Dynamics of Extreme-Scale Supercomputers},
+  volume = {3},
+  year = {2004}
+}
+
+@inproceedings{Tallent2011HPCToolkit,
+  abstract = {Applications must scale well to make efficient use of even medium-scale parallel systems. Because scaling problems are often difficult to diagnose, there is a critical need for scalable tools that guide scientists to the root causes of performance bottlenecks. Although tracing is a powerful performance-analysis technique, tools that employ it can quickly become bottlenecks themselves. Moreover, to obtain actionable performance feedback for modular parallel software systems, it is often necessary to collect and present fine-grained context-sensitive data --- the very thing scalable tools avoid. While existing tracing tools can collect calling contexts, they do so only in a coarse-grained fashion; and no prior tool scalably presents both context- and time-sensitive data. This paper describes how to collect, analyze and present fine-grained call path traces for parallel programs. To scale our measurements, we use asynchronous sampling, whose granularity is controlled by a sampling frequency, and a compact representation. To present traces at multiple levels of abstraction and at arbitrary resolutions, we use sampling to render complementary slices of calling-context-sensitive trace data. Because our techniques are general, they can be used on applications that use different parallel programming models (MPI, OpenMP, PGAS). This work is implemented in HPCToolkit.},
+  acmid = {1995908},
+  address = {New York, NY, USA},
+  author = {Tallent, Nathan R. and Mellor-Crummey, John and Franco, Michael and Landrum, Reed and Adhianto, Laksono},
+  booktitle = {Proceedings of the International Conference on Supercomputing},
+  doi = {10.1145/1995896.1995908},
+  isbn = {978-1-4503-0102-2},
+  keywords = {type:research,name:HPCToolkit, context:tasks, subcontext:trace, timelines, parallel scale:10K},
+  location = {Tucson, Arizona, USA},
+  numpages = {12},
+  pages = {63--74},
+  publisher = {ACM},
+  series = {ICS '11},
+  title = {Scalable Fine-grained Call Path Tracing},
+  year = {2011}
+}
+
+@INPROCEEDINGS{Tao2001,
+  abstract = {Data locality is one of the most important issues affecting the performance of shared memory applications on NUMA architectures. A possibility to improve data locality is the specification of a correct data layout within the source code. This kind of optimization, however, requires in depth knowledge about the run-time memory access behavior of programs. In order to acquire this knowledge without causing a probe overhead, as it would be caused by software instrumentation approaches, it is necessary to adopt a hardware performance monitor that can provide detailed information about memory transactions. As the monitored information is usually very low-level and not user-readable, a visualization tool is necessary as well. This paper presents such a visualization tool displaying the monitored data in a user understandable way thereby showing the memory access behavior of shared memory applications. In addition, it projects the physical addresses in the memory transactions back to the data structures within the source code. This increases a programmer’s ability to effectively understand, develop, and optimize programs.},
+  author = {Jie Tao and Wolfgang Karl and Martin Schulz},
+  booktitle = {In Proceedings of the 2001 International Conference on Computational Science (ICCS), volume 2074 of LNCS},
+  doi = {10.1007/3-540-45718-6_91},
+  keywords = {type:research,context:hardware, subcontext:memory, visual analytics, bar charts, matrix, time series, parallel scale:1+},
+  pages = {861--870},
+  title = {Visualizing the Memory Access Behavior of Shared Memory Applications on NUMA Architectures},
+  year = {2001}
+}
+
+@article{Topol1998PVaniM,
+  abstract = {Network computing has evolved into a popular and effective mode of high performance computing. Network computing environments have fundamental differences from hardware multiprocessors, involving a different approach to measuring and characterizing performance, monitoring an application’s progress and understanding program behavior. In this paper, we present the design and implementation of PVaniM, an experimental visualization environment we have developed for the PVM network computing system. PVaniM supports a two-phase approach whereby on-line visualization focuses on large-grained events that are influenced by and relate to the dynamic network computing environment, and postmortem visualization provides for detailed program analysis and tuning. PVaniM’s capabilities are illustrated via its use on several applications and a comparison with single-phase visualization environments developed for network computing. Our experiences indicate that, for several classes of applications, the two-phase visualization scheme can provide valuable insight into the behavior, efficiency and operation of distributed and parallel programs in network computing environments.},
+  author = {Topol, Brad and Stasko, John T. and Sunderam, Vaidy},
+  doi = {10.1002/(SICI)1096-9128(19981210)10:14<1197::AID-CPE364>3.0.CO;2-O},
+  issn = {1096-9128},
+  journal = {Concurrency: Practice and Experience},
+  keywords = {type:research,name:PVaniM, context:tasks, subcontext:commgraph, subcontext:trace, timelines, Gantt, animation, adjacency matrix, bar charts, parallel scale:1+},
+  number = {14},
+  pages = {1197--1222},
+  publisher = {John Wiley & Sons, Ltd},
+  title = {PVaniM: a tool for visualization in network computing environments},
+  volume = {10},
+  year = {1998}
+}
+
+@inproceedings{Trumper2010,
+  abstract = {Understanding multithreaded software systems is typically a tedious task: Due to parallel execution and interactions between multiple threads, such a system’s runtime behavior is often much more complex than the behavior of a single-threaded system. For many maintenance activities, system understanding is a prerequisite. Hence, tasks such as bug fixing or performance optimization are highly demanding in the case of multithreaded systems. Unfortunately, state-of-the-art tools for system understanding and debuggers provide only limited support for these systems. We present a dynamic analysis and visualization technique that helps developers in understanding multithreaded software systems in general and in identifying performance bottlenecks in particular. The technique first performs method boundary trac- ing. Second, developers perform a post-mortem analysis of a system’s behavior using visualization optimized for trace data of multithreaded software systems. The technique enables developers to understand how multiple threads collaborate at runtime. The technique is integrated into a professional and scalable tool for visualizing the behavior of complex software systems. In case studies, we have tested the technique with industrially developed, multithreaded software systems to understand system behavior and to identify multithreading-related performance bottlenecks.},
+  acmid = {1879232},
+  address = {New York, NY, USA},
+  author = {Tr\"{u}mper, Jonas and Bohnet, Johannes and D\"{o}llner, J\"{u}rgen},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879232},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,context:software, subcontext:trace, icicle timelines, distortion, timelines, threads},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {133--142},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Understanding Complex Multithreaded Software Systems by Using Trace Visualization},
+  year = {2010}
+}
+
+@misc{VampirManual,
+  howpublished = {\httpAddr{www.vampir.eu}},
+  keywords = {type:manual, name:Vampir, context:tasks, subcontext:trace, Gantt, timelines, messages, adjacency matrix, plots, visual analytics},
+  month = {November},
+  title = {{Manual - Vampir 8.2}},
+  year = {2013}
+}
+
+@inproceedings{Waller2013SynchroVis,
+  abstract = {The increasing code complexity in modern software systems exceeds the capabilities of most software engineers to understand the system’s behavior by just looking at its program code. The addition of concurrency issues through the advent of multi-core processors in the consumer market further escalates this complexity. A solution to these problems is visualizing a model of the system to ease program comprehension. Especially for the comprehension of concurrency issues, static information is often not sufficient. For this purpose, profiling and monitoring can provide additional information on the actual behavior of a system. An established visualization approach is the 3D city metaphor. It utilizes the familiarity with navigating a city to improve program comprehension. In this paper, we present our trace-based SynchroVis 3D visualization approach for concurrency. It employs the city metaphor to visualize both static and dynamic properties of software systems with a focus on illustrating the concurrent behavior. To evaluate our approach, we provide an open source implementation of our concepts and present an exemplary dining philosophers scenario showing its feasibility.},
+  author = {Jan Waller and Christian Wulf and Florian Fittkau and Philipp D{\"o}hring and Wilhelm Hasselbring},
+  booktitle = {1st IEEE International Working Conference  on Software Visualization (VISSOFT 2013)},
+  doi = {10.1109/VISSOFT.2013.6650520},
+  keywords = {type:research,context:software, subcontext:trace, software design, threads, animation, city, semaphores},
+  month = {September},
+  title = {SynchroVis: 3D Visualization of Monitoring Traces in the City Metaphor for Analyzing Concurrency},
+  year = {2013}
+}
+
+@inproceedings{Wang2000,
+  abstract = {Code mobility has the potential to provide more flexible and efficient solutions to traditional distributed applications. However, developing distributed programs with code mobility is quite a challenge and so is the understanding of their dynamic behavior. Graphical visualizations are a promising way to help to understand the dynamic behavior of distributed applications, including those that contain mobile agents. This paper addresses two issues: what needs to be visualized and how do we visualize it. We present an innovative approach to visualizing code mobility in the context of process-time diagrams/message sequence charts. An infrastructure that provides tracing facilities and supports both on-line and postmortem visualization is discussed to demonstrate our approach.},
+  acmid = {663332},
+  address = {London, UK, UK},
+  author = {Wang, Yi and Kunz, Thomas},
+  booktitle = {Proceedings of the Second International Workshop on Mobile Agents for Telecommunication Applications},
+  doi = {10.1007/3-540-45391-1_8},
+  isbn = {3-540-41069-4},
+  keywords = {type:research,context:tasks, subcontext:trace, migratable objects, animation},
+  numpages = {12},
+  pages = {103--114},
+  publisher = {Springer-Verlag},
+  series = {MATA '00},
+  title = {Visualizing Mobile Agent Executions},
+  year = {2000}
+}
+
+@incollection{Weidendorfer2004,
+  abstract = {In this paper, two tools are presented: an execution driven cache simulator which relates event metrics to a dynamically built-up call-graph, and a graphical front end able to visualize the generated data in various ways. To get a general purpose, easy-to-use tool suite, the simulation approach allows us to take advantage of runtime instrumentation, i.e. no preparation of application code is needed, and enables for sophisticated preprocessing of the data already in the simulation phase. In an ongoing project, research on advanced cache analysis is based on these tools. Taking a multigrid solver as an example, we present the results obtained from the cache simulation together with real data measured by hardware performance counters.},
+  author = {Weidendorfer, Josef and Kowarschik, Markus and Trinitis, Carsten},
+  booktitle = {Computational Science - ICCS 2004},
+  doi = {10.1007/978-3-540-24688-6_58},
+  editor = {Bubak, Marian and Albada, GeertDick and Sloot, PeterM.A. and Dongarra, Jack},
+  isbn = {978-3-540-22116-6},
+  keywords = {type:research,context:software, subcontext:callgraph, node-link, treemap, parallel scale:N/A},
+  pages = {440-447},
+  publisher = {Springer Berlin Heidelberg},
+  series = {Lecture Notes in Computer Science},
+  title = {A Tool Suite for Simulation Based Analysis of Memory Access Behavior},
+  volume = {3038},
+  year = {2004}
+}
+
+@article{Wheeler2010ThreadScope,
+  abstract = {As highly parallel multicore machines become commonplace, programs must exhibit more concurrency to exploit the available hardware. Many multithreaded programming models already encourage programmers to create hundreds or thousands of short-lived threads that interact in complex ways. Programmers need to be able to analyze, tune, and troubleshoot these large-scale multithreaded programs. To address this problem, we present ThreadScope: a tool for tracing, visualizing, and analyzing massively multi-threaded programs. ThreadScope extracts the machine-independent program structure from execution trace data from a variety of tracing tools and displays it as a graph of dependent execution blocks and memory objects, enabling identification of synchronization and structural problems, even if they did not occur in the traced run. It also uses graph-based analysis to identify potential problems. We demonstrate the use of ThreadScope to view program structure, memory access patterns, and synchronization problems in three programming environments and seven applications.},
+  acmid = {1673015},
+  address = {Chichester, UK},
+  author = {Wheeler, Kyle B. and Thain, Douglas},
+  doi = {10.1002/cpe.v22:1},
+  issn = {1532-0626},
+  issue_date = {January 2010},
+  journal = {Concurr. Comput. : Pract. Exper.},
+  keywords = {type:research,name:ThreadScope, context:tasks, subcontext:trace, node-link, threads, memory, parallel scale:1K},
+  month = {jan,},
+  number = {1},
+  numpages = {23},
+  pages = {45--67},
+  publisher = {John Wiley and Sons Ltd.},
+  title = {Visualizing Massively Multithreaded Applications with ThreadScope},
+  volume = {22},
+  year = {2010}
+}
+
+@inproceedings{Wu2010lviz,
+  abstract = {Operating system traces contain the detailed behavior of the persistent actions of an application; interactions between multiple applications; and the functioning of the system as a whole. The challenge is that such traces are large and consequently hard to understand and analyze. We present lviz, a novel visualization tool, which meets these challenges. We focus on Windows system traces though our visualization is general. Our visualization is flexible and can be customized to highlight different aspects of the behavior program(s) and the overall operating system.},
+  acmid = {1879231},
+  address = {New York, NY, USA},
+  author = {Wu, Yongzheng and Yap, Roland H.C. and Halim, Felix},
+  booktitle = {Proceedings of the 5th International Symposium on Software Visualization},
+  doi = {10.1145/1879211.1879231},
+  isbn = {978-1-4503-0028-5},
+  keywords = {type:research,name:lviz, context:software, subcontext:trace, dotplot, comparison, ensemble, jobs},
+  location = {Salt Lake City, Utah, USA},
+  numpages = {10},
+  pages = {123--132},
+  publisher = {ACM},
+  series = {SOFTVIS '10},
+  title = {Visualizing Windows System Traces},
+  year = {2010}
+}
+
+@INPROCEEDINGS{Wylie2011Scalasca,
+  abstract = {The PFLOTRAN code for multiphase subsurface flow and reactive transport has featured prominently in US Department of Energy SciDAC and INCITE programmes, where is has been used to simulate migration of radionucleide contaminants in groundwater. As part of its ongoing development, execution performance with up to 128k processor cores on Cray XT and IBM BG/P systems has been investigated, and a variety of aspects have been identified to inhibit PFLOTRAN performance at larger scales using the open-source Scalasca toolset. Scalability of Scalasca measurements and analyses themselves, previously demonstrated with a range of applications and benchmarks, required re-engineering in key areas to handle the complexities of PFLOTRAN executions employing MPI within PETSc, LAPACK, BLAS and HDF5 libraries at large scale.},
+  author = {Wylie, Brian J. N. and Geimer, Markus},
+  booktitle = {Proc. of the 53rd Cray User Group meeting, Fairbanks, AK, USA},
+  keywords = {type:research,name:Scalasca, context:software, context:application, subcontext:callgraph, indented tree, mesh, visual analytics, parallel scale:100K},
+  month = {may,},
+  publisher = {Cray User Group Inc.},
+  title = {Large-scale performance analysis of {PFLOTRAN} with {Scalasca}},
+  year = {2011}
+}
+
+@INPROCEEDINGS{Yamaguchi2003,
+  ISSN = {1530-1052},
+  abstract = {Visualization of distributed processes is useful for the management of large-scale distributed computing systems. Reactivity and scalability are especially important requirements for such visualization of distributed processes. We have proposed the visualization technique "Data Jewelry Box" algorithm, which satisfies both of above requirements. The technique can be applied for the visualization of distributed processes, however, the algorithm has a problem that may yield much different data layouts even among very similar datasets. This is a serious issue for the seamless visualization of time-varying data. To solve the problem, we propose the extension of "Data Jewelry Box" algorithm. The extension places data elements referring positions of the previous data layout, so that the extension can yield similar layouts among similar datasets. This paper introduces the extended algorithm, and proposes the visualization system for distributed computing systems using the extended algorithm.},
+  author = {Yamaguchi, Y. and Itoh, T.},
+  booktitle = {Computer Graphics International, 2003. Proceedings},
+  doi = {10.1109/CGI.2003.1214461},
+  keywords = {type:research,name:Data Jewelry Box, nested, hierarchy, 3D, migratable objects, bar charts, space-filling},
+  pages = {162-169},
+  title = {Visualization of distributed processes using "Data Jewelry Box" algorithm},
+  year = {2003}
+}
+
+@article{Yan1995AIMS,
+  abstract = {Writing large-scale parallel and distributed scientific applications that make optimum use of the multiprocessor is a challenging problem. Typically, computational resources are underused due to performance failures in the application being executed. Performance-tuning tools are essential for exposing these performance failures and for suggesting ways to improve program performance. In this paper, we first address fundamental issues in building useful performance-tuning tools and then describe our experience with the AIMS toolkit for tuning parallel and distributed programs on a variety of platforms. AIMS supports source-code instrumentation, run-time monitoring, graphical execution profiles, performance indices and automated modeling techniques as ways to expose performance problems of programs. Using several examples representing a broad range of scientific applications, we illustrate AIMS’ effectiveness in exposing performance problems in parallel and distributed programs.},
+  author = {Yan, Jerry and Sarukkai, Sekhar and Mehra, Pankaj},
+  doi = {10.1002/spe.4380250406},
+  issn = {1097-024X},
+  journal = {Software: Practice and Experience},
+  keywords = {type:research,name:AIMS, context:tasks, subcontext:trace, visual analytics, animation, Gantt, timelines, messages, code, node-link, bar charts, code tree, parallel scale:10},
+  number = {4},
+  pages = {429--461},
+  publisher = {John Wiley & Sons, Ltd.},
+  title = {Performance measurement, visualization and modeling of parallel and distributed programs using the AIMS toolkit},
+  volume = {25},
+  year = {1995}
+}
+
+@Article{Zaki1999JumpShot,
+  abstract = {Jumpshot is a graphical tool for understanding the performance of parallel programs. It is in the tradition of the upshot tool but contains a number of extensions and enhancements that make it suitable for large-scale parallel computations. Jumpshot takes as input a new, more flexible logfile format and comes with a library for generating such logfiles. An MPI profiling library is also included, enabling the automatic generation of such logfiles from MPI programs. Jumpshot is written in Java and can easily be integrated as an applet into browser-based computing environments. The most novel feature of Jumpshot is its automatic detection of anomalous durations, drawing the user's attention to problem areas in a parallel execution. This capability is particularly useful in large-scale parallel computations containing many events.},
+  author = {Omer Zaki and Ewing Lusk and William Gropp and Deborah Swider},
+  doi = {10.1177/109434209901300310},
+  journal = {High Performance Computing Applications},
+  keywords = {type:research,name:JumpShot, context:tasks, subcontext:trace, Gantt, timelines, messages, histograms, parallel scale:10},
+  month = {Fall},
+  number = {2,},
+  pages = {277--288},
+  title = {Toward Scalable Performance Visualization with {Jumpshot}},
+  volume = {13,},
+  year = {1999,}
+}
+
+@inproceedings{Zernik1991,
+  acmid = {122763},
+  address = {New York, NY, USA},
+  author = {Zernik, Dror and Rudolph, Larry},
+  booktitle = {Proceedings of the 1991 ACM/ONR Workshop on Parallel and Distributed Debugging},
+  doi = {10.1145/122759.122763},
+  isbn = {0-89791-457-0},
+  keywords = {type:research,context:tasks, subcontext:trace, animation, logical time, multiple coordinated views, tree, node-link, nested, parallel scale:1+},
+  location = {Santa Cruz, California, USA},
+  numpages = {11},
+  pages = {46--56},
+  publisher = {ACM},
+  series = {PADD '91},
+  title = {Animating Work and Time for Debugging Parallel Programs Foundation and Experience},
+  year = {1991}
+}
+
+@ARTICLE{Zernik1992,
+  ISSN = {0740-7459},
+  abstract = {A visualization tool that provides an aggregate view of execution through a graph of events called the causality graph, which is suitable for systems with hundreds or thousands of processors, coarse-grained parallelism, and for a language that makes communication and synchronization explicit, is discussed. The methods for computing causality graphs and stepping through an execution with causality graphs are described. The properties of the abstraction algorithms and super nodes, the subgraphs in causality graphs, are also discussed.},
+  author = {Zernik, D. and Snir, M. and Malki, D.},
+  doi = {10.1109/52.136185},
+  journal = {Software, IEEE},
+  keywords = {type:research,context:tasks, subcontext:trace, logical time, node-link, messages, debugging, parallel scale:10},
+  number = {3},
+  pages = {87-92},
+  title = {Using visualization tools to understand concurrency},
+  volume = {9},
+  year = {1992}
+}
+
+@inproceedings{Zhou2003,
+  abstract = {We are exploring the development and application of information visualization techniques for the analysis of new massively parallel supercomputer architectures. Modern supercomputers typically comprise very large clusters of commodity SMPs interconnected by possibly dense and often nonstandard networks. The scale, complexity, and inherent nonlocality of the structure and dynamics of this hardware, and the systems and applications distributed over it, challenge traditional analysis methods. As part of the \'a la carte team at Los Alamos National Laboratory, who are simulating these advanced architectures, we are exploring advanced visualization techniques and creating tools to provide intuitive exploration, discovery, and analysis of these simulations. This work complements existing and emerging algorithmic analysis tools. This paper gives background on the problem domain, a description of a prototypical computer architecture of interest (on the order of 10,000 processors connected by a quaternary fat-tree communications network), and a presentation of two classes of visualizations that clearly display the switch structure and the flow of information in the interconnecting network.},
+  acmid = {774854},
+  address = {New York, NY, USA},
+  author = {Zhou, Cheng and Summers, Kenneth L. and Caudell, Thomas P.},
+  booktitle = {Proceedings of the 2003 ACM Symposium on Software Visualization},
+  doi = {10.1145/774833.774854},
+  isbn = {1-58113-642-0},
+  keywords = {type:research,context:hardware, subcontext:network, fat tree, 3D, 2.5D, tree, H-tree},
+  location = {San Diego, California},
+  numpages = {7},
+  pages = {143--149},
+  publisher = {ACM},
+  series = {SoftVis '03},
+  title = {Graph Visualization for the Analysis of the Structure and Dynamics of Extreme-scale Supercomputers},
+  year = {2003}
+}
+
