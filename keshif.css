@@ -490,14 +490,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
-  vertical-align: top;
   display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  position: relative;
   font-size: 0.7em;
   font-weight: 300;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon {
   position: relative;
-  right: -15px;
+  left: 2px;
+  top: 2px;
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon:hover {
+  color: #ff4500;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon:before {
+  content: "\f161";
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon[inverse='true']:before {
+  content: "\f160";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect {
+  width: 100%;
   -webkit-appearance: none;
   -moz-appearance: none;
   background: transparent;
@@ -505,23 +521,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
   border-width: 0px;
   cursor: pointer;
-  padding-right: 12px;
+  padding-right: 0px;
   margin: 0px;
   vertical-align: middle;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10px' height='15px'><polyline points='0,2 10,2, 5,11'/></svg>") no-repeat top right;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect:hover {
   color: orangered;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect::-ms-expand {
+  display: none;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect_Label {
   margin-right: 2px;
   vertical-align: bottom;
   cursor: default;
   pointer-events: none;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect_Label:after {
-  content: ':';
-  vertical-align: bottom;
+  /*                            &:after{
+                                content: ':';
+                                vertical-align: bottom;
+                            }*/
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop {
   margin-top: -16px;

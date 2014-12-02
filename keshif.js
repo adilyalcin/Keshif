@@ -55,7 +55,7 @@ var kshf = {
       sub.prototype.constructor = sub;
     },
     num_of_charts: 0,
-    maxVisibleItems_default: 50, 
+    maxVisibleItems_default: 100, 
     dt: {},
     dt_id: {},
     dt_ColNames: {},
@@ -1869,7 +1869,7 @@ kshf.Browser = function(options){
     this.pauseResultPreview = false;
 
     this.resultPreviewActive = false;
-    this.previewIsShown = false;
+    this.previewCompareIsActive = false;
     this.refreshPreviewTimeout = null;
     this.clearPreviewTimeout = null;
 
@@ -1906,7 +1906,9 @@ kshf.Browser = function(options){
     this.loadedCb = options.loadedCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
+
     this.previewCb = options.previewCb;
+    this.previewCompareCb = options.previewCompareCb;
 
     this.dom = {};
 
@@ -2735,8 +2737,9 @@ kshf.Browser.prototype = {
         window.clearTimeout(this.refreshPreviewTimeout);
 
         this.clearPreviewTimeout = window.setTimeout(function(){
-            me.previewIsShown = false;
-            me.facets.forEach(function(facet){ facet.clearResultPreview_set(); });
+            me.previewCompareIsActive = false;
+            me.facets.forEach(function(facet){ facet.clearResultPreviewCompare(); });
+            if(me.previewCompareCb) me.previewCompareCb.call(this,true);
         },1500);
 
         if(this.previewCb) this.previewCb.call(this,true);
@@ -2749,10 +2752,11 @@ kshf.Browser.prototype = {
         window.clearTimeout(this.clearPreviewTimeout);
         window.clearTimeout(this.refreshPreviewTimeout);
 
-        if(this.previewIsShown===false){
+        if(this.previewCompareIsActive===false){
             this.refreshPreviewTimeout = window.setTimeout(function(){
-                me.facets.forEach(function(facet){ facet.refreshResultPreview_set(false); });
-                me.previewIsShown = true;
+                me.facets.forEach(function(facet){ facet.refreshResultPreviewCompare(); });
+                me.previewCompareIsActive = true;
+                if(me.previewCompareCb) me.previewCompareCb.call(this,false);
             },2500);
         }
 
@@ -3741,10 +3745,10 @@ kshf.Facet_Categorical.prototype = {
     insertSortingOpts: function(){
         var me=this;
         var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
-        sortGr.append("span").attr("class","optionSelect_Label").text("Order by");
-        sortGr.append("select").attr("class","optionSelect")
+        sortGr.append("select").attr("class","optionSelect").attr("dir","rtl")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
+                me.dom.sortInverse.attr("inverse",me.sortingOpt_Active.inverse);
                 me.updateSorting_do.call(me, 0);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
             })
@@ -3752,6 +3756,20 @@ kshf.Facet_Categorical.prototype = {
           .enter().append("option").attr("class", "sort_label")
             .text(function(d){ return d.name; })
             ;
+        // desc content: "\f161";
+        // asc: content: "\f160";
+        this.dom.sortInverse = sortGr.append("span").attr("class","sortIcon fa").on("click",function(d){
+            me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+            this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+            me.updateSorting_do.call(me, 0);
+        })
+        .each(function(){
+            this.tipsy = new Tipsy(this, {
+                gravity: 'w', title: function(){ return "Reverse order"; }
+            })
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); });
     },
     updateBarPreviewScale2Active: function(){
         if(!this.hasAttribs()) return; // nothing to do
@@ -3860,13 +3878,14 @@ kshf.Facet_Categorical.prototype = {
         });
     },
     /** -- */
-    clearResultPreview_set: function(){
+    clearResultPreviewCompare: function(){
+        if(!this.hasAttribs()) return;
         this.dom.bars_preview_compare.each(function(attrib){
             this.setAttribute("hidden",true);
         });
     },
     /** -- */
-    refreshResultPreview_set: function(dontCull){
+    refreshResultPreviewCompare: function(){
         var me=this;
         this.dom.bars_preview_compare.each(function(attrib){
             kshf.Util.setTransform(this,"translateX("+
@@ -5378,6 +5397,7 @@ kshf.Facet_Interval.prototype = {
         });
     },
     clearResultPreview_Bars: function(){
+        if(this.isEmpty) return;
         var me=this;
         var width=this.barWidth-this.barGap*2;
         this.dom.bars_preview.each(function(bar){
@@ -5387,13 +5407,14 @@ kshf.Facet_Interval.prototype = {
         });
     },
     /** -- */
-    clearResultPreview_set: function(){
+    clearResultPreviewCompare: function(){
+        if(this.isEmpty) return;
         this.dom.bars_preview_compare.each(function(attrib){
             this.setAttribute("hidden",true);
         });
     },
     /** -- */
-    refreshResultPreview_set: function(){
+    refreshResultPreviewCompare: function(){
         var me=this;
         if(this.isEmpty) return;
         if(this.collapsed) return;
