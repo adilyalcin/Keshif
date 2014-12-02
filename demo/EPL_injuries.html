@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>EPL Injuries</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+function resizeBrowser(){
+$('#chart_div').width($(window).width()-100);
+$('#chart_div').height($(window).height()-80);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 130,
+        rightPanelLabelWidth: 120,
+        source: {
+            url: 'http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html',
+            gdocId : '1sdEtJ5oVQPzUx_wpxQNSIQ_SPUp-NcFXq3TUNeMgeX0',
+            sheets : [ {name:"Injuries"} ]
+        },
+        facets: [
+            {   facetTitle: "Team"
+            },{ facetTitle: "Player"
+            },{ facetTitle: "Injury",layout: 'right'
+            },{ facetTitle: "Season", layout: 'right',
+                sortingOpts: [{
+                    func: function(a, b){
+                        a=parseInt(a.data[1].substr(0,4));
+                        b=parseInt(b.data[1].substr(0,4));
+                        return a - b; 
+                    }
+                }],
+            },{ facetTitle: "Month", layout: 'right', collapsed: true,
+                catItemMap: function(d){
+                    return d.data[3].getMonth();
+                },
+                sortingOpts: [
+                    {func: kshf.Util.sortFunc_Column_Int_Incr}
+                ],
+                catLabelText: function(d){
+                    switch(d.data[1]){
+                        case 0: return "January";
+                        case 1: return "February";
+                        case 2: return "March";
+                        case 3: return "April";
+                        case 4: return "May";
+                        case 5: return "June";
+                        case 6: return "July";
+                        case 7: return "August";
+                        case 8: return "September";
+                        case 9: return "October";
+                        case 10: return "November";
+                        case 11: return "December";
+                    }
+                },
+                type: 'categorical'                            
+            },{ facetTitle: "Date Reported", layout: 'bottom', intervalScale: 'time'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            sortingOpts : [ {name: 'Date Reported'} ],
+            displayType: 'grid',
+            autoExpandMore: true,
+            contentFunc: function(d){
+                var img = "<img class='thumbImg' src='img/EPL/"+d.data[0].replace(" ","_")+".svg'>";
+                return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+d.data[1]+"</span>";
+            }
+        }
+    });
+});
+        </script>
+        <style>
+#chart_div {
+    width: 1000px;
+    height: 700px;
+}
+.listItem{
+    width: 70px;
+}
+.listItem > .content{
+    text-align: center;
+}
+.thumbnail{
+    min-height: 90px;
+}
+.thumbImg{
+    position: absolute;
+    bottom: 0px;
+    left: 5%;
+}
+#chart_div .subTitle{
+    text-align: center;
+}
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">English Premier League Injury Table</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Data</a> was curated by the <b>Andy Kriebel</b>. <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
