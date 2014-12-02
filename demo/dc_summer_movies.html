@@ -129,7 +129,7 @@ $(document).ready( function() {
             },{
                 facetTitle: "Time",
                 layout: "right",
-                facets : [{
+                facets : [/*{
                     facetTitle: "Soon",
                     removeInactiveAttrib: false,
                     catItemMap: function(d){
@@ -139,7 +139,7 @@ $(document).ready( function() {
                         if(m_scr.isBefore(m_nextweek)) return "Next Week";
                         return null;
                     }
-                },{
+                },*/{
                     facetTitle: "Day Of Week",
                     type: 'categorical',
                     catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },

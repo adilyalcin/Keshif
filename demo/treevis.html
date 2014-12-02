@@ -30,7 +30,7 @@ $(document).ready( function(){
 
 	browser = new kshf.Browser({
         domID : "#chart_div",
-        categoryTextWidth: 250,
+        categoryTextWidth: 140,
         itemName: "Tree Visualization Techniques",
         source : {
             url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
@@ -42,6 +42,7 @@ $(document).ready( function(){
 
                 $.ajax( {
                     url: "./data/treevis.xml",
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                     async: false,
                     success: function(doc){
                         $doc = $(doc);
@@ -135,7 +136,7 @@ $(document).ready( function(){
         </script>
 <style>
     .listItem{
-        width: 150px;
+        width: 140px;
     }
     .content{
         padding: 3px;
