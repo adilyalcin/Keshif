@@ -17,7 +17,7 @@
         <script type="text/javascript">
 
 $(document).ready(function(){
-    var frmt = d3.format("s");
+    var frmt = d3.format(".2s");
     
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -146,7 +146,7 @@ $(document).ready(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 92,
+            sortColWidth: 70,
             sortingOpts : [
                 { name: 'Amount', 
                     value: function(d){ 
@@ -155,7 +155,7 @@ $(document).ready(function(){
                     label: function(d){
                         var v=d.data.AwardedAmountToDate;
                         if(v===undefined) return "-";
-                        return frmt(v);
+                        return frmt(v) + " $";
                     }
                 },
 //                { name: 'AwardNo', value: function(d){ return d.data.AwardNumber; } },
