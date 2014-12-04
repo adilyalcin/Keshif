@@ -3886,6 +3886,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshResultPreviewCompare: function(){
+        if(!this.hasAttribs()) return;
         var me=this;
         this.dom.bars_preview_compare.each(function(attrib){
             kshf.Util.setTransform(this,"translateX("+
