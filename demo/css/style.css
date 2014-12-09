@@ -195,10 +195,10 @@ body {
   bottom: 0px;
   padding: 3px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(bottom, #dfd2a9 0%, #ffffff 80%);
-  background-image: -moz-linear-gradient(bottom, #dfd2a9 0%, #ffffff 80%);
-  background-image: -o-linear-gradient(bottom, #dfd2a9 0%, #ffffff 80%);
-  background-image: linear-gradient(to top, #dfd2a9 0%, #ffffff 80%);
+  background-image: -webkit-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
+  background-image: -moz-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
+  background-image: -o-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
+  background-image: linear-gradient(to top, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
 }
 #infobox a {
   color: black !important;

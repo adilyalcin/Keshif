@@ -122,21 +122,22 @@ google.setOnLoadCallback(function() {
             ],
             textSearch : 'title',
             detailsToggle : "One",
+            autoExpandMore: true,
             contentFunc : function(d){
                 var j;
                 var str="";
 
-                if(d.data[pubCol.img]!==""){
+                if(d.data[pubCol.img]!==""&&d.data[pubCol.img]!==null){
                     str+="<img class='pdfImage' src='"+d.data[pubCol.img]+"'>";
                 }
 
                 // paper name
                     str+="<div class=''> <span>";
                     str+="<span class='paperName'>"+d.data[pubCol.title]+"</span>";
-                    if(d.data[pubCol.pdf]!==""){
+                    if(d.data[pubCol.pdf]!==""&&d.data[pubCol.pdf]!==null){
                         str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data[pubCol.pdf]+"' target='_blank'></a>";
                     }
-                    if(d.data[pubCol.doi]!==""){
+                    if(d.data[pubCol.doi]!==""&&d.data[pubCol.doi]!==null){
                         str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data[pubCol.doi]+"' target='_blank'>[doi]</a>";
                     }
                     if(d.data[pubCol.url].trim()!==""){
@@ -178,7 +179,7 @@ google.setOnLoadCallback(function() {
                         str+="</div>";
                     }
                 // award
-                    if(d.data[pubCol.award]!==""){
+                    if(d.data[pubCol.award]!==""&d.data[pubCol.award]!==null){
                         str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data[pubCol.award]+"</div>";
                     }
 
@@ -335,7 +336,7 @@ body {
             <h2>
             <a href="http://cs.umd.edu/~bederson/" class='mainTitle'>Ben Bederson</a>
 
-            <a target="_blank" href="http://www.github.com/adilyalcin/Keshif" class="KeshifCredit" >Created by Keshif. Click for more...</a>
+            <a target="_blank" href="http://www.github.com/adilyalcin/Keshif" class="KeshifCredit" >Created by Keshif. Click here to learn more</a>
 
 
 <!--            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>-->
