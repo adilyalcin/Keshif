@@ -35,9 +35,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  /*    &[preview-not] .kshf .kshfChart .bar.preview{
-        background-color: lightgray !important;
-    }*/
 }
 .kshfHost * {
   -webkit-box-sizing: border-box;
@@ -1020,7 +1017,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper .bar {
   display: block;
   position: absolute;
-  background-color: #b0bfca;
+  background-color: #b8c7d2;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
@@ -1052,10 +1049,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper .bar.preview_compare {
   background-color: #222222;
   pointer-events: none;
-  -webkit-transition: opacity 700ms;
-  -moz-transition: opacity 700ms;
-  -o-transition: opacity 700ms;
-  transition: opacity 700ms;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
   opacity: 1;
 }
 .kshf .kshfChart > .wrapper .bar.preview_compare[hidden=true] {
@@ -1160,6 +1157,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .belowAttribs .border_line {
   opacity: 0.6;
+}
+.kshf .belowAttribs > .barChartPreviewAxis > .percentSign {
+  position: absolute;
+  left: -15px;
+  color: gray;
+  font-size: 0.7em;
+  font-weight: 300;
+}
+.kshf .belowAttribs > .barChartPreviewAxis > .percentSign:before {
+  content: '%';
 }
 .kshf .belowAttribs > .barChartPreviewAxis > .tick > .text {
   width: 20px;

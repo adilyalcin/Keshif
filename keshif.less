@@ -36,7 +36,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
-@color_bars: #B0BFCA; //#98ABB9; //#8699A8;
+@color_bars: #B8C7D2; //#B0BFCA; //#98ABB9; //#8699A8;
 @color_filtered: #30B8C4;
 @color_bars_selected: darken(orangered, 10%); //#CC2320;
 @color_related: lighten(orangered, 10%); //#B2B227;
@@ -84,9 +84,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'all 700ms ease-in-out');
         }
     }
-/*    &[preview-not] .kshf .kshfChart .bar.preview{
-        background-color: lightgray !important;
-    }*/
 }
 
 .kshf {
@@ -1042,7 +1039,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &.preview_compare {
                     background-color: @color_preview_compare;
                     pointer-events: none;
-                    .transition(~'opacity 700ms');
+                    .transition(@bar_animation);
                     opacity: 1;
                     &[hidden=true]{
                         opacity: 0;
@@ -1189,6 +1186,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             opacity: 0.6;
         }
         > .barChartPreviewAxis {
+            > .percentSign{
+                position: absolute;
+                left: -15px;
+                color: gray;
+                font-size: 0.7em;
+                font-weight: 300;
+                &:before{
+                    content: '%';
+                }
+            }
             > .tick{
                 > .text{
                     width: 20px;
