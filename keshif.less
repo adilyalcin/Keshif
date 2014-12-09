@@ -51,7 +51,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
 
-.kshfHost{
+.kshf {
 //    border: solid 1px lightgray;
 //    background-color: white;
 //    &:hover{ box-shadow: 0px 0px 4px gray; }
@@ -84,10 +84,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'all 700ms ease-in-out');
         }
     }
-}
 
-.kshf {
-	font-family: Helvetica, Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
     display: block;
 
@@ -112,92 +110,231 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    &.layout_left > .kshfChart{
-        display: block;
-    }
+    > .layout_block {
+        &.layout_left > .kshfChart{
+            display: block;
+        }
+        &.layout_top{
+            display:block;
+        }
+        &.layout_bottom{
+            display:inline-block;
+        }
+        &.layout_right{
+            float: right;
+            vertical-align: top;
+            position: relative;
+        }
+        &.layout_left{
+            float: left;
+            vertical-align: top;
+            position: relative;
+        }
+        &.layout_resize{
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            cursor: nwse-resize;
+            width: 0;
+            height: 0;
+            z-index: 10;
+            border-left: 16px solid transparent;
+            border-right: 16px solid lightgray;
+            border-top: 16px solid transparent;
+            :hover{ border-right: 16px solid gray; }
+        }
+        &.layout_infobox {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            z-index: 2000;
+            transform: scale(1);
+            text-align: center;
+            .transition(~'transform 500ms ease-in-out, opacity 500ms');
 
-    &.layout_top{
-        display:block;
-    }
-    &.layout_bottom{
-        display:inline-block;
-    }
+            .keyframes(~'itemZoom, 0%{transform: scale(0); opacity:1;} 100% {transform: scale(1); opacity:1;}');
 
-    &.layout_right{
-        float: right;
-        vertical-align: top;
-        position: relative;
-    }
-    &.layout_left{
-        float: left;
-        vertical-align: top;
-        position: relative;
-    }
-    &:not(.layout_leftttt){
-        .hasLabelWidth{ text-align: right; }
-        .headerGroup {
-            span.header_label_arrow{
-                left: 0px;
+            div.infobox_close_button{
+                position: absolute;
+                right: 3px;
+                top: 3px;
+                background-color: rgb(151, 151, 151);
+                width: 20px;
+                height: 20px;
+                border-radius: 20px;
+                text-align: center;
+                cursor: pointer;
+                line-height: 20px;
+                color: white;
+                &:hover{ background-color: rgb(111, 111, 111); }
             }
-            .chartFirstLineBackground{
-                direction: ltr;
+            // DONT MESS WITH THIS
+            > .background{
+                width: 100%;
+                height: 100%;
+                z-index: -2;
+                background: #0b0b0b;
+                opacity: 0.8;
+                position: absolute;
+                .transition(~'all 0.5s');
+                border-radius: 20px;
             }
-        }
-        .attribGroup{
-            direction:ltr;
-            margin-right: 2px;
-        }
-        .attrib{
-            > span.attribLabel span.filterButtons{
-                margin-left: 2px;
+            > .infobox_content{
+                display: none;
+                margin: auto;
+                box-shadow: 0px 0px 20px gray;
+                border-radius:15px;
+                background-color:white;
+                opacity: 1.0;
+                z-index: 1043;
+                max-height: 90%;
+                max-width: 90%;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
-            > span.barGroup > .bar{
-                .transform-origin(0%, 0%);
-            }
-            > .item_count_wrapper{
-                padding-left: 3px;
-                text-align: left;
-            }
-            &:not([selected="0"]) {
-                .attribLabel{
-                    .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
-                }
-                .item_count_wrapper{
-                    .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
-                }
-            }
-        }
-        .facetControls{
-            direction: ltr;
-            .attribTextSearch input{
-                text-align: right;
-                &::-webkit-input-placeholder { 
-                    text-align:right; 
-                }
-            }
-        }
-        .kshfChart[collapsed=true] {
-            > .headerGroup span.header_label_arrow{ 
-                opacity: 1;
-                &:hover{
-                    .fa{
-                        .animation-direction(reverse);
+
+            > .infobox_loading{
+                width: 300px;
+                height: 35px;
+                position: absolute;
+                top: 0; left: 0; bottom: 0; right: 0;
+                .loadinggg{
+                    position: absolute;
+                    top: 8px;
+                    left: 10px;
+                    i.fa-warning{
+                        margin-left: 20px;
+                        font-size: 1.5em;
                     }
                 }
-                span.fa{
-//                    .rotate(0deg);
-                    &::before{ content: "\f065"; }
+                div.status_text{
+                    margin: auto;
+                    position: absolute;
+                    top: 10px;
+                    left: 70px;
+                    height:20px;
+                    > .status_text_sub{
+                        margin-left:5px;
+                    }
                 }
             }
-        }
-        .belowAttribs{ direction: ltr; }
+            > .infobox_credit{
+                display:none;
+                width: 390px;
+                height: 260px;
+                position: absolute;
+                top: 0; left: 0; bottom: 0; right: 0;
+                div.all-the-credits{
+                    margin: auto;
+                }
+                div.header{
+                    background-color:rgb(216, 221, 212);
+                    width:100%;
+                    padding-top: 5px;
+                    border-top-left-radius: 15px;
+                    border-top-right-radius: 15px;
+                    border-bottom: solid 2px rgb(60, 94, 67);
+                }
+                span.libName{
+                    font-size: 1.4em;
+                    font-weight: 700;
+                }
+                div.project_fund {
+                    font-size: 0.8em;
+                    font-weight: 300;
+                }
+            }
+            > .infobox_itemZoom{
+                position: relative;
+                margin: 20px;
+                padding: 10px;
+            }
+            &[show=loading] > .infobox_loading{
+                display: inline-block;
+            }
+            &[show=credit] > .infobox_credit{
+                display: inline-block;
+            }
+            &[show=none]{
+                pointer-events: none;
+                //display: none;
+                > .background{ opacity: 0;}
+            }
+            &[show=itemZoom] {
+                > .infobox_itemZoom{
+                    .animation(itemZoom 500ms forwards);
+                    .animation-iteration-count(1);
+                    .animation-timing-function(ease-in-out);
+                    display: inline-block;
+                }
+            }
+        } // layout_infobox
+        &:not(.layout_leftttt){
+            .hasLabelWidth{ text-align: right; }
+            .headerGroup {
+                span.header_label_arrow{
+                    left: 0px;
+                }
+                .chartFirstLineBackground{
+                    direction: ltr;
+                }
+            }
+            .attribGroup{
+                direction:ltr;
+                margin-right: 2px;
+            }
+            .attrib{
+                > span.attribLabel span.filterButtons{
+                    margin-left: 2px;
+                }
+                > span.barGroup > .bar{
+                    .transform-origin(0%, 0%);
+                }
+                > .item_count_wrapper{
+                    padding-left: 3px;
+                    text-align: left;
+                }
+                &:not([selected="0"]) {
+                    .attribLabel{
+                        .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
+                    }
+                    .item_count_wrapper{
+                        .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
+                    }
+                }
+            }
+            .facetControls{
+                direction: ltr;
+                .attribTextSearch input{
+                    text-align: right;
+                    &::-webkit-input-placeholder { 
+                        text-align:right; 
+                    }
+                }
+            }
+            .kshfChart[collapsed=true] {
+                > .headerGroup span.header_label_arrow{ 
+                    opacity: 1;
+                    &:hover{
+                        .fa{
+                            .animation-direction(reverse);
+                        }
+                    }
+                    span.fa{
+    //                    .rotate(0deg);
+                        &::before{ content: "\f065"; }
+                    }
+                }
+            }
+            .belowAttribs{ direction: ltr; }
 
-        .subFacets{
-            .kshfChart{ margin-left: 17px; }
-        }
-        .facetCategorical{
-            .scrollToTop{
-                right: 3px;
+            .subFacets{
+                .kshfChart{ margin-left: 17px; }
+            }
+            .facetCategorical{
+                .scrollToTop{
+                    right: 3px;
+                }
             }
         }
     }
@@ -1245,7 +1382,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    &.listDiv {
+    .listDiv {
         // position: absolute; // exact position is calculated by keshif
         // box-shadow: 2px 2px 2px rgb(150, 134, 73);
         position: relative;
@@ -1580,7 +1717,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    div.listHeader {
+    .listHeader {
         font-weight: bold;
         color: black;
         font: 500 100% Arial,sans-serif;
@@ -1846,135 +1983,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // listHeader
 
-
-    &.layout_infobox {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        z-index: 2000;
-        transform: scale(1);
-        text-align: center;
-        .transition(~'transform 500ms ease-in-out, opacity 500ms');
-
-        .keyframes(~'itemZoom, 0%{transform: scale(0); opacity:1;} 100% {transform: scale(1); opacity:1;}');
-
-        div.infobox_close_button{
-            position: absolute;
-            right: 3px;
-            top: 3px;
-            background-color: rgb(151, 151, 151);
-            width: 20px;
-            height: 20px;
-            border-radius: 20px;
-            text-align: center;
-            cursor: pointer;
-            line-height: 20px;
-            color: white;
-            &:hover{ background-color: rgb(111, 111, 111); }
-        }
-        // DONT MESS WITH THIS
-        > .background{
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background: #0b0b0b;
-            opacity: 0.8;
-            position: absolute;
-            .transition(~'all 0.5s');
-            border-radius: 20px;
-        }
-        > .infobox_content{
-            display: none;
-            margin: auto;
-            box-shadow: 0px 0px 20px gray;
-            border-radius:15px;
-            background-color:white;
-            opacity: 1.0;
-            z-index: 1043;
-            max-height: 90%;
-            max-width: 90%;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        > .infobox_loading{
-            width: 300px;
-            height: 35px;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            .loadinggg{
-                position: absolute;
-                top: 8px;
-                left: 10px;
-                i.fa-warning{
-                    margin-left: 20px;
-                    font-size: 1.5em;
-                }
-            }
-            div.status_text{
-                margin: auto;
-                position: absolute;
-                top: 10px;
-                left: 70px;
-                height:20px;
-                > .status_text_sub{
-                    margin-left:5px;
-                }
-            }
-        }
-        > .infobox_credit{
-            display:none;
-            width: 390px;
-            height: 260px;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            div.all-the-credits{
-                margin: auto;
-            }
-            div.header{
-                background-color:rgb(216, 221, 212);
-                width:100%;
-                padding-top: 5px;
-                border-top-left-radius: 15px;
-                border-top-right-radius: 15px;
-                border-bottom: solid 2px rgb(60, 94, 67);
-            }
-            span.libName{
-                font-size: 1.4em;
-                font-weight: 700;
-            }
-            div.project_fund {
-                font-size: 0.8em;
-                font-weight: 300;
-            }
-        }
-        > .infobox_itemZoom{
-            position: relative;
-            margin: 20px;
-            padding: 10px;
-        }
-        &[show=loading] > .infobox_loading{
-            display: inline-block;
-        }
-        &[show=credit] > .infobox_credit{
-            display: inline-block;
-        }
-        &[show=none]{
-            pointer-events: none;
-            //display: none;
-            > .background{ opacity: 0;}
-        }
-        &[show=itemZoom] {
-            > .infobox_itemZoom{
-                .animation(itemZoom 500ms forwards);
-                .animation-iteration-count(1);
-                .animation-timing-function(ease-in-out);
-                display: inline-block;
-            }
-        }
-    } // layout_infobox
-
-    div.boxinbox{
+    .boxinbox{
         margin-top:10px;
         &:hover{
             background-color: #EFEFEF;
@@ -2009,20 +2018,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:relative;
         }
     } // boxinbox
-
-    &.layout_resize{
-        position: absolute;
-        right: 0px;
-        bottom: 0px;
-        cursor: nwse-resize;
-        width: 0;
-        height: 0;
-        z-index: 10;
-        border-left: 16px solid transparent;
-        border-right: 16px solid lightgray;
-        border-top: 16px solid transparent;
-        :hover{ border-right: 16px solid gray; }
-    }
 }
 
 .tipsy { 

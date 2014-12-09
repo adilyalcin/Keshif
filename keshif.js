@@ -1944,8 +1944,9 @@ kshf.Browser = function(options){
     this.forceHideBarAxis = false;
     if(options.forceHideBarAxis!==undefined) this.forceHideBarAxis = options.forceHideBarAxis;
 
-    this.TopRoot = d3.select(this.domID)
-        .classed("kshfHost",true)
+    this.root = d3.select(this.domID)
+        .classed("kshf",true)
+        .attr("noanim",false)
         .style("position","relative")
         .style("overflow-y","hidden")
         .on("mousemove",function(d){
@@ -1956,18 +1957,16 @@ kshf.Browser = function(options){
         ;
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
-    var rootDomNode = this.TopRoot[0][0];
+    var rootDomNode = this.root[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
-
-    this.root = this.TopRoot.attr("noanim",false);
 
     if(options.showResizeCorner === true) this.insertResize();
     this.insertInfobox();
 
-    this.layoutLeft  = this.root.append("div").attr("class", "kshf layout_left");
-    this.layoutRight  = this.root.append("div").attr("class", "kshf layout_right");
-    this.layoutList =   this.root.append("div").attr("class", "kshf listDiv")
-    this.layoutBottom = this.root.append("div").attr("class", "kshf layout_bottom");
+    this.layoutLeft  = this.root.append("div").attr("class", "layout_block layout_left");
+    this.layoutRight  = this.root.append("div").attr("class", "layout_block layout_right");
+    this.layoutList =   this.root.append("div").attr("class", "layout_block listDiv")
+    this.layoutBottom = this.root.append("div").attr("class", "layout_block layout_bottom");
 
     this.layoutLeft.on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
@@ -2007,11 +2006,11 @@ kshf.Browser.prototype = {
     },
     /** -- */
     domHeight: function(){
-        return parseInt(this.TopRoot.style("height"));
+        return parseInt(this.root.style("height"));
     },
     /** -- */
     domWidth: function(){
-        return parseInt(this.TopRoot.style("width"));
+        return parseInt(this.root.style("width"));
     },
     // TODO: Not used yet. If names are the same and config options are different, what do you do?
     createFilter: function(opts){
@@ -2024,7 +2023,7 @@ kshf.Browser.prototype = {
     /** -- */
     insertResize: function(){
         var me=this;
-        this.root.append("div").attr("class", "kshf layout_resize")
+        this.root.append("div").attr("class", "layout_block layout_resize")
             .on("mousedown", function (d, i) {
                 me.root.style('cursor','nwse-resize');
                 me.root.attr("noanim",true);
@@ -2079,7 +2078,7 @@ kshf.Browser.prototype = {
         creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
-        this.layout_infobox = this.root.append("div").attr("class", "kshf layout_infobox").attr("show","loading");
+        this.layout_infobox = this.root.append("div").attr("class", "layout_block layout_infobox").attr("show","loading");
         this.layout_infobox.append("div").attr("class","background")
             .on("click",function(){
                 me.layout_infobox.attr("show","none");
