@@ -1002,6 +1002,10 @@ kshf.Filter.prototype = {
             // insert DOM
             if(this.filterSummaryBlock===null) {
                 this.filterSummaryBlock = this.insertFilterSummaryBlock();
+                if(this.filterSummaryBlock===false){
+                    this.filterSummaryBlock=null;
+                    return;
+                }
             }
             if(this.summary_header!==undefined){
                 var text = this.summary_header;
@@ -1024,6 +1028,7 @@ kshf.Filter.prototype = {
     insertFilterSummaryBlock: function(){
         var x;
         var me=this;
+        if(this.browser.dom.filtercrumbs===undefined) return false;
         x = this.browser.dom.filtercrumbs
             .append("span").attr("class","filter-block")
             .each(function(d){
@@ -1904,8 +1909,7 @@ kshf.Browser = function(options){
     }
 
     this.subBrowser = options.subBrowser;
-    this.facetDefs = options.facets;
-    if(options.charts) this.facetDefs = options.charts;
+
     this.listDef = options.itemDisplay;
     if(options.list) this.listDef = options.list;
 
@@ -2406,35 +2410,42 @@ kshf.Browser.prototype = {
             window.setTimeout(function(){ me.loadCharts(); }, 50);
         }
     },
+    describeDefaultFacets: function(){
+        var r=[];
+
+        var skipFacet = {};
+        if(this.columnsSkip){
+            this.columnsSkip.forEach(function(c){ skipFacet[c] = true; },this);
+        }
+
+        kshf.dt_ColNames_Arr[this.primaryTableName].forEach(function(colName){
+            if(colName===this.source.sheets[0].id) return;
+            if(skipFacet[colName]===true) return;
+            if(colName[0]==="*") return;
+            r.push({facetTitle: colName});
+        },this);
+
+        return r;
+    },
     /** -- */
     loadCharts: function(){
         var me=this;
         if(this.loadedCb!==undefined) this.loadedCb.call(this);
 
         // Use all the columns in the data, insert to view in order...
-        if(this.facetDefs===undefined){
-            this.facetDefs = [];
-
-            var skipFacet = {};
-            if(this.columnsSkip){
-                this.columnsSkip.forEach(function(c){ skipFacet[c] = true; },this);
-            }
-
-            var colNames = kshf.dt_ColNames_Arr[this.primaryTableName];
-            colNames.forEach(function(colName){
-                if(colName===this.source.sheets[0].id) return;
-                if(skipFacet[colName]===true) return;
-                if(colName[0]==="*") return;
-                this.facetDefs.push({facetTitle: colName});
-            },this);
+        if(this.options.facets===undefined){
+            this.options.facets = this.describeDefaultFacets();
         }
 
         // TODO: Find the first column that has a date value, set it the time component of first chart
-        this.facetDefs.forEach(function(facetDescr){ 
-            me.addFacet(facetDescr,this.primaryTableName);
+        this.options.facets.forEach(function(facetDescr){ 
+            this.addFacet(facetDescr,this.primaryTableName);
         },this);
 
         // Init facet DOMs after all facets are added / data mappings are completed
+        this.facets.forEach(function(facet){ facet.initDOM(); });
+
+        // in case new facets are added, init dom's again...
         this.facets.forEach(function(facet){ facet.initDOM(); });
 
         if(this.listDef!==undefined){
@@ -2608,6 +2619,8 @@ kshf.Browser.prototype = {
         var fct=new kshf.Facet_Categorical(this,options);
         this.facets.push(fct);
         if(fct.isLinked) this.linkedFacets.push(fct);
+        fct.init_1();
+
         return fct;
     },
     addFacet_Interval: function(options){
@@ -2725,7 +2738,8 @@ kshf.Browser.prototype = {
     update: function (resultChange) {
         var me=this;
 
-        this.dom.listheader_count.text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
+        if(this.dom.listheader_count)
+            this.dom.listheader_count.text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
 
         this.facets.forEach(function(facet){
             facet.updateAfterFilter(resultChange);
@@ -2786,7 +2800,7 @@ kshf.Browser.prototype = {
                 if(me.previewCompareCb) me.previewCompareCb.call(this,false);
             },2500);
         }
-        if(this._percentView_Active===false){
+        if(this._percentView_Active===false && this._previewCompare_Active===false){
             this._percentView_Timeout_Set = window.setTimeout(function(){
                 me._percentView_Active = true;
                 me.facets.forEach(function(facet){ facet.refreshViz_All(); });
@@ -3076,6 +3090,11 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.browser = kshf_;
     this.filteredItems = options.items;
 
+    this.subFacets = [];
+
+    this.collapsed = false;
+    if(options.collapsed===true) this.collapsed = true;
+
     this.options = options;
     this.layoutStr = options.layout;
 
@@ -3088,19 +3107,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.attrib_InDisplay_First = 0;
     this.configRowCount=0;
 
-    this.subFacets = [];
-
-    // COLLAPSED
-    this.collapsed = false;
-    if(options.collapsed===true) this.collapsed = true;
-
-    // Does this facet have attributes?
-
     this.skipSorting = false;
-
-    if(this.hasAttribs()){
-        this.initAttribs(options);
-    }
 };
 
 kshf.Facet_Categorical.prototype = {
@@ -3466,11 +3473,33 @@ kshf.Facet_Categorical.prototype = {
         this.browser.mapItemData(this.filteredItems,this.options.catItemMap, this.getAttribs_wID(), filterId);
 
         this.hasMultiValueItem = false;
+        var maxDegree = 0
         this.filteredItems.forEach(function(item){
             var arr=item.mappedDataCache[filterId];
             if(arr===null) return;
             if(arr.length>1) this.hasMultiValueItem = true;
+            maxDegree = Math.max(maxDegree,arr.length);
         },this);
+
+        if(this.hasMultiValueItem && this.options.enableSetVis){
+            var fscale = 'step';
+            if(maxDegree>100) fscale = 'log';
+            else if(maxDegree>10) fscale = 'linear';
+            var facetDescr = {
+                facetTitle:"<i class='fa fa-hand-o-up'></i> # of "+this.options.facetTitle,
+                catItemMap: function(d){
+                    var arr=d.mappedDataCache[filterId];
+                    if(arr==null) return 0;
+                    return arr.length;
+                },
+                parentFacet: this.parentFacet,
+                collapsed: true,
+                type: 'interval',
+                intervalScale: fscale,
+                layout: this.layoutStr
+            };
+            this.browser.addFacet(facetDescr,this.browser.primaryTableName);
+        }
 
         // Modified internal dataMap function - Skip rows with 0 active item count
         if(this.options.dataMap) {
@@ -3538,9 +3567,16 @@ kshf.Facet_Categorical.prototype = {
             if(attrib.isVisible) this.attribCount_Visible++;
         },this);
     },
+    init_1: function(){
+        if(this.hasAttribs()){
+            this.initAttribs(this.options);
+        }
+    },
     /** -- */
     initDOM: function(){
+        if(this.dom.inited===true) return;
         var me = this;
+
         var root;
         if(this.parentFacet){
             root = this.parentFacet.dom.subFacets;
@@ -3581,21 +3617,15 @@ kshf.Facet_Categorical.prototype = {
             // no-attrib facets (hierarchy parents) still need to adjust their header position
             this.refreshLabelWidth();
         }
+
+        this.dom.inited = true;
     },
     /** -- */
     init_DOM_Attrib: function(){
         var me=this;
         this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
 
-        if(this.options.facets){
-            this.dom.wrapper.append("span").attr("class","facetGroupBar");//.append("span").text("["+this.options.facetTitle+"]");
-        }
-
         this.dom.facetCategorical = this.dom.wrapper.append("div").attr("class","facetCategorical");
-
-        if(this.options.facets){
-            this.dom.facetCategorical.style('margin-left','17px');
-        }
 
         // update control components
         if(this.showTextSearch || this.sortingOpts.length>1) {
@@ -3915,22 +3945,21 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     refreshViz_Active: function(){
         var me=this;
+        var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
         if(this.browser._percentView_Active){
             this.dom.bars_active.each(function(attrib){
                 var width = (attrib.aggregate_Active!==0)?me.chartPreviewAxisScale.range()[1]:0;
                 kshf.Util.setTransform(this,"scaleX("+width+")");
             });
             // adjust click area
-            var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
-            var totalWidth = basicWidth+me.chartPreviewAxisScale.range();
-            this.dom.attribClickArea.style("width",totalWidth+"px");
+            this.dom.attribClickArea.style("width",
+                (basicWidth+me.chartPreviewAxisScale.range()[1])+"px");
         } else {
             // active bar width
             this.dom.bars_active.each(function(attrib){
                 kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.aggregate_Active)+")");
             });
             // adjust click area
-            var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
             this.dom.attribClickArea.style("width",function(attrib){
                 return (basicWidth+me.chartPreviewAxisScale(attrib.aggregate_Active))+"px";
             });
@@ -4691,6 +4720,12 @@ kshf.Facet_Interval = function(kshf_, options){
     this.browser = kshf_;
     this.filteredItems = options.items;
 
+    // Interval cannot be an entity itself, but some methods may try to recurse on subFacet parameter, play well
+    this.subFacets = [];
+
+    this.collapsed = false;
+    if(options.collapsed===true) this.collapsed = true;
+
     this.options = options;
     this.layoutStr = options.layout;
     this.parentFacet = options.parentFacet;
@@ -4708,13 +4743,6 @@ kshf.Facet_Interval = function(kshf_, options){
     this.histogramTopGap = 10;
 
     this.dom = {};
-
-    // Interval cannot be an entity itself, but some methods may try to recurse on subFacet parameter...
-    this.subFacets = [];
-
-    this.collapsed = false;
-    if(options.collapsed===true)
-        this.collapsed = true;
 
     if(options.optimumTickWidth===undefined)
         options.optimumTickWidth = 50;
@@ -4946,8 +4974,12 @@ kshf.Facet_Interval.prototype = {
     getMaxBinActiveItems: function(){
         return d3.max(this.histBins,function(bin){ return bin.aggregate_Active; });
     },
+    init_1: function(){
+
+    },
     /** -- */
     initDOM: function(){
+        if(this.dom.inited===true) return;
         var me = this;
         var root;
         if(this.parentFacet){
@@ -4988,6 +5020,8 @@ kshf.Facet_Interval.prototype = {
         if(this.intervalRange.min===0 && this.intervalRange.max===0){
             this.setCollapsed(true);
         }
+
+        this.dom.inited=true;
     },
     initDOM_Percentile: function(){
         var me=this;

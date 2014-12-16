@@ -269,75 +269,75 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         } // layout_infobox
-        &:not(.layout_leftttt){
-            .hasLabelWidth{ text-align: right; }
-            .headerGroup {
-                span.header_label_arrow{
-                    left: 0px;
-                }
-                .chartFirstLineBackground{
-                    direction: ltr;
-                }
-            }
-            .attribGroup{
-                direction:ltr;
-                margin-right: 2px;
-            }
-            .attrib{
-                > span.attribLabel span.filterButtons{
-                    margin-left: 2px;
-                }
-                > span.barGroup > .bar{
-                    .transform-origin(0%, 0%);
-                }
-                > .item_count_wrapper{
-                    padding-left: 3px;
-                    text-align: left;
-                }
-                &:not([selected="0"]) {
-                    .attribLabel{
-                        .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
-                    }
-                    .item_count_wrapper{
-                        .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
-                    }
-                }
-            }
-            .facetControls{
-                direction: ltr;
-                .attribTextSearch input{
-                    text-align: right;
-                    &::-webkit-input-placeholder { 
-                        text-align:right; 
-                    }
-                }
-            }
-            .kshfChart[collapsed=true] {
-                > .headerGroup span.header_label_arrow{ 
-                    opacity: 1;
-                    &:hover{
-                        .fa{
-                            .animation-direction(reverse);
-                        }
-                    }
-                    span.fa{
-    //                    .rotate(0deg);
-                        &::before{ content: "\f065"; }
-                    }
-                }
-            }
-            .belowAttribs{ direction: ltr; }
+    }
 
-            .subFacets{
-                .kshfChart{ margin-left: 17px; }
+    .hasLabelWidth{ text-align: right; }
+    .headerGroup {
+        span.header_label_arrow{
+            left: 0px;
+        }
+        .chartFirstLineBackground{
+            direction: ltr;
+        }
+    }
+    .attribGroup{
+        direction:ltr;
+        margin-right: 2px;
+    }
+    .attrib{
+        > span.attribLabel span.filterButtons{
+            margin-left: 2px;
+        }
+        > span.barGroup > .bar{
+            .transform-origin(0%, 0%);
+        }
+        > .item_count_wrapper{
+            padding-left: 3px;
+            text-align: left;
+        }
+        &:not([selected="0"]) {
+            .attribLabel{
+                .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
             }
-            .facetCategorical{
-                .scrollToTop{
-                    right: 3px;
-                }
+            .item_count_wrapper{
+                .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
             }
         }
     }
+    .facetControls{
+        border-bottom: dotted 1px lightgray;
+        .attribTextSearch input{
+            text-align: right;
+            &::-webkit-input-placeholder { 
+                text-align:right; 
+            }
+        }
+    }
+    .kshfChart[collapsed=true] {
+        > .headerGroup span.header_label_arrow{ 
+            opacity: 1;
+            &:hover{
+                .fa{
+                    .animation-direction(reverse);
+                }
+            }
+            span.fa{
+//                    .rotate(0deg);
+                &::before{ content: "\f065"; }
+            }
+        }
+    }
+    .belowAttribs{ direction: ltr; }
+
+    .subFacets{
+        .kshfChart{ margin-left: 17px; }
+    }
+    .facetCategorical{
+        .scrollToTop{
+            right: 3px;
+        }
+    }
+    //}
 
     .chartFilterButtonParent{
         position: absolute;
@@ -400,6 +400,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
         position:absolute;
         z-index: 2;
+        top: 1px;
         .transition(@layout_animation);
         > .tick{
             opacity: 0;
@@ -510,10 +511,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             span.fa{
 //                .transform(scaleX(-1));
-                position: absolute;
-                left: 0px;
+//                position: absolute;
+//                left: 0px;
                 font-size: 0.8em;
-                margin:2px;
+                margin:1px;
 //                .transition(~'transform 500ms');
 //                .rotate(180deg);
                 &::before{
@@ -555,10 +556,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 overflow: hidden;
 
                 > .facetControls{
-                    border-bottom: dotted 1px lightgray;
-                    margin-bottom: -1px;
+                    // margin-bottom: -1px;
                     > .attribTextSearch{
-                        display: inline-block;
+                        display: block;
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
@@ -1305,13 +1305,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .header_label{
                     font-size: 1.3em;
                 }
-                .header_label_arrow{
+/*                .header_label_arrow{
                     border-right: solid 2px rgb(204,195,195);
                     //color: #5947B4;
                     //background-color: #DFDEE7;
                     width: 17px;
                     .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-                }
+                }*/
             }
         }
 

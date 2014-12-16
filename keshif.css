@@ -287,75 +287,75 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   animation-timing-function: ease-in-out;
   display: inline-block;
 }
-.kshf > .layout_block:not(.layout_leftttt) .hasLabelWidth {
+.kshf .hasLabelWidth {
   text-align: right;
 }
-.kshf > .layout_block:not(.layout_leftttt) .headerGroup span.header_label_arrow {
+.kshf .headerGroup span.header_label_arrow {
   left: 0px;
 }
-.kshf > .layout_block:not(.layout_leftttt) .headerGroup .chartFirstLineBackground {
+.kshf .headerGroup .chartFirstLineBackground {
   direction: ltr;
 }
-.kshf > .layout_block:not(.layout_leftttt) .attribGroup {
+.kshf .attribGroup {
   direction: ltr;
   margin-right: 2px;
 }
-.kshf > .layout_block:not(.layout_leftttt) .attrib > span.attribLabel span.filterButtons {
+.kshf .attrib > span.attribLabel span.filterButtons {
   margin-left: 2px;
 }
-.kshf > .layout_block:not(.layout_leftttt) .attrib > span.barGroup > .bar {
+.kshf .attrib > span.barGroup > .bar {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf > .layout_block:not(.layout_leftttt) .attrib > .item_count_wrapper {
+.kshf .attrib > .item_count_wrapper {
   padding-left: 3px;
   text-align: left;
 }
-.kshf > .layout_block:not(.layout_leftttt) .attrib:not([selected="0"]) .attribLabel {
+.kshf .attrib:not([selected="0"]) .attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: -moz-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: -o-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
   background-image: linear-gradient(to right, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
 }
-.kshf > .layout_block:not(.layout_leftttt) .attrib:not([selected="0"]) .item_count_wrapper {
+.kshf .attrib:not([selected="0"]) .item_count_wrapper {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: -moz-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: -o-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: linear-gradient(to right, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
 }
-.kshf > .layout_block:not(.layout_leftttt) .facetControls {
-  direction: ltr;
+.kshf .facetControls {
+  border-bottom: dotted 1px lightgray;
 }
-.kshf > .layout_block:not(.layout_leftttt) .facetControls .attribTextSearch input {
+.kshf .facetControls .attribTextSearch input {
   text-align: right;
 }
-.kshf > .layout_block:not(.layout_leftttt) .facetControls .attribTextSearch input::-webkit-input-placeholder {
+.kshf .facetControls .attribTextSearch input::-webkit-input-placeholder {
   text-align: right;
 }
-.kshf > .layout_block:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow {
+.kshf .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow {
   opacity: 1;
 }
-.kshf > .layout_block:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow:hover .fa {
+.kshf .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow:hover .fa {
   -webkit-animation-direction: reverse;
   -moz-animation-direction: reverse;
   -o-animation-direction: reverse;
   animation-direction: reverse;
 }
-.kshf > .layout_block:not(.layout_leftttt) .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa::before {
+.kshf .kshfChart[collapsed=true] > .headerGroup span.header_label_arrow span.fa::before {
   content: "\f065";
 }
-.kshf > .layout_block:not(.layout_leftttt) .belowAttribs {
+.kshf .belowAttribs {
   direction: ltr;
 }
-.kshf > .layout_block:not(.layout_leftttt) .subFacets .kshfChart {
+.kshf .subFacets .kshfChart {
   margin-left: 17px;
 }
-.kshf > .layout_block:not(.layout_leftttt) .facetCategorical .scrollToTop {
+.kshf .facetCategorical .scrollToTop {
   right: 3px;
 }
 .kshf .chartFilterButtonParent {
@@ -416,6 +416,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   position: absolute;
   z-index: 2;
+  top: 1px;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -549,10 +550,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   animation-timing-function: ease-in;
 }
 .kshf .headerGroup span.header_label_arrow span.fa {
-  position: absolute;
-  left: 0px;
   font-size: 0.8em;
-  margin: 2px;
+  margin: 1px;
 }
 .kshf .headerGroup span.header_label_arrow span.fa::before {
   content: "\f066";
@@ -591,12 +590,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical {
   overflow: hidden;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls {
-  border-bottom: dotted 1px lightgray;
-  margin-bottom: -1px;
-}
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch {
-  display: inline-block;
+  display: block;
   vertical-align: top;
   white-space: nowrap;
   position: relative;
@@ -1303,17 +1298,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[hasFacets=true] {
   margin-bottom: 2px;
 }
+.kshf .kshfChart[hasFacets=true] > .headerGroup {
+  /*                .header_label_arrow{
+                    border-right: solid 2px rgb(204,195,195);
+                    //color: #5947B4;
+                    //background-color: #DFDEE7;
+                    width: 17px;
+                    .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
+                }*/
+}
 .kshf .kshfChart[hasFacets=true] > .headerGroup .header_label {
   font-size: 1.3em;
-}
-.kshf .kshfChart[hasFacets=true] > .headerGroup .header_label_arrow {
-  border-right: solid 2px #ccc3c3;
-  width: 17px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMDQsMTk1LDE5NSkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIwNCwxOTUsMTk1KSIgc3RvcC1vcGFjaXR5PSIwLjUiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%);
-  background-image: -moz-linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%);
-  background-image: -o-linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%);
-  background-image: linear-gradient(to right, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%);
 }
 .kshf .belowAttribs {
   position: relative;
