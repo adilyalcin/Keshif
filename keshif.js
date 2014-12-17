@@ -3160,8 +3160,6 @@ kshf.Facet_Categorical.prototype = {
         var offset=0;
         if(this.parentFacet){
             offset+=17;
-        } else if(this.hasSubFacets()){
-            offset+=17;
         }
         return offset;
     },
@@ -4329,8 +4327,12 @@ kshf.Facet_Categorical.prototype = {
                 this.timer = setTimeout(function() { x.timer = null; }, 500);
             }
         };
-        var cbAttribEnter = function(attrib,i){
+        var cbAttribEnter = function(attrib){
             if(me.tipsy_active) me.tipsy_active.hide();
+
+            if(attrib.crossing_row)
+                attrib.crossing_row.setAttribute("highlight","selected");
+            
             if(me.isAttribSelectable(attrib)) {
                 attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
                 if(!me.browser.pauseResultPreview && 
@@ -4359,11 +4361,15 @@ kshf.Facet_Categorical.prototype = {
                 me.chartPreviewAxisScale(attrib.aggregate_Active);
             attrib.facetDOM.tipsy_active.show();
         };
-        var cbAttribLeave = function(attrib,i){
+        var cbAttribLeave = function(attrib){
             if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
                 attrib.skipMouseOut = false;
                 return;
             }
+
+            if(attrib.crossing_row)
+                attrib.crossing_row.setAttribute("highlight",false);
+
             if(!me.isAttribSelectable(attrib)) return;
             attrib.nohighlightAll(true);
 
