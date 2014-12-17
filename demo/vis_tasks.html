@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>A Multi-Level Typology of Abstract Visualization Tasks</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+        var pubCol;
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    leftPanelLabelWidth: 150,
+                    rightPanelLabelWidth: 90,
+                    source: {
+                        gdocId : '16zQtOlLLugoSvDw_87IiGVJK6FW2vyUtfVfxfMTkoQ0',
+                        sheets : [ {name:"Papers"} ]
+                    },
+                    loadedCb: function(){
+                        pubCol = kshf.dt_ColNames.Papers;
+                        // convert authors and keywords columns in publication table ( space separated IDs) to array
+                        kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Authors],", ",false);
+                        kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Keywords],"*",false);
+                    },
+                    facets: [
+                        {
+                            facetTitle: "Keywords"
+                        },{ facetTitle: "Authors", layout: 'right', 
+                        },{ facetTitle: "Highlighted", layout: 'right', 
+                            catItemMap: function(d){ return d.data[2]==="*"?"Yes":"No";}
+                        },{ facetTitle: "Venue", layout: 'right', 
+                        },{ facetTitle: "Year", layout: 'bottom',
+                            type:'interval', intervalScale: 'linear'
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 45,
+                        detailsToggle : "Zoom",
+                        sortingOpts : [ {name: 'id', inverse:true} ],
+                        textSearch: 'Title',
+                        contentFunc: function(d){ 
+                            return d.data[4];
+                        }
+                    }
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 1000px;
+                height: 650px;
+            }
+            #chart_div div.listItem{
+                max-height: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">References of A Multi-Level Typology of Abstract Visualization Tasks</div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
