@@ -72,7 +72,7 @@ $(document).ready( function(){
                 facetTitle: "Tasks",
                 facets: [
                     {
-                        facetTitle: "Analytic",
+                        facetTitle: "Analytics",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="sentiment-analysis" ||
@@ -87,7 +87,7 @@ $(document).ready( function(){
                             });
                         }
                     },{
-                        facetTitle: "Visualization",
+                        facetTitle: "Visualizations",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="roi" ||
@@ -105,7 +105,7 @@ $(document).ready( function(){
                 facetTitle: "Data", layout: 'right',
                 facets:[
                     {
-                        facetTitle: "Source",
+                        facetTitle: "Sources",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="document" ||
@@ -125,7 +125,7 @@ $(document).ready( function(){
                     }
                 ]
             },{
-                facetTitle: "Domain",
+                facetTitle: "Domains",
                 catItemMap: function(d){
                     return d.data.categories.filter(function(c){
                         return c==="social-media" ||
@@ -141,7 +141,7 @@ $(document).ready( function(){
                 facetTitle: "Visualization", layout: 'right',
                 facets:[
                     {
-                        facetTitle: "Dimensionality",
+                        facetTitle: "Dimensionalities",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="1d" ||
@@ -150,7 +150,7 @@ $(document).ready( function(){
                             });
                         }
                     },{
-                        facetTitle: "Representation",
+                        facetTitle: "Representations",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="line-plot" ||
@@ -163,7 +163,7 @@ $(document).ready( function(){
                             });
                         }
                     },{
-                        facetTitle: "Alignment",
+                        facetTitle: "Alignments",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="radial" ||

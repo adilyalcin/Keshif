@@ -13,52 +13,80 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-        var pubCol;
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    leftPanelLabelWidth: 200,
-                    rightPanelLabelWidth: 90,
-                    source: {
-                        gdocId : '16zQtOlLLugoSvDw_87IiGVJK6FW2vyUtfVfxfMTkoQ0',
-                        sheets : [ {name:"Papers"} ]
-                    },
-                    loadedCb: function(){
-                        pubCol = kshf.dt_ColNames.Papers;
-                        // convert authors and keywords columns in publication table ( space separated IDs) to array
-                        kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Authors],", ",false);
-                        kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Keywords],"*",false);
-                    },
-                    facets: [
-                        {
-                            facetTitle: "Keywords"
-                        },{ facetTitle: "Authors", layout: 'right', 
-                        },{ facetTitle: "Highlighted", layout: 'right', 
-                            catItemMap: function(d){ return d.data[2]==="*"?"Yes":"No";}
-                        },{ facetTitle: "Venue", layout: 'right', 
-                        },{ facetTitle: "Year", layout: 'bottom',
-                            type:'interval', intervalScale: 'linear'
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-80);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    var pubCol;
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 200,
+        rightPanelLabelWidth: 200,
+        source: {
+            gdocId : '16zQtOlLLugoSvDw_87IiGVJK6FW2vyUtfVfxfMTkoQ0',
+            sheets : [ {name:"Papers"},{name:"Keywords",id:"Task"},{name:"Levels",id:"Category"} ]
+        },
+        loadedCb: function(){
+            pubCol = kshf.dt_ColNames.Papers;
+            // convert authors and keywords columns in publication table ( space separated IDs) to array
+            kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Authors],", ",false);
+            kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Tasks],"*",false);
+        },
+        facets: [
+            {
+                facetTitle: "Tasks",
+                catTableName: "Keywords",
+                catLabelText: function(d){
+                    return d.data[0];
+                },
+                facets:[
+                    {
+                        facetTitle: "Categories",
+                        catItemMap: function(d){
+                            return d.data[1];
                         }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 45,
-                        detailsToggle : "Zoom",
-                        sortingOpts : [ {name: 'id', inverse:true} ],
-                        textSearch: 'Title',
-                        contentFunc: function(d){ 
-                            return d.data[4];
+                    },{
+                        facetTitle: "Levels",
+                        catItemMap: function(d){
+                            return kshf.dt_id.Levels[d.data[1]].data[1];
                         }
                     }
-                });
-            });
-        </script>
-        <style>
-            #chart_div {
-                width: 1050px;
-                height: 650px;
+                ]
+            },{ facetTitle: "Authors", layout: 'right', 
+            },{ facetTitle: "Features", layout: 'right', 
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data[2]==="*") r.push("Highlighted");
+                    if(d.data[1] && d.data[1].length>0) r.push("Presents Taxonomy");
+                    return r;
+                }
+            },{ facetTitle: "Venue", layout: 'right', 
+            },{ facetTitle: "Year", layout: 'bottom',
+                type:'interval', intervalScale: 'linear'
             }
-        </style>
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            detailsToggle : "Zoom",
+            sortingOpts : [ {name: 'id', inverse:true} ],
+            textSearch: 'Title',
+            contentFunc: function(d){ 
+                return d.data[4];
+            }
+        }
+    });
+});
+        </script>
     </head>
     <body>
         <div class="pageTitle" align="center">References in "A Multi-Level Typology of Abstract Visualization Tasks"</div>
