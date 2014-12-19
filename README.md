@@ -10,6 +10,10 @@ To start using Keshif
 
 [![Demo](https://github.com/adilyalcin/Keshif/blob/master/demo/demo_img/demo.png)](http://adilyalcin.github.io/Keshif/demo/demo.html)
 
+### License
+
+BSD 3 clause (c) University of Maryland
+
 ### Author
 
 Mehmet Adil Yalcin @ HCIL, University of Maryland, College Park

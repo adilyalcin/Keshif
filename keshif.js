@@ -2,7 +2,7 @@
 
 keshif library
 
-Copyright (c) 2013, Mehmet Adil Yalcin
+Copyright (c) 2013, University of Maryland
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -553,7 +553,7 @@ kshf.Item = function(d, idIndex){
     //  2: selected for inclusion (OR)
     // -1: selected for removal (NOT query)
     //  0: not selected
-	this.selected = 0;
+    this.selected = 0;
     // Items which are mapped/related to this item
     this.items = []; 
 
@@ -562,7 +562,7 @@ kshf.Item = function(d, idIndex){
     // Note that the aggregation currently works by summation only.
     this.aggregate_Self = 1;
     // Active aggregate value
-	this.aggregate_Active = 0;
+    this.aggregate_Active = 0;
     // Previewed aggregate value
     this.aggregate_Preview = 0;
     // Total aggregate value
@@ -1162,7 +1162,7 @@ kshf.List = function(kshf_, config, root){
         this.detailsToggle = this.detailsToggle.toLowerCase();
     }
 
-	this.listDiv = root.select("div.listDiv")
+    this.listDiv = root.select("div.listDiv")
         .attr('detailsToggle',this.detailsToggle)
         .attr('displayType',this.displayType);
 
@@ -1868,7 +1868,7 @@ kshf.Browser = function(options){
     this.options = options;
 
     // BASIC OPTIONS
-	this.facets = [];
+    this.facets = [];
     this.facetsTop = [];
     this.facetsBottom = [];
     this.facetsLeft = [];
@@ -1879,7 +1879,6 @@ kshf.Browser = function(options){
 
     this.scrollWidth = 21;
     this.sepWidth = 10;
-    this.line_height = 18;
     this.filterList = [];
     this.pauseResultPreview = false;
 
@@ -2881,8 +2880,9 @@ kshf.Browser.prototype = {
                     if(!facet.collapsed){
                         if(facet.options.catDispCountFix){
                             // if you have more space than what's requested, you can skip this
-                            var newTarget = facet.getHeight_Header()+(facet.options.catDispCountFix+1)*me.line_height;
                             if(finalPass) {
+                                var newTarget = facet.getHeight_Header()+(facet.options.catDispCountFix+1)*facet.heightRow_attrib;
+                                var newTarget = facet.getHeight_Header()+(facet.options.catDispCountFix+1)*facet.heightRow_attrib;
                                 newTarget = Math.max(newTarget,targetHeight);
                                 facet.setHeight(newTarget);
                             } else {
@@ -3092,6 +3092,9 @@ kshf.Facet_Categorical = function(kshf_, options){
 
     this.subFacets = [];
 
+    this.heightRow_attrib = 18;
+    this.heightRow_config = 18;
+
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
 
@@ -3160,6 +3163,8 @@ kshf.Facet_Categorical.prototype = {
         var offset=0;
         if(this.parentFacet){
             offset+=17;
+        } else if(this.hasSubFacets()){
+            offset+=17;
         }
         return offset;
     },
@@ -3176,16 +3181,16 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     getHeight_RangeMax: function(){
-        if(!this.hasAttribs()) return this.browser.line_height;
-        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Visible+1)*this.browser.line_height-1;
+        if(!this.hasAttribs()) return this.heightRow_attrib;
+        return this.getHeight_Header()+(this.configRowCount+this.attribCount_Visible+1)*this.heightRow_attrib-1;
     },
     /** -- */
     getHeight_RangeMin: function(){
-        if(!this.hasAttribs()) return this.browser.line_height;
-        return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Visible,3)+1)*this.browser.line_height;
+        if(!this.hasAttribs()) return this.heightRow_attrib;
+        return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Visible,3)+1)*this.heightRow_attrib;
     },
     getHeight_Content: function(){
-        var h = this.attribHeight + this.browser.line_height*this.configRowCount;
+        var h = this.attribHeight + this.heightRow_config*this.configRowCount;
         if(!this.areAllAttribsInDisplay() || !this.browser.hideBarAxis) h+=17;
         return h;
     },
@@ -3535,7 +3540,7 @@ kshf.Facet_Categorical.prototype = {
             this.options.catBarScale = "scale_frequency";
         }
 
-    	this.unselectAllAttribs();
+        this.unselectAllAttribs();
     },
     /** -- */
     updateAttribCount_Total: function(){
@@ -3653,7 +3658,8 @@ kshf.Facet_Categorical.prototype = {
                 me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
 
                 me.scrollTop_cache = this.scrollTop;
-                me.attrib_InDisplay_First = Math.floor(this.scrollTop / (me.browser.line_height*1.0));
+                me.attrib_InDisplay_First = Math.floor( this.scrollTop/me.heightRow_attrib);
+                me.attrib_InDisplay_First = Math.floor( this.scrollTop/me.heightRow_attrib);
                 me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.attribCount_InDisplay);
 
                 me.cullAttribs();
@@ -3675,8 +3681,9 @@ kshf.Facet_Categorical.prototype = {
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
-            .on("mousedown",function(){
-                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+18);
+            .on("click",function(){
+                kshf.Util.scrollToPos_do(
+                    me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+me.heightRow_attrib);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
 
@@ -3868,11 +3875,12 @@ kshf.Facet_Categorical.prototype = {
     setHeight: function(newHeight){
         if(!this.hasAttribs()) return;
         this.attribHeight = Math.min(
-            newHeight-this.getHeight_Header()-(1+this.configRowCount)*this.browser.line_height+1,
-            this.browser.line_height*this.attribCount_Visible);
+            newHeight-this.getHeight_Header()-(1+this.configRowCount)*this.heightRow_config+1,
+            this.heightRow_attrib*this.attribCount_Visible);
 
         // update attribCount_InDisplay
-        var c = Math.floor(this.attribHeight / this.browser.line_height);
+        var c = Math.floor(this.attribHeight / this.heightRow_attrib);
+        var c = Math.floor(this.attribHeight / this.heightRow_attrib);
         if(c<0) c=1;
         if(c>this.attribCount_Visible) c=this.attribCount_Visible;
         if(this.attribCount_Visible<=2){ 
@@ -4129,6 +4137,31 @@ kshf.Facet_Categorical.prototype = {
         this.dom.barChartPreviewAxis.selectAll("span.line").style("top",(-h)+"px").style("height",h+"px");
     },
     /** -- */
+    setHeightRow_attrib: function(h){
+        var me=this;
+        if(this.heightRow_attrib===h) return;
+        this.heightRow_attrib = h;
+
+        this.browser.root.attr("noanim",true);
+        
+        this.browser.updateLayout();
+        
+        this.dom.attribs.each(function(attrib){
+            var yPos = me.heightRow_attrib*attrib.orderIndex;
+            kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+yPos+"px)");
+            // padding!
+            var padTop = 0;
+            if(me.heightRow_attrib>19){
+                padTop = (me.heightRow_attrib-18)/2;
+            }
+            this.style.paddingTop = padTop+"px";
+        });
+
+        setTimeout(function(){
+            me.browser.root.attr("noanim",false);
+        },100);
+    },
+    /** -- */
     isAttribVisible: function(attrib){
         if(this.isLinked){
             if(attrib.selectedForLink===false) return false;
@@ -4239,7 +4272,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** - */
     insertAttribs: function(){
-    	var me = this;
+        var me = this;
         var previewTimer = null;
 
         var domAttribs_new = this.dom.attribGroup.selectAll("div.attrib")
@@ -4327,7 +4360,7 @@ kshf.Facet_Categorical.prototype = {
                 this.timer = setTimeout(function() { x.timer = null; }, 500);
             }
         };
-        var cbAttribEnter = function(attrib){
+        var cbAttribEnter = function(attrib,i){
             if(me.tipsy_active) me.tipsy_active.hide();
 
             if(attrib.crossing_row)
@@ -4361,7 +4394,7 @@ kshf.Facet_Categorical.prototype = {
                 me.chartPreviewAxisScale(attrib.aggregate_Active);
             attrib.facetDOM.tipsy_active.show();
         };
-        var cbAttribLeave = function(attrib){
+        var cbAttribLeave = function(attrib,i){
             if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
                 attrib.skipMouseOut = false;
                 return;
@@ -4429,7 +4462,8 @@ kshf.Facet_Categorical.prototype = {
                     me.dom.attribs.each(function(attrib){
                         if(attrib.isVisible){
                             attrib.posX = 0;
-                            attrib.posY = line_height*attrib.orderIndex;
+                            attrib.posY = me.heightRow_attrib*attrib.orderIndex;
+                            attrib.posY = me.heightRow_attrib*attrib.orderIndex;
                             kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+attrib.posY+"px)");
                         }
                     });
@@ -4502,7 +4536,6 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var dragged;
-        var line_height = this.browser.line_height;
 
         var domAttribClickArea = domAttribs_new.append("span").attr("class", "clickArea")
             .on("click", cbAttribClick)
@@ -4525,7 +4558,7 @@ kshf.Facet_Categorical.prototype = {
             .on("mouseout",cbAndLeave)
             .on("click",cbAndClick)
 
-    	var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
+        var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
 
         // These are "invisible"...
         var domLabelFilterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
@@ -4544,9 +4577,9 @@ kshf.Facet_Categorical.prototype = {
         domBarGroup.append("span").attr("class", function(d,i){ 
                 return "bar total "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
             });
-    	domBarGroup.append("span").attr("class", function(d,i){ 
-    			return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
-    		})
+        domBarGroup.append("span").attr("class", function(d,i){ 
+                return "bar active "+(me.options.barClassFunc?me.options.barClassFunc(d,i):"");
+            })
             ;
         domBarGroup.append("span").attr("class", "bar preview").attr("fast",true);
         domBarGroup.append("span").attr("class", "bar preview_compare").attr("hidden",true);
@@ -4611,12 +4644,12 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateSorting_do: function(sortDelay){
-        var line_height = this.browser.line_height;
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortAttribs();
         var xRemoveOffset = -100;
         if(this.options.layout==='right') xRemoveOffset *= -1;
+        if(this.cbFacetSort) this.cbFacetSort.call(this);
 
         setTimeout(function(){
             // 1. Make items disappear
@@ -4634,7 +4667,7 @@ kshf.Facet_Categorical.prototype = {
                 }
                 // if item is to appear, move it to the correct y position
                 if(attrib.isVisible && !attrib.isVisible_before){
-                    var y = line_height*attrib.orderIndex;
+                    var y = me.heightRow_attrib*attrib.orderIndex;
                     kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+y+"px)");
                 }
                 if(attrib.isVisible || attrib.isVisible_before){
@@ -4647,7 +4680,7 @@ kshf.Facet_Categorical.prototype = {
                 me.dom.attribs.each(function(attrib){
                     if(attrib.isVisible && attrib.isVisible_before){
                         var x = 0;
-                        var y = line_height*attrib.orderIndex;
+                        var y = me.heightRow_attrib*attrib.orderIndex;
                         attrib.posX = x;
                         attrib.posY = y;
                         kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
@@ -4661,7 +4694,7 @@ kshf.Facet_Categorical.prototype = {
                             if(attrib.isVisible && !attrib.isVisible_before){
                                 this.style.opacity = 1;
                                 var x = 0;
-                                var y = line_height*attrib.orderIndex;
+                                var y = me.heightRow_attrib*attrib.orderIndex;
                                 attrib.posX = x;
                                 attrib.posY = y;
                                 kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
@@ -4676,7 +4709,10 @@ kshf.Facet_Categorical.prototype = {
 
         },sortDelay);
 
-        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*line_height-4)+"px");
+        // filler is used to insert the scroll bar. Items outside the view are not visible, something needs
+        // to expand the box
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*this.heightRow_attrib-4)+"px");
+        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*this.heightRow_attrib-4)+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
