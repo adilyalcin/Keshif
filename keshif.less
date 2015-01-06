@@ -273,7 +273,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .hasLabelWidth{ text-align: right; }
     .headerGroup {
-        span.header_label_arrow{
+        > .header_display_control{
             left: 0px;
         }
         .chartFirstLineBackground{
@@ -314,15 +314,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     .kshfChart[collapsed=true] {
-        > .headerGroup span.header_label_arrow{ 
+        > .headerGroup > .header_display_control{ 
             opacity: 1;
             &:hover{
                 .fa{
                     .animation-direction(reverse);
                 }
             }
-            span.fa{
-//                    .rotate(0deg);
+            > .fa-collapse{
                 &::before{ content: "\f065"; }
             }
         }
@@ -441,7 +440,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: default;
             cursor: default;
             font-variant: small-caps;
-            pointer-events: all;
+            pointer-events: none;
             padding-top: 1px;
             height: 16px;
             margin-left: 2px;
@@ -490,7 +489,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             span.facetDescription{
             }
         }
-        span.header_label_arrow{
+        > .header_display_control{
             display: inline;
             position: absolute;
             top: 0px;
@@ -503,23 +502,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transform-origin(50% 50%);
             &:hover{
                 color:#cb5454;
-                .fa{
+                > .fa-collapse{
                     .animation(shrink 800ms);
                     .animation-iteration-count(infinite);
                     .animation-timing-function(ease-in);
                 }
             }
-            span.fa{
-//                .transform(scaleX(-1));
-//                position: absolute;
-//                left: 0px;
+            > .fa-collapse{
                 font-size: 0.8em;
                 margin:1px;
-//                .transition(~'transform 500ms');
-//                .rotate(180deg);
                 &::before{
                     content: "\f066";
                 }
+            }
+            > .fa-remove{
+                font-size: 0.8em;
             }
         }
         span.showFilterText{
@@ -537,15 +534,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         border-radius: 6px;
         position: relative;
-        overflow: hidden; // Keep it this way!
-
-        // appers under another keshif chart (subchart)
-/*        .kshfChart span.header_label_arrow{
-            .background-image(~"linear-gradient(right, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-        }*/
+        // overflow: hidden; // Keep it this way! -- Why?
 
         > .wrapper{
             position: relative;
+            overflow: hidden;
             // so that absolute positioned elements will not overflow
         }
 
@@ -715,7 +708,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     z-index: 5;
                     .transition(~'height 700ms ease-in-out');
 
-                    > .filler{
+                    > .attribGroupFiller{
                         opacity: 0;
                         width: 1px;
                         display: inline-block;
@@ -728,8 +721,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .clickArea{
                             display: inline-block;
                             vertical-align: top;
-                            line-height: 18px;
-
                             pointer-events: all;
                             // Note: The height of clickable area is the same as height of the bar!
                             margin-top:4px;
@@ -783,9 +774,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .barGroup{
                             display: inline-block;
                             vertical-align: top;
-                            line-height: 18px;
                             pointer-events: none;
-                            
                             position: relative;
                             pointer-events: none;
                             > .bar{
@@ -869,7 +858,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
 
                         &[noitems=false]{
-                            &[highlight=selected] {
+                            &[highlight^="selected"] {
                                 > .attribLabel > .theLabel{
                                     font-weight: 700 !important;
                                 }
@@ -1208,17 +1197,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[collapsed=true]{
             > .headerGroup{
-                color: gray;
+                // color: gray;
                 span.header_label{
                     cursor: pointer;
                 }
                 .facetControls{ display: none; }
             }
             > .wrapper .facetCategorical{
-                > div { display: none !important; }
+                > div { display: none; }
             }
-            > .facetInterval{ 
-                > div { display: none !important; }
+            > .wrapper .facetInterval{ 
+                > div { display: none; }
             }
         }
 
@@ -1284,10 +1273,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }*/
 
         &:hover{
-//            &:before{
-                box-shadow: inset 0px 0px 3px gray;
-//            }
-            > .headerGroup span.header_label_arrow{
+//            margin: -1px;
+//            border: solid 1px gray;
+            > .headerGroup > .header_display_control{
                 opacity: 1; 
             }
             &[hasmultivalueitem=true] {
@@ -1305,13 +1293,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .header_label{
                     font-size: 1.3em;
                 }
-/*                .header_label_arrow{
-                    border-right: solid 2px rgb(204,195,195);
-                    //color: #5947B4;
-                    //background-color: #DFDEE7;
-                    width: 17px;
-                    .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-                }*/
             }
         }
 
@@ -1550,10 +1531,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
 
-                &[highlight=false]{
-                    //background-color:white;
-                }
-                &[highlight=selected]{
+                &[highlight^="selected"]{
                     box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
                     &[selectedForLink=true]{
                         .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
