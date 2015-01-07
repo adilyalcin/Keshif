@@ -4363,8 +4363,15 @@ kshf.Facet_Categorical.prototype = {
     cbAttribEnter_Tipsy: function(attrib,removeActiveTooltip){
         attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
         this.tipsy_active = attrib.facetDOM.tipsy;
-        attrib.facetDOM.tipsy_active.options.offset_x = (this.browser.hideBars)?0:
-            this.chartPreviewAxisScale(attrib.aggregate_Active);
+        var offset=0;
+        if(!this.browser.hideBars){
+            if(this.browser._percentView_Active){
+                offset+=this.chartPreviewAxisScale.range()[1];
+            } else {
+                offset+=this.chartPreviewAxisScale(attrib.aggregate_Active)
+            }
+        }
+        attrib.facetDOM.tipsy_active.options.offset_x = offset;
         attrib.facetDOM.tipsy_active.show(!removeActiveTooltip);
     },
     /** -- */
