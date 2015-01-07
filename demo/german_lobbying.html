@@ -51,7 +51,6 @@ google.setOnLoadCallback(function(){
                         }
                     }
                 ]
-            },{ facetTitle: "Lobbyist", collapsed: true
             },{ facetTitle: "Type", layout: 'right',
                 catItemMap: function(d){
                     return kshf.dt_id.Organizations[d.data[2]].data[1];
@@ -67,6 +66,7 @@ google.setOnLoadCallback(function(){
                 catLabelText: function(d){
                     return d.data[0]+" "+getIcon(d.data[1]);
                 },
+            },{ facetTitle: "Lobbyist", collapsed: true, layout: 'right'
             },{
                 facetTitle: "Date",
                 intervalScale: "time",
