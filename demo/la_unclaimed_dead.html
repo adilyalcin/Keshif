@@ -5,6 +5,7 @@
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
@@ -17,7 +18,7 @@
 
 $(document).ready( function(){
     $('#chart_div').width(1000);
-    $('#chart_div').height(450);
+    $('#chart_div').height(500);
 
     var dateFormat=d3.time.format("%m/%d/%Y");
 
@@ -28,6 +29,10 @@ $(document).ready( function(){
         itemName: "Unclaimed Deads",
         source : {
             url: "http://spreadsheets.latimes.com/unclaimed-dead/",
+            dirPath: 'data/',
+            fileType: 'csv',
+            sheets : [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
+            /*
             callback: function(browser){
                 browser.primaryTableName = "Deaths";
                 kshf.dt.Deaths = [];
@@ -62,6 +67,7 @@ $(document).ready( function(){
                 d3.select(".kshf.layout_infobox div.status_text div").text("");
                 window.setTimeout(function() { browser.loadCharts(); }, 100);
             }
+            */
         },
         facets: [
             {
@@ -76,7 +82,7 @@ $(document).ready( function(){
                     // Nope, above doesn't really work. We need to parse the last name
                     if(d.data.Last.substr(0,3)==='Doe') r.push("Unknown <span class='fa gender-icon fa-question'></span>");
 //                    if(d.data.Note!=="") r.push("Has note <span class='fa fa-file-text'></span>");
-                    if(d.data.isBaby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
+                    if(d.data.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
             },{
@@ -84,7 +90,12 @@ $(document).ready( function(){
             },{
                 facetTitle: "Death Date", intervalScale: 'time',
                 catItemMap: function(d){
-                    return d.data.Death;
+                    return dateFormat.parse(d.data.Death);
+                }
+            },{
+                facetTitle: "After Story is Published...",
+                catItemMap: function(d){
+                    if(d.data.claimed) return "Claimed";
                 }
             }
         ],
@@ -157,6 +168,9 @@ $(document).ready( function(){
 #chart_div .gender-icon{
     width: 10px;
     text-align: center;
+}
+.kshfChart[chart_id='4'] .barChartPreviewAxis{
+    display: none;
 }
 </style>
     </head>
