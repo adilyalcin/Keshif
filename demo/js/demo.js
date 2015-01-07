@@ -131,10 +131,19 @@ var sendLog = function(actID, dt, ts){
 };;
 
 $(window).load(function(){
+    d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
+        .append("a").attr("href","https://github.com/adilyalcin/keshif").attr("target","_blank")
+        .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span>");
+
+    d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
+        .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
+        .attr("class","fork-ribbon").text("Fork me on GitHub");
+
     if(socialShare===true){    
         var s = document.createElement("script");
         s.type = "text/javascript";
         s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
         $("body").append(s);
     }
+
 });

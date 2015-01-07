@@ -345,13 +345,68 @@ browser = new kshf.Browser({
         text-align: center;
     }
 
+    #forkongithub a{
+        background:#000;
+        color:#fff;
+        text-decoration:none;
+        font-family:arial,sans-serif;
+        text-align:center;
+        font-weight:bold;
+        padding:5px 40px;
+        font-size:0.8rem;
+        line-height:1.5rem;
+        position:relative;
+        transition:0.5s;
+    }
+    #forkongithub a:hover{background:orangered;color:#fff;}
+    #forkongithub a::before,#forkongithub a::after{
+        content:"";
+        width:100%;
+        display:block;
+        position:absolute;
+        top:1px;
+        left:0;
+        height:1px;
+        background:#fff;
+    }
+    #forkongithub a::after{
+        bottom:1px;
+        top:auto;
+    }
+    @media screen and (min-width:800px){
+        #forkongithub{
+            position:fixed;
+            display:block;
+            bottom:0;
+            right:0;
+            width:200px;
+            overflow:hidden;
+            height:200px;
+            z-index:9999;
+        }
+        #forkongithub a{
+            width:200px;
+            position:absolute;
+            top:120px;
+            right:-80px;
+            transform:rotate(-45deg);
+            -webkit-transform:rotate(-45deg);
+            -ms-transform:rotate(-45deg);
+            -moz-transform:rotate(-45deg);
+            -o-transform:rotate(-45deg);
+            box-shadow:4px 4px 10px rgba(0,0,0,0.8);
+        }
+}
+
     </style>
 	 
 </head>
 
 <body>
 
-<a href="https://github.com/adilyalcin/keshif"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<span id="forkongithub"><a href="https://github.com/adilyalcin/keshif" target='_blank' class='forkText'>Fork me on GitHub</a></span>
+
+<!--<a href="https://github.com/adilyalcin/keshif"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>-->
 
 <!-- banner -->
 <!--#include virtual="/hcil/_includes/banner.html"-->
@@ -393,22 +448,32 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 </div>
 
 </br></br>
-<!-- Participants -->
-<h2 id="participants">Participants</h2>
-<ul>
-<li><a href="http://adilyalcin.me/">M. Adil Yalçın</a>, PhD student, Computer Science</li>
-<li><a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a>, Professor, Computer Science</li>
-<li><a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, Faculty Research Assistant, UMIACS</li>
-</ul>
+<h2 id="participants">Developed By</h2>
+<a href="http://adilyalcin.me/">M. Adil Yalçın</a>, PhD student, Computer Science, University of Maryland
 
+</br></br>
+<h2 id="participants">Advised By</h2>
+<a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a>, Professor, Computer Science, University of Maryland
+
+</br></br>
+<h2 id="license">License <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
+    <span class='fa fa-external-link'></span></a></h2>
+
+Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license</a>.
+<span class='fa fa-copyright'></span> 2015 University of Maryland
+
+
+</br></br>
 <h2 id="participants">Contact</h2>
 <ul>
 <li>You are invited to contact <my-email data-user="yalcin" data-domain="umd.edu"></my-email> for feedback and questions.</li>
 </ul>
 
-<!-- Sponsors -->
-<h2 id="sponsors">Sponsors</h2>
+<h2 id="sponsors">History</h2>
 <p>Funded in part by <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014).</p>
+<ul>
+<li><a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, Faculty Research Assistant, UMIACS, University of Maryland</li>
+</ul>
 
 <br/><br/>
 </div>

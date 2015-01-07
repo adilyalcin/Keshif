@@ -207,3 +207,78 @@ body {
 #infobox span.fa {
   color: gray;
 }
+.forkongithub a.fork-ribbon {
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  font-family: arial, sans-serif;
+  text-align: center;
+  font-weight: bold;
+  padding: 5px 40px;
+  font-size: 0.8rem;
+  line-height: 1.5rem;
+  position: relative;
+  transition: 0.5s;
+}
+.forkongithub a.fork-ribbon::before,
+.forkongithub a.fork-ribbon::after {
+  width: 100%;
+  display: block;
+  position: absolute;
+  top: 1px;
+  left: 0;
+  height: 1px;
+  background: #fff;
+  content: "";
+}
+.forkongithub a.fork-ribbon::after {
+  bottom: 1px;
+  top: auto;
+}
+.forkongithub a.fork-ribbon:hover {
+  background: orangered;
+  color: #fff;
+}
+@media screen and (min-width: 800px) {
+  .forkongithub {
+    position: fixed;
+    display: block;
+    width: 150px;
+    height: 150px;
+    z-index: 9999;
+  }
+  .forkongithub.fork-bottom {
+    bottom: 0;
+  }
+  .forkongithub.fork-right {
+    right: 0;
+  }
+  .forkongithub.fork-right a.fork-ribbon {
+    font-size: 1.1em;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+  .forkongithub.fork-left {
+    left: -70px;
+    bottom: -10px;
+  }
+  .forkongithub.fork-left a.fork-ribbon {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    right: auto;
+    left: 0px;
+  }
+  .forkongithub a.fork-ribbon {
+    width: 150px;
+    position: absolute;
+    top: 80px;
+    right: -60px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
+  }
+}
