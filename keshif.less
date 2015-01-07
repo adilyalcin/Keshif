@@ -711,6 +711,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         opacity: 0;
                         width: 1px;
                         display: inline-block;
+                        background-color: rgb(194, 146, 124);
                     }
 
                     > .attrib{
@@ -784,6 +785,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     width: 2px;
                                     margin-left: -1px;
                                 }
+                                &.preview_compare_2{
+                                    width: 1px;
+                                    border-top: solid 1px gray;
+//                                    margin-top: -2px;
+                                    border-bottom: solid 1px gray;
+                                }
                             }
                         }
                         .filterButtons{
@@ -815,6 +822,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
 
+                        &[compare="true"] {
+                            > .attribLabel > .theLabel{
+                                font-weight: 700;
+                            }
+                        }
                         &:not([selected="0"]) {
                             > .attribLabel > .theLabel{
                                 font-weight: 700;
@@ -910,7 +922,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 .transform-origin(0% 100%);
                                 &.preview_compare {
                                     height: 2px;
-                                    margin-top: 1px;
+                                    margin-top: 0px;
+                                }
+                                &.preview_compare_2 {
+                                    height: 1px;
+                                    border-left: solid 2px gray;
+                                    border-right: solid 2px gray;
                                 }
                             }
                             > .item_count{
@@ -1163,6 +1180,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 &.preview_compare {
                     background-color: @color_preview_compare;
+                    pointer-events: none;
+                    .transition(@bar_animation);
+                    opacity: 1;
+                    &[hidden=true]{
+                        opacity: 0;
+                    }
+                }
+                &.preview_compare_2 {
+                    background-color: rgba(0,0,0,0);
                     pointer-events: none;
                     .transition(@bar_animation);
                     opacity: 1;

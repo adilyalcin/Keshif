@@ -749,6 +749,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   width: 1px;
   display: inline-block;
+  background-color: #c2927c;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   position: absolute;
@@ -816,6 +817,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 2px;
   margin-left: -1px;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup > .bar.preview_compare_2 {
+  width: 1px;
+  border-top: solid 1px gray;
+  border-bottom: solid 1px gray;
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons {
   white-space: nowrap;
   cursor: pointer;
@@ -844,6 +850,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] .item_count {
   visibility: hidden;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[compare="true"] > .attribLabel > .theLabel {
+  font-weight: 700;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib:not([selected="0"]) > .attribLabel > .theLabel {
   font-weight: 700;
@@ -934,7 +943,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare {
   height: 2px;
-  margin-top: 1px;
+  margin-top: 0px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare_2 {
+  height: 1px;
+  border-left: solid 2px gray;
+  border-right: solid 2px gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
   top: -1em;
@@ -1211,6 +1225,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
 }
 .kshf .kshfChart > .wrapper .bar.preview_compare[hidden=true] {
+  opacity: 0;
+}
+.kshf .kshfChart > .wrapper .bar.preview_compare_2 {
+  background-color: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  opacity: 1;
+}
+.kshf .kshfChart > .wrapper .bar.preview_compare_2[hidden=true] {
   opacity: 0;
 }
 .kshf .kshfChart .subFacets {

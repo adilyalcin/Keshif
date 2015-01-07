@@ -1915,8 +1915,8 @@ kshf.Browser = function(options){
     this._previewCompare_Timeout_Clear = null;
 
     this._percentView_Active = false;
-    this._percentView_Timeout_Set = null;
-    this._percentView_Timeout_Clear = null;
+//    this._percentView_Timeout_Set = null;
+//    this._percentView_Timeout_Clear = null;
 
     this.columnsSkip = options.columnsSkip;
 
@@ -2779,6 +2779,11 @@ kshf.Browser.prototype = {
         this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
+    setPercentView: function(how){
+        this._percentView_Active = how;
+        this.facets.forEach(function(facet){ facet.refreshViz_All(); });
+        if(this.percentViewCb) this.percentViewCb.call(this,!how);
+    },
     clearResultPreviews: function(){
         var me=this;
         this.resultPreviewActive = false;
@@ -2790,24 +2795,23 @@ kshf.Browser.prototype = {
         window.clearTimeout(this._previewCompare_Timeout_Clear);
         window.clearTimeout(this._previewCompare_Timeout_Set);
 
-        window.clearTimeout(this._percentView_Timeout_Clear);
-        window.clearTimeout(this._percentView_Timeout_Set);
-
         this._previewCompare_Timeout_Clear = window.setTimeout(function(){
             me._previewCompare_Active = false;
-            me.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
+            if(me._percentView_Active===true){
+                me.setPercentView(false);
+            } else {
+                me.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
+            }
+            if(me.comparedAggregate){
+                me.comparedAggregate.facetDOM.setAttribute("compare",false);
+                me.comparedAggregate = null;
+            }
             if(me.previewCompareCb) me.previewCompareCb.call(this,true);
-        },1500);
-
-        this._percentView_Timeout_Clear = window.setTimeout(function(){
-            me._percentView_Active = false;
-            me.facets.forEach(function(facet){ facet.refreshViz_All(); });
-            if(me.percentViewCb) me.percentViewCb.call(this,true);
-        },3000);
+        },2500);
 
         if(this.previewCb) this.previewCb.call(this,true);
     },
-    refreshResultPreviews: function(){
+    refreshResultPreviews: function(aggregate){
         var me=this;
         this.resultPreviewActive = true;
         this.facets.forEach(function(facet){ facet.refreshViz_Preview(); });
@@ -2815,22 +2819,16 @@ kshf.Browser.prototype = {
         window.clearTimeout(this._previewCompare_Timeout_Clear);
         window.clearTimeout(this._previewCompare_Timeout_Set);
 
-        window.clearTimeout(this._percentView_Timeout_Clear);
-        window.clearTimeout(this._percentView_Timeout_Set);
-
         if(this._previewCompare_Active===false){
             this._previewCompare_Timeout_Set = window.setTimeout(function(){
+                if(aggregate){
+                    aggregate.facetDOM.setAttribute("compare",true);
+                    me.comparedAggregate = aggregate;
+                }
                 me._previewCompare_Active = true;
                 me.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
                 if(me.previewCompareCb) me.previewCompareCb.call(this,false);
             },2500);
-        }
-        if(this._percentView_Active===false && this._previewCompare_Active===false){
-            this._percentView_Timeout_Set = window.setTimeout(function(){
-                me._percentView_Active = true;
-                me.facets.forEach(function(facet){ facet.refreshViz_All(); });
-                if(me.percentViewCb) me.percentViewCb.call(this,false);
-            },5500);
         }
 
         if(this.previewCb) this.previewCb.call(this,false);
@@ -3705,7 +3703,13 @@ kshf.Facet_Categorical.prototype = {
             .attr("class","percentSign");
 
         // this helps us makes sure that the div height is correctly set to visible number of rows
-        this.dom.attribGroupFiller = this.dom.attribGroup.append("span").attr("class","attribGroupFiller");
+        this.dom.attribGroupFiller = this.dom.attribGroup.append("span")
+            .attr("class","attribGroupFiller")
+            .on("click",function(){
+                if(me.browser._previewCompare_Active && me.browser._percentView_Active===false){
+                    me.browser.setPercentView(true);
+                }
+            });
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -3941,6 +3945,7 @@ kshf.Facet_Categorical.prototype = {
     refreshWidth: function(){
         if(this.dom.facetCategorical){
             this.dom.facetCategorical.style("width",this.getWidth()+"px");
+            this.dom.attribGroupFiller.style("width",this.browser.barChartWidth+"px");
         }
     },
     /** -- */
@@ -4022,21 +4027,42 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
         if(this.browser._previewCompare_Active){
+            this.getAttribs().forEach(function(attrib){
+                if(attrib.cache_compare===undefined){
+                    attrib.cache_compare=attrib.cache_preview;
+                }
+            });
             if(this.browser._percentView_Active){
                 this.dom.bars_preview_compare.each(function(attrib){
-                    var w=(attrib.cache_preview / attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
                     kshf.Util.setTransform(this,"translateX("+w+"px)");
-                    this.setAttribute('hidden',attrib.cache_preview===0);
+                    this.setAttribute('hidden',attrib.cache_compare===0);
+                });
+                this.dom.bars_preview_compare_2.each(function(attrib){
+                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                    kshf.Util.setTransform(this,"scaleX("+(w+1)+")");
+                    this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(attrib){
                     kshf.Util.setTransform(this,"translateX("+
-                        me.chartPreviewAxisScale(attrib.cache_preview)+"px)");
-                    this.setAttribute('hidden',attrib.cache_preview===0);
+                        me.chartPreviewAxisScale(attrib.cache_compare)+"px)");
+                    this.setAttribute('hidden',attrib.cache_compare===0);
+                });
+                this.dom.bars_preview_compare_2.each(function(attrib){
+                    kshf.Util.setTransform(this,"scaleX("+
+                        (me.chartPreviewAxisScale(attrib.cache_compare)+1)+")");
+                    this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             }
         } else {
+            this.getAttribs().forEach(function(attrib){
+                delete attrib.cache_compare;
+            });
             this.dom.bars_preview_compare.each(function(attrib){
+                this.setAttribute("hidden",true);
+            });
+            this.dom.bars_preview_compare_2.each(function(attrib){
                 this.setAttribute("hidden",true);
             });
         }
@@ -4142,11 +4168,14 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs()) return;
         var kshf_ = this.browser;
         var labelWidth = this.getWidth_Label();
+        var barChartMinX=(labelWidth+kshf_.getWidth_QueryPreview());
 
         this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
         this.dom.barChartPreviewAxis.each(function(d){
-            kshf.Util.setTransform(this,"translateX("+(labelWidth+kshf_.getWidth_QueryPreview())+"px)");
+            kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
+        this.dom.attribGroupFiller
+            .style("margin-left",barChartMinX+"px");
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
@@ -4304,6 +4333,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     cbAttribEnter: function(attrib,removeActiveTooltip){
+        var me=this;
         if(attrib.crossing_row)
             attrib.crossing_row.setAttribute("highlight","selected");
         
@@ -4316,11 +4346,11 @@ kshf.Facet_Categorical.prototype = {
                 attrib.items.forEach(function(item){item.updatePreview(this.parentFacet);},this);
                 attrib.highlightAll(true);
 
-                this.browser.refreshResultPreviews();
+                this.browser.refreshResultPreviews(attrib);
                 if(sendLog) {
                     if(this.previewTimer) clearTimeout(this.previewTimer);
                     this.previewTimer = setTimeout(function(){
-                        sendLog(kshf.LOG.FILTER_PREVIEW, {id:this.attribFilter.id, info: attrib.id()});
+                        sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
                     }, 1000); // wait 1 second to see the update fully
                 }
             }
@@ -4551,7 +4581,7 @@ kshf.Facet_Categorical.prototype = {
             me.tipsy_active = this.__data__.facetDOM.tipsy;
             me.browser.root.attr("preview-not",true);
             me.browser.preview_not = true;
-            me.browser.refreshResultPreviews();
+            me.browser.refreshResultPreviews(attrib);
             d3.event.stopPropagation();
         };
         var cbAndLeave = function(attrib,i){
@@ -4562,7 +4592,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
-            me.browser.refreshResultPreviews();
+            me.browser.clearResultPreviews();
             d3.event.stopPropagation();
         };
         var cbAndClick = function(attrib,i){
@@ -4621,6 +4651,7 @@ kshf.Facet_Categorical.prototype = {
             ;
         domBarGroup.append("span").attr("class", "bar preview").attr("fast",true);
         domBarGroup.append("span").attr("class", "bar preview_compare").attr("hidden",true);
+        domBarGroup.append("span").attr("class", "bar preview_compare_2").attr("hidden",true);
 
         this.dom.attribs = this.dom.attribGroup.selectAll(".attrib")
         this.dom.attribClickArea = this.dom.attribs.selectAll(".clickArea");
@@ -4629,6 +4660,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.bars_active = this.dom.attribs.selectAll(".barGroup > .active");
         this.dom.bars_preview = this.dom.attribs.selectAll(".barGroup > .preview");
         this.dom.bars_preview_compare = this.dom.attribs.selectAll(".barGroup > .preview_compare");
+        this.dom.bars_preview_compare_2 = this.dom.attribs.selectAll(".barGroup > .preview_compare_2");
     },
 
     /** -- */
@@ -5093,7 +5125,12 @@ kshf.Facet_Interval.prototype = {
         this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
         this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
 
-        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
+        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram")
+            .on("click",function(){
+                if(me.browser._previewCompare_Active && me.browser._percentView_Active===false){
+                    me.browser.setPercentView(true);
+                }
+            });
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins");
         this.dom.barChartPreviewAxis = this.dom.histogram.append("div").attr("class", "barChartPreviewAxis");
 
@@ -5338,6 +5375,7 @@ kshf.Facet_Interval.prototype = {
             .on("click",onBarClick);
         xxxx.append("span").attr("class","bar preview").attr("fast",true);
         xxxx.append("span").attr("class","bar preview_compare").attr("hidden",true);
+        xxxx.append("span").attr("class","bar preview_compare_2").attr("hidden",true);
 
         xxxx.append("span").attr("class","item_count")
             .on("mouseover",onMouseOver)
@@ -5349,6 +5387,7 @@ kshf.Facet_Interval.prototype = {
         this.dom.bars_total = this.dom.histogram_bin.selectAll(".bar.total");
         this.dom.bars_preview = this.dom.histogram_bin.selectAll(".bar.preview");
         this.dom.bars_preview_compare = this.dom.histogram_bin.selectAll(".bar.preview_compare");
+        this.dom.bars_preview_compare_2 = this.dom.histogram_bin.selectAll(".bar.preview_compare_2");
 
         this.dom.bars_item_count = this.dom.histogram_bin.selectAll(".item_count");
 
@@ -5680,23 +5719,44 @@ kshf.Facet_Interval.prototype = {
         var width=this.barWidth-this.barGap*2;
         var trnsfrm="scale("+width+",1) translateY(-";
         if(this.browser._previewCompare_Active){
+            this.histBins.forEach(function(bar){
+                if(bar.aggregate_Compare===undefined){
+                    bar.aggregate_Compare = bar.aggregate_Preview;
+                    if(preview_not) {
+                        bar.aggregate_Compare = bar.aggregate_Active-bar.aggregate_Preview;
+                    }
+                }
+            });
             if(this.browser._percentView_Active){
                 this.dom.bars_preview_compare.each(function(bar){
-                    var p=bar.aggregate_Preview;
-                    if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                    var h=(p / bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
-                    kshf.Util.setTransform(this,trnsfrm+h+"px)");
-                    this.setAttribute('hidden',p===0);
+                    kshf.Util.setTransform(this,trnsfrm+
+                        (bar.aggregate_Compare/bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1]+"px)");
+                    this.setAttribute('hidden',bar.aggregate_Compare===0);
+                });
+                this.dom.bars_preview_compare_2.each(function(bar){
+                    kshf.Util.setTransform(this,"scaleY("+
+                        (bar.aggregate_Compare/bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1]+")");
+                    this.style.width = (width+0.5)+"px";
+                    this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(bar){
-                    var p=bar.aggregate_Preview;
-                    if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                    kshf.Util.setTransform(this,trnsfrm+chartPreviewAxisScale(p)+"px)");
-                    this.setAttribute('hidden',p===0);
+                    kshf.Util.setTransform(this,trnsfrm+chartPreviewAxisScale(bar.aggregate_Compare)+"px)");
+                    this.setAttribute('hidden',bar.aggregate_Compare===0);
+                });
+                this.dom.bars_preview_compare_2.each(function(bar){
+                    this.style.width = (width+0.5)+"px";
+                    kshf.Util.setTransform(this,"scaleY("+chartPreviewAxisScale(bar.aggregate_Compare)+")");
+                    this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
             }
         } else {
+            this.histBins.forEach(function(bar){
+                delete bar.aggregate_Compare;
+            });
+            this.dom.bars_preview_compare_2.each(function(attrib){
+                this.setAttribute("hidden",true);
+            });
             this.dom.bars_preview_compare.each(function(attrib){
                 this.setAttribute("hidden",true);
             });
