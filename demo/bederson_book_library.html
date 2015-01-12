@@ -162,13 +162,13 @@ $(document).ready( function(){
                 catItemMap: function(book){ return book.data.ReadYear; },
                 type: 'interval',
                 intervalScale: 'step',
-                layout: "bottom",
+                layout: "bottom-mid",
                 collapsed: true,
             },{
                 facetTitle: "Year: Publication (Excl. Books Before 1990)",
                 catItemMap: function(book){ return book.data.PubYear; },
                 timeTitle: "Publication Year",
-                layout: "bottom",
+                layout: "bottom-mid",
                 type: 'interval',
                 intervalScale: 'step'
             }
