@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>My Books</title><meta charset="utf-8">
+        <title>Ben Bederson's Book Library</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -58,7 +58,7 @@ $(document).ready( function(){
                 });
 
                 $.ajax( {
-                    url: "./demo/data/myBookLibrary.xml",
+                    url: "./data/bederson_book_library.xml",
                     async: false,
                     success: function(doc){
                         $doc = $(doc);
@@ -150,22 +150,25 @@ $(document).ready( function(){
                 type: 'interval',
                 intervalScale: 'step'
             },{
+                facetTitle: "Authors", 
+            },{
                 facetTitle: "# Pages",
                 catItemMap: function(book){ return book.data.NumPages; },
                 type: 'interval',
                 collapsed: true,
+//                intervalScale: 'log'
             },{
-                facetTitle: "Authors", 
-            },{
-                facetTitle: "Year Book Read",
+                facetTitle: "Year: Book Read",
                 catItemMap: function(book){ return book.data.ReadYear; },
                 type: 'interval',
-                intervalScale: 'step'
+                intervalScale: 'step',
+                layout: "bottom",
+                collapsed: true,
             },{
-                facetTitle: "Publication Year (excluding books before 1990)",
+                facetTitle: "Year: Publication (Excl. Books Before 1990)",
                 catItemMap: function(book){ return book.data.PubYear; },
                 timeTitle: "Publication Year",
-                layout: "bottom-mid",
+                layout: "bottom",
                 type: 'interval',
                 intervalScale: 'step'
             }
@@ -183,7 +186,11 @@ $(document).ready( function(){
             contentFunc : function(d){
                 var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
                 if (d.data.Rating > 0) {
-                    desc += "\<img width='80px' src='demo/demo_img/ratings" + d.data.Rating + ".png' //>";
+                    desc+="<span class='ratings'>";
+                    for(var s=0; s<5; s++){
+                        desc+="<span class='fa ratingStar fa-star"+(d.data.Rating<s?"-o":"")+"'></span>";
+                    }
+                    desc+="</span>";
                 }
                 return desc;
             },
@@ -203,6 +210,20 @@ $(document).ready( function(){
     }
     .thumbnail{
         overflow: visible !important;
+    }
+    .ratings{
+        margin-top: 2px;
+        display: block;
+        text-align: center;
+    }
+    .ratingStar{
+        text-shadow: 0px 0px 1px black;
+    }
+    .ratingStar.fa-star-o{
+        color: rgb(228, 228, 228);
+    }
+    .ratingStar.fa-star{
+        color: rgb(234, 234, 124);
     }
 </style>
 
