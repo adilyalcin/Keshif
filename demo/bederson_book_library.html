@@ -185,7 +185,8 @@ $(document).ready( function(){
             maxVisibleItems_Default: 200,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-                var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Author+"</span>";
+                var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'>"+
+                    "<img class='thumbImg'></a><span class='subTitle'>"+d.data.Author+"</span>";
                 desc+="<span class='title'>"+d.data.Title+"</span>";
                 if (d.data.Rating > 0) {
                     desc+="<span class='ratings'>";
@@ -197,7 +198,7 @@ $(document).ready( function(){
                 return desc;
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data.Thumb).attr("title", "alt text");
+                d3.select(d.resultDOM).select("img").attr("src",d.data.Thumb).attr("title", d.data.Description);
             }   
         }
     });
