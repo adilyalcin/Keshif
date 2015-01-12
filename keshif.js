@@ -2866,7 +2866,7 @@ kshf.Browser.prototype = {
         var leftBottomUsed=false;
         var rightBottomUsed=false;
 
-        // number of barcharts, and initialize all ` as not processed yet
+        // initialize all facets as not yet processed.
         this.facets.forEach(function(facet){ facet.heightProcessed = false; })
 
         var bottomFacetsHeight=0;
@@ -2878,7 +2878,7 @@ kshf.Browser.prototype = {
             this.facetsBottom.forEach(function(fct){
                 fct.setHeight(targetHeight);
                 fct.heightProcessed = true;
-                bottomFacetsHeight = Math.max(bottomFacetsHeight,fct.getHeight()); 
+                bottomFacetsHeight += fct.getHeight();
                 if(fct.options.layout==="bottom"){
                     leftBottomUsed = true;
                     rightBottomUsed = true;
@@ -2973,17 +2973,13 @@ kshf.Browser.prototype = {
  
         if(this.listDisplay) {
             var listDivTop = 0;
-            if(this.fullWidthResultSet()){
-//                listDivTop = facetsHeight;
-            } else {
-            }
             // get height of header
             var listHeaderHeight=this.listDisplay.dom.listHeader[0][0].offsetHeight;
-            var targetHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
+            var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
             if(this.facetsBottom.length>0){
-                targetHeight-=this.facetsBottom[0].getHeight();
+                listDisplayHeight-=bottomFacetsHeight;
             }
-            this.listDisplay.dom.listItemGroup.style("height",targetHeight+"px");
+            this.listDisplay.dom.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
     initBarChartWidth: function(){
@@ -3631,9 +3627,9 @@ kshf.Facet_Categorical.prototype = {
             root = this.parentFacet.dom.subFacets;
         } else {
             switch(this.options.layout){
-                case 'left':       root = this.browser.layoutLeft; break;
-                case 'right':      root = this.browser.layoutRight; break;
-                case 'bottom':     root = this.browser.layoutBottom; break;
+                case 'left':   root = this.browser.layoutLeft; break;
+                case 'right':  root = this.browser.layoutRight; break;
+                case 'bottom': root = this.browser.layoutBottom; break;
             }
         }
         this.divRoot = root
