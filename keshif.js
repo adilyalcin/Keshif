@@ -935,12 +935,10 @@ kshf.Filter.prototype = {
         this._refreshFilterSummary();
 
         if(forceUpdate===true){
-            this.browser.updateItemSelectedCt();
-            this.browser.refreshFilterClearAll();
-            if(stateChanged) this.browser.update(-1);
-            if(sendLog) {
-                sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilterState());
-            }
+            this.browser.update_itemsWantedCount();
+            this.browser.refresh_filterClearAll();
+            if(stateChanged) this.browser.updateAfterFilter(-1);
+            if(sendLog) sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilterState());
         }
     },
     clearFilter: function(forceUpdate,recursive, updateWanted){
@@ -1003,9 +1001,9 @@ kshf.Filter.prototype = {
                 }
             }
 
-            this.browser.updateItemSelectedCt();
-            this.browser.refreshFilterClearAll();
-            this.browser.update(1); // more results
+            this.browser.update_itemsWantedCount();
+            this.browser.refresh_filterClearAll();
+            this.browser.updateAfterFilter(1); // more results
 
             if(sendLog) {
                 sendLog(kshf.LOG.FILTER_CLEAR,this.browser.getFilterState());
@@ -1821,7 +1819,7 @@ kshf.List.prototype = {
             }
         });
 
-        var hiddenItemCount = this.browser.itemsSelectedCt-visibleItemCount;
+        var hiddenItemCount = this.browser.itemsWantedCount-visibleItemCount;
         this.dom.showMore.style("display",(hiddenItemCount===0)?"none":"block");
         this.dom.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
         this.dom.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
@@ -1976,6 +1974,8 @@ kshf.Browser = function(options){
     this.root = d3.select(this.domID)
         .classed("kshf",true)
         .attr("noanim",false)
+        .attr("percentview",false)
+        .attr("previewcompare",false)
         .style("position","relative")
         .style("overflow-y","hidden")
         .on("mousemove",function(d){
@@ -2426,7 +2426,7 @@ kshf.Browser.prototype = {
             this.source.sheets.forEach(function(sheet){
                 if(sheet.primary){
                     this.items = kshf.dt[sheet.tableName];
-                    this.itemsSelectedCt = this.items.length;
+                    this.itemsWantedCount = this.items.length;
                 }
             },this);
 
@@ -2479,8 +2479,7 @@ kshf.Browser.prototype = {
             var resultInfo = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","resultInfo");
             var listheader_count_width = (this.listDisplay.sortColWidth);
             this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
-                .style("width",listheader_count_width+"px")
-                .text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
+                .style("width",listheader_count_width+"px");
             resultInfo.append("span").attr("class","listheader_itemName").html(this.itemName);
 
             if(this.listDisplay.hideTextSearch!==true){
@@ -2544,11 +2543,12 @@ kshf.Browser.prototype = {
 
         this.loaded = true;
         this.initBarChartWidth();
-        this.refreshFilterClearAll();
+        this.refresh_filterClearAll();
 
         this.items.forEach(function(item){item.updateWanted();});
+        this.update_itemsWantedCount();
 
-        this.update();
+        this.updateAfterFilter();
 
         this.updateLayout_Height();
 
@@ -2740,9 +2740,9 @@ kshf.Browser.prototype = {
         })
         if(force!==false){
             this.items.forEach(function(item){ item.updateWanted_More(true); });
-            this.updateItemSelectedCt();
-            this.refreshFilterClearAll();
-            this.update(1); // more results
+            this.update_itemsWantedCount();
+            this.refresh_filterClearAll();
+            this.updateAfterFilter(1); // more results
             if(sendLog){
                 sendLog(kshf.LOG.FILTER_CLEAR_ALL);
             }
@@ -2750,87 +2750,105 @@ kshf.Browser.prototype = {
         setTimeout( function(){ me.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
     },
     /** -- */
-    updateItemSelectedCt: function(){
-        this.itemsSelectedCt = 0;
+    update_itemsWantedCount: function(){
+        this.itemsWantedCount = 0;
         this.items.forEach(function(item){
-            if(item.isWanted) this.itemsSelectedCt++;
+            if(item.isWanted) this.itemsWantedCount++;
         },this);
+
+        // update the visual representation directly
+        if(this.dom.listheader_count)
+            this.dom.listheader_count.text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No");
     },
     /** @arg resultChange: 
      * - If positive, more results are shown
      * - If negative, fewer results are shown
      * - Else, no info is available. */
-    update: function (resultChange) {
-        var me=this;
-
-        if(this.dom.listheader_count)
-            this.dom.listheader_count.text((this.itemsSelectedCt!==0)?this.itemsSelectedCt:"No");
-
+    updateAfterFilter: function (resultChange) {
+        this.clearPreviewCompare();
+        // basically, propogate call under every facet and listDisplay
         this.facets.forEach(function(facet){
             facet.updateAfterFilter(resultChange);
         });
-
         if(this.listDisplay) this.listDisplay.updateAfterFilter();
 
         if(this.updateCb) this.updateCb(this);
     },
-    refreshFilterClearAll: function(){
+    /** -- */
+    refresh_filterClearAll: function(){
         var filteredCount=0;
         this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
         this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
+    /** -- */
     setPercentView: function(how){
         this._percentView_Active = how;
+        this.root.attr("percentview",how);
         this.facets.forEach(function(facet){ facet.refreshViz_All(); });
         if(this.percentViewCb) this.percentViewCb.call(this,!how);
     },
-    clearResultPreviews: function(){
+    /** -- */
+    clearPreviewCompare: function(){
+        this._previewCompare_Active = false;
+        this.root.attr("previewcompare",false);
+        if(this._percentView_Active===true){
+            this.setPercentView(false);
+        } else {
+            this.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
+        }
+        if(this.comparedAggregate){
+            this.comparedAggregate.facetDOM.setAttribute("compare",false);
+            this.comparedAggregate = null;
+        }
+        if(this.previewCompareCb) this.previewCompareCb.call(this,true);
+    },
+    /** -- */
+    setPreviewCompare: function(aggregate){
+        if(aggregate){
+            aggregate.facetDOM.setAttribute("compare",true);
+            this.comparedAggregate = aggregate;
+        }
+        this._previewCompare_Active = true;
+        this.root.attr("previewcompare",true);
+        this.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
+        if(this.previewCompareCb) this.previewCompareCb.call(this,false);
+    },
+    /** -- */
+    set_previewCompare_Timeout_Clear: function(){
         var me=this;
+        window.clearTimeout(this._previewCompare_Timeout_Clear);
+        window.clearTimeout(this._previewCompare_Timeout_Set);
+        this._previewCompare_Timeout_Clear = window.setTimeout(function(){
+            me.clearPreviewCompare();
+        },2500);
+    },
+    /** -- */
+    set_previewCompare_Timeout_Set: function(aggregate){
+        var me=this;
+        window.clearTimeout(this._previewCompare_Timeout_Clear);
+        window.clearTimeout(this._previewCompare_Timeout_Set);
+        if(this._previewCompare_Active===false){
+            this._previewCompare_Timeout_Set = window.setTimeout(function(){
+                me.setPreviewCompare(aggregate);
+            },2500);
+        }
+    },
+    /** -- */
+    clearResultPreviews: function(){
         this.resultPreviewActive = false;
         this.items.forEach(function(item){
             item.updatePreview_Cache = false;
         });
         this.facets.forEach(function(facet){ facet.clearViz_Preview(); });
-
-        window.clearTimeout(this._previewCompare_Timeout_Clear);
-        window.clearTimeout(this._previewCompare_Timeout_Set);
-
-        this._previewCompare_Timeout_Clear = window.setTimeout(function(){
-            me._previewCompare_Active = false;
-            if(me._percentView_Active===true){
-                me.setPercentView(false);
-            } else {
-                me.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
-            }
-            if(me.comparedAggregate){
-                me.comparedAggregate.facetDOM.setAttribute("compare",false);
-                me.comparedAggregate = null;
-            }
-            if(me.previewCompareCb) me.previewCompareCb.call(this,true);
-        },2500);
-
+        this.set_previewCompare_Timeout_Clear();
         if(this.previewCb) this.previewCb.call(this,true);
     },
+    /** -- */
     refreshResultPreviews: function(aggregate){
         var me=this;
         this.resultPreviewActive = true;
         this.facets.forEach(function(facet){ facet.refreshViz_Preview(); });
-
-        window.clearTimeout(this._previewCompare_Timeout_Clear);
-        window.clearTimeout(this._previewCompare_Timeout_Set);
-
-        if(this._previewCompare_Active===false){
-            this._previewCompare_Timeout_Set = window.setTimeout(function(){
-                if(aggregate){
-                    aggregate.facetDOM.setAttribute("compare",true);
-                    me.comparedAggregate = aggregate;
-                }
-                me._previewCompare_Active = true;
-                me.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
-                if(me.previewCompareCb) me.previewCompareCb.call(this,false);
-            },2500);
-        }
-
+        this.set_previewCompare_Timeout_Set(aggregate);
         if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
@@ -3063,7 +3081,7 @@ kshf.Browser.prototype = {
     /** -- */
     getFilterState: function() {
         var r={
-            resultCt : this.itemsSelectedCt,
+            resultCt : this.itemsWantedCount,
         };
 
         r.filtered="";
@@ -3108,8 +3126,6 @@ kshf.Browser.prototype = {
  * @constructor
  */
 kshf.Facet_Categorical = function(kshf_, options){
-    // Call the parent's constructor
-    var me = this;
     this.id = ++kshf.num_of_charts;
     this.browser = kshf_;
     this.filteredItems = options.items;
@@ -3129,6 +3145,8 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.parentFacet = options.parentFacet;
 
     this.dom = {};
+
+    this.vizHistogramScale = d3.scale.linear();
 
     this.scrollTop_cache=0;
     this.attrib_InDisplay_First = 0;
@@ -3181,6 +3199,10 @@ kshf.Facet_Categorical.prototype = {
             r = this.browser.rightPanelLabelWidth;
         r-=this.getWidth_LeftOffset();
         return r;
+    },
+    /** -- */
+    getWidth_Text: function(){
+        return this.getWidth_Label()+this.browser.getWidth_QueryPreview()
     },
     /** -- */
     getWidth_LeftOffset: function(){
@@ -3684,7 +3706,6 @@ kshf.Facet_Categorical.prototype = {
                 me.dom.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
                 me.attrib_InDisplay_First = Math.floor( me.scrollTop_cache/me.heightRow_attrib);
-                me.attrib_InDisplay_First = Math.floor( me.scrollTop_cache/me.heightRow_attrib);
                 me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.attribCount_InDisplay);
 
                 me.updateAttribCull();
@@ -3703,13 +3724,36 @@ kshf.Facet_Categorical.prototype = {
             .attr("class","percentSign");
 
         // this helps us makes sure that the div height is correctly set to visible number of rows
-        this.dom.attribGroupFiller = this.dom.attribGroup.append("span")
-            .attr("class","attribGroupFiller")
+        this.dom.vizBackground = this.dom.attribGroup.append("span")
+            .attr("class","vizBackground")
             .on("click",function(){
-                if(me.browser._previewCompare_Active && me.browser._percentView_Active===false){
-                    me.browser.setPercentView(true);
+                if(me.browser._previewCompare_Active){
+                    me.browser.setPercentView(!me.browser._percentView_Active);
                 }
-            });
+            })
+            .on("mouseover",function(){
+                var heightDiff = (me.attribCount_Visible*me.heightRow_attrib)
+                    - me.scrollTop_cache - me.attribHeight;
+                if(me.browser._previewCompare_Active){
+                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
+                    if(this.tipsy) delete this.tipsy;
+
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'n', title: function(){ 
+                            return "Show "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
+                        },
+                        offset_y: -heightDiff
+                    })
+                    this.tipsy.show();
+                }
+            })
+            .on("mouseout",function(){
+                if(me.browser._previewCompare_Active){
+//                    me.browser.set_previewCompare_Timeout_Clear();
+                    this.tipsy.hide();
+                }
+            })
+            ;
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -3884,18 +3928,21 @@ kshf.Facet_Categorical.prototype = {
     updateBarPreviewScale2Active: function(){
         if(!this.hasAttribs()) return; // nothing to do
         var me=this;
-        this.chartPreviewAxisScale = d3.scale.linear()
+        this.vizHistogramScale
             .rangeRound([0, this.browser.barChartWidth])
             .nice(this.getTicksSkip())
-            .clamp(true);
-        if(this.options.catBarScale==="scale_frequency"){
-            this.chartPreviewAxisScale.domain([0,this.browser.itemsSelectedCt]);
-        } else {
-            this.chartPreviewAxisScale.domain([0,this.getMaxAggregate_Active()]);
-        }
+            .clamp(true)
+            .domain([
+                0,
+                (this.options.catBarScale==="scale_frequency")?
+                    this.browser.itemsWantedCount:
+                    this.getMaxAggregate_Active()
+            ])
+            ;
 
         this.refreshViz_Active();
         this.refreshViz_Total();
+        this.refreshViz_Compare();
 
         this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
@@ -3933,11 +3980,13 @@ kshf.Facet_Categorical.prototype = {
     updateAfterFilter: function(resultChange){
         if(!this.hasAttribs()) return;
         // true means: dontCull: Update all query previews...
-        this.refreshQueryPreview(true);
+        this.refreshQueryPreview_Text(true);
         this.updateBarPreviewScale2Active();
+
         if(!this.skipSorting) {
             this.updateSorting();
         } else {
+            this.refreshViz_All();
             this.refreshViz_Active();
         }
     },
@@ -3945,17 +3994,17 @@ kshf.Facet_Categorical.prototype = {
     refreshWidth: function(){
         if(this.dom.facetCategorical){
             this.dom.facetCategorical.style("width",this.getWidth()+"px");
-            this.dom.attribGroupFiller.style("width",this.browser.barChartWidth+"px");
+            this.dom.vizBackground.style("width",this.browser.barChartWidth+"px");
         }
     },
     /** -- */
-    refreshQueryPreview: function(dontCull){
+    refreshQueryPreview_Text: function(dontCull){
         var me=this;
         var formatFunc = kshf.Util.formatForItemCount;
 
         this.dom.attribs.attr("noitems",function(d){ return !me.isAttribSelectable(d); });
 
-        this.dom.item_count.each(function(attrib){
+        this.dom.queryPreview_Text.each(function(attrib){
             if(attrib.isCulled && dontCull!==true) return;
             var p=attrib.aggregate_Preview;
             if(me.browser.resultPreviewActive){
@@ -3966,9 +4015,12 @@ kshf.Facet_Categorical.prototype = {
             } else {
                 p = attrib.aggregate_Active;
             }
-            if(attrib.cache_querypreview===p) return;
-            attrib.cache_querypreview=p;
-            this.textContent=formatFunc(p);
+            if(me.browser._percentView_Active){
+                p = 100*p/attrib.aggregate_Active;
+                this.textContent = p.toFixed(0);//+"%";
+            } else {
+                this.textContent = formatFunc(p);
+            }
         });
     },
     /** -- */
@@ -3981,44 +4033,52 @@ kshf.Facet_Categorical.prototype = {
         this.refreshViz_Preview();
         setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
         this.refreshViz_Compare();
+        this.refreshQueryPreview_Text();
 
         this.refreshViz_Axis();
     },
     /** -- */
     refreshViz_Active: function(){
+        if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
-        var basicWidth = this.getWidth_Label()+this.browser.getWidth_QueryPreview();
+        var width_Text = this.getWidth_Text();
+        var width_vizFull = this.browser.barChartWidth;
+        var func_barScale, func_clickAreaScale;
         if(this.browser._percentView_Active){
-            this.dom.bars_active.each(function(attrib){
-                var width = (attrib.aggregate_Active!==0)?me.chartPreviewAxisScale.range()[1]:0;
-                kshf.Util.setTransform(this,"scaleX("+width+")");
-            });
-            // adjust click area
-            this.dom.attribClickArea.style("width",
-                (basicWidth+me.chartPreviewAxisScale.range()[1])+"px");
+            func_barScale = function(attrib){
+                kshf.Util.setTransform(this,
+                    "scaleX("+((attrib.aggregate_Active===0)?0:width_vizFull)+")");
+            };
+            func_clickAreaScale = function(attrib){
+                return (width_Text+((attrib.aggregate_Active===0)?0:width_vizFull))+"px";
+            };
         } else {
-            // active bar width
-            this.dom.bars_active.each(function(attrib){
-                kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.aggregate_Active)+")");
-            });
-            // adjust click area
-            this.dom.attribClickArea.style("width",function(attrib){
-                return (basicWidth+me.chartPreviewAxisScale(attrib.aggregate_Active))+"px";
-            });
+            func_barScale = function(attrib){
+                kshf.Util.setTransform(this,
+                    "scaleX("+me.vizHistogramScale(attrib.aggregate_Active)+")");
+            };
+            func_clickAreaScale = function(attrib){
+                return (width_Text+me.vizHistogramScale(attrib.aggregate_Active))+"px";
+            };
         }
+        this.dom.bars_active.each(func_barScale);
+        this.dom.attribClickArea.style("width",func_clickAreaScale);
     },
     /** -- */
     refreshViz_Total: function(){
         if(!this.hasAttribs() || this.collapsed) return;
         var me = this;
         if(this.browser._percentView_Active){
-            var t="scaleX("+this.chartPreviewAxisScale.range()[1]+")";
+/*          // Do not need to update total. Total value is invisible. Percent view is based on active count.
+            var t="scaleX("+this.vizHistogramScale.range()[1]+")";
             this.dom.bars_total.each(function(attrib){
                 kshf.Util.setTransform(this,t);
             });
+*/
         } else {
             this.dom.bars_total.each(function(attrib){
-                kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(attrib.aggregate_Total)+")");
+                kshf.Util.setTransform(this,
+                    "scaleX("+me.vizHistogramScale(attrib.aggregate_Total)+")");
             });
         }
     },
@@ -4034,24 +4094,24 @@ kshf.Facet_Categorical.prototype = {
             });
             if(this.browser._percentView_Active){
                 this.dom.bars_preview_compare.each(function(attrib){
-                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.vizHistogramScale.range()[1];
                     kshf.Util.setTransform(this,"translateX("+w+"px)");
                     this.setAttribute('hidden',attrib.cache_compare===0);
                 });
                 this.dom.bars_preview_compare_2.each(function(attrib){
-                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.vizHistogramScale.range()[1];
                     kshf.Util.setTransform(this,"scaleX("+(w+1)+")");
                     this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(attrib){
                     kshf.Util.setTransform(this,"translateX("+
-                        me.chartPreviewAxisScale(attrib.cache_compare)+"px)");
+                        me.vizHistogramScale(attrib.cache_compare)+"px)");
                     this.setAttribute('hidden',attrib.cache_compare===0);
                 });
                 this.dom.bars_preview_compare_2.each(function(attrib){
                     kshf.Util.setTransform(this,"scaleX("+
-                        (me.chartPreviewAxisScale(attrib.cache_compare)+1)+")");
+                        (me.vizHistogramScale(attrib.cache_compare)+1)+")");
                     this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             }
@@ -4069,15 +4129,14 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshViz_Preview: function(){
+        if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
-        if(!this.hasAttribs()) return;
-        if(this.collapsed) return;
         if(this.browser._percentView_Active){
             this.dom.bars_preview.each(function(attrib){
                 var p=attrib.aggregate_Preview;
                 if(me.browser.preview_not) p = attrib.aggregate_Active-p;
                 attrib.cache_preview = p;
-                var w= (p / attrib.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                var w= (p / attrib.aggregate_Active)*me.vizHistogramScale.range()[1];
                 kshf.Util.setTransform(this,"scaleX("+w+")");
             });
         } else {
@@ -4085,10 +4144,10 @@ kshf.Facet_Categorical.prototype = {
                 var p=attrib.aggregate_Preview;
                 if(me.browser.preview_not) p = attrib.aggregate_Active-p;
                 attrib.cache_preview = p;
-                kshf.Util.setTransform(this,"scaleX("+me.chartPreviewAxisScale(p)+")");
+                kshf.Util.setTransform(this,"scaleX("+me.vizHistogramScale(p)+")");
             });
         }
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
     },
     /** -- */
     clearViz_Preview: function(){
@@ -4104,7 +4163,7 @@ kshf.Facet_Categorical.prototype = {
             if(attrib.cache_preview===0) return;
             kshf.Util.setTransform(this,"scaleX(0)");
         });
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
     },
     /** -- */
     refreshViz_Axis: function(){
@@ -4122,7 +4181,7 @@ kshf.Facet_Categorical.prototype = {
                 .ticks(this.getTicksSkip());
         } else {
             // remove non-integer values
-            tickValues = this.chartPreviewAxisScale.ticks(this.getTicksSkip()).filter(function(d){return d%1===0;});
+            tickValues = this.vizHistogramScale.ticks(this.getTicksSkip()).filter(function(d){return d%1===0;});
         }
 
         this.dom.barChartPreviewAxis_percentage.style("display",
@@ -4134,11 +4193,11 @@ kshf.Facet_Categorical.prototype = {
 
         if(this.browser._percentView_Active){
             transformFunc=function(d){
-                kshf.Util.setTransform(this,"translateX("+(d*me.chartPreviewAxisScale.range()[1]/100-0.5)+"px)");
+                kshf.Util.setTransform(this,"translateX("+(d*me.vizHistogramScale.range()[1]/100-0.5)+"px)");
             };
         } else {
             transformFunc=function(d){
-                kshf.Util.setTransform(this,"translateX("+(me.chartPreviewAxisScale(d)-0.5)+"px)");
+                kshf.Util.setTransform(this,"translateX("+(me.vizHistogramScale(d)-0.5)+"px)");
             };
         }
 
@@ -4148,7 +4207,7 @@ kshf.Facet_Categorical.prototype = {
 
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line")
-            .style("top","-"+this.attribHeight+"px")
+            .style("top","-"+(this.attribHeight+2)+"px")
             .style("height",this.attribHeight+"px");
 
         if(this.browser._percentView_Active){
@@ -4174,7 +4233,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.barChartPreviewAxis.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
-        this.dom.attribGroupFiller
+        this.dom.vizBackground
             .style("margin-left",barChartMinX+"px");
     },
     /** -- */
@@ -4193,8 +4252,8 @@ kshf.Facet_Categorical.prototype = {
         this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
         this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
-        var h=this.attribHeight-8;
-        this.dom.barChartPreviewAxis.selectAll("span.line").style("top",(-h)+"px").style("height",h+"px");
+        var h=this.attribHeight;
+        this.dom.barChartPreviewAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
@@ -4216,7 +4275,7 @@ kshf.Facet_Categorical.prototype = {
             }
             this.style.paddingTop = padTop+"px";
         });
-        this.dom.attribGroupFiller.style("height",(this.attribCount_Visible*this.heightRow_attrib-4)+"px");
+        this.dom.vizBackground.style("height",(this.attribCount_Visible*this.heightRow_attrib)+"px");
 
         setTimeout(function(){
             me.browser.root.attr("noanim",false);
@@ -4286,7 +4345,7 @@ kshf.Facet_Categorical.prototype = {
         if(what==="NOT"){
             if(attrib.is_NONE()){
                 // if number of items in this attrib equals to current result count, do nothing!
-                if(attrib.aggregate_Active===this.browser.itemsSelectedCt){
+                if(attrib.aggregate_Active===this.browser.itemsWantedCount){
                     alert("Removing this attribute would make an empty result set, so it is not allowed.");
                     return;
                 }
@@ -4366,9 +4425,9 @@ kshf.Facet_Categorical.prototype = {
         var offset=0;
         if(!this.browser.hideBars){
             if(this.browser._percentView_Active){
-                offset+=this.chartPreviewAxisScale.range()[1];
+                offset+=this.vizHistogramScale.range()[1];
             } else {
-                offset+=this.chartPreviewAxisScale(attrib.aggregate_Active)
+                offset+=this.vizHistogramScale(attrib.aggregate_Active)
             }
         }
         attrib.facetDOM.tipsy_active.options.offset_x = offset;
@@ -4554,7 +4613,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
             me.tipsy_active = attrib.facetDOM.tipsy;
             attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                (me.chartPreviewAxisScale(attrib.aggregate_Active)-me.chartPreviewAxisScale.range()[1]);
+                (me.vizHistogramScale(attrib.aggregate_Active)-me.vizHistogramScale.range()[1]);
             attrib.facetDOM.tipsy_active.show();
 
             facetDOM.tipsy.show();
@@ -4642,11 +4701,10 @@ kshf.Facet_Categorical.prototype = {
 
         var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
-        var domItemCountWrapper = domAttribs_new.append("span")
+        domAttribs_new.append("span")
             .attr("class", "item_count_wrapper")
-            .style("width",(this.browser.getWidth_QueryPreview())+"px");
-
-        domItemCountWrapper.append("span").attr("class","item_count");
+            .style("width",(this.browser.getWidth_QueryPreview())+"px")
+            .append("span").attr("class","item_count");
         
         var domBarGroup = domAttribs_new.append("span").attr("class","barGroup");
         domBarGroup.append("span").attr("class", function(d,i){ 
@@ -4662,7 +4720,7 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.attribs = this.dom.attribGroup.selectAll(".attrib")
         this.dom.attribClickArea = this.dom.attribs.selectAll(".clickArea");
-        this.dom.item_count = this.dom.attribs.selectAll(".item_count_wrapper > .item_count");
+        this.dom.queryPreview_Text = this.dom.attribs.selectAll(".item_count_wrapper > .item_count");
         this.dom.bars_total = this.dom.attribs.selectAll(".barGroup > .total");
         this.dom.bars_active = this.dom.attribs.selectAll(".barGroup > .active");
         this.dom.bars_preview = this.dom.attribs.selectAll(".barGroup > .preview");
@@ -4807,7 +4865,7 @@ kshf.Facet_Categorical.prototype = {
 
         // filler is used to insert the scroll bar. Items outside the view are not visible, something needs
         // to expand the box
-        this.dom.attribGroupFiller.style("height",(this.getTotalAttribHeight()-4)+"px");
+        this.dom.vizBackground.style("height",(this.getTotalAttribHeight())+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -4888,7 +4946,7 @@ kshf.Facet_Interval = function(kshf_, options){
     if(options.tickIntegerOnly===true)
         this.tickIntegerOnly = true;
 
-    this.chartPreviewAxisScale = d3.scale.linear();
+    this.vizHistogramScale = d3.scale.linear();
 
     this.intervalFilter = kshf_.createFilter({
         name: this.options.facetTitle,
@@ -5132,12 +5190,32 @@ kshf.Facet_Interval.prototype = {
         this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
         this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
 
-        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram")
+        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
+        this.dom.vizBackground = this.dom.histogram.append("span").attr("class","vizBackground")
             .on("click",function(){
                 if(me.browser._previewCompare_Active && me.browser._percentView_Active===false){
                     me.browser.setPercentView(true);
                 }
-            });
+            })
+            .on("mouseover",function(){
+                if(me.browser._previewCompare_Active){
+                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
+                    if(this.tipsy) delete this.tipsy;
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'n', title: function(){ 
+                            return "Show "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
+                        }
+                    })
+                    this.tipsy.show();
+                }
+            })
+            .on("mouseout",function(){
+                if(me.browser._previewCompare_Active){
+//                    me.browser.set_previewCompare_Timeout_Clear();
+                    this.tipsy.hide();
+                }
+            })
+            ;
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins");
         this.dom.barChartPreviewAxis = this.dom.histogram.append("div").attr("class", "barChartPreviewAxis");
 
@@ -5396,13 +5474,13 @@ kshf.Facet_Interval.prototype = {
         this.dom.bars_preview_compare = this.dom.histogram_bin.selectAll(".bar.preview_compare");
         this.dom.bars_preview_compare_2 = this.dom.histogram_bin.selectAll(".bar.preview_compare_2");
 
-        this.dom.bars_item_count = this.dom.histogram_bin.selectAll(".item_count");
+        this.dom.queryPreview_Text = this.dom.histogram_bin.selectAll(".item_count");
 
         this.refreshBins_Translate();
 
         this.refreshViz_Scale();
         this.refreshViz_Preview();
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
     },
     fixIntervalFilterRange: function(){
         if(this.options.intervalScale==='log' || this.options.intervalScale==='step'){
@@ -5596,13 +5674,13 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     updateBarScale2Total: function(){
-        this.chartPreviewAxisScale = this.chartPreviewAxisScale
+        this.vizHistogramScale = this.vizHistogramScale
             .domain([0, this.getMaxBinTotalItems()])
             .range ([0, this.height_hist]);
     },
     /** -- */
     updateBarScale2Active: function(){
-        this.chartPreviewAxisScale = this.chartPreviewAxisScale
+        this.vizHistogramScale = this.vizHistogramScale
             .domain([0, this.getMaxBinActiveItems()])
             .range ([0, this.height_hist]);
     },
@@ -5656,8 +5734,8 @@ kshf.Facet_Interval.prototype = {
     refreshBins_Translate: function(){
         var me=this;
         var offset = this.options.intervalScale==='step'?this.barGap:0;
-        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.chartPreviewAxisScale.range()[1]+"px)");
-        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.chartPreviewAxisScale.range()[1]+"px)");
+        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
+        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
             kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
         });
@@ -5671,6 +5749,7 @@ kshf.Facet_Interval.prototype = {
         this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
         setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
+        this.refreshQueryPreview_Text();
 
         this.refreshViz_Compare();
     },
@@ -5685,11 +5764,11 @@ kshf.Facet_Interval.prototype = {
         var width=this.barWidth-this.barGap*2;
         if(this.browser._percentView_Active){
             this.dom.bars_total.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.chartPreviewAxisScale.range()[1]+")");
+                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale.range()[1]+")");
             });
         } else {
             this.dom.bars_total.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.chartPreviewAxisScale(bar.y)+")");
+                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale(bar.y)+")");
             });
         }
     },
@@ -5699,20 +5778,20 @@ kshf.Facet_Interval.prototype = {
         var width = this.barWidth-this.barGap*2;
         if(this.browser._percentView_Active){
             this.dom.bars_active.each(function(bar){
-                var height = (bar.aggregate_Active!==0)?me.chartPreviewAxisScale.range()[1]:0;
+                var height = (bar.aggregate_Active!==0)?me.vizHistogramScale.range()[1]:0;
                 kshf.Util.setTransform(this,"scale("+width+","+height+")");
             });
-            this.dom.bars_item_count.each(function(bar){
+            this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
-                    "translate("+(me.barWidth/2)+"px,"+(-me.chartPreviewAxisScale.range()[1])+"px)");
+                    "translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale.range()[1])+"px)");
             });
         } else {
             this.dom.bars_active.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.chartPreviewAxisScale(bar.aggregate_Active)+")");
+                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale(bar.aggregate_Active)+")");
             });
-            this.dom.bars_item_count.each(function(bar){
+            this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
-                    "translate("+(me.barWidth/2)+"px,"+(-me.chartPreviewAxisScale(bar.aggregate_Active))+"px)");
+                    "translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale(bar.aggregate_Active))+"px)");
             });
         }
     },
@@ -5721,7 +5800,7 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var chartPreviewAxisScale=this.chartPreviewAxisScale;
+        var vizHistogramScale=this.vizHistogramScale;
         var preview_not = this.browser.preview_not;
         var width=this.barWidth-this.barGap*2;
         var trnsfrm="scale("+width+",1) translateY(-";
@@ -5737,23 +5816,23 @@ kshf.Facet_Interval.prototype = {
             if(this.browser._percentView_Active){
                 this.dom.bars_preview_compare.each(function(bar){
                     kshf.Util.setTransform(this,trnsfrm+
-                        (bar.aggregate_Compare/bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1]+"px)");
+                        (bar.aggregate_Compare/bar.aggregate_Active)*me.vizHistogramScale.range()[1]+"px)");
                     this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
                 this.dom.bars_preview_compare_2.each(function(bar){
                     kshf.Util.setTransform(this,"scaleY("+
-                        (bar.aggregate_Compare/bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1]+")");
+                        (bar.aggregate_Compare/bar.aggregate_Active)*me.vizHistogramScale.range()[1]+")");
                     this.style.width = (width+0.5)+"px";
                     this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(bar){
-                    kshf.Util.setTransform(this,trnsfrm+chartPreviewAxisScale(bar.aggregate_Compare)+"px)");
+                    kshf.Util.setTransform(this,trnsfrm+vizHistogramScale(bar.aggregate_Compare)+"px)");
                     this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
                 this.dom.bars_preview_compare_2.each(function(bar){
                     this.style.width = (width+0.5)+"px";
-                    kshf.Util.setTransform(this,"scaleY("+chartPreviewAxisScale(bar.aggregate_Compare)+")");
+                    kshf.Util.setTransform(this,"scaleY("+vizHistogramScale(bar.aggregate_Compare)+")");
                     this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
             }
@@ -5775,24 +5854,24 @@ kshf.Facet_Interval.prototype = {
         if(this.isEmpty) return;
         if(this.collapsed) return;
         var preview_not = this.browser.preview_not;
-        var chartPreviewAxisScale=this.chartPreviewAxisScale;
+        var vizHistogramScale=this.vizHistogramScale;
         var width=this.barWidth-this.barGap*2;
         var trnsfrm="scale("+width+",";
         if(this.browser._percentView_Active){
             this.dom.bars_preview.each(function(bar){
                 var p=bar.aggregate_Preview;
                 if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                var h=(p / bar.aggregate_Active)*me.chartPreviewAxisScale.range()[1];
+                var h=(p / bar.aggregate_Active)*me.vizHistogramScale.range()[1];
                 kshf.Util.setTransform(this,trnsfrm+h+")");
             });
         } else {
             this.dom.bars_preview.each(function(bar){
                 var p=bar.aggregate_Preview;
                 if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                kshf.Util.setTransform(this,trnsfrm+chartPreviewAxisScale(p)+")");
+                kshf.Util.setTransform(this,trnsfrm+vizHistogramScale(p)+")");
             });
         }
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
     },
     /** -- */
     clearViz_Preview: function(){
@@ -5805,13 +5884,13 @@ kshf.Facet_Interval.prototype = {
             // TODO: assuming all bars are visible...
             kshf.Util.setTransform(this,transform);
         });
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
     },
     /** -- */
     refreshViz_Axis: function(){
         var me=this;
 
-        var tickValues = this.chartPreviewAxisScale.ticks(this.getTicksSkip());
+        var tickValues = this.vizHistogramScale.ticks(this.getTicksSkip());
         // remove non-integer values!
         tickValues = tickValues.filter(function(d){return d % 1 === 0;});
 
@@ -5821,7 +5900,7 @@ kshf.Facet_Interval.prototype = {
         var noanim=this.browser.root.attr("noanim");
 
         var transformFunc=function(d){
-            kshf.Util.setTransform(this,"translateY(-"+me.chartPreviewAxisScale(d)+"px)");
+            kshf.Util.setTransform(this,"translateY(-"+me.vizHistogramScale(d)+"px)");
         };
 
         if(noanim!=="true") this.browser.root.attr("noanim",true);
@@ -5839,21 +5918,27 @@ kshf.Facet_Interval.prototype = {
         tickDoms.exit().remove();
     },
     /** -- */
-    refreshQueryPreview: function(){
+    refreshQueryPreview_Text: function(){
         var me=this;
         var formatFunc = kshf.Util.formatForItemCount;
         this.dom.histogram_bin.attr("noitems",function(bar){ return bar.aggregate_Active===0; });
         
-        this.dom.bars_item_count.text(function(bar){
-            if(me.browser.resultPreviewActive!==true){
-                return formatFunc(bar.aggregate_Active);
+        this.dom.queryPreview_Text.each(function(aggr){
+            var p=aggr.aggregate_Preview;
+            if(me.browser.resultPreviewActive){
+                if(me.browser.preview_not)
+                    p = aggr.aggregate_Active-aggr.aggregate_Preview;
+                else
+                    p = aggr.aggregate_Preview;
+            } else {
+                p = aggr.aggregate_Active;
             }
-            var p;
-            if(me.browser.preview_not)
-                p = bar.aggregate_Active-bar.aggregate_Preview;
-            else
-                p = bar.aggregate_Preview;
-            return formatFunc(p);
+            if(me.browser._percentView_Active){
+                p = 100*p/aggr.aggregate_Active;
+                this.textContent = p.toFixed(0)+"%";
+            } else {
+                this.textContent = formatFunc(p);
+            }
         });
     },
     /** -- */
@@ -5919,7 +6004,7 @@ kshf.Facet_Interval.prototype = {
     updateAfterFilter: function(resultChange){
         if(this.isEmpty) return;
         this.updateActiveItems();
-        this.refreshQueryPreview();
+        this.refreshQueryPreview_Text();
         this.updateBarPreviewScale2Active();
         if(this.options.showPercentile){
             this.updateQuantiles();
@@ -5931,6 +6016,7 @@ kshf.Facet_Interval.prototype = {
         this.updateBarScale2Active();
         this.refreshBins_Translate();
         this.refreshViz_Scale();
+        this.refreshViz_Compare();
 
         this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();

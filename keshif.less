@@ -43,12 +43,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_facet_group: #E9E5CB;
 @color_bar_preview: orangered;
 @color_preview_compare: #222222;
+@color_axis_line: rgb(182, 179, 179);
 
 @color_query_and: #1D4870;
 @color_query_or:  #1C737A;
 @color_query_not: gray;
 
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
+@compare_viz_animation: ~'opacity: 100ms linear';
 
 .kshf {
 //    border: solid 1px lightgray;
@@ -81,6 +83,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .attrib{
             .transition(~'all 700ms ease-in-out');
+        }
+    }
+    &[previewcompare=true]{
+        .vizBackground:hover{
+            opacity: 0.1 !important;
+            cursor: pointer;
         }
     }
 
@@ -291,8 +299,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transform-origin(0%, 0%);
         }
         > .item_count_wrapper{
-            padding-left: 3px;
-            text-align: left;
+            padding-right: 2px;
+            text-align: right;
         }
         &:not([selected="0"]) {
             .attribLabel{
@@ -398,7 +406,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
         position:absolute;
         z-index: 2;
-        top: 1px;
+        top: 0px;
         .transition(@layout_animation);
         > .tick{
             opacity: 0;
@@ -707,11 +715,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     z-index: 5;
                     .transition(~'height 700ms ease-in-out');
 
-                    > .attribGroupFiller{
+                    > .vizBackground{
                         opacity: 0;
                         width: 1px;
-                        display: inline-block;
+                        display: block;
                         background-color: rgb(194, 146, 124);
+                        .transition(~'opacity 250ms');
                     }
 
                     > .attrib{
@@ -729,6 +738,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             position: absolute;
                             font-size: 0.8em;
                             font-weight: 300;
+                            width: 1px;
                         }
                         > .attribLabel{
                             display: inline-block;
@@ -908,6 +918,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     pointer-events: all;
                     overflow: hidden; // necessary, because after bin height is scaled, they can extend beyond.
                     .transition(~'height 700ms ease-in-out');
+                    > .vizBackground{
+                        opacity: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+                        background-color: rgb(194, 146, 124);
+                        .transition(~'opacity 250ms');
+                    }
                     > .bins{
                         position: absolute;
                         top: 9px;
@@ -956,7 +974,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         top: 9px;
                         > .tick{
                             > .line{
-                                border-bottom: dashed 1px rgb(182, 179, 179);
+                                border-bottom: dotted 1px @color_axis_line;
                             }
                         }
                     }
@@ -979,6 +997,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         z-index: 120;
                         color: gray;
                         pointer-events: none;
+                        display: none;
+                    }
+                    &:hover > .percentileTitle{
+                        display: block;
                     }
                     > .quantile {
                         display: inline-block;
@@ -1181,7 +1203,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &.preview_compare {
                     background-color: @color_preview_compare;
                     pointer-events: none;
-                    .transition(@bar_animation);
+                    .transition(@compare_viz_animation);
                     opacity: 1;
                     &[hidden=true]{
                         opacity: 0;
@@ -1190,7 +1212,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &.preview_compare_2 {
                     background-color: rgba(0,0,0,0);
                     pointer-events: none;
-                    .transition(@bar_animation);
+                    .transition(@compare_viz_animation);
                     opacity: 1;
                     &[hidden=true]{
                         opacity: 0;
@@ -1331,10 +1353,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .barChartPreviewAxis {
             > .percentSign{
                 position: absolute;
-                left: -15px;
+                left: -14px;
                 color: gray;
                 font-size: 0.7em;
-                font-weight: 300;
+                font-weight: 700;
                 &:before{
                     content: '%';
                 }
@@ -1346,7 +1368,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .line{
                     width: 0px;
-                    border-left: dashed 1px rgb(182, 179, 179);
+                    border-left: dotted 1px @color_axis_line;
                 }
             }
         }
