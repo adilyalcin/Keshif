@@ -117,7 +117,8 @@ google.setOnLoadCallback(function () {
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data[3]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data[4]+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + d.data[5]+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data[6].length+"</div>";
+                if(d.data[6])
+                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data[6].length+"</div>";
                 str+="</span>";
 
                 return str;

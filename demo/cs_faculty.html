@@ -16,7 +16,18 @@
 
         <script type="text/javascript">
             var cols = null;
+            function resizeBrowser(){
+                $('#chart_div').width($(window).width()-100);
+                $('#chart_div').height($(window).height()-120);
+            }
+
             google.setOnLoadCallback(function(){
+                resizeBrowser();
+                $(window).resize(function() {
+                    resizeBrowser();
+                    browser.updateLayout();
+                });
+
                 browser = new kshf.Browser({
                     domID: "#chart_div",
                     barChartWidth: 90,

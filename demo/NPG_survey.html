@@ -57,11 +57,11 @@ var ageSort = function(a,b){
 
 $(document).ready(function() {
     // set div height accordingly 
-    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').height($(window).height()-55);
     $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').height($(window).height()-55);
         $('#chart_div').width ($(window).width()*0.9);
         browser.updateLayout();
     });
@@ -269,19 +269,6 @@ $(document).ready(function() {
             }
         }
     });
-
-    $(".comment_popup").fancybox({
-        type: 'iframe',
-        width    : 600,
-        height   : 300,
-        closeBtn    : true,
-//        openEffect  : 'none',
-//        closeEffect : 'none',
-        iframe: {
-            preload   : true
-        }
-    });
-
 });
 
 </script>
@@ -353,46 +340,9 @@ $(document).ready(function() {
             .listItem{
                 max-height: 500px !important;
             }
-            .comment_popup{
-                position: fixed;
-                margin-left: 5px;
-                cursor: pointer;
-            }
-            .comment_popup .fa-stack{
-                float:left;
-                clear:left;
-                height: 1.5em;
-                margin-top: -15px;
-                margin-left: -15px;
-                font-size: 2em;
-            }
-            .comment_popup .fa-comment{
-                color: rgb(255, 205, 46);
-            }
-            .comment_popup .texttt{
-                font-family: sans-serif;
-                font-weight: 300;
-                font-size: 0.8em;
-            }
-            .comment_popup:hover .texttt{
-                color: orangered;
-            }
-            .comment_popup:hover .fa-comment{
-                color: orangered;
-            }
         </style>
 	</head>
     <body>
-
-        <span class="comment_popup"
-        href="https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true"
-            >
-            <span class="fa-stack" style="">
-              <i class="fa fa-stack-1x fa-comment"></i>
-              <i class="fa fa-stack-1x fa-comment-o"></i>
-            </span><br>
-            <span class="texttt">Share<br>your<br>feedback</span>
-            </span>
 
         <div class="contents">
             <div id="chart_div"></div>

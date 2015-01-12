@@ -62,7 +62,7 @@ $(document).ready( function(){
             },{ facetTitle: "Race",
                 catItemMap: function(d){ return d.data.race;}
             },{ facetTitle: "Sex",
-                catItemMap: function(d){ return d.data.sex;}
+                catItemMap: function(d){ return d.data.sex==="m"?"Male":"Female";}
             },{ facetTitle: "Quadrant", layout: 'right',
                 catItemMap: function(d){ return d.data.quadrant;}
             },{ facetTitle: "Neighborhood", layout: 'right',
