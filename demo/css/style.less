@@ -76,7 +76,6 @@ body{
 .pageTitle{
     font-family: 'Montserrat', sans-serif;
     font-size: 2em;
-    margin-top: 5px;
     text-shadow: 3px 3px 0px lightgray;
     text-transform: capitalize;
 }
@@ -217,16 +216,45 @@ body{
     background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,0) 80%);
     background-image: -o-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,0) 80%);
     background-image: linear-gradient(to top, rgb(223, 210, 169) 0%, rgba(255,255,255,0) 80%);;
-}
-#infobox a{
-    color: black !important;
-    font-weight: 500;
-}
-#infobox span.fa{
-    color:gray;
+    a{
+    	color: black !important;
+    	font-weight: 500;
+    }
+    .fa{
+        color:gray;
+    }
 }
 
-
+.comment_popup{
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+    .fa-stack{
+        float:left;
+        clear:left;
+        height: 1.5em;
+        margin-top: -15px;
+        margin-left: -15px;
+        font-size: 2em;
+    }
+    .fa-comment{
+        color: rgb(255, 205, 46);
+    }
+    .texttt{
+        font-family: sans-serif;
+        font-weight: 300;
+        font-size: 0.8em;
+    }
+    &:hover{
+    	.texttt{
+    	    color: orangered;
+    	}
+    	.fa-comment{
+    	    color: orangered;
+    	}
+    }
+}
 
 .forkongithub {
 	a.fork-ribbon{
@@ -297,3 +325,5 @@ body{
         box-shadow:4px 4px 10px rgba(0,0,0,0.8);
     }
 }
+
+

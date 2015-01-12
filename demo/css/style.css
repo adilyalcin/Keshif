@@ -67,7 +67,6 @@ body {
 .pageTitle {
   font-family: 'Montserrat', sans-serif;
   font-size: 2em;
-  margin-top: 5px;
   text-shadow: 3px 3px 0px lightgray;
   text-transform: capitalize;
 }
@@ -204,8 +203,36 @@ body {
   color: black !important;
   font-weight: 500;
 }
-#infobox span.fa {
+#infobox .fa {
   color: gray;
+}
+.comment_popup {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+}
+.comment_popup .fa-stack {
+  float: left;
+  clear: left;
+  height: 1.5em;
+  margin-top: -15px;
+  margin-left: -15px;
+  font-size: 2em;
+}
+.comment_popup .fa-comment {
+  color: #ffcd2e;
+}
+.comment_popup .texttt {
+  font-family: sans-serif;
+  font-weight: 300;
+  font-size: 0.8em;
+}
+.comment_popup:hover .texttt {
+  color: orangered;
+}
+.comment_popup:hover .fa-comment {
+  color: orangered;
 }
 .forkongithub a.fork-ribbon {
   background: #000;
