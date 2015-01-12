@@ -68,7 +68,7 @@ $(document).ready( function(){
                             var d={};
                             d.id = $this.find("id")[0].textContent.trim();
                             d['Genres'] = [];
-                            d['Authors'] = [];
+                            d['Author'] = [];
                             d.Title = $this.find("title")[0].textContent.trim();
                             num_pages = $this.find("num_pages")[0].textContent.trim();
                             if (num_pages != "") {
@@ -107,7 +107,7 @@ $(document).ready( function(){
                             d.Review = $this.find("body")[0].textContent.trim();
                             $this.find("authors > author > name").each(function(i) {
                                 var author = $(this)[0].textContent.trim();
-                                d['Authors'].push(author);
+                                d['Author'].push(author);
                             });
                             d.URL = $this.find("link")[0].textContent.trim();
                             if ((typeof book_metadata[d.Title] === "undefined") || (book_metadata[d.Title][1] == "")) {
@@ -128,7 +128,7 @@ $(document).ready( function(){
                             kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
                             
                             // Write out book info to import into spreadsheet
-                            // console.log("'" + d.Title + "'\t " + d['Authors']);
+                            // console.log("'" + d.Title + "'\t " + d['Author']);
                         });
 
                         browser.items = kshf.dt.Visualizations;
