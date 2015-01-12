@@ -131,12 +131,16 @@ var sendLog = function(actID, dt, ts){
 };;
 
 $(window).load(function(){
+    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+    var pageName = window.location.pathname.split("/");
+    pageName = pageName[pageName.length-1];
+
     d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
         .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
         .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span>");
 
     d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
-        .append("a").attr("href","https://github.com/adilyalcin/keshif").attr("target","_blank")
+        .append("a").attr("href",githubDemoRoot+pageName).attr("target","_blank")
         .attr("class","fork-ribbon").text("Fork me on GitHub");
 
     if(socialShare===true){

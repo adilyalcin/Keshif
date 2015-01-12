@@ -234,6 +234,11 @@ body {
 .comment_popup:hover .fa-comment {
   color: orangered;
 }
+.forkongithub {
+  position: fixed;
+  display: block;
+  z-index: 0;
+}
 .forkongithub a.fork-ribbon {
   background: #000;
   color: #fff;
@@ -268,11 +273,8 @@ body {
 }
 @media screen and (min-width: 800px) {
   .forkongithub {
-    position: fixed;
-    display: block;
     width: 150px;
     height: 150px;
-    z-index: 9999;
   }
   .forkongithub.fork-bottom {
     bottom: 0;
