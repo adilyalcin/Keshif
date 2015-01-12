@@ -144,11 +144,12 @@ $(document).ready( function(){
         },
         facets: [
             {
-                facetTitle: "Genres",
+                facetTitle: "Genres"
             },{
                 facetTitle: "Rating",
                 type: 'interval',
-                intervalScale: 'step'
+                intervalScale: 'step',
+                description: "Ben Bederson's Rating"
             },{
                 facetTitle: "Author", 
             },{
@@ -184,7 +185,8 @@ $(document).ready( function(){
             maxVisibleItems_Default: 200,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-                var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
+                var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Author+"</span>";
+                desc+="<span class='title'>"+d.data.Title+"</span>";
                 if (d.data.Rating > 0) {
                     desc+="<span class='ratings'>";
                     for(var s=0; s<5; s++){
@@ -210,6 +212,12 @@ $(document).ready( function(){
     }
     .thumbnail{
         overflow: visible !important;
+    }
+    .listItem .subTitle{
+        text-align: center !important;
+    }
+    .listItem .title{
+        text-align: center !important;
     }
     .ratings{
         margin-top: 2px;
@@ -245,7 +253,9 @@ $(document).ready( function(){
 
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
-            Books that <a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a> has read since Oct 1991 (data from <a href="https://www.goodreads.com/review/list/14553051?shelf=read">GoodReads)</a>.<br>Book list is incomplete and includes primarily non-work-related books.
+            Books that <a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a> has read since Oct 1991 (data from <a href="https://www.goodreads.com/review/list/14553051?shelf=read">GoodReads)</a>.<br>Book list is incomplete and includes primarily non-work-related books. Blog post relating to this browser is at
+            <a href="http://hci-user-advocate.blogspot.com/2015/01/books-ive-read-visualization.html"
+                target="_blank">HCI user advocate blog</a>.
             <span class="fa fa-info-circle"></span>
             </div>
     </body>
