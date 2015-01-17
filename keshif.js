@@ -405,7 +405,7 @@ kshf.Facet_Base = {
             })
             .on("mouseover",function(d){
                 this.tipsy.show();
-                this.setAttribute("class","hasMultiMappings fa fa-circle-o-notch fa-spin");
+                this.setAttribute("class","hasMultiMappings fa fa-th");
             })
             .on("mouseout" ,function(d){
                 this.tipsy.hide();
@@ -436,7 +436,7 @@ kshf.Facet_Base = {
                 .on("mouseout" ,function(d){ this.tipsy.hide(); });
         }
 
-        this.dom.headerGroup.append("div").attr("class","border_line");
+        this.dom.headerGroup.append("div").attr("class","border_line border_line_bottom");
     },
     /* ** */
     collapseFacet: function(hide){
@@ -3206,7 +3206,7 @@ kshf.Facet_Categorical.prototype = {
         if(this.parentFacet){
             offset+=17;
         } else if(this.hasSubFacets()){
-            offset+=17;
+            // offset+=17;
         }
         return offset;
     },
@@ -3723,15 +3723,13 @@ kshf.Facet_Categorical.prototype = {
         this.dom.vizBackground = this.dom.attribGroup.append("span")
             .attr("class","vizBackground")
             .on("click",function(){
-                if(me.browser._previewCompare_Active){
-                    me.browser.setPercentView(!me.browser._percentView_Active);
-                }
+                me.browser.setPercentView(!me.browser._percentView_Active);
             })
             .on("mouseover",function(){
                 var heightDiff = (me.attribCount_Visible*me.heightRow_attrib)
                     - me.scrollTop_cache - me.attribHeight;
-                if(me.browser._previewCompare_Active){
-                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
+                if(me.browser._previewCompare_Active || true){
+//                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
                     if(this.tipsy) delete this.tipsy;
 
                     this.tipsy = new Tipsy(this, {
@@ -3744,10 +3742,6 @@ kshf.Facet_Categorical.prototype = {
                 }
             })
             .on("mouseout",function(){
-                if(me.browser._previewCompare_Active){
-//                    me.browser.set_previewCompare_Timeout_Clear();
-                    this.tipsy.hide();
-                }
             })
             ;
 
@@ -4245,7 +4239,7 @@ kshf.Facet_Categorical.prototype = {
         // So far, should be pretty nice.
         if(!this.hasAttribs()) return;
 
-        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
+        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content()-2)+"px");
         this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
         var h=this.attribHeight;
@@ -4495,7 +4489,7 @@ kshf.Facet_Categorical.prototype = {
                         if(hasMultiValueItem===false)
                             return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
                         else
-                            return "<span class='action'><span class='fa fa-plus'></span> And ...</span>";
+                            return "<span class='action'><span class='fa fa-plus'></span> And<span>";
                     }
                 });
             })
@@ -4603,7 +4597,7 @@ kshf.Facet_Categorical.prototype = {
 
         var cbOrEnter = function(attrib,i){
             var facetDOM = attrib.facetDOM;
-            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or ...</span>";
+            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
             facetDOM.tipsy.hide();
 
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
@@ -4636,7 +4630,7 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var cbAndEnter = function(attrib,i){
-            this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not ...</span>";
+            this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
             this.__data__.facetDOM.tipsy.hide();
             this.__data__.facetDOM.tipsy.show();
             attrib.facetDOM.setAttribute("selectType","not");
@@ -5189,13 +5183,11 @@ kshf.Facet_Interval.prototype = {
         this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
         this.dom.vizBackground = this.dom.histogram.append("span").attr("class","vizBackground")
             .on("click",function(){
-                if(me.browser._previewCompare_Active && me.browser._percentView_Active===false){
-                    me.browser.setPercentView(true);
-                }
+                me.browser.setPercentView(!me.browser._percentView_Active);
             })
             .on("mouseover",function(){
-                if(me.browser._previewCompare_Active){
-                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
+                if(me.browser._previewCompare_Active || true){
+//                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
                     if(this.tipsy) delete this.tipsy;
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n', title: function(){ 
@@ -5206,10 +5198,7 @@ kshf.Facet_Interval.prototype = {
                 }
             })
             .on("mouseout",function(){
-                if(me.browser._previewCompare_Active){
-//                    me.browser.set_previewCompare_Timeout_Clear();
-                    this.tipsy.hide();
-                }
+                this.tipsy.hide();
             })
             ;
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins");

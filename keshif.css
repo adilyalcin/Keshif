@@ -82,7 +82,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 700ms ease-in-out;
   transition: all 700ms ease-in-out;
 }
-.kshf[previewcompare=true] .vizBackground:hover {
+.kshf .vizBackground:hover {
   opacity: 0.1 !important;
   cursor: pointer;
 }
@@ -453,6 +453,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-bottom: -2px;
   pointer-events: all;
   top: -1px;
+}
+.kshf .border_line.border_line_bottom {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: calc(99%);
 }
 .kshf .headerGroup {
   position: relative;
