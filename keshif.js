@@ -3742,6 +3742,7 @@ kshf.Facet_Categorical.prototype = {
                 }
             })
             .on("mouseout",function(){
+                this.tipsy.hide();
             })
             ;
 
