@@ -116,11 +116,12 @@ $(document).ready(function(){
             },{
                 facetTitle: "ProgramManager", collapsed: true
             },{
-                facetTitle: "Awarded Amount ($)",
+                facetTitle: "Awarded Amount",
                 catItemMap: function(d){ 
                     return d.data.AwardedAmountToDate;// "$333,360.00"
                 },
-                intervalScale: 'log'
+                intervalScale: 'log',
+                unitName: "$",
 /*            },{
                 facetTitle: "PrincipalInvestigator",
                 layout: 'right'*/

@@ -131,9 +131,11 @@ google.setOnLoadCallback( function(){
                 layout: 'left',
                 catTableName: "Districts"
             },{
-                facetTitle: "Water Depth (feet)",
+                facetTitle: "Water Depth",
+                catItemMap: function(d){ return d.data[spillsCol['Water Depth (feet)']];},
                 layout: 'right',
-                intervalScale: 'log'
+                intervalScale: 'log',
+                unitName: 'feet'
             },{
                 facetTitle: "During Activity",
                 layout: 'right',

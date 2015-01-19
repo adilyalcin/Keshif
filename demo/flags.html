@@ -163,7 +163,7 @@ $(document).ready( function(){
                     },{
                         facetTitle: "Flag Date", layout: 'left',
                         catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
-                        intervalScale: 'time'
+                        intervalScale: 'time', unitName: 'yr'
                     }
                 ]
             },
@@ -203,13 +203,13 @@ $(document).ready( function(){
                             var r=flag.data.Bars;
                             return (r===0)?0:r;
                         },
-                        intervalScale: 'step'
+                        intervalScale: 'step', unitName: "bar"
                     },{
                         facetTitle: "Number of Stripes",
                         catItemMap : function(flag){ 
                             var r=flag.data.Stripes;
                             return (r===0)?null:r;
-                        }
+                        }, unitName: "strp"
                     },{
                         facetTitle: "Other", collapsed: true,
                         catItemMap : function(flag){

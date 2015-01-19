@@ -203,12 +203,13 @@ $(document).ready(function() {
                     return r;
                 }
             },{
-                facetTitle: "Comment (Log) Length",
+                facetTitle: "Comment Length",
                 catItemMap: function(d){ 
                     if(d.data[11]===null) return;
                     if(d.data[11].length===0) return;
                     return d.data[11].length; 
                 },
+                unitName: "ch.",
                 layout: 'bottom-mid',
                 intervalScale: 'log'
             },{

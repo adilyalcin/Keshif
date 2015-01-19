@@ -203,12 +203,12 @@ $(document).ready( function(){
 //            },{
 //                facetTitle: "Independence", layout: "right"
             },{
-                facetTitle: "Education Expend.s (%)", layout: "right",
+                facetTitle: "Education Expend.s (%)", layout: "right", unitName: "%",
                 description: "This entry provides the public expenditure on education as a percent of GDP.",
                 catItemMap: function(d){ return d.data["Education Expenditures"]; }
             },{
                 facetTitle: "Population", layout: "right",
-                intervalScale: 'log',
+                intervalScale: 'log', unitName: "ppl",
                 description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."
 //            },{
 //                facetTitle: "Languages"

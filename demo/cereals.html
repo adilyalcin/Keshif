@@ -41,26 +41,33 @@ google.setOnLoadCallback(function(){
             },{ facetTitle: "Calories", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data[3]},
                 showPercentile: true
-            },{ facetTitle: "Protein (gr)", type: 'interval', layout: 'right',
+            },{ facetTitle: "Protein", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data[4]},
+                unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Fat (gr)", type: 'interval', layout: 'right',
+            },{ facetTitle: "Fat", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data[5]},
+                unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Carbo (gr)", type: 'interval', layout: 'right',
+            },{ facetTitle: "Carb", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data[8]},
+                unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Sugar (gr)", type: 'interval', layout: 'right',
+            },{ facetTitle: "Sugar", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data[9]},
+                unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Sodium (gr)", type: 'interval', layout: 'left',
+            },{ facetTitle: "Sodium", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data[6]},
+                unitName: "gr",
                 showPercentile: true,
-            },{ facetTitle: "Fiber (gr)", type: 'interval', layout: 'left',
+            },{ facetTitle: "Fiber", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data[7]},
+                unitName: "gr",
                 showPercentile: true, collapsed: true
-            },{ facetTitle: "Potasium (mg)", type: 'interval', layout: 'left',
+            },{ facetTitle: "Potasium", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data[10]},
+                unitName: "mg",
                 showPercentile: true, collapsed: true
             }
             // Vitamins:
