@@ -82,6 +82,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 700ms ease-in-out;
   transition: all 700ms ease-in-out;
 }
+.kshf[percentview=true] .barChartPreviewAxis > .percentSign::after {
+  content: "%";
+}
 .kshf .vizBackground:hover {
   opacity: 0.1 !important;
   cursor: pointer;
@@ -441,6 +444,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .barChartPreviewAxis > .tick > .line {
   display: block;
   position: absolute;
+}
+.kshf .barChartPreviewAxis > .percentSign {
+  position: absolute;
+  color: gray;
+  font-size: 0.7em;
+  font-weight: 700;
+}
+.kshf .barChartPreviewAxis > .percentSign:after {
+  content: '#';
 }
 .kshf .border_line {
   position: relative;
@@ -922,13 +934,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval {
-  padding: 5px 12px 0px 12px;
+  padding: 7px 6px 0px 6px;
   overflow: hidden;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram {
   position: relative;
   pointer-events: all;
-  overflow: hidden;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
@@ -947,7 +958,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins {
   position: absolute;
-  top: 9px;
+  top: 0px;
   z-index: 3;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -977,7 +988,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-right: solid 2px gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
-  top: -1em;
   text-shadow: white 0px 0px 2px;
   display: block;
   position: relative;
@@ -998,10 +1008,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis {
-  top: 9px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .percentSign {
+  bottom: 0px;
+  left: 0px;
+  width: 20px;
+  text-align: right;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick {
+  width: 100%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick > .line {
   border-bottom: dotted 1px #b6b3b3;
+  width: 100%;
+  left: 0px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick > .text {
+  width: 20px;
+  left: -22px;
+  text-align: right;
+  top: -6px;
+  position: relative;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup {
   height: 14px;
@@ -1076,6 +1106,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 15px;
   margin-top: -1px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .unitName {
+  font-size: 0.7em;
+  left: -27px;
+  width: 15px;
+  position: absolute;
+  top: -1px;
+  text-align: right;
+  font-weight: 300;
+  /*
+                        &::after{
+                            content: "]";
+                        }
+                        &::before{
+                            content: "[";
+                        }*/
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick {
   position: absolute;
@@ -1355,22 +1401,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0.6;
 }
 .kshf .belowAttribs > .barChartPreviewAxis > .percentSign {
-  position: absolute;
   left: -14px;
-  color: gray;
-  font-size: 0.7em;
-  font-weight: 700;
-}
-.kshf .belowAttribs > .barChartPreviewAxis > .percentSign:before {
-  content: '%';
 }
 .kshf .belowAttribs > .barChartPreviewAxis > .tick > .text {
   width: 20px;
   left: -10px;
+  -webkit-transition: top 700ms ease-in-out;
+  -moz-transition: top 700ms ease-in-out;
+  -o-transition: top 700ms ease-in-out;
+  transition: top 700ms ease-in-out;
 }
 .kshf .belowAttribs > .barChartPreviewAxis > .tick > .line {
   width: 0px;
   border-left: dotted 1px #b6b3b3;
+  -webkit-transition: top 700ms ease-in-out, height 700ms ease-in-out;
+  -moz-transition: top 700ms ease-in-out, height 700ms ease-in-out;
+  -o-transition: top 700ms ease-in-out, height 700ms ease-in-out;
+  transition: top 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshf .item_count {
   color: gray;
@@ -2074,6 +2121,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy .tipsy-inner span.action {
   font-weight: 700;
 }
+.tipsy.tipsyFilterAnd .tipsy-inner {
+  background-color: #1d4870;
+}
+.tipsy.tipsyFilterAnd .tipsy-arrow {
+  border-color: #1d4870;
+}
+.tipsy.tipsyFilterOr .tipsy-inner {
+  background-color: #1c737a;
+}
+.tipsy.tipsyFilterOr .tipsy-arrow {
+  border-color: #1c737a;
+}
+.tipsy.tipsyFilterNot .tipsy-inner {
+  background-color: #808080;
+}
+.tipsy.tipsyFilterNot .tipsy-arrow {
+  border-color: #808080;
+}
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
 .tipsy-arrow {
@@ -2083,43 +2148,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 0;
   border: 5px dashed #000;
 }
-/* Rules to colour arrows */
-.tipsy-arrow-n {
-  border-bottom-color: #000;
-}
-.tipsy-arrow-s {
-  border-top-color: #000;
-}
-.tipsy-arrow-e {
-  border-left-color: #000;
-}
-.tipsy-arrow-w {
-  border-right-color: #000;
-}
 .tipsy-n .tipsy-arrow {
   top: 0px;
   left: 50%;
   margin-left: -5px;
   border-bottom-style: solid;
   border-top: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-nw .tipsy-arrow {
   top: 0;
   left: 10px;
   border-bottom-style: solid;
   border-top: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-ne .tipsy-arrow {
   top: 0;
   right: 10px;
   border-bottom-style: solid;
   border-top: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-s .tipsy-arrow {
   bottom: 0;
@@ -2127,24 +2179,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-left: -5px;
   border-top-style: solid;
   border-bottom: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-sw .tipsy-arrow {
   bottom: 0;
   left: 10px;
   border-top-style: solid;
   border-bottom: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-se .tipsy-arrow {
   bottom: 0;
   right: 10px;
   border-top-style: solid;
   border-bottom: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }
 .tipsy-e .tipsy-arrow {
   right: 0;
@@ -2152,8 +2204,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: -5px;
   border-left-style: solid;
   border-right: none;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
 }
 .tipsy-w .tipsy-arrow {
   left: 0;
@@ -2161,8 +2213,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: -5px;
   border-right-style: solid;
   border-left: none;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
 }
 @-webkit-keyframes shrink {
   from {

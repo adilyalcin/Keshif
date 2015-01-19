@@ -2791,11 +2791,7 @@ kshf.Browser.prototype = {
     clearPreviewCompare: function(){
         this._previewCompare_Active = false;
         this.root.attr("previewcompare",false);
-        if(this._percentView_Active===true){
-            this.setPercentView(false);
-        } else {
-            this.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
-        }
+        this.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
         if(this.comparedAggregate){
             this.comparedAggregate.facetDOM.setAttribute("compare",false);
             this.comparedAggregate = null;
@@ -3716,8 +3712,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
         this.dom.belowAttribs.append("div").attr("class", "border_line");
         this.dom.barChartPreviewAxis = this.dom.belowAttribs.append("div").attr("class", "barChartPreviewAxis");
-        this.dom.barChartPreviewAxis_percentage = this.dom.barChartPreviewAxis.append("span")
-            .attr("class","percentSign");
+        this.dom.barChartPreviewAxis.append("span").attr("class","percentSign");
 
         // this helps us makes sure that the div height is correctly set to visible number of rows
         this.dom.vizBackground = this.dom.attribGroup.append("span")
@@ -3734,7 +3729,7 @@ kshf.Facet_Categorical.prototype = {
 
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n', title: function(){ 
-                            return "Show "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
+                            return "Explore "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
                         },
                         offset_y: -heightDiff
                     })
@@ -3898,7 +3893,11 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     setCollapsed: function(v){
+        var oldV = this.collapsed;
         this.collapsed = v;
+        if(oldV===true&v===false){
+            this.refreshViz_All();
+        }
         this.divRoot.attr("collapsed",this.collapsed===false?"false":"true");
         // collapse children only if this is a hierarchy, not sub-filtering
         if(this.hasSubFacets() && !this.hasAttribs()){
@@ -3934,12 +3933,11 @@ kshf.Facet_Categorical.prototype = {
         this.refreshViz_Active();
         this.refreshViz_Total();
         this.refreshViz_Compare();
+        this.refreshViz_Axis();
 
         this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
         setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
-
-        this.refreshViz_Axis();
     },
     /** -- */
     setHeight: function(newHeight){
@@ -4007,8 +4005,12 @@ kshf.Facet_Categorical.prototype = {
                 p = attrib.aggregate_Active;
             }
             if(me.browser._percentView_Active){
-                p = 100*p/attrib.aggregate_Active;
-                this.textContent = p.toFixed(0);//+"%";
+                if(attrib.aggregate_Active===0){
+                    this.textContent = "";
+                } else {
+                    p = 100*p/attrib.aggregate_Active;
+                    this.textContent = p.toFixed(0);//+"%";
+                }
             } else {
                 this.textContent = formatFunc(p);
             }
@@ -4175,9 +4177,6 @@ kshf.Facet_Categorical.prototype = {
             tickValues = this.vizHistogramScale.ticks(this.getTicksSkip()).filter(function(d){return d%1===0;});
         }
 
-        this.dom.barChartPreviewAxis_percentage.style("display",
-            this.browser._percentView_Active?"block":"none");
-
         var tickDoms = this.dom.barChartPreviewAxis.selectAll("span.tick").data(tickValues,function(i){return i;});
 
         var noanim=this.browser.root.attr("noanim");
@@ -4205,6 +4204,13 @@ kshf.Facet_Categorical.prototype = {
             tickData_new.append("span").attr("class","text").text(function(d){return d;});
         } else {
             tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
+        }
+        if(this.configRowCount>0){
+            if(this.browser._percentView_Active){
+                tickData_new.append("span").attr("class","text text_upper").text(function(d){return d;});
+            } else {
+                tickData_new.append("span").attr("class","text text_upper").text(function(d){return d3.format("s")(d);});
+            }
         }
 
         setTimeout(function(){
@@ -4245,6 +4251,7 @@ kshf.Facet_Categorical.prototype = {
 
         var h=this.attribHeight;
         this.dom.barChartPreviewAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
+        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-28)+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
@@ -4413,6 +4420,7 @@ kshf.Facet_Categorical.prototype = {
     cbAttribEnter_Tipsy: function(attrib,removeActiveTooltip){
         attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
         this.tipsy_active = attrib.facetDOM.tipsy;
+        attrib.facetDOM.tipsy.options.className = "tipsyFilterAnd";
         var offset=0;
         if(!this.browser.hideBars){
             if(this.browser._percentView_Active){
@@ -4486,7 +4494,7 @@ kshf.Facet_Categorical.prototype = {
                         if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
                             return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
                         if(!me.attribFilter.selected_Any())
-                            return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter";
+                            return "<span class='action'><span class='fa fa-plus'></span> And</span>";
                         if(hasMultiValueItem===false)
                             return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
                         else
@@ -4599,12 +4607,13 @@ kshf.Facet_Categorical.prototype = {
         var cbOrEnter = function(attrib,i){
             var facetDOM = attrib.facetDOM;
             facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
+            facetDOM.tipsy.options.className = "tipsyFilterOr";
             facetDOM.tipsy.hide();
 
             attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
             me.tipsy_active = attrib.facetDOM.tipsy;
-            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-                (me.vizHistogramScale(attrib.aggregate_Active)-me.vizHistogramScale.range()[1]);
+//            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
+//                (me.vizHistogramScale(attrib.aggregate_Active)-me.vizHistogramScale.range()[1]);
             attrib.facetDOM.tipsy_active.show();
 
             facetDOM.tipsy.show();
@@ -4630,8 +4639,9 @@ kshf.Facet_Categorical.prototype = {
             d3.event.stopPropagation();
         };
 
-        var cbAndEnter = function(attrib,i){
+        var cbNotEnter = function(attrib,i){
             this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
+            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterNot";
             this.__data__.facetDOM.tipsy.hide();
             this.__data__.facetDOM.tipsy.show();
             attrib.facetDOM.setAttribute("selectType","not");
@@ -4641,7 +4651,7 @@ kshf.Facet_Categorical.prototype = {
             me.browser.refreshResultPreviews(attrib);
             d3.event.stopPropagation();
         };
-        var cbAndLeave = function(attrib,i){
+        var cbNotLeave = function(attrib,i){
             this.__data__.facetDOM.tipsy_title = undefined;
             this.__data__.facetDOM.tipsy.hide();
             this.__data__.facetDOM.tipsy.show();
@@ -4679,8 +4689,8 @@ kshf.Facet_Categorical.prototype = {
             .on("click",cbOrClick);
 
         domClickFilterButtons.append("span").attr("class","notButton fa fa-minus-square")
-            .on("mouseover",cbAndEnter)
-            .on("mouseout",cbAndLeave)
+            .on("mouseover",cbNotEnter)
+            .on("mouseout",cbNotLeave)
             .on("click",cbAndClick)
 
         var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
@@ -4910,16 +4920,23 @@ kshf.Facet_Interval = function(kshf_, options){
     this.parentFacet = options.parentFacet;
 
     // pixel width settings...
-    this.height_hist = 65;
+    // Initial width (will be updated later...)
+    this.height_hist = 1;
+    // Minimum possible histogram height
     this.height_hist_min = 30;
+    // Maximim possible histogram height
     this.height_hist_max = 100;
+    // Slider height
     this.height_slider = 10;
-    this.height_labels = 16;
-    this.height_bin_top = 19; // space for text...
+    // Height for labels
+    this.height_labels = 15;
+    // Height for percentile chart
     this.height_percentile = 0;
-    this.barGap = 2;
-    this.histogramMargin = 12;
-    this.histogramTopGap = 10;
+    // The width between neighboring histgoram bars
+    this.width_barGap = 2;
+    this.width_histMargin = 6;
+    this.histogramTopGap = 12;
+    this.vertAxisLabelWidth = 23;
 
     this.dom = {};
 
@@ -4976,11 +4993,8 @@ kshf.Facet_Interval = function(kshf_, options){
                     item.setFilterCache(filter.id, checkFilter(v) );
                 // TODO: Check if the interval scale is extending/shrinking or completely updated...
             }, this);
-
             // update handles
-            console.log("OnIntervalFilter-Filter 3");
             this.refreshIntervalSlider();
-            console.log("OnIntervalFilter-Filter 4");
         },
         summary_header: this.options.facetTitle,
         summary_item_cb: function(){
@@ -5041,7 +5055,7 @@ kshf.Facet_Interval = function(kshf_, options){
         // remove 0-values from log scale
         if(isLog && v===0) return false;
         return true;
-    })
+    });
 
     // sort items in increasing order
     this.filteredItems.sort(function(a,b){
@@ -5067,7 +5081,7 @@ kshf.Facet_Interval = function(kshf_, options){
         this.intervalRange.max = d3.max(this.filteredItems,accessor);
     }
 
-    if(this.options.intervalScale==='step' || this.tickIntegerOnly){
+    if(this.options.intervalScale==='step'){
         this.intervalRange.max++;
     }
 
@@ -5099,9 +5113,12 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     getHeight: function(){
-        if(this.collapsed) return this.getHeight_Header()-2;
+        if(this.collapsed) return this.getHeight_Header();
         // Note: I don't know why I need -2 to match real dom height.
-        return this.getHeight_Header()+this.height_hist+this.getHeight_Extra()-2;
+        return this.getHeight_Header()+this.getHeight_Wrapper();
+    },
+    getHeight_Wrapper: function(){
+        return this.height_hist+this.getHeight_Extra();
     },
     /** -- */
     getWidth_Offset: function(){
@@ -5115,8 +5132,8 @@ kshf.Facet_Interval.prototype = {
         return this._height_header;
     },
     /** -- */
-    getHeight_Extra : function(){
-        return this.height_bin_top+this.height_labels+this.height_slider+this.height_percentile;
+    getHeight_Extra: function(){
+        return 7+this.histogramTopGap+this.height_labels+this.height_slider+this.height_percentile;
     },
     /** -- */
     getHeight_RangeMax: function(){
@@ -5191,9 +5208,9 @@ kshf.Facet_Interval.prototype = {
 //                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
                     if(this.tipsy) delete this.tipsy;
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'n', title: function(){ 
-                            return "Show "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
-                        }
+                        gravity: 's', title: function(){ 
+                            return "Explore "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
+                        },offset_y:10,
                     })
                     this.tipsy.show();
                 }
@@ -5202,14 +5219,27 @@ kshf.Facet_Interval.prototype = {
                 this.tipsy.hide();
             })
             ;
-        this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins");
-        this.dom.barChartPreviewAxis = this.dom.histogram.append("div").attr("class", "barChartPreviewAxis");
+        this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
+            .style("padding-left",(this.vertAxisLabelWidth)+"px")
+            .style("padding-bottom",(this.histogramTopGap)+"px")
+            ;
+        this.dom.barChartPreviewAxis = this.dom.histogram.append("div")
+            .attr("class", "barChartPreviewAxis")
+            .style("padding-left",(this.vertAxisLabelWidth-2)+"px")
+            .style("padding-bottom",(this.histogramTopGap)+"px")
+            ;
+        this.dom.barChartPreviewAxis.append("span").attr("class","percentSign");
 
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider")
-            .attr("anim",true);
+            .attr("anim",true)
+            .style('margin-left',this.vertAxisLabelWidth+"px");
         this.initDOM_Slider();
 
-        this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup");
+        this.dom.labelGroup = this.dom.facetInterval.append("div").attr("class","labelGroup")
+            .style('margin-left',this.vertAxisLabelWidth+"px");
+
+        if(this.options.unitName)
+            this.dom.labelGroup.append("span").attr("class","unitName").text(this.options.unitName);
 
         if(this.options.showPercentile===true){
             this.initDOM_Percentile();
@@ -5225,7 +5255,8 @@ kshf.Facet_Interval.prototype = {
     },
     initDOM_Percentile: function(){
         var me=this;
-        this.dom.percentileGroup = this.dom.facetInterval.append("div").attr("class","percentileGroup");
+        this.dom.percentileGroup = this.dom.facetInterval.append("div").attr("class","percentileGroup")
+            .style('margin-left',this.vertAxisLabelWidth+"px");;
         this.dom.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
 
         this.dom.quantile = {};
@@ -5292,7 +5323,7 @@ kshf.Facet_Interval.prototype = {
         var ticks = this.intervalScale.ticks(this.optimalTickCount);
 
         if(this.tickIntegerOnly)
-            ticks = ticks.filter(function(d){return d % 1 === 0;});
+            ticks = ticks.filter(function(d){return d%1===0;});
 
         switch(this.options.intervalScale){
             case 'time':
@@ -5301,7 +5332,7 @@ kshf.Facet_Interval.prototype = {
             case 'log':
                 this.intervalTickFormat = d3.format(".1s");
                 while(ticks.length > this.optimalTickCount*2){
-                    ticks = ticks.filter(function(d,i){return i % 2 === 0;});
+                    ticks = ticks.filter(function(d,i){return i%2===0;});
                 }
                 break;
             case 'step':
@@ -5364,7 +5395,7 @@ kshf.Facet_Interval.prototype = {
                         if(this.getAttribute("filtered")==="true"){
                             return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"
                         }
-                        return "<span class='action'><span class='fa fa-plus'></span> Add</span> filter"
+                        return "<span class='action'><span class='fa fa-plus'></span> And</span>"
                     }
                 });
                 bar.aggregate_Preview=0;
@@ -5376,7 +5407,8 @@ kshf.Facet_Interval.prototype = {
         var onMouseOver = function(bar){
             if(!me.browser.pauseResultPreview){
                 this.parentNode.setAttribute("highlight","selected");
-                this.parentNode.tipsy.options.offset_x = (me.barWidth-me.barGap*2)/2-5;
+                this.parentNode.tipsy.options.offset_x = (me.barWidth-me.width_barGap*2)/2-5;
+                this.parentNode.tipsy.options.className = "tipsyFilterAnd";
                 this.parentNode.tipsy.show();
 
                 bar.forEach(function(item){item.updatePreview(me.parentFacet);});
@@ -5588,11 +5620,9 @@ kshf.Facet_Interval.prototype = {
             d3.select("body").style('cursor','ew-resize')
                 .on("mousemove", function() {
                     mee.dragging = true;
-                    console.log("hey 1");
                     me.browser.pauseResultPreview = true;
                     var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
                     me.intervalFilter.active[d] = targetPos;
-                    console.log("hey 2");
                     // Swap is min > max
                     if(me.intervalFilter.active.min>me.intervalFilter.active.max){
                         var t=me.intervalFilter.active.min;
@@ -5600,7 +5630,6 @@ kshf.Facet_Interval.prototype = {
                         me.intervalFilter.active.max = t;
                         if(d==='min') d='max'; else d='min';
                     }
-                    console.log("hey 3");
                     me.fixIntervalFilterRange();
                     me.refreshIntervalSlider();
                     // wait half second to update
@@ -5608,25 +5637,17 @@ kshf.Facet_Interval.prototype = {
                         clearTimeout(this.timer);
                         this.timer = null;
                     }
-                    console.log("hey 4");
                     me.intervalFilter.filteredBin=this;
-                    console.log("hey 5");
                     this.timer = setTimeout( function(){
                         if(me.isFiltered_min() || me.isFiltered_max()){
-                            console.log("hey 6");
                             if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
                                 { id: me.intervalFilter.id,
                                   info: me.intervalFilter.active.min+"x"+me.intervalFilter.active.max });
-                            console.log("hey 7");
                             me.intervalFilter.addFilter(true);
-                            console.log("hey 8");
                         } else {
-                            console.log("hey 9");
                             me.intervalFilter.clearFilter();
-                            console.log("hey 10");
                         }
                     },200);
-                    console.log("hey ZZZ");
                 }).on("mouseup", function(){
                     mee.dragging = false;
                     me.browser.pauseResultPreview = false;
@@ -5719,11 +5740,13 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshBins_Translate: function(){
         var me=this;
-        var offset = this.options.intervalScale==='step'?this.barGap:0;
-        kshf.Util.setTransform(this.dom.histogram_bins[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
-        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
+        var offset = this.options.intervalScale==='step'?this.width_barGap:0;
+//        kshf.Util.setTransform(this.dom.histogram_bins[0][0],
+//            "translate("+me.vertAxisLabelWidth+"px,"+me.vizHistogramScale.range()[1]+"px)");
+//        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
-            kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
+            kshf.Util.setTransform(this,"translate("+(me.intervalScale(bar.x)+offset)+"px,"+
+                me.height_hist+"px)");
         });
     },
     /** -- Note: Same as the function used for categorical facet */
@@ -5738,6 +5761,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshQueryPreview_Text();
 
         this.refreshViz_Compare();
+        this.refreshViz_Axis();
     },
     /** -- */
     refreshViz_Scale: function(){
@@ -5747,21 +5771,23 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshViz_Total: function(){
         var me=this;
-        var width=this.barWidth-this.barGap*2;
+        var width=this.barWidth-this.width_barGap*2;
         if(this.browser._percentView_Active){
             this.dom.bars_total.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale.range()[1]+")");
+                var h=Math.min(me.vizHistogramScale.range()[1],me.height_hist);
+                kshf.Util.setTransform(this,"scale("+width+","+h+")");
             });
         } else {
             this.dom.bars_total.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale(bar.y)+")");
+                var h=Math.min(me.vizHistogramScale(bar.y),me.height_hist);
+                kshf.Util.setTransform(this,"scale("+width+","+h+")");
             });
         }
     },
     /** -- */
     refreshViz_Active: function(){
         var me=this;
-        var width = this.barWidth-this.barGap*2;
+        var width = this.barWidth-this.width_barGap*2;
         if(this.browser._percentView_Active){
             this.dom.bars_active.each(function(bar){
                 var height = (bar.aggregate_Active!==0)?me.vizHistogramScale.range()[1]:0;
@@ -5769,7 +5795,9 @@ kshf.Facet_Interval.prototype = {
             });
             this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
-                    "translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale.range()[1])+"px)");
+                    //"translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale.range()[1])+"px)");
+                    "translate("+(me.barWidth/2)+"px,0px)");
+                    //"translate("+(me.barWidth/2)+"px,-"+me.height_hist+"px)");
             });
         } else {
             this.dom.bars_active.each(function(bar){
@@ -5777,7 +5805,9 @@ kshf.Facet_Interval.prototype = {
             });
             this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
-                    "translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale(bar.aggregate_Active))+"px)");
+                    //"translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale(bar.aggregate_Active))+"px)");
+                    "translate("+(me.barWidth/2)+"px,0px)");
+                    //"translate("+(me.barWidth/2)+"px,-"+me.height_hist+"px)");
             });
         }
     },
@@ -5788,7 +5818,7 @@ kshf.Facet_Interval.prototype = {
         if(this.collapsed) return;
         var vizHistogramScale=this.vizHistogramScale;
         var preview_not = this.browser.preview_not;
-        var width=this.barWidth-this.barGap*2;
+        var width=this.barWidth-this.width_barGap*2;
         var trnsfrm="scale("+width+",1) translateY(-";
         if(this.browser._previewCompare_Active){
             this.histBins.forEach(function(bar){
@@ -5841,7 +5871,7 @@ kshf.Facet_Interval.prototype = {
         if(this.collapsed) return;
         var preview_not = this.browser.preview_not;
         var vizHistogramScale=this.vizHistogramScale;
-        var width=this.barWidth-this.barGap*2;
+        var width=this.barWidth-this.width_barGap*2;
         var trnsfrm="scale("+width+",";
         if(this.browser._percentView_Active){
             this.dom.bars_preview.each(function(bar){
@@ -5864,7 +5894,7 @@ kshf.Facet_Interval.prototype = {
         if(this.isEmpty) return;
         if(this.collapsed) return;
         var me=this;
-        var transform="scale("+(this.barWidth-this.barGap*2)+",0)";
+        var transform="scale("+(this.barWidth-this.width_barGap*2)+",0)";
         this.dom.bars_preview.each(function(bar){
             bar.aggregate_Preview=0;
             // TODO: assuming all bars are visible...
@@ -5874,34 +5904,55 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     refreshViz_Axis: function(){
-        var me=this;
+        var me=this,tickValues;
 
-        var tickValues = this.vizHistogramScale.ticks(this.getTicksSkip());
-        // remove non-integer values!
-        tickValues = tickValues.filter(function(d){return d % 1 === 0;});
+        if(this.browser._percentView_Active) {
+            tickValues = d3.scale.linear()
+                .rangeRound([0, this.height_hist])
+                .nice(this.getTicksSkip())
+                .clamp(true)
+                .domain([0,100])
+                .ticks(this.getTicksSkip())
+                .filter(function(d){return d!==0;});
+        } else {
+            // remove non-integer values
+            tickValues = this.vizHistogramScale.ticks(this.getTicksSkip())
+                .filter(function(d){return d%1===0&&d!==0;});
+        }
 
         var tickDoms = this.dom.barChartPreviewAxis.selectAll("span.tick")
-            .data(tickValues,function(i){ return i; });
+            .data(tickValues,function(i){return i;});
+        tickDoms.exit().remove();
+        var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
         var noanim=this.browser.root.attr("noanim");
 
-        var transformFunc=function(d){
-            kshf.Util.setTransform(this,"translateY(-"+me.vizHistogramScale(d)+"px)");
-        };
+        // translate the ticks horizontally on scale
+        tickData_new.append("span").attr("class","line");
 
-        if(noanim!=="true") this.browser.root.attr("noanim",true);
-        var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
-        if(noanim!=="true") this.browser.root.attr("noanim",false);
+        if(this.browser._percentView_Active){
+            tickData_new.append("span").attr("class","text").text(function(d){return d;});
+        } else {
+            tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
+        }
 
-        // translate the ticks horizontally on scale.
-        tickData_new.append("span").attr("class","line")
-            .style("left","0px")
-            .style("width",this.intervalRange.width+"px");
         setTimeout(function(){
+            var transformFunc;
+            if(this.browser._percentView_Active){
+                transformFunc=function(d){
+                    kshf.Util.setTransform(this,"translateY("+
+                        (me.height_hist-d*me.vizHistogramScale.range()[1]/100)+"px)");
+                };
+            } else {
+                transformFunc=function(d){
+                    kshf.Util.setTransform(this,"translateY("+
+                        (me.height_hist-me.vizHistogramScale(d))+"px)");
+                };
+            }
+            if(noanim!=="true") this.browser.root.attr("noanim",true);
             me.dom.barChartPreviewAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
+            if(noanim!=="true") this.browser.root.attr("noanim",false);
         });
-
-        tickDoms.exit().remove();
     },
     /** -- */
     refreshQueryPreview_Text: function(){
@@ -5921,7 +5972,7 @@ kshf.Facet_Interval.prototype = {
             }
             if(me.browser._percentView_Active){
                 p = 100*p/aggr.aggregate_Active;
-                this.textContent = p.toFixed(0)+"%";
+                this.textContent = p.toFixed(0);//+"%";
             } else {
                 this.textContent = formatFunc(p);
             }
@@ -5940,7 +5991,9 @@ kshf.Facet_Interval.prototype = {
         }
 
         this.dom.intervalSlider.select(".base.total")
-            .style("width",this.intervalScale.range()[1]+"px");
+            .style("margin-left",this.intervalScale.range()[0]+"px")
+            .style("width",(this.intervalRange.width)+"px")
+            ;
         this.dom.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
@@ -5954,12 +6007,13 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshHeight: function(){
         this.dom.histogram.style("height",(this.height_hist+this.histogramTopGap)+"px")
-        this.dom.wrapper.style("height",(this.collapsed?"0":(this.height_hist+this.getHeight_Extra()))+"px");
+        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Wrapper())+"px");
     },
     /** -- */
     refreshWidth: function(){
-        this.dom.facetInterval.style("width",this.getWidth()+"px");
-        this.updateIntervalWidth(this.getWidth()-2*this.histogramMargin);
+        var totalWidth = this.getWidth();
+        this.dom.facetInterval.style("width",totalWidth+"px");
+        this.updateIntervalWidth(totalWidth-2*this.width_histMargin-this.vertAxisLabelWidth);
     },
     /** -- */
     setHeight: function(targetHeight){
@@ -6006,6 +6060,8 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.bars_preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
+        this.refreshViz_Axis();
+
         setTimeout(function(){ me.dom.bars_preview.attr("fast",true); },700);
     },
     /** -- */
@@ -6060,6 +6116,6 @@ kshf.Facet_Interval.prototype = {
         },this);
     },
     getTicksSkip: function(){
-        return this.height_hist/20;
+        return this.height_hist/17;
     },
 };

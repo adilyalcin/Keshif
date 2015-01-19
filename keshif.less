@@ -85,6 +85,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'all 700ms ease-in-out');
         }
     }
+    &[percentview=true]{
+        .barChartPreviewAxis > .percentSign::after{
+            content: "%";
+        }
+    }
         .vizBackground:hover{
             opacity: 0.1 !important;
             cursor: pointer;
@@ -423,6 +428,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: absolute;
             }
         }
+        > .percentSign{
+            position: absolute;
+            color: gray;
+            font-size: 0.7em;
+            font-weight: 700;
+            &:after{
+                content: '#';
+            }
+        }
     }
 
     .border_line{
@@ -553,7 +567,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             // so that absolute positioned elements will not overflow
         }
 
-        > .wrapper {
+        > .wrapper{
             .transition(~'height 700ms ease-in-out');
 
             > .facetCategorical{
@@ -915,12 +929,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }// facetCategorical
 
             > .facetInterval {
-                padding: 5px 12px 0px 12px;
+                padding: 7px 6px 0px 6px;
                 overflow: hidden;
                 > .histogram{
                     position:relative;
                     pointer-events: all;
-                    overflow: hidden; // necessary, because after bin height is scaled, they can extend beyond.
+//                    overflow-x: hidden;
+//                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
                     > .vizBackground{
                         opacity: 0;
@@ -932,7 +947,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     > .bins{
                         position: absolute;
-                        top: 9px;
+                        top: 0px;
+                        // If this is set, it prevents background events from the other div layer
+//                        width: 100%;
+//                        height: 100%;
                         z-index: 3;
                         .transition(@layout_animation);
                         > .bin{
@@ -953,7 +971,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                             > .item_count{
-                                top: -1em;
+                                //top: -1em;
                                 text-shadow: white 0px 0px 2px;
                                 display: block;
                                 position: relative;
@@ -975,10 +993,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                     > .barChartPreviewAxis {
-                        top: 9px;
+                        top: 0px;
+                        width: 100%;
+                        height: 100%;
+                        > .percentSign{
+                            bottom: 0px;
+                            left: 0px;
+                            width: 20px;
+                            text-align: right;
+                        }
                         > .tick{
+                            width: 100%;
                             > .line{
                                 border-bottom: dotted 1px @color_axis_line;
+                                width: 100%;
+                                left: 0px;
+                            }
+                            > .text{
+                                width: 20px;
+                                left: -22px;
+                                text-align: right;
+                                top: -6px;
+                                position: relative;
                             }
                         }
                     }
@@ -1052,6 +1088,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     position:relative;
                     height: 15px;
                     margin-top: -1px;
+                    > .unitName{
+                        font-size: 0.7em;
+                        left: -27px;
+                        width: 15px;
+                        position: absolute;
+                        top: -1px;
+                        text-align: right;
+                        font-weight: 300;/*
+                        &::after{
+                            content: "]";
+                        }
+                        &::before{
+                            content: "[";
+                        }*/
+                    }
                     > .tick{
                         position:absolute;
                         > .text{
@@ -1356,23 +1407,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .barChartPreviewAxis {
             > .percentSign{
-                position: absolute;
                 left: -14px;
-                color: gray;
-                font-size: 0.7em;
-                font-weight: 700;
-                &:before{
-                    content: '%';
-                }
             }
             > .tick{
                 > .text{
                     width: 20px;
                     left: -10px;
+                    .transition(~'top 700ms ease-in-out');
                 }
                 > .line{
                     width: 0px;
                     border-left: dotted 1px @color_axis_line;
+                    .transition(~'top 700ms ease-in-out, height 700ms ease-in-out');
                 }
             }
         }
@@ -2074,6 +2120,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight: 700;
         }
     }
+    &.tipsyFilterAnd{
+        .tipsy-inner{
+            background-color: @color_query_and;
+        }
+        .tipsy-arrow{
+            border-color: @color_query_and;
+        }
+    }
+    &.tipsyFilterOr{
+        .tipsy-inner{
+            background-color: @color_query_or;
+        }
+        .tipsy-arrow{
+            border-color: @color_query_or;
+        }
+    }
+    &.tipsyFilterNot{
+        .tipsy-inner{
+            background-color: @color_query_not;
+        }
+        .tipsy-arrow{
+            border-color: @color_query_not;
+        }
+    }
 
 }
 
@@ -2082,20 +2152,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .tipsy-arrow { position: absolute; width: 0; height: 0; line-height: 0; border: 5px dashed #000; }
 
-/* Rules to colour arrows */
-.tipsy-arrow-n { border-bottom-color: #000; }
-.tipsy-arrow-s { border-top-color: #000; }
-.tipsy-arrow-e { border-left-color: #000; }
-.tipsy-arrow-w { border-right-color: #000; }
-
-.tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
-.tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
-.tipsy-ne .tipsy-arrow { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
-.tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
-.tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
-.tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
-.tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
-.tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+.tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent !important; border-right-color: transparent !important; }
+.tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent !important; border-right-color: transparent !important;}
+.tipsy-ne .tipsy-arrow { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent !important; border-right-color: transparent !important;}
+.tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent !important; border-right-color: transparent !important; }
+.tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent !important; border-right-color: transparent !important; }
+.tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent !important; border-right-color: transparent !important; }
+.tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent !important; border-bottom-color: transparent !important; }
+.tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent !important; border-bottom-color: transparent !important; }
 
 
 .mixi-frames () {
