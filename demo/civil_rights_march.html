@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Civil Rights March on Washington Photos</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-80);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Civil Rights March on Washington Photos",
+        categoryTextWidth: 200,
+        source: { 
+            url: "https://catalog.archives.gov/id/541992",
+        callback : function(browser){
+            browser.primaryTableName = "Photos";
+
+            kshf.dt.Photos = [];
+            var arr = kshf.dt.Photos;
+
+            $.ajax({
+                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+                // url: "./data_private/dc_homicides.json", // original source
+                url: "./data/civil_rights_march.json",
+                error: function(e,f){
+                    console.log(e+" - "+f);
+                },
+                success: function(data){
+                    data.forEach(function(poster){
+                        poster.id = 1*poster.arcIdentifier;
+                        arr.push(new kshf.Item(poster,"id"))
+                    });
+
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }},
+        facets: [
+//            {   facetTitle: "date"
+//            },{ facetTitle: "Collection",
+//                catItemMap: function(poster){
+//                    return poster.data.from;
+//                }
+/*            },{ facetTitle: "Subjects",
+                catItemMap: function(poster){
+                    return poster.data.subjects;
+                }*/
+//            },
+            { facetTitle: "Tags",
+                catItemMap: function(d){
+                    var contribs = d.data.publicContributions;
+                    if(contribs===undefined) return;
+                    var tags = contribs.tags;
+                    if(tags===undefined) return;
+                    var r=[];
+                    if(tags.tag.length===undefined){
+                        r.push(tags.tag['$']);
+                    } else {
+                        tags.tag.forEach(function(tag){
+                            r.push(tag['$']);
+                        });
+                    }
+                    return r;
+                }
+            },{ facetTitle: "Tag Contributors",
+                catItemMap: function(d){
+                    var contribs = d.data.publicContributions;
+                    if(contribs===undefined) return;
+                    var tags = contribs.tags;
+                    if(tags===undefined) return;
+                    var r=[];
+                    if(tags.tag.length===undefined){
+                        r.push(tags.tag['@user']);
+                    } else {
+                        tags.tag.forEach(function(tag){
+                            r.push(tag['@user']);
+                        });
+                    }
+                    return r;
+                }
+            },{ facetTitle: "contributors",
+            },{ facetTitle: "Types",
+                catItemMap: function(poster){
+                    return poster.data.typesOfArchivalMaterials;
+                }
+            },{ facetTitle: "levelOfDescription", collapsed: true
+            },{ facetTitle: "Use Restrictions", collapsed: true,
+                catItemMap: function(poster){
+                    return poster.data.useRestrictions;
+                }
+            },{ facetTitle: "Access Restrictions", collapsed: true,
+                catItemMap: function(poster){
+                    return poster.data.accessRestrictions;
+                }
+/*            },{ facetTitle: "Date", layout: "bottom",
+                catItemMap: function(d){
+                    var pDate=d.data.productionDates;
+                    if(pDate===undefined ||pDate.length!==1) return;
+                    var m=moment(pDate[0],["M/DD/YYYY"]);
+                    var r=new Date(m);
+                    return r;
+                }*/
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            sortingOpts : [ { name: 'id' } ],
+            autoExpandMore: true,
+            displayType: 'grid',
+            textSearch: "title",
+            contentFunc : function(d){
+                d.data.url = d.data.url.replace("govid","gov/id");
+                return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'>"+
+                    "<img class='thumbImg'></a><span class='title'>"+d.data.title+"</span>";
+            },
+            visibleCb: function(poster){
+                if(poster.data.objects===undefined) return;
+                var url;
+                if(poster.data.objects.object.length){
+                    url = poster.data.objects.object[0].thumbnail['@url'];
+                } else {
+                    url = poster.data.objects.object.thumbnail['@url'];
+                }
+                // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
+                // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
+                url = url.replace("govOpaAPI","gov/OpaAPI");
+                d3.select(poster.resultDOM).select("img").attr("src",url);
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+.listItem{
+    width: 150px;
+    overflow: visible !important;
+}
+.listItem > .itemRow{
+    overflow: visible !important;
+}
+.content{
+    padding: 3px;
+}
+.thumbnail{
+    overflow: visible !important;
+}
+.listItem:hover{
+  z-index: 200 !important;
+}
+.listItem .content img.thumbImg:hover{
+  transform: scale(1.5);
+}
+.content img.thumbImg{
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 0px;
+  width: 100%;
+  transition: all 150ms ease-in;
+  -webkit-transition: all 150ms ease-in;
+  -o-transition: all 150ms ease-in;
+  -moz-transition: all 150ms ease-in;
+}
+
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">Civil Rights March on Washington 2 Photos - National Archives</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
