@@ -1470,7 +1470,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   overflow: hidden;
   float: left;
-  z-index: 100;
   -webkit-transition: margin-top 700ms ease-in-out;
   -moz-transition: margin-top 700ms ease-in-out;
   -o-transition: margin-top 700ms ease-in-out;

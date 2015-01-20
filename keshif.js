@@ -5043,6 +5043,7 @@ kshf.Facet_Interval = function(kshf_, options){
     },this);
 
     if(!this.hasFloat) this.tickIntegerOnly=true;
+    if(this.hasTime) this.options.intervalScale = "time";
 
     var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
