@@ -3956,7 +3956,8 @@ kshf.Facet_Categorical.prototype = {
         } else {
             c = Math.max(c,2);
         }
-        this.attribCount_InDisplay = c;
+        this.attribCount_InDisplay = c+1;
+        this.attribCount_InDisplay = Math.min(this.attribCount_InDisplay,this.attribCount_Total);
 
         this.refreshScrollDisplayMore(this.attribCount_InDisplay);
 
@@ -4251,7 +4252,7 @@ kshf.Facet_Categorical.prototype = {
 
         var h=this.attribHeight;
         this.dom.barChartPreviewAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
-        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-28)+"px");
+        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-24)+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
@@ -4389,7 +4390,7 @@ kshf.Facet_Categorical.prototype = {
         this.attribFilter.addFilter(true);
     },
     /** -- */
-    cbAttribEnter: function(attrib,removeActiveTooltip){
+    cbAttribEnter: function(attrib){
         var me=this;
         if(attrib.crossing_row)
             attrib.crossing_row.setAttribute("highlight","selected");
@@ -4415,12 +4416,17 @@ kshf.Facet_Categorical.prototype = {
             if(this.tipsy_title===undefined) return;
         }
 
-        this.cbAttribEnter_Tipsy(attrib,removeActiveTooltip);
+        this.cbAttribEnter_Tipsy(attrib);
     },
-    cbAttribEnter_Tipsy: function(attrib,removeActiveTooltip){
-        attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
-        this.tipsy_active = attrib.facetDOM.tipsy;
-        attrib.facetDOM.tipsy.options.className = "tipsyFilterAnd";
+    cbAttribEnter_Tipsy: function(attrib){
+        if(attrib.dontChangeTooltip) return;
+        var attribTipsy = attrib.facetDOM.tipsy;
+        attribTipsy.options.className = "tipsyFilterAnd";
+        attribTipsy.hide();
+
+        attrib.facetDOM.tipsy_active = attribTipsy;
+        this.tipsy_active = attribTipsy;
+
         var offset=0;
         if(!this.browser.hideBars){
             if(this.browser._percentView_Active){
@@ -4430,10 +4436,11 @@ kshf.Facet_Categorical.prototype = {
             }
         }
         attrib.facetDOM.tipsy_active.options.offset_x = offset;
-        attrib.facetDOM.tipsy_active.show(!removeActiveTooltip);
+        attrib.facetDOM.tipsy_active.show();
     },
     /** -- */
     cbAttribLeave: function(attrib){
+        if(attrib.dontChangeTooltip) return;
         if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
             attrib.skipMouseOut = false;
             return;
@@ -4605,29 +4612,27 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var cbOrEnter = function(attrib,i){
-            var facetDOM = attrib.facetDOM;
-            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
-            facetDOM.tipsy.options.className = "tipsyFilterOr";
-            facetDOM.tipsy.hide();
-
-            attrib.facetDOM.tipsy_active = attrib.facetDOM.tipsy;
-            me.tipsy_active = attrib.facetDOM.tipsy;
-//            attrib.facetDOM.tipsy_active.options.offset_x = (me.browser.hideBars)?0:
-//                (me.vizHistogramScale(attrib.aggregate_Active)-me.vizHistogramScale.range()[1]);
-            attrib.facetDOM.tipsy_active.show();
-
-            facetDOM.tipsy.show();
-            me.tipsy_active = facetDOM.tipsy;
-
+            attrib.dontChangeTooltip = true;
+            attrib.facetDOM.setAttribute("selectType","or");
             if(me.attribFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
 
-            attrib.facetDOM.setAttribute("selectType","or");
+            var facetDOM = attrib.facetDOM;
+            facetDOM.tipsy.options.className = "tipsyFilterOr";
+            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
+            facetDOM.tipsy.hide();
+            facetDOM.tipsy.show();
+            facetDOM.tipsy_active = facetDOM.tipsy;
+            me.tipsy_active = facetDOM.tipsy;
+            facetDOM.tipsy.show();
+
             d3.event.stopPropagation();
         };
         var cbOrLeave = function(attrib,i){
+            attrib.dontChangeTooltip = false;
             this.__data__.facetDOM.tipsy_title = undefined;
             this.__data__.facetDOM.tipsy.hide();
+            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterAnd";
             this.__data__.facetDOM.tipsy.show();
             me.tipsy_active = this.__data__.facetDOM.tipsy;
             attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
@@ -4640,21 +4645,26 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var cbNotEnter = function(attrib,i){
-            this.__data__.facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
-            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterNot";
-            this.__data__.facetDOM.tipsy.hide();
-            this.__data__.facetDOM.tipsy.show();
+            attrib.dontChangeTooltip = true;
             attrib.facetDOM.setAttribute("selectType","not");
-            me.tipsy_active = this.__data__.facetDOM.tipsy;
             me.browser.root.attr("preview-not",true);
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
+            
+            var facetDOM = attrib.facetDOM;
+            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
+            facetDOM.tipsy.options.className = "tipsyFilterNot";
+            facetDOM.tipsy.show();
+            facetDOM.tipsy_active = facetDOM.tipsy;
+            me.tipsy_active = facetDOM.tipsy;
+
             d3.event.stopPropagation();
         };
         var cbNotLeave = function(attrib,i){
+            attrib.dontChangeTooltip = false;
             this.__data__.facetDOM.tipsy_title = undefined;
             this.__data__.facetDOM.tipsy.hide();
-            this.__data__.facetDOM.tipsy.show();
+            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterAnd";
             me.tipsy_active = this.__data__.facetDOM.tipsy;
             attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
@@ -4674,8 +4684,8 @@ kshf.Facet_Categorical.prototype = {
 
         var domAttribClickArea = domAttribs_new.append("span").attr("class", "clickArea")
             .on("click", cbAttribClick)
-            .on("mouseenter",function(d){ me.cbAttribEnter(d,true);})
-            .on("mouseleave",function(d){ me.cbAttribLeave(d);})
+            .on("mouseover",function(d){ me.cbAttribEnter(d);})
+            .on("mouseout",function(d){ me.cbAttribLeave(d);})
             // drag & drop control
             .attr("draggable",true)
             .each(attribDrag)
@@ -4685,12 +4695,12 @@ kshf.Facet_Categorical.prototype = {
 
         domClickFilterButtons.append("span").attr("class","orButton fa fa-plus-square")
             .on("mouseenter",cbOrEnter)
-            .on("mouseout",cbOrLeave)
+            .on("mouseleave",cbOrLeave)
             .on("click",cbOrClick);
 
         domClickFilterButtons.append("span").attr("class","notButton fa fa-minus-square")
-            .on("mouseover",cbNotEnter)
-            .on("mouseout",cbNotLeave)
+            .on("mouseenter",cbNotEnter)
+            .on("mouseleave",cbNotLeave)
             .on("click",cbAndClick)
 
         var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
@@ -4968,7 +4978,6 @@ kshf.Facet_Interval = function(kshf_, options){
             this.refreshIntervalSlider();
         },
         onFilter: function(filter){
-            console.log("OnIntervalFilter-Filter 1");
             if(this.divRoot.attr("filtered")!=="true")
                 this.divRoot.attr("filtered",true);
 
@@ -4983,7 +4992,6 @@ kshf.Facet_Interval = function(kshf_, options){
             } else {
                 checkFilter = function(v){ return v<=i_max; };
             }
-            console.log("OnIntervalFilter-Filter 2");
 
             filter.filteredItems.forEach(function(item){
                 var v = item.mappedDataCache[filter.id].v;

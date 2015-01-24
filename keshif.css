@@ -491,6 +491,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-top: 1px;
   height: 16px;
   margin-left: 2px;
+  text-rendering: initial;
 }
 .kshf .headerGroup .header_label > .title_of {
   font-weight: 300;
@@ -988,6 +989,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-right: solid 2px gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
+  top: 1px;
   text-shadow: white 0px 0px 2px;
   display: block;
   position: relative;
@@ -2047,12 +2049,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   text-shadow: 1px 1px lightgray;
   margin-bottom: -3px;
-  /*            span.listheader_itemName{
-                display: inline;
-                letter-spacing: 0.1em;
-                font-variant: small-caps;
-                vertical-align: top;
-            }*/
 }
 .kshf .listHeader span.resultInfo span.listheader_count {
   display: inline-block;

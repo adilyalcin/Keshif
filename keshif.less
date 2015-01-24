@@ -96,7 +96,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
     font-family: Helvetica, Arial, sans-serif;
-    text-rendering: optimizeLegibility; // People say this has big performance drawbacks.1
+    text-rendering: optimizeLegibility; // People say this has big performance drawbacks
     display: block;
 
     .AndOrNot{
@@ -469,6 +469,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-top: 1px;
             height: 16px;
             margin-left: 2px;
+            // chrome currently messes up text rendering when using optimized mode...
+            text-rendering: initial;
             > .title_of{
                 font-weight: 300;
             }
@@ -772,6 +774,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             text-overflow: ellipsis;
                             overflow: hidden;
                             > .theLabel{
+                                // And/Or/Not can come before...
                                 &:before{
                                     color: white;
                                     font-weight: 300;
@@ -971,7 +974,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                             > .item_count{
-                                //top: -1em;
+                                top: 1px;
                                 text-shadow: white 0px 0px 2px;
                                 display: block;
                                 position: relative;
@@ -2048,12 +2051,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 padding-right: 3px;
                 margin-right: 2px;
             }
-/*            span.listheader_itemName{
-                display: inline;
-                letter-spacing: 0.1em;
-                font-variant: small-caps;
-                vertical-align: top;
-            }*/
         }
     } // listHeader
 
