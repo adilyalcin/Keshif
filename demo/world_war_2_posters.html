@@ -89,6 +89,22 @@ $(document).ready( function(){
                     }
                     return r;
                 }
+            },{ facetTitle: "Tag Contributors",
+                catItemMap: function(d){
+                    var contribs = d.data.publicContributions;
+                    if(contribs===undefined) return;
+                    var tags = contribs.tags;
+                    if(tags===undefined) return;
+                    var r=[];
+                    if(tags.tag.length===undefined){
+                        r.push(tags.tag['@user']);
+                    } else {
+                        tags.tag.forEach(function(tag){
+                            r.push(tag['@user']);
+                        });
+                    }
+                    return r;
+                }
             },{ facetTitle: "Types",
                 catItemMap: function(poster){
                     return poster.data.typesOfArchivalMaterials;
