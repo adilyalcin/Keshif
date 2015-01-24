@@ -199,12 +199,12 @@ $(document).ready( function(){
                     }
                 ]
             },{
-                facetTitle: "Time (Seconds into the episode)",
+                facetTitle: "Time (Minutes into the episode)",
                 catItemMap: function(d){
-                    return d.data.second;
+                    return d.data.second/60;
                 },
                 layout: "bottom",
-                unitName: "sec"
+                unitName: "min"
             }
         /*
             */
