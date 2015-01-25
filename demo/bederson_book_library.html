@@ -153,6 +153,12 @@ $(document).ready( function(){
             },{
                 facetTitle: "Author", 
             },{
+                facetTitle: "Reviewed",
+                description: "Mouse-over the book image to see my review",
+                catItemMap: function(book){
+                    return (book.data.Review!=="")?"Yes":"No";
+                }
+            },{
                 facetTitle: "# of Pages",
                 catItemMap: function(book){ return book.data.NumPages; },
                 type: 'interval',
@@ -198,7 +204,7 @@ $(document).ready( function(){
                 return desc;
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data.Thumb).attr("title", d.data.Description);
+                d3.select(d.resultDOM).select("img").attr("src",d.data.Thumb).attr("title", d.data.Review);
             }   
         }
     });
