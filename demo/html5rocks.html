@@ -94,7 +94,7 @@ $(document).ready( function(){
                 return "<img class='face'><a href='http://www.html5rocks.com"+tutorial.data.URL+"' target='_blank'><span class='title'>"+tutorial.data.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",
+                d3.select(d.DOM.result).select("img").attr("src",
                     "http://www.html5rocks.com/"+d.data.author_img);
             }
         }

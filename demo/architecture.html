@@ -95,7 +95,7 @@ $(document).ready( function(){
                     d.data.Name+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src","https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
+                d3.select(d.DOM.result).select("img").attr("src","https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
             }
         }
     });

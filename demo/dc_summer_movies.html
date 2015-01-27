@@ -171,7 +171,7 @@ $(document).ready( function() {
             // open the first movie
             var firstItem = kshf.dt.Screenings[0];
             browserScreenings.listDisplay.showListItemDetails(firstItem);
-            kshf.dt.Screenings[0].resultDOM.setAttribute('details',true);
+            kshf.dt.Screenings[0].DOM.result.setAttribute('details',true);
         },
         itemDisplay: {
             sortColWidth: 90,
@@ -225,7 +225,7 @@ $(document).ready( function() {
             detailCb: function(item){
                 if(item.dataLoaded===true) return;
                 // some of the data is already included in google spreadshee...
-                var d3Item = d3.select(item.resultDOM);
+                var d3Item = d3.select(item.DOM.result);
 
                 var query="t="+item.data[2];
                 var movieData = kshf.dt_id.Movies[item.data[2]];

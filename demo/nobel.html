@@ -154,7 +154,7 @@ $(document).ready( function(){
                 surname_short = surname_short.replace("von_","").replace("la_","");
                 var imgUrl="./img/nobel_photo/"+surname_short+".jpg";
                 if(laureate.data[lautCols.gender]!==3){
-                    d3.select(d.resultDOM).select("img").attr("src",imgUrl);
+                    d3.select(d.DOM.result).select("img").attr("src",imgUrl);
                 }
             }
         }

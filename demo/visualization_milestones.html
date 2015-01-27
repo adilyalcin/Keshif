@@ -293,7 +293,7 @@ google.setOnLoadCallback(function(){
                         break;
                     }
                 }
-                d3.select(d.resultDOM).select("img")
+                d3.select(d.DOM.result).select("img")
                     .attr("src",URL)
                     .attr("title",d.data.Images[0].text);
             }

@@ -144,7 +144,7 @@ $(document).ready( function(){
                     {func: function(a,b){ return a.data.ep_id - b.data.ep_id; }}
                 ],
                 catLabelText: function(episode){
-                    return "EP "+episode.data.ep_id+" - "+episode.data.Name;
+                    return episode.data.Name+ " <i>[Ep."+episode.data.ep_id+"]</i>";
                 },
                 catTooltipText: function(episode){ return episode.data.Synopsis; },
                 facets:[

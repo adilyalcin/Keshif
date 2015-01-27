@@ -95,7 +95,7 @@ $(document).ready( function(){
                 return str;
             },
             detailCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
+                d3.select(d.DOM.result).select("img").attr("src",d.data[postCols['Img']]);
             },*/
             displayType: 'grid',
             maxVisibleItems_Default: 50,
@@ -106,7 +106,7 @@ $(document).ready( function(){
                     "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data[postCols['Title']]+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data[postCols['Img']]);
+                d3.select(d.DOM.result).select("img").attr("src",d.data[postCols['Img']]);
             },
         }
     });

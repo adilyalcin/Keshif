@@ -97,7 +97,7 @@ google.setOnLoadCallback(function(){
         return d.data[cols.Ma];
       },
       visibleCb: function(d){
-          d3.select(d.resultDOM).select("img").attr("src",d.data[cols.Thumbnail_2]);
+          d3.select(d.DOM.result).select("img").attr("src",d.data[cols.Thumbnail_2]);
       }
     }
   });

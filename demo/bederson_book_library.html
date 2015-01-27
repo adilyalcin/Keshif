@@ -204,7 +204,7 @@ $(document).ready( function(){
                 return desc;
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data.Thumb).attr("title", d.data.Review);
+                d3.select(d.DOM.result).select("img").attr("src",d.data.Thumb).attr("title", d.data.Review);
             }   
         }
     });

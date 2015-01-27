@@ -58,7 +58,7 @@
                         return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data[15]+"' target='_blank'><img></a>";
                     },
                     visibleCb: function(d){
-                        d3.select(d.resultDOM).select("img").attr("src",d.data[11]);
+                        d3.select(d.DOM.result).select("img").attr("src",d.data[11]);
                     }
                 }
             });

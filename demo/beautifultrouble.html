@@ -150,7 +150,7 @@ $(document).ready( function(){
             },
             detailCb: function(d){
                 if(d.data.image ===undefined) return;
-                var d3Item = d3.select(d.resultDOM);
+                var d3Item = d3.select(d.DOM.result);
                 d3Item.select(".itemImg").attr("src",d.data.image);
             }
         }

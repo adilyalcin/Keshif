@@ -612,10 +612,11 @@ kshf.Item = function(d, idIndex){
     // If true, item is currently selected to be included in link computation
     this.selectedForLink = false;
 
+    this.DOM = {};
     // If item is primary type, this will be set
-    this.resultDOM = undefined;
+    this.DOM.result = undefined;
     // If item is used as a filter (can be primary if looking at links), this will be set
-    this.facetDOM  = undefined;
+    this.DOM.facet  = undefined;
     // If true, updatePreview has propogated changes above
     this.updatePreview_Cache = false;
 };
@@ -674,7 +675,7 @@ kshf.Item.prototype = {
     },
 
     _setFacetDOM: function(){
-        if(this.facetDOM) this.facetDOM.setAttribute("selected",this.selected);
+        if(this.DOM.facet) this.DOM.facet.setAttribute("selected",this.selected);
     },
 
     /** -- */
@@ -779,7 +780,7 @@ kshf.Item.prototype = {
             return;
         }
 
-        if(this.resultDOM) this.resultDOM.setAttribute("highlight",true);
+        if(this.DOM.result) this.DOM.result.setAttribute("highlight",true);
 
         // This is where you pass highlught information to through parent facet (which is primary entity)
         // if this item appears in a facet, it means it's used as a filter itself, propogate above
@@ -816,14 +817,14 @@ kshf.Item.prototype = {
      * Higlights all relevant UI parts to this UI item
      */
     highlightAll: function(recurse){
-        if(this.resultDOM) {
-            this.resultDOM.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.result) {
+            this.DOM.result.setAttribute("highlight",recurse?"selected":true);
         }
-        if(this.facetDOM) {
-            this.facetDOM.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.facet) {
+            this.DOM.facet.setAttribute("highlight",recurse?"selected":true);
         }
 
-        if(this.resultDOM && !recurse) return;
+        if(this.DOM.result && !recurse) return;
         this.mappedDataCache.forEach(function(d){
             if(d===null) return; // no mapping for this index
             if(d.h){ // interval facet
@@ -831,7 +832,7 @@ kshf.Item.prototype = {
             } else { // categorical facet
                 d.forEach(function(item){
                     // skip going through main items that contain a link TO this item
-                    if(this.resultDOM && item.resultDOM)
+                    if(this.DOM.result && item.DOM.result)
                         return;
                     item.highlightAll(false);
                 },this);
@@ -840,10 +841,10 @@ kshf.Item.prototype = {
     },
     /** Removes higlight from all relevant UI parts to this UI item */
     nohighlightAll: function(recurse){
-        if(this.resultDOM) this.resultDOM.setAttribute("highlight",false);
-        if(this.facetDOM)  this.facetDOM .setAttribute("highlight",false);
+        if(this.DOM.result) this.DOM.result.setAttribute("highlight",false);
+        if(this.DOM.facet)  this.DOM.facet .setAttribute("highlight",false);
 
-        if(this.resultDOM && !recurse) return;
+        if(this.DOM.result && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
             if(d===null) return; // no mapping for this index
             if(d.h){ // interval facet
@@ -851,7 +852,7 @@ kshf.Item.prototype = {
             } else { // categorical facet
                 d.forEach(function(item){
                     // skip going through main items that contain a link TO this item
-                    if(this.resultDOM && item.resultDOM) return;
+                    if(this.DOM.result && item.DOM.result) return;
                     item.nohighlightAll(false);
                 },this);
             }
@@ -859,8 +860,8 @@ kshf.Item.prototype = {
     },
     setSelectedForLink: function(v){
         this.selectedForLink = v;
-        if(this.resultDOM){
-            this.resultDOM.setAttribute("selectedForLink",v);
+        if(this.DOM.result){
+            this.DOM.result.setAttribute("selectedForLink",v);
         }
         if(v===false){
             this.set_NONE();
@@ -1472,11 +1473,11 @@ kshf.List.prototype = {
             .attr("animSt","visible")
             .attr("itemID",function(d){return d.id();})
             // store the link to DOM in the data item
-            .each(function(d){ d.resultDOM = this; })
+            .each(function(d){ d.DOM.result = this; })
             .on("mouseenter",function(d,i){
                 d.highlightAll(true);
                 if(me.hasLinkedItems)
-                    d.resultDOM.setAttribute("selectedForLink",true);
+                    d.DOM.result.setAttribute("selectedForLink",true);
                 d.items.forEach(function(item){
                     item.highlightAll(false);
                 });
@@ -1490,7 +1491,7 @@ kshf.List.prototype = {
                 d3.select(this).attr("highlight","false");
                 // find all the things that  ....
                 if(me.hasLinkedItems)
-                    d.resultDOM.setAttribute("selectedForLink",false);
+                    d.DOM.result.setAttribute("selectedForLink",false);
                 d.nohighlightAll(true);
                 d.items.forEach(function(item){
                     item.nohighlightAll(false);
@@ -1657,13 +1658,13 @@ kshf.List.prototype = {
     },
     /** -- */
     hideListItemDetails: function(item){
-        item.resultDOM.setAttribute('details', false);
+        item.DOM.result.setAttribute('details', false);
         item.showDetails=false;
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_OFF, {info:item.id()});
     },
     /** -- */
     showListItemDetails: function(item){
-        item.resultDOM.setAttribute('details', true);
+        item.DOM.result.setAttribute('details', true);
         item.showDetails=true;
         if(this.detailCb) this.detailCb.call(this, item);
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_ON,{info:item.id()});
@@ -1682,8 +1683,8 @@ kshf.List.prototype = {
                 this.browser.items.forEach(function(item,i){
                     if(!item.isWanted) return;
                     if(pItem!==null){ 
-                        if(item.resultDOM!==undefined)
-                        item.resultDOM.style.borderTopWidth = 
+                        if(item.DOM.result!==undefined)
+                        item.DOM.result.style.borderTopWidth = 
                             sortFunc(sortValueFunc(item),sortValueFunc(pItem))!==0?"4px":"0px";
                     }
                     pItem = item;
@@ -2793,7 +2794,7 @@ kshf.Browser.prototype = {
         this.root.attr("previewcompare",false);
         this.facets.forEach(function(facet){ facet.refreshViz_Compare(); });
         if(this.comparedAggregate){
-            this.comparedAggregate.facetDOM.setAttribute("compare",false);
+            this.comparedAggregate.DOM.facet.setAttribute("compare",false);
             this.comparedAggregate = null;
         }
         if(this.previewCompareCb) this.previewCompareCb.call(this,true);
@@ -2801,7 +2802,7 @@ kshf.Browser.prototype = {
     /** -- */
     setPreviewCompare: function(aggregate){
         if(aggregate){
-            aggregate.facetDOM.setAttribute("compare",true);
+            aggregate.DOM.facet.setAttribute("compare",true);
             this.comparedAggregate = aggregate;
         }
         this._previewCompare_Active = true;
@@ -3863,19 +3864,19 @@ kshf.Facet_Categorical.prototype = {
         }
         var show_box = (this.attribFilter.selected_OR.length+this.attribFilter.selected_AND.length)>1;
         this.attribFilter.selected_OR.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",show_box);
+            attrib.DOM.facet.setAttribute("show-box",show_box);
         },this);
         this.attribFilter.selected_AND.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box",show_box);
+            attrib.DOM.facet.setAttribute("show-box",show_box);
         },this);
         this.attribFilter.selected_NOT.forEach(function(attrib){
-            attrib.facetDOM.setAttribute("show-box","true");
+            attrib.DOM.facet.setAttribute("show-box","true");
         },this);
     },
     /** -- */
     unselectAllAttribs: function(){
         this._attribs.forEach(function(attrib){ 
-            if(attrib.f_selected() && attrib.facetDOM) attrib.facetDOM.setAttribute("highlight",false);
+            if(attrib.f_selected() && attrib.DOM.facet) attrib.DOM.facet.setAttribute("highlight",false);
             attrib.set_NONE();
         });
         this.attribFilter.selected_All_clear();
@@ -4396,7 +4397,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.crossing_row.setAttribute("highlight","selected");
         
         if(this.isAttribSelectable(attrib)) {
-            attrib.facetDOM.setAttribute("selectType",this.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selectType",this.hasMultiValueItem?"and":"or");
             if(!this.browser.pauseResultPreview && 
               (this.hasMultiValueItem || this.attribFilter.selected_OR.length===0) &&
               (!attrib.is_NOT()) ){
@@ -4420,11 +4421,11 @@ kshf.Facet_Categorical.prototype = {
     },
     cbAttribEnter_Tipsy: function(attrib){
         if(attrib.dontChangeTooltip) return;
-        var attribTipsy = attrib.facetDOM.tipsy;
+        var attribTipsy = attrib.DOM.facet.tipsy;
         attribTipsy.options.className = "tipsyFilterAnd";
         attribTipsy.hide();
 
-        attrib.facetDOM.tipsy_active = attribTipsy;
+        attrib.DOM.facet.tipsy_active = attribTipsy;
         this.tipsy_active = attribTipsy;
 
         var offset=0;
@@ -4435,8 +4436,8 @@ kshf.Facet_Categorical.prototype = {
                 offset+=this.vizHistogramScale(attrib.aggregate_Active)
             }
         }
-        attrib.facetDOM.tipsy_active.options.offset_x = offset;
-        attrib.facetDOM.tipsy_active.show();
+        attrib.DOM.facet.tipsy_active.options.offset_x = offset;
+        attrib.DOM.facet.tipsy_active.show();
     },
     /** -- */
     cbAttribLeave: function(attrib){
@@ -4456,14 +4457,14 @@ kshf.Facet_Categorical.prototype = {
             clearTimeout(this.previewTimer);
         }
         this.browser.items.forEach(function(item){
-            if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
+            if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
         },this);
 
         if(!this.browser.pauseResultPreview){
             this.browser.clearResultPreviews();
         }
 
-        if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
+        if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
     },
     /** - */
     insertAttribs: function(){
@@ -4484,7 +4485,7 @@ kshf.Facet_Categorical.prototype = {
             .attr("selected","0")
             .each(function(attrib,i){
                 attrib.facet = me;
-                attrib.facetDOM = this;
+                attrib.DOM.facet = this;
                 attrib.isVisible = true;
                 this.isLinked = me.isLinked;
 
@@ -4521,7 +4522,7 @@ kshf.Facet_Categorical.prototype = {
         var cbAttribClick = function(attrib){
             if(!me.isAttribSelectable(attrib)) return;
 
-            if(attrib.facetDOM.tipsy_active) attrib.facetDOM.tipsy_active.hide();
+            if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
 
             if(this.timer){
                 // double click
@@ -4613,60 +4614,60 @@ kshf.Facet_Categorical.prototype = {
 
         var cbOrEnter = function(attrib,i){
             attrib.dontChangeTooltip = true;
-            attrib.facetDOM.setAttribute("selectType","or");
+            attrib.DOM.facet.setAttribute("selectType","or");
             if(me.attribFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
 
-            var facetDOM = attrib.facetDOM;
-            facetDOM.tipsy.options.className = "tipsyFilterOr";
-            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
-            facetDOM.tipsy.hide();
-            facetDOM.tipsy.show();
-            facetDOM.tipsy_active = facetDOM.tipsy;
-            me.tipsy_active = facetDOM.tipsy;
-            facetDOM.tipsy.show();
+            var DOM_facet = attrib.DOM.facet;
+            DOM_facet.tipsy.options.className = "tipsyFilterOr";
+            DOM_facet.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
+            DOM_facet.tipsy.hide();
+            DOM_facet.tipsy.show();
+            DOM_facet.tipsy_active = DOM_facet.tipsy;
+            me.tipsy_active = DOM_facet.tipsy;
+            DOM_facet.tipsy.show();
 
             d3.event.stopPropagation();
         };
         var cbOrLeave = function(attrib,i){
             attrib.dontChangeTooltip = false;
-            this.__data__.facetDOM.tipsy_title = undefined;
-            this.__data__.facetDOM.tipsy.hide();
-            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterAnd";
-            this.__data__.facetDOM.tipsy.show();
-            me.tipsy_active = this.__data__.facetDOM.tipsy;
-            attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            this.__data__.DOM.facet.tipsy_title = undefined;
+            this.__data__.DOM.facet.tipsy.hide();
+            this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
+            this.__data__.DOM.facet.tipsy.show();
+            me.tipsy_active = this.__data__.DOM.facet.tipsy;
+            attrib.DOM.facet.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
             d3.event.stopPropagation();
         };
         var cbOrClick = function(attrib,i){
             me.filterAttrib(attrib,"OR");
-            this.__data__.facetDOM.tipsy.hide();
+            this.__data__.DOM.facet.tipsy.hide();
             d3.event.stopPropagation();
         };
 
         var cbNotEnter = function(attrib,i){
             attrib.dontChangeTooltip = true;
-            attrib.facetDOM.setAttribute("selectType","not");
+            attrib.DOM.facet.setAttribute("selectType","not");
             me.browser.root.attr("preview-not",true);
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
             
-            var facetDOM = attrib.facetDOM;
-            facetDOM.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
-            facetDOM.tipsy.options.className = "tipsyFilterNot";
-            facetDOM.tipsy.show();
-            facetDOM.tipsy_active = facetDOM.tipsy;
-            me.tipsy_active = facetDOM.tipsy;
+            var DOM_facet = attrib.DOM.facet;
+            DOM_facet.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
+            DOM_facet.tipsy.options.className = "tipsyFilterNot";
+            DOM_facet.tipsy.show();
+            DOM_facet.tipsy_active = DOM_facet.tipsy;
+            me.tipsy_active = DOM_facet.tipsy;
 
             d3.event.stopPropagation();
         };
         var cbNotLeave = function(attrib,i){
             attrib.dontChangeTooltip = false;
-            this.__data__.facetDOM.tipsy_title = undefined;
-            this.__data__.facetDOM.tipsy.hide();
-            this.__data__.facetDOM.tipsy.options.className = "tipsyFilterAnd";
-            me.tipsy_active = this.__data__.facetDOM.tipsy;
-            attrib.facetDOM.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            this.__data__.DOM.facet.tipsy_title = undefined;
+            this.__data__.DOM.facet.tipsy.hide();
+            this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
+            me.tipsy_active = this.__data__.DOM.facet.tipsy;
+            attrib.DOM.facet.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
@@ -4675,7 +4676,7 @@ kshf.Facet_Categorical.prototype = {
         var cbAndClick = function(attrib,i){
             me.browser.preview_not = false;
             me.filterAttrib(attrib,"NOT");
-            this.__data__.facetDOM.tipsy.hide();
+            this.__data__.DOM.facet.tipsy.hide();
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
             d3.event.stopPropagation();
         };
@@ -5444,7 +5445,7 @@ kshf.Facet_Interval.prototype = {
                 this.parentNode.setAttribute("highlight",false);
 
                 me.browser.items.forEach(function(item){
-                    if(item.resultDOM) item.resultDOM.setAttribute("highlight",false);
+                    if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
                 })
                 me.browser.clearResultPreviews();
             }

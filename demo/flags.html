@@ -245,7 +245,7 @@ $(document).ready( function(){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src","img/"+d.data.Flag);
+                d3.select(d.DOM.result).select("img").attr("src","img/"+d.data.Flag);
             }
         }
     });

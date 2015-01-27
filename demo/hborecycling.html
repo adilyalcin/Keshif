@@ -352,7 +352,7 @@ google.setOnLoadCallback(function(){
             textSearch: "Name",
             contentFunc: function(d){
                 // resize d based on # of shows!
-                d.resultDOM.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
+                d.DOM.result.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
                 return d.data.Name;
             }
         }

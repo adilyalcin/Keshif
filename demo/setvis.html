@@ -113,7 +113,7 @@ $(document).ready( function(){
             },
             visibleCb: function(d){
 //                http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/alsallakh2013radial.png
-                d3.select(d.resultDOM).select("img").attr("src",
+                d3.select(d.DOM.result).select("img").attr("src",
                     "http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/"+d.data.Key+".png");
             }
         }

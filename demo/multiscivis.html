@@ -135,7 +135,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src","http://multivis.net/t200/"+d.data.id+".png");
+                d3.select(d.DOM.result).select("img").attr("src","http://multivis.net/t200/"+d.data.id+".png");
             }
         }
     });

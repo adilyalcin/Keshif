@@ -77,7 +77,7 @@ $(document).ready( function(){
                     "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",d.data.image_src);
+                d3.select(d.DOM.result).select("img").attr("src",d.data.image_src);
             }
         }
     });

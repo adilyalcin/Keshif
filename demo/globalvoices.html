@@ -117,7 +117,7 @@ $(document).ready( function(){
                 return str;
             },
             detailCb: function(d){
-                var x=d3.select(d.resultDOM);
+                var x=d3.select(d.DOM.result);
                 x.select(".postImg").attr("src",d.data[9]);
                 x.select(".postDetail").html(d.data[5]);
             }

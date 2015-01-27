@@ -139,7 +139,7 @@ $(document).ready( function(){
             visibleCb: function(d){
                 var imgRoot = 'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/';
                 var imgLink = imgRoot+d.data.city+'/'+d.data.id;
-                d3.select(d.resultDOM).select("img").attr("src",imgLink);
+                d3.select(d.DOM.result).select("img").attr("src",imgLink);
             }
         }
     });

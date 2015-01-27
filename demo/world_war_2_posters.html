@@ -138,7 +138,7 @@ $(document).ready( function(){
                 } else {
                     url = poster.data.objects.object.file['@url'];
                 }
-                d3.select(poster.resultDOM).select("img").attr("src",url);
+                d3.select(poster.DOM.result).select("img").attr("src",url);
             }
         }
     });

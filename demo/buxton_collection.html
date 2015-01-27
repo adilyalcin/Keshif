@@ -228,7 +228,7 @@ $(document).ready( function(){
             },
             visibleCb: function(d){
                 if(d.data['Related Images'].length===0) return;
-                d3.select(d.resultDOM).select("img").attr("src",
+                d3.select(d.DOM.result).select("img").attr("src",
                     "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
                     +d.data['Related Images'][0]);
             }

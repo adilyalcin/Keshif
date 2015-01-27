@@ -126,7 +126,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.resultDOM).select("img").attr("src",
+                d3.select(d.DOM.result).select("img").attr("src",
                     "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/thumbs100png/"+
                     d.data.id+".png");
             }
