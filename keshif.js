@@ -323,7 +323,7 @@ kshf.Facet_Base = {
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'sw',
-                        title: function(){ return me.collapsed?"Expand facet":"Collapse facet"; }
+                        title: function(){ return me.collapsed?"Open view":"Close view"; }
                     })
                 })
                 .on("mouseover",function(){ this.tipsy.show(); })
@@ -1977,6 +1977,7 @@ kshf.Browser = function(options){
         .attr("noanim",false)
         .attr("percentview",false)
         .attr("previewcompare",false)
+        .attr("resultpreview",false)
         .style("position","relative")
         .style("overflow-y","hidden")
         .on("mousemove",function(d){
@@ -2833,6 +2834,7 @@ kshf.Browser.prototype = {
     /** -- */
     clearResultPreviews: function(){
         this.resultPreviewActive = false;
+        this.root.attr("resultpreview",false);
         this.items.forEach(function(item){
             item.updatePreview_Cache = false;
         });
@@ -2844,6 +2846,7 @@ kshf.Browser.prototype = {
     refreshResultPreviews: function(aggregate){
         var me=this;
         this.resultPreviewActive = true;
+        this.root.attr("resultpreview",true);
         this.facets.forEach(function(facet){ facet.refreshViz_Preview(); });
         this.set_previewCompare_Timeout_Set(aggregate);
         if(this.previewCb) this.previewCb.call(this,false);
@@ -3781,7 +3784,9 @@ kshf.Facet_Categorical.prototype = {
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ return "Reverse order"; }
+                    gravity: 'w', title: function(){
+                        return "Reverse order";
+                    }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -4398,21 +4403,25 @@ kshf.Facet_Categorical.prototype = {
         
         if(this.isAttribSelectable(attrib)) {
             attrib.DOM.facet.setAttribute("selectType",this.hasMultiValueItem?"and":"or");
-            if(!this.browser.pauseResultPreview && 
-              (this.hasMultiValueItem || this.attribFilter.selected_OR.length===0) &&
-              (!attrib.is_NOT()) ){
-                // calculate the preview
-                attrib.items.forEach(function(item){item.updatePreview(this.parentFacet);},this);
-                attrib.highlightAll(true);
+            var timeoutTime = 450;
+            if(this.browser._previewCompare_Active) timeoutTime = 0;
+            this.resultPreviewShowTimeout = setTimeout(function(){
+                if(!me.browser.pauseResultPreview && 
+                  (me.hasMultiValueItem || me.attribFilter.selected_OR.length===0) &&
+                  (!attrib.is_NOT()) ){
+                    // calculate the preview
+                    attrib.items.forEach(function(item){item.updatePreview(me.parentFacet);},me);
+                    attrib.highlightAll(true);
 
-                this.browser.refreshResultPreviews(attrib);
-                if(sendLog) {
-                    if(this.previewTimer) clearTimeout(this.previewTimer);
-                    this.previewTimer = setTimeout(function(){
-                        sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
-                    }, 1000); // wait 1 second to see the update fully
+                    me.browser.refreshResultPreviews(attrib);
+                    if(sendLog) {
+                        if(me.resultPreviewLogTimeout) clearTimeout(me.resultPreviewLogTimeout);
+                        me.resultPreviewLogTimeout = setTimeout(function(){
+                            sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.attribFilter.id, info: attrib.id()});
+                        }, 1000); // wait 1 second to see the update fully
+                    }
                 }
-            }
+            },timeoutTime);
         } else {
             if(this.tipsy_title===undefined) return;
         }
@@ -4453,8 +4462,8 @@ kshf.Facet_Categorical.prototype = {
         if(!this.isAttribSelectable(attrib)) return;
         attrib.nohighlightAll(true);
 
-        if(this.previewTimer){
-            clearTimeout(this.previewTimer);
+        if(this.resultPreviewLogTimeout){
+            clearTimeout(this.resultPreviewLogTimeout);
         }
         this.browser.items.forEach(function(item){
             if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
@@ -4464,12 +4473,17 @@ kshf.Facet_Categorical.prototype = {
             this.browser.clearResultPreviews();
         }
 
+        if(this.resultPreviewShowTimeout){
+            clearTimeout(this.resultPreviewShowTimeout);
+            this.resultPreviewShowTimeout = null;
+        }
+
         if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
     },
     /** - */
     insertAttribs: function(){
         var me = this;
-        this.previewTimer = null;
+        this.resultPreviewLogTimeout = null;
 
         var domAttribs_new = this.dom.attribGroup.selectAll("div.attrib")
             .data(this._attribs, function(attrib){ 
@@ -5386,7 +5400,7 @@ kshf.Facet_Interval.prototype = {
     },
     insertBins: function(){
         var me=this;
-        var previewTimer = null;
+        var resultPreviewLogTimeout = null;
 
         var filterId = this.intervalFilter.id;
         // *************************************************************************************
@@ -5426,10 +5440,10 @@ kshf.Facet_Interval.prototype = {
 
                 me.browser.refreshResultPreviews();
                 if(sendLog) {
-                    if(previewTimer){
-                        clearTimeout(previewTimer);
+                    if(resultPreviewLogTimeout){
+                        clearTimeout(resultPreviewLogTimeout);
                     }
-                    previewTimer = setTimeout(function(){
+                    resultPreviewLogTimeout = setTimeout(function(){
                         sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.intervalFilter.id, info: bar.x+"x"+bar.dx});
                     }, 1000); // wait 1 second to see the update fully
                 }
@@ -5438,8 +5452,8 @@ kshf.Facet_Interval.prototype = {
         };
         var onMouseOut = function(bar){
             this.parentNode.tipsy.hide();
-            if(previewTimer){
-                clearTimeout(previewTimer);
+            if(resultPreviewLogTimeout){
+                clearTimeout(resultPreviewLogTimeout);
             }
             if(!me.browser.pauseResultPreview){
                 this.parentNode.setAttribute("highlight",false);
