@@ -2231,9 +2231,10 @@ kshf.Browser.prototype = {
                     this.loadSheet_Memory(sheet);
                 }
             },this);
-        }
-        if(this.source.callback){
-            this.source.callback(this);
+        } else {
+            if(this.source.callback){
+                this.source.callback(this);
+            }
         }
     },
     loadSheet_Google: function(sheet){
@@ -2424,17 +2425,21 @@ kshf.Browser.prototype = {
         this.layout_infobox.select("div.status_text .dynamic")
             .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
             // finish loading
-        if(this.source.callback===undefined && this.source.loadedTableCount===this.source.sheets.length) {
-            this.source.sheets.forEach(function(sheet){
-                if(sheet.primary){
-                    this.items = kshf.dt[sheet.tableName];
-                    this.itemsWantedCount = this.items.length;
-                }
-            },this);
+        if(this.source.loadedTableCount===this.source.sheets.length) {
+            if(this.source.callback===undefined){
+                this.source.sheets.forEach(function(sheet){
+                    if(sheet.primary){
+                        this.items = kshf.dt[sheet.tableName];
+                        this.itemsWantedCount = this.items.length;
+                    }
+                },this);
 
-            this.layout_infobox.select("div.status_text .info").text("Creating browser...");
-            this.layout_infobox.select("div.status_text .dynamic").text("");
-            window.setTimeout(function(){ me.loadCharts(); }, 50);
+                this.layout_infobox.select("div.status_text .info").text("Creating browser...");
+                this.layout_infobox.select("div.status_text .dynamic").text("");
+                window.setTimeout(function(){ me.loadCharts(); }, 50);
+            } else {
+                this.source.callback(this);
+            }
         }
     },
     describeDefaultFacets: function(){
@@ -4258,7 +4263,7 @@ kshf.Facet_Categorical.prototype = {
 
         var h=this.attribHeight;
         this.dom.barChartPreviewAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
-        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-24)+"px");
+        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-19)+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
