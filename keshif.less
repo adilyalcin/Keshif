@@ -90,10 +90,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             content: "%";
         }
     }
-        .vizBackground:hover{
-            opacity: 0.1 !important;
-            cursor: pointer;
+    &[resultpreview=true]{
+        .item_count{
+            color: rgb(232, 67, 6);
         }
+    }
+    .vizBackground:hover{
+        opacity: 0.1 !important;
+        cursor: pointer;
+    }
 
     font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
@@ -302,7 +307,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transform-origin(0%, 0%);
         }
         > .item_count_wrapper{
-            padding-right: 2px;
+            padding-right: 3px;
             text-align: right;
         }
         &:not([selected="0"]) {
@@ -418,7 +423,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
                 position: relative;
                 text-align: center;
-                font-size: 0.7em;
+                font-size: 0.6em;
                 font-weight: 300;
                 cursor: default;
                 color: gray;
@@ -447,10 +452,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: all;
         top: -1px;
         &.border_line_bottom{
-            position: absolute;
+            //position: absolute;
             width: 100%;
             height: 1px;
-            top: calc(100% - 1px);
+            margin-bottom: 0px;
+            //top: calc(100% - 1px);
         }
     }
 
@@ -458,19 +464,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         text-align: center;
         padding-top: 1px;
-        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
+//        background-color: #E7E6E6;
+        border-radius: 3px;
+//        border: solid 1px gray;
+//        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
+        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);");
         .header_label {
-            font-size: 1.0em;
             font-weight: 700;
-            cursor: default;
             cursor: default;
             font-variant: small-caps;
             pointer-events: none;
-            padding-top: 1px;
-            height: 16px;
-            margin-left: 2px;
-            // chrome currently messes up text rendering when using optimized mode...
+            margin-top: 2px;
             text-rendering: initial;
+            display: inline-block;
             > .title_of{
                 font-weight: 300;
             }
@@ -625,9 +631,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                         > .searchIcon{
-                            position: relative;
-                            top: -1px;
-                            left: 2px;
+                            position: absolute;
+                            top: 2px;
+                            left: 3px;
                             color: #cb5454;
                             font-size: 0.7em;
                         }
@@ -643,7 +649,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .sortIcon{
                             position: relative;
                             left: 2px;
-                            top:2px;
+                            top:3px;
                             cursor: pointer;
                             &:hover{
                                 color:orangered
@@ -1416,6 +1422,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .text{
                     width: 20px;
                     left: -10px;
+                    top: 2px;
                     .transition(~'top 700ms ease-in-out');
                 }
                 > .line{
@@ -1429,8 +1436,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .item_count{
         color: gray;
-        &::before{ content: "("; }
-        &::after{ content: ")"; }
+        //&::before{ content: "("; }
+        //&::after{ content: ")"; }
     }
 
     .selectVertLine {
