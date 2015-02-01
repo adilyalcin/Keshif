@@ -112,9 +112,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [{ name:'Milestone', value: function(d){
-                return d.data.shipped_milestone;
-            }}],
+            sortingOpts : [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
             textSearch : "title",
             autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.title;},

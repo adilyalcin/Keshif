@@ -140,9 +140,7 @@ $(document).ready( function(){
                 },
                 type: "categorical",
                 catTableName: "Episodes",
-                sortingOpts: [
-                    {func: function(a,b){ return a.data.ep_id - b.data.ep_id; }}
-                ],
+                sortingOpts: [ {func: function(a,b){ return a.data.ep_id - b.data.ep_id; }} ],
                 catLabelText: function(episode){
                     return episode.data.Name+ " <i>[Ep."+episode.data.ep_id+"]</i>";
                 },
