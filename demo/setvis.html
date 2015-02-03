@@ -107,12 +107,10 @@ $(document).ready( function(){
             displayType: 'grid',
             detailsToggle : "Zoom",
             contentFunc : function(d){
-//                return d.data.Title;
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
             },
             visibleCb: function(d){
-//                http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/alsallakh2013radial.png
                 d3.select(d.DOM.result).select("img").attr("src",
                     "http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/data/papers_img/"+d.data.Key+".png");
             }
