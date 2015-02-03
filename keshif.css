@@ -749,10 +749,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   font-style: italic;
   cursor: pointer;
-  color: gray;
+  color: #919191;
   opacity: 1;
   pointer-events: all;
   display: inline-block;
+  padding-top: 2px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scroll_display_more:hover {
   color: #cb5454;
@@ -1371,9 +1372,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .orButton {
-  display: inline-block;
-}
-.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"] .clickArea:hover .orButton {
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=true] .headerGroup .hasMultiMappings {

@@ -2646,6 +2646,7 @@ kshf.Browser.prototype = {
         if(options.layout===undefined){
             options.layout = "left";
         }
+        // Note: the sorting option has defaults, so inserting an empty one is ok.
         if(options.sortingOpts===undefined) options.sortingOpts = [{}];
 
         var fct=new kshf.Facet_Categorical(this,options);
@@ -3142,7 +3143,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.options = options;
     this.layoutStr = options.layout;
 
-    this.sortingOpts = options.sortingOpts.slice();
+    this.sortingOpts = options.sortingOpts;
     this.parentFacet = options.parentFacet;
 
     this.dom = {};
@@ -3678,7 +3679,7 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.facetCategorical = this.dom.wrapper.append("div").attr("class","facetCategorical");
 
-        // update control components
+        // create config row(s) if needed
         if(this.showTextSearch || this.sortingOpts.length>1) {
             this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
             if(this.showTextSearch){
@@ -4249,8 +4250,8 @@ kshf.Facet_Categorical.prototype = {
     refreshScrollDisplayMore: function(bottomItem){
         var moreTxt = "";
         var below = this.attribCount_Visible-bottomItem-1;
-        if(below>0) moreTxt=" / "+below+" below...";
-        this.dom.scroll_display_more.text(this.attribCount_Visible+" total"+moreTxt);
+        if(below>0) moreTxt=""+below+" more below / ";
+        this.dom.scroll_display_more.text(moreTxt+this.attribCount_Visible+" total");
     },
     /** -- */
     refreshHeight: function(){
@@ -4762,9 +4763,9 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     sortAttribs: function(){
         var me = this;
-        if(this.sortingOpt_Active===undefined){
-            this.sortingOpt_Active = this.sortingOpts[0];
-        }
+//        if(this.sortingOpt_Active===undefined){
+//            this.sortingOpt_Active = this.sortingOpts[0];
+//        }
         var selectedOnTop = this.sortingOpt_Active.no_resort!==true;
         var inverse = this.sortingOpt_Active.inverse;
         var sortFunc = this.sortingOpt_Active.func;
@@ -4814,9 +4815,9 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     updateSorting: function(sortDelay,force){
-        if(this.sortingOpt_Active===undefined){
-            this.sortingOpt_Active = this.sortingOpts[0];
-        }
+//        if(this.sortingOpt_Active===undefined){
+//            this.sortingOpt_Active = this.sortingOpts[0];
+//        }
         if(this.sortingOpt_Active.custom===true&&force!==true) return;
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Visible();
