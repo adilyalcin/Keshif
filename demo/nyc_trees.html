@@ -83,17 +83,19 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
-            sortingOpts : [ { name: 'Total' } ],
+            sortColWidth: 90,
+            sortingOpts : [ { name: '# Total Trees', value: function(d){ return d.data.Total;} } ],
             autoExpandMore: true,
             detailsToggle : "Zoom",
             displayType: 'grid',
+            textSearch: 'Tree Name',
+            textSearchFunc : function(d){ return d.data.Common;},
             contentFunc : function(d){
-                var str='';
-                str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"'></span>";
-                str+="<span class='authorName'>"+d.data.Latin+"</span>";
-                str+="<span class='title'>"+d.data.Common+"</span>";
-                return str;
+    var str='';
+    str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"' class='thumbImg'></span>";
+    str+="<span class='authorName'>"+d.data.Latin+"</span>";
+    str+="<span class='title'>"+d.data.Common+"</span>";
+    return str;
             },
             visibleCb: function(d){
                 d3.select(this).select("img").attr("src",
@@ -110,14 +112,14 @@ $(document).ready( function(){
             height:700px;
         }
         .listItem{
-            width: 14.2%;
+            width: 70px;
+            padding-top: 0px !important;
+            padding-bottom: 2px !important;
         }
-        div.content{
-            width: 100%;
-            height: 130px;
-            padding: 5px;
+        .thumbImg{
+            width: 100% !important;
         }
-        span.thumbnail{
+/*        span.thumbnail{
             height: 70px;
             display: block;
             overflow-y: hidden;
@@ -133,26 +135,18 @@ $(document).ready( function(){
             margin-left: auto;
             margin-right: auto;
             background-color: white;
-            width: 90%;
+            width: 100%;
             position: absolute;
             bottom: 2px;
             background-color: lightgray;
-        }
-        div.listItem{
-            vertical-align: top;
-        }
+        }*/
         div.listItem[highlight=true] div.content span.thumbnail{
             background-color: orangered;
         }
-        div.content span.title{
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 2px;
-            text-align: left;
-            font-size: 0.9em;
-            font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-weight: 700;
+        .content .title{
+            font-weight: 500 !important;
+            text-align: center !important;
+            font-size: 0.8em !important;
         }
         .content .authorName{
             display: block;
@@ -160,8 +154,8 @@ $(document).ready( function(){
             font-style: italic;
             font-weight: 400;
             color: gray;
-            font-size: 0.8em;
-            text-align: left;
+            font-size: 0.6em;
+            text-align: center;
         }
     </style>
 	</head>
