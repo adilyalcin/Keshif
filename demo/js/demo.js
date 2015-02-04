@@ -150,6 +150,12 @@ $(window).load(function(){
         $("body").append(s);
     }
 
+    d3.select("head").append("link")
+        .attr("rel","icon")
+        .attr("href","./img/favicon.png")
+        .attr("type","image/png");
+
+
     if($("body").fancybox){
 
         var com_dom = d3.select("body").append("span").attr("class","comment_popup").attr("href",
