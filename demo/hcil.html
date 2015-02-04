@@ -111,8 +111,13 @@ google.setOnLoadCallback( function() {
             },{
                 facetTitle: "Author",
                 catTableName: "people",
-                catLabelText: function(author) { 
-                    return author.data[peopleCol.first_name][0]+". "+ author.data[peopleCol.last_name]; 
+                catLabelText: function(author) {
+                    var f_name = author.data[peopleCol.first_name];
+                    var l_name = author.data[peopleCol.last_name];
+                    var str="";
+                    if(f_name) str+=f_name+". ";
+                    if(f_name) str+=l_name;
+                    return str;
                 }
             },{
                 facetTitle: "Member Type",
@@ -160,7 +165,8 @@ google.setOnLoadCallback( function() {
                 var str="";
                 // paper name
                     str+="<div class=\"iteminfo iteminfo_0\">";
-                    if(pub.data[trsCol.reference_url].trim()!==""){
+                    var url=pub.data[trsCol.reference_url];
+                    if(url && url.trim()!==""){
                         str+="<a target=\"_blank\" href=\""+pub.data[trsCol.reference_url]+"\">"+pub.data[trsCol.title]+"</a>";
                     } else {
                         str+=pub.data[trsCol.title];
@@ -181,8 +187,9 @@ google.setOnLoadCallback( function() {
                     str+="</div>";
                 }
                 // venue
+                    var ref=pub.data[trsCol.reference];
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
-                    if(pub.data[trsCol.reference].trim()!==""){
+                    if(ref && ref.trim()!==""){
                         str+="<b>["+pub.data[trsCol.Date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
                     }
                     str+="</div>";
@@ -198,10 +205,12 @@ google.setOnLoadCallback( function() {
                 }
                 // links
                 str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
-                if(pub.data[trsCol.pdf].trim()!==""){
+                var pdf=pub.data[trsCol.pdf];
+                var video=pub.data[trsCol.video];
+                if(pdf && pdf.trim()!==""){
                     str+="<a target=\"_blank\" href=\""+pub.data[trsCol.pdf]+"\"><img src=\"img/pdf-logo.gif\"></a>";
                 }
-                if(pub.data[trsCol.video].trim()!==""){
+                if(video && video.trim()!==""){
                     str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
                 }
                 str+="</div>";
