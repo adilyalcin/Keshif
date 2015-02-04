@@ -3532,6 +3532,7 @@ kshf.Facet_Categorical.prototype = {
             maxDegree = Math.max(maxDegree,arr.length);
         },this);
 
+        // add degree filter if attrib has multi-value items and set-vis is enabled
         if(this.hasMultiValueItem && this.options.enableSetVis){
             var fscale = 'step';
             if(maxDegree>100) fscale = 'log';
@@ -3553,10 +3554,12 @@ kshf.Facet_Categorical.prototype = {
         }
 
         // Modified internal dataMap function - Skip rows with 0 active item count
+        var minAggrValue=0;
+        if(this.options.minAggrValue) minAggrValue = Math.max(0,this.options.minAggrValue);
         if(this.options.dataMap) {
             if(!this.isLinked){
                 this._dataMap = function(d){
-                    if(d.items.length===0) return null; 
+                    if(d.items.length<minAggrValue) return null; 
                     return options.dataMap(d);
                 };
             } else {
@@ -3567,7 +3570,7 @@ kshf.Facet_Categorical.prototype = {
         } else {
             if(!this.isLinked){
                 this._dataMap = function(d){
-                    if(d.items.length===0) return null;
+                    if(d.items.length<minAggrValue) return null; 
                     return d.id();
                 };
             } else {
