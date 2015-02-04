@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Woman In Film</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-140);
+    $('#chart_div').height($(window).height()-180);
+};
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth:140,
+        leftPanelLabelWidth: 250,
+        itemName: "Movies",
+        source: {
+            url: "http://women-in-film.silk.co/",
+            dirPath: "./data/",
+            fileType: 'csv',
+            sheets : [ {name:"woman_in_film"} ]
+        },
+        facets: [
+            //Movie Title
+            // Passes Bechdel Test?
+            // Number of Criteria Passed
+            // Clarity of Pass
+            // Has at least two [named] women in it
+            // The women talk to each other
+            // The women talk about something besides a man
+            // Genre
+            // Director
+            // Main Actors
+            // Production Comapany
+            // Plot Keywords (top 10)
+            // Year
+            // Rating
+            // Runtime (min)
+            // Plot
+            // Language
+            // Country
+            // Image
+            // IMDb Popularity Score
+            // Award Popularity
+            // IMDb rating
+            // IMDb votes
+            // Nominations
+            // Wins
+            // IMDB Link
+            {   facetTitle: "Movie Passes Bechdel Test ?",
+                catItemMap: function(movie){
+                    return movie.data["Passes Bechdel Test?"];
+                }
+            },{ facetTitle: "Bechdel Criterias",
+                catItemMap: function(movie){
+                    var r=[];
+                    if(movie.data["Has at least two [named] women in it"]==="Pass")
+                        r.push("Has at least two [named] women in it");
+                    if(movie.data["The women talk to each other"]==="Pass")
+                        r.push("The women talk to each other");
+                    if(movie.data["The women talk about something besides a man"]==="Pass")
+                        r.push("The women talk about something besides a man");
+                    return r;
+                }
+            },{ facetTitle: "Clarity of Pass", collapsed: true
+/*            },{ facetTitle: "Director",
+                catItemMap: function(movie){
+                    return movie.data.Director.split(", ");
+                }*/
+/*                        },{ facetTitle: "Plot Keywords (top 10)",
+                catItemMap: function(movie){
+                    var keywords = movie.data["Plot Keywords (top 10)"];
+                    if(keywords !== undefined && keywords.split) 
+                        return keywords.split(", ");
+                }*/
+            },{ facetTitle: "IMDb Popularity Score", layout: 'left', intervalScale: 'log'
+            },{ facetTitle: "Award Popularity", layout: 'left', intervalScale: 'log', collapsed: true
+            },{ facetTitle: "Rating",
+                catItemMap: function(movie){
+                    return movie.data.Rating.split(", ");
+                }
+            },{ facetTitle: "Genre", layout: 'right',
+                catItemMap: function(movie){
+                    return movie.data.Genre.split(", ");
+                }
+            },{ facetTitle: "Main Actors", layout: 'right',
+                catItemMap: function(movie){
+                    return movie.data['Main Actors'].split(", ");
+                }, minAggrValue: 3
+            },{ facetTitle: "Language", layout: 'right',
+                catItemMap: function(movie){
+                    return movie.data.Language.split(", ");
+                }
+/*                        },{ facetTitle: "Production Company", collapsed: true, layout: 'right',
+                catItemMap: function(movie){
+                    return movie.data["Production Company"].split(", ");
+                }*/
+            },{ facetTitle: "Runtime (min)", intervalScale: 'log', layout: 'right', collapsed: true
+            },{ facetTitle: "Year", layout: "left", intervalScale: 'step'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 105,
+            detailsToggle : "Zoom",
+            displayType: 'grid',
+            autoExpandMore: true,
+            sortingOpts : [ 
+                {name: 'Popularity', value: function(d){ return d.data["IMDb Popularity Score"];} },
+//                {name: 'id', inverse:true},
+                {name: 'Year', inverse:true},
+            ],
+            contentFunc : function(d){
+                return "<a target='_blank' href='"+d.data['IMDB Link']+"' class='thumbnail'>"+
+                    "<img class='thumbImg'></a>";//<span class='title'>"+/*d.data['Movie Title']*/+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.Image);
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            .listItem{
+                width: 25%;
+            }
+            .thumbImg{
+
+            }
+            #chart_div {
+                width: 1100px;
+                height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">Gender Bias In Movies - Woman Only Talk About Men? </div>
+        <div class="pageSubtitle">
+        To pass the Information on <a href="http://bechdeltest.com/" target="_blank">Bechdel test</a>, a movie has to meet 3 criteria: it has to have at least two women in it (1), who talk to each other (2) about something besides a man (3).<br>
+        Surprisingly, <b>533 of the 1453 (36%)</b> movies in this dataset fails this simple gender test! Explore the data below.</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data curated by <a href="https://github.com/ali-ce/datasets/tree/master/Women-in-Film" target="_blank">
+                Alice Corona
+            </a>, CC SA 4.0 Int <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank"><img src="http://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg" height="12"></a>.
+            Story also published at <a href="http://women-in-film.silk.co/" target='_blank'>Silk</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
