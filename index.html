@@ -3,9 +3,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Language" content="en-us" />
-	<link href="http://www.cs.umd.edu/hcil/_styles/screen.css" rel="stylesheet" type="text/css" media="screen" />
-	<link href="http://www.cs.umd.edu/hcil/_styles/menu.css" rel="stylesheet" type="text/css" />
-
+<!--	<link href="http://www.cs.umd.edu/hcil/_styles/screen.css" rel="stylesheet" type="text/css" media="screen" />-->
+	
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="./js/d3.v3.min.js" charset="utf-8"></script>
@@ -16,7 +15,7 @@
 
     <script type="text/javascript" src="./demo/js/demo.js" charset="utf-8"></script>
 
-	<title>Keshif - Simplicity Driven Visual Faceted Browser</title>
+	<title>Keshif: Data Made Explorable</title>
 
 	<!-- highlight active area -->
 	<script type="text/javascript">
@@ -130,7 +129,7 @@ browser = new kshf.Browser({
             showPercentile: true
         },{
             facetTitle: "Creation Time",
-            layout: 'right',
+            layout: 'left',
             collapsed: true,
             catItemMap: function(d){ return d.data[dataColumns['Authored']];},
             intervalScale: 'time'
@@ -181,23 +180,170 @@ browser = new kshf.Browser({
 	};
 	</script>
 	<style>
-	  my-email::after {
-	    content: attr(data-domain);
-	  }
-	  my-email::before {
-	    content: attr(data-user) "\0040";
-	  }
-	  h1, .h1 {
-	          font-size: 1.7em;
-	          font-weight: normal;
-	          color: #727365;
-	          letter-spacing: .12em;
-	  }
 
-	  li {
-	          line-height: 1.3em;
-	          margin-bottom: 10px !important;
-	  }
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 63.125%;
+    /* translate 1.0em to 10px, 1.5em to 15px, etc. */
+    color: #222;
+}
+
+/****************************************
+ * body / content Sections
+ ****************************************/
+
+h2{
+    margin: 0 0 15px 0;
+    color: #8AB422;
+    font-size: 1.2em;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+h3{
+    clear: both;
+    margin: 0 0 15px 0;
+    font-size: 1em;
+    line-height: 1.4em;
+    font-weight: bold;
+    color: #222222;
+}
+
+h4
+{
+    margin: 15px 0 3px 0;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/*  Text  */
+p
+{
+    margin: 0 0 15px 0;
+    line-height: 1.4em;
+}
+
+blockquote 
+{ 
+    margin: 0 30px; 
+    line-height: 1.4em;
+}
+
+/*  Lists */
+ul, ol
+{
+    margin: 3px 0 18px;
+    padding: 0;
+    font-size: 1em;
+    line-height: 1.1em;
+}
+
+ul ul, ul ol, ol ol, ol ul { font-size: 1em; }
+
+ul li
+{
+    margin: 5px 0;
+    list-style: none;
+}
+
+ol li { margin: 5px 0 5px 35px; }
+
+/*  Links */
+a
+{
+    color: #476F88;
+    text-decoration: underline;
+}
+
+a:visited { color: #717171; }
+a:hover { color: #96BF1A; }
+a:active { color: #476F88; }
+
+.attention {
+    color: #C31C5F;
+    font-weight: bold;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* Images */
+img { border: none; }
+.imgR { float: right; }
+.imgL { float: left; }
+
+/****************************************
+ * Tables
+ ****************************************/
+
+table, tr, th, td
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/************************ 
+ * Misc
+ ************************/
+
+/* 
+    Hide rules for accesibility.
+*/
+
+hr { display: none; }
+
+.row 
+{
+    clear: both;
+    padding-top: 5px;
+}
+
+.row span.label 
+{
+    float: left;
+    width: 9em;
+    text-align: left;   
+    font-weight: bold;
+}
+
+div.row span.value
+{
+    float: left;
+    text-align: left;
+}
+
+.featureList{
+    cursor: default;
+/*    margin-top:20px; */
+}
+.featureList > li{
+    margin-top: 20px;
+}
+.featureList > li:hover >i:before{
+    color: green;
+}
+.titleee{
+    text-align: center;
+    font-size: 1.3em;
+}
+      
+    my-email::after {
+        content: attr(data-domain);
+    }
+    my-email::before {
+        content: attr(data-user) "\0040";
+    }
+    h1, .h1 {
+          font-size: 1.7em;
+          font-weight: normal;
+          color: #727365;
+          letter-spacing: .12em;
+    }
 
     #mypage {
         margin-left: auto;
@@ -405,7 +551,7 @@ browser = new kshf.Browser({
 
 <body>
 
-<span id="forkongithub"><a href="https://github.com/adilyalcin/keshif" target='_blank' class='forkText'>Fork me on GitHub</a></span>
+<span id="forkongithub"><a href="https://github.com/adilyalcin/keshif" target='_blank' class='forkText'>Fork me on Github</a></span>
 
 <!--<a href="https://github.com/adilyalcin/keshif"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>-->
 
@@ -438,9 +584,25 @@ Data Made Explorable</span><br/><br/>
 <!--<h2 id="overview">Overview</h2>-->
 
 
-<i><b>Keshif</b></i> is a visual data browser that makes it easier to browse and understand your data. It presents visual summaries of your data properties, such as who, what, when and where, in its facets and timeline. You can discover relations between attributes through exploration. Filtering follows a consistent design within and across facets. After each step of exploration, the most relevant results and data properties are shown first, as they are dynamically and smoothly re-ordered.<br/><br/>
+<!--Easy
+Explore
+Understand
+Data
+Visual
+Summaries-->
 
-Our demos show a wide range of datasets to inspire your own cases. Keshif is easy to use for new datasets (mails, digital collections, news, contact lists, ...); you can load your data either through simple csv files, from Google Spreadsheets, or online APIs (JSON) through some manual coding. Our <a href="https://github.com/adilyalcin/Keshif/wiki#wiki-api-documentation" target="_blank">API</a> for creating a browser using Keshif is a single function which accepts basic configuration parameters, such as data source, and which attributes you want to build facets on.<br/><br/>
+<div class="titleee"><i><b>Keshif</b></i> lets you explore and understand your data collections, visually &amp; easily.</div>
+<ul class="fa-ul featureList">
+    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries for the data properties you would like to explore.</b> Keshif will present your data in its simple, effective visual language.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> across your summaries using the rapid interaction design. <b>Preview results </b> by quick mouse over. <b>Compare</b> across distributions. Keshif automatically <b>synronizes</b> all that is connected so that you can make observations swiftly.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability through design</b>. Many visualization techniques have not been designed to scale gracefully. Keshif is designed to scale. It lets you explore large data collections, as far as data can be loaded to your web browser.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs with a single design. Our visual and interactive approach is cohesive, so it's easy to start exploring.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Don't worry about picking the right visualization.</b> Keshif does it for you. You will focus on your data and your goals. You will define dimensions that you'd like to explore. Keshif will visualize the characteristics.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step of exploration, the most relevant results and data properties are shown first, as they are dynamically and smoothly re-ordered.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible pipeline.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Define your browser using its simple <a href="https://github.com/adilyalcin/Keshif/wiki#wiki-api-documentation" target="_blank">API</a>.</b> The API is based on a single function which takes configuration parameters, such as data source, and the descriptions of your data summaries.</li>
+</ul>
+
 </div>
 
 <div align="center">
@@ -456,6 +618,7 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 
 </br></br>
 <h2 id="participants">Advised By</h2>
+<a href="https://engineering.purdue.edu/~elm/">Niklas Elmqvist</a>, Associate Professor, Computer Science, University of Maryland<br><br>
 <a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a>, Professor, Computer Science, University of Maryland
 
 </br></br>
@@ -473,9 +636,14 @@ Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license
 </ul>
 
 <h2 id="sponsors">History</h2>
-<p>Funded in part by <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014).</p>
-<ul>
-<li><a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, Faculty Research Assistant, UMIACS, University of Maryland</li>
+
+<ul class="fa-ul">
+    <li> <i class="fa-li fa fa-bullseye"></i>
+        Funded in part by 
+        <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014).</li>
+    <li> <i class="fa-li fa fa-bullseye"></i>
+        <a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, 
+        Contributor, Faculty Research Assistant, UMIACS, University of Maryland</li>
 </ul>
 
 <br/><br/>
