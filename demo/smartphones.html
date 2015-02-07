@@ -11,16 +11,19 @@
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="./css/style.css" type="text/css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
 
 $(document).ready( function() {
     // set div height accordingly 
-    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').height($(window).height()-70);
     $('#chart_div').width ($(window).width()*0.9);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').height($(window).height()-70);
         $('#chart_div').width ($(window).width()*0.9);
         browser.updateLayout();
     });
