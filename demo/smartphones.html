@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Smartphones</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css" type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="./css/style.css" type="text/css">
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript">
+
+$(document).ready( function() {
+    // set div height accordingly 
+    $('#chart_div').height($(window).height()-45);
+    $('#chart_div').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div').height($(window).height()-45);
+        $('#chart_div').width ($(window).width()*0.9);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 100,
+        barChartWidth: 140,
+        itemName: "Smartphones",
+        source: {
+            url: "http://www.productchart.com/smartphones/",
+callback: function(browser){
+    browser.primaryTableName = "Smartphones";
+    kshf.dt.Smartphones = [];
+    var arr = kshf.dt.Smartphones;
+    $.ajax({
+        url: "./data/smartphones.json",
+        success: function(data){
+            data.forEach(function(phone){
+                // convert string to int...
+                phone.id = 1*phone.id;
+                phone['Has Dual SIM'] = 1*phone.att_dual_sim;
+                phone.att_pixels_x = 1*phone.att_pixels_x;
+                phone.att_pixels_y = 1*phone.att_pixels_y;
+                phone.RAM = 1*phone.att_ram;
+                phone['Screen Size'] = 1*phone.att_screen_size;
+                phone.SDCard = 1*phone.att_sd_card;
+                phone.Storage = 1*phone.att_storage;
+                phone.Weight = 1*phone.att_weight;
+                phone.Price = 1*phone.price;
+                phone.Brand = phone.att_brand;
+                phone.Model = phone.att_base_name;
+                phone.URL = phone.url.split("%")[0];
+
+                phone.last_update = moment(phone.last_update).toDate();
+                phone.SaveDate = moment(phone.att_manually_saved).toDate();
+
+                delete phone.att_dual_sim;
+                delete phone.att_ram;
+                delete phone.att_screen_size;
+                delete phone.att_sd_card;
+                delete phone.att_storage;
+                delete phone.att_weight;
+                delete phone.price;
+                delete phone.att_brand;
+                delete phone.att_base_name;
+
+                delete phone.att_base_name;
+                delete phone.last_update;
+                delete phone.needs_update;
+                delete phone.att_base_name;
+                delete phone.att_manually_saved;
+                delete phone.last_update;
+
+                arr.push(new kshf.Item(phone,"id"));
+            });
+
+            browser.items = arr;
+            browser.itemsSelectedCt = arr.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+}
+        },
+        facets: [
+            {
+                facetTitle: "Brand"
+            },{
+                facetTitle: "Model", collapsed: true
+            },{
+                facetTitle: "Price",
+                unitName: "$"
+            },{
+                facetTitle: "Screen Size",
+                unitName: 'in'//'″'
+            },{
+                facetTitle: "Weight",
+                unitName: "oz."
+            },{
+                facetTitle: "Storage", layout: 'right',
+                //type:'categorical',
+                unitName: 'GB'
+            },{
+                facetTitle: "SDCard", layout: 'right',
+                unitName: "GB"
+            },{
+                facetTitle: "RAM", layout: 'right',
+                unitName: "GB", //intervalScale: 'step'
+            },{
+                facetTitle: "att_pixels_x", layout: 'right'
+            },{
+                facetTitle: "att_pixels_y", layout: 'right'
+            },{ 
+                facetTitle: "Has Dual SIM",
+                type: 'categorical', collapsed: true
+/*            },{
+                facetTitle: "SaveDate",
+                intervalScale: 'time',
+                layout: 'bottom'*/
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts: [
+                {   name: 'Price' },
+                {   name: 'Storage' },
+                {   name: 'Weight' },
+                {   name: 'Screen Size' }
+            ],
+            displayType: 'grid',
+            detailsToggle: "Zoom",
+            textSearch: "name",
+            autoExpandMore: true,
+            contentFunc : function(d){
+                return "<a target='_blank' href='"+d.data.URL+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Model+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.image);
+            }
+        }
+    });
+});
+
+        </script>
+        <style>
+        .iteminfo a{
+            color:#606060;
+            font-style:italic;
+        }
+        #chart_div { width: 90%; }
+        .listItem{
+            width: 90px;
+            box-shadow: none !important;
+            overflow: visible !important;
+        }
+        .listItem .thumbImg{
+            width: auto !important;
+            max-height: 55px;
+        }
+        .subTitle{
+            font-size: 0.7em !important;
+        }
+
+        .listItem .content img:hover{
+          transform: scale(1.5);
+        }
+        .thumbnail{
+            overflow: visible !important;
+        }
+
+        .listItem:hover{
+          z-index: 200 !important;
+          overflow: visible !important;
+        }
+        .itemRow{
+          width: 100% !important;
+        }
+        .listItem > .itemRow{
+          overflow: visible !important;
+        }
+        .listItem{
+        }
+        .content img.thumbImg{
+          transition: all 200ms linear;
+          -webkit-transition: all 200ms linear;
+          -o-transition: all 200ms linear;
+          -moz-transition: all 200ms linear;
+        }
+
+
+        </style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
