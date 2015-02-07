@@ -340,10 +340,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .facetControls {
   border-bottom: dotted 1px lightgray;
 }
-.kshf .facetControls .attribTextSearch input {
+.kshf .facetControls .attribTextSearchInput {
   text-align: right;
 }
-.kshf .facetControls .attribTextSearch input::-webkit-input-placeholder {
+.kshf .facetControls .attribTextSearchInput::-webkit-input-placeholder {
   text-align: right;
 }
 .kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control {
@@ -618,6 +618,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   white-space: nowrap;
   position: relative;
+  cursor: text;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput {
   width: 100%;
@@ -628,6 +629,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(244, 244, 244, 0);
   pointer-events: all;
   margin: 0px;
+  cursor: text;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput:focus {
   outline-color: gray;
@@ -636,7 +638,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput:hover {
   border: solid 1px #cb5454;
   padding: 0px 0px 0px 0px;
-  background-color: white;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput::-webkit-input-placeholder {
   font-weight: 500;
@@ -648,24 +649,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput:hover::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .clearText {
-  position: absolute;
-  left: 1px;
-  top: 3px;
-  cursor: pointer;
-  font-size: 0.8em;
-  color: gray;
-  display: none;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .clearText:hover {
-  color: #cb5454;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .searchIcon {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl {
   position: absolute;
   top: 2px;
-  left: 3px;
-  color: #cb5454;
+  left: 1px;
+  padding-left: 1px;
   font-size: 0.7em;
+  pointer-events: none;
+  color: #cb5454;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl:before {
+  content: "\f002";
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true] {
+  cursor: pointer;
+  pointer-events: all;
+  color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:hover {
+  color: #cb5454;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:before {
+  content: "\f057";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
   display: inline-block;
@@ -1397,6 +1402,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .belowAttribs {
   position: relative;
+  height: 18px;
 }
 .kshf .belowAttribs .border_line {
   opacity: 0.6;
@@ -1422,7 +1428,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: top 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshf .item_count {
-  color: gray;
+  color: #969DA3;
 }
 .kshf .selectVertLine {
   display: inline-block;

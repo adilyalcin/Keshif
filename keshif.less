@@ -321,10 +321,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .facetControls{
         border-bottom: dotted 1px lightgray;
-        .attribTextSearch input{
+        .attribTextSearchInput{
             text-align: right;
             &::-webkit-input-placeholder { 
-                text-align:right; 
+                text-align:right;
             }
         }
     }
@@ -588,6 +588,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
+                        cursor: text;
                         > .attribTextSearchInput {
                             width: 100%;
                             font-size: 0.7em;
@@ -598,6 +599,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             background-color:rgba(244, 244, 244,0);
                             pointer-events: all;
                             margin: 0px;
+                            cursor:text;
                             &:focus{
                                 outline-color: gray;
                                 outline-width: 4px;
@@ -605,7 +607,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             &:hover{
                                 border: solid 1px #cb5454;
                                 padding: 0px 0px 0px 0px;
-                                background-color: white;
+                                //background-color: white;
                             }
                             &::-webkit-input-placeholder { 
                                 font-weight: 500;
@@ -618,24 +620,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 color: #F3CDCD;
                             }
                         }
-                        > .clearText{
-                            position: absolute;
-                            left: 1px;
-                            top: 3px;
-                            cursor: pointer;
-                            font-size: 0.8em;
-                            color: gray;
-                            display: none;
-                            &:hover{
-                                color: #cb5454;
-                            }
-                        }
-                        > .searchIcon{
+                        > .attribTextSearchControl{
                             position: absolute;
                             top: 2px;
-                            left: 3px;
-                            color: #cb5454;
+                            left: 1px;
+                            padding-left: 1px;
                             font-size: 0.7em;
+                            pointer-events: none;
+                            color: #cb5454;
+                            // Search icon
+                            &:before{
+                                content: "\f002";
+                            }
+                            &[showClear=true]{
+                                cursor: pointer;
+                                pointer-events: all;
+                                color: gray;
+                                &:hover{
+                                    color: #cb5454;
+                                }
+                                &:before{
+                                    content: "\f057";
+                                }
+                            }
                         }
                     } // attribTextSearch
 
@@ -1412,6 +1419,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .belowAttribs{
         position:relative; 
+        height: 18px;
         .border_line{
             opacity: 0.6;
         }
@@ -1436,7 +1444,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .item_count{
-        color: gray;
+        color: #969DA3;
         //&::before{ content: "("; }
         //&::after{ content: ")"; }
     }
