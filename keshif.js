@@ -2868,7 +2868,6 @@ kshf.Browser.prototype = {
     updateLayout_Height: function(){
         var me=this;
         var divHeight_Total = this.domHeight();
-        var divHeight = divHeight_Total;
         var leftBottomUsed=false;
         var rightBottomUsed=false;
 
@@ -2878,7 +2877,7 @@ kshf.Browser.prototype = {
         var bottomFacetsHeight=0;
         // process bottom facet too
         if(this.facetsBottom.length>0){
-            var targetHeight=divHeight/5;
+            var targetHeight=divHeight_Total/5;
             var maxHeight=0;
             // they all share the same target height
             this.facetsBottom.forEach(function(fct){
@@ -2904,7 +2903,7 @@ kshf.Browser.prototype = {
 
             while(true){
                 var remainingFacetCount = facets.length-processedFacets;
-                if(remainingFacetCount===0 && sectionHeight<10) {
+                if(remainingFacetCount===0) {
                     break;
                 }
                 var processedFacets_pre = processedFacets;
@@ -2958,20 +2957,17 @@ kshf.Browser.prototype = {
             return sectionHeight;
         };
 
-        var facetsHeight = divHeight_Total;
-
         // Left Panel
         if(this.facetsLeft.length>0){
-            var leftPanelHeight = divHeight;
+            var leftPanelHeight = divHeight_Total;
             if(leftBottomUsed) leftPanelHeight-=bottomFacetsHeight;
-            var leftHeightRemaining = doLayout(leftPanelHeight,this.facetsLeft);
-            facetsHeight-=leftHeightRemaining;
+            doLayout(leftPanelHeight,this.facetsLeft);
         }
         // Right Panel
         if(this.facetsRight.length>0){
-            var rightPanelHeight = divHeight;
+            var rightPanelHeight = divHeight_Total;
             if(rightBottomUsed) rightPanelHeight-=bottomFacetsHeight;
-            var rightHeightRemaining = doLayout(rightPanelHeight,this.facetsRight);
+            doLayout(rightPanelHeight,this.facetsRight);
         }
 
         // The part where facet DOM is updated
@@ -3135,7 +3131,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.subFacets = [];
 
     this.heightRow_attrib = 18;
-    this.heightRow_config = 18;
+    this.heightRow_config = 16;
 
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
@@ -3180,8 +3176,8 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     getHeight: function(){
-        if(!this.hasAttribs()) return this.getHeight_Header()-2;
-        if(this.collapsed) return this.getHeight_Header()-2;
+        if(!this.hasAttribs()) return this.getHeight_Header();
+        if(this.collapsed) return this.getHeight_Header();
         // Note: I don't know why I need -2 to match real dom height.
         return this.getHeight_Header() + this.getHeight_Content()-2;
     },
@@ -3237,9 +3233,22 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs()) return this.heightRow_attrib;
         return this.getHeight_Header()+(this.configRowCount+Math.min(this.attribCount_Visible,3)+1)*this.heightRow_attrib;
     },
+    /** -- */
+    getHeight_Config: function(){
+        var r=0;
+        if(this.configRowCount!=0) r+=1; // bottom border : 1 px
+        if(this.showTextSearch) r+=16;
+        if(this.sortingOpts.length>1) r+=17;
+        return r;
+    },
+    /** -- */
+    getHeight_Bottom: function(){
+        return 18;
+    },
+    /** -- */
     getHeight_Content: function(){
-        var h = this.attribHeight + this.heightRow_config*this.configRowCount;
-        if(!this.areAllAttribsInDisplay() || !this.browser.hideBarAxis) h+=17;
+        var h = this.attribHeight + this.getHeight_Config();
+        if(!this.areAllAttribsInDisplay() || !this.browser.hideBarAxis) h+=this.getHeight_Bottom();
         return h;
     },
     /** -- */
@@ -3819,7 +3828,7 @@ kshf.Facet_Categorical.prototype = {
                     if(v===""){
                         me.attribFilter.clearFilter();
                     } else {
-                        textSearchRowDOM.select(".clearText").style("display","block");                     
+                        me.dom.attribTextSearchControl.attr("showClear",true);
                         me.attribFilter.selected_All_clear();
                         me._attribs.forEach(function(attrib){
                             if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
@@ -3850,8 +3859,8 @@ kshf.Facet_Categorical.prototype = {
                 d3.event.preventDefault();
             })
             ;
-        textSearchRowDOM.append("i").attr("class","fa fa-search searchIcon");
-        this.dom.clearTextSearch=textSearchRowDOM.append("i").attr("class","fa fa-times-circle clearText")
+        this.dom.attribTextSearchControl = textSearchRowDOM.append("span")
+            .attr("class","attribTextSearchControl fa")
             .on("click",function() { me.attribFilter.clearFilter(); });
     },
     /** returns the maximum active aggregate value per row in chart data */
@@ -3926,7 +3935,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     clearLabelTextSearch: function(){
         if(!this.showTextSearch) return;
-        this.dom.clearTextSearch.style("display","none");
+        this.dom.attribTextSearchControl.attr("showClear",false);
         this.dom.attribTextSearch[0][0].value = '';
     },
     /** -- */
@@ -3958,7 +3967,7 @@ kshf.Facet_Categorical.prototype = {
     setHeight: function(newHeight){
         if(!this.hasAttribs()) return;
         this.attribHeight = Math.min(
-            newHeight-this.getHeight_Header()-(1+this.configRowCount)*this.heightRow_config+1,
+            newHeight-this.getHeight_Header()-this.getHeight_Config()-this.getHeight_Bottom()+2,
             this.heightRow_attrib*this.attribCount_Visible);
 
         // update attribCount_InDisplay
@@ -4251,10 +4260,10 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-        var moreTxt = "";
+        var moreTxt = "# Rows: "+this.attribCount_Visible+" ";
         var below = this.attribCount_Visible-bottomItem-1;
-        if(below>0) moreTxt=""+below+" more below / ";
-        this.dom.scroll_display_more.text(moreTxt+this.attribCount_Visible+" total");
+        if(below>0) moreTxt+=" - more <span class='fa fa-angle-down'></span>";
+        this.dom.scroll_display_more.html(moreTxt);
     },
     /** -- */
     refreshHeight: function(){
@@ -4772,6 +4781,8 @@ kshf.Facet_Categorical.prototype = {
         var selectedOnTop = this.sortingOpt_Active.no_resort!==true;
         var inverse = this.sortingOpt_Active.inverse;
         var sortFunc = this.sortingOpt_Active.func;
+        var prepSort = this.sortingOpt_Active.prep;
+        if(prepSort) prepSort.call(this);
 
         var idCompareFunc = function(a,b){return b-a;};
         if(typeof(this._attribs[0].id())==="string") 
