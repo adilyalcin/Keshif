@@ -4991,6 +4991,10 @@ kshf.Facet_Interval = function(kshf_, options){
     if(options.intervalScale===undefined)
         options.intervalScale='linear';
 
+    if(options.stepSize===undefined){
+        options.stepSize = 1;
+    }
+
     if(options.showPercentile===true){
         this.height_percentile = 14;   
     }
@@ -5126,7 +5130,7 @@ kshf.Facet_Interval = function(kshf_, options){
     }
 
     if(this.options.intervalScale==='step'){
-        this.intervalRange.max++;
+        this.intervalRange.max+=this.options.stepSize;
     }
 
     if(this.intervalRange.min===undefined){
@@ -5381,9 +5385,9 @@ kshf.Facet_Interval.prototype = {
                 break;
             case 'step':
                 var range=this.intervalRange.max-this.intervalRange.min+1;
-                ticks = new Array(range);
-                for(var m=0; m<range; m++){
-                    ticks[m] = this.intervalRange.min+m;
+                ticks = new Array(Math.floor(range/this.options.stepSize));
+                for(var m=0,n=0; m<range; m+=this.options.stepSize,n++){
+                    ticks[n] = this.intervalRange.min+m;
                 }
                 this.intervalTickFormat = d3.format("d");
                 break;
