@@ -95,19 +95,19 @@ google.setOnLoadCallback(function(){
             },{ facetTitle: "Award Popularity", layout: 'left', intervalScale: 'log', collapsed: true
             },{ facetTitle: "Rating",
                 catItemMap: function(movie){
-                    return movie.data.Rating.split(", ");
+                    if(movie.data.Rating) return movie.data.Rating.split(", ");
                 }
             },{ facetTitle: "Genre", layout: 'right',
                 catItemMap: function(movie){
-                    return movie.data.Genre.split(", ");
+                    if(movie.data.Genre) return movie.data.Genre.split(", ");
                 }
             },{ facetTitle: "Main Actors", layout: 'right',
                 catItemMap: function(movie){
-                    return movie.data['Main Actors'].split(", ");
+                    if(movie.data['Main Actors']) return movie.data['Main Actors'].split(", ");
                 }, minAggrValue: 3
             },{ facetTitle: "Language", layout: 'right',
                 catItemMap: function(movie){
-                    return movie.data.Language.split(", ");
+                    if(movie.data.Language) return movie.data.Language.split(", ");
                 }
 /*                        },{ facetTitle: "Production Company", collapsed: true, layout: 'right',
                 catItemMap: function(movie){
