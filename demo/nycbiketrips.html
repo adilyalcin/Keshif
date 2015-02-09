@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Bike Trips in New York City</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 110,
+                    leftPanelLabelWidth: 320,
+                    rightPanelLabelWidth: 320,
+                    source: {
+                        dirPath: './data/nycbiketrips_',
+                        fileType: 'csv',
+                        // gdocId : '1ftMNd_WmRYlvxxQS0eqCBwnJ-3vM1Z1oEEWpNA8FjtE',
+                        sheets : [ {name:"Trips"}, {name:"Stations"} ]
+                    },
+                    loadedCb: function(){
+                        kshf.dt.Trips.forEach(function(trip){
+                            // 2/28/14 21:07
+                            trip.data.TimeStart = moment(trip.data.Time_Start,"M/D/YY HH:mm");
+                        })
+                    },
+                    facets: [
+                        {   facetTitle: "UserType",
+                            catLabelText: function(d){
+                                switch(d.data[1]){
+                                    case "S": return "Subscriber";
+                                    case "C": return "Customer";
+                                }
+                            },
+                        },{ facetTitle: "Gender", layout: 'right',
+                            catLabelText: function(d){
+                                switch(d.data[1]){
+                                    case 2: return "Female";
+                                    case 1: return "Male";
+                                    default: return "?";
+                                }
+                            },
+                            type: 'categorical'
+                        },{ facetTitle: "Station_Start",
+                            type: 'categorical',
+                            catLabelText: function(d){
+                                return kshf.dt_id.Stations[d.data[1]].data.Name;
+                            },
+                        },{ facetTitle: "Station_End", layout: 'right',
+                            type: 'categorical',
+                            catLabelText: function(d){
+                                return kshf.dt_id.Stations[d.data[1]].data.Name;
+                            },
+                        },{ facetTitle: "Hour of Day", layout: 'bottom',
+                            type: 'interval',
+                            catItemMap: function(d){
+                                return d.data.TimeStart.hour();
+                            },
+                            unitName: "hr",
+                            intervalScale: 'step'
+                        },{ facetTitle: "Day of Week", layout: 'right', collapsed: true,
+                            type: 'categorical',
+                            catItemMap: function(d){
+                                return d.data.TimeStart.day();
+                            },
+                            sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
+                            catLabelText: function(d){
+                                switch(d.data[1]){
+                                    case 1: return "Monday";
+                                    case 2: return "Tuesday";
+                                    case 3: return "Wednesday";
+                                    case 4: return "Thursday";
+                                    case 5: return "Friday";
+                                    case 6: return "Saturday";
+                                    case 0: return "Sunday";
+                                }
+                            }
+                        },{ facetTitle: "Duration (minutes)", layout: 'bottom',
+                            intervalScale: "log",
+                            catItemMap: function(d){
+                                return Math.round(d.data.Duration/60);
+                            },
+                            unitName: "sec"
+                        },{ facetTitle: "BirthYear", layout: 'bottom', collapsed: true
+                        }
+                    ]
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 1000px;
+                height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
