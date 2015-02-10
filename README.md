@@ -8,7 +8,7 @@ To start using Keshif
 * Check out the [wiki](https://github.com/adilyalcin/Keshif/wiki).
 * Explore the demos and source codes.
 
-[![Demo](https://github.com/adilyalcin/Keshif/blob/master/demo/demo_img/demo.png)](http://adilyalcin.github.io/Keshif/demo/demo.html)
+[![Demo](https://github.com/adilyalcin/Keshif/blob/master/demo/demo_img/demo.png)](http://keshif.me)
 
 ### License
 
