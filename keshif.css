@@ -441,6 +441,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   font-size: 0.6em;
   font-weight: 300;
+  line-height: 9px;
   cursor: default;
   color: gray;
 }
@@ -491,6 +492,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-variant: small-caps;
   pointer-events: none;
   margin-top: 2px;
+  line-height: 1em;
   text-rendering: initial;
   display: inline-block;
 }
@@ -540,8 +542,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   position: absolute;
   top: 0px;
-  width: 1em;
-  font-size: 1em;
   cursor: pointer;
   opacity: 0;
   z-index: 10;
@@ -1038,6 +1038,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .barChartPreviewAxis > .tick > .text {
   width: 20px;
   left: -22px;
+  line-heigt: 9px;
   text-align: right;
   top: -6px;
   position: relative;
@@ -1392,9 +1393,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart:hover[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {
   display: inline-block;
-}
-.kshf .kshfChart[hasFacets=true] {
-  margin-bottom: 2px;
 }
 .kshf .kshfChart[hasFacets=true] > .headerGroup .header_label {
   font-size: 1.3em;
