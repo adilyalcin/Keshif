@@ -120,8 +120,6 @@ $(document).ready( function(){
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-//                  return d.data.Name;
-//                return d.data.Title;
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
             },
