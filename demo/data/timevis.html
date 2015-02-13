@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html>
+	<!-- The head of the document -->
+	<head>
+		<title>TimeViz Browser</title>
+		<meta charset="UTF-8" />
+		<link type="text/css" href="css/redmond/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" />
+		<link type="text/css" href="jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+		<link type="text/css" href="jqwidgets/styles/jqx.energyblue.css" rel="stylesheet" />
+		<link type="text/css" href="timeviz.css" rel="stylesheet" />
+
+		<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.min.js"></script>
+		<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
+		<script type="text/javascript" src="jqwidgets/jqxswitchbutton.js"></script>
+		<script type="text/javascript" src="timeviz.js"></script>
+
+		<script>
+			$(function () {
+                "use strict";
+				init();
+			});
+		</script>
+	</head>
+
+	<!-- The body of the document -->
+	<body>
+		<div>
+			<div class="header default ui-corner-all ui-widget-content">
+				<div class="header-text-large">The TimeViz Browser</div>
+				<div class="header-text-medium">A Visual Survey of Visualization Techniques for Time-Oriented Data</div>
+				<div class="header-text-small">by <a href="http://www.informatik.uni-rostock.de/~ct">Christian Tominski</a> and <a href="http://mc.fhstp.ac.at/people/wolfgang-aigner">Wolfgang Aigner</a></div>
+			</div>
+			<div class="content default ui-corner-all ui-widget-content">
+				<div class="sidebar">
+					<div class="count ui-corner-all ui-widget-content">
+						# of Techniques: <span id="count" class="righty"></span>
+					</div>
+					<div class="search ui-corner-all ui-widget-content">
+						<span>Search: <input type="text" id="search" /><img id="clear_search" src="pics/ico/cross.png" alt="Clear Search" /></span>
+					</div>
+
+					<div class="clear"></div>
+
+					<!-- !!! DO NOT EDIT BELOW ANY CHANGES WILL BE OVERWRITTEN !!! -->
+					<!-- FILTER START -->
+<div class="filter-group">
+Data
+	<div class="category">
+		<div class="category-caption">Frame of Reference</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_abstract.png" class="category-icon" alt="Abstract" />Abstract</div>
+			<div class="category-switch">
+				<div id="sw_abstract"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_spatial.png" class="category-icon" alt="Spatial" />Spatial</div>
+			<div class="category-switch">
+				<div id="sw_spatial"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="category">
+		<div class="category-caption">Number of Variables</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_univariate.png" class="category-icon" alt="Univariate" />Univariate</div>
+			<div class="category-switch">
+				<div id="sw_univariate"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_multivariate.png" class="category-icon" alt="Multivariate" />Multivariate</div>
+			<div class="category-switch">
+				<div id="sw_multivariate"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+<div class="filter-group">
+Time
+	<div class="category">
+		<div class="category-caption">Arrangement</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_linear.png" class="category-icon" alt="Linear" />Linear</div>
+			<div class="category-switch">
+				<div id="sw_linear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_cyclic.png" class="category-icon" alt="Cyclic" />Cyclic</div>
+			<div class="category-switch">
+				<div id="sw_cyclic"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="category">
+		<div class="category-caption">Time Primitives</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_instant.png" class="category-icon" alt="Instant" />Instant</div>
+			<div class="category-switch">
+				<div id="sw_instant"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_interval.png" class="category-icon" alt="Interval" />Interval</div>
+			<div class="category-switch">
+				<div id="sw_interval"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+<div class="filter-group">
+Visualization
+	<div class="category">
+		<div class="category-caption">Mapping</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_static.png" class="category-icon" alt="Static" />Static</div>
+			<div class="category-switch">
+				<div id="sw_static"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_dynamic.png" class="category-icon" alt="Dynamic" />Dynamic</div>
+			<div class="category-switch">
+				<div id="sw_dynamic"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="category">
+		<div class="category-caption">Dimensionality</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_2D.png" class="category-icon" alt="2D" />2D</div>
+			<div class="category-switch">
+				<div id="sw_2D"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="category-switch-section">
+			<div class="category-label"><img src="pics/ico/ico_3D.png" class="category-icon" alt="3D" />3D</div>
+			<div class="category-switch">
+				<div id="sw_3D"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+					<!-- FILTER END -->
+					<!-- !!! YOU CAN EDIT FROM HERE ON !!! -->
+
+					<div class="book ui-corner-all ui-widget-content">
+						Our book:
+						<a href="http://www.timeviz.net"><img src="pics/book3d.png" alt="Book" /></a>
+					</div>
+
+					<div class="clustrmap ui-corner-all ui-widget-content">
+						<div id="clustrmaps-widget" style="margin:auto"></div><script type="text/javascript">var _clustrmaps = {'url' : 'http://survey.timeviz.net', 'user' : 1020563, 'server' : '4', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2012-06-07', 'lang' : 'en', 'corners' : 'square' };(function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www4.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();</script><noscript><a href="http://www4.clustrmaps.com/user/0cef9293"><img src="http://www4.clustrmaps.com/stats/maps-no_clusters/survey.timeviz.net-thumb.jpg" alt="Locations of visitors to this page" /></a></noscript>
+					</div>
+
+					<div class="contact ui-corner-all ui-widget-content">
+						<div style="padding: 5px 7px;">
+							Want to add your technique?<br>
+							Want to suggest corrections?<br>
+							Want to send a comment?<br>
+						</div>
+						<div style="text-align: center;">Please contact us:<br> <strong>survey [at] timeviz [dot] net</strong></div>
+					</div>
+					<div class="tree-vis ui-corner-all ui-widget-content">
+						Don't miss the <br> tree visualization survey <br> <a href="http://www.treevis.net" target="treevis">www.treevis.net</a>.
+					</div>
+
+					<div class="clear"></div>
+				</div>
+
+				<div id="thumbs">
+
+					<!-- !!! DO NOT EDIT BELOW ANY CHANGES WILL BE OVERWRITTEN !!! -->
+					<!-- THUMBS START -->
+<div class="tec" data-id="3D ThemeRiver" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/themeriver_3d.png" alt="3D ThemeRiver" />
+	<div class="tec-reference">Imrich, P.; Mueller, K.; Imre, D.; Zelenyuk, D. & Zhu, W.: <a >Interactive Poster: 3D ThemeRiver</a>. Poster Compendium of IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2003.</div>
+	<div class="tec-source">
+Imrich, P.; Mueller, K.; Imre, D.; Zelenyuk, D. & Zhu, W. (2003), ©  2003 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Imrich, P.; Mueller, K.; Imre, D.; Zelenyuk, D. & Zhu, W. (2003) propose a 3D variant of the ThemeRiver technique (see <a href="javascript:openTec('ThemeRiver')">ThemeRiver</a>). The 3D approach inherits the basic visual design from its 2D counterpart: multiple time-oriented variables are encoded to the widths of individually colored currents that form a river flowing through time along a horizontal time-axis. In the 2D variant, only one data variable can be visualized per current, namely by varying ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Anemone" data-categories="abstract|univariate|linear|instant|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/anemone.png" alt="Anemone" />
+	<div class="tec-reference">Fry, B.: <a href="http://benfry.com/organic/">Organic Information Design</a>. Masters Thesis, Massachusetts Institute of Technology, 2000.</div>
+	<div class="tec-source">
+Image courtesy of Ben Fry, MIT Media Laboratory, Aesthetics + Computation Group, ©  1999-2005.
+		</div>
+	<div class="tec-text">Anemone by Fry, B. (2000) is a technique related to the visualization of structured information. It is a dynamic, organic representation designed to reveal not only the static structure of a website, which is based on its organization into folders and files, but also to reveal dynamic usage patterns. To this end, a classic node-link representation is visually enriched with dynamically updated usage statistics to form a living representation that truly reflects the restless nature of a website. The ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Arc Diagrams" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/arc_diagrams.png" alt="Arc Diagrams" />
+	<div class="tec-reference">Wattenberg, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.2002.1173155">Arc Diagrams: Visualizing Structure in Strings</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2002.</div>
+	<div class="tec-source">
+Image courtesy of Michael Zornow.
+		</div>
+	<div class="tec-text">Patterns in sequences of data values can be visualized using arc diagrams. They were introduced as an interactive visualization technique by Wattenberg, M. (2002). Given a sequence of values, the goal is to extract significant subsequences that occur multiple times in the original sequence. The visualization displays the sequence of data values in textual form along the horizontal (time) axis. Occurrences of significant subsequences are visually connected by spanning arcs. The arcs' thickness represents ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Bar Graph, Spike Graph" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/bargraphs.png" alt="Bar Graph, Spike Graph" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Adapted from Harris, R. L. (1999).
+		</div>
+	<div class="tec-text">Bar graphs  are a well known and widely used type of representation where bars are used to depict data values. This makes comparisons easier than with point plots. As bar length is used to depict data values, only variables with a ratio scale (having a natural zero) can be represented. Consequently, the value scale also has to start with zero to allow for a fair visual comparison. In contrast to line plots, bar graphs emphasize individual values as do point plots. A variant of bar graphs often ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="BinX" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/binx.png" alt="BinX" />
+	<div class="tec-reference">Berry, L. & Munzner, T.: <a >BinX: Dynamic Exploration of Time Series Datasets Across Aggregation Levels</a>. Poster Compendium of IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Generated with the BinX tool with permission of Tamara Munzner.
+		</div>
+	<div class="tec-text">Large time-series require the application of abstraction methods in order to reduce the number of time points to be displayed, thus keeping visualization costs at a manageable level. Finding a suitable degree of abstraction, however, is not an easy task. The BinX tool developed by Berry, L. & Munzner, T. (2004) is interesting in that it supports the exploration of different aggregations of a time-series. The aggregation is based on constructing bins, each of which holds a user-defined number of ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Braided Graph" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/braided-graph.png" alt="Braided Graph" />
+	<div class="tec-reference">Javed, W.; McDonnel, B. & Elmqvist, N.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2010.162">Graphical Perception of Multiple Time Series</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 16, No. 6, 2010.</div>
+	<div class="tec-source">
+Adapted from Javed, W.; McDonnel, B. & Elmqvist, N. (2010). ©  2010 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Braided graphs allow for superimposing silhouette graphs to show multivariate data. They were developed in order to take advantage of the enhanced perception of silhouette graphs (see <a href="javascript:openTec('Silhouette Graph, Circular Silhouette Graph')">Silhouette Graph, Circular Silhouette Graph</a>) and at the same time avoiding the disadvantage of varying baselines of layered graphs (see <a href="javascript:openTec('Layer Area Graph')">Layer Area Graph</a>). Simply drawing silhouette graphs ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="CareCruiser" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/carecruiser.png" alt="CareCruiser" />
+	<div class="tec-reference">Gschwandtner, T.; Aigner, W.; Kaiser, K.; Miksch, S. & Seyfang, A.: <a href="http://doi.ieeecomputersociety.org/10.1109/PACIFICVIS.2011.5742371">CareCruiser: Exploring and Visualizing Plans, Events, and Effects Interactively</a>. Proceedings of the IEEE Pacific Visualization Symposium (PacificVis), IEEE Computer Society, 2011.</div>
+	<div class="tec-source">
+Generated with the CareCruiser software.
+		</div>
+	<div class="tec-text">CareCruiser by Gschwandtner, T.; Aigner, W.; Kaiser, K.; Miksch, S. & Seyfang, A. (2011) is a visualization system for exploring the effects of clinical actions on a patient's condition.It supports exploration via aligning, color-highlighting, filtering, and providing focus and context information.Aligning clinical treatment plans vertically supports the comparison of the effects of different treatments or the comparison of different effects of one treatment plan applied on different patients.Three ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="ChronoLenses" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb new" src="pics/thumbs/chronolenses.png" alt="ChronoLenses" />
+	<div class="tec-reference">Zhao, J.; Chevalier, F.; Pietriga, E. & Balakrishnan, R.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2011.195">Exploratory Analysis of Time-Series with ChronoLenses</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 17, No. 12, 2011.</div>
+	<div class="tec-source">
+Image courtesy of Jian Zhao.
+		</div>
+	<div class="tec-text">ChronoLenses is domain-independent time-series visualization technique supporting users in exploratory visual analysis tasks. Based on direct manipulation, ChronoLenses performs on-the-fly transformation of the data points in their focus area, tightly integrating visual analysis with interaction. Users can build pipelines composed of lenses performing various transformations on the data, effectively creating flexible and reusable time-series visual analysis interfaces. At any moment, users can change the parameters of already created lenses, with the modifications instantaneously propagating down through the pipeline, providing immediate visual feedback that supports the iterative exploration process.</div>
+</div>
+<div class="tec" data-id="CircleView" data-categories="abstract|multivariate|linear|instant|static|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/circleview.png" alt="CircleView" />
+	<div class="tec-reference">Keim, D. A.; Schneidewind, J. & Sips, M.: <a href="http://doi.acm.org/10.1145/989863.989891">CircleView: A New Approach for Visualizing Time-Related Multidimensional Data Sets</a>. Proceedings of the Working Conference on Advanced Visual Interfaces (AVI), ACM, 2004.</div>
+	<div class="tec-reference">Keim, D. A. & Schneidewind, J.: <a href="http://dx.doi.org/10.3217/jucs-011-11-1766">Scalable Visual Data Exploration of Large Data Sets via MultiResolution</a>. Journal of Universal Computer Science, Vol. 11, No. 11, 2005.</div>
+	<div class="tec-source">
+Adapted from Keim, D. A.; Schneidewind, J. & Sips, M. (2004).
+		</div>
+	<div class="tec-text">Keim, D. A.; Schneidewind, J. & Sips, M. (2004) developed CircleView for visualizing multivariate streaming data as well as static historical data.Its basic idea is to divide a circle into a number of segments, each representing one variable. The segments are further divided into slots covering periods of time, and color shows the (aggregated) data value for the corresponding interval. Thus, time is mapped linearly along the segments.The user can interactively adjust the number of time slots, the ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Circos" data-categories="abstract|multivariate|linear|cyclic|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/circos.png" alt="Circos" />
+	<div class="tec-reference">Brewer, C. A.: <a href="http://colorbrewer2.org">Color Use Guidelines for Data Representation</a>. Proceedings of the Section on Statistical Graphics, American Statistical Association, 1999.</div>
+	<div class="tec-reference">Krzywinski, M.; Schein, J.; Birol, I.; Connors, J.; Gascoyne, R.; Horsman, D.; Jones, S. J. & Marra, M. A.: <a href="http://dx.doi.org/10.1101/gr.092759.109">Circos: An Information Aesthetic for Comparative Genomics</a>. Genome Research, Vol. 19, No. 9, 2009.</div>
+	<div class="tec-source">
+Images courtesy of Martin Krzywinski.
+		</div>
+	<div class="tec-text">Circos by Krzywinski, M.; Schein, J.; Birol, I.; Connors, J.; Gascoyne, R.; Horsman, D.; Jones, S. J. & Marra, M. A. (2009) uses a circular design to generate multivariate displays. It uses concentric bands (data tracks) as display areas and is capable of displaying data as point plots (see <a href="javascript:openTec('Point Plot')">Point Plot</a>), line plots (see <a href="javascript:openTec('Line Plot')">Line Plot</a>), histograms, heat maps, tiles, connectors, and text. In this sense, time is ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="CiteSpace II" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/citespace2.png" alt="CiteSpace II" />
+	<div class="tec-reference">Chen, C.: <a href="http://dx.doi.org/10.1002/asi.20317">CiteSpace II: Detecting and Visualizing Emerging Trends and Transient Patterns in Scientific Literature</a>. Journal of the American Society for Information Science and Technology, Vol. 57, No. 3, 2006.</div>
+	<div class="tec-source">
+Images courtesy of Chaomei Chen.
+		</div>
+	<div class="tec-text">CiteSpace II by Chen, C. (2006) is a system that supports visual exploration of bibliographic databases. It combines rich analytic capabilities to analyze emerging trends in a knowledge domain with interactive visualization of co-citation networks. Three complementary views are provided for the visual representation: a cluster view, a time-zone view, and a timeline view. The cluster view represents a network as a node-link diagram using a force-directed layout. Node size shows how often an article ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Cluster and Calendar-Based Visualization" data-categories="abstract|univariate|linear|cyclic|instant|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/cluster-calendar.png" alt="Cluster and Calendar-Based Visualization" />
+	<div class="tec-reference">Van Wijk, J. J. & Van Selow, E. R.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.1999.801851">Cluster and Calendar Based Visualization of Time Series Data</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 1999.</div>
+	<div class="tec-source">
+Van Wijk, J. J. & Van Selow, E. R. (1999), ©  1999 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Temporal patterns can indicate at which time of the day certain resources are highly stressed. Relevant applications can be found in computing centers, traffic networks, or power supply networks. An approach that allows for finding temporal patterns at different temporal granularities has been proposed by Van Wijk, J. J. & Van Selow, E. R. (1999). The starting point of the approach is to consider the course of a day as a line plot (see <a href="javascript:openTec('Line Plot')">Line Plot</a>) covering ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Continuum" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/continuum.png" alt="Continuum" />
+	<div class="tec-reference">André, P.; Wilson, M. L.; Russell, A.; Smith, D. A.; Owens, A. & schraefel, m.: <a href="http://doi.acm.org/10.1145/1294211.1294229">Continuum: Designing Timelines for Hierarchies, Relationships and Scale</a>. Proceedings of the ACM Symposium on User Interface Software and Technology (UIST), ACM, 2007.</div>
+	<div class="tec-source">
+Image courtesy of Paul André.
+		</div>
+	<div class="tec-text">Collections of small events often constitute larger, more complex events, like for example talks at conferences or legs of a race. Moreover, events might also be related to other events at other points in time (e.g., a paper written at some point in time and referenced later). Continuum by André, P.; Wilson, M. L.; Russell, A.; Smith, D. A.; Owens, A. & schraefel, m. (2007) is a timeline visualization tool to represent large amounts of hierarchically structured temporal data and their relationships. ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Cycle Plot" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/cycleplot-technique.png" alt="Cycle Plot" />
+	<div class="tec-reference">Cleveland, W.: <a >Visualizing Data</a>. Hobart Press, 1993. (ISBN: 0963488406)</div>
+	<div class="tec-source">
+Adapted from Cleveland, W. (1993) with permission of William Cleveland.
+		</div>
+	<div class="tec-text">Time-series data may contain a seasonal as well as a trend component, which is also reflected in many statistical models. Cleveland, W. (1993) describes cycle plots as a technique to make seasonal and trend components visually discernable. This is achieved by showing individual trends as line plots embedded within a plot that shows the seasonal pattern. For constructing a cycle plot, one has to define the time primitives to be considered for the seasonal component. The horizontal axis of the cycle ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Data Tube Technique" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/data_tube.png" alt="Data Tube Technique" />
+	<div class="tec-reference">Ankerst, M.: <a >Visual Data Mining with Pixel-oriented Visualization Techniques</a>. Proceedings of the ACM SIGKDD Workshop on Visual Data Mining, ACM, 2001.</div>
+	<div class="tec-reference">Ankerst, M.; Kao, A.; Tjoelker, R. & Wang, C.: <a href="http://dx.doi.org/10.1007/978-3-540-71080-6_19">DataJewel: Integrating Visualization with Temporal Data Mining</a>. In: Simoff, S., Böhlen, M. & Mazeika, A. (ed.) Visual Data Mining. Springer, 2008.</div>
+	<div class="tec-source">
+Images courtesy of Mihael Ankerst.
+		</div>
+	<div class="tec-text">In the data tube technique by Ankerst, M. (2001) multiple time-oriented variables are mapped to bands that follow the inside of a 3D tube. Each slice of the tube represents an instant and each cell represents a data value by color. The tube is viewed from above and time is flowing to or from the center of the tube. The user is able to explore the data by interactively moving through the 3D tube. Because of the 3D perspective distortion, cells that are further away appear to be smaller in size, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Data Vases" data-categories="spatial|multivariate|linear|instant|interval|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/data_vases.png" alt="Data Vases" />
+	<div class="tec-reference">Thakur, S. & Hanson, A. J.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2010.54">A 3D Visualization of Multiple Time Series on Maps</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2010.</div>
+	<div class="tec-reference">Thakur, S. & Rhyne, T.-M.: <a href="http://dx.doi.org/10.1007/978-3-642-10520-3_89">Data Vases: 2D and 3D Plots for Visualizing Multiple Time Series</a>. Proceedings of the International Symposium on Visual Computing (ISVC), Springer, 2009.</div>
+	<div class="tec-source">
+Thakur, S. & Hanson, A. J. (2010), ©  2010 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The data vases technique has been designed to visualize multiple time-varying variables. Thakur, S. & Rhyne, T.-M. (2009) describe two alternative designs: a 2D and a 3D variant. A 2D data vase is basically a graph constructed by mirroring a line plot (see <a href="javascript:openTec('Line Plot')">Line Plot</a>) against the time axis, effectively creating a symmetric shape that can be filled (segment-wise) with a data-specific color. Such data vases can then be arranged on the screen to create a ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="DateLens" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/datelens.png" alt="DateLens" />
+	<div class="tec-reference">Bederson, B. B.; Clamage, A.; Czerwinski, M. P. & Robertson, G. G.: <a href="http://doi.acm.org/10.1145/972648.972652">DateLens: A Fisheye Calendar Interface for PDAs</a>. ACM Transactions on Computer-Human Interaction, Vol. 11, No. 1, 2004.</div>
+	<div class="tec-source">
+Images courtesy of Ben Bederson.
+		</div>
+	<div class="tec-text">Most people use calendars to plan their daily life, for instance, to maintain a list of appointments or bookmark future events. Bederson, B. B.; Clamage, A.; Czerwinski, M. P. & Robertson, G. G. (2004) developed a tool to make it easier to work with a personal schedule on small handheld devices. Because display space is limited on such devices (compared to common desktop displays), focus+context mechanisms are applied to present temporal information at different levels of detail. Based on a common ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Decision Chart" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/decision-chart.png" alt="Decision Chart" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Adapted from Harris, R. L. (1999).
+		</div>
+	<div class="tec-text">Harris, R. L. (1999) describes decision charts as a graphical representation for depicting future decisions and potential alternative outcomes along with their probabilities over time. It is one of very few techniques for time-oriented data that use the branching time model. Decision charts use a horizontal time axis along which information elements (decisions and probabilities) are aligned. Multiple decisions for a particular time interval are stacked on top of each other, indicating that they ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Enhanced Interactive Spiral" data-categories="abstract|univariate|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/enhanced_interactive_spiral.png" alt="Enhanced Interactive Spiral" />
+	<div class="tec-reference">Saito, T.; Miyamura, H.; Yamamoto, M.; Saito, H.; Hoshiya, Y. & Kaseda, T.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFOVIS.2005.35">Two-Tone Pseudo Coloring: Compact Visualization for One-Dimensional Data</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2005.</div>
+	<div class="tec-reference">Tominski, C. & Schumann, H.: <a href="">Enhanced Interactive Spiral Display</a>. Proceedings of the Annual SIGRAD Conference, Special Theme: Interactivity, Linköping University Electronic Press, 2008.</div>
+	<div class="tec-source">
+Generated with the enhanced interactive spiral display tool.
+		</div>
+	<div class="tec-text">Tominski, C. & Schumann, H. (2008) apply the enhanced two-tone color-coding by Saito, T.; Miyamura, H.; Yamamoto, M.; Saito, H.; Hoshiya, Y. & Kaseda, T. (2005) to visualize time-dependent data along a spiral. Each time primitive is mapped to a unique segment of the spiral. Every segment is subdivided into two parts that are colored according to the two-tone coloring method. The advantage of using the two-tone approach is that it realizes the overview+detail concept by design. The two colors used ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="EventRiver" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/eventriver.png" alt="EventRiver" />
+	<div class="tec-reference">Luo, D.; Yang, J.; Krstajic, M.; Ribarsky, W. & Keim, D.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2010.225">EventRiver: Visually Exploring Text Collections With Temporal References</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 12, No. 1, 2012.</div>
+	<div class="tec-source">
+Luo, D.; Yang, J.; Krstajic, M.; Ribarsky, W. & Keim, D. (2012). ©  2011, IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Text collections such as news corpora or email archives often contain temporal references, which embed the text's information into a temporal context. Luo, D.; Yang, J.; Krstajic, M.; Ribarsky, W. & Keim, D. (2012) describe a technique, called EventRiver, for exploring such text collections interactively in terms of important events and the stories that these events constitute. In a first phase, events are extracted from the data using a number of analytical steps, including keyword identification ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="EventViewer" data-categories="abstract|spatial|univariate|multivariate|linear|cyclic|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/eventviewer.png" alt="EventViewer" />
+	<div class="tec-reference">Beard, K.; Deese, H. & Pettigrew, N. R.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500165">A Framework for Visualization and Exploration of Events</a>. Information Visualization, Vol. 7, No. 2, 2008.</div>
+	<div class="tec-source">
+Adapted from Beard, K.; Deese, H. & Pettigrew, N. R. (2008).
+		</div>
+	<div class="tec-text">EventViewer by Beard, K.; Deese, H. & Pettigrew, N. R. (2008) is a framework that has been developed to visualize and explore spatial, temporal, and thematic dimensions of sensor data. The system supports queries on events that have been extracted from such data and are stored in an events database. The spatial, temporal, and thematic categories of selected events can flexibly be assigned to three kinds of nested display elements called bands, stacks, and panels. Bands are the primary graphic object ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="FacetZoom" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/facet_zoom.png" alt="FacetZoom" />
+	<div class="tec-reference">Dachselt, R. & Weiland, M.: <a href="http://doi.acm.org/10.1145/1125451.1125590">TimeZoom: A Flexible Detail and Context Timeline</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2006.</div>
+	<div class="tec-reference">Dachselt, R.; Frisch, M. & Weiland, M.: <a href="http://doi.acm.org/10.1145/1357054.1357265">FacetZoom: A Continuous Multi-Scale Widget for Navigating Hierarchical Metadata</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2008.</div>
+	<div class="tec-source">
+Image courtesy of Raimund Dachselt.
+		</div>
+	<div class="tec-text">FacetZoom is a technique that enables users to navigate hierarchically structured information spaces (see Dachselt, R.; Frisch, M. & Weiland, M. (2008)). The hierarchical structure of time is a natural match for this technique. What Dachselt, R. & Weiland, M. (2006) originally called TimeZoom is a visual navigation aid for time-oriented data. The basic idea is to display a horizontal time axis that represents different levels of temporal granularity as stacked bars (e.g., decades, years, months, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Flocking Boids" data-categories="abstract|multivariate|linear|instant|dynamic|3D">
+	<img class="thumb" src="pics/thumbs/flocking.png" alt="Flocking Boids" />
+	<div class="tec-reference">Vande Moere, A.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.2004.65">Time-Varying Data Visualization Using Information Flocking Boids</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Vande Moere, A. (2004), ©  2004 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Stock market data change dynamically during the day as prices are constantly updated. Vande Moere, A. (2004) proposes to visualize such data by means of information flocking boids. The term boids borrows from the simulation of birds (bird objects = boids) in flocks. In order to visualize stock market prices, each stock is considered to be a boid with an initially random position in a 3D presentation space. Upon arrival of new data, boid positions are updated dynamically according to several rules. ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Flow Map" data-categories="spatial|univariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/flow_map.png" alt="Flow Map" />
+	<div class="tec-reference">Kraak, M.-J. & Ormeling, F.: <a >Cartography: Visualization of Geospatial Data</a>. Pearson Education, 2003. (ISBN: 0130888907)</div>
+	<div class="tec-reference">Andrienko, N. & Andrienko, G.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2010.44">Spatial Generalization and Aggregation of Massive Movement Data</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 17, No. 2, 2011.</div>
+	<div class="tec-source">
+Image courtesy of Gennady Andrienko.
+		</div>
+	<div class="tec-text">Flow maps show movements of objects over time, that is, they show a change of positions over time, rather than a change of data values. Usually, such movements form directed (optionally segmented) trajectories connecting the starting point of a movement and its end point. Such trajectories can be represented visually as more or less complex arrows or curves, where width, color, and other attributes can be used to encode additional information. A famous example is Minard's flow map of Napoleon's ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Flowstrates" data-categories="spatial|univariate|linear|instant|static|2D">
+	<img class="thumb new" src="pics/thumbs/flowstrates.png" alt="Flowstrates" />
+	<div class="tec-reference">Boyandin, I.; Bertini, E.; Bak, P. & Lalanne, D.: <a href="http://dx.doi.org/10.1111/j.1467-8659.2011.01946.x">Flowstrates: An Approach for Visual Exploration of Temporal Origin-Destination Data</a>. Computer Graphics Forum, Vol. 30, No. 3, 2011.</div>
+	<div class="tec-source">
+Image courtesy of Ilya Boyandin.
+		</div>
+	<div class="tec-text">Flowstrates by Boyandin, I.; Bertini, E.; Bak, P. & Lalanne, D. (2011) extend the idea of flow maps (see <a href="javascript:openTec('Flow Map')">Flow Map</a>) to the temporal dimension and allow the user to analyze changes of the flow magnitudes over time. In Flowstrates the origins and the destinations of the flows are displayed in two separate maps, and the temporal changes of the flow magnitudes are displayed between the two maps in a heatmap in which the columns represent time periods. As in most flow maps that focus on representing the flow magnitudes, the exact routes of the flows are not accurately represented in Flowstrates. Instead, the flow lines are rerouted so that they connect the flow origins and destinations with the corresponding rows of the heatmap, as if the flows were going through it. The flow lines help to see in the geographic maps the origin and the destination corresponding to each of the heatmap rows. To allow the user to explore the whole data in every bit of detail, Flowstrates provide interactive support for performing spatial visual queries, focusing on different regions of interest for the origins and destinations, zooming and panning, sorting and aggregating the heatmap rows.</div>
+</div>
+<div class="tec" data-id="Gantt Chart" data-categories="abstract|univariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/gantt.png" alt="Gantt Chart" />
+	<div class="tec-reference">Gantt, H. L.: <a >Work, Wages, and Profits</a>. Engineering Magazine Co., 1913.</div>
+	<div class="tec-source">
+Authors.
+		</div>
+	<div class="tec-text">Planning activities, people, and resources is a task that is particularly important in the field of project management. One of the common visualization techniques used for such tasks are Gantt charts. This kind of representation was originally invented by Gantt, H. L. (1913) who studied the order of steps in work processes. Mainly work tasks with their temporal location and duration as well as milestones are depicted. The tasks are displayed as a textual list in the left part of the diagram and ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="GeoTime" data-categories="spatial|multivariate|linear|instant|static|dynamic|3D">
+	<img class="thumb" src="pics/thumbs/geotime-oculus.png" alt="GeoTime" />
+	<div class="tec-reference">Kapler, T.; Eccles, R.; Harper, R. & Wright, W.: <a href="http://doi.ieeecomputersociety.org/10.1109/VAST.2008.4677355">Configurable Spaces: Temporal Analysis in Diagrammatic Contexts</a>. Proceedings of the IEEE Symposium on Visual Analytics Science and Technology (VAST), IEEE Computer Society, 2008.</div>
+	<div class="tec-reference">Kapler, T. & Wright, W.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500097">GeoTime Information Visualization</a>. Information Visualization, Vol. 4, No. 2, 2005.</div>
+	<div class="tec-reference">Eccles, R.; Kapler, T.; Harper, R. & Wright, W.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500173">Stories in GeoTime</a>. Information Visualization, Vol. 7, No. 1, 2008.</div>
+	<div class="tec-source">
+Image courtesy of William Wright. GeoTime is a registered trademark of Oculus Info Inc.
+		</div>
+	<div class="tec-text">Kapler, T. & Wright, W. (2005) describe GeoTime® as a system to visualize data items (e.g., objects, events, transactions, flows) in their spatial and temporal context. It provides a dynamic, interactive version of the space-time cube concept (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>), where a map plane illustrates the spatial context and time is mapped vertically along the third display dimension. Items and tracks are placed in the space-time cube at their spatial ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Gravi++" data-categories="abstract|multivariate|linear|instant|static|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/gravi.png" alt="Gravi++" />
+	<div class="tec-reference">Hinum, K.; Miksch, S.; Aigner, W.; Ohmann, S.; Popow, C.; Pohl, M. & Rester, M.: <a href="http://dx.doi.org/10.3217/jucs-011-11-1792">Gravi++: Interactive Information Visualization to Explore Highly Structured Temporal Data</a>. Journal of Universal Computer Science, Vol. 11, No. 11, 2005.</div>
+	<div class="tec-source">
+Image courtesy of Klaus Hinum.
+		</div>
+	<div class="tec-text">Hinum, K.; Miksch, S.; Aigner, W.; Ohmann, S.; Popow, C.; Pohl, M. & Rester, M. (2005) designed Gravi++ to find predictors for the treatment planning of anorexic girls. It represents patients and data gathered from questionnaires during treatment over the course of several weeks or months. Patients are represented by icons that are laid according to a spring-based model relative to the surrounding icons that represent items of a questionnaire.This leads to the formation of clusters of persons who ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Great Wall of Space-Time" data-categories="spatial|univariate|linear|instant|static|3D">
+	<img class="thumb new" src="pics/thumbs/greatwall.png" alt="Great Wall of Space-Time" />
+	<div class="tec-reference">Tominski, C. & Schulz, H.-J.: <a href="http://dx.doi.org/10.2312/PE/VMV/VMV12/199-206">The Great Wall of Space-Time</a>. Proceedings of the Workshop on Vision, Modeling & Visualization (VMV), Magdeburg, Germany, Eurographics Association, 2012.</div>
+	<div class="tec-source">
+Image courtesy of Christian Tominski.
+		</div>
+	<div class="tec-text">Tominski, C. & Schulz, H.-J. (2012) introduce a visualization technique for spatio-temporal data that refers to 2D geographical space and 1D linear time. The idea is to construct a non-planar slice -- called the Great Wall of Space-Time -- through the 3D (2D+1D) space-time continuum. The construction of the wall is based on topological and geometrical aspects of the geographical space. Based on a neighborhood graph, a topological path is established automatically or interactively. The topological path is transformed to a geometrical path that respects the geographic properties of the areas of the map. The geometrical path is extruded to a 3D wall, whose 3rd dimension can be used to map the time domain. Different visual representations can be projected onto the wall in order to display the data. Examples illustrate data visualizations based on color-coding and parallel coordinates. The wall has the advantage that it shows a closed path through space with no gaps between the information-bearing pixels on the screen.</div>
+</div>
+<div class="tec" data-id="GROOVE" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/groove.png" alt="GROOVE" />
+	<div class="tec-reference">Lammarsch, T.; Aigner, W.; Bertone, A.; Gärtner, J.; Mayr, E.; Miksch, S. & Smuc, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2009.52">Hierarchical Temporal Patterns and Interactive Aggregated Views for Pixel-based Visualizations</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2009.</div>
+	<div class="tec-source">
+Generated with the GROOVE software.
+		</div>
+	<div class="tec-text">GROOVE (Granularity Overview OVErlay) visualizations as presented by Lammarsch, T.; Aigner, W.; Bertone, A.; Gärtner, J.; Mayr, E.; Miksch, S. & Smuc, M. (2009) utilize a user-configurable set of four time granularities to partition a dataset in a regular manner.That is, a recursive layout is achieved that shows columns and rows of larger blocks and a pixel arrangement within blocks for the detail structure.Following the concept of recursive patterns (see <a href="javascript:openTec('Recursive Pattern')">Recursive Pattern</a>) ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Growth Ring Maps" data-categories="spatial|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb new" src="pics/thumbs/growth-ring-maps.png" alt="Growth Ring Maps" />
+	<div class="tec-reference">Bak, P.; Mansmann, F.; Janetzko, H. & Keim, D. A.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2009.182">Spatiotemporal Analysis of Sensor Logs using Growth Ring Maps</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 15, No. 6, 2009.</div>
+	<div class="tec-reference">Andrienko, G. L.; Andrienko, N. V.; Bak, P.; Keim, D. A.; Kisilevich, S. & Wrobel, S.: <a href="http://dx.doi.org/10.1016/j.jvlc.2011.02.003">A Conceptual Framework and Taxonomy of Techniques for Analyzing Movement</a>. Journal of Visual Languages & Computing, Vol. 22, No. 3, 2011.</div>
+	<div class="tec-source">
+Image courtesy of Peter Bak.
+		</div>
+	<div class="tec-text">Growth Ring Maps is a technique for visualizing the spatio-temporal distribution of events. Every spatio-temporal event is represented by one pixel, which makes the technique highly scalable with the number of events. Each location (for example the centroid of spatial clusters of events) is taken as the center point for the computation of growth rings. The pixels (i.e., events) are placed around this center point in an orbital manner resulting in so called Growth Ring representations. The pixels are sorted by the date and time the event occurred: the earlier an event happened, the closer is the pixel to the central point. When two or more neighboring growth rings are about to overlap, the layout algorithm displaces the pixels in such a way that none of them is covered by another pixel. Hence, when big clusters of events are close in space, the corresponding growth rings will not have perfectly circular shapes but will be distorted. The resulting Growth Ring Maps are overlaid over a cartographic map to capture their spatial context. The figure illustrates Growth Ring Maps where events correspond to photos taken by tourists.</div>
+</div>
+<div class="tec" data-id="Helix Icons" data-categories="spatial|multivariate|cyclic|instant|interval|static|3D">
+	<img class="thumb" src="pics/thumbs/helix_icons.png" alt="Helix Icons" />
+	<div class="tec-reference">Tominski, C.; Schulze-Wollgast, P. & Schumann, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2005.3">3D Information Visualization for Time Dependent Data on Maps</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Generated with the LandVis system.
+		</div>
+	<div class="tec-text">Helix icons by Tominski, C.; Schulze-Wollgast, P. & Schumann, H. (2005) are useful for emphasizing the cyclic character of spatio-temporal data. The underlying model of this technique is the space-time cube (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>), which maps the spatial context to the x-axis and the y-axis, and the dimension of time to the z-axis of a virtual three-dimensional cube.The actual data visualization is embedded into the cube. To this end, a helix ribbon ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="history flow" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/historyflow.png" alt="history flow" />
+	<div class="tec-reference">Viégas, F. B.; Wattenberg, M. & Dave, K.: <a href="http://doi.acm.org/10.1145/985692.985765">Studying Cooperation and Conflict between Authors with history flow Visualizations</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2004.</div>
+	<div class="tec-source">
+Images courtesy of Fernanda B. Viégas.
+		</div>
+	<div class="tec-text">Viégas, F. B.; Wattenberg, M. & Dave, K. (2004) designed history flow to be an exploratory wiki article analysis tool for finding author collaboration patterns, showing relations between document versions, revealing patterns of cooperation and conflict, as well as making broad trends immediately visible. The basis for the representation are so-called revision lines. These top-aligned, vertical lines are displayed for every version of a document. The length of revision lines is proportional to ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Horizon Graph" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/horizongraph.png" alt="Horizon Graph" />
+	<div class="tec-reference">Heer, J.; Kong, N. & Agrawala, M.: <a href="http://doi.acm.org/10.1145/1518701.1518897">Sizing the Horizon: The Effects of Chart Size and Layering on the Graphical Perception of Time Series Visualizations</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2009.</div>
+	<div class="tec-reference">Saito, T.; Miyamura, H.; Yamamoto, M.; Saito, H.; Hoshiya, Y. & Kaseda, T.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFOVIS.2005.35">Two-Tone Pseudo Coloring: Compact Visualization for One-Dimensional Data</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2005.</div>
+	<div class="tec-reference">Reijner, H.: <a href="http://www.stonesc.com/Vis08_Workshop/DVD/Reijner_submission.pdf">The Development of the Horizon Graph</a>. Electronic Proceedings of the VisWeek Workshop From Theory to Practice: Design, Vision and Visualization, 2008.</div>
+	<div class="tec-source">
+Left: Adapted from Reijner, H. (2008). Right: Image courtesy of Hannes Reijner.
+		</div>
+	<div class="tec-text">Reijner, H. (2008) describes horizon graphs as a visualization technique for comparing a large number of time-dependent variables. Horizon graphs are based on the two-tone pseudo coloring technique by Saito, T.; Miyamura, H.; Yamamoto, M.; Saito, H.; Hoshiya, Y. & Kaseda, T. (2005). The left part of Figure  demonstrates the construction of horizon graphs (from top to bottom). Starting from a common line plot, the value range is divided into equally sized bands that are discriminated by increasing ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Icons on Maps" data-categories="spatial|univariate|multivariate|linear|cyclic|instant|interval|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/icons_on_maps.png" alt="Icons on Maps" />
+	<div class="tec-reference">Fuchs, G. & Schumann, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2004.1320136">Visualizing Abstract Data on Maps</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2004.</div>
+	<div class="tec-reference">Tominski, C.; Schulze-Wollgast, P. & Schumann, H.: <a >Visualisierung zeitlicher Verläufe auf geografischen Karten</a>. In: Kartographische Schriften, Band 7: Visualisierung und Erschließung von Geodaten. Kirschbaum Verlag, 2003.</div>
+	<div class="tec-source">
+Generated with the LandVis system.
+		</div>
+	<div class="tec-text">When time-oriented data additionally contain spatial dependencies, it is necessary to visualize both the temporal aspects and the spatial aspects. A sensible approach to achieving this is to adapt existing solutions. Maps are commonly applied to represent the spatial context of the data. In order to apply existing visualization techniques to represent the temporal context, they must be made compatible with the map display. First and foremost, this implies a reduction in size, which effectively means ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="InfoBUG" data-categories="abstract|multivariate|linear|instant|static|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/infobug.png" alt="InfoBUG" />
+	<div class="tec-reference">Chuah, M. C. & Eick, S. G.: <a href="http://doi.ieeecomputersociety.org/10.1109/38.689658">Information Rich Glyphs for Software Management Data</a>. IEEE Computer Graphics and Applications, Vol. 18, No. 4, 1998.</div>
+	<div class="tec-source">
+Chuah, M. C. & Eick, S. G. (1998), ©  1998 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Chuah, M. C. & Eick, S. G. (1998) developed InfoBUG for visualizing changes in software projects. The InfoBUG is an information-rich graphic that combines a multitude of different heterogeneous data values. The glyph resembles an insect with wings, head, tail, and body. The different parts of the glyph are used to represent four different classes of information about software projects : code lines and errors (wings), types of code (head), added and deleted lines of code (tail), and number of file ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Interactive Parallel Bar Charts" data-categories="abstract|univariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/ipbc.png" alt="Interactive Parallel Bar Charts" />
+	<div class="tec-reference">Chittaro, L.; Combi, C. & Trapasso, G.: <a href="http://dx.doi.org/10.1016/j.jvlc.2003.06.003">Data Mining on Temporal Data: A Visual Approach and its Clinical Application to Hemodialysis</a>. Journal of Visual Languages and Computing, Vol. 14, No. 6, 2003.</div>
+	<div class="tec-source">
+Chittaro, L.; Combi, C. & Trapasso, G. (2003), ©  2003 Elsevier. Used with permission.
+		</div>
+	<div class="tec-text">Chittaro, L.; Combi, C. & Trapasso, G. (2003) present a technique for visualizing time-dependent hemodialysis data. To keep the visualization of multiple hemodialysis sessions simple and easy to use for physicians, the design is based on common 3D bar charts, where the height of bars encodes individual data values. Multiple bar charts (one per hemodialysis session) are arranged on a regular grid in a parallel fashion. This visual display is easy to interpret despite the 3D projection. Visual exploration ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Intrusion Detection" data-categories="abstract|multivariate|cyclic|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/intrusion_detection.png" alt="Intrusion Detection" />
+	<div class="tec-reference">Muniandy, K.: <a >Visualizing Time-Related Events for Intrusion Detection</a>. Late Breaking Hot Topics of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2001.</div>
+	<div class="tec-source">
+Images courtesy of Kovalan Muniandy.
+		</div>
+	<div class="tec-text">A 3D visualization technique by Muniandy, K. (2001) helps to analyze user access to computers in a network over time for intrusion detection. The different parameters time, users, machines, and access are mapped onto a 3D cylinder. In Figure, time is mapped onto the circumference of a circle showing the 24 hours of a day. The units along the circle can be configured to represent either hours, months, or years. Different users are represented by individual cylinder slices that are stacked upon each ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Intrusion Monitoring" data-categories="abstract|univariate|linear|instant|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/intrusion-monitoring.png" alt="Intrusion Monitoring" />
+	<div class="tec-reference">Erbacher, R. F.; Walker, K. L. & Frincke, D. A.: <a href="http://doi.ieeecomputersociety.org/10.1109/38.974517">Intrusion and Misuse Detection in Large-Scale Systems</a>. IEEE Computer Graphics and Applications, Vol. 22, No. 1, 2002.</div>
+	<div class="tec-source">
+Image courtesy of Robert F. Erbacher.
+		</div>
+	<div class="tec-text">Erbacher, R. F.; Walker, K. L. & Frincke, D. A. (2002) describe a system that visualizes time-stamped network-related log messages that are dynamically generated by a monitored system. These messages correspond to events in a linear continuous time domain. The visualization shows the monitored server system as a central glyph encoding the number of users and the server's load. Events are shown as radially arranged lines at whose end the remote host is shown as a smaller glyph. Regular network activities ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Kaleidomaps" data-categories="abstract|multivariate|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/kaleidomaps.png" alt="Kaleidomaps" />
+	<div class="tec-reference">Bale, K.; Chapman, P.; Barraclough, N.; Purdy, J.; Aydin, N. & Dark, P.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500154">Kaleidomaps: A New Technique for the Visualization of Multivariate Time-Series Data</a>. Information Visualization, Vol. 6, No. 2, 2007.</div>
+	<div class="tec-reference">Bale, K.; Chapman, P.; Purdy, J.; Aydin, N. & Dark, P.: <a href="http://doi.ieeecomputersociety.org/10.1109/MEDIVIS.2006.19">Kaleidomap Visualizations of Cardiovascular Function in Critical Care Medicine</a>. Proceedings of the International Conference on Medical Information Visualisation - BioMedical Visualisation (MediVis), IEEE Computer Society, 2006.</div>
+	<div class="tec-source">
+Bale, K.; Chapman, P.; Purdy, J.; Aydin, N. & Dark, P. (2006), ©  2006 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Kaleidomaps by Bale, K.; Chapman, P.; Barraclough, N.; Purdy, J.; Aydin, N. & Dark, P. (2007) visualize multivariate time-series data and the results of wave decomposition techniques using the curvature of a line to alter the detection of possible periodic patterns.The overall idea of kaleidomaps is similar to the rendered output of a kaleidoscope for children, from whence the name comes.A base circle is broken into segments of equal angles for different variables. Each circle segment has two axes ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Kiviat Tube" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/kiviat_tube.png" alt="Kiviat Tube" />
+	<div class="tec-reference">Kolence, K. W. & Kiviat, P. J.: <a href="http://doi.acm.org/10.1145/1041613.1041614">Software Unit Profiles & Kiviat Figures</a>. SIGMETRICS Performance Evaluation Review, Vol. 2, No. 3, 1973.</div>
+	<div class="tec-reference">Tominski, C.; Abello, J. & Schumann, H.: <a >Interactive Poster: 3D Axes-Based Visualizations for Time Series Data</a>. Poster Compendium of IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Generated the VisAxes3D tool.
+		</div>
+	<div class="tec-text">The Kiviat tube by Tominski, C.; Abello, J. & Schumann, H. (2005) visualizes multiple time-dependent variables. The construction of a Kiviat tube is as simple as stacking multiple Kiviat graphs  along a shared time axis. Each Kiviat graph represents the data for multiple variables for a specific point in time. But instead of drawing individual Kiviat graphs, a three-dimensional surface is constructed. This way, multiple, otherwise separated time points are combined to form a single 3D body that ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="KNAVE II" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/knave2.png" alt="KNAVE II" />
+	<div class="tec-reference">Shahar, Y.; Goren-Bar, D.; Boaz, D. & Tahan, G.: <a href="http://dx.doi.org/10.1016/j.artmed.2005.03.001">Distributed, Intelligent, Interactive Visualization and Exploration of Time-Oriented Clinical Data and their Abstractions</a>. Artificial Intelligence in Medicine, Vol. 38, No. 2, 2006.</div>
+	<div class="tec-source">
+Shahar, Y.; Goren-Bar, D.; Boaz, D. & Tahan, G. (2006), ©  2006 Elsevier. Used with permission.
+		</div>
+	<div class="tec-text">KNAVE II by Shahar, Y.; Goren-Bar, D.; Boaz, D. & Tahan, G. (2006) enables visual browsing and exploring of patient's data (raw measured values and external interventions such as medications). The system focuses mainly on the visual display of temporal abstractions of the data  and shows domain-specific concepts and patterns. In order to abstract the raw data, a predefined knowledge base is used that defines three types of interpretations: classification of data (e.g., low -- normal -- high), change ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="KronoMiner" data-categories="abstract|multivariate|cyclic|instant|static|2D">
+	<img class="thumb new" src="pics/thumbs/kronominer.png" alt="KronoMiner" />
+	<div class="tec-reference">Zhao, J.; Chevalier, F. & Balakrishnan, R.: <a href="http://doi.acm.org/10.1145/1978942.1979195">KronoMiner: Using Multi-Foci Navigation for the Visual Exploration of Time-Series Data</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2011.</div>
+	<div class="tec-source">
+Image courtesy of Jian Zhao.
+		</div>
+	<div class="tec-text">KronoMiner is a multipurpose time-series exploration tool providing rich navigation capabilities and analytical support. Its visualization is based on a hierarchical radial layout, allowing users to drill into details by focusing on different pieces. The data pieces can be rotated, dragged, stretched or shrunken in a facile manner, supporting various kinds of time-series analysis and exploration tasks. KronoMiner also introduces two analytical techniques: 1) MagicAnalytics Lens which shows the correlations between two parts of the data pieces when overlapped and 2) Best Match mode in which an arch shape is displayed indicating the matching parts of two data pieces under a specific similarity measure.</div>
+</div>
+<div class="tec" data-id="Layer Area Graph" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/layer-area-graph.png" alt="Layer Area Graph" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Adapted from Harris, R. L. (1999).
+		</div>
+	<div class="tec-text">Layer area graphs might be used when comparing time-series that share the same unit and can be summed up. A layer area graph is a stacked visualization where time-series plots are drawn upon each other as layered bands. Caution needs to be exercised for this kind of representation because it is sensitive to the order of the layers. Different orders influence the visual appearance of the individual layers because only the bottommost layer has a straight baseline. All subsequent layers are drawn ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="LifeLines" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/lifelines.png" alt="LifeLines" />
+	<div class="tec-reference">Plaisant, C.; Mushlin, R.; Snyder, A.; Li, J.; Heller, D. & Shneiderman, B.: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2232192/pdf/procamiasymp00005-0112.pdf">LifeLines: Using Visualization to Enhance Navigation and Analysis of Patient Records</a>. Proceedings of the American Medical Informatics Association Annual Fall Symposium, American Medical Informatic Association (AMIA), 1998.</div>
+	<div class="tec-source">
+Image courtesy of Catherine Plaisant and University of Maryland Human-Computer Interaction Lab.
+		</div>
+	<div class="tec-text">A simple and intuitive way of depicting incidents is by drawing a horizontal line on a time scale for the time span the incident took. This form of visualization is called timeline (see <a href="javascript:openTec('Timeline')">Timeline</a>). Plaisant, C.; Mushlin, R.; Snyder, A.; Li, J.; Heller, D. & Shneiderman, B. (1998) apply and extend this concept for visualizing health-related incidents in personal histories and patient records. Consequently, they call their approach LifeLines. Horizontal ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="LifeLines2" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/lifelines2.png" alt="LifeLines2" />
+	<div class="tec-reference">Wang, T. D.; Plaisant, C.; Shneiderman, B.; Spring, N.; Roseman, D.; Marchand, G.; Mukherjee, V. & Smith, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2009.187">Temporal Summaries: Supporting Temporal Categorical Searching, Aggregation and Comparison</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 15, 2009.</div>
+	<div class="tec-source">
+Image courtesy of Taowei David Wang.
+		</div>
+	<div class="tec-text">LifeLines2 by Wang, T. D.; Plaisant, C.; Shneiderman, B.; Spring, N.; Roseman, D.; Marchand, G.; Mukherjee, V. & Smith, M. (2009) is an interactive visual exploration interface for instantaneous events based on categorical, health-related data (e.g., high, normal, or low body temperature). Events are displayed as triangles along a horizontal time axis, where color indicates event categories and data of different patient records are stacked vertically. An aggregation of events is represented as a ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Line Plot" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/lineplot.png" alt="Line Plot" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Authors.
+		</div>
+	<div class="tec-text">The most common form of representing time-series are line plots. They extend point plots (see <a href="javascript:openTec('Point Plot')">Point Plot</a>) by linking the data points with lines which emphasizes their temporal relation. Consequently, line plots focus on the overall shape of data over time. This is in contrast to point plots where individual data points are emphasized. As illustrated in Figure, different styles of connections between the data points such as straight lines, step lines ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="LiveRAC" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/liverac.png" alt="LiveRAC" />
+	<div class="tec-reference">McLachlan, P.; Munzner, T.; Koutsofios, E. & North, S.: <a href="http://doi.acm.org/10.1145/1357054.1357286">LiveRAC: Interactive Visual Exploration of System Management Time-Series Data</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2008.</div>
+	<div class="tec-source">
+McLachlan, P.; Munzner, T.; Koutsofios, E. & North, S. (2008), ©  2008 ACM. Used with permission.
+		</div>
+	<div class="tec-text">LiveRACMcLachlan, P.; Munzner, T.; Koutsofios, E. & North, S. (2008) developed LiveRAC, a system for analyzing system management time-series data. LiveRAC scales to dozens of parameters collected from thousands of network devices. Familiar representations such as line plots (see <a href="javascript:openTec('Line Plot')">Line Plot</a>), bar graphs (see <a href="javascript:openTec('Bar Graph, Spike Graph')">Bar Graph, Spike Graph</a>), and sparklines (see <a href="javascript:openTec('Sparklines')">Sparklines</a>) ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Midgaard" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/midgaard.png" alt="Midgaard" />
+	<div class="tec-reference">Bade, R.; Schlechtweg, S. & Miksch, S.: <a href="http://doi.acm.org/10.1145/985692.985706">Connecting Time-oriented Data and Information to a Coherent Interactive Visualization</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2004.</div>
+	<div class="tec-source">
+Authors.
+		</div>
+	<div class="tec-text">Several tightly integrated visualization techniques have been developed in the Midgaard project by Bade, R.; Schlechtweg, S. & Miksch, S. (2004) to enhance the understanding of heterogeneous patient data. To support the user in exploring the data and to capture as much qualitative and quantitative information as possible on a limited display space, Midgaard supports different levels of abstractions for time-oriented data. Switching between these levels is achieved via a smoothly integrated semantic ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="MOSAN" data-categories="abstract|multivariate|linear|instant|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/mosan.png" alt="MOSAN" />
+	<div class="tec-reference">Unger, A. & Schumann, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/PACIFICVIS.2009.4906838">Visual Support for the Understanding of Simulation Processes</a>. Proceedings of the IEEE Pacific Visualization Symposium (PacificVis), IEEE Computer Society, 2009.</div>
+	<div class="tec-source">
+Image courtesy of Andrea Unger.
+		</div>
+	<div class="tec-text">MOSAN is a tool for visualizing multivariate time-oriented data that result from simulation of reaction networks. Due to the stochastic multi-run simulation, each variable comprises multiple time-series. In order to facilitate the understanding of the complex dependencies in the data it is necessary to jointly visualize structural information and stochastic simulation data together. To this end, Unger, A. & Schumann, H. (2009) combine different views within a single interactive interface. In an ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Multi Scale Temporal Behavior" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/multi-scale_temporal_behavior.png" alt="Multi Scale Temporal Behavior" />
+	<div class="tec-reference">Shimabukuro, M.; Flores, E.; de Oliveira, M. & Levkowitz, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/CMV.2004.1319531">Coordinated Views to Assist Exploration of Spatio-Temporal Data: A Case Study</a>. Proceedings of the International Conference on Coordinated and Multiple Views in Exploratory Visualization (CMV), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Image courtesy of Milton Hirokazu Shimabukuro.
+		</div>
+	<div class="tec-text">The Multi Scale Temporal Behavior technique by Shimabukuro, M.; Flores, E.; de Oliveira, M. & Levkowitz, H. (2004) comprises different levels of granularity and aggregation to explore patterns at different temporal levels. The basis for the visualization is a matrix that is divided vertically into three regions, one for each of the three scale levels: daily data, monthly data, and yearly data. Each column of the matrix represents a year worth of data. The cells in the topmost region represent months. ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="MultiComb" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/multicomb.png" alt="MultiComb" />
+	<div class="tec-reference">Tominski, C.; Abello, J. & Schumann, H.: <a href="http://doi.acm.org/10.1145/967900.968153">Axes-Based Visualizations with Radial Layouts</a>. Proceedings of the ACM Symposium on Applied Computing (SAC), ACM, 2004.</div>
+	<div class="tec-source">
+Generated with the VisAxes software.
+		</div>
+	<div class="tec-text">Line plots (see <a href="javascript:openTec('Line Plot')">Line Plot</a>) are expressive visual representations for univariate data. The rationale behind the MultiComb visualization is to utilize this expressiveness for representing multiple time-dependent variables. Tominski, C.; Abello, J. & Schumann, H. (2004) describe the MultiComb as a visual representation that consists of multiple radially arranged line plots. Two alternative designs exist: time axes are arranged around the display center ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Paint Strips" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/paint-strips.png" alt="Paint Strips" />
+	<div class="tec-reference">Chittaro, L. & Combi, C.: <a href="http://dx.doi.org/10.1016/S0169-023X(02)00137-4">Visualizing Queries on Databases of Temporal Histories: New Metaphors and their Evaluation</a>. Data and Knowledge Engineering, Vol. 44, No. 2, 2003.</div>
+	<div class="tec-source">
+Image courtesy of Luca Chittaro.
+		</div>
+	<div class="tec-text">Chittaro, L. & Combi, C. (2003) designed paint strips to represent relations between time intervals for visualizing queries on medical databases. The technique is strongly related to timelines (see <a href="javascript:openTec('Timeline')">Timeline</a>), but here paint strips are used as equivalents of bars to indicate time intervals, and optionally, the indeterminacy of intervals is communicated by placing paint rollers at either end of the paint strips. A paint roller with a weight attached to ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Parallel Glyphs" data-categories="abstract|multivariate|linear|cyclic|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/parallel_glyphs.png" alt="Parallel Glyphs" />
+	<div class="tec-reference">Fanea, E.; Carpendale, M. S. T. & Isenberg, T.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFOVIS.2005.5">An Interactive 3D Integration of Parallel Coordinates and Star Glyphs</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Fanea, E.; Carpendale, M. S. T. & Isenberg, T. (2005), ©  2005 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Multivariate time-series can be visualized as parallel glyphs. Fanea, E.; Carpendale, M. S. T. & Isenberg, T. (2005) synthesized this technique as a combination of parallel coordinates and star glyphs. The visualization uses multiple star glyphs, each of which consists of as many radially arranged spikes as there are time points in the data. The length of a spike corresponds to the data value measured at the spike's associated time point. The tips of subsequent spikes are connected via a polyline, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="PatternFinder" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/patternfinder.png" alt="PatternFinder" />
+	<div class="tec-reference">Fails, J.; Karlson, A.; Shahamat, L. & Shneiderman, B.: <a href="http://doi.ieeecomputersociety.org/10.1109/VAST.2006.261421">A Visual Interface for Multivariate Temporal Data: Finding Patterns of Events across Multiple Histories</a>. Proceedings of the IEEE Symposium on Visual Analytics Science and Technology (VAST), IEEE Computer Society, 2006.</div>
+	<div class="tec-source">
+Image courtesy of Jerry Alan Fails.
+		</div>
+	<div class="tec-text">PatternFinder by Fails, J.; Karlson, A.; Shahamat, L. & Shneiderman, B. (2006) is used for constructing queries to find temporal patterns in medical record databases. The temporal patterns consist of events that are associated with data, and time spans that separate events. Users formulate queries by imposing constraints on events and time spans. Events can be selected from a hierarchically structured vocabulary and constraints for associated variables can be specified in a visual interface along ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Pencil Icons" data-categories="spatial|multivariate|linear|instant|interval|static|3D">
+	<img class="thumb" src="pics/thumbs/pencil_icons.png" alt="Pencil Icons" />
+	<div class="tec-reference">Tominski, C.; Schulze-Wollgast, P. & Schumann, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2005.3">3D Information Visualization for Time Dependent Data on Maps</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Generated with the LandVis system.
+		</div>
+	<div class="tec-text">Pencil icons have been developed by Tominski, C.; Schulze-Wollgast, P. & Schumann, H. (2005) to visualize multivariate spatio-temporal data. The technique is based on the space-time cube concept (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>), where the spatial frame of reference is represented as a map in the x-y plane of a virtual three-dimensional cube. The dimension of time is mapped along the cube's z-axis. Within the cube, pencil icons are positioned where data is ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="PeopleGarden" data-categories="abstract|multivariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/peoplegarden.png" alt="PeopleGarden" />
+	<div class="tec-reference">Xiong, R. & Donath, J.: <a href="http://doi.acm.org/10.1145/320719.322581">PeopleGarden: Creating Data Portraits for Users</a>. Proceedings of the ACM Symposium on User Interface Software and Technology (UIST), ACM, 1999.</div>
+	<div class="tec-source">
+Xiong, R. & Donath, J. (1999), ©  1999 ACM. Used with permission.
+		</div>
+	<div class="tec-text">Xiong, R. & Donath, J. (1999) developed PeopleGarden as a graphical representation of users' interaction histories in discussion groups. PeopleGarden visualizes data about users and messages posted to an online interaction environment. It integrates information on the time of posting, amount of response, and whether a post starts a new conversation. For intuitive understanding, PeopleGarden uses the metaphor of a garden of flowers. The garden represents the whole environment and flowers represent ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Perspective Wall" data-categories="abstract|univariate|linear|instant|interval|static|3D">
+	<img class="thumb" src="pics/thumbs/perspective-wall.png" alt="Perspective Wall" />
+	<div class="tec-reference">Mackinlay, J. D.; Robertson, G. G. & Card, S. K.: <a href="http://doi.acm.org/10.1145/108844.108870">The Perspective Wall: Detail and Context Smoothly Integrated</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 1991.</div>
+	<div class="tec-source">
+©  Inxight Federal Systems.
+		</div>
+	<div class="tec-text">Time-oriented data that are linked to a longer time axis (i.e., wide span in time or many time primitives) are usually difficult to represent visually because the image becomes very wide and exhibits an aspect ratio that is not suited for common displays. The perspective wall by Mackinlay, J. D.; Robertson, G. G. & Card, S. K. (1991) is a technique that addresses this problem by means of a focus+context approach. The key idea is to map time-oriented data to a 3D wall. For a user-selected focus, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Pixel-Oriented Network Visualization" data-categories="abstract|multivariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/ponv.png" alt="Pixel-Oriented Network Visualization" />
+	<div class="tec-reference">Stein, K.; Wegener, R. & Schlieder, C.: <a href="http://doi.ieeecomputersociety.org/10.1109/ASONAM.2010.18">Pixel-Oriented Visualization of Change in Social Networks</a>. Proceedings of the International Conference on Advances in Social Networks Analysis and Mining (ASONAM), IEEE Computer Society, 2010.</div>
+	<div class="tec-source">
+Images courtesy of Klaus Stein.
+		</div>
+	<div class="tec-text">Social networks consist of actors and relationships between them. Unlike most static node-link representations of graph-like structures would suggest, these networks are dynamically changing over time. The two most common forms of visualizing time-varying networks are applying animation to node-link diagrams or applying the concept of small multiples (see <a href="javascript:openTec('Small Multiples')">Small Multiples</a>) by showing snapshots of different points in time. An alternative display ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="PlanningLines" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/planninglines.png" alt="PlanningLines" />
+	<div class="tec-reference">Aigner, W.; Miksch, S.; Thurnher, B. & Biffl, S.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2005.97">PlanningLines: Novel Glyphs for Representing Temporal Uncertainties and their Evaluation</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Adapted from Aigner, W.; Miksch, S.; Thurnher, B. & Biffl, S. (2005).
+		</div>
+	<div class="tec-text">Since the future is always inherently connected with possible uncertainties, delays, and the unforeseen, these issues need to be dealt with in many domains like project management or medical treatment planning. PlanningLines by Aigner, W.; Miksch, S.; Thurnher, B. & Biffl, S. (2005) allow the representation of temporal uncertainties, thus supporting project managers in their difficult planning and controlling tasks.PlanningLines have been designed to be easily integrated into well-known timeline-based ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Point Plot" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/scatterplot.png" alt="Point Plot" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Authors.
+		</div>
+	<div class="tec-text">One of the most straightforward ways of depicting time-series data is using a Cartesian coordinate system with time on the horizontal axis and the corresponding value on the vertical axis. A point is plotted for every measured time-value pair. This kind of representation is called point plot, point graph, or scatter plot, respectively. Harris, R. L. (1999) describes it as a 2-dimensional representation where quantitative data aspects are visualized by distance from the main axis. Many extensions ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="PostHistory" data-categories="abstract|multivariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/posthistory.png" alt="PostHistory" />
+	<div class="tec-reference">Viégas, F.; Boyd, D.; Nguyen, D.; Potter, J. & Donath, J.: <a href="http://doi.ieeecomputersociety.org/10.1109/HICSS.2004.1265287">Digital Artifacts for Remembering and Storytelling: PostHistory and Social Network Fragments</a>. Proceedings of the Annual Hawaii International Conference on System Sciences (HICSS), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Image courtesy of Fernanda B. Viégas.
+		</div>
+	<div class="tec-text">Viégas, F.; Boyd, D.; Nguyen, D.; Potter, J. & Donath, J. (2004) developed PostHistory with the goal of visually uncovering different patterns of e-mail activity (e.g., social networks, e-mail exchange rhythms) and the role of time in these patterns. PostHistory is user-centric and focuses on a single user's direct interactions with other people through e-mail. The social patterns are derived from analyzing e-mail header information. So, not the content of messages, but the tracked traffic is ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Process Visualization" data-categories="abstract|multivariate|linear|instant|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/processvis.png" alt="Process Visualization" />
+	<div class="tec-reference">Matković, K.; Hauser, H.; Sainitzer, R. & Gröller, E.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.2002.1173149">Process Visualization with Levels of Detail</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2002.</div>
+	<div class="tec-source">
+Matković, K.; Hauser, H.; Sainitzer, R. & Gröller, E. (2002), ©  2002 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Process visualization, for instance in automotive environments, has to deal with a multitude of time-varying input variables to be monitored. Matković, K.; Hauser, H.; Sainitzer, R. & Gröller, E. (2002) suggest a focus+context approach to help users keep track of the important changes of a process. The key idea is to provide virtual instruments that represent monitored variables at different levels of detail. Instruments representing focused variables provide more detailed information, for example, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Recursive Pattern" data-categories="abstract|univariate|multivariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/recursive_pattern.png" alt="Recursive Pattern" />
+	<div class="tec-reference">Keim, D.; Kriegel, H.-P. & Ankerst, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/VISUAL.1995.485140">Recursive Pattern: A Technique for Visualizing Very Large Amounts of Data</a>. Proceedings of IEEE Visualization (Vis), IEEE Computer Society, 1995.</div>
+	<div class="tec-source">
+Keim, D.; Kriegel, H.-P. & Ankerst, M. (1995), ©  1995 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The most space-efficient way of visualizing data is to represent them on a per-pixel basis. Keim, D.; Kriegel, H.-P. & Ankerst, M. (1995) suggest a variety of pixel-based visualization approaches of which the recursive pattern technique is particularly suited to display large time-series. The key idea behind the recursive pattern technique is to construct an arrangement of pixels that corresponds to the inherently hierarchical structure of time-oriented data given at multiple granularities. Figure ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Ring Maps" data-categories="abstract|spatial|univariate|multivariate|linear|cyclic|instant|interval|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/ringmaps.png" alt="Ring Maps" />
+	<div class="tec-reference">Zhao, J.; Forer, P. & Harvey, A. S.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500184">Activities, Ringmaps and Geovisualization of Large Human Movement Fields</a>. Information Visualization, Vol. 7, No. 3, 2008.</div>
+	<div class="tec-reference">Huang, G.; Govoni, S.; Choi, J.; Hartley, D. M. & Wilson, J. M.: <a href="http://www.esri.com/news/arcuser/0408/files/ringmaps.pdf">Geovisualizing Data With Ring Maps</a>. ArcUser, Vol. Winter 2008, 2008.</div>
+	<div class="tec-source">
+Left: Image courtesy of Guilan Huang. Right: Image courtesy of Jinfeng Zhao.
+		</div>
+	<div class="tec-text">The basic idea of ring maps is to create multiple differently sized rings, each of which is subdivided into an equal number of ring segments. The rings and their segments as well as the center area of the overall visual representation can be used in various ways. One can utilize ring maps to visualize spatio-temporal data. To this end, a map is shown in the center and the ring segments of a particular angle are associated with a specific area of the map. This is depicted in the left part of Figure ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Silhouette Graph, Circular Silhouette Graph" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/silhouette-graphs.png" alt="Silhouette Graph, Circular Silhouette Graph" />
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Adapted from Harris, R. L. (1999).
+		</div>
+	<div class="tec-text">Silhouette graphs emphasize the visual impression of time-series by filling the area below the plotted lines. This leads to distinct silhouettes that enhance perception at wide aspect ratios of long time-series compared to line plots (see <a href="javascript:openTec('Line Plot')">Line Plot</a>) and allow an easier comparison of multiple time-series. On the left of Figure, time is mapped to the horizontal axes and multiple time-series are stacked upon each other. Other layouts of the axes might ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Similan" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/similan.png" alt="Similan" />
+	<div class="tec-reference">Wongsuphasawat, K. & Shneiderman, B.: <a href="http://doi.ieeecomputersociety.org/10.1109/VAST.2009.5332595">Finding Comparable Temporal Categorical Records: A Similarity Measure with an Interactive Visualization</a>. Proceedings of the IEEE Symposium on Visual Analytics Science and Technology (VAST), IEEE Computer Society, 2009.</div>
+	<div class="tec-source">
+Image courtesy of Krist Wongsuphasawat.
+		</div>
+	<div class="tec-text">Wongsuphasawat, K. & Shneiderman, B. (2009) describe Similan as a system for exploring patient records.Patient records are stacked upon each other and show health-related events as triangles, where color indicates event categories (e.g., arrival, emergency, ICU).Similan uses the same visual representation as LifeLines2 (see <a href="javascript:openTec('LifeLines2')">LifeLines2</a>) but provides a different approach to data exploration. Instead of interactive filtering, records are ranked according ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Small Multiples" data-categories="abstract|spatial|univariate|multivariate|linear|cyclic|instant|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/small_multiples.png" alt="Small Multiples" />
+	<div class="tec-reference">: <a ></a>. </div>
+	<div class="tec-reference">Tufte, E. R.: <a >The Visual Display of Quantitative Information</a>. Graphics Press, 1983. (ISBN: 096139210X)</div>
+	<div class="tec-source">
+Generated with the JFlowMap software with permission of Ilya Boyandin.
+		</div>
+	<div class="tec-text">Small multiples are more a general concept than a specific technique. Tufte, E. R. (1983),  () describes small multiples as a set of miniature visual representations. For time-oriented data, each miniature visualizes a selected time point. The concrete depiction may show a single variable or multiple variables in an abstract or spatial context using a 2D or 3D presentation space. Particularly relevant is the arrangement of the small multiples as it dictates how the time axis is perceived. Linear ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Software Evolution Analysis" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/software-evolution-analysis.png" alt="Software Evolution Analysis" />
+	<div class="tec-reference">Gall, H.; Jazayeri, M. & Riva, C.: <a href="http://doi.ieeecomputersociety.org/10.1109/ICSM.1999.792584">Visualizing Software Release Histories: The Use of Color and Third Dimension</a>. Proceedings of the International Conference on Software Maintenance (ICSM), IEEE Computer Society, 1999.</div>
+	<div class="tec-source">
+Gall, H.; Jazayeri, M. & Riva, C. (1999), ©  1999 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The software evolution analysis technique by Gall, H.; Jazayeri, M. & Riva, C. (1999) uses 3D visualization to analyze software systems or product families respectively. The information is decomposed hierarchically into modules, packages, and files or similar concepts. This hierarchy is depicted as a three dimensional tree structure in which the leaf nodes represent individual files. Multiple such trees are aligned in layers in the 3D space, with one layer for each revision of the software. Color ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="SolarPlot" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/solarplot.png" alt="SolarPlot" />
+	<div class="tec-reference">Chuah, M. C.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.1998.729557">Dynamic Aggregation with Circular Visual Designs</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 1998.</div>
+	<div class="tec-source">
+Chuah, M. C. (1998), ©  1998 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">With the SolarPlot technique introduced by Chuah, M. C. (1998), values are plotted around the circumference of a circle as shown left in Figure. Much like in a circular histogram, the first step is to partition the data series into a number of bins. Each bin is represented by a sunbeam whose length encodes the frequency of data items in the corresponding bin. The SolarPlot determines the number of bins dynamically depending on the size of the circle. Users are allowed to expand or contract the ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="SOPO Diagram" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/sopoview.png" alt="SOPO Diagram" />
+	<div class="tec-reference">Kosara, R. & Miksch, S.: <a href="http://dx.doi.org/10.1016/S1386-5056(02)00072-2">Visualization Methods for Data Analysis and Planning</a>. International Journal of Medical Informatics, Vol. 68, No. 1--3, 2002.</div>
+	<div class="tec-reference">Rit, J.-F.: <a href="http://www.aaai.org/Papers/AAAI/1986/AAAI86-064.pdf">Propagating Temporal Constraints for Scheduling</a>. Proceedings of the National Conference on Artificial Intelligence (AAAI), Morgan Kaufmann, 1986.</div>
+	<div class="tec-source">
+Images courtesy of Robert Kosara.
+		</div>
+	<div class="tec-text">For planning and scheduling, the temporal extents of events can be characterized by sets of possible occurrences (SOPOs), i.e., a set of possible begin and end times during which an event may happen. Rit, J.-F. (1986) defined a theoretical model for the definition and propagation of temporal constraints for scheduling problems. A graphical representation of SOPOs was introduced as a visual aid for understanding and solving such problems. In this representation, the extent of temporal uncertainty ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Space-Time Cube" data-categories="spatial|univariate|multivariate|linear|instant|interval|static|3D">
+	<img class="thumb" src="pics/thumbs/space-time-cube.png" alt="Space-Time Cube" />
+	<div class="tec-reference">Kraak, M.-J.: <a href="http://www.itc.nl/library/Papers_2003/art_proc/kraak.pdf">The Space-Time Cube Revisited from a Geovisualization Perspective</a>. Proceedings of the 21st International Cartographic Conference (ICC), The International Cartographic Association (ICA), 2003.</div>
+	<div class="tec-reference">Hägerstrand, T.: <a href="http://dx.doi.org/10.1111/j.1435-5597.1970.tb01464.x">What About People in Regional Science?</a>. Papers of the Regional Science Association, Vol. 24, 1970.</div>
+	<div class="tec-source">
+Image courtesy of Thomas Nocke.
+		</div>
+	<div class="tec-text">A classic concept that combines the visualization of space and time is the space-time cube, which is attributed to the pioneer work of Hägerstrand, T. (1970). The basic idea is to map two spatial dimensions to two axes of a virtual three-dimensional cube and to use the third axis for the mapping of time. The spatial context is often represented as a map that constitutes one face of the space-time cube. The three-dimensional space inside the cube is used to represent spatio-temporal data, where possible ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Space-Time Path" data-categories="spatial|univariate|multivariate|linear|instant|interval|static|3D">
+	<img class="thumb" src="pics/thumbs/space-time-path.png" alt="Space-Time Path" />
+	<div class="tec-reference">Kwan, M.-P.: <a >Space-Time Paths</a>. In: Madden, M. (ed.) Manual of Geographic Information Systems. American Society for Photogrammetry and Remote Sensing, 2009.</div>
+	<div class="tec-reference">Lenntorp, B.: <a >Paths in Space-Time Environments: A Time Geographic Study of Movement Possibilities of Individuals</a>. In: Lund Studies in Geography. Royal University of Lund, 1976.</div>
+	<div class="tec-reference">Kraak, M.-J.: <a href="http://www.itc.nl/library/Papers_2003/art_proc/kraak.pdf">The Space-Time Cube Revisited from a Geovisualization Perspective</a>. Proceedings of the 21st International Cartographic Conference (ICC), The International Cartographic Association (ICA), 2003.</div>
+	<div class="tec-source">
+Kraak, M.-J. (2003), ©  2003 International Cartographic Association (ICA). Used with permission.
+		</div>
+	<div class="tec-text">The space-time path is a specific representation of data in a space-time cube (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>). The roots of the concept of space-time paths can be found in the work by Lenntorp, B. (1976). Kwan, M.-P. (2009) describes contemporary visual representations that are based on the classic concept. A space-time path is constructed by considering the location of an object as a three-dimensional point in space and time. Multiple such points ordered ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="SparkClouds" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/sparkclouds.png" alt="SparkClouds" />
+	<div class="tec-reference">Lee, B.; Riche, N.; Karlson, A. & Carpendale, S.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2010.194">SparkClouds: Visualizing Trends in Tag Clouds</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 16, No. 6, 2010.</div>
+	<div class="tec-source">
+Lee, B.; Riche, N.; Karlson, A. & Carpendale, S. (2010). ©  2010, IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Tag clouds visualize a set of keywords weighted by their importance. To this end, a layout of the keywords is computed. By varying font size, color, or other visual variables important keywords are emphasized over less-important keywords. Classic tag clouds, however, are incapable of representing the evolution of keywords. Lee, B.; Riche, N.; Karlson, A. & Carpendale, S. (2010) integrate sparklines (see <a href="javascript:openTec('Sparklines')">Sparklines</a>) into tag clouds in order to visualize ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Sparklines" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/sparklines.png" alt="Sparklines" />
+	<div class="tec-reference">Tufte, E. R.: <a >Beautiful Evidence</a>. Graphics Press, 2006. (ISBN: 0961392177)</div>
+	<div class="tec-source">
+Generated with the sparklines package for LaTeX.
+		</div>
+	<div class="tec-text">Tufte, E. R. (2006) describes sparklines as simple, word-like graphics intended to be integrated into text. This adds richer information about the development of a variable over time that words themselves could hardly convey. The visualization method focuses mainly on giving an overview of the development of values for time-oriented data rather than on specific values or dates due to their small size and the omission of axes and labels. Sparklines can be integrated seamlessly into paragraphs of ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Spatio-Temporal Event Visualization" data-categories="spatial|univariate|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/space-time-events.png" alt="Spatio-Temporal Event Visualization" />
+	<div class="tec-reference">Gatalsky, P.; Andrienko, N. & Andrienko, G.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2004.1320137">Interactive Analysis of Event Data Using Space-Time Cube</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2004.</div>
+	<div class="tec-reference">Turdukulov, U. D.; Kraak, M.-J. & Blok, C. A.: <a href="http://dx.doi.org/10.1016/j.cag.2007.01.028">Designing a Visual Environment for Exploration of Time Series of Remote Sensing Data: In Search for Convective Clouds</a>. Computers & Graphics, Vol. 31, No. 3, 2007.</div>
+	<div class="tec-reference">Tominski, C.; Schulze-Wollgast, P. & Schumann, H.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2005.3">3D Information Visualization for Time Dependent Data on Maps</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Left: Turdukulov, U. D.; Kraak, M.-J. & Blok, C. A. (2007), ©  2007 Elsevier. Used with permission. Center: Generated with the LandVis system. Right: Gatalsky, P.; Andrienko, N. & Andrienko, G. (2004), ©  2004 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Events usually describe happenings of interest. In order to analyze events in their spatial and temporal context, one can make use of the space-time cube concept (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>). The actual events are visualized by placing graphical objects in the space-time cube at those positions where events are located in time and space. Attributes associated with events can be encoded, for example, by varying size, color, shape, or texture of the graphical ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="SpiraClock" data-categories="abstract|univariate|cyclic|interval|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/spiraclock.png" alt="SpiraClock" />
+	<div class="tec-reference">Dragicevic, P. & Huot, S.: <a href="http://doi.acm.org/10.1145/506443.506505">SpiraClock: A Continuous and Non-Intrusive Display for Upcoming Events</a>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), ACM, 2002.</div>
+	<div class="tec-source">
+Adapted from Dragicevic, P. & Huot, S. (2002) with permission of Pierre Dragicevic.
+		</div>
+	<div class="tec-text">The SpiraClock invented by Dragicevic, P. & Huot, S. (2002) visualizes time by using the clock metaphor. The visual representation consists of a clock face and two hands indicating hour and minute. The interior of the clock shows a spiral that extends from the clock's circumference toward its center. Each cycle of the spiral represents 12 hours, with the current hour shown at the outermost cycle and future hours displayed in the center (about nine future hours in Figure ). Time intervals (e.g., ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Spiral Display" data-categories="abstract|univariate|multivariate|cyclic|instant|interval|static|2D|3D">
+	<img class="thumb" src="pics/thumbs/spiral_display.png" alt="Spiral Display" />
+	<div class="tec-reference">Carlis, J. V. & Konstan, J. A.: <a href="http://doi.acm.org/10.1145/288392.288399">Interactive Visualization of Serial Periodic Data</a>. Proceedings of the ACM Symposium on User Interface Software and Technology (UIST), ACM, 1998.</div>
+	<div class="tec-source">
+Carlis, J. V. & Konstan, J. A. (1998), ©  1998 ACM. Used with permission.
+		</div>
+	<div class="tec-text">The interactive spiral display by Carlis, J. V. & Konstan, J. A. (1998) uses Archimedean spirals to represent the time domain. Data values at particular time points are visualized as filled circular elements whose area is proportional to the data value. In the case of interval-based data, filled bars are aligned with the spiral shape to indicate start and end of intervals. If multivariate data are given at time points, the spiral is tilted and data values are visualized as differently colored ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Spiral Graph" data-categories="abstract|univariate|multivariate|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/spiralgraph.png" alt="Spiral Graph" />
+	<div class="tec-reference">Weber, M.; Alexa, M. & Müller, W.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.2001.963273">Visualizing Time-Series on Spirals</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2001.</div>
+	<div class="tec-source">
+Weber, M.; Alexa, M. & Müller, W. (2001), ©  2001 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The spiral graph developed by Weber, M.; Alexa, M. & Müller, W. (2001) is a visualization technique that focuses on cyclic characteristics of time-oriented data. To this end, the time axis is represented by a spiral. Time-oriented data are then mapped along the spiral path. While nominal data are represented by simple icons, quantitative data can be visualized by color, line thickness, or texture. One can also visualize multivariate time-series by intertwining several spirals as shown for two variables ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Stacked Graphs" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/stacked_graphs.png" alt="Stacked Graphs" />
+	<div class="tec-reference">Byron, L. & Wattenberg, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2008.166">Stacked Graphs &#x2013; Geometry & Aesthetics</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 14, No. 6, 2008.</div>
+	<div class="tec-reference">Harris, R. L.: <a >Information Graphics: A Comprehensive Illustrated Reference</a>. Oxford University Press, 1999. (ISBN: 0195135326)</div>
+	<div class="tec-source">
+Generated with the streamgraph_generator code base.
+		</div>
+	<div class="tec-text">Stacking multiple graphs on top of each other is a suitable approach to visualizing multiple time-dependent variables (see Harris, R. L. (1999)). Elaborate variants of stacked graphs have been investigated in detail by Byron, L. & Wattenberg, M. (2008). To visualize the evolution of an individual variable, data values are encoded to the height of a so-called layer that extends along the horizontal time axis. A special color map is applied to visualize additional data variables and to make individual ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Temporal Focus+Context" data-categories="spatial|multivariate|linear|interval|static|3D">
+	<img class="thumb new" src="pics/thumbs/temporal-focus-context.png" alt="Temporal Focus+Context" />
+	<div class="tec-reference">Carvalho, A.; Augusto de, A. S.; Ribeiro, C. & Costa, E.: <a >A Temporal Focus + Context Visualization Model for Handling Valid-Time Spatial Information</a>. Information Visualization, Vol. 7, No. 3-4, 2008.</div>
+	<div class="tec-source">
+Image courtesy of Alexandre Carvalho.
+		</div>
+	<div class="tec-text">Carvalho, A.; Augusto de, A. S.; Ribeiro, C. & Costa, E. (2008) introduce a temporal focus+context visualization model to meaningfully display several time instants simultaneously. In this model, focus+context is applied to time rather than, as more typically, to attributes or space. Underlying the proposed technique is the calculation of a temporal degree of interest (TDOI), which is driven by the valid time attribute, by specific analysis, exploration, or presentation goals as well as by user-defined visualization requirements. The TDOI is used to convey the temporal aspects of the data via adjusting graphical properties, such as transparency, color, sketchiness, or other non-photorealistic enhancements. This makes it possible to meaningfully compress information about distinct temporal states of the data into the same visualization display.</div>
+</div>
+<div class="tec" data-id="Temporal Mosaic" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb new" src="pics/thumbs/temporal-mosaic.png" alt="Temporal Mosaic" />
+	<div class="tec-reference">Luz, S. & Masoodian, M.: <a href="http://ewic.bcs.org/content/ConWebDoc/43305">Improving Focus and Context Awareness in Interactive Visualization of Time Lines</a>. Proceedings of the British Computer Society Conference on Human-Computer Interaction (BCS-HCI), ACM, 2010.</div>
+	<div class="tec-reference">Luz, S. & Masoodian, M.: <a href="http://doi.acm.org/10.1145/989863.989950">A mobile system for non-linear access to time-based data</a>. Proceedings of the Working Conference on Advanced Visual Interfaces (AVI), ACM, 2004.</div>
+	<div class="tec-reference">Luz, S. & Masoodian, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2007.127">Visualisation of Parallel Data Streams with Temporal Mosaics</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2007.</div>
+	<div class="tec-source">
+Image courtesy of Saturnino Luz.
+		</div>
+	<div class="tec-text">Temporal mosaic is a technique for visualization of parallel time-based streams. It provides a compact way of representing concurrent events by allocating a fixed drawing area to time intervals and partitioning that area according to the number of events that co-occur in that time interval. The figure shows a temporal mosaic representation of a house renovation schedule with hierarchical event dependencies. Time is mapped along the horizontal axis. Differently colored regions in the mosaic indicate at which time a particular renovation is scheduled. One can see that some renovations can be executed in parallel, while others depend on each other an need be carried out one after the other. The temporal mosaic technique has also been evaluated in the context of meeting browsing tasks.</div>
+</div>
+<div class="tec" data-id="Temporal Star" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/temporal-star.png" alt="Temporal Star" />
+	<div class="tec-reference">Noirhomme-Fraiture, M.: <a href="http://www.jsda.unina2.it/newjsda/volumes/Vol0/abstractv0noir.htm">Visualization of Large Data Sets: The Zoom Star Solution</a>. Journal of Symbolic Data Analysis, Vol. 0, No. 0, 2002.</div>
+	<div class="tec-source">
+Images courtesy of Monique Noirhomme.
+		</div>
+	<div class="tec-text">The temporal star technique by Noirhomme-Fraiture, M. (2002) visualizes multivariate data structures in 3D. For each point in time, a circular column graph is drawn that represents each variable's value as a bar length in a circular arrangement. These graphs are aligned in a row to represent the development of the dataset over time. A unique color is assigned to each variable to aid recognition of variables across time. Moreover, a transparent veil can be displayed to enhance the perception of ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="ThemeRiver" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/themeriver.png" alt="ThemeRiver" />
+	<div class="tec-reference">Havre, S.; Hetzler, E.; Whitney, P. & Nowell, L.: <a href="http://doi.ieeecomputersociety.org/10.1109/2945.981848">ThemeRiver: Visualizing Thematic Changes in Large Document Collections</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 8, No. 1, 2002.</div>
+	<div class="tec-reference">Havre, S.; Hetzler, E. & Nowell, L.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFVIS.2000.885098">ThemeRiver: Visualizing Theme Changes Over Time</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2000.</div>
+	<div class="tec-source">
+Havre, S.; Hetzler, E.; Whitney, P. & Nowell, L. (2002), ©  2002 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The ThemeRiver technique developed by Havre, S.; Hetzler, E. & Nowell, L. (2000) represents changes of news topics in the media. Each topic is displayed as a colored current whose width varies continuously as it flows through time. The overall image is a river that comprises all of the topics considered. The ThemeRiver provides an overview of the topics that were important at certain points in time. Hence, the main focus is directed towards establishing a picture of an easy to follow evolution over ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Tile Maps" data-categories="abstract|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/tile-map.png" alt="Tile Maps" />
+	<div class="tec-reference">Mintz, D.; Fitz-Simons, T. & Wayland, M.: <a href="http://www2.sas.com/proceedings/sugi22/INFOVIS/PAPER173.PDF">Tracking Air Quality Trends with SAS/GRAPH</a>. Proceedings of the 22nd Annual SAS User Group International Conference (SUGI), SAS, 1997.</div>
+	<div class="tec-source">
+Adapted from Mintz, D.; Fitz-Simons, T. & Wayland, M. (1997) with permission of David Mintz.
+		</div>
+	<div class="tec-text">Tile maps as described by Mintz, D.; Fitz-Simons, T. & Wayland, M. (1997) represent a series of data values along a calendar division. The idea behind this technique is to arrange data values according to different temporal granularities. For example, data values measured on a daily basis are displayed in a matrix where each cell (or tile) corresponds to a distinct day, a column represents a week, and a row represents all data values for a particular weekday. One additional level of granularity ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Time Annotation Glyph" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/time-annotation-glyph.png" alt="Time Annotation Glyph" />
+	<div class="tec-reference">Kosara, R. & Miksch, S.: <a href="http://dx.doi.org/10.1016/S0933-3657(00)00103-2">Metaphors of Movement - A Visualization and User Interface for Time-Oriented, Skeletal Plans</a>. Artificial Intelligence in Medicine, Vol. 22, No. 2, 2001.</div>
+	<div class="tec-source">
+Images courtesy of Robert Kosara.
+		</div>
+	<div class="tec-text">The time annotation glyph by Kosara, R. & Miksch, S. (2001) uses the simple metaphor of bars that lie on pillars to represent a complex set of time attributes. Four vertical lines on the base specify the earliest and the latest starting and ending times. Supported by these pillars lies a bar that is as long as the maximum duration. On top of the maximum duration bar, a bar that represents the minimum duration lies upon two diamonds indicating the latest start and the earliest end. Furthermore, undefined ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Time Line Browser" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/time_line_browser.png" alt="Time Line Browser" />
+	<div class="tec-reference">Cousins, S. B. & Kahn, M. G.: <a href="http://dx.doi.org/10.1016/0933-3657(91)90005-V">The Visual Display of Temporal Information</a>. Artificial Intelligence in Medicine, Vol. 3, No. 6, 1991.</div>
+	<div class="tec-source">
+Cousins, S. B. & Kahn, M. G. (1991), ©  1991 Elsevier. Used with permission.
+		</div>
+	<div class="tec-text">Cousins, S. B. & Kahn, M. G. (1991) developed the time line browser for visualizing heterogeneous time-oriented data. The time line browser integrates qualitative and quantitative data as well as instant and interval data into a single coherent view. To this end, Cousins, S. B. & Kahn, M. G. (1991) distinguish simple events, complex events, and intervals. Simple events are represented as small circles, whereas complex events are shown as icons. Bars are used to indicate location and duration of ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Time-Oriented Polygons on Maps" data-categories="spatial|univariate|linear|cyclic|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/time_polygons.png" alt="Time-Oriented Polygons on Maps" />
+	<div class="tec-reference">Shanbhag, P.; Rheingans, P. & desJardins, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/INFOVIS.2005.32">Temporal Visualization of Planning Polygons for Effcient Partitioning of Geo-Spatial Data</a>. Proceedings of the IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2005.</div>
+	<div class="tec-source">
+Shanbhag, P.; Rheingans, P. & desJardins, M. (2005), ©  2005 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Three time-oriented visualization methods are presented by Shanbhag, P.; Rheingans, P. & desJardins, M. (2005) to analyze and support effective allocation of resources in a spatio-temporal context. Wedges, rings, and time slices are the three basic layouts used to display changes of data values over time on a map. For all three variants, data values and categories are represented using color components (hue, saturation, and brightness). In the layout of the wedges the area of a polygon is partitioned ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Time-tunnel" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/timetunnel.png" alt="Time-tunnel" />
+	<div class="tec-reference">Akaishi, M. & Okada, Y.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2004.1320184">Time-tunnel: Visual Analysis Tool for Time-series Numerical Data and its Aspects as Multimedia Presentation Tool</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Akaishi, M. & Okada, Y. (2004), ©  2004 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Akaishi, M. & Okada, Y. (2004) developed time-tunnel as a data analysis technique for visualizing a number of time-series plots in a 3D virtual space. The individual plots are put onto semi-transparent planes (data-wings) that are positioned around a central time-bar in a fan-like manner. In the example above, line plots are used for visualizing data but any other linear time visualization might also be used. Multiple planes can be overlapped and compared due to their transparency. Furthermore, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Time-Varying Hierarchies on Maps" data-categories="spatial|univariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/hierarchies_on_maps.png" alt="Time-Varying Hierarchies on Maps" />
+	<div class="tec-reference">Hadlak, S.; Tominski, C.; Schulz, H.-J. & Schumann, H.: <a href="http://dx.doi.org/10.1080/13658816.2010.508043">Visualization of Attributed Hierarchical Structures in a Spatio-Temporal Context</a>. International Journal of Geographical Information Science, Vol. 24, No. 10, 2010.</div>
+	<div class="tec-source">
+Generated with the LandVis system.
+		</div>
+	<div class="tec-text">Hierarchical structures can be found in many application areas. A technique for visualizing hierarchies that change over time in a geo-spatial context is described by Hadlak, S.; Tominski, C.; Schulz, H.-J. & Schumann, H. (2010). This technique follows the idea of using the third dimension of the presentation space to represent the dimension of time, which is analog to the space-time cube approach (see <a href="javascript:openTec('Space-Time Cube')">Space-Time Cube</a>). For a series of time steps, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeDensityPlots" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb new" src="pics/thumbs/timedensityplots.png" alt="TimeDensityPlots" />
+	<div class="tec-reference">Rohrdantz, C.; Hao, M. C.; Dayal, U.; Haug, L.-E. & Keim, D. A.: <a href="http://doi.acm.org/10.1145/2089094.2089102">Feature-Based Visual Sentiment Analysis of Text Document Streams</a>. ACM Transactions on Intelligent Systems and Technology, Vol. 3, No. 2, 2012.</div>
+	<div class="tec-source">
+Image courtesy of Christian Rohrdantz.
+		</div>
+	<div class="tec-text">In the context of text stream visualization Rohrdantz, C.; Hao, M. C.; Dayal, U.; Haug, L.-E. & Keim, D. A. (2012) developed a technique called TimeDensityPlots. It is an instant based 2D visualization, where the data items (here documents) are arranged in the sequence of their appearance. The idea is that each data item gets a visual data representation (i.e., a bar) that is clickable for further exploration and to avoid overlap or empty space along the timeline. The information about exact temporal relations is given as a curve below the bars that represent the data items. The higher the curve below the border of two items the closer they are in time.</div>
+</div>
+<div class="tec" data-id="TimeHistogram 3D" data-categories="abstract|univariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/timehistogram_3d.png" alt="TimeHistogram 3D" />
+	<div class="tec-reference">Kosara, R.; Bendix, F. & Hauser, H.: <a href="http://diglib.eg.org/EG/DL/WS/VisSym/VisSym04/045-054.pdf">TimeHistograms for Large, Time-Dependent Data</a>. Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization (VisSym), IEEE Computer Society, 2004.</div>
+	<div class="tec-source">
+Kosara, R.; Bendix, F. & Hauser, H. (2004), ©  2004 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Kosara, R.; Bendix, F. & Hauser, H. (2004) proposed an interactive extension of well-known histograms called TimeHistogram 3D. The TimeHistogram is especially designed for time-oriented data. It has been developed to give an overview of complex data in the application context of computational fluid dynamics (CFD). A design goal of this technique was to show temporal information in static images while maintaining the easy readability of standard histograms. In the TimeHistograms in Figure, the x-axis ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Timeline" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/timeline.png" alt="Timeline" />
+	<div class="tec-reference">Tufte, E. R.: <a >The Visual Display of Quantitative Information</a>. Graphics Press, 1983. (ISBN: 096139210X)</div>
+	<div class="tec-source">
+Generated by the authors.
+		</div>
+	<div class="tec-text">If the time primitives of interest are not points but intervals, the visualization has to communicate not only where in time a primitive is located, but also how long it is. A simple and intuitive way of depicting incidents with a duration is by marking them visually along a time axis. This form of visualization is called timeline. Most commonly, a visual element such as a line or a bar represents an interval's starting point and duration (and consequently its end). Figure  shows an example with ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Timeline Trees" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/timeline_trees.png" alt="Timeline Trees" />
+	<div class="tec-reference">Burch, M.; Beck, F. & Diehl, S.: <a href="http://doi.acm.org/10.1145/1385569.1385584">Timeline Trees: Visualizing Sequences of Transactions in Information Hierarchies</a>. Proceedings of the Working Conference on Advanced Visual Interfaces (AVI), ACM, 2008.</div>
+	<div class="tec-source">
+Image courtesy of Michael Burch.
+		</div>
+	<div class="tec-text">Data that describe items which are related to each other are quite common. An example of such data are transactions in on-line shopping systems where products being bought together are considered to be related. Burch, M.; Beck, F. & Diehl, S. (2008) visualize temporal sequences of transactions by means of so-called timeline trees. The visual representation consists of three parts: a display of an information hierarchy, a timeline representation of temporal sequences, and thumbnail pictures. The ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeNets" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/time_nets.png" alt="TimeNets" />
+	<div class="tec-reference">Kim, N. W.; Card, S. K. & Heer, J.: <a href="http://doi.acm.org/10.1145/1842993.1843035">Tracing Genealogical Data with TimeNets</a>. Proceedings of the International Working Conference on Advanced Visual Interfaces (AVI), ACM, 2010.</div>
+	<div class="tec-source">
+Image courtesy of Jeffrey Heer and Nam Wook Kim.
+		</div>
+	<div class="tec-text">Genealogical data are an interesting source of time-oriented information. In such data, not only family structures are of interest, but also temporal relationships. Kim, N. W.; Card, S. K. & Heer, J. (2010) propose the TimeNets approach, which aims to visualize both of these aspects. TimeNets represent persons as individual bands that extend horizontally along a time axis from left to right. Each band shows a label of the person's name and different colors are used to encode sex: red is reserved ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeRider" data-categories="abstract|multivariate|linear|instant|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/timerider.png" alt="TimeRider" />
+	<div class="tec-reference">Rind, A.; Aigner, W.; Miksch, S.; Wiltner, S.; Pohl, M.; Drexler, F.; Neubauer, B. & Suchy, N.: <a href="http://dx.doi.org/10.1007/978-3-642-21716-6_15">Visually Exploring Multivariate Trends in Patient Cohorts Using Animated Scatter Plots</a>. In: Robertson, M. (ed.) Ergonomics and Health Aspects of Work with Computers. Springer, 2011.</div>
+	<div class="tec-source">
+Generated with the TimeRider software.
+		</div>
+	<div class="tec-text">TimeRider by Rind, A.; Aigner, W.; Miksch, S.; Wiltner, S.; Pohl, M.; Drexler, F.; Neubauer, B. & Suchy, N. (2011) is an enhanced animated scatter plot (see <a href="javascript:openTec('Trendalyzer, Animated Scatter Plot')">Trendalyzer, Animated Scatter Plot</a>) for exploring multivariate trends in cohorts of diabetes patients. The enhancements tackle three challenges of medical data: irregular sampling, data wear (i.e., decreasing validity over time), and patient records covering different portions ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeSearcher" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/timesearcher.png" alt="TimeSearcher" />
+	<div class="tec-reference">Hochheiser, H. & Shneiderman, B.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500061">Dynamic Query Tools for Time Series Data Sets: Timebox Widgets for Interactive Exploration</a>. Information Visualization, Vol. 3, No. 1, 2004.</div>
+	<div class="tec-reference">Buono, P.; Aris, A.; Plaisant, C.; Khella, A. & Shneiderman, B.: <a href="http://dx.doi.org/10.1117/12.587537">Interactive Pattern Search in Time Series</a>. Proceedings of the Conference on Visualization and Data Analysis (VDA), SPIE, 2005.</div>
+	<div class="tec-source">
+Generated with the TimeSearcher software with permission of University of Maryland Human-Computer Interaction Lab.
+		</div>
+	<div class="tec-text">Hochheiser, H. & Shneiderman, B. (2004) implemented TimeSearcher as a visual exploration tool for multiple time-series. While employing a straightforward visual representation using line plots, its main objective is to enable users to identify and find patterns in the investigated data. To this end, the so-called timebox query model has been developed. It allows the specification of a rectangular query region that defines both a time interval and a value range of interest. Those time-series that ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeSearcher 3, River Plot" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/timesearcher3.png" alt="TimeSearcher 3, River Plot" />
+	<div class="tec-reference">Buono, P.; Plaisant, C.; Simeone, A.; Aris, A.; Shneiderman, B.; Shmueli, G. & Jank, W.: <a href="http://doi.ieeecomputersociety.org/10.1109/IV.2007.101">Similarity-Based Forecasting with Simultaneous Previews: A River Plot Interface for Time Series Forecasting</a>. Proceedings of the International Conference Information Visualisation (IV), IEEE Computer Society, 2007.</div>
+	<div class="tec-source">
+Image courtesy of Paolo Buono.
+		</div>
+	<div class="tec-text">Buono, P.; Plaisant, C.; Simeone, A.; Aris, A.; Shneiderman, B.; Shmueli, G. & Jank, W. (2007) developed TimeSearcher 3 as a tool to support similarity-based forecasting of multivariate time-series. Similarity-based forecasting is a data-driven method using the similarity to a set of historical data for predicting future behavior. The outcome of the algorithm is affected by a number of options and parameters, for instance, the transformations applied or the tolerance threshold used for matching. ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeSlice" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb new" src="pics/thumbs/timeslice.png" alt="TimeSlice" />
+	<div class="tec-reference">Zhao, J.; Drucker, S. M.; Fisher, D. & Brinkman, D.: <a href="http://doi.acm.org/10.1145/2254556.2254639">TimeSlice: interactive faceted browsing of timeline data</a>. Proceedings of the International Working Conference on Advanced Visual Interfaces (AVI), ACM, 2012.</div>
+	<div class="tec-source">
+Image courtesy of Jian Zhao.
+		</div>
+	<div class="tec-text">TimeSlice is an interactive faceted browsing tool (see <a href="javascript:openTec('FacetZoom')">FacetZoom</a>) for time-oriented data, providing a flexible approach for constructing, comparing and manipulating multiple queries over faceted timelines. These queries are organized by a dynamic filtering tree structure that displays both current focused queries and their contexts (such as queries that share the same attribute on one facet but that differ on another). Tree nodes (representing attributes) and tree levels (representing facets) can be manipulated directly, which offers efficient navigation across different perspectives of the data.</div>
+</div>
+<div class="tec" data-id="TimeTree" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/timetree.png" alt="TimeTree" />
+	<div class="tec-reference">Card, S. K.; Suh, B.; Pendleton, B. A.; Heer, J. & Bodnar, J. W.: <a href="http://doi.ieeecomputersociety.org/10.1109/VAST.2006.261450">Time Tree: Exploring Time Changing Hierarchies</a>. Proceedings of the IEEE Symposium on Visual Analytics Science and Technology (VAST), IEEE Computer Society, 2006.</div>
+	<div class="tec-source">
+Card, S. K.; Suh, B.; Pendleton, B. A.; Heer, J. & Bodnar, J. W. (2006), ©  2006 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">TimeTree by Card, S. K.; Suh, B.; Pendleton, B. A.; Heer, J. & Bodnar, J. W. (2006) is a visualization technique to enable the exploration of changing hierarchical organizational structures and of individuals within such structures. The visualization consists of three parts: a time slider, a tree view, and a search interface (see bottom, center, and top of Figure, respectively). The time slider's main purpose is to allow users to navigate to any point in time. Additionally, it shows information ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TimeWheel" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/timewheel.png" alt="TimeWheel" />
+	<div class="tec-reference">Tominski, C.; Abello, J. & Schumann, H.: <a href="http://doi.acm.org/10.1145/967900.968153">Axes-Based Visualizations with Radial Layouts</a>. Proceedings of the ACM Symposium on Applied Computing (SAC), ACM, 2004.</div>
+	<div class="tec-source">
+Generated with the VisAxes software.
+		</div>
+	<div class="tec-text">Tominski, C.; Abello, J. & Schumann, H. (2004) describe the TimeWheel as a technique for visualizing multiple time-dependent variables. The TimeWheel consists of a single time axis and multiple data axes for the data variables. The time axis is placed in the center of the display to emphasize the temporal character of the data. The data axes are associated with individual colors and are arranged circularly around the time axis. In order to visualize data, lines emanate from the time axis to each ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Trajectory Wall" data-categories="spatial|univariate|linear|cyclic|instant|static|2D|3D">
+	<img class="thumb new" src="pics/thumbs/trajectorywall.png" alt="Trajectory Wall" />
+	<div class="tec-reference">Tominski, C.; Schumann, H.; Andrienko, G. & Andrienko, N.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2012.265">Stacking-Based Visualization of Trajectory Attribute Data</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 18, No. 12, 2012.</div>
+	<div class="tec-source">
+Image courtesy of Christian Tominski.
+		</div>
+	<div class="tec-text">The Trajectory Wall shows temporal, spatial, and attribute aspects of movement data as a hybrid 2D/3D visual representation. Starting with an appropriate grouping of movement trajectories, the trajectories are mapped to 3D bands that are stacked above a map display to erect a trajectory wall. A user-selected data attribute associated with the movement (e.g., speed, acceleration, sinuosity) is color-coded along the individual bands. Additional 2D lines are embedded directly on the map to better preserve the spatial aspect of the movement. An interactive time lens enables the user to access temporarily aggregated information about a selected spatial region of the data. While the trajectory bands focus on the spatial aspect and linear temporal character of the data, the time lens emphasizes the cyclic temporal components. In combination, the interactive visualizations enable users to explore trajectory attributes with regard to their spatial and temporal dependencies. Movement patterns such us general commuting behavior, unexpected deviations, or trends in the development of trajectory attributes can be discerned.</div>
+</div>
+<div class="tec" data-id="Trendalyzer, Animated Scatter Plot" data-categories="abstract|multivariate|linear|instant|dynamic|2D">
+	<img class="thumb" src="pics/thumbs/gapminder.png" alt="Trendalyzer, Animated Scatter Plot" />
+	<div class="tec-reference">Gapminder: <a href="http://www.gapminder.org/world/">Gapminder Trendalyzer</a>., 2010.</div>
+	<div class="tec-reference">Robertson, G.; Fernandez, R.; Fisher, D.; Lee, B. & Stasko, J.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2008.125">Effectiveness of Animation in Trend Visualization</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 14, 2008.</div>
+	<div class="tec-source">
+Generated with Trendalyzer with permission of the Gapminder Foundation.
+		</div>
+	<div class="tec-text">Trendalyzer by Gapminder (2010) is an interactive visualization and presentation tool that is based on scatter plots. In contrast to point plots (see <a href="javascript:openTec('Point Plot')">Point Plot</a>) where time is mapped on the horizontal or vertical axis, animation is used to represent time. Hence, two data variables are mapped onto the axes of the Cartesian coordinate system and animation is used to step through time. The size of a dot represents a third variable and color is used for ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="TrendDisplay" data-categories="abstract|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/trenddisplay.png" alt="TrendDisplay" />
+	<div class="tec-reference">Brodbeck, D. & Girardin, L.: <a >Interactive Poster: Trend Analysis in Large Timeseries of High-Throughput Screening Data Using a Distortion-Oriented Lens with Semantic Zooming</a>. Poster Compendium of IEEE Symposium on Information Visualization (InfoVis), IEEE Computer Society, 2003.</div>
+	<div class="tec-source">
+Brodbeck, D. & Girardin, L. (2003), ©  2003 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">The TrendDisplay technique by Brodbeck, D. & Girardin, L. (2003) allows the analysis of trends in larger time-series. The technique is used for the drug discovery process and in quality control. Basically, the TrendDisplay window is composed of two panels. The main panel on the bottom shows the measured (raw) data and the top panel depicts derived statistical values. Four different levels of detail are used in order to cope with large numbers of time points: density distributions, thin box plots, ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Triangular Model" data-categories="abstract|univariate|linear|interval|static|2D">
+	<img class="thumb new" src="pics/thumbs/triangular-model.png" alt="Triangular Model" />
+	<div class="tec-reference">Kulpa, Z.: <a href="http://dx.doi.org/10.1016/j.jvlc.2005.10.004">A Diagrammatic Approach to Investigate Interval Relations</a>. Journal of Visual Languages and Computing, Vol. 17, No. 5, 2006.</div>
+	<div class="tec-reference">Kulpa, Z.: <a href="http://dx.doi.org/10.1023/A:1009919304728">Diagrammatic Representation of Interval Space in Proving Theorems about Interval Relations</a>. Reliable Computing, Vol. 3, No. 3, 1997.</div>
+	<div class="tec-reference">Qiang, Y.; Delafontaine, M.; Versichele, M.; De Maeyer, P. & de Weghe, N. V.: <a href="http://dx.doi.org/10.1177/1473871612436775">Interactive Analysis of Time Intervals in a Two-Dimensional Space</a>. Information Visualization, Vol. 11, No. 4, 2012.</div>
+	<div class="tec-source">
+Image adapted from Qiang, Y.; Delafontaine, M.; Versichele, M.; De Maeyer, P. & de Weghe, N. V. (2012).
+		</div>
+	<div class="tec-text">Qiang, Y.; Delafontaine, M.; Versichele, M.; De Maeyer, P. & de Weghe, N. V. (2012) popularize the original idea by Kulpa, Z. (1997) and Kulpa, Z. (2006) of visualizing time intervals using a triangular model. In this model, an interval is represented as a dot with two attached arms. The dot is placed so that the arms connect the horizontal time axis exactly at the start and the end of the represented interval. The point's height corresponds to the interval's duration, which is mapped along the vertical axis. This representation is useful in many scenarios, in particular when it comes to reason about properties and the relationships of multiple intervals. In that case, the triangular model generates easily distinguishable visual patterns for all possible interval relations.</div>
+</div>
+<div class="tec" data-id="Value Flow Map" data-categories="spatial|univariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/value_flow_map.png" alt="Value Flow Map" />
+	<div class="tec-reference">Andrienko, N. & Andrienko, G.: <a href="http://doi.acm.org/10.1145/989863.989940">Interactive Visual Tools to Explore Spatio-Temporal Variation</a>. Proceedings of the Working Conference on Advanced Visual Interfaces (AVI), ACM, 2004.</div>
+	<div class="tec-source">
+Image courtesy of Gennady Andrienko.
+		</div>
+	<div class="tec-text">What Andrienko, N. & Andrienko, G. (2004) call value flow map is a technique to visualize variation in spatio-temporal data. A value flow map shows one miniature silhouette graph (see <a href="javascript:openTec('Silhouette Graph, Circular Silhouette Graph')">Silhouette Graph, Circular Silhouette Graph</a>) for each area of a cartographic map to represent the temporal behavior of one data variable per area. Typically, temporal smoothing is carried out by replacing the values of a point-based time ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="VIE-VISU" data-categories="abstract|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/vie-visu.png" alt="VIE-VISU" />
+	<div class="tec-reference">Horn, W.; Popow, C. & Unterasinger, L.: <a href="">Support for Fast Comprehension of ICU Data: Visualization using Metaphor Graphics</a>. Methods of Information in Medicine, Vol. 40, No. 5, 2001.</div>
+	<div class="tec-source">
+Left: Adapted from Horn, W.; Popow, C. & Unterasinger, L. (2001). Right: Image courtesy of Werner Horn.
+		</div>
+	<div class="tec-text">Paper-based analysis of patient records is hard to conduct because many parameters are involved and an overall assessment of the patient's situation is difficult. Therefore, Horn, W.; Popow, C. & Unterasinger, L. (2001) developed VIE-VISU, an interactive glyph-based visualization technique for time-oriented patient records. The glyph consists of three parts that represent circulation, respiration, and fluid balance parameters. All in all, 15 parameters are visualized using different visual attributes ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="VIS-STAMP" data-categories="spatial|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/vis-stamp.png" alt="VIS-STAMP" />
+	<div class="tec-reference">Guo, D.; Chen, J.; MacEachren, A. M. & Liao, K.: <a href="http://doi.ieeecomputersociety.org/10.1109/TVCG.2006.84">A Visualization System for Space-Time and Multivariate Patterns (VIS-STAMP)</a>. IEEE Transactions on Visualization and Computer Graphics, Vol. 12, No. 6, 2006.</div>
+	<div class="tec-source">
+Generated with the VIS-STAMP system.
+		</div>
+	<div class="tec-text">Spatio-temporal data can be complex and multi-faceted. Guo, D.; Chen, J.; MacEachren, A. M. & Liao, K. (2006) developed a system called VIS-STAMP that integrates computational, visual, and cartographic methods for visual analysis and exploration of such data. At the heart of the system is a self-organizing map (SOM) that is used for multivariate clustering, sorting, and coloring. The visual ensemble comprises a matrix view (top-left in Figure ), a map view (top-right), a parallel coordinates view ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="VisuExplore" data-categories="abstract|multivariate|linear|instant|interval|static|2D">
+	<img class="thumb" src="pics/thumbs/visuexplore.png" alt="VisuExplore" />
+	<div class="tec-reference">Rind, A.; Aigner, W.; Miksch, S.; Wiltner, S.; Pohl, M.; Turic, T. & Drexler, F.: <a href="http://www.springerlink.com/content/760003g38jh7l283/">Visual Exploration of Time-Oriented Patient Data for Chronic Diseases: Design Study and Evaluation</a>. Information Quality in e-Health, Springer, 2011.</div>
+	<div class="tec-reference">Rind, A.; Miksch, S.; Aigner, W.; Turic, T. & Pohl, M.: <a >VisuExplore: Gaining New Medical Insights from Visual Exploration</a>. Proceedings of the 1st International Workshop on Interactive Systems in Healthcare (WISH@CHI2010), Dealer Analysis Group, 2010.</div>
+	<div class="tec-source">
+Generated with the VisuExplore software.
+		</div>
+	<div class="tec-text">VisuExplore by Rind, A.; Miksch, S.; Aigner, W.; Turic, T. & Pohl, M. (2010) is an interactive visualization system for exploring a heterogeneous set of medical parameters over time.It uses multiple views along a common horizontal time axis to convey the different medical parameters involved.VisuExplore provides an extensible environment of pluggable visualization techniques and its primary visualization techniques are deliberately kept simple to make them easily usable in medical practice: line ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="VizTree" data-categories="abstract|univariate|multivariate|linear|instant|static|2D">
+	<img class="thumb" src="pics/thumbs/viztree.png" alt="VizTree" />
+	<div class="tec-reference">Lin, J.; Keogh, E. J.; Wei, L. & Lonardi, S.: <a href="http://dx.doi.org/10.1007/s10618-007-0064-z">Experiencing SAX: A Novel Symbolic Representation of Time Series</a>. Data Mining and Knowledge Discovery, Vol. 15, No. 2, 2007.</div>
+	<div class="tec-reference">Lin, J.; Keogh, E. J. & Lonardi, S.: <a href="http://dx.doi.org/10.1057/palgrave.ivs.9500089">Visualizing and Discovering Non-Trivial Patterns in Large Time Series Databases</a>. Information Visualization, Vol. 4, No. 2, 2005.</div>
+	<div class="tec-source">
+Image courtesy of Eamonn Keogh.
+		</div>
+	<div class="tec-text">VizTree by Lin, J.; Keogh, E. J. & Lonardi, S. (2005) is a time-series pattern discovery and visualization system for massive time-series datasets. It uses the time-series discretization method SAX (symbolic aggregate approximation) developed earlier by Lin, J.; Keogh, E. J.; Wei, L. & Lonardi, S. (2007). SAX discretizes time-series into a sequence of symbols (e.g., `abacacc'). Subsequences (patterns) are generated by moving a sliding window along the sequence. These subsequences are combined and ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Wakame" data-categories="spatial|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/wakame.png" alt="Wakame" />
+	<div class="tec-reference">Forlines, C. & Wittenburg, K.: <a href="http://doi.acm.org/10.1145/1842993.1843000">Wakame: Sense Making of Multi-Dimensional Spatial-Temporal Data</a>. Proceedings of the International Working Conference on Advanced Visual Interfaces (AVI), ACM, 2010.</div>
+	<div class="tec-source">
+Image courtesy of Clifton Forlines.
+		</div>
+	<div class="tec-text">Forlines, C. & Wittenburg, K. (2010) describe an interactive system for visualizing multivariate spatio-temporal data. The temporal aspects are encoded to multivariate glyphs, so-called Wakame. A single Wakame basically corresponds to a radar chart that has been extruded along the third dimension. In a radar chart, different variables are represented on radially arranged axes that are connected to form a polyline. Wakame are constructed as solid three-dimensional objects whose shape indicate temporal ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+<div class="tec" data-id="Worm Plots" data-categories="abstract|multivariate|linear|instant|static|3D">
+	<img class="thumb" src="pics/thumbs/wormplots.png" alt="Worm Plots" />
+	<div class="tec-reference">Matthews, G. & Roze, M.: <a href="http://doi.ieeecomputersociety.org/10.1109/38.626960">Worm Plots</a>. IEEE Computer Graphics and Applications, Vol. 17, No. 6, 1997.</div>
+	<div class="tec-source">
+Matthews, G. & Roze, M. (1997), ©  1997 IEEE. Used with permission.
+		</div>
+	<div class="tec-text">Worm plots have been developed by Matthews, G. & Roze, M. (1997) to help scientists gain qualitative insights into the temporal development of groups of points in scatter plots. The initial step necessary to construct a worm plot is generating a visual abstraction of multiple points. One way to do this is to compute the centroid of a group of points and the average distance of points to the centroid. The visual abstraction is then a circle with a radius equal to the average distance and located ...<br/><a href="http://www.timeviz.net">Read more in our book ...</a></div>
+</div>
+					<!-- THUMBS END -->
+					<!-- !!! YOU CAN EDIT FROM HERE ON !!! -->
+
+				</div>
+
+				<div class="clear"></div>
+
+			</div>
+
+			<div class="footer default ui-corner-all ui-widget-content">
+				Last update: November 28, 2013 • This site uses <a href="http://jquery.com">jQuery</a> and <a href="http://www.jqwidgets.com">jQWidgets</a> • Some icons adapted from <a href="http://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a> and <a href="http://www.oxygen-icons.org">Oxygen</a> • Contact: survey [at] timeviz [dot] net • Hosted at <a href="http://vcg.informatik.uni-rostock.de">Computer Graphics, University of Rostock</a>
+			</div>
+
+			<div id="tooltip"></div>
+
+			<div id="detail">
+				<div class="detail-image">
+					<div id="detail_load_msg">Loading, please be patient...</div>
+					<img id="detail_img" src="" alt="" />
+					<img id="close_detail" src="pics/ico/close.png" alt="Close Detail" />
+					<img id="view_full" src="pics/ico/view-fullscreen.png" alt="View Fullscreen" />
+					<img id="nav_prev" src="pics/ico/previous.png" alt="Previous" />
+					<img id="nav_next" src="pics/ico/next.png" alt="Next" />
+				</div>
+				<div class="detail-content">
+					<div id="detail_title" class="default"></div>
+					<div id="detail_categories" class="default"></div>
+					<div class="detail-source default">
+						Source: <span id="detail_source"></span>
+					</div>
+					<div id="detail_text" class="default"></div>
+				</div>
+				<div class="refs default">
+				References
+					<ul id="detail_refs" class="default">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

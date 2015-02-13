@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Time Visualization Techniques</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-100);
+}
+
+function getIcon(cat){
+    switch(cat){
+        case "abstract": return "ils";
+        case "spatial": return "arrows";
+        case "univariate": return "align-justify";
+        case "multivariate": return "th";
+        case "linear": return "arrow-right";
+        case "cyclic": return "repeat";
+        case "static": return "spinner";
+        case "dynamic": return "spinner fa-spin";
+        case "instant": return "caret-right";
+        case "interval": return "arrows-h";
+        case "2D": return "square-o";
+        case "3D": return "cube";
+    };
+};
+
+function getIt(cat){
+    return kshf.Util.toProperCase(cat)+" <span class='fa fa-"+getIcon(cat)+"'></span>";
+};
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 140,
+        itemName: "Time Visualization Techniques",
+        source : {
+            url: "http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html",
+            callback: function(browser){
+                browser.primaryTableName = "Visualizations";
+
+                kshf.dt.Visualizations = [];
+                kshf.dt_id.Visualizations = {};
+
+                $.ajax( {
+                    url: "./data/timevis.html",
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    async: false,
+                    success: function(doc){
+                        $doc = $(doc);
+
+                        $doc.find("div.tec").each(function(i){
+                            var $this = $(this);
+                            var d={};
+                            d.id = this.getAttribute("data-id");
+                            d.Name = d.id;
+                            d.categories = this.getAttribute("data-categories").split("|");
+                            d.imageURL = $this.find("img")[0].getAttribute("src");
+                            d.imageURL_full = "http://www.informatik.uni-rostock.de/~ct/timeviz/"+d.imageURL;
+                            d.Info = $this.find(".tec-source")[0].textContent.trim();
+
+                            var kshfItem = new kshf.Item(d,'id');
+                            kshf.dt.Visualizations.push(kshfItem);
+                        });
+
+                        browser.items = kshf.dt.Visualizations;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Data",
+                facets: [{
+                    facetTitle: "Frame of Reference",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
+                        });
+                        return r;
+                    }
+                },{
+                    facetTitle: "Number of Variables",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
+                        });
+                        return r;
+                    }
+                }
+                ]
+            },{
+                facetTitle: "Time",
+                facets: [{
+                    facetTitle: "Arrangement",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
+                        });
+                        return r;
+                    }
+                },{
+                    facetTitle: "Time Primitives",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
+                            if(cat==="interval") r.push("Interval <span class='fa fa-arrows-h'></span>");
+                        });
+                        return r;
+                    }
+                }
+                ]
+            },{
+                facetTitle: "Visualization",
+                facets: [{
+                    facetTitle: "Mapping",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
+                            if(cat==="dynamic") r.push("Dynamic <span class='fa fa-spinner fa-spin'></span>");
+                        });
+                        return r;
+                    }
+                },{
+                    facetTitle: "Dimensionality",
+                    catItemMap: function(d){
+                        var r=[];
+                        d.data.categories.forEach(function(cat){
+                            if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");
+                            if(cat==="3D") r.push("3D <span class='fa fa-cube'></span>");
+                        });
+                        return r;
+                    }
+                }
+                ]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{ name:'Year'}],
+            textSearch : "Name",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+                var iconList="<div class='iconList'>";
+                d.data.categories.forEach(function(cat){
+                    iconList+="<span class='fa fa-"+getIcon(cat)+"'></span>";
+                });
+                iconList+="</div>";
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Name+
+                    "' class='thumbnail' title='"+d.data.Info+"'><img class='thumbImg'></a><span class='title'>"+d.data.Name+"</span>"+
+                    iconList;
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.imageURL_full);
+            }
+        }
+    });
+});
+        </script>
+<style>
+    .listItem{
+        width: 140px;
+    }
+    .content{
+        padding: 3px;
+    }
+    .thumbnail{
+        height: 105px;
+    }
+    .theLabel > .fa{
+        width: 15px;
+        display: inline-block;
+        text-align: center;
+    }
+    .kshfChart[chart_id="1"]{
+        margin-bottom: 10px;
+    }
+    .kshfChart[chart_id="2"]{
+        margin-bottom: 10px;
+    }
+    .iconList{
+        text-align: center;
+    }
+    .iconList > .fa{
+        font-size: 0.8em;
+        color: gray;
+        margin: 0px 2px;
+    }
+</style>
+    </head>
+    <body>
+<!--        <div class="pageTitle" align="center">Time Visualization Techniques</div>-->
+
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data: <a href="http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html"
+                target='_blank'>survey.timeviz.net</a> The TimeViz Browser - 
+                A Visual Survey of Visualization Techniques for Time-Oriented Data
+                by 
+                <a href="http://www.informatik.uni-rostock.de/~ct" target='_blank'>Christian Tominski</a>
+                and
+                <a href="http://mc.fhstp.ac.at/people/wolfgang-aigner" target='_blank'>Wolfgang Aigner</a><br>
+            All rights for the technique images belong to their respective owners.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
