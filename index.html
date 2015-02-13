@@ -121,7 +121,9 @@ browser = new kshf.Browser({
         },{
             facetTitle: "Data Source",
             layout: 'right',
-            catItemMap: function(d){ return d.data[dataColumns['Source']];}
+            catItemMap: function(d){ 
+                return d.data[dataColumns['Source']].split("+");
+            }
         },{
             facetTitle: "# Items",
             layout: 'right',
