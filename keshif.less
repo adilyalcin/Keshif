@@ -145,6 +145,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             vertical-align: top;
             position: relative;
         }
+        &.layout_middle{
+            display:inline-block;
+        }
         &.layout_resize{
             position: absolute;
             right: 0px;
@@ -1410,6 +1413,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             //margin-bottom: 2px;
 //            padding-top: 3px;
             > .headerGroup {
+                .background-image(~"linear-gradient(right, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);");
                 .header_label{
                     font-size: 1.3em;
                 }

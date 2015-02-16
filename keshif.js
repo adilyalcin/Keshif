@@ -1897,6 +1897,7 @@ kshf.Browser = function(options){
     this.facetsTop = [];
     this.facetsBottom = [];
     this.facetsLeft = [];
+    this.facetsMiddle = [];
     this.facetsRight = [];
     this.linkedFacets = [];
     this.maxFilterID = 0;
@@ -1924,9 +1925,11 @@ kshf.Browser = function(options){
 
     this.rightPanelLabelWidth = this.categoryTextWidth;
     this.leftPanelLabelWidth  = this.categoryTextWidth;
+    this.middlePanelLabelWidth  = this.categoryTextWidth;
 
     if(options.leftPanelLabelWidth ) this.leftPanelLabelWidth  = options.leftPanelLabelWidth ;
     if(options.rightPanelLabelWidth) this.rightPanelLabelWidth = options.rightPanelLabelWidth;
+    if(options.middlePanelLabelWidth ) this.middlePanelLabelWidth  = options.middlePanelLabelWidth ;
 
     if(typeof options.barChartWidth === 'number'){
         this.barChartWidthInit = options.barChartWidth;
@@ -1994,15 +1997,19 @@ kshf.Browser = function(options){
     if(options.showResizeCorner === true) this.insertResize();
     this.insertInfobox();
 
-    this.layoutLeft  = this.root.append("div").attr("class", "layout_block layout_left");
+    this.layoutLeft   = this.root.append("div").attr("class", "layout_block layout_left");
     this.layoutRight  = this.root.append("div").attr("class", "layout_block layout_right");
-    this.layoutList =   this.root.append("div").attr("class", "layout_block listDiv")
+    this.layoutList   = this.root.append("div").attr("class", "layout_block listDiv")
+    this.layoutMiddle = this.root.append("div").attr("class", "layout_block layout_middle")
     this.layoutBottom = this.root.append("div").attr("class", "layout_block layout_bottom");
 
     this.layoutLeft.on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
     });
     this.layoutRight.on("mouseleave",function(){
+        setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
+    });
+    this.layoutMiddle.on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
     });
     this.layoutBottom.on("mouseleave",function(){
@@ -2022,8 +2029,7 @@ kshf.Browser.prototype = {
     getWidth_Total: function(){
         return this.divWidth;
     },
-    getWidth_MidPanel: function(){
-        // 5 pixel space from div width
+    getWidth_MiddlePanel: function(){
         var widthListDisplay = this.divWidth;
         if(!this.fullWidthResultSet()) {
             if(this.facetsLeft.length>0){
@@ -2637,7 +2643,7 @@ kshf.Browser.prototype = {
             case 'bottom': this.facetsBottom.push(fct); break;
             case 'bottom-mid':
                 this.layoutLeft.style("height","100%");
-                this.facetsBottom.push(fct); 
+                this.facetsMiddle.push(fct); 
                 break;
         }
         return fct;
@@ -2868,8 +2874,6 @@ kshf.Browser.prototype = {
     updateLayout_Height: function(){
         var me=this;
         var divHeight_Total = this.domHeight();
-        var leftBottomUsed=false;
-        var rightBottomUsed=false;
 
         // initialize all facets as not yet processed.
         this.facets.forEach(function(facet){ facet.heightProcessed = false; })
@@ -2884,10 +2888,6 @@ kshf.Browser.prototype = {
                 fct.setHeight(targetHeight);
                 fct.heightProcessed = true;
                 bottomFacetsHeight += fct.getHeight();
-                if(fct.options.layout==="bottom"){
-                    leftBottomUsed = true;
-                    rightBottomUsed = true;
-                }
             });
         }
 
@@ -2959,15 +2959,24 @@ kshf.Browser.prototype = {
 
         // Left Panel
         if(this.facetsLeft.length>0){
-            var leftPanelHeight = divHeight_Total;
-            if(leftBottomUsed) leftPanelHeight-=bottomFacetsHeight;
-            doLayout(leftPanelHeight,this.facetsLeft);
+            var panelHeight = divHeight_Total;
+            if(this.facetsBottom.length>0) panelHeight-=bottomFacetsHeight;
+            doLayout(panelHeight,this.facetsLeft);
         }
         // Right Panel
         if(this.facetsRight.length>0){
-            var rightPanelHeight = divHeight_Total;
-            if(rightBottomUsed) rightPanelHeight-=bottomFacetsHeight;
-            doLayout(rightPanelHeight,this.facetsRight);
+            var panelHeight = divHeight_Total;
+            if(this.facetsBottom.length>0) panelHeight-=bottomFacetsHeight;
+            doLayout(panelHeight,this.facetsRight);
+        }
+        // Middle Panel
+        var midPanelHeight=0;
+        if(this.facetsMiddle.length>0){
+            var panelHeight = divHeight_Total;
+            if(this.facetsBottom.length>0) panelHeight-=bottomFacetsHeight;
+//            if(this.listDisplay)
+//                panelHeight = panelHeight/5;
+            midPanelHeight=panelHeight-doLayout(panelHeight,this.facetsMiddle);
         }
 
         // The part where facet DOM is updated
@@ -2981,6 +2990,7 @@ kshf.Browser.prototype = {
             if(this.facetsBottom.length>0){
                 listDisplayHeight-=bottomFacetsHeight;
             }
+            listDisplayHeight-=midPanelHeight;
             this.listDisplay.dom.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
@@ -3061,7 +3071,8 @@ kshf.Browser.prototype = {
             }
             this.listDisplay.updateContentWidth(widthListDisplay);
 
-            this.listDisplay.listDiv.style("width",widthListDisplay+"px");
+            this.layoutList.style("width",widthListDisplay+"px");
+            this.layoutMiddle.style("width",widthListDisplay+"px");
             this.layoutLeft.style("margin-right",marginLeft+"px")  
             this.layoutRight.style("margin-left",marginRight+"px")  
         }
@@ -3169,10 +3180,14 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     getWidth: function(){
+        var w;
         if(this.options.layout==='left')
-            return this.browser.getWidth_LeftPanel()-this.getWidth_LeftOffset();
+            w=this.browser.getWidth_LeftPanel();
         if(this.options.layout==='right')
-            return this.browser.getWidth_RightPanel()-this.getWidth_LeftOffset();
+            w=this.browser.getWidth_RightPanel();
+        if(this.options.layout==='bottom-mid')
+            w=this.browser.getWidth_MiddlePanel();
+        return w-this.getWidth_LeftOffset();;
     },
     /** -- */
     getHeight: function(){
@@ -3195,6 +3210,8 @@ kshf.Facet_Categorical.prototype = {
             r = this.browser.leftPanelLabelWidth;
         if(this.options.layout==='right')
             r = this.browser.rightPanelLabelWidth;
+        if(this.options.layout==='bottom-mid')
+            r = this.browser.middlePanelLabelWidth;
         r-=this.getWidth_LeftOffset();
         return r;
     },
@@ -3645,9 +3662,10 @@ kshf.Facet_Categorical.prototype = {
             root = this.parentFacet.dom.subFacets;
         } else {
             switch(this.options.layout){
-                case 'left':   root = this.browser.layoutLeft; break;
-                case 'right':  root = this.browser.layoutRight; break;
-                case 'bottom': root = this.browser.layoutBottom; break;
+                case 'left'      : root = this.browser.layoutLeft; break;
+                case 'right'     : root = this.browser.layoutRight; break;
+                case 'bottom'    : root = this.browser.layoutBottom; break;
+                case 'bottom-mid': root = this.browser.layoutMiddle; break;
             }
         }
         this.divRoot = root
@@ -4034,7 +4052,7 @@ kshf.Facet_Categorical.prototype = {
                     this.textContent = "";
                 } else {
                     p = 100*p/attrib.aggregate_Active;
-                    this.textContent = p.toFixed(0);//+"%";
+                    this.textContent = p.toFixed(0)+"%";
                 }
             } else {
                 this.textContent = formatFunc(p);
@@ -5157,7 +5175,7 @@ kshf.Facet_Interval.prototype = {
         if(this.options.layout==='bottom')
             return this.browser.getWidth_Total()-this.getWidth_Offset();
         if(this.options.layout==='bottom-mid')
-            return this.browser.getWidth_MidPanel();
+            return this.browser.getWidth_MiddlePanel();
     },
     /** -- */
     getHeight: function(){
@@ -5230,10 +5248,10 @@ kshf.Facet_Interval.prototype = {
             root = this.parentFacet.dom.subFacets;
         } else {
             switch(this.options.layout){
-                case 'left': root = this.browser.layoutLeft; break;
-                case 'right': root = this.browser.layoutRight; break;
-                case 'bottom': root = this.browser.layoutBottom; break;
-                case 'bottom-mid': root = this.browser.layoutBottom; break;
+                case 'left'      : root = this.browser.layoutLeft;   break;
+                case 'right'     : root = this.browser.layoutRight;  break;
+                case 'bottom'    : root = this.browser.layoutBottom; break;
+                case 'bottom-mid': root = this.browser.layoutMiddle; break;
             }
         }
         this.divRoot = root.append("div").attr("class","kshfChart")
@@ -6020,7 +6038,7 @@ kshf.Facet_Interval.prototype = {
             }
             if(me.browser._percentView_Active){
                 p = 100*p/aggr.aggregate_Active;
-                this.textContent = p.toFixed(0);//+"%";
+                this.textContent = p.toFixed(0)+"%";
             } else {
                 this.textContent = formatFunc(p);
             }
