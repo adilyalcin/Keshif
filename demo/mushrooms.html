@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Mushrooms</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+getName = {
+    Class: function(d){
+        switch(d.data[1]){
+            case 'e': return 'Edible';
+            case 'p': return 'Poisonous';
+        }
+    },
+    Shape: function(d){
+        switch(d.data[1]){
+            case 'b': return "Bell";
+            case 'c': return "Conical";
+            case 'x': return "Convex";
+            case 'f': return "Flat";
+            case 'k': return "Knobbed";
+            case 's': return "Sunken";
+            case 'e': return "Enlarging";
+            case 't': return "Tapering";
+        }
+    },
+    Surface: function(d){
+        switch(d.data[1]){
+            case 'f': return "Fibrous";
+            case 'g': return "Grooves";
+            case 'y': return "Scaly";
+            case 's': return "Smooth";
+            case 'k': return "Silky";
+        }
+    },
+    Color: function(d){
+        switch(d.data[1]){
+            case 'n': return "Brown";
+            case 'b': return "Buff";
+            case 'c': return "Cinnamon";
+            case 'g': return "Gray";
+            case 'r': return "Green";
+            case 'p': return "Pink";
+            case 'u': return "Purple";
+            case 'e': return "Red";
+            case 'w': return "White";
+            case 'y': return "Yellow";
+            case 'k': return "Black";
+            case 'h': return "Chocolate";
+            case 'o': return "Orange";
+        }
+    },
+    Odor: function(d){
+        switch(d.data[1]){
+            case 'a': return "Almond";
+            case 'l': return "Anise";
+            case 'c': return "Creosote";
+            case 'y': return "Fishy";
+            case 'f': return "Foul";
+            case 'm': return "Musty";
+            case 'n': return "None";
+            case 'p': return "Pungent";
+            case 's': return "Spicy";
+        }
+    },
+    GillAttachment: function(d){
+        switch(d.data[1]){
+            case 'a': return 'Attached';
+            case 'd': return 'Descending';
+            case 'f': return 'Free';
+            case 'n': return 'Notched';
+        }
+    },
+    GillSpacing: function(d){
+        switch(d.data[1]){
+            case 'c': return 'Close';
+            case 'w': return 'Crowded';
+            case 'd': return 'Distant';
+        }
+    },
+    GillSize: function(d){
+        switch(d.data[1]){
+            case 'b': return 'Broad';
+            case 'n': return 'Narrow';
+        }
+    },
+    Population: function(d){
+        switch(d.data[1]){
+            case 'a': return 'Abundant';
+            case 'c': return 'Clustered';
+            case 'n': return 'Numerous';
+            case 's': return 'Scattered';
+            case 'v': return 'Several';
+            case 'y': return 'Solitary';
+        }
+    },
+    Habitat: function(d){
+        switch(d.data[1]){
+            case 'g': return 'Grasses';
+            case 'l': return 'Leaves';
+            case 'm': return 'Meadows';
+            case 'p': return 'Paths';
+            case 'u': return 'Urban';
+            case 'w': return 'Waste';
+            case 'd': return 'Woods';
+        }
+    },
+    RingNumber: function(d){
+        switch(d.data[1]){
+            case 'n': return 'None';
+            case 'o': return 'One';
+            case 't': return 'Two';
+        }
+    },
+    RingType: function(d){
+        switch(d.data[1]){
+            case 'c': return 'Cobwebby';
+            case 'e': return 'Evanescent';
+            case 'f': return 'Flaring';
+            case 'l': return 'Large';
+            case 'n': return 'None';
+            case 'p': return 'Pendant';
+            case 's': return 'Sheathing';
+            case 'z': return 'Zone';
+        }
+    },
+    Root: function(d){
+        switch(d.data[1]){
+            case 'b': return 'Bulbous';
+            case 'c': return 'Club';
+            case 'u': return 'Cup';
+            case 'e': return 'Equal';
+            case 'z': return 'Rhizomorphs';
+            case 'r': return 'Rooted';
+            case '?': return '?';
+        }
+    }
+};
+
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 110,
+        leftPanelLabelWidth: 128,
+        rightPanelLabelWidth: 128,
+        middlePanelLabelWidth: 128,
+        source: {
+            gdocId : '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
+            sheets : [ {name:"Mushrooms"} ]
+        },
+        facets: [
+            {   facetTitle: "Class",
+                catItemMap: function(d){ return d.data[0]; },
+                catLabelText: getName.Class
+            },{ facetTitle: "Population",
+                layout: "bottom-mid",
+                catItemMap: function(d){ return d.data[21]; },
+                catLabelText: getName.Population
+            },{ facetTitle: "Habitat",
+                catItemMap: function(d){ return d.data[22]; },
+                catLabelText: getName.Habitat
+            },{ facetTitle: "Odor",
+                catItemMap: function(d){ return d.data[5]; },
+                catLabelText: getName.Odor
+            },{ facetTitle: "Bruises",
+                collapsed: true,
+                catItemMap: function(d){ return d.data[4]; },
+            },{
+                facetTitle: "Cap",
+                layout: "bottom-mid",
+                facets: [
+                    {   facetTitle: "Shape",
+                        catItemMap: function(d){ return d.data[1]; },
+                        catLabelText: getName.Shape
+                    },{ facetTitle: "Surface",
+                        catItemMap: function(d){ return d.data[2]; },
+                        catLabelText: getName.Surface
+                    },{ facetTitle: "Color",
+                        catItemMap: function(d){ return d.data[3]; },
+                        catLabelText: getName.Color
+                    }
+                ]
+            },{
+                facetTitle: "Ring",
+                layout: "bottom-mid",
+                facets: [
+                    {   facetTitle: "Number",
+                        catItemMap: function(d){ return d.data[18]; },
+                        catLabelText: getName.RingNumber
+                    },{ facetTitle: "Type",
+                        catItemMap: function(d){ return d.data[19]; },
+                        catLabelText: getName.RingType
+                    }
+                ]
+            },{ facetTitle: "Gill",
+                facets:[
+                    {   facetTitle: "Attachment",
+                        catItemMap: function(d){ return d.data[6]; },
+                        catLabelText: getName.GillAttachment
+                    },{ facetTitle: "Spacing",
+                        catItemMap: function(d){ return d.data[7]; },
+                        catLabelText: getName.GillSpacing
+                    },{ facetTitle: "Size",
+                        catItemMap: function(d){ return d.data[8]; },
+                        catLabelText: getName.GillSize
+                    },{ facetTitle: "Color",
+                        catItemMap: function(d){ return d.data[9]; },
+                        catLabelText: getName.Color
+                    }
+                ]
+            },{
+                facetTitle: "Spore Print Color",
+                layout: 'right',
+                catItemMap: function(d){ return d.data[20]; },
+                catLabelText: getName.Color
+            },{
+                facetTitle: "Stalk",
+                layout: 'right',
+                facets:[
+                    {   facetTitle: "Shape",
+                        catItemMap: function(d){ return d.data[10]; },
+                        catLabelText: getName.Shape
+                    },{ facetTitle: "Root",
+                        catItemMap: function(d){ return d.data[11]; },
+                        catLabelText: getName.Root
+                    },{ facetTitle: "Surface Above Ring",
+                        catItemMap: function(d){ return d.data[12]; },
+                        catLabelText: getName.Surface
+                    },{ facetTitle: "Surface Below Ring",
+                        catItemMap: function(d){ return d.data[13]; },
+                        catLabelText: getName.Surface
+                    },{ facetTitle: "Color Above Ring",
+                        catItemMap: function(d){ return d.data[14]; },
+                        catLabelText: getName.Color
+                    },{ facetTitle: "Color Below Ring",
+                        catItemMap: function(d){ return d.data[15]; },
+                        catLabelText: getName.Color
+                    }
+                ]
+            }
+/*
+            10. stalk-shape:              enlarging=e,tapering=t
+                11. stalk-root:               
+                12. stalk-surface-above-ring: fibrous=f,scaly=y,silky=k,smooth=s
+                13. stalk-surface-below-ring: fibrous=f,scaly=y,silky=k,smooth=s
+                                              */
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 890px;
+                height: 720px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from
+            UC Irvine Machine Learning Repository<br>
+            This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525).<br> The Guide clearly states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
+            <span class="fa fa-info-circle"></span>
+            </div>
+        // 
+    </body>
+</html>
