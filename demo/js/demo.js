@@ -137,11 +137,13 @@ $(window).load(function(){
 
     d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
         .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
-        .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span>");
+        .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span> ...");
 
     d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
         .append("a").attr("href",githubDemoRoot+pageName).attr("target","_blank")
-        .attr("class","fork-ribbon").text("Fork me on GitHub");
+        .attr("class","fork-ribbon").html(
+            "<span class='fa fa-code-fork fa-2x'></span> Fork me on "+
+            "<span class='fa fa-github fa-2x'></span>");
 
     if(socialShare===true){
         var s = document.createElement("script");
@@ -157,7 +159,7 @@ $(window).load(function(){
         .attr("type","image/png");
 
 
-    if($("body").fancybox){
+    if($("body").fancybox && enableComments){
 
         var com_dom = d3.select("body").append("span").attr("class","comment_popup").attr("href",
             "https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true");

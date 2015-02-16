@@ -299,8 +299,7 @@ body {
     transform: rotate(-45deg);
   }
   .forkongithub.fork-left {
-    left: -70px;
-    bottom: -10px;
+    left: -60px;
   }
   .forkongithub.fork-left a.fork-ribbon {
     -webkit-transform: rotate(45deg);
