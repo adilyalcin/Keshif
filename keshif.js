@@ -3072,7 +3072,10 @@ kshf.Browser.prototype = {
             this.listDisplay.updateContentWidth(widthListDisplay);
 
             this.layoutList.style("width",widthListDisplay+"px");
-            this.layoutMiddle.style("width",widthListDisplay+"px");
+            this.layoutMiddle
+                .style("width",widthListDisplay+"px")
+                .style("display",this.facetsMiddle.length>0?"inline-block":"none")
+                ;
             this.layoutLeft.style("margin-right",marginLeft+"px")  
             this.layoutRight.style("margin-left",marginRight+"px")  
         }
