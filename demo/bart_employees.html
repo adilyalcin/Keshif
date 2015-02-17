@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>BART Employee Salaries</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+$(document).ready( function() {
+    // set div height accordingly 
+    $('#chart_div').height($(window).height()-90);
+    $('#chart_div').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div').height($(window).height()-90);
+        $('#chart_div').width ($(window).width()*0.9);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 100,
+        leftPanelLabelWidth: 200,
+        rightPanelLabelWidth: 250,
+        itemName: "BART Employees",
+        source: {
+            dirPath: './data/',
+            fileType: 'csv',
+            sheets : [ {name:"bart-comp-all", id:"ASIN"} ]
+        },
+        facets: [
+            {   facetTitle: "Job Family"
+            },{ facetTitle: "Union"
+            },{ facetTitle: "Title"
+            },{ facetTitle: "Source", collapsed: true
+            },{ facetTitle: "Salary", layout: 'right',
+                facets:[
+                { facetTitle: "Total", layout: 'right',intervalScale: 'log',
+                    catItemMap: function(d){ return d.data.TCOE; }
+                },{ facetTitle: "Base", layout: 'right',intervalScale: 'log'
+                },{ facetTitle: "Overtime", layout: 'right',intervalScale: 'log',
+                    catItemMap: function(d){ return d.data.OT; }
+                },{ facetTitle: "Other",layout: 'right', intervalScale: 'log'
+                },{ facetTitle: "Medical,Dental,Vision",layout: 'right',collapsed: true, intervalScale: 'log',
+                    catItemMap: function(d){ return d.data.MDV; }
+                },{ facetTitle: "ER",layout: 'right',collapsed: true, intervalScale: 'log'
+                },{ facetTitle: "EE",layout: 'right',collapsed: true, intervalScale: 'log'
+                },{ facetTitle: "DC",layout: 'right',collapsed: true, intervalScale: 'log'
+                }
+                ]
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            detailsToggle : "Zoom",
+            sortingOpts : [
+                {name: 'Total', value: function(d){ return d.data.TCOE;}},
+                {name: 'Base'},
+            ],
+            textSearch: "Name",
+            contentFunc: function(d){ return d.data.Name + " <span class='empTitle'>" +d.data.Title+"</span>"; }
+        }
+    });
+});
+        </script>
+        <style>
+            .empTitle{
+                display:inline-block;
+                font-size: 0.8em;
+                color: gray;
+            }
+            .empTitle:before{
+                content: " - ";
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
