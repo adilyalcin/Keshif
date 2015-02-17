@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Architecture Work of Mies van der Rohe</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+function resizeBrowser(){
+    $('#chart_div').height($(window).height()-100);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 30,
+        leftPanelLabelWidth: 150,
+        rightPanelLabelWidth: 180,
+        source: {
+            gdocId : '1hHNh0p0dt1b8ucEnxL_TspCE8V7Mi6e3WkpF3RAa27k',
+            sheets : [ {name:"Projects"} ]
+        },
+        facets: [
+            {   facetTitle: "Continent", collapsed: true
+            //},{ facetTitle: "Country",
+            },{ facetTitle: "City / Location",
+                catItemMap: function(d){
+                    return "<span style='color:gray'>"+d.data[1]+" </span> - "+d.data[3];
+                }
+            },{ facetTitle: "Year", layout: 'bottom'
+            },{ facetTitle: "Type", layout: 'right'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            detailsToggle : "Zoom",
+            sortingOpts : [ {name: 'Year'} ],
+            autoExpandMore: true,
+            textSearchFunc: function(d){return d.data[7]+" "+d.data[11]; },
+            contentFunc: function(d){
+                var str="";
+                str+="<span class='workTitle'>"+d.data[7]+"</span>";
+                if(d.data[11])
+                    str+="<img class='workPhoto' src='"+d.data[11]+"'>";
+                return str;
+            }
+        }
+    });
+});
+        </script>
+<style type="text/css" media="screen">
+    .workTitle{
+        display: block;
+        text-align: center;
+        font-size: 1.2em;
+    }
+    .listItem:hover .workTitle{
+    }
+    .workPhoto{
+        display: block;
+        width: 70%;
+        margin: 0 auto;
+        -webkit-transition: all 1s ease;
+           -moz-transition: all 1s ease;
+             -o-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+                transition: all 1s ease;
+        -webkit-filter: grayscale(100%);
+           -moz-filter: grayscale(100%);
+             -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+                filter: grayscale(100%);
+        box-shadow: 0px 0px 0px black;
+    }
+    .listItem:hover .workPhoto {
+        box-shadow: 0px 0px 5px black;
+        -webkit-filter: grayscale(0%);
+           -moz-filter: grayscale(0%);
+             -o-filter: grayscale(0%);
+            -ms-filter: grayscale(0%);
+                filter: grayscale(0%);
+    }
+    .listItem{
+        max-height: initial !important;
+        /*margin-bottom: 10px;*/
+    }
+    .content{
+        padding-bottom: 10px;
+    }
+    #chart_div{
+        width: 1100px;
+    }
+</style>
+    </head>
+    <body>
+    <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+        <span class="fa fa-info-circle"></span>
+        Data Credits:
+        <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a>
+        <a href="http://library.iit.edu/grc/mies/mies_work_geo.html">IIT Library</a>
+        <span class="fa fa-info-circle"></span>
+        </div>
+    </body>
+</html>
