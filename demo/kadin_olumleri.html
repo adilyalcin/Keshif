@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Türkiye'de şiddet sonucu kadın ölümleri</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    // set div height accordingly 
+    $('#chart_div').height($(window).height()-90);
+    $('#chart_div').width ($(window).width()*0.9);
+    // set resize callback
+    $(window).resize(function() {
+        $('#chart_div').height($(window).height()-90);
+        $('#chart_div').width ($(window).width()*0.9);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 100,
+        leftPanelLabelWidth: 200,
+        rightPanelLabelWidth: 250,
+        itemName: "Şiddetten ölen kadınlarımız",
+        source: {
+            gdocId : '1w9O47uvTpJRG7FetXC0U2cSk2BjLu4tOQfJGOWDPkDM',
+            sheets : [ {name:"Oldurulen kadin", id:"ASIN"} ]
+        },
+        facets: [ //                 Kaynak-Foto
+//            {   facetTitle: "İsim"
+            { facetTitle: "Yıl",
+                sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
+            },{ facetTitle: "Kim tarafından",
+            },{ facetTitle: "Neden"
+            },{ facetTitle: "Nasıl", layout: 'right',
+            },{ facetTitle: "Korunma talebi", layout: 'right',
+            //},{ facetTitle: "Kaynak", layout: 'right',
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            detailsToggle : "Zoom",
+            autoExpandMore: true,
+            textSearch: "İsim",
+            sortingOpts : [
+                {name: 'Yıl'},
+            ],
+            contentFunc: function(d){
+                var str="";
+                str+=d.data[1];
+                if(d.data[8])str+="<img class='kaynakFoto' src='http://www.anitsayac.com/"+d.data[8]+"'>";
+                return str;
+                return d.data[1];
+
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            .empTitle{
+                display:inline-block;
+                font-size: 0.8em;
+                color: gray;
+            }
+            .empTitle:before{
+                content: " - ";
+            }
+            .kaynakFoto{
+                display: block;
+                width: 50%;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
