@@ -44,6 +44,7 @@ var loadBrowser = function(){
             var arr = kshf.dt.Photos;
             var parentId = $("#naraParentID")[0].value;
             var resultFields = $("#naraResultFields")[0].value;
+            var rows=$("#naraRows")[0].value;
 
             $.ajax({
                 url:"https://catalog.archives.gov/api/v1/?naIds="+parentId,
@@ -56,8 +57,8 @@ var loadBrowser = function(){
             $.ajax({
                 //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
                 // url: "./data_private/dc_homicides.json", // original source
-                url: "https://catalog.archives.gov/api/v1/?description.item.parentSeries.naId="+parentId+"&rows=200"+
-                    "&resultFields="+resultFields,
+                url: "https://catalog.archives.gov/api/v1/?description.item.parentSeries.naId="+
+                    parentId+"&rows="+rows+"&resultFields="+resultFields,
                 error: function(e,f){
                     console.log(e+" - "+f);
                 },
@@ -218,6 +219,9 @@ $(document).ready(function(){
 #naraResultFields{
     width: 200px;
 }
+#naraRows{
+    width: 50px;
+}
 
     </style>
 	</head>
@@ -231,6 +235,7 @@ $(document).ready(function(){
                     </select>
                 parentID: <input type="number" id="naraParentID">
                 resultFields: <input type="text" id="naraResultFields" value="naId,publicContributions,objects">
+                rows: <input type="number" id="naraRows" value="200">
                 <input type="button" id="naraLoadButton" value="Load Collection">
                 </span>
             </div>
