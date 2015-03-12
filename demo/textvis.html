@@ -11,8 +11,6 @@
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
         <script type="text/javascript">
 
 $(document).ready( function(){
@@ -181,20 +179,20 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 92,
+            sortColWidth: 55,
             sortingOpts : [{ name:'year', value: function(d){ return d.data.year; }}],
             textSearch : "title",
             autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'grid',
-            maxVisibleItems_Default: 28,
+            maxVisibleItems_Default: 50,
             detailsToggle : "Zoom",
             contentFunc : function(d){
                 return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'><img class='thumbImg'></a></span>"+
                     "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","img/textvis/thumbs200_"+d.data.id+".png");
+                d3.select(d.DOM.result).select("img").attr("src","http://textvis.lnu.se/thumbs200/"+d.data.id+".png");
             }
         }
     });
