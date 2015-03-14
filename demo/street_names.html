@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Road Map - Street Names, # of Homes, Values, &amp; More</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+var demoID = 117;
+
+var nameRegistry = {};
+
+$(document).ready( function(){
+    $('#chart_div').width($(window).width()-150);
+    $('#chart_div').height($(window).height()-100);
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Street Names",
+        categoryTextWidth: 150,
+        source: { 
+        url: "http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r",
+        callback : function(browser){
+            browser.primaryTableName = "StreetNames";
+
+            kshf.dt.StreetNames = [];
+            var arr = kshf.dt.StreetNames;
+
+            $.ajax({
+                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+                // url: "./data_private/dc_homicides.json", // original source
+                url: "./data/street_names.json",
+                error: function(e,f){
+                    console.log(e+" - "+f);
+                },
+                success: function(data){
+                    var id=0;
+                    data.forEach(function(streetName){
+                        var n= kshf.Util.toProperCase(streetName.text);
+                        if(nameRegistry[n]) return;
+                        nameRegistry[n] = true;
+                        streetName.text = n;
+                        streetName.id = id++;
+                        streetName.Value = streetName.value;
+                        arr.push(new kshf.Item(streetName,"id"));
+                    });
+
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }},
+        facets: [
+            // text":"Main St","homes":374334,"":115944.5,"":2152,"":0,"tree":0,"scenic":0,"geoname":0
+            {   facetTitle: "<span class='fa fa-home'></span> # of Homes",
+                catItemMap: function(d){ return d.data.homes; },
+                intervalScale: "log"
+            },{ facetTitle: "<span class='fa fa-money'></span> Average Value",
+                catItemMap: function(d){ return d.data.Value; },
+                intervalScale: "log"
+//            },{ facetTitle: "In # Counties",
+//                catItemMap: function(d){ return d.data.in_counties;},
+//                intervalScale: "log"
+            },{ facetTitle: "Name Features",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
+                    if(d.data.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
+                    if(d.data.scenic) r.push("Scenic <span class='fa fa-picture-o featIcon'></span>");
+                    if(d.data.geoname) r.push("Geo-name <span class='fa fa-map-marker featIcon'></span>");
+                    if(parseInt(d.data.text)) r.push("Numbered <span class='featIcon'><img src='http://graphics8.nytimes.com/newsgraphics/2015/01/20/streetclouds/db6af38c9c61da220ded80f2c202cda1428ccc69/icon_numbered.png' style='height:15px'></span>");
+                    return r;
+                }
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 90,
+            sortingOpts : [
+                { name: 'Value' },
+                { name: '# Homes', value: function(d){ return d.data.homes; } }
+            ],
+            autoExpandMore: true,
+            displayType: 'grid',
+            textSearch: 'text',
+            maxVisibleItems_Default: 400,
+            contentFunc : function(d){
+                var str=d.data.text;
+                if(d.data.president) str+="<span class='fa fa-flag-checkered featIcon'></span>";
+                if(d.data.tree) str+="<span class='fa fa-tree featIcon'></span>";
+                if(d.data.scenic) str+="<span class='fa fa-picture-o featIcon'></span>";
+                if(d.data.geoname) str+="<span class='fa fa-map-marker featIcon'></span>";
+                return str;
+            }
+        }
+    });
+});
+
+</script>
+    <style>
+div.listItem{
+    padding: 4px 2px 0px 2px !important;
+    border: solid 1px lightgray  !important;
+    border-radius: 4px;
+    margin: 2px;
+}
+.featIcon{
+    display: inline-block;
+}
+.theLabel .featIcom{
+    width: 15px;
+}
+.listItem .featIcon{
+    color:gray;
+    margin: 0px 2px 0px 2px;
+    font-size: 0.7em;
+}
+.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"]{
+    box-shadow: none !important;
+    color: orangered;
+}
+.kshf .listDiv > .listItemGroup > .listItem[highlight=true]{
+    box-shadow: none !important;
+    background-color: #F8F8F8;
+    color: orangered;
+}
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">Road Map - Street Names, # of Homes, Values, &amp; More</div>
+
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r=0" target='_blank'>Data</a> was curated by the <b>New York Times</b>. <a href="hhttp://www.nytimes.com/2015/01/25/opinion/sunday/the-secrets-of-street-names-and-home-values.html" target='_blank'>Original Story</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
