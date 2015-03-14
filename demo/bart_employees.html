@@ -43,22 +43,22 @@ $(document).ready( function() {
             },{ facetTitle: "Salary", layout: 'right',
                 facets:[
                 { facetTitle: "Total", layout: 'right',intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.TCOE; }
-                },{ facetTitle: "Base", layout: 'right',intervalScale: 'log'
+                    catItemMap: function(d){ return d.data.TCOE; }, unitName: '$'
+                },{ facetTitle: "Base", layout: 'right',intervalScale: 'log', unitName: '$'
                 },{ facetTitle: "Overtime", layout: 'right',intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.OT; }
-                },{ facetTitle: "Other",layout: 'right', intervalScale: 'log'
+                    catItemMap: function(d){ return d.data.OT; }, unitName: '$'
+                },{ facetTitle: "Other",layout: 'right', intervalScale: 'log', unitName: '$'
                 },{ facetTitle: "Medical,Dental,Vision",layout: 'right',collapsed: true, intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.MDV; }
-                },{ facetTitle: "ER",layout: 'right',collapsed: true, intervalScale: 'log'
-                },{ facetTitle: "EE",layout: 'right',collapsed: true, intervalScale: 'log'
-                },{ facetTitle: "DC",layout: 'right',collapsed: true, intervalScale: 'log'
+                    catItemMap: function(d){ return d.data.MDV; }, unitName: '$'
+                },{ facetTitle: "ER",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
+                },{ facetTitle: "EE",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
+                },{ facetTitle: "DC",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
                 }
                 ]
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
+            sortColWidth: 70,
             detailsToggle : "Zoom",
             autoExpandMore: true,
             sortingOpts : [
@@ -79,6 +79,12 @@ $(document).ready( function() {
             }
             .empTitle:before{
                 content: " - ";
+            }
+            .listsortcolumn > .columnLabel:after{
+                content: "$";
+                color: gray;
+                margin-left: 3px;
+                font-size: 0.9em;
             }
         </style>
     </head>
