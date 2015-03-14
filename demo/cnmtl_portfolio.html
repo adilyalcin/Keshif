@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Columbia University CNMTL - Project Portfolio</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+function resizeBrowser(){
+    $('#chart_div').width(840);//$(window).width()-300);
+    $('#chart_div').height($(window).height()-170);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    var format = d3.time.format("%Y-%m-%d");
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth: 160,
+        itemName: "Projects",
+        source : {
+            url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
+            callback: function(browser){
+                browser.primaryTableName = "Projects";
+                kshf.dt.Projects = [];
+                kshf.dt_id.Projects = {};
+                $.ajax( {
+                    url: "./data/cnmtl_portfolio.json",
+                    async: false,
+                    success: function(dataset){
+                        var id=0
+                        dataset.forEach(function(r){
+                            r.id=id++;
+                            r.Released = format.parse(r.released);
+                            var kshfItem = new kshf.Item(r,'id');
+                            kshf.dt.Projects.push(kshfItem);
+                        });
+
+                        browser.items = kshf.dt.Projects;
+                        browser.itemsSelectedCt = browser.items.length;                
+
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 100);
+                    }
+                });
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Disciplines"
+            },{
+                facetTitle: "Types",
+//            },{
+//                facetTitle: "Categories",
+            },{
+                facetTitle: "Group",
+                collapsed: true
+            },{
+                facetTitle: "Access",
+                collapsed: true
+            },{
+                facetTitle: "Status"
+            },{
+                facetTitle: "Released Year",
+                catItemMap: function(d){
+                    return d.data.Released.getFullYear();
+                },
+                layout: "bottom-mid",
+                collapsed: true
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 92,
+            sortingOpts : [{name:'Released', inverse: true}],
+            textSearch : "title",
+            autoExpandMore: true,
+            displayType: 'grid',
+            maxVisibleItems_Default: 100,
+            detailsToggle : "Zoom",
+            contentFunc : function(d){
+                return "<a target='_blank' href='"+d.data.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
+                    "<span class='title'>"+d.data.label+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.thumb_URL).attr("title", d.data.description);
+            }
+        }
+    });
+});
+        </script>
+<style>
+    .listItem{
+        width: 130px;
+    }
+    .thumbImg{
+        border-radius: 9px;
+    }
+</style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">
+            <img src="http://ccnmtl.columbia.edu/images/home/logo_withtag_big.gif" style="height:45px"> Project Portfolio</div>
+
+        <div class="pageSubtitle">This page demonstrates the range of projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. While each of these projects pursues its own objectives, the unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
+        </div>
+
+        <div class="contents"><div id="chart_div"></div></div>
+
+    </body>
+</html>
