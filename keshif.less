@@ -65,8 +65,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attrib .barGroup{ display:none; }
     }
     &[hidebaraxis=true] {
-        .barChartPreviewAxis{ display:none; }
-        .barChartMainInfo{ display:none; }
+        .facetCategorical{
+            .chartScaleAxis{ display:none; }
+            .barChartMainInfo{ display:none; }
+        }
     }
     &[noanim=false]{
         .bar{
@@ -75,7 +77,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .histogram .barGroup_Active{
             .transition(@bar_animation);
         }
-        .barChartPreviewAxis span.tick{
+        .chartScaleAxis span.tick{
             .transition(@bar_animation);
         }
         .facetInterval .histogram .bin{
@@ -86,7 +88,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[percentview=true]{
-        .barChartPreviewAxis > .percentSign::after{
+        .chartScaleAxis > .percentSign::after{
             content: "%";
         }
     }
@@ -94,10 +96,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .item_count{
             color: rgb(232, 67, 6);
         }
-    }
-    .vizBackground:hover{
-        opacity: 0.1 !important;
-        cursor: pointer;
     }
 
     font-family: Helvetica, Arial, sans-serif;
@@ -113,7 +111,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-radius: 3px;
         padding: 0px 2px 0px 2px;
         margin-top: 1px;
-        opacity: 0.4;
+        opacity: 0.7;
         &.AndOrNot_And{
             background-color: @color_query_and;
         }
@@ -123,6 +121,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.AndOrNot_Not{
             background-color: @color_query_not;
         }
+    }
+    .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     > .layout_block {
@@ -413,7 +419,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover { stroke: orangered; }
     }
 
-    .barChartPreviewAxis {
+    .chartScaleAxis {
         pointer-events: none;
         position:absolute;
         z-index: 2;
@@ -444,6 +450,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-weight: 700;
             &:after{
                 content: '#';
+            }
+        }
+        > .background {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            cursor: pointer;
+            pointer-events: all;
+            background-color: rgb(194, 146, 124);
+            opacity: 0;
+            &:hover{
+                opacity: 0.1;
             }
         }
     }
@@ -593,7 +611,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: relative;
                         cursor: text;
                         > .attribTextSearchInput {
+                            display:block;
                             width: 100%;
+                            height: 15px;
                             font-size: 0.7em;
                             font-weight: 700;
                             border-width: 0px;
@@ -650,7 +670,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     } // attribTextSearch
 
                     > .sortOptionSelectGroup{
-                        display: inline-block;
+                        display: block;
+                        height: 16px;
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
@@ -659,7 +680,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .sortIcon{
                             position: relative;
                             left: 2px;
-                            top:3px;
+                            top: 2px;
                             cursor: pointer;
                             &:hover{
                                 color:orangered
@@ -752,11 +773,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     z-index: 5;
                     .transition(~'height 700ms ease-in-out');
 
-                    > .vizBackground{
+                    > .chartBackground{
                         opacity: 0;
                         width: 1px;
                         display: block;
-                        background-color: rgb(194, 146, 124);
                         .transition(~'opacity 250ms');
                     }
 
@@ -957,12 +977,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-x: hidden;
 //                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
-                    > .vizBackground{
+                    > .chartBackground{
                         opacity: 0;
                         width: 100%;
                         height: 100%;
                         display: block;
-                        background-color: rgb(194, 146, 124);
                         .transition(~'opacity 250ms');
                     }
                     > .bins{
@@ -1012,7 +1031,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
-                    > .barChartPreviewAxis {
+                    > .chartScaleAxis {
                         top: 0px;
                         width: 100%;
                         height: 100%;
@@ -1021,6 +1040,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             left: 0px;
                             width: 20px;
                             text-align: right;
+                        }
+                        > .background{
+                            width: 20px;
+                            height: 100%;
                         }
                         > .tick{
                             width: 100%;
@@ -1157,14 +1180,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             border-radius: 20px;
                             width: 8px;
                             height: 8px;
-                            background-color: rgba(255, 69, 0, 0.29);
-                            border: solid 2px orangered;
+                            background-color: orangered;
                             left: -4px;
                             position: relative;
                         }
                         > .selected-item-value-text{
                             position: relative;
-                            top: -2em;
+                            top: -2px;
                             color: orangered;
                             text-shadow: 0px 0px 2px white;
                             font-size: 0.8em;
@@ -1172,6 +1194,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .selected-item-value-text-v{
                                 position: relative;
                                 left: -50%;
+                                background-color: rgba(255,255,255, 0.5);
+                                font-size: 0.9em;
                             }
                         }
                     }
@@ -1342,7 +1366,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:not([filtered_total="0"]):not([filtered_total="1"])[hasmultivalueitem=true]{
             > .headerGroup {
                 .save_filter_as_set{
-                    display: inline-block;
+                    // display: inline-block;
                 }
             }
         }
@@ -1377,7 +1401,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    }
                 }
             }
-            .headerGroup .hasMultiMappings{
+            > .headerGroup .hasMultiMappings{
                 display: inline-block;
             }
         }
@@ -1428,9 +1452,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .border_line{
             opacity: 0.6;
         }
-        > .barChartPreviewAxis {
+        > .chartScaleAxis {
             > .percentSign{
                 left: -14px;
+            }
+            > .background{
+                height: 15px;
             }
             > .tick{
                 > .text{
@@ -1750,10 +1777,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[displaytype="grid"] {
             > .listItemGroup {
+                display: -webkit-flex;     /* NEW - Chrome */
                 display: flex;
                 flex-direction: row;
+                -webkit-flex-direction: row;
                 flex-wrap: wrap;
+                -webkit-flex-wrap: wrap;
                 justify-content: space-around;
+                -webkit-justify-content: space-around;
                 > .listItem{
                     display: block;
                     > .content{
@@ -1773,6 +1804,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
                 > .listItem {
                     display: flex;
+                    display: -webkit-flex;
                     width: 100%;
                     max-height: 200px;
                     > .listsortcolumn{
@@ -1797,6 +1829,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     > .content{
                         flex: 1;
+                        -webkit-flex: 1;
                     }
                 }
             }

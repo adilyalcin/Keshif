@@ -345,8 +345,9 @@ kshf.Facet_Base = {
                 .on("mouseover",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(){
-//                    this.tipsy.hide();
-//                    me.collapseFacet(!me.collapsed);
+                    var parentdivRoot=me.parentFacet.divRoot;
+                    parentdivRoot.attr("show_cliques",
+                        parentdivRoot.attr("show_cliques")==="true"?false:true);
                 })
                 .append("span").attr("class","fa fa-remove")
         }
@@ -383,7 +384,7 @@ kshf.Facet_Base = {
             .attr("class","save_filter_as_set fa fa-save")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ return "Save filter as option"; }
+                    gravity: 'n', title: function(){ return "Save filtering as new row"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -2337,6 +2338,7 @@ kshf.Browser.prototype = {
                 config.header = true; // header setting can be turned off
                 if(sheet.header===false) config.header = false;
                 if(sheet.preview) config.preview = sheet.preview;
+                if(sheet.fastMode) config.fastMode = sheet.fastMode;
 
                 var parsedData = Papa.parse(data, config);
 
@@ -2379,22 +2381,22 @@ kshf.Browser.prototype = {
         this.finishDataLoad(sheet,arr);
     },
     /** -- */
-    createTableFromTable: function(srcData, dstTableName, mapFunc, labelFunc){
-        var i,uniqueID=0;
+    createTableFromTable: function(srcItems, dstTableName, mapFunc, labelFunc){
+        var i;
         var me=this;
         kshf.dt_id[dstTableName] = {};
         kshf.dt[dstTableName] = [];
         var dstTable_Id = kshf.dt_id[dstTableName];
         var dstTable = kshf.dt[dstTableName];
 
-        srcData.forEach(function(srcData_i){
-            var v = mapFunc(srcData_i);
-            if(v==="" || v===undefined || v===null) return;
-            if(v instanceof Array) {
-                v.forEach(function(v2){
+        srcItems.forEach(function(srcData_i){
+            var mapping = mapFunc(srcData_i);
+            if(mapping==="" || mapping===undefined || mapping===null) return;
+            if(mapping instanceof Array) {
+                mapping.forEach(function(v2){
                     if(v2==="" || v2===undefined || v2===null) return;
                     if(!dstTable_Id[v2]){
-                        var itemData = [uniqueID++,v2];
+                        var itemData = [v2,v2];
                         if(labelFunc){
                             itemData.push(labelFunc(v2));
                         }
@@ -2404,13 +2406,13 @@ kshf.Browser.prototype = {
                     }   
                 });
             } else {
-                if(!dstTable_Id[v]){
-                    var itemData = [uniqueID++,v];
+                if(!dstTable_Id[mapping]){
+                    var itemData = [mapping,mapping];
                     if(labelFunc){
                         itemData.push(labelFunc(v2));
                     }
                     var item = new kshf.Item(itemData,0);
-                    dstTable_Id[v] = item;
+                    dstTable_Id[mapping] = item;
                     dstTable.push(item);
                 }   
             }
@@ -2485,6 +2487,10 @@ kshf.Browser.prototype = {
 
         // in case new facets are added, init dom's again...
         this.facets.forEach(function(facet){ facet.initDOM(); });
+
+        if(this.facetsBottom.length===0 && this.facetsMiddle.length>0){
+            this.layoutLeft.style("height","100%");
+        }
 
         if(this.listDef!==undefined){
             this.listDisplay = new kshf.List(this,this.listDef, this.root);
@@ -2642,7 +2648,6 @@ kshf.Browser.prototype = {
             case 'top': this.facetsTop.push(fct); break;
             case 'bottom': this.facetsBottom.push(fct); break;
             case 'bottom-mid':
-                this.layoutLeft.style("height","100%");
                 this.facetsMiddle.push(fct); 
                 break;
         }
@@ -2689,35 +2694,32 @@ kshf.Browser.prototype = {
      */
     mapItemData: function(items, mapFunc, targetTable, filterId){
         items.forEach(function(item){
-            var toMap = mapFunc(item);
             item.mappedDataCache[filterId] = null;
-            if(toMap===undefined || toMap==="" || toMap===null) { 
-                return;
-            } else if(toMap instanceof Array){
-                // remove duplicate / invalid values in the array
+
+            var mapping = mapFunc(item);
+            if(mapping===undefined || mapping==="" || mapping===null) return;
+            if(mapping instanceof Array){
                 var found = {};
-                toMap = toMap.filter(function(e){
-                    if(e===undefined || e==="" || e===null) return false;
+                mapping = mapping.filter(function(e){
+                    if(e===undefined || e==="" || e===null) return false; // remove invalid values
                     if(found[e]===undefined){
-                        found[e] = true;
+                        found[e] = true; // remove duplicate values
                         return true;
                     }
                     return false;
                 });
-                if(toMap.length===0) {
-                    return;
-                }
+                if(mapping.length===0) return; // empty array - after removing invalid/duplicates
             } else {
-                toMap = [toMap];
+                mapping = [mapping];
             }
-            item.mappedDataCache[filterId] = [];
-            var arr=item.mappedDataCache[filterId];
-            toMap.forEach(function(a){
+            var arr = [];
+            mapping.forEach(function(a){
                 var m=targetTable[a];
                 if(m==undefined) return;
                 arr.push(m);
                 m.addItem(item);
             });
+            item.mappedDataCache[filterId] = arr;
             return;
         },this);
     },
@@ -3257,8 +3259,8 @@ kshf.Facet_Categorical.prototype = {
     getHeight_Config: function(){
         var r=0;
         if(this.configRowCount!=0) r+=1; // bottom border : 1 px
-        if(this.showTextSearch) r+=16;
-        if(this.sortingOpts.length>1) r+=17;
+        if(this.showTextSearch) r+=15;
+        if(this.sortingOpts.length>1) r+=16;
         return r;
     },
     /** -- */
@@ -3313,6 +3315,12 @@ kshf.Facet_Categorical.prototype = {
         if(this.options.catLabelText===undefined){
             // get the 2nd attribute as row text [1st is expected to be the id]
             this.options.catLabelText = function(d){ return d.data[1]; };
+        } else {
+            var tt=this.options.catLabelText;
+            this.options.catLabelText = function(attrib){ 
+                if(attrib.savedAttrib) return attrib.data[1];
+                return tt(attrib);
+            };
         }
 
         // generate row table if necessary
@@ -3447,26 +3455,26 @@ kshf.Facet_Categorical.prototype = {
                 } else {
                     var selectedItemsCount=0;
 
-                    if(this.selected_AND.length>0 || this.selected_OR.length > 0){
-                        if(this.selected_NOT.length>0) selectedItemsText+="[ ";
-                        
-                        // X and Y and ....
-                        me.attribFilter.selected_AND.forEach(function(attrib,i){
-                            selectedItemsText+=((i!==0)?query_and:"")+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
-                            selectedItemsCount++;
-                        });
-
+                    // OR selections
+                    if(me.attribFilter.selected_OR.length>0){
+                        var useBracket_or = this.selected_AND.length>0 || this.selected_NOT.length>0;
+                        if(useBracket_or) selectedItemsText+="[";
                         // X or Y or ....
                         me.attribFilter.selected_OR.forEach(function(attrib,i){
                             selectedItemsText+=((i!==0 || selectedItemsCount>0)?query_or:"")+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
                             selectedItemsCount++;
                         });
-
-                        if(this.selected_NOT.length>0) selectedItemsText+=" ]";
+                        if(useBracket_or) selectedItemsText+="]";
                     }
-
+                    // AND selections
+                    me.attribFilter.selected_AND.forEach(function(attrib,i){
+                        selectedItemsText+=((selectedItemsText!=="")?query_and:"")
+                            +"<span class='attribName'>"+catLabelText(attrib)+"</span>";
+                        selectedItemsCount++;
+                    });
+                    // NOT selections
                     me.attribFilter.selected_NOT.forEach(function(attrib,i){
-                        selectedItemsText+=((selectedItemsCount!==0)?query_and:"")+query_not+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
+                        selectedItemsText+=query_not+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
                         selectedItemsCount++;
                     });
                 }
@@ -3494,10 +3502,16 @@ kshf.Facet_Categorical.prototype = {
         };
         this.attribFilter.saveFilter = function(){
             // create new item in the attrib list
+            // TODO: check inserted id when using a data table lookup...
+            var randID=me._attribs.length+10;
+            while(me.getAttribs_wID()[randID]!==undefined) {
+                randID = Math.random();
+            }
             var newAttrib = new kshf.Item(
-                [me._attribs.length+1,this.summary_item_cb()],
+                [randID,this.summary_item_cb()],
                 0 // id row (first row by default) TODO: check when using a data table..
             );
+            newAttrib.savedAttrib = true;
             this.filteredItems.forEach(function(item){
                 if(item.isWanted) {
                     newAttrib.addItem(item);
@@ -3512,6 +3526,7 @@ kshf.Facet_Categorical.prototype = {
                 me.updateSorting(0, true);
             }
             this.clearFilter();
+            if(me.cbSaveFilter) me.cbSaveFilter.call(this);
         };
 
         this.facetFilter = this.attribFilter;
@@ -3627,7 +3642,8 @@ kshf.Facet_Categorical.prototype = {
         this.attribCount_Total = this._attribs.length;
         this.attribCount_Wanted = this.attribCount_Total;
         // text search is automatically enabled if num of rows is more than 20. NOT dependent on number of displayed rows
-        this.showTextSearch = this.options.forceSearch || (this.options.forceSearch!==false && this.attribCount_Total>=20);
+        if(this.showTextSearch===undefined)
+            this.showTextSearch = this.options.forceSearch || (this.options.forceSearch!==false && this.attribCount_Total>=20);
     },
     /** -- */
     updateAttribCount_Wanted: function(){
@@ -3754,12 +3770,10 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
         this.dom.belowAttribs.append("div").attr("class", "border_line");
-        this.dom.barChartPreviewAxis = this.dom.belowAttribs.append("div").attr("class", "barChartPreviewAxis");
-        this.dom.barChartPreviewAxis.append("span").attr("class","percentSign");
-
-        // this helps us makes sure that the div height is correctly set to visible number of rows
-        this.dom.vizBackground = this.dom.attribGroup.append("span")
-            .attr("class","vizBackground")
+        
+        this.dom.chartScaleAxis = this.dom.belowAttribs.append("div").attr("class", "chartScaleAxis");
+        this.dom.chartScaleAxis.append("span").attr("class","percentSign");
+        this.dom.chartScaleAxis.append("span").attr("class","background")
             .on("click",function(){
                 me.browser.setPercentView(!me.browser._percentView_Active);
             })
@@ -3774,15 +3788,17 @@ kshf.Facet_Categorical.prototype = {
                         gravity: 'n', title: function(){ 
                             return "Explore "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
                         },
-                        offset_y: -heightDiff
+//                        offset_y: -heightDiff
                     })
                     this.tipsy.show();
                 }
             })
             .on("mouseout",function(){
                 this.tipsy.hide();
-            })
-            ;
+            });
+
+        // this helps us makes sure that the div height is correctly set to visible number of rows
+        this.dom.chartBackground = this.dom.attribGroup.append("span").attr("class","chartBackground");
 
         var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
         this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
@@ -3987,9 +4003,12 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     setHeight: function(newHeight){
         if(!this.hasAttribs()) return;
-        this.attribHeight = Math.min(
+        var attribHeight_new = Math.min(
             newHeight-this.getHeight_Header()-this.getHeight_Config()-this.getHeight_Bottom()+2,
             this.heightRow_attrib*this.attribCount_Visible);
+
+//        if(this.attribHeight===attribHeight_new) return;
+        this.attribHeight = attribHeight_new;
 
         // update attribCount_InDisplay
         var c = Math.floor(this.attribHeight / this.heightRow_attrib);
@@ -4029,7 +4048,8 @@ kshf.Facet_Categorical.prototype = {
     refreshWidth: function(){
         if(this.dom.facetCategorical){
             this.dom.facetCategorical.style("width",this.getWidth()+"px");
-            this.dom.vizBackground.style("width",this.browser.barChartWidth+"px");
+            this.dom.chartBackground.style("width",this.browser.barChartWidth+"px");
+            this.dom.chartScaleAxis.select(".background").style("width",this.browser.barChartWidth+"px");
         }
     },
     /** -- */
@@ -4223,7 +4243,7 @@ kshf.Facet_Categorical.prototype = {
             tickValues = this.vizHistogramScale.ticks(this.getTicksSkip()).filter(function(d){return d%1===0;});
         }
 
-        var tickDoms = this.dom.barChartPreviewAxis.selectAll("span.tick").data(tickValues,function(i){return i;});
+        var tickDoms = this.dom.chartScaleAxis.selectAll("span.tick").data(tickValues,function(i){return i;});
 
         var noanim=this.browser.root.attr("noanim");
 
@@ -4252,15 +4272,18 @@ kshf.Facet_Categorical.prototype = {
             tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
         }
         if(this.configRowCount>0){
+            var h=this.attribHeight;
             if(this.browser._percentView_Active){
-                tickData_new.append("span").attr("class","text text_upper").text(function(d){return d;});
+                tickData_new.append("span").attr("class","text text_upper")
+                    .text(function(d){return d;}).style("top",(-h-19)+"px");
             } else {
-                tickData_new.append("span").attr("class","text text_upper").text(function(d){return d3.format("s")(d);});
+                tickData_new.append("span").attr("class","text text_upper")
+                    .text(function(d){return d3.format("s")(d);}).style("top",(-h-19)+"px");
             }
         }
 
         setTimeout(function(){
-            me.dom.barChartPreviewAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
+            me.dom.chartScaleAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
         });
 
         tickDoms.exit().remove();
@@ -4273,17 +4296,17 @@ kshf.Facet_Categorical.prototype = {
         var barChartMinX=(labelWidth+kshf_.getWidth_QueryPreview());
 
         this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
-        this.dom.barChartPreviewAxis.each(function(d){
+        this.dom.chartScaleAxis.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
-        this.dom.vizBackground
-            .style("margin-left",barChartMinX+"px");
+        this.dom.chartBackground.style("margin-left",barChartMinX+"px");
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-        var moreTxt = "# Rows: "+this.attribCount_Visible+" ";
+        var moreTxt = ""+this.attribCount_Visible+" Row";
+        if(this.attribCount_Visible>1) moreTxt+="s";
         var below = this.attribCount_Visible-bottomItem-1;
-        if(below>0) moreTxt+=" - more <span class='fa fa-angle-down'></span>";
+        if(below>0) moreTxt+=", <span class='fa fa-angle-down'></span> "+below+" more ";
         this.dom.scroll_display_more.html(moreTxt);
     },
     /** -- */
@@ -4296,8 +4319,8 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
         var h=this.attribHeight;
-        this.dom.barChartPreviewAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
-        this.dom.barChartPreviewAxis.selectAll(".text_upper").style("top",(-h-19)+"px");
+        this.dom.chartScaleAxis.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
+        this.dom.chartScaleAxis.selectAll(".text_upper").style("top",(-h-19)+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
@@ -4317,9 +4340,9 @@ kshf.Facet_Categorical.prototype = {
             if(me.heightRow_attrib>19){
                 padTop = (me.heightRow_attrib-18)/2;
             }
-            this.style.paddingTop = padTop+"px";
+            this.style.marginTop = padTop+"px";
         });
-        this.dom.vizBackground.style("height",(this.attribCount_Visible*this.heightRow_attrib)+"px");
+        this.dom.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
 
         setTimeout(function(){
             me.browser.root.attr("noanim",false);
@@ -4485,6 +4508,7 @@ kshf.Facet_Categorical.prototype = {
             }
         }
         attrib.DOM.facet.tipsy_active.options.offset_x = offset;
+        attrib.DOM.facet.tipsy_active.options.offset_y = -1;//+(this.heightRow_attrib-18)/2;
         attrib.DOM.facet.tipsy_active.show();
     },
     /** -- */
@@ -4546,8 +4570,6 @@ kshf.Facet_Categorical.prototype = {
                 kshf.Util.setTransform(this,"translateY(0px)");
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
-                    offset_x: 2,
-                    offset_y: -1,
                     title: function(){
                         if(this.tipsy_title) return this.tipsy_title;
                         var attribName=me.options.facetTitle;
@@ -4930,9 +4952,9 @@ kshf.Facet_Categorical.prototype = {
 
         },sortDelay);
 
-        // filler is used to insert the scroll bar. Items outside the view are not visible, something needs
-        // to expand the box
-        this.dom.vizBackground.style("height",(this.getTotalAttribHeight())+"px");
+        // filler is used to insert the scroll bar. 
+        // Items outside the view are not visible, something needs to expand the box
+        this.dom.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
  
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -5268,7 +5290,18 @@ kshf.Facet_Interval.prototype = {
         this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
 
         this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
-        this.dom.vizBackground = this.dom.histogram.append("span").attr("class","vizBackground")
+        this.dom.chartBackground = this.dom.histogram.append("span").attr("class","chartBackground");
+        this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
+            .style("padding-left",(this.vertAxisLabelWidth)+"px")
+            .style("padding-bottom",(this.histogramTopGap)+"px")
+            ;
+        this.dom.chartScaleAxis = this.dom.histogram.append("div")
+            .attr("class", "chartScaleAxis")
+            .style("padding-left",(this.vertAxisLabelWidth-2)+"px")
+            .style("padding-bottom",(this.histogramTopGap)+"px")
+            ;
+        this.dom.chartScaleAxis.append("span").attr("class","percentSign");
+        this.dom.chartScaleAxis.append("span").attr("class","background")
             .on("click",function(){
                 me.browser.setPercentView(!me.browser._percentView_Active);
             })
@@ -5277,9 +5310,9 @@ kshf.Facet_Interval.prototype = {
 //                    window.clearTimeout(me.browser._previewCompare_Timeout_Clear);
                     if(this.tipsy) delete this.tipsy;
                     this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){ 
+                        gravity: 'nw', title: function(){ 
                             return "Explore "+(me.browser._percentView_Active?"absolute":"percentage")+" values";
-                        },offset_y:10,
+                        },
                     })
                     this.tipsy.show();
                 }
@@ -5287,17 +5320,7 @@ kshf.Facet_Interval.prototype = {
             .on("mouseout",function(){
                 this.tipsy.hide();
             })
-            ;
-        this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
-            .style("padding-left",(this.vertAxisLabelWidth)+"px")
-            .style("padding-bottom",(this.histogramTopGap)+"px")
-            ;
-        this.dom.barChartPreviewAxis = this.dom.histogram.append("div")
-            .attr("class", "barChartPreviewAxis")
-            .style("padding-left",(this.vertAxisLabelWidth-2)+"px")
-            .style("padding-bottom",(this.histogramTopGap)+"px")
-            ;
-        this.dom.barChartPreviewAxis.append("span").attr("class","percentSign");
+
 
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider rangeSlider")
             .attr("anim",true)
@@ -5812,7 +5835,7 @@ kshf.Facet_Interval.prototype = {
         var offset = this.options.intervalScale==='step'?this.width_barGap:0;
 //        kshf.Util.setTransform(this.dom.histogram_bins[0][0],
 //            "translate("+me.vertAxisLabelWidth+"px,"+me.vizHistogramScale.range()[1]+"px)");
-//        kshf.Util.setTransform(this.dom.barChartPreviewAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
+//        kshf.Util.setTransform(this.dom.chartScaleAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
         this.dom.histogram_bin.each(function(bar){
             kshf.Util.setTransform(this,"translate("+(me.intervalScale(bar.x)+offset)+"px,"+
                 me.height_hist+"px)");
@@ -5989,7 +6012,7 @@ kshf.Facet_Interval.prototype = {
                 .filter(function(d){return d%1===0&&d!==0;});
         }
 
-        var tickDoms = this.dom.barChartPreviewAxis.selectAll("span.tick")
+        var tickDoms = this.dom.chartScaleAxis.selectAll("span.tick")
             .data(tickValues,function(i){return i;});
         tickDoms.exit().remove();
         var tickData_new=tickDoms.enter().append("span").attr("class","tick");
@@ -6007,7 +6030,7 @@ kshf.Facet_Interval.prototype = {
 
         setTimeout(function(){
             var transformFunc;
-            if(this.browser._percentView_Active){
+            if(me.browser._percentView_Active){
                 transformFunc=function(d){
                     kshf.Util.setTransform(this,"translateY("+
                         (me.height_hist-d*me.vizHistogramScale.range()[1]/100)+"px)");
@@ -6018,9 +6041,9 @@ kshf.Facet_Interval.prototype = {
                         (me.height_hist-me.vizHistogramScale(d))+"px)");
                 };
             }
-            if(noanim!=="true") this.browser.root.attr("noanim",true);
-            me.dom.barChartPreviewAxis.selectAll("span.tick").style("opacity",1).each(transformFunc);
-            if(noanim!=="true") this.browser.root.attr("noanim",false);
+            if(noanim!=="true") me.browser.root.attr("noanim",true);
+            me.dom.chartScaleAxis.selectAll(".tick").style("opacity",1).each(transformFunc);
+            if(noanim!=="true") me.browser.root.attr("noanim",false);
         });
     },
     /** -- */
@@ -6140,9 +6163,7 @@ kshf.Facet_Interval.prototype = {
         var offset = this.options.intervalScale==='step'?this.barWidth/2:0;
         var t="translateX("+(this.intervalScale(v)+offset)+"px)";
         this.dom.selectedItemValue
-            .each(function(attrib){
-                kshf.Util.setTransform(this,t);
-            })
+            .each(function(attrib){ kshf.Util.setTransform(this,t); })
             .style("display","block");
 
         var dateFormat = d3.time.format("%b %-e,'%y");
