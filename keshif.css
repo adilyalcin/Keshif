@@ -316,10 +316,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   direction: ltr;
   margin-right: 2px;
 }
-.kshf .attrib > span.attribLabel span.filterButtons {
-  margin-left: 2px;
-}
-.kshf .attrib > span.barGroup > .bar {
+.kshf .attrib > .barGroup > .bar {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
@@ -640,7 +637,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: text;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput {
-  display: block;
+  display: inline-block;
   width: 100%;
   height: 15px;
   font-size: 0.7em;
@@ -693,32 +690,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:before {
   content: "\f057";
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon {
+  position: relative;
+  font-size: 0.7em;
+  text-align: right;
+  display: inline-block;
+  padding-right: 6px;
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon:hover {
+  color: #ff4500;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon:before {
+  content: "\f161";
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon[inverse='true']:before {
+  content: "\f160";
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
   display: block;
   height: 16px;
   vertical-align: top;
   white-space: nowrap;
   position: relative;
-  font-size: 0.7em;
   font-weight: 300;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon {
-  position: relative;
-  left: 2px;
-  top: 2px;
-  cursor: pointer;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon:hover {
-  color: #ff4500;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon:before {
-  content: "\f161";
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .sortIcon[inverse='true']:before {
-  content: "\f160";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect {
   width: 100%;
+  font-size: 0.7em;
   -webkit-appearance: none;
   -moz-appearance: none;
   background: transparent;
@@ -735,16 +734,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect::-ms-expand {
   display: none;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect_Label {
-  margin-right: 2px;
-  vertical-align: bottom;
-  cursor: default;
-  pointer-events: none;
-  /*                            &:after{
-                                content: ':';
-                                vertical-align: bottom;
-                            }*/
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop {
   margin-top: -16px;
@@ -810,8 +799,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   white-space: nowrap;
   top: 0px;
+  height: 16px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea {
+  z-index: 20;
   display: inline-block;
   vertical-align: top;
   pointer-events: all;
@@ -822,12 +813,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   font-weight: 300;
   width: 1px;
+  left: 0px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel {
+  position: absolute;
   display: inline-block;
   vertical-align: top;
   line-height: 18px;
   pointer-events: none;
+  z-index: 21;
   font-size: 0.8em;
   font-weight: 300;
   cursor: default;
@@ -848,10 +842,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .theLabel .AndOrNot {
   display: inline;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .filterButtons {
-  opacity: 0;
-}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .item_count_wrapper {
+  position: absolute;
   display: inline-block;
   vertical-align: top;
   line-height: 18px;
@@ -869,6 +861,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1px;
   height: 10px;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup > .bar.total_tip {
+  right: -5px;
+  /* right arrow */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #dee2e6;
+  background-color: initial;
+  opacity: 0;
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup > .bar.preview_compare {
   width: 2px;
   margin-left: -1px;
@@ -884,12 +885,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   float: left;
   margin-left: 2px;
-  margin-top: -3px;
-  margin-bottom: -2px;
-  font-size: 1.1em;
-  height: 10px;
+  z-index: 100;
+  pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton {
+  pointer-events: all;
   display: none;
   margin-right: 1px;
   vertical-align: top;
@@ -898,6 +898,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
+  pointer-events: all;
   display: none;
   vertical-align: top;
 }
@@ -1006,6 +1007,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
 }
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.total_tip {
+  top: -4px;
+  /* top arrow */
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #dee2e6;
+  background-color: initial;
+  opacity: 0;
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare {
   height: 2px;
   margin-top: 0px;
@@ -1050,6 +1060,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .background {
   width: 20px;
   height: 100%;
+  top: -6px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .tick {
   width: 100%;
@@ -1307,7 +1318,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
 }
 .kshf .kshfChart > .wrapper .bar.total {
-  background-color: #DEE2E6;
+  background-color: #dee2e6;
   pointer-events: none;
 }
 .kshf .kshfChart > .wrapper .bar.preview {
@@ -1410,6 +1421,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
   display: none;
 }
+.kshf .kshfChart[refreshSorting="true"] .sortIcon:before {
+  content: "\f021" !important;
+}
 .kshf .kshfChart:hover > .headerGroup > .header_display_control {
   opacity: 1;
 }
@@ -1457,7 +1471,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: top 700ms ease-in-out, height 700ms ease-in-out;
 }
 .kshf .item_count {
-  color: #969DA3;
+  color: #969da3;
 }
 .kshf .selectVertLine {
   display: inline-block;

@@ -35,22 +35,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
+@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
+@compare_viz_animation: ~'opacity: 100ms linear';
+
 @color_bars: #B8C7D2; //#B0BFCA; //#98ABB9; //#8699A8;
 @color_filtered: #30B8C4;
 @color_bars_selected: darken(orangered, 10%); //#CC2320;
+@color_bars_background: #DEE2E6;
 @color_related: lighten(orangered, 10%); //#B2B227;
 @color_facet_arrow: rgb(231, 215, 97);
 @color_facet_group: #E9E5CB;
 @color_bar_preview: orangered;
 @color_preview_compare: #222222;
 @color_axis_line: rgb(182, 179, 179);
+@color_item_count: #969DA3;;
 
 @color_query_and: #1D4870;
 @color_query_or:  #1C737A;
 @color_query_not: gray;
 
-@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
-@compare_viz_animation: ~'opacity: 100ms linear';
 
 .kshf {
 //    border: solid 1px lightgray;
@@ -309,10 +312,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-right: 2px;
     }
     .attrib{
-        > span.attribLabel span.filterButtons{
-            margin-left: 2px;
-        }
-        > span.barGroup > .bar{
+        > .barGroup > .bar{
             .transform-origin(0%, 0%);
         }
         > .item_count_wrapper{
@@ -452,7 +452,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 content: '#';
             }
         }
-        > .background {
+        > .background{
             position: absolute;
             left: 0px;
             top: 0px;
@@ -611,7 +611,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: relative;
                         cursor: text;
                         > .attribTextSearchInput {
-                            display:block;
+                            display: inline-block;
                             width: 100%;
                             height: 15px;
                             font-size: 0.7em;
@@ -669,31 +669,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     } // attribTextSearch
 
+                    .sortIcon{
+                        position: relative;
+                        font-size: 0.7em;
+                        text-align: right;
+                        display: inline-block;
+                        padding-right: 6px;
+                        cursor: pointer;
+                        &:hover{
+                            color:orangered
+                        }
+                        &:before{
+                            content: "\f161";
+                        }
+                        &[inverse='true']:before{
+                            content: "\f160";
+                        }
+                    }
+
                     > .sortOptionSelectGroup{
                         display: block;
                         height: 16px;
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
-                        font-size: 0.7em;
                         font-weight: 300;
-                        > .sortIcon{
-                            position: relative;
-                            left: 2px;
-                            top: 2px;
-                            cursor: pointer;
-                            &:hover{
-                                color:orangered
-                            }
-                            &:before{
-                                content: "\f161";
-                            }
-                            &[inverse='true']:before{
-                                content: "\f160";
-                            }
-                        }
                         > .optionSelect{
                             width: 100%;
+                            font-size: 0.7em;
                             -webkit-appearance: none;
                             -moz-appearance: none;
                             background: transparent;
@@ -711,16 +714,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             &::-ms-expand {
                                 display: none;
                             }
-                        }
-                        > .optionSelect_Label{
-                            margin-right: 2px;
-                            vertical-align: bottom;
-                            cursor: default;
-                            pointer-events: none;
-/*                            &:after{
-                                content: ':';
-                                vertical-align: bottom;
-                            }*/
                         }
                     }
                 } // facetControls
@@ -784,7 +777,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: absolute;
                         white-space: nowrap;
                         top: 0px;
+                        height: 16px;
                         > .clickArea{
+                            position: absolute;
+                            left: 0px;
+                            z-index: 20;
                             display: inline-block;
                             vertical-align: top;
                             pointer-events: all;
@@ -796,12 +793,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             font-size: 0.8em;
                             font-weight: 300;
                             width: 1px;
+                            left: 0px;
                         }
                         > .attribLabel{
+                            position: absolute;
                             display: inline-block;
                             vertical-align: top;
                             line-height: 18px;
                             pointer-events: none;
+                            z-index: 21;
                             
                             font-size: 0.8em;
                             font-weight: 300;
@@ -826,11 +826,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     display: inline;
                                 }
                             }
-                            > .filterButtons{
-                                opacity: 0;
-                            }
                         }
                         > .item_count_wrapper{
+                            position: absolute;
                             display: inline-block;
                             vertical-align: top;
                             line-height: 18px;
@@ -849,6 +847,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 top: 4px;
                                 width: 1px;
                                 height: 10px;
+                                &.total_tip{
+                                    right: -5px;
+                                    /* right arrow */
+                                    border-top: 5px solid transparent;
+                                    border-bottom: 5px solid transparent;
+                                    border-left: 5px solid @color_bars_background;
+                                    background-color: initial;
+                                    opacity: 0;
+                                }
                                 &.preview_compare{
                                     width: 2px;
                                     margin-left: -1px;
@@ -867,17 +874,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             vertical-align: top;
                             float: left;
                             margin-left: 2px;
-                            margin-top: -3px;
-                            margin-bottom: -2px;
-                            font-size: 1.1em;
-                            height: 10px;
+                            z-index: 100;
+//                            margin-bottom: -2px;
+//                            font-size: 1.1em;
+                            pointer-events: all;
                             > .orButton {
+                                pointer-events: all;
                                 display: none;
                                 margin-right: 1px;
                                 vertical-align: top;
                                 &:hover { color: @color_query_or; }
                             }
                             > .notButton {
+                                pointer-events: all;
                                 display: none;
                                 vertical-align: top;
                                 &:hover { color: gray; }
@@ -999,6 +1008,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 width: 1px;
                                 height: 1px;
                                 .transform-origin(0% 100%);
+                                &.total_tip{
+                                    top: -4px;
+                                    /* top arrow */
+                                    border-left: 5px solid transparent;
+                                    border-right: 5px solid transparent;
+                                    border-bottom: 5px solid @color_bars_background;
+                                    background-color: initial;
+                                    opacity: 0;
+                                }
                                 &.preview_compare {
                                     height: 2px;
                                     margin-top: 0px;
@@ -1044,6 +1062,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .background{
                             width: 20px;
                             height: 100%;
+                            top: -6px;
                         }
                         > .tick{
                             width: 100%;
@@ -1288,8 +1307,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     cursor: pointer;
                 }
                 &.total{
-                    // opacity:0.1;
-                    background-color: #DEE2E6;
+                    background-color: @color_bars_background;
                     pointer-events: none;
                 }
                 &.preview {
@@ -1413,6 +1431,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
         }
 
+        &[refreshSorting="true"]{
+            .sortIcon:before{
+                content: "\f021" !important;
+            }
+        }
+
 /*        &:before{
             content:''; width:100%; height:100%;
             position:absolute; top:0; left:0;
@@ -1476,7 +1500,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .item_count{
-        color: #969DA3;
+        color: @color_item_count;
         //&::before{ content: "("; }
         //&::after{ content: ")"; }
     }
