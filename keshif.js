@@ -4598,6 +4598,8 @@ kshf.Facet_Categorical.prototype = {
             })
             .attr("highlight","false")
             .attr("selected","0")
+            .on("mouseenter",function(d){ me.cbAttribEnter(d);})
+            .on("mouseleave",function(d){ me.cbAttribLeave(d);})
             .each(function(attrib,i){
                 attrib.facet = me;
                 attrib.DOM.facet = this;
@@ -4833,8 +4835,6 @@ kshf.Facet_Categorical.prototype = {
 
         var domAttribClickArea = domAttribs_new.append("span").attr("class", "clickArea")
             .on("click", cbAttribClick)
-            .on("mouseover",function(d){ me.cbAttribEnter(d);})
-            .on("mouseout",function(d){ me.cbAttribLeave(d);})
             // drag & drop control
             .attr("draggable",true)
             .each(attribDrag)
@@ -5513,7 +5513,7 @@ kshf.Facet_Interval.prototype = {
         var xxxx=activeBins.enter().append("span").attr("class","bin")
             .each(function(bar){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
+                    gravity: 's',
                     offset_y: 3,
                     title: function(){
                         if(this.getAttribute("filtered")==="true"){
@@ -5532,6 +5532,8 @@ kshf.Facet_Interval.prototype = {
             if(!me.browser.pauseResultPreview){
                 this.parentNode.setAttribute("highlight","selected");
                 this.parentNode.tipsy.options.offset_x = (me.barWidth-me.width_barGap*2)/2-5;
+                var height = me.vizHistogramScale(bar.aggregate_Active);
+                this.parentNode.tipsy.options.offset_y = -height;
                 this.parentNode.tipsy.options.className = "tipsyFilterAnd";
                 this.parentNode.tipsy.show();
 
@@ -5932,7 +5934,8 @@ kshf.Facet_Interval.prototype = {
             });
         } else {
             this.dom.bars_active.each(function(bar){
-                kshf.Util.setTransform(this,"scale("+width+","+me.vizHistogramScale(bar.aggregate_Active)+")");
+                var height = me.vizHistogramScale(bar.aggregate_Active);
+                kshf.Util.setTransform(this,"scale("+width+","+height+")");
             });
             this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
