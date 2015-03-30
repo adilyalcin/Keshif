@@ -323,7 +323,7 @@ kshf.Facet_Base = {
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'sw',
-                        title: function(){ return me.collapsed?"Open view":"Close view"; }
+                        title: function(){ return me.collapsed?"Open summary":"Close summary"; }
                     })
                 })
                 .on("mouseover",function(){ this.tipsy.show(); })
@@ -2849,7 +2849,7 @@ kshf.Browser.prototype = {
         if(this.previewCb) this.previewCb.call(this,true);
     },
     /** -- */
-    refreshResultPreviews: function(aggregate){
+    refreshResultPreviews: function(){
         var me=this;
         this.resultPreviewActive = true;
         this.root.attr("resultpreview",true);
@@ -4139,6 +4139,7 @@ kshf.Facet_Categorical.prototype = {
         }
         this.dom.bars_active.each(func_barScale);
         this.dom.attribClickArea.style("width",func_clickAreaScale);
+        this.dom.compareButton.style("left",func_clickAreaScale);
     },
     /** -- */
     refreshViz_Total: function(){
@@ -4171,35 +4172,17 @@ kshf.Facet_Categorical.prototype = {
             if(this.browser.ratioModeActive){
                 this.dom.bars_preview_compare.each(function(attrib){
                     var w=(attrib.cache_compare/attrib.aggregate_Active)*me.vizHistogramScale.range()[1];
-                    kshf.Util.setTransform(this,"translateX("+w+"px)");
-                    this.setAttribute('hidden',attrib.cache_compare===0);
-                });
-                this.dom.bars_preview_compare_2.each(function(attrib){
-                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.vizHistogramScale.range()[1];
                     kshf.Util.setTransform(this,"scaleX("+(w)+")");
-                    this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(attrib){
-                    kshf.Util.setTransform(this,"translateX("+
-                        me.vizHistogramScale(attrib.cache_compare)+"px)");
-                    this.setAttribute('hidden',attrib.cache_compare===0);
-                });
-                this.dom.bars_preview_compare_2.each(function(attrib){
                     kshf.Util.setTransform(this,"scaleX("+
                         (me.vizHistogramScale(attrib.cache_compare))+")");
-                    this.setAttribute('hidden',attrib.cache_compare===0);
                 });
             }
         } else {
             this.getAttribs().forEach(function(attrib){
                 delete attrib.cache_compare;
-            });
-            this.dom.bars_preview_compare.each(function(attrib){
-                this.setAttribute("hidden",true);
-            });
-            this.dom.bars_preview_compare_2.each(function(attrib){
-                this.setAttribute("hidden",true);
             });
         }
     },
@@ -4407,7 +4390,7 @@ kshf.Facet_Categorical.prototype = {
         // facet is not filtered yet, cannot click on 0 items
         if(!this.isFiltered()) return attrib.aggregate_Active!==0;
         // Hide if multiple options are selected and selection is and
-//        if(this.attribFilter.selectType==="SelectAnd") return false;
+//        if(this.attribFilter.selecttype==="SelectAnd") return false;
         // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
 
 //        if(attrib.orderIndex===this.attribCount_Total) return true;
@@ -4515,11 +4498,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     cbAttribEnter: function(attrib){
         var me=this;
-        if(attrib.crossing_row)
-            attrib.crossing_row.setAttribute("highlight","selected");
-        
         if(this.isAttribSelectable(attrib)) {
-            attrib.DOM.facet.setAttribute("selectType",this.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype",this.hasMultiValueItem?"and":"or");
             attrib.highlightAll(true);
             var timeoutTime = 400;
             if(this.browser._previewCompare_Active) timeoutTime = 0;
@@ -4529,7 +4509,7 @@ kshf.Facet_Categorical.prototype = {
                   (!attrib.is_NOT()) ){
                     // calculate the preview
                     attrib.items.forEach(function(item){item.updatePreview(me.parentFacet);},me);
-
+                    attrib.DOM.facet.setAttribute("showlock",true);
                     me.browser.refreshResultPreviews(attrib);
                     if(sendLog) {
                         if(me.resultPreviewLogTimeout) clearTimeout(me.resultPreviewLogTimeout);
@@ -4546,6 +4526,9 @@ kshf.Facet_Categorical.prototype = {
         this.cbAttribEnter_Tipsy(attrib);
     },
     cbAttribEnter_Tipsy: function(attrib){
+        if(attrib.cliqueRow)
+            attrib.cliqueRow.setAttribute("highlight","selected");
+
         var attribTipsy = attrib.DOM.facet.tipsy;
         attribTipsy.options.className = "tipsyFilterAnd";
         attribTipsy.hide();
@@ -4562,6 +4545,7 @@ kshf.Facet_Categorical.prototype = {
             }
         }
         offset+=this.getWidth_Text();
+        offset+=9; // lock icon
         attrib.DOM.facet.tipsy_active.options.offset_x = offset;
         //attrib.DOM.facet.tipsy_active.options.offset_y = 8;//+(this.heightRow_attrib-18)/2;
         attrib.DOM.facet.tipsy_active.show();
@@ -4573,8 +4557,8 @@ kshf.Facet_Categorical.prototype = {
             return;
         }
 
-        if(attrib.crossing_row)
-            attrib.crossing_row.setAttribute("highlight",false);
+        if(attrib.cliqueRow)
+            attrib.cliqueRow.setAttribute("highlight",false);
 
         if(!this.isAttribSelectable(attrib)) return;
         attrib.nohighlightAll(true);
@@ -4587,6 +4571,7 @@ kshf.Facet_Categorical.prototype = {
         },this);
 
         if(this.browser.livePreviewOn()){
+            attrib.DOM.facet.setAttribute("showlock",false);
             this.browser.clearResultPreviews();
         }
 
@@ -4602,20 +4587,21 @@ kshf.Facet_Categorical.prototype = {
         var me = this;
         this.resultPreviewLogTimeout = null;
 
-        var domAttribs_new = this.dom.attribGroup.selectAll("div.attrib")
+        var domAttribs_new = this.dom.attribGroup.selectAll(".attrib")
             .data(this._attribs, function(attrib){ 
                 return attrib.id();
             })
-        .enter().append("div")
-            .attr("class", function(d,d2,d3,d4){
+        .enter().append("span")
+            .attr("class", function(attrib){
                 var str="attrib";
-                if(me.options.domStyle) str+=" "+me.options.domStyle.call(this,d);
+                if(me.options.domStyle) str+=" "+me.options.domStyle.call(this,attrib);
                 return str;
             })
-            .attr("highlight","false")
-            .attr("selected","0")
-            .on("mouseenter",function(d){ me.cbAttribEnter(d);})
-            .on("mouseleave",function(d){ me.cbAttribLeave(d);})
+            .on("mouseenter",function(attrib){ me.cbAttribEnter(attrib);})
+            .on("mouseleave",function(attrib){ me.cbAttribLeave(attrib);})
+            .attr("highlight",false)
+            .attr("showlock" ,false)
+            .attr("selected",0)
             .each(function(attrib,i){
                 attrib.facet = me;
                 attrib.DOM.facet = this;
@@ -4655,11 +4641,6 @@ kshf.Facet_Categorical.prototype = {
 
             if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
 
-            if(d3.event.altKey || d3.event.ctrlKey || d3.event.shiftKey){
-                me.browser.setPreviewCompare(attrib);
-                return;
-            }
-
             if(this.timer){
                 // double click
                 // Only meaningul & active if facet has multi value items
@@ -4693,6 +4674,8 @@ kshf.Facet_Categorical.prototype = {
                 this.timer = setTimeout(function() { x.timer = null; }, 500);
             }
         };
+
+        var dragged;
         var attribDrag = function(d){
             this.addEventListener("dragstart", function( event ) {
                 // store a ref. on the dragged elem
@@ -4749,7 +4732,7 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var cbOrEnter = function(attrib,i){
-            attrib.DOM.facet.setAttribute("selectType","or");
+            attrib.DOM.facet.setAttribute("selecttype","or");
             if(me.attribFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
 
@@ -4770,7 +4753,7 @@ kshf.Facet_Categorical.prototype = {
             this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
             this.__data__.DOM.facet.tipsy.show();
             me.tipsy_active = this.__data__.DOM.facet.tipsy;
-            attrib.DOM.facet.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
             d3.event.stopPropagation();
         };
         var cbOrClick = function(attrib,i){
@@ -4788,7 +4771,7 @@ kshf.Facet_Categorical.prototype = {
             DOM_facet.tipsy_active = DOM_facet.tipsy;
             me.tipsy_active = DOM_facet.tipsy;
 
-            attrib.DOM.facet.setAttribute("selectType","not");
+            attrib.DOM.facet.setAttribute("selecttype","not");
             me.browser.root.attr("preview-not",true);
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
@@ -4800,7 +4783,7 @@ kshf.Facet_Categorical.prototype = {
             this.__data__.DOM.facet.tipsy.hide();
             this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
             me.tipsy_active = this.__data__.DOM.facet.tipsy;
-            attrib.DOM.facet.setAttribute("selectType",me.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
@@ -4813,8 +4796,6 @@ kshf.Facet_Categorical.prototype = {
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
             d3.event.stopPropagation();
         };
-
-        var dragged;
 
         var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
 
@@ -4842,17 +4823,45 @@ kshf.Facet_Categorical.prototype = {
         domBarGroup.append("span").attr("class", "bar active");
         domBarGroup.append("span").attr("class", "bar preview").attr("fast",true);
         domBarGroup.append("span").attr("class", "bar preview_compare").attr("hidden",true);
-        domBarGroup.append("span").attr("class", "bar preview_compare_2").attr("hidden",true);
 
-        var domAttribClickArea = domAttribs_new.append("span").attr("class", "clickArea")
+        domAttribs_new.append("span").attr("class", "clickArea")
             .on("click", cbAttribClick)
             // drag & drop control
             .attr("draggable",true)
             .each(attribDrag)
             ;
+    
+        domAttribs_new.append("span").attr("class","compareButton fa")
+            .on("click",function(attrib){
+                me.browser.setPreviewCompare(attrib);
+                this.__data__.DOM.facet.tipsy.hide();
+                d3.event.stopPropagation();
+            })
+            .on("mouseenter",function(attrib){
+                var DOM_facet = attrib.DOM.facet;
+                DOM_facet.tipsy.options.className = "tipsyFilterLock";
+                DOM_facet.tipsy_title = (me.browser.comparedAggregate!==attrib)?"Lock to compare":"Unlock";
+                DOM_facet.tipsy.hide();
+                DOM_facet.tipsy.show();
+                DOM_facet.tipsy_active = DOM_facet.tipsy;
+                me.tipsy_active = DOM_facet.tipsy;
+                DOM_facet.tipsy.show();
+                d3.event.stopPropagation();
+            })
+            .on("mouseleave",function(attrib){
+                this.__data__.DOM.facet.tipsy_title = undefined;
+                this.__data__.DOM.facet.tipsy.hide();
+                this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
+                this.__data__.DOM.facet.tipsy.show();
+                me.tipsy_active = this.__data__.DOM.facet.tipsy;
+                attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
+                d3.event.stopPropagation();
+            })
+            ;
 
         this.dom.attribs = this.dom.attribGroup.selectAll(".attrib")
         this.dom.attribClickArea = this.dom.attribs.selectAll(".clickArea");
+        this.dom.compareButton = this.dom.attribs.selectAll(".compareButton");
         this.dom.item_count_wrapper = this.dom.attribs.selectAll(".item_count_wrapper");
         this.dom.queryPreview_Text = this.dom.attribs.selectAll(".item_count_wrapper > .item_count");
         this.dom.barGroup = this.dom.attribs.selectAll(".barGroup");
@@ -4861,7 +4870,6 @@ kshf.Facet_Categorical.prototype = {
         this.dom.bars_active = this.dom.attribs.selectAll(".barGroup > .active");
         this.dom.bars_preview = this.dom.attribs.selectAll(".barGroup > .preview");
         this.dom.bars_preview_compare = this.dom.attribs.selectAll(".barGroup > .preview_compare");
-        this.dom.bars_preview_compare_2 = this.dom.attribs.selectAll(".barGroup > .preview_compare_2");
     },
 
     /** -- */
@@ -5336,16 +5344,13 @@ kshf.Facet_Interval.prototype = {
         this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
 
         this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
-        this.dom.chartBackground = this.dom.histogram.append("span").attr("class","chartBackground");
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
             .style("padding-left",(this.vertAxisLabelWidth)+"px")
-            .style("padding-bottom",(this.histogramTopGap)+"px")
             ;
 
         this.dom.chartScaleAxis = this.dom.histogram.append("div")
             .attr("class", "chartScaleAxis")
             .style("padding-left",(this.vertAxisLabelWidth-2)+"px")
-            .style("padding-bottom",(this.histogramTopGap)+"px")
             ;
         this.dom.chartScaleAxis.append("span").attr("class","percentSign")
             .on("click",function(){
@@ -5536,35 +5541,14 @@ kshf.Facet_Interval.prototype = {
         activeBins.exit()
             .remove();
 
-        var xxxx=activeBins.enter().append("span").attr("class","bin")
-            .each(function(bar){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    offset_y: 3,
-                    title: function(){
-                        if(this.getAttribute("filtered")==="true"){
-                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"
-                        }
-                        return "<span class='action'><span class='fa fa-plus'></span> And</span>"
-                    }
-                });
-                bar.aggregate_Preview=0;
-                bar.forEach(function(item){
-                    item.mappedDataCache[filterId].b = bar;
-                },this);
-                bar.DOM = {}
-                bar.DOM.facet = this;
-            });
-
-        var onMouseOver = function(bar){
-            this.parentNode.setAttribute("highlight","selected");
-
+        var onBarOver = function(bar){
+            var thiss= this;
             // Show tipsy
             var height = me.vizHistogramScale(bar.aggregate_Active);
-            this.parentNode.tipsy.options.offset_x = (me.barWidth-me.width_barGap*2)/2-5;
-            this.parentNode.tipsy.options.offset_y = -height;
-            this.parentNode.tipsy.options.className = "tipsyFilterAnd";
-            this.parentNode.tipsy.show();
+            this.tipsy.options.offset_x = 0;
+            this.tipsy.options.offset_y = me.height_hist-height-9;
+            this.tipsy.options.className = "tipsyFilterAnd";
+            this.tipsy.show();
 
             if(me.browser.livePreviewOn()){
                 var timeoutTime = 400;
@@ -5572,7 +5556,8 @@ kshf.Facet_Interval.prototype = {
                 this.resultPreviewShowTimeout = setTimeout(function(){
                     bar.forEach(function(item){item.updatePreview(me.parentFacet);});
                     // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
-
+                    thiss.setAttribute("highlight","selected");
+                    thiss.setAttribute("showlock",true);
                     me.browser.refreshResultPreviews();
                     if(sendLog) {
                         if(resultPreviewLogTimeout){
@@ -5585,8 +5570,8 @@ kshf.Facet_Interval.prototype = {
                 },timeoutTime);
             }
         };
-        var onMouseOut = function(bar){
-            this.parentNode.tipsy.hide();
+        var onBarOut = function(bar){
+            this.tipsy.hide();
             if(resultPreviewLogTimeout){
                 clearTimeout(resultPreviewLogTimeout);
             }
@@ -5595,7 +5580,8 @@ kshf.Facet_Interval.prototype = {
                 this.resultPreviewShowTimeout = null;
             }
             if(me.browser.livePreviewOn()){
-                this.parentNode.setAttribute("highlight",false);
+                this.setAttribute("highlight",false);
+                this.setAttribute("showlock",false);
 
                 me.browser.items.forEach(function(item){
                     if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
@@ -5604,19 +5590,14 @@ kshf.Facet_Interval.prototype = {
             }
         };
         var onBarClick = function(bar){
-            this.parentNode.tipsy.hide();
-
-            if(d3.event.altKey || d3.event.ctrlKey || d3.event.shiftKey){
-                me.browser.setPreviewCompare(bar);
-                return;
-            }
+            this.tipsy.hide();
 
             if(me.intervalFilter.filteredBin===this){
-                this.parentNode.setAttribute("filtered",false);
+                this.setAttribute("filtered",false);
                 me.intervalFilter.clearFilter();
                 return;
             }
-            this.parentNode.setAttribute("filtered","true");
+            this.setAttribute("filtered","true");
 
             // store histogram state
             me.intervalFilter.dom_HistogramBar = this;
@@ -5640,30 +5621,67 @@ kshf.Facet_Interval.prototype = {
                 {id:me.intervalFilter.id, info:me.intervalFilter.active.min+"x"+me.intervalFilter.active.max} );
         };
 
+        var xxxx=activeBins.enter().append("span").attr("class","bin")
+            .on("mouseenter",onBarOver)
+            .on("mouseleave",onBarOut)
+            .on("click",onBarClick)
+            .each(function(bar){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    offset_y: 3,
+                    title: function(){
+                        if(this.tipsy_title) return this.tipsy_title;
+                        if(this.getAttribute("filtered")==="true"){
+                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"
+                        }
+                        return "<span class='action'><span class='fa fa-plus'></span> And</span>"
+                    }
+                });
+                bar.aggregate_Preview=0;
+                bar.forEach(function(item){
+                    item.mappedDataCache[filterId].b = bar;
+                },this);
+                bar.DOM = {}
+                bar.DOM.facet = this;
+            });
+
         xxxx.append("span").attr("class","bar total");
         xxxx.append("span").attr("class","bar total_tip");
-        xxxx.append("span").attr("class","bar active")
-            .on("mouseover",onMouseOver)
-            .on("mouseout",onMouseOut)
-            .on("click",onBarClick);
+        xxxx.append("span").attr("class","bar active");
         xxxx.append("span").attr("class","bar preview").attr("fast",true);
         xxxx.append("span").attr("class","bar preview_compare").attr("hidden",true);
-        xxxx.append("span").attr("class","bar preview_compare_2").attr("hidden",true);
 
-        xxxx.append("span").attr("class","item_count")
-            .on("mouseover",onMouseOver)
-            .on("mouseout",onMouseOut)
-            .on("click",onBarClick);
+        xxxx.append("span").attr("class","compareButton fa")
+            .on("click",function(bin){
+                me.browser.setPreviewCompare(bin);
+                this.parentNode.tipsy.hide();
+                d3.event.stopPropagation();
+            })
+            .on("mouseenter",function(bin){
+                this.parentNode.tipsy.options.className = "tipsyFilterLock";
+                this.parentNode.tipsy_title = (me.browser.comparedAggregate!==bin)?"Lock to compare":"Unlock";
+                this.parentNode.tipsy.hide();
+                this.parentNode.tipsy.show();
+                d3.event.stopPropagation();
+            })
+            .on("mouseleave",function(bin){
+                this.parentNode.tipsy_title = undefined;
+                this.parentNode.tipsy.hide();
+                d3.event.stopPropagation();
+            })
+            ;
 
-        this.dom.histogram_bin = this.dom.histogram_bins.selectAll("span.bin");
-        this.dom.bars_active = this.dom.histogram_bin.selectAll(".bar.active");
-        this.dom.bars_total = this.dom.histogram_bin.selectAll(".bar.total");
-        this.dom.bars_total_tip = this.dom.histogram_bin.selectAll(".bar.total_tip");
-        this.dom.bars_preview = this.dom.histogram_bin.selectAll(".bar.preview");
-        this.dom.bars_preview_compare = this.dom.histogram_bin.selectAll(".bar.preview_compare");
-        this.dom.bars_preview_compare_2 = this.dom.histogram_bin.selectAll(".bar.preview_compare_2");
+        xxxx.append("span").attr("class","item_count");
 
-        this.dom.queryPreview_Text = this.dom.histogram_bin.selectAll(".item_count");
+        this.dom.aggregBins = this.dom.histogram_bins.selectAll("span.bin");
+        this.dom.bars_active = this.dom.aggregBins.selectAll(".bar.active");
+        this.dom.bars_total = this.dom.aggregBins.selectAll(".bar.total");
+        this.dom.bars_total_tip = this.dom.aggregBins.selectAll(".bar.total_tip");
+        this.dom.bars_preview = this.dom.aggregBins.selectAll(".bar.preview");
+        this.dom.bars_preview_compare = this.dom.aggregBins.selectAll(".bar.preview_compare");
+        this.dom.compareButton = this.dom.aggregBins.selectAll(".compareButton");
+
+        this.dom.queryPreview_Text = this.dom.aggregBins.selectAll(".item_count");
 
         this.refreshBins_Translate();
 
@@ -5912,12 +5930,10 @@ kshf.Facet_Interval.prototype = {
     refreshBins_Translate: function(){
         var me=this;
         var offset = this.options.intervalScale==='step'?this.width_barGap:0;
-//        kshf.Util.setTransform(this.dom.histogram_bins[0][0],
-//            "translate("+me.vertAxisLabelWidth+"px,"+me.vizHistogramScale.range()[1]+"px)");
-//        kshf.Util.setTransform(this.dom.chartScaleAxis[0][0],"translateY("+me.vizHistogramScale.range()[1]+"px)");
-        this.dom.histogram_bin.each(function(bar){
-            kshf.Util.setTransform(this,"translate("+(me.intervalScale(bar.x)+offset)+"px,"+
-                me.height_hist+"px)");
+        var width=this.barWidth-this.width_barGap*2;
+        this.dom.aggregBins.each(function(bar){
+            kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
+            this.style.width = width+"px";
         });
     },
     /** -- Note: Same as the function used for categorical facet */
@@ -5943,19 +5959,18 @@ kshf.Facet_Interval.prototype = {
     refreshViz_Total: function(){
         var me=this;
         var width=this.barWidth-this.width_barGap*2;
+        var translate="translateY("+me.height_hist+"px) ";
         if(this.browser.ratioModeActive){
             this.dom.bars_total.each(function(bar){
                 var h=Math.min(me.vizHistogramScale.range()[1],me.height_hist);
-                kshf.Util.setTransform(this,"scale("+width+","+h+")");
+                kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
             });
         } else {
             this.dom.bars_total.each(function(bar){
                 var h=Math.min(me.vizHistogramScale(bar.y),me.height_hist);
-                kshf.Util.setTransform(this,"scale("+width+","+h+")");
+                kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
             });
             this.dom.bars_total_tip.each(function(bar){
-                var h=Math.min(me.vizHistogramScale(bar.y),me.height_hist);
-                kshf.Util.setTransform(this,"translateY(-"+h+"px)");
                 this.style.opacity = (bar.y>me.vizHistogramScale.domain()[1])?1:0;
                 this.style.width = width+"px";
             });
@@ -5965,29 +5980,40 @@ kshf.Facet_Interval.prototype = {
     refreshViz_Active: function(){
         var me=this;
         var width = this.barWidth-this.width_barGap*2;
+        var translate="translateY("+me.height_hist+"px) ";
         if(this.browser.ratioModeActive){
             this.dom.bars_active.each(function(bar){
                 var height = (bar.aggregate_Active!==0)?me.vizHistogramScale.range()[1]:0;
-                kshf.Util.setTransform(this,"scale("+width+","+height+")");
+                kshf.Util.setTransform(this,translate+"scale("+width+","+height+")");
             });
             this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
                     //"translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale.range()[1])+"px)");
-                    "translate("+(me.barWidth/2)+"px,0px)");
+                    "translateY("+me.height_hist+"px)");
                     //"translate("+(me.barWidth/2)+"px,-"+me.height_hist+"px)");
             });
         } else {
             this.dom.bars_active.each(function(bar){
                 var height = me.vizHistogramScale(bar.aggregate_Active);
-                kshf.Util.setTransform(this,"scale("+width+","+height+")");
+                kshf.Util.setTransform(this,translate+"scale("+width+","+height+")");
             });
             this.dom.queryPreview_Text.each(function(bar){
                 kshf.Util.setTransform(this,
                     //"translate("+(me.barWidth/2)+"px,"+(-me.vizHistogramScale(bar.aggregate_Active))+"px)");
-                    "translate("+(me.barWidth/2)+"px,0px)");
+                    "translateY("+me.height_hist+"px)");
                     //"translate("+(me.barWidth/2)+"px,-"+me.height_hist+"px)");
             });
         }
+        this.dom.compareButton.style("left",function(bar){
+            var height;
+            if(me.browser.ratioModeActive){
+                height = (bar.aggregate_Active!==0)?me.vizHistogramScale.range()[1]:0;
+            } else {
+                height = me.vizHistogramScale(bar.aggregate_Active);
+            }
+            height = me.height_hist-height-9;
+            kshf.Util.setTransform(this,"translateY("+height+"px)");
+        });
     },
     /** -- */
     refreshViz_Compare: function(){
@@ -5997,6 +6023,8 @@ kshf.Facet_Interval.prototype = {
         var vizHistogramScale=this.vizHistogramScale;
         var preview_not = this.browser.preview_not;
         var width=this.barWidth-this.width_barGap*2;
+        var width_half = width/2;
+        var translate="translateY("+me.height_hist+"px) ";
         var trnsfrm="scale("+width+",1) translateY(-";
         if(this.browser._previewCompare_Active){
             this.histBins.forEach(function(bar){
@@ -6009,36 +6037,18 @@ kshf.Facet_Interval.prototype = {
             });
             if(this.browser.ratioModeActive){
                 this.dom.bars_preview_compare.each(function(bar){
-                    kshf.Util.setTransform(this,trnsfrm+
-                        (bar.aggregate_Compare/bar.aggregate_Active)*me.vizHistogramScale.range()[1]+"px)");
-                    this.setAttribute('hidden',bar.aggregate_Compare===0);
-                });
-                this.dom.bars_preview_compare_2.each(function(bar){
-                    kshf.Util.setTransform(this,"scaleY("+
+                    kshf.Util.setTransform(this,translate+"scale("+width_half+","+
                         (bar.aggregate_Compare/bar.aggregate_Active)*me.vizHistogramScale.range()[1]+")");
-                    this.style.width = (width+0.5)+"px";
-                    this.setAttribute('hidden',bar.aggregate_Compare===0);
                 });
             } else {
                 this.dom.bars_preview_compare.each(function(bar){
-                    kshf.Util.setTransform(this,trnsfrm+vizHistogramScale(bar.aggregate_Compare)+"px)");
-                    this.setAttribute('hidden',bar.aggregate_Compare===0);
-                });
-                this.dom.bars_preview_compare_2.each(function(bar){
-                    this.style.width = (width+0.5)+"px";
-                    kshf.Util.setTransform(this,"scaleY("+vizHistogramScale(bar.aggregate_Compare)+")");
-                    this.setAttribute('hidden',bar.aggregate_Compare===0);
+                    kshf.Util.setTransform(this,translate+"scale("+width_half+","+
+                        vizHistogramScale(bar.aggregate_Compare)+")");
                 });
             }
         } else {
             this.histBins.forEach(function(bar){
                 delete bar.aggregate_Compare;
-            });
-            this.dom.bars_preview_compare_2.each(function(attrib){
-                this.setAttribute("hidden",true);
-            });
-            this.dom.bars_preview_compare.each(function(attrib){
-                this.setAttribute("hidden",true);
             });
         }
     },
@@ -6050,29 +6060,27 @@ kshf.Facet_Interval.prototype = {
         var preview_not = this.browser.preview_not;
         var vizHistogramScale=this.vizHistogramScale;
         var width=this.barWidth-this.width_barGap*2;
-        var trnsfrm="scale("+width+",";
-        if(this.browser.ratioModeActive){
-            this.dom.bars_preview.each(function(bar){
-                var p=bar.aggregate_Preview;
-                if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                var h=(p / bar.aggregate_Active)*me.vizHistogramScale.range()[1];
-                kshf.Util.setTransform(this,trnsfrm+h+")");
-            });
-        } else {
-            this.dom.bars_preview.each(function(bar){
-                var p=bar.aggregate_Preview;
-                if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-                kshf.Util.setTransform(this,trnsfrm+vizHistogramScale(p)+")");
-            });
-        }
+        var width_half = width/2;
+        var translate="translateY("+me.height_hist+"px) ";
+        this.dom.bars_preview.each(function(bar){
+            var p=bar.aggregate_Preview;
+            if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
+            var h;
+            if(me.browser.ratioModeActive){
+                h = (p / bar.aggregate_Active)*me.vizHistogramScale.range()[1];
+            } else {
+                h = vizHistogramScale(p);
+            }
+            kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
+        });
         this.refreshQueryPreview_Text();
     },
     /** -- */
     clearViz_Preview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var me=this;
-        var transform="scale("+(this.barWidth-this.width_barGap*2)+",0)";
+        var w=(this.barWidth-this.width_barGap*2);
+        var transform="translateY("+this.height_hist+"px) "+"scale("+w+",0)";
         this.dom.bars_preview.each(function(bar){
             bar.aggregate_Preview=0;
             // TODO: assuming all bars are visible...
@@ -6154,7 +6162,7 @@ kshf.Facet_Interval.prototype = {
     refreshQueryPreview_Text: function(){
         var me=this;
         var formatFunc = kshf.Util.formatForItemCount;
-        this.dom.histogram_bin.attr("noitems",function(bar){ return bar.aggregate_Active===0; });
+        this.dom.aggregBins.attr("noitems",function(bar){ return bar.aggregate_Active===0; });
         
         this.dom.queryPreview_Text.each(function(aggr){
             var p=aggr.aggregate_Preview;

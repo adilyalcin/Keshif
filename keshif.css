@@ -53,28 +53,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf[noanim=false] .bar {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf[noanim=false] .histogram .barGroup_Active {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf[noanim=false] .chartScaleAxis span.tick {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf[noanim=false] .facetInterval .histogram .bin {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf[noanim=false] .attrib {
   -webkit-transition: all 700ms ease-in-out;
@@ -88,8 +88,54 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartScaleAxis > .tick > .text::after {
   content: "%";
 }
-.kshf[resultpreview=true] .item_count {
+.kshf[resultpreview="true"] .item_count {
   color: #e84306;
+}
+.kshf[previewcompare="true"] {
+  /*        .attrib .preview{
+            top: 9px !important;
+            height: 4px !important;
+        }*/
+}
+.kshf[previewcompare="true"] .preview_compare {
+  opacity: 1 !important;
+}
+.kshf .compareButton {
+  display: block;
+  position: absolute;
+  font-size: 0.7em;
+  color: gray;
+  opacity: 0;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: opacity 500ms ease-in-out;
+  -moz-transition: opacity 500ms ease-in-out;
+  -o-transition: opacity 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out;
+}
+.kshf .compareButton:after {
+  content: "\f13e";
+}
+.kshf .compareButton:hover:after {
+  content: "\f023";
+}
+.kshf .compareButton:hover {
+  color: #2f4f4f;
+}
+.kshf span[showlock="true"] .compareButton {
+  pointer-events: all;
+  opacity: 1;
+}
+.kshf span[compare="true"] .compareButton {
+  pointer-events: all;
+  opacity: 1;
+  color: #2f4f4f;
+}
+.kshf span[compare="true"] .compareButton:after {
+  content: "\f023";
+}
+.kshf span[compare="true"] .compareButton:hover:after {
+  content: "\f13e";
 }
 .kshf .AndOrNot {
   color: white;
@@ -805,6 +851,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 250ms;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
+  display: block;
   position: absolute;
   white-space: nowrap;
   top: 0px;
@@ -824,6 +871,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1px;
   left: 0px;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .compareButton {
+  width: 9px;
+  text-align: right;
+  top: 4px;
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel {
   position: absolute;
   display: inline-block;
@@ -837,7 +889,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  margin-top: 1px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel > .theLabel:before {
   color: white;
@@ -895,11 +946,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     */
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup .bar.preview_compare {
-  width: 0px;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup .bar.preview_compare_2 {
   width: 1px;
-  border-top: solid 4px #2f4f4f;
+  height: 5px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons {
   white-space: nowrap;
@@ -945,15 +993,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "And";
   background-color: #1d4870;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"] > span.attribLabel > .theLabel {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"] > .attribLabel > .theLabel {
   color: #1c737a;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"][show-box=true] > .attribLabel > .theLabel:before {
   content: "Or";
   background-color: #1c737a;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] .clickArea {
-  cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel {
   color: #808080;
@@ -984,6 +1029,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] {
   color: gray;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] .item_count {
+  display: none;
+}
 .kshf .kshfChart > .wrapper > .facetInterval {
   padding: 7px 6px 0px 6px;
   overflow: hidden;
@@ -996,20 +1044,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartBackground {
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  -webkit-transition: opacity 250ms;
-  -moz-transition: opacity 250ms;
-  -o-transition: opacity 250ms;
-  transition: opacity 250ms;
-}
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins {
   position: absolute;
   top: 0px;
   z-index: 3;
+  height: 100%;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -1018,6 +1057,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin {
   position: absolute;
   display: block;
+  height: 100%;
+  pointer-events: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar {
   width: 1px;
@@ -1042,24 +1083,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-repeat: repeat;
   background-size: 8px 8px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare {
-  height: 0px;
-  margin-top: 0px;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.preview_compare_2 {
-  height: 1px;
-  border-left: solid 8px #2f4f4f;
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .compareButton {
+  position: absolute;
+  width: 100%;
+  text-align: center;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
   top: 1px;
-  text-shadow: white 0px 0px 2px;
   display: block;
   position: relative;
-  width: 26px;
-  margin-left: -14px;
+  width: 100%;
   font-size: 0.7em;
   text-align: center;
   cursor: pointer;
+  pointer-events: all;
   -webkit-transition: -webkit-transform 700ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out;
@@ -1098,9 +1135,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .tick > .text {
   width: 20px;
   left: -22px;
-  line-heigt: 9px;
   text-align: right;
-  top: -6px;
+  top: -3px;
   position: relative;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup {
@@ -1318,16 +1354,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .base {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .handle {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf .kshfChart > .wrapper .bar {
   display: block;
@@ -1341,6 +1377,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper .bar.active {
   cursor: pointer;
+  pointer-events: all;
 }
 .kshf .kshfChart > .wrapper .bar.total {
   background-color: #dee2e6;
@@ -1364,25 +1401,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper .bar.preview_compare {
   background-color: #2f4f4f;
   pointer-events: none;
-  -webkit-transition: all 200ms ease-in-out;
-  -moz-transition: all 200ms ease-in-out;
-  -o-transition: all 200ms ease-in-out;
-  transition: all 200ms ease-in-out;
-  opacity: 1;
-}
-.kshf .kshfChart > .wrapper .bar.preview_compare[hidden=true] {
-  opacity: 0;
-}
-.kshf .kshfChart > .wrapper .bar.preview_compare_2 {
-  background-color: rgba(0, 0, 0, 0);
-  pointer-events: none;
-  -webkit-transition: all 200ms ease-in-out;
-  -moz-transition: all 200ms ease-in-out;
-  -o-transition: all 200ms ease-in-out;
-  transition: all 200ms ease-in-out;
-  opacity: 1;
-}
-.kshf .kshfChart > .wrapper .bar.preview_compare_2[hidden=true] {
+  -webkit-transition: opacity 400ms ease-in-out, -webkit-transform 200ms ease-in-out;
+  -moz-transition: opacity 400ms ease-in-out, -moz-transform 200ms ease-in-out;
+  -o-transition: opacity 400ms ease-in-out, -o-transform 200ms ease-in-out;
+  transition: opacity 400ms ease-in-out,-webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
   opacity: 0;
 }
 .kshf .kshfChart .subFacets {
@@ -2208,6 +2230,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy.tipsyFilterNot .tipsy-arrow {
   border-color: #808080;
+}
+.tipsy.tipsyFilterLock .tipsy-inner {
+  background-color: #2f4f4f;
+}
+.tipsy.tipsyFilterLock .tipsy-arrow {
+  border-color: #2f4f4f;
 }
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/

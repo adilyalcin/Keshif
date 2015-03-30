@@ -35,8 +35,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
-@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
-@compare_viz_animation: ~'all 200ms ease-in-out';
+@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear';
 
 @color_bars: #B8C7D2; //#B0BFCA; //#98ABB9; //#8699A8;
 @color_filtered: #30B8C4;
@@ -100,11 +99,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
-    &[resultpreview=true]{
+    &[resultpreview="true"]{
         .item_count{
             color: rgb(232, 67, 6);
         }
     }
+    &[previewcompare="true"]{
+        .preview_compare{
+            opacity: 1 !important;
+        }
+/*        .attrib .preview{
+            top: 9px !important;
+            height: 4px !important;
+        }*/
+    }
+
+    .compareButton{
+        display: block;
+        position: absolute;
+        font-size: 0.7em;
+        color: gray;
+        opacity: 0;
+        cursor: pointer;
+        pointer-events: none;
+        .transition(~'opacity 500ms ease-in-out');
+        &:after{
+            content: "\f13e";
+        }
+        &:hover:after{
+            content: "\f023";
+        }
+        &:hover{
+            color: @color_preview_compare;
+        }
+    }
+    span[showlock="true"]{
+        .compareButton{ 
+            pointer-events: all;
+            opacity: 1;
+        }
+    }
+    span[compare="true"]{
+        .compareButton{
+            pointer-events: all;
+            opacity: 1;
+            color: @color_preview_compare;
+            &:after{
+                content: "\f023";
+            }
+            &:hover:after{
+                content: "\f13e";
+            }
+        }
+    }
+
 
     font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
@@ -324,6 +372,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-right: 1px;
             text-align: right;
         }
+        // add background to the text area when an item is selected
         &:not([selected="0"]) {
             .attribLabel{
                 .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
@@ -785,6 +834,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
 
                     > .attrib{
+                        display: block;
                         position: absolute;
                         white-space: nowrap;
                         top: 0px;
@@ -806,6 +856,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             width: 1px;
                             left: 0px;
                         }
+                        .compareButton{
+                            width: 9px;
+                            text-align: right;
+                            top: 4px;
+                        }
                         > .attribLabel{
                             position: absolute;
                             display: inline-block;
@@ -821,7 +876,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             overflow: hidden;
-                            margin-top: 1px;
                             > .theLabel{
                                 // And/Or/Not can come before...
                                 &:before{
@@ -883,14 +937,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     */
                                 }
                                 &.preview_compare{
-                                    width: 0px;
-                                    //width: 2px;
-                                    //margin-left: -1px;
-                                }
-                                &.preview_compare_2{
                                     width: 1px;
-                                    border-top: solid 4px @color_preview_compare;
-                                    //border-bottom: solid 2px @color_preview_compare;
+                                    height: 5px;
                                 }
                             }
                         }
@@ -934,14 +982,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .attribLabel > .theLabel{
                                 font-weight: 700;
                             }
-                            .clickArea{
-                                cursor: pointer;
-                            }
+                            .clickArea{ cursor: pointer; }
                         }
+                        // AND
                         &[selected="1"]{
-                            > .attribLabel > .theLabel{
-                                color: @color_query_and;
-                            }
+                            > .attribLabel > .theLabel{ color: @color_query_and; }
                             &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
                                     content: "And";
@@ -949,10 +994,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                         }
+                        // OR
                         &[selected="2"]{
-                            > span.attribLabel > .theLabel{
-                                color: @color_query_or;
-                            }
+                            > .attribLabel > .theLabel{ color: @color_query_or; }
                             &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
                                     content: "Or";
@@ -960,8 +1004,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                         }
+                        // NOT
                         &[selected="-1"]{
-                            .clickArea { cursor: pointer; }
                             > .attribLabel > .theLabel{
                                 color: @color_query_not;
                                 &:before{
@@ -976,6 +1020,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 > .attribLabel > .theLabel{
                                     font-weight: 700 !important;
                                 }
+                                // Not selected
                                 &[selected="0"] {
                                     .clickArea { cursor: cell; }
                                     &[selecttype="and"] > .attribLabel > .theLabel{
@@ -998,6 +1043,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         &[noitems=true] {
                             color:gray;
+                            .item_count{ display: none; }
                         }
                     } // .attrib
                 } // .attribGroup
@@ -1012,13 +1058,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-x: hidden;
 //                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
-                    > .chartBackground{
-                        opacity: 0;
-                        width: 100%;
-                        height: 100%;
-                        display: block;
-                        .transition(~'opacity 250ms');
-                    }
                     > .bins{
                         position: absolute;
                         top: 0px;
@@ -1026,10 +1065,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                        width: 100%;
 //                        height: 100%;
                         z-index: 3;
+                        height: 100%;
                         .transition(@layout_animation);
                         > .bin{
                             position: absolute;
                             display: block;
+                            height: 100%;
+                            pointer-events: none;
                             > .bar{
                                 width: 1px;
                                 height: 1px;
@@ -1051,30 +1093,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     background-repeat: repeat;
                                     background-size: 8px 8px;
                                 }
-                                &.preview_compare {
-                                    height: 0px;
-                                    margin-top: 0px;
-                                }
-                                &.preview_compare_2 {
-                                    height: 1px;
-                                    border-left: solid 8px @color_preview_compare;
-                                    // border-right: solid 2px @color_preview_compare;
-                                }
+                            }
+                            > .compareButton{
+                                position: absolute;
+                                width: 100%;
+                                text-align: center;
                             }
                             > .item_count{
                                 top: 1px;
-                                text-shadow: white 0px 0px 2px;
                                 display: block;
                                 position: relative;
-                                width:26px;
-                                margin-left: -14px;
+                                width:100%;
                                 font-size: 0.7em;
                                 text-align: center;
                                 cursor: pointer;
+                                pointer-events: all;
                                 .transition(~'transform 700ms ease-in-out');
                             }
-                            &[noitems=true] > .item_count{
-                                display: none;
+                            &[noitems=true] {
+                                > .item_count{ display: none; }
                             }
                             &[highlight=true]{
                                 > .item_count{
@@ -1108,9 +1145,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .text{
                                 width: 20px;
                                 left: -22px;
-                                line-heigt:9px;
                                 text-align: right;
-                                top: -6px;
+                                top: -3px;
                                 position: relative;
                             }
                         }
@@ -1339,12 +1375,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .transform-origin(0% 0%);
                 &.active{
                     cursor: pointer;
+                    pointer-events: all;
                 }
                 &.total{
                     background-color: @color_bars_background;
                     pointer-events: none;
                 }
-                &.preview {
+                &.preview{
                     background-color: @color_related;
                     pointer-events: none;
                     .transform(~'scaleX(0)');
@@ -1355,20 +1392,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &.preview_compare {
                     background-color: @color_preview_compare;
                     pointer-events: none;
-                    .transition(@compare_viz_animation);
-                    opacity: 1;
-                    &[hidden=true]{
-                        opacity: 0;
-                    }
-                }
-                &.preview_compare_2 {
-                    background-color: rgba(0,0,0,0);
-                    pointer-events: none;
-                    .transition(@compare_viz_animation);
-                    opacity: 1;
-                    &[hidden=true]{
-                        opacity: 0;
-                    }
+                    .transition(~'opacity 400ms ease-in-out, transform 200ms ease-in-out');
+                    opacity: 0;
                 }
             }
         } // wrapperitem_count_wrapper
@@ -1448,9 +1473,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         .notButton{ display: inline-block; }
                         .orButton{ display: inline-block; }
                     }
-//                    .clickArea:hover{
-//                        .orButton{ display: inline-block; }
-//                    }
                 }
             }
             > .headerGroup .hasMultiMappings{
@@ -2250,6 +2272,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .tipsy-arrow{
             border-color: @color_query_not;
+        }
+    }
+    &.tipsyFilterLock{
+        .tipsy-inner{
+            background-color: @color_preview_compare;
+        }
+        .tipsy-arrow{
+            border-color: @color_preview_compare;
         }
     }
 
