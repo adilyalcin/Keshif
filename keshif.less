@@ -36,7 +36,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
-@compare_viz_animation: ~'opacity: 100ms linear';
+@compare_viz_animation: ~'all 200ms ease-in-out';
 
 @color_bars: #B8C7D2; //#B0BFCA; //#98ABB9; //#8699A8;
 @color_filtered: #30B8C4;
@@ -46,7 +46,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_facet_arrow: rgb(231, 215, 97);
 @color_facet_group: #E9E5CB;
 @color_bar_preview: orangered;
-@color_preview_compare: #222222;
+@color_preview_compare: darkslategray; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
 
@@ -91,8 +91,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[percentview=true]{
-        .chartScaleAxis > .percentSign::after{
-            content: "%";
+        .chartScaleAxis {
+            > .percentSign::after{
+                content: "%";
+            }
+            > .tick > .text::after{
+                content: "%";
+            }
         }
     }
     &[resultpreview=true]{
@@ -316,7 +321,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transform-origin(0%, 0%);
         }
         > .item_count_wrapper{
-            padding-right: 3px;
+            padding-right: 1px;
             text-align: right;
         }
         &:not([selected="0"]) {
@@ -444,12 +449,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .percentSign{
+            pointer-events: all;
             position: absolute;
             color: gray;
             font-size: 0.7em;
             font-weight: 700;
+            cursor: pointer;
             &:after{
                 content: '#';
+            }
+            &:hover{
+                color: orangered;
             }
         }
         > .background{
@@ -611,7 +621,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: relative;
                         cursor: text;
                         > .attribTextSearchInput {
-                            display: inline-block;
+                            display: block;
                             width: 100%;
                             height: 15px;
                             font-size: 0.7em;
@@ -670,7 +680,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     } // attribTextSearch
 
                     .sortIcon{
-                        position: relative;
+                        position: absolute;
+                        top: 3px;
                         font-size: 0.7em;
                         text-align: right;
                         display: inline-block;
@@ -810,6 +821,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             overflow: hidden;
+                            margin-top: 1px;
                             > .theLabel{
                                 // And/Or/Not can come before...
                                 &:before{
@@ -843,7 +855,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             pointer-events: none;
                             position: relative;
                             pointer-events: none;
-                            > .bar{
+                            .bar{
                                 top: 4px;
                                 width: 1px;
                                 height: 10px;
@@ -854,17 +866,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     border-bottom: 5px solid transparent;
                                     border-left: 5px solid @color_bars_background;
                                     background-color: initial;
-                                    opacity: 0;
+                                    /*
+                                    // The sawtooth pattern
+                                    width: 8px;
+                                    left: 0px;
+                                    height: 10px;
+                                    top: 4px;
+                                    opacity: 0px;
+
+                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%, 
+                                    linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+
+                                    background-position: top left, top left;
+                                    background-repeat: repeat;
+                                    background-size: 8px 8px;
+                                    */
                                 }
                                 &.preview_compare{
-                                    width: 2px;
-                                    margin-left: -1px;
+                                    width: 0px;
+                                    //width: 2px;
+                                    //margin-left: -1px;
                                 }
                                 &.preview_compare_2{
                                     width: 1px;
-                                    border-top: solid 1px gray;
-//                                    margin-top: -2px;
-                                    border-bottom: solid 1px gray;
+                                    border-top: solid 4px @color_preview_compare;
+                                    //border-bottom: solid 2px @color_preview_compare;
                                 }
                             }
                         }
@@ -872,8 +898,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             white-space: nowrap;
                             cursor: pointer;
                             vertical-align: top;
-                            float: left;
-                            margin-left: 2px;
+                            //float: left;
+                            margin-right: 3px;
                             z-index: 100;
 //                            margin-bottom: -2px;
 //                            font-size: 1.1em;
@@ -1009,22 +1035,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 height: 1px;
                                 .transform-origin(0% 100%);
                                 &.total_tip{
-                                    top: -4px;
-                                    /* top arrow */
-                                    border-left: 5px solid transparent;
-                                    border-right: 5px solid transparent;
-                                    border-bottom: 5px solid @color_bars_background;
-                                    background-color: initial;
+                                    content: " ";
+                                    display: block;
+                                    position: absolute;
+                                    top: -7px;
+                                    width: 100%;
+                                    left: 0px;
+                                    height: 8px;
                                     opacity: 0;
+
+                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%, 
+                                    linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
+
+                                    background-position: top left, top left;
+                                    background-repeat: repeat;
+                                    background-size: 8px 8px;
                                 }
                                 &.preview_compare {
-                                    height: 2px;
+                                    height: 0px;
                                     margin-top: 0px;
                                 }
                                 &.preview_compare_2 {
                                     height: 1px;
-                                    border-left: solid 2px gray;
-                                    border-right: solid 2px gray;
+                                    border-left: solid 8px @color_preview_compare;
+                                    // border-right: solid 2px @color_preview_compare;
                                 }
                             }
                             > .item_count{
@@ -1061,7 +1095,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         > .background{
                             width: 20px;
-                            height: 100%;
+                            height: calc(100% - 12px);
                             top: -6px;
                         }
                         > .tick{
@@ -1433,7 +1467,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[refreshSorting="true"]{
             .sortIcon:before{
-                content: "\f021" !important;
+                content: "\f175" !important;
             }
         }
 
@@ -1478,7 +1512,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .chartScaleAxis {
             > .percentSign{
-                left: -14px;
+                right: 2px;
             }
             > .background{
                 height: 15px;
