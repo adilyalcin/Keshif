@@ -345,9 +345,8 @@ kshf.Facet_Base = {
                 .on("mouseover",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(){
-                    var parentdivRoot=me.parentFacet.divRoot;
-                    parentdivRoot.attr("show_cliques",
-                        parentdivRoot.attr("show_cliques")==="true"?false:true);
+                    me.parentFacet.show_cliques = !me.parentFacet.show_cliques;
+                    me.parentFacet.divRoot.attr("show_cliques",me.parentFacet.show_cliques);
                 })
                 .append("span").attr("class","fa fa-remove")
         }
@@ -413,8 +412,8 @@ kshf.Facet_Base = {
                 this.setAttribute("class","hasMultiMappings fa fa-ellipsis-v");
             })
             .on("click",function(d){
-                var v=me.divRoot.attr("show_cliques");
-                me.divRoot.attr("show_cliques",v==="true"?false:true);
+                me.show_cliques = !me.show_cliques;
+                me.divRoot.attr("show_cliques",me.show_cliques);
             })
             ;
         if(this.isLinked) {
@@ -2810,7 +2809,7 @@ kshf.Browser.prototype = {
     setPercentMode: function(how){
         this.percentModeActive = how;
         this.root.attr("percentview",how);
-        this.facets.forEach(function(facet){ facet.refreshQueryPreview_Text(); });
+        this.facets.forEach(function(facet){ facet.refreshQueryPreview_Text(true); });
         this.facets.forEach(function(facet){ facet.refreshViz_Axis(); });
     },
     /** -- */
@@ -3139,6 +3138,8 @@ kshf.Facet_Categorical = function(kshf_, options){
 
     this.heightRow_attrib = 18;
     this.heightRow_config = 16;
+
+    this.show_cliques = false;
 
     this.collapsed = false;
     if(options.collapsed===true) this.collapsed = true;
@@ -3812,24 +3813,22 @@ kshf.Facet_Categorical.prototype = {
     },
     initDOM_insertSortButton: function(targetDom){
         var me=this;
-
-        this.dom.sortButton = targetDom.append("span").attr("class","sortIcon fa")
+        this.dom.sortButton = targetDom.append("span").attr("class","sortButton fa")
             .on("click",function(d){
-                if(me.skipSorting){
-                    me.skipSorting=false;
+                if(me.dirtySort){
+                    me.dirtySort=false;
                     me.divRoot.attr("refreshSorting",false);
-                    me.updateSorting(0); // no delay
+                    me.updateSorting(0,true); // no delay
                     return;
                 }
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
-                me.updateSorting_do.call(me, 0);
+                me.updateSorting(0,true);
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w', title: function(){
-                        if(me.skipSorting) return "Reorder";
-                        return "Reverse order";
+                        return me.dirtySort?"Reorder":"Reverse order";
                     }
                 })
             })
@@ -3849,7 +3848,7 @@ kshf.Facet_Categorical.prototype = {
                 me.dom.sortButton.style("display",(me.sortingOpt_Active.no_resort?"none":"inline-block"));
                 
                 me.dom.sortButton.attr("inverse",me.sortingOpt_Active.inverse);
-                me.updateSorting_do.call(me, 0);
+                me.updateSorting.call(me,0,true);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
             })
             .selectAll("input.sort_label").data(this.sortingOpts)
@@ -4050,7 +4049,12 @@ kshf.Facet_Categorical.prototype = {
         this.refreshQueryPreview_Text(true);
         this.updateBarPreviewScale2Active();
 
-        if(!this.skipSorting) {
+        if(this.show_cliques) {
+            this.dirtySort = true;
+            this.divRoot.attr("refreshSorting",true);
+        }
+
+        if(!this.dirtySort) {
             this.updateSorting();
         } else {
             this.refreshViz_All();
@@ -4067,6 +4071,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshQueryPreview_Text: function(dontCull){
+        if(!this.hasAttribs()) return;
         var me=this;
         var formatFunc = kshf.Util.formatForItemCount;
 
@@ -4226,6 +4231,7 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshViz_Axis: function(){
+        if(!this.hasAttribs()) return;
         var me=this;
 
         var tickValues;
@@ -4414,12 +4420,12 @@ kshf.Facet_Categorical.prototype = {
     filterAttrib: function(attrib, what, how){
         if(this.browser.skipSortingFacet){
             // you can now sort the last filtered facet, attention is no longer there.
-            this.browser.skipSortingFacet.skipSorting = false;
+            this.browser.skipSortingFacet.dirtySort = false;
             this.browser.skipSortingFacet.divRoot.attr("refreshSorting",false);
         }
         this.browser.skipSortingFacet=this;
 
-        this.browser.skipSortingFacet.skipSorting = true;
+        this.browser.skipSortingFacet.dirtySort = true;
         this.browser.skipSortingFacet.divRoot.attr("refreshSorting",true);
 
         var i=0;
@@ -4442,7 +4448,7 @@ kshf.Facet_Categorical.prototype = {
             attrib.set_NONE();
             if(this.attribFilter.selected_OR.length===0 && this.attribFilter.selected_AND.length===0 &&
                     this.attribFilter.selected_NOT.length===0){
-                this.skipSorting = false;
+                this.dirtySort = false;
                 this.divRoot.attr("refreshSorting",false);
             }
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_UNSELECT, {id:this.attribFilter.id, info:attrib.id()});
@@ -4717,6 +4723,11 @@ kshf.Facet_Categorical.prototype = {
                     item2.orderIndex = item1.orderIndex;
                     item1.orderIndex = tmp;
 
+                    item1.DOM.facet.tipsy.hide();
+                    item2.DOM.facet.tipsy.hide();
+                    item2.DOM.facet.setAttribute("highlight",false);
+                    item2.DOM.facet.setAttribute("highlight",false);
+
                     me.dom.attribs.each(function(attrib){
                         if(attrib.isVisible){
                             attrib.posX = 0;
@@ -4930,14 +4941,7 @@ kshf.Facet_Categorical.prototype = {
         if(this.options.removeInactiveAttrib){
             this.updateAttribCount_Visible();
         }
-        this.refreshScrollDisplayMore(this.attribCount_InDisplay);
-        this.updateSorting_do(sortDelay);
-    },
-    getTotalAttribHeight: function(){
-        return this.attribCount_Visible*this.heightRow_attrib;
-    },
-    /** -- */
-    updateSorting_do: function(sortDelay){
+        
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortAttribs();
@@ -5006,11 +5010,16 @@ kshf.Facet_Categorical.prototype = {
         // filler is used to insert the scroll bar. 
         // Items outside the view are not visible, something needs to expand the box
         this.dom.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
- 
+        
         var attribGroupScroll = me.dom.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
         if(this.scrollTop_cache!==0)
             kshf.Util.scrollToPos_do(attribGroupScroll,0);
+        this.refreshScrollDisplayMore(this.attribCount_InDisplay);
+
+    },
+    getTotalAttribHeight: function(){
+        return this.attribCount_Visible*this.heightRow_attrib;
     },
     cullAttribs: function(){
         var me=this;
@@ -5345,7 +5354,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
         this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
-            .style("padding-left",(this.vertAxisLabelWidth)+"px")
+            .style("margin-left",(this.vertAxisLabelWidth)+"px")
             ;
 
         this.dom.chartScaleAxis = this.dom.histogram.append("div")

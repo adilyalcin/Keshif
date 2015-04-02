@@ -744,7 +744,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:before {
   content: "\f057";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton {
   position: absolute;
   top: 3px;
   font-size: 0.7em;
@@ -753,13 +753,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-right: 6px;
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton:hover {
   color: #ff4500;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton:before {
   content: "\f161";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortIcon[inverse='true']:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton[inverse='true']:before {
   content: "\f160";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
@@ -1468,7 +1468,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
   display: none;
 }
-.kshf .kshfChart[refreshSorting="true"] .sortIcon:before {
+.kshf .kshfChart[refreshSorting="true"] .sortButton:before {
   content: "\f175" !important;
 }
 .kshf .kshfChart:hover > .headerGroup > .header_display_control {
