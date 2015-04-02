@@ -91,7 +91,8 @@ $(document).ready( function(){
             sortColWidth: 90,
             sortingOpts : [
                 { name: 'Value' },
-                { name: '# Homes', value: function(d){ return d.data.homes; } }
+                { name: '# Homes', value: function(d){ return d.data.homes; } },
+                { name: 'Name', value: function(d){ return d.data.text; } }
             ],
             autoExpandMore: true,
             displayType: 'grid',

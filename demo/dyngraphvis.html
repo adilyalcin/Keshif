@@ -21,6 +21,158 @@ function resizeBrowser(){
     $('#chart_div').height($(window).height()-120);
 }
 
+var references = {
+    "Abello2013Modular": "Farrugia2011Effective Frishman2008Online Reitz2009Focused",
+    "Ahlers2014Replicable": "Federico2011Visual Dutot2007GraphStream",
+    "Ahmed2010Visual": "Brandes2006Affiliation Dwyer2004Visualising Fu2007Visualization Misue1995Layout Moody2005Dynamic",
+    "Ahn2011Temporal": "Kang2007Visual Moody2005Dynamic",
+    "Ahn2013Task": "Yi2010TimeMatrix Hadlak2011Situ Moody2005Dynamic Bender-deMoll2006Science Brandes2003Visual",
+    "Alencar2012TimeAware": "Chen2006CiteSpace",
+    "Archambault2011Animation": "Brandes2003Visual Cohen1992Framework Frishman2004Dynamic Frishman2008Online Kumar2006Visual Lee2006Mental Misue1995Layout Saffrey2008Mental",
+    "Archambault2011Difference": "Archambault2011Animation Cohen1992Framework Farrugia2011Effective Frishman2008Online Saffrey2008Mental",
+    "Archambault2012Mental": "Archambault2011Animation Cohen1992Framework Farrugia2011Effective Frishman2008Online Lee2006Mental Misue1995Layout Saffrey2008Mental Zaman2011Effect",
+    "Archambault2013Map": "Archambault2012Mental Archambault2011Animation Bender-deMoll2006Science Brandes2012Visualization Burch2011Parallel Cohen1992Framework Farrugia2011Effective Frishman2004Dynamic Frishman2008Online Lee2006Mental Misue1995Layout Moody2005Dynamic Saffrey2008Mental",
+    "Archambault2013Mental": "Archambault2012Mental Archambault2011Animation Brandes2012Visualization Farrugia2011Effective Frishman2008Online Ghani2012Perception Misue1995Layout Saffrey2008Mental",
+    "Archambault2014Application": "Archambault2012Mental Archambault2013Map Archambault2011Animation Bach2014Review Bach2014GraphDiaries Beck2014State Farrugia2011Effective Ghani2012Perception Misue1995Layout Rufiange2013DiffAni",
+    "Archambault2014Temporal": "Abello2013Modular Archambault2013Map Archambault2011Animation Bastian2009Gephi Bender-deMoll2006Science Boitmanis2008Visualizing Brandes2012Visualization Brandes1997Bayesian Burch2011Parallel Collberg2003System Dwyer2004Visualising Erten2004Exploring Farrugia2011Effective Feng2012Coherent Forrester2005graphael Frishman2008Online Hu2012Embedding Kumar2006Visual Mashima2012Visualizing Moody2005Dynamic Rufiange2013DiffAni Saffrey2008Mental Sallaberry2012Clustering",
+    "Bach2014GraphDiaries": "Federico2011Visual Farrugia2011Exploring Collberg2003System Dwyer2002Visualising Brandes2003Visual Friedrich2002Graph Archambault2011Animation Farrugia2011Effective Bastian2009Gephi Ahn2011Temporal Ghani2012Perception Zaman2011Effect",
+    "Bach2014Review": "Archambault2011Animation Ahn2011Temporal Boyandin2012Qualitative Brandes2003Visual Brandes2011Asymmetric Bach2014GraphDiaries Burch2011Parallel Dwyer2002Visualising Dwyer2004Visualising Groh2009Interactively Hurter2013Bundled Rufiange2013DiffAni",
+    "Bach2014Visualizing": "",
+    "Bastian2009Gephi": "",
+    "Baur2008Dynamic": "Friedrich2002Graph Misue1995Layout Moody2005Dynamic",
+    "Beck2009Aesthetic": "Misue1995Layout",
+    "Beck2012Rapid": "Beck2009Aesthetic Burch2008TimeRadarTrees Burch2011Parallel Frishman2008Online Greilich2009Visualizing Misue1995Layout Reitz2009Focused",
+    "Beck2013Matching": "Beck2009Aesthetic Misue1995Layout Frishman2008Online Burch2011Parallel Greilich2009Visualizing Brandes2011Asymmetric Stein2010PixelOriented Burch2008TimeRadarTrees Beck2012Rapid",
+    "Beck2014State": "Archambault2014Temporal Alencar2012TimeAware Ahmed2010Visual Abello2013Modular Archambault2012Mental Archambault2013Map Archambault2011Animation Archambault2011Difference Ahn2013Task Ahn2011Temporal Beck2009Aesthetic Beck2013Matching Boyandin2012Qualitative Boitmanis2008Visualizing Burch2014Dynamic Beck2012Rapid Burch2012Radial Brandes2003Visual Burch2008TimeRadarTrees Burch2010TimeSpiderTrees Brasch2012VENLO Brandes2006Dynamic Beyer2006Animated Brandes2006Affiliation Burch2011Layered Brandes2012Visualization Brandes2012Quantitative Burch2012Visualizing Brandes2011Asymmetric Bach2014GraphDiaries Bach2014Visualizing Branke2001Dynamic Burch2013MatrixBased Burch2011Parallel Brandes1997Bayesian Cohen1992Framework Cohen1995Dynamic Chen2006CiteSpace Collberg2003System Cengiz2013Visualization Dwyer2002Visualising Diehl2002Graphs Diehl2001Preserving Erten2004Exploring Erten2004GraphAEL Erten2004Simultaneous Elmqvist2003Causality Federico2011Visual Friedrich2001Marey Friedrich2002Graph Friedrich2002GraphII Farrugia2011Exploring Forrester2005graphael Farrugia2011Effective Frishman2004Dynamic Frishman2008MOVIS Frishman2008Online Feng2012Coherent Greilich2009Visualizing Gorg2005Dynamic Gorochowski2012Using Ghani2012Perception Gansner2013Interactive Greevy2006Visualizing Gaertler2006Hybrid Hurter2013Bundled Huang1998Online Hu2012Embedding Hayashi2013Initial Hadlak2011Situ Itoh2012Visualization Itoh2010Interactive Itoh2012Analysis John2011Constructing Kumar2006Visual Kimelman1995Reduction Kobourov2012Spring Loubier2008Temporal Lee2006Mental Li2013Visual Lin2010ContexTour Liao2013Visual Misue1995Layout Mashima2012Visualizing Moody2005Dynamic Nesbitt2002Applying North1996Incremental Oelke2013Fingerprint Ogawa2008StarGate Ogawa2009codeswarm Pohl2008Interactive Purchase2007Important Purchase2008Extremes Pupyrev2010Analyzing Rey2010Controlling Rufiange2013DiffAni Reitz2009Focused Rohrschneider2010Visual Saraiya2005Visualization Sallaberry2012Clustering Stab2010SemaTime Saffrey2008Mental Stein2010PixelOriented Shi2011Dynamic Toyoda2005System Trier2006Towards Vehlow2013Radial vandenElzen2013Dynamic Vehlow2013iVUN vonLandesberger2013Visual vonLandesberger2011Visual Windhager2011Visual Yang2008Visual Yi2010TimeMatrix Zaman2011Effect",
+    "Bender-deMoll2006Science": "Moody2005Dynamic",
+    "Beyer2006Animated": "Collberg2003System",
+    "Boitmanis2008Visualizing": "Brandes1997Bayesian Diehl2002Graphs Erten2004GraphAEL",
+    "Boyack2009Mapping": "Chen2006CiteSpace",
+    "Boyandin2012Qualitative": "Archambault2011Animation Farrugia2011Effective Saffrey2008Mental",
+    "Brandes1997Bayesian": "",
+    "Brandes2003Visual": "Misue1995Layout",
+    "Brandes2006Affiliation": "",
+    "Brandes2006Dynamic": "Diehl2001Preserving Friedrich2002Graph Misue1995Layout",
+    "Brandes2011Asymmetric": "Brandes2012Visualization Frishman2008Online Moody2005Dynamic Nesbitt2002Applying Stein2010PixelOriented Yi2010TimeMatrix",
+    "Brandes2012Quantitative": "Brandes2003Visual Huang1998Online Misue1995Layout Moody2005Dynamic",
+    "Brandes2012Visualization": "Dwyer2004Visualising Friedrich2002Graph Frishman2008Online Groh2009Interactively Huang1998Online Misue1995Layout Moody2005Dynamic Nesbitt2002Applying Saffrey2008Mental",
+    "Branke2001Dynamic": "",
+    "Brasch2012VENLO": "Brandes2003Visual Erten2004Simultaneous Gorg2005Dynamic",
+    "Burch2008TimeRadarTrees": "Elmqvist2003Causality",
+    "Burch2010TimeSpiderTrees": "Beck2009Aesthetic",
+    "Burch2011Layered": "Archambault2011Animation Beck2009Aesthetic Burch2008TimeRadarTrees Frishman2008Online Greilich2009Visualizing Misue1995Layout",
+    "Burch2011Parallel": "Archambault2011Animation Brandes2003Visual Burch2008TimeRadarTrees Collberg2003System Frishman2008Online Greevy2006Visualizing Greilich2009Visualizing Ogawa2009codeswarm",
+    "Burch2012Radial": "Brandes2011Asymmetric Burch2008TimeRadarTrees Burch2011Parallel Frishman2008Online Greilich2009Visualizing Misue1995Layout Stein2010PixelOriented Yi2010TimeMatrix",
+    "Burch2012Visualizing": "Beck2012Rapid Brandes2003Visual Burch2008TimeRadarTrees Burch2011Parallel Collberg2003System Frishman2008Online Greilich2009Visualizing Misue1995Layout Ogawa2009codeswarm",
+    "Burch2013MatrixBased": "Burch2008TimeRadarTrees Burch2011Parallel Frishman2008Online Yi2010TimeMatrix Brandes2011Asymmetric Stein2010PixelOriented",
+    "Burch2014Dynamic": "Archambault2011Animation Beck2009Aesthetic Beck2013Matching Brandes2003Visual Brandes2011Asymmetric Burch2008TimeRadarTrees Burch2011Parallel Burch2013MatrixBased Frishman2008Online Hurter2013Bundled Purchase2007Important Stein2010PixelOriented",
+    "Burch2014FlipBook": "Archambault2011Animation Beck2014State Beck2012Rapid Brandes2011Asymmetric Burch2012Radial Burch2008TimeRadarTrees Burch2011Parallel Frishman2008Online Ghani2012Perception Purchase2007Important Rufiange2013DiffAni Stein2010PixelOriented",
+    "Cengiz2013Visualization": "Frishman2008Online Kumar2006Visual Shi2011Dynamic Ghani2012Perception",
+    "Chen2003Visualizing": "",
+    "Chen2006CiteSpace": "",
+    "Cohen1992Framework": "",
+    "Cohen1995Dynamic": "",
+    "Collberg2003System": "Cohen1995Dynamic",
+    "Curtis2012Enabling": "",
+    "Diehl2001Preserving": "Misue1995Layout",
+    "Diehl2002Graphs": "Branke2001Dynamic Cohen1995Dynamic Diehl2001Preserving Misue1995Layout",
+    "Dutot2007GraphStream": "",
+    "Dwyer2002Visualising": "",
+    "Dwyer2004Visualising": "",
+    "Elmqvist2003Causality": "",
+    "Ens2014ChronoTwigger": "Beyer2006Animated",
+    "Erten2004Exploring": "Cohen1995Dynamic Collberg2003System",
+    "Erten2004GraphAEL": "Cohen1995Dynamic Collberg2003System",
+    "Erten2004Simultaneous": "Collberg2003System Huang1998Online Misue1995Layout",
+    "Farrugia2011Effective": "Bender-deMoll2006Science Moody2005Dynamic Misue1995Layout Frishman2008Online Lee2006Mental Dwyer2004Visualising Friedrich2002Graph",
+    "Farrugia2011Exploring": "Frishman2008Online",
+    "Federico2011Visual": "Bender-deMoll2006Science Brandes2003Visual Dwyer2004Visualising Lee2006Mental Misue1995Layout Moody2005Dynamic Saffrey2008Mental",
+    "Feng2012Coherent": "Diehl2001Preserving Frishman2004Dynamic Misue1995Layout",
+    "Forrester2005graphael": "Erten2004Exploring",
+    "Friedrich2001Marey": "",
+    "Friedrich2002Graph": "",
+    "Friedrich2002GraphII": "Friedrich2002Graph",
+    "Frishman2004Dynamic": "Misue1995Layout",
+    "Frishman2008MOVIS": "Collberg2003System Frishman2004Dynamic Kumar2006Visual Misue1995Layout",
+    "Frishman2008Online": "Misue1995Layout Kumar2006Visual Frishman2004Dynamic Bender-deMoll2006Science",
+    "Fu2007Visualization": "Moody2005Dynamic",
+    "Gaertler2006Hybrid": "Brandes2003Visual",
+    "Gansner2013Interactive": "Archambault2011Animation",
+    "Ghani2012Perception": "Archambault2011Animation Beck2009Aesthetic Brandes2003Visual Cohen1992Framework Farrugia2011Effective Moody2005Dynamic Yi2010TimeMatrix",
+    "Gilbert2011Communities": "Bender-deMoll2006Science Kang2007Visual Moody2005Dynamic",
+    "Gorg2005Dynamic": "Cohen1995Dynamic Collberg2003System Diehl2001Preserving",
+    "Gorochowski2012Using": "Farrugia2011Effective Erten2004GraphAEL Erten2004Exploring Brandes2003Visual Friedrich2002Graph Misue1995Layout Lee2006Mental Moody2005Dynamic",
+    "Greevy2006Visualizing": "",
+    "Greilich2009Visualizing": "Pohl2008Interactive",
+    "Groh2009Interactively": "Bender-deMoll2006Science Erten2004Exploring Friedrich2002Graph Moody2005Dynamic",
+    "Hadlak2011Situ": "Bastian2009Gephi Brandes2003Visual Burch2008TimeRadarTrees Diehl2002Graphs Diehl2001Preserving Friedrich2001Marey Frishman2004Dynamic Frishman2008Online Gaertler2006Hybrid Purchase2007Important Saraiya2005Visualization Shi2011Dynamic",
+    "Hayashi2013Initial": "Archambault2011Animation Archambault2011Difference Diehl2002Graphs Frishman2008Online Gorg2005Dynamic Huang1998Online Itoh2012Visualization Moody2005Dynamic Reitz2009Focused",
+    "Hindle2007YARN": "Beyer2006Animated",
+    "Hlawatsch2014Visual": "Burch2011Parallel Yi2010TimeMatrix Frishman2008Online Lee2006Mental Beck2009Aesthetic Misue1995Layout Hu2012Embedding Archambault2011Animation Greilich2009Visualizing Brandes2003Visual Rufiange2013DiffAni Burch2008TimeRadarTrees",
+    "Hu2012Embedding": "Burch2008TimeRadarTrees",
+    "Huang1998Online": "Misue1995Layout",
+    "Hurter2013Bundled": "Boyandin2012Qualitative Burch2008TimeRadarTrees Erten2004Simultaneous Forrester2005graphael",
+    "Itoh2010Interactive": "Toyoda2005System Brandes2003Visual",
+    "Itoh2012Analysis": "Brandes2003Visual Itoh2010Interactive Toyoda2005System",
+    "Itoh2012Visualization": "Itoh2010Interactive Shi2011Dynamic",
+    "John2011Constructing": "",
+    "Kang2007Visual": "Bender-deMoll2006Science Moody2005Dynamic",
+    "Kerracher2014Design": "Archambault2011Animation Bender-deMoll2006Science Bach2014GraphDiaries Bach2014Visualizing Federico2011Visual Farrugia2011Exploring Farrugia2011Effective Frishman2008Online Groh2009Interactively Hadlak2011Situ Itoh2010Interactive Moody2005Dynamic Perer2012MatrixFlow Rufiange2013DiffAni Reitz2009Focused Saraiya2005Visualization Shi2011Dynamic Yi2010TimeMatrix",
+    "Kerracher2014Tasks": "Yi2010TimeMatrix",
+    "Kimelman1995Reduction": "",
+    "Kobourov2012Spring": "Cohen1992Framework Cohen1995Dynamic Collberg2003System Erten2004Exploring Bastian2009Gephi",
+    "Kumar2006Visual": "",
+    "Lad2006Visualizing": "",
+    "Lee2006Mental": "Misue1995Layout",
+    "Li2013Visual": "Burch2011Parallel Diehl2002Graphs Frishman2008Online Gorg2005Dynamic",
+    "Liao2013Visual": "",
+    "Lin2010ContexTour": "Kumar2006Visual",
+    "Loubier2008Temporal": "Collberg2003System",
+    "Mashima2012Visualizing": "Branke2001Dynamic Collberg2003System",
+    "Misue1995Layout": "",
+    "Moody2005Dynamic": "",
+    "Nesbitt2002Applying": "Misue1995Layout",
+    "North1996Incremental": "",
+    "Oelke2013Fingerprint": "Brandes2011Asymmetric Burch2011Parallel Farrugia2011Effective Moody2005Dynamic Stein2010PixelOriented Yi2010TimeMatrix",
+    "Ogawa2008StarGate": "Brandes2003Visual Chen2003Visualizing Collberg2003System Saraiya2005Visualization",
+    "Ogawa2009codeswarm": "Collberg2003System Ogawa2008StarGate",
+    "Perer2012MatrixFlow": "Moody2005Dynamic Yi2010TimeMatrix",
+    "Pohl2008Interactive": "Diehl2001Preserving",
+    "Pupyrev2010Analyzing": "Brandes2003Visual Dwyer2004Visualising Misue1995Layout",
+    "Purchase2007Important": "",
+    "Purchase2008Extremes": "Brandes2003Visual Collberg2003System Lee2006Mental Saffrey2008Mental",
+    "Reitz2009Focused": "Misue1995Layout Pohl2008Interactive",
+    "Reitz2010Framework": "Burch2008TimeRadarTrees",
+    "Rey2010Controlling": "",
+    "Rohrschneider2010Visual": "Misue1995Layout Diehl2001Preserving Frishman2008Online Moody2005Dynamic",
+    "Rufiange2013DiffAni": "Archambault2011Animation Brandes2003Visual Brandes2011Asymmetric Burch2008TimeRadarTrees Burch2010TimeSpiderTrees Burch2011Parallel Farrugia2011Effective Federico2011Visual Greilich2009Visualizing Hadlak2011Situ Purchase2008Extremes Saraiya2005Visualization Windhager2011Visual Yi2010TimeMatrix Zaman2011Effect",
+    "Rufiange2014AniMatrix": "Erten2004GraphAEL Yi2010TimeMatrix Archambault2011Difference Archambault2011Animation Purchase2008Extremes Zaman2011Effect Rufiange2013DiffAni Collberg2003System Hindle2007YARN Rufiange2014Visualizing Beck2014State Burch2012Radial Bach2014GraphDiaries",
+    "Rufiange2014Visualizing": "Archambault2011Animation Farrugia2011Effective Hindle2007YARN Zaman2011Effect",
+    "Saffrey2008Mental": "Lee2006Mental Misue1995Layout Purchase2007Important",
+    "Sallaberry2012Clustering": "Frishman2008Online Archambault2011Animation Kumar2006Visual Hu2012Embedding Saffrey2008Mental Burch2011Parallel",
+    "Saraiya2005Visualization": "",
+    "Shannon2007Considerations": "Lee2006Mental Misue1995Layout",
+    "Shi2011Dynamic": "Collberg2003System Diehl2001Preserving Friedrich2002Graph Frishman2004Dynamic Frishman2008Online Huang1998Online Misue1995Layout Moody2005Dynamic",
+    "Smuc2014Connect": "Brandes2003Visual Brandes2012Visualization Dwyer2004Visualising Federico2011Visual Misue1995Layout Moody2005Dynamic Windhager2011Visual",
+    "Stab2010SemaTime": "",
+    "Stein2010PixelOriented": "Moody2005Dynamic Bender-deMoll2006Science",
+    "Toyoda2005System": "Chen2003Visualizing Collberg2003System Diehl2001Preserving Erten2004Exploring",
+    "Trier2006Towards": "",
+    "Vehlow2013Radial": "Archambault2011Animation Frishman2008Online Misue1995Layout Burch2011Parallel Beck2012Rapid Burch2012Radial Brandes2011Asymmetric Yi2010TimeMatrix",
+    "Vehlow2013iVUN": "Beck2009Aesthetic Westenberg2008Visualizing",
+    "Vehlow2014Visualizing": "Archambault2011Animation Beck2014State Burch2011Parallel Frishman2004Dynamic Greilich2009Visualizing Hu2012Embedding Kumar2006Visual Misue1995Layout Mashima2012Visualizing Rufiange2013DiffAni Reitz2009Focused",
+    "Westenberg2008Visualizing": "",
+    "Windhager2011Visual": "Bender-deMoll2006Science",
+    "Yang2008Visual": "Kumar2006Visual",
+    "Yi2010TimeMatrix": "Brandes2003Visual Moody2005Dynamic",
+    "Zaidi2014Analysis": "Burch2011Parallel Frishman2008Online Gilbert2011Communities Hu2012Embedding Moody2005Dynamic",
+    "Zaman2011Effect": "Archambault2011Animation Archambault2011Difference Diehl2002Graphs Farrugia2011Effective Purchase2007Important Purchase2008Extremes Saffrey2008Mental",
+    "vandenElzen2013Dynamic": "Kumar2006Visual Reitz2009Focused Farrugia2011Exploring Federico2011Visual Burch2010TimeSpiderTrees Burch2008TimeRadarTrees Burch2011Layered Burch2011Parallel Greilich2009Visualizing",
+    "vonLandesberger2011Visual": "Beck2009Aesthetic Burch2008TimeRadarTrees Diehl2001Preserving Frishman2004Dynamic Frishman2008Online Greilich2009Visualizing Kumar2006Visual Reitz2009Focused Saraiya2005Visualization",
+    "vonLandesberger2013Visual": "Cohen1995Dynamic Kumar2006Visual Brandes2003Visual"
+};
+
+
 $(document).ready( function(){
     resizeBrowser();
     $(window).resize(function() {
@@ -36,10 +188,10 @@ $(document).ready( function(){
         source : {
             url: "http://dynamicgraphs.fbeck.com/",
             callback: function(browser){
-                browser.primaryTableName = "Visualizations";
+                browser.primaryTableName = "Publications";
 
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
+                kshf.dt.Publications = [];
+                kshf.dt_id.Publications = {};
 
                 $.ajax( {
                     url: "./data/dyngraphviz.bib",
@@ -84,12 +236,13 @@ $(document).ready( function(){
                                 entryData.Journal = entry.Fields.booktitle;
 
                             var kshfItem = new kshf.Item(entryData,'Key');
-                            kshf.dt.Visualizations.push(kshfItem);
-                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+                            kshf.dt.Publications.push(kshfItem);
+                            kshf.dt_id.Publications[kshfItem.id()] = kshfItem;
                         });
+
                         // there will be some entries.errors, for incorrect entry types (like online)
 
-                        browser.items = kshf.dt.Visualizations;
+                        browser.items = kshf.dt.Publications;
                         browser.itemsSelectedCt = browser.items.length;                
 
                         // finish loading....
@@ -111,6 +264,14 @@ $(document).ready( function(){
                 facetTitle: "Applications",
             },{
                 facetTitle: "Evaluations",
+/*            },{
+                facetTitle: "Citations",
+                catItemMap: function(d){
+                    return references[d.id()].split(" ");
+                },
+                // Using the main table name, this will enable linking through items
+                catTableName: "Publications",
+                collapsed: true*/
             },{
                 facetTitle: "Authors", layout: 'right'
             },{
@@ -161,8 +322,9 @@ $(document).ready( function(){
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
             Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
-            for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf1.<br>
+            for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf.<br>
             Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
+            <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>SurVis version</a>
             <span class="fa fa-info-circle"></span>
             </div>
     </body>
