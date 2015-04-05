@@ -100,6 +100,7 @@ var kshf = {
         LIST_SORT              : 50, // param: info (sortID)
         LIST_SCROLL_TOP        : 51, // param: -
         LIST_SHOWMORE          : 52, // param: info (itemCount)
+        LIST_SORT_INV          : 53, // param: -
         // Item specific interactions
         ITEM_DETAIL_ON         : 60, // param: info (itemID)
         ITEM_DETAIL_OFF        : 61, // param: info (itemID)
@@ -602,7 +603,8 @@ kshf.Item = function(d, idIndex){
     // Wanted item / not filtered out
     this.isWanted = true;
     // Used by listDisplay to adjust animations. Only used by primary entity type for now.
-    this.wantedOrder = 0;
+    this.visibleOrder = 0;
+    this.visibleOrder_pre = -1;
     // The data that's used for mapping this item, used as a cache.
     // This is accessed by filterID
     // Through this, you can also reach mapped DOM items
@@ -1375,41 +1377,61 @@ kshf.List.prototype = {
             .style("width",(this.sortColWidth)+"px")
             .style('white-space','nowrap');
         // just insert it as text
-        if(me.displayType==='grid'){
-            x.append("span").attr("class","sortBy fa fa-sort-amount-desc");
-        }
         if(this.sortingOpts.length===1){
             x.append("span").html(this.sortingOpts[0].name);
-            return;
+        } else {
+            x.append("select")
+                .attr("class","listSortOptionSelect")
+                .style("width",(this.sortColWidth-(me.displayType==='grid'?15:0))+"px")
+                .on("change", function(){
+                    me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
+                    me.sortFilter_Active = me.sortFilters[this.selectedIndex];
+                    me.reorderItemsOnDOM();
+                    me.updateVisibleIndex();
+                    me.maxVisibleItems = kshf.maxVisibleItems_default;
+                    me.updateItemVisibility();
+                    if(me.displayType==='list'){
+                        // update sort column labels
+                        me.dom.listsortcolumn_label
+                            .html(function(d){
+                                return me.sortingOpt_Active.label(d);
+                            })
+                            .each(function(d){
+                                this.columnValue = me.sortingOpt_Active.label(d);
+                            });
+                    }
+                    kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
+                    if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
+                })
+                .selectAll("input.list_sort_label").data(this.sortingOpts)
+                .enter().append("option")
+                    .attr("class", "list_sort_label")
+                    .html(function(d){ return d.name; })
+                    ;
         }
-        x.append("select")
-            .attr("class","listSortOptionSelect")
-            .style("width",(this.sortColWidth-(me.displayType==='grid'?15:0))+"px")
-            .on("change", function(){
-                me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
-                me.sortFilter_Active = me.sortFilters[this.selectedIndex];
-                me.reorderItemsOnDOM();
+
+        this.dom.listHeader_BottomRow.append("span").attr("class","sortColumn")
+            .append("span").attr("class","sortButton fa")
+            .on("click",function(d){
+                me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+                this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+                me.browser.items.reverse();
+                me.dom.listItems = me.dom.listItemGroup.selectAll("div.listItem")
+                    .data(me.browser.items, function(d){ return d.id(); })
+                    .order();
                 me.updateVisibleIndex();
                 me.maxVisibleItems = kshf.maxVisibleItems_default;
-                me.updateItemVisibility();
-                if(me.displayType==='list'){
-                    // update sort column labels
-                    me.dom.listsortcolumn_label
-                        .html(function(d){
-                            return me.sortingOpt_Active.label(d);
-                        })
-                        .each(function(d){
-                            this.columnValue = me.sortingOpt_Active.label(d);
-                        });
-                }
-                if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
-                // me.updateShowListGroupBorder();
+                me.updateItemVisibility(false,true);
+                kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
+                if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
-            .selectAll("input.list_sort_label").data(this.sortingOpts)
-            .enter().append("option")
-                .attr("class", "list_sort_label")
-                .html(function(d){ return d.name; })
-                ;
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w', title: function(){ return "Reverse order"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); });
     },
     insertHeaderLinkedItems: function(){
         var me=this;
@@ -1712,7 +1734,6 @@ kshf.List.prototype = {
      *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
      */
     sortItems: function(){
-        var me=this;
         var sortValueFunc = this.sortingOpt_Active.value;
         var sortFunc = this.sortingOpt_Active.func;
         var inverse = this.sortingOpt_Active.inverse;
@@ -1768,55 +1789,61 @@ kshf.List.prototype = {
         return sortValueType_;
     },
     /** Updates visibility of list items */
-    updateItemVisibility: function(showMoreOnly){
+    updateItemVisibility: function(showMoreOnly, noAnimation){
         var me = this;
         var visibleItemCount=0;
 
         this.dom.listItems.each(function(item){
             var domItem = this;
-            // adjust visibleItemCount
-            var isVisible = (item.wantedOrder>=0 && item.wantedOrder<me.maxVisibleItems);
-            if(isVisible) visibleItemCount++;
 
+            var isVisible     = (item.visibleOrder>=0) && (item.visibleOrder<me.maxVisibleItems);
+            var isVisible_pre = (item.visibleOrder_pre>=0) && (item.visibleOrder_pre<me.maxVisibleItems);
             if(isVisible) {
+                visibleItemCount++;
                 if(me.visibleCb) me.visibleCb.call(this,item);
             }
 
             if(showMoreOnly){
-                this.style.display = isVisible?'':'none';
-                this.setAttribute("animSt","visible");
+                domItem.style.display = isVisible?'':'none';
+                domItem.setAttribute("animSt","visible");
                 return;
             }
 
-            var isInViewNow = item.wantedOrder>=0 && item.wantedOrder<50;
-            var isInViewBefore = item.wantedOrder_pre>=0 && item.wantedOrder_pre<50;
-
-            // NOTE: Max 100 items can be under animation (in view now, or before), so don't worry about performance!
-
-            if(isInViewNow){
-                if(isInViewBefore){
-                    // "in view" now, "in view" before
-                    this.setAttribute("animSt","visible");
-                    this.style.display = isVisible?'':'none';
-                } else {
-                    this.style.display = '';
-                    domItem.setAttribute("animSt","closed"); // start from closed state
-                    // "in view" now, but not "in view" before
-                    setTimeout(function(){ domItem.setAttribute("animSt","open") },500);
-                    setTimeout(function(){ domItem.setAttribute("animSt","visible") },1100+item.wantedOrder*10);
+            if(noAnimation){
+                if(isVisible && !isVisible_pre){
+                    domItem.style.display = '';
+                    domItem.setAttribute("animSt","visible");
                 }
-            } else {
-                // item not in view now
-                if(isInViewBefore && isVisible===false){
-                    // not in view now, but in view before
-                    setTimeout(function(){ domItem.setAttribute("animSt","open") },-item.wantedOrder*10);
-                    setTimeout(function(){ domItem.setAttribute("animSt","closed") },500);
-                    setTimeout(function(){ domItem.style.display = 'none' },1000);
-                } else {
-                    // not "in view" now or before
-                    this.setAttribute("animSt","visible");
-                    this.style.display = isVisible?'':'none';
+                if(!isVisible && isVisible_pre){
+                    domItem.setAttribute("animSt","closed");
+                    domItem.style.display = 'none';
                 }
+                return;
+            }
+
+            // NOTE: Max 100 items can be under animation (visibility change), so don't worry about performance!
+
+            if(isVisible && !isVisible_pre){
+                domItem.setAttribute("animSt","closed"); // start from closed state
+                setTimeout(function(){ 
+                    domItem.style.display = '';
+                    domItem.setAttribute("animSt","open");
+                },500);
+                setTimeout(function(){ 
+                    domItem.setAttribute("animSt","visible");
+                },1100+item.visibleOrder*10);
+            }
+            if(!isVisible && isVisible_pre){
+                // not in view now, but in view before
+                setTimeout(function(){ 
+                    domItem.setAttribute("animSt","open");
+                },-item.visibleOrder*10);
+                setTimeout(function(){ 
+                    domItem.setAttribute("animSt","closed");
+                },500);
+                setTimeout(function(){
+                    domItem.style.display = 'none';
+                },1000);
             }
         });
 
@@ -1836,7 +1863,6 @@ kshf.List.prototype = {
         this.updateVisibleIndex();
         this.maxVisibleItems = kshf.maxVisibleItems_default;
         this.updateItemVisibility(false);
-        // this.updateShowListGroupBorder();
     },
     /** -- */
     updateAfterFilter: function(){
@@ -1869,18 +1895,18 @@ kshf.List.prototype = {
         var wantedCount = 0;
         var unwantedCount = 1;
         this.browser.items.forEach(function(item){
-            item.wantedOrder_pre = item.wantedOrder;
+            item.visibleOrder_pre = item.visibleOrder;
             if(item.isWanted){
-                item.wantedOrder = wantedCount;
+                item.visibleOrder = wantedCount;
                 wantedCount++;
             } else {
-                item.wantedOrder = -unwantedCount;
+                item.visibleOrder = -unwantedCount;
                 unwantedCount++;
             }
         },this);
 
         if(this.showRank){
-            this.dom.ranks.text(function(d){ return "#"+(d.wantedOrder+1);});
+            this.dom.ranks.text(function(d){ return "#"+(d.visibleOrder+1);});
         }
     }
 };
@@ -2339,8 +2365,9 @@ kshf.Browser.prototype = {
                 config.dynamicTyping = true;
                 config.header = true; // header setting can be turned off
                 if(sheet.header===false) config.header = false;
-                if(sheet.preview) config.preview = sheet.preview;
-                if(sheet.fastMode) config.fastMode = sheet.fastMode;
+                if(sheet.preview!==undefined) config.preview = sheet.preview;
+                if(sheet.fastMode!==undefined) config.fastMode = sheet.fastMode;
+                if(sheet.dynamicTyping!==undefined) config.dynamicTyping = sheet.dynamicTyping;
 
                 var parsedData = Papa.parse(data, config);
 
@@ -4894,7 +4921,9 @@ kshf.Facet_Categorical.prototype = {
 
         var idCompareFunc = function(a,b){return b-a;};
         if(typeof(this._attribs[0].id())==="string") 
-            idCompareFunc = function(a,b){return b.localeCompare(a);};
+            idCompareFunc = function(a,b){
+                return b.localeCompare(a);
+            };
 
         var theSortFunc = function(a,b){
             // linked items...

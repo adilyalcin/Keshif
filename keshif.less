@@ -153,6 +153,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
+    .sortButton{
+        cursor: pointer;
+        &:hover{
+            color:orangered
+        }
+        &:before{
+            content: "\f161";
+        }
+        &[inverse='true']:before{
+            content: "\f160";
+        }
+    }
 
     font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
@@ -733,9 +745,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         top: 3px;
                         font-size: 0.7em;
                         text-align: right;
-                        display: inline-block;
-                        padding-right: 6px;
-                        cursor: pointer;
                         &:hover{
                             color:orangered
                         }
@@ -1941,15 +1950,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-width: 0px 2px;
         .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
 
-        > .topRow{
-//            font-size: 1.2em;
-        }
         > .bottomRow{
             display: table;
             table-layout: fixed;
             width: 100%;
             > .bottomRowRow{
                 display: table-row;
+                > .sortColumn {
+                    display: table-cell;
+                    width: 17px;
+                    font-size: 0.7em;
+                    vertical-align: bottom;
+                    > .sortButton{
+                        padding: 2px;
+                    }
+                }
                 > .scrollToTop{
                     display: table-cell;
                     vertical-align: bottom;

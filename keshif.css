@@ -137,6 +137,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span[compare="true"] .compareButton:hover:after {
   content: "\f13e";
 }
+.kshf .sortButton {
+  cursor: pointer;
+}
+.kshf .sortButton:hover {
+  color: #ff4500;
+}
+.kshf .sortButton:before {
+  content: "\f161";
+}
+.kshf .sortButton[inverse='true']:before {
+  content: "\f160";
+}
 .kshf .AndOrNot {
   color: white;
   display: inline-block;
@@ -749,9 +761,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 3px;
   font-size: 0.7em;
   text-align: right;
-  display: inline-block;
-  padding-right: 6px;
-  cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton:hover {
   color: #ff4500;
@@ -1922,6 +1931,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .bottomRow > .bottomRowRow {
   display: table-row;
+}
+.kshf .listHeader > .bottomRow > .bottomRowRow > .sortColumn {
+  display: table-cell;
+  width: 17px;
+  font-size: 0.7em;
+  vertical-align: bottom;
+}
+.kshf .listHeader > .bottomRow > .bottomRowRow > .sortColumn > .sortButton {
+  padding: 2px;
 }
 .kshf .listHeader > .bottomRow > .bottomRowRow > .scrollToTop {
   display: table-cell;
