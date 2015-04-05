@@ -43,38 +43,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.kshf[hidebars=true] .kshf .attrib .barGroup {
+.kshf[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
 }
-.kshf[hidebaraxis=true] .facetCategorical .chartScaleAxis {
+.kshf[hidebaraxis=true] .facetCategorical .chartAxis_Measure {
   display: none;
 }
 .kshf[hidebaraxis=true] .facetCategorical .barChartMainInfo {
   display: none;
 }
-.kshf[noanim=false] .bar {
+.kshf[noanim=false] .aggr {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf[noanim=false] .histogram .barGroup_Active {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-}
-.kshf[noanim=false] .chartScaleAxis span.tick {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-}
-.kshf[noanim=false] .facetInterval .histogram .bin {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+.kshf[noanim=false] .chartAxis_Measure .tick {
+  -webkit-transition: -webkit-transform 500ms ease-out;
+  -moz-transition: -moz-transform 500ms ease-out;
+  -o-transition: -o-transform 500ms ease-out;
+  transition: -webkit-transform 500ms ease-out,-moz-transform 500ms ease-out,-o-transform 500ms ease-out,transform 500ms ease-out;
 }
 .kshf[noanim=false] .attrib {
   -webkit-transition: all 700ms ease-in-out;
@@ -82,14 +70,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 700ms ease-in-out;
   transition: all 700ms ease-in-out;
 }
-.kshf[percentview=true] .chartScaleAxis > .percentSign::after {
+.kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
-.kshf[percentview=true] .chartScaleAxis > .tick > .text::after {
+.kshf[percentview=true] .chartAxis_Measure > .tick > .text::after {
   content: "%";
-}
-.kshf[resultpreview="true"] .item_count {
-  color: #e84306;
 }
 .kshf[previewcompare="true"] {
   /*        .attrib .preview{
@@ -97,7 +82,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 4px !important;
         }*/
 }
-.kshf[previewcompare="true"] .preview_compare {
+.kshf[previewcompare="true"] .compare {
   opacity: 1 !important;
 }
 .kshf .compareButton {
@@ -377,17 +362,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   direction: ltr;
   margin-right: 2px;
 }
-.kshf .attrib > .barGroup > .bar {
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-}
-.kshf .attrib > .item_count_wrapper {
-  padding-right: 1px;
-  text-align: right;
-}
 .kshf .attrib:not([selected="0"]) .attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
@@ -486,7 +460,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .selection_bar rect:hover {
   stroke: orangered;
 }
-.kshf .chartScaleAxis {
+.kshf .chartAxis_Measure {
   pointer-events: none;
   position: absolute;
   z-index: 2;
@@ -496,11 +470,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
-.kshf .chartScaleAxis > .tick {
+.kshf .chartAxis_Measure > .tick {
   opacity: 0;
   position: absolute;
 }
-.kshf .chartScaleAxis > .tick > .text {
+.kshf .chartAxis_Measure > .tick > .text {
   display: block;
   position: relative;
   text-align: center;
@@ -510,11 +484,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   color: gray;
 }
-.kshf .chartScaleAxis > .tick > .line {
+.kshf .chartAxis_Measure > .tick > .line {
   display: block;
   position: absolute;
 }
-.kshf .chartScaleAxis > .percentSign {
+.kshf .chartAxis_Measure > .percentSign {
   pointer-events: all;
   position: absolute;
   color: gray;
@@ -522,13 +496,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   cursor: pointer;
 }
-.kshf .chartScaleAxis > .percentSign:after {
+.kshf .chartAxis_Measure > .percentSign:after {
   content: '#';
 }
-.kshf .chartScaleAxis > .percentSign:hover {
+.kshf .chartAxis_Measure > .percentSign:hover {
   color: orangered;
 }
-.kshf .chartScaleAxis > .background {
+.kshf .chartAxis_Measure > .background {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -537,7 +511,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #c2927c;
   opacity: 0;
 }
-.kshf .chartScaleAxis > .background:hover {
+.kshf .chartAxis_Measure > .background:hover {
   opacity: 0.1;
 }
 .kshf .border_line {
@@ -671,6 +645,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .hasLabelWidth {
   text-align: right;
+}
+.kshf .aggr {
+  display: block;
+  position: absolute;
+  background-color: #b8c7d2;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+}
+.kshf .aggr.active {
+  cursor: pointer;
+  pointer-events: all;
+}
+.kshf .aggr.total {
+  background-color: #dee2e6;
+  pointer-events: none;
+}
+.kshf .aggr.preview {
+  background-color: #ff6a33;
+  pointer-events: none;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+}
+.kshf .aggr.preview[fast] {
+  -webkit-transition: -webkit-transform 200ms ease-in-out;
+  -moz-transition: -moz-transform 200ms ease-in-out;
+  -o-transition: -o-transform 200ms ease-in-out;
+  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+}
+.kshf .aggr.compare {
+  background-color: #2f4f4f;
+  pointer-events: none;
+  -webkit-transition: opacity 400ms ease-in-out, -webkit-transform 200ms ease-in-out;
+  -moz-transition: opacity 400ms ease-in-out, -moz-transform 200ms ease-in-out;
+  -o-transition: opacity 400ms ease-in-out, -o-transform 200ms ease-in-out;
+  transition: opacity 400ms ease-in-out,-webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+  opacity: 0;
 }
 .kshf .kshfChart {
   display: block;
@@ -919,19 +935,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 18px;
   font-size: 0.7em;
   pointer-events: none;
+  padding-right: 1px;
+  text-align: right;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .aggr_Group {
   display: inline-block;
   vertical-align: top;
   position: relative;
   pointer-events: none;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup .bar {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .aggr_Group .aggr {
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
   top: 4px;
   width: 1px;
   height: 10px;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup .bar.total_tip {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .aggr_Group .aggr.total_tip {
   right: -5px;
   /* right arrow */
   border-top: 5px solid transparent;
@@ -954,7 +977,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     background-size: 8px 8px;
                                     */
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .barGroup .bar.preview_compare {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .aggr_Group .aggr.compare {
   width: 1px;
   height: 5px;
 }
@@ -983,7 +1006,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:hover {
   color: gray;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] .item_count {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] .measureLabel {
   visibility: hidden;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[compare="true"] > .attribLabel > .theLabel {
@@ -1038,7 +1061,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] {
   color: gray;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] .item_count {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] .measureLabel {
   display: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval {
@@ -1063,13 +1086,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group {
   position: absolute;
   display: block;
   height: 100%;
   pointer-events: none;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .aggr {
   width: 1px;
   height: 1px;
   -webkit-transform-origin: 0% 100%;
@@ -1078,7 +1101,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .bar.total_tip {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .aggr.total_tip {
   content: " ";
   display: block;
   position: absolute;
@@ -1092,12 +1115,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-repeat: repeat;
   background-size: 8px 8px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .compareButton {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .compareButton {
   position: absolute;
   width: 100%;
   text-align: center;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin > .item_count {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
   top: 1px;
   display: block;
   position: relative;
@@ -1111,37 +1134,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin[noitems=true] > .item_count {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group[noitems=true] > .measureLabel {
   display: none;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .bin[highlight=true] > .item_count {
-  color: orangered;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure {
   top: 0px;
   width: 100%;
   height: 100%;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .percentSign {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .percentSign {
   bottom: 0px;
   left: 0px;
   width: 20px;
   text-align: right;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .background {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .background {
   width: 20px;
   height: calc(88%);
   top: -6px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .tick {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick {
   width: 100%;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .tick > .line {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick > .line {
   border-bottom: dotted 1px #b6b3b3;
   width: 100%;
   left: 0px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartScaleAxis > .tick > .text {
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick > .text {
   width: 20px;
   left: -22px;
   text-align: right;
@@ -1216,60 +1236,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup > .quantile.q_10_90 {
   background-color: #f3fcfb;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup {
-  cursor: default;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider {
   position: relative;
-  height: 15px;
-  margin-top: -1px;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .unitName {
-  font-size: 0.7em;
-  left: -27px;
-  width: 15px;
-  position: absolute;
-  text-align: right;
-  font-weight: 300;
-  /*
-                        &::after{
-                            content: "]";
-                        }
-                        &::before{
-                            content: "[";
-                        }*/
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick {
-  position: absolute;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick > .text {
-  font-size: 0.7em;
-  font-weight: 300;
-  position: relative;
-  left: -50%;
-  display: block;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .labelGroup > .tick > .line {
-  position: absolute;
-  top: -9px;
-  height: 10px;
-  border-left: solid 1px gray;
-  display: block;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider {
-  position: relative;
-  height: 10px;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine {
+  height: 11px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue {
   position: absolute;
   z-index: 20;
-  top: 1px;
+  top: 2px;
   display: none;
   -webkit-transition: all 250ms ease-out;
   -moz-transition: all 250ms ease-out;
   -o-transition: all 250ms ease-out;
   transition: all 250ms ease-out;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue > .circlee {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .circlee {
   display: block;
   border-radius: 20px;
   width: 8px;
@@ -1278,7 +1262,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: -4px;
   position: relative;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue > .selected-item-value-text {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text {
   position: relative;
   top: -2px;
   color: orangered;
@@ -1286,13 +1270,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   white-space: nowrap;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .selectedItemValue > .selected-item-value-text > .selected-item-value-text-v {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text > .selected-item-value-text-v {
   position: relative;
   left: -50%;
   background-color: rgba(255, 255, 255, 0.5);
   font-size: 0.9em;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base {
   display: block;
   position: absolute;
   box-shadow: inset 0px 0px 2px gray;
@@ -1302,27 +1286,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.total {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.total {
   height: 3px;
   top: 3px;
   cursor: pointer;
   background-color: lightgray;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active {
   height: 8px;
   top: 1px;
   width: 1px;
   display: none;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active[filtered=true] {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
   display: block;
   cursor: col-resize;
   background-color: #30b8c4;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .base.active:hover {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle {
   display: block;
   position: absolute;
   width: 6px;
@@ -1335,86 +1319,81 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 10;
   top: 1px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle:hover {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle:hover {
   background-color: orangered !important;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.min {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.min {
   left: -5px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.max {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.max {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle > .invalidArea {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle > .invalidArea {
   position: relative;
   display: block;
   background-color: lightgray;
   opacity: 0.3;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.min > .invalidArea {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.min > .invalidArea {
   border-right: double 3px black;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider > .handle.max > .invalidArea {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.max > .invalidArea {
   border-left: double 3px black;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[filtered=false] span.invalidArea {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[filtered=false] span.invalidArea {
   display: none;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .base {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[anim=true] > .base {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .rangeSlider[anim=true] > .handle {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[anim=true] > .handle {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf .kshfChart > .wrapper .bar {
-  display: block;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
+  cursor: default;
+  position: relative;
+  height: 15px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .unitName {
+  font-size: 0.7em;
+  left: -27px;
+  width: 15px;
   position: absolute;
-  background-color: #b8c7d2;
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
+  text-align: right;
+  font-weight: 300;
+  /*
+                            &::after{
+                                content: "]";
+                            }
+                            &::before{
+                                content: "[";
+                            }*/
 }
-.kshf .kshfChart > .wrapper .bar.active {
-  cursor: pointer;
-  pointer-events: all;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick {
+  position: absolute;
 }
-.kshf .kshfChart > .wrapper .bar.total {
-  background-color: #dee2e6;
-  pointer-events: none;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .text {
+  font-size: 0.7em;
+  font-weight: 300;
+  position: relative;
+  left: -50%;
+  display: block;
 }
-.kshf .kshfChart > .wrapper .bar.preview {
-  background-color: #ff6a33;
-  pointer-events: none;
-  -webkit-transform: scaleX(0);
-  -moz-transform: scaleX(0);
-  -o-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  transform: scaleX(0);
-}
-.kshf .kshfChart > .wrapper .bar.preview[fast] {
-  -webkit-transition: -webkit-transform 200ms ease-in-out;
-  -moz-transition: -moz-transform 200ms ease-in-out;
-  -o-transition: -o-transform 200ms ease-in-out;
-  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
-}
-.kshf .kshfChart > .wrapper .bar.preview_compare {
-  background-color: #2f4f4f;
-  pointer-events: none;
-  -webkit-transition: opacity 400ms ease-in-out, -webkit-transform 200ms ease-in-out;
-  -moz-transition: opacity 400ms ease-in-out, -moz-transform 200ms ease-in-out;
-  -o-transition: opacity 400ms ease-in-out, -o-transform 200ms ease-in-out;
-  transition: opacity 400ms ease-in-out,-webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
-  opacity: 0;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
+  position: absolute;
+  top: -9px;
+  height: 10px;
+  border-left: solid 1px gray;
+  display: block;
 }
 .kshf .kshfChart .subFacets {
   position: relative;
@@ -1474,9 +1453,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
-.kshf .kshfChart[removeinactiveattrib=true] .kshf .kshfChart[noitems=true] {
-  display: none;
-}
 .kshf .kshfChart[refreshSorting="true"] .sortButton:before {
   content: "\f175" !important;
 }
@@ -1503,13 +1479,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .belowAttribs .border_line {
   opacity: 0.6;
 }
-.kshf .belowAttribs > .chartScaleAxis > .percentSign {
+.kshf .belowAttribs > .chartAxis_Measure > .percentSign {
   right: 2px;
 }
-.kshf .belowAttribs > .chartScaleAxis > .background {
+.kshf .belowAttribs > .chartAxis_Measure > .background {
   height: 15px;
 }
-.kshf .belowAttribs > .chartScaleAxis > .tick > .text {
+.kshf .belowAttribs > .chartAxis_Measure > .tick > .text {
   width: 20px;
   left: -10px;
   top: 2px;
@@ -1518,7 +1494,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: top 700ms ease-in-out;
   transition: top 700ms ease-in-out;
 }
-.kshf .belowAttribs > .chartScaleAxis > .tick > .line {
+.kshf .belowAttribs > .chartAxis_Measure > .tick > .line {
   width: 0px;
   border-left: dotted 1px #b6b3b3;
   -webkit-transition: top 700ms ease-in-out, height 700ms ease-in-out;
@@ -1526,8 +1502,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: top 700ms ease-in-out, height 700ms ease-in-out;
   transition: top 700ms ease-in-out, height 700ms ease-in-out;
 }
-.kshf .item_count {
+.kshf .measureLabel {
   color: #969da3;
+}
+.kshf[resultpreview="true"] .measureLabel {
+  color: orangered;
 }
 .kshf .selectVertLine {
   display: inline-block;
@@ -1685,7 +1664,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   margin-right: 2px;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .item_count {
+.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .measureLabel {
   font-size: 0.6em;
   vertical-align: middle;
 }

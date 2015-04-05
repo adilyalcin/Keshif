@@ -64,33 +64,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .box-sizing(border-box);  
     }
     &[hidebars=true] .kshf {
-        .attrib .barGroup{ display:none; }
+        .attrib .aggr_Group{ display:none; }
     }
     &[hidebaraxis=true] {
         .facetCategorical{
-            .chartScaleAxis{ display:none; }
+            .chartAxis_Measure{ display:none; }
             .barChartMainInfo{ display:none; }
         }
     }
     &[noanim=false]{
-        .bar{
+        .aggr{
             .transition(@bar_animation);
         }
-        .histogram .barGroup_Active{
-            .transition(@bar_animation);
-        }
-        .chartScaleAxis span.tick{
-            .transition(@bar_animation);
-        }
-        .facetInterval .histogram .bin{
-            .transition(@bar_animation);
+        .chartAxis_Measure .tick{
+            .transition(~'transform 500ms ease-out');
         }
         .attrib{
             .transition(~'all 700ms ease-in-out');
         }
     }
     &[percentview=true]{
-        .chartScaleAxis {
+        .chartAxis_Measure {
             > .percentSign::after{
                 content: "%";
             }
@@ -99,13 +93,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
-    &[resultpreview="true"]{
-        .item_count{
-            color: rgb(232, 67, 6);
-        }
-    }
     &[previewcompare="true"]{
-        .preview_compare{
+        .compare{
             opacity: 1 !important;
         }
 /*        .attrib .preview{
@@ -377,13 +366,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-right: 2px;
     }
     .attrib{
-        > .barGroup > .bar{
-            .transform-origin(0%, 0%);
-        }
-        > .item_count_wrapper{
-            padding-right: 1px;
-            text-align: right;
-        }
         // add background to the text area when an item is selected
         &:not([selected="0"]) {
             .attribLabel{
@@ -485,7 +467,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover { stroke: orangered; }
     }
 
-    .chartScaleAxis {
+    .chartAxis_Measure {
         pointer-events: none;
         position:absolute;
         z-index: 2;
@@ -653,6 +635,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .hasLabelWidth{
         text-align: right;
+    }
+
+    .aggr{
+        display: block;
+        position: absolute;
+        background-color: @color_bars;
+        .transform-origin(0% 0%);
+        &.active{
+            cursor: pointer;
+            pointer-events: all;
+        }
+        &.total{
+            background-color: @color_bars_background;
+            pointer-events: none;
+        }
+        &.preview{
+            background-color: @color_related;
+            pointer-events: none;
+            .transform(~'scaleX(0)');
+            &[fast]{
+                .transition(~'transform 200ms ease-in-out');
+            }
+        }
+        &.compare{
+            background-color: @color_preview_compare;
+            pointer-events: none;
+            .transition(~'opacity 400ms ease-in-out, transform 200ms ease-in-out');
+            opacity: 0;
+        }
     }
 
     .kshfChart{
@@ -911,14 +922,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             
                             font-size: 0.7em;
                             pointer-events: none;
+
+                            padding-right: 1px;
+                            text-align: right;
                         }
-                        > .barGroup{
+                        > .aggr_Group{
                             display: inline-block;
                             vertical-align: top;
                             pointer-events: none;
                             position: relative;
                             pointer-events: none;
-                            .bar{
+                            .aggr{
+                                .transform-origin(0%, 0%);
                                 top: 4px;
                                 width: 1px;
                                 height: 10px;
@@ -945,7 +960,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     background-size: 8px 8px;
                                     */
                                 }
-                                &.preview_compare{
+                                &.compare{
                                     width: 1px;
                                     height: 5px;
                                 }
@@ -977,7 +992,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         
                         &[activeItems='0'] {
-                            .item_count{
+                            .measureLabel{
                                 visibility: hidden;
                             }
                         }
@@ -1052,7 +1067,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         &[noitems=true] {
                             color:gray;
-                            .item_count{ display: none; }
+                            .measureLabel{ display: none; }
                         }
                     } // .attrib
                 } // .attribGroup
@@ -1076,12 +1091,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         z-index: 3;
                         height: 100%;
                         .transition(@layout_animation);
-                        > .bin{
+                        > .aggr_Group{
                             position: absolute;
                             display: block;
                             height: 100%;
                             pointer-events: none;
-                            > .bar{
+                            > .aggr{
                                 width: 1px;
                                 height: 1px;
                                 .transform-origin(0% 100%);
@@ -1108,7 +1123,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 width: 100%;
                                 text-align: center;
                             }
-                            > .item_count{
+                            > .measureLabel{
                                 top: 1px;
                                 display: block;
                                 position: relative;
@@ -1120,16 +1135,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 .transition(~'transform 700ms ease-in-out');
                             }
                             &[noitems=true] {
-                                > .item_count{ display: none; }
-                            }
-                            &[highlight=true]{
-                                > .item_count{
-                                    color: orangered;
-                                }
+                                > .measureLabel{ display: none; }
                             }
                         }
                     }
-                    > .chartScaleAxis {
+                    > .chartAxis_Measure {
                         top: 0px;
                         width: 100%;
                         height: 100%;
@@ -1225,187 +1235,159 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 } // percentileGroup
-                > .labelGroup{
-                    cursor: default;
+                > .intervalSlider{
                     position:relative;
-                    height: 15px;
-                    margin-top: -1px;
-                    > .unitName{
-                        font-size: 0.7em;
-                        left: -27px;
-                        width: 15px;
-                        position: absolute;
-                        //top: -1px;
-                        text-align: right;
-                        font-weight: 300;/*
-                        &::after{
-                            content: "]";
-                        }
-                        &::before{
-                            content: "[";
-                        }*/
-                    }
-                    > .tick{
-                        position:absolute;
-                        > .text{
-                            font-size: 0.7em;
-                            font-weight: 300;
-                            position: relative;
-                            left: -50%;
-                            display: block;
-                        }
-                        > .line{
-                            position: absolute;
-                            top: -9px;
-                            height: 10px;
-                            border-left: solid 1px gray;
-                            display: block;
-                        }
-                    }
-                } // labelGroup
-                > .rangeSlider{
-                    position:relative;
-                    height: 10px;
                     pointer-events: all;
-                    > .selectedItemValue{
-                        position:absolute;
-                        z-index: 20;
-                        top: 1px;
-                        display: none;
-                        .transition(~'all 250ms ease-out');
-                        > .circlee{
-                            display: block;
-                            border-radius: 20px;
-                            width: 8px;
-                            height: 8px;
-                            background-color: orangered;
-                            left: -4px;
-                            position: relative;
-                        }
-                        > .selected-item-value-text{
-                            position: relative;
-                            top: -2px;
-                            color: orangered;
-                            text-shadow: 0px 0px 2px white;
-                            font-size: 0.8em;
-                            white-space: nowrap;
-                            > .selected-item-value-text-v{
-                                position: relative;
-                                left: -50%;
-                                background-color: rgba(255,255,255, 0.5);
-                                font-size: 0.9em;
-                            }
-                        }
-                    }
-                    > .base{
-                        display: block;
-                        position: absolute;
-                        box-shadow: inset 0px 0px 2px gray;
-                        .transform-origin(0% 0%);
-                        &.total{
-                            height: 3px;
-                            top: 3px;
-                            cursor: pointer;
-                            background-color: lightgray;
-                        }
-                        &.active{
-                            height: 8px;
-                            top: 1px;
-                            width:1px;
-                            display:none;
-                            &[filtered=true]{
+                    > .controlLine {
+                        height: 11px;
+                        > .selectedItemValue{
+                            position:absolute;
+                            z-index: 20;
+                            top: 2px;
+                            display: none;
+                            .transition(~'all 250ms ease-out');
+                            > .circlee{
                                 display: block;
-                                cursor: col-resize;
-                                background-color: @color_filtered;
+                                border-radius: 20px;
+                                width: 8px;
+                                height: 8px;
+                                background-color: orangered;
+                                left: -4px;
+                                position: relative;
                             }
+                            > .selected-item-value-text{
+                                position: relative;
+                                top: -2px;
+                                color: orangered;
+                                text-shadow: 0px 0px 2px white;
+                                font-size: 0.8em;
+                                white-space: nowrap;
+                                > .selected-item-value-text-v{
+                                    position: relative;
+                                    left: -50%;
+                                    background-color: rgba(255,255,255, 0.5);
+                                    font-size: 0.9em;
+                                }
+                            }
+                        }
+                        > .base{
+                            display: block;
+                            position: absolute;
+                            box-shadow: inset 0px 0px 2px gray;
+                            .transform-origin(0% 0%);
+                            &.total{
+                                height: 3px;
+                                top: 3px;
+                                cursor: pointer;
+                                background-color: lightgray;
+                            }
+                            &.active{
+                                height: 8px;
+                                top: 1px;
+                                width:1px;
+                                display:none;
+                                &[filtered=true]{
+                                    display: block;
+                                    cursor: col-resize;
+                                    background-color: @color_filtered;
+                                }
+                                &:hover{
+                                    background-color: orangered !important;
+                                }
+                            }
+                        }
+                        > .handle{
+                            display:block;
+                            position:absolute;
+                            width:6px;
+                            height:8px;
+                            background-color: white;
+                            border-width: 1px;
+                            border-color: black;
+                            border-style: solid;
+                            cursor: ew-resize;
+                            z-index: 10;
+                            top:1px;
                             &:hover{
                                 background-color: orangered !important;
                             }
+                            &.min{
+                                left: -5px;
+                                border-top-left-radius: 10px;
+                                border-bottom-left-radius: 10px;
+                            }
+                            &.max{
+                                border-top-right-radius: 10px;
+                                border-bottom-right-radius: 10px;
+                            }
+                            > .invalidArea{
+                                position: relative;
+                                display: block;
+                                background-color: lightgray;
+                                opacity: 0.3;
+                            }
+                            &.min > .invalidArea{
+                                border-right: double 3px black;
+                            }
+                            &.max > .invalidArea{
+                                border-left: double 3px black;
+                            }
+                        }
+                        &[filtered=false]{
+                            span.invalidArea{
+                                display: none;
+                            }
+                        }
+                        &[anim=true]{
+                            > .base {
+                                .transition(@bar_animation);
+                            }
+                            > .handle{
+                                .transition(@bar_animation);
+                            }
                         }
                     }
-                    > .handle{
-                        display:block;
-                        position:absolute;
-                        width:6px;
-                        height:8px;
-                        background-color: white;
-                        border-width: 1px;
-                        border-color: black;
-                        border-style: solid;
-                        cursor: ew-resize;
-                        z-index: 10;
-                        top:1px;
-                        &:hover{
-                            background-color: orangered !important;
+                    > .labelGroup{
+                        cursor: default;
+                        position:relative;
+                        height: 15px;
+                        > .unitName{
+                            font-size: 0.7em;
+                            left: -27px;
+                            width: 15px;
+                            position: absolute;
+                            //top: -1px;
+                            text-align: right;
+                            font-weight: 300;/*
+                            &::after{
+                                content: "]";
+                            }
+                            &::before{
+                                content: "[";
+                            }*/
                         }
-                        &.min{
-                            left: -5px;
-                            border-top-left-radius: 10px;
-                            border-bottom-left-radius: 10px;
+                        > .tick{
+                            position:absolute;
+                            > .text{
+                                font-size: 0.7em;
+                                font-weight: 300;
+                                position: relative;
+                                left: -50%;
+                                display: block;
+                            }
+                            > .line{
+                                position: absolute;
+                                top: -9px;
+                                height: 10px;
+                                border-left: solid 1px gray;
+                                display: block;
+                            }
                         }
-                        &.max{
-                            border-top-right-radius: 10px;
-                            border-bottom-right-radius: 10px;
-                        }
-                        > .invalidArea{
-                            position: relative;
-                            display: block;
-                            background-color: lightgray;
-                            opacity: 0.3;
-                        }
-                        &.min > .invalidArea{
-                            border-right: double 3px black;
-                        }
-                        &.max > .invalidArea{
-                            border-left: double 3px black;
-                        }
-                    }
-                    &[filtered=false]{
-                        span.invalidArea{
-                            display: none;
-                        }
-                    }
-                    &[anim=true]{
-                        > .base {
-                            .transition(@bar_animation);
-                        }
-                        > .handle{
-                            .transition(@bar_animation);
-                        }
-                    }
-                } // rangeSlider
+                    } // labelGroup
+                } // intervalSlider
 
             } // facetInterval
-
-            .bar{
-                display: block;
-                position: absolute;
-                background-color: @color_bars;
-                .transform-origin(0% 0%);
-                &.active{
-                    cursor: pointer;
-                    pointer-events: all;
-                }
-                &.total{
-                    background-color: @color_bars_background;
-                    pointer-events: none;
-                }
-                &.preview{
-                    background-color: @color_related;
-                    pointer-events: none;
-                    .transform(~'scaleX(0)');
-                    &[fast]{
-                        .transition(~'transform 200ms ease-in-out');
-                    }
-                }
-                &.preview_compare {
-                    background-color: @color_preview_compare;
-                    pointer-events: none;
-                    .transition(~'opacity 400ms ease-in-out, transform 200ms ease-in-out');
-                    opacity: 0;
-                }
-            }
-        } // wrapperitem_count_wrapper
+        } // 
 
         .subFacets {
             position:relative;
@@ -1492,10 +1474,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display:inline-block;
         }
 
-        &[removeinactiveattrib=true] &[noitems=true] {
-            display: none;
-        }
-
         &[refreshSorting="true"]{
             .sortButton:before{
                 content: "\f175" !important;
@@ -1532,7 +1510,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-
     }// kshfChart
 
     .belowAttribs{
@@ -1541,7 +1518,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .border_line{
             opacity: 0.6;
         }
-        > .chartScaleAxis {
+        > .chartAxis_Measure {
             > .percentSign{
                 right: 2px;
             }
@@ -1564,10 +1541,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .item_count{
+    .measureLabel{
         color: @color_item_count;
-        //&::before{ content: "("; }
-        //&::after{ content: ")"; }
+    }
+    &[resultpreview="true"] .measureLabel{
+        color: orangered;
     }
 
     .selectVertLine {
@@ -1716,7 +1694,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         cursor: pointer;
                         margin-right: 2px;
                     }
-                    > .item_count{
+                    > .measureLabel{
                         font-size: 0.6em;
                         vertical-align: middle;
                     }
