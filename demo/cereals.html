@@ -75,7 +75,10 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [ {name: 'Rating', label: function(d){ return d.data[15].toPrecision(4)}} ],
+            sortingOpts : [ 
+                {name: 'Rating', label: function(d){ return d.data[15].toPrecision(4)}},
+                {name: 'Calories', label: function(d){ return d.data[3].toPrecision(4)}}
+            ],
             textSearch: 'Name',
             contentFunc: function(d){ return d.data[0]; }
         }
@@ -86,9 +89,6 @@ google.setOnLoadCallback(function(){
             #chart_div {
                 width: 1000px;
                 height: 650px;
-            }
-            #chart_div div.listItem{
-                max-height: 20px;
             }
         </style>
     </head>

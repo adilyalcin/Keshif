@@ -31,7 +31,7 @@ $(document).ready( function(){
 
     logIf.Check = logIf.All();
 
-	new kshf.Browser({
+	browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Winners",
         categoryTextWidth: 190,
@@ -85,10 +85,10 @@ $(document).ready( function(){
             },{
                 facetTitle: "Year",
                 catItemMap : function(prize){
-                    return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD"));
+                    return prize.data[prizeCols['Year']];
                 },
-                intervalScale: 'time',
-                layout: 'bottom'
+                layout: 'bottom',
+                intervalScale: 'step', stepSize: 5
             }
         ],
         itemDisplay: {

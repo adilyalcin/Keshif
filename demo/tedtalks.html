@@ -14,6 +14,7 @@
 
         <script type="text/javascript">
 
+// For retrieving data from source Ted Talks pages, you can use this function.
 var getData = function(){
     var logStr="";
     for(var i=1; i<=49;i++){
@@ -87,6 +88,8 @@ google.setOnLoadCallback(function(){
                 }
             },{ facetTitle: "Feelings"
             },{ facetTitle: "Views", intervalScale: 'log'
+            },{
+                facetTitle: "Speaker"
             },{ facetTitle: "Date", layout: 'bottom',
                 intervalScale: 'time'
             }

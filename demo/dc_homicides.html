@@ -93,7 +93,9 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [ { name: 'id' } ],
+            sortingOpts : [ { name: 'Year', value: function(d){
+                if(d.data.incident_date.getFullYear()>=2000) return d.data.incident_date.getFullYear();
+            } } ],
             autoExpandMore: true,
             detailsToggle : "Zoom",
             contentFunc : function(d){
