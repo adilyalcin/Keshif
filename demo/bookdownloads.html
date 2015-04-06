@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Download Times of the book D3 Tips and Tricks</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+var demoID = 117;
+
+$(document).ready( function(){
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Downloads",
+        categoryTextWidth: 250,
+        barChartWidth: 100,
+        source: { 
+            url: "http://bl.ocks.org/d3noob/a0cbcddc6bf0eb9569fe",
+        callback : function(browser){
+            browser.primaryTableName = "Downloads";
+
+            kshf.dt.Downloads = [];
+            var arr = kshf.dt.Downloads;
+
+            $.ajax({
+                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+                // url: "./data_private/dc_homicides.json", // original source
+                url: "./data/bookdownloads.json",
+                error: function(e,f){ console.log("ERROR: "+e+" - "+f); },
+                success: function(data){
+                    var id=0;
+                    data.forEach(function(download){
+                        var i = {'id':id++};
+                        i.downloadTime = moment(download, "YYYY-MM-DD HH:mm:ss");
+                        arr.push(new kshf.Item(i,"id"));
+                    });
+
+                    browser.items = arr;
+                    browser.itemsSelectedCt = arr.length;
+
+                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                    d3.select(".kshf.layout_infobox div.status_text div").text("");
+                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                }
+            });
+        }},
+        facets: [
+            {
+                facetTitle: "Hour", layout: 'bottom',
+                catItemMap: function(d){
+                    return d.data.downloadTime.hour();
+                },
+                intervalScale: 'step',
+                intervalTickFormat: function(d){
+                    return d3.format("d")(d)+":00";
+                }
+            },{
+                facetTitle: "Time", layout: 'bottom',
+                catItemMap: function(d){ return new Date(d.data.downloadTime);}
+            },{
+                facetTitle: "Day",
+                catItemMap: function(d){
+                    return d.data.downloadTime.day();
+                },
+                catLabelText: function(v){
+                    switch(v.data[1]){
+                        case 0: return "Sunday";
+                        case 1: return "Monday";
+                        case 2: return "Tuesday";
+                        case 3: return "Wednesday";
+                        case 4: return "Thursday";
+                        case 5: return "Friday";
+                        case 6: return "Saturday";
+                    }
+                },
+                sortingOpts: [{
+                    no_resort: true,
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
+                }]
+            },{
+                facetTitle: "Month", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.downloadTime.month();
+                },
+                catLabelText: function(v){
+                    switch(v.data[1]){
+                        case 0:  return "January";
+                        case 1:  return "February";
+                        case 2:  return "March";
+                        case 3:  return "April";
+                        case 4:  return "May";
+                        case 5:  return "June";
+                        case 6:  return "July";
+                        case 7:  return "August";
+                        case 8:  return "September";
+                        case 9:  return "October";
+                        case 10: return "November";
+                        case 11: return "December";
+                    }
+                },
+                sortingOpts: [{
+                    no_resort: true,
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
+                }]
+            },{
+                facetTitle: "Year",
+                catItemMap: function(d){
+                    return d.data.downloadTime.year();
+                },
+                type: 'categorical',
+                sortingOpts: [{
+                    no_resort: true,
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
+                }]
+            }
+        ],
+    });
+});
+
+</script>
+    <style>
+        #chart_div {
+            width:850px;
+            height:700px;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
+            <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
