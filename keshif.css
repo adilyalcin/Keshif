@@ -76,12 +76,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
-.kshf[previewcompare="true"] {
-  /*        .attrib .preview{
-            top: 9px !important;
-            height: 4px !important;
-        }*/
-}
 .kshf[previewcompare="true"] .compare {
   opacity: 1 !important;
 }
@@ -1068,6 +1062,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 7px 6px 0px 6px;
   overflow: hidden;
 }
+.kshf .kshfChart > .wrapper > .facetInterval[istime="true"] span.aggr {
+  opacity: 0 !important;
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram {
   position: relative;
   pointer-events: all;
@@ -1075,6 +1072,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.total {
+  fill: #EEF0F2;
+  stroke: none;
+  stroke-width: 1.5px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.active {
+  fill: #d7e0e6;
+  stroke: #b8c7d2;
+  stroke-width: 1.5px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .activeLine {
+  stroke: #b8c7d2;
+  stroke-width: 2px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.preview {
+  fill: none;
+  stroke: #ff4500;
+  stroke-width: 2px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.compare {
+  fill: none;
+  stroke: #2f4f4f;
+  stroke-width: 1.5px;
+  opacity: 0;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins {
   position: absolute;
@@ -1241,7 +1268,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine {
-  height: 11px;
+  height: 12px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue {
   position: absolute;
@@ -1361,7 +1388,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
   cursor: default;
   position: relative;
-  height: 15px;
+  height: 30px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .unitName {
   font-size: 0.7em;
@@ -1387,10 +1414,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   left: -50%;
   display: block;
+  text-align: center;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
-  top: -9px;
+  top: -11px;
   height: 10px;
   border-left: solid 1px gray;
   display: block;
@@ -1507,6 +1535,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[resultpreview="true"] .measureLabel {
   color: orangered;
+}
+.kshf[resultpreview="true"] .lineTrend.preview {
+  opacity: 1 !important;
 }
 .kshf .selectVertLine {
   display: inline-block;

@@ -97,10 +97,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .compare{
             opacity: 1 !important;
         }
-/*        .attrib .preview{
-            top: 9px !important;
-            height: 4px !important;
-        }*/
     }
 
     .compareButton{
@@ -1076,12 +1072,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .facetInterval {
                 padding: 7px 6px 0px 6px;
                 overflow: hidden;
+                &[istime="true"]{
+                    span.aggr{
+                        opacity: 0 !important;
+                    }
+                }
                 > .histogram{
                     position:relative;
                     pointer-events: all;
 //                    overflow-x: hidden;
 //                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
+                    > .timeSVG{
+                        .lineTrend.total{
+                            fill: #EEF0F2;
+                            stroke: none;
+                            stroke-width: 1.5px;
+                        }
+                        .lineTrend.active{
+                            fill: lighten(@color_bars, 10%);
+                            stroke: @color_bars;
+                            stroke-width: 1.5px;
+                        }
+                        .activeLine{
+                            stroke: @color_bars;
+                            stroke-width: 2px;
+                        }
+                        .lineTrend.preview{
+                            fill: none;
+                            stroke: @color_bar_preview;
+                            stroke-width: 2px;
+                            opacity: 0;
+                            .transition(~'opacity 500ms linear');
+                        }
+                        .lineTrend.compare{
+                            fill: none;
+                            stroke: @color_preview_compare;
+                            stroke-width: 1.5px;
+                            opacity: 0;
+                        }
+                    }
                     > .bins{
                         position: absolute;
                         top: 0px;
@@ -1239,7 +1269,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     position:relative;
                     pointer-events: all;
                     > .controlLine {
-                        height: 11px;
+                        height: 12px;
                         > .selectedItemValue{
                             position:absolute;
                             z-index: 20;
@@ -1350,7 +1380,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .labelGroup{
                         cursor: default;
                         position:relative;
-                        height: 15px;
+                        height: 30px;
                         > .unitName{
                             font-size: 0.7em;
                             left: -27px;
@@ -1374,10 +1404,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 position: relative;
                                 left: -50%;
                                 display: block;
+                                text-align: center;
                             }
                             > .line{
                                 position: absolute;
-                                top: -9px;
+                                top: -11px;
                                 height: 10px;
                                 border-left: solid 1px gray;
                                 display: block;
@@ -1546,6 +1577,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[resultpreview="true"] .measureLabel{
         color: orangered;
+    }
+
+    &[resultpreview="true"]{
+        .lineTrend.preview{
+            opacity: 1 !important;
+        }
     }
 
     .selectVertLine {

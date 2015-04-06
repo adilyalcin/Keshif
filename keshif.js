@@ -308,6 +308,21 @@ kshf.Util = {
         dom.style.OTransform = transform;
         dom.style.transform = transform;
     },
+    // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+    ordinal_suffix_of: function(i) {
+        var j = i % 10,
+            k = i % 100;
+        if (j == 1 && k != 11) {
+            return i + "st";
+        }
+        if (j == 2 && k != 12) {
+            return i + "nd";
+        }
+        if (j == 3 && k != 13) {
+            return i + "rd";
+        }
+        return i + "th";
+    },
 };
 
 kshf.Summary_Base = {
@@ -4112,6 +4127,10 @@ kshf.Facet_Categorical.prototype = {
                     this.textContent = "";
                 } else {
                     if(me.browser.ratioModeActive){
+                        if(!me.browser.resultPreviewActive){
+                            this.textContent = "";
+                            return;
+                        }
                         p = 100*p/attrib.aggregate_Active;
                     } else {
                         p = 100*p/me.browser.itemsWantedCount;
@@ -5011,7 +5030,7 @@ kshf.Facet_Categorical.prototype = {
 
                 // 3. Make items appear
                 setTimeout(function(){
-                    if(me.attribCount_NowVisible>0){
+                    if(me.attribCount_NowVisible>=0){
                         me.dom.attribs.each(function(attrib){
                             if(attrib.isVisible && !attrib.isVisible_before){
                                 this.style.opacity = 1;
@@ -5102,7 +5121,7 @@ kshf.Facet_Interval = function(kshf_, options){
     // Maximim possible histogram height
     this.height_hist_max = 100;
     // Slider height
-    this.height_slider = 11;
+    this.height_slider = 12;
     // Height for labels
     this.height_labels = 15;
     // Height for percentile chart
@@ -5197,7 +5216,9 @@ kshf.Facet_Interval = function(kshf_, options){
     this.facetFilter = this.intervalFilter;
 
     var filterId = this.intervalFilter.id;
+    
     this.hasFloat = false;
+    this.hasTime  = false;
 
     this.filteredItems.forEach(function(item){
         var v=this.options.catItemMap(item);
@@ -5382,6 +5403,13 @@ kshf.Facet_Interval.prototype = {
             .style("margin-left",(this.vertAxisLabelWidth)+"px")
             ;
 
+        if(this.options.intervalScale==='time') {
+            this.dom.timeSVG = this.dom.histogram.append("svg")
+                .style("margin-left",(this.vertAxisLabelWidth)+"px")
+                .attr("class","timeSVG")
+                .attr("xmlns","http://www.w3.org/2000/svg");
+        }
+
         kshf.Summary_Base.insertChartAxis_Measure.call(this, this.dom.histogram, 'w', 'nw');
         this.dom.chartAxis_Measure.style("padding-left",(this.vertAxisLabelWidth-2)+"px")
 
@@ -5453,58 +5481,170 @@ kshf.Facet_Interval.prototype = {
         this.dom.facetInterval.style("width",this.getWidth()+"px");
         this.intervalRange.width=w;
 
-        this.optimalTickCount = Math.floor(this.intervalRange.width/this.options.optimumTickWidth);
+        if(this.dom.timeSVG)
+            this.dom.timeSVG.style("width",(this.intervalRange.width+2)+"px")
+        var optimalTickCount = Math.floor(this.intervalRange.width/this.options.optimumTickWidth);
 
         // UPDATE intervalScale
         switch(this.options.intervalScale){
             case 'linear':
             case 'step':
             case 'percentage':
-                this.intervalScale = d3.scale.linear(); break;
+                this.valueScale = d3.scale.linear(); break;
             case 'log':
-                this.intervalScale = d3.scale.log().base(2); break;
+                this.valueScale = d3.scale.log().base(2); break;
             case 'time':
-                this.intervalScale = d3.time.scale.utc(); break;
+                this.valueScale = d3.time.scale.utc(); break;
         }
-        this.intervalScale
+        this.valueScale
             .domain([this.intervalRange.min, this.intervalRange.max])
-            .range([0, this.intervalRange.width])
-            .clamp(true);
-        if(this.options.intervalScale!=='step'){
-            this.intervalScale.nice(this.optimalTickCount);
+            .range([0, this.intervalRange.width]);
+
+        var ticks;
+
+        // HANDLE TIME CAREFULLY
+        if(this.options.intervalScale==='time') {
+            this.dom.facetInterval.attr("istime",true);
+
+            // 1. Find the appropriate aggregation interval (day, month, etc)
+            var timeRange = this.intervalRange.max-this.intervalRange.min; // in milliseconds
+            var timeInterval;
+            var timeIntervalStep = 1;
+            optimalTickCount = optimalTickCount*2;
+            if((timeRange/1000) < optimalTickCount){
+                timeInterval = d3.time.second.utc;
+                this.intervalTickFormat = d3.time.format.utc("%S");
+            } else if((timeRange/(1000*5)) < optimalTickCount){
+                timeInterval = d3.time.second.utc;
+                timeIntervalStep = 5;
+                this.intervalTickFormat = d3.time.format.utc("%-S");
+            } else if((timeRange/(1000*15)) < optimalTickCount){
+                timeInterval = d3.time.second.utc;
+                timeIntervalStep = 15;
+                this.intervalTickFormat = d3.time.format.utc("%-S");
+            } else if((timeRange/(1000*60)) < optimalTickCount){
+                timeInterval = d3.time.minute.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%-M");
+            } else if((timeRange/(1000*60*5)) < optimalTickCount){
+                timeInterval = d3.time.minute.utc;
+                timeIntervalStep = 5;
+                this.intervalTickFormat = d3.time.format.utc("%-M");
+            } else if((timeRange/(1000*60*15)) < optimalTickCount){
+                timeInterval = d3.time.minute.utc;
+                timeIntervalStep = 15;
+                this.intervalTickFormat = d3.time.format.utc("%-M");
+            } else if((timeRange/(1000*60*60)) < optimalTickCount){
+                timeInterval = d3.time.hour.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%-H");
+            } else if((timeRange/(1000*60*60*6)) < optimalTickCount){
+                timeInterval = d3.time.hour.utc;
+                timeIntervalStep = 6;
+                this.intervalTickFormat = d3.time.format.utc("%-H");
+            } else if((timeRange/(1000*60*60*24)) < optimalTickCount){
+                timeInterval = d3.time.day.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%-e");
+                // TODO: kshf.Util.ordinal_suffix_of();
+            } else if((timeRange/(1000*60*60*24*7)) < optimalTickCount){
+                timeInterval = d3.time.week.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = function(v){
+                    var suffix = kshf.Util.ordinal_suffix_of(v.getUTCDate());
+                    var first=d3.time.format.utc("%-b")(v);
+                    return suffix+"<br>"+first;
+                };
+                this.height_labels = 28;
+            } else if((timeRange/(1000*60*60*24*30)) < optimalTickCount){
+                timeInterval = d3.time.month.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%-b");
+            } else if((timeRange/(1000*60*60*24*30*3)) < optimalTickCount){
+                timeInterval = d3.time.month.utc;
+                timeIntervalStep = 3;
+                this.intervalTickFormat = function(v){
+                    var threeMonthsLater = timeInterval.offset(v, 3);
+                    var first=d3.time.format.utc("%-b")(v);
+                    var s=first;
+                    //s+="...";//+d3.time.format.utc("%-b")(threeMonthsLater);
+                    if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(v)+1);
+                    return s;
+                };
+                this.height_labels = 28;
+            } else if((timeRange/(1000*60*60*24*365)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else if((timeRange/(1000*60*60*24*365)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 1;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else if((timeRange/(1000*60*60*24*365*5)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 5;
+                this.intervalTickFormat = function(v){
+                    var later = timeInterval.offset(v, 4);
+                    var first=d3.time.format.utc("%Y")(v);
+                    var s=first;
+                    s+="<br>"+d3.time.format.utc("%Y")(later);
+                    return s;
+                };
+                this.height_labels = 28;
+            } else if((timeRange/(1000*60*60*24*365*25)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 25;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else if((timeRange/(1000*60*60*24*365*100)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 100;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else {
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 500;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            }
+
+            this.valueScale.nice(timeInterval, timeIntervalStep);
+            ticks = this.valueScale.ticks(timeInterval, timeIntervalStep);
+
+        } else {
+            if(this.options.intervalScale!=='step'){
+                this.valueScale.nice(optimalTickCount);
+            }
+
+            // Generate ticks
+            ticks = this.valueScale.ticks(optimalTickCount);
+            if(this.options.tickIntegerOnly)
+                ticks = ticks.filter(function(d){return d%1===0;});
+
+            // Set tick format, and adjust ticks as necessary
+            switch(this.options.intervalScale){
+                case 'log':
+                    this.intervalTickFormat = d3.format(".1s");
+                    while(ticks.length > optimalTickCount*2){
+                        ticks = ticks.filter(function(d,i){return i%2===0;});
+                    }
+                    break;
+                case 'step':
+                    var range=this.intervalRange.max-this.intervalRange.min+1;
+                    ticks = new Array(Math.floor(range/this.options.stepSize));
+                    for(var m=0,n=0; m<range; m+=this.options.stepSize,n++){
+                        ticks[n] = this.intervalRange.min+m;
+                    }
+                    this.intervalTickFormat = d3.format("d");
+                    break;
+                default:
+                    this.intervalTickFormat = d3.format(this.options.tickIntegerOnly?"d":".2s");
+                    break;
+            }
         }
 
-        // Generate ticks
-        var ticks = this.intervalScale.ticks(this.optimalTickCount);
-        if(this.options.tickIntegerOnly)
-            ticks = ticks.filter(function(d){return d%1===0;});
-
-        // Decide on intervalTickFormat
-        // Updates ticks based on scale format too
-        switch(this.options.intervalScale){
-            case 'time':
-                this.intervalTickFormat = this.intervalScale.tickFormat(this.optimalTickCount);
-                break;
-            case 'log':
-                this.intervalTickFormat = d3.format(".1s");
-                while(ticks.length > this.optimalTickCount*2){
-                    ticks = ticks.filter(function(d,i){return i%2===0;});
-                }
-                break;
-            case 'step':
-                var range=this.intervalRange.max-this.intervalRange.min+1;
-                ticks = new Array(Math.floor(range/this.options.stepSize));
-                for(var m=0,n=0; m<range; m+=this.options.stepSize,n++){
-                    ticks[n] = this.intervalRange.min+m;
-                }
-                this.intervalTickFormat = d3.format("d");
-                break;
-            default:
-                this.intervalTickFormat = d3.format(this.options.tickIntegerOnly?"d":".2s");
-                break;
+        if(this.options.intervalTickFormat){
+            this.intervalTickFormat = this.options.intervalTickFormat;
         }
 
-        this.barWidth = this.intervalScale(ticks[1])-this.intervalScale(ticks[0]);
+        this.barWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
 
         var numExistingBins = 0;
         if(this.intervalTicks) numExistingBins = this.histBins.length;
@@ -5519,6 +5659,26 @@ kshf.Facet_Interval.prototype = {
             // this calculates aggregation based on the intervalTicks, the filtered item list and the accessor function
             this.histBins = d3.layout.histogram().bins(this.intervalTicks)
                 .value(accessor)(this.filteredItems);
+            
+            if(this.options.intervalScale==='time') {
+                if(this.dom.lineTrend_Total===undefined)
+                    this.dom.lineTrend_Total = this.dom.timeSVG.append("path").attr("class","lineTrend total")
+                        .datum(this.histBins);
+                if(this.dom.lineTrend_Active===undefined)
+                    this.dom.lineTrend_Active = this.dom.timeSVG.append("path").attr("class","lineTrend active")
+                        .datum(this.histBins);
+                if(this.dom.lineTrend_ActiveLine===undefined)
+                    this.dom.lineTrend_ActiveLine = this.dom.timeSVG.selectAll("line.activeLine")
+                        .data(this.histBins, function(d,i){ return i; })
+                        .enter().append("line").attr("class","lineTrend activeLine");
+                if(this.dom.lineTrend_Preview===undefined)
+                    this.dom.lineTrend_Preview = this.dom.timeSVG.append("path").attr("class","lineTrend preview")
+                        .datum(this.histBins);
+                if(this.dom.lineTrend_Compare===undefined)
+                    this.dom.lineTrend_Compare = this.dom.timeSVG.append("path").attr("class","lineTrend compare")
+                        .datum(this.histBins);
+            }
+
 
             this.updateActiveItems();
 
@@ -5531,7 +5691,7 @@ kshf.Facet_Interval.prototype = {
             ddd.exit().remove();
             var ddd_enter = ddd.enter().append("span").attr("class","tick");
             ddd_enter.append("span").attr("class","line");
-            ddd_enter.append("span").attr("class","text").text(function(d){
+            ddd_enter.append("span").attr("class","text").html(function(d){
                 var v=me.intervalTickFormat(d);
                 if(me.options.intervalScale==='percentage') v+="%";
                 return v;
@@ -5540,13 +5700,21 @@ kshf.Facet_Interval.prototype = {
             this.refreshBins_Translate();
             this.refreshViz_Scale();
         }
-        // refreshAxisLabelPos
-        var labelOffset = this.options.intervalScale==='step'?this.barWidth/2:0;
+
         this.dom.labelGroup.selectAll(".tick").style("left",function(d){
-            return (me.intervalScale(d)+labelOffset)+"px";
+            return (me.valueScale(d)+me.getAggreg_Width_Offset())+"px";
         });
 
         this.refreshIntervalSlider();
+    },
+    /** -- */
+    getBarWidth_Real: function(){
+        return this.barWidth-this.width_barGap*2;
+    },
+    getAggreg_Width_Offset: function(){
+        if(this.options.intervalScale==='step'||this.options.intervalScale==='time')
+            return this.barWidth/2;
+        return 0;
     },
     /** -- */
     insertBins: function(){
@@ -5731,10 +5899,10 @@ kshf.Facet_Interval.prototype = {
                 if(d3.event.which !== 1) return; // only respond to left-click
                 me.dom.intervalSlider.attr("anim",false);
                 var e=this.parentNode;
-                var initPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                var initPos = me.valueScale.invert(d3.mouse(e)[0]);
                 d3.select("body").style('cursor','ew-resize')
                     .on("mousemove", function() {
-                        var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                        var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
                         me.intervalFilter.active.min=d3.min([initPos,targetPos]);
                         me.intervalFilter.active.max=d3.max([initPos,targetPos]);
                         me.fixIntervalFilterRange();
@@ -5781,11 +5949,11 @@ kshf.Facet_Interval.prototype = {
                 var initMin = me.intervalFilter.active.min;
                 var initMax = me.intervalFilter.active.max;
                 var initRange= initMax - initMin;
-                var initPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                var initPos = me.valueScale.invert(d3.mouse(e)[0]);
 
                 d3.select("body").style('cursor','ew-resize')
                     .on("mousemove", function() {
-                        var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                        var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
                         var targetDif = targetPos-initPos;
                         me.intervalFilter.active.min = initMin+targetDif;
                         me.intervalFilter.active.max = initMax+targetDif;
@@ -5831,7 +5999,7 @@ kshf.Facet_Interval.prototype = {
                 .on("mousemove", function() {
                     mee.dragging = true;
                     me.browser.pauseResultPreview = true;
-                    var targetPos = me.intervalScale.invert(d3.mouse(e)[0]);
+                    var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
                     me.intervalFilter.active[d] = targetPos;
                     // Swap is min > max
                     if(me.intervalFilter.active.min>me.intervalFilter.active.max){
@@ -5928,9 +6096,9 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         var offset = this.options.intervalScale==='step'?this.width_barGap:0;
         this.dom.aggr_Group
-            .style("width",(this.barWidth-this.width_barGap*2)+"px")
-            .each(function(bar){
-                kshf.Util.setTransform(this,"translateX("+(me.intervalScale(bar.x)+offset)+"px)");
+            .style("width",this.getBarWidth_Real()+"px")
+            .each(function(aggr){
+                kshf.Util.setTransform(this,"translateX("+(me.valueScale(aggr.x)+offset)+"px)");
             });
     },
     /** -- Note: Same as the function used for categorical facet */
@@ -5956,126 +6124,195 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshViz_Total: function(){
         var me=this;
-        var width=this.barWidth-this.width_barGap*2;
-        var translate="translateY("+me.height_hist+"px) ";
-        if(this.browser.ratioModeActive){
-            this.dom.aggr_Total
-                .each(function(bar){
-                    var h=Math.min(me.chartScale_Measure.range()[1],me.height_hist);
-                    kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
-                });
+        var width=this.getBarWidth_Real();
+        
+        var getAggrHeight_Total = function(aggr){
+            if(me.browser.ratioModeActive) return me.height_hist;
+            return Math.min(me.chartScale_Measure(aggr.length),me.height_hist);
+        };
+
+        if(this.options.intervalScale==='time'){
+            this.timeSVGLine = d3.svg.area()
+                .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+                .y0(me.height_hist)
+                .y1(function(aggr){ return me.height_hist-getAggrHeight_Total(aggr); });
+            this.dom.lineTrend_Total
+                .transition().duration(700)
+                .attr("d", this.timeSVGLine);
         } else {
-            this.dom.aggr_Total
-                .each(function(bar){
-                    var h=Math.min(me.chartScale_Measure(bar.y),me.height_hist);
-                    kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
-                });
-            this.dom.aggr_TotalTip
-                .style("opacity",function(bar){
-                    return (bar.y>me.chartScale_Measure.domain()[1])?1:0;
-                })
-                .style("width",width+"px");
+            this.dom.aggr_Total.each(function(aggr){
+                kshf.Util.setTransform(this,
+                    "translateY("+this.height_hist+"px) scale("+width+","+getAggrHeight_Total(aggr)+")");
+            });
+            if(!this.browser.ratioModeActive){
+                this.dom.aggr_TotalTip
+                    .style("opacity",function(aggr){
+                        return (aggr.length>me.chartScale_Measure.domain()[1])?1:0;
+                    })
+                    .style("width",width+"px");
+            }
         }
     },
     /** -- */
     refreshViz_Active: function(){
         var me=this;
-        var width = this.barWidth-this.width_barGap*2;
-        var translate="translateY("+me.height_hist+"px) ";
-        if(this.browser.ratioModeActive){
-            this.dom.aggr_Active.each(function(bar){
-                var height = (bar.aggregate_Active!==0)?me.chartScale_Measure.range()[1]:0;
-                kshf.Util.setTransform(this,translate+"scale("+width+","+height+")");
-            });
-        } else {
-            this.dom.aggr_Active.each(function(bar){
-                var height = me.chartScale_Measure(bar.aggregate_Active);
-                kshf.Util.setTransform(this,translate+"scale("+width+","+height+")");
-            });
-        }
-        this.dom.compareButton.each(function(bar){
-            var height;
-            if(me.browser.ratioModeActive){
-                height = (bar.aggregate_Active!==0)?me.chartScale_Measure.range()[1]:0;
-            } else {
-                height = me.chartScale_Measure(bar.aggregate_Active);
-            }
-            height = me.height_hist-height-9;
+        var width = this.getBarWidth_Real();
+
+        var getAggrHeight_Active = function(aggr){
+            if(me.browser.ratioModeActive) return (aggr.aggregate_Active!==0)?me.height_hist:0;
+            return me.chartScale_Measure(aggr.aggregate_Active);
+        };
+
+        this.dom.aggr_Active.each(function(aggr){
+            kshf.Util.setTransform(this,
+                "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Active(aggr)+")");
+        });
+        this.dom.compareButton.each(function(aggr){
+            var height = me.height_hist-getAggrHeight_Active(aggr)-9;
             kshf.Util.setTransform(this,"translateY("+height+"px)");
         });
+
+        if(this.options.intervalScale==='time'){
+            this.timeSVGLine = d3.svg.area()
+                .x(function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2;
+                })
+                .y0(me.height_hist)
+                .y1(function(aggr){
+                    return me.height_hist-getAggrHeight_Active(aggr);
+                });
+            
+            this.dom.lineTrend_Active
+              .transition().duration(700)
+              .attr("d", this.timeSVGLine);
+
+            this.dom.lineTrend_ActiveLine
+                .transition().duration(700)
+                .attr("y1",function(aggr){
+                    return me.height_hist;
+                })
+                .attr("y2",function(aggr){
+                    return me.height_hist-getAggrHeight_Active(aggr);
+                })
+                .attr("x1",function(aggr){
+                    return me.valueScale(aggr.x)+width/2;
+                })
+                .attr("x2",function(aggr){
+                    return me.valueScale(aggr.x)+width/2;
+                });
+        }
     },
     /** -- */
     refreshViz_Compare: function(){
         var me=this;
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var chartScale_Measure=this.chartScale_Measure;
-        var preview_not = this.browser.preview_not;
-        var width=this.barWidth-this.width_barGap*2;
-        var width_half = width/2;
-        var translate="translateY("+me.height_hist+"px) ";
-        var trnsfrm="scale("+width+",1) translateY(-";
-        if(this.browser._previewCompare_Active){
-            this.histBins.forEach(function(bar){
-                if(bar.aggregate_Compare===undefined){
-                    bar.aggregate_Compare = bar.aggregate_Preview;
-                    if(preview_not) {
-                        bar.aggregate_Compare = bar.aggregate_Active-bar.aggregate_Preview;
-                    }
-                }
-            });
-            if(this.browser.ratioModeActive){
-                this.dom.aggr_Compare.each(function(bar){
-                    kshf.Util.setTransform(this,translate+"scale("+width_half+","+
-                        (bar.aggregate_Compare/bar.aggregate_Active)*me.chartScale_Measure.range()[1]+")");
-                });
-            } else {
-                this.dom.aggr_Compare.each(function(bar){
-                    kshf.Util.setTransform(this,translate+"scale("+width_half+","+
-                        chartScale_Measure(bar.aggregate_Compare)+")");
-                });
+
+        var getAggrHeight_Compare = function(aggr){
+            if(me.browser.ratioModeActive) 
+                return (aggr.aggregate_Compare/aggr.aggregate_Active)*me.height_hist;
+            return me.chartScale_Measure(aggr.aggregate_Compare);
+        };
+
+        var width = this.getBarWidth_Real();
+        var width_half = this.getBarWidth_Real()/2;
+        // update aggregate_Compare value in each aggregate
+        this.histBins.forEach(function(aggr){
+            aggr.aggregate_Compare = aggr.aggregate_Preview;
+            if(me.browser.preview_not) {
+                aggr.aggregate_Compare = aggr.aggregate_Active-aggr.aggregate_Preview;
             }
-        } else {
-            this.histBins.forEach(function(bar){
-                delete bar.aggregate_Compare;
-            });
+        });
+        // update chart
+        this.dom.aggr_Compare.each(function(aggr){
+            kshf.Util.setTransform(this,
+                "translateY("+me.height_hist+"px) scale("+width_half+","+getAggrHeight_Compare(aggr)+")");
+        });
+
+        if(this.options.intervalScale==='time'){
+            this.timeSVGLine = d3.svg.line()
+                .x(function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2;
+                })
+                .y(function(aggr){
+                    if(aggr.aggregate_Compare===0) return me.height_hist+3;
+                    return me.height_hist-getAggrHeight_Compare(aggr);
+                });
+            
+            this.dom.lineTrend_Compare
+                .transition()
+                .duration(200)
+                .attr("d", this.timeSVGLine);
         }
     },
     /** -- */
     refreshViz_Preview: function(){
-        var me=this;
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var preview_not = this.browser.preview_not;
-        var chartScale_Measure=this.chartScale_Measure;
-        var width=this.barWidth-this.width_barGap*2;
-        var width_half = width/2;
-        var translate="translateY("+me.height_hist+"px) ";
-        this.dom.aggr_Preview.each(function(bar){
-            var p=bar.aggregate_Preview;
-            if(preview_not) p = bar.aggregate_Active-bar.aggregate_Preview;
-            var h;
+        var me=this;
+        var width = this.getBarWidth_Real();
+
+        var getAggrHeight_Preview = function(aggr){
+            var p=aggr.aggregate_Preview;
+            if(me.browser.preview_not) p = aggr.aggregate_Active-aggr.aggregate_Preview;
             if(me.browser.ratioModeActive){
-                h = (p / bar.aggregate_Active)*me.chartScale_Measure.range()[1];
+                if(aggr.aggregate_Active===0) return 0;
+                return (p / aggr.aggregate_Active)*me.height_hist;
             } else {
-                h = chartScale_Measure(p);
+                return me.chartScale_Measure(p);
             }
-            kshf.Util.setTransform(this,translate+"scale("+width+","+h+")");
+        };
+
+        this.dom.aggr_Preview.each(function(aggr){
+            kshf.Util.setTransform(this,
+                "translateY("+me.height_hist+"px) scale("+
+                    me.getBarWidth_Real()+","+getAggrHeight_Preview(aggr)+")");
         });
         this.refreshMeasureLabel();
+
+        if(this.options.intervalScale==='time'){
+            this.timeSVGLine = d3.svg.line()
+                .x(function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2;
+                })
+                .y(function(aggr){
+                    if(aggr.aggregate_Preview===0) return me.height_hist+3;
+                    var h = getAggrHeight_Preview(aggr);
+                    return me.height_hist-h;
+                });
+            
+            this.dom.lineTrend_Preview
+                .transition().duration(200)
+                .attr("d", this.timeSVGLine);
+        }
     },
     /** -- */
     clearViz_Preview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        var w=(this.barWidth-this.width_barGap*2);
-        var transform="translateY("+this.height_hist+"px) "+"scale("+w+",0)";
+        var me=this;
+        var width = this.getBarWidth_Real();
+        var transform="translateY("+this.height_hist+"px) "+"scale("+this.getBarWidth_Real()+",0)";
         this.dom.aggr_Preview.each(function(bar){
             bar.aggregate_Preview=0;
-            // TODO: assuming all bars are visible...
             kshf.Util.setTransform(this,transform);
         });
         this.refreshMeasureLabel();
+
+        if(this.options.intervalScale==='time'){
+            this.timeSVGLine = d3.svg.line()
+                .x(function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2;
+                })
+                .y(function(aggr){
+                    return me.height_hist;
+                });
+            
+            this.dom.lineTrend_Preview
+                .transition().duration(200)
+                .attr("d", this.timeSVGLine);
+        }
+
     },
     /** -- */
     refreshViz_Axis: function(){
@@ -6173,6 +6410,10 @@ kshf.Facet_Interval.prototype = {
             if(me.browser.percentModeActive){
                 if(me.browser.ratioModeActive){
                     p = 100*p/aggr.aggregate_Active;
+                    if(!me.browser.resultPreviewActive){
+                        this.textContent = "";
+                        return;
+                    }
                 } else {
                     p = 100*p/me.browser.itemsWantedCount;
                 }
@@ -6184,18 +6425,17 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     refreshIntervalSlider: function(){
-        var me=this;
-        var minPos = this.intervalScale(this.intervalFilter.active.min);
-        var maxPos = this.intervalScale(this.intervalFilter.active.max);
-        if(me.intervalFilter.active.min===me.intervalRange.min){
-            minPos = me.intervalScale.range()[0];
+        var minPos = this.valueScale(this.intervalFilter.active.min);
+        var maxPos = this.valueScale(this.intervalFilter.active.max);
+        if(this.intervalFilter.active.min===this.intervalRange.min){
+            minPos = this.valueScale.range()[0];
         }
-        if(me.intervalFilter.active.max===me.intervalRange.max){
-            maxPos = me.intervalScale.range()[1];
+        if(this.intervalFilter.active.max===this.intervalRange.max){
+            maxPos = this.valueScale.range()[1];
         }
 
         this.dom.intervalSlider.select(".base.total")
-            .style("margin-left",this.intervalScale.range()[0]+"px")
+            .style("margin-left",this.valueScale.range()[0]+"px")
             .style("width",(this.intervalRange.width)+"px")
             ;
         this.dom.intervalSlider.select(".base.active")
@@ -6210,12 +6450,12 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     refreshHeight: function(){
-        var me=this;
         this.dom.histogram.style("height",(this.height_hist+this.height_hist_topGap)+"px")
         this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Wrapper())+"px");
-        this.dom.measureLabel.each(function(bar){
-            kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
-        });
+        var labelTranslate ="translateY("+this.height_hist+"px)";
+        this.dom.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });
+        if(this.dom.timeSVG)
+            this.dom.timeSVG.style("height",(this.height_hist+2)+"px");
     },
     /** -- */
     refreshWidth: function(){
@@ -6273,11 +6513,10 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     setSelectedPosition: function(v){
         if(v===null) return;
-        if(this.intervalScale===undefined) return;
-        var offset = this.options.intervalScale==='step'?this.barWidth/2:0;
-        var t="translateX("+(this.intervalScale(v)+offset)+"px)";
+        if(this.valueScale===undefined) return;
+        var t="translateX("+(this.valueScale(v))+"px)";
         this.dom.selectedItemValue
-            .each(function(attrib){ kshf.Util.setTransform(this,t); })
+            .each(function(){ kshf.Util.setTransform(this,t); })
             .style("display","block");
 
         var dateFormat = d3.time.format("%b %-e,'%y");
@@ -6309,7 +6548,7 @@ kshf.Facet_Interval.prototype = {
         this.quantile_pos = {};
         [10,20,30,40,50,60,70,80,90].forEach(function(q){
             this.quantile_val[q] = d3.quantile(values,q/100);
-            this.quantile_pos[q] = this.intervalScale(this.quantile_val[q]);
+            this.quantile_pos[q] = this.valueScale(this.quantile_val[q]);
             kshf.Util.setTransform(this.dom.quantile[q][0][0],"translateX("+this.quantile_pos[q]+"px)");
         },this);
 
