@@ -5560,6 +5560,14 @@ kshf.Facet_Interval.prototype = {
                 timeInterval = d3.time.month.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-b");
+                this.intervalTickFormat = function(v){
+                    var threeMonthsLater = timeInterval.offset(v, 3);
+                    var first=d3.time.format.utc("%-b")(v);
+                    var s=first;
+                    if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(threeMonthsLater));
+                    return s;
+                };
+                this.height_labels = 28;
             } else if((timeRange/(1000*60*60*24*30*3)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
                 timeIntervalStep = 3;
@@ -5567,8 +5575,7 @@ kshf.Facet_Interval.prototype = {
                     var threeMonthsLater = timeInterval.offset(v, 3);
                     var first=d3.time.format.utc("%-b")(v);
                     var s=first;
-                    //s+="...";//+d3.time.format.utc("%-b")(threeMonthsLater);
-                    if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(v)+1);
+                    if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(threeMonthsLater));
                     return s;
                 };
                 this.height_labels = 28;
