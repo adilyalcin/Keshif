@@ -85,10 +85,9 @@ $(document).ready( function(){
             },{
                 facetTitle: "Year",
                 catItemMap : function(prize){
-                    return prize.data[prizeCols['Year']];
+                    return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD"));
                 },
                 layout: 'bottom',
-                intervalScale: 'step', stepSize: 5
             }
         ],
         itemDisplay: {
