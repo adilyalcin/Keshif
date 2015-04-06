@@ -97,6 +97,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .compare{
             opacity: 1 !important;
         }
+        .compareLine{
+            opacity: 1 !important;
+        }
     }
 
     .compareButton{
@@ -1105,10 +1108,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             opacity: 0;
                             .transition(~'opacity 500ms linear');
                         }
+                        .previewLine{
+                            stroke: @color_bar_preview;
+                            stroke-width: 2px;
+                            opacity: 0;
+                        }
                         .lineTrend.compare{
                             fill: none;
                             stroke: @color_preview_compare;
                             stroke-width: 1.5px;
+                            opacity: 0;
+                            .transition(~'opacity 500ms linear');
+                        }
+                        .compareLine{
+                            stroke: @color_preview_compare;
+                            stroke-width: 2px;
                             opacity: 0;
                         }
                     }
@@ -1581,6 +1595,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     &[resultpreview="true"]{
         .lineTrend.preview{
+            opacity: 1 !important;
+        }
+        .previewLine{
             opacity: 1 !important;
         }
     }

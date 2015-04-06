@@ -79,6 +79,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[previewcompare="true"] .compare {
   opacity: 1 !important;
 }
+.kshf[previewcompare="true"] .compareLine {
+  opacity: 1 !important;
+}
 .kshf .compareButton {
   display: block;
   position: absolute;
@@ -1097,10 +1100,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .previewLine {
+  stroke: #ff4500;
+  stroke-width: 2px;
+  opacity: 0;
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.compare {
   fill: none;
   stroke: #2f4f4f;
   stroke-width: 1.5px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .compareLine {
+  stroke: #2f4f4f;
+  stroke-width: 2px;
   opacity: 0;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins {
@@ -1537,6 +1554,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
 }
 .kshf[resultpreview="true"] .lineTrend.preview {
+  opacity: 1 !important;
+}
+.kshf[resultpreview="true"] .previewLine {
   opacity: 1 !important;
 }
 .kshf .selectVertLine {

@@ -5405,7 +5405,7 @@ kshf.Facet_Interval.prototype = {
 
         if(this.options.intervalScale==='time') {
             this.dom.timeSVG = this.dom.histogram.append("svg")
-                .style("margin-left",(this.vertAxisLabelWidth)+"px")
+                .style("margin-left",(this.vertAxisLabelWidth+this.width_barGap)+"px")
                 .attr("class","timeSVG")
                 .attr("xmlns","http://www.w3.org/2000/svg");
         }
@@ -5668,24 +5668,26 @@ kshf.Facet_Interval.prototype = {
                 .value(accessor)(this.filteredItems);
             
             if(this.options.intervalScale==='time') {
-                if(this.dom.lineTrend_Total===undefined)
+                if(this.dom.lineTrend_Total===undefined){
                     this.dom.lineTrend_Total = this.dom.timeSVG.append("path").attr("class","lineTrend total")
                         .datum(this.histBins);
-                if(this.dom.lineTrend_Active===undefined)
                     this.dom.lineTrend_Active = this.dom.timeSVG.append("path").attr("class","lineTrend active")
                         .datum(this.histBins);
-                if(this.dom.lineTrend_ActiveLine===undefined)
                     this.dom.lineTrend_ActiveLine = this.dom.timeSVG.selectAll("line.activeLine")
                         .data(this.histBins, function(d,i){ return i; })
                         .enter().append("line").attr("class","lineTrend activeLine");
-                if(this.dom.lineTrend_Preview===undefined)
                     this.dom.lineTrend_Preview = this.dom.timeSVG.append("path").attr("class","lineTrend preview")
                         .datum(this.histBins);
-                if(this.dom.lineTrend_Compare===undefined)
+                    this.dom.lineTrend_PreviewLine = this.dom.timeSVG.selectAll("line.previewLine")
+                        .data(this.histBins, function(d,i){ return i; })
+                        .enter().append("line").attr("class","lineTrend previewLine");
                     this.dom.lineTrend_Compare = this.dom.timeSVG.append("path").attr("class","lineTrend compare")
                         .datum(this.histBins);
+                    this.dom.lineTrend_CompareLine = this.dom.timeSVG.selectAll("line.compareLine")
+                        .data(this.histBins, function(d,i){ return i; })
+                        .enter().append("line").attr("class","lineTrend compareLine");
+                }
             }
-
 
             this.updateActiveItems();
 
@@ -6193,20 +6195,11 @@ kshf.Facet_Interval.prototype = {
               .transition().duration(700)
               .attr("d", this.timeSVGLine);
 
-            this.dom.lineTrend_ActiveLine
-                .transition().duration(700)
-                .attr("y1",function(aggr){
-                    return me.height_hist;
-                })
-                .attr("y2",function(aggr){
-                    return me.height_hist-getAggrHeight_Active(aggr);
-                })
-                .attr("x1",function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .attr("x2",function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                });
+            this.dom.lineTrend_ActiveLine.transition().duration(700)
+                .attr("y1",function(aggr){ return me.height_hist; })
+                .attr("y2",function(aggr){ return me.height_hist-getAggrHeight_Active(aggr); })
+                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2; })
+                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
         }
     },
     /** -- */
@@ -6238,18 +6231,30 @@ kshf.Facet_Interval.prototype = {
 
         if(this.options.intervalScale==='time'){
             this.timeSVGLine = d3.svg.line()
-                .x(function(aggr){ 
-                    return me.valueScale(aggr.x)+width/2;
-                })
+                .x(function(aggr){  return me.valueScale(aggr.x)+width/2; })
                 .y(function(aggr){
                     if(aggr.aggregate_Compare===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Compare(aggr);
                 });
+
+            var durationTime=0;
+            if(this.browser._previewCompare_Active){
+                durationTime=200;
+            }
             
             this.dom.lineTrend_Compare
                 .transition()
-                .duration(200)
+                .duration(durationTime)
                 .attr("d", this.timeSVGLine);
+
+            this.dom.lineTrend_CompareLine.transition().duration(durationTime)
+                .attr("y1",function(aggr){ return me.height_hist; })
+                .attr("y2",function(aggr){ 
+                    if(aggr.aggregate_Compare===0) return me.height_hist+3;
+                    return me.height_hist-getAggrHeight_Compare(aggr);
+                })
+                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2+1; })
+                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2+1; });
         }
     },
     /** -- */
@@ -6284,13 +6289,21 @@ kshf.Facet_Interval.prototype = {
                 })
                 .y(function(aggr){
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
-                    var h = getAggrHeight_Preview(aggr);
-                    return me.height_hist-h;
+                    return me.height_hist-getAggrHeight_Preview(aggr);
                 });
             
             this.dom.lineTrend_Preview
                 .transition().duration(200)
                 .attr("d", this.timeSVGLine);
+
+            this.dom.lineTrend_PreviewLine.transition().duration(200)
+                .attr("y1",function(aggr){ return me.height_hist; })
+                .attr("y2",function(aggr){
+                    if(aggr.aggregate_Preview===0) return me.height_hist+3;
+                    return me.height_hist-getAggrHeight_Preview(aggr);
+                })
+                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2-1; })
+                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2-1; });
         }
     },
     /** -- */
