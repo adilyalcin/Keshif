@@ -32,7 +32,7 @@ browser = new kshf.Browser({
     categoryTextWidth: 150,
     rightPanelLabelWidth: 140,
     barChartWidth: 70,
-    itemName: "Datasets Keshif'ized",
+    itemName: "Datasets Keshif-ized",
     catBarScale: "scale_frequency",
     source: {
         gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
@@ -129,10 +129,11 @@ browser = new kshf.Browser({
             showPercentile: true
         },{
             facetTitle: "Creation Time",
-            layout: 'left',
-            collapsed: true,
-            catItemMap: function(d){ return d.data[dataColumns['Authored']];},
-            intervalScale: 'time'
+            catItemMap: function(d){
+                return d.data[dataColumns['Authored']].getFullYear();
+            },
+            collapsed: false,
+            intervalScale: 'step'
         }
     ],
     itemDisplay: {
@@ -348,13 +349,14 @@ div.row span.value
     #mypage {
         margin-left: auto;
         margin-right: auto;
+        margin-top: 15px;
         font-size: 1.3em;
         /* max-width: 800px; */
         width: 1100px;
     }
     #demobox{
         width: 1100px;
-        height: 400px;
+        height: 500px;
         position:relative;
     }
     #demoimg {
@@ -372,7 +374,7 @@ div.row span.value
         top: 0px;
         background-color: rgba(255,255,255,0);
         width: 1100px;
-        height: 400px;
+        height: 500px;
         display:none;
     }
     #demobox:hover[loaded=false] #clicktoLoad {
@@ -391,7 +393,7 @@ div.row span.value
     }
     #livedemo {
         margin: 0 auto;
-        height: 400px;
+        height: 500px;
         font-size: 12pt;
     }
     #demobox[loaded=false] #livedemo{
@@ -554,16 +556,14 @@ div.row span.value
 <span id="forkongithub"><a href="https://github.com/adilyalcin/keshif" target='_blank' class='forkText'>
 <span class='fa fa-code-fork fa-2x'></span> Fork me on <span class='fa fa-github fa-2x'></span></a></span>
 
-<!--<a href="https://github.com/adilyalcin/keshif"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>-->
-
 <!-- banner -->
 <!--#include virtual="/hcil/_includes/banner.html"-->
 <div style="clear:both"></div>
 
-<div id="mypage"><br/><br/>
+<div id="mypage">
 <img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
 <span class='h1'><strong>Keshif</strong></br>
-Data Made Explorable</span><br/><br/>
+Data Made Explorable</span>
 
 <div align="right">
 	<i>Click on the image to load the interactive <b>Keshif</b> browser - 
