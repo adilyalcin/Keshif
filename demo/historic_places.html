@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>National Registry of Historic Places</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+var getStateName = function(d){
+    switch(d.data[1]){
+        case 'AL': return 'Alabama';
+        case 'AK': return 'Alaska';
+        case 'AZ': return 'Arizona';
+        case 'AR': return 'Arkansas';
+        case 'CA': return 'California';
+        case 'CO': return 'Colorado';
+        case 'CT': return 'Connecticut';
+        case 'DE': return 'Delaware';
+        case 'DC': return 'District of Columbia';
+        case 'FL': return 'Florida';
+        case 'GA': return 'Georgia';
+        case 'HI': return 'Hawaii';
+        case 'ID': return 'Idaho';
+        case 'IL': return 'Illinois';
+        case 'IN': return 'Indiana';
+        case 'IA': return 'Ioawa';
+        case 'KS': return 'Kansas';
+        case 'KY': return 'Kentucy';
+        case 'LA': return 'Louisiana';
+        case 'ME': return 'Maine';
+        case 'MD': return 'Maryland';
+        case 'MA': return 'Massachusetts';
+        case 'MI': return 'Michigan';
+        case 'MN': return 'Minnesota';
+        case 'MS': return 'Mississippi';
+        case 'MO': return 'Missouri';
+        case 'MT': return 'Montana';
+        case 'NE': return 'Nebraska';
+        case 'NV': return 'Nevada';
+        case 'NH': return 'New Hampshire';
+        case 'NJ': return 'New Jersey';
+        case 'NM': return 'New Mexico';
+        case 'NY': return 'New York';
+        case 'NC': return 'North Carolina';
+        case 'ND': return 'North Dakota';
+        case 'OH': return 'Ohio';
+        case 'OK': return 'Oklahoma';
+        case 'OR': return 'Oregon';
+        case 'PA': return 'Pennsylvania';
+        case 'RI': return 'Rhode Island';
+        case 'SC': return 'South Carolina';
+        case 'SD': return 'South Dakota';
+        case 'TN': return 'Tennessee';
+        case 'TX': return 'Texas';
+        case 'UT': return 'Utah';
+        case 'VT': return 'Vermont';
+        case 'VA': return 'Virginia';
+        case 'WA': return 'Washington';
+        case 'WV': return 'West Virginia';
+        case 'WI': return 'Wisconsin';
+        case 'WY': return 'Wyoming';
+    }
+    return d.data[1];
+};
+dateFormat = d3.time.format("%Y%m%d");
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 120,
+        rightPanelLabelWidth: 190,
+        itemName: "Historic Places",
+        source: {
+            gdocId : '15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ',
+            sheets : [ {name:"Places"} ]
+        },
+        facets: [
+            {   facetTitle: "State",
+                catLabelText: getStateName
+            },{ facetTitle: "County", layout: 'bottom-mid', minAggrValue: 50,
+                catItemMap: function(d){
+                    return d.data[2]+", "+d.data[1];
+                }
+            },{ facetTitle: "Listed Time", layout: 'bottom',
+                catItemMap: function(d){
+                    return moment(d.data[6],"YYYYMMDD")._d;
+                }
+            },{ facetTitle: "City", layout: 'right',
+                catItemMap: function(d){
+                    return d.data[3]+" - "+d.data[1];
+                },
+                minAggrValue: 50
+            }
+        ],
+/*        itemDisplay: {
+            sortColWidth: 45,
+            detailsToggle : "Zoom",
+            sortingOpts : [ {name: 'Ref', inverse:true} ],
+            textSearch: "Resource",
+            content: "Resource"
+        }*/
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 890px;
+                height: 650px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
