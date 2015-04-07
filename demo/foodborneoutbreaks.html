@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Foodborne Outbreaks</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+    new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Outbreaks",
+        categoryTextWidth: 200,
+        barChartWidth: 110,
+        source : {
+            url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
+            callback: function(browser){
+                $.ajax( {
+                    url:"./data/foodborneoutbreaks.xml",
+                    dataType:"xml",
+                    async: false,
+                    success: function(collection){
+                        var $collection = $(collection);
+                        browser.primaryTableName = "Outbreaks";
+                        kshf.dt.Outbreaks = [];
+                        var arr = kshf.dt.Outbreaks;
+                        var id=0;
+                        $collection.find("record").each(function(){
+                            var $this = $(this);
+                            var cData = {};
+                            cData.id = id++;
+                            cData.Year = parseInt($this.find("Year").text());
+                            if(cData.Year){
+                                cData.Year = new Date(cData.Year,1,1,1,1,1,1);
+                            }
+                            cData.Month = $this.find("Month").text();
+                            cData.State = $this.find("State").text();
+                            cData.Genus_Species = $this.find("Genus_Species").text().split("; ");
+                            cData.Status = $this.find("Status").text().split("; ");
+                            cData.LocationOfConsumption = $this.find("LocationOfConsumption").text().split("; ");
+                            cData.TotalIll = parseInt($this.find("TotalIll").text());
+                            cData.TotalHospitalizations = parseInt($this.find("TotalHospitalizations").text());
+                            cData.TotalDeaths = parseInt($this.find("TotalDeaths").text());
+                            cData.FoodVehicle = $this.find("FoodVehicle").text().split("; ");
+                            cData.Contaminated_Ingredient = $this.find("Contaminated_Ingredient").text().split("; ");
+                            
+                            arr.push(new kshf.Item(cData,"id"));
+                        });
+
+                        browser.items = kshf.dt.Outbreaks;
+                        browser.itemsSelectedCt = browser.items.length;
+                        browser.loadCharts();   
+                    }
+                });
+            }
+        },
+        facets: [
+            { 
+                facetTitle: "Year"
+            },{ facetTitle: "Month"
+            },{ facetTitle: "Genus_Species",
+            },{ facetTitle: "Contaminated_Ingredient",
+
+            },{ facetTitle: "State", layout: 'bottom-mid'
+            },{ facetTitle: "LocationOfConsumption", layout: 'bottom-mid'
+            },{ facetTitle: "FoodVehicle", layout: 'bottom-mid', minAggrValue: 5
+
+            },{ facetTitle: "TotalIll", layout: 'right', intervalScale: 'log'
+            },{ facetTitle: "TotalHospitalizations", layout: 'right', intervalScale: 'log'
+            },{ facetTitle: "TotalDeaths", layout: 'right', intervalScale: 'log'
+            },{ facetTitle: "Status", layout: 'right'
+            }
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                height: 700px;
+                width: 1100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">
+            <a href="http://www.cdc.gov/" target='_blank'>CSC</a> Foodborne Outbreak Online Database</div>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
