@@ -1324,13 +1324,18 @@ kshf.List = function(kshf_, config, root){
     this.insertHeaderSortSelect();
     this.dom.filtercrumbs = this.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
     this.insertHeaderLinkedItems();
-    this.dom.scrollToTop = this.dom.listHeader_BottomRow.append("div").attr("class","scrollToTop")
-        .html("⬆")
-        .attr("title","Scroll To Top")
+    this.dom.scrollToTop = this.dom.listHeader_BottomRow.append("div")
+        .attr("class","scrollToTop fa fa-arrow-up")
         .on("click",function(d){ 
             kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
             if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
-        });
+        })
+        .each(function(){
+            this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); })
+        ;
 
     this.sortItems();
     this.insertItems();
@@ -3800,11 +3805,17 @@ kshf.Facet_Categorical.prototype = {
 
         this.dom.scrollToTop = this.dom.facetCategorical.append("div")
             .attr("class","scrollToTop fa fa-arrow-up")
-            .attr("title","Scroll To Top")
             .on("click",function(d){ 
                 kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0);
+                this.tipsy.hide();
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
-            });
+            })
+            .each(function(){
+                this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            ;
 
         this.dom.attribGroup = this.dom.facetCategorical.append("div").attr("class","attribGroup")
             .on("scroll",function(d){
@@ -5583,9 +5594,9 @@ kshf.Facet_Interval.prototype = {
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
-            } else if((timeRange/(1000*60*60*24*365)) < optimalTickCount){
+            } else if((timeRange/(1000*60*60*24*365*2)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
-                timeIntervalStep = 1;
+                timeIntervalStep = 2;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
             } else if((timeRange/(1000*60*60*24*365*5)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
@@ -6103,7 +6114,9 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     refreshBins_Translate: function(){
         var me=this;
-        var offset = this.options.intervalScale==='step'?this.width_barGap:0;
+        var offset = 0;
+        if(this.options.intervalScale==='step')offset=this.width_barGap;
+        if(this.options.intervalScale==='time')offset=this.width_barGap;
         this.dom.aggr_Group
             .style("width",this.getBarWidth_Real()+"px")
             .each(function(aggr){
@@ -6151,7 +6164,7 @@ kshf.Facet_Interval.prototype = {
         } else {
             this.dom.aggr_Total.each(function(aggr){
                 kshf.Util.setTransform(this,
-                    "translateY("+this.height_hist+"px) scale("+width+","+getAggrHeight_Total(aggr)+")");
+                    "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Total(aggr)+")");
             });
             if(!this.browser.ratioModeActive){
                 this.dom.aggr_TotalTip
@@ -6186,7 +6199,7 @@ kshf.Facet_Interval.prototype = {
                 .x(function(aggr){ 
                     return me.valueScale(aggr.x)+width/2;
                 })
-                .y0(me.height_hist)
+                .y0(me.height_hist+2)
                 .y1(function(aggr){
                     return me.height_hist-getAggrHeight_Active(aggr);
                 });
@@ -6196,8 +6209,11 @@ kshf.Facet_Interval.prototype = {
               .attr("d", this.timeSVGLine);
 
             this.dom.lineTrend_ActiveLine.transition().duration(700)
-                .attr("y1",function(aggr){ return me.height_hist; })
-                .attr("y2",function(aggr){ return me.height_hist-getAggrHeight_Active(aggr); })
+                .attr("y1",function(aggr){ return me.height_hist+3; })
+                .attr("y2",function(aggr){ 
+                    if(aggr.aggregate_Active===0) return me.height_hist+3;
+                    return me.height_hist-getAggrHeight_Active(aggr);
+                })
                 .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2; })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
         }
@@ -6248,7 +6264,7 @@ kshf.Facet_Interval.prototype = {
                 .attr("d", this.timeSVGLine);
 
             this.dom.lineTrend_CompareLine.transition().duration(durationTime)
-                .attr("y1",function(aggr){ return me.height_hist; })
+                .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){ 
                     if(aggr.aggregate_Compare===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Compare(aggr);
@@ -6297,7 +6313,7 @@ kshf.Facet_Interval.prototype = {
                 .attr("d", this.timeSVGLine);
 
             this.dom.lineTrend_PreviewLine.transition().duration(200)
-                .attr("y1",function(aggr){ return me.height_hist; })
+                .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Preview(aggr);

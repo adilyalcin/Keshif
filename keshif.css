@@ -1165,7 +1165,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
-  top: 1px;
+  top: 2px;
   display: block;
   position: relative;
   width: 100%;
@@ -1333,7 +1333,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.total {
   height: 3px;
   top: 3px;
-  cursor: pointer;
+  cursor: ew-resize;
   background-color: lightgray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active {
