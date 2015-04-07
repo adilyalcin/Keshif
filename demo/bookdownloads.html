@@ -34,8 +34,6 @@ $(document).ready( function(){
             var arr = kshf.dt.Downloads;
 
             $.ajax({
-                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-                // url: "./data_private/dc_homicides.json", // original source
                 url: "./data/bookdownloads.json",
                 error: function(e,f){ console.log("ERROR: "+e+" - "+f); },
                 success: function(data){
