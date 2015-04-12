@@ -1292,10 +1292,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 20;
   top: 2px;
   display: none;
-  -webkit-transition: all 250ms ease-out;
-  -moz-transition: all 250ms ease-out;
-  -o-transition: all 250ms ease-out;
-  transition: all 250ms ease-out;
+  -webkit-transition: all 450ms ease-in-out;
+  -moz-transition: all 450ms ease-in-out;
+  -o-transition: all 450ms ease-in-out;
+  transition: all 450ms ease-in-out;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .circlee {
   display: block;
@@ -1405,7 +1405,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
   cursor: default;
   position: relative;
-  height: 30px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .unitName {
   font-size: 0.7em;
