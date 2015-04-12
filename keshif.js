@@ -5184,14 +5184,19 @@ kshf.Facet_Interval = function(kshf_, options){
 
             var i_min = filter.active.min;
             var i_max = filter.active.max;
-            if(!filter.max_inclusive) i_max-=0.01;
             var isFiltered;
             if(me.isFiltered_min() && me.isFiltered_max()){
-                isFiltered = function(v){ return v>=i_min && v<=i_max; };
+                if(filter.max_inclusive)
+                    isFiltered = function(v){ return v>=i_min && v<=i_max; };
+                else
+                    isFiltered = function(v){ return v>=i_min && v<i_max; };
             } else if(me.isFiltered_min()){
                 isFiltered = function(v){ return v>=i_min; };
             } else {
-                isFiltered = function(v){ return v<=i_max; };
+                if(filter.max_inclusive)
+                    isFiltered = function(v){ return v<=i_max; };
+                else
+                    isFiltered = function(v){ return v<i_max; };
             }
 
             filter.filteredItems.forEach(function(item){
@@ -5266,7 +5271,6 @@ kshf.Facet_Interval = function(kshf_, options){
         var v = accessor(item);
         if(v===null) return false;
         if(isLog && v===0) {
-            item.mappedDataCache[filterId].v=null;
             return false; // remove 0-values from log scale
         }
         return true;
@@ -5365,7 +5369,11 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     isFiltered_min: function(){
-        return this.intervalFilter.active.min!==this.intervalRange.min;
+        // the active min is differnt from intervalRange min.
+        if(this.intervalFilter.active.min!==this.intervalRange.min) return true;
+        // if using log scale, assume min is also filtered when max is filtered.
+        if(this.options.intervalScale==='log') return this.isFiltered_max();
+        return false;
     },
     /** -- */
     isFiltered_max: function(){
