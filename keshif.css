@@ -73,7 +73,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
-.kshf[percentview=true] .chartAxis_Measure > .tick > .text::after {
+.kshf[ratiomode=true] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
 .kshf[previewcompare="true"] .compare {
@@ -1331,6 +1331,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 0% 0%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.total {
+  width: 100%;
   height: 3px;
   top: 3px;
   cursor: ew-resize;

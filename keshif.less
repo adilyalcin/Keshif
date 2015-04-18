@@ -88,6 +88,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .percentSign::after{
                 content: "%";
             }
+        }
+    }
+    &[ratiomode=true]{
+        .chartAxis_Measure {
             > .tick > .text::after{
                 content: "%";
             }
@@ -1320,6 +1324,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             box-shadow: inset 0px 0px 2px gray;
                             .transform-origin(0% 0%);
                             &.total{
+                                width: 100%;
                                 height: 3px;
                                 top: 3px;
                                 cursor: ew-resize;

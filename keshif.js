@@ -2051,6 +2051,7 @@ kshf.Browser = function(options){
         .classed("kshf",true)
         .attr("noanim",false)
         .attr("percentview",false)
+        .attr("ratiomode",false)
         .attr("previewcompare",false)
         .attr("resultpreview",false)
         .style("position","relative")
@@ -2875,6 +2876,7 @@ kshf.Browser.prototype = {
     /** Ratio mode is when glyphs scale to their max */
     setRatioMode: function(how){
         this.ratioModeActive = how;
+        this.root.attr("ratiomode",how);
         this.setPercentMode(how);
         this.facets.forEach(function(facet){ facet.refreshViz_All(); });
         if(this.ratioModeCb) this.ratioModeCb.call(this,!how);
@@ -3642,9 +3644,10 @@ kshf.Facet_Categorical.prototype = {
 
         // add degree filter if attrib has multi-value items and set-vis is enabled
         if(this.hasMultiValueItem && this.options.enableSetVis){
-            var fscale = 'step';
+            var fscale;
             if(maxDegree>100) fscale = 'log';
             else if(maxDegree>10) fscale = 'linear';
+            else fscale = 'step';
             var facetDescr = {
                 facetTitle:"<i class='fa fa-hand-o-up'></i> # of "+this.options.facetTitle,
                 catItemMap: function(d){
@@ -5155,8 +5158,7 @@ kshf.Facet_Interval = function(kshf_, options){
     if(options.intervalScale===undefined)
         options.intervalScale='linear';
 
-    if(options.stepSize===undefined)
-        options.stepSize = 1;
+    this.options.stepSize = 1;
 
     if(options.tickIntegerOnly===undefined)
         options.tickIntegerOnly = false;
@@ -5184,6 +5186,7 @@ kshf.Facet_Interval = function(kshf_, options){
 
             var i_min = filter.active.min;
             var i_max = filter.active.max;
+
             var isFiltered;
             if(me.isFiltered_min() && me.isFiltered_max()){
                 if(filter.max_inclusive)
@@ -5197,6 +5200,11 @@ kshf.Facet_Interval = function(kshf_, options){
                     isFiltered = function(v){ return v<=i_max; };
                 else
                     isFiltered = function(v){ return v<i_max; };
+            }
+            if(me.options.intervalScale==='step'){
+                if(i_min===i_max){
+                    isFiltered = function(v){ return v===i_max; };
+                }
             }
 
             filter.filteredItems.forEach(function(item){
@@ -5213,7 +5221,7 @@ kshf.Facet_Interval = function(kshf_, options){
         summary_header: this.options.facetTitle,
         summary_item_cb: function(){
             if(me.options.intervalScale==='step'){
-                if(this.active.min+1===this.active.max){
+                if(this.active.min===this.active.max){
                     return "<b>"+this.active.min+"</b>";
                 }
             }
@@ -5298,10 +5306,6 @@ kshf.Facet_Interval = function(kshf_, options){
     }
     if(this.intervalRange.max===undefined){
         this.intervalRange.max = d3.max(this.filteredItems,accessor);
-    }
-
-    if(this.options.intervalScale==='step'){
-        this.intervalRange.max+=this.options.stepSize;
     }
 
     if(this.intervalRange.min===undefined){
@@ -5510,18 +5514,22 @@ kshf.Facet_Interval.prototype = {
         var optimalTickCount = Math.floor(this.intervalRange.width/this.options.optimumTickWidth);
 
         // if we have enough width, and
-        var tmp=this.intervalRange.max-this.intervalRange.min;
+        var tmp=(this.intervalRange.max-this.intervalRange.min)+1;
+        var stepWidth=this.intervalRange.width/tmp;
         if(!this.hasFloat && this.options.intervalScale!=='step' && 
                 this.intervalRange.width/this.options.optimumTickWidth>tmp){
             this.options.intervalScale = 'step';
-            this.intervalRange.max+=this.options.stepSize;
+        }
+        if(this.options.intervalScale==='step'){
+            this.resetIntervalFilterActive();
+            this.intervalRange.width -= stepWidth;
         }
 
         // UPDATE intervalScale
         switch(this.options.intervalScale){
             case 'linear':
-            case 'step':
             case 'percentage':
+            case 'step':
                 this.valueScale = d3.scale.linear(); break;
             case 'log':
                 this.valueScale = d3.scale.log().base(2); break;
@@ -5531,6 +5539,11 @@ kshf.Facet_Interval.prototype = {
         this.valueScale
             .domain([this.intervalRange.min, this.intervalRange.max])
             .range([0, this.intervalRange.width]);
+
+        if(this.options.intervalScale==='step'){
+            this.valueScale
+                .range([0+stepWidth/2, this.intervalRange.width+stepWidth/2]);
+        }
 
         var ticks;
 
@@ -5611,6 +5624,17 @@ kshf.Facet_Interval.prototype = {
                     return s;
                 };
                 this.height_labels = 28;
+            } else if((timeRange/(1000*60*60*24*30*6)) < optimalTickCount){
+                timeInterval = d3.time.month.utc;
+                timeIntervalStep = 6;
+                this.intervalTickFormat = function(v){
+                    var threeMonthsLater = timeInterval.offset(v, 6);
+                    var first=d3.time.format.utc("%-b")(v);
+                    var s=first;
+                    if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(threeMonthsLater));
+                    return s;
+                };
+                this.height_labels = 28;
             } else if((timeRange/(1000*60*60*24*365)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 1;
@@ -5666,11 +5690,6 @@ kshf.Facet_Interval.prototype = {
                     }
                     break;
                 case 'step':
-                    var range=this.intervalRange.max-this.intervalRange.min+1;
-                    ticks = new Array(Math.floor(range/this.options.stepSize));
-                    for(var m=0,n=0; m<range; m+=this.options.stepSize,n++){
-                        ticks[n] = this.intervalRange.min+m;
-                    }
                     this.intervalTickFormat = d3.format("d");
                     break;
                 default:
@@ -5683,7 +5702,11 @@ kshf.Facet_Interval.prototype = {
             this.intervalTickFormat = this.options.intervalTickFormat;
         }
 
-        this.barWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
+        if(this.options.intervalScale!=='step'){
+            this.barWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
+        } else {
+            this.barWidth = w/tmp;
+        }
 
         var numExistingBins = 0;
         if(this.intervalTicks) numExistingBins = this.histBins.length;
@@ -5696,8 +5719,26 @@ kshf.Facet_Interval.prototype = {
             var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
             // this calculates aggregation based on the intervalTicks, the filtered item list and the accessor function
-            this.histBins = d3.layout.histogram().bins(this.intervalTicks)
-                .value(accessor)(this.filteredItems);
+            if(this.options.intervalScale!=='step'){
+                this.histBins = d3.layout.histogram().bins(this.intervalTicks)
+                    .value(accessor)(this.filteredItems);
+            } else {
+                // I'll do the bins myself, d3 just messes everything up when you want to use a simple step scale!
+                this.histBins = [];
+                for(var bin=this.intervalRange.min; bin<=this.intervalRange.max; bin++){
+                    var d=[];
+                    d.x=bin;
+                    d.y=0;
+                    d.dx = 0;
+                    this.histBins.push(d);
+                }
+                this.filteredItems.forEach(function(item){
+                    var v = accessor(item);
+                    var bin=this.histBins[v-this.intervalRange.min];
+                    bin.push(item);
+                    bin.y++;
+                },this);
+            }
             
             if(this.options.intervalScale==='time') {
                 if(this.dom.lineTrend_Total===undefined){
@@ -5753,7 +5794,7 @@ kshf.Facet_Interval.prototype = {
         return this.barWidth-this.width_barGap*2;
     },
     getAggreg_Width_Offset: function(){
-        if(this.options.intervalScale==='step'||this.options.intervalScale==='time')
+        if(this.options.intervalScale==='time')
             return this.barWidth/2;
         return 0;
     },
@@ -5861,6 +5902,9 @@ kshf.Facet_Interval.prototype = {
                 }
                 // if we are filtering the last aggr, make max_score inclusive
                 me.intervalFilter.max_inclusive = (aggr.x+aggr.dx)===me.intervalRange.max;
+                if(me.options.intervalScale==='step'){
+                    me.intervalFilter.max_inclusive = true;
+                }
 
                 me.intervalFilter.filteredBin=this;
                 me.intervalFilter.addFilter(true);
@@ -5932,7 +5976,7 @@ kshf.Facet_Interval.prototype = {
 
         this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider")
             .attr("anim",true)
-            .style('margin-left',this.vertAxisLabelWidth+"px");
+            .style('margin-left',(this.vertAxisLabelWidth)+"px");
 
         var controlLine = this.dom.intervalSlider.append("div").attr("class","controlLine")
         controlLine.append("span").attr("class","base total")
@@ -6136,8 +6180,8 @@ kshf.Facet_Interval.prototype = {
     refreshBins_Translate: function(){
         var me=this;
         var offset = 0;
-        if(this.options.intervalScale==='step')offset=this.width_barGap;
-        if(this.options.intervalScale==='time')offset=this.width_barGap;
+        if(this.options.intervalScale==='step') offset=this.width_barGap-this.barWidth/2;
+        if(this.options.intervalScale==='time') offset=this.width_barGap;
         this.dom.aggr_Group
             .style("width",this.getBarWidth_Real()+"px")
             .each(function(aggr){
@@ -6492,11 +6536,11 @@ kshf.Facet_Interval.prototype = {
         if(this.intervalFilter.active.max===this.intervalRange.max){
             maxPos = this.valueScale.range()[1];
         }
+        if(this.options.intervalScale==='step'){
+            minPos-=this.barWidth/2;
+            maxPos+=this.barWidth/2;
+        }
 
-        this.dom.intervalSlider.select(".base.total")
-            .style("margin-left",this.valueScale.range()[0]+"px")
-            .style("width",(this.intervalRange.width)+"px")
-            ;
         this.dom.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
@@ -6590,11 +6634,10 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     updateQuantiles: function(){
         // get active values into an array
+        // the items are already sorted by their numeric value, it's just a linear pass.
         var values = [];
         var filterId = this.intervalFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
-
-        // use this is filteredItems are primary
         if(!this.hasEntityParent()){
             this.filteredItems.forEach(function(item){
                 if(item.isWanted) values.push(accessor(item));
