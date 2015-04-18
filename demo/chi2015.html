@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>CHI2015 Papers</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+
+function resizeBrowser(){
+    $('#chart_div').width($(window).width()-100);
+    $('#chart_div').height($(window).height()-100);
+}
+
+google.setOnLoadCallback(function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 180,
+        rightPanelLabelWidth: 250,
+        itemName: "Papers & Notes",
+        source: {
+            url: "http://confer.csail.mit.edu/chi2015/papers",
+            callback : function(browser){
+                browser.primaryTableName = "Papers";
+
+                kshf.dt.Papers = [];
+                kshf.dt_id.Papers = {};
+                kshf.dt.Sessions = [];
+                kshf.dt_id.Sessions = {};
+
+                var arr = kshf.dt.Papers;
+                $.ajax({
+                    url: "./data/chi2015_papers.json",
+                    async: false,
+                    error: function(e,f){
+                        console.log(e+" - "+f);
+                    },
+                    success: function(data){
+                        for(var key in data){
+                            var paper = data[key];
+                            if(paper.subtype===undefined) continue;
+                            if(paper.subtype!=="Paper" && paper.subtype!=="Note") continue;
+                            paper.key = key;
+                            var item = new kshf.Item(paper,"key");
+                            arr.push(item);
+                            kshf.dt_id.Papers[key] = item;
+                        }
+                    }
+                });
+
+                $.ajax({
+                    url: "./data/chi2015_sessions.json",
+                    async: false,
+                    error: function(e,f){
+                        console.log(e+" - "+f);
+                    },
+                    success: function(data){
+                        for(var key in data){
+                            var session = data[key];
+                            session.key = key;
+
+                            session.submissions.forEach(function(submissionKey){
+                                var paper = kshf.dt_id.Papers[submissionKey];
+                                // add session information to the paper
+                                if(paper) paper.data.session = session;
+                            });
+                        }
+
+                    }
+                });
+
+
+                browser.items = arr;
+                browser.itemsSelectedCt = arr.length;
+
+                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                d3.select(".kshf.layout_infobox div.status_text div").text("");
+                window.setTimeout(function() { browser.loadCharts(); }, 50);
+
+            }
+        },
+        facets: [
+            {
+                facetTitle: "Type", 
+                catItemMap: function(d){
+                    return d.data.subtype;
+                }
+            },{ facetTitle: "Highlights",
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.award) r.push("Awarded");
+                    if(d.data.hm) r.push("Honorable Mention");
+                    return r;
+                }
+            },{ facetTitle: "Keywords", minAggrValue: 2,
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.keywords===undefined) return;
+                    d.data.keywords.forEach(function(keyword){
+                        r.push(kshf.Util.toProperCase(keyword));
+                    });
+                    return r;
+                },
+            },{ facetTitle: "Authors", 
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.authors===undefined) return r;
+                    d.data.authors.forEach(function(author){
+                        r.push(kshf.Util.toProperCase(author.name));
+                    });
+                    return r;
+                },
+            },{ facetTitle: "Author Institution", 
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.authors===undefined) return r;
+                    d.data.authors.forEach(function(author){
+                        r.push(kshf.Util.toProperCase(author.institution));
+                    });
+                    return r;
+                },
+            },{ facetTitle: "Author Country", 
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.authors===undefined) return r;
+                    d.data.authors.forEach(function(author){
+                        r.push(kshf.Util.toProperCase(author.country));
+                    });
+                    return r;
+                },
+            },{ facetTitle: "Session Title", layout: 'right',
+                catItemMap: function(d){
+                    if(d.data.session===undefined) return;
+                    return d.data.session.s_title.substring(8);
+                },
+            },{ facetTitle: "Session Day", layout: 'right',
+                catItemMap: function(d){
+                    if(d.data.session===undefined) return;
+                    switch(d.data.session.day){
+                        case "Monday": return 0;
+                        case "Tuesday": return 1;
+                        case "Wednesday": return 2;
+                        case "Thursday": return 3;
+                    }
+                },
+                sortingOpts: [{
+                    no_resort: true,
+                    func: kshf.Util.sortFunc_Column_ParseInt_Incr
+                }],
+                catLabelText: function(d){
+                    switch(d.data[1]){
+                        case 0: return "Monday";
+                        case 1: return "Tuesday";
+                        case 2: return "Wednesday";
+                        case 3: return "Thursday";
+                    }
+                }
+            },{ facetTitle: "Session Time",  layout: 'right',
+                catItemMap: function(d){
+                    if(d.data.session===undefined) return;
+                    switch(d.data.session.time){
+                        case "9:30-10:50": return 0;
+                        case "11:30-12:50": return 1;
+                        case "14:30-15:50": return 2;
+                        case "16:30-17:50": return 3;
+                    }
+                },
+                sortingOpts: [{
+                    no_resort: true,
+                    func: kshf.Util.sortFunc_Column_ParseInt_Incr
+                }],
+                catLabelText: function(d){
+                    switch(d.data[1]){
+                        case 0: return "9:30-10:50";
+                        case 1: return "11:30-12:50";
+                        case 2: return "14:30-15:50";
+                        case 3: return "16:30-17:50";
+                    }
+                }
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 55,
+            detailsToggle : "Zoom",
+            sortingOpts : [
+                {   name: '', inverse: true,
+                    value: function(d){ return d.data.key; }
+                }
+            ],
+            textSearch: 'title',
+            autoExpandMore: true,
+            content: 'title'
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1090px;
+                height: 650px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">CHI-2015 Papers &amp; Notes</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            This is just a quick experiment. Data is from <a href="http://confer.csail.mit.edu/chi2015/papers" target='_blank'>MIT's page</a>. All errors in the interface are mine. Feel free to bug me at 
+                <a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+
+    </body>
+</html>

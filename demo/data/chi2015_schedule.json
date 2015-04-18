@@ -1,0 +1,1158 @@
+[
+    {
+        "date": "April 20, 2015",
+        "day": "Monday",
+        "slots": [
+            {
+                "slot_id": "Monday_8_30_10_00",
+                "time": "8:30 - 10:00",
+                "slot_class": "keynote",
+                "sessions": [
+                    {
+                        "session": "keynote-1",
+                        "room": "Plenary Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_10_00_11_30",
+                "time": "10:00 - 11:30",
+                "slot_class": "morning2",
+                "sessions": [
+                    {
+                        "session": "break-1",
+                        "room": ""
+                    },
+                    {
+                        "session": "sgc-ex-1",
+                        "room": "Exhibit Hall"
+                    },
+                    {
+                        "session": "vid-1",
+                        "room": "401"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_11_30_12_50",
+                "time": "11:30 - 12:50",
+                "slot_class": "morning4",
+                "sessions": [
+                    {
+                        "session": "s-float-6",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-2",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s130",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s119",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s157",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s155",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s124",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-43",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel1",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-alt5",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs108",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs128",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs132",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_12_50_14_30",
+                "time": "12:50 - 14:30",
+                "slot_class": "lunch",
+                "sessions": [
+                    {
+                        "session": "break-2",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_14_30_15_50",
+                "time": "14:30 - 15:50",
+                "slot_class": "afternoon1",
+                "sessions": [
+                    {
+                        "session": "s-award3",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-21",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s108",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-45",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s100",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s131",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s116",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-41",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s109",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-case1",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs112",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs135",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs118",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs111",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig5",
+                        "room": "318A"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_15_50_16_30",
+                "time": "15:50 - 16:30",
+                "slot_class": "afternoon2",
+                "sessions": [
+                    {
+                        "session": "break-3",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_16_30_17_50",
+                "time": "16:30 - 17:50",
+                "slot_class": "afternoon3",
+                "sessions": [
+                    {
+                        "session": "s134",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-23",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s-float-48",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s118",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s153",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s110",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s146",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-30",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-float-29",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-alt2",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs112-1",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs135-1",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs118-1",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs111-1",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Monday_18_00_19_30",
+                "time": "18:00 - 19:30",
+                "slot_class": "afternoon4",
+                "sessions": [
+                    {
+                        "session": "special-1",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "date": "April 21, 2015",
+        "day": "Tuesday",
+        "slots": [
+            {
+                "slot_id": "Tuesday_8_30_9_20",
+                "time": "8:30 - 9:20",
+                "slot_class": "keynote",
+                "sessions": [
+                    {
+                        "session": "keynote-2",
+                        "room": "Plenary Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_9_30_10_50",
+                "time": "9:30 - 10:50",
+                "slot_class": "morning2",
+                "sessions": [
+                    {
+                        "session": "s141",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-22",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s132",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s133",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s148",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-14",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s-float-12",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s151",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-float-40",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-case2",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs122",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs100",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs129",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs106",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_10_50_11_30",
+                "time": "10:50 - 11:30",
+                "slot_class": "morning3",
+                "sessions": [
+                    {
+                        "session": "break-4",
+                        "room": ""
+                    },
+                    {
+                        "session": "wip-1",
+                        "room": "Exhibit Hall"
+                    },
+                    {
+                        "session": "int-1",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+
+            {
+                "slot_id": "Tuesday_11_30_12_50",
+                "time": "11:30 - 12:50",
+                "slot_class": "morning4",
+                "sessions": [
+                    {
+                        "session": "s154",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-25",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s111",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s168",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s161",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s135",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s-float-33",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-42",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel2",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-alt3",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs122-1",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs100-1",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs129-1",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs106-1",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig4",
+                        "room": "318A"
+                    },
+                    {
+                        "session": "s-competition",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_12_50_14_30",
+                "time": "12:50 - 14:30",
+                "slot_class": "lunch",
+                "sessions": [
+                    {
+                        "session": "break-5",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_14_30_15_50",
+                "time": "14:30 - 15:50",
+                "slot_class": "afternoon1",
+                "sessions": [
+                    {
+                        "session": "s-award2",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-24",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s-float-47",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s142",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s138",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s164",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s-float-38",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s139",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s136",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-case3",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs133",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs134",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs109",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs131",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_15_50_16_30",
+                "time": "15:50 - 16:30",
+                "slot_class": "afternoon2",
+                "sessions": [
+                    {
+                        "session": "break-6",
+                        "room": ""
+                    },
+                    {
+                        "session": "wip-2",
+                        "room": "Exhibit Hall"
+                    },
+                    {
+                        "session": "int-2",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_16_30_17_50",
+                "time": "16:30 - 17:50",
+                "slot_class": "afternoon3",
+                "sessions": [
+                    {
+                        "session": "s117",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-20",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s102",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-17",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s-float-8",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-13",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s113",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-5",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-float-39",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s167",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs133-1",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs134-1",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs109-1",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs131-1",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig1",
+                        "room": "318A"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Tuesday_18_00_19_30",
+                "time": "18:00 - 19:30",
+                "slot_class": "afternoon4",
+                "sessions": [
+                    {
+                        "session": "special-2",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "date": "April 22, 2015",
+        "day": "Wednesday",
+        "slots": [
+            {
+                "slot_id": "Wednesday_8_30_9_20",
+                "time": "8:30 - 9:20",
+                "slot_class": "keynote",
+                "sessions": [
+                    {
+                        "session": "keynote-3",
+                        "room": "Plenary Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_9_30_10_50",
+                "time": "9:30 - 10:50",
+                "slot_class": "morning2",
+                "sessions": [
+                    {
+                        "session": "s166",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s101",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s159",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-16",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s-float-36",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-10",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s152",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-28",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-float-15",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-alt4",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs101",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-crs116",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs121",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_10_50_11_30",
+                "time": "10:50 - 11:30",
+                "slot_class": "morning3",
+                "sessions": [
+                    {
+                        "session": "break-7",
+                        "room": ""
+                    },
+                    {
+                        "session": "wip-3",
+                        "room": "Exhibit Hall"
+                    },
+                    {
+                        "session": "int-3",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_11_30_12_50",
+                "time": "11:30 - 12:50",
+                "slot_class": "morning4",
+                "sessions": [
+                    {
+                        "session": "s-float-49",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s103",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s143",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s104",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s160",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-27",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s169",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-46",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel3",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s156",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs101-1",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-src",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs116-1",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs121-1",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig2",
+                        "room": "318A"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_12_50_14_30",
+                "time": "12:50 - 14:30",
+                "slot_class": "lunch",
+                "sessions": [
+                    {
+                        "session": "break-8",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_14_30_15_50",
+                "time": "14:30 - 15:50",
+                "slot_class": "afternoon1",
+                "sessions": [
+                    {
+                        "session": "s-award1",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s127",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s140",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-18",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s137",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s107",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s-float-32",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s125",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel4",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-crs115",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs104",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-sdc",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs117",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs107",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig6",
+                        "room": "318A"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_15_50_16_30",
+                "time": "15:50 - 16:30",
+                "slot_class": "afternoon2",
+                "sessions": [
+                    {
+                        "session": "break-9",
+                        "room": ""
+                    },
+                    {
+                        "session": "wip-4",
+                        "room": "Exhibit Hall"
+                    },
+                    {
+                        "session": "int-4",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_16_30_17_50",
+                "time": "16:30 - 17:50",
+                "slot_class": "afternoon3",
+                "sessions": [
+                    {
+                        "session": "s106",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s128",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s162",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-3",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s144",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-50",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s145",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s147",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s165",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-crs115-1",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs104-1",
+                        "room": "317A"
+                    },
+                    {
+                        "session": "s-sgc",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs117-1",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs107-1",
+                        "room": "318BC"
+                    },
+                    {
+                        "session": "s-sig3",
+                        "room": "318A"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "date": "April 23, 2015",
+        "day": "Thursday",
+        "slots": [
+            {
+                "slot_id": "Thursday_8_30_9_20",
+                "time": "8:30 - 9:20",
+                "slot_class": "keynote",
+                "sessions": [
+                    {
+                        "session": "keynote-4",
+                        "room": "Plenary Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_9_30_10_50",
+                "time": "9:30 - 10:50",
+                "slot_class": "morning2",
+                "sessions": [
+                    {
+                        "session": "s105",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-1",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s122",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s115",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s123",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-11",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s114",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-37",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel5",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-case4",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs138",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs119",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-crs110",
+                        "room": "318BC"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_10_50_11_30",
+                "time": "10:50 - 11:30",
+                "slot_class": "morning3",
+                "sessions": [
+                    {
+                        "session": "break-10",
+                        "room": ""
+                    },
+                    {
+                        "session": "int-4",
+                        "room": "Exhibit Hall"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_11_30_12_50",
+                "time": "11:30 - 12:50",
+                "slot_class": "morning4",
+                "sessions": [
+                    {
+                        "session": "s150",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s129",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s149",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s120",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s-float-7",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s126",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s121",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-31",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s-panel6",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-alt1",
+                        "room": "308"
+                    },
+                    {
+                        "session": "s-crs103",
+                        "room": "317BC"
+                    },
+                    {
+                        "session": "s-crs124",
+                        "room": "E7"
+                    },
+                    {
+                        "session": "s-sig7",
+                        "room": "318A"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_12_50_14_30",
+                "time": "12:50 - 14:30",
+                "slot_class": "lunch",
+                "sessions": [
+                    {
+                        "session": "break-11",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_14_30_15_50",
+                "time": "14:30 - 15:50",
+                "slot_class": "afternoon1",
+                "sessions": [
+                    {
+                        "session": "s-float-9",
+                        "room": "401"
+                    },
+                    {
+                        "session": "s-float-26",
+                        "room": "E5"
+                    },
+                    {
+                        "session": "s-float-34",
+                        "room": "E6"
+                    },
+                    {
+                        "session": "s-float-19",
+                        "room": "E1/E2"
+                    },
+                    {
+                        "session": "s158",
+                        "room": "402"
+                    },
+                    {
+                        "session": "s-float-35",
+                        "room": "E3"
+                    },
+                    {
+                        "session": "s112",
+                        "room": "E4"
+                    },
+                    {
+                        "session": "s-float-4",
+                        "room": "403"
+                    },
+                    {
+                        "session": "s163",
+                        "room": "307"
+                    },
+                    {
+                        "session": "s-case5",
+                        "room": "308"
+                    }
+                ]
+            },
+            {
+                "slot_id": "Wednesday_15_50_16_30",
+                "time": "15:50 - 16:30",
+                "slot_class": "afternoon2",
+                "sessions": [
+                    {
+                        "session": "break-12",
+                        "room": ""
+                    }
+                ]
+            },
+            {
+                "slot_id": "Thursday_16_30_17_50",
+                "time": "16:30 - 17:50",
+                "slot_class": "keynote",
+                "sessions": [
+                    {
+                        "session": "keynote-5",
+                        "room": "Plenary Hall"
+                    }
+                ]
+            }
+        ]
+    }
+]
