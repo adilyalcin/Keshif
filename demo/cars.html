@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Cars</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    leftPanelLabelWidth: 100,
+                    rightPanelLabelWidth: 150,
+                    source: {
+                        gdocId : '1UPaqtGuoeGXcxXKSVh1IJ-i40gbTgGfb_jZo494PlXk',
+                        sheets : [ {name:"Cars"} ]
+                    },
+                    facets: [
+                        {   facetTitle: "Origin",
+                            catItemMap: function(d){
+                                switch(d.data[8]){
+                                    case 1: return "American";
+                                    case 2: return "European";
+                                    case 3: return "Japanese";
+                                }
+                                return "Da?";
+                            }
+                        },{ facetTitle: "Cyclinders", type: "categorical",
+                            sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
+                        },{ facetTitle: "MPG", type: 'interval'
+                        },{ facetTitle: "Engine Displacement", unitName: "cu.\"", layout: 'right'
+                        },{ facetTitle: "Horsepower", layout: 'right'
+                        },{ facetTitle: "Weight", unitName: "lbs", layout: 'right'
+                        },{ facetTitle: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
+                        },{ facetTitle: "Year", layout: "bottom"
+                        }
+                    ],
+                    itemDisplay: {
+                        sortColWidth: 70,
+                        detailsToggle : "Zoom",
+                        autoExpandMore: true,
+                        sortingOpts : [ {name: 'MPG'},{name: "Weight"}, {name: "Year"} ],
+                        textSearch: "Name",
+                        content: "Name"
+                    }
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 890px;
+                height: 600px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
