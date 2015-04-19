@@ -33,7 +33,7 @@ browser = new kshf.Browser({
     rightPanelLabelWidth: 140,
     barChartWidth: 70,
     itemName: "Datasets Keshif-ized",
-    catBarScale: "scale_frequency",
+    //catBarScale: "scale_frequency",
     source: {
         gdocId : '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
         sheets : [ {name:"Demos"} ]
@@ -45,7 +45,7 @@ browser = new kshf.Browser({
         {
             facetTitle: "Code complexity",
             description: "Relative code complexity of demo source",
-            layout: 'right',
+            layout: 'right', collapsed: true,
             catItemMap: function(d){
                 switch(d.data[dataColumns['Code Complexity']]){
                     case 1: return "A breeze *";
@@ -62,6 +62,11 @@ browser = new kshf.Browser({
                     return a-b;
                 }
             }]
+        },{
+            facetTitle: "Keywords", layout: 'right',
+            catItemMap: function(d){
+                return d.data[dataColumns['Keywords']].split("+");
+            }
         },{
             facetTitle: "Facet Types &amp; Features",
             catItemMap: function(d){
