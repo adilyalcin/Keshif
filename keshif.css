@@ -982,26 +982,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   cursor: pointer;
   vertical-align: top;
-  margin-right: 3px;
   z-index: 100;
   pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton {
   pointer-events: all;
+  margin-right: 2px;
+  border-radius: 4px;
   display: none;
-  margin-right: 1px;
-  vertical-align: top;
+  vertical-align: middle;
+  background-color: #269aa3;
+  color: white;
+  line-height: 13px;
+  padding: 1px 2px 0px 2px;
+  font-weight: 300;
+  font-size: 0.7em;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:hover {
-  color: #1c737a;
+  background-color: #1c737a;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:before {
+  content: "Or";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
+  border-radius: 4px;
   pointer-events: all;
   display: none;
-  vertical-align: top;
+  margin-right: 2px;
+  vertical-align: middle;
+  color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:hover {
-  color: gray;
+  color: black;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] .measureLabel {
   visibility: hidden;
@@ -1015,32 +1027,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib:not([selected="0"]) .clickArea {
   cursor: pointer;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"] {
+  /*                            &[show-box=true]{
+                                > .attribLabel > .theLabel:before{
+                                    content: "And";
+                                    background-color: @color_query_and;
+                                }
+                            }*/
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"] > .attribLabel > .theLabel {
   color: #1d4870;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"][show-box=true] > .attribLabel > .theLabel:before {
-  content: "And";
-  background-color: #1d4870;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"] > .attribLabel > .theLabel {
   color: #1c737a;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"][show-box=true] > .attribLabel > .theLabel:before {
-  content: "Or";
-  background-color: #1c737a;
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="2"][show-box=true] > .attribLabel > .filterButtons > .orButton {
+  display: inline;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] {
+  /*
+                            > .attribLabel > .theLabel{
+                                color: @color_query_not;
+                                &:before{
+                                    content: "Not";
+                                    background-color: @color_query_not;
+                                }
+                            }
+                            */
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel {
   color: #808080;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel:before {
-  content: "Not";
-  background-color: #808080;
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .filterButtons > .notButton {
+  display: inline-block;
+  color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight^="selected"] > .attribLabel > .theLabel {
   font-weight: 700 !important;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight^="selected"][selected="0"] .clickArea {
-  cursor: cell;
+  cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight^="selected"][selected="0"][selecttype="and"] > .attribLabel > .theLabel {
   color: #1d4870;
@@ -1091,7 +1117,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke-width: 2px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.preview {
-  fill: none;
+  fill: rgba(255, 69, 0, 0.3);
   stroke: #ff4500;
   stroke-width: 2px;
   opacity: 0;
@@ -1477,19 +1503,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton {
   display: inline-block;
 }
-.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
+.kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"][filtered_and="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="-1"] {
   cursor: pointer;
 }
-.kshf .kshfChart[hasmultivalueitem=false]:not([filtered_or="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .orButton {
-  display: inline-block;
+.kshf .kshfChart:not([filtered_or="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton {
+  display: inline;
+}
+.kshf .kshfChart:not([filtered_and="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton {
+  display: inline;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .notButton {
-  display: inline-block;
-}
-.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .orButton {
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {

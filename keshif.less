@@ -974,23 +974,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             cursor: pointer;
                             vertical-align: top;
                             //float: left;
-                            margin-right: 3px;
                             z-index: 100;
 //                            margin-bottom: -2px;
 //                            font-size: 1.1em;
                             pointer-events: all;
                             > .orButton {
                                 pointer-events: all;
+                                margin-right: 2px;
+                                border-radius: 4px;
                                 display: none;
-                                margin-right: 1px;
-                                vertical-align: top;
-                                &:hover { color: @color_query_or; }
+                                vertical-align: middle;
+                                background-color: lighten(@color_query_or, 10%);
+                                color: white;
+                                line-height: 13px;
+                                padding: 1px 2px 0px 2px;
+                                font-weight: 300;
+                                font-size: 0.7em;
+                                &:hover { background-color: @color_query_or; }
+                                &:before{ content: "Or"; }
                             }
                             > .notButton {
+                                border-radius: 4px;
                                 pointer-events: all;
                                 display: none;
-                                vertical-align: top;
-                                &:hover { color: gray; }
+                                margin-right: 2px;
+                                vertical-align: middle;
+                                color: gray;
+                                &:hover { color: black; }
                             }
                         }
                         
@@ -1014,31 +1024,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         // AND
                         &[selected="1"]{
                             > .attribLabel > .theLabel{ color: @color_query_and; }
-                            &[show-box=true]{
+/*                            &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
                                     content: "And";
                                     background-color: @color_query_and;
                                 }
-                            }
+                            }*/
                         }
                         // OR
                         &[selected="2"]{
                             > .attribLabel > .theLabel{ color: @color_query_or; }
                             &[show-box=true]{
-                                > .attribLabel > .theLabel:before{
-                                    content: "Or";
-                                    background-color: @color_query_or;
+                                > .attribLabel > .filterButtons > .orButton {
+                                    display: inline;
                                 }
                             }
                         }
                         // NOT
                         &[selected="-1"]{
+                            /*
                             > .attribLabel > .theLabel{
                                 color: @color_query_not;
                                 &:before{
                                     content: "Not";
                                     background-color: @color_query_not;
                                 }
+                            }
+                            */
+                            > .attribLabel > .theLabel{
+                                color: @color_query_not;
+                            }
+                            > .attribLabel > .filterButtons > .notButton{
+                                display: inline-block;
+                                color: @color_query_not;
                             }
                         }
 
@@ -1049,7 +1067,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                                 // Not selected
                                 &[selected="0"] {
-                                    .clickArea { cursor: cell; }
+                                    .clickArea { cursor: pointer; }
                                     &[selecttype="and"] > .attribLabel > .theLabel{
                                         color: @color_query_and;
                                     }
@@ -1106,7 +1124,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             stroke-width: 2px;
                         }
                         .lineTrend.preview{
-                            fill: none;
+                            fill: fadeout(@color_bar_preview,70%);
                             stroke: @color_bar_preview;
                             stroke-width: 2px;
                             opacity: 0;
@@ -1488,22 +1506,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[hasmultivalueitem=false]{
-            &[filtered_or="0"]{
+            &[filtered_or="0"][filtered_and="0"]{
                 > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
                     &[selected="0"] .notButton{
                         display: inline-block;
                     }
+                }
+            }
+            &[filtered_or="0"]{
+                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
                     &[selected="-1"] {
                         cursor: pointer;
                     }
                 }
             }
-            &:not([filtered_or="0"]){
-                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
-                    &[selected="0"] .orButton{
-                        display: inline-block;
-                    }
-                }
+        }
+        &:not([filtered_or="0"]){
+            > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton{
+                display: inline;
+            }
+        }
+        &:not([filtered_and="0"]){
+            > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton{
+                display: inline;
             }
         }
         &[hasmultivalueitem=true]{
@@ -1511,7 +1536,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &[selected="0"]{
                     &[highlight="selected"] {
                         .notButton{ display: inline-block; }
-                        .orButton{ display: inline-block; }
                     }
                 }
             }

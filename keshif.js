@@ -3451,48 +3451,48 @@ kshf.Facet_Categorical.prototype = {
                 var filterId = filter.id;
 
                 this.filteredItems.forEach(function(item){
-                    var attribItems=item.mappedDataCache[filterId];
+                    var recordVal_s=item.mappedDataCache[filterId];
 
-                    if(attribItems===null){ // item is mapped to none
+                    if(recordVal_s===null){
                         if(filter.selected_AND.length>0 || filter.selected_OR.length>0){
                             item.setFilterCache(filterId,false); return;
                         }
                         item.setFilterCache(filterId,true); return;
                     }
+
                     // Check NOT selections - If any mapped item is NOT, return false
                     // Note: no other filtering depends on NOT state.
         /*            if(filter.selected_NOT.length>0){
-                        if(!attribItems.every(function(item){ 
+                        if(!recordVal_s.every(function(item){ 
                             return !item.is_NOT() && item.isWanted;
                         })){
                             item.setFilterCache(filterId,false); return;
                         }
                     }*/ // THIS THING ABOVE IS FOR MULTI_LEVEL FILTERING AND NOT QUERY
                     
+                    // If any of the record values are selected with NOT, the item will be removed
                     if(filter.selected_NOT.length>0){
-                        if(!attribItems.every(function(item){ 
-                            return !item.is_NOT();
-                        })){
+                        if(!recordVal_s.every(function(val){ return !val.is_NOT(); })){
                             item.setFilterCache(filterId,false); return;
                         }
                     }
-                    // Check OR selections - If any mapped item is OR, return true
-                    if(filter.selected_OR.length>0){
-                        if(attribItems.some(function(d){ return (d.is_OR()); })){
-                            item.setFilterCache(filterId,true); return;
-                        }
-                    }
-                    // Check AND selections - If any mapped item is not AND, return false;
+                    // All AND selections must be among the record values
                     if(filter.selected_AND.length>0){
+                        // Compute the number of record values selected with AND.
                         var t=0;
-                        attribItems.forEach(function(m){ if(m.is_AND()) t++; })
+                        recordVal_s.forEach(function(m){ if(m.is_AND()) t++; })
                         if(t!==filter.selected_AND.length){
                             item.setFilterCache(filterId,false); return;
                         }
-                        item.setFilterCache(filterId,true); return;
                     }
+                    // One of the OR selections must be among the item values
+                    // Check OR selections - If any mapped item is OR, return true
                     if(filter.selected_OR.length>0){
-                        item.setFilterCache(filterId,false); return;
+                        if(recordVal_s.some(function(d){ return (d.is_OR()); })){
+                            item.setFilterCache(filterId,true); return;
+                        } else {
+                            item.setFilterCache(filterId,false); return;
+                        }
                     }
                     // only NOT selection
                     item.setFilterCache(filterId,true);
@@ -4479,7 +4479,6 @@ kshf.Facet_Categorical.prototype = {
             this.browser.skipSortingFacet.divRoot.attr("refreshSorting",false);
         }
         this.browser.skipSortingFacet=this;
-
         this.browser.skipSortingFacet.dirtySort = true;
         this.browser.skipSortingFacet.divRoot.attr("refreshSorting",true);
 
@@ -4501,8 +4500,13 @@ kshf.Facet_Categorical.prototype = {
                 this.attribFilter.how = this.attribFilter.selected_OR.length===0?"MoreResults":"LessResults";
             }
             attrib.set_NONE();
-            if(this.attribFilter.selected_OR.length===0 && this.attribFilter.selected_AND.length===0 &&
-                    this.attribFilter.selected_NOT.length===0){
+            if(this.attribFilter.selected_OR.length===1 && this.attribFilter.selected_AND.length===0){
+                this.attribFilter.selected_OR.forEach(function(a){ 
+                    a.set_NONE();
+                    a.set_AND(this.attribFilter.selected_AND);
+                },this);
+            }
+            if(!this.attribFilter.selected_Any()){
                 this.dirtySort = false;
                 this.divRoot.attr("refreshSorting",false);
             }
@@ -4510,9 +4514,8 @@ kshf.Facet_Categorical.prototype = {
         }
         if(what==="NOT"){
             if(attrib.is_NONE()){
-                // if number of items in this attrib equals to current result count, do nothing!
                 if(attrib.aggregate_Active===this.browser.itemsWantedCount){
-                    alert("Removing this attribute would make an empty result set, so it is not allowed.");
+                    alert("Removing this category will create an empty result list, so it is not allowed.");
                     return;
                 }
                 this.attribFilter.how = "LessResults";
@@ -4528,14 +4531,19 @@ kshf.Facet_Categorical.prototype = {
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_AND, {id:this.attribFilter.id, info:attrib.id()});
         }
         if(what==="OR"){
-            if(!this.hasMultiValueItem){
-                // remove NOT selections...
+            if(!this.hasMultiValueItem && this.attribFilter.selected_NOT.length>0){
                 var temp = [];
                 this.attribFilter.selected_NOT.forEach(function(a){ temp.push(a); });
                 temp.forEach(function(a){ a.set_NONE(); });
             }
+            if(this.attribFilter.selected_OR.length===0 && this.attribFilter.selected_AND.length===1){
+                this.attribFilter.selected_AND.forEach(function(a){ 
+                    a.set_NONE();
+                    a.set_OR(this.attribFilter.selected_OR);
+                },this);
+            }
             attrib.set_OR(this.attribFilter.selected_OR);
-            this.attribFilter.how = this.attribFilter.selected_OR.length===1?"LessResults":"MoreResults";
+            this.attribFilter.how = "MoreResults";
             if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR, {id:this.attribFilter.id, info:attrib.id()});
         }
         if(how) this.attribFilter.how = how;
@@ -4560,7 +4568,11 @@ kshf.Facet_Categorical.prototype = {
     cbAttribEnter: function(attrib){
         var me=this;
         if(this.isAttribSelectable(attrib)) {
-            attrib.DOM.facet.setAttribute("selecttype",this.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype","and");
+            attrib.DOM.facet.setAttribute("highlight","selected");
+            if(!this.hasMultiValueItem && this.attribFilter.selected_AND.length!==0) {
+                return;
+            }
             attrib.highlightAll(true);
             var timeoutTime = 400;
             if(this.browser._previewCompare_Active) timeoutTime = 0;
@@ -4584,7 +4596,7 @@ kshf.Facet_Categorical.prototype = {
             if(this.tipsy_title===undefined) return;
         }
 
-        this.cbAttribEnter_Tipsy(attrib);
+//        this.cbAttribEnter_Tipsy(attrib);
     },
     cbAttribEnter_Tipsy: function(attrib){
         if(attrib.cliqueRow)
@@ -4641,7 +4653,7 @@ kshf.Facet_Categorical.prototype = {
             this.resultPreviewShowTimeout = null;
         }
 
-        if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
+//        if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
     },
     /** - */
     insertAttribs: function(){
@@ -4700,13 +4712,13 @@ kshf.Facet_Categorical.prototype = {
         var cbAttribClick = function(attrib){
             if(!me.isAttribSelectable(attrib)) return;
 
-            if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
+///            if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
 
             if(this.timer){
                 // double click
                 // Only meaningul & active if facet has multi value items
                 me.unselectAllAttribs();
-                me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR","All");
+                me.filterAttrib("AND","All");
                 if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_EXACT,{id: me.attribFilter.id, info: attrib.id()});
                 return;
             } else {
@@ -4718,15 +4730,25 @@ kshf.Facet_Categorical.prototype = {
                     me.filterAttrib(attrib,"OR");
                 } else {
                     // remove the single selection if it is defined with OR
-                    if(!me.hasMultiValueItem && me.attribFilter.selected_OR.length>0){
+                    if(!me.hasMultiValueItem && me.attribFilter.selected_Any()){
                         if(me.attribFilter.selected_OR.indexOf(attrib)<0){
                             var temp = [];
                             me.attribFilter.selected_OR.forEach(function(a){ temp.push(a); });
                             temp.forEach(function(a){ a.set_NONE(); });
                         }
-                        me.filterAttrib(attrib,"OR","All");
+                        if(me.attribFilter.selected_AND.indexOf(attrib)<0){
+                            var temp = [];
+                            me.attribFilter.selected_AND.forEach(function(a){ temp.push(a); });
+                            temp.forEach(function(a){ a.set_NONE(); });
+                        }
+                        if(me.attribFilter.selected_NOT.indexOf(attrib)<0){
+                            var temp = [];
+                            me.attribFilter.selected_NOT.forEach(function(a){ temp.push(a); });
+                            temp.forEach(function(a){ a.set_NONE(); });
+                        }
+                        me.filterAttrib(attrib,"AND","All");
                     } else {
-                        me.filterAttrib(attrib,me.hasMultiValueItem?"AND":"OR");
+                        me.filterAttrib(attrib,"AND");
                     }
                 }
             }
@@ -4798,28 +4820,18 @@ kshf.Facet_Categorical.prototype = {
         };
 
         var cbOrEnter = function(attrib,i){
+            me.browser.clearResultPreviews();
             attrib.DOM.facet.setAttribute("selecttype","or");
             if(me.attribFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
 
             var DOM_facet = attrib.DOM.facet;
-            DOM_facet.tipsy.options.className = "tipsyFilterOr";
-            DOM_facet.tipsy_title = "<span class='action'><span class='fa fa-plus'></span> Or</span>";
             DOM_facet.tipsy.hide();
-            DOM_facet.tipsy.show();
-            DOM_facet.tipsy_active = DOM_facet.tipsy;
-            me.tipsy_active = DOM_facet.tipsy;
-            DOM_facet.tipsy.show();
 
             d3.event.stopPropagation();
         };
         var cbOrLeave = function(attrib,i){
-            this.__data__.DOM.facet.tipsy_title = undefined;
-            this.__data__.DOM.facet.tipsy.hide();
-            this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
-            this.__data__.DOM.facet.tipsy.show();
-            me.tipsy_active = this.__data__.DOM.facet.tipsy;
-            attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype","and");
             d3.event.stopPropagation();
         };
         var cbOrClick = function(attrib,i){
@@ -4831,12 +4843,7 @@ kshf.Facet_Categorical.prototype = {
         var cbNotEnter = function(attrib,i){
             // update the tooltip
             var DOM_facet = attrib.DOM.facet;
-            DOM_facet.tipsy_title = "<span class='action'><span class='fa fa-minus'></span> Not</span>";
-            DOM_facet.tipsy.options.className = "tipsyFilterNot";
-            DOM_facet.tipsy.show();
-            DOM_facet.tipsy_active = DOM_facet.tipsy;
-            me.tipsy_active = DOM_facet.tipsy;
-
+            DOM_facet.tipsy.hide();
             attrib.DOM.facet.setAttribute("selecttype","not");
             me.browser.root.attr("preview-not",true);
             me.browser.preview_not = true;
@@ -4845,21 +4852,19 @@ kshf.Facet_Categorical.prototype = {
             d3.event.stopPropagation();
         };
         var cbNotLeave = function(attrib,i){
-            this.__data__.DOM.facet.tipsy_title = undefined;
-            this.__data__.DOM.facet.tipsy.hide();
-            this.__data__.DOM.facet.tipsy.options.className = "tipsyFilterAnd";
-            me.tipsy_active = this.__data__.DOM.facet.tipsy;
-            attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
+            attrib.DOM.facet.setAttribute("selecttype","and");
             setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
             d3.event.stopPropagation();
         };
-        var cbAndClick = function(attrib,i){
-            me.browser.preview_not = false;
+        var cbNotClick = function(attrib,i){
+            me.browser.preview_not = true;
             me.filterAttrib(attrib,"NOT");
-            this.__data__.DOM.facet.tipsy.hide();
-            setTimeout(function(){me.browser.root.attr("preview-not",null);}, 1000);
+            setTimeout(function(){
+                me.browser.root.attr("preview-not",null);
+                me.browser.preview_not = false;
+            }, 1000);
             d3.event.stopPropagation();
         };
 
@@ -4867,14 +4872,14 @@ kshf.Facet_Categorical.prototype = {
 
         // These are "invisible"...
         var domLabelFilterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
-            domLabelFilterButtons.append("span").attr("class","orButton fa fa-plus-square")
-                .on("mouseenter",cbOrEnter)
-                .on("mouseleave",cbOrLeave)
-                .on("click",cbOrClick);
             domLabelFilterButtons.append("span").attr("class","notButton fa fa-minus-square")
                 .on("mouseenter",cbNotEnter)
                 .on("mouseleave",cbNotLeave)
-                .on("click",cbAndClick);
+                .on("click",cbNotClick);
+            domLabelFilterButtons.append("span").attr("class","orButton") //  fa fa-plus-square
+                .on("mouseenter",cbOrEnter)
+                .on("mouseleave",cbOrLeave)
+                .on("click",cbOrClick);
 
         var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
 
@@ -4904,6 +4909,7 @@ kshf.Facet_Categorical.prototype = {
                 d3.event.stopPropagation();
             })
             .on("mouseenter",function(attrib){
+                me.cbAttribEnter_Tipsy(attrib);
                 var DOM_facet = attrib.DOM.facet;
                 DOM_facet.tipsy.options.className = "tipsyFilterLock";
                 DOM_facet.tipsy_title = (me.browser.comparedAggregate!==attrib)?"Lock to compare":"Unlock";
@@ -4916,12 +4922,8 @@ kshf.Facet_Categorical.prototype = {
             })
             .on("mouseleave",function(attrib){
                 var DOM_facet = attrib.DOM.facet;
-                DOM_facet.tipsy_title = undefined;
                 DOM_facet.tipsy.hide();
-                DOM_facet.tipsy.options.className = "tipsyFilterAnd";
-                DOM_facet.tipsy.show();
-                me.tipsy_active = DOM_facet.tipsy;
-                attrib.DOM.facet.setAttribute("selecttype",me.hasMultiValueItem?"and":"or");
+                attrib.DOM.facet.setAttribute("selecttype","and");
                 d3.event.stopPropagation();
             })
             ;
@@ -5837,7 +5839,7 @@ kshf.Facet_Interval.prototype = {
                 this.tipsy.options.offset_y = me.browser.percentModeActive?
                     (-9):(me.height_hist-me.chartScale_Measure(aggr.aggregate_Active)-9);
                 this.tipsy.options.className = "tipsyFilterAnd";
-                this.tipsy.show();
+//                this.tipsy.show();
 
                 if(me.browser.livePreviewOn()){
                     var timeoutTime = 400;
@@ -5860,7 +5862,7 @@ kshf.Facet_Interval.prototype = {
                 }
             })
             .on("mouseleave",function(aggr){
-                this.tipsy.hide();
+                // this.tipsy.hide();
                 if(resultPreviewLogTimeout){
                     clearTimeout(resultPreviewLogTimeout);
                 }
@@ -6366,11 +6368,12 @@ kshf.Facet_Interval.prototype = {
         this.refreshMeasureLabel();
 
         if(this.options.intervalScale==='time'){
-            this.timeSVGLine = d3.svg.line()
+            this.timeSVGLine = d3.svg.area()
                 .x(function(aggr){ 
                     return me.valueScale(aggr.x)+width/2;
                 })
-                .y(function(aggr){
+                .y0(me.height_hist+2)
+                .y1(function(aggr){
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Preview(aggr);
                 });
