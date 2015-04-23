@@ -2,6 +2,8 @@
 // turn on social share by default
 var socialShare = true;
 
+var noRibbon = false;
+
 function writeCookie(name,value,days){
     var date, expires;
     if (days) {
@@ -131,19 +133,22 @@ var sendLog = function(actID, dt, ts){
 };;
 
 $(window).load(function(){
-    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
-    var pageName = window.location.pathname.split("/");
-    pageName = pageName[pageName.length-1];
 
-    d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
-        .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
-        .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span> ...");
+    if(!noRibbon){
+        var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+        var pageName = window.location.pathname.split("/");
+        pageName = pageName[pageName.length-1];
 
-    d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
-        .append("a").attr("href",githubDemoRoot+pageName).attr("target","_blank")
-        .attr("class","fork-ribbon").html(
-            "<span class='fa fa-code-fork fa-2x'></span> Fork me on "+
-            "<span class='fa fa-github fa-2x'></span>");
+        d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
+            .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
+            .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span> ...");
+
+        d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
+            .append("a").attr("href",githubDemoRoot+pageName).attr("target","_blank")
+            .attr("class","fork-ribbon").html(
+                "<span class='fa fa-code-fork fa-2x'></span> Fork me on "+
+                "<span class='fa fa-github fa-2x'></span>");
+        }
 
     if(socialShare===true){
         var s = document.createElement("script");
