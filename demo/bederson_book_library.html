@@ -146,10 +146,8 @@ $(document).ready( function(){
             {
                 facetTitle: "Genres"
             },{
-                facetTitle: "Rating",
-                type: 'interval',
-                intervalScale: 'step',
-                description: "Ben Bederson's Rating"
+                facetTitle: "Bederson's Rating", type: 'interval',
+                catItemMap: function(d){ return d.data.Rating; }
             },{
                 facetTitle: "Author", 
             },{
@@ -197,7 +195,7 @@ $(document).ready( function(){
                 if (d.data.Rating > 0) {
                     desc+="<span class='ratings'>";
                     for(var s=0; s<5; s++){
-                        desc+="<span class='fa ratingStar fa-star"+(d.data.Rating<s?"-o":"")+"'></span>";
+                        desc+="<span class='fa ratingStar fa-star"+(d.data.Rating<=s?"-o":"")+"'></span>";
                     }
                     desc+="</span>";
                 }

@@ -13,7 +13,8 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-getName = {
+
+var getName = {
     Class: function(d){
         switch(d.data[1]){
             case 'e': return 'Edible';
@@ -246,12 +247,6 @@ google.setOnLoadCallback(function(){
                     }
                 ]
             }
-/*
-            10. stalk-shape:              enlarging=e,tapering=t
-                11. stalk-root:               
-                12. stalk-surface-above-ring: fibrous=f,scaly=y,silky=k,smooth=s
-                13. stalk-surface-below-ring: fibrous=f,scaly=y,silky=k,smooth=s
-                                              */
         ]
     });
 });
@@ -259,11 +254,12 @@ google.setOnLoadCallback(function(){
         <style>
             #chart_div {
                 width: 890px;
-                height: 720px;
+                height: 700px;
             }
         </style>
     </head>
     <body>
+        <div class="pageTitle" align="center">Mushroom Species</div>
         <div class="contents"><div id="chart_div"></div></div>
 
         <div id="infobox" align="center">
@@ -273,6 +269,5 @@ google.setOnLoadCallback(function(){
             This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525).<br> The Guide clearly states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
             <span class="fa fa-info-circle"></span>
             </div>
-        // 
     </body>
 </html>

@@ -20,6 +20,7 @@
             browser = new kshf.Browser({
                 domID: "#chart_div",
                 leftPanelLabelWidth: 150,
+                rightPanelLabelWidth: 150,
                 source: {
                     gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
                     sheets : [ {name:"Passengers"} ]
@@ -54,8 +55,8 @@
                         },
                         layout:'bottom',
                         showPercentile: true
-                    },{ facetTitle: "embarked", layout: 'left'
-                    },{ facetTitle: "room", layout: 'left'
+                    },{ facetTitle: "embarked", layout: 'right'
+                    },{ facetTitle: "room", layout: 'right', collapsed: true,
 //                    },{ facetTitle: "boat", type: 'categorical', layout: 'right'
 /*                    },{
                         facetTitle: "Birthdate",
@@ -83,7 +84,7 @@
         <style>
             #chart_div {
                 margin-top: 40px;
-                width: 850px;
+                width: 950px;
                 height: 700px;
             }
             #chart_div div.listItem{

@@ -92,6 +92,8 @@ $(document).ready(function(){
                 catItemMap: function(d){
                     return d.data['Program(s)'];
                 }
+            },{ facetTitle: "Name",
+                catItemMap: function(d){ return d.data.Organization; }
             },{
                 facetTitle: "AwardInstrument",
             },{

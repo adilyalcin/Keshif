@@ -147,19 +147,19 @@ $(document).ready( function(){
                 catTooltipText: function(episode){ return episode.data.Synopsis; },
                 facets:[
                     {
-                        facetTitle: "Dead Count (Total)", intervalScale: 'step', collapsed: true,
+                        facetTitle: "Dead Count (Total)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.total; }
                     },{
-                        facetTitle: "Dead Count (Humans)", intervalScale: 'step', collapsed: true,
+                        facetTitle: "Dead Count (Humans)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.humans; }
                     },{
-                        facetTitle: "Dead Count (Vampires)", intervalScale: 'step', collapsed: true,
+                        facetTitle: "Dead Count (Vampires)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.vampires; }
                     },{
-                        facetTitle: "Dead Count (Demons)", intervalScale: 'step', collapsed: true,
+                        facetTitle: "Dead Count (Demons)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.demons; }, 
                     },{
-                        facetTitle: "Dead Count (Animals)", intervalScale: 'step', collapsed: true,
+                        facetTitle: "Dead Count (Animals)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.animals; },
                     }
                 ]

@@ -13,9 +13,17 @@
 
         <script type="text/javascript">
 
-$(document).ready( function(){
+function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-50);
+    $('#chart_div').height($(window).height()-80);
+}
+
+$(document).ready( function(){
+    resizeBrowser();
+    $(window).resize(function() {
+        resizeBrowser();
+        browser.updateLayout();
+    });
 
 	browser = new kshf.Browser({
         domID : "#chart_div",

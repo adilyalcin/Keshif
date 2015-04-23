@@ -13,8 +13,8 @@
 
         <script type="text/javascript">
 
-function getType(d){
-    switch(d.data.type){
+function getType(v){
+    switch(v){
         case 0: return "Tactics";
         case 1: return "Principles";
         case 2: return "Theories";
@@ -38,18 +38,12 @@ $(document).ready( function(){
                 kshf.dt.Posts = [];
                 kshf.dt_id.Posts = {};
 
-                kshf.dt.Types = [];
-                kshf.dt_id.Types = {};
-
-                var contr = null;
-
                 // contributor data is manually added to this dataset...
+                var contributorData = null;
                 $.ajax({
                     url: "./data/beautifultrouble_contr.json",
                     async: false,
-                    success: function(data){
-                        contr = data[0];
-                    }
+                    success: function(data){ contributorData = data[0]; }
                 });
 
                 $.ajax( {
@@ -59,7 +53,7 @@ $(document).ready( function(){
                     async: false,
                     success: function(data){
                         data.forEach(function(item){
-                            item.Contributors = contr[item.title];
+                            item.Contributors = contributorData[item.title];
 /*                            if(item.Contributors){
                                 // change contributor name to X. Lastname
                                 var cc=[];
@@ -76,22 +70,13 @@ $(document).ready( function(){
                             kshf.dt_id.Posts[kshfItem.id()] = kshfItem;
                         });
 
-                        var types = ["Tactics","Principles","Theories","Case Studies","Practitioners"];
-                        types.forEach(function(t,i){
-                            var kshfItem = new kshf.Item([i,t],0);
-                            kshf.dt.Types.push(kshfItem);
-                            kshf.dt_id.Types[kshfItem.id()] = kshfItem;
-                        })
+                        browser.items = kshf.dt.Posts;
+                        browser.itemsSelectedCt = browser.items.length;
 
-                        if(browser){
-                            browser.items = kshf.dt.Posts;
-                            browser.itemsSelectedCt = browser.items.length;
-
-                            // finish loading....
-                            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                            d3.select(".kshf.layout_infobox div.status_text div").text("");
-                            window.setTimeout(function() { browser.loadCharts(); }, 50);
-                        }
+                        // finish loading....
+                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+                        d3.select(".kshf.layout_infobox div.status_text div").text("");
+                        window.setTimeout(function() { browser.loadCharts(); }, 50);
                     }
                 });
             }
@@ -99,14 +84,14 @@ $(document).ready( function(){
         facets: [
             {   facetTitle: "Category",
                 catItemMap: function(d){ return d.data.type; },
-                catTableName: "Types",
+                catLabelText: function(d){
+                    return getType(d.data[0])+" <span class='typeImg'></span>";
+                },
                 domStyle: function(d){ return "itemType_"+d.data[0]; },
-                catLabelText: function(d){ return d.data[1]+" <span class='typeImg'></span>"; }
-            },{
-                facetTitle: "Contributors",
+//            },{ facetTitle: "Contributors",
             },{
                 facetTitle: "Number of Related Posts",
-                showPercentile: true,
+//                showPercentile: true,
                 catItemMap: function(d){ return d.data.links.length; },
             },{
                 facetTitle: "Related To",
