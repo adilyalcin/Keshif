@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Stack Overflow Developer Survey - 2015</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+            google.setOnLoadCallback(function(){
+                browser = new kshf.Browser({
+                    domID: "#chart_div",
+                    barChartWidth: 90,
+                    leftPanelLabelWidth: 190,
+                    rightPanelLabelWidth: 180,
+                    middlePanelLabelWidth: 270,
+                    source: {
+                        gdocId : '1ZVabBN65bCtUDURAjiZBeFddXzJT2gjN3HQNZa2adLk',
+                        sheets : [ {name:"Responses"} ]
+                    },
+                    readyCb: function(){
+                        this.setPercentMode(true);
+                    },
+                    facets: [
+                        {   facetTitle: "Country",
+                        },{ facetTitle: "Age",
+                            catItemMap: function(d){
+                                var age=d.data[1];
+                                switch(age){
+                                    case '< 20': return 0;
+                                    case '20-24': return 1;
+                                    case '25-29': return 2;
+                                    case '30-34': return 3;
+                                    case '35-39': return 4;
+                                    case '40-50': return 5;
+                                    case '51-60': return 6;
+                                    case '> 60': return 7;
+                                    case 'Prefer not to disclose': return 8;
+                                }
+                                return;
+                            },
+                            catLabelText: function(d){
+                                switch(d.data[0]){
+                                    case 0: return "< 20";
+                                    case 1: return "20-24";
+                                    case 2: return "25-29";
+                                    case 3: return "30-34";
+                                    case 4: return "35-39";
+                                    case 5: return "40-50";
+                                    case 6: return "51-50";
+                                    case 7: return "> 60";
+                                    case 8: return "Prefer not to disclose";
+                                }
+                            },
+                            type: 'categorical',
+                            sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+                        },{ facetTitle: "Gender",
+                        },{ facetTitle: "Occupation"
+                        },{ facetTitle: "Years IT / Programming Experience",
+                            catItemMap: function(d){
+                                var age=d.data[3];
+                                switch(age){
+                                    case 'Less than 1 year': return 0;
+                                    case '1 - 2 years': return 1;
+                                    case '2 - 5 years': return 2;
+                                    case '6 - 10 years': return 3;
+                                    case '11+ years': return 4;
+                                }
+                                return;
+                            },
+                            catLabelText: function(d){
+                                switch(d.data[0]){
+                                    case 0: return "Less than 1 year";
+                                    case 1: return "1 - 2 years";
+                                    case 2: return "2 - 5 years";
+                                    case 3: return "6 - 10 years";
+                                    case 4: return "11+ years";
+                                    case 10: return "?";
+                                }
+                            },
+                            type: 'categorical',
+                            sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+//                        },{ facetTitle: "Desktop Operating System"
+                        },{ facetTitle: "Training & Education",
+                            catItemMap: function(d){
+                                if(d.data[8]===null) return;
+                                return d.data[8].split("|");
+                            }
+                        },{ facetTitle: "Current Language", layout:'bottom-mid',
+                            catItemMap: function(d){
+                                if(d.data[6]===null) return;
+                                return d.data[6].split("|");
+                            }, minAggrValue: 2
+                        },{ facetTitle: "Future Language", layout:'bottom-mid',
+                            catItemMap: function(d){
+                                if(d.data[7]===null) return;
+                                return d.data[7].split("|");
+                            }
+                        },{ facetTitle: "Desktop Operating System", layout:'right'
+                        },{ facetTitle: "Preferred text editor", layout:'bottom-mid', collapsed: true
+                        },{ facetTitle: "Prefered IDE theme", layout:'bottom-mid', collapsed: true
+                        },{ facetTitle: "Source control used", layout:'bottom-mid', collapsed: true,
+                            catItemMap: function(d){
+                                if(d.data[20]===null) return;
+                                return d.data[20].split("|");
+                            },
+                        },{ facetTitle: "Prefered Source Control", layout:'bottom-mid', collapsed: true
+                        },{ facetTitle: "Why use Stack Overflow", layout:'bottom-mid', collapsed: true,
+                            catItemMap: function(d){
+                                if(d.data[22]===null) return;
+                                return d.data[22].split("|");
+                            }
+                        },{ facetTitle: "How often are Stack Overflow's answers helpful", layout:'bottom-mid', collapsed: true,
+                            catItemMap: function(d){
+                                var age=d.data[23];
+                                switch(age){
+                                    case 'Always': return 0;
+                                    case 'Usually': return 1;
+                                    case 'Sometimes': return 2;
+                                    case 'Rarely': return 3;
+                                    case 'Never': return 4;
+                                }
+                                return;
+                            },
+                            catLabelText: function(d){
+                                switch(d.data[0]){
+                                    case 0: return "Always";
+                                    case 1: return "Usually";
+                                    case 2: return "Sometimes";
+                                    case 3: return "Rarely";
+                                    case 4: return "Never";
+                                }
+                            },
+                            type: 'categorical',
+                            sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+                        },{ facetTitle: "Why answer?", layout:'bottom-mid',
+                            catItemMap: function(d){
+                                if(d.data[24]===null) return;
+                                return d.data[24].split("|");
+                            }
+                        },{ facetTitle: "Employment Status", layout:'right'
+                        },{ facetTitle: "Compensation", layout:'right',
+                            catItemMap: function(d){
+                                var age=d.data[9];
+                                switch(age){
+                                    case 'Less than $20,000': return 0;
+                                    case '$20,000 - $40,000': return 1;
+                                    case '$40,000 - $60,000': return 2;
+                                    case '$60,000 - $80,000': return 3;
+                                    case '$80,000 - $100,000': return 4;
+                                    case '$100,000 - $120,000': return 5;
+                                    case '$120,000 - $140,000': return 6;
+                                    case '$140,000 - $160,000': return 7;
+                                    case 'More than $160,000': return 8;
+                                    case 'Rather not say': return 9;
+                                    case "Unemployed": return 10;
+                                }
+                            },
+                            catLabelText: function(d){
+                                switch(d.data[0]){
+                                    case 0: return "Less than $20,000";
+                                    case 1: return "$20,000 - $40,000";
+                                    case 2: return "$40,000 - $60,000";
+                                    case 3: return "$60,000 - $80,000";
+                                    case 4: return "$80,000 - $100,000";
+                                    case 5: return "$100,000 - $120,000";
+                                    case 6: return "$120,000 - $140,000";
+                                    case 7: return "$140,000 - $160,000";
+                                    case 8: return "More than $160,000";
+                                    case 9: return "Rather not say";
+                                    case 10: return "Unemployed";
+                                    case 90: return "Hmmm";
+                                }
+                            },
+                            type: 'categorical',
+                            sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+                        },{ facetTitle: "Industry", layout:'right'
+                        },{ facetTitle: "Job Satisfaction", layout:'right'
+                        },{ facetTitle: "Remote Status", layout:'right', collapsed: true,
+                            catItemMap: function(d){
+                                var age=d.data[13];
+                                switch(age){
+                                    case 'Full-time Remote': return 0;
+                                    case 'Part-time Remote': return 1;
+                                    case 'I rarely work remote': return 2;
+                                    case "Never": return 3;
+                                }
+                            },
+                            catLabelText: function(d){
+                                switch(d.data[0]){
+                                    case 0: return "Full-time Remote";
+                                    case 1: return "Part-time Remote";
+                                    case 2: return "I rarely work remote";
+                                    case 3: return "Never";
+                                }
+                            },
+                            type: 'categorical',
+                            sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+//                        },{ facetTitle: "Open to new job opportunities"
+//                        },{ facetTitle: "Most important aspect of new job opportunity"
+                        },{ facetTitle: "How many caffeinated beverages per day?", layout:'bottom-mid'
+                        },{ facetTitle: "How many hours programming as hobby per week?", layout:'bottom-mid'
+                        }
+                    ]
+                });
+            });
+        </script>
+        <style>
+            #chart_div {
+                width: 1100px;
+                height: 720px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">Stack Overflow Developer Survey - 2015</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data made available by StackOverflow.
+            <a href="http://stackoverflow.com/research/developer-survey-2015/" target='_blank'>For details...</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
