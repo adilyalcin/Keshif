@@ -77,7 +77,9 @@ var AAU_Group = {
     "University of Southern California": true,
     "Vanderbilt University": true,
     "Washington University in St Louis": true,
-    "Yale University": true
+    "Yale University": true,
+    "McGill University": true,
+    "University of Toronto": true,
 };
 
 var CIC_Group = {
@@ -130,24 +132,11 @@ var Unizin_Group = {
 };
 
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
-
 $(document).ready( function(){
-    resizeBrowser();
-    $(window).resize(function() {
-        resizeBrowser();
-        browser.updateLayout();
-    });
-
-    var dateFormat=d3.time.format("%m/%d/%Y");
-
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 240,
-        barChartWidth: 147,
+        barChartWidth: 107,
         itemName: "Universities",
         source : {
             url: "https://nces.ed.gov/ipeds/datacenter/",
@@ -192,10 +181,23 @@ $(document).ready( function(){
                 },
                 intervalScale: 'log'
             },{
-                facetTitle: "Sector of institution",
+                facetTitle: "Institution Type",
                 catItemMap: function(d){
-                    return d.data["HD2013.Sector of institution"];
-                }, layout: "left"
+                    switch(d.data["HD2013.Sector of institution"]){
+                        case 'Public, 4-year or above': return 0;
+                        case 'Private not-for-profit, 4-year or above': return 1;
+                        case 'Private for-profit, 4-year or above': return 2;
+                    }
+                },
+                catLabelText: function(d){
+                    switch(d.data[0]){
+                        case 0: return "Public, 4-year or above";
+                        case 1: return "Private-not-for profit, 4-year or above";
+                        case 2: return "Private-for profit, 4-year or above";
+                    }
+                },
+                type: 'categorical',
+                sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
             },{
                 facetTitle: "State", collapsed: true,
                 catItemMap: function(d){
@@ -279,6 +281,13 @@ $(document).ready( function(){
                         description: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
                         intervalScale: 'log'
                     },{
+                        facetTitle: "Diversity: % Nonresident Alien", collapsed: true,
+                        catItemMap: function(d){
+                            return d.data["DRVEF2013.Percent of total enrollment that are Nonresident Alien"];
+                        },
+                        description: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
+                        intervalScale: 'log'
+                    },{
                         facetTitle: "Diversity: % White",
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are White"];
@@ -291,13 +300,6 @@ $(document).ready( function(){
                             return d.data["DRVEF2013.Percent of total enrollment that are Black or African American"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Black or African American",
-                        intervalScale: 'log'
-                    },{
-                        facetTitle: "Diversity: % Nonresident Alien",
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Nonresident Alien"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
                         intervalScale: 'log'
                     },{
                         facetTitle: "Diversity: % Women",
@@ -359,6 +361,10 @@ $(document).ready( function(){
 });
         </script>
 <style>
+#chart_div{
+    width: 1200px;
+    height: 700px;
+}
 </style>
     </head>
     <body>
@@ -376,7 +382,5 @@ $(document).ready( function(){
             U.S. Only
             <span class="fa fa-info-circle"></span>
             </div>
-
-
     </body>
 </html>
