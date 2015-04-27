@@ -42,10 +42,10 @@ var AAU_Group = {
     "University of Iowa": true,
     "University of Kansas": true,
     "University of Maryland-College Park": true,
-    "University of Michigan": true,
+    "University of Michigan-Ann Arbor": true,
     "University of Minnesota-Twin Cities": true,
     "University of Missouri-Columbia": true,
-    "University of North Carolina-Chapel Hill": true,
+    "University of North Carolina at Chapel Hill": true,
     "University of Oregon": true,
     "University of Pittsburgh-Pittsburgh Campus": true,
     "The University of Texas at Austin": true,
@@ -117,7 +117,7 @@ var ACC_Group = {
 };
 
 var Unizin_Group = {
-    "Colorado State University": true,
+    "Colorado State University-Fort Collins": true,
     "Indiana University-Bloomington": true,
     "University of Florida": true,
     "University of Michigan-Ann Arbor": true,
@@ -147,7 +147,7 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 240,
-        barChartWidth: 150,
+        barChartWidth: 147,
         itemName: "Universities",
         source : {
             url: "https://nces.ed.gov/ipeds/datacenter/",
@@ -168,7 +168,7 @@ $(document).ready( function(){
         facets: [
             {
                 facetTitle: "Groups", collapsed: false,
-            },{
+/*            },{
                 facetTitle: "Institution Size", collapsed: true,
                 catItemMap: function(d){
                     return d.data["HD2013.Institution size category"];
@@ -178,7 +178,7 @@ $(document).ready( function(){
                 catItemMap: function(d){
                     return d.data["DRVEF2013.Total  enrollment"];
                 },
-                intervalScale: 'log'
+                intervalScale: 'log'*/
             },{
                 facetTitle: "Undergraduate enrollment",
                 catItemMap: function(d){
@@ -195,7 +195,7 @@ $(document).ready( function(){
                 facetTitle: "Sector of institution",
                 catItemMap: function(d){
                     return d.data["HD2013.Sector of institution"];
-                }, layout: "bottom-mid"
+                }, layout: "left"
             },{
                 facetTitle: "State", collapsed: true,
                 catItemMap: function(d){
@@ -218,7 +218,7 @@ $(document).ready( function(){
                         facetTitle: "Basic",
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Basic"];
-                        }
+                        }, collapsed: true,
                     },{
                         facetTitle: "Size and Setting",
                         catItemMap: function(d){
@@ -228,13 +228,13 @@ $(document).ready( function(){
                         facetTitle: "Undergraduate Instructional Program",
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"];
-                        }
+                        }, collapsed: true,
                     },{
                         facetTitle: "Graduate Instructional Program",
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Graduate Instructional Program"];
                         },collapsed: true
-                    },{
+/*                    },{
                         facetTitle: "Undergraduate Profile",
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Undergraduate Profile"];
@@ -243,7 +243,7 @@ $(document).ready( function(){
                         facetTitle: "Enrollment Profile",
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Enrollment Profile"];
-                        }, collapsed: true
+                        }, collapsed: true*/
                     }
                 ]
             },{
@@ -309,29 +309,29 @@ $(document).ready( function(){
                     }
                 ]
             },{
-                facetTitle: "Graduation Rates", layout: 'right',
+                facetTitle: "6 Year Graduation Rates", layout: 'right',
                 facets: [
                     {
-                        facetTitle: "Total Cohort",
+                        facetTitle: "% Total Cohort",
                         catItemMap: function(d){
                             return d.data["DRVGR2013.Graduation rate, total cohort"];
                         },
                         description: "DRVGR2013.Graduation rate, total cohort",
-                        intervalScale: 'log'
+                        intervalScale: 'log', unitName: "%"
                     },{
-                        facetTitle: "Men",
+                        facetTitle: "% Men",
                         catItemMap: function(d){
                             return d.data["DRVGR2013.Graduation rate, men"];
                         },
                         description: "DRVGR2013.Graduation rate, men",
-                        intervalScale: 'log', collapsed: true
+                        intervalScale: 'log', collapsed: true, unitName: "%"
                     },{
-                        facetTitle: "Men",
+                        facetTitle: "% Women",
                         catItemMap: function(d){
                             return d.data["DRVGR2013.Graduation rate, women"];
                         },
                         description: "DRVGR2013.Graduation rate, women",
-                        intervalScale: 'log', collapsed: true
+                        intervalScale: 'log', collapsed: true, unitName: "%"
                     }
                 ]
             }
