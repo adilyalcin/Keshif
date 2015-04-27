@@ -3154,6 +3154,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     fullWidthResultSet: function(){
+        if(this.listDisplay===undefined) return;
         if(this.facetsLeft.length==0 && this.facetsRight.length==0) return true;
         if(this.isSmallWidth()) return true;
         return false;
