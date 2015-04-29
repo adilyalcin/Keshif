@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>InfoVis 2014 Contest</title><meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+$(document).ready( function(){
+
+    var timeFormat = d3.time.format("%m-%d-%Y");
+    new kshf.Browser({
+        domID : "#chart_div",
+        itemName: "Papers",
+        leftPanelLabelWidth: 160,
+        rightPanelLabelWidth: 200,
+        barChartWidth: 80,
+        source : {
+            url: 'http://www.cs.umd.edu/hcil/iv04contest',    
+            callback: function(browser){
+                $.ajax( {
+                    // Cannot load remote resouce because it is in another domain
+                    // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
+                    url:"./data/iv04.xml",
+                    dataType:"xml",
+                    async: false,
+                    success: function(collection){
+                        var $collection = $(collection);
+                        browser.primaryTableName = "Papers";
+                        kshf.dt.Papers = [];
+                        kshf.dt.Authors = [];
+                        kshf.dt_id.Authors = {};
+                        kshf.dt_id.Papers = {};
+
+                        $collection.find("> articles > article").each(function(){
+                            var $this = $(this);
+                            var cData = {};
+                            cData.id = $this.attr("id");
+                            cData.Title = $this.find("title").text();
+                            cData.Source = $this.find("source").text();
+                            cData.Abstract = $this.find("abstract").text();
+                            cData.Year = $this.find("date").attr("from");
+                            cData.url = $this.find("abstract").text();
+                            if(cData.Year){
+                                // parse the string into a date object
+                                cData.Date = new Date(cData.Year,1,1);
+                            }
+                            cData.Keywords = $this.find("keywords").text().split(/\s*,\s*/);
+                            for(var i=0; i<cData.Keywords.length; i++){
+                                cData.Keywords[i] = kshf.Util.toProperCase(cData.Keywords[i])
+                                    .replace(/\./g, '')
+                                    .replace("Three-Dimensional", '3D')
+                                    .replace("3d", '3D')
+                                    .replace("3-D", '3D')
+                                    .replace("Visualisation","Visualization")
+                                    .replace("Tools", "Tool")
+                                    ;
+                            }
+                            
+                            // Authors
+                            cData.Authors = [];
+                            $this.find("authors > author_ref").each(function(author){
+                                var ref  = this.getAttribute("ref");
+                                var name = this.textContent;
+                                cData.Authors.push(ref);
+                                kshf.dt_id.Authors[ref] = name;
+                            });
+
+                            // References // TODO
+                            cData.References_Internal = [];
+                            cData.References_External = [];
+                            cData.References_Other = [];
+                            kshf.dt_id.References = {}
+                            $this.find("references > ref").each(function(author){
+                                var ref  = this.getAttribute("ref");
+                                if(ref){
+                                    if(ref.substring(0,2)==="id"){
+                                        cData.References_External.push(ref);
+                                        kshf.dt_id.References[ref] = this.textContent;
+                                    } else {
+                                        cData.References_Internal.push(ref);
+                                    }
+                                } else {
+                                    cData.References_Other.push(this.textContent);
+                                }
+                            });
+
+                            var item = new kshf.Item(cData,"id");
+                            kshf.dt.Papers.push(item);
+                            kshf.dt_id.Papers[item.id()] = item;
+                        });
+
+                        // Go over the items and add the papers that reference to this paper
+                        kshf.dt.Papers.forEach(function(paper){
+                            paper.data.References_To = []
+                            paper.data.References_Internal.forEach(function(ref){
+                                var refPaper = kshf.dt_id.Papers[ref];
+                                if(refPaper){
+                                    paper.data.References_To.push(ref);
+                                }
+                            });
+                        });
+
+                        browser.items = kshf.dt.Papers;
+                        browser.itemsSelectedCt = browser.items.length;
+                        browser.loadCharts();   
+                    }
+                });
+            }
+        },
+        facets: [
+            { 
+                facetTitle: "Authors",
+                catLabelText: function(d){
+                    var ref = d.data[0];
+                    return kshf.dt_id.Authors[ref];
+                }
+            },{
+                facetTitle: "Keywords", layout: 'right'
+            },{
+                facetTitle: "# of Keywords", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.Keywords.length;
+                }, collapsed: true
+            },{
+                facetTitle: "Abstract", layout: 'right',
+                catItemMap: function(d){
+                    var r=[];
+                    if(d.data.Abstract) r.push("Has Abstract");
+//                    if(d.data.Keywords.length>0) r.push("Has Keywords");
+                    return r;
+                }
+            },{
+                facetTitle: "# References To (Within)", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.References_To.length;
+                }, intervalScale: 'log'
+            },{
+                facetTitle: "# References Within (Total)", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.References_Internal.length+
+                        d.data.References_External.length+
+                        d.data.References_Other.length;
+                }, intervalScale: 'log', collapsed: true
+            },{
+                facetTitle: "# References Within (Internal)", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.References_Internal.length;
+                }, intervalScale: 'log', collapsed: true
+            },{
+                facetTitle: "# References Within (External + Other)", layout: 'right',
+                catItemMap: function(d){
+                    return d.data.References_External.length+d.data.References_Other.length;
+                }, intervalScale: 'log', collapsed: true
+            },{
+                facetTitle: "Date", layout: "bottom"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 65,
+            sortingOpts : [
+                { name: "#Ref's", value: function(d){return d.data.References_To.length;} },
+                { name: 'Year' },
+                ],
+            detailsToggle: 'zoom',
+            autoExpandMore: true,
+            textSearch: "Title",
+            content: "Title"
+        }
+    });
+});
+
+        </script>
+        <style>
+            #chart_div {
+                height: 700px;
+                width: 1100px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="pageTitle" align="center">InfoVis 2004 Contest - Papers</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Fekete, J.-D., Grinstein, G., Plaisant, C., IEEE InfoVis 2004 Contest, the history of InfoVis, <a href="http://www.cs.umd.edu/hcil/iv04contest" target="_blank">www.cs.umd.edu/hcil/iv04contest</a> (2004)
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
