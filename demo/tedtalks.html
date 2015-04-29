@@ -48,7 +48,7 @@ var getData = function(){
 function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
     $('#chart_div').height($(window).height()-80);
-}
+};
 
 google.setOnLoadCallback(function(){
     resizeBrowser();
@@ -61,7 +61,7 @@ google.setOnLoadCallback(function(){
         domID: "#chart_div",
         barChartWidth: 90,
         leftPanelLabelWidth: 100,
-        rightPanelLabelWidth: 90,
+        rightPanelLabelWidth: 140,
         itemName: "TED Talks",
         source: {
             gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
@@ -81,17 +81,14 @@ google.setOnLoadCallback(function(){
             })
         },
         facets: [
-            {   facetTitle: "Talk Duration",
+            {   facetTitle: "Feelings",
+            },{ facetTitle: "Talk Duration",
                 catItemMap: function(d){
-                    var dur = d.data[cols["Duration"]];
-                    return dur[0];
+                    return d.data[cols["Duration"]][0]; // minutes
                 }
-            },{ facetTitle: "Feelings"
             },{ facetTitle: "Views", intervalScale: 'log'
-            },{
-                facetTitle: "Speaker"
-            },{ facetTitle: "Date", layout: 'bottom',
-                intervalScale: 'time'
+            },{ facetTitle: "Speaker", layout: 'right'
+            },{ facetTitle: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
@@ -105,14 +102,14 @@ google.setOnLoadCallback(function(){
             contentFunc : function(d){
                 var str='';
                 // Demo name
-                str+="<a target='_blank' href='http://www.ted.com"+d.data[cols.URL]+"'><span class='thumbnail'>"+
+                str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data[cols.URL]+"'><span class='thumbnail'>"+
                     "<img class='thumbImg'></span></a>";
                 str+="<span class='subTitle'>"+d.data[cols.Speaker]+"</span>";
                 str+="<span class='title'>"+d.data[cols.Title]+"</span>";
                 return str;
             },
             visibleCb: function(d){
-                d3.select(this).select("img").attr("src",d.data[cols.ThumbImg]);
+                d3.select(this).select("img").attr("src","http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data[cols.ThumbImg]);
             }
         }
     });
@@ -125,7 +122,7 @@ google.setOnLoadCallback(function(){
 .content{
     padding: 3px;
 }
-span.thumbnail{
+.thumbnail{
     height: 75px;
 }
         </style>
