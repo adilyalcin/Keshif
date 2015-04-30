@@ -246,7 +246,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .layout_block.layout_left {
   display: inline-flex;
+  display: -webkit-inline-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   vertical-align: top;
   position: relative;
   height: 100%;
@@ -267,7 +269,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .layout_block.layout_right {
   display: inline-flex;
+  display: -webkit-inline-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   vertical-align: top;
   position: relative;
   height: 100%;
@@ -1985,7 +1989,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv[displaytype="grid"] > .listItemGroup {
   display: -webkit-flex;
-  /* NEW - Chrome */
   display: flex;
   flex-direction: row;
   -webkit-flex-direction: row;
@@ -2070,6 +2073,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -moz-linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
   background-image: -o-linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
   background-image: linear-gradient(to top, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
+}
+.kshf .listHeader > .topRow .totalViz {
+  height: 3px;
+  margin-top: 1px;
+  margin-bottom: 2px;
+  position: relative;
+}
+.kshf .listHeader > .topRow .totalViz > .aggr {
+  cursor: default !important;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.kshf .listHeader > .topRow .totalViz > .aggr.total {
+  width: 100%;
+}
+.kshf .listHeader > .topRow .totalViz > .aggr.preview {
+  transform: inherit;
 }
 .kshf .listHeader > .bottomRow {
   display: table;
@@ -2222,7 +2247,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(255, 255, 255, 0.2);
   pointer-events: all;
   border-width: 0px;
-  border-bottom: dashed 1px #cb5454;
+  border-bottom: dashed 0px #cb5454;
   margin: 0px;
 }
 .kshf .listHeader span.mainTextSearch input:focus {
@@ -2312,7 +2337,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-shadow: 1px 1px lightgray;
   margin-bottom: -3px;
 }
-.kshf .listHeader span.resultInfo span.listheader_count {
+.kshf .listHeader span.resultInfo .listheader_count {
   display: inline-block;
   text-align: right;
   vertical-align: top;

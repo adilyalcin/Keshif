@@ -289,7 +289,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &.layout_left{
             display: inline-flex;
+            display: -webkit-inline-flex;
             flex-direction: column;
+            -webkit-flex-direction: column;
+
             vertical-align: top;
             position: relative;
             height: 100%;
@@ -310,7 +313,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &.layout_right{
             display: inline-flex;
+            display: -webkit-inline-flex;
             flex-direction: column;
+            -webkit-flex-direction: column;
+
             vertical-align: top;
             position: relative;
             height: 100%;
@@ -2019,7 +2025,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[displaytype="grid"] {
             > .listItemGroup {
-                display: -webkit-flex;     /* NEW - Chrome */
+                display: -webkit-flex;
                 display: flex;
                 flex-direction: row;
                 -webkit-flex-direction: row;
@@ -2102,7 +2108,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-top-right-radius: 10px;
         border-width: 0px 2px;
         .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
-
+        > .topRow{
+            .totalViz{
+                height: 3px;
+                margin-top: 1px;
+                margin-bottom: 2px;
+                position:relative;
+                > .aggr{
+                    cursor: default !important;
+                    left: 0px;
+                    top: 0px;
+                    height: 100%;
+                    .transition(~'all 500ms ease-in-out');
+                    
+                    &.total{
+                        width: 100%;    
+                    }
+                    &.preview{
+                        transform: inherit;
+                    }
+                }
+            }
+        }
         > .bottomRow{
             display: table;
             table-layout: fixed;
@@ -2256,7 +2283,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 background-color:rgba(255, 255, 255,0.2);
                 pointer-events: all;
                 border-width:0px;
-                border-bottom: dashed 1px #cb5454;
+                border-bottom: dashed 0px #cb5454;
                 margin: 0px;
                 &:focus{
                     outline-color: gray;
@@ -2345,7 +2372,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-shadow: 1px 1px lightgray;
             margin-bottom:-3px;
 
-            span.listheader_count{
+            .listheader_count{
                 display: inline-block;
                 text-align: right;
                 // min-width: 50px;
