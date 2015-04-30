@@ -355,18 +355,21 @@ kshf.Summary_Base = {
                     event.preventDefault();
                 }, false);
                 this.addEventListener("dragenter", function( event ) {
+                    if(draggedTarget===null) return;
                     // highlight potential drop target when the draggable element enters it
                     if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
                         event.target.style.background = "rgba(0,0,150,0.5)";
                     }
                 }, false);
                 this.addEventListener("dragleave", function( event ) {
+                    if(draggedTarget===null) return;
                     // reset background of potential drop target when the draggable element leaves it
                     if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
                         event.target.style.background = "";
                     }
                 }, false);
                 this.addEventListener("drop", function( event ) {
+                    if(draggedTarget===null) return;
                     if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
                         event.target.style.background = "";
                     }
@@ -465,7 +468,10 @@ kshf.Summary_Base = {
                     me.browser.summaries.splice(summaryIndex,1);
                     me.browser.panels[me.options.layout].removeSummary(me);
                     me.clearDOM();
-                    me.browser.updateLayout();
+
+                    // add the facet title back
+                    me.browser.insertOneAttribute(me.options.facetTitle);
+
                     me.browser.updateLayout();
                 }
             })
@@ -2329,7 +2335,7 @@ kshf.Browser = function(options){
         .attr("previewcompare",false)
         .attr("resultpreview",false)
         .style("position","relative")
-        .style("overflow-y","hidden")
+        //.style("overflow-y","hidden")
         .on("mousemove",function(d){
             if(typeof logIf === "object"){
                 logIf.setSessionID();
@@ -2374,6 +2380,9 @@ kshf.Browser = function(options){
         'parentDOM': this.root
 //        'widthCatLabel' : options.leftPanelLabelWidth  || options.categoryTextWidth || 115
     });
+
+    this.dom.attributeList = this.root.append("div").attr("class","attributeList");
+    this.dom.attributeList.append("div").attr("class","attributeListHeader").text("Attributes:");
 
     this.root.selectAll(".layout_block").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
@@ -2953,7 +2962,55 @@ kshf.Browser.prototype = {
         // hide infobox
         this.layout_infobox.attr("show","none");
 
+        this.insertAttributeList();
+
         if(this.readyCb!==undefined) this.readyCb(this);
+    },
+    addAttribDragListeners: function(dom){
+        dom.addEventListener("dragstart",function(event){
+            browser.root.attr("showdropzone",true);
+            event.dataTransfer.setData("text/plain",dom.textContent);
+            event.dataTransfer.setData("text/info","new_summary");
+        });
+        dom.addEventListener("dragend",function(event){
+            browser.root.attr("showdropzone",false);
+            //alert(event.dataTransfer.dropEffect);
+            if(event.dataTransfer.dropEffect==="copy"){
+                event.target.parentNode.removeChild(event.target);  
+            }
+        });
+    },
+    /** -- */
+    insertAttributeList: function(){
+        var me=this;
+        var tableName = this.primaryTableName;
+        if(kshf.dt_ColNames_Arr[tableName]===undefined) return;
+        var attribNames = kshf.dt_ColNames_Arr[tableName].filter(function(attrName,i){
+            // remove the unique key
+            if(i===kshf.dt[tableName][0].idIndex) return false;
+            // remove those already in the view
+            if(me.summaries.some(function(summary){
+                return summary.options.facetTitle===attrName;
+            })) return false;
+            return true;
+        })
+        this.dom.attributeList.selectAll("div.attributeName").data(attribNames).enter()
+            .append("div").attr("class","attributeName")
+            .attr("draggable",true)
+            .text(function(d){ return d;})
+            .each(function(){ me.addAttribDragListeners(this) });
+            ;
+    },
+    /** -- */
+    insertOneAttribute: function(name){
+        var me=this;
+        var tableName = this.primaryTableName;
+        this.dom.attributeList
+            .append("div").attr("class","attributeName")
+            .attr("draggable",true)
+            .text(name)
+            .each(function(){ me.addAttribDragListeners(this) });
+            ;
     },
     /** -- */
     addFacet: function(options, primTableName){
@@ -3931,14 +3988,15 @@ kshf.Facet_Categorical.prototype = {
         if(this.dom.inited===true) return;
         var me = this;
 
-        var root;
+        var root,before;
         if(this.parentFacet){
             root = this.parentFacet.dom.subFacets;
+            this.divRoot = root.append("div")
         } else {
             root = this.browser.panels[this.options.layout].DOM.root;
+            this.divRoot = root.insert("div",function(){ return me.getPanel().DOM.dropZone[0][0];})
         }
-        this.divRoot = root
-            .insert("div",function(){ return me.getPanel().DOM.dropZone[0][0]; })
+        this.divRoot
             .attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("filtered",false)
@@ -5600,14 +5658,17 @@ kshf.Facet_Interval.prototype = {
     initDOM: function(){
         if(this.dom.inited===true) return;
         var me = this;
+        
         var root;
         if(this.parentFacet){
             root = this.parentFacet.dom.subFacets;
+            this.divRoot = root.append("div");
         } else {
             root = this.browser.panels[this.options.layout].DOM.root;
+            this.divRoot = root.insert("div",function(){ return me.getPanel().DOM.dropZone[0][0];});
         }
 
-        this.divRoot = root.insert("div",function(){ return me.getPanel().DOM.dropZone[0][0]; })
+        this.divRoot
             .attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("filtered",false)

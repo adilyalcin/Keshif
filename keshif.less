@@ -187,6 +187,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         user-select: none;
     }
 
+    .attributeList{
+        position: absolute;
+        right: -110px;
+        width: 100px;
+        top: 10px;
+
+        > .attributeName{
+            padding: 2px;
+            margin: 2px;
+            border-radius: 3px;
+            background-color: rgb(232, 232, 232);
+            border: solid 1px gray;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            &:hover{
+                background-color: orange;
+            }
+        }
+        > .attributeListHeader{
+            font-weight: 700;
+        }
+    }
+
     .layout_block {
         > .dropZone{
             flex: 1;
@@ -230,6 +254,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             height: 100%;
             width: 0px;
+            top: 0px;
             // border-bottom: solid 1px lightgray;
             // border-top: solid 1px lightgray;
             border-width: 0px 2px 0px 0px;

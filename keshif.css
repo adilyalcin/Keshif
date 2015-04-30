@@ -153,6 +153,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
+.kshf .attributeList {
+  position: absolute;
+  right: -110px;
+  width: 100px;
+  top: 10px;
+}
+.kshf .attributeList > .attributeName {
+  padding: 2px;
+  margin: 2px;
+  border-radius: 3px;
+  background-color: #e8e8e8;
+  border: solid 1px gray;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.kshf .attributeList > .attributeName:hover {
+  background-color: orange;
+}
+.kshf .attributeList > .attributeListHeader {
+  font-weight: 700;
+}
 .kshf .layout_block > .dropZone {
   flex: 1;
   display: none;
@@ -195,6 +217,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   height: 100%;
   width: 0px;
+  top: 0px;
   border-width: 0px 2px 0px 0px;
   border-style: dotted;
   border-color: lightgray;
