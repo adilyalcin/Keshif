@@ -64,6 +64,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
+.kshf[showdropzone=true] .layout_block > .dropZone {
+  display: block;
+}
 .kshf[ratiomode=true] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
@@ -150,6 +153,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
+.kshf .layout_block > .dropZone {
+  flex: 1;
+  display: none;
+  position: absolute;
+  background-color: rgba(200, 200, 200, 0.3);
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 0px;
+  border-color: gray;
+  z-index: 50;
+}
+.kshf .layout_block > .dropZone[asblock="true"] {
+  position: relative;
+  width: auto !important;
+  height: auto !important;
+  top: auto !important;
+  right: auto !important;
+  border-radius: 40px !important;
+  border-width: 2px !important;
+}
+.kshf .layout_block .dropIcon {
+  margin: 0px auto;
+  width: 30px;
+  position: relative;
+  display: block;
+  top: 40%;
+  font-size: 2em;
+}
 .kshf .layout_block[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
 }
@@ -176,26 +207,55 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-style: dotted;
   border-color: gray;
 }
-.kshf .layout_block.layout_left > .kshfChart {
-  display: block;
-}
 .kshf .layout_block.layout_bottom {
   display: block;
 }
+.kshf .layout_block.layout_bottom > .dropZone {
+  bottom: 2px;
+  height: 40px;
+  left: 5%;
+  width: 90%;
+  border-radius: 40px 40px 0px 0px;
+  border-top-width: 2px;
+}
+.kshf .layout_block.layout_bottom > .dropZone > .dropIcon {
+  top: 5px;
+}
 .kshf .layout_block.layout_left {
+  display: inline-flex;
+  flex-direction: column;
   vertical-align: top;
   position: relative;
-  display: inline-block;
   height: 100%;
+}
+.kshf .layout_block.layout_left > .kshfChart {
+  display: block;
+}
+.kshf .layout_block.layout_left > .dropZone {
+  left: 2px;
+  height: 90%;
+  top: 5%;
+  width: 40px;
+  border-radius: 0px 40px 40px 0px;
+  border-right-width: 2px;
 }
 .kshf .layout_block.layout_left > .panelAdjustWidth {
   right: -2px;
 }
 .kshf .layout_block.layout_right {
+  display: inline-flex;
+  flex-direction: column;
   vertical-align: top;
   position: relative;
-  display: inline-block;
   height: 100%;
+}
+.kshf .layout_block.layout_right > .dropZone {
+  right: 2px;
+  height: 90%;
+  top: 5%;
+  width: 40px;
+  border-radius: 40px 0px 0px 40px;
+  border-left-width: 2px;
 }
 .kshf .layout_block.layout_right > .panelAdjustWidth {
   left: -2px;

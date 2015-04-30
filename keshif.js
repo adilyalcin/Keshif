@@ -337,13 +337,16 @@ kshf.Summary_Base = {
             .each(function(d){
                 this.__data__ = me;
                 this.addEventListener("dragstart", function( event ) {
+                    event.dataTransfer.setData("text/info","xfer_summary");
                     // store a ref. on the dragged elem
                     draggedSummary = me;
                     draggedTarget = event.target;
                     me.divRoot
                         .style("opacity",0.5)
+                    me.browser.root.attr("showdropzone",true);
                 }, false);
                 this.addEventListener("dragend", function( event ) {
+                    me.browser.root.attr("showdropzone",false);
                     me.divRoot
                         .style("opacity","")
                 }, false);
@@ -392,18 +395,18 @@ kshf.Summary_Base = {
                         var domFrom      = summaryFrom.divRoot[0][0];
                         var domAfterFrom = domFrom.nextSibling;
 
-                        me.browser.panels[layoutFrom].DOM[0][0].insertBefore(domTo,domAfterFrom);
-                        me.browser.panels[layoutTo].DOM[0][0].insertBefore(domFrom,domAfterTo);
+                        me.browser.panels[layoutFrom].DOM.root[0][0].insertBefore(domTo,domAfterFrom);
+                        me.browser.panels[layoutTo].DOM.root[0][0].insertBefore(domFrom,domAfterTo);
 
                         var swap = summaryFrom.options.layout;
                         summaryFrom.options.layout = summaryTo.options.layout;
                         summaryTo.options.layout = swap;
 
-                        if(summarFrom.options.type=="categorical"){
+                        if(summaryFrom.options.type=="categorical"){
                             summaryFrom.refreshLabelWidth();
                             summaryFrom.updateBarPreviewScale2Active();
                         }
-                        if(summarTo.options.type=="categorical"){
+                        if(summaryTo.options.type=="categorical"){
                             summaryTo.refreshLabelWidth();
                             summaryTo.updateBarPreviewScale2Active();
                         }
@@ -460,11 +463,7 @@ kshf.Summary_Base = {
                     });
                     // remove it from the list
                     me.browser.summaries.splice(summaryIndex,1);
-                    summaryIndex = -1;
-                    me.browser.panels[me.options.layout].summaries.forEach(function(summary,i){
-                        if(summary===me) summaryIndex = i;
-                    });
-                    me.browser.panels[me.options.layout].summaries.splice(summaryIndex,1);
+                    me.browser.panels[me.options.layout].removeSummary(me);
                     me.clearDOM();
                     me.browser.updateLayout();
                     me.browser.updateLayout();
@@ -2041,53 +2040,152 @@ kshf.List.prototype = {
 
 kshf.Panel = function(options){
     this.browser = options.browser;
-    this.DOM = null;
+    this.DOM = {};
+    this.DOM.root = options.parentDOM.append("div").attr("class", "layout_block layout_"+options.name);
     this.name = options.name;
     this.width={};
     this.width.catLabel = options.widthCatLabel;
     this.width.catChart = 0;
     this.width.catQueryPreview = 1;
     this.summaries = [];
+    this.insertDropZone();
 };
 
 kshf.Panel.prototype = {
+    /** -- */
     getWidth_Total: function(){
         if(this.name==="bottom") return this.browser.getWidth_Total();
         return this.width.catLabel + this.width.catQueryPreview + this.width.catChart + this.browser.scrollWidth;
     },
-    insertAdjustWidth: function(){
+    /** -- */
+    addSummary: function(summary){
+        this.summaries.push(summary);
+        this.DOM.dropZone.attr("asblock",true).style("background-color","");
+    },
+    /** -- */
+    removeSummary: function(summary){
+        var indexFrom = -1;
+        this.summaries.forEach(function(s,i){
+            if(s===summary) indexFrom = i;
+        });
+        this.summaries.splice(indexFrom,1);
+        if(this.summaries.length===0)
+            this.DOM.dropZone.attr("asblock",false);
+    },
+    /** -- */
+    insertDropZone: function(dom){
+        var me=this;
+        this.DOM.dropZone = this.DOM.root.append("div").attr("class","dropZone")
+            .attr("draggable",true);
+
+        this.DOM.dropZone.append("div").attr("class","dropIcon fa fa-toggle-down")
+
+        this.DOM.dropZone[0][0].addEventListener("dragenter", function( event ) {
+            this.style.backgroundColor = "rgba(255, 69, 0, 0.3)";;
+            event.preventDefault();
+        });
+        this.DOM.dropZone[0][0].addEventListener("dragleave", function( event ) {
+            this.style.backgroundColor = "";
+            event.preventDefault();
+        });
+        this.DOM.dropZone[0][0].addEventListener("dragover", function( event ) {
+            event.preventDefault();
+        });
+        this.DOM.dropZone[0][0].addEventListener("drop", function( event ) {
+            this.style.backgroundColor = "";
+            var info=event.dataTransfer.getData("text/info");
+            if(info==="new_summary"){
+                var attributeName = event.dataTransfer.getData("text/plain");
+
+                var fct=me.browser.addFacet({
+                    facetTitle:attributeName,
+                    layout: me.name
+                },me.browser.primaryTableName);
+                fct.initDOM();
+                if(fct.options.type==='categorical'){
+                    fct.updateBarPreviewScale2Active();
+                }
+                fct.refreshWidth();
+                me.browser.updateLayout();
+            }
+            if(info==="xfer_summary"){
+                var movedSummary = draggedTarget.__data__;
+                
+                var layoutFrom = movedSummary.options.layout;
+                var layoutTo = me.name;
+
+                var panelFrom = me.browser.panels[layoutFrom];
+                var panelTo   = me.browser.panels[layoutTo];
+
+                // Update the summary layout reference
+                movedSummary.options.layout = layoutTo;
+
+                if(layoutFrom===layoutTo){
+
+                } else {
+                    // remove facet from its current layout
+                    panelFrom.removeSummary(movedSummary);
+                    panelTo.addSummary(movedSummary);
+                }
+
+                panelTo.DOM.root[0][0].insertBefore(movedSummary.divRoot[0][0],
+                    panelTo.DOM.dropZone[0][0]);
+
+                if(movedSummary.options.type=="categorical"){
+                    movedSummary.refreshLabelWidth();
+                    movedSummary.updateBarPreviewScale2Active();
+                }
+
+                movedSummary.refreshWidth();
+
+                me.browser.updateLayout();
+                me.browser.updateLayout();
+            }
+            event.preventDefault();
+        });
+    },
+    /** -- */
+    setupAdjustWidth: function(){
         var me=this;
         var root = this.browser.root;
-        this.DOM.append("span").attr("class","panelAdjustWidth")
-            .attr("title","Drag to adjust panel width")
-            .on("mousedown", function (d, i) {
-                if(d3.event.which !== 1) return; // only respond to left-click
-                root.style('cursor','ew-resize');
-                root.attr('noanim',true);
-                var mouseDown_x = d3.mouse(document.body)[0];
-                var mouseDown_width = me.width.catChart;
-                root.on("mousemove", function() {
-                    var mouseMove_x = d3.mouse(document.body)[0];
-                    var mouseDif = mouseMove_x-mouseDown_x;
-                    if(me.name==='right') mouseDif *= -1;
-                    var oldhideBarAxis = me.hideBarAxis;
-                    me.setWidthCatChart(mouseDown_width+mouseDif);
-                    if(me.hideBarAxis!==oldhideBarAxis){
-                        me.browser.updateLayout_Height();
-                    }
-                    // TODO: Adjust other panel widths
-                }).on("mouseup", function(){
-                    root.style('cursor','default');
-                    root.attr('noanim',false);
-                    // unregister mouse-move callbacks
-                    root.on("mousemove", null).on("mouseup", null);
+        if(this.summaries.length===0){
+            if(this.DOM.panelAdjustWidth){
+                this.DOM.root[0][0].removeChild(this.DOM.panelAdjustWidth[0][0]);
+            }
+        } else {
+            if(this.DOM.panelAdjustWidth) return;
+            this.DOM.panelAdjustWidth = this.DOM.root.append("span")
+                .attr("class","panelAdjustWidth")
+                .attr("title","Drag to adjust panel width")
+                .on("mousedown", function (d, i) {
+                    if(d3.event.which !== 1) return; // only respond to left-click
+                    root.style('cursor','ew-resize');
+                    root.attr('noanim',true);
+                    var mouseDown_x = d3.mouse(document.body)[0];
+                    var mouseDown_width = me.width.catChart;
+                    root.on("mousemove", function() {
+                        var mouseMove_x = d3.mouse(document.body)[0];
+                        var mouseDif = mouseMove_x-mouseDown_x;
+                        if(me.name==='right') mouseDif *= -1;
+                        var oldhideBarAxis = me.hideBarAxis;
+                        me.setWidthCatChart(mouseDown_width+mouseDif);
+                        if(me.hideBarAxis!==oldhideBarAxis){
+                            me.browser.updateLayout_Height();
+                        }
+                        // TODO: Adjust other panel widths
+                    }).on("mouseup", function(){
+                        root.style('cursor','default');
+                        root.attr('noanim',false);
+                        // unregister mouse-move callbacks
+                        root.on("mousemove", null).on("mouseup", null);
+                    });
+                    d3.event.preventDefault();
+                })
+                .on("click",function(){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
                 });
-                d3.event.preventDefault();
-            })
-            .on("click",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            });
+        }
     },
     setWidthCatChart: function(_w_){
         if(_w_>200) {
@@ -2108,14 +2206,14 @@ kshf.Panel.prototype = {
             this.hideBarAxis = true;
         }
         if(this.hideBars===false){
-            this.DOM.attr("hidebars",false);
+            this.DOM.root.attr("hidebars",false);
         } else {
-            this.DOM.attr("hidebars",true);
+            this.DOM.root.attr("hidebars",true);
         }
         if(this.hideBarAxis===false){
-            this.DOM.attr("hideBarAxis",false);
+            this.DOM.root.attr("hideBarAxis",false);
         } else {
-            this.DOM.attr("hideBarAxis",true);
+            this.DOM.root.attr("hideBarAxis",true);
         }
 
         this.width.catChart = _w_;
@@ -2183,28 +2281,6 @@ kshf.Browser = function(options){
 
     this.columnsSkip = options.columnsSkip;
 
-    this.panels.left = new kshf.Panel({
-        'widthCatLabel' : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
-        'browser': this,
-        'name': 'left'
-    });
-    this.panels.right = new kshf.Panel({
-        'widthCatLabel' : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
-        'browser': this,
-        'name': 'right'
-    });
-    this.panels.middle = new kshf.Panel({
-        'widthCatLabel' : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
-        'browser': this,
-        'name': 'middle'
-    });
-    this.panels.bottom = new kshf.Panel({
-        'browser': this,
-        'name': 'bottom'
-//        'widthCatLabel' : options.leftPanelLabelWidth  || options.categoryTextWidth || 115
-    });
-
-
     this.subBrowser = options.subBrowser;
 
     this.listDef = options.itemDisplay;
@@ -2249,6 +2325,7 @@ kshf.Browser = function(options){
         .attr("noanim",false)
         .attr("percentview",false)
         .attr("ratiomode",false)
+        .attr("showdropzone",false)
         .attr("previewcompare",false)
         .attr("resultpreview",false)
         .style("position","relative")
@@ -2269,14 +2346,34 @@ kshf.Browser = function(options){
 
     this.dom.panelsTop=this.root.append("div");
 
-    this.panels.left.DOM   = this.dom.panelsTop.append("div").attr("class", "layout_block layout_left");
-    this.layoutList        = this.dom.panelsTop.append("div").attr("class", "layout_block listDiv")
-    this.panels.right.DOM  = this.dom.panelsTop.append("div").attr("class", "layout_block layout_right");
-    this.panels.middle.DOM = this.dom.panelsTop.append("div").attr("class", "layout_block layout_middle")
-    this.panels.bottom.DOM = this.root.append("div").attr("class", "layout_block layout_bottom");
 
-    this.panels.left.insertAdjustWidth();
-    this.panels.right.insertAdjustWidth();
+    this.panels.left = new kshf.Panel({
+        'widthCatLabel' : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
+        'browser': this,
+        'name': 'left',
+        'parentDOM': this.dom.panelsTop
+    });
+
+    this.layoutList = this.dom.panelsTop.append("div").attr("class", "layout_block listDiv")
+
+    this.panels.right = new kshf.Panel({
+        'widthCatLabel' : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
+        'browser': this,
+        'name': 'right',
+        'parentDOM': this.dom.panelsTop
+    });
+    this.panels.middle = new kshf.Panel({
+        'widthCatLabel' : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
+        'browser': this,
+        'name': 'middle',
+        'parentDOM': this.dom.panelsTop
+    });
+    this.panels.bottom = new kshf.Panel({
+        'browser': this,
+        'name': 'bottom',
+        'parentDOM': this.root
+//        'widthCatLabel' : options.leftPanelLabelWidth  || options.categoryTextWidth || 115
+    });
 
     this.root.selectAll(".layout_block").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
@@ -2740,8 +2837,11 @@ kshf.Browser.prototype = {
         // in case new summaries are added, init dom's again...
         this.summaries.forEach(function(summary){ summary.initDOM(); });
 
+        this.panels.left.setupAdjustWidth();
+        this.panels.right.setupAdjustWidth();
+
         if(this.panels.bottom.summaries.length===0 && this.panels.middle.summaries.length>0){
-            this.panels.left.DOM.style("height","100%");
+            this.panels.left.DOM.root.style("height","100%");
         }
 
         if(this.listDef!==undefined){
@@ -2914,7 +3014,7 @@ kshf.Browser.prototype = {
             fct = this.addFacet_Interval(options);
         }
         if(options.layout ==='middle') options.layout = 'middle';
-        this.panels[options.layout].summaries.push(fct);
+        this.panels[options.layout].addSummary(fct); 
 
         return fct;
     },
@@ -3247,12 +3347,12 @@ kshf.Browser.prototype = {
             this.listDisplay.updateContentWidth(widthListDisplay);
 
             this.layoutList.style("width",widthListDisplay+"px");
-            this.panels.middle.DOM
+            this.panels.middle.DOM.root
                 .style("width",widthListDisplay+"px")
                 .style("display",this.panels.middle.summaries.length>0?"inline-block":"none")
                 ;
-            this.panels.left.DOM.style("margin-right",marginLeft+"px")  
-            this.panels.right.DOM.style("margin-left",marginRight+"px")  
+            this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
+            this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         }
     },
     /** -- */
@@ -3295,7 +3395,6 @@ kshf.Browser.prototype = {
 
 
 // ***********************************************************************************************************
-//
 // ***********************************************************************************************************
 
 /**
@@ -3836,15 +3935,11 @@ kshf.Facet_Categorical.prototype = {
         if(this.parentFacet){
             root = this.parentFacet.dom.subFacets;
         } else {
-            switch(this.options.layout){
-                case 'left'  : root = this.browser.panels.left.DOM;   break;
-                case 'right' : root = this.browser.panels.right.DOM;  break;
-                case 'bottom': root = this.browser.panels.bottom.DOM; break;
-                case 'middle': root = this.browser.panels.middle.DOM; break;
-            }
+            root = this.browser.panels[this.options.layout].DOM.root;
         }
         this.divRoot = root
-            .append("div").attr("class","kshfChart")
+            .insert("div",function(){ return me.getPanel().DOM.dropZone[0][0]; })
+            .attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("filtered",false)
             .attr("removeInactiveAttrib",this.options.removeInactiveAttrib)
@@ -5509,14 +5604,11 @@ kshf.Facet_Interval.prototype = {
         if(this.parentFacet){
             root = this.parentFacet.dom.subFacets;
         } else {
-            switch(this.options.layout){
-                case 'left'      : root = this.browser.panels.left.DOM;   break;
-                case 'right'     : root = this.browser.panels.right.DOM;  break;
-                case 'bottom'    : root = this.browser.panels.bottom.DOM; break;
-                case 'middle': root = this.browser.panels.middle.DOM; break;
-            }
+            root = this.browser.panels[this.options.layout].DOM.root;
         }
-        this.divRoot = root.append("div").attr("class","kshfChart")
+
+        this.divRoot = root.insert("div",function(){ return me.getPanel().DOM.dropZone[0][0]; })
+            .attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
             .attr("filtered",false)
             .attr("chart_id",this.id)
