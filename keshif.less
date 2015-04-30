@@ -63,15 +63,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     *{
         .box-sizing(border-box);  
     }
-    &[hidebars=true] .kshf {
-        .attrib .aggr_Group{ display:none; }
-    }
-    &[hidebaraxis=true] {
-        .facetCategorical{
-            .chartAxis_Measure{ display:none; }
-            .barChartMainInfo{ display:none; }
-        }
-    }
     &[noanim=false]{
         .aggr{
             .transition(@bar_animation);
@@ -191,25 +182,62 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         user-select: none;
     }
 
-    > .layout_block {
+    .layout_block {
+        &[hidebars=true] .kshf {
+            .attrib .aggr_Group{ display:none; }
+        }
+        &[hidebaraxis=true] {
+            .facetCategorical{
+                .chartAxis_Measure{ display:none; }
+                .barChartMainInfo{ display:none; }
+            }
+        }
+        > .panelAdjustWidth{
+            position: absolute;
+            pointer-events: all;
+            height: 100%;
+            width: 0px;
+            // border-bottom: solid 1px lightgray;
+            // border-top: solid 1px lightgray;
+            border-width: 0px 2px 0px 0px;
+            border-style: dotted;
+            border-color: lightgray;
+            cursor: col-resize;
+            // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
+            opacity: 0.5;
+            z-index: 10;
+            &:hover{
+                // border-bottom: solid 1px gray;
+                // border-top: solid 1px gray;
+                border-width: 0px 2px 0px 0px;
+                border-style: dotted;
+                border-color: gray;
+                // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
+            }
+        }
         &.layout_left > .kshfChart{
             display: block;
         }
-        &.layout_top{
+        &.layout_bottom{
             display:block;
         }
-        &.layout_bottom{
-            display:inline-block;
+        &.layout_left{
+            vertical-align: top;
+            position: relative;
+            display: inline-block;
+            height: 100%;
+            > .panelAdjustWidth{
+                right: -2px;
+            }
         }
         &.layout_right{
-            float: right;
             vertical-align: top;
             position: relative;
-        }
-        &.layout_left{
-            float: left;
-            vertical-align: top;
-            position: relative;
+            display: inline-block;
+            height: 100%;
+            > .panelAdjustWidth{
+                left: -2px;
+            }
         }
         &.layout_middle{
             display:inline-block;
@@ -391,10 +419,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .kshfChart[collapsed=true] {
         > .headerGroup > .header_display_control{ 
             opacity: 1;
-            &:hover{
-                .fa{
-                    .animation-direction(reverse);
-                }
+            .fa:hover{
+                .animation-direction(reverse);
             }
             > .fa-collapse{
                 &::before{ content: "\f065"; }
@@ -605,18 +631,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline;
             position: absolute;
             top: 0px;
-            cursor: pointer;
             opacity: 0;
             z-index: 10;
             .transition(~'color 250ms linear, opacity 100ms linear ');
             .transform-origin(50% 50%);
-            &:hover{
-                color:#cb5454;
-                > .fa-collapse{
-                    .animation(shrink 800ms);
-                    .animation-iteration-count(infinite);
-                    .animation-timing-function(ease-in);
+            > .fa{
+                cursor: pointer;
+                &:hover{
+                    color:#cb5454;
                 }
+            }
+            > .fa-collapse:hover{
+                .animation(shrink 800ms);
+                .animation-iteration-count(infinite);
+                .animation-timing-function(ease-in);
             }
             > .fa-collapse{
                 font-size: 0.8em;
@@ -627,6 +655,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             > .fa-remove{
                 font-size: 0.8em;
+                margin-left: 3px;
+                color:gray;
             }
         }
         span.showFilterText{
@@ -1190,7 +1220,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 text-align: center;
                             }
                             > .measureLabel{
-                                top: 2px;
+                                top: 1px;
                                 display: block;
                                 position: relative;
                                 width:100%;
@@ -1666,32 +1696,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         top: 0px;
         overflow: hidden; // Don't remove!
-        float: left;
+        display: inline-block;
         .transition(~'margin-top 700ms ease-in-out');
-        > .leftBlockAdjustSize{
-            position: absolute;
-            left: 0px;
-            pointer-events: all;
-            height: 100%;
-            width: 0px;
-            // border-bottom: solid 1px lightgray;
-            // border-top: solid 1px lightgray;
-            border-width: 0px 2px 0px 0px;
-            border-style: dotted;
-            border-color: lightgray;
-            cursor: col-resize;
-            // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
-            opacity: 0.5;
-            z-index: 10;
-            &:hover{
-                // border-bottom: solid 1px gray;
-                // border-top: solid 1px gray;
-                border-width: 0px 2px 0px 0px;
-                border-style: dotted;
-                border-color: gray;
-                // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
-            }
-        }
         > .listItemGroup {
             width: 100%;
             overflow-y: scroll;

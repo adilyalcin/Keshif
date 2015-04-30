@@ -43,15 +43,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.kshf[hidebars=true] .kshf .attrib .aggr_Group {
-  display: none;
-}
-.kshf[hidebaraxis=true] .facetCategorical .chartAxis_Measure {
-  display: none;
-}
-.kshf[hidebaraxis=true] .facetCategorical .barChartMainInfo {
-  display: none;
-}
 .kshf[noanim=false] .aggr {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
@@ -159,29 +150,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
-.kshf > .layout_block.layout_left > .kshfChart {
+.kshf .layout_block[hidebars=true] .kshf .attrib .aggr_Group {
+  display: none;
+}
+.kshf .layout_block[hidebaraxis=true] .facetCategorical .chartAxis_Measure {
+  display: none;
+}
+.kshf .layout_block[hidebaraxis=true] .facetCategorical .barChartMainInfo {
+  display: none;
+}
+.kshf .layout_block > .panelAdjustWidth {
+  position: absolute;
+  pointer-events: all;
+  height: 100%;
+  width: 0px;
+  border-width: 0px 2px 0px 0px;
+  border-style: dotted;
+  border-color: lightgray;
+  cursor: col-resize;
+  opacity: 0.5;
+  z-index: 10;
+}
+.kshf .layout_block > .panelAdjustWidth:hover {
+  border-width: 0px 2px 0px 0px;
+  border-style: dotted;
+  border-color: gray;
+}
+.kshf .layout_block.layout_left > .kshfChart {
   display: block;
 }
-.kshf > .layout_block.layout_top {
+.kshf .layout_block.layout_bottom {
   display: block;
 }
-.kshf > .layout_block.layout_bottom {
-  display: inline-block;
-}
-.kshf > .layout_block.layout_right {
-  float: right;
+.kshf .layout_block.layout_left {
   vertical-align: top;
   position: relative;
+  display: inline-block;
+  height: 100%;
 }
-.kshf > .layout_block.layout_left {
-  float: left;
+.kshf .layout_block.layout_left > .panelAdjustWidth {
+  right: -2px;
+}
+.kshf .layout_block.layout_right {
   vertical-align: top;
   position: relative;
+  display: inline-block;
+  height: 100%;
 }
-.kshf > .layout_block.layout_middle {
+.kshf .layout_block.layout_right > .panelAdjustWidth {
+  left: -2px;
+}
+.kshf .layout_block.layout_middle {
   display: inline-block;
 }
-.kshf > .layout_block.layout_resize {
+.kshf .layout_block.layout_resize {
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -193,10 +215,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-right: 16px solid lightgray;
   border-top: 16px solid transparent;
 }
-.kshf > .layout_block.layout_resize :hover {
+.kshf .layout_block.layout_resize :hover {
   border-right: 16px solid gray;
 }
-.kshf > .layout_block.layout_infobox {
+.kshf .layout_block.layout_infobox {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -208,14 +230,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 500ms;
 }
-.kshf > .layout_block.layout_infobox lesshat-selector {
+.kshf .layout_block.layout_infobox lesshat-selector {
   -lh-property: 0; } 
 @-webkit-keyframes itemZoom{ 0%{-webkit-transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1); opacity:1;}}
 @-moz-keyframes itemZoom{ 0%{-moz-transform: scale(0); opacity:1;} 100% {-moz-transform: scale(1); opacity:1;}}
 @-o-keyframes itemZoom{ 0%{-o-transform: scale(0); opacity:1;} 100% {-o-transform: scale(1); opacity:1;}}
 @keyframes itemZoom{ 0%{-webkit-transform: scale(0);-moz-transform: scale(0);-ms-transform: scale(0);transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); opacity:1;};
 }
-.kshf > .layout_block.layout_infobox div.infobox_close_button {
+.kshf .layout_block.layout_infobox div.infobox_close_button {
   position: absolute;
   right: 3px;
   top: 3px;
@@ -228,10 +250,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 20px;
   color: white;
 }
-.kshf > .layout_block.layout_infobox div.infobox_close_button:hover {
+.kshf .layout_block.layout_infobox div.infobox_close_button:hover {
   background-color: #6f6f6f;
 }
-.kshf > .layout_block.layout_infobox > .background {
+.kshf .layout_block.layout_infobox > .background {
   width: 100%;
   height: 100%;
   z-index: -2;
@@ -244,7 +266,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: all 0.5s;
   border-radius: 20px;
 }
-.kshf > .layout_block.layout_infobox > .infobox_content {
+.kshf .layout_block.layout_infobox > .infobox_content {
   display: none;
   margin: auto;
   box-shadow: 0px 0px 20px gray;
@@ -257,7 +279,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
 }
-.kshf > .layout_block.layout_infobox > .infobox_loading {
+.kshf .layout_block.layout_infobox > .infobox_loading {
   width: 300px;
   height: 35px;
   position: absolute;
@@ -266,26 +288,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf > .layout_block.layout_infobox > .infobox_loading .loadinggg {
+.kshf .layout_block.layout_infobox > .infobox_loading .loadinggg {
   position: absolute;
   top: 8px;
   left: 10px;
 }
-.kshf > .layout_block.layout_infobox > .infobox_loading .loadinggg i.fa-warning {
+.kshf .layout_block.layout_infobox > .infobox_loading .loadinggg i.fa-warning {
   margin-left: 20px;
   font-size: 1.5em;
 }
-.kshf > .layout_block.layout_infobox > .infobox_loading div.status_text {
+.kshf .layout_block.layout_infobox > .infobox_loading div.status_text {
   margin: auto;
   position: absolute;
   top: 10px;
   left: 70px;
   height: 20px;
 }
-.kshf > .layout_block.layout_infobox > .infobox_loading div.status_text > .status_text_sub {
+.kshf .layout_block.layout_infobox > .infobox_loading div.status_text > .status_text_sub {
   margin-left: 5px;
 }
-.kshf > .layout_block.layout_infobox > .infobox_credit {
+.kshf .layout_block.layout_infobox > .infobox_credit {
   display: none;
   width: 390px;
   height: 260px;
@@ -295,10 +317,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf > .layout_block.layout_infobox > .infobox_credit div.all-the-credits {
+.kshf .layout_block.layout_infobox > .infobox_credit div.all-the-credits {
   margin: auto;
 }
-.kshf > .layout_block.layout_infobox > .infobox_credit div.header {
+.kshf .layout_block.layout_infobox > .infobox_credit div.header {
   background-color: #d8ddd4;
   width: 100%;
   padding-top: 5px;
@@ -306,32 +328,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-right-radius: 15px;
   border-bottom: solid 2px #3c5e43;
 }
-.kshf > .layout_block.layout_infobox > .infobox_credit span.libName {
+.kshf .layout_block.layout_infobox > .infobox_credit span.libName {
   font-size: 1.4em;
   font-weight: 700;
 }
-.kshf > .layout_block.layout_infobox > .infobox_credit div.project_fund {
+.kshf .layout_block.layout_infobox > .infobox_credit div.project_fund {
   font-size: 0.8em;
   font-weight: 300;
 }
-.kshf > .layout_block.layout_infobox > .infobox_itemZoom {
+.kshf .layout_block.layout_infobox > .infobox_itemZoom {
   position: relative;
   margin: 20px;
   padding: 10px;
 }
-.kshf > .layout_block.layout_infobox[show=loading] > .infobox_loading {
+.kshf .layout_block.layout_infobox[show=loading] > .infobox_loading {
   display: inline-block;
 }
-.kshf > .layout_block.layout_infobox[show=credit] > .infobox_credit {
+.kshf .layout_block.layout_infobox[show=credit] > .infobox_credit {
   display: inline-block;
 }
-.kshf > .layout_block.layout_infobox[show=none] {
+.kshf .layout_block.layout_infobox[show=none] {
   pointer-events: none;
 }
-.kshf > .layout_block.layout_infobox[show=none] > .background {
+.kshf .layout_block.layout_infobox[show=none] > .background {
   opacity: 0;
 }
-.kshf > .layout_block.layout_infobox[show=itemZoom] > .infobox_itemZoom {
+.kshf .layout_block.layout_infobox[show=itemZoom] > .infobox_itemZoom {
   -webkit-animation: itemZoom 500ms forwards;
   -moz-animation: itemZoom 500ms forwards;
   -o-animation: itemZoom 500ms forwards;
@@ -385,7 +407,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control {
   opacity: 1;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control:hover .fa {
+.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control .fa:hover {
   -webkit-animation-direction: reverse;
   -moz-animation-direction: reverse;
   -o-animation-direction: reverse;
@@ -595,7 +617,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   position: absolute;
   top: 0px;
-  cursor: pointer;
   opacity: 0;
   z-index: 10;
   -webkit-transition: color 250ms linear, opacity 100ms linear ;
@@ -608,10 +629,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 50% 50%;
   transform-origin: 50% 50%;
 }
-.kshf .headerGroup > .header_display_control:hover {
+.kshf .headerGroup > .header_display_control > .fa {
+  cursor: pointer;
+}
+.kshf .headerGroup > .header_display_control > .fa:hover {
   color: #cb5454;
 }
-.kshf .headerGroup > .header_display_control:hover > .fa-collapse {
+.kshf .headerGroup > .header_display_control > .fa-collapse:hover {
   -webkit-animation: shrink 800ms;
   -moz-animation: shrink 800ms;
   -o-animation: shrink 800ms;
@@ -634,6 +658,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup > .header_display_control > .fa-remove {
   font-size: 0.8em;
+  margin-left: 3px;
+  color: gray;
 }
 .kshf .headerGroup span.showFilterText {
   display: inline-block;
@@ -1191,7 +1217,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
-  top: 2px;
+  top: 1px;
   display: block;
   position: relative;
   width: 100%;
@@ -1626,29 +1652,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   top: 0px;
   overflow: hidden;
-  float: left;
+  display: inline-block;
   -webkit-transition: margin-top 700ms ease-in-out;
   -moz-transition: margin-top 700ms ease-in-out;
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
-}
-.kshf .listDiv > .leftBlockAdjustSize {
-  position: absolute;
-  left: 0px;
-  pointer-events: all;
-  height: 100%;
-  width: 0px;
-  border-width: 0px 2px 0px 0px;
-  border-style: dotted;
-  border-color: lightgray;
-  cursor: col-resize;
-  opacity: 0.5;
-  z-index: 10;
-}
-.kshf .listDiv > .leftBlockAdjustSize:hover {
-  border-width: 0px 2px 0px 0px;
-  border-style: dotted;
-  border-color: gray;
 }
 .kshf .listDiv > .listItemGroup {
   width: 100%;
