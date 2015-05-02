@@ -54,12 +54,12 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "date"
-            },{ facetTitle: "Collection",
+            {   title: "date"
+            },{ title: "Collection",
                 catItemMap: function(poster){ return poster.data.from; }
-            },{ facetTitle: "Subjects",
+            },{ title: "Subjects",
                 catItemMap: function(poster){ return poster.data.subjects; }
-            },{ facetTitle: "Tags",
+            },{ title: "Tags",
                 catItemMap: function(poster){
                     var contribs = poster.data.publicContributions;
                     if(contribs===undefined) return;
@@ -75,7 +75,7 @@ $(document).ready( function(){
                     }
                     return r;
                 }
-            },{ facetTitle: "Tag Contributors",
+            },{ title: "Tag Contributors",
                 catItemMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
@@ -91,12 +91,12 @@ $(document).ready( function(){
                     }
                     return r;
                 }
-            },{ facetTitle: "Types",
+            },{ title: "Types",
                 catItemMap: function(poster){ return poster.data.typesOfArchivalMaterials; }
-            },{ facetTitle: "levelOfDescription", collapsed: true
-            },{ facetTitle: "Use Restrictions", collapsed: true,
+            },{ title: "levelOfDescription", collapsed: true
+            },{ title: "Use Restrictions", collapsed: true,
                 catItemMap: function(poster){ return poster.data.useRestrictions; }
-            },{ facetTitle: "Access Restrictions", collapsed: true,
+            },{ title: "Access Restrictions", collapsed: true,
                 catItemMap: function(poster){ return poster.data.accessRestrictions; }
             }
         ],
@@ -155,7 +155,6 @@ $(document).ready( function(){
   -o-transition: all 150ms ease-in;
   -moz-transition: all 150ms ease-in;
 }
-
     </style>
 	</head>
     <body>

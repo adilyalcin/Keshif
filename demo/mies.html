@@ -34,13 +34,13 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Projects"} ]
         },
         facets: [
-            {   facetTitle: "Continent", collapsed: true
-            },{ facetTitle: "City / Location",
+            {   title: "Continent", collapsed: true
+            },{ title: "City / Location",
                 catItemMap: function(d){
                     return "<span style='color:gray'>"+d.data.Country+" </span> - "+d.data.City;
                 }
-            },{ facetTitle: "Year", layout: 'bottom'
-            },{ facetTitle: "Type", layout: 'right'
+            },{ title: "Year", layout: 'bottom'
+            },{ title: "Type", layout: 'right'
             }
         ],
         itemDisplay: {

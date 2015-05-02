@@ -37,25 +37,25 @@ google.setOnLoadCallback(function(){
                 ]
         },
         facets: [
-            {   facetTitle: "Politician",
+            {   title: "Politician",
                 catTableName: "Politicians",
                 catLabelText: function(d){ return d.data.Politician; },
                 facets:[
-                    { facetTitle: "Department", }
+                    { title: "Department", }
                 ]
-            },{ facetTitle: "Type", layout: 'right',
+            },{ title: "Type", layout: 'right',
                 catItemMap: function(d){
                     return kshf.dt_id.Organizations[d.data.Organization].data.Type;
                 },
                 catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
-            },{ facetTitle: "Organization", layout: 'right',
+            },{ title: "Organization", layout: 'right',
                 catTableName: "Organizations",
                 catLabelText: function(d){
                     return d.data.Organization+" "+getIcon(d.data.Type);
                 },
-            },{ facetTitle: "Lobbyist", layout: 'right', collapsed: true
+            },{ title: "Lobbyist", layout: 'right', collapsed: true
             },{
-                facetTitle: "Date",
+                title: "Date",
                 layout: "bottom"
             }
         ],

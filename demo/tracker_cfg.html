@@ -36,7 +36,7 @@ $(document).ready( function(){
                     if(dt.getUTCFullYear()<2000) return null;
                     return dt;
                 },
-                facetTitle: "Demo",
+                title: "Demo",
                 catItemMap : function(f){ 
                     switch(f.data[cols['demoID']]){
                     case 1:  return '1';
@@ -59,7 +59,7 @@ $(document).ready( function(){
                     }
                     return '???';
                 }
-            },{ facetTitle: "width",
+            },{ title: "width",
                 sortingOpts: [{
                     name:"numeric",
                     no_resort: true,
@@ -71,7 +71,7 @@ $(document).ready( function(){
                     var x=f.data[cols['width']];
                     return Math.floor(x/20)*20;
                 }
-            },{ facetTitle: "height",
+            },{ title: "height",
                 sortingOpts: [{
                     name:"numeric",
                     no_resort: true,

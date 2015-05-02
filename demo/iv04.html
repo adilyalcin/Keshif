@@ -116,36 +116,36 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Authors",
+            {   title: "Authors",
                 catLabelText: function(d){ return kshf.dt_id.Authors[d.data[0]]; }
-            },{ facetTitle: "Keywords", layout: 'right'
-            },{ facetTitle: "# of Keywords", layout: 'right', collapsed: true,
+            },{ title: "Keywords", layout: 'right'
+            },{ title: "# of Keywords", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data.Keywords.length; }
-            },{ facetTitle: "Abstract", layout: 'right',
+            },{ title: "Abstract", layout: 'right',
                 catItemMap: function(d){
                     var r=[];
                     if(d.data.Abstract) r.push("Has Abstract");
 //                    if(d.data.Keywords.length>0) r.push("Has Keywords");
                     return r;
                 }
-            },{ facetTitle: "# References To (Within)", layout: 'right',
+            },{ title: "# References To (Within)", layout: 'right',
                 catItemMap: function(d){ return d.data.References_To.length; }, 
                 intervalScale: 'log'
-            },{ facetTitle: "# References Within (Total)", layout: 'right',  collapsed: true,
+            },{ title: "# References Within (Total)", layout: 'right',  collapsed: true,
                 catItemMap: function(d){
                     return d.data.References_Internal.length+
                         d.data.References_External.length+
                         d.data.References_Other.length;
                 }, intervalScale: 'log'
-            },{ facetTitle: "# References Within (Internal)", layout: 'right', collapsed: true,
+            },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
                 catItemMap: function(d){
                     return d.data.References_Internal.length;
                 }, intervalScale: 'log'
-            },{ facetTitle: "# References Within (External + Other)", layout: 'right', collapsed: true,
+            },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
                 catItemMap: function(d){
                     return d.data.References_External.length+d.data.References_Other.length;
                 }, intervalScale: 'log'
-            },{ facetTitle: "Date", layout: "bottom"
+            },{ title: "Date", layout: "bottom"
             }
         ],
         itemDisplay: {
@@ -156,7 +156,7 @@ $(document).ready( function(){
                 ],
             detailsToggle: 'zoom',
             textSearch: "Title",
-            content: "Title"
+            recordView: "Title"
         }
     });
 });

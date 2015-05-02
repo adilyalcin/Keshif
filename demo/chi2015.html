@@ -81,16 +81,16 @@ google.setOnLoadCallback(function(){
             callback : loadData
         },
         facets: [
-            {   facetTitle: "Type", 
+            {   title: "Type", 
                 catItemMap: function(d){ return d.data.subtype; }
-            },{ facetTitle: "Highlights",
+            },{ title: "Highlights",
                 catItemMap: function(d){
                     var r=[];
                     if(d.data.award) r.push("Awarded");
                     if(d.data.hm) r.push("Honorable Mention");
                     return r;
                 }
-            },{ facetTitle: "Keywords", minAggrValue: 2,
+            },{ title: "Keywords", minAggrValue: 2,
                 catItemMap: function(d){
                     if(d.data.keywords===undefined) return;
                     var r=[];
@@ -99,7 +99,7 @@ google.setOnLoadCallback(function(){
                     });
                     return r;
                 },
-            },{ facetTitle: "Authors", 
+            },{ title: "Authors", 
                 catItemMap: function(d){
                     if(d.data.authors===undefined) return r;
                     var r=[];
@@ -108,7 +108,7 @@ google.setOnLoadCallback(function(){
                     });
                     return r;
                 },
-            },{ facetTitle: "Author Institution", 
+            },{ title: "Author Institution", 
                 catItemMap: function(d){
                     if(d.data.authors===undefined) return r;
                     var r=[];
@@ -117,7 +117,7 @@ google.setOnLoadCallback(function(){
                     });
                     return r;
                 },
-            },{ facetTitle: "Author Country", 
+            },{ title: "Author Country", 
                 catItemMap: function(d){
                     if(d.data.authors===undefined) return r;
                     var r=[];
@@ -126,12 +126,12 @@ google.setOnLoadCallback(function(){
                     });
                     return r;
                 },
-            },{ facetTitle: "Session Title", layout: 'right',
+            },{ title: "Session Title", layout: 'right',
                 catItemMap: function(d){
                     if(d.data.session===undefined) return;
                     return d.data.session.s_title.substring(8);
                 },
-            },{ facetTitle: "Session Day", layout: 'right',
+            },{ title: "Session Day", layout: 'right',
                 catItemMap: function(d){
                     if(d.data.session===undefined) return;
                     switch(d.data.session.day){
@@ -153,7 +153,7 @@ google.setOnLoadCallback(function(){
                         case 3: return "Thursday";
                     }
                 }
-            },{ facetTitle: "Session Time",  layout: 'right',
+            },{ title: "Session Time",  layout: 'right',
                 catItemMap: function(d){
                     if(d.data.session===undefined) return;
                     switch(d.data.session.time){
@@ -184,7 +184,7 @@ google.setOnLoadCallback(function(){
                 name: '', inverse: true, value: function(d){ return d.data.key; }
             }],
             textSearch: 'title',
-            content: 'title'
+            recordView: 'title'
         }
     });
 });

@@ -37,9 +37,9 @@ $(document).ready( function(){
 //sheets : [ {name:"selfies_rekognized_full", id:"id"} ]
         },
         facets: [
-            {   facetTitle: "Demographics",
+            {   title: "Demographics",
                 facets:[
-                    {   facetTitle: "City",
+                    {   title: "City",
                         catItemMap: function(d){
                             switch(d.data.city){
                                 case 'ny': return "New York";
@@ -49,37 +49,37 @@ $(document).ready( function(){
                                 case 'berlin': return "Berlin";
                             }
                         }
-                    },{ facetTitle: "Sex", 
+                    },{ title: "Sex", 
                         catItemMap: function(d){ return d.data.sex; }
-                    },{ facetTitle: "Age", 
+                    },{ title: "Age", 
                         catItemMap: function(d){ return d.data.age; },
                         showPercentile: true
                     }
                 ]
-            },{ facetTitle: "Features",
+            },{ title: "Features",
                 facets:[
-                    {   facetTitle: "Eyes Closed",
+                    {   title: "Eyes Closed",
                         catItemMap: function(d){ return d.data.eye_closed; }
-                    },{ facetTitle: "Mouth Open", collapsed: true,
+                    },{ title: "Mouth Open", collapsed: true,
                         catItemMap: function(d){ return d.data.mouth_open_wide; }
-                    },{ facetTitle: "Has Glasses",
+                    },{ title: "Has Glasses",
                         catItemMap: function(d){ return d.data.glasses; }
                     }
                 ]
-            },{ facetTitle: "Mood", layout: 'right',
+            },{ title: "Mood", layout: 'right',
                 facets:[
-                    {   facetTitle: "Happy",
+                    {   title: "Happy",
                         catItemMap: function(d){ return d.data.emotion_happy; },
                         showPercentile: true
-                    },{ facetTitle: "Calm", type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Calm", type: 'interval', // TODO: Why need to define type?
                         catItemMap: function(d){ return d.data.emotion_calm; }
-                    },{ facetTitle: "Confused", type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Confused", type: 'interval', // TODO: Why need to define type?
                         catItemMap: function(d){ return d.data.emotion_confused; }
-                    },{ facetTitle: "Sad",
+                    },{ title: "Sad",
                         catItemMap: function(d){ return d.data.emotion_sad; }
-                    },{ facetTitle: "Angry", collapsed: true,
+                    },{ title: "Angry", collapsed: true,
                         catItemMap: function(d){ return d.data.emotion_angry; }
-                    },{ facetTitle: "Disgust", collapsed: true, type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Disgust", collapsed: true, type: 'interval', // TODO: Why need to define type?
                         catItemMap: function(d){ return d.data.emotion_disgust; }
                     }
                 ]

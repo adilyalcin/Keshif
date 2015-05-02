@@ -70,17 +70,13 @@ google.setOnLoadCallback( function(){
             accCol = kshf.dt_ColNames.Accidents;
         },
         facets : [
-            {
-                facetTitle: "Road Type",
+            {   title: "Road Type",
                 catTableName: "RoadType",
-            },{
-                facetTitle: "Severity",
+            },{ title: "Severity",
                 catTableName: "Severity",
-            },{
-                facetTitle: "Area",
+            },{ title: "Area",
                 catLabelText: function(d) { return (d.data[0]===1)?"Urban":"Rural"; }
-            },{
-                facetTitle: "Time of Day",
+            },{ title: "Time of Day",
                 catItemMap : function(accident){
                     var hour=accident.data['Time of Day'].getHours();
                     if(hour<6) return 0;
@@ -89,17 +85,14 @@ google.setOnLoadCallback( function(){
                     return 3;
                 },
                 catLabelText: function(d){ return timeOfDayText(d.data[0]); }
-            },{
-                facetTitle: "Speed Limit (mph)",
+            },{ title: "Speed Limit (mph)",
                 catItemMap: function(d){ return d.data['Speed Limit']; }
-            },{
-                facetTitle: "# of Vehicles",
+            },{ title: "# of Vehicles",
                 sortingOpts: [{
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{
-                facetTitle: "Road Surface",
+            },{ title: "Road Surface",
                 catTableName: "RoadSurface",
                 catItemMap : function(accident){
                     var c=accident.data['Road Surface Condition'];
@@ -108,46 +101,35 @@ google.setOnLoadCallback( function(){
                 catLabelText: function(d){ 
                     return d.data.name;
                 }
-            },{
-                facetTitle: "Light Condition",
-                layout: 'right',
+            },{ title: "Light Condition", layout: 'right',
                 catTableName: "LightCond",
                 catLabelText: function(d) {
                     return d.data.name;
                 }
-            },{
-                facetTitle: "Weather Condition",
-                layout: 'right',
+            },{ title: "Weather Condition", layout: 'right',
                 catTableName: "WeatherCond",
                 catLabelText: function(d) { return d.data.name;}
-            },{
-                facetTitle: "Special Condition",
-                layout: 'right',
+            },{ title: "Special Condition", layout: 'right',
                 catTableName: "SpecCond",
                 catItemMap : function(accident){
                     var c=accident.data['Special Condition'];
                     return (c===0)?null:c; // skip if 0
                 },
                 catLabelText: function(d) { return d.data.name; }
-            },{
-                facetTitle: "Junction Detail",
-                layout: 'right',
+            },{ title: "Junction Detail", layout: 'right',
                 catTableName: "JuncDet",
                 catItemMap : function(accident){
                     var c=accident.data['Junction Detail'];
                     return (c===-0)?null:c; // skip if 0
                 }
-            },{
-                facetTitle: "Junction Control",
-                layout: 'right',
+            },{ title: "Junction Control", layout: 'right',
                 catTableName: "JuncCont",
                 catItemMap : function(accident){
                     var c=accident.data['Junction Control'];
                     return (c===-1)?null:c; // skip if 0
                 },
                 collapsed: true
-            },{
-                facetTitle: "Date", layout: 'bottom'
+            },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
@@ -161,7 +143,7 @@ google.setOnLoadCallback( function(){
                 }
             ],
             detailsToggle : "Multi",
-            content: 'Accident_Index'
+            recordView: 'Accident_Index'
         }
     });
 });

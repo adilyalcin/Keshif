@@ -38,20 +38,20 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Companies", id:'Stock'} ]
         },
         facets: [
-            {   facetTitle: "Industry",
+            {   title: "Industry",
                 catItemMap: function(d){ return d.data.Industry+" "+getIcon(d.data.Industry); }
-            },{ facetTitle: "Cash vs. Debt", layout: 'left',
+            },{ title: "Cash vs. Debt", layout: 'left',
                 catItemMap: function(d){
                     return ((d.data['Cash ($B)']-d.data['Debt ($B)'])>0)?"More cash":"More debt";
                 }
-            },{ facetTitle: "Cash (Billions)",
+            },{ title: "Cash (Billions)",
                 catItemMap: function(d){return d.data['Cash ($B)'];},
                 unitName: 'B$', intervalScale: 'log'
-            },{ facetTitle: "Debt (Billions)",
+            },{ title: "Debt (Billions)",
                 catItemMap: function(d){ return d.data['Debt ($B)'];},
                 unitName: 'B$', intervalScale: 'log',
-//                        },{ facetTitle: "Market Capitalization", layout: 'right'
-//                        },{ facetTitle: "Profit Margin", layout: 'right'
+//                        },{ title: "Market Capitalization", layout: 'right'
+//                        },{ title: "Profit Margin", layout: 'right'
             }
         ],
         itemDisplay: {

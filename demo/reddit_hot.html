@@ -47,12 +47,12 @@ $(document).ready( function(){
         showDataSource: false,
         source: { callback: loadData },
         facets: [
-            {   facetTitle: "subreddit"
-            },{ facetTitle: "num_comments",
+            {   title: "subreddit"
+            },{ title: "num_comments",
                 catItemMap: function(post){ return post.data.num_comments; }
-            },{ facetTitle: "score",
+            },{ title: "score",
                 catItemMap: function(post){ return post.data.score; }
-            },{ facetTitle: "gilded",  
+            },{ title: "gilded",  
                 type: "categorical"
             }
         ],

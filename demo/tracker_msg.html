@@ -32,7 +32,7 @@ $(document).ready( function(){
                 timeItemMap: function(f){ 
                     return new Date(f.data[cols['ts']]*900+1388088936864);
                 },
-                facetTitle: "Action Category",
+                title: "Action Category",
                 catItemMap : function(f){ 
                     switch(f.data[cols['catID']]){
                     case 1:  return 'FacetFilter';
@@ -46,7 +46,7 @@ $(document).ready( function(){
                     return '???';
                 }
             },{
-                facetTitle: "Demo",
+                title: "Demo",
                 catItemMap : function(f){ 
                     switch(f.data[cols['demoID']]){
                     case 1:  return '1';
@@ -69,13 +69,13 @@ $(document).ready( function(){
                     }
                     return '???';
                 }
-            },{ facetTitle: "Facet",
+            },{ title: "Facet",
                 catItemMap : function(f){ return f.data[cols['facet']]; }
-            },{ facetTitle: "Action ID",
+            },{ title: "Action ID",
                 catItemMap : function(f){ return f.data[cols['actID']]; }
-            },{ facetTitle: "SessionID",
+            },{ title: "SessionID",
                 catItemMap : function(f){ return f.data[cols['sesID']]; }
-            },{ facetTitle: "Integer Value",
+            },{ title: "Integer Value",
                 catItemMap : function(f){ return f.data[cols['intValue']]; }
             }
         ],

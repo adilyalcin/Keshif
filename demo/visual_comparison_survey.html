@@ -261,19 +261,19 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "GeneralCategory", 
-            },{ facetTitle: "ComparisonCategory",
+            {   title: "GeneralCategory", 
+            },{ title: "ComparisonCategory",
                 catItemMap: function(d){ 
                     return d.data.ComparisonCategory.split("/");
                 } 
-            },{ facetTitle: "DataTypeCompared", 
-            },{ facetTitle: "ComparisonScale", 
-//            },{ facetTitle: "CitedInPaper", layout: 'right'
-//            },{ facetTitle: "MentionedInPaper", layout: 'right'
-            },{ facetTitle: "TechniqueUsed", layout: 'right'
-            },{ facetTitle: "Authors", layout: 'right',
-            },{ facetTitle: "Venue", layout: 'right'
-            },{ facetTitle: "Categorized By",  layout: 'right', collapsed: true,
+            },{ title: "DataTypeCompared", 
+            },{ title: "ComparisonScale", 
+//            },{ title: "CitedInPaper", layout: 'right'
+//            },{ title: "MentionedInPaper", layout: 'right'
+            },{ title: "TechniqueUsed", layout: 'right'
+            },{ title: "Authors", layout: 'right',
+            },{ title: "Venue", layout: 'right'
+            },{ title: "Categorized By",  layout: 'right', collapsed: true,
                 catItemMap: function(d){
                     switch(d.data.CategorizedBy){
                         case 'DA'  : return "Danielle Albers";
@@ -281,7 +281,7 @@ $(document).ready( function(){
                         case 'RW'  : return "Rick Walker";
                     }
                 }
-            },{ facetTitle: "Year", layout: "bottom",
+            },{ title: "Year", layout: "bottom",
             }
         ],
         itemDisplay: {

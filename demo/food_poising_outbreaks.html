@@ -90,14 +90,14 @@ google.setOnLoadCallback(function(){
             browser.summaries[0].setHeightRow_attrib(20);
         },
         facets: [
-            {   facetTitle: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
+            {   title: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
                 catItemMap: function(outbreak){ return outbreak.data['National Cuisine']; }
             },
             // leaf
-            {   facetTitle: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
+            {   title: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
                 catItemMap: function(d){ return d.data['Food Types']; }
-            },{ facetTitle: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
+            },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
                 catItemMap: function(d){
                     var r=d.data['Pathogens / Toxins'];
@@ -106,11 +106,11 @@ google.setOnLoadCallback(function(){
                     if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");
                     return a;
                 }
-            },{ facetTitle: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
+            },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
                 layout: 'right',
                 catItemMap: function(d){ return d.data['Contributing Factors']; }
             },{
-                facetTitle: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>", 
+                title: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>", 
                 layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
                 catItemMap: function(d){ return d.data['Setting']; }

@@ -67,7 +67,7 @@ $(document).ready( function(){
             */
         },
         facets: [
-            {   facetTitle: "WHO?",
+            {   title: "WHO?",
                 catItemMap: function(d){
                     var r=[];
                     switch(d.data.Sex){
@@ -81,10 +81,10 @@ $(document).ready( function(){
                     if(d.data.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
-            },{ facetTitle: "Age",
-            },{ facetTitle: "Death Date", intervalScale: 'time',
+            },{ title: "Age",
+            },{ title: "Death Date", intervalScale: 'time',
                 catItemMap: function(d){ return dateFormat.parse(d.data.Death); }
-            },{ facetTitle: "After Story is Published...",
+            },{ title: "After Story is Published...",
                 catItemMap: function(d){ if(d.data.claimed) return "Claimed"; }
             }
         ],

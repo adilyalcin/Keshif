@@ -76,7 +76,7 @@ var loadBrowser = function(){
             callback: loadData
         },
         facets: [
-            { facetTitle: "Tags",
+            { title: "Tags",
                 catItemMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
@@ -92,7 +92,7 @@ var loadBrowser = function(){
                     }
                     return r;
                 }
-            },{ facetTitle: "Tag Contributors",
+            },{ title: "Tag Contributors",
                 catItemMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
@@ -108,17 +108,17 @@ var loadBrowser = function(){
                     }
                     return r;
                 }
-            },{ facetTitle: "contributors",
-            },{ facetTitle: "Types",
+            },{ title: "contributors",
+            },{ title: "Types",
                 catItemMap: function(poster){
                     return poster.data.typesOfArchivalMaterials;
                 }
-            },{ facetTitle: "levelOfDescription", collapsed: true
-            },{ facetTitle: "Use Restrictions", collapsed: true,
+            },{ title: "levelOfDescription", collapsed: true
+            },{ title: "Use Restrictions", collapsed: true,
                 catItemMap: function(poster){
                     return poster.data.useRestrictions;
                 }
-            },{ facetTitle: "Access Restrictions", collapsed: true,
+            },{ title: "Access Restrictions", collapsed: true,
                 catItemMap: function(poster){
                     return poster.data.accessRestrictions;
                 }

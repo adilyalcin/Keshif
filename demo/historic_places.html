@@ -26,13 +26,13 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Places"} ]
         },
         facets: [
-            {   facetTitle: "State",
+            {   title: "State",
                 catLabelText: function(d){ return getStateName(d.data[0]) }
-            },{ facetTitle: "County", layout: 'middle', minAggrValue: 50,
+            },{ title: "County", layout: 'middle', minAggrValue: 50,
                 catItemMap: function(d){ return d.data.County+", "+d.data.State; }
-            },{ facetTitle: "Listed Time", layout: 'bottom',
+            },{ title: "Listed Time", layout: 'bottom',
                 catItemMap: function(d){ return moment(d.data.Listed,"YYYYMMDD")._d; }
-            },{ facetTitle: "City", layout: 'right', minAggrValue: 50,
+            },{ title: "City", layout: 'right', minAggrValue: 50,
                 catItemMap: function(d){ return d.data.City+", "+d.data.State; }
             }
         ],

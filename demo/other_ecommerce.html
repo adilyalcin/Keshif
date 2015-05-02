@@ -16,37 +16,29 @@
 
 function loadChart() {
 	new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth:100,
-        showDataSource : false,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdHFkS1E2V2M0SHRkWkRUX0p4T2pHVmc',
-            sheets : [ {name:"Shorts"} ]
+        showDataSource: false,
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdHFkS1E2V2M0SHRkWkRUX0p4T2pHVmc',
+            sheets: [ {name:"Shorts"} ]
         },
-        charts : [
-            {
-                facetTitle: "Color"
-            },
-            {
-                facetTitle: "Size"
-            },
-            {
-                facetTitle: "Store"
-            },
-            {
-                facetTitle: "Price"
-            }
-
-        ],
         loadedCb: function(){
             // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.Util.cellToArray(kshf.dt.Shorts, [1, 2], /\b,\s+/, false);
         },
-        list : {
+        facets: [
+            {   title: "Color"
+            },{ title: "Size"
+            },{ title: "Store"
+            },{ title: "Price"
+            }
+        ],
+        list: {
             sortColWidth: 50,
-            sortingOpts : [ {   name: 'Price' } ],
-            textSearch : 'Model',
-            content: 'Model'
+            sortingOpts: [ {   name: 'Price' } ],
+            textSearch: 'Model',
+            recordView: 'Model'
         }
     });
 }

@@ -47,11 +47,11 @@ google.setOnLoadCallback(function(){
             });
         },
         facets: [
-            {   facetTitle: "Categories"
-            },{ facetTitle: "Year",
+            {   title: "Categories"
+            },{ title: "Year",
                 catItemMap: function(d){ return d.data.Award; },
                 intervalScale: 'step'
-            },{ facetTitle: "Credits", collapsed: true
+            },{ title: "Credits", collapsed: true
             }
         ],
         itemDisplay: {

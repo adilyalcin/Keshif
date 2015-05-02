@@ -44,12 +44,12 @@ google.setOnLoadCallback(function(){
             });
         },
         facets: [
-            {   facetTitle: "Feelings",
-            },{ facetTitle: "Talk Duration",
+            {   title: "Feelings",
+            },{ title: "Talk Duration",
                 catItemMap: function(d){ return d.data.Duration[0]; }
-            },{ facetTitle: "Views", intervalScale: 'log'
-            },{ facetTitle: "Speaker", layout: 'right'
-            },{ facetTitle: "Date", layout: 'bottom'
+            },{ title: "Views", intervalScale: 'log'
+            },{ title: "Speaker", layout: 'right'
+            },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {

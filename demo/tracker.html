@@ -34,7 +34,7 @@ $(document).ready( function(){
                 timeItemMap: function(f){ 
                     return new Date(f.data[cols['ts']]*900+1388088936864);
                 },
-                facetTitle: "Action",
+                title: "Action",
                 catDispCountFix: 5,
                 catItemMap : function(f){ 
                     switch(f.data[cols['actID']]){
@@ -54,11 +54,11 @@ $(document).ready( function(){
                     }
                     return '???';
                 }
-            },{ facetTitle: "Facet",
+            },{ title: "Facet",
                 catDispCountFix: 5,
                 catItemMap : function(f){ return f.data[cols['facet']]; }
             },{ 
-                facetTitle: "Demo",
+                title: "Demo",
                 catItemMap : function(f){ 
                     switch(f.data[cols['demoID']]){
                     case 1:  return '1';
@@ -81,13 +81,13 @@ $(document).ready( function(){
                     }
                     return '???';
                 }
-            },{ facetTitle: "Item Info",
+            },{ title: "Item Info",
                 catDispCountFix: 5,
                 catItemMap : function(f){ return f.data[cols['itemInfo']]; }
-            },{ facetTitle: "textSrch",
+            },{ title: "textSrch",
                 catDispCountFix: 3,
             },{
-                facetTitle: "Time Filter Active",
+                title: "Time Filter Active",
                 catItemMap : function(f){ 
                     return f.data[cols['timeFltr']];
                 },
@@ -95,7 +95,7 @@ $(document).ready( function(){
                     no_resort: true,
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{ facetTitle: "Max. Ctgry. Active",
+            },{ title: "Max. Ctgry. Active",
                 catItemMap : function(f){ 
                     var v= f.data[cols['selected']];
 
@@ -114,7 +114,7 @@ $(document).ready( function(){
                     no_resort: true,
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{ facetTitle: "Max. Facets Active",
+            },{ title: "Max. Facets Active",
                 catItemMap : function(f){ 
                     var v= f.data[cols['filtered']];
 
@@ -136,7 +136,7 @@ $(document).ready( function(){
                     name:"By freq."
                 }]
             },{
-                facetTitle: "TimeDif (sec)",
+                title: "TimeDif (sec)",
                 catItemMap : function(f){ 
                     var tsec= Math.floor(f.data[cols['ts']]/1000);
                     var tsec_approx = Math.floor(tsec/10)*10;
@@ -150,7 +150,7 @@ $(document).ready( function(){
                     name:"By freq."
                 }]
             },{
-                facetTitle: "results",
+                title: "results",
                 sortingOpts: [{
                     name:"numeric",
                     no_resort: true,

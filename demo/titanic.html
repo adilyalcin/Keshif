@@ -26,14 +26,14 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Passengers"} ]
         },
         facets: [
-            {   facetTitle: "Survived",
+            {   title: "Survived",
                 catItemMap : function(d){ 
                     var s = d.data.survived;
                     if(s) return 'Yes';
                     return 'No';
                 },
                 sortingOpts : [{ no_resort: true }]
-            },{ facetTitle: "Class",
+            },{ title: "Class",
                 catItemMap: function(d){ return d.data.pclass;},
                 sortingOpts : [{ 
                     func: function(a,b){
@@ -44,10 +44,10 @@ google.setOnLoadCallback(function(){
                     },
                     no_resort: true 
                 }]
-            },{ facetTitle: "Sex",
+            },{ title: "Sex",
                 catItemMap: function(d){ return d.data.sex;},
                 sortingOpts : [{ no_resort: true }]
-            },{ facetTitle: "Age",
+            },{ title: "Age",
                 catItemMap : function(d){
                     var age = d.data.age;
                     if(age===null) return null;
@@ -55,9 +55,9 @@ google.setOnLoadCallback(function(){
                 },
                 layout:'bottom',
                 showPercentile: true
-            },{ facetTitle: "embarked",
-            },{ facetTitle: "room", collapsed: true,
-//            },{ facetTitle: "boat", collapsed: true, type: 'categorical' // there are negative values and such
+            },{ title: "embarked",
+            },{ title: "room", collapsed: true,
+//            },{ title: "boat", collapsed: true, type: 'categorical' // there are negative values and such
             }
         ],
         itemDisplay: {
@@ -67,7 +67,7 @@ google.setOnLoadCallback(function(){
                 {name: 'age'}
             ],
             textSearch: 'name',
-            content: "name"
+            recordView: "name"
         }
     });
 });

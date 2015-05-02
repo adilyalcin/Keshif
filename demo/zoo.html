@@ -13,53 +13,51 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-        google.setOnLoadCallback(function () {
-            
-        	browser = new kshf.Browser({
-                domID: "#chart_div",
-                categoryTextWidth: 135,
-                source: {
-                    gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
-                    sheets : [ {name:"Animals"} ]
+google.setOnLoadCallback(function () {
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 135,
+        source: {
+            gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
+            sheets : [ {name:"Animals"} ]
+        },
+        facets: [
+            {   title: "# of Legs", intervalScale: 'step'
+            },{ title: "Properties",
+                catItemMap: function(d){
+                    var r =[];
+                    if(d.data[2 ]) r.push("Has Tail");
+                    if(d.data[3 ]) r.push("Has Hair");
+                    if(d.data[4 ]) r.push("Has Feathers");
+                    if(d.data[5 ]) r.push("Has Backbone");
+                    if(d.data[6 ]) r.push("Has Eggs");
+                    if(d.data[7 ]) r.push("Has Milk");
+                    if(d.data[8 ]) r.push("Domestic");
+                    if(d.data[9 ]) r.push("Aquatic");
+                    if(d.data[10]) r.push("Airborn");
+                    if(d.data[11]) r.push("Venomous");
+                    if(d.data[12]) r.push("Predator");
+                    if(d.data[13]) r.push("Has Tooth");
+                    if(d.data[14]) r.push("Breathes");
+                    return r;
                 },
-                facets: [
-                    {   facetTitle: "# of Legs", intervalScale: 'step'
-                    },{ facetTitle: "Properties",
-                        catItemMap: function(d){
-                            var r =[];
-                            if(d.data[2 ]) r.push("Has Tail");
-                            if(d.data[3 ]) r.push("Has Hair");
-                            if(d.data[4 ]) r.push("Has Feathers");
-                            if(d.data[5 ]) r.push("Has Backbone");
-                            if(d.data[6 ]) r.push("Has Eggs");
-                            if(d.data[7 ]) r.push("Has Milk");
-                            if(d.data[8 ]) r.push("Domestic");
-                            if(d.data[9 ]) r.push("Aquatic");
-                            if(d.data[10]) r.push("Airborn");
-                            if(d.data[11]) r.push("Venomous");
-                            if(d.data[12]) r.push("Predator");
-                            if(d.data[13]) r.push("Has Tooth");
-                            if(d.data[14]) r.push("Breathes");
-                            return r;
-                        },
-                        catDispCountFix: 6
-                    }
-                ],
-                itemDisplay: {
-                    sortColWidth: 50,
-                    sortingOpts : [
-                        {   name: 'Name',
-                            value: function(animal){ return animal.data[0][0]; } // first letter in name column
-                        }
-                    ],
-                    textSearch : '*Name',
-                    content: '*Name'
+                catDispCountFix: 6
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 50,
+            sortingOpts : [
+                {   name: 'Name',
+                    value: function(animal){ return animal.data[0][0]; } // first letter in name column
                 }
-            });
-        });
+            ],
+            textSearch : '*Name',
+            recordView: '*Name'
+        }
+    });
+});
         </script>
-        <<style type="text/css" media="screen">
+        <style type="text/css" media="screen">
             #chart_div {
                 width: 400px;
                 height: 450px;

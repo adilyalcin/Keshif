@@ -32,30 +32,30 @@ $(document).ready( function() {
             sheets : [ {name:"tablets", id:"ASIN"} ]
         },
         facets: [
-            {   facetTitle: "Brand Name",
-            },{ facetTitle: "Operating System",
-            },{ facetTitle: "Customer Reviews"
-            },{ facetTitle: "Flash Memory Size (GB)", layout: 'right',
+            {   title: "Brand Name",
+            },{ title: "Operating System",
+            },{ title: "Customer Reviews"
+            },{ title: "Flash Memory Size (GB)", layout: 'right',
                 catItemMap : function(tablet){
                     var n= parseFloat(tablet.data['Flash Memory Size']);
                     if(n<1) return null;
                     return n;
                 },
                 intervalScale: 'log'
-            },{ facetTitle: "Screen Size (inches)",
+            },{ title: "Screen Size (inches)",
                 catItemMap : function(tablet){
                     var x= parseFloat(tablet.data['Screen Size']);
                     if(isNaN(x)) { return null; }
                     return x;
                 }
-            },{ facetTitle: "Weight (ounces)", layout: 'right', intervalScale: 'log',
+            },{ title: "Weight (ounces)", layout: 'right', intervalScale: 'log',
                 catItemMap : function(tablet){ return tablet.data['Weight']; }
-            },{ facetTitle: "Battery Life (hours)", layout: 'right',
+            },{ title: "Battery Life (hours)", layout: 'right',
                 catItemMap: function(d) { return d.data['Battery Life']; }
-            },{ facetTitle: "Rating", layout: 'right',
+            },{ title: "Rating", layout: 'right',
                 catItemMap: function(d) { return d.data['Customer Reviews']; },
                 showPercentile: true
-            },{ facetTitle: "Release Date",
+            },{ title: "Release Date",
                 catItemMap : function(tablet){ 
                     var dt = tablet.data['Date First Available'];
                     if(dt===""){ return null; }

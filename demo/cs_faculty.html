@@ -38,28 +38,28 @@ google.setOnLoadCallback(function(){
             //sheets: [ {name: "Data"} ]
         },
         facets: [
-            {   facetTitle: "<i class='fa fa-university'></i> University",
+            {   title: "<i class='fa fa-university'></i> University",
                 description: "The name of the university they teach",
                 catItemMap: function(d){ return d.data.University; }
-            },{ facetTitle: "<i class='fa fa-sitemap'></i> Subfield",
+            },{ title: "<i class='fa fa-sitemap'></i> Subfield",
                 description: "Main field of research. One of the 20 fields reported by Microsoft Academic",
                 catItemMap: function(d){ return d.data.Subfield; }
-            },{ facetTitle: "<i class='fa fa-th-large'></i> Rank",
+            },{ title: "<i class='fa fa-th-large'></i> Rank",
                 catItemMap: function(d){ return d.data.Rank; }
-            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
+            },{ title: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
                 description: "University they acquired their BSc degree from",
                 catItemMap: function(d){ return d.data.Bachelors; }
-            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
+            },{ title: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
                 description: "University they acquired their Masters degree from",
                 catItemMap: function(d){ return d.data.Masters; }
-            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
+            },{ title: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
                 description: "University they acquired their Doctorate degree from",
                 catItemMap: function(d){ return d.data.Doctorate; }
-            },{ facetTitle: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right',
+            },{ title: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right',
                 description: "University or Company they did their post-doctoral training",
                 catItemMap: function(d){ return d.data.PostDoc; },
                 collapsed: true
-            },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
+            },{ title: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
                 description: "For each CS faculty, lists the countries that s/he received her degrees from",
                 catItemMap: function(d){
                     var r=[];
@@ -73,7 +73,7 @@ google.setOnLoadCallback(function(){
                     r.push(a[a.length-1].trim());
                     return r;
                 }
-            },{ facetTitle: "<span class='fa fa-calendar'></span> Joined Year",
+            },{ title: "<span class='fa fa-calendar'></span> Joined Year",
                 description: "When they joined that department of Computer Science as faculty",
                 layout: "bottom",
                 catItemMap: function(d){ return d.data.JoinYear; }

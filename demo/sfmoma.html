@@ -70,26 +70,26 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: " Artist",
+            {   title: " Artist",
                 layout: 'right',
                 facets: [
-                    {   facetTitle: "Name", collapsed: true,
+                    {   title: "Name", collapsed: true,
                         catItemMap: function(d){ return d.data.Artist; }
-                    },{ facetTitle: "Nationality"
-                    },{ facetTitle: "Gender"
-                    },{ facetTitle: "Living"
-                    },{ facetTitle: "Year Born"
+                    },{ title: "Nationality"
+                    },{ title: "Gender"
+                    },{ title: "Living"
+                    },{ title: "Year Born"
                     }
                 ]
-            },{ facetTitle: "Collection", collapsed: true,
-            },{ facetTitle: "Object Type",
-//            },{ facetTitle: "Medium",
-            },{ facetTitle: "Creation Date",
+            },{ title: "Collection", collapsed: true,
+            },{ title: "Object Type",
+//            },{ title: "Medium",
+            },{ title: "Creation Date",
                 catItemMap: function(d){ return d.data.Time},
                 intervalScale: 'time'
-            },{ facetTitle: "Department",
-            },{ facetTitle: "On Display",
-//            },{ facetTitle: "Key Words", collapsed: true
+            },{ title: "Department",
+            },{ title: "On Display",
+//            },{ title: "Key Words", collapsed: true
             }
         ],
         itemDisplay: {
@@ -98,7 +98,7 @@ $(document).ready( function(){
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
-            content: "Name"
+            recordView: "Name"
         }
     });
 });

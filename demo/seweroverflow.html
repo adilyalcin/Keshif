@@ -64,30 +64,30 @@ $(document).ready(function(){
             url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
         },
         facets: [
-            {   facetTitle: "Overflow Type",
+            {   title: "Overflow Type",
                 catItemMap: function(overflow){ return overflow.data[8]; }
-            },{ facetTitle: "Cause",
+            },{ title: "Cause",
                 catItemMap: function(overflow){ return overflow.data[21]; }
-            },{ facetTitle: "Time",
+            },{ title: "Time",
                 facets: [
-                    {   facetTitle: "Year Discovered", 
+                    {   title: "Year Discovered", 
                         catItemMap: function(overflow){ 
                             // parses the date string and returns the year
                             return new Date(moment(overflow.data[11]));
                         },
                         intervalScale: 'time'
-                    },{ facetTitle: "Duration",
+                    },{ title: "Duration",
                         catItemMap: getDuration_Human
                     }
                 ]
-            },{ facetTitle: "Location",
+            },{ title: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [
-                    {   facetTitle: "Zip Code", 
+                    {   title: "Zip Code", 
                         catItemMap: function(overflow){ return overflow.data[17]; }
-                    },{ facetTitle: "County", 
+                    },{ title: "County", 
                         catItemMap: function(overflow){ return overflow.data[23]; }
-                    },{ facetTitle: "Municipality/Facility",
+                    },{ title: "Municipality/Facility",
                         catItemMap: function(overflow){ return overflow.data[9]; }
                     }
                 ]

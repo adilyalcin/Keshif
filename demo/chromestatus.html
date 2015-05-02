@@ -51,33 +51,33 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Category",
+            {   title: "Category",
                 catItemMap: function(d){ return d.data.category; }
-            },{ facetTitle: "Implementation Status",
+            },{ title: "Implementation Status",
                 catItemMap: function(d){ return d.data.impl_status_chrome; }
-            },{ facetTitle: "Standardization",
+            },{ title: "Standardization",
                 catItemMap: function(d){ return d.data.standardization.text; }
-            },{ facetTitle: "Visibility", layout: 'left',
+            },{ title: "Visibility", layout: 'left',
                 catItemMap: function(d){ return d.data.visibility; }
-            },{ facetTitle: "Milestone", layout: 'right', 
+            },{ title: "Milestone", layout: 'right', 
                 catItemMap: function(d){ return d.data.shipped_milestone; }
-            },{ facetTitle: "Prefixed", layout: 'right', collapsed: true,
+            },{ title: "Prefixed", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data.prefixed; }
-            },{ facetTitle: "Owner", layout: 'right', collapsed: true,
+            },{ title: "Owner", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data.owner; }
-            },{ facetTitle: "Updated By", layout: 'right', collapsed: true,
+            },{ title: "Updated By", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data.updated_by; }
-            },{ facetTitle: "Status (vs.)", layout: 'right',
+            },{ title: "Status (vs.)", layout: 'right',
                 facets: [
-                    {   facetTitle: "FF Status",
+                    {   title: "FF Status",
                         catItemMap: function(d){ return d.data.ff_views.text; },
-                    },{ facetTitle: "IE Status",
+                    },{ title: "IE Status",
                         catItemMap: function(d){ return d.data.ie_views.text; },
-                    },{ facetTitle: "Safari Status",
+                    },{ title: "Safari Status",
                         catItemMap: function(d){ return d.data.safari_views.text; },
                     }
                 ]
-            },{ facetTitle: "Update Date", layout: 'bottom',
+            },{ title: "Update Date", layout: 'bottom',
                 catItemMap: function(d){ return new Date(moment(d.data.updated)); },
             }
         ],

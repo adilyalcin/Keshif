@@ -25,15 +25,15 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Executions"} ]
         },
         facets: [
-            {   facetTitle: "Crime",
+            {   title: "Crime",
                 catItemMap: function(d){ return d.data.Crime.split(" - "); }
-            },{ facetTitle: "Method",
-            },{ facetTitle: "State", layout: 'right',
+            },{ title: "Method",
+            },{ title: "State", layout: 'right',
                 catLabelText: function(d){ return getStateName(d.data[0]); }
-            },{ facetTitle: "Race", layout: 'right'
-            },{ facetTitle: "Sex", layout: 'right'
-            },{ facetTitle: "Age", layout: 'right', type: 'interval'
-            },{ facetTitle: "Year", layout: 'bottom'
+            },{ title: "Race", layout: 'right'
+            },{ title: "Sex", layout: 'right'
+            },{ title: "Age", layout: 'right', type: 'interval'
+            },{ title: "Year", layout: 'bottom'
             }
         ],
         itemDisplay: {
@@ -41,7 +41,7 @@ google.setOnLoadCallback(function(){
             detailsToggle : "Zoom",
             sortingOpts : [ {name: 'Year'} ],
             textSearch: "Name",
-            content: "Name"
+            recordView: "Name"
         }
     });
 });

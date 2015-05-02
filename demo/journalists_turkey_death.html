@@ -23,9 +23,9 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Journalists"} ]
         },
         facets: [
-            {   facetTitle: "Organization"
-            },{ facetTitle: "Location", layout: 'right'
-            },{ facetTitle: "Date",
+            {   title: "Organization"
+            },{ title: "Location", layout: 'right'
+            },{ title: "Date",
                 type: 'interval',
                 layout: 'bottom'
             }
@@ -34,7 +34,7 @@ google.setOnLoadCallback(function(){
             sortColWidth: 50,
             sortingOpts : [ {name: 'Date',value: function(d){ return d.data.Date.getFullYear(); } } ],
             textSearch : "Journalist",
-            content: '*Journalist'
+            recordView: '*Journalist'
         }
     });
 });

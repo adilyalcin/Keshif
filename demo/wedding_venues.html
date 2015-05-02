@@ -99,26 +99,26 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Location",
+            {   title: "Location",
                 facets:[
-                    {facetTitle: "Region Name" },
-                    {facetTitle: "County Name", collapsed: true }
+                    {title: "Region Name" },
+                    {title: "County Name", collapsed: true }
                 ]
-            },{ facetTitle: "Venue Type", layout: 'right',
-            },{ facetTitle: "Dining Options"
-            },{ facetTitle: "Overnight Accommodation"
-            },{ facetTitle: "Venue Leisure Facilities"
-            },{ facetTitle: "Other Features"
-            },{ facetTitle: "Venue Staff Assistance", layout: 'right'
-            },{ facetTitle: "Average Facility Rating", layout: 'right'
-            },{ facetTitle: "Average Service Rating", layout: 'right'
-            },{ facetTitle: "Number Of Reviews", collapsed: true, layout: 'right', intervalScale: 'log',
+            },{ title: "Venue Type", layout: 'right',
+            },{ title: "Dining Options"
+            },{ title: "Overnight Accommodation"
+            },{ title: "Venue Leisure Facilities"
+            },{ title: "Other Features"
+            },{ title: "Venue Staff Assistance", layout: 'right'
+            },{ title: "Average Facility Rating", layout: 'right'
+            },{ title: "Average Service Rating", layout: 'right'
+            },{ title: "Number Of Reviews", collapsed: true, layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){
                     if(d.data['Total Number Of Reviews']==0) return;
                     return d.data['Total Number Of Reviews'];
                 }
-            },{ facetTitle: "Maximum Capacity", layout: 'right', unitName: "Ppl"
-            },{ facetTitle: "Minimum Capacity", layout: 'right', unitName: "Ppl"
+            },{ title: "Maximum Capacity", layout: 'right', unitName: "Ppl"
+            },{ title: "Minimum Capacity", layout: 'right', unitName: "Ppl"
             }
         ],
         itemDisplay: {

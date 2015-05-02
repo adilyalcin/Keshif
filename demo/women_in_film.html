@@ -14,7 +14,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 google.setOnLoadCallback(function(){
     resizeBrowser(150,150);
     $(window).resize(function() {
@@ -37,9 +36,9 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.women_in_film, ['Rating','Genre','Main Actors','Language'], ', ', false);
         },
         facets: [
-            {   facetTitle: "Movie Passes Bechdel Test ?",
+            {   title: "Movie Passes Bechdel Test ?",
                 catItemMap: function(movie){ return movie.data["Passes Bechdel Test?"]; }
-            },{ facetTitle: "Bechdel Criterias",
+            },{ title: "Bechdel Criterias",
                 catItemMap: function(movie){
                     var r=[];
                     if(movie.data["Has at least two [named] women in it"]==="Pass")
@@ -50,25 +49,25 @@ google.setOnLoadCallback(function(){
                         r.push("The women talk about something besides a man");
                     return r;
                 }
-            },{ facetTitle: "Clarity of Pass", collapsed: true
-/*            },{ facetTitle: "Director",
+            },{ title: "Clarity of Pass", collapsed: true
+/*            },{ title: "Director",
                 catItemMap: function(movie){
                     return movie.data.Director.split(", ");
                 }*/
-/*                        },{ facetTitle: "Plot Keywords (top 10)",
+/*                        },{ title: "Plot Keywords (top 10)",
                 catItemMap: function(movie){
                     var keywords = movie.data["Plot Keywords (top 10)"];
                     if(keywords !== undefined && keywords.split) 
                         return keywords.split(", ");
                 }*/
-            },{ facetTitle: "IMDb Popularity Score", layout: 'left', intervalScale: 'log'
-            },{ facetTitle: "Award Popularity", layout: 'left', intervalScale: 'log', collapsed: true
-            },{ facetTitle: "Rating"
-            },{ facetTitle: "Genre", layout: 'right'
-            },{ facetTitle: "Main Actors", layout: 'right', minAggrValue: 3
-            },{ facetTitle: "Language", layout: 'right'
-            },{ facetTitle: "Runtime (min)", layout: 'right', intervalScale: 'log', collapsed: true
-            },{ facetTitle: "Year", layout: "left", intervalScale: 'step'
+            },{ title: "IMDb Popularity Score", layout: 'left', intervalScale: 'log'
+            },{ title: "Award Popularity", layout: 'left', intervalScale: 'log', collapsed: true
+            },{ title: "Rating"
+            },{ title: "Genre", layout: 'right'
+            },{ title: "Main Actors", layout: 'right', minAggrValue: 3
+            },{ title: "Language", layout: 'right'
+            },{ title: "Runtime (min)", layout: 'right', intervalScale: 'log', collapsed: true
+            },{ title: "Year", layout: "left", intervalScale: 'step'
             }
         ],
         itemDisplay: {

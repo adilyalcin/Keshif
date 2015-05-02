@@ -24,9 +24,9 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Cereals"} ]
         },
         facets: [
-            {   facetTitle: "Brand"
-            },{ facetTitle: "Type"
-            },{ facetTitle: "Shelf Level", type: 'categorical',
+            {   title: "Brand"
+            },{ title: "Type"
+            },{ title: "Shelf Level", type: 'categorical',
                 catLabelText: function(d){
                     switch(d.data[1]){
                         case 1: return "Bottom";
@@ -34,40 +34,40 @@ google.setOnLoadCallback(function(){
                         case 3: return "Top";
                     }
                 }
-            },{ facetTitle: "Rating", type: 'interval', layout: 'middle',
+            },{ title: "Rating", type: 'interval', layout: 'middle',
                 showPercentile: true,
                 description: "Reported by Consumer Reports"
-            },{ facetTitle: "Calories", type: 'interval', layout: 'right',
+            },{ title: "Calories", type: 'interval', layout: 'right',
                 showPercentile: true
-            },{ facetTitle: "Protein", type: 'interval', layout: 'right',
+            },{ title: "Protein", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data["Protein (gr)"]},
                 unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Fat", type: 'interval', layout: 'right',
+            },{ title: "Fat", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data["Fat\n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Carb", type: 'interval', layout: 'right',
+            },{ title: "Carb", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data["Carbo \n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Sugar", type: 'interval', layout: 'right',
+            },{ title: "Sugar", type: 'interval', layout: 'right',
                 catItemMap: function(d){return d.data["Sugar \n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
-            },{ facetTitle: "Sodium", type: 'interval', layout: 'left',
+            },{ title: "Sodium", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data["Sodium \n(mg)"]},
                 unitName: "gr",
                 showPercentile: true,
-            },{ facetTitle: "Fiber", type: 'interval', layout: 'left',
+            },{ title: "Fiber", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data["Fiber \n(gr)"]},
                 unitName: "gr",
                 showPercentile: true, 
-            },{ facetTitle: "Potasium", type: 'interval', layout: 'left',
+            },{ title: "Potasium", type: 'interval', layout: 'left',
                 catItemMap: function(d){return d.data["Potassium \n(mg)"]},
                 unitName: "mg",
                 showPercentile: true,
-            },{ facetTitle: "Vitamins", type: 'interval', layout: 'middle',
+            },{ title: "Vitamins", type: 'interval', layout: 'middle',
                 showPercentile: true,  collapsed: true,
             }
             // Vitamins:
@@ -80,7 +80,7 @@ google.setOnLoadCallback(function(){
                 {name: 'Calories', label: function(d){ return d.data.Calories.toPrecision(4)}}
             ],
             textSearch: 'Name',
-            content: "Name"
+            recordView: "Name"
         }
     });
 });

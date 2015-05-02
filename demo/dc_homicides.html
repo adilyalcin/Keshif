@@ -55,28 +55,28 @@ $(document).ready( function(){
             callback: dataLoad
         },
         facets: [
-            {   facetTitle: "Age",
+            {   title: "Age",
                 catItemMap: function(d){ return d.data.age;}
-            },{ facetTitle: "Race",
+            },{ title: "Race",
                 catItemMap: function(d){ return d.data.race;}
-            },{ facetTitle: "Sex",
+            },{ title: "Sex",
                 catItemMap: function(d){ return d.data.sex==="m"?"Male":"Female"; }
-            },{ facetTitle: "Quadrant", layout: 'right',
+            },{ title: "Quadrant", layout: 'right',
                 catItemMap: function(d){ return d.data.quadrant;}
-            },{ facetTitle: "Neighborhood", layout: 'right',
+            },{ title: "Neighborhood", layout: 'right',
                 catItemMap: function(d){ if(d.data.nbhd) return d.data.nbhd.subhood; }
-            },{ facetTitle: "Status", layout: 'right',
+            },{ title: "Status", layout: 'right',
                 catItemMap: function(d){ 
                     var r=[];
                     r.push("Police Status: "+d.data.police_status.name);
                     if(d.data.jury_trial) r.push("Had jury trial");
                     return r;
                 }
-            },{ facetTitle: "Manner",
+            },{ title: "Manner",
                 catItemMap: function(d){ return d.data.manner.name; }
-            },{ facetTitle: "Motive",
+            },{ title: "Motive",
                 catItemMap: function(d){ return d.data.motive.name; }
-            },{ facetTitle: "Incident Date", layout: "bottom",
+            },{ title: "Incident Date", layout: "bottom",
                 catItemMap: function(d){
                     if(d.data.incident_date.getFullYear()>=2000) return d.data.incident_date;
                 }

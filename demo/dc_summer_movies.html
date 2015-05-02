@@ -78,17 +78,17 @@ $(document).ready( function(){
             sheets: [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
         },
         facets: [
-            {   facetTitle: "Movie",
+            {   title: "Movie",
                 catTableName: "Movies",
                 catLabelText: function(d){ return d.data.Title; },
                 facets: [
-                    {   facetTitle: "Genre", forceSearch: false
-                    },{ facetTitle: "Rated"
-                    },{ facetTitle: "IMDB Rating",
+                    {   title: "Genre", forceSearch: false
+                    },{ title: "Rated"
+                    },{ title: "IMDB Rating",
                         catItemMap: function(movie){ return movie.data.imdbRating; }
                     }
                 ]
-            },{ facetTitle: "Location",
+            },{ title: "Location",
                 layout: "right",
                 catTableName: "Series",
                 catItemMap: function(d){ return d.data.Series; },
@@ -109,14 +109,14 @@ $(document).ready( function(){
                     }
                 ],
                 facets: [
-                    {   facetTitle: "State"
-                    },{ facetTitle: "Features", collapsed: true,
+                    {   title: "State"
+                    },{ title: "Features", collapsed: true,
                     }
                 ]
             },{
-                facetTitle: "Time", layout: "right",
+                title: "Time", layout: "right",
                 facets : [/*{
-                    facetTitle: "Soon",
+                    title: "Soon",
                     removeInactiveAttrib: false,
                     catItemMap: function(d){
                         var m_scr = moment(d.data[1]);
@@ -126,13 +126,13 @@ $(document).ready( function(){
                         return null;
                     }
                 },*/{
-                    facetTitle: "Day Of Week",
+                    title: "Day Of Week",
                     type: 'categorical',
                     catTableName: "Weekdays",
                     catItemMap: function(d){ return (moment(d.data.Date).days()+6)%7;  },
                     sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
                 }]
-            },{ facetTitle: "Date",
+            },{ title: "Date",
                 layout: "bottom",
                 catItemMap: function(d){ return d.data.Date; },
                 intervalScale: 'time'

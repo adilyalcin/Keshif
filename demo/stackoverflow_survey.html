@@ -38,8 +38,8 @@ google.setOnLoadCallback(function(){
             this.setPercentMode(true);
         },
         facets: [
-            {   facetTitle: "Country",
-            },{ facetTitle: "Age",
+            {   title: "Country",
+            },{ title: "Age",
                 catItemMap: function(d){
                     switch(d.data.Age){
                         case '< 20': return 0;
@@ -67,9 +67,9 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-            },{ facetTitle: "Gender",
-            },{ facetTitle: "Occupation"
-            },{ facetTitle: "Years IT / Programming Experience",
+            },{ title: "Gender",
+            },{ title: "Occupation"
+            },{ title: "Years IT / Programming Experience",
                 catItemMap: function(d){
                     var age=d.data['Years IT / Programming Experience'];
                     switch(age){
@@ -92,17 +92,17 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-//                        },{ facetTitle: "Desktop Operating System"
-            },{ facetTitle: "Training & Education",
-            },{ facetTitle: "Current Language", layout:'middle', minAggrValue: 2
-            },{ facetTitle: "Future Language", layout:'middle'
-            },{ facetTitle: "Desktop Operating System", layout:'right'
-            },{ facetTitle: "Preferred text editor", layout:'middle', collapsed: true
-            },{ facetTitle: "Prefered IDE theme", layout:'middle', collapsed: true
-            },{ facetTitle: "Source control used", layout:'middle', collapsed: true,
-            },{ facetTitle: "Prefered Source Control", layout:'middle', collapsed: true
-            },{ facetTitle: "Why use Stack Overflow", layout:'middle', collapsed: true
-            },{ facetTitle: "How often are Stack Overflow's answers helpful", layout:'middle', collapsed: true,
+//                        },{ title: "Desktop Operating System"
+            },{ title: "Training & Education",
+            },{ title: "Current Language", layout:'middle', minAggrValue: 2
+            },{ title: "Future Language", layout:'middle'
+            },{ title: "Desktop Operating System", layout:'right'
+            },{ title: "Preferred text editor", layout:'middle', collapsed: true
+            },{ title: "Prefered IDE theme", layout:'middle', collapsed: true
+            },{ title: "Source control used", layout:'middle', collapsed: true,
+            },{ title: "Prefered Source Control", layout:'middle', collapsed: true
+            },{ title: "Why use Stack Overflow", layout:'middle', collapsed: true
+            },{ title: "How often are Stack Overflow's answers helpful", layout:'middle', collapsed: true,
                 catItemMap: function(d){
                     switch(d.data["How often are Stack Overflow's answers helpful"]){
                         case 'Always': return 0;
@@ -123,9 +123,9 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-            },{ facetTitle: "Why answer?", layout:'middle'
-            },{ facetTitle: "Employment Status", layout:'right'
-            },{ facetTitle: "Compensation", layout:'right',
+            },{ title: "Why answer?", layout:'middle'
+            },{ title: "Employment Status", layout:'right'
+            },{ title: "Compensation", layout:'right',
                 catItemMap: function(d){
                     switch(d.data.Compensation){
                         case 'Less than $20,000': return 0;
@@ -158,9 +158,9 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-            },{ facetTitle: "Industry", layout:'right'
-            },{ facetTitle: "Job Satisfaction", layout:'right'
-            },{ facetTitle: "Remote Status", layout:'right', collapsed: true,
+            },{ title: "Industry", layout:'right'
+            },{ title: "Job Satisfaction", layout:'right'
+            },{ title: "Remote Status", layout:'right', collapsed: true,
                 catItemMap: function(d){
                     switch(d.data['Remote Status']){
                         case 'Full-time Remote': return 0;
@@ -178,11 +178,11 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-//                        },{ facetTitle: "Open to new job opportunities"
-//                        },{ facetTitle: "Most important aspect of new job opportunity"
-            },{ facetTitle: "How many caffeinated beverages per day?", layout:'middle',
+//                        },{ title: "Open to new job opportunities"
+//                        },{ title: "Most important aspect of new job opportunity"
+            },{ title: "How many caffeinated beverages per day?", layout:'middle',
                 intervalScale: 'step'
-            },{ facetTitle: "How many hours programming as hobby per week?", layout:'middle'
+            },{ title: "How many hours programming as hobby per week?", layout:'middle'
             }
         ]
     });

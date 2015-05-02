@@ -36,10 +36,10 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Injuries"} ]
         },
         facets: [
-            {   facetTitle: "Team"
-            },{ facetTitle: "Player"
-            },{ facetTitle: "Injury",layout: 'right'
-            },{ facetTitle: "Season", layout: 'right',
+            {   title: "Team"
+            },{ title: "Player"
+            },{ title: "Injury",layout: 'right'
+            },{ title: "Season", layout: 'right',
                 sortingOpts: [{
                     func: function(a, b){
                         a=parseInt(a.data[1].substr(0,4));
@@ -47,13 +47,13 @@ google.setOnLoadCallback(function(){
                         return a - b; 
                     }
                 }],
-            },{ facetTitle: "Month", layout: 'right', collapsed: true,
+            },{ title: "Month", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data[3].getMonth(); },
                 sortingOpts: [
                     {func: kshf.Util.sortFunc_Column_Int_Incr}
                 ],
                 catLabelText: function(d){ return getMonthNameFromNumber(d.data[0]); },
-            },{ facetTitle: "Date Reported", layout: 'bottom', intervalScale: 'time'
+            },{ title: "Date Reported", layout: 'bottom', intervalScale: 'time'
             }
         ],
         itemDisplay: {

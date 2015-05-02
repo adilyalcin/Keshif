@@ -51,7 +51,7 @@ google.setOnLoadCallback( function() {
         },
         facets: [
             {
-                facetTitle: "Category",
+                title: "Category",
                 catItemMap : function(news){
                     var topics = news.data[newsCol.Topic];
                     var cats= {};
@@ -67,19 +67,19 @@ google.setOnLoadCallback( function() {
                     return toRet;
                 }
             },{
-                facetTitle: "Topic",
+                title: "Topic",
             },{
-                facetTitle: "Country",
+                title: "Country",
                 catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); }
             },{
-                facetTitle: "People",
+                title: "People",
                 catLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
                 catTooltipText: function(d) { 
                     var p = kshf.dt_id.People[d.data[1]];
                     return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
                 }
             },{
-                facetTitle: "Publish Time",
+                title: "Publish Time",
                 intervalScale: 'time',
                 layout: 'middle'
             }

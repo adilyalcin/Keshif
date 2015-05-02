@@ -54,18 +54,18 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);
         },
         facets: [
-            {   facetTitle: "Industry"
-            },{ facetTitle: "# of Records",
+            {   title: "Industry"
+            },{ title: "# of Records",
                 intervalScale: "log"
-            },{ facetTitle: "Source",
-            },{ facetTitle: "Type", layout: 'right'
-            },{ facetTitle: "Data Source", layout: 'right'
-            },{ facetTitle: "Record Types", layout: 'right',
+            },{ title: "Source",
+            },{ title: "Type", layout: 'right'
+            },{ title: "Data Source", layout: 'right'
+            },{ title: "Record Types", layout: 'right',
                 catLabelText: function(d){
                     if(typeInfo[d.data[1]]) return typeInfo[d.data[1]];
                     return d.data[1];
                 }
-            },{ facetTitle: "Date", layout: "bottom"
+            },{ title: "Date", layout: "bottom"
             }
         ],
         itemDisplay: {

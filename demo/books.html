@@ -66,52 +66,52 @@ $(document).ready( function(){
         },
         facets: [
             {
-                facetTitle: "Type",
+                title: "Type",
                 catItemMap: function(book){
                     var metadata = kshf.dt_id['Book Metadata'][book.data[0]];
                     if(metadata===undefined) return null;
                     return metadata.data[4];
                 }
             },{
-                facetTitle: "Genre",
+                title: "Genre",
                 catItemMap: function(book){
                     var metadata = kshf.dt_id['Book Metadata'][book.data[0]];
                     if(metadata===undefined) return null;
                     return metadata.data[5];
                 }
             },{
-                facetTitle: "Rating",
+                title: "Rating",
                 catItemMap: function(book){ return getIndicesWithParent(book,71); },
                 catLabelText: function(d){ return d.data[2]; },
                 attribNameFunc: getIndexTitle,
                 collapsed: true,
             },{
-                facetTitle: "Feeling",
+                title: "Feeling",
                 catItemMap: function(book){ return getIndicesWithParent(book,5); },
                 catLabelText: function(d){ return d.data[2]; },
                 attribNameFunc: getIndexTitle,
             },{   
-                facetTitle: "Audience",
+                title: "Audience",
                 collapsed: true,
                 facets: [
                     {
-                        facetTitle: "Language",
+                        title: "Language",
                         catItemMap: function(book){ return getIndicesWithParent(book,3); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Age",
+                        title: "Age",
                         catItemMap: function(book){ return getIndicesWithParent(book,83); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Collection",
+                        title: "Collection",
                         catItemMap: function(book){ return getIndicesWithParent(book,473); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed:true
                     },{
-                        facetTitle: "Publication Date",
+                        title: "Publication Date",
                         catItemMap: function(book){ return getIndicesWithParent(book,326); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
@@ -119,28 +119,28 @@ $(document).ready( function(){
                     }
                 ]
             },{
-                facetTitle: "Appearance",
+                title: "Appearance",
                 layout: 'right',
                 collapsed: true,
                 facets: [
                     {
-                        facetTitle: "Format",
+                        title: "Format",
                         catItemMap: function(book){ return getIndicesWithParent(book,15); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Length",
+                        title: "Length",
                         catItemMap: function(book){ return getIndicesWithParent(book,260); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Cover Color",
+                        title: "Cover Color",
                         catItemMap: function(book){ return getIndicesWithParent(book,4); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed: true
                     },{
-                        facetTitle: "Shape",
+                        title: "Shape",
                         catItemMap: function(book){ return getIndicesWithParent(book,6); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
@@ -148,22 +148,22 @@ $(document).ready( function(){
                     }
                 ]
             },{
-                facetTitle: "Content",
+                title: "Content",
                 layout: 'right',
                 collapsed: true,
                 facets: [
                     {
-                        facetTitle: "Countries",
+                        title: "Countries",
                         catItemMap: function(book){ return getIndicesWithParent(book,359); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Characters",
+                        title: "Characters",
                         catItemMap: function(book){ return getIndicesWithParent(book,257); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
-                        facetTitle: "Time Periods - When",
+                        title: "Time Periods - When",
                         catItemMap: function(book){ return getIndicesWithParent(book,287); },
                         catLabelText: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,

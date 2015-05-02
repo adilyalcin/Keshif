@@ -90,11 +90,11 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "EntryType",
-            },{ facetTitle: "Authors",
-            },{ facetTitle: "Journal",
+            {   title: "EntryType",
+            },{ title: "Authors",
+            },{ title: "Journal",
                 catItemMap: function(d){ return d.data.Fields.journal; }
-            },{ facetTitle: "Year", layout: "bottom"
+            },{ title: "Year", layout: "bottom"
             }
         ],
         itemDisplay: {

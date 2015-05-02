@@ -132,7 +132,7 @@ $(document).ready(function(){
             browser.facets[2].setHeightRow_attrib(20);
         },
         facets: [
-            {   facetTitle: "Episode", layout: 'right',
+            {   title: "Episode", layout: 'right',
                 catTableName: "Episodes",
                 sortingOpts: [ {func: function(a,b){ return a.data.ep_id - b.data.ep_id; }} ],
                 catLabelText: function(episode){
@@ -140,27 +140,27 @@ $(document).ready(function(){
                 },
                 catTooltipText: function(episode){ return episode.data.Synopsis; },
                 facets:[
-                    {   facetTitle: "Dead Count (Total)", collapsed: true,
+                    {   title: "Dead Count (Total)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.total; }
-                    },{ facetTitle: "Dead Count (Humans)", collapsed: true,
+                    },{ title: "Dead Count (Humans)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.humans; }
-                    },{ facetTitle: "Dead Count (Vampires)", collapsed: true,
+                    },{ title: "Dead Count (Vampires)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.vampires; }
-                    },{ facetTitle: "Dead Count (Demons)", collapsed: true,
+                    },{ title: "Dead Count (Demons)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.demons; }, 
-                    },{ facetTitle: "Dead Count (Animals)", collapsed: true,
+                    },{ title: "Dead Count (Animals)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.animals; },
                     }
                 ]
-            },{ facetTitle: "Location", layout: 'right'
-            },{ facetTitle: "Characters",
+            },{ title: "Location", layout: 'right'
+            },{ title: "Characters",
                 catItemMap: function(d){ return d.data.Appears; },
                 catTableName: "Characters",
                 catLabelText: function(character){ 
                     return character.data.Name+"<img src='./img/buffy/"+character.data.char_id+".jpg' class='charImg'>";
                 },
                 facets: [
-                    {   facetTitle: "Episodic Appearance", collapsed: true,
+                    {   title: "Episodic Appearance", collapsed: true,
                         sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
                         catItemMap: function(d){
                             if(d.data.episode===undefined) return 0;
@@ -170,11 +170,11 @@ $(document).ready(function(){
                             if(d.data[1]===0) return "Many Episodes";
                             return "Episode "+d.data[1]+" Only";
                         }
-                    },{ facetTitle: "Team",
-                    },{ facetTitle: "Type", collapsed: true
+                    },{ title: "Team",
+                    },{ title: "Type", collapsed: true
                     }
                 ]
-            },{ facetTitle: "Time (Minutes into the episode)",
+            },{ title: "Time (Minutes into the episode)",
                 catItemMap: function(d){ return d.data.second/60; },
                 layout: "bottom",
                 unitName: "min"

@@ -35,14 +35,14 @@ google.setOnLoadCallback(function(){
             })
         },
         facets: [
-            {   facetTitle: "UserType",
+            {   title: "UserType",
                 catLabelText: function(d){
                     switch(d.data[1]){
                         case "S": return "Subscriber";
                         case "C": return "Customer";
                     }
                 },
-            },{ facetTitle: "Gender", layout: 'right',
+            },{ title: "Gender", layout: 'right',
                 catLabelText: function(d){
                     switch(d.data[1]){
                         case 2: return "Female";
@@ -51,17 +51,17 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 type: 'categorical'
-            },{ facetTitle: "Station_Start",
+            },{ title: "Station_Start",
                 type: 'categorical',
                 catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
-            },{ facetTitle: "Station_End", layout: 'right',
+            },{ title: "Station_End", layout: 'right',
                 type: 'categorical',
                 catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
-            },{ facetTitle: "Hour of Day", layout: 'bottom',
+            },{ title: "Hour of Day", layout: 'bottom',
                 catItemMap: function(d){ return d.data.TimeStart.hour(); },
                 unitName: "hr",
                 intervalScale: 'step'
-            },{ facetTitle: "Day of Week", layout: 'right', collapsed: true,
+            },{ title: "Day of Week", layout: 'right', collapsed: true,
                 catItemMap: function(d){ return d.data.TimeStart.day(); },
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
                 catLabelText: function(d){
@@ -75,11 +75,11 @@ google.setOnLoadCallback(function(){
                         case 0: return "Sunday";
                     }
                 }
-            },{ facetTitle: "Duration (minutes)", layout: 'bottom',
+            },{ title: "Duration (minutes)", layout: 'bottom',
                 intervalScale: "log",
                 catItemMap: function(d){ return Math.round(d.data.Duration/60); },
                 unitName: "sec"
-            },{ facetTitle: "BirthYear", layout: 'bottom', collapsed: true
+            },{ title: "BirthYear", layout: 'bottom', collapsed: true
             }
         ]
     });

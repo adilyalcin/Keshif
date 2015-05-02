@@ -29,14 +29,14 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Banks, ['Loss Share Type'], /\//, false);
         },
         facets: [
-            {   facetTitle: "Loss Share Type"
-            },{ facetTitle: "State", layout: 'right',
+            {   title: "Loss Share Type"
+            },{ title: "State", layout: 'right',
                 catItemMap: "ST",
                 catTableName: "States",
                 catLabelText: function(state){ return state.data.name; }
-            },{ facetTitle: "City", layout: 'right',
-            },{ facetTitle: "Acquiring Institution"
-            },{ facetTitle: "Closing Date", layout: 'bottom'
+            },{ title: "City", layout: 'right',
+            },{ title: "Acquiring Institution"
+            },{ title: "Closing Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
                 inverse: true
             } ],
             textSearch: "Bank Name",
-            content: "Bank Name"
+            recordView: "Bank Name"
         }
     });
 });

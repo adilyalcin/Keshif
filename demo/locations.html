@@ -66,10 +66,10 @@ $(document).ready( function(){
         },
         facets: [
             {
-                facetTitle: "Type",
+                title: "Type",
                 catItemMap: function(location){ return location.data.l_type; }
             },{
-                facetTitle: "Part of",
+                title: "Part of",
                 catTableName: "Locations",
                 catItemMap: function(location){ return location.data.parent_location_uuid; },
                 catLabelText: function(location){ return location.data.name; },
@@ -79,7 +79,7 @@ $(document).ready( function(){
             sortColWidth: 80,
             sortingOpts : [{ name:'pos'},],
             linkText: "Part of",
-            content : "name"
+            recordView: "name"
         }
     });
 });

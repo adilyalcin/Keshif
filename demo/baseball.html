@@ -45,14 +45,14 @@ $(document).ready(function() {
             ]
         },
         facets: [
-            {   facetTitle: "Trans. Type",
+            {   title: "Trans. Type",
                 catLabelText: function(d){
                     return kshf.dt_id.baseball_trantype[d.data[1]].data.info;
                 }
-            },{ facetTitle: "From",
+            },{ title: "From",
                 facets: [
                     {
-                        facetTitle: "Team",
+                        title: "Team",
                         catTableName: "baseball_teams_1",
                         catItemMap: function(d){
                             return d.data['From Team'];
@@ -61,7 +61,7 @@ $(document).ready(function() {
                             return d.data.name;
                         },
                     },{
-                        facetTitle: "League",
+                        title: "League",
                         catTableName: "baseball_leagues_1",
                         catItemMap : function(tr){
                             var x = tr.data['From Team'];
@@ -71,14 +71,14 @@ $(document).ready(function() {
                         catLabelText: function(d){ return d.data.name; },
                     }
                 ]
-            },{ facetTitle: "To",
+            },{ title: "To",
                 layout: 'right',
                 facets: [
-                    {   facetTitle: "Team",
+                    {   title: "Team",
                         catTableName: "baseball_teams_2",
                         catItemMap: function(d){ return d.data['To Team']; },
                         catLabelText: function(d){ return d.data.name; },
-                    },{ facetTitle: "League",
+                    },{ title: "League",
                         catTableName: "baseball_leagues_2",
                         catItemMap : function(tr){
                             var x = tr.data['To Team'];
@@ -89,7 +89,7 @@ $(document).ready(function() {
                     }
                 ]
             },{
-                facetTitle: "Transaction Date",
+                title: "Transaction Date",
                 layout: "bottom",
                 catItemMap : function(tr){ 
                     var dt = tr.data['primary-date'];

@@ -161,31 +161,31 @@ google.setOnLoadCallback(function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Category"
-            },{ facetTitle: "Year",
+            {   title: "Category"
+            },{ title: "Year",
                 catItemMap: function(paper){
                     return paper.data.Proceeding.data.year;
                 },
                 intervalScale: 'step',
                 layout: 'middle'
-            },{ facetTitle: "Author",
+            },{ title: "Author",
                 catTableName: "People",
                 catLabelText: function(person){
                     return person.data.last_name+", "+person.data.first_name;
                 },
-                facets: [{ facetTitle: "Affiliaton" }]
+                facets: [{ title: "Affiliaton" }]
             },
-            /*,{ facetTitle: "Term"
-            },{ facetTitle: "# of References", collapsed: true,
+            /*,{ title: "Term"
+            },{ title: "# of References", collapsed: true,
                 catItemMap: function(paper){ return paper.data.ReferenceTotal; }
-            }*/,{ facetTitle: "# of Citations",
+            }*/,{ title: "# of Citations",
                 catItemMap: function(paper){
                     if(paper.data.CitedByTotal===0) return;
                     return paper.data.CitedByTotal;
                 },
                 intervalScale: "log"
             }/*,{
-                facetTitle: "Citations to",
+                title: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
@@ -204,7 +204,7 @@ google.setOnLoadCallback(function(){
             textSearch: "Title",
             linkText: 'Citations to',
             detailsToggle : "Zoom",
-            content: "Title"
+            recordView: "Title"
         }
     });
 });

@@ -43,40 +43,40 @@ $(document).ready(function(){
             kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)'], ", ", false);
         },
         facets: [
-            {   facetTitle: "Program",
+            {   title: "Program",
                 catItemMap: function(d){
                     return d.data['Program(s)'];
                 }
-            },{ facetTitle: "Name",
+            },{ title: "Name",
                 catItemMap: function(d){ return d.data.Organization; }
-            },{ facetTitle: "AwardInstrument",
-            },{ facetTitle: "Start Date", layout: 'bottom',
+            },{ title: "AwardInstrument",
+            },{ title: "Start Date", layout: 'bottom',
                 catItemMap: function(d){
                     var dt = d.data.StartDate;
                     if(dt===""){ return null; }
                     var m = moment(dt,"MM/DD/YYYY");
                     return new Date(m);
                 },
-            },{ facetTitle: "NSFOrganization", 
+            },{ title: "NSFOrganization", 
                 collapsed: true,
 //                catTableName: 'nsf_orgs',
 //                catLabelText: function(org){
 //                    return org.data.name;
 //                }
-            },{ facetTitle: "NSFDirectorate", collapsed: true
-            },{ facetTitle: "ProgramManager", collapsed: true
-            },{ facetTitle: "Awarded Amount",
+            },{ title: "NSFDirectorate", collapsed: true
+            },{ title: "ProgramManager", collapsed: true
+            },{ title: "Awarded Amount",
                 catItemMap: function(d){ return d.data.AwardedAmountToDate; },
                 intervalScale: 'log',
                 unitName: "$",
 /*            },{
-                facetTitle: "PrincipalInvestigator",
+                title: "PrincipalInvestigator",
                 layout: 'right'*/
-            },{ facetTitle: "-Institution-", layout: 'right',
+            },{ title: "-Institution-", layout: 'right',
                 facets: [
-                    {   facetTitle: "Name",
+                    {   title: "Name",
                         catItemMap: function(d){ return d.data.Organization; }
-                    },{ facetTitle: "State", collapsed: true,
+                    },{ title: "State", collapsed: true,
                         catItemMap: function(d){ return d.data.OrganizationState; }
                     }
 /*                    },{
@@ -85,7 +85,7 @@ $(document).ready(function(){
                             return kshf.dt_id.states[d.data[1]].data.name;
                         }
 //                    },{
-//                        facetTitle: "OrganizationCity", collapsed: true
+//                        title: "OrganizationCity", collapsed: true
                     }*/
                 ]
             }

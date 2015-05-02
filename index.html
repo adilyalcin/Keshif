@@ -41,7 +41,7 @@ browser = new kshf.Browser({
     },
     facets: [
         {
-            facetTitle: "Code complexity",
+            title: "Code complexity",
             description: "Relative code complexity of demo source",
             layout: 'right', collapsed: true,
             catItemMap: function(d){
@@ -61,12 +61,12 @@ browser = new kshf.Browser({
                 }
             }]
         },{
-            facetTitle: "Keywords", layout: 'right',
+            title: "Keywords", layout: 'right',
             catItemMap: function(d){
                 return d.data['Keywords'].split("+");
             }
         },{
-            facetTitle: "Facet Types &amp; Features",
+            title: "Facet Types &amp; Features",
             catItemMap: function(d){
                 var r = [];
                 if(d.data['Facets - Histogram']>0)
@@ -80,7 +80,7 @@ browser = new kshf.Browser({
                 return r;
             }
         },{
-            facetTitle: "Data Structure",
+            title: "Data Structure",
             catItemMap: function(d){
                 var r = [];
                 if(d.data['Linked'])
@@ -91,7 +91,7 @@ browser = new kshf.Browser({
                 return r;
             }
         }, {
-            facetTitle: "Result Display",
+            title: "Result Display",
             catItemMap: function(d){
                 var r = [];
                 if(d.data['Results-Details'])
@@ -105,7 +105,7 @@ browser = new kshf.Browser({
                 return r;
             }
         }, {
-            facetTitle: "Other",
+            title: "Other",
             catItemMap: function(d){
                 var r = [];
                 if(d.data['Right Column'])
@@ -120,18 +120,18 @@ browser = new kshf.Browser({
                 return r;
             }
         },{
-            facetTitle: "Data Source",
+            title: "Data Source",
             layout: 'right',
             catItemMap: function(d){ 
                 return d.data['Source'].split("+");
             }
         },{
-            facetTitle: "# Items",
+            title: "# Items",
             layout: 'right',
             intervalScale: 'log',
             showPercentile: true
         },{
-            facetTitle: "Creation Time",
+            title: "Creation Time",
             catItemMap: function(d){
                 return d.data['Authored'].getFullYear();
             },

@@ -51,33 +51,33 @@ $(document).ready( function(){
             sheets : [ {name:"Prizes"}, {name:"Laureates"} ]
         },
         facets: [
-            {   facetTitle: "Category",
+            {   title: "Category",
                 textFilter: 'about',
                 catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
-            },{ facetTitle: "Born Country",
+            },{ title: "Born Country",
                 catItemMap : function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.bornCountry;
                 },
-            },{ facetTitle: "Affiliation", layout: 'right',
+            },{ title: "Affiliation", layout: 'right',
                 catItemMap : function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.name;
                 },
                 facets:[
-                    {   facetTitle:"# of Winners",
+                    {   title:"# of Winners",
                         catItemMap: function(d){ return d.items.length; },
                         intervalScale: 'log'
                     }
                 ]
-            },{ facetTitle: "Joint Awards",
+            },{ title: "Joint Awards",
                 catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
-            },{ facetTitle: "Gender",
+            },{ title: "Gender",
                 catItemMap : function(prize){ 
                     return getGender(kshf.dt_id.Laureates[prize.data.laureate_id].data.gender);
                 },
                 catLabelText: function(d) { 
                     return d.data[0]+" "+getIcon(d.data[0]);
                 }
-            },{ facetTitle: "Year", layout: 'bottom',
+            },{ title: "Year", layout: 'bottom',
                 catItemMap : function(prize){
                     return new Date(moment(prize.data.Year+"01-01","YYYY-MM-DD"));
                 },

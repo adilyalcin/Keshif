@@ -45,17 +45,17 @@ $(document).ready( function(){
             kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
         },
         facets: [
-            {   facetTitle: "Category"
-            },{ facetTitle: "Author",
+            {   title: "Category"
+            },{ title: "Author",
                 catTableName: "Authors", collapsed: true,
                 catLabelText: function(d){ return d.data.Name; }
-            },{ facetTitle: "# Comments", 
+            },{ title: "# Comments", 
                 catItemMap : function(post){
                     var v=post.data['# of Comments'];
                     if(v>0) return v;
                 },
                 intervalScale: "log"
-            },{ facetTitle: "Time", layout: 'bottom',
+            },{ title: "Time", layout: 'bottom',
                 catItemMap : function(post){ return post.data.Date; },
             }
         ],

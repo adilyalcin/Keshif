@@ -25,7 +25,7 @@ var simpsons = {
     itemName: "Simpsons Characters",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"simpsons"}] },
     facets: [
-        {   facetTitle: "Characteristics",
+        {   title: "Characteristics",
             catItemMap: function(d){
                 var r=[];
                 if(d.data.School===1) r.push("Goes to school");
@@ -37,10 +37,10 @@ var simpsons = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Characteristics",
+        },{ title: "Degree of Characteristics",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
-        },{ facetTitle: "Age"
+        },{ title: "Age"
         }
     ],
     itemDisplay: {
@@ -55,7 +55,7 @@ var fruit = {
     leftPanelLabelWidth: 140,
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"fruit"}] },
     facets: [
-        {   facetTitle: "Characteristics",
+        {   title: "Characteristics",
             catItemMap: function(d){
                 var r=[];
                 if(d.data.Green===1) r.push("Green");
@@ -66,10 +66,10 @@ var fruit = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Characteristics",
+        },{ title: "Degree of Characteristics",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
-        },{ facetTitle: "Taste"
+        },{ title: "Taste"
         }
     ],
     itemDisplay: {
@@ -84,7 +84,7 @@ var movies = {
     leftPanelLabelWidth: 140,
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies"}] },
     facets: [
-        {   facetTitle: "Genres",
+        {   title: "Genres",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -98,11 +98,11 @@ var movies = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Genres",
+        },{ title: "Degree of Genres",
             catItemMap: function(d){ return d.data.set_degree; },
             type: 'interval', intervalScale: 'step'
-        },{ facetTitle: "AvgRating", type: 'interval', layout: 'right'
-        },{ facetTitle: "ReleaseDate", type: 'interval', layout: 'right'
+        },{ title: "AvgRating", type: 'interval', layout: 'right'
+        },{ title: "ReleaseDate", type: 'interval', layout: 'right'
         }
     ],
     itemDisplay: {
@@ -118,7 +118,7 @@ var movies_radialset = {
     leftPanelLabelWidth: 140,
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies_radialset"}] },
     facets: [
-        {   facetTitle: "Genres",
+        {   title: "Genres",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -131,11 +131,11 @@ var movies_radialset = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Genres",
+        },{ title: "Degree of Genres",
             catItemMap: function(d){ return d.data.set_degree; },
             type: 'interval', intervalScale: 'step'
-        },{ facetTitle: "AvgRating", type: 'interval', layout: 'right'
-        },{ facetTitle: "ReleaseDate", type: 'interval', layout: 'right'
+        },{ title: "AvgRating", type: 'interval', layout: 'right'
+        },{ title: "ReleaseDate", type: 'interval', layout: 'right'
         }
     ],
     itemDisplay: {
@@ -153,7 +153,7 @@ var mutations = {
     itemName: "Mutations",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"gbm_mutated_top100"}] },
     facets: [
-        {   facetTitle: "Genes",
+        {   title: "Genes",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -164,7 +164,7 @@ var mutations = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Genes",
+        },{ title: "Degree of Genes",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
         }
@@ -183,7 +183,7 @@ var CpdsVsProteinFam = {
     itemName: "cpds vs protein fam",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinFam", id:'cpd'}] },
     facets: [
-        {   facetTitle: "Sets",
+        {   title: "Sets",
 
             catItemMap: function(d){
                 var r=[];
@@ -202,7 +202,7 @@ var CpdsVsProteinFam = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
         }
@@ -221,7 +221,7 @@ var CpdsVsProteinTable = {
     itemName: "cpds vs protein table",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinTable", id:''}] },
     facets: [
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -232,7 +232,7 @@ var CpdsVsProteinTable = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'log'
         }
@@ -251,7 +251,7 @@ var countries100 = {
     itemName: "Countries",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"countries100"}] },
     facets: [
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -261,7 +261,7 @@ var countries100 = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval'
         }
@@ -280,7 +280,7 @@ var countries = {
     itemName: "Countries",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"countries"}] },
     facets: [
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 var r=[];
                 for(x in d.data){
@@ -290,7 +290,7 @@ var countries = {
                 d.data.set_degree = r.length;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval'
         }
@@ -309,7 +309,7 @@ var rand = {
     itemName: "Elements",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"rand"}] },
     facets:[
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 var r=[];
                 if(d.data['A']===1) r.push('A');
@@ -319,7 +319,7 @@ var rand = {
                 d.data.r = r;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
         }
@@ -338,7 +338,7 @@ var socialgraph = {
     itemName: "People",
     source:{ url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"socialgraph", id:"Name"}] },
     facets:[
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 var r=[];
                 if(d.data['Facebook']===1) r.push('Facebook');
@@ -352,7 +352,7 @@ var socialgraph = {
                 d.data.r = r;
                 return r;
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){ return d.data.set_degree },
             type: 'interval', intervalScale: 'step'
         }
@@ -408,9 +408,9 @@ var senate = {
         }
     },
     facets: [
-        {   facetTitle: "Votes",
+        {   title: "Votes",
         },{
-            facetTitle: "Number of votes",
+            title: "Number of votes",
             catItemMap: function(d){
                 return d.data.Votes.length;
             }
@@ -467,11 +467,11 @@ var sharks = {
 //        url:sourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"socialgraph", id:"Name"}]
     },
     facets:[
-        {   facetTitle: "Sets",
+        {   title: "Sets",
             catItemMap: function(d){
                 return d.data[0];
             }
-        },{ facetTitle: "Degree of Sets",
+        },{ title: "Degree of Sets",
             catItemMap: function(d){
                 return d.data[0].length;
             },

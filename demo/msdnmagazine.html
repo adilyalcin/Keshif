@@ -85,21 +85,21 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-              { facetTitle: "Topic",
-            },{ facetTitle: "Has Code",
-            },{ facetTitle: "Column / Feature",
-            },{ facetTitle: "Column Name",
-            },{ facetTitle: "Issue Date", layout:'middle'
-            },{ facetTitle: "Popularity", layout: 'right',
+              { title: "Topic",
+            },{ title: "Has Code",
+            },{ title: "Column / Feature",
+            },{ title: "Column Name",
+            },{ title: "Issue Date", layout:'middle'
+            },{ title: "Popularity", layout: 'right',
                 sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
                 catLabelText: function(d){
                     var str='';
                     for(var i=0; i<d.data[1]; i++) str +="<span class='fa fa-star'></span>"
                     return str;
                 }
-            },{ facetTitle: "Page Views", layout: 'right',
+            },{ title: "Page Views", layout: 'right',
                 intervalScale: 'log'
-            },{ facetTitle: "Authors", layout: 'right',
+            },{ title: "Authors", layout: 'right',
             }
         ],
         itemDisplay: {

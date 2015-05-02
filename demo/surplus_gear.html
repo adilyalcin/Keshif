@@ -28,9 +28,9 @@ $(document).ready( function() {
             url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
         },
         facets: [
-            {   facetTitle: "state",
+            {   title: "state",
                 catLabelText: function(d){ return getStateName(d.data[1]); }
-            },{ facetTitle: "Gear Category",
+            },{ title: "Gear Category",
                 catItemMap: function(d){
                     var r=[];
                     if(d.data['Armored Vehicle']>0) r.push('Received Armored Vehicles');
@@ -52,7 +52,7 @@ $(document).ready( function() {
 //                    if(d.data['Silence']>0) r.push('Silence');
                     return r;
                 }
-            },{ facetTitle: "Gear",
+            },{ title: "Gear",
                 catItemMap: function(d){
                     var r=[];
                     if(d.data['Armored Vehicle']>0) r.push('Armored Vehicle');
@@ -76,24 +76,24 @@ $(document).ready( function() {
                     if(d.data['Other armored vehicle']>0) r.push('Other armored vehicle');
                     return r;
                 }
-            },{ facetTitle: "Machine Gun", layout: 'right', intervalScale: 'log',
+            },{ title: "Machine Gun", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Machine Gun'];},
-            },{ facetTitle: "Pistol", layout: 'right', intervalScale: 'log',
+            },{ title: "Pistol", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Pistol'];},
-            },{ facetTitle: "Magazine", layout: 'right', intervalScale: 'log',
+            },{ title: "Magazine", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Magazine'];},
-            },{ facetTitle: "Shotgun", layout: 'right', intervalScale: 'log',
+            },{ title: "Shotgun", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Shotgun'];},
-            },{ facetTitle: "Armored Vehicle", layout: 'right', intervalScale: 'step',
+            },{ title: "Armored Vehicle", layout: 'right', intervalScale: 'step',
                 catItemMap: function(d){ 
                     if(d.data['Armored Vehicle']===0) return; // skip 0
                     return d.data['Armored Vehicle'];
                 },
                 collapsed: true
-            },{ facetTitle: "Personal Armor", layout: 'right', intervalScale: 'log',
+            },{ title: "Personal Armor", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Personal Armor'];},
                 collapsed: true
-            },{ facetTitle: "Night Vision", layout: 'right', intervalScale: 'log',
+            },{ title: "Night Vision", layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){ return d.data['Night Vision'];},
                 collapsed: true
             }
@@ -104,7 +104,7 @@ $(document).ready( function() {
             textSearch : 'County Name',
             detailsToggle: 'zoom',
             textSearchFunc: function(d){ return d.data.county;},
-            content: "CombinedName"
+            recordView: "CombinedName"
         }
     });
 });

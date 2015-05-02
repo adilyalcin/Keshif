@@ -51,13 +51,13 @@ $(document).ready( function(){
             callback: dataLoad
         },
         facets: [
-            {   facetTitle: "Hour", layout: 'bottom',
+            {   title: "Hour", layout: 'bottom',
                 catItemMap: function(download){ return download.data.downloadTime.hour(); },
                 intervalScale: 'step',
                 intervalTickFormat: function(d){ return d3.format("d")(d)+":00"; }
-            },{ facetTitle: "Time", layout: 'bottom',
+            },{ title: "Time", layout: 'bottom',
                 catItemMap: function(download){ return new Date(download.data.downloadTime);}
-            },{ facetTitle: "Day",
+            },{ title: "Day",
                 catItemMap: function(download){ return download.data.downloadTime.day(); },
                 catLabelText: function(v){
                     switch(v.data[1]){
@@ -74,14 +74,14 @@ $(document).ready( function(){
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{ facetTitle: "Month", layout: 'right',
+            },{ title: "Month", layout: 'right',
                 catItemMap: function(download){ return download.data.downloadTime.month(); },
                 catLabelText: function(v){ return getMonthNameFromNumber(v.data[0]); },
                 sortingOpts: [{
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{ facetTitle: "Year",
+            },{ title: "Year",
                 catItemMap: function(download){ return download.data.downloadTime.year(); },
                 type: 'categorical',
                 sortingOpts: [{

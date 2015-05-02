@@ -84,13 +84,13 @@ google.setOnLoadCallback( function() {
         loadedCb: drawCharts,
         facets: [
             {
-                facetTitle: "Topic",
+                title: "Topic",
                 catTableName: "topics",
                 catLabelText: function(topic) { return topic.data.topic; },
                 catTooltipText: function(topic) { return topic.data.topic; },
                 visibleRows: 9
             },{
-                facetTitle: "Author",
+                title: "Author",
                 catTableName: "people",
                 catLabelText: function(author) {
                     var f_name = author.data.first_name;
@@ -101,7 +101,7 @@ google.setOnLoadCallback( function() {
                     return str;
                 }
             },{
-                facetTitle: "Member Type",
+                title: "Member Type",
                 catTableName: "member_types",
                 catItemMap : function(pub){
                     var typeList = {};
@@ -121,11 +121,11 @@ google.setOnLoadCallback( function() {
                 },
                 catLabelText: function(member_type){ return member_type.data.type;  },
             },{
-                facetTitle: "Project",
+                title: "Project",
                 catTableName: "projects",
                 catLabelText: function(project){ return project.data.project;  },
             },{
-                facetTitle: "Date",
+                title: "Date",
                 layout: "middle",
                 catItemMap : function(pub){ return new Date(pub.data.Date); },
                 type: 'interval',

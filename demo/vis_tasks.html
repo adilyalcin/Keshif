@@ -37,27 +37,27 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {
-                facetTitle: "Tasks",
+                title: "Tasks",
                 catTableName: "Keywords",
                 catLabelText: function(d){ return d.data.Task; },
                 facets:[
-                    {   facetTitle: "Categories",
+                    {   title: "Categories",
                         catItemMap: function(d){ return d.data.Category; }
                     },{
-                        facetTitle: "Levels",
+                        title: "Levels",
                         catItemMap: function(d){ return kshf.dt_id.Levels[d.data.Category].data.Level; }
                     }
                 ]
-            },{ facetTitle: "Authors", layout: 'right', 
-            },{ facetTitle: "Features", layout: 'right', 
+            },{ title: "Authors", layout: 'right', 
+            },{ title: "Features", layout: 'right', 
                 catItemMap: function(d){
                     var r=[];
                     if(d.data[2]==="*") r.push("Highlighted");
                     if(d.data[1] && d.data[1].length>0) r.push("Presents Taxonomy");
                     return r;
                 }
-            },{ facetTitle: "Venue", layout: 'right', 
-            },{ facetTitle: "Year", layout: 'bottom', intervalScale: 'linear'
+            },{ title: "Venue", layout: 'right', 
+            },{ title: "Year", layout: 'bottom', intervalScale: 'linear'
             }
         ],
         itemDisplay: {

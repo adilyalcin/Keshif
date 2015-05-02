@@ -57,22 +57,22 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Total Number of <span class='fa fa-tree'></span>'s",
+            {   title: "Total Number of <span class='fa fa-tree'></span>'s",
                 catItemMap: function(d){ return d.data.Total;},
                 intervalScale: "log"
-            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Bronx",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Bronx",
                 catItemMap: function(d){ return d.data.Bronx;},
                 intervalScale: "log"
-            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Brooklyn",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Brooklyn",
                 catItemMap: function(d){ return d.data.Brooklyn;},
                 intervalScale: "log"
-            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Queens",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Queens",
                 catItemMap: function(d){ return d.data.Queens;},
                 intervalScale: "log"
-            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Manhattan",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Manhattan",
                 catItemMap: function(d){ return d.data.Manhattan;},
                 intervalScale: "log"
-            },{ facetTitle: "Number of <span class='fa fa-tree'></span>s in Staten Island",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Staten Island",
                 catItemMap: function(d){ return d.data['Staten Island'];},
                 intervalScale: "log"
             }

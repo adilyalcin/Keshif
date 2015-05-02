@@ -470,7 +470,7 @@ kshf.Summary_Base = {
                     me.clearDOM();
 
                     // add the facet title back
-                    me.browser.insertOneAttribute(me.options.facetTitle);
+                    me.browser.insertOneAttribute(me.options.title);
 
                     me.browser.updateLayout();
                 }
@@ -501,8 +501,8 @@ kshf.Summary_Base = {
         topRow.append("span").attr("class", "header_label")
             .html((this.parentFacet && this.parentFacet.hasAttribs())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
-                    this.parentFacet.options.facetTitle+":</span> "+"  "+this.options.facetTitle):
-                this.options.facetTitle)
+                    this.parentFacet.options.title+":</span> "+"  "+this.options.title):
+                this.options.title)
             .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
             .on("mouseover",function(){
 
@@ -528,7 +528,7 @@ kshf.Summary_Base = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                    title: function(){ return "Multiple "+me.options.facetTitle+" possible.<br>Click to show relations.";}
+                    title: function(){ return "Multiple "+me.options.title+" possible.<br>Click to show relations.";}
                 });
             })
             .on("mouseover",function(d){
@@ -2134,7 +2134,7 @@ kshf.Panel.prototype = {
                 var attributeName = event.dataTransfer.getData("text/plain");
 
                 var fct=me.browser.addFacet({
-                    facetTitle:attributeName,
+                    title:attributeName,
                     layout: me.name
                 },me.browser.primaryTableName);
                 fct.initDOM();
@@ -2850,7 +2850,7 @@ kshf.Browser.prototype = {
             if(colName===this.source.sheets[0].id) return;
             if(skipFacet[colName]===true) return;
             if(colName[0]==="*") return;
-            r.push({facetTitle: colName});
+            r.push({title: colName});
         },this);
 
         return r;
@@ -3026,7 +3026,7 @@ kshf.Browser.prototype = {
             if(attrName===kshf.dt[tableName][0].idIndex) return false;
             // remove those already in the view
             if(me.summaries.some(function(summary){
-                return summary.options.facetTitle===attrName;
+                return summary.options.title===attrName;
             })) return false;
             return true;
         })
@@ -3062,12 +3062,12 @@ kshf.Browser.prototype = {
         if(options.attribAccess===undefined){
             // if we have a column name mapping, use that
             if(kshf.dt_ColNames[primTableName]!==undefined) {
-                var ID = options.facetTitle;
+                var ID = options.title;
                 if(ID!==undefined)
                     options.attribAccess = function(d){ return d.data[ID]; };
             } else {
                 options.attribAccess = function(d){ 
-                    return d.data[options.facetTitle];
+                    return d.data[options.title];
                 };
             }
         } else if(typeof(options.attribAccess)==="string"){
@@ -3686,13 +3686,13 @@ kshf.Facet_Categorical.prototype = {
 
         // generate row table if necessary
         if(this.options.catTableName===undefined){
-            this.catTableName = this.options.facetTitle+"_h_"+this.id;
+            this.catTableName = this.options.title+"_h_"+this.id;
             this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.options.attribAccess,
                 this.options.attribNameFunc);
         } else {
             if(this.options.catTableName===this.browser.primaryTableName){
                 this.isLinked=true;
-                this.options.catTableName = this.options.facetTitle+"_h_"+this.id;
+                this.options.catTableName = this.options.title+"_h_"+this.id;
                 kshf.dt_id[this.options.catTableName] = kshf.dt_id[this.browser.primaryTableName];
                 kshf.dt[this.options.catTableName] = this.filteredItems.slice();
             }
@@ -3731,7 +3731,7 @@ kshf.Facet_Categorical.prototype = {
         }
 
         this.attribFilter = this.browser.createFilter({
-            name: this.options.facetTitle,
+            name: this.options.title,
             browser: this.browser,
             filteredItems: this.filteredItems,
             facet: this,
@@ -3794,7 +3794,7 @@ kshf.Facet_Categorical.prototype = {
                     item.setFilterCache(filterId,true);
                 },this);
             },
-            summary_header: (this.options.summaryHeader?this.options.summaryHeader:this.options.facetTitle),
+            summary_header: (this.options.summaryHeader?this.options.summaryHeader:this.options.title),
             summary_item_cb: function(){
                 // go over all items and prepare the list
                 var selectedItemsText="";
@@ -3900,7 +3900,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.subFacets=this.divRoot.append("div").attr("class","subFacets");
 
         this.dom.subFacets.append("span").attr("class","facetGroupBar").append("span").attr("class","facetGroupBarSub");
-            //.text("["+this.options.facetTitle+"]");
+            //.text("["+this.options.title+"]");
 
         if(!this.hasAttribs()){
             this.options.facets.forEach(function(facetDescr){
@@ -3945,7 +3945,7 @@ kshf.Facet_Categorical.prototype = {
             else if(maxDegree>10) fscale = 'linear';
             else fscale = 'step';
             var facetDescr = {
-                facetTitle:"<i class='fa fa-hand-o-up'></i> # of "+this.options.facetTitle,
+                title:"<i class='fa fa-hand-o-up'></i> # of "+this.options.title,
                 attribAccess: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;
@@ -4212,7 +4212,7 @@ kshf.Facet_Categorical.prototype = {
         this.dom.attribTextSearch=textSearchRowDOM.append("input")
             .attr("class","attribTextSearchInput")
             .attr("type","text")
-            .attr("placeholder","Search")// " in ...+kshf.Util.toProperCase(this.options.facetTitle))
+            .attr("placeholder","Search")// " in ...+kshf.Util.toProperCase(this.options.title))
             .on("input",function(){
                 if(this.timer){
                     clearTimeout(this.timer);
@@ -4993,7 +4993,7 @@ kshf.Facet_Categorical.prototype = {
                     gravity: 'w',
                     title: function(){
                         if(this.tipsy_title) return this.tipsy_title;
-                        var attribName=me.options.facetTitle;
+                        var attribName=me.options.title;
                         var hasMultiValueItem=attrib.facet.hasMultiValueItem;
                         if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
                             return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
@@ -5479,7 +5479,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.chartScale_Measure = d3.scale.linear();
 
     this.intervalFilter = kshf_.createFilter({
-        name: this.options.facetTitle,
+        name: this.options.title,
         browser: this.browser,
         filteredItems: this.filteredItems,
         facet: this,
@@ -5531,7 +5531,7 @@ kshf.Facet_Interval = function(kshf_, options){
             // update handles
             this.refreshIntervalSlider();
         },
-        summary_header: this.options.facetTitle,
+        summary_header: this.options.title,
         summary_item_cb: function(){
             if(me.options.intervalScale==='step'){
                 if(this.active.min===this.active.max){

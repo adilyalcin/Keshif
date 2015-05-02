@@ -252,22 +252,22 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Type",
-            },{ facetTitle: "Time",
-            },{ facetTitle: "Paradigms",
-            },{ facetTitle: "Applications",
-            },{ facetTitle: "Evaluations",
+            {   title: "Type",
+            },{ title: "Time",
+            },{ title: "Paradigms",
+            },{ title: "Applications",
+            },{ title: "Evaluations",
 /*            },{
-                facetTitle: "Citations",
+                title: "Citations",
                 catItemMap: function(d){
                     return references[d.id()].split(" ");
                 },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true*/
-            },{ facetTitle: "Authors", layout: 'right'
-            },{ facetTitle: "Journal", collapsed: false, layout: 'right'
-            },{ facetTitle: "Year", layout: "bottom",
+            },{ title: "Authors", layout: 'right'
+            },{ title: "Journal", collapsed: false, layout: 'right'
+            },{ title: "Year", layout: "bottom",
                 intervalScale: 'step'
             }
         ],

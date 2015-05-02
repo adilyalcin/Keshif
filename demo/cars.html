@@ -24,7 +24,7 @@ google.setOnLoadCallback(function(){
             sheets : [{ name:"Cars" }]
         },
         facets: [
-            {   facetTitle: "Origin",
+            {   title: "Origin",
                 catItemMap: function(d){
                     switch(d.data.Origin){
                         case 1: return "American";
@@ -32,14 +32,14 @@ google.setOnLoadCallback(function(){
                         case 3: return "Japanese";
                     }
                 }
-            },{ facetTitle: "Cyclinders", type: "categorical",
+            },{ title: "Cyclinders", type: "categorical",
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
-            },{ facetTitle: "MPG", type: 'interval'
-            },{ facetTitle: "Engine Displacement", unitName: "cu.\"", layout: 'right'
-            },{ facetTitle: "Horsepower", layout: 'right'
-            },{ facetTitle: "Weight", unitName: "lbs", layout: 'right'
-            },{ facetTitle: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
-            },{ facetTitle: "Year", layout: "bottom"
+            },{ title: "MPG", type: 'interval'
+            },{ title: "Engine Displacement", unitName: "cu.\"", layout: 'right'
+            },{ title: "Horsepower", layout: 'right'
+            },{ title: "Weight", unitName: "lbs", layout: 'right'
+            },{ title: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
+            },{ title: "Year", layout: "bottom"
             }
         ],
         itemDisplay: {
@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
             detailsToggle : "Zoom",
             sortingOpts : [ {name: 'MPG'},{name: "Weight"}, {name: "Year"} ],
             textSearch: "Name",
-            content: "Name"
+            recordView: "Name"
         }
     });
 });

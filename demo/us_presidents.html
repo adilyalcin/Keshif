@@ -24,20 +24,20 @@ google.setOnLoadCallback( function(){
             sheets: [ {name:"Presidents"} ]
         },
         facets: [
-            {   facetTitle: "Party", 
-            },{ facetTitle: "State of Birth",
-            },{ facetTitle: "Occupation",
-            },{ facetTitle: "College", layout: 'right'
-            },{ facetTitle: "Religion", layout: 'right'
-            },{ facetTitle: "Notes", layout: 'right'
-            },{ facetTitle: "Age at inaguration", layout: 'right'
-            },{ facetTitle: "Term Start", layout: 'bottom'
+            {   title: "Party", 
+            },{ title: "State of Birth",
+            },{ title: "Occupation",
+            },{ title: "College", layout: 'right'
+            },{ title: "Religion", layout: 'right'
+            },{ title: "Notes", layout: 'right'
+            },{ title: "Age at inaguration", layout: 'right'
+            },{ title: "Term Start", layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 40,
             textSearch: 'Name',
-            sortingOpts: [{name: 'id'} ],
+            sortingOpts: [{name: 'id'}],
             displayType: 'grid',
             recordView: function(d){ 
                 return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data.Link+"' target='_blank'>"+

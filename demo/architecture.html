@@ -60,9 +60,9 @@ $(document).ready( function(){
             callback: dataLoad
         },
         facets: [
-            {   facetTitle: "Architect",
-            },{ facetTitle: "Style", layout: 'right'
-            },{ facetTitle: "Year (Post 14th century)", layout: 'bottom',
+            {   title: "Architect",
+            },{ title: "Style", layout: 'right'
+            },{ title: "Year (Post 14th century)", layout: 'bottom',
                 catItemMap: function(d){
                     if(d.data.Year.getFullYear()<1500) return;
                     return d.data.Year;

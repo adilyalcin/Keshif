@@ -32,17 +32,17 @@ google.setOnLoadCallback(function () {
             });
         },
         facets: [
-            {   facetTitle: "Concepts",
-            },{ facetTitle: "Year", layout: "middle",
+            {   title: "Concepts",
+            },{ title: "Year", layout: "middle",
                 catItemMap: function(d){ return d.data.time; },
-            },{ facetTitle: "Highlights",
+            },{ title: "Highlights",
                 catItemMap: function(d){
                     var toRet = [];
                     if(d.data[8]===true) toRet.push("Best in Year");
 //                    if(d.data[6].length>10) toRet.push("Cited +10");
                     return toRet;
                 }
-            },{ facetTitle: "Citations to",
+            },{ title: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
@@ -50,13 +50,13 @@ google.setOnLoadCallback(function () {
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
-            },{ facetTitle: "Total Citations",
+            },{ title: "Total Citations",
                 catItemMap: function(d){ if(d.data.num===0) return; return d.data.num; },
                 intervalScale: 'log'
-            },{ facetTitle: "Authors",
+            },{ title: "Authors",
                 layout: 'right'
             }/*,{
-//              facetTitle: "Keywords",
+//              title: "Keywords",
                 timeTitle: "Year",
                 timeItemMap: function(d){
                     var yr = d.data[0].substring(7,9);
@@ -65,9 +65,9 @@ google.setOnLoadCallback(function () {
                     return new Date(moment(yr,"YY"));
                 }
 //            },{
-//                facetTitle: "Concepts",
+//                title: "Concepts",
 //            },{
-//                facetTitle: "Keywords", // HUGE LIST : 1k keywords
+//                title: "Keywords", // HUGE LIST : 1k keywords
 //            }*/
         ],
         itemDisplay: {

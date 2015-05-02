@@ -34,14 +34,14 @@ google.setOnLoadCallback( function () {
                 ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
         },
         facets:[
-            {   facetTitle: "Doctor actor"
-            },{ facetTitle: "Motivation",
+            {   title: "Doctor actor"
+            },{ title: "Motivation",
                 catItemMap: function(d){ return d.data['Motivation (invasion earth, kill humans, etc)']; }
-            },{ facetTitle: "Story titles",
-            },{ facetTitle: "Total Stories",
+            },{ title: "Story titles",
+            },{ title: "Total Stories",
                 catItemMap: function(d){ return d.data['Story titles'].length; },
                 intervalScale: 'log'
-            },{ facetTitle: "First Appearance", layout: 'bottom'
+            },{ title: "First Appearance", layout: 'bottom'
                 catItemMap: function(d){ 
                     var y=d.data['Year first'];
                     if(y===null) return null;
@@ -54,7 +54,7 @@ google.setOnLoadCallback( function () {
             sortingOpts: [{   name: 'Year first' }
             ],
             textSearch: 'Villain',
-            content: 'Villain'
+            recordView: 'Villain'
         }
     });
 });

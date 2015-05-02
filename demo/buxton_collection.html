@@ -183,13 +183,13 @@ $(document).ready( function(){
             callback: dataLoad
         },
         facets: [
-            {   facetTitle: "Type", 
-            },{ facetTitle: "Year", layout: 'middle', intervalScale: 'time'
-            },{ facetTitle: "Price ($) [Log]",
+            {   title: "Type", 
+            },{ title: "Year", layout: 'middle', intervalScale: 'time'
+            },{ title: "Price ($) [Log]",
                 catItemMap: function(d){ return d.data.Price; },
                 intervalScale: "log"
-            },{ facetTitle: "Company", layout: "right" 
-            },{ facetTitle: "Degree of Freedom",  intervalScale: "step"
+            },{ title: "Company", layout: "right" 
+            },{ title: "Degree of Freedom",  intervalScale: "step"
             }
         ],
         itemDisplay: {

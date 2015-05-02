@@ -89,9 +89,9 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Data",
+            {   title: "Data",
                 facets: [
-                {   facetTitle: "Frame of Reference",
+                {   title: "Frame of Reference",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -99,7 +99,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{ facetTitle: "Number of Variables",
+                },{ title: "Number of Variables",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -109,9 +109,9 @@ $(document).ready( function(){
                     }
                 }
                 ]
-            },{ facetTitle: "Time",
+            },{ title: "Time",
                 facets: [
-                {   facetTitle: "Arrangement",
+                {   title: "Arrangement",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -119,7 +119,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{ facetTitle: "Time Primitives",
+                },{ title: "Time Primitives",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -130,9 +130,9 @@ $(document).ready( function(){
                     }
                 }
                 ]
-            },{ facetTitle: "Visualization",
+            },{ title: "Visualization",
                 facets: [
-                {   facetTitle: "Mapping",
+                {   title: "Mapping",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -141,7 +141,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{ facetTitle: "Dimensionality",
+                },{ title: "Dimensionality",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){

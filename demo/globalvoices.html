@@ -71,17 +71,17 @@ $(document).ready( function(){
         },
         facets: [
             {
-                facetTitle: "Tag",
+                title: "Tag",
                 catTableName: "Types",
                 catItemMap: function(d){
                     return d.data[2].t;
                 }
             },{
-                facetTitle: "Author",
+                title: "Author",
                 catItemMap: function(d){ return d.data[6]; },
                 collapsed: true,
             },{
-                facetTitle: "Time",
+                title: "Time",
                 layout: "bottom",
                 catItemMap: function(d){
                     // the date is also in epoch format, nice...

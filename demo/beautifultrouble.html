@@ -84,19 +84,19 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   facetTitle: "Category",
+            {   title: "Category",
                 catItemMap: function(d){ return d.data.type; },
                 catLabelText: function(d){
                     return getType(d.data[0])+" <span class='typeImg'></span>";
                 },
                 domStyle: function(d){ return "itemType_"+d.data[0]; },
-            },{ facetTitle: "Contributors",
+            },{ title: "Contributors",
             },{
-                facetTitle: "Number of Related Posts",
+                title: "Number of Related Posts",
 //                showPercentile: true,
                 catItemMap: function(d){ return d.data.links.length; },
             },{
-                facetTitle: "Related To",
+                title: "Related To",
                 catItemMap: function(d){ return d.data.links; },
                 domStyle: function(d){ return "itemType_"+d.data.type; },
                 catLabelText: function(d){ return d.data.title; },

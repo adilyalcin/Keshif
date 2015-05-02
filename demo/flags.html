@@ -97,31 +97,31 @@ $(document).ready( function(){
 //            sheets : [ {name:"Flags"} ]
         },
         facets: [
-            {   facetTitle: "-Country-",
+            {   title: "-Country-",
                 facets: [
-                    {   facetTitle: "Continent",
+                    {   title: "Continent",
                         catLabelText: function(d) { return landmassText(d.data[1]); },
-                    },{ facetTitle: "Zone", collapsed: true,
+                    },{ title: "Zone", collapsed: true,
                         catLabelText: function(d) { return zoneText(d.data[1]); }
-                    },{ facetTitle: "Language",
+                    },{ title: "Language",
                         catItemMap : function(flag){
                             var r= flag.data.Language;
                             if(r===9) return 10;
                             return r;
                         },
                         catLabelText: function(d) { return languageText(d.data[1]); }
-                    },{ facetTitle: "Religion",
+                    },{ title: "Religion",
                         catLabelText: function(d) { return religionText(d.data[1]); }
-                    },{ facetTitle: "Flag Date", layout: 'left',
+                    },{ title: "Flag Date", layout: 'left',
                         catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
                         intervalScale: 'time', unitName: 'yr'
                     }
                 ]
             },
-            {   facetTitle: "Flag Properties",
+            {   title: "Flag Properties",
                 layout: 'right',
                 facets: [
-                    {   facetTitle: "Flag Color", 
+                    {   title: "Flag Color", 
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Red) toRet.push("Red");
@@ -133,7 +133,7 @@ $(document).ready( function(){
                             if(flag.data.Orange) toRet.push("Orange / Brown");
                             return toRet;
                         },
-                    },{ facetTitle: "Flag Shape",
+                    },{ title: "Flag Shape",
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Circles) toRet.push("Circle");
@@ -145,18 +145,18 @@ $(document).ready( function(){
                             if(flag.data.Triangle) toRet.push("Triangle");
                             return toRet;
                         },
-                    },{ facetTitle: "Number of Bars",
+                    },{ title: "Number of Bars",
                         catItemMap : function(flag){ 
                             var r=flag.data.Bars;
                             return (r===0)?0:r;
                         },
                         intervalScale: 'step', unitName: "bar"
-                    },{ facetTitle: "Number of Stripes",
+                    },{ title: "Number of Stripes",
                         catItemMap : function(flag){ 
                             var r=flag.data.Stripes;
                             return (r===0)?null:r;
                         }, unitName: "strp"
-                    },{ facetTitle: "Other", collapsed: true,
+                    },{ title: "Other", collapsed: true,
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Text!==0) toRet.push("Text");

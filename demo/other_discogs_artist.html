@@ -234,7 +234,7 @@ function loadChart() {
         },
         charts : [
             {
-                facetTitle: "Label",
+                title: "Label",
                 timeTitle : "Year",
                 timeItemMap : function(release){ 
                     var rYear = release.data[releaseCols.year];
@@ -243,23 +243,23 @@ function loadChart() {
                     return new Date(moment(rYear+"01-01","YYYY-MM-DD"));
             }
 /*            }, {
-                facetTitle: "Type",
+                title: "Type",
                 catItemMap : function(release){ return release.data[releaseCols.type]; },
                 filter: { rowConj: 'type' }*/
             }, {
-                facetTitle: "Style",
+                title: "Style",
                 filter: { rowConj: 'style' }
             }, {
-                facetTitle: "Format",
+                title: "Format",
                 filter: { rowConj: 'format' }
             }, {
-                facetTitle: "Country",
+                title: "Country",
                 filter: { rowConj: 'country' }
             }, {
-                facetTitle: "Role",
+                title: "Role",
                 filter: { rowConj: 'role' }
             }, {
-                facetTitle: "Artist",
+                title: "Artist",
                 filter: { rowConj: 'artist' }
             }
         ],

@@ -158,79 +158,79 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Mushrooms"} ]
         },
         facets: [
-            {   facetTitle: "Class",
+            {   title: "Class",
                 catLabelText: getName.Class
-            },{ facetTitle: "Population",
+            },{ title: "Population",
                 layout: "middle",
                 catLabelText: getName.Population
-            },{ facetTitle: "Habitat",
+            },{ title: "Habitat",
                 catLabelText: getName.Habitat
-            },{ facetTitle: "Odor",
+            },{ title: "Odor",
                 catLabelText: getName.Odor
-            },{ facetTitle: "Bruises", collapsed: true,
-            },{ facetTitle: "Cap", layout: "middle",
+            },{ title: "Bruises", collapsed: true,
+            },{ title: "Cap", layout: "middle",
                 facets: [
-                    {   facetTitle: "Shape",
+                    {   title: "Shape",
                         catItemMap: function(d){ return d.data.Cap_Shape; },
                         catLabelText: getName.Shape
-                    },{ facetTitle: "Surface",
+                    },{ title: "Surface",
                         catItemMap: function(d){ return d.data.Cap_Surface; },
                         catLabelText: getName.Surface
-                    },{ facetTitle: "Color",
+                    },{ title: "Color",
                         catItemMap: function(d){ return d.data.Cap_Color; },
                         catLabelText: getName.Color
                     }
                 ]
             },{
-                facetTitle: "Ring", layout: "middle",
+                title: "Ring", layout: "middle",
                 facets: [
-                    {   facetTitle: "Number",
+                    {   title: "Number",
                         catItemMap: function(d){ return d.data.Ring_Number; },
                         catLabelText: getName.RingNumber
-                    },{ facetTitle: "Type",
+                    },{ title: "Type",
                         catItemMap: function(d){ return d.data.Ring_Type; },
                         catLabelText: getName.RingType
                     }
                 ]
-            },{ facetTitle: "Gill",
+            },{ title: "Gill",
                 facets:[
-                    {   facetTitle: "Attachment",
+                    {   title: "Attachment",
                         catItemMap: function(d){ return d.data.Gill_Attachment; },
                         catLabelText: getName.GillAttachment
-                    },{ facetTitle: "Spacing",
+                    },{ title: "Spacing",
                         catItemMap: function(d){ return d.data.Gill_Spacing; },
                         catLabelText: getName.GillSpacing
-                    },{ facetTitle: "Size",
+                    },{ title: "Size",
                         catItemMap: function(d){ return d.data.Gill_Size; },
                         catLabelText: getName.GillSize
-                    },{ facetTitle: "Color",
+                    },{ title: "Color",
                         catItemMap: function(d){ return d.data.Gill_Color; },
                         catLabelText: getName.Color
                     }
                 ]
             },{
-                facetTitle: "Spore Print Color", layout: 'right',
+                title: "Spore Print Color", layout: 'right',
                 catItemMap: function(d){ return d.data.Spore_Pring_Color; },
                 catLabelText: getName.Color
             },{
-                facetTitle: "Stalk", layout: 'right',
+                title: "Stalk", layout: 'right',
                 facets:[
-                    {   facetTitle: "Shape",
+                    {   title: "Shape",
                         catItemMap: function(d){ return d.data.Stalk_Shape; },
                         catLabelText: getName.Shape
-                    },{ facetTitle: "Root",
+                    },{ title: "Root",
                         catItemMap: function(d){ return d.data.Stalk_Root; },
                         catLabelText: getName.Root
-                    },{ facetTitle: "Surface Above Ring",
+                    },{ title: "Surface Above Ring",
                         catItemMap: function(d){ return d.data.Stalk_Surface_Above_Ring; },
                         catLabelText: getName.Surface
-                    },{ facetTitle: "Surface Below Ring",
+                    },{ title: "Surface Below Ring",
                         catItemMap: function(d){ return d.data.Stalk_Surface_Below_Ring; },
                         catLabelText: getName.Surface
-                    },{ facetTitle: "Color Above Ring",
+                    },{ title: "Color Above Ring",
                         catItemMap: function(d){ return d.data.Stalk_Color_Above_Ring; },
                         catLabelText: getName.Color
-                    },{ facetTitle: "Color Below Ring",
+                    },{ title: "Color Below Ring",
                         catItemMap: function(d){ return d.data.Stalk_Color_Below_Ring; },
                         catLabelText: getName.Color
                     }

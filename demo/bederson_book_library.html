@@ -147,25 +147,25 @@ $(document).ready( function(){
     callback: loadData
         },
         facets: [
-            {   facetTitle: "Genres"
-            },{ facetTitle: "Bederson's Rating", type: 'categorical',
+            {   title: "Genres"
+            },{ title: "Bederson's Rating", type: 'categorical',
                 catItemMap: function(d){ return d.data.Rating; },
                 catLabelText: function(d){ return getStars(d.data[0]); }
-            },{ facetTitle: "Author", 
-            },{ facetTitle: "Reviewed",
+            },{ title: "Author", 
+            },{ title: "Reviewed",
                 description: "Mouse-over the book image to see my review",
                 catItemMap: function(book){
                     return (book.data.Review!=="")?"Yes":"No";
                 }
-            },{ facetTitle: "# of Pages",
+            },{ title: "# of Pages",
                 catItemMap: function(book){ return book.data.NumPages; },
                 collapsed: true,
 //                intervalScale: 'log'
-            },{ facetTitle: "Year: Book Read", layout: "middle",
+            },{ title: "Year: Book Read", layout: "middle",
                 catItemMap: function(book){ return book.data.ReadYear; },
                 intervalScale: 'step',
                 collapsed: true,
-            },{ facetTitle: "Year: Publication (Excl. Books Before 1990)", layout: "middle",
+            },{ title: "Year: Publication (Excl. Books Before 1990)", layout: "middle",
                 catItemMap: function(book){ return book.data.PubYear; },
                 type: 'interval',
                 intervalScale: 'step'

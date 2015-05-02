@@ -66,40 +66,40 @@ google.setOnLoadCallback( function(){
         },
         facets: [
             {
-                facetTitle: "Size",
+                title: "Size",
                 sortingOpts : [{ 
                     no_resort: true
                 }]
             },{
-                facetTitle: "Amount (Barrel)",
+                title: "Amount (Barrel)",
                 collapsed: true,
                 facets: [
                     {
-                        facetTitle: "Total Spilled", collapsed: false,
+                        title: "Total Spilled", collapsed: false,
                         intervalScale: 'log',
                     },{
-                        facetTitle: "Crude & Condensate", collapsed: true,
+                        title: "Crude & Condensate", collapsed: true,
                         catItemMap: function(d){
                             if(d.data[11]===0) return;
                             return d.data[11];
                         },
                         intervalScale: 'log',
                     },{
-                        facetTitle: "Refined Petroleum", collapsed: true,
+                        title: "Refined Petroleum", collapsed: true,
                         catItemMap: function(d){
                             if(d.data[12]===0) return;
                             return d.data[12];
                         },
                         intervalScale: 'log',
                     }/*,{
-                        facetTitle: "Synthetic Base Fluid", collapsed: true,
+                        title: "Synthetic Base Fluid", collapsed: true,
                         catItemMap: function(d){
                             if(d.data[13]===0) return;
                             return d.data[13];
                         },
                         intervalScale: 'log',
                     },{
-                        facetTitle: "Other Chemicals", collapsed: true,
+                        title: "Other Chemicals", collapsed: true,
                         catItemMap: function(d){
                             if(d.data[14]===0) return;
                             return d.data[14];
@@ -108,41 +108,41 @@ google.setOnLoadCallback( function(){
                     }*/
                 ]
             },{
-                facetTitle: "Source",
+                title: "Source",
                 catItemMap : getSource
             },{
-                facetTitle: "Material",
+                title: "Material",
                 catItemMap : getMaterial
             },{
-                facetTitle: "Company",
+                title: "Company",
                 layout: 'right',
                 catDispCountFix: 5
             },{
-                facetTitle: "District",
+                title: "District",
                 layout: 'left',
                 catTableName: "Districts",
                 catLabelText: function(d){ return d.data.Name; }
             },{
-                facetTitle: "Water Depth",
+                title: "Water Depth",
                 catItemMap: function(d){ return d.data['Water Depth (feet)'];},
                 layout: 'right',
                 intervalScale: 'log',
                 unitName: 'feet'
             },{
-                facetTitle: "During Activity",
+                title: "During Activity",
                 layout: 'right',
                 collapsed: true
             },{
-                facetTitle: "Cause",
+                title: "Cause",
                 layout: 'right'
             },{
-                facetTitle: "Other Properties",
+                title: "Other Properties",
                 layout: 'right',
                 catTableName: "Notes",
                 collapsed: true,
                 catItemMap : function(spill){ return spill.data.Notes; },
             },{
-                facetTitle: "Spill Date",
+                title: "Spill Date",
                 catItemMap: getDate,
                 intervalScale: 'time',
                 layout: 'bottom'

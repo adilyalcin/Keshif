@@ -26,10 +26,10 @@ google.setOnLoadCallback( function(){
         },
         facets: [
             {
-                facetTitle: "Result",
+                title: "Result",
                 textFilter: 'resulting in'
             },{
-                facetTitle: "Session",
+                title: "Session",
                 catLabelText: function(d) {
                     if(d.data[1]===1) { return "1st Session"; }
                     if(d.data[1]===2) { return "2nd Session"; }
@@ -39,15 +39,15 @@ google.setOnLoadCallback( function(){
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                     }]
             },{
-                facetTitle: "Yea's",
+                title: "Yea's",
                 catItemMap : function(vote){ return vote.data['Yea\'s']; },
             },{
-                facetTitle: "Nay's",
+                title: "Nay's",
                 catItemMap : function(vote){ return vote.data['Nay\'s']; },
             },{
-                facetTitle: "Bill",
+                title: "Bill",
             },{
-                facetTitle: "Vote Date",
+                title: "Vote Date",
                 intervalScale: 'time',
                 layout: 'middle'
             }
