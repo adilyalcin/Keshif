@@ -70,7 +70,7 @@ $(document).ready( function() {
                 { name: 'Rating', value: function(d){ return d.data['Customer Reviews']; } }
             ],
             textSearch : 'name',
-        contentFunc : function(d){
+        recordView : function(d){
             return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+d.data.url+"'>"+d.data.name+"</a></div>";
         }
         }

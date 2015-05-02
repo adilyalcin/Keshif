@@ -69,7 +69,7 @@ google.setOnLoadCallback(function(){
                     return moment(meeting.data.Date).format("D MMM 'YY");
                 }
             } ],
-            contentFunc: function(meeting){
+            recordView: function(meeting){
                 return getIcon(kshf.dt_id.Organizations[meeting.data.Organization].data.Type) +
                     "<span style='display:block'>"+
                         "<i class='fa fa-bank commonIcon'></i> "+

@@ -60,7 +60,7 @@ google.setOnLoadCallback(function(){
             sortColWidth: 45,
             sortingOpts : [ {name: 'Date Reported'} ],
             displayType: 'grid',
-            contentFunc: function(d){
+            recordView: function(d){
                 var img = "<img class='thumbImg' src='img/EPL/"+d.data[0].replace(" ","_")+".svg'>";
                 return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+d.data[1]+"</span>";
             }

@@ -92,7 +92,7 @@ $(document).ready( function(){
             displayType: 'grid',
             textSearch: 'text',
             maxVisibleItems_Default: 400,
-            contentFunc : function(d){
+            recordView : function(d){
                 var str=d.data.text;
                 if(d.data.president) str+="<span class='fa fa-flag-checkered featIcon'></span>";
                 if(d.data.tree) str+="<span class='fa fa-tree featIcon'></span>";

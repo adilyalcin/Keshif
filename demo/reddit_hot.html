@@ -60,7 +60,7 @@ $(document).ready( function(){
             sortColWidth: 60,
             sortingOpts: [ { name: 'score' } ],
             textSearch: "title",
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 if(d.data.thumbnail!=="") { 
                     str+="<div style='float:right'><img src='"+d.data.thumbnail+"'/></div>";

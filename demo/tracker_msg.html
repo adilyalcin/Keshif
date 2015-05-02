@@ -82,7 +82,7 @@ $(document).ready( function(){
         list:{
             sortColWidth: 65,
             sortingOpts : [ {name: 'ts' } ],
-            contentFunc : function(d) {
+            recordView : function(d) {
                 var str="";
                 str+="<div class=\"iteminfo iteminfo_1\"> SesID: "+d.data[cols.sesID]+"</div>";
                 return str;

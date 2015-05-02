@@ -52,7 +52,7 @@ google.setOnLoadCallback(function(){
             displayType: 'grid',
             sortingOpts : [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
             textSearchFunc: function(d){return d.data.Info; },
-            contentFunc: function(d){ 
+            recordView: function(d){ 
                 var str='';
                 // Demo name
                 str+="<a target='_blank' href='http://content.time.com"+d.data.MagazineURL+"'><img class='thumbImg'></a>";

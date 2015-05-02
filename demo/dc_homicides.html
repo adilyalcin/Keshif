@@ -89,7 +89,7 @@ $(document).ready( function(){
                 { name: 'Age', value: function(d){ return d.data.age; }}
             ],
             detailsToggle: "Zoom",
-            contentFunc: function(d){
+            recordView: function(d){
                 return d.data.last_name +", "+d.data.first_name;
             }
         }

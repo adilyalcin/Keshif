@@ -71,7 +71,7 @@ $(document).ready( function(){
             ],
             textSearch : "Title",
 /*            detailsToggle : "One",
-            contentFunc : function(d) {
+            recordView : function(d) {
                 var str="";
                 
                 str+="<div class='iteminfo iteminfo_0 postName'>"
@@ -95,7 +95,7 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 50,
             detailsToggle : "zoom",
-            contentFunc: function(d){
+            recordView: function(d){
                 return "<a target='_blank' href='"+d.data.URL+
                     "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data.Title+"</span></a>";
             },

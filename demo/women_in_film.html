@@ -16,9 +16,9 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(140,180);
+    resizeBrowser(150,150);
     $(window).resize(function() {
-        resizeBrowser(140,180);
+        resizeBrowser(150,150);
         browser.updateLayout();
     });
 
@@ -80,12 +80,14 @@ google.setOnLoadCallback(function(){
                 { name: 'Popularity', value: function(d){ return d.data["IMDb Popularity Score"];} },
                 { name: 'Year', inverse:true},
             ],
-            contentFunc: function(d){
-                return "<a target='_blank' href='"+d.data['IMDB Link']+"' class='thumbnail'>"+
-                    "<img class='thumbImg'></a>";//<span class='title'>"+/*d.data['Movie Title']*/+"</span>";
+            recordView: function(movie){
+                return "<a target='_blank' href='"+movie.data['IMDB Link']+"' class='thumbnail'>"+
+                    "<img class='thumbImg'></a>";//<span class='title'>"+/*movie.data['Movie Title']*/+"</span>";
             },
-            visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.Image);
+            visibleCb: function(movie){
+                var imdbID = movie.data['IMDB Link'].substr(26,9);
+                d3.select(movie.DOM.result).select("img").attr("src",
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+imdbID+".jpg");
             }
         }
     });
@@ -107,7 +109,7 @@ google.setOnLoadCallback(function(){
         <div class="pageTitle" align="center">Gender Bias In Movies - Woman Only Talk About Men? </div>
         <div class="pageSubtitle">
         To pass the Information on <a href="http://bechdeltest.com/" target="_blank">Bechdel test</a>, a movie has to meet 3 criteria: it has to have at least two women in it (1), who talk to each other (2) about something besides a man (3).<br>
-        Surprisingly, <b>533 of the 1453 (36%)</b> movies in this dataset fails this simple gender test! Explore the data below.</div>
+        Surprisingly, <b>533 of the 1453 (37%)</b> movies in this dataset fails this simple gender test! Explore the data below.</div>
         <div class="contents"><div id="chart_div"></div></div>
 
         <div id="infobox" align="center">

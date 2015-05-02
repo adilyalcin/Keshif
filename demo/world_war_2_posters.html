@@ -105,7 +105,7 @@ $(document).ready( function(){
             sortingOpts : [ { name: 'id' } ],
             displayType: 'grid',
             textSearch: "title",
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='title'>"+d.data.title+"</span>";
             },

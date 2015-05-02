@@ -39,7 +39,7 @@
                         detailsToggle : "Zoom",
                         sortingOpts : [ {name: 'Position', inverse:true} ],
                         textSearchFunc: function(d){return d.data['Artist(s)']+" "+d.data.Track; },
-                        contentFunc: function(d){ return d.data['Artist(s)']+" - "+d.data.Track; }
+                        recordView: function(d){ return d.data['Artist(s)']+" - "+d.data.Track; }
                     }
                 });
             });

@@ -48,7 +48,7 @@ google.setOnLoadCallback(function(){
             detailsToggle : "Zoom",
             sortingOpts : [ {name: 'Year'} ],
             textSearchFunc: function(d){return d.data.Name; },
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 str+="<span class='workTitle'>"+d.data.Name+"</span>";
                 if(d.data.Image)

@@ -301,7 +301,7 @@ $(document).ready(function() {
                     if(d.data[columns[11]]===null) return 0;
                     return d.data[columns[11]].length; 
                 } }],
-            contentFunc : function(d){ 
+            recordView : function(d){ 
                 if(d.data[columns[11]]===null) return "-";
                 return "<blockquote>" + d.data[columns[11]] + "</blockquote>";
             }

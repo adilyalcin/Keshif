@@ -129,7 +129,7 @@ var loadBrowser = function(){
             sortingOpts : [ { name: 'id' } ],
             displayType: 'grid',
             textSearch: "title",
-            contentFunc : function(d){
+            recordView : function(d){
 //                d.data.url = d.data.url.replace("govid","gov/id");
                 return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='title'>"+d.data.title+"</span>";

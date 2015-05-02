@@ -80,7 +80,7 @@ google.setOnLoadCallback(function(){
                 label: function(breach){ return recordFormat(breach.data['# of Records']); }
             } ],
             textSearchFunc: function(breach){return breach.data.org; },
-            contentFunc: function(breach){
+            recordView: function(breach){
                 var str="";
                 str+=breach.data.org;
                 if(breach.data.source_1){

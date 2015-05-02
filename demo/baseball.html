@@ -118,7 +118,7 @@ $(document).ready(function() {
                 },
                 {   name: 'Transact.ID' },
             ],
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<div class=\"iteminfo iteminfo_0\">Player: "+
                         "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data.player[0]+"/P"+
                         d.data.player+".htm\">"+d.data.player+"</a></div>";

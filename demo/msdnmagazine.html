@@ -111,7 +111,7 @@ $(document).ready( function(){
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
-            contentFunc: function(article){
+            recordView: function(article){
                 return "<a target='_blank' class='articleLink' href='"+article.data.url+"'>"+article.data.Name+
                     " <i class='fa fa-external-link'></i></a>";
             }

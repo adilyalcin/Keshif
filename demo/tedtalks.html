@@ -57,7 +57,7 @@ google.setOnLoadCallback(function(){
             sortingOpts : [ {name:'Views'}, {name:'Date', inverse:true} ],
             textSearch: 'Title',
             displayType: 'grid',
-            contentFunc : function(d){
+            recordView : function(d){
                 var str='';
                 // Demo name
                 str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data.URL+"'><span class='thumbnail'>"+

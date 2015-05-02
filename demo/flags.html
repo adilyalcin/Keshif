@@ -186,7 +186,7 @@ $(document).ready( function(){
             detailsDefault : false,
             displayType: 'grid',
             maxVisibleItems_Default: 200,
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
             visibleCb: function(d){

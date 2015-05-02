@@ -127,7 +127,7 @@ $(document).ready( function(){
             detailsToggle: "Zoom",
             textSearch: "Name",
             maxVisibleItems_Default: 40,
-            contentFunc: function(d){
+            recordView: function(d){
                 return d.data.Name+" <a href='http://www.hitched.co.uk"+d.data.url+
                     "' target='_blank' class='fa fa-external-link'></a>";
             }

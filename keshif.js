@@ -1270,9 +1270,14 @@ kshf.List = function(kshf_, config, root){
 
     this.config = config;
 
-    this.contentFunc = config.contentFunc;
-    if(config.content!==undefined){
-        this.contentFunc = this.browser.getColumnData(this.browser.primaryTableName,config.content);
+    if(config.recordView!==undefined){
+        if(typeof config.recordView === 'string'){
+            var tmp=config.recordView;
+            this.recordView = this.browser.getColumnData(this.browser.primaryTableName,tmp);
+        }
+        if(typeof config.recordView === 'function'){
+            this.recordView = config.recordView;
+        }
     }
 
     this.autoExpandMore = true;
@@ -1630,7 +1635,7 @@ kshf.List.prototype = {
         var me = this;
 
         this.dom.listItems = this.dom.listItemGroup.selectAll("div.listItem")
-            // if content Func is not defined, provide an empty list
+            // TODO (?) if recordView is not defined, provide an empty list
             .data(this.browser.items, function(d){ return d.id(); })
         .enter()
             .append("div")
@@ -1684,7 +1689,7 @@ kshf.List.prototype = {
             this.insertItemToggleDetails();
         }
         this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
-            .html(function(d){ return me.contentFunc(d);});
+            .html(me.recordView);
 
         if(this.hasLinkedItems){
             this.dom.itemLinkStateColumn = this.dom.listItems.append("span").attr("class","itemLinkStateColumn")
@@ -2755,7 +2760,7 @@ kshf.Browser.prototype = {
                     kshf.insertColumnName(sheet.tableName,sheet.id,j);
                     idIndex = j;
                 }
-            } else { // content
+            }else{
                 // push unique id as the last column if necessary
                 if(idIndex===c.length) c.push(itemId++);
                 arr.push(new kshf.Item(c,idIndex));

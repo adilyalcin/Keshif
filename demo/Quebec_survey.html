@@ -196,7 +196,7 @@ $(document).ready(function() {
                     if(v===null) return 0;
                     return v.length; 
                 } }],
-            contentFunc : function(d){ 
+            recordView : function(d){ 
                 var v=d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                 return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
             }

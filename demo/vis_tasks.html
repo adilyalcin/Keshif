@@ -65,7 +65,7 @@ google.setOnLoadCallback(function(){
             detailsToggle : "Zoom",
             sortingOpts : [ {name: 'id', inverse:true} ],
             textSearch: 'Title',
-            contentFunc: function(d){ return d.data.Title; }
+            recordView: function(d){ return d.data.Title; }
         }
     });
 });

@@ -93,7 +93,7 @@ $(document).ready( function(){
                 return laureate.data.firstname + " " + (laureate.data.surname || "");
             },
             displayType: 'grid',
-            contentFunc: function(prize){
+            recordView: function(prize){
                 var laureate = kshf.dt_id.Laureates[prize.data.laureate_id];
                 var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
@@ -107,7 +107,7 @@ $(document).ready( function(){
                     "</div>";
             },
             /*
-            contentFunc : function(d) {
+            recordView : function(d) {
                 var str="";
 
                 if(laureate.data.gender!==3){
@@ -149,7 +149,7 @@ $(document).ready( function(){
                     // insert the image url
                     var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
                     surname_short = surname_short.replace("von_","").replace("la_","");
-                    var imgUrl="./img/nobel_photo/"+surname_short+".jpg";
+                    var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
                     d3.select(prize.DOM.result).select("img").attr("src",imgUrl);
                 }
             }

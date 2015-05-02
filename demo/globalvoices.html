@@ -102,7 +102,7 @@ $(document).ready( function(){
             detailsToggle : "One",
             textSearch : "Title and text",
             textSearchFunc: function(d){ return d.data[4] + " " + d.data[5];},
-            contentFunc : function(d){
+            recordView : function(d){
                 var str="";
 
                 str +="<span class='typeImg'></span> <span class='postTitle'>"+d.data[4] +"</span> <a target='_blank' href='"+d.data[3]+"' class='fa fa-external-link'></a></div>";;

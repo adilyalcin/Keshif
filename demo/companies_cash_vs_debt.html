@@ -66,7 +66,7 @@ google.setOnLoadCallback(function(){
             ],
             displayType: 'grid',
             textSearch: 'Stock',
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 str+=getIcon(d.data.Industry);
                 str+=" "+d.data.Stock;

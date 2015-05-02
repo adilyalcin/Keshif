@@ -150,7 +150,7 @@ browser = new kshf.Browser({
         displayType: 'grid',
         maxVisibleItems_Default: 100,
         textSearch: 'Name',
-        contentFunc : function(d){
+        recordView : function(d){
             var str='';
             str+="<span class='thumbnail'><a target='_blank' href='./demo/"
                 +d.data["Link"]+"'><img class='theImage'></a></span>";

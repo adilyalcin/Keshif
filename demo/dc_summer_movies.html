@@ -179,7 +179,7 @@ $(document).ready( function(){
                 }
             } ],
             detailsToggle : "One",
-            contentFunc : function(screening) {
+            recordView : function(screening) {
                 var series = kshf.dt_id.Series[screening.data.Series];
                 var str="";
                 str+="<span class=\"item_details\">";
@@ -217,7 +217,9 @@ $(document).ready( function(){
                 var movieData = kshf.dt_id.Movies[screening.data.Movie];
                 if(movieData){
                     d3Item.select(".movieInfo").style("display","block");
-                    d3Item.select(".moviePoster").attr("src","./img/posters/"+movieData.data.imdbID+".jpg");
+                    d3Item.select(".moviePoster").attr("src",
+                        "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.data.imdbID+".jpg"
+                        );
                     d3Item.select(".Genre .value").text(movieData.data.Genre.toString()); // can be a list
                     d3Item.select(".Rated .value").text(movieData.data.Rated);
                     d3Item.select(".Year .value" ).text(movieData.data.Year);

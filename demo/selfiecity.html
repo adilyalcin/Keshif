@@ -90,7 +90,7 @@ $(document).ready( function(){
             sortingOpts : [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
             displayType: 'grid',
             maxVisibleItems_Default: 104,
-            contentFunc : function(d){return "<img>"; },
+            recordView : function(d){return "<img>"; },
             visibleCb: function(d){
                 var imgRoot = 'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/';
                 d3.select(d.DOM.result).select("img").attr("src",imgRoot+d.data.city+'/'+d.data.id);

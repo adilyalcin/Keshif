@@ -59,7 +59,7 @@ google.setOnLoadCallback(function(){
             displayType: 'grid',
             sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
             textSearch : 'Title',
-            contentFunc: function(d){ 
+            recordView: function(d){ 
                 var str='';
                 str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
                 str+="<span class='subTitle'>"+d.data.Credits+"</span>";

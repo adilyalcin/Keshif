@@ -88,7 +88,7 @@ $(document).ready( function(){
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'list',
             detailsToggle : "Zoom",
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<a target='_blank' href='http://www.chromestatus.com/feature/"+d.data.id
                     +"'><span class='title'>"+d.data.name+"</span></a>";
             }

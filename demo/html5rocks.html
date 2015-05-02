@@ -78,7 +78,7 @@ $(document).ready( function(){
             ],
             displayType: 'grid',
             textSearch: "Title",
-            contentFunc: function(tutorial){
+            recordView: function(tutorial){
                 return "<img class='face'><a href='http://www.html5rocks.com"+tutorial.data.URL+"' target='_blank'><span class='title'>"+tutorial.data.Title+"</span></a>";
             },
             visibleCb: function(d){

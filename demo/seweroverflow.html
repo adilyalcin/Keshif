@@ -99,7 +99,7 @@ $(document).ready(function(){
                 { name: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
                 { name: 'id', value: function(d){ return d.data[0]; } }
             ],
-            contentFunc: function(d){
+            recordView: function(d){
                 return d.data[16]+" -- "+getDuration_TotalMinutes(d)+" minutes";
             }
         }

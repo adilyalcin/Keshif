@@ -276,7 +276,7 @@ function loadChart() {
                 }
             ],
             textSearch : "title",
-            contentFunc : function(release) {
+            recordView : function(release) {
                 var str="";
                 var imgUrl = release.data[releaseCols.thumb];
                 var aLink = "<a href=\"http://www.discogs.com/release/"+release.data[releaseCols.id]+"\" target=\"_blank\">";

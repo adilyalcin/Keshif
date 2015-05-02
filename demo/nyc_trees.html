@@ -84,7 +84,7 @@ $(document).ready( function(){
             displayType: 'grid',
             textSearch: 'Tree Name',
             textSearchFunc : function(d){ return d.data.Common;},
-            contentFunc : function(d){
+            recordView : function(d){
     var str='';
     str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"' class='thumbImg'></span>";
     str+="<span class='authorName'>"+d.data.Latin+"</span>";

@@ -292,7 +292,7 @@ $(document).ready( function(){
             ],
             detailsToggle: 'zoom',
             textSearch: "System",
-            contentFunc: function(d){
+            recordView: function(d){
                 return "<span class='sysName'>"+d.data.System + "</span>"+
                        "<span class='sysDescription'>" + d.data.Description+"</span>";
             }

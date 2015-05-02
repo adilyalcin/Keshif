@@ -76,7 +76,7 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<a target='_blank' href='"+d.data.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
                     "<span class='title'>"+d.data.label+"</span>";
             },

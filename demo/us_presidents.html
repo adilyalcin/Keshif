@@ -20,8 +20,8 @@ google.setOnLoadCallback( function(){
         domID: "#chart_div",
         categoryTextWidth: 160,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
-            sheets : [ {name:"Presidents"} ]
+            gdocId: '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
+            sheets: [ {name:"Presidents"} ]
         },
         facets: [
             {   facetTitle: "Party", 
@@ -37,14 +37,11 @@ google.setOnLoadCallback( function(){
         itemDisplay: {
             sortColWidth: 40,
             textSearch: 'Name',
-            maxVisibleItems_Default: 5,
-            sortingOpts : [ {name: 'id'} ],
+            sortingOpts: [{name: 'id'} ],
             displayType: 'grid',
-            contentFunc: function(d){ 
-                return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data.Link+"' target='_blank'><img></a>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.Image);
+            recordView: function(d){ 
+                return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data.Link+"' target='_blank'>"+
+                    "<img src='"+d.data.Image+"'></a>";
             }
         }
     });

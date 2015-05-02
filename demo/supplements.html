@@ -70,7 +70,7 @@ google.setOnLoadCallback(function(){
 //                        detailsToggle: 'zoom',
             sortingOpts: [{ name: 'popularity' }],
             textSearch: 'name',
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 if(d.data.onetowatch!==""){
                     // one to watch

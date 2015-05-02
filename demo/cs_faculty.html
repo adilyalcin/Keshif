@@ -85,7 +85,7 @@ google.setOnLoadCallback(function(){
             sortingOpts: [ {name: 'Join-Year', value: function(d){return d.data.JoinYear;}} ],
             textSearch: "Name",
             detailsToggle: "One",
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 str+=d.data.Name;
                 str+="<span style='float: right' class='infoList'>";

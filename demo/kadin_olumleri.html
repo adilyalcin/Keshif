@@ -45,7 +45,7 @@ google.setOnLoadCallback(function(){
             detailsToggle: "Zoom",
             textSearch: "İsim",
             sortingOpts: [{name: 'Yıl'}],
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 str+=d.data['İsim'];
                 if(d.data['Kaynak-Foto'])

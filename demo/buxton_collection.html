@@ -214,7 +214,7 @@ $(document).ready( function(){
             displayType: 'grid',
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
-            contentFunc: function(d){
+            recordView: function(d){
                 return "<a href='"+d.data.url+"' target='_blank'><img><span class='title'>"+d.data.Name+"</span></a>";
             },
             visibleCb: function(d){

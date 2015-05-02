@@ -261,7 +261,7 @@ google.setOnLoadCallback(function(){
             maxVisibleItems_Default: 25,
             detailsToggle: "Zoom",
             textSearch: "Title",
-            contentFunc: function(d){
+            recordView: function(d){
                 var str="";
                 str+="<a target='_blank' href='http://datavis.ca/milestones/"+d.data.URL+
                     "' class='thumbnail'><img class='thumbImg'></a>";

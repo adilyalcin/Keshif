@@ -161,7 +161,7 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",
-            contentFunc : function(d){
+            recordView : function(d){
                 var iconList="<div class='iconList'>";
                 d.data.categories.forEach(function(cat){
                     iconList+="<span class='fa fa-"+getIcon(cat)+"'></span>";

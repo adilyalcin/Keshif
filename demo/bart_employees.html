@@ -62,7 +62,7 @@ $(document).ready( function() {
                 {name: 'Base'},
             ],
             textSearch: "Name",
-            contentFunc: function(d){ return d.data.Name + " <span class='empTitle'>" +d.data.Title+"</span>"; }
+            recordView: function(d){ return d.data.Name + " <span class='empTitle'>" +d.data.Title+"</span>"; }
         }
     });
 });

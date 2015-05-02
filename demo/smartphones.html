@@ -120,7 +120,7 @@ $(document).ready( function() {
             displayType: 'grid',
             detailsToggle: "Zoom",
             textSearch: "name",
-            contentFunc : function(d){
+            recordView : function(d){
                 return "<a target='_blank' href='"+d.data.URL+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Model+"</span>";
             },

@@ -46,7 +46,7 @@ var simpsons = {
     itemDisplay: {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
-        contentFunc: function(d){ return d.data['']; }
+        recordView: function(d){ return d.data['']; }
     }
 };
 
@@ -75,7 +75,7 @@ var fruit = {
     itemDisplay: {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
-        contentFunc: function(d){ return d.data['']; }
+        recordView: function(d){ return d.data['']; }
     }
 };
 
@@ -109,7 +109,7 @@ var movies = {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -142,7 +142,7 @@ var movies_radialset = {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -173,7 +173,7 @@ var mutations = {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Identifier; }
+        recordView: function(d){ return d.data.Identifier; }
     }
 };
 
@@ -211,7 +211,7 @@ var CpdsVsProteinFam = {
         sortColWidth: 45,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.cpd + " -- "+d.data.CPD_SMILES; }
+        recordView: function(d){ return d.data.cpd + " -- "+d.data.CPD_SMILES; }
     }
 };
 
@@ -241,7 +241,7 @@ var CpdsVsProteinTable = {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data[''] + " -- "+d.data.CPD_SMILES; }
+        recordView: function(d){ return d.data[''] + " -- "+d.data.CPD_SMILES; }
     }
 };
 
@@ -270,7 +270,7 @@ var countries100 = {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -299,7 +299,7 @@ var countries = {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -328,7 +328,7 @@ var rand = {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data[''] + " Sets: "+d.data.r; }
+        recordView: function(d){ return d.data[''] + " Sets: "+d.data.r; }
     }
 };
 
@@ -361,7 +361,7 @@ var socialgraph = {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -420,7 +420,7 @@ var senate = {
         sortColWidth: 65,
         sortingOpts : [ {name: '# Votes', value:function(d){ return d.data.Votes.length; }} ],
         autoExpandMore: true,
-        contentFunc: function(d){ return d.data.Name; }
+        recordView: function(d){ return d.data.Name; }
     }
 };
 
@@ -481,7 +481,7 @@ var sharks = {
     itemDisplay: {
         sortColWidth: 55,
         sortingOpts : [ {name: '-'} ],
-        contentFunc: function(d){
+        recordView: function(d){
             return d.data[1];
         }
     }
