@@ -16,130 +16,105 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
-            var cols = null;
-            function resizeBrowser(){
-                $('#chart_div').width($(window).width()-100);
-                $('#chart_div').height($(window).height()-120);
+google.setOnLoadCallback(function(){
+    resizeBrowser(100,120);
+    $(window).resize(function() {
+        resizeBrowser(100,120);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        itemName: "CS Faculty",
+        leftPanelLabelWidth: 210,
+        rightPanelLabelWidth: 240,
+        source: {
+            url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
+            dirPath: './data/',
+            fileType: 'csv',
+            sheets: [ {name: "cs_faculty"} ]
+            //gdocId: '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
+            //sheets: [ {name: "Data"} ]
+        },
+        facets: [
+            {   facetTitle: "<i class='fa fa-university'></i> University",
+                description: "The name of the university they teach",
+                catItemMap: function(d){ return d.data.University; }
+            },{ facetTitle: "<i class='fa fa-sitemap'></i> Subfield",
+                description: "Main field of research. One of the 20 fields reported by Microsoft Academic",
+                catItemMap: function(d){ return d.data.Subfield; }
+            },{ facetTitle: "<i class='fa fa-th-large'></i> Rank",
+                catItemMap: function(d){ return d.data.Rank; }
+            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
+                description: "University they acquired their BSc degree from",
+                catItemMap: function(d){ return d.data.Bachelors; }
+            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
+                description: "University they acquired their Masters degree from",
+                catItemMap: function(d){ return d.data.Masters; }
+            },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
+                description: "University they acquired their Doctorate degree from",
+                catItemMap: function(d){ return d.data.Doctorate; }
+            },{ facetTitle: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right',
+                description: "University or Company they did their post-doctoral training",
+                catItemMap: function(d){ return d.data.PostDoc; },
+                collapsed: true
+            },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
+                description: "For each CS faculty, lists the countries that s/he received her degrees from",
+                catItemMap: function(d){
+                    var r=[];
+                    a = d.data.Bachelors.split(" - ");
+                    r.push(a[a.length-1].trim());
+                    a = d.data.Masters.split(" - ");
+                    r.push(a[a.length-1].trim());
+                    a = d.data.Doctorate.split(" - ");
+                    r.push(a[a.length-1].trim());
+                    a = d.data.PostDoc.split(" - ");
+                    r.push(a[a.length-1].trim());
+                    return r;
+                }
+            },{ facetTitle: "<span class='fa fa-calendar'></span> Joined Year",
+                description: "When they joined that department of Computer Science as faculty",
+                layout: "bottom",
+                catItemMap: function(d){ return d.data.JoinYear; }
             }
+        ],
+        itemDisplay: {
+            sortColWidth: 60,
+            autoExpandMore: true,
+            sortingOpts: [ {name: 'Join-Year', value: function(d){return d.data.JoinYear;}} ],
+            textSearch: "Name",
+            detailsToggle: "One",
+            contentFunc: function(d){
+                var str="";
+                str+=d.data.Name;
+                str+="<span style='float: right' class='infoList'>";
+                    if(d.data.Sources1) str+="<a href='"+
+                        d.data.Sources1+"' class='fa fa-info-circle' target='_blank'></a>";
+                    if(d.data.Sources2) str+="<a href='"+
+                        d.data.Sources2+"' class='fa fa-info-circle' target='_blank'></a>";
+                    if(d.data.Sources3) str+="<a href='"+
+                        d.data.Sources3+"' class='fa fa-info-circle' target='_blank'></a>";
+                str+="</span>";
 
-            google.setOnLoadCallback(function(){
-                resizeBrowser();
-                $(window).resize(function() {
-                    resizeBrowser();
-                    browser.updateLayout();
-                });
-
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    itemName: "CS Faculty",
-                    leftPanelLabelWidth: 210,
-                    rightPanelLabelWidth: 240,
-                    source: {
-                        url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
-                        dirPath: './data/',
-                        fileType: 'csv',
-                        sheets : [ {name: "cs_faculty"} ]
-//                        gdocId : '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
-//                        sheets : [ {name: "Data"} ]
-                    },
-                    loadedCb: function(){
-                        cols = kshf.dt_ColNames.Data;
-                    },
-                    facets: [
-                        {   facetTitle: "<i class='fa fa-university'></i> University",
-                            description: "The name of the university they teach",
-                            catItemMap: function(d){
-                                return d.data.University;
-                            }
-                        },{ facetTitle: "<i class='fa fa-sitemap'></i> Subfield",
-                            description: "Main field of research. One of the 20 fields reported by Microsoft Academic",
-                            catItemMap: function(d){
-                                return d.data.Subfield;
-                            }
-                        },{ facetTitle: "<i class='fa fa-th-large'></i> Rank",
-                            catItemMap: function(d){
-                                return d.data.Rank;
-                            }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
-                            description: "University they acquired their BSc degree from",
-                            catItemMap: function(d){
-                                return d.data.Bachelors;
-                            }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
-                            description: "University they acquired their Masters degree from",
-                            catItemMap: function(d){
-                                return d.data.Masters;
-                            }
-                        },{ facetTitle: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
-                            description: "University they acquired their Doctorate degree from",
-                            catItemMap: function(d){
-                                return d.data.Doctorate;
-                            }
-                        },{ facetTitle: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right',
-                            description: "University or Company they did their post-doctoral training",
-                            catItemMap: function(d){
-                                return d.data.PostDoc;
-                            },
-                            collapsed: true
-                        },{ facetTitle: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
-                            description: "For each CS faculty, lists the countries that s/he received her degrees from",
-                            catItemMap: function(d){
-                                var r=[];
-                                a = d.data.Bachelors.split(" - ");
-                                r.push(a[a.length-1].trim());
-                                a = d.data.Masters.split(" - ");
-                                r.push(a[a.length-1].trim());
-                                a = d.data.Doctorate.split(" - ");
-                                r.push(a[a.length-1].trim());
-                                a = d.data.PostDoc.split(" - ");
-                                r.push(a[a.length-1].trim());
-                                return r;
-                            }
-                        },{ facetTitle: "<span class='fa fa-calendar'></span> Joined Year",
-                            description: "When they joined that department of Computer Science as faculty",
-                            layout: "bottom",
-                            catItemMap: function(d){
-                                return d.data.JoinYear;
-                            }
-                        }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 60,
-                        autoExpandMore: true,
-                        sortingOpts : [ {name: 'Join-Year', value: function(d){return d.data.JoinYear;}} ],
-                        textSearch: "Name",
-                        detailsToggle : "One",
-                        contentFunc: function(d){
-                            var str="";
-                            str+=d.data.Name;
-                            str+="<span style='float: right' class='infoList'>";
-                                if(d.data.Sources1) str+="<a href='"+
-                                    d.data.Sources1+"' class='fa fa-info-circle' target='_blank'></a>";
-                                if(d.data.Sources2) str+="<a href='"+
-                                    d.data.Sources2+"' class='fa fa-info-circle' target='_blank'></a>";
-                                if(d.data.Sources3) str+="<a href='"+
-                                    d.data.Sources3+"' class='fa fa-info-circle' target='_blank'></a>";
-                            str+="</span>";
-
-                            str+="<span class='item_details'>";
-                                str+="<i class='fa fa-university'></i> University: "+d.data.University+"<br>";
-                                str+="<i class='fa fa-sitemap'></i> Subfield: "+d.data.Subfield+"<br>";
-                                str+="<i class='fa fa-th-large'></i> Rank: "+d.data.Rank+"<br>";
-                                if(d.data.Bachelors)
-                                    str+="<i class='fa fa-graduation-cap'></i> Bachelors: "+d.data.Bachelors+"<br>";
-                                if(d.data.Masters)
-                                    str+="<i class='fa fa-graduation-cap'></i> Masters: "+d.data.Masters+"<br>";
-                                str+="<i class='fa fa-graduation-cap'></i> Doctorate: "+d.data.Doctorate+"<br>";
-                                if(d.data.PostDoc)
-                                    str+="<i class='fa fa-suitcase'></i> Post-Doc   : "+d.data.PostDoc;
-                            str+="</span>";
-                            return str;
-                        }
-                    }
-                });
-            });
-        </script>
+                str+="<span class='item_details'>";
+                    str+="<i class='fa fa-university'></i> University: "+d.data.University+"<br>";
+                    str+="<i class='fa fa-sitemap'></i> Subfield: "+d.data.Subfield+"<br>";
+                    str+="<i class='fa fa-th-large'></i> Rank: "+d.data.Rank+"<br>";
+                    if(d.data.Bachelors)
+                        str+="<i class='fa fa-graduation-cap'></i> Bachelors: "+d.data.Bachelors+"<br>";
+                    if(d.data.Masters)
+                        str+="<i class='fa fa-graduation-cap'></i> Masters: "+d.data.Masters+"<br>";
+                    str+="<i class='fa fa-graduation-cap'></i> Doctorate: "+d.data.Doctorate+"<br>";
+                    if(d.data.PostDoc)
+                        str+="<i class='fa fa-suitcase'></i> Post-Doc   : "+d.data.PostDoc;
+                str+="</span>";
+                return str;
+            }
+        }
+    });
+});
+</script>
 <style>
     #chart_div {
         width: 1100px;
@@ -162,9 +137,6 @@
         font-weight: 300;
     }
     .item_details .fa{
-        font-size: 0.8em;
-    }
-    #chart_div .header_label .fa{
         font-size: 0.8em;
     }
 </style>

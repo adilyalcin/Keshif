@@ -29,22 +29,21 @@
 var demoID = 51;
 
 // https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
-function distanceKilometersGreatCircle (lat1, long1, lat2, long2)
-{
+function distanceKilometersGreatCircle (lat1, long1, lat2, long2) {
     var degToRad= Math.PI / 180;
     var phi1= lat1 * degToRad;
     var phi2= lat2 * degToRad;
     var lam1= long1 * degToRad;
     var lam2= long2 * degToRad;
-
-    return  6371.01 * Math.acos( Math.sin(phi1) * Math.sin(phi2) + Math.cos(phi1) * Math.cos(phi2) * Math.cos(lam2 - lam1) );
-}
+    return  6371.01 * Math.acos( Math.sin(phi1) * Math.sin(phi2) + 
+        Math.cos(phi1) * Math.cos(phi2) * Math.cos(lam2 - lam1) );
+};
 
 var myLoc=null;
 var updateLocationSorting = function(){
     if(myLoc===undefined) return;
     if(browserScreenings===undefined) return;
-    var seriesChart = browserScreenings.facets[1];
+    var seriesChart = browserScreenings.summaries[1];
     if(seriesChart===undefined) return;
     seriesChart.sortingOpt_Active = seriesChart.options.sortingOpts[1];
     seriesChart.sortDelay = 0;
@@ -52,8 +51,7 @@ var updateLocationSorting = function(){
     seriesChart.updateSorting.call(seriesChart);
 };
 
-$(document).ready( function() {
-
+$(document).ready( function(){
     var h=Math.max($(window).height()-80,650);
 //    h = 700; // temp
     var w=Math.max($(window).width()-110,1000);
@@ -69,7 +67,6 @@ $(document).ready( function() {
 
     // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
     var m_now = moment().subtract('days',1);
-
     var m_thisweek = moment().add('days',7);
     var m_nextweek = moment().add('days',14);
 
@@ -77,33 +74,24 @@ $(document).ready( function() {
         domID: "#div_screenings",
         categoryTextWidth: 210,
         source: {
-            gdocId : '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
-            sheets : [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
+            gdocId: '1WQZX6-pkafMQmJqY8Wgx3O6eKwY5VRmLaN9zSlRJLt8',
+            sheets: [ {name:"Screenings"}, {name:"Series"}, {name:"Movies", id:"Title"}, {name: "Weekdays"} ]
         },
         facets: [
-            {
-                facetTitle: "Movie",
+            {   facetTitle: "Movie",
                 catTableName: "Movies",
-                catItemMap: function(d){ return d.data[2]; },
-                catLabelText: function(m){ return m.data[0]; },
+                catLabelText: function(d){ return d.data.Title; },
                 facets: [
-                    {   facetTitle: "Genre",
-                        forceSearch: false
-                    },{
-                        facetTitle: "Rating",
-                        catItemMap:function(movie){ return movie.data[2];}
-                    },{
-                        facetTitle: "IMDB Rating",
-                        catItemMap: function(m){
-                            return m.data[5];
-                        }
+                    {   facetTitle: "Genre", forceSearch: false
+                    },{ facetTitle: "Rated"
+                    },{ facetTitle: "IMDB Rating",
+                        catItemMap: function(movie){ return movie.data.imdbRating; }
                     }
                 ]
-            },{
-                facetTitle: "Location",
+            },{ facetTitle: "Location",
                 layout: "right",
                 catTableName: "Series",
-                catItemMap: function(d){ return d.data[0]; },
+                catItemMap: function(d){ return d.data.Series; },
                 sortingOpts : [
                     {   name: "# of Screenings"},
                     {   name: "Distance",  
@@ -113,22 +101,20 @@ $(document).ready( function() {
                                 return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
                             }
                             var dist_a = distanceKilometersGreatCircle(
-                                myLoc.latitude,myLoc.longitude,a.data[10],a.data[11]);
+                                myLoc.latitude,myLoc.longitude,a.data.Latitude,a.data.Longitude);
                             var dist_b = distanceKilometersGreatCircle(
-                                myLoc.latitude,myLoc.longitude,b.data[10],b.data[11]);
+                                myLoc.latitude,myLoc.longitude,b.data.Latitude,b.data.Longitude);
                             return dist_a - dist_b;
                         }
                     }
                 ],
                 facets: [
                     {   facetTitle: "State"
-                    },{
-                        facetTitle: "Features", collapsed: true,
+                    },{ facetTitle: "Features", collapsed: true,
                     }
                 ]
             },{
-                facetTitle: "Time",
-                layout: "right",
+                facetTitle: "Time", layout: "right",
                 facets : [/*{
                     facetTitle: "Soon",
                     removeInactiveAttrib: false,
@@ -142,21 +128,20 @@ $(document).ready( function() {
                 },*/{
                     facetTitle: "Day Of Week",
                     type: 'categorical',
-                    catItemMap: function(d){ return (moment(d.data[1]).days()+6)%7;  },
                     catTableName: "Weekdays",
+                    catItemMap: function(d){ return (moment(d.data.Date).days()+6)%7;  },
                     sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
                 }]
-            },{
-                facetTitle: "Date",
+            },{ facetTitle: "Date",
                 layout: "bottom",
-                catItemMap: function(d){ return d.data[1]; },
+                catItemMap: function(d){ return d.data.Date; },
                 intervalScale: 'time'
             }
         ],
         loadedCb: function(){
             // expand cell content - movie*genres and series*features
-            kshf.Util.cellToArray(kshf.dt.Movies,[1], /\b,\s+/, false);
-            kshf.Util.cellToArray(kshf.dt.Series,[9], ",", false);
+            kshf.Util.cellToArray(kshf.dt.Movies,['Genre'], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Series,['Features'], ",", false);
         },
         readyCb: function(){
 //            $(".itemtoggledetails .item_details_on").click(loadMovieData);
@@ -194,20 +179,21 @@ $(document).ready( function() {
                 }
             } ],
             detailsToggle : "One",
-            contentFunc : function(d) {
-                var series = kshf.dt_id.Series[d.data[0]];
+            contentFunc : function(screening) {
+                var series = kshf.dt_id.Series[screening.data.Series];
                 var str="";
                 str+="<span class=\"item_details\">";
                 str+="<a target='_blank'><img class='moviePoster' src=''></a>"
                 str+="</span>"; // item_details
 
-                str+="<span class='movieName'>"+d.data[2]+"</span>";
+                str+="<span class='movieName'>"+screening.data.Movie+"</span>";
                 str+="<span class=\"item_details\">";
 
                 str+=
-                    "<span class='header'>Location</span>: <b>"+series.data[4]+"</b> - "+ series.data[3]+"<br>"+
-                    "<span class='header'>Series</span>: <a target=\"_blank\" class='location' href=\""+series.data[6]+"\">"+
-                    series.data[1]+"</a></br>"+
+                    "<span class='header'>Location</span>: <b>"+series.data.Location+"</b> - "+ series.data.State+"<br>"+
+                    "<span class='header'>Series</span>: <a target=\"_blank\" class='location' href=\""
+                        +series.data['Web page']+"\">"+
+                    series.data.Name+"</a></br>"+
                     "<span class='movieInfo' style='display:none;'>"+
                     "<span class='Year'><span class='header'>Year</span>: <span class='value'></span></span></br>"+
                     "<span class='Rated'><span class='header'>Rated</span>: <span class='value'></span></span></br>"+
@@ -222,22 +208,22 @@ $(document).ready( function() {
                 str+="</span>"; // item_details
                 return str;
             },
-            detailCb: function(item){
-                if(item.dataLoaded===true) return;
+            detailCb: function(screening){
+                if(screening.dataLoaded===true) return;
                 // some of the data is already included in google spreadshee...
-                var d3Item = d3.select(item.DOM.result);
+                var d3Item = d3.select(screening.DOM.result);
 
-                var query="t="+item.data[2];
-                var movieData = kshf.dt_id.Movies[item.data[2]];
+                var query="t="+screening.data.Movie;
+                var movieData = kshf.dt_id.Movies[screening.data.Movie];
                 if(movieData){
                     d3Item.select(".movieInfo").style("display","block");
-                    d3Item.select(".moviePoster").attr("src","./img/posters/"+movieData.data[4]+".jpg");
-                    d3Item.select(".Genre .value").text(movieData.data[1].toString()); // can be a list
-                    d3Item.select(".Rated .value").text(movieData.data[2]);
-                    d3Item.select(".Year .value" ).text(movieData.data[3]);
-                    d3Item.select(".imdbRating .value").text(movieData.data[5]);
+                    d3Item.select(".moviePoster").attr("src","./img/posters/"+movieData.data.imdbID+".jpg");
+                    d3Item.select(".Genre .value").text(movieData.data.Genre.toString()); // can be a list
+                    d3Item.select(".Rated .value").text(movieData.data.Rated);
+                    d3Item.select(".Year .value" ).text(movieData.data.Year);
+                    d3Item.select(".imdbRating .value").text(movieData.data.imdbRating);
                     d3Item.selectAll("a:not(.location)").attr("href","http://www.imdb.com/title/"+movieData.data[4]);
-                    item.dataLoaded = true;
+                    screening.dataLoaded = true;
                     query = "i="+movieData.data[4];
                 }
                 $.ajax( {
@@ -245,7 +231,7 @@ $(document).ready( function() {
                     dataType: "json",
                     success: function(data){
                         if(data.Error) {
-                            console.log("Error loading extra movie info from API: "+item.data[2])
+                            console.log("Error loading extra movie info from API: "+screening.data[2])
                             return;
                         }
                         d3Item.select(".Plot .value").text(data.Plot);

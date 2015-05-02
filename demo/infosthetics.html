@@ -25,8 +25,11 @@ function getAuthorName(d){
 };
 
 $(document).ready( function(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-50);
+    resizeBrowser(150,50);
+    $(window).resize(function() {
+        resizeBrowser(150,50);
+        browser.updateLayout();
+    });
 
     logIf.Check = logIf.All();
     
@@ -39,37 +42,29 @@ $(document).ready( function(){
             sheets : [ {name:"Posts"}, {name:"Authors"} ]
         },
         loadedCb: function(){
-            postCols = kshf.dt_ColNames.Posts;
-            kshf.Util.cellToArray(kshf.dt.Posts, [postCols['Category']], ",", false);
+            kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
         },
         facets: [
             {   facetTitle: "Category"
-            },{
-                facetTitle: "Author",
-                catTableName: "Authors", collapsed: false,
-                layout: 'right',
-                catDispCountFix: 6
-            },{
-                facetTitle: "# Comments",
+            },{ facetTitle: "Author",
+                catTableName: "Authors", collapsed: true,
+                catLabelText: function(d){ return d.data.Name; }
+            },{ facetTitle: "# Comments", 
                 catItemMap : function(post){
-                    var v=post.data[postCols['# of Comments']];
+                    var v=post.data['# of Comments'];
                     if(v>0) return v;
                 },
-                layout: 'right',
                 intervalScale: "log"
-            },{
-                facetTitle: "Time",
-                layout: 'bottom',
-                catItemMap : function(post){ return post.data[postCols['Date']]; },
-                intervalScale: 'time'
+            },{ facetTitle: "Time", layout: 'bottom',
+                catItemMap : function(post){ return post.data.Date; },
             }
         ],
         itemDisplay: {
             sortColWidth: 85,
             sortingOpts : [
                 {   name: 'Date',
-                    value: function(d){ return d.data[postCols['Date']].getTime(); },
-                    label: function(d){ return moment(d.data[postCols['Date']]).format("MMM Do, YY"); }
+                    value: function(d){ return d.data.Date.getTime(); },
+                    label: function(d){ return moment(d.data.Date).format("MMM Do, YY"); }
                 },{ name: '#Comments',
                     value: function(d){ return d.data[5]; }
                 }
@@ -100,13 +95,12 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 50,
             detailsToggle : "zoom",
-            autoExpandMore: true,
             contentFunc: function(d){
-                return "<a target='_blank' href='"+d.data[postCols['URL']]+
-                    "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data[postCols['Title']]+"</span></a>";
+                return "<a target='_blank' href='"+d.data.URL+
+                    "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data[postCols['Img']]);
+                d3.select(d.DOM.result).select("img").attr("src",d.data.Img);
             },
         }
     });

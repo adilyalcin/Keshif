@@ -12,6 +12,52 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+function loadData(browser){
+    $.ajax( {
+        // Cannot load remote resouce because it is in another domain
+        // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
+        url:"./data/Pivot_SFMOMACollection.xml",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            browser.primaryTableName = "Artworks";
+            kshf.dt.Artworks = [];
+
+            $(collection).find("> Collection > Items > Item").each(function(){
+                var $this = $(this);
+                var cData = {};
+                cData.url = $this.attr("Href");
+                cData.id = parseInt($this.attr("Id"));
+                cData.Name = $this.attr("Name");
+                cData.Description = $this.find("Description").text();
+
+                $this.find(">Facets>Facet").each(function(d){
+                    var columnName = this.getAttribute("Name");
+                    var $item = $(this);
+                    cData[columnName] = [];
+                    if($item.find(">String").length>0) {
+                        $item.find(">String").each(function(){
+                            cData[columnName].push(this.getAttribute("Value"));
+                        })
+                    } else if($item.find(">Number").length>0) {
+                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+                    } else {
+                        cData[columnName] = undefined;
+                    }
+                });
+
+                cData.Time = new Date(cData['Creation Date'], 0);
+                cData['Year Born'] = new Date(cData['Year Born'], 0);
+
+                kshf.dt.Artworks.push(new kshf.Item(cData,"id"));
+            });
+
+            browser.items = kshf.dt.Artworks;
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        }
+    });
+};
 
 $(document).ready( function(){
     new kshf.Browser({
@@ -21,66 +67,18 @@ $(document).ready( function(){
         barChartWidth: 70,
         source : {
             url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
-            callback: function(browser){
-                $.ajax( {
-                    // Cannot load remote resouce because it is in another domain
-                    // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
-                    url:"./data/Pivot_SFMOMACollection.xml",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-                        browser.primaryTableName = "Artworks";
-                        kshf.dt.Artworks = [];
-                        var arr = kshf.dt.Artworks;
-
-                        $collection.find("> Collection > Items > Item").each(function(){
-                            var $this = $(this);
-                            var cData = {};
-                            cData.url = $this.attr("Href");
-                            cData.id = parseInt($this.attr("Id"));
-                            cData.Name = $this.attr("Name");
-                            cData.Description = $this.find("Description").text();
-
-                            $this.find(">Facets>Facet").each(function(d){
-                                var columnName = this.getAttribute("Name");
-                                var $item = $(this);
-                                cData[columnName] = [];
-                                if($item.find(">String").length>0) {
-                                    $item.find(">String").each(function(){
-                                        cData[columnName].push(this.getAttribute("Value"));
-                                    })
-                                } else if($item.find(">Number").length>0) {
-                                    cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                                } else {
-                                    cData[columnName] = undefined;
-                                }
-                            });
-
-                            cData.Time = new Date(cData['Creation Date'], 0);
-                            cData['Year Born'] = new Date(cData['Year Born'], 0);
-
-                            arr.push(new kshf.Item(cData,"id"));
-                        });
-
-                        browser.items = kshf.dt.Artworks;
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            { 
-                facetTitle: " Artist",
+            {   facetTitle: " Artist",
                 layout: 'right',
                 facets: [
-                    { facetTitle: "Name", catItemMap: function(d){ return d.data.Artist; }, collapsed: true},
-                    { facetTitle: "Nationality"},
-                    { facetTitle: "Gender"},
-                    { facetTitle: "Living"},
-                    { facetTitle: "Year Born",
-                        intervalScale: 'time'
+                    {   facetTitle: "Name", collapsed: true,
+                        catItemMap: function(d){ return d.data.Artist; }
+                    },{ facetTitle: "Nationality"
+                    },{ facetTitle: "Gender"
+                    },{ facetTitle: "Living"
+                    },{ facetTitle: "Year Born"
                     }
                 ]
             },{ facetTitle: "Collection", collapsed: true,

@@ -17,12 +17,100 @@
         <meta property="og:title" content="Exploring Buffy The Vampire Slayer - Season 1" />
 
         <script type="text/javascript">
+var dataLoad = function(browser){
+    // SETUP EPISODE INFORMATION
+    kshf.dt.Episodes = [];
+    kshf.dt_id.Episodes = {};
+    g_episodes.forEach(function(ep){
+        var c=new kshf.Item(ep,"ep_id");
+        kshf.dt.Episodes.push(c);
+        kshf.dt_id.Episodes[c.id()] = c;
+    });
 
-function resizeBrowser(){
-    $('#chart_div').height($(window).height()-180);
-}
+    // SETUP CHARACTER INFORMATION
+    kshf.dt.Characters = [];
+    kshf.dt_id.Characters = {};
+    g_characters.forEach(function(character){
+        var c=new kshf.Item(character,"char_id");
+        kshf.dt.Characters.push(c);
+        kshf.dt_id.Characters[c.id()] = c;
+    });
 
-$(document).ready( function(){
+    // SETUP PER-SECOND CHARACTER APPEARANCE
+    kshf.dt.Seconds = [];
+    var index = [];
+    for(var x=0; x<=12;x++){
+        index[x] = {};
+    }
+    var secondID=0;
+    // for each episode
+    g_appearances.forEach(function(episode,epNo){
+        // for each character
+        episode.forEach(function(ep_char){
+            var char_id = ep_char.char_id;
+            // for each appearance
+            ep_char.times.forEach(function(t){
+                // for each second
+                for(var second=t.ts; second<=t.te ; second++){
+                    var who = index[epNo][second];
+                    if(who===undefined){
+                        var i= new kshf.Item({
+                                'Episode': epNo+1,
+                                'Appears':[],
+                                'second':second,
+                                'Location':'?',
+                                'id':secondID
+                            },'id');
+                        kshf.dt.Seconds.push(i);
+                        index[epNo][second] = i;
+                        who = i;
+                    }
+                    who.data.Appears.push(char_id);
+                }
+            });
+        });
+    });
+
+    // add locations per episode
+    // for each episode
+    g_locations.forEach(function(episode,epNo){
+        // for each character
+        episode.forEach(function(t){
+            // for each second
+            for(var second=t.ts; second<=t.te ; second++){
+                var who = index[epNo][second];
+                if(who===undefined){
+                    var i= new kshf.Item({
+                            'Episode': epNo+1,
+                            'Appears':[],
+                            'second':second,
+                            'Location':'?',
+                            'id':secondID
+                        },'id');
+                    kshf.dt.Seconds.push(i);
+                    index[epNo][second] = i;
+                    who = i;
+                }
+                who.data.Location = t.loc;
+            }
+        });
+    });
+
+    browser.primaryTableName = "Seconds";
+    browser.items = kshf.dt.Seconds;
+
+    browser.itemsSelectedCt = browser.items.length;                
+
+    // finish loading....
+    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+    d3.select(".kshf.layout_infobox div.status_text div").text("");
+    window.setTimeout(function() { browser.loadCharts(); }, 100);
+};
+
+$(document).ready(function(){
+    function resizeBrowser(){
+        $('#chart_div').height($(window).height()-180);
+    };
     resizeBrowser();
     $(window).resize(function() {
         resizeBrowser();
@@ -34,111 +122,17 @@ $(document).ready( function(){
         barChartWidth: 90,
         leftPanelLabelWidth: 290,
         rightPanelLabelWidth: 290,
-        itemName: "Characters in Buffy, Season One",
+        itemName: "X",
         source: {
             url: "http://visualizingbuffy.com/season1.html",
             // http://visualizingbuffy.com/data/season1_data.js
-            callback: function(browser){
-
-                // SETUP EPISODE INFORMATION
-                kshf.dt.Episodes = [];
-                kshf.dt_id.Episodes = {};
-                g_episodes.forEach(function(ep){
-                    var c=new kshf.Item(ep,"ep_id");
-                    kshf.dt.Episodes.push(c);
-                    kshf.dt_id.Episodes[c.id()] = c;
-                });
-
-                // SETUP CHARACTER INFORMATION
-                kshf.dt.Characters = [];
-                kshf.dt_id.Characters = {};
-                g_characters.forEach(function(character){
-                    var c=new kshf.Item(character,"char_id");
-                    kshf.dt.Characters.push(c);
-                    kshf.dt_id.Characters[c.id()] = c;
-                });
-
-                // SETUP PER-SECOND CHARACTER APPEARANCE
-                kshf.dt.Seconds = [];
-                var index = [];
-                for(var x=0; x<=12;x++){
-                    index[x] = {};
-                }
-                var secondID=0;
-                // for each episode
-                g_appearances.forEach(function(episode,epNo){
-                    // for each character
-                    episode.forEach(function(ep_char){
-                        var char_id = ep_char.char_id;
-                        // for each appearance
-                        ep_char.times.forEach(function(t){
-                            // for each second
-                            for(var second=t.ts; second<=t.te ; second++){
-                                var who = index[epNo][second];
-                                if(who===undefined){
-                                    var i= new kshf.Item({
-                                            'Episode': epNo+1,
-                                            'Appears':[],
-                                            'second':second,
-                                            'Location':'?',
-                                            'id':secondID
-                                        },'id');
-                                    kshf.dt.Seconds.push(i);
-                                    index[epNo][second] = i;
-                                    who = i;
-                                }
-                                who.data.Appears.push(char_id);
-                            }
-                        });
-                    });
-                });
-
-                // add locations per episode
-                // for each episode
-                g_locations.forEach(function(episode,epNo){
-                    // for each character
-                    episode.forEach(function(t){
-                        // for each second
-                        for(var second=t.ts; second<=t.te ; second++){
-                            var who = index[epNo][second];
-                            if(who===undefined){
-                                var i= new kshf.Item({
-                                        'Episode': epNo+1,
-                                        'Appears':[],
-                                        'second':second,
-                                        'Location':'?',
-                                        'id':secondID
-                                    },'id');
-                                kshf.dt.Seconds.push(i);
-                                index[epNo][second] = i;
-                                who = i;
-                            }
-                            who.data.Location = t.loc;
-                        }
-                    });
-                });
-
-                browser.primaryTableName = "Seconds";
-                browser.items = kshf.dt.Seconds;
-
-                browser.itemsSelectedCt = browser.items.length;                
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 100);
-            }
+            callback: dataLoad
         },
         readyCb: function(browser){
             browser.facets[2].setHeightRow_attrib(20);
         },
         facets: [
-            {
-                facetTitle: "Episode", layout: 'right',
-                catItemMap: function(d){
-                    return d.data.Episode;
-                },
-                type: "categorical",
+            {   facetTitle: "Episode", layout: 'right',
                 catTableName: "Episodes",
                 sortingOpts: [ {func: function(a,b){ return a.data.ep_id - b.data.ep_id; }} ],
                 catLabelText: function(episode){
@@ -146,41 +140,27 @@ $(document).ready( function(){
                 },
                 catTooltipText: function(episode){ return episode.data.Synopsis; },
                 facets:[
-                    {
-                        facetTitle: "Dead Count (Total)", collapsed: true,
+                    {   facetTitle: "Dead Count (Total)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.total; }
-                    },{
-                        facetTitle: "Dead Count (Humans)", collapsed: true,
+                    },{ facetTitle: "Dead Count (Humans)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.humans; }
-                    },{
-                        facetTitle: "Dead Count (Vampires)", collapsed: true,
+                    },{ facetTitle: "Dead Count (Vampires)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.vampires; }
-                    },{
-                        facetTitle: "Dead Count (Demons)", collapsed: true,
+                    },{ facetTitle: "Dead Count (Demons)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.demons; }, 
-                    },{
-                        facetTitle: "Dead Count (Animals)", collapsed: true,
+                    },{ facetTitle: "Dead Count (Animals)", collapsed: true,
                         catItemMap: function(d){ return d.data.bodycount.animals; },
                     }
                 ]
-            },{
-                facetTitle: "Location", layout: 'right'
-            },{
-                facetTitle: "Characters",
-                catItemMap: function(d){
-                    return d.data.Appears;
-                },
+            },{ facetTitle: "Location", layout: 'right'
+            },{ facetTitle: "Characters",
+                catItemMap: function(d){ return d.data.Appears; },
                 catTableName: "Characters",
                 catLabelText: function(character){ 
-                    return character.data.Name+
-                        "<img src='./img/buffy/"+
-                        character.data.char_id+".jpg' class='charImg'>"
-                        +""
-                        ;
+                    return character.data.Name+"<img src='./img/buffy/"+character.data.char_id+".jpg' class='charImg'>";
                 },
                 facets: [
-                    {   
-                        facetTitle: "Episodic Appearance", collapsed: true,
+                    {   facetTitle: "Episodic Appearance", collapsed: true,
                         sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
                         catItemMap: function(d){
                             if(d.data.episode===undefined) return 0;
@@ -190,30 +170,16 @@ $(document).ready( function(){
                             if(d.data[1]===0) return "Many Episodes";
                             return "Episode "+d.data[1]+" Only";
                         }
-                    },{
-                        facetTitle: "Team",
-                    },{
-                        facetTitle: "Type", collapsed: true
+                    },{ facetTitle: "Team",
+                    },{ facetTitle: "Type", collapsed: true
                     }
                 ]
-            },{
-                facetTitle: "Time (Minutes into the episode)",
-                catItemMap: function(d){
-                    return d.data.second/60;
-                },
+            },{ facetTitle: "Time (Minutes into the episode)",
+                catItemMap: function(d){ return d.data.second/60; },
                 layout: "bottom",
                 unitName: "min"
             }
-        /*
-            */
-        ]/*,
-        itemDisplay: {
-            sortColWidth: 45,
-            detailsToggle : "Zoom",
-            sortingOpts : [ {name: 'Position', inverse:true} ],
-            textSearchFunc: function(d){return d.data.Name; },
-            contentFunc: function(d){ return d.data.Name; }
-        }*/
+        ]
     });
 });
         </script>

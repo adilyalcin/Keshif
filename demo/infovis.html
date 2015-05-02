@@ -15,52 +15,45 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
 google.setOnLoadCallback(function () {
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 220,
+        rightPanelLabelWidth: 160,
         source: {
             gdocId: '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
             sheets: [ {name:"Publications"} ]
         },
         loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Publications, [2, 3, 4, 5, 6, 7], "*", false);
-            kshf.dt.Publications.forEach(function(item){
-                item.data.time = new Date(moment(item.data[0].substring(7,9),"YY"));
-            })
+            kshf.Util.cellToArray(kshf.dt.Publications, 
+                ['Authors','Concepts','Keywords','IndexTerms','Citations','citeLocs'], "*", false);
+            kshf.dt.Publications.forEach(function(publication){
+                publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
+            });
         },
         facets: [
-            {
-                facetTitle: "Concept",
-            },{
-                facetTitle: "Year",
-                layout: "bottom-mid",
+            {   facetTitle: "Concepts",
+            },{ facetTitle: "Year", layout: "middle",
                 catItemMap: function(d){ return d.data.time; },
-                intervalScale: 'time'
-            },{
-                facetTitle: "Highlights",
+            },{ facetTitle: "Highlights",
                 catItemMap: function(d){
                     var toRet = [];
                     if(d.data[8]===true) toRet.push("Best in Year");
 //                    if(d.data[6].length>10) toRet.push("Cited +10");
                     return toRet;
                 }
-            },{
-                facetTitle: "Citations to",
+            },{ facetTitle: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
-                catItemMap: function(d){ return d.data[6]; },
+                catItemMap: function(d){ return d.data.Citations; },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
-            },{
-                facetTitle: "Total Citations",
-                catItemMap: function(d){ if(d.data[10]===0) return; return d.data[10]; },
+            },{ facetTitle: "Total Citations",
+                catItemMap: function(d){ if(d.data.num===0) return; return d.data.num; },
                 intervalScale: 'log'
-            },{
-                facetTitle: "Author",
+            },{ facetTitle: "Authors",
                 layout: 'right'
             }/*,{
 //              facetTitle: "Keywords",
@@ -74,24 +67,18 @@ google.setOnLoadCallback(function () {
 //            },{
 //                facetTitle: "Concepts",
 //            },{
-//                facetTitle: "Keyword", // HUGE LIST : 1k keywords
+//                facetTitle: "Keywords", // HUGE LIST : 1k keywords
 //            }*/
         ],
         itemDisplay: {
             sortColWidth: 85,
             sortingOpts : [
                 {   name: '# Cit.\'s To',
-                    value: function(d){ 
-                        return d.items.length;
-                    }   
-                },
-                {   name: 'Year',
+                    value: function(d){ return d.items.length; }
+                },{ name: 'Year',
                     value: function(d){ return d.data.time.getFullYear(); }, inverse: true
-                },
-                {   name: '# Cit.\'s- Total',
-                    value: function(d){ 
-                        return d.data[10];
-                    }
+                },{ name: '# Cit.\'s- Total',
+                    value: function(d){ return d.data.num; }
                 }
             ],
             detailsToggle : "One",
@@ -105,20 +92,20 @@ google.setOnLoadCallback(function () {
 
                 // description
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=d.data[1];
-                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+d.data[9]+"\">"+
+                str+=d.data.Title;
+                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+d.data.doi+"\">"+
                     "<i class='fa fa-external-link'></i></a>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
                 str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + d.data.time.getFullYear()+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + d.data[2]+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data[3]+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data[4]+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + d.data[5]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + d.data.Authors+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data.Concepts+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data.Keywords+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + d.data.IndexTerms+"</div>";
                 if(d.data[6])
-                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data[6].length+"</div>";
+                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data.Citations.length+"</div>";
                 str+="</span>";
 
                 return str;
@@ -128,7 +115,11 @@ google.setOnLoadCallback(function () {
 });
         </script>
         <style type="text/css" media="screen">
-            #chart_div{ width:1250px; height: 700px; margin-top: 30px;}    
+            #chart_div{
+                width: 1250px;
+                height: 700px;
+                margin-top: 30px;
+            }
             .content .fa{
                 font-size: 0.8em;
                 color:gray;

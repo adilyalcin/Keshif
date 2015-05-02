@@ -16,8 +16,6 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback( function(){
-    var billCols;
-
 	browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Roll calls",
@@ -25,9 +23,6 @@ google.setOnLoadCallback( function(){
         source: {
             gdocId : '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
             sheets : [ {name:"Senate112"} ]
-        },
-        loadedCb: function(){
-            billCols = kshf.dt_ColNames.Senate112;
         },
         facets: [
             {
@@ -45,16 +40,16 @@ google.setOnLoadCallback( function(){
                     }]
             },{
                 facetTitle: "Yea's",
-                catItemMap : function(vote){ return vote.data[billCols['Yea\'s']]; },
+                catItemMap : function(vote){ return vote.data['Yea\'s']; },
             },{
                 facetTitle: "Nay's",
-                catItemMap : function(vote){ return vote.data[billCols['Nay\'s']]; },
+                catItemMap : function(vote){ return vote.data['Nay\'s']; },
             },{
                 facetTitle: "Bill",
             },{
                 facetTitle: "Vote Date",
                 intervalScale: 'time',
-                layout: 'bottom-mid'
+                layout: 'middle'
             }
         ],
         itemDisplay: {
@@ -72,17 +67,17 @@ google.setOnLoadCallback( function(){
                 // description
                     str+="<div class=\"iteminfo iteminfo_1\">"+
                         "<a target=\"_blank\" href=\"http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?"+
-                        "congress=112&session="+d.data[billCols['Session']]+"&vote=00"+d.data[billCols['Number']]+"\">"+d.data[billCols['Description']]+"<a/></div>";
+                        "congress=112&session="+d.data.Session+"&vote=00"+d.data.Number+"\">"+d.data.Description+"<a/></div>";
                 // bill
-                    str+="<div class=\"iteminfo iteminfo_2\">";//Bill:"+d.data[billCols['Bill']]+" ---- ";
+                    str+="<div class=\"iteminfo iteminfo_2\">";
                 // question
 //                    str+="Question:"+d.data[5]+"</div>";
                 // yay/nay
                     str+="<div class=\"iteminfo iteminfo_2\">";
-                    var r=d.data[billCols['Yea\'s']]/d.data[billCols['Nay\'s']];
+                    var r=d.data['Yea\'s']/d.data['Nay\'s'];
                     str+="<span style=\"color:"+((r>1)?"green":"red")+"\">";
-                    str+="Yays:"+d.data[billCols['Yea\'s']];
-                    str+=" Nays:"+d.data[billCols['Nay\'s']];
+                    str+="Yays:"+d.data['Yea\'s'];
+                    str+=" Nays:"+d.data['Nay\'s'];
                     str+="</span>";
                     str+="</div>";
                 return str;

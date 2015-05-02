@@ -16,11 +16,6 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-100);
-};
-
 var paperMap = {
     1: 15,
     2: 52,
@@ -193,15 +188,68 @@ var paperMap = {
     169: 35,
     170: 120,
     171: 54
+};
 
+function loadData(browser){
+    kshf.dt.Projects = [];
+    browser.primaryTableName = "Projects";
+    $.ajax( {
+//      url:"http://www.html5rocks.com/en/tutorials/",
+        url:"./data/CompIV.html",
+        async: false,
+        success: function(doc){
+            $$doc = $($.parseHTML(doc));
+
+            $($$doc[13]).find(" > table > tbody > tr").each(function(rowNo){
+                if(rowNo===0) return; // first row
+                var $row = $(this);
+                var d={};
+                d.id = rowNo;
+
+                $row.find(" > td").each(function(colNo){
+                    switch(colNo){
+                        case 0: d.System = this.textContent.trim(); break;
+                        case 1: d.TechniqueUsed = this.textContent.trim(); break;
+                        case 2: d.ComparisonCategory = this.textContent.trim(); break;
+                        case 3: d.GeneralCategory = this.textContent.trim(); break;
+                        case 4: d.Description = this.textContent.trim(); break;
+                        case 5: d.DataTypeCompared = this.textContent.trim(); break;
+                        case 6: d.ComparisonScale = this.textContent.trim(); break;
+                        case 7: d.CategorizedBy = this.textContent.trim(); break;
+                        case 8: d.CitedInPaper = this.textContent.trim(); break;
+                        case 9: d.MentionedInPaper = this.textContent.trim(); break;
+                        case 10: d.Citation = this.textContent.trim(); break;
+                    }
+                });
+
+                var paperID = paperMap[d.id];
+                if(paperID!==undefined){
+                    var paper = kshf.dt_id.Papers[paperID];
+                    if(paper!==undefined){
+                        var y=paper.data.Year;
+                        if(y>=1990) d.Year = y;
+                        d.Venue = paper.data.Venue;
+                        d.Authors = paper.data.Authors.split(", ");
+                    }
+                }
+
+                kshf.dt.Projects.push(new kshf.Item(d,"id"));
+            });
+            browser.items = kshf.dt.Projects;
+
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        }
+    });
 };
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,100);
     $(window).resize(function(){
-        resizeBrowser();
+        resizeBrowser(100,100);
         browser.updateLayout();
     });
+    
     browser = new kshf.Browser({
         domID : "#chart_div",
         itemName: "Techniques for Visual Comparison",
@@ -210,66 +258,12 @@ $(document).ready( function(){
             url: "http://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/",
             gdocId: "1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0",
             sheets: [{name:'Papers'}],
-            callback: function(browser){
-                kshf.dt.Projects = [];
-                browser.primaryTableName = "Projects";
-                $.ajax( {
-//                    url:"http://www.html5rocks.com/en/tutorials/",
-                    url:"./data/CompIV.html",
-                    async: false,
-                    success: function(doc){
-                        $$doc = $($.parseHTML(doc));
-
-                        $($$doc[13]).find(" > table > tbody > tr").each(function(rowNo){
-                            if(rowNo===0) return; // first row
-                            var $row = $(this);
-                            var d={};
-                            d.id = rowNo;
-
-                            $row.find(" > td").each(function(colNo){
-                                switch(colNo){
-                                    case 0: d.System = this.textContent.trim(); break;
-                                    case 1: d.TechniqueUsed = this.textContent.trim(); break;
-                                    case 2: d.ComparisonCategory = this.textContent.trim(); break;
-                                    case 3: d.GeneralCategory = this.textContent.trim(); break;
-                                    case 4: d.Description = this.textContent.trim(); break;
-                                    case 5: d.DataTypeCompared = this.textContent.trim(); break;
-                                    case 6: d.ComparisonScale = this.textContent.trim(); break;
-                                    case 7: d.CategorizedBy = this.textContent.trim(); break;
-                                    case 8: d.CitedInPaper = this.textContent.trim(); break;
-                                    case 9: d.MentionedInPaper = this.textContent.trim(); break;
-                                    case 10: d.Citation = this.textContent.trim(); break;
-                                }
-                            });
-
-                            var paperID = paperMap[d.id];
-                            if(paperID!==undefined){
-                                var paper = kshf.dt_id.Papers[paperID];
-                                if(paper!==undefined){
-                                    var y=paper.data[6];
-                                    if(y>=1990) d.Year = y;
-                                    d.Venue = paper.data[3];
-                                    d.Authors = paper.data[1].split(", ");
-                                }
-                            }
-
-                            kshf.dt.Projects.push(new kshf.Item(d,"id"));
-                        });
-                        browser.items = kshf.dt.Projects;
-
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    },
-                    error: function(error){
-                        var terer=23232;
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
             {   facetTitle: "GeneralCategory", 
             },{ facetTitle: "ComparisonCategory",
-                catItemMap: function(d){
+                catItemMap: function(d){ 
                     return d.data.ComparisonCategory.split("/");
                 } 
             },{ facetTitle: "DataTypeCompared", 
@@ -282,9 +276,9 @@ $(document).ready( function(){
             },{ facetTitle: "Categorized By",  layout: 'right', collapsed: true,
                 catItemMap: function(d){
                     switch(d.data.CategorizedBy){
-                        case 'DA': return "Danielle Albers";
+                        case 'DA'  : return "Danielle Albers";
                         case 'Ilir': return "Ilir Jusuf";
-                        case 'RW': return "Rick Walker";
+                        case 'RW'  : return "Rick Walker";
                     }
                 }
             },{ facetTitle: "Year", layout: "bottom",
@@ -296,7 +290,6 @@ $(document).ready( function(){
                 { name: 'Year', inverse: true},
                 { name: 'id', inverse: true },
             ],
-            autoExpandMore: true,
             detailsToggle: 'zoom',
             textSearch: "System",
             contentFunc: function(d){

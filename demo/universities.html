@@ -145,6 +145,7 @@ $(document).ready( function(){
             sheets : [ {name:"universities", id:"unitid"} ]
         },
         loadedCb: function(d){
+            // Add group information to the universities
             kshf.dt.universities.forEach(function(u){
                 var name = u.data['institution name'];
                 u.data.Groups=[];
@@ -155,8 +156,7 @@ $(document).ready( function(){
             })
         },
         facets: [
-            {
-                facetTitle: "Groups", collapsed: false,
+            {   facetTitle: "Groups", collapsed: false,
 /*            },{
                 facetTitle: "Institution Size", collapsed: true,
                 catItemMap: function(d){
@@ -168,20 +168,13 @@ $(document).ready( function(){
                     return d.data["DRVEF2013.Total  enrollment"];
                 },
                 intervalScale: 'log'*/
-            },{
-                facetTitle: "Undergraduate enrollment",
-                catItemMap: function(d){
-                    return d.data["DRVEF2013.Undergraduate enrollment"];
-                },
+            },{ facetTitle: "Undergraduate enrollment",
+                catItemMap: function(d){ return d.data["DRVEF2013.Undergraduate enrollment"]; },
                 intervalScale: 'log'
-            },{
-                facetTitle: "Graduate enrollment",
-                catItemMap: function(d){
-                    return d.data["DRVEF2013.Graduate enrollment"];
-                },
+            },{ facetTitle: "Graduate enrollment",
+                catItemMap: function(d){ return d.data["DRVEF2013.Graduate enrollment"]; },
                 intervalScale: 'log'
-            },{
-                facetTitle: "Institution Type",
+            },{ facetTitle: "Institution Type",
                 catItemMap: function(d){
                     switch(d.data["HD2013.Sector of institution"]){
                         case 'Public, 4-year or above': return 0;
@@ -196,46 +189,34 @@ $(document).ready( function(){
                         case 2: return "Private-for profit, 4-year or above";
                     }
                 },
-                type: 'categorical',
                 sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
-            },{
-                facetTitle: "State", collapsed: true,
-                catItemMap: function(d){
-                    return d.data["HD2013.State abbreviation"];
-                }, layout: "bottom-mid",
-            },{
-                facetTitle: "Geographic region", collapsed: true,
-                catItemMap: function(d){
-                    return d.data["HD2013.Geographic region"];
-                }, layout: "bottom-mid"
-            },{
-                facetTitle: "Degree of urbanization",
-                catItemMap: function(d){
-                    return d.data["HD2013.Degree of urbanization (Urban-centric locale)"];
-                }, layout: "bottom-mid", collapsed: true
-            },{
-                facetTitle: "Carnegie Classification 2010",
+            },{ facetTitle: "State", layout: "middle", collapsed: true,
+                catItemMap: function(d){ return d.data["HD2013.State abbreviation"]; }
+            },{ facetTitle: "Geographic region", layout: "middle", collapsed: true,
+                catItemMap: function(d){ return d.data["HD2013.Geographic region"]; }
+            },{ facetTitle: "Degree of urbanization", layout: "middle", collapsed: true,
+                catItemMap: function(d){ return d.data["HD2013.Degree of urbanization (Urban-centric locale)"]; }
+            },{ facetTitle: "Carnegie Classification 2010",
                 facets: [
-                    {
-                        facetTitle: "Basic",
+                    {   facetTitle: "Basic", collapsed: true,
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Basic"];
-                        }, collapsed: true,
+                        }
                     },{
-                        facetTitle: "Size and Setting",
+                        facetTitle: "Size and Setting", collapsed: true,
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Size and Setting"];
-                        }, collapsed: true,
+                        }
                     },{
-                        facetTitle: "Undergraduate Instructional Program",
+                        facetTitle: "Undergraduate Instructional Program", collapsed: true,
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"];
-                        }, collapsed: true,
+                        }
                     },{
-                        facetTitle: "Graduate Instructional Program",
+                        facetTitle: "Graduate Instructional Program",collapsed: true,
                         catItemMap: function(d){
                             return d.data["HD2013.Carnegie Classification 2010: Graduate Instructional Program"];
-                        },collapsed: true
+                        }
 /*                    },{
                         facetTitle: "Undergraduate Profile",
                         catItemMap: function(d){
@@ -248,90 +229,68 @@ $(document).ready( function(){
                         }, collapsed: true*/
                     }
                 ]
-            },{
-                facetTitle: "Diversity",
-                layout: 'right',
+            },{ facetTitle: "Diversity", layout: 'right',
                 facets: [
-                    {
-                        facetTitle: "% American Indian/Alaska Native", collapsed: true,
+                    {   facetTitle: "% American Indian/Alaska Native", collapsed: true,
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native"];
                         },
                         description: "Percent of total enrollment that are American Indian or Alaska Native",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Asian", collapsed: true,
+                    },{ facetTitle: "% Asian", collapsed: true,
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are Asian"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Asian",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Hispanic / Latino", collapsed: true,
+                    },{ facetTitle: "% Hispanic / Latino", collapsed: true,
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are Hispanic/Latino"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Nativa Hawaiian / Pac. Isl.", collapsed: true,
+                    },{ facetTitle: "% Nativa Hawaiian / Pac. Isl.", collapsed: true,
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Nonresident Alien", collapsed: true,
+                    },{ facetTitle: "% Nonresident Alien", collapsed: true,
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are Nonresident Alien"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% White",
+                    },{ facetTitle: "% White",
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are White"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are White",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Black / African American",
+                    },{ facetTitle: "% Black / African American",
                         catItemMap: function(d){
                             return d.data["DRVEF2013.Percent of total enrollment that are Black or African American"];
                         },
                         description: "DRVEF2013.Percent of total enrollment that are Black or African American",
                         intervalScale: 'log'
-                    },{
-                        facetTitle: "% Women",
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are women"];
-                        },
+                    },{ facetTitle: "% Women",
+                        catItemMap: function(d){ return d.data["DRVEF2013.Percent of total enrollment that are women"]; },
                         description: "DRVEF2013.Percent of total enrollment that are women",
                         intervalScale: 'log'
                     }
                 ]
-            },{
-                facetTitle: "6 Year Graduation Rates", layout: 'right',
+            },{ facetTitle: "6 Year Graduation Rates", layout: 'right',
                 facets: [
-                    {
-                        facetTitle: "% Total Cohort",
-                        catItemMap: function(d){
-                            return d.data["DRVGR2013.Graduation rate, total cohort"];
-                        },
+                    {   facetTitle: "% Total Cohort",
+                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"]; },
                         description: "DRVGR2013.Graduation rate, total cohort",
                         intervalScale: 'log', unitName: "%"
-                    },{
-                        facetTitle: "% Men",
-                        catItemMap: function(d){
-                            return d.data["DRVGR2013.Graduation rate, men"];
-                        },
+                    },{ facetTitle: "% Men",
+                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, men"]; },
                         description: "DRVGR2013.Graduation rate, men",
                         intervalScale: 'log', collapsed: true, unitName: "%"
-                    },{
-                        facetTitle: "% Women",
-                        catItemMap: function(d){
-                            return d.data["DRVGR2013.Graduation rate, women"];
-                        },
+                    },{ facetTitle: "% Women",
+                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, women"]; },
                         description: "DRVGR2013.Graduation rate, women",
                         intervalScale: 'log', collapsed: true, unitName: "%"
                     }
@@ -341,20 +300,13 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 82,
             sortingOpts : [
-                { name:'Enrollment', value: function(d){
-                    return d.data["DRVEF2013.Total  enrollment"];
-                }},
-                { name:'Grad. Rate', value: function(d){
-                    return d.data["DRVGR2013.Graduation rate, total cohort"];
-                }},
+                { name:'Enrollment', value: function(d){ return d.data["DRVEF2013.Total  enrollment"]; }},
+                { name:'Grad. Rate', value: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"]; }},
             ],
             textSearch : "institution name",
-            autoExpandMore: true,
             detailsToggle: "zoom",
             contentFunc : function(d){
-                var str="";
-                str+=d.data['institution name'];
-                return str;
+                return d.data['institution name'];
             },
         }
     });

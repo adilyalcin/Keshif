@@ -39,37 +39,23 @@ google.setOnLoadCallback(function(){
         facets: [
             {   facetTitle: "Politician",
                 catTableName: "Politicians",
-                catItemMap: function(d){
-                    return d.data[0];
-                },
-                catLabelText: function(d){ return d.data[0]; },
+                catLabelText: function(d){ return d.data.Politician; },
                 facets:[
-                    {
-                        facetTitle: "Department",
-                        catItemMap: function(d){
-                            return d.data[1];
-                        }
-                    }
+                    { facetTitle: "Department", }
                 ]
             },{ facetTitle: "Type", layout: 'right',
                 catItemMap: function(d){
-                    return kshf.dt_id.Organizations[d.data[2]].data[1];
+                    return kshf.dt_id.Organizations[d.data.Organization].data.Type;
                 },
-                catLabelText: function(d){
-                    return d.data[1]+" "+getIcon(d.data[1]);
-                }
+                catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
             },{ facetTitle: "Organization", layout: 'right',
                 catTableName: "Organizations",
-                catItemMap: function(d){
-                    return d.data[2];
-                },
                 catLabelText: function(d){
-                    return d.data[0]+" "+getIcon(d.data[1]);
+                    return d.data.Organization+" "+getIcon(d.data.Type);
                 },
-            },{ facetTitle: "Lobbyist", collapsed: true, layout: 'right'
+            },{ facetTitle: "Lobbyist", layout: 'right', collapsed: true
             },{
                 facetTitle: "Date",
-                intervalScale: "time",
                 layout: "bottom"
             }
         ],
@@ -79,18 +65,17 @@ google.setOnLoadCallback(function(){
                 name: 'Date',
                 noGroupBorder: true,
                 inverse: true,
-                label: function(d){
-                    return moment(d.data[3]).format("D MMM 'YY");
+                label: function(meeting){
+                    return moment(meeting.data.Date).format("D MMM 'YY");
                 }
             } ],
-            autoExpandMore: true,
-            contentFunc: function(d){
-                return getIcon(kshf.dt_id.Organizations[d.data[2]].data[1]) +
+            contentFunc: function(meeting){
+                return getIcon(kshf.dt_id.Organizations[meeting.data.Organization].data.Type) +
                     "<span style='display:block'>"+
                         "<i class='fa fa-bank commonIcon'></i> "+
-                        "<span class='person'>"+d.data[0]+"</span></span>"+
+                        "<span class='person'>"+meeting.data.Politician+"</span></span>"+
                     "<span style='display:block; text-align:right; margin-right: 1.7em;'>"+
-                        "<span class='person' style='font-size: 0.8em'>("+d.data[1]+")</span> "+d.data[2]+" "+
+                        "<span class='person' style='font-size: 0.8em'>("+meeting.data.Lobbyist+")</span> "+meeting.data.Organization+" "+
                         "<i class='fa fa-briefcase commonIcon'></i></span>";
             }
         }

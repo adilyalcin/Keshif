@@ -17,13 +17,9 @@
         <script type="text/javascript">
 
 $(document).ready( function() {
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-90);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
+    resizeBrowser(160,40);
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-90);
-        $('#chart_div').width ($(window).width()*0.9);
+        resizeBrowser(160,40);
         browser.updateLayout();
     });
 
@@ -36,68 +32,47 @@ $(document).ready( function() {
             sheets : [ {name:"tablets", id:"ASIN"} ]
         },
         facets: [
-            {
-                facetTitle: "Brand Name",
-            },{
-                facetTitle: "Operating System",
-            },{
-                facetTitle: "Customer Reviews"
-            },{
-                facetTitle: "Flash Memory Size (GB)",
-                layout: 'right',
+            {   facetTitle: "Brand Name",
+            },{ facetTitle: "Operating System",
+            },{ facetTitle: "Customer Reviews"
+            },{ facetTitle: "Flash Memory Size (GB)", layout: 'right',
                 catItemMap : function(tablet){
                     var n= parseFloat(tablet.data['Flash Memory Size']);
                     if(n<1) return null;
                     return n;
                 },
                 intervalScale: 'log'
-            },{
-                facetTitle: "Screen Size (inches)",
+            },{ facetTitle: "Screen Size (inches)",
                 catItemMap : function(tablet){
                     var x= parseFloat(tablet.data['Screen Size']);
                     if(isNaN(x)) { return null; }
                     return x;
                 }
-            },{
-                facetTitle: "Weight (ounces)",
-                layout: 'right',
+            },{ facetTitle: "Weight (ounces)", layout: 'right', intervalScale: 'log',
                 catItemMap : function(tablet){ return tablet.data['Weight']; }
-            },{
-                facetTitle: "Battery Life (hours)",
-                layout: 'right',
+            },{ facetTitle: "Battery Life (hours)", layout: 'right',
                 catItemMap: function(d) { return d.data['Battery Life']; }
-            },{
-                facetTitle: "Rating",
-                layout: 'right',
+            },{ facetTitle: "Rating", layout: 'right',
                 catItemMap: function(d) { return d.data['Customer Reviews']; },
-                showPercentile: true,
-                intervalScale: 'step'
-            },{
-                facetTitle: "Release Date",
+                showPercentile: true
+            },{ facetTitle: "Release Date",
                 catItemMap : function(tablet){ 
                     var dt = tablet.data['Date First Available'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 },
-                intervalScale: 'time',
                 layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
             sortingOpts : [
-                {   name: 'Rating',
-                    value: function(d){ return d.data['Customer Reviews']; }
-                }
+                { name: 'Rating', value: function(d){ return d.data['Customer Reviews']; } }
             ],
-            textSearchFunc : function (tablet) { return tablet.data.name; },
-            contentFunc : function(d){
-                var j;
-                var str="";
-                // name
-                    str+="<div class=\"iteminfo iteminfo_0\"><a target=\"_blank\" href=\""+d.data.url+"\">"+d.data.name+"</a></div>";
-                return str;
-            }
+            textSearch : 'name',
+        contentFunc : function(d){
+            return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+d.data.url+"'>"+d.data.name+"</a></div>";
+        }
         }
     });
 });

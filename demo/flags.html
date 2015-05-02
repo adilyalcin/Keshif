@@ -72,40 +72,6 @@ function religionText(d){
     }
 };
 
-var flag_cols = {
-    Country : 0,
-    Was:1,
-    Independence:2,
-    Flag:3,
-    Landmass:4,
-    Zone:5,
-    Area:6,
-    Population:7,
-    Language:8,
-    Religion:9,
-    Bars:10,
-    Stripes:11,
-    Colors:12,
-    Red:13,
-    Green:14,
-    Blue:15,
-    Gold:16,
-    White:17,
-    Black:18,
-    Orange:19,
-    Mainhue:20,
-    Circles:21,
-    Crosses:22,
-    Saltires:23,
-    Quarters:24,
-    Sunstars:25,
-    Crescent:26,
-    Triangle:27,
-    Icon:28,
-    Animate:29,
-    Text:30
-};
-
 function resizeBrowser(){
     $('#chart_div').width($(window).width()-100);
     $('#chart_div').height($(window).height()-30);
@@ -127,52 +93,35 @@ $(document).ready( function(){
             dirPath: 'data/',
             fileType: 'csv',
             sheets : [ {name:"flags", id:'Country'} ]
+//            gdocId : '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
+//            sheets : [ {name:"Flags"} ]
         },
-/*        source : {
-            gdocId : '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
-            sheets : [ {name:"Flags"} ]
-        },*/
         facets: [
-            {
-                facetTitle: "-Country-",
+            {   facetTitle: "-Country-",
                 facets: [
-                    {
-                        facetTitle: "Continent",
+                    {   facetTitle: "Continent",
                         catLabelText: function(d) { return landmassText(d.data[1]); },
-                    },{
-                        facetTitle: "Zone", collapsed: true,
-                        catItemMap : function(flag){
-                            return flag.data.Zone;
-                        },
+                    },{ facetTitle: "Zone", collapsed: true,
                         catLabelText: function(d) { return zoneText(d.data[1]); }
-                    },{
-                        facetTitle: "Language",
+                    },{ facetTitle: "Language",
                         catItemMap : function(flag){
                             var r= flag.data.Language;
                             if(r===9) return 10;
                             return r;
                         },
                         catLabelText: function(d) { return languageText(d.data[1]); }
-                    },{
-                        facetTitle: "Religion",
-                        catItemMap : function(flag){
-                            var r= flag.data.Religion;
-                            return r;
-                        },
+                    },{ facetTitle: "Religion",
                         catLabelText: function(d) { return religionText(d.data[1]); }
-                    },{
-                        facetTitle: "Flag Date", layout: 'left',
+                    },{ facetTitle: "Flag Date", layout: 'left',
                         catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
                         intervalScale: 'time', unitName: 'yr'
                     }
                 ]
             },
-            {   
-                facetTitle: "Flag Properties",
+            {   facetTitle: "Flag Properties",
                 layout: 'right',
                 facets: [
-                    {
-                        facetTitle: "Flag Color", 
+                    {   facetTitle: "Flag Color", 
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Red) toRet.push("Red");
@@ -184,8 +133,7 @@ $(document).ready( function(){
                             if(flag.data.Orange) toRet.push("Orange / Brown");
                             return toRet;
                         },
-                    },{
-                        facetTitle: "Flag Shape",
+                    },{ facetTitle: "Flag Shape",
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Circles) toRet.push("Circle");
@@ -197,21 +145,18 @@ $(document).ready( function(){
                             if(flag.data.Triangle) toRet.push("Triangle");
                             return toRet;
                         },
-                    }, {
-                        facetTitle: "Number of Bars",
+                    },{ facetTitle: "Number of Bars",
                         catItemMap : function(flag){ 
                             var r=flag.data.Bars;
                             return (r===0)?0:r;
                         },
                         intervalScale: 'step', unitName: "bar"
-                    },{
-                        facetTitle: "Number of Stripes",
+                    },{ facetTitle: "Number of Stripes",
                         catItemMap : function(flag){ 
                             var r=flag.data.Stripes;
                             return (r===0)?null:r;
                         }, unitName: "strp"
-                    },{
-                        facetTitle: "Other", collapsed: true,
+                    },{ facetTitle: "Other", collapsed: true,
                         catItemMap : function(flag){
                             var toRet = [];
                             if(flag.data.Text!==0) toRet.push("Text");
@@ -260,7 +205,7 @@ $(document).ready( function(){
                 color:#606060;
                 font-style:italic;
             }
-            div.content img{
+            .content img{
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
@@ -276,10 +221,10 @@ $(document).ready( function(){
                 -o-transition: background-color 300ms linear;
                 -moz-transition: background-color 300ms linear;
             }
-            div.listItem[highlight=true] div.content img{
+            .listItem[highlight=true] .content img{
                 background-color: orangered;
             }
-            div.content span.title{
+            .content span.title{
                 display: block;
                 margin-left: auto;
                 margin-right: auto;

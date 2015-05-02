@@ -16,11 +16,6 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-100);
-}
-
 function getIcon(cat){
     switch(cat){
         case "abstract": return "ils";
@@ -42,10 +37,46 @@ function getIt(cat){
     return kshf.Util.toProperCase(cat)+" <span class='fa fa-"+getIcon(cat)+"'></span>";
 };
 
+function loadData(browser){
+    browser.primaryTableName = "Visualizations";
+
+    kshf.dt.Visualizations = [];
+
+    $.ajax( {
+        url: "./data/timevis.html",
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        async: false,
+        success: function(doc){
+            $doc = $(doc);
+
+            $doc.find("div.tec").each(function(i){
+                var $this = $(this);
+                var d={};
+                d.id = this.getAttribute("data-id");
+                d.Name = d.id;
+                d.categories = this.getAttribute("data-categories").split("|");
+                d.imageURL = $this.find("img")[0].getAttribute("src");
+                d.imageURL_full = "http://www.informatik.uni-rostock.de/~ct/timeviz/"+d.imageURL;
+                d.Info = $this.find(".tec-source")[0].textContent.trim();
+
+                var kshfItem = new kshf.Item(d,'id');
+                kshf.dt.Visualizations.push(kshfItem);
+            });
+
+            browser.items = kshf.dt.Visualizations;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+}
+
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,100);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,100);
         browser.updateLayout();
     });
 
@@ -55,48 +86,12 @@ $(document).ready( function(){
         itemName: "Time Visualization Techniques",
         source : {
             url: "http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html",
-            callback: function(browser){
-                browser.primaryTableName = "Visualizations";
-
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
-
-                $.ajax( {
-                    url: "./data/timevis.html",
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    async: false,
-                    success: function(doc){
-                        $doc = $(doc);
-
-                        $doc.find("div.tec").each(function(i){
-                            var $this = $(this);
-                            var d={};
-                            d.id = this.getAttribute("data-id");
-                            d.Name = d.id;
-                            d.categories = this.getAttribute("data-categories").split("|");
-                            d.imageURL = $this.find("img")[0].getAttribute("src");
-                            d.imageURL_full = "http://www.informatik.uni-rostock.de/~ct/timeviz/"+d.imageURL;
-                            d.Info = $this.find(".tec-source")[0].textContent.trim();
-
-                            var kshfItem = new kshf.Item(d,'id');
-                            kshf.dt.Visualizations.push(kshfItem);
-                        });
-
-                        browser.items = kshf.dt.Visualizations;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Data",
-                facets: [{
-                    facetTitle: "Frame of Reference",
+            {   facetTitle: "Data",
+                facets: [
+                {   facetTitle: "Frame of Reference",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -104,8 +99,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{
-                    facetTitle: "Number of Variables",
+                },{ facetTitle: "Number of Variables",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -115,10 +109,9 @@ $(document).ready( function(){
                     }
                 }
                 ]
-            },{
-                facetTitle: "Time",
-                facets: [{
-                    facetTitle: "Arrangement",
+            },{ facetTitle: "Time",
+                facets: [
+                {   facetTitle: "Arrangement",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -126,8 +119,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{
-                    facetTitle: "Time Primitives",
+                },{ facetTitle: "Time Primitives",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -138,10 +130,9 @@ $(document).ready( function(){
                     }
                 }
                 ]
-            },{
-                facetTitle: "Visualization",
-                facets: [{
-                    facetTitle: "Mapping",
+            },{ facetTitle: "Visualization",
+                facets: [
+                {   facetTitle: "Mapping",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -150,8 +141,7 @@ $(document).ready( function(){
                         });
                         return r;
                     }
-                },{
-                    facetTitle: "Dimensionality",
+                },{ facetTitle: "Dimensionality",
                     catItemMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
@@ -168,7 +158,6 @@ $(document).ready( function(){
             sortColWidth: 92,
             sortingOpts : [{ name:'Year'}],
             textSearch : "Name",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",

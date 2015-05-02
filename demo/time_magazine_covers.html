@@ -13,94 +13,58 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
         <script type="text/javascript">
 
-var cols;
 var timeFormat = d3.time.format("%B %d, %Y");
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-110);
-}
-
 google.setOnLoadCallback(function(){
-  resizeBrowser();
-  $(window).resize(function() {
-      resizeBrowser();
-      browser.updateLayout();
-  });
+    resizeBrowser(100,100);
+    $(window).resize(function() {
+        resizeBrowser(100,100);
+        browser.updateLayout();
+    });
 
-  browser = new kshf.Browser({
-    domID: "#chart_div",
-    barChartWidth: 90,
-    leftPanelLabelWidth: 160,
-    rightPanelLabelWidth: 120,
-    source: {
-      gdocId : '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
-      sheets : [ {name:"Covers"} ]
-    },
-    loadedCb: function(){
-      cols = kshf.dt_ColNames.Covers;
-      kshf.Util.cellToArray(kshf.dt.Covers, [cols.Categories],",",false);
-    },
-    facets: [
-    { 
-      facetTitle: "Categories"
-    },{
-      facetTitle: "Credits", layout: 'right',
-    },{
-      facetTitle: "Month", layout: 'right',
-      catItemMap: function(d){
-        return d.data[1].getMonth();
-      },
-      catLabelText: function(d){
-        switch (d.data[1]){
-          case 0: return 'January';
-          case 1: return 'February';
-          case 2: return 'March';
-          case 3: return 'April';
-          case 4: return 'May';
-          case 5: return 'June';
-          case 6: return 'July';
-          case 7: return 'August';
-          case 8: return 'September';
-          case 9: return 'October';
-          case 10: return 'November';
-          case 11: return 'December';
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 160,
+        rightPanelLabelWidth: 120,
+        source: {
+            gdocId : '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
+            sheets : [ {name:"Covers"} ]
+        },
+        loadedCb: function(){
+            kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
+        },
+        facets: [
+            {   facetTitle: "Categories"
+            },{ facetTitle: "Credits", layout: 'right',
+            },{ facetTitle: "Month", layout: 'right',
+                catItemMap: function(d){ 
+                    if(d.data.Date) return d.data.Date.getMonth();
+                },
+                catLabelText: function(d){ return getMonthNameFromNumber(d.data.Date); },
+                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
+            },{ facetTitle: "Date",  layout: 'bottom', 
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 120,
+            //      detailsToggle : "Zoom",
+            displayType: 'grid',
+            sortingOpts : [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
+            textSearchFunc: function(d){return d.data.Info; },
+            contentFunc: function(d){ 
+                var str='';
+                // Demo name
+                str+="<a target='_blank' href='http://content.time.com"+d.data.MagazineURL+"'><img class='thumbImg'></a>";
+                str+="<span class='subTitle'>"+timeFormat(d.data.Date)+"</span>";
+                str+="<span class='title'>"+d.data.MagazineTitle+"</span>";
+                return str;
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.Thumbnail_2);
+            }
         }
-      },
-      sortingOpts: [{
-        func: kshf.Util.sortFunc_Column_Int_Incr
-      }]
-    },{
-      facetTitle: "Date", 
-      layout: 'bottom', 
-      type: 'interval',
-      intervalScale: 'time'
-    }
-    ],
-    itemDisplay: {
-      sortColWidth: 120,
-//      detailsToggle : "Zoom",
-      displayType: 'grid',
-      autoExpandMore: true,
-      sortingOpts : [{
-        name: 'Date',
-        label: function(d){ return timeFormat(d.data[1]);}
-      }],
-      textSearchFunc: function(d){return d.data[cols.Info]; },
-      contentFunc: function(d){ 
-        var str='';
-        // Demo name
-        str+="<a target='_blank' href='http://content.time.com"+d.data[cols.MagazineURL]+"'><img class='thumbImg'></a>";
-        str+="<span class='subTitle'>"+timeFormat(d.data[1])+"</span>";
-        str+="<span class='title'>"+d.data[cols.MagazineTitle]+"</span>";
-        return str;
-        return d.data[cols.Ma];
-      },
-      visibleCb: function(d){
-          d3.select(d.DOM.result).select("img").attr("src",d.data[cols.Thumbnail_2]);
-      }
-    }
-  });
+    });
 });
         </script>
         <style>

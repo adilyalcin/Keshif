@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Best-selling singles of 2008</title><meta charset="utf-8">
+		<title>Jobs</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -12,17 +12,7 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-$(document).ready( function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        categoryTextWidth: 180,
-        rightPanelLabelWidth: 510,
-        itemName: "Jobs",
-        source:{
-url: "http://idl.cs.washington.edu/projects/lyra/app/data/jobs.json",
-callback: function(browser){
+function loadData(browser){
     browser.primaryTableName = "Jobs";
     kshf.dt.Jobs = [];
     var arr = kshf.dt.Jobs;
@@ -31,7 +21,7 @@ callback: function(browser){
         success: function(data){
             var jobID = 0;
             data.forEach(function(job){
-                job.id = jobID; jobID++;
+                job.id = jobID++;
                 var job_item = new kshf.Item(job,"id");
                 job_item.aggregate_Self = job.count;
                 arr.push(job_item);
@@ -45,22 +35,25 @@ callback: function(browser){
             window.setTimeout(function() { browser.loadCharts(); }, 50);
         }
     });
-}
+};
+
+$(document).ready( function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        categoryTextWidth: 180,
+        rightPanelLabelWidth: 510,
+        itemName: "Jobs",
+        source:{
+            url: "http://idl.cs.washington.edu/projects/lyra/app/data/jobs.json",
+            callback: 
         },
         facets: [
             {   facetTitle: "job",
             },{ facetTitle: "sex", layout: 'right'
-            },{
-                facetTitle: "year", layout: "right",
+            },{ facetTitle: "year", layout: "right",
             }
         ]
-/*       ,itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts : [ {name: 'perc', inverse:true} ],
-            contentFunc: function(d){ 
-                return d.data.job+" - "+d.data.sex+" - "+d.data.year;
-            }
-        }*/
     });
 });
         </script>
@@ -72,6 +65,7 @@ callback: function(browser){
         </style>
     </head>
     <body>
+        <div class="pageTitle" align="center">Job Trends, 1850-2000</div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

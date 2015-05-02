@@ -12,112 +12,108 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+var loadData = function(browser){
+    $.ajax( {
+        // Cannot load remote resouce because it is in another domain
+        // url:"http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazine.cxml",
+        url:"./data/Pivot_MSDNMagazine.cxml",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            var $collection = $(collection);
+            browser.primaryTableName = "Articles";
+            kshf.dt.Articles = [];
+            var arr = kshf.dt.Articles;
+            var timeFormat = d3.time.format("%B %Y");
+
+            $collection.find("> Collection > Items > Item").each(function(){
+                var $this = $(this);
+                var cData = {};
+                cData.url = $this.attr("Href");
+                cData.id = parseInt($this.attr("Id"));
+                cData.Name = $this.attr("Name");
+                cData.Description = $this.find("Description").text();
+
+                $this.find(">Facets>Facet").each(function(d){
+                    var columnName = this.getAttribute("Name");
+                    var $item = $(this);
+                    cData[columnName] = [];
+                    if($item.find(">String").length>0) {
+                        $item.find(">String").each(function(){
+                            cData[columnName].push(this.getAttribute("Value"));
+                        })
+                    } else if($item.find(">Number").length>0) {
+                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+                    } else {
+                        cData[columnName] = undefined;
+                    }
+                });
+
+                // convert page views from string to number
+                cData['Page Views'] = cData['Page Views']*1;
+
+                cData['Issue Date'] = timeFormat.parse(cData['Issue'][0]);
+
+                if(cData['Column Name'][0]==="Feature Article or Unknown Column")
+                    cData['Column Name'] = null;
+
+                var p=0;
+                if(cData['Popularity'][0]==='Viewed Infrequently') p=1;
+                else if(cData['Popularity'][0]==='Viewed Occasionally') p=2;
+                else if(cData['Popularity'][0]==='Viewed Often') p=3;
+                cData['Popularity'] = p;
+
+                arr.push(new kshf.Item(cData,"id"));
+            });
+
+            browser.items = kshf.dt.Articles;
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        }
+    });
+};
 
 $(document).ready( function(){
     new kshf.Browser({
         domID : "#chart_div",
-        itemName: "Articles",
+        itemName: "Articles on MSDN Magazine",
         categoryTextWidth: 180,
+        leftPanelLabelWidth: 130,
         barChartWidth: 70,
         source : {
             url: 'http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazinepivot.htm',
-            callback: function(browser){
-                $.ajax( {
-                    // Cannot load remote resouce because it is in another domain
-                    // url:"http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazine.cxml",
-                    url:"./data/Pivot_MSDNMagazine.cxml",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-                        browser.primaryTableName = "Articles";
-                        kshf.dt.Articles = [];
-                        var arr = kshf.dt.Articles;
-                        var timeFormat = d3.time.format("%B %Y");
-
-                        $collection.find("> Collection > Items > Item").each(function(){
-                            var $this = $(this);
-                            var cData = {};
-                            cData.url = $this.attr("Href");
-                            cData.id = parseInt($this.attr("Id"));
-                            cData.Name = $this.attr("Name");
-                            cData.Description = $this.find("Description").text();
-
-                            $this.find(">Facets>Facet").each(function(d){
-                                var columnName = this.getAttribute("Name");
-                                var $item = $(this);
-                                cData[columnName] = [];
-                                if($item.find(">String").length>0) {
-                                    $item.find(">String").each(function(){
-                                        cData[columnName].push(this.getAttribute("Value"));
-                                    })
-                                } else if($item.find(">Number").length>0) {
-                                    cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                                } else {
-                                    cData[columnName] = undefined;
-                                }
-                            });
-
-                            // convert page views from string to number
-                            cData['Page Views'] = cData['Page Views']*1;
-
-                            cData['Issue Date'] = timeFormat.parse(cData['Issue'][0]);
-
-                            if(cData['Column Name'][0]==="Feature Article or Unknown Column")
-                                cData['Column Name'] = null;
-
-                            var p=0;
-                            if(cData['Popularity'][0]==='Viewed Infrequently') p=1;
-                            else if(cData['Popularity'][0]==='Viewed Occasionally') p=2;
-                            else if(cData['Popularity'][0]==='Viewed Often') p=3;
-                            cData['Popularity'] = p;
-
-                            arr.push(new kshf.Item(cData,"id"));
-                        });
-
-                        browser.items = kshf.dt.Articles;
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
               { facetTitle: "Topic",
             },{ facetTitle: "Has Code",
             },{ facetTitle: "Column / Feature",
             },{ facetTitle: "Column Name",
-            },{ facetTitle: "Issue Date",
-                intervalScale: 'time',
-                layout:'bottom-mid'
-            },{ facetTitle: "Popularity",
-                type: 'categorical',
-                layout: 'right',
+            },{ facetTitle: "Issue Date", layout:'middle'
+            },{ facetTitle: "Popularity", layout: 'right',
                 sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
                 catLabelText: function(d){
                     var str='';
-                    for(var i=0; i<d.data[1]; i++)
-                        str +="<span class='fa fa-star'></span>"
+                    for(var i=0; i<d.data[1]; i++) str +="<span class='fa fa-star'></span>"
                     return str;
                 }
-            },{ facetTitle: "Page Views",
-                layout: 'right',
-                type: 'interval',
+            },{ facetTitle: "Page Views", layout: 'right',
                 intervalScale: 'log'
-            },{ facetTitle: "Authors",
-                layout: 'right',
+            },{ facetTitle: "Authors", layout: 'right',
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [{ name: 'id', inverse: true}],
+            sortingOpts : [
+                { name: 'Page Views'},
+                { name: 'id', inverse: true},
+            ],
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
             contentFunc: function(article){
                 return "<a target='_blank' class='articleLink' href='"+article.data.url+"'>"+article.data.Name+
-                    " <i class='fa fa-external-link'></i>"
-                    "</a>";
+                    " <i class='fa fa-external-link'></i></a>";
             }
         }
     });

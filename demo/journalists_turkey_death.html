@@ -13,38 +13,36 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-        google.setOnLoadCallback(function(){
-            new kshf.Browser({
-                domID: "#chart_div",
-                categoryTextWidth: 130,
-                rightPanelLabelWidth: 100,
-                source: {
-                    gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
-                    sheets : [ {name:"Journalists"} ]
-                },
-                facets: [
-                    {   facetTitle: "Organization"
-                    },{ facetTitle: "Location", layout: 'right'
-                    },{
-                        facetTitle: "Date",
-                        type: 'interval',
-                        intervalScale: 'time',
-                        layout: 'bottom'
-                    }
-                ],
-                itemDisplay: {
-                    sortColWidth: 50,
-                    sortingOpts : [ {name: 'Date',value: function(d){ return d.data[3].getFullYear(); } } ],
-                    textSearch : "Journalist",
-                    content: '*Journalist'
-                }
-            });
-        });
+google.setOnLoadCallback(function(){
+    new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 130,
+        rightPanelLabelWidth: 100,
+        source: {
+            gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
+            sheets : [ {name:"Journalists"} ]
+        },
+        facets: [
+            {   facetTitle: "Organization"
+            },{ facetTitle: "Location", layout: 'right'
+            },{ facetTitle: "Date",
+                type: 'interval',
+                layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 50,
+            sortingOpts : [ {name: 'Date',value: function(d){ return d.data.Date.getFullYear(); } } ],
+            textSearch : "Journalist",
+            content: '*Journalist'
+        }
+    });
+});
         </script>
         <style>
             #chart_div {
                 width: 750px;
-                height: 450px;
+                height: 550px;
             }
             div.kshf.layout_header span.title{
                 font-size: 1em;

@@ -15,80 +15,68 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-150);
-}
+function loadData(browser){
+    kshf.dt.Tutorials = [];
+    browser.primaryTableName = "Tutorials";
+    $.ajax( {
+        // YAY! The site allows cross-domain request!
+        url:"http://www.html5rocks.com/en/tutorials/",
+        async: false,
+        success: function(doc){
+            $($.parseHTML(doc)).find("div.articles-list > ul > li").each(function(i){
+                var $this = $(this);
+                var d={};
+
+                d.id = i;
+                d.URL = $this.find(">a").attr("href");
+                d.author_id = $this.find(">a > .left .author").attr("data-author_id");
+                d.author_img = $this.find(">a > .left .author >img").attr("src");
+                d.Author = $this.find(">a > .left .author >img").attr("title");
+                d.Date = moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,""));
+                d.Title = $(this).find(">a > .right > .title").text().trim();
+                d.Description = $(this).find(">a > .right > .description").text().trim();
+                d.Tags = [];
+                $(this).find(">a > .right > .tag").each(function(){
+                    d.Tags.push(this.textContent.trim());
+                })
+                kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
+            });
+            browser.items = kshf.dt.Tutorials;
+
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,50);
     $(window).resize(function(){
-        resizeBrowser();
+        resizeBrowser(100,50);
         browser.updateLayout();
     });
+
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         itemName: "HTML5 Rocks Tutorials",
         categoryTextWidth: 120,
-        source : {
+        source: {
             url: "http://www.html5rocks.com/en/tutorials/",
-            callback: function(browser){
-                kshf.dt.Tutorials = [];
-                browser.primaryTableName = "Tutorials";
-                $.ajax( {
-                    url:"http://www.html5rocks.com/en/tutorials/",
-//                    url:"./data/html5rocks.html",
-                    async: false,
-                    success: function(doc){
-                        $$doc = $($.parseHTML(doc));
-
-                        $$doc.find("div.articles-list > ul > li").each(function(i){
-                            var $this = $(this);
-                            var d={};
-
-                            d.id = i;
-                            d.URL = $this.find(">a").attr("href");
-                            d.author_id = $this.find(">a > .left .author").attr("data-author_id");
-                            d.author_img = $this.find(">a > .left .author >img").attr("src");
-                            d.Author = $this.find(">a > .left .author >img").attr("title");
-                            d.Date = moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,""));
-                            d.Title = $(this).find(">a > .right > .title").text().trim();
-                            d.Description = $(this).find(">a > .right > .description").text().trim();
-                            d.Tags = [];
-                            $(this).find(">a > .right > .tag").each(function(){
-                                d.Tags.push(this.textContent.trim());
-                            })
-                            kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
-                        });
-                        browser.items = kshf.dt.Tutorials;
-
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    },
-                    error: function(error){
-                        var terer=23232;
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
             {   facetTitle: "Author", 
-            },{ facetTitle: "Date",
+            },{ facetTitle: "Date", layout: "bottom",
                 catItemMap: function(tut){ return new Date(tut.data.Date);},
-                intervalScale: 'time',
-                layout: "bottom"
             },{ facetTitle: "Tags", layout: 'right'
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [
-                {   name: 'Date',
-                    value: function(tutorial){ return tutorial.data.Date.unix(); },
-                }
+            sortingOpts: [
+                { name: 'Date', value: function(tutorial){ return tutorial.data.Date.unix(); } }
             ],
             displayType: 'grid',
-            autoExpandMore: true,
             textSearch: "Title",
             contentFunc: function(tutorial){
                 return "<img class='face'><a href='http://www.html5rocks.com"+tutorial.data.URL+"' target='_blank'><span class='title'>"+tutorial.data.Title+"</span></a>";

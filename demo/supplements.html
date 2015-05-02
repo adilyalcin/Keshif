@@ -16,7 +16,7 @@
         <script type="text/javascript">
 function resizeBrowser(){
     $('#chart_div').height($(window).height()-80);
-}
+};
 
 google.setOnLoadCallback(function(){
     resizeBrowser();
@@ -24,6 +24,7 @@ google.setOnLoadCallback(function(){
         resizeBrowser();
         browser.updateLayout();
     });
+
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 90,
@@ -32,75 +33,50 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 160,
         source: {
             url: "http://www.informationisbeautiful.net/play/snake-oil-supplements/",
-            gdocId : '0Altk3Tn01ZsWdDRVN19EeENwd1pQY1ZyV1AwTnJCMnc',
-            sheets : [ {name:"apr_2011", headers:2} ]
+            gdocId: '0Ai6LdDWgaqgNdE5OaTFVTFh2Z2NtTmVwWGEwNjJwMlE',
+            sheets: [ {name:"apr_2011", headers:1} ]
         },
         loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.apr_2011, [2, 3], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.apr_2011, ['condition', 'category'], /\b,\s+/, false);
         },
         facets: [
-            {   
-                facetTitle: "<i class='fa fa-heart'></i> Evidence <i class='fa fa-heart'></i>",
+            {   facetTitle: "<i class='fa fa-heart'></i> evidence <i class='fa fa-heart'></i>",
                 description: "Is there scientific evidence for its benefits on a specific health condition?",
-                catItemMap: function(d){
-                    return d.data[1]*2;
-                }
-            },{
-                facetTitle: "<i class='fa fa-eye'></i> One to Watch",
+                catItemMap: function(d){ return d.data.evidence*2; }
+            },{ facetTitle: "<i class='fa fa-eye'></i> One to Watch",
                 description: "Few studies but promising results",
-                catItemMap: function(d){
-                    if(d.data[4]!=="") return true;
-                }
+                catItemMap: function(d){ if(d.data.onetowatch!=="") return true; }
             },{ facetTitle: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity <i class='fa fa-thumbs-up popularity_icon'></i> ",
                 description: "Popularity based on Google search results",
-                catItemMap: function(d){
-                    return d.data[6];
-                },
+                catItemMap: function(d){ return d.data.popularity; },
                 intervalScale: "log",
             },{ facetTitle: "<i class='fa fa-th-large type_icon'></i> Type",
                 description: "What type of substance is this?",
-                catItemMap: function(d){
-                    return d.data[5];
-                }
+                catItemMap: function(d){ return d.data.type; }
             },{ facetTitle: "Health Categories",
-                description: "The type of condition",
-                layout: 'right',
-                catItemMap: function(d){
-                    return d.data[3];
-                }
+                description: "The type of condition", layout: 'right',
+                catItemMap: function(d){ return d.data.category; }
             },{ facetTitle: "Health Conditions",
-                description: "What condition does the supplement purport to affect?",
-                layout: 'right',
-                catItemMap: function(d){
-                    return d.data[2];
-                }
+                description: "What condition does the supplement purport to affect?", layout: 'right',
+                catItemMap: function(d){ return d.data.condition; }
             },{ facetTitle: "Source",
-                description: "The key study for grading the evidence",
-                layout: 'right',
+                description: "The key study for grading the evidence", layout: 'right',
                 collapsed: true,
-                catItemMap: function(d){
-                    return d.data[7];
-                }
+                catItemMap: function(d){ return d.data.source; }
             }
         ],
         itemDisplay: {
             sortColWidth: 55,
-            autoExpandMore: true, 
 //                        detailsToggle: 'zoom',
-            sortingOpts : [ {
-                name: 'popularity', 
-                value: function(d){ return d.data[6]; }
-            }],
-            textSearchFunc: function(d){ 
-                return d.data[0];
-            },
+            sortingOpts: [{ name: 'popularity' }],
+            textSearch: 'name',
             contentFunc: function(d){
                 var str="";
-                if(d.data[4]!==""){
+                if(d.data.onetowatch!==""){
                     // one to watch
                     str+="<i class='fa fa-eye item_watch' title='One to Watch'></i>";
                 }
-                str+="<span class='item_title'>"+d.data[0]+"</span><br>";
+                str+="<span class='item_title'>"+d.data.name+"</span><br>";
                 // add heartbeat with delay
                     var delay = Math.round(Math.random()*1000);
                     var delay_str = "animation-delay:"+delay+"ms;"+
@@ -109,19 +85,17 @@ google.setOnLoadCallback(function(){
                         "-o-animation-delay:"+delay+"ms;";
                     var str_heart = "<i class='fa fa-heart' style='"+delay_str+"'></i>";
                 str+="<span class='item_condition'>";
-                for(var i=0; i<d.data[1];i++){
-                    str+=str_heart;
-                }
+                for(var i=0; i<d.data.evidence;i++){ str+=str_heart; }
                 str+="<span style='margin-left: 5px'>"+d.data[2]+"</span></span>";
 
-
-                if(d.data[8]){
+                if(d.data.url){
                     str+="<span class='item_source'> Study:";
-                    if(d.data[8]){
-                        str+=" <a href='"+d.data[8]+"' target='_blank' class='fa fa-external-link'></a>";
+                    if(d.data.url){
+                        str+=" <a href='"+d.data.url+"' target='_blank' class='fa fa-external-link'></a>";
                     }
-                    if(d.data[10]){
-                        str+=" <a href='"+d.data[10]+"' target='_blank' class='fa fa-external-link'></a>";
+                    if(d.data['url of 2nd key study']){
+                        str+=" <a href='"+d.data['url of 2nd key study']+
+                            "' target='_blank' class='fa fa-external-link'></a>";
                     }
                     str+="</span>";
                 }
@@ -143,6 +117,5 @@ google.setOnLoadCallback(function(){
             <a href="http://www.informationisbeautiful.net/play/snake-oil-supplements/" target="_blank">Snake Oil Supplements?</a> by <a href="http://www.informationisbeautiful.net" target='_blank'>Information is Beautiful</a>.
             <span class="fa fa-info-circle"></span>
             </div>
-
     </body>
 </html>

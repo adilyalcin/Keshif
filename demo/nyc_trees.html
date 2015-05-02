@@ -16,8 +16,36 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
+var loadData= function(browser){
+    browser.primaryTableName = "TreeTypes";
+    kshf.dt.TreeTypes = [];
 
-//http://www.cloudred.com/labprojects/nyctrees/trees/black-locust.png
+    $.ajax({
+        //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
+        url: "./data/nyc_trees.json",
+        success: function(data){
+            data.forEach(function(treeType){
+                treeType.Bronx = parseInt(treeType.Bronx);
+                treeType.Brooklyn = parseInt(treeType.Brooklyn);
+                treeType.Queens = parseInt(treeType.Queens);
+                treeType.Manhattan = parseInt(treeType.Manhattan);
+                treeType['Staten Island'] = parseInt(treeType['Staten Island']);
+                treeType.Total = treeType.Bronx + treeType.Brooklyn + treeType.Queens
+                    + treeType.Manhattan + treeType['Staten Island'];
+
+                var item = new kshf.Item(treeType, "Common");
+                kshf.dt.TreeTypes.push(item);
+            });
+
+            browser.items = kshf.dt.TreeTypes;
+            browser.itemsSelectedCt = kshf.dt.TreeTypes.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
@@ -25,42 +53,9 @@ $(document).ready( function(){
         itemName: "Tree Types",
         categoryTextWidth: 450,
         source: { 
-        url: "http://www.cloudred.com/labprojects/nyctrees/",
-        callback : function(browser){
-            browser.primaryTableName = "TreeTypes";
-
-            kshf.dt.TreeTypes = [];
-            var arr = kshf.dt.TreeTypes;
-
-            $.ajax({
-                //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
-                url: "./data/nyc_trees.json",
-                error: function(e,f){
-                    console.log(e+" - "+f);
-                },
-                success: function(data){
-                    data.forEach(function(treeType){
-                        treeType.Bronx = parseInt(treeType.Bronx);
-                        treeType.Brooklyn = parseInt(treeType.Brooklyn);
-                        treeType.Queens = parseInt(treeType.Queens);
-                        treeType.Manhattan = parseInt(treeType.Manhattan);
-                        treeType['Staten Island'] = parseInt(treeType['Staten Island']);
-                        treeType.Total = treeType.Bronx + treeType.Brooklyn + treeType.Queens
-                            + treeType.Manhattan + treeType['Staten Island'];
-
-                        var item = new kshf.Item(treeType, "Common");
-                        arr.push(item);
-                    });
-
-                    browser.items = arr;
-                    browser.itemsSelectedCt = arr.length;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
-                }
-            });
-        }},
+            url: "http://www.cloudred.com/labprojects/nyctrees/",
+            callback: loadData
+        },
         facets: [
             {   facetTitle: "Total Number of <span class='fa fa-tree'></span>'s",
                 catItemMap: function(d){ return d.data.Total;},
@@ -85,7 +80,6 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [ { name: '# Total Trees', value: function(d){ return d.data.Total;} } ],
-            autoExpandMore: true,
             detailsToggle : "Zoom",
             displayType: 'grid',
             textSearch: 'Tree Name',
@@ -119,55 +113,15 @@ $(document).ready( function(){
         .thumbImg{
             width: 100% !important;
         }
-/*        span.thumbnail{
-            height: 70px;
-            display: block;
-            overflow-y: hidden;
-            overflow-x: hidden;
-            position: relative;
-            transition: background-color 300ms linear;
-            -webkit-transition: background-color 300ms linear;
-            -o-transition: background-color 300ms linear;
-            -moz-transition: background-color 300ms linear;
-        }
-        div.content img{
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            background-color: white;
-            width: 100%;
-            position: absolute;
-            bottom: 2px;
-            background-color: lightgray;
-        }*/
-        div.listItem[highlight=true] div.content span.thumbnail{
-            background-color: orangered;
-        }
-        .content .title{
-            font-weight: 500 !important;
-            text-align: center !important;
-            font-size: 0.8em !important;
-        }
-        .content .authorName{
-            display: block;
-            font-family: Georgia,"Times New Roman",Times,serif;
-            font-style: italic;
-            font-weight: 400;
-            color: gray;
-            font-size: 0.6em;
-            text-align: center;
-        }
     </style>
 	</head>
     <body>
         <div class="pageTitle" align="center">NYC Street Trees</div>
         <div class="contents"><div id="chart_div"></div></div>
-
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
             Data provided by <a href="https://nycopendata.socrata.com/" target='_blank'>NYV Open Data</a> and curated by <a href="http://www.cloudred.com/labprojects/nyctrees/" target='_blank'>Cloudred Multimedia</a>. <a href="http://www.cloudred.com/labprojects/nyctrees/data/common.json" target='_blank'>Raw source</a>.
             <span class="fa fa-info-circle"></span>
             </div>
-
     </body>
 </html>

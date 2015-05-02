@@ -152,8 +152,7 @@ $(document).ready( function(){
         },
         facets: [
             {   facetTitle: "Collection", 
-            },{ facetTitle: "Item Type",
-                collapsed: true
+            },{ facetTitle: "Item Type", collapsed: true
             },{ facetTitle: "Subject", 
 //            },{ facetTitle: "Author", 
             },{ facetTitle: "Date", 
@@ -163,7 +162,7 @@ $(document).ready( function(){
                     if(y<1990) return;
                     return d.data.Date;
                 },
-                intervalScale: 'time', layout: 'bottom-mid'
+                intervalScale: 'time', layout: 'middle'
             },{ facetTitle: 'Series Title', 
             }
         ],

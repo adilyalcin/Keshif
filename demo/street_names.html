@@ -16,10 +16,38 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
-
 var demoID = 117;
 
-var nameRegistry = {};
+function loadData(browser){
+    browser.primaryTableName = "StreetNames";
+    kshf.dt.StreetNames = [];
+
+    $.ajax({
+        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+        // url: "./data_private/dc_homicides.json", // original source
+        url: "./data/street_names.json",
+        success: function(data){
+            var nameRegistry={};
+
+            data.forEach(function(streetName, i){
+                var n= kshf.Util.toProperCase(streetName.text);
+                if(nameRegistry[n]) return;
+                nameRegistry[n] = true;
+                streetName.text = n;
+                streetName.id = i;
+                streetName.Value = streetName.value;
+                kshf.dt.StreetNames.push(new kshf.Item(streetName,"id"));
+            });
+
+            browser.items = kshf.dt.StreetNames;
+            browser.itemsSelectedCt = kshf.dt.StreetNames.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
 
 $(document).ready( function(){
     $('#chart_div').width($(window).width()-150);
@@ -29,52 +57,16 @@ $(document).ready( function(){
         itemName: "Street Names",
         categoryTextWidth: 150,
         source: { 
-        url: "http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r",
-        callback : function(browser){
-            browser.primaryTableName = "StreetNames";
-
-            kshf.dt.StreetNames = [];
-            var arr = kshf.dt.StreetNames;
-
-            $.ajax({
-                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-                // url: "./data_private/dc_homicides.json", // original source
-                url: "./data/street_names.json",
-                error: function(e,f){
-                    console.log(e+" - "+f);
-                },
-                success: function(data){
-                    var id=0;
-                    data.forEach(function(streetName){
-                        var n= kshf.Util.toProperCase(streetName.text);
-                        if(nameRegistry[n]) return;
-                        nameRegistry[n] = true;
-                        streetName.text = n;
-                        streetName.id = id++;
-                        streetName.Value = streetName.value;
-                        arr.push(new kshf.Item(streetName,"id"));
-                    });
-
-                    browser.items = arr;
-                    browser.itemsSelectedCt = arr.length;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
-                }
-            });
-        }},
+            url: "http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r",
+            callback : loadData
+        },
         facets: [
-            // text":"Main St","homes":374334,"":115944.5,"":2152,"":0,"tree":0,"scenic":0,"geoname":0
             {   facetTitle: "<span class='fa fa-home'></span> # of Homes",
                 catItemMap: function(d){ return d.data.homes; },
                 intervalScale: "log"
             },{ facetTitle: "<span class='fa fa-money'></span> Average Value",
                 catItemMap: function(d){ return d.data.Value; },
                 intervalScale: "log"
-//            },{ facetTitle: "In # Counties",
-//                catItemMap: function(d){ return d.data.in_counties;},
-//                intervalScale: "log"
             },{ facetTitle: "Name Features",
                 catItemMap: function(d){
                     var r=[];
@@ -86,6 +78,9 @@ $(document).ready( function(){
                     return r;
                 }
             }
+//            },{ facetTitle: "In # Counties",
+//                catItemMap: function(d){ return d.data.in_counties;},
+//                intervalScale: "log"
         ],
         itemDisplay: {
             sortColWidth: 90,
@@ -94,7 +89,6 @@ $(document).ready( function(){
                 { name: '# Homes', value: function(d){ return d.data.homes; } },
                 { name: 'Name', value: function(d){ return d.data.text; } }
             ],
-            autoExpandMore: true,
             displayType: 'grid',
             textSearch: 'text',
             maxVisibleItems_Default: 400,

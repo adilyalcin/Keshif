@@ -16,12 +16,12 @@
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
-        barChartWidth: 120,
-        leftPanelLabelWidth: 160,
+        barChartWidth: 80,
+        leftPanelLabelWidth: 200,
         rightPanelLabelWidth: 200,
         source: {
-            gdocId : '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
-            sheets : [ {name:"Cereals"} ]
+            gdocId: '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
+            sheets: [ {name:"Cereals"} ]
         },
         facets: [
             {   facetTitle: "Brand"
@@ -34,53 +34,53 @@ google.setOnLoadCallback(function(){
                         case 3: return "Top";
                     }
                 }
-            },{ facetTitle: "Rating", type: 'interval',
-                catItemMap: function(d){return d.data[15]},
+            },{ facetTitle: "Rating", type: 'interval', layout: 'middle',
                 showPercentile: true,
                 description: "Reported by Consumer Reports"
             },{ facetTitle: "Calories", type: 'interval', layout: 'right',
-                catItemMap: function(d){return d.data[3]},
                 showPercentile: true
             },{ facetTitle: "Protein", type: 'interval', layout: 'right',
-                catItemMap: function(d){return d.data[4]},
+                catItemMap: function(d){return d.data["Protein (gr)"]},
                 unitName: "gr",
                 showPercentile: true
             },{ facetTitle: "Fat", type: 'interval', layout: 'right',
-                catItemMap: function(d){return d.data[5]},
+                catItemMap: function(d){return d.data["Fat\n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
             },{ facetTitle: "Carb", type: 'interval', layout: 'right',
-                catItemMap: function(d){return d.data[8]},
+                catItemMap: function(d){return d.data["Carbo \n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
             },{ facetTitle: "Sugar", type: 'interval', layout: 'right',
-                catItemMap: function(d){return d.data[9]},
+                catItemMap: function(d){return d.data["Sugar \n(gr)"]},
                 unitName: "gr",
                 showPercentile: true
             },{ facetTitle: "Sodium", type: 'interval', layout: 'left',
-                catItemMap: function(d){return d.data[6]},
+                catItemMap: function(d){return d.data["Sodium \n(mg)"]},
                 unitName: "gr",
                 showPercentile: true,
             },{ facetTitle: "Fiber", type: 'interval', layout: 'left',
-                catItemMap: function(d){return d.data[7]},
+                catItemMap: function(d){return d.data["Fiber \n(gr)"]},
                 unitName: "gr",
-                showPercentile: true, collapsed: true
+                showPercentile: true, 
             },{ facetTitle: "Potasium", type: 'interval', layout: 'left',
-                catItemMap: function(d){return d.data[10]},
+                catItemMap: function(d){return d.data["Potassium \n(mg)"]},
                 unitName: "mg",
-                showPercentile: true, collapsed: true
+                showPercentile: true,
+            },{ facetTitle: "Vitamins", type: 'interval', layout: 'middle',
+                showPercentile: true,  collapsed: true,
             }
             // Vitamins:
             // typical percentage of the FDA's RDA of vitamins
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [ 
-                {name: 'Rating', label: function(d){ return d.data[15].toPrecision(4)}},
-                {name: 'Calories', label: function(d){ return d.data[3].toPrecision(4)}}
+            sortingOpts: [ 
+                {name: 'Rating', label: function(d){ return d.data.Rating.toPrecision(4)}},
+                {name: 'Calories', label: function(d){ return d.data.Calories.toPrecision(4)}}
             ],
             textSearch: 'Name',
-            contentFunc: function(d){ return d.data[0]; }
+            content: "Name"
         }
     });
 });

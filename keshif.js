@@ -1275,7 +1275,7 @@ kshf.List = function(kshf_, config, root){
         this.contentFunc = this.browser.getColumnData(this.browser.primaryTableName,config.content);
     }
 
-    this.autoExpandMore = false;
+    this.autoExpandMore = true;
     if(config.autoExpandMore)
         this.autoExpandMore = config.autoExpandMore;
 
@@ -1498,7 +1498,7 @@ kshf.List.prototype = {
         listHeaderTopRowTextSearch.append("i").attr("class","fa fa-search searchIcon");
         this.dom.mainTextSearch = listHeaderTopRowTextSearch.append("input")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:"title"))
-            .attr("autofocus","true")
+            //.attr("autofocus","true")
             .on("keydown",function(){
                 var x = this;
                 if(this.timer){
@@ -1880,7 +1880,7 @@ kshf.List.prototype = {
             .data(this.browser.items, function(d){ return d.id(); })
             .order();
     },
-    /** Sort all items fiven the active sort option 
+    /** Sort all items given the active sort option 
      *  List items are only sorted on list init and when sorting options change.
      *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
      */
@@ -1894,9 +1894,16 @@ kshf.List.prototype = {
                 // Don't. Then, when you change result set, you'd need to re-order
                 var v_a = sortValueFunc(a);
                 var v_b = sortValueFunc(b);
+                
+                if(isNaN(v_a)) v_a = undefined;
+                if(isNaN(v_b)) v_b = undefined;
+                if(v_a===null) v_a = undefined;
+                if(v_b===null) v_b = undefined;
+
                 if(v_a===undefined && v_b!==undefined) return  1;
                 if(v_b===undefined && v_a!==undefined) return -1;
                 if(v_b===undefined && v_a===undefined) return 0;
+
                 var dif=sortFunc(v_a,v_b);
                 if(dif===0) dif=b.id()-a.id();
                 if(inverse) return -dif;
@@ -2211,6 +2218,11 @@ kshf.Panel.prototype = {
                 });
         }
     },
+    /** -- */
+    setTotalWidth: function(_w_){
+        this.width.catChart = _w_-this.width.catLabel-this.width.catQueryPreview-this.browser.scrollWidth;
+    },
+    /** -- */
     setWidthCatChart: function(_w_){
         if(_w_>200) {
             this.hideBars = false;
@@ -2243,6 +2255,8 @@ kshf.Panel.prototype = {
         this.width.catChart = _w_;
 
         this.updateSummariesWidth();
+        if(this.name!=="middle")
+            this.browser.updateMiddlePanelWidth();
     },
     /** --- */
     updateSummariesWidth: function(){
@@ -2252,7 +2266,6 @@ kshf.Panel.prototype = {
             }
             summary.refreshWidth();
         },this);
-        this.browser.updateLayout_Width();
     },
     /** --- */
     updateWidth_QueryPreview: function(){
@@ -2267,8 +2280,8 @@ kshf.Panel.prototype = {
             digits++;
             maxTotalCount = Math.floor(maxTotalCount/10);
         }
-        if(digits>3) {
-            digits = 3;
+        if(digits>4) {
+            digits = 4;
             this.width.catQueryPreview+=4; // "." character is used to split. It takes some space
         }
         this.width.catQueryPreview += digits*6;
@@ -2378,21 +2391,24 @@ kshf.Browser = function(options){
         parentDOM: this.dom.panelsTop
     });
 
-    this.layoutList = this.dom.panelsTop.append("div").attr("class", "layout_block listDiv")
+    var asdasds=this.dom.panelsTop.append("div").attr("class","middleStuff");
 
+    this.layoutList = asdasds.append("div").attr("class", "layout_block listDiv")
+
+    this.panels.middle = new kshf.Panel({
+        widthCatLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
+        browser: this,
+        name: 'middle',
+        parentDOM: asdasds
+    });
     this.panels.right = new kshf.Panel({
         widthCatLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'right',
         parentDOM: this.dom.panelsTop
     });
-    this.panels.middle = new kshf.Panel({
-        widthCatLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
-        browser: this,
-        name: 'middle',
-        parentDOM: this.dom.panelsTop
-    });
     this.panels.bottom = new kshf.Panel({
+        widthCatLabel : options.categoryTextWidth || 115,
         browser: this,
         name: 'bottom',
         parentDOM: this.root
@@ -2528,19 +2544,10 @@ kshf.Browser.prototype = {
     /** -- */
     updateItemZoomText: function(item){
         var str="";
-        if(kshf.dt_ColNames[this.primaryTableName]){
-            var columnNames = kshf.dt_ColNames[this.primaryTableName];
-            for(var column in columnNames){
-                var d=item.data[columnNames[column]];
-                if(d===null || d===undefined) continue;
-                str+="<b>"+column+":</b> "+ d.toString()+"<br>";
-            }
-        } else {
-            for(var column in item.data){
-                var v=item.data[column];
-                if(v===undefined || v===null) continue;
-                str+="<b>"+column+":</b> "+ v.toString()+"<br>";
-            }
+        for(var column in item.data){
+            var v=item.data[column];
+            if(v===undefined || v===null) continue;
+            str+="<b>"+column+":</b> "+ v.toString()+"<br>";
         }
         this.dom.infobox_itemZoom_content.html(str);
 //        this.dom.infobox_itemZoom_content.html(item.data.toString());
@@ -2661,20 +2668,24 @@ kshf.Browser.prototype = {
                 }
             }
 
-            // create the item array
-            arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
-            for(r=0; r<dataTable.getNumberOfRows() ; r++){
-                var c=[];
-                c.length = numCols; // pre-allocate for speed
-                for(i=0; i<numCols ; i++) { c[i] = dataTable.getValue(r,i); }
-                // push unique id as the last column if necessary
-                if(idIndex===numCols) c.push(itemId++);
-                arr[r] = new kshf.Item(c,idIndex);
-            }
-
+            // create the column name tables
             kshf.createColumnNames(sheet.tableName);
             for(j=0; j<dataTable.getNumberOfColumns(); j++){
                 kshf.insertColumnName(sheet.tableName,dataTable.getColumnLabel(j).trim(),j);
+            }
+
+            var columnNames = kshf.dt_ColNames_Arr[sheet.tableName];
+
+            // create the item array
+            arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
+            for(r=0; r<dataTable.getNumberOfRows() ; r++){
+                var c={};
+                for(i=0; i<numCols ; i++) {
+                    c[columnNames[i]] = dataTable.getValue(r,i);
+                }
+                // push unique id as the last column if necessary
+                if(c[sheet.id]===undefined) c[sheet.id] = itemId++;
+                arr[r] = new kshf.Item(c,sheet.id);
             }
 
             if(idIndex===numCols) {
@@ -2935,6 +2946,8 @@ kshf.Browser.prototype = {
                 .on("click",function(){ me.showInfoBox();});
 
             this.listDisplay.insertTotalViz();
+        } else {
+            this.layoutList.style("display","none");
         }
         this.insertClearAll();
 
@@ -2945,28 +2958,28 @@ kshf.Browser.prototype = {
             var totalWidth = me.divWidth;
             var colCount = 0;
             if(me.panels.left.summaries.length>0){
-                totalWidth-=me.panels.left.width.catLabel;
+                totalWidth-=me.panels.left.width.catLabel+me.scrollWidth+me.panels.left.width.catQueryPreview;
                 colCount++;
             }
             if(me.panels.right.summaries.length>0){
-                totalWidth-=me.panels.right.width.catLabel;
+                totalWidth-=me.panels.right.width.catLabel+me.scrollWidth+me.panels.right.width.catQueryPreview;
                 colCount++;
             }
             if(me.panels.middle.summaries.length>0){
-                totalWidth-=me.panels.middle.width.catLabel;
+                totalWidth-=me.panels.middle.width.catLabel+me.scrollWidth+me.panels.middle.width.catQueryPreview;
                 colCount++;
             }
             if(me.listDisplay===undefined) return totalWidth/colCount;
-            return Math.floor((totalWidth)/10);
+            return Math.floor((totalWidth)/8);
         };
         var defaultBarChartWidth = x();
 
-        this.panels.left.setWidthCatChart(defaultBarChartWidth);
-        this.panels.right.setWidthCatChart(defaultBarChartWidth);
-        this.panels.middle.setWidthCatChart(defaultBarChartWidth);
-        this.panels.bottom.updateSummariesWidth(defaultBarChartWidth);
+        this.panels.left.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.right.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.middle.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.bottom.updateSummariesWidth(this.options.barChartWidth || defaultBarChartWidth);
 
-        this.updateLayout_Width();
+        this.updateMiddlePanelWidth();
 
         this.refresh_filterClearAll();
 
@@ -3003,9 +3016,9 @@ kshf.Browser.prototype = {
         var me=this;
         var tableName = this.primaryTableName;
         if(kshf.dt_ColNames_Arr[tableName]===undefined) return;
-        var attribNames = kshf.dt_ColNames_Arr[tableName].filter(function(attrName,i){
+        var attribNames = kshf.dt_ColNames_Arr[tableName].filter(function(attrName){
             // remove the unique key
-            if(i===kshf.dt[tableName][0].idIndex) return false;
+            if(attrName===kshf.dt[tableName][0].idIndex) return false;
             // remove those already in the view
             if(me.summaries.some(function(summary){
                 return summary.options.facetTitle===attrName;
@@ -3044,11 +3057,13 @@ kshf.Browser.prototype = {
         if(options.attribAccess===undefined){
             // if we have a column name mapping, use that
             if(kshf.dt_ColNames[primTableName]!==undefined) {
-                var ID = this.getColumnID(primTableName,options.facetTitle);
+                var ID = options.facetTitle;
                 if(ID!==undefined)
                     options.attribAccess = function(d){ return d.data[ID]; };
             } else {
-                options.attribAccess = function(d){ return d.data[options.facetTitle]; };
+                options.attribAccess = function(d){ 
+                    return d.data[options.facetTitle];
+                };
             }
         } else if(typeof(options.attribAccess)==="string"){
             options.attribAccess = this.getColumnData(primTableName,options.attribAccess);
@@ -3062,11 +3077,12 @@ kshf.Browser.prototype = {
             options.type = options.type.toLowerCase();
         } else {
             // If certain options are defined, load categorical
-            if(options.catLabelText || options.catTableName ){
+            if(options.catLabelText || options.catTableName || options.sortingOpts){
                 options.type="categorical";
-            } else if(options.intervalScale ){
+            } else if(options.intervalScale || options.showPercentile){
                 options.type="interval";
             } else if(options.attribAccess!==undefined){
+                options.type="categorical";
                 for(var index=0; index<kshf.dt[primTableName].length; index++){
                     var item = options.attribAccess(kshf.dt[primTableName][index]);
                     if(item===null) continue;
@@ -3093,7 +3109,7 @@ kshf.Browser.prototype = {
         } else if(options.type==="interval"){
             fct = this.addFacet_Interval(options);
         }
-        if(options.layout ==='middle') options.layout = 'middle';
+        if(options.layout ===undefined) options.layout = 'left';
         this.panels[options.layout].addSummary(fct); 
 
         return fct;
@@ -3123,11 +3139,11 @@ kshf.Browser.prototype = {
         return kshf.dt_ColNames[tableName][columnName];
     },
     getColumnData: function(tableName, columnName){
-        var ID = this.getColumnID(tableName, columnName);
-        if(ID===undefined) {
+//        var ID = this.getColumnID(tableName, columnName);
+//        if(ID===undefined) {
             return function(d){ return d.data[columnName]; };
-        }
-        return function(d){ return d.data[ID]; };
+//        }
+//        return function(d){ return d.data[ID]; };
     },
     /** For each primary item
      *  - Run the mapFunc
@@ -3291,7 +3307,7 @@ kshf.Browser.prototype = {
         if(this.loaded!==true) return;
         this.divWidth = this.domWidth();
         this.updateLayout_Height();
-        this.updateLayout_Width();
+        this.updateMiddlePanelWidth();
     },
     /** -- */
     updateLayout_Height: function(){
@@ -3419,30 +3435,31 @@ kshf.Browser.prototype = {
         }
     },
     /** -- */
-    updateLayout_Width: function(){
+    updateMiddlePanelWidth: function(){
         // for some reason, on page load, this variable may be null. urgh.
+        var widthMiddlePanel = this.divWidth;
+        var marginLeft = 0;
+        var marginRight = 0;
+        if(this.panels.left.summaries.length>0){
+            marginLeft=2;
+            widthMiddlePanel-=this.panels.left.getWidth_Total()+2;
+        }
+        if(this.panels.right.summaries.length>0){
+            marginRight=2;
+            widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
+        }
         if(this.listDisplay){
-            var widthListDisplay = this.divWidth;
-            var marginLeft = 0;
-            var marginRight = 0;
-            if(this.panels.left.summaries.length>0){
-                marginLeft=2;
-                widthListDisplay-=this.panels.left.getWidth_Total()+2;
-            }
-            if(this.panels.right.summaries.length>0){
-                marginRight=2;
-                widthListDisplay-=this.panels.right.getWidth_Total()+2;
-            }
-            this.listDisplay.updateContentWidth(widthListDisplay);
-
-            this.layoutList.style("width",widthListDisplay+"px");
-            this.panels.middle.DOM.root
-                .style("width",widthListDisplay+"px")
-                .style("display",this.panels.middle.summaries.length>0?"inline-block":"none")
-                ;
+            this.listDisplay.updateContentWidth(widthMiddlePanel);
+            this.layoutList.style("width",widthMiddlePanel+"px");
             this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
             this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         }
+        this.panels.middle.DOM.root
+            .style("width",widthMiddlePanel+"px")
+            .style("display",this.panels.middle.summaries.length>0?"inline-block":"none")
+            ;
+        this.panels.middle.setTotalWidth(widthMiddlePanel);
+        this.panels.middle.updateSummariesWidth();
     },
     /** -- */
     getFilterState: function() {
@@ -3608,7 +3625,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     getHeight_Content: function(){
         var h = this.attribHeight + this.getHeight_Config();
-        if(!this.areAllAttribsInDisplay() || !this.getPanel().hideBarAxis) h+=this.getHeight_Bottom();
+        if(!this.areAllAttribsInDisplay() || !this.getPanel().hideBarAxis || this.attribCount_Total>3)
+            h+=this.getHeight_Bottom();
         return h;
     },
     /** -- */
@@ -4241,7 +4259,12 @@ kshf.Facet_Categorical.prototype = {
     },
     /** returns the maximum total aggregate value stored per row in chart data */
     getMaxAggregate_Total: function(){
-        if(!this.hasAttribs()) return 0;
+        var subMax=0;
+        // recurse
+        if(this.subFacets.length>0){
+            subMax = d3.max(this.subFacets, function(f){ return f.getMaxAggregate_Total(v); });
+        }
+        if(!this.hasAttribs()) return subMax;;
         if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
         this._maxBarValueMaxPerAttrib = d3.max(this._attribs, function(d){ return d.aggregate_Total;});
         return this._maxBarValueMaxPerAttrib;
@@ -5790,7 +5813,6 @@ kshf.Facet_Interval.prototype = {
     updateIntervalWidth: function(w){
         var me=this;
         if(this.isEmpty) return;
-        if(this.intervalRange.width!==undefined && this.intervalRange.width===w) return;
 
         this.dom.facetInterval.style("width",this.getWidth()+"px");
         this.intervalRange.width=w;

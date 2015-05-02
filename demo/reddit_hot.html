@@ -12,64 +12,24 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-var tableName = "posts";
-
-var subreddit = "hot";
-
-var postCols = {
-    subreddit: 0,
-    num_comments: 1,
-    score: 2,
-    ups: 3,
-    downs: 4,
-    gilded: 5,
-    id: 6,
-    title: 7,
-    url: 8,
-    thumbnail: 9
-};
-
 function loadData(browser){
-    browser.primaryTableName = tableName;
+    browser.primaryTableName = "Posts";
+    kshf.dt.Posts = [];
 
-    kshf.dt_ColNames[tableName] = postCols;
-    kshf.dt[tableName] = [];
-    var arr = kshf.dt[tableName];
-
+    var subreddit = "hot";
     if(window.location.hash!==""){
         subreddit = window.location.hash.substring(1);
     }
-
     $.ajax( {
         url: "http://api.reddit.com/"+subreddit+".json?limit=100",
         dataType: "json",
         success: function(data){
-            var posts = data.data.children;
-
-            posts.forEach(function(p){
-                p = p.data;
-                var c = [];
-                c[postCols.subreddit] = p.subreddit;
-                c[postCols.num_comments] = p.num_comments;
-                c[postCols.score] = p.score;
-                c[postCols.ups] = p.ups;
-                c[postCols.downs] = p.downs;
-                c[postCols.gilded] = p.gilded;
-                c[postCols.id] = p.id;
-                c[postCols.title] = p.title;
-                c[postCols.url] = p.url;
-                c[postCols.thumbnail] = p.thumbnail;
-                var item = new kshf.Item(c,postCols.id,true);
-                arr.push(item);
+            data.data.children.forEach(function(p){
+                kshf.dt.Posts.push(new kshf.Item(p.data,'id'));
             });
 
-            browser.items = arr;
-            browser.itemsSelectedCt = kshf.dt[tableName].length;
-
-            var id_table = {};
-            arr.forEach(function(r){id_table[r.id()] = r;})
-            kshf.dt_id[tableName] = id_table;
+            browser.items = kshf.dt.Posts;
+            browser.itemsSelectedCt = kshf.dt.Posts.length;
 
             // finish loading....
             d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
@@ -84,35 +44,30 @@ $(document).ready( function(){
         domID: "#chart_div",
         itemName: "Reddit Hot Posts",
         categoryTextWidth: 150,
-        showDataSource : false,
-        source: { callback : loadData },
+        showDataSource: false,
+        source: { callback: loadData },
         facets: [
             {   facetTitle: "subreddit"
             },{ facetTitle: "num_comments",
-                catItemMap : function(d){ return d.data[postCols.num_comments]; }
+                catItemMap: function(post){ return post.data.num_comments; }
             },{ facetTitle: "score",
-                catItemMap : function(d){ return d.data[postCols.score]; }
+                catItemMap: function(post){ return post.data.score; }
             },{ facetTitle: "gilded",  
                 type: "categorical"
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [ { name: 'score' } ],
-            textSearch : "title",
-            contentFunc : function(d){
+            sortingOpts: [ { name: 'score' } ],
+            textSearch: "title",
+            contentFunc: function(d){
                 var str="";
-                // thumbnail
-                if(d.data[postCols.thumbnail]!=="") { 
-                    str+="<div style=\"float:right\">";
-                    str+="<img src=\""+d.data[postCols.thumbnail]+"\"/>";
-                    str+="</div>";
+                if(d.data.thumbnail!=="") { 
+                    str+="<div style='float:right'><img src='"+d.data.thumbnail+"'/></div>";
                 }
-                // title
-                str+=d.data[postCols.title];
-                // link
-                str+="<a class='fa fa-external-link' target=\"_blank\" href=\""+d.data[postCols.url]+"\" "+
-                        "onclick=\"sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})\"></a>";
+                str+=d.data.title;
+                str+="<a class='fa fa-external-link' target='_blank' href='"+d.data.url+"' "+
+                        "onclick='sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})'></a>";
                 return str;
             }
         }
@@ -121,9 +76,6 @@ $(document).ready( function(){
 
 </script>
     <style>
-        div.listItem{
-            padding-bottom: 4px;
-        }
         #chart_div {
             width:800px;
             height:700px;

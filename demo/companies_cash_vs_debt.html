@@ -13,80 +13,74 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-        var getIndustryIcon = function(str){
-            switch(str){
-                case 'Financials': return ''+"<span class='industryIcon fa fa-money'></span>"
-                case 'Tech/Communication': return ''+"<span class='industryIcon fa fa-cog'></span>"
-                case 'Industrial': return ''+"<span class='industryIcon fa fa-building'></span>"
-                case 'Consumer Prod/Retail': return ''+"<span class='industryIcon fa fa-shopping-cart'></span>"
-                case 'Healthcare/Pharm.': return ''+"<span class='industryIcon fa fa-medkit'></span>"
-                case 'Energy': return ''+"<span class='industryIcon fa fa-lightbulb-o'></span>"
-                case '': return ''+"<span class='industryIcon fa fa-'></span>"
-                case '': return ''+"<span class='industryIcon fa fa-'></span>"
-            }
-            return "?";
-        };
+var getIcon = function(str){
+    switch(str){
+        case 'Financials': return ''+"<span class='industryIcon fa fa-money'></span>"
+        case 'Tech/Communication': return ''+"<span class='industryIcon fa fa-cog'></span>"
+        case 'Industrial': return ''+"<span class='industryIcon fa fa-building'></span>"
+        case 'Consumer Prod/Retail': return ''+"<span class='industryIcon fa fa-shopping-cart'></span>"
+        case 'Healthcare/Pharm.': return ''+"<span class='industryIcon fa fa-medkit'></span>"
+        case 'Energy': return ''+"<span class='industryIcon fa fa-lightbulb-o'></span>"
+        case '': return ''+"<span class='industryIcon fa fa-'></span>"
+        case '': return ''+"<span class='industryIcon fa fa-'></span>"
+    }
+    return "?";
+};
 
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 50,
-                    leftPanelLabelWidth: 170,
-                    rightPanelLabelWidth: 90,
-                    source: {
-                        gdocId : '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
-                        sheets : [ {name:"Companies", id:'Stock'} ]
-                    },
-                    facets: [
-                        {   facetTitle: "Industry",
-                            catItemMap: function(d){
-                                return d.data[2]+" "+getIndustryIcon(d.data[2]);
-                            }
-                        },{ facetTitle: "Cash vs. Debt",
-                            catItemMap: function(d){
-                                return ((d.data[4]-d.data[3])>0)?"More cash":"More debt";
-                            }, layout: 'left'
-                        },{ facetTitle: "Cash (Billions)",
-                            catItemMap: function(d){
-                                return d.data[4];
-                            }, unitName: 'B$', intervalScale: 'log'
-                        },{ facetTitle: "Debt (Billions)",
-                            catItemMap: function(d){
-                                return d.data[3];
-                            }, unitName: 'B$', intervalScale: 'log',
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 50,
+        leftPanelLabelWidth: 170,
+        rightPanelLabelWidth: 90,
+        source: {
+            gdocId : '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
+            sheets : [ {name:"Companies", id:'Stock'} ]
+        },
+        facets: [
+            {   facetTitle: "Industry",
+                catItemMap: function(d){ return d.data.Industry+" "+getIcon(d.data.Industry); }
+            },{ facetTitle: "Cash vs. Debt", layout: 'left',
+                catItemMap: function(d){
+                    return ((d.data['Cash ($B)']-d.data['Debt ($B)'])>0)?"More cash":"More debt";
+                }
+            },{ facetTitle: "Cash (Billions)",
+                catItemMap: function(d){return d.data['Cash ($B)'];},
+                unitName: 'B$', intervalScale: 'log'
+            },{ facetTitle: "Debt (Billions)",
+                catItemMap: function(d){ return d.data['Debt ($B)'];},
+                unitName: 'B$', intervalScale: 'log',
 //                        },{ facetTitle: "Market Capitalization", layout: 'right'
 //                        },{ facetTitle: "Profit Margin", layout: 'right'
-                        }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 90,
-                        detailsToggle : "none",
-                        sortingOpts : [ 
-                            {name: 'Value', value:function(d){
-                                return (d.data[4]-d.data[3]);
-                            }},
-                            {name: 'Debt ($B)'},
-                            {name: 'Cash ($B)'},
-                            {name: 'Profit Margin'},
-                            {name: 'Market Cap.'}
-                        ],
-                        displayType: 'grid',
-                        textSearch: 'Stock',
-                        contentFunc: function(d){
-                            var str="";
-                            str+=getIndustryIcon(d.data[2]);
-                            str+=" "+d.data[0];
-                            var cash = (d.data[4]-d.data[3]);
-                            if(cash>0){
-                                str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
-                            } else {
-                                str+="<div class='cashdebt negative'>"+cash.toFixed(2)+"B$</div>";
-                            }
-                            return str;
-                        }
-                    }
-                });
-            });
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 90,
+            detailsToggle : "none",
+            sortingOpts : [ 
+                {name: 'Value', value:function(d){ return (d.data['Cash ($B)']-d.data['Debt ($B)']); }},
+                {name: 'Debt ($B)'},
+                {name: 'Cash ($B)'},
+                {name: 'Profit Margin'},
+                {name: 'Market Cap.'}
+            ],
+            displayType: 'grid',
+            textSearch: 'Stock',
+            contentFunc: function(d){
+                var str="";
+                str+=getIcon(d.data.Industry);
+                str+=" "+d.data.Stock;
+                var cash = (d.data['Cash ($B)']-d.data['Debt ($B)']);
+                if(cash>0){
+                    str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
+                } else {
+                    str+="<div class='cashdebt negative'>"+cash.toFixed(2)+"B$</div>";
+                }
+                return str;
+            }
+        }
+    });
+});
         </script>
         <style>
             #chart_div {

@@ -15,7 +15,70 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+function loadData(browser){
+    browser.primaryTableName = "Publications";
+    kshf.dt.Publications = [];
 
+    $.ajax( {
+//      url:"https://www.cs.umd.edu/users/ben/publications.html",
+        url:"./data/BenShneiderman.html",
+        async: false,
+        success: function(doc){
+            $$doc = $($.parseHTML(doc));
+
+            var lastItem;
+
+            var bibParser = new BibtexParser(function(entry) {
+                lastItem = entry;
+                entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
+
+                // convert text form date to javascript date
+                var year = entry.Fields.year;
+                if(year){
+                    if(entry.Fields.month){
+                        console.log("month: " + entry.Fields.month);
+                    }
+                    entry.Year = new Date(moment(year+"01-01","YYYY-MM-DD"));
+                } else {
+                    var asd=2323232;
+                }
+
+                // process author chunk
+                if(entry.Fields.author){
+                    entry.Authors = entry.Fields.author.split(" and ")
+                }
+
+                if(entry.EntryKey.indexOf('/') === -1 && entry.EntryKey.indexOf('!') === -1){
+                    // read pdf link
+                    $$doc.find('#'+entry.EntryKey+ ' a:last-of-type').each(function(aTag){
+                        if(this.innerText==="PDF"){
+                            entry.PDF = this.attributes.href;
+                        }
+                    });                          
+                    
+                    // read abstract
+                    $$doc.find('#abs_'+entry.EntryKey).each(function(abs){
+                        entry.Abstract = this.innerText;
+                    });
+                }
+
+                kshf.dt.Publications.push(new kshf.Item(entry,"EntryKey"));
+            });
+
+            $$doc.find('#qs_table tr.bibtex pre').each(function(){
+                bibParser.parse(this.innerText);
+                lastItem.bibTex = this.innerText;
+            });
+
+            browser.items = kshf.dt.Publications;
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        },
+        error: function(jqXHR, textStatus, errorThrown ){
+            console.log(errorThrown);
+        }
+    });
+}
 $(document).ready( function(){
 
 	browser = new kshf.Browser({
@@ -24,100 +87,15 @@ $(document).ready( function(){
         itemName: "Publications of Ben Shneiderman",
         source : {
             url: "https://www.cs.umd.edu/users/ben/publications.html",
-            callback: function(browser){
-                browser.primaryTableName = "Publications";
-
-                kshf.dt.Publications = [];
-                kshf.dt_id.Publications = {};
-
-                $.ajax( {
-//                    url:"https://www.cs.umd.edu/users/ben/publications.html",
-                    url:"./data/BenShneiderman.html",
-                    async: false,
-                    success: function(doc){
-                        $$doc = $($.parseHTML(doc));
-
-                        var lastItem;
-
-                        var bibParser = new BibtexParser(function(entry) {
-                            lastItem = entry;
-                            entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
-
-                            // convert text form date to javascript date
-                            var year = entry.Fields.year;
-                            if(year){
-                                if(entry.Fields.month){
-                                    console.log("month: " + entry.Fields.month);
-                                }
-                                entry.Year = new Date(moment(year+"01-01","YYYY-MM-DD"));
-                            } else {
-                                var asd=2323232;
-                            }
-
-                            // process author chunk
-                            if(entry.Fields.author){
-                                entry.Authors = entry.Fields.author.split(" and ")
-                            }
-
-                            if(entry.EntryKey.indexOf('/') === -1 && entry.EntryKey.indexOf('!') === -1){
-                                // read pdf link
-                                $$doc.find('#'+entry.EntryKey+ ' a:last-of-type').each(function(aTag){
-                                    if(this.innerText==="PDF"){
-                                        entry.PDF = this.attributes.href;
-                                    }
-                                });                          
-                                
-                                // read abstract
-                                $$doc.find('#abs_'+entry.EntryKey).each(function(abs){
-                                    entry.Abstract = this.innerText;
-                                });
-                            }
-
-                            kshf.dt.Publications.push(new kshf.Item(entry,"EntryKey"));
-                        });
-
-                        $$doc.find('#qs_table tr.bibtex pre').each(function(){
-                            bibParser.parse(this.innerText);
-                            lastItem.bibTex = this.innerText;
-                        });
-
-                        browser.items = kshf.dt.Publications;
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    },
-                    error: function(jqXHR, textStatus, errorThrown ){
-                        console.log(errorThrown);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Entry Type",
-                catItemMap: function(d){ return d.data.EntryType; }
-            },{
-                facetTitle: "Authors",
-            },{
-                facetTitle: "Journal",
-                catItemMap: function(d){
-                    return d.data.Fields.journal;
-                }
-            },{
-                facetTitle: "Year",
-                catItemMap: function(d){
-                    return d.data.Year;
-                },
-                facetType: 'interval',
-                intervalScale: 'time',
-                layout: "bottom"
+            {   facetTitle: "EntryType",
+            },{ facetTitle: "Authors",
+            },{ facetTitle: "Journal",
+                catItemMap: function(d){ return d.data.Fields.journal; }
+            },{ facetTitle: "Year", layout: "bottom"
             }
-             // number...
-            // shipped_opera_milestone
-            // shipped_webview_milestone
-            // shipped_ios_milestone
-            // shipped_android_milestone
-            // shipped_opera_android_milestone
-            
         ],
         itemDisplay: {
             sortColWidth: 50,
@@ -127,7 +105,6 @@ $(document).ready( function(){
                 value: function(d){ return d.data.Year;},
                 label: function(d){ return d.data.Year.getFullYear(); }
             }],
-            autoExpandMore: true,
             textSearch : "title",
             textSearchFunc: function(d){ return d.data.Fields.title;},
             displayType: 'list',
@@ -207,7 +184,6 @@ $(document).ready( function(){
         font-size: 0.8em;
     }
 
-
     .paperName{
         cursor:pointer;
     }
@@ -267,8 +243,6 @@ $(document).ready( function(){
         padding-bottom: 4px;
         padding-right: 40px;
     }
-
-
 </style>
     </head>
     <body>

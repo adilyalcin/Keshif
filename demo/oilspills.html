@@ -16,42 +16,35 @@
 
         <script type="text/javascript">
 
-var spillsCol;
 var demoID = 15;
 
 function getDate(d){
-    var dt=d.data[1];
+    var dt=d.data.Date;
     if(dt.getUTCFullYear) { return dt;}
-    var m=moment(d.data[1],["YYYY-MM-DD"]);
+    var m=moment(d.data.Date,["YYYY-MM-DD"]);
     dt = new Date(m);
     return dt;
 }
 
 function getSource(spill){
-    if(spill.data[spillsCol["Platform / Rig"]]!==null){ return "Platform / Rig"; }
-    if(spill.data[spillsCol["Pipeline"]]!==null){ return "Pipeline"; }
-    if(spill.data[spillsCol["Vessel"]]!==null){ return "Vessel"; }
+    if(spill.data["Platform / Rig"]!==null){ return "Platform / Rig"; }
+    if(spill.data["Pipeline"]!==null){ return "Pipeline"; }
+    if(spill.data["Vessel"]!==null){ return "Vessel"; }
     return "Unknown";
 }
 function getMaterial(spill){
     var toRet=[];
-    if(spill.data[spillsCol["Crude & Condensate"]]!==0) toRet.push("Crude & Condensate");
-    if(spill.data[spillsCol["Refined Petroleum"]]!==0) toRet.push("Refined Petroleum");
-    if(spill.data[spillsCol["Synthetic Base Fluid"]]!==0) toRet.push("Synthetic Base Fluid");
-    if(spill.data[spillsCol["Other Chemicals"]]!==0) toRet.push("Other Chemicals");
+    if(spill.data["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
+    if(spill.data["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
+    if(spill.data["Synthetic Base Fluid"]!==0) toRet.push("Synthetic Base Fluid");
+    if(spill.data["Other Chemicals"]!==0) toRet.push("Other Chemicals");
     return toRet;
 }
 
-function resetSize(){
-    $('#chart_div').height(750);
-    $('#chart_div').width (1000);
-}
-
 google.setOnLoadCallback( function(){
-    
-    resetSize();
+    resizeBrowser(90,90);
     $(window).resize(function() {
-        resetSize();
+        resizeBrowser(90,90);
         browser.updateLayout();
     });
 
@@ -67,11 +60,9 @@ google.setOnLoadCallback( function(){
             sheets : [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
         },
         loadedCb: function(){
-            spillsCol = kshf.dt_ColNames.Spills;
-
-            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol.Cause], ", ", false);
-            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol.Notes], /-|,\s*/, true);
-            kshf.Util.cellToArray(kshf.dt.Spills, [spillsCol['During Activity']], /\/\s*/, false);
+            kshf.Util.cellToArray(kshf.dt.Spills, ['Cause'], ", ", false);
+            kshf.Util.cellToArray(kshf.dt.Spills, ['Notes'], /-|,\s*/, true);
+            kshf.Util.cellToArray(kshf.dt.Spills, ['During Activity'], /\/\s*/, false);
         },
         facets: [
             {
@@ -129,10 +120,11 @@ google.setOnLoadCallback( function(){
             },{
                 facetTitle: "District",
                 layout: 'left',
-                catTableName: "Districts"
+                catTableName: "Districts",
+                catLabelText: function(d){ return d.data.Name; }
             },{
                 facetTitle: "Water Depth",
-                catItemMap: function(d){ return d.data[spillsCol['Water Depth (feet)']];},
+                catItemMap: function(d){ return d.data['Water Depth (feet)'];},
                 layout: 'right',
                 intervalScale: 'log',
                 unitName: 'feet'
@@ -148,7 +140,7 @@ google.setOnLoadCallback( function(){
                 layout: 'right',
                 catTableName: "Notes",
                 collapsed: true,
-                catItemMap : function(spill){ return spill.data[spillsCol["Notes"]]},
+                catItemMap : function(spill){ return spill.data.Notes; },
             },{
                 facetTitle: "Spill Date",
                 catItemMap: getDate,
@@ -170,36 +162,36 @@ google.setOnLoadCallback( function(){
                     },
                     inverse: true,
                 },
-                { name: 'Amount',value: function(d){ return d.data[spillsCol["Total Spilled"]]; }},
+                { name: 'Amount',value: function(d){ return d.data["Total Spilled"]; }},
             ],
             detailsToggle : "Multi",
             contentFunc : function(d){
                 var j;
                 var str="";
                 // location
-                var district=kshf.dt_id.Districts[d.data[spillsCol["District"]]];
+                var district=kshf.dt_id.Districts[d.data.District];
                 if(district) district = district.data[1];
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data[spillsCol["Company"]]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data.Company+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
                     +" <u>District</u>:"+district
-                    +" - <u>Area Block</u>:"+d.data[spillsCol["Area Block"]]
-                    +" - <u>Water Depth</u>:"+d.data[spillsCol["Water Depth (feet)"]]+"feet"
-                    +" - <u>Distance to Shore</u>:"+d.data[spillsCol["Distance to Shore (miles)"]]+"miles"
+                    +" - <u>Area Block</u>:"+d.data["Area Block"]
+                    +" - <u>Water Depth</u>:"+d.data["Water Depth (feet)"]+"feet"
+                    +" - <u>Distance to Shore</u>:"+d.data["Distance to Shore (miles)"]+"miles"
                     +"</div>";
                 
                 str+="<span class=\"item_details\">";
                 
                 // Spillage
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
-                str+=" <u>Total</u>:"+d.data[spillsCol["Total Spilled"]];
-                str+=" <u>Crude & Condensate</u>:"+d.data[spillsCol["Crude & Condensate"]];
-                str+=" <u>Refined Petroleum</u>:"+d.data[spillsCol["Refined Petroleum"]];
-                str+=" <u>Synthetic Base Fluid</u>:"+d.data[spillsCol["Synthetic Base Fluid"]];
-                str+=" <u>Other Chemicals</u>:"+d.data[spillsCol["Other Chemicals"]];
+                str+=" <u>Total</u>:"+d.data["Total Spilled"];
+                str+=" <u>Crude & Condensate</u>:"+d.data["Crude & Condensate"];
+                str+=" <u>Refined Petroleum</u>:"+d.data["Refined Petroleum"];
+                str+=" <u>Synthetic Base Fluid</u>:"+d.data["Synthetic Base Fluid"];
+                str+=" <u>Other Chemicals</u>:"+d.data["Other Chemicals"];
                 str+="</div>"
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+d.data[spillsCol.Cause]+"</div>";
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+d.data.Cause+"</div>";
                 str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource(d)
-                    +" <b>Facility:</b> "+ d.data[spillsCol["Facility"]]
+                    +" <b>Facility:</b> "+ d.data.Facility
                     +"</div>";
 
                 str+="</span>";

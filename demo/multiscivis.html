@@ -16,15 +16,78 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+var loadData = function(browser){
+    browser.primaryTableName = "Visualizations";
+
+    kshf.dt.Visualizations = [];
+
+    $.ajax( {
+        url: "./data/multivis.xml",
+        async: false,
+        success: function(doc){
+            $doc = $(doc);
+
+
+            $doc.find("list > item").each(function(i){
+                var $this = $(this);
+                var d={};
+                d.id = this.getAttribute("id");
+                d['Data Facets'] = [];
+                d['Main Goals'] = [];
+                d['Techniques'] = [];
+                this.getAttribute("fac").split("").forEach(function(t){
+                    switch(t){
+                        case "1": d['Data Facets'].push("Spatio-Temporal"); break;
+                        case "2": d['Data Facets'].push("Multivariate Data"); break;
+                        case "3": d['Data Facets'].push("Multi-Model"); break;
+                        case "4": d['Data Facets'].push("Multi-Run / Ensemble Data"); break;
+                        case "5": d['Data Facets'].push("Multi-Model Data"); break;
+                    }
+                });
+                this.getAttribute("gol").split("").forEach(function(t){
+                    switch(t){
+                        case "R": d['Main Goals'].push("Representation"); break;
+                        case "I": d['Main Goals'].push("Interaction"); break;
+                        case "A": d['Main Goals'].push("Analysis"); break;
+                    }
+                });
+                this.getAttribute("tec").split("").forEach(function(t){
+                    switch(t){
+                        case "A": d['Techniques'].push("Data Abstraction & Aggregation"); break;
+                        case "B": d['Techniques'].push("Interactive Feature Specification"); break;
+                        case "C": d['Techniques'].push("Visual Comparison"); break;
+                        case "D": d['Techniques'].push("Focus+Context & Overview+Detail"); break;
+                        case "F": d['Techniques'].push("Visual Data Fusion"); break;
+                        case "N": d['Techniques'].push("Navigation"); break;
+                    }
+                });
+                d.Name = $this.find("name")[0].textContent.trim();
+                d.Year = parseInt($this.find("year")[0].textContent.trim());
+                d.Authors = $this.find("authors")[0].textContent.trim();
+                d.Authors = d.Authors.replace(" and ",", ");
+                d.Authors = d.Authors.split(", ");
+                d.URL = $this.find("url")[0].textContent.trim();
+                d.Title = $this.find("title")[0].textContent.trim();
+                d.Venue = $this.find("publication")[0].textContent.trim();
+                var kshfItem = new kshf.Item(d,'id');
+                kshf.dt.Visualizations.push(kshfItem);
+            });
+
+            browser.items = kshf.dt.Visualizations;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -34,89 +97,14 @@ $(document).ready( function(){
         itemName: "Multifaceted Scientific Data Visualization",
         source : {
             url: "http://multivis.net/",
-            callback: function(browser){
-                browser.primaryTableName = "Visualizations";
-
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
-
-                $.ajax( {
-                    url: "./data/multivis.xml",
-                    async: false,
-                    success: function(doc){
-                        $doc = $(doc);
-
-
-                        $doc.find("list > item").each(function(i){
-                            var $this = $(this);
-                            var d={};
-                            d.id = this.getAttribute("id");
-                            d['Data Facets'] = [];
-                            d['Main Goals'] = [];
-                            d['Techniques'] = [];
-                            this.getAttribute("fac").split("").forEach(function(t){
-                                switch(t){
-                                    case "1": d['Data Facets'].push("Spatio-Temporal"); break;
-                                    case "2": d['Data Facets'].push("Multivariate Data"); break;
-                                    case "3": d['Data Facets'].push("Multi-Model"); break;
-                                    case "4": d['Data Facets'].push("Multi-Run / Ensemble Data"); break;
-                                    case "5": d['Data Facets'].push("Multi-Model Data"); break;
-                                }
-                            });
-                            this.getAttribute("gol").split("").forEach(function(t){
-                                switch(t){
-                                    case "R": d['Main Goals'].push("Representation"); break;
-                                    case "I": d['Main Goals'].push("Interaction"); break;
-                                    case "A": d['Main Goals'].push("Analysis"); break;
-                                }
-                            });
-                            this.getAttribute("tec").split("").forEach(function(t){
-                                switch(t){
-                                    case "A": d['Techniques'].push("Data Abstraction & Aggregation"); break;
-                                    case "B": d['Techniques'].push("Interactive Feature Specification"); break;
-                                    case "C": d['Techniques'].push("Visual Comparison"); break;
-                                    case "D": d['Techniques'].push("Focus+Context & Overview+Detail"); break;
-                                    case "F": d['Techniques'].push("Visual Data Fusion"); break;
-                                    case "N": d['Techniques'].push("Navigation"); break;
-                                }
-                            });
-                            d.Name = $this.find("name")[0].textContent.trim();
-                            d.Year = parseInt($this.find("year")[0].textContent.trim());
-                            d.Authors = $this.find("authors")[0].textContent.trim();
-                            d.Authors = d.Authors.replace(" and ",", ");
-                            d.Authors = d.Authors.split(", ");
-                            d.URL = $this.find("url")[0].textContent.trim();
-                            d.Title = $this.find("title")[0].textContent.trim();
-                            d.Venue = $this.find("publication")[0].textContent.trim();
-                            var kshfItem = new kshf.Item(d,'id');
-                            kshf.dt.Visualizations.push(kshfItem);
-                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
-                        });
-
-                        browser.items = kshf.dt.Visualizations;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Data Facets",
-            },{
-                facetTitle: "Main Goals",
-            },{
-                facetTitle: "Techniques",
-            },{
-                facetTitle: "Authors", collapsed: false
-            },{
-                facetTitle: "Year",
-                layout: "bottom",
-                type: 'interval',
+            {   facetTitle: "Data Facets",
+            },{ facetTitle: "Main Goals",
+            },{ facetTitle: "Techniques",
+            },{ facetTitle: "Authors"
+            },{ facetTitle: "Year", layout: "bottom",
                 intervalScale: 'step'
             }
         ],
@@ -124,13 +112,10 @@ $(document).ready( function(){
             sortColWidth: 92,
             sortingOpts : [{ name:'Year'}],
             textSearch : "Title",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-//                  return d.data.Name;
-//                return d.data.Title;
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
             },
@@ -155,10 +140,8 @@ $(document).ready( function(){
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
-
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
-
             Data: <a href="http://multivis.net/"
                 target='_blank'>multivis.net</a> A Visual Bibliography of Tree Visualization 2.0
                 by

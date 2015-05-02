@@ -15,16 +15,35 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+function loadData(browser){
+    browser.primaryTableName = "Resources";
+    kshf.dt.Resources = [];
+    kshf.dt_id.Resources = {};
+    $.ajax( {
+        url: "./data/vis_resources.json",
+        async: false,
+        success: function(dataset){
+            dataset.forEach(function(r){
+                var kshfItem = new kshf.Item(r,'id');
+                kshf.dt.Resources.push(kshfItem);
+                kshf.dt_id.Resources[kshfItem.id()] = kshfItem;
+            });
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+            browser.items = kshf.dt.Resources;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -34,41 +53,13 @@ $(document).ready( function(){
         itemName: "Visualization Resources",
         source : {
             url: "http://www.visualisingdata.com/index.php/resources/",
-            callback: function(browser){
-                browser.primaryTableName = "Resources";
-                kshf.dt.Resources = [];
-                kshf.dt_id.Resources = {};
-                $.ajax( {
-                    url: "./data/vis_resources.json",
-                    async: false,
-                    success: function(dataset){
-                        dataset.forEach(function(r){
-                            var kshfItem = new kshf.Item(r,'id');
-                            kshf.dt.Resources.push(kshfItem);
-                            kshf.dt_id.Resources[kshfItem.id()] = kshfItem;
-                        });
-
-                        browser.items = kshf.dt.Resources;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
-        facets: [
-            {
-                facetTitle: "category",
-            }
-        ],
+        facets: [{ facetTitle: "category" }],
         itemDisplay: {
             sortColWidth: 92,
             sortingOpts : [{name:'id', inverse: true}],
             textSearch : "title",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",

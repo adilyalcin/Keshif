@@ -15,16 +15,55 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+function loadData(browser){
+    browser.primaryTableName = "Visualizations";
+    kshf.dt.Visualizations = [];
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+    $.ajax( {
+        url: "./data/setviz.bib",
+        async: false,
+        success: function(bibdata){
+            var entries = BibtexParser(bibdata);
+
+            entries.entries.forEach(function(entry){
+                var entryData = {};
+
+                entryData.Key = entry.EntryKey;
+                entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
+                entryData.Type = entry.EntryType;
+                entryData.Authors = [];
+                if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+                entryData.Title = entry.Fields.title;
+                entryData.Year = entry.Fields.year;
+                if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
+
+                entryData.Keywords = [];
+                if(entry.Fields.keywords)
+                    entryData.Keywords = entry.Fields.keywords.replace(/category:/g,"").split(", ");
+                if(entry.Fields.journal)
+                    entryData.Journal = entry.Fields.journal;
+                else if(entry.Fields.booktitle)
+                    entryData.Journal = entry.Fields.booktitle;
+
+                kshf.dt.Visualizations.push(new kshf.Item(entryData,'Key'));
+            });
+            // there will be some entries.errors, for incorrect entry types (like online)
+
+            browser.items = kshf.dt.Visualizations;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -34,76 +73,20 @@ $(document).ready( function(){
         itemName: "Set Visualization Techniques",
         source : {
             url: "http://www.cvast.tuwien.ac.at/SetViz",
-            callback: function(browser){
-                browser.primaryTableName = "Visualizations";
-
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
-
-                $.ajax( {
-                    url: "./data/setviz.bib",
-                    async: false,
-                    success: function(bibdata){
-                        var entries = BibtexParser(bibdata);
-
-                        entries.entries.forEach(function(entry){
-                            var entryData = {};
-
-                            entryData.Key = entry.EntryKey;
-                            entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
-                            entryData.Type = entry.EntryType;
-                            entryData.Authors = [];
-                            if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
-                            entryData.Title = entry.Fields.title;
-                            entryData.Year = entry.Fields.year;
-                            if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
-
-                            entryData.Keywords = [];
-                            if(entry.Fields.keywords)
-                                entryData.Keywords = entry.Fields.keywords.replace(/category:/g,"").split(", ");
-                            if(entry.Fields.journal)
-                                entryData.Journal = entry.Fields.journal;
-                            else if(entry.Fields.booktitle)
-                                entryData.Journal = entry.Fields.booktitle;
-
-                            var kshfItem = new kshf.Item(entryData,'Key');
-                            kshf.dt.Visualizations.push(kshfItem);
-                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
-                        });
-                        // there will be some entries.errors, for incorrect entry types (like online)
-
-                        browser.items = kshf.dt.Visualizations;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Keywords",
-            },{
-                facetTitle: "Type", collapsed: true
-            },{
-                facetTitle: "Authors",
-            },{
-                facetTitle: "Journal", collapsed: false
-            },{
-                facetTitle: "Year",
-                layout: "bottom",
-                type: 'interval',
-                intervalScale: 'step'
+            {   facetTitle: "Keywords",
+            },{ facetTitle: "Type", collapsed: true
+            },{ facetTitle: "Authors",
+            },{ facetTitle: "Journal", collapsed: false
+            },{ facetTitle: "Year", layout: "bottom", intervalScale: 'step'
             }
         ],
         itemDisplay: {
             sortColWidth: 92,
             sortingOpts : [{ name:'Year'}],
             textSearch : "Title",
-            autoExpandMore: true,
             displayType: 'grid',
             detailsToggle : "Zoom",
             contentFunc : function(d){

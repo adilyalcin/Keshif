@@ -15,15 +15,10 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-140);
-    $('#chart_div').height($(window).height()-180);
-};
-
 google.setOnLoadCallback(function(){
-    resizeBrowser();
+    resizeBrowser(140,180);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(140,180);
         browser.updateLayout();
     });
 
@@ -36,39 +31,14 @@ google.setOnLoadCallback(function(){
             url: "http://women-in-film.silk.co/",
             dirPath: "./data/",
             fileType: 'csv',
-            sheets : [ {name:"women_in_film"} ]
+            sheets: [ {name:"women_in_film"} ]
+        },
+        loadedCb: function(){
+            kshf.Util.cellToArray(kshf.dt.women_in_film, ['Rating','Genre','Main Actors','Language'], ', ', false);
         },
         facets: [
-            //Movie Title
-            // Passes Bechdel Test?
-            // Number of Criteria Passed
-            // Clarity of Pass
-            // Has at least two [named] women in it
-            // The women talk to each other
-            // The women talk about something besides a man
-            // Genre
-            // Director
-            // Main Actors
-            // Production Comapany
-            // Plot Keywords (top 10)
-            // Year
-            // Rating
-            // Runtime (min)
-            // Plot
-            // Language
-            // Country
-            // Image
-            // IMDb Popularity Score
-            // Award Popularity
-            // IMDb rating
-            // IMDb votes
-            // Nominations
-            // Wins
-            // IMDB Link
             {   facetTitle: "Movie Passes Bechdel Test ?",
-                catItemMap: function(movie){
-                    return movie.data["Passes Bechdel Test?"];
-                }
+                catItemMap: function(movie){ return movie.data["Passes Bechdel Test?"]; }
             },{ facetTitle: "Bechdel Criterias",
                 catItemMap: function(movie){
                     var r=[];
@@ -93,42 +63,24 @@ google.setOnLoadCallback(function(){
                 }*/
             },{ facetTitle: "IMDb Popularity Score", layout: 'left', intervalScale: 'log'
             },{ facetTitle: "Award Popularity", layout: 'left', intervalScale: 'log', collapsed: true
-            },{ facetTitle: "Rating",
-                catItemMap: function(movie){
-                    if(movie.data.Rating) return movie.data.Rating.split(", ");
-                }
-            },{ facetTitle: "Genre", layout: 'right',
-                catItemMap: function(movie){
-                    if(movie.data.Genre) return movie.data.Genre.split(", ");
-                }
-            },{ facetTitle: "Main Actors", layout: 'right',
-                catItemMap: function(movie){
-                    if(movie.data['Main Actors']) return movie.data['Main Actors'].split(", ");
-                }, minAggrValue: 3
-            },{ facetTitle: "Language", layout: 'right',
-                catItemMap: function(movie){
-                    if(movie.data.Language) return movie.data.Language.split(", ");
-                }
-/*                        },{ facetTitle: "Production Company", collapsed: true, layout: 'right',
-                catItemMap: function(movie){
-                    return movie.data["Production Company"].split(", ");
-                }*/
-            },{ facetTitle: "Runtime (min)", intervalScale: 'log', layout: 'right', collapsed: true
+            },{ facetTitle: "Rating"
+            },{ facetTitle: "Genre", layout: 'right'
+            },{ facetTitle: "Main Actors", layout: 'right', minAggrValue: 3
+            },{ facetTitle: "Language", layout: 'right'
+            },{ facetTitle: "Runtime (min)", layout: 'right', intervalScale: 'log', collapsed: true
             },{ facetTitle: "Year", layout: "left", intervalScale: 'step'
             }
         ],
         itemDisplay: {
             sortColWidth: 105,
-            detailsToggle : "Zoom",
+            detailsToggle: "Zoom",
             displayType: 'grid',
-            autoExpandMore: true,
             textSearch: "Movie Title",
-            sortingOpts : [ 
-                {name: 'Popularity', value: function(d){ return d.data["IMDb Popularity Score"];} },
-//                {name: 'id', inverse:true},
-                {name: 'Year', inverse:true},
+            sortingOpts: [ 
+                { name: 'Popularity', value: function(d){ return d.data["IMDb Popularity Score"];} },
+                { name: 'Year', inverse:true},
             ],
-            contentFunc : function(d){
+            contentFunc: function(d){
                 return "<a target='_blank' href='"+d.data['IMDB Link']+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a>";//<span class='title'>"+/*d.data['Movie Title']*/+"</span>";
             },
@@ -144,7 +96,6 @@ google.setOnLoadCallback(function(){
                 width: 25%;
             }
             .thumbImg{
-
             }
             #chart_div {
                 width: 1100px;

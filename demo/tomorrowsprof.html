@@ -20,29 +20,25 @@ function resetSize(){
 };
 
 $(document).ready( function(){
-    var postCols, catCols, tNow;
     resetSize();
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 160,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
-            sheets : [ {name:"Posts"}, {name:"Categories"} ]
-        },
-        loadedCb: function(){
-            postCols = kshf.dt_ColNames.Posts;
-            catCols = kshf.dt_ColNames.Categories;
+            gdocId: '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
+            sheets: [ {name:"Posts"}, {name:"Categories"} ]
         },
         facets: [ 
-            {
-                facetTitle: "Category", 
-                catTableName: "Categories"
-            },{
-                facetTitle: "Date",
-                catItemMap : function(d){
+            {   facetTitle: "Category", 
+                catTableName: "Categories",
+                catLabelText: function(d){
+                    return d.data.Category;
+                }
+            },{ facetTitle: "Date",
+                catItemMap: function(d){
                     var r =new Date(Date.now());
-                    r.setDate(r.getDate()-d.data[0]*4);
+                    r.setDate(r.getDate()-d.data.id*4);
                     return r;
                 },
                 intervalScale: 'time',
@@ -51,24 +47,23 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts : [ 
-                {   name: 'id', noGroupBorder: true
-                },{
-                    name:"Category"
-                }],
-            textSearch : "Title",
-            detailsToggle : "One",
-            contentFunc : function(d) {
+            sortingOpts: [ 
+                { name: 'id', noGroupBorder: true },
+                { name: "Category" }
+            ],
+            textSearch: "Title",
+            detailsToggle: "One",
+            contentFunc: function(d){
                 var str="";
                 // title
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+d.data[postCols['id']]+"\" target=\"_blanl\">"+d.data[postCols['Title']]+"<a/>";
+                str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+d.data.id+"\" target=\"_blanl\">"+d.data.Title+"<a/>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">In: "+
-                    kshf.dt_id.Categories[d.data[postCols['Category']]].data[2]+
+                    kshf.dt_id.Categories[d.data.Category].data.Category+
                     "</div>";
                 str+="</span>";
 

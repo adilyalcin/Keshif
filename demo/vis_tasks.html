@@ -14,19 +14,13 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
-
 google.setOnLoadCallback(function(){
-    resizeBrowser();
+    resizeBrowser(160,110);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(160,110);
         browser.updateLayout();
     });
 
-    var pubCol;
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 90,
@@ -37,29 +31,21 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Papers"},{name:"Keywords",id:"Task"},{name:"Levels",id:"Category"} ]
         },
         loadedCb: function(){
-            pubCol = kshf.dt_ColNames.Papers;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Authors],", ",false);
-            kshf.Util.cellToArray(kshf.dt.Papers, [pubCol.Tasks],"*",false);
+            kshf.Util.cellToArray(kshf.dt.Papers, ['Authors'],", ",false);
+            kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
         },
         facets: [
             {
                 facetTitle: "Tasks",
                 catTableName: "Keywords",
-                catLabelText: function(d){
-                    return d.data[0];
-                },
+                catLabelText: function(d){ return d.data.Task; },
                 facets:[
-                    {
-                        facetTitle: "Categories",
-                        catItemMap: function(d){
-                            return d.data[1];
-                        }
+                    {   facetTitle: "Categories",
+                        catItemMap: function(d){ return d.data.Category; }
                     },{
                         facetTitle: "Levels",
-                        catItemMap: function(d){
-                            return kshf.dt_id.Levels[d.data[1]].data[1];
-                        }
+                        catItemMap: function(d){ return kshf.dt_id.Levels[d.data.Category].data.Level; }
                     }
                 ]
             },{ facetTitle: "Authors", layout: 'right', 
@@ -71,8 +57,7 @@ google.setOnLoadCallback(function(){
                     return r;
                 }
             },{ facetTitle: "Venue", layout: 'right', 
-            },{ facetTitle: "Year", layout: 'bottom',
-                type:'interval', intervalScale: 'linear'
+            },{ facetTitle: "Year", layout: 'bottom', intervalScale: 'linear'
             }
         ],
         itemDisplay: {
@@ -80,9 +65,7 @@ google.setOnLoadCallback(function(){
             detailsToggle : "Zoom",
             sortingOpts : [ {name: 'id', inverse:true} ],
             textSearch: 'Title',
-            contentFunc: function(d){ 
-                return d.data[4];
-            }
+            contentFunc: function(d){ return d.data.Title; }
         }
     });
 });

@@ -19,15 +19,189 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-170);
-}
+function loadData(browser){
+    browser.primaryTableName = "Milestones";
+
+    kshf.dt.Milestones = [];
+    kshf.dt_id.Milestones = {};
+    kshf.dt.References = [];
+    kshf.dt_id.Milestones_2 = {};
+
+    var highlightIDs= [
+        1,2,9,12,13,
+        23,38,46,49,
+        71,75,77,78,80,
+        89,90,95,94,114,112,118,120,
+        126,135,129,141,130,155,174,
+        181,195,198,209,
+        219,222,227,
+        250,274,254,275
+        ];
+
+    $.ajax({
+        url:"./data/visualization_milestones.xml",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            var $collection = $(collection);
+            var arr = kshf.dt.Milestones;
+            var el = document.createElement( 'div' );
+            var id=0;
+
+            $collection.find("event").each(function(){
+                var $this = $(this);
+                var cData = {};
+                cData.id = id; id++;
+
+                cData.Images = [];
+                cData.InfoLinks = [];
+                cData.References = [];
+                cData.Keywords = [];
+
+                cData.Year = parseInt($this.attr("start"));
+                cData.IsDuration = $this.attr("isDuration");
+                cData.Title = $this.attr("title");
+                el.innerHTML = $this.text();
+                var $el = $(el);
+                cData.Category = $el.find("span.tl_bubble_category > a")[0].text.trim();
+                cData.Date_Location = $el.find("span.tl_bubble_date_location").text().trim();
+                cData.Author = $el.find("span.tl_bubble_author").text().trim();
+                cData.Author = cData.Author.replace(/\(.*\)/,"");
+                cData.Author = cData.Author.split(" & ");
+                for(var a=0;a<cData.Author.length;a++){
+                    cData.Author[a] = cData.Author[a].trim();
+                }
+
+                cData.Description = $el.find("span.tl_bubble_description").text().trim();
+                cData.URL = $el.find("span.tl_bubble_link > a").attr("href").trim();
+                cData.id = parseInt(cData.URL.substr(cData.URL.indexOf("mid=ms")+6));
+                var milestoneItem = new kshf.Item(cData,"id");
+                arr.push(milestoneItem);
+
+                highlightIDs.forEach(function(id){
+                    if(id===cData.id) cData.Highlights="Highlighted";
+                })
+
+                kshf.dt_id.Milestones[milestoneItem.id()] = milestoneItem;
+            });
+        }
+    });
+
+    $.ajax({
+        url:"./data/visualization_milestones_references.html",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            var $collection = $(collection);
+            var arr = kshf.dt.References;
+
+            $collection.find("> ol > li").each(function(){
+                var $this = $(this);
+                var cData = {};
+                cData.id = $this.attr("id");
+                cData.Author = $this.find("strong").text();
+                cData.FullText = $this.text();
+                arr.push(new kshf.Item(cData,"id"));
+            });
+        }
+    });
+
+    // add more data! - images, links, references, etc
+    $.ajax({
+        url:"./data/visualization_milestones.html",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            var $collection = $(collection);
+
+            $collection.find("> div > div.milestoneContainer").each(function(){
+                var $this = $(this);
+                var mid = parseInt($this.attr("id").substr(2));
+                var milestoneItem = kshf.dt_id.Milestones[mid];
+                if(milestoneItem===undefined){
+                    console.log("noo! "+ mid);
+                    return;
+                }
+                var msData = milestoneItem.data;
+
+                msData.Name = $this.find("> a").attr("name");
+
+                kshf.dt_id.Milestones_2[msData.Name] = milestoneItem;
+
+                msData.Date = $this.find("> div.milestoneHeaderContainer > .milestoneDates").text();
+
+//                            msData.Author = $this.find("> div.milestoneHeaderContainer > .milestoneAuthor").text();
+//                            msData.Author = msData.Author.replace(/\(.*\)/,"");
+
+                msData.Tag = $this.find("> div.milestoneHeaderContainer > .milestoneTag").text();
+
+                $this.find("> div.milestoneDetail >.mediaItemLinkImage").each(function(){
+                    msData.Images.push({
+                        text: "",
+                        URL: $(this).find("a").attr("href")
+                    });
+                });
+
+                $this.find("> div.mediaItemImageContainer >.mediaItemImage").each(function(){
+                    msData.Images.push({
+                        text: $(this).text().trim(),
+                        thumb: $(this).find("a > img").attr("src"),
+                        URL: $(this).find("a").attr("href")
+                    });
+                });
+
+                $this.find("> div.milestoneDetail >.mediaItemLinkNonImage").each(function(){
+                    msData.InfoLinks.push({
+                        text: $(this).find("a").text().trim(),
+                        URL: $(this).find("a").attr("href")
+                    });
+                });
+
+                $this.find("> div.milestoneDetail >.milestoneRefs > a").each(function(){
+                    msData.References.push(this.textContent);
+                })
+            });
+        }
+    });
+
+    // add categories
+    $.ajax({
+        url:"./data/visualization_milestones_categories.txt",
+        dataType:"text",
+        async: false,
+        success: function(collection){
+            var lines = collection.split("\n");
+            lines.forEach(function(line,lineNo){
+                var s=line.split(" * ");
+                if(s.length!==2){
+                    console.log(s+" lineNo: "+lineNo);
+                    return;
+                }
+                var cats=s[0].split(">");
+                var milestones=s[1].split(",");
+                milestones.forEach(function(msName){
+                    var msItem = kshf.dt_id.Milestones_2[msName];
+                    if(msItem===undefined){
+                        console.log("Item not found: "+msName+" - "+milestones);
+                        return;
+                    }
+                    cats.forEach(function(cat){
+                        msItem.data.Keywords.push(cat);
+                    });
+                });
+            })
+        }
+    });
+    
+    browser.items = kshf.dt.Milestones;
+    browser.itemsSelectedCt = browser.items.length;
+    browser.loadCharts();   
+};
 
 google.setOnLoadCallback(function(){
-    resizeBrowser();
+    resizeBrowser(100,170);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,170);
         browser.updateLayout();
     });
 
@@ -37,190 +211,12 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 240,
         rightPanelLabelWidth: 160,
         itemName: "Milestones in Visualization",
-        source : {
+        source: {
             url: 'http://www.datavis.ca/milestones/index.php',
-            callback: function(browser){
-                browser.primaryTableName = "Milestones";
-
-                kshf.dt.Milestones = [];
-                kshf.dt_id.Milestones = {};
-                kshf.dt.References = [];
-                kshf.dt_id.Milestones_2 = {};
-
-                var highlightIDs= [
-                    1,2,9,12,13,
-                    23,38,46,49,
-                    71,75,77,78,80,
-                    89,90,95,94,114,112,118,120,
-                    126,135,129,141,130,155,174,
-                    181,195,198,209,
-                    219,222,227,
-                    250,274,254,275
-                    ];
-
-                $.ajax({
-                    url:"./data/visualization_milestones.xml",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-                        var arr = kshf.dt.Milestones;
-                        var el = document.createElement( 'div' );
-                        var id=0;
-
-                        $collection.find("event").each(function(){
-                            var $this = $(this);
-                            var cData = {};
-                            cData.id = id; id++;
-
-                            cData.Images = [];
-                            cData.InfoLinks = [];
-                            cData.References = [];
-                            cData.Keywords = [];
-
-                            cData.Year = parseInt($this.attr("start"));
-                            cData.IsDuration = $this.attr("isDuration");
-                            cData.Title = $this.attr("title");
-                            el.innerHTML = $this.text();
-                            var $el = $(el);
-                            cData.Category = $el.find("span.tl_bubble_category > a")[0].text.trim();
-                            cData.Date_Location = $el.find("span.tl_bubble_date_location").text().trim();
-                            cData.Author = $el.find("span.tl_bubble_author").text().trim();
-                            cData.Author = cData.Author.replace(/\(.*\)/,"");
-                            cData.Author = cData.Author.split(" & ");
-                            for(var a=0;a<cData.Author.length;a++){
-                                cData.Author[a] = cData.Author[a].trim();
-                            }
-
-                            cData.Description = $el.find("span.tl_bubble_description").text().trim();
-                            cData.URL = $el.find("span.tl_bubble_link > a").attr("href").trim();
-                            cData.id = parseInt(cData.URL.substr(cData.URL.indexOf("mid=ms")+6));
-                            var milestoneItem = new kshf.Item(cData,"id");
-                            arr.push(milestoneItem);
-
-                            highlightIDs.forEach(function(id){
-                                if(id===cData.id) cData.Highlights="Highlighted";
-                            })
-
-                            kshf.dt_id.Milestones[milestoneItem.id()] = milestoneItem;
-                        });
-                    }
-                });
-
-                $.ajax({
-                    url:"./data/visualization_milestones_references.html",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-                        var arr = kshf.dt.References;
-
-                        $collection.find("> ol > li").each(function(){
-                            var $this = $(this);
-                            var cData = {};
-                            cData.id = $this.attr("id");
-                            cData.Author = $this.find("strong").text();
-                            cData.FullText = $this.text();
-                            arr.push(new kshf.Item(cData,"id"));
-                        });
-                    }
-                });
-
-                // add more data! - images, links, references, etc
-                $.ajax({
-                    url:"./data/visualization_milestones.html",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-
-                        $collection.find("> div > div.milestoneContainer").each(function(){
-                            var $this = $(this);
-                            var mid = parseInt($this.attr("id").substr(2));
-                            var milestoneItem = kshf.dt_id.Milestones[mid];
-                            if(milestoneItem===undefined){
-                                console.log("noo! "+ mid);
-                                return;
-                            }
-                            var msData = milestoneItem.data;
-
-                            msData.Name = $this.find("> a").attr("name");
-
-                            kshf.dt_id.Milestones_2[msData.Name] = milestoneItem;
-
-                            msData.Date = $this.find("> div.milestoneHeaderContainer > .milestoneDates").text();
-
-//                            msData.Author = $this.find("> div.milestoneHeaderContainer > .milestoneAuthor").text();
-//                            msData.Author = msData.Author.replace(/\(.*\)/,"");
-
-                            msData.Tag = $this.find("> div.milestoneHeaderContainer > .milestoneTag").text();
-
-                            $this.find("> div.milestoneDetail >.mediaItemLinkImage").each(function(){
-                                msData.Images.push({
-                                    text: "",
-                                    URL: $(this).find("a").attr("href")
-                                });
-                            });
-
-                            $this.find("> div.mediaItemImageContainer >.mediaItemImage").each(function(){
-                                msData.Images.push({
-                                    text: $(this).text().trim(),
-                                    thumb: $(this).find("a > img").attr("src"),
-                                    URL: $(this).find("a").attr("href")
-                                });
-                            });
-
-                            $this.find("> div.milestoneDetail >.mediaItemLinkNonImage").each(function(){
-                                msData.InfoLinks.push({
-                                    text: $(this).find("a").text().trim(),
-                                    URL: $(this).find("a").attr("href")
-                                });
-                            });
-
-                            $this.find("> div.milestoneDetail >.milestoneRefs > a").each(function(){
-                                msData.References.push(this.textContent);
-                            })
-                        });
-                    }
-                });
-
-                // add categories
-                $.ajax({
-                    url:"./data/visualization_milestones_categories.txt",
-                    dataType:"text",
-                    async: false,
-                    success: function(collection){
-                        var lines = collection.split("\n");
-                        lines.forEach(function(line,lineNo){
-                            var s=line.split(" * ");
-                            if(s.length!==2){
-                                console.log(s+" lineNo: "+lineNo);
-                                return;
-                            }
-                            var cats=s[0].split(">");
-                            var milestones=s[1].split(",");
-                            milestones.forEach(function(msName){
-                                var msItem = kshf.dt_id.Milestones_2[msName];
-                                if(msItem===undefined){
-                                    console.log("Item not found: "+msName+" - "+milestones);
-                                    return;
-                                }
-                                cats.forEach(function(cat){
-                                    msItem.data.Keywords.push(cat);
-                                });
-                            });
-                        })
-                    }
-                });
-                
-                browser.items = kshf.dt.Milestones;
-                browser.itemsSelectedCt = browser.items.length;
-                browser.loadCharts();   
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "ERA",
+            {   facetTitle: "ERA",
                 catItemMap: function(d){
                     var year=d.data.Year;
                     if(year<1600) return 0;
@@ -232,7 +228,7 @@ google.setOnLoadCallback(function(){
                     if(year<1975) return 6;
                     return 7;
                 },
-                sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}],
+                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}],
                 catLabelText: function(d){
                     switch(d.data[1]){
                         case 0: return "Maps and diagrams <b>Pre-1600</b>";
@@ -259,14 +255,13 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 45,
-            detailsToggle : "Zoom",
-            autoExpandMore: true,
-            sortingOpts : [ {name: 'Year', inverse: true} ],
+            detailsToggle: "Zoom",
+            sortingOpts: [ {name: 'Year', inverse: true} ],
             displayType: 'grid',
             maxVisibleItems_Default: 25,
-            detailsToggle : "Zoom",
+            detailsToggle: "Zoom",
             textSearch: "Title",
-            contentFunc : function(d){
+            contentFunc: function(d){
                 var str="";
                 str+="<a target='_blank' href='http://datavis.ca/milestones/"+d.data.URL+
                     "' class='thumbnail'><img class='thumbImg'></a>";

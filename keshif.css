@@ -158,6 +158,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: -110px;
   width: 100px;
   top: 10px;
+  display: none;
 }
 .kshf .attributeList > .attributeName {
   padding: 2px;
@@ -491,10 +492,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .facetControls .attribTextSearchInput::-webkit-input-placeholder {
   text-align: right;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control {
+.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control > .fa-collapse {
   opacity: 1;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control .fa:hover {
+.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control > .fa-collapse:hover {
   -webkit-animation-direction: reverse;
   -moz-animation-direction: reverse;
   -o-animation-direction: reverse;
@@ -704,7 +705,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   position: absolute;
   top: 0px;
-  opacity: 0;
   z-index: 10;
   -webkit-transition: color 250ms linear, opacity 100ms linear ;
   -moz-transition: color 250ms linear, opacity 100ms linear ;
@@ -717,6 +717,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 50% 50%;
 }
 .kshf .headerGroup > .header_display_control > .fa {
+  opacity: 0;
   cursor: pointer;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
@@ -1640,7 +1641,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[refreshSorting="true"] .sortButton:before {
   content: "\f175" !important;
 }
-.kshf .kshfChart:hover > .headerGroup > .header_display_control {
+.kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
 .kshf .kshfChart:hover[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {
@@ -1734,6 +1735,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-animation-delay: 600ms;
   -o-animation-delay: 600ms;
   animation-delay: 600ms;
+}
+.kshf .middleStuff {
+  display: inline-flex;
+  display: -webkit-inline-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
 }
 .kshf .listDiv {
   position: relative;
@@ -2068,11 +2075,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-width: 0px 2px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMTAwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjksIDIyMiwgMjAwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyNDYsIDI0MywgMjM1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
-  background-image: -moz-linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
-  background-image: -o-linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
-  background-image: linear-gradient(to top, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%);
+  background-color: #efeadf;
 }
 .kshf .listHeader > .topRow .totalViz {
   height: 3px;
@@ -2085,10 +2088,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
   top: 0px;
   height: 100%;
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
+  -webkit-transition: all 200ms ease-in-out;
+  -moz-transition: all 200ms ease-in-out;
+  -o-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
 }
 .kshf .listHeader > .topRow .totalViz > .aggr.total {
   width: 100%;
@@ -2100,6 +2103,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: table;
   table-layout: fixed;
   width: 100%;
+  min-height: 18px;
 }
 .kshf .listHeader > .bottomRow > .bottomRowRow {
   display: table-row;
@@ -2192,7 +2196,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
 }
 .kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header {
-  padding: 1px 0px 1px 0px;
+  padding: 1px;
   font-size: 0.9em;
   font-weight: 700;
 }
@@ -2232,14 +2236,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[filtered=false] {
   display: none;
 }
-.kshf .listHeader span.mainTextSearch {
+.kshf .listHeader .mainTextSearch {
   white-space: nowrap;
   margin-left: 5px;
   display: inline-block;
   vertical-align: bottom;
   position: relative;
 }
-.kshf .listHeader span.mainTextSearch input {
+.kshf .listHeader .mainTextSearch input {
   font-size: 0.8em;
   font-weight: 700;
   color: #cb5454;
@@ -2247,29 +2251,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(255, 255, 255, 0.2);
   pointer-events: all;
   border-width: 0px;
-  border-bottom: dashed 0px #cb5454;
+  border-style: solid;
+  border-color: #cb5454;
+  margin: 1px;
+}
+.kshf .listHeader .mainTextSearch input:focus {
+  outline-color: #cb5454;
+  outline-width: 2px;
+}
+.kshf .listHeader .mainTextSearch input:hover {
+  border-width: 1px;
+  background-color: white;
   margin: 0px;
 }
-.kshf .listHeader span.mainTextSearch input:focus {
-  outline-color: gray;
-  outline-width: 4px;
-}
-.kshf .listHeader span.mainTextSearch input:hover {
-  border: solid 1px #cb5454;
-  background-color: white;
-  padding: 0px 1px;
-}
-.kshf .listHeader span.mainTextSearch input::-webkit-input-placeholder {
+.kshf .listHeader .mainTextSearch input::-webkit-input-placeholder {
   color: #cb5454;
   font-weight: 300;
 }
-.kshf .listHeader span.mainTextSearch input:focus::-webkit-input-placeholder {
+.kshf .listHeader .mainTextSearch input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .listHeader span.mainTextSearch .searchIcon {
+.kshf .listHeader .mainTextSearch .searchIcon {
   color: #cb5454;
 }
-.kshf .listHeader span.mainTextSearch i.fa.clearText {
+.kshf .listHeader .mainTextSearch i.fa.clearText {
   position: absolute;
   display: none;
   right: 2px;
@@ -2277,7 +2282,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   color: gray;
 }
-.kshf .listHeader span.mainTextSearch i.fa.clearText:hover {
+.kshf .listHeader .mainTextSearch i.fa.clearText:hover {
   color: #cb5454;
 }
 .kshf .listHeader span.rightBoxes {

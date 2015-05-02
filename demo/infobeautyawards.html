@@ -17,15 +17,10 @@
 var demoID = 45;
 var cols=null;
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-120);
-}
-
 google.setOnLoadCallback(function(){
-    resizeBrowser();
+    resizeBrowser(100,120);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,120);
         browser.updateLayout();
     });
 
@@ -41,43 +36,38 @@ google.setOnLoadCallback(function(){
         },
         loadedCb: function(){
             cols = kshf.dt_ColNames.Showcases;
-            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Categories], /\*/, false);
-            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.RelatedTo], /\*/, true);
-            kshf.Util.cellToArray(kshf.dt.Showcases, [cols.Credits], ", ", false);
+            kshf.Util.cellToArray(kshf.dt.Showcases, ['Categories'], /\*/, false);
+            kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
+            kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
             kshf.dt.Showcases.forEach(function(d){
-                var t=d.data[cols.Title];
+                var t=d.data.Title;
                 var i=t.indexOf(" by ");
                 if(i>0)
-                    d.data[cols.Title] = t.substr(0,i);
+                    d.data.Title = t.substr(0,i);
             });
         },
         facets: [
             {   facetTitle: "Categories"
             },{ facetTitle: "Year",
-                catItemMap: function(d){
-                    return d.data[cols.Award];
-                },
+                catItemMap: function(d){ return d.data.Award; },
                 intervalScale: 'step'
-//                        },{ facetTitle: "RelatedTo"
             },{ facetTitle: "Credits", collapsed: true
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
             displayType: 'grid',
-            autoExpandMore: true,
-//                        detailsToggle : "Zoom",
             sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
             textSearch : 'Title',
             contentFunc: function(d){ 
                 var str='';
-                str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data[cols.URL]+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
-                str+="<span class='subTitle'>"+d.data[cols.Credits]+"</span>";
-                str+="<span class='title'>"+d.data[cols.Title]+"</span>";
+                str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
+                str+="<span class='subTitle'>"+d.data.Credits+"</span>";
+                str+="<span class='title'>"+d.data.Title+"</span>";
                 return str;
             },
             visibleCb: function(d){
-                d3.select(this).select("img").attr("src",d.data[cols.Thumbnail]);
+                d3.select(this).select("img").attr("src",d.data.Thumbnail);
             }
         }
     });

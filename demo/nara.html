@@ -19,15 +19,51 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-160);
+function loadData(browser){
+    browser.primaryTableName = "Photos";
+
+    kshf.dt.Photos = [];
+    var arr = kshf.dt.Photos;
+    var parentId = $("#naraParentID")[0].value;
+    var resultFields = $("#naraResultFields")[0].value;
+    var rows=$("#naraRows")[0].value;
+
+    $.ajax({
+        url:"https://catalog.archives.gov/api/v1/?naIds="+parentId,
+        async:false,
+        success: function(data){
+            browser.itemName = data.opaResponse.results.result[0].description.series.title;
+        }
+    });
+
+    $.ajax({
+        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+        // url: "./data_private/dc_homicides.json", // original source
+        url: "https://catalog.archives.gov/api/v1/?description.item.parentSeries.naId="+
+            parentId+"&rows="+rows+"&resultFields="+resultFields,
+        error: function(e,f){
+            console.log(e+" - "+f);
+        },
+        success: function(data){
+            data.opaResponse.results.result.forEach(function(poster){
+                poster.id = 1*poster.naId;
+                arr.push(new kshf.Item(poster,"id"))
+            });
+
+            browser.items = arr;
+            browser.itemsSelectedCt = arr.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
 }
 
 var loadBrowser = function(){
-    resizeBrowser();
+    resizeBrowser(100,160);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,160);
         browser.updateLayout();
     });
 
@@ -37,57 +73,9 @@ var loadBrowser = function(){
         categoryTextWidth: 200,
         source: { 
             url: "http://www.archives.gov",
-        callback : function(browser){
-            browser.primaryTableName = "Photos";
-
-            kshf.dt.Photos = [];
-            var arr = kshf.dt.Photos;
-            var parentId = $("#naraParentID")[0].value;
-            var resultFields = $("#naraResultFields")[0].value;
-            var rows=$("#naraRows")[0].value;
-
-            $.ajax({
-                url:"https://catalog.archives.gov/api/v1/?naIds="+parentId,
-                async:false,
-                success: function(data){
-                    browser.itemName = data.opaResponse.results.result[0].description.series.title;
-                }
-            });
-
-            $.ajax({
-                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-                // url: "./data_private/dc_homicides.json", // original source
-                url: "https://catalog.archives.gov/api/v1/?description.item.parentSeries.naId="+
-                    parentId+"&rows="+rows+"&resultFields="+resultFields,
-                error: function(e,f){
-                    console.log(e+" - "+f);
-                },
-                success: function(data){
-                    data.opaResponse.results.result.forEach(function(poster){
-                        poster.id = 1*poster.naId;
-                        arr.push(new kshf.Item(poster,"id"))
-                    });
-
-                    browser.items = arr;
-                    browser.itemsSelectedCt = arr.length;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
-                }
-            });
-        }},
+            callback: loadData
+        },
         facets: [
-//            {   facetTitle: "date"
-//            },{ facetTitle: "Collection",
-//                catItemMap: function(poster){
-//                    return poster.data.from;
-//                }
-/*            },{ facetTitle: "Subjects",
-                catItemMap: function(poster){
-                    return poster.data.subjects;
-                }*/
-//            },
             { facetTitle: "Tags",
                 catItemMap: function(d){
                     var contribs = d.data.publicContributions;
@@ -139,7 +127,6 @@ var loadBrowser = function(){
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [ { name: 'id' } ],
-            autoExpandMore: true,
             displayType: 'grid',
             textSearch: "title",
             contentFunc : function(d){
@@ -164,13 +151,12 @@ var loadBrowser = function(){
     });
 };
 
+// Custom controls
 $(document).ready(function(){
-
     $("#naraPreset").on("change",function(a){
         var v=this.selectedOptions[0].getAttribute("value");
         $("#naraParentID")[0].value = 1*v;
     });
-
     $("#naraLoadButton").on("click",function(){
         loadBrowser(); 
     })

@@ -15,18 +15,12 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback( function() {
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-45);
-    $('#chart_div').width ($(window).width()*0.8);
-    // set resize callback
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
-        $('#chart_div').width ($(window).width()*0.8);
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
-    var pubCol;
-    
-    // set height of the source dom as 
+
     browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "works",
@@ -39,49 +33,43 @@ google.setOnLoadCallback( function() {
             sheets : [ {name: "Publications"} ]
         },
         loadedCb: function(){
-            pubCol = kshf.dt_ColNames.Publications;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol['Co-Author'], pubCol['Topic']],/\b,/, false );
+            kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );
         },
         facets: [
-            {
-                facetTitle: "Topic",
-            },{
-                facetTitle: "Co-Author",
-            },{
-                facetTitle: "Pub. Type",
+            {   facetTitle: "Topic",
+            },{ facetTitle: "Co-Author",
+            },{ facetTitle: "Pub. Type",
                 forceSearch: false,
-            },{
-                facetTitle: "Date",
-                intervalScale: 'time',
-                layout: 'bottom-mid'
+            },{ facetTitle: "Date",
+                layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 72,
             sortingOpts : [
-                {   name: 'Year', value: function(d){ return d.data[pubCol['Date']].getFullYear(); } }
+                {   name: 'Year', value: function(d){ return d.data.Date.getFullYear(); } }
             ],
             textSearch : 'Title',
             detailsToggle : "Multi",
             contentFunc : function(item){
                 var j;
                 var str="";
-                var ptype=item.data[pubCol['Pub. Type']];
+                var ptype=item.data['Pub. Type'];
                 // paper name
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=item.data[pubCol.Title];
+                str+=item.data.Title;
                 if(ptype!=='') str+=" <i>("+ptype+")</i>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
                 // Venue
-                var year = item.data[pubCol['Date']].getFullYear();
-                var venue=item.data[pubCol['Venue']];
-                var subvenue=item.data[pubCol['Venue-Sub']];
-                var location=item.data[pubCol['Location']];
-                var publisher=item.data[pubCol['Publisher']];
+                var year = item.data.Date.getFullYear();
+                var venue=item.data.Venue;
+                var subvenue=item.data['Venue-Sub'];
+                var location=item.data.Location;
+                var publisher=item.data.Publisher;
                 if(venue!==''){
                     str+="<div class=\"iteminfo iteminfo_1\"> ["+year+"] "+venue;
                     if(subvenue!=='') str+=", "+subvenue;
@@ -90,13 +78,13 @@ google.setOnLoadCallback( function() {
                     str+="</div>";
                 }
                 // co-authors
-                var coAuthors=item.data[pubCol['Co-Author']];
-                if(coAuthors.length!==0){
+                var coAuthors=item.data['Co-Author'];
+                if(coAuthors && coAuthors.length!==0){
                     str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: "+coAuthors+"</div>";
                 }
                 // topics
-                var topics=item.data[pubCol['Topic']];
-                if(topics.length!==0){
+                var topics=item.data.Topic;
+                if(topics && topics.length!==0){
                     str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
                 }
 

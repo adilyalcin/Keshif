@@ -159,90 +159,79 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   facetTitle: "Class",
-                catItemMap: function(d){ return d.data[0]; },
                 catLabelText: getName.Class
             },{ facetTitle: "Population",
-                layout: "bottom-mid",
-                catItemMap: function(d){ return d.data[21]; },
+                layout: "middle",
                 catLabelText: getName.Population
             },{ facetTitle: "Habitat",
-                catItemMap: function(d){ return d.data[22]; },
                 catLabelText: getName.Habitat
             },{ facetTitle: "Odor",
-                catItemMap: function(d){ return d.data[5]; },
                 catLabelText: getName.Odor
-            },{ facetTitle: "Bruises",
-                collapsed: true,
-                catItemMap: function(d){ return d.data[4]; },
-            },{
-                facetTitle: "Cap",
-                layout: "bottom-mid",
+            },{ facetTitle: "Bruises", collapsed: true,
+            },{ facetTitle: "Cap", layout: "middle",
                 facets: [
                     {   facetTitle: "Shape",
-                        catItemMap: function(d){ return d.data[1]; },
+                        catItemMap: function(d){ return d.data.Cap_Shape; },
                         catLabelText: getName.Shape
                     },{ facetTitle: "Surface",
-                        catItemMap: function(d){ return d.data[2]; },
+                        catItemMap: function(d){ return d.data.Cap_Surface; },
                         catLabelText: getName.Surface
                     },{ facetTitle: "Color",
-                        catItemMap: function(d){ return d.data[3]; },
+                        catItemMap: function(d){ return d.data.Cap_Color; },
                         catLabelText: getName.Color
                     }
                 ]
             },{
-                facetTitle: "Ring",
-                layout: "bottom-mid",
+                facetTitle: "Ring", layout: "middle",
                 facets: [
                     {   facetTitle: "Number",
-                        catItemMap: function(d){ return d.data[18]; },
+                        catItemMap: function(d){ return d.data.Ring_Number; },
                         catLabelText: getName.RingNumber
                     },{ facetTitle: "Type",
-                        catItemMap: function(d){ return d.data[19]; },
+                        catItemMap: function(d){ return d.data.Ring_Type; },
                         catLabelText: getName.RingType
                     }
                 ]
             },{ facetTitle: "Gill",
                 facets:[
                     {   facetTitle: "Attachment",
-                        catItemMap: function(d){ return d.data[6]; },
+                        catItemMap: function(d){ return d.data.Gill_Attachment; },
                         catLabelText: getName.GillAttachment
                     },{ facetTitle: "Spacing",
-                        catItemMap: function(d){ return d.data[7]; },
+                        catItemMap: function(d){ return d.data.Gill_Spacing; },
                         catLabelText: getName.GillSpacing
                     },{ facetTitle: "Size",
-                        catItemMap: function(d){ return d.data[8]; },
+                        catItemMap: function(d){ return d.data.Gill_Size; },
                         catLabelText: getName.GillSize
                     },{ facetTitle: "Color",
-                        catItemMap: function(d){ return d.data[9]; },
+                        catItemMap: function(d){ return d.data.Gill_Color; },
                         catLabelText: getName.Color
                     }
                 ]
             },{
-                facetTitle: "Spore Print Color",
-                layout: 'right',
-                catItemMap: function(d){ return d.data[20]; },
+                facetTitle: "Spore Print Color", layout: 'right',
+                catItemMap: function(d){ return d.data.Spore_Pring_Color; },
                 catLabelText: getName.Color
             },{
-                facetTitle: "Stalk",
-                layout: 'right',
+                facetTitle: "Stalk", layout: 'right',
                 facets:[
                     {   facetTitle: "Shape",
-                        catItemMap: function(d){ return d.data[10]; },
+                        catItemMap: function(d){ return d.data.Stalk_Shape; },
                         catLabelText: getName.Shape
                     },{ facetTitle: "Root",
-                        catItemMap: function(d){ return d.data[11]; },
+                        catItemMap: function(d){ return d.data.Stalk_Root; },
                         catLabelText: getName.Root
                     },{ facetTitle: "Surface Above Ring",
-                        catItemMap: function(d){ return d.data[12]; },
+                        catItemMap: function(d){ return d.data.Stalk_Surface_Above_Ring; },
                         catLabelText: getName.Surface
                     },{ facetTitle: "Surface Below Ring",
-                        catItemMap: function(d){ return d.data[13]; },
+                        catItemMap: function(d){ return d.data.Stalk_Surface_Below_Ring; },
                         catLabelText: getName.Surface
                     },{ facetTitle: "Color Above Ring",
-                        catItemMap: function(d){ return d.data[14]; },
+                        catItemMap: function(d){ return d.data.Stalk_Color_Above_Ring; },
                         catLabelText: getName.Color
                     },{ facetTitle: "Color Below Ring",
-                        catItemMap: function(d){ return d.data[15]; },
+                        catItemMap: function(d){ return d.data.Stalk_Color_Below_Ring; },
                         catLabelText: getName.Color
                     }
                 ]
@@ -254,14 +243,13 @@ google.setOnLoadCallback(function(){
         <style>
             #chart_div {
                 width: 890px;
-                height: 700px;
+                height: 670px;
             }
         </style>
     </head>
     <body>
         <div class="pageTitle" align="center">Mushroom Species</div>
         <div class="contents"><div id="chart_div"></div></div>
-
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
             <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from

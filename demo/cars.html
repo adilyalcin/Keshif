@@ -13,55 +13,61 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    leftPanelLabelWidth: 100,
-                    rightPanelLabelWidth: 150,
-                    source: {
-                        gdocId : '1UPaqtGuoeGXcxXKSVh1IJ-i40gbTgGfb_jZo494PlXk',
-                        sheets : [ {name:"Cars"} ]
-                    },
-                    facets: [
-                        {   facetTitle: "Origin",
-                            catItemMap: function(d){
-                                switch(d.data[8]){
-                                    case 1: return "American";
-                                    case 2: return "European";
-                                    case 3: return "Japanese";
-                                }
-                                return "Da?";
-                            }
-                        },{ facetTitle: "Cyclinders", type: "categorical",
-                            sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
-                        },{ facetTitle: "MPG", type: 'interval'
-                        },{ facetTitle: "Engine Displacement", unitName: "cu.\"", layout: 'right'
-                        },{ facetTitle: "Horsepower", layout: 'right'
-                        },{ facetTitle: "Weight", unitName: "lbs", layout: 'right'
-                        },{ facetTitle: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
-                        },{ facetTitle: "Year", layout: "bottom"
-                        }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 70,
-                        detailsToggle : "Zoom",
-                        autoExpandMore: true,
-                        sortingOpts : [ {name: 'MPG'},{name: "Weight"}, {name: "Year"} ],
-                        textSearch: "Name",
-                        content: "Name"
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 150,
+        source: {
+            gdocId : '1UPaqtGuoeGXcxXKSVh1IJ-i40gbTgGfb_jZo494PlXk',
+            sheets : [{ name:"Cars" }]
+        },
+        facets: [
+            {   facetTitle: "Origin",
+                catItemMap: function(d){
+                    switch(d.data.Origin){
+                        case 1: return "American";
+                        case 2: return "European";
+                        case 3: return "Japanese";
                     }
-                });
-            });
+                }
+            },{ facetTitle: "Cyclinders", type: "categorical",
+                sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
+            },{ facetTitle: "MPG", type: 'interval'
+            },{ facetTitle: "Engine Displacement", unitName: "cu.\"", layout: 'right'
+            },{ facetTitle: "Horsepower", layout: 'right'
+            },{ facetTitle: "Weight", unitName: "lbs", layout: 'right'
+            },{ facetTitle: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
+            },{ facetTitle: "Year", layout: "bottom"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 70,
+            detailsToggle : "Zoom",
+            sortingOpts : [ {name: 'MPG'},{name: "Weight"}, {name: "Year"} ],
+            textSearch: "Name",
+            content: "Name"
+        }
+    });
+});
         </script>
         <style>
             #chart_div {
                 width: 890px;
                 height: 600px;
             }
+            .attributeList{
+                display: block !important;
+            }
         </style>
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            <a href="http://lib.stat.cmu.edu/datasets/cars.data" target='_blank'>Data</a> from <a href="http://lib.stat.cmu.edu/datasets/" target='_blank'>StatLib @ CMU</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
     </body>
 </html>

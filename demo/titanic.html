@@ -14,77 +14,68 @@
 
         <script type="text/javascript">
 
-        var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
+var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
 
-        google.setOnLoadCallback(function(){
-            browser = new kshf.Browser({
-                domID: "#chart_div",
-                leftPanelLabelWidth: 150,
-                rightPanelLabelWidth: 150,
-                source: {
-                    gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
-                    sheets : [ {name:"Passengers"} ]
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        leftPanelLabelWidth: 150,
+        rightPanelLabelWidth: 150,
+        source: {
+            gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
+            sheets : [ {name:"Passengers"} ]
+        },
+        facets: [
+            {   facetTitle: "Survived",
+                catItemMap : function(d){ 
+                    var s = d.data.survived;
+                    if(s) return 'Yes';
+                    return 'No';
                 },
-                facets: [
-                    {   facetTitle: "Survived",
-                        catItemMap : function(d){ 
-                            var s = d.data[2];
-                            if(s) return 'Yes';
-                            return 'No';
-                        },
-                        sortingOpts : [{ no_resort: true }]
-                    },{ facetTitle: "Class",
-                        catItemMap: function(d){ return d.data[1];},
-                        sortingOpts : [{ 
-                            func: function(a,b){
-                                if(a==="3rd") return 1;
-                                if(a==="1st") return -1;
-                                if(b==="3rd") return -1;
-                                if(b==="1st") return 1;
-                            },
-                            no_resort: true 
-                        }]
-                    },{ facetTitle: "Sex",
-                        catItemMap: function(d){ return d.data[10];},
-                        sortingOpts : [{ no_resort: true }]
-                    },{ facetTitle: "Age",
-                        catItemMap : function(d){
-                            var age = d.data[4];
-                            if(age===null) return null;
-                            return age;
-                        },
-                        layout:'bottom',
-                        showPercentile: true
-                    },{ facetTitle: "embarked", layout: 'right'
-                    },{ facetTitle: "room", layout: 'right', collapsed: true,
-//                    },{ facetTitle: "boat", type: 'categorical', layout: 'right'
-/*                    },{
-                        facetTitle: "Birthdate",
-                        catItemMap : function(d){ 
-                            // calculate birthdate from sink date and passenger age
-                            var age = d.data[4];
-                            if(age===null) return null;
-                            var newdate = new Date(sinkDate);
-                            newdate.setFullYear(newdate.getFullYear() - age);
-                            return newdate;
-                        },
-                        intervalScale: 'time',
-                        layout:'bottom'*/
-                    }
-                ],
-                itemDisplay: {
-                    sortColWidth: 50,
-                    sortingOpts : [ {name: 'id', inverse:true} ],
-                    textSearch: 'name',
-                    content: "name"
-                }
-            });
-        });
+                sortingOpts : [{ no_resort: true }]
+            },{ facetTitle: "Class",
+                catItemMap: function(d){ return d.data.pclass;},
+                sortingOpts : [{ 
+                    func: function(a,b){
+                        if(a==="3rd") return 1;
+                        if(a==="1st") return -1;
+                        if(b==="3rd") return -1;
+                        if(b==="1st") return 1;
+                    },
+                    no_resort: true 
+                }]
+            },{ facetTitle: "Sex",
+                catItemMap: function(d){ return d.data.sex;},
+                sortingOpts : [{ no_resort: true }]
+            },{ facetTitle: "Age",
+                catItemMap : function(d){
+                    var age = d.data.age;
+                    if(age===null) return null;
+                    return age;
+                },
+                layout:'bottom',
+                showPercentile: true
+            },{ facetTitle: "embarked",
+            },{ facetTitle: "room", collapsed: true,
+//            },{ facetTitle: "boat", collapsed: true, type: 'categorical' // there are negative values and such
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 50,
+            sortingOpts : [ 
+                {name: 'id', inverse:true},
+                {name: 'age'}
+            ],
+            textSearch: 'name',
+            content: "name"
+        }
+    });
+});
         </script>
         <style>
             #chart_div {
                 margin-top: 40px;
-                width: 950px;
+                width: 750px;
                 height: 700px;
             }
             #chart_div div.listItem{

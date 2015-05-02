@@ -34,32 +34,16 @@ google.setOnLoadCallback(function () {
             sheets: [ {name:"Grants", range:"A1:U4000"} ]
         },
         facets: [
-            {
-                facetTitle: "Main Category RFCD",/*
-                timeTitle: "App Year",
-                timeItemMap : function(d){ 
-                    var y=d.data[10];
-                    if(y===null) return null;
-                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
-                }*/
-            },{
-                facetTitle: "Broad Research Area", 
-            },{
-                facetTitle: "Funding Purpose", 
-            },{
-                facetTitle: "Main Funding Group", 
-            },{
-                facetTitle: "Sector", layout: 'right', 
-            },{
-                facetTitle: "Field Of Research / RFCD", layout: 'right',
-            },{
-                facetTitle: "Main Funding Unit Type", layout: 'right',
-            },{
-                facetTitle: "Grant Admin Institution", layout: 'right',
-            },{
-                facetTitle: "State", layout: 'right',
-            },{
-                facetTitle: "Main Category RFCD", layout: 'right',
+            {   facetTitle: "Main Category RFCD",
+            },{ facetTitle: "Broad Research Area", 
+            },{ facetTitle: "Funding Purpose", 
+            },{ facetTitle: "Main Funding Group", 
+            },{ facetTitle: "Sector", layout: 'right', 
+            },{ facetTitle: "Field Of Research / RFCD", layout: 'right',
+            },{ facetTitle: "Main Funding Unit Type", layout: 'right',
+            },{ facetTitle: "Grant Admin Institution", layout: 'right',
+            },{ facetTitle: "State", layout: 'right',
+            },{ facetTitle: "Main Category RFCD", layout: 'right',
             }
         ],
         itemDisplay: {

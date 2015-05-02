@@ -12,16 +12,51 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+function loadData(browser){
+    browser.primaryTableName = "Visualizations";
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+    kshf.dt.Visualizations = [];
+    kshf.dt_id.Visualizations = {};
+
+    kshf.dt.Categories = [];
+    kshf.dt_id.Categories = {};
+
+    $.ajax( {
+        url: "./data/textvis_content.json",
+        async: false,
+        success: function(data){
+            data.forEach(function(v){
+                var kshfItem = new kshf.Item(v,'id');
+                kshf.dt.Visualizations.push(kshfItem);
+                kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
+            });
+        }
+    });
+    $.ajax( {
+        url: "./data/textvis_categories.json",
+        async: false,
+        success: function(data){
+            data.forEach(function(c){
+                var kshfItem = new kshf.Item(c,'title');
+                kshf.dt.Categories.push(kshfItem);
+                kshf.dt_id.Categories[kshfItem.id()] = kshfItem;
+            });
+        }
+    });
+
+    browser.items = kshf.dt.Visualizations;
+    browser.itemsSelectedCt = browser.items.length;                
+
+    // finish loading....
+    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+    d3.select(".kshf.layout_infobox div.status_text div").text("");
+    window.setTimeout(function() { browser.loadCharts(); }, 100);
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -31,54 +66,12 @@ $(document).ready( function(){
         itemName: "Text Visualization Techniques",
         source : {
             url: "http://textvis.lnu.se/",
-            callback: function(browser){
-                browser.primaryTableName = "Visualizations";
-
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
-
-                kshf.dt.Categories = [];
-                kshf.dt_id.Categories = {};
-
-                $.ajax( {
-                    url: "./data/textvis_content.json",
-                    async: false,
-                    success: function(data){
-                        data.forEach(function(v){
-                            var kshfItem = new kshf.Item(v,'id');
-                            kshf.dt.Visualizations.push(kshfItem);
-                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
-                        });
-                    }
-                });
-
-                $.ajax( {
-                    url: "./data/textvis_categories.json",
-                    async: false,
-                    success: function(data){
-                        data.forEach(function(c){
-                            var kshfItem = new kshf.Item(c,'title');
-                            kshf.dt.Categories.push(kshfItem);
-                            kshf.dt_id.Categories[kshfItem.id()] = kshfItem;
-                        });
-                    }
-                });
-
-                browser.items = kshf.dt.Visualizations;
-                browser.itemsSelectedCt = browser.items.length;                
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 100);
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Tasks",
+            {   facetTitle: "Tasks",
                 facets: [
-                    {
-                        facetTitle: "Analytics",
+                    {   facetTitle: "Analytics",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="sentiment-analysis" ||
@@ -92,8 +85,7 @@ $(document).ready( function(){
                                     c==="category-entry";
                             });
                         }
-                    },{
-                        facetTitle: "Visualizations",
+                    },{ facetTitle: "Visualizations",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="roi" ||
@@ -107,11 +99,9 @@ $(document).ready( function(){
                         }
                     }
                 ]
-            },{
-                facetTitle: "Data", layout: 'right',
+            },{ facetTitle: "Data", layout: 'right',
                 facets:[
-                    {
-                        facetTitle: "Sources",
+                    {   facetTitle: "Sources",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="document" ||
@@ -119,8 +109,7 @@ $(document).ready( function(){
                                     c==="streams";
                             });
                         }
-                    },{
-                        facetTitle: "Properties",
+                    },{ facetTitle: "Properties",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="geospatial" ||
@@ -130,8 +119,7 @@ $(document).ready( function(){
                         }
                     }
                 ]
-            },{
-                facetTitle: "Domains",
+            },{ facetTitle: "Domains",
                 catItemMap: function(d){
                     return d.data.categories.filter(function(c){
                         return c==="social-media" ||
@@ -143,11 +131,9 @@ $(document).ready( function(){
                             c==="editorial-media";
                     });
                 }
-            },{
-                facetTitle: "Visualization", layout: 'right',
+            },{ facetTitle: "Visualization", layout: 'right',
                 facets:[
-                    {
-                        facetTitle: "Dimensionalities",
+                    {   facetTitle: "Dimensionalities",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="1d" ||
@@ -155,8 +141,7 @@ $(document).ready( function(){
                                     c==="3d";
                             });
                         }
-                    },{
-                        facetTitle: "Representations",
+                    },{ facetTitle: "Representations",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="line-plot" ||
@@ -168,8 +153,7 @@ $(document).ready( function(){
                                     c==="glyph";
                             });
                         }
-                    },{
-                        facetTitle: "Alignments",
+                    },{ facetTitle: "Alignments",
                         catItemMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="radial" ||
@@ -179,19 +163,14 @@ $(document).ready( function(){
                         }
                     }
                 ]
-            },{
-                facetTitle: "Year",
+            },{ facetTitle: "Year", layout: 'bottom', 
                 catItemMap: function(d){ return new Date(d.data.year,0); },
-                intervalScale: 'time',
-                layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 55,
-            sortingOpts : [{ name:'year', value: function(d){ return d.data.year; }}],
+            sortingOpts : [{ name:'year' }],
             textSearch : "title",
-            autoExpandMore: true,
-            textSearchFunc: function(d){ return d.data.title;},
             displayType: 'grid',
             maxVisibleItems_Default: 50,
             detailsToggle : "Zoom",

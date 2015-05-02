@@ -13,6 +13,55 @@
 
         <script type="text/javascript">
 
+var loadData = function(browser){
+    browser.primaryTableName = "Posts";
+
+    kshf.dt.Posts = [];
+    kshf.dt_id.Posts = {};
+
+    // contributor data is manually added to this dataset...
+    var contributorData = null;
+    $.ajax({
+        url: "./data/beautifultrouble_contr.json",
+        async: false,
+        success: function(data){ contributorData = data[0]; }
+    });
+
+    $.ajax( {
+        // using original source is not allowed because of access control allow origin settings
+        //  http://explore.beautifultrouble.org/app/data.json
+        url: "./data/beautifultrouble.json",
+        async: false,
+        success: function(data){
+            data.forEach(function(item){
+                item.Contributors = contributorData[item.title];
+/*                            if(item.Contributors){
+                    // change contributor name to X. Lastname
+                    var cc=[];
+                    item.Contributors.forEach(function(c){
+                        var n=c.split(" ");
+                        var p="";
+                        if(n.length>1) p = n[n.length-2][0]+". ";
+                        cc.push(p+n[n.length-1]);
+                    });
+                    item.Contributors = cc;
+                }*/
+                var kshfItem = new kshf.Item(item,"id");
+                kshf.dt.Posts.push(kshfItem);
+                kshf.dt_id.Posts[kshfItem.id()] = kshfItem;
+            });
+
+            browser.items = kshf.dt.Posts;
+            browser.itemsSelectedCt = browser.items.length;
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
+
 function getType(v){
     switch(v){
         case 0: return "Tactics";
@@ -32,54 +81,7 @@ $(document).ready( function(){
         itemName: "Posts",
         source : {
             url: "http://explore.beautifultrouble.org/app/data.json",
-            callback: function(browser){
-                browser.primaryTableName = "Posts";
-
-                kshf.dt.Posts = [];
-                kshf.dt_id.Posts = {};
-
-                // contributor data is manually added to this dataset...
-                var contributorData = null;
-                $.ajax({
-                    url: "./data/beautifultrouble_contr.json",
-                    async: false,
-                    success: function(data){ contributorData = data[0]; }
-                });
-
-                $.ajax( {
-                    // using original source is not allowed because of access control allow origin settings
-                    //  http://explore.beautifultrouble.org/app/data.json
-                    url: "./data/beautifultrouble.json",
-                    async: false,
-                    success: function(data){
-                        data.forEach(function(item){
-                            item.Contributors = contributorData[item.title];
-/*                            if(item.Contributors){
-                                // change contributor name to X. Lastname
-                                var cc=[];
-                                item.Contributors.forEach(function(c){
-                                    var n=c.split(" ");
-                                    var p="";
-                                    if(n.length>1) p = n[n.length-2][0]+". ";
-                                    cc.push(p+n[n.length-1]);
-                                });
-                                item.Contributors = cc;
-                            }*/
-                            var kshfItem = new kshf.Item(item,"id");
-                            kshf.dt.Posts.push(kshfItem);
-                            kshf.dt_id.Posts[kshfItem.id()] = kshfItem;
-                        });
-
-                        browser.items = kshf.dt.Posts;
-                        browser.itemsSelectedCt = browser.items.length;
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 50);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
             {   facetTitle: "Category",
@@ -88,7 +90,7 @@ $(document).ready( function(){
                     return getType(d.data[0])+" <span class='typeImg'></span>";
                 },
                 domStyle: function(d){ return "itemType_"+d.data[0]; },
-//            },{ facetTitle: "Contributors",
+            },{ facetTitle: "Contributors",
             },{
                 facetTitle: "Number of Related Posts",
 //                showPercentile: true,
@@ -111,11 +113,9 @@ $(document).ready( function(){
                         return d.data.Contributors[0];
                     }
                 },
-                { name:'# Related',
-                    value: function(d){ return d.data.links.length}},
+                { name:'# Related', value: function(d){ return d.data.links.length}},
             ],
 //            showRank: true,
-            autoExpandMore: true,
             showSelectBox: true,
             domStyle: function(d){ return "itemType_"+d.data.type},
             detailsToggle : "One",
@@ -144,7 +144,6 @@ $(document).ready( function(){
         </script>
 <style>
     #chart_div{
-        margin-top: 40px;
         width: 1000px;
         height: 700px;
     }

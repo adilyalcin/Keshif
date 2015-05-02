@@ -17,8 +17,6 @@
 // https://github.com/zgrossbart/hborecycling/blob/master/data.json
 // http://zgrossbart.github.io/hborecycling/
 // http://grantland.com/features/the-hbo-recycling-program/
-
-
 var HBO_data = {
     "Aidan Gillen": [
         "Game of Thrones",
@@ -311,6 +309,26 @@ var HBO_data = {
         "Oz"
     ]
 };
+
+var loadData(browser){
+    browser.primaryTableName = "Actors";
+
+    kshf.dt.Actors = [];
+    for(var actorName in HBO_data){
+        kshf.dt.Actors.push(
+            new kshf.Item( {'Name':actorName, "HBO_Shows":HBO_data[actorName]}, 'Name')
+        );
+    }
+
+    browser.items = kshf.dt.Actors;
+    browser.itemsSelectedCt = browser.items.length;                
+
+    // finish loading....
+    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+    d3.select(".kshf.layout_infobox div.status_text div").text("");
+    window.setTimeout(function() { browser.loadCharts(); }, 100);
+};
+
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -318,44 +336,22 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 200,
         itemName: "Actors",
         source: {
-            url: "http://grantland.com/features/the-hbo-recycling-program/",
             // http://zgrossbart.github.io/hborecycling/
             // https://github.com/zgrossbart/hborecycling
-            callback: function(browser){
-                browser.primaryTableName = "Actors";
-
-                kshf.dt.Actors = [];
-                kshf.dt_id.Actors = {};
-
-                var uniqueID=0;
-                for(var actorName in HBO_data){
-                    var kshfItem = new kshf.Item( {'Name':actorName, "HBO Shows":HBO_data[actorName]},'Name');
-                    kshf.dt.Actors.push(kshfItem);
-                }
-
-                browser.items = kshf.dt.Actors;
-                browser.itemsSelectedCt = browser.items.length;                
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 100);
-            }
+            url: "http://grantland.com/features/the-hbo-recycling-program/",
+            callback: loadData
         },
-        facets: [
-            {   facetTitle: "HBO Shows" }
-        ],
+        facets: [{ facetTitle: "HBO_Shows" }],
         itemDisplay: {
             sortColWidth: 65,
-            autoExpandMore: true,
             sortingOpts : [ {
                 name: '# of Shows',
-                value: function(d){ return d.data['HBO Shows'].length; }
+                value: function(d){ return d.data.HBO_Shows.length; }
             } ],
             textSearch: "Name",
             contentFunc: function(d){
                 // resize d based on # of shows!
-                d.DOM.result.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
+                d.DOM.result.style.fontSize = (0.8+(d.data.HBO_Shows.length*0.1))+"em";
                 return d.data.Name;
             }
         }
@@ -366,9 +362,6 @@ google.setOnLoadCallback(function(){
             #chart_div {
                 width: 820px;
                 height: 600px;
-            }
-            .mainTextSearch input{
-                width: 100px;
             }
         </style>
     </head>

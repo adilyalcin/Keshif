@@ -13,6 +13,65 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    resizeBrowser(100,80);
+    $(window).resize(function() {
+        resizeBrowser(100,80);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 140,
+        itemName: "TED Talks",
+        source: {
+            gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
+            sheets : [{ name:"Talks" }]
+        },
+        loadedCb: function(){
+            kshf.Util.cellToArray(kshf.dt.Talks, ['Feelings'], "+", false);
+            // convert views from 10M to 10,000,000 etc
+            kshf.dt.Talks.forEach(function(d){
+                var views = d.data.Views;
+                if(views[views.length-1]==="M") {
+                    views = 1000000*views.substr(0,views.length-1)
+                } else if(views[views.length-1]==="K") {
+                    views = 1000*views.substr(0,views.length-1)
+                }
+                d.data.Views = views;
+            });
+        },
+        facets: [
+            {   facetTitle: "Feelings",
+            },{ facetTitle: "Talk Duration",
+                catItemMap: function(d){ return d.data.Duration[0]; }
+            },{ facetTitle: "Views", intervalScale: 'log'
+            },{ facetTitle: "Speaker", layout: 'right'
+            },{ facetTitle: "Date", layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts : [ {name:'Views'}, {name:'Date', inverse:true} ],
+            textSearch: 'Title',
+            displayType: 'grid',
+            contentFunc : function(d){
+                var str='';
+                // Demo name
+                str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data.URL+"'><span class='thumbnail'>"+
+                    "<img class='thumbImg'></span></a>";
+                str+="<span class='subTitle'>"+d.data.Speaker+"</span>";
+                str+="<span class='title'>"+d.data.Title+"</span>";
+                return str;
+            },
+    visibleCb: function(d){
+        d3.select(this).select("img").attr("src","http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data.ThumbImg);
+    }
+        }
+    });
+});
 
 // For retrieving data from source Ted Talks pages, you can use this function.
 var getData = function(){
@@ -44,76 +103,6 @@ var getData = function(){
     }
     console.log(logStr);    
 };
-
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-};
-
-google.setOnLoadCallback(function(){
-    resizeBrowser();
-    $(window).resize(function() {
-        resizeBrowser();
-        browser.updateLayout();
-    });
-
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 100,
-        rightPanelLabelWidth: 140,
-        itemName: "TED Talks",
-        source: {
-            gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
-            sheets : [ {name:"Talks"} ]
-        },
-        loadedCb: function(){
-            cols = kshf.dt_ColNames.Talks;
-            kshf.Util.cellToArray(kshf.dt.Talks, [cols.Feelings],"+",false);
-            kshf.dt.Talks.forEach(function(d){
-                var views = d.data[cols.Views];
-                if(views[views.length-1]==="M") {
-                    views = 1000000*views.substr(0,views.length-1)
-                } else if(views[views.length-1]==="K") {
-                    views = 1000*views.substr(0,views.length-1)
-                }
-                d.data[cols.Views] = views;
-            })
-        },
-        facets: [
-            {   facetTitle: "Feelings",
-            },{ facetTitle: "Talk Duration",
-                catItemMap: function(d){
-                    return d.data[cols["Duration"]][0]; // minutes
-                }
-            },{ facetTitle: "Views", intervalScale: 'log'
-            },{ facetTitle: "Speaker", layout: 'right'
-            },{ facetTitle: "Date", layout: 'bottom'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 80,
-            sortingOpts : [ {name: 'Views'}, {name: 'Date', inverse: true} ],
-            textSearch: "Speaker and Title",
-            textSearchFunc: function(d){return d.data[cols.Speaker]+" "+d.data[cols.Title]; },
-            contentFunc: function(d){ return d.data[cols.Speaker]+" "+d.data[cols.Title]; },
-            displayType: 'grid',
-            autoExpandMore: true,
-            contentFunc : function(d){
-                var str='';
-                // Demo name
-                str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data[cols.URL]+"'><span class='thumbnail'>"+
-                    "<img class='thumbImg'></span></a>";
-                str+="<span class='subTitle'>"+d.data[cols.Speaker]+"</span>";
-                str+="<span class='title'>"+d.data[cols.Title]+"</span>";
-                return str;
-            },
-            visibleCb: function(d){
-                d3.select(this).select("img").attr("src","http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data[cols.ThumbImg]);
-            }
-        }
-    });
-});
         </script>
         <style>
 .listItem{

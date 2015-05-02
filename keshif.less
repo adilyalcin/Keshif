@@ -192,6 +192,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         right: -110px;
         width: 100px;
         top: 10px;
+        display: none;
 
         > .attributeName{
             padding: 2px;
@@ -511,11 +512,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .kshfChart[collapsed=true] {
         > .headerGroup > .header_display_control{ 
-            opacity: 1;
-            .fa:hover{
-                .animation-direction(reverse);
-            }
             > .fa-collapse{
+                opacity: 1;
+                &:hover{
+                    .animation-direction(reverse);
+                }
                 &::before{ content: "\f065"; }
             }
         }
@@ -724,11 +725,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline;
             position: absolute;
             top: 0px;
-            opacity: 0;
             z-index: 10;
             .transition(~'color 250ms linear, opacity 100ms linear ');
             .transform-origin(50% 50%);
             > .fa{
+                opacity: 0;
                 cursor: pointer;
                 &:hover{
                     color:#cb5454;
@@ -1685,7 +1686,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{
 //            margin: -1px;
 //            border: solid 1px gray;
-            > .headerGroup > .header_display_control{
+            > .headerGroup > .header_display_control > .fa{
                 opacity: 1; 
             }
             &[hasmultivalueitem=true] {
@@ -1781,6 +1782,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .animation-delay(600ms)
             }
         }
+    }
+
+    .middleStuff{
+        display: inline-flex;
+        display: -webkit-inline-flex;
+        flex-direction: column;
+        -webkit-flex-direction: column;
     }
 
     .listDiv {
@@ -2107,7 +2115,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         border-width: 0px 2px;
-        .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
+        // .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
+        background-color: rgb(239, 234, 223);
         > .topRow{
             .totalViz{
                 height: 3px;
@@ -2119,7 +2128,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     left: 0px;
                     top: 0px;
                     height: 100%;
-                    .transition(~'all 500ms ease-in-out');
+                    .transition(~'all 200ms ease-in-out');
                     
                     &.total{
                         width: 100%;    
@@ -2134,6 +2143,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: table;
             table-layout: fixed;
             width: 100%;
+            min-height: 18px;
             > .bottomRowRow{
                 display: table-row;
                 > .sortColumn {
@@ -2210,7 +2220,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         background-color: rgba(255,255,255,0.5);
                         margin-right: 5px;
                         padding-left: 2px;
-            //            opacity: 0;
                         max-width: 0px;
                         .transition(~"all 250ms linear");
                         > .sdsdsds{
@@ -2225,7 +2234,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             white-space: nowrap;
                             overflow: hidden;
                             > .summary_header{
-                                padding:1px 0px 1px 0px;
+                                padding: 1px;
                                 font-size: 0.9em;
                                 font-weight: 700;
                                 &:after{
@@ -2269,7 +2278,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         } // bottomRow
 
-        span.mainTextSearch {
+        .mainTextSearch {
             white-space: nowrap;
             margin-left: 5px;
             display: inline-block;
@@ -2283,16 +2292,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 background-color:rgba(255, 255, 255,0.2);
                 pointer-events: all;
                 border-width:0px;
-                border-bottom: dashed 0px #cb5454;
-                margin: 0px;
+                border-style: solid;
+                border-color: #cb5454;
+                margin: 1px;
                 &:focus{
-                    outline-color: gray;
-                    outline-width: 4px;
+                    outline-color: #cb5454;
+                    outline-width: 2px;
                 }
                 &:hover{
-                    border: solid 1px #cb5454;
+                    border-width: 1px;
                     background-color: white;
-                    padding: 0px 1px;
+                    margin: 0px;
+                    //padding: 0px 1px;
+                    //margin: 0px 1px;
     //                padding: 0px 0px 1px 0px;
                 }
             }

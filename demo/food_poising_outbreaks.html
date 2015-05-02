@@ -45,23 +45,23 @@ google.setOnLoadCallback(function(){
         },
         loadedCb: function(){
             kshf.dt.Outbreaks.forEach(function(o){
-                o.data[5] = []; // empty array
+                o.data['Contributing Factors'] = []; // empty array
             });
 
             var factorNames = kshf.dt_ColNames_Arr['Contributing Factors'].slice(1);
             var outbreaks = [];
 
             kshf.dt['Contributing Factors'].forEach(function(factorRow){
-                var cousineName = factorRow.data[0];
+                var cousineName = factorRow.data.id;
                 outbreaks = [];
                 kshf.dt.Outbreaks.forEach(function(o){
-                    if(o.data[2]===cousineName) outbreaks.push(o);
+                    if(o.data['National Cuisine']===cousineName) outbreaks.push(o);
                 });
 
                 factorNames.forEach(function(facName,i){
                     outbreaks = shuffle(outbreaks);
                     for(var j=0; j<factorRow.data[i+1]; j++){
-                        outbreaks[j].data[5].push(facName);
+                        outbreaks[j].data['Contributing Factors'].push(facName);
                     }
                 });
             });
@@ -71,59 +71,51 @@ google.setOnLoadCallback(function(){
             // outbreaks will hold non-restaurant settings
             outbreaks = [];
             kshf.dt.Outbreaks.forEach(function(o){
-                if(o.data[1]!=="Restaurant") outbreaks.push(o);
+                if(o.data.Setting!=="Restaurant") outbreaks.push(o);
             });
             outbreaks = shuffle(outbreaks);
             var index=0;
-            otherservicePathogens.data.forEach(function(v,i){
+            var i=0;
+            for(var patName in otherservicePathogens.data){
                 if(i==0) return;
                 if(i==14) return;
-                var patName = kshf.dt_ColNames_Arr['Pathogens/Toxins'][i];
                 for(var j=0; j<v; j++){
-                    outbreaks[index].data[4] = patName;
+                    outbreaks[index].data['Pathogens / Toxins'] = patName;
                     index++;
                 }
-            });
+                i++;
+            };
         },
         readyCb: function(browser){
-            browser.facets[0].setHeightRow_attrib(20);
+            browser.summaries[0].setHeightRow_attrib(20);
         },
         facets: [
             {   facetTitle: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
-                catItemMap: function(d){
-                    return d.data[2];
-                }
+                catItemMap: function(outbreak){ return outbreak.data['National Cuisine']; }
             },
             // leaf
             {   facetTitle: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
-                catItemMap: function(d){ return d.data[3]; }
-            },{
-                facetTitle: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
+                catItemMap: function(d){ return d.data['Food Types']; }
+            },{ facetTitle: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
                 catItemMap: function(d){
-                    var r=d.data[4];
+                    var r=d.data['Pathogens / Toxins'];
                     var a=[r];
                     if(r==undefined || r===null) return r;
                     if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");
                     return a;
                 }
-            },{
-                facetTitle: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
+            },{ facetTitle: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
                 layout: 'right',
-                catItemMap: function(d){ return d.data[5]; }
+                catItemMap: function(d){ return d.data['Contributing Factors']; }
             },{
                 facetTitle: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>", 
                 layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
-                catItemMap: function(d){ return d.data[1]; }
+                catItemMap: function(d){ return d.data['Setting']; }
             }
-        ],/*
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts : [ {name: 'id', inverse:true} ],
-            contentFunc: function(d){ return d.data[1]; }
-        }*/
+        ],
     });
 });
         </script>
@@ -131,9 +123,6 @@ google.setOnLoadCallback(function(){
             #chart_div {
                 width: 890px;
                 height: 560px;
-            }
-            #chart_div div.listItem{
-                max-height: 20px;
             }
             .kshfChart[chart_id="1"] .attribGroup > .attrib > .attribLabel > .theLabel{
                 font-size: 1.3em;

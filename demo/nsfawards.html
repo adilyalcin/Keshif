@@ -24,58 +24,14 @@ $(document).ready(function(){
         itemName: "NSF Awards in 2014",//"Active NSF Awards",
         categoryTextWidth: 200,
         source: {
+            url: 'http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true',
             dirPath: './data/',
             fileType: 'csv',
-            url: 'http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true',
             sheets: [ 
                 {name:"awards", id:"AwardNumber", preview: 0},
                 {name:"states", id:"id"},
                 {name:"nsf_orgs", id:"code"},
             ],
-/*            callback: function(browser){
-                browser.primaryTableName = "awards";
-                kshf.dt.awards = [];
-                var arr = kshf.dt.awards;
-
-                $.ajax( {
-                    url:"./data/nsf_awards_2013.xml",
-                    type:"GET",
-                    dataType:"xml",
-                    async: false,
-                    success: function(awards){
-                        $(awards).find("> rootTag > award").each(function(i){
-                            //if(i>100) return;
-                            var award = $(this);
-
-                            var awardData = {};
-                            awardData.AwardNumber = award.find("> AwardID").text();
-                            awardData.Title = award.find("> AwardTitle").text();
-                            var amount = parseInt(award.find("> AwardAmount").text());
-                            if(amount>1)
-                                awardData.AwardedAmountToDate = amount;
-                            awardData.AwardInstrument = award.find("> AwardInstrument > Value").text();
-                            awardData.ProgramManager = award.find("> ProgramOfficer > SignBlockName").text();
-                            awardData.NSFOrganization = award.find("> Organization > Directorate > LongName").text();
-                            awardData.Abstract = award.find("> AbstractNarration").text();
-                            awardData.PrincipalInvestigator =
-                                award.find("> Investigator > LastName").text()+", "+award.find("> Investigator > FirstName").text();
-                            if(awardData.PrincipalInvestigator===', ')
-                                awardData.PrincipalInvestigator=undefined;
-                            awardData.StartDate = award.find("> Investigator > StartDate").text();
-                            awardData.Organization = award.find("> Institution > Name").text();
-                            awardData.OrganizationState = award.find("> Institution > StateName").text();
-                            awardData['Program(s)'] = kshf.Util.toProperCase(award.find("> ProgramElement > Text").text());
-
-                            var item = new kshf.Item(awardData,"AwardNumber");
-                            arr.push(item);
-                        });
-                        }
-                });
-
-                browser.items = kshf.dt[browser.primaryTableName];
-                browser.itemsSelectedCt = browser.items.length;
-                browser.loadCharts();   
-            }*/
         },
         loadedCb: function(){
             // If you downloaded using csv file, convert award amount field
@@ -87,54 +43,40 @@ $(document).ready(function(){
             kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)'], ", ", false);
         },
         facets: [
-            {
-                facetTitle: "Program",
+            {   facetTitle: "Program",
                 catItemMap: function(d){
                     return d.data['Program(s)'];
                 }
             },{ facetTitle: "Name",
                 catItemMap: function(d){ return d.data.Organization; }
-            },{
-                facetTitle: "AwardInstrument",
-            },{
-                facetTitle: "Start Date",
+            },{ facetTitle: "AwardInstrument",
+            },{ facetTitle: "Start Date", layout: 'bottom',
                 catItemMap: function(d){
                     var dt = d.data.StartDate;
                     if(dt===""){ return null; }
                     var m = moment(dt,"MM/DD/YYYY");
                     return new Date(m);
                 },
-                intervalScale: 'time',
-                layout: 'bottom'
-            },{
-                facetTitle: "NSFOrganization", 
+            },{ facetTitle: "NSFOrganization", 
                 collapsed: true,
 //                catTableName: 'nsf_orgs',
 //                catLabelText: function(org){
 //                    return org.data.name;
 //                }
-            },{
-                facetTitle: "NSFDirectorate", collapsed: true
-            },{
-                facetTitle: "ProgramManager", collapsed: true
-            },{
-                facetTitle: "Awarded Amount",
-                catItemMap: function(d){ 
-                    return d.data.AwardedAmountToDate;// "$333,360.00"
-                },
+            },{ facetTitle: "NSFDirectorate", collapsed: true
+            },{ facetTitle: "ProgramManager", collapsed: true
+            },{ facetTitle: "Awarded Amount",
+                catItemMap: function(d){ return d.data.AwardedAmountToDate; },
                 intervalScale: 'log',
                 unitName: "$",
 /*            },{
                 facetTitle: "PrincipalInvestigator",
                 layout: 'right'*/
-            },{
-                facetTitle: "-Institution-",
-                layout: 'right',
+            },{ facetTitle: "-Institution-", layout: 'right',
                 facets: [
                     {   facetTitle: "Name",
                         catItemMap: function(d){ return d.data.Organization; }
-                    },{
-                        facetTitle: "State", collapsed: true,
+                    },{ facetTitle: "State", collapsed: true,
                         catItemMap: function(d){ return d.data.OrganizationState; }
                     }
 /*                    },{
@@ -150,8 +92,8 @@ $(document).ready(function(){
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts : [
-                { name: 'Amount', 
+            sortingOpts: [
+                {   name: 'Amount', 
                     value: function(d){ 
                         return d.data.AwardedAmountToDate;// "$333,360.00"
                     },
@@ -163,9 +105,9 @@ $(document).ready(function(){
                 },
 //                { name: 'AwardNo', value: function(d){ return d.data.AwardNumber; } },
             ],
-            textSearch : 'Title', // Off for now, content width is small.
+            textSearch: 'Title', // Off for now, content width is small.
             showRank: true,
-            contentFunc : function(d){
+            contentFunc: function(d){
                 return " <a href='http://www.nsf.gov/awardsearch/showAward?AWD_ID="+d.data.AwardNumber
                     +"' style='font-size: 1em' target='_blank'>"+d.data.Title
                     +" <span class='fa fa-external-link'></span></a>";
@@ -175,7 +117,7 @@ $(document).ready(function(){
 });
         </script>
 <style> 
-    #chart_div { height: 700px; width:1250px; }
+    #chart_div { height: 750px; width:1250px; }
     .content > a{
         color: black;
     }

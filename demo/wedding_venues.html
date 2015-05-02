@@ -12,95 +12,91 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+function loadData(browser){
+    $.ajax( {
+        // Cannot load remote resouce because it is in another domain
+        // url:"http://www.hitched.co.uk/pivot/venues/pivot.cxml",
+        url:"./data/Pivot_WeddingVenues.xml",
+        dataType:"xml",
+        async: false,
+        success: function(collection){
+            var $collection = $(collection);
+            browser.primaryTableName = "Venues";
+            kshf.dt["Venues"] = [];
+            var arr = kshf.dt["Venues"];
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+            $collection.find("> Collection > Items > Item").each(function(){
+                var $this = $(this);
+                var cData = {};
+                cData.url = $this.attr("Href");
+                cData.id = $this.attr("Id");
+                cData.Name = $this.attr("Name");
+                cData.Description = $this.find("Description").text();
+
+                $this.find(">Facets>Facet").each(function(d){
+                    var columnName = this.getAttribute("Name");
+                    var $item = $(this);
+                    cData[columnName] = [];
+                    if($item.find(">String").length>0){
+                        $item.find(">String").each(function(){
+                            cData[columnName].push(this.getAttribute("Value"));
+                        })
+                    } else if($item.find(">Number").length>0){
+                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+                    } else{
+                        cData[columnName] = undefined;
+                    }
+                })
+
+                // customizations
+
+                cData.id = parseInt(cData.id);
+
+                cData['Overnight Accommodation'] = [];
+                $this.find(">Facets>Facet[Name=\"Overnight Accommodation\"]>String").each(function(){
+                    cData['Overnight Accommodation'].push("... "+this.getAttribute("Value").substring(28));
+                });
+
+                if(cData['Average Facility Rating']){
+                    var stars = parseInt(cData['Average Facility Rating']);
+                    cData['Average Facility Rating'] = "";
+                    for(var i=0; i<stars; i++)
+                        cData['Average Facility Rating'] +="<span class='fa fa-star'></span>"
+                }
+                if(cData['Average Service Rating']){
+                    var stars = parseInt(cData['Average Service Rating']);
+                    cData['Average Service Rating'] = "";
+                    for(var i=0; i<stars; i++)
+                        cData['Average Service Rating'] +="<span class='fa fa-star'></span>"
+                }
+
+                arr.push(new kshf.Item(cData,"id"));
+            });
+
+            browser.items = kshf.dt.Venues;
+            browser.itemsSelectedCt = browser.items.length;
+            browser.loadCharts();   
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         itemName: "Wedding Venues",
         categoryTextWidth: 220,
         rightPanelLabelWidth: 180,
         barChartWidth: 150,
         catBarScale: "scale_frequency",
-        source : {
+        source: {
             url: 'http://www.hitched.co.uk/wedding-venues/visual-search.htm',
-            callback: function(browser){
-                $.ajax( {
-                    // Cannot load remote resouce because it is in another domain
-                    // url:"http://www.hitched.co.uk/pivot/venues/pivot.cxml",
-                    url:"./data/Pivot_WeddingVenues.xml",
-                    dataType:"xml",
-                    async: false,
-                    success: function(collection){
-                        var $collection = $(collection);
-                        browser.primaryTableName = "Venues";
-                        kshf.dt["Venues"] = [];
-                        var arr = kshf.dt["Venues"];
-
-                        $collection.find("> Collection > Items > Item").each(function(){
-                            var $this = $(this);
-                            var cData = {};
-                            cData.url = $this.attr("Href");
-                            cData.id = $this.attr("Id");
-                            cData.Name = $this.attr("Name");
-                            cData.Description = $this.find("Description").text();
-
-                            $this.find(">Facets>Facet").each(function(d){
-                                var columnName = this.getAttribute("Name");
-                                var $item = $(this);
-                                cData[columnName] = [];
-                                if($item.find(">String").length>0){
-                                    $item.find(">String").each(function(){
-                                        cData[columnName].push(this.getAttribute("Value"));
-                                    })
-                                } else if($item.find(">Number").length>0){
-                                    cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                                } else{
-                                    cData[columnName] = undefined;
-                                }
-                            })
-
-                            // customizations
-
-                            cData.id = parseInt(cData.id);
-
-                            cData['Overnight Accommodation'] = [];
-                            $this.find(">Facets>Facet[Name=\"Overnight Accommodation\"]>String").each(function(){
-                                cData['Overnight Accommodation'].push("... "+this.getAttribute("Value").substring(28));
-                            });
-
-                            if(cData['Average Facility Rating']){
-                                var stars = parseInt(cData['Average Facility Rating']);
-                                cData['Average Facility Rating'] = "";
-                                for(var i=0; i<stars; i++)
-                                    cData['Average Facility Rating'] +="<span class='fa fa-star'></span>"
-                            }
-                            if(cData['Average Service Rating']){
-                                var stars = parseInt(cData['Average Service Rating']);
-                                cData['Average Service Rating'] = "";
-                                for(var i=0; i<stars; i++)
-                                    cData['Average Service Rating'] +="<span class='fa fa-star'></span>"
-                            }
-
-                            arr.push(new kshf.Item(cData,"id"));
-                        });
-
-                        browser.items = kshf.dt.Venues;
-                        browser.itemsSelectedCt = browser.items.length;
-                        browser.loadCharts();   
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
             {   facetTitle: "Location",
@@ -109,14 +105,13 @@ $(document).ready( function(){
                     {facetTitle: "County Name", collapsed: true }
                 ]
             },{ facetTitle: "Venue Type", layout: 'right',
-            },{ facetTitle: "Dining Options",
-            },{ facetTitle: "Overnight Accommodation",
-            },{ facetTitle: "Venue Leisure Facilities",
-                catItemMap: function(d){ return d.data['Venue Leisure Facilities']; }
-            },{ facetTitle: "Other Features",
-            },{ facetTitle: "Venue Staff Assistance", layout: 'right',
-            },{ facetTitle: "Average Facility Rating", layout: 'right',
-            },{ facetTitle: "Average Service Rating", layout: 'right',
+            },{ facetTitle: "Dining Options"
+            },{ facetTitle: "Overnight Accommodation"
+            },{ facetTitle: "Venue Leisure Facilities"
+            },{ facetTitle: "Other Features"
+            },{ facetTitle: "Venue Staff Assistance", layout: 'right'
+            },{ facetTitle: "Average Facility Rating", layout: 'right'
+            },{ facetTitle: "Average Service Rating", layout: 'right'
             },{ facetTitle: "Number Of Reviews", collapsed: true, layout: 'right', intervalScale: 'log',
                 catItemMap: function(d){
                     if(d.data['Total Number Of Reviews']==0) return;
@@ -128,10 +123,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [{
-                name: 'id', inverse: true,
-            }],
-            detailsToggle : "Zoom",
+            sortingOpts: [{ name: 'id', inverse: true }],
+            detailsToggle: "Zoom",
             textSearch: "Name",
             maxVisibleItems_Default: 40,
             contentFunc: function(d){

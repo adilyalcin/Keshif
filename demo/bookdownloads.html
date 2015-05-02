@@ -16,8 +16,29 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
+var dataLoad = function(browser){
+    browser.primaryTableName = "Downloads";
+    kshf.dt.Downloads = [];
 
-var demoID = 117;
+    $.ajax({
+        url: "./data/bookdownloads.json",
+        success: function(data){
+            var id=0;
+            data.forEach(function(download){
+                var i = {'id':id++};
+                i.downloadTime = moment(download, "YYYY-MM-DD HH:mm:ss");
+                kshf.dt.Downloads.push(new kshf.Item(i,"id"));
+            });
+
+            browser.items = kshf.dt.Downloads;
+            browser.itemsSelectedCt = kshf.dt.Downloads.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
@@ -25,52 +46,19 @@ $(document).ready( function(){
         itemName: "Downloads",
         categoryTextWidth: 250,
         barChartWidth: 100,
-        source: { 
+        source: {
             url: "http://bl.ocks.org/d3noob/a0cbcddc6bf0eb9569fe",
-        callback : function(browser){
-            browser.primaryTableName = "Downloads";
-
-            kshf.dt.Downloads = [];
-            var arr = kshf.dt.Downloads;
-
-            $.ajax({
-                url: "./data/bookdownloads.json",
-                error: function(e,f){ console.log("ERROR: "+e+" - "+f); },
-                success: function(data){
-                    var id=0;
-                    data.forEach(function(download){
-                        var i = {'id':id++};
-                        i.downloadTime = moment(download, "YYYY-MM-DD HH:mm:ss");
-                        arr.push(new kshf.Item(i,"id"));
-                    });
-
-                    browser.items = arr;
-                    browser.itemsSelectedCt = arr.length;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
-                }
-            });
-        }},
+            callback: dataLoad
+        },
         facets: [
-            {
-                facetTitle: "Hour", layout: 'bottom',
-                catItemMap: function(d){
-                    return d.data.downloadTime.hour();
-                },
+            {   facetTitle: "Hour", layout: 'bottom',
+                catItemMap: function(download){ return download.data.downloadTime.hour(); },
                 intervalScale: 'step',
-                intervalTickFormat: function(d){
-                    return d3.format("d")(d)+":00";
-                }
-            },{
-                facetTitle: "Time", layout: 'bottom',
-                catItemMap: function(d){ return new Date(d.data.downloadTime);}
-            },{
-                facetTitle: "Day",
-                catItemMap: function(d){
-                    return d.data.downloadTime.day();
-                },
+                intervalTickFormat: function(d){ return d3.format("d")(d)+":00"; }
+            },{ facetTitle: "Time", layout: 'bottom',
+                catItemMap: function(download){ return new Date(download.data.downloadTime);}
+            },{ facetTitle: "Day",
+                catItemMap: function(download){ return download.data.downloadTime.day(); },
                 catLabelText: function(v){
                     switch(v.data[1]){
                         case 0: return "Sunday";
@@ -86,36 +74,15 @@ $(document).ready( function(){
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{
-                facetTitle: "Month", layout: 'right',
-                catItemMap: function(d){
-                    return d.data.downloadTime.month();
-                },
-                catLabelText: function(v){
-                    switch(v.data[1]){
-                        case 0:  return "January";
-                        case 1:  return "February";
-                        case 2:  return "March";
-                        case 3:  return "April";
-                        case 4:  return "May";
-                        case 5:  return "June";
-                        case 6:  return "July";
-                        case 7:  return "August";
-                        case 8:  return "September";
-                        case 9:  return "October";
-                        case 10: return "November";
-                        case 11: return "December";
-                    }
-                },
+            },{ facetTitle: "Month", layout: 'right',
+                catItemMap: function(download){ return download.data.downloadTime.month(); },
+                catLabelText: function(v){ return getMonthNameFromNumber(v.data[0]); },
                 sortingOpts: [{
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
-            },{
-                facetTitle: "Year",
-                catItemMap: function(d){
-                    return d.data.downloadTime.year();
-                },
+            },{ facetTitle: "Year",
+                catItemMap: function(download){ return download.data.downloadTime.year(); },
                 type: 'categorical',
                 sortingOpts: [{
                     no_resort: true,

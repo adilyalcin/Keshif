@@ -14,113 +14,83 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+var loadData = function(browser){
+    browser.primaryTableName = "Features";
+    kshf.dt.Features = [];
+    $.ajax({
+        // http://www.chromestatus.com/data/featurepopularity
+        // http://www.chromestatus.com/features.json
+        url: "./data/chromefeatures.json",
+        async: false,
+        success: function(data){
+            data.forEach(function(v){
+                v.name = v.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                var kshfItem = new kshf.Item(v,'id');
+                kshf.dt.Features.push(kshfItem);
+            });
+
+            browser.items = kshf.dt.Features;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 
 $(document).ready( function(){
-
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 180,
-        itemName: "Features",
+        barChartWidth: 100,
+        itemName: "Chromium Features",
         source : {
             url: "http://www.chromestatus.com/features",
-            callback: function(browser){
-                browser.primaryTableName = "Features";
-
-                kshf.dt.Features = [];
-                kshf.dt_id.Features = {};
-
-                $.ajax( {
-                    // http://www.chromestatus.com/data/featurepopularity
-                    // http://www.chromestatus.com/features.json
-                    url: "./data/chromefeatures.json",
-                    async: false,
-                    success: function(data){
-                        data.forEach(function(v){
-                            v.name = v.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                            var kshfItem = new kshf.Item(v,'id');
-                            kshf.dt.Features.push(kshfItem);
-                            kshf.dt_id.Features[kshfItem.id()] = kshfItem;
-                        });
-
-                        browser.items = kshf.dt.Features;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown ){
-                        console.log(errorThrown);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Category",
+            {   facetTitle: "Category",
                 catItemMap: function(d){ return d.data.category; }
-            },{
-                facetTitle: "Visibility", layout: 'right',
-                catItemMap: function(d){ return d.data.visibility; }
-            },{
-                facetTitle: "Prefixed", layout: 'right',
-                catItemMap: function(d){ return d.data.prefixed; }
-            },{
-                facetTitle: "Owner", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.owner; }
-            },{
-                facetTitle: "Updated By", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.updated_by; }
-            },{
-                facetTitle: "Implementation Status",
+            },{ facetTitle: "Implementation Status",
                 catItemMap: function(d){ return d.data.impl_status_chrome; }
-            },{
-                facetTitle: "Standardization",
+            },{ facetTitle: "Standardization",
                 catItemMap: function(d){ return d.data.standardization.text; }
-            },{
-                facetTitle: "Status (vs.)",
-                layout: 'right',
+            },{ facetTitle: "Visibility", layout: 'left',
+                catItemMap: function(d){ return d.data.visibility; }
+            },{ facetTitle: "Milestone", layout: 'right', 
+                catItemMap: function(d){ return d.data.shipped_milestone; }
+            },{ facetTitle: "Prefixed", layout: 'right', collapsed: true,
+                catItemMap: function(d){ return d.data.prefixed; }
+            },{ facetTitle: "Owner", layout: 'right', collapsed: true,
+                catItemMap: function(d){ return d.data.owner; }
+            },{ facetTitle: "Updated By", layout: 'right', collapsed: true,
+                catItemMap: function(d){ return d.data.updated_by; }
+            },{ facetTitle: "Status (vs.)", layout: 'right',
                 facets: [
-                    {
-                        facetTitle: "FF Status",
+                    {   facetTitle: "FF Status",
                         catItemMap: function(d){ return d.data.ff_views.text; },
-                    },{
-                        facetTitle: "IE Status",
+                    },{ facetTitle: "IE Status",
                         catItemMap: function(d){ return d.data.ie_views.text; },
-                    },{
-                        facetTitle: "Safari Status",
+                    },{ facetTitle: "Safari Status",
                         catItemMap: function(d){ return d.data.safari_views.text; },
                     }
                 ]
-            },{
-                facetTitle: "Update Date",
-                layout: 'bottom-mid',
-                catItemMap: function(d){ 
-                    return new Date(moment(d.data.updated));
-                },
-                intervalScale: 'time',
-//                optimumTickWidth: 70,
+            },{ facetTitle: "Update Date", layout: 'bottom',
+                catItemMap: function(d){ return new Date(moment(d.data.updated)); },
             }
-             // number...
-            // shipped_opera_milestone
-            // shipped_webview_milestone
-            // shipped_ios_milestone
-            // shipped_android_milestone
-            // shipped_opera_android_milestone
-            
         ],
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
             textSearch : "title",
-            autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'list',
             detailsToggle : "Zoom",
             contentFunc : function(d){
-                return "<a target='_blank' href='http://www.chromestatus.com/feature/"+d.data.id+"'><span class='title'>"
-                +d.data.name+"</span></a>";
+                return "<a target='_blank' href='http://www.chromestatus.com/feature/"+d.data.id
+                    +"'><span class='title'>"+d.data.name+"</span></a>";
             }
         }
     });
@@ -128,22 +98,13 @@ $(document).ready( function(){
         </script>
 <style>
     #chart_div{
-        margin-top: 20px;
-        width:1000px;
-        height: 650px;
+        width: 1100px;
+        height: 700px;
     }
-    div.listItem {
-        max-height: 230px !important;
-        vertical-align: top;
-    }
-    div.content{
-        margin-bottom: 5px;
-    }
-    div.content a{
-        vertical-align: top;
+    .content a{
         color: #496B86;
     }
-    div.content span.title{
+    .content .title{
         display: block;
         margin-left: auto;
         margin-right: auto;
@@ -151,7 +112,6 @@ $(document).ready( function(){
         text-align: left;
         font-size: 0.8em;
     }
-
 </style>
     </head>
     <body>

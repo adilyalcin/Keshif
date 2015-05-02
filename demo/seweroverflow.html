@@ -58,54 +58,49 @@ $(document).ready(function(){
         domID: "#chart_div",
         itemName: "Sewer Overflows",
         categoryTextWidth: 200,
-        showDataSource : true,
+        showDataSource: true,
         source: { 
-            callback : loadData,
+            callback: loadData,
             url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
         },
         facets: [
             {   facetTitle: "Overflow Type",
-                catItemMap : function(overflow){ return overflow.data[8]; }
+                catItemMap: function(overflow){ return overflow.data[8]; }
             },{ facetTitle: "Cause",
-                catItemMap : function(overflow){ return overflow.data[21]; }
-            },{
-                facetTitle: "Time",
+                catItemMap: function(overflow){ return overflow.data[21]; }
+            },{ facetTitle: "Time",
                 facets: [
-                    {
-                        facetTitle: "Year Discovered", 
-                        catItemMap : function(overflow){ 
+                    {   facetTitle: "Year Discovered", 
+                        catItemMap: function(overflow){ 
                             // parses the date string and returns the year
                             return new Date(moment(overflow.data[11]));
                         },
                         intervalScale: 'time'
-                    },{ 
-                        facetTitle: "Duration",
-                        catItemMap : getDuration_Human
+                    },{ facetTitle: "Duration",
+                        catItemMap: getDuration_Human
                     }
                 ]
             },{ facetTitle: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [
-                    { facetTitle: "Zip Code", 
-                        catItemMap: function(overflow){ return overflow.data[17]; } },
-                    { facetTitle: "County", 
-                        catItemMap: function(overflow){ return overflow.data[23]; } },
-                    { facetTitle: "Municipality/Facility",
-                        catItemMap : function(overflow){ return overflow.data[9]; }
+                    {   facetTitle: "Zip Code", 
+                        catItemMap: function(overflow){ return overflow.data[17]; }
+                    },{ facetTitle: "County", 
+                        catItemMap: function(overflow){ return overflow.data[23]; }
+                    },{ facetTitle: "Municipality/Facility",
+                        catItemMap: function(overflow){ return overflow.data[9]; }
                     }
                 ]
             }
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts : [
-                {   name: 'Duration',
-                    value: getDuration_TotalMinutes,
-                    label: getDuration_Human},
-                { name: 'id',  value: function(d){ return d.data[0]; } }
+            sortingOpts: [
+                { name: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
+                { name: 'id', value: function(d){ return d.data[0]; } }
             ],
-            contentFunc : function(d){
-                return d.data[16] + " -- "+getDuration_TotalMinutes(d)+" minutes";
+            contentFunc: function(d){
+                return d.data[16]+" -- "+getDuration_TotalMinutes(d)+" minutes";
             }
         }
     });
@@ -141,11 +136,7 @@ var getDuration_Human = function(overflow){
 };
         </script>
         <style>
-            div.listItem{
-                padding-bottom: 4px;
-            }
             #chart_div {
-                margin-top: 20px;
                 width:1200px;
                 height:700px;
             }

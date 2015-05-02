@@ -15,13 +15,9 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-90);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
+    resizeBrowser(90,90);
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-90);
-        $('#chart_div').width ($(window).width()*0.9);
+        resizeBrowser(90,90);
         browser.updateLayout();
     });
 
@@ -32,49 +28,35 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 250,
         itemName: "Şiddetten ölen kadınlarımız",
         source: {
-            gdocId : '1w9O47uvTpJRG7FetXC0U2cSk2BjLu4tOQfJGOWDPkDM',
-            sheets : [ {name:"Oldurulen kadin", id:"ASIN"} ]
+            gdocId: '1w9O47uvTpJRG7FetXC0U2cSk2BjLu4tOQfJGOWDPkDM',
+            sheets: [ {name:"Oldurulen kadin", id:"ASIN"} ]
         },
-        facets: [ //                 Kaynak-Foto
-//            {   facetTitle: "İsim"
-            { facetTitle: "Yıl",
+        facets: [
+            {   facetTitle: "Yıl",
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
             },{ facetTitle: "Kim tarafından",
             },{ facetTitle: "Neden"
             },{ facetTitle: "Nasıl", layout: 'right',
             },{ facetTitle: "Korunma talebi", layout: 'right',
-            //},{ facetTitle: "Kaynak", layout: 'right',
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            detailsToggle : "Zoom",
-            autoExpandMore: true,
+            detailsToggle: "Zoom",
             textSearch: "İsim",
-            sortingOpts : [
-                {name: 'Yıl'},
-            ],
+            sortingOpts: [{name: 'Yıl'}],
             contentFunc: function(d){
                 var str="";
-                str+=d.data[1];
-                if(d.data[8])str+="<img class='kaynakFoto' src='http://www.anitsayac.com/"+d.data[8]+"'>";
+                str+=d.data['İsim'];
+                if(d.data['Kaynak-Foto'])
+                    str+="<img class='kaynakFoto' src='http://www.anitsayac.com/"+d.data['Kaynak-Foto']+"'>";
                 return str;
-                return d.data[1];
-
             }
         }
     });
 });
         </script>
         <style>
-            .empTitle{
-                display:inline-block;
-                font-size: 0.8em;
-                color: gray;
-            }
-            .empTitle:before{
-                content: " - ";
-            }
             .kaynakFoto{
                 display: block;
                 width: 50%;

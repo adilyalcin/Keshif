@@ -12,16 +12,43 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+var dataLoad = function(browser){
+    browser.primaryTableName = "Architecture";
+    kshf.dt.Architecture = [];
+    $.ajax({
+        url: "./data/freebase_architecture.json",
+        async: false,
+        success: function(data){
+            data.result.forEach(function(v){
+                var dt = {};
+                dt.id = v.id;
+                dt.Name = v.name;
+                dt.Year = new Date(parseInt(v.opened[0]),0);
+                dt.Architect = v.architect[0].name;
+                dt.Style = [];
+                v.architect[0].architectural_style.forEach(function(o){
+                    dt.Style.push(o.name);
+                });
+                dt.Location = v['/location/location/geolocation'][0];
+                dt.img_url = v['/common/topic/image'][0].id[0];
+                var kshfItem = new kshf.Item(dt,'id');
+                kshf.dt.Architecture.push(kshfItem);
+            });
+            browser.items = kshf.dt.Architecture;
+            browser.itemsSelectedCt = browser.items.length;                
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-30);
-}
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,30);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,30);
         browser.updateLayout();
     });
 	browser = new kshf.Browser({
@@ -30,72 +57,31 @@ $(document).ready( function(){
         itemName: "Architectures",
         source : {
             url: "http://moritz.stefaner.eu/projects/elastic-lists/MACE%20ProjectSearch/index.html",
-            callback: function(browser){
-                browser.primaryTableName = "Architecture";
-
-                kshf.dt.Architecture = [];
-
-                $.ajax( {
-                    url: "./data/freebase_architecture.json",
-                    async: false,
-                    success: function(data){
-                        data.result.forEach(function(v){
-                            var dt = {};
-                            dt.id = v.id;
-                            dt.Name = v.name;
-                            dt.Year = new Date(parseInt(v.opened[0]),0);
-                            dt.Architect = v.architect[0].name;
-                            dt.Style = [];
-                            v.architect[0].architectural_style.forEach(function(o){
-                                dt.Style.push(o.name);
-                            })
-                            dt.Location = v['/location/location/geolocation'][0];
-                            dt.img_url = v['/common/topic/image'][0].id[0];
-                            var kshfItem = new kshf.Item(dt,'id');
-                            kshf.dt.Architecture.push(kshfItem);
-                        });
-                        browser.items = kshf.dt.Architecture;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    },
-                    error: function(e){
-                        var t=9;
-                    }
-                });
-            }
+            callback: dataLoad
         },
         facets: [
-            {
-                facetTitle: "Architect",
-            },{
-                facetTitle: "Style", layout: 'right'
-            },{
-                facetTitle: "Year (Post 14th century)",
+            {   facetTitle: "Architect",
+            },{ facetTitle: "Style", layout: 'right'
+            },{ facetTitle: "Year (Post 14th century)", layout: 'bottom',
                 catItemMap: function(d){
                     if(d.data.Year.getFullYear()<1500) return;
                     return d.data.Year;
-                },
-                intervalScale: 'time',
-                layout: 'bottom'
+                }
             }
         ],
         itemDisplay: {
             sortColWidth: 52,
-            sortingOpts : [{ name:'Year', value: function(d){ return d.data.Year; }}],
+            sortingOpts : [{ name:'Year' }],
             textSearch : "Name",
-            autoExpandMore: false, // images hit rate limits fast!
+            autoExpandMore: false,
             displayType: 'grid',
             maxVisibleItems_Default: 48,
             contentFunc : function(d){
-                return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+
-                    d.data.Name+"</span>";
+                return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+d.data.Name+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
             }
         }
     });
@@ -108,7 +94,7 @@ $(document).ready( function(){
     .content{
         padding: 3px;
     }
-    span.thumbnail{
+    .thumbnail{
         height: 75px;
     }
     .thumbImg{

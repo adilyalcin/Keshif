@@ -16,15 +16,66 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-100);
+function loadData(browser){
+    browser.primaryTableName = "Visualizations";
+
+    kshf.dt.Visualizations = [];
+
+    $.ajax({
+        url: "./data/treevis.xml",
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        async: false,
+        success: function(doc){
+            $(doc).find("list > item").each(function(i){
+                var $this = $(this);
+                var d={};
+                d.id = this.getAttribute("id");
+                d.Dimension = this.getAttribute("dim");
+                switch(d.Dimension){
+                    case "2": d.Dimension = "2-D"; break;
+                    case "3": d.Dimension = "3-D"; break;
+                    case "H": d.Dimension = "Hybrid"; break;
+                }
+                d.Representation = this.getAttribute("rep");
+                switch(d.Representation){
+                    case "I": d.Representation = "Implicit"; break;
+                    case "E": d.Representation = "Explicit"; break;
+                    case "H": d.Representation = "Hybrid"; break;
+                }
+                d.Alignment = this.getAttribute("pos");
+                switch(d.Alignment){
+                    case "A": d.Alignment = "Axis-Parallel"; break;
+                    case "R": d.Alignment = "Radial"; break;
+                    case "F": d.Alignment = "Free"; break;
+                }
+                d.Name = $this.find("name")[0].textContent.trim();
+                d.Year = parseInt($this.find("year")[0].textContent.trim());
+                if(d.Year<1970) d.Year = undefined;// remove those earlier than 1970
+                d.Authors = $this.find("authors")[0].textContent.trim();
+                d.Authors = d.Authors.replace(" and ",", ");
+                d.Authors = d.Authors.split(", ");
+                d.URL = $this.find("url")[0].textContent.trim();
+                d.Title = $this.find("title")[0].textContent.trim();
+                d.Venue = $this.find("publication")[0].textContent.trim();
+                var kshfItem = new kshf.Item(d,'id');
+                kshf.dt.Visualizations.push(kshfItem);
+            });
+
+            browser.items = kshf.dt.Visualizations;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
 }
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,100);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,100);
         browser.updateLayout();
     });
 
@@ -34,80 +85,14 @@ $(document).ready( function(){
         itemName: "Tree Visualization Techniques",
         source : {
             url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
-            callback: function(browser){
-                browser.primaryTableName = "Visualizations";
-
-                kshf.dt.Visualizations = [];
-                kshf.dt_id.Visualizations = {};
-
-                $.ajax( {
-                    url: "./data/treevis.xml",
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    async: false,
-                    success: function(doc){
-                        $doc = $(doc);
-
-
-                        $doc.find("list > item").each(function(i){
-                            var $this = $(this);
-                            var d={};
-                            d.id = this.getAttribute("id");
-                            d.Dimension = this.getAttribute("dim");
-                            switch(d.Dimension){
-                                case "2": d.Dimension = "2-D"; break;
-                                case "3": d.Dimension = "3-D"; break;
-                                case "H": d.Dimension = "Hybrid"; break;
-                            }
-                            d.Representation = this.getAttribute("rep");
-                            switch(d.Representation){
-                                case "I": d.Representation = "Implicit"; break;
-                                case "E": d.Representation = "Explicit"; break;
-                                case "H": d.Representation = "Hybrid"; break;
-                            }
-                            d.Alignment = this.getAttribute("pos");
-                            switch(d.Alignment){
-                                case "A": d.Alignment = "Axis-Parallel"; break;
-                                case "R": d.Alignment = "Radial"; break;
-                                case "F": d.Alignment = "Free"; break;
-                            }
-                            d.Name = $this.find("name")[0].textContent.trim();
-                            d.Year = parseInt($this.find("year")[0].textContent.trim());
-                            if(d.Year<1970) d.Year = undefined;// remove those earlier than 1970
-                            d.Authors = $this.find("authors")[0].textContent.trim();
-                            d.Authors = d.Authors.replace(" and ",", ");
-                            d.Authors = d.Authors.split(", ");
-                            d.URL = $this.find("url")[0].textContent.trim();
-                            d.Title = $this.find("title")[0].textContent.trim();
-                            d.Venue = $this.find("publication")[0].textContent.trim();
-                            var kshfItem = new kshf.Item(d,'id');
-                            kshf.dt.Visualizations.push(kshfItem);
-                            kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
-                        });
-
-                        browser.items = kshf.dt.Visualizations;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Dimension",
-            },{
-                facetTitle: "Representation",
-            },{
-                facetTitle: "Alignment",
-            },{
-                facetTitle: "Authors", collapsed: false
-            },{
-                facetTitle: "Year",
-                layout: "bottom",
-                type: 'interval',
+            {   facetTitle: "Dimension",
+            },{ facetTitle: "Representation",
+            },{ facetTitle: "Alignment",
+            },{ facetTitle: "Authors", collapsed: false
+            },{ facetTitle: "Year", layout: "bottom",
                 intervalScale: 'step'
             }
         ],
@@ -115,7 +100,6 @@ $(document).ready( function(){
             sortColWidth: 92,
             sortingOpts : [{ name:'Year'}],
             textSearch : "Title",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",

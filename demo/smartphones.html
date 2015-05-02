@@ -16,26 +16,7 @@
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <script type="text/javascript">
-
-$(document).ready( function() {
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-70);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-        $('#chart_div').height($(window).height()-70);
-        $('#chart_div').width ($(window).width()*0.9);
-        browser.updateLayout();
-    });
-
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 100,
-        barChartWidth: 140,
-        itemName: "Smartphones",
-        source: {
-url: "http://www.productchart.com/smartphones/",
-callback: function(browser){
+function loadData(browser){
     browser.primaryTableName = "Smartphones";
     kshf.dt.Smartphones = [];
     var arr = kshf.dt.Smartphones;
@@ -89,57 +70,56 @@ callback: function(browser){
             window.setTimeout(function() { browser.loadCharts(); }, 50);
         }
     });
-}
+};
+
+$(document).ready( function() {
+    resizeBrowser(100,80);
+    $(window).resize(function() {
+        resizeBrowser(100,80);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 100,
+        barChartWidth: 140,
+        itemName: "Smartphones",
+        source: {
+            url: "http://www.productchart.com/smartphones/",
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Brand"
-            },{
-                facetTitle: "Model", collapsed: true
-            },{
-                facetTitle: "Price",
+            {   facetTitle: "Brand"
+            },{ facetTitle: "Model", collapsed: true
+            },{ facetTitle: "Price",
                 unitName: "$"
-            },{
-                facetTitle: "Screen Size",
+            },{ facetTitle: "Screen Size",
                 unitName: 'in'//'″'
-            },{
-                facetTitle: "Weight",
+            },{ facetTitle: "Weight",
                 unitName: "oz."
-            },{
-                facetTitle: "Storage", layout: 'right',
-                //type:'categorical',
+            },{ facetTitle: "Storage", layout: 'right',
                 unitName: 'GB'
-            },{
-                facetTitle: "SDCard", layout: 'right',
+            },{ facetTitle: "SDCard", layout: 'right',
                 unitName: "GB"
-            },{
-                facetTitle: "RAM", layout: 'right',
+            },{ facetTitle: "RAM", layout: 'right',
                 unitName: "GB", //intervalScale: 'step'
-            },{
-                facetTitle: "att_pixels_x", layout: 'right'
-            },{
-                facetTitle: "att_pixels_y", layout: 'right'
-            },{ 
-                facetTitle: "Has Dual SIM",
+            },{ facetTitle: "att_pixels_x", layout: 'right'
+            },{ facetTitle: "att_pixels_y", layout: 'right'
+            },{ facetTitle: "Has Dual SIM",
                 type: 'categorical', collapsed: true
-/*            },{
-                facetTitle: "SaveDate",
-                intervalScale: 'time',
-                layout: 'bottom'*/
             }
         ],
         itemDisplay: {
             sortColWidth: 80,
             sortingOpts: [
-                {   name: 'Price' },
-                {   name: 'Storage' },
-                {   name: 'Weight' },
-                {   name: 'Screen Size' }
+                { name: 'Price' },
+                { name: 'Storage' },
+                { name: 'Weight' },
+                { name: 'Screen Size' }
             ],
             displayType: 'grid',
             detailsToggle: "Zoom",
             textSearch: "name",
-            autoExpandMore: true,
             contentFunc : function(d){
                 return "<a target='_blank' href='"+d.data.URL+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Model+"</span>";
@@ -150,7 +130,6 @@ callback: function(browser){
         }
     });
 });
-
         </script>
         <style>
         .iteminfo a{
@@ -196,8 +175,6 @@ callback: function(browser){
           -o-transition: all 200ms linear;
           -moz-transition: all 200ms linear;
         }
-
-
         </style>
 	</head>
     <body>

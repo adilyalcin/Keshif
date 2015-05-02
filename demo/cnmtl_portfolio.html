@@ -15,11 +15,35 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+function loadData(browser){
+    browser.primaryTableName = "Projects";
+    kshf.dt.Projects = [];
+    $.ajax( {
+        url: "./data/cnmtl_portfolio.json",
+        async: false,
+        success: function(dataset){
+            var format = d3.time.format("%Y-%m-%d");
+            dataset.forEach(function(r,i){
+                r.id=i;
+                r['Released Year'] = format.parse(r.released);
+                var kshfItem = new kshf.Item(r,'id');
+                kshf.dt.Projects.push(kshfItem);
+            });
 
+            browser.items = kshf.dt.Projects;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
 function resizeBrowser(){
     $('#chart_div').width(840);//$(window).width()-300);
     $('#chart_div').height($(window).height()-170);
-}
+};
 
 $(document).ready( function(){
     resizeBrowser();
@@ -28,70 +52,27 @@ $(document).ready( function(){
         browser.updateLayout();
     });
 
-    var format = d3.time.format("%Y-%m-%d");
-
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 160,
         itemName: "Projects",
         source : {
             url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
-            callback: function(browser){
-                browser.primaryTableName = "Projects";
-                kshf.dt.Projects = [];
-                kshf.dt_id.Projects = {};
-                $.ajax( {
-                    url: "./data/cnmtl_portfolio.json",
-                    async: false,
-                    success: function(dataset){
-                        var id=0
-                        dataset.forEach(function(r){
-                            r.id=id++;
-                            r.Released = format.parse(r.released);
-                            var kshfItem = new kshf.Item(r,'id');
-                            kshf.dt.Projects.push(kshfItem);
-                        });
-
-                        browser.items = kshf.dt.Projects;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Disciplines"
-            },{
-                facetTitle: "Types",
-//            },{
-//                facetTitle: "Categories",
-            },{
-                facetTitle: "Group",
-                collapsed: true
-            },{
-                facetTitle: "Access",
-                collapsed: true
-            },{
-                facetTitle: "Status"
-            },{
-                facetTitle: "Released Year",
-                catItemMap: function(d){
-                    return d.data.Released.getFullYear();
-                },
-                layout: "bottom-mid",
-                collapsed: true
+            {   facetTitle: "Disciplines"
+            },{ facetTitle: "Types",
+            },{ facetTitle: "Group", collapsed: true
+            },{ facetTitle: "Access", collapsed: true
+            },{ facetTitle: "Status"
+            },{ facetTitle: "Released Year", layout: "middle", collapsed: true
             }
         ],
         itemDisplay: {
             sortColWidth: 92,
             sortingOpts : [{name:'Released', inverse: true}],
             textSearch : "title",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",

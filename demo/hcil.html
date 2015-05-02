@@ -15,70 +15,51 @@
         <script type="text/javascript">
 
 // to access row data easily by column name instead of integer column id.
-var departmentCol;
-var peopleCol;
-var projectsCol;
-var topicsCol;
-var member_typesCol;
-var trsCol;
 
 function drawCharts(){
     var i,p,t;
     
-    // to access row data easily by column name instead of integer column id.
-    departmentCol = kshf.dt_ColNames.departments;
-    peopleCol = kshf.dt_ColNames.people;
-    projectsCol = kshf.dt_ColNames.projects;
-    topicsCol = kshf.dt_ColNames.topics;
-    member_typesCol = kshf.dt_ColNames.member_types;
-    trsCol = kshf.dt_ColNames.trs;
-    trsCol.Author=9;
-    trsCol.Topic=10;
-    trsCol.Project=11;
-
     // go over the list of tr_people, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_people.length ; t++){
         var tr_people = kshf.dt.tr_people[t];
-        var tr_id = tr_people.data[0];
-        var person_id = tr_people.data[1];
+        var tr_id = tr_people.data.hcil_number;
+        var person_id = tr_people.data.person_id;
         // if person id doesn't exist, skip
         if(kshf.dt_id.people[person_id]===undefined){continue;}
         var tr = kshf.dt_id.trs[tr_id];
-        if(!tr.data[trsCol.Author]) { tr.data[trsCol.Author] = []; }
-        tr.data[trsCol.Author].push(person_id);
+        if(!tr.data.Author) { tr.data.Author = []; }
+        tr.data.Author.push(person_id);
     }
     // go over the list of tr_topics, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_topics.length ; t++){
         var tr_topic = kshf.dt.tr_topics[t];
-        var tr_id_ = tr_topic.data[0];
-        var topic_id = tr_topic.data[1];
+        var tr_id_ = tr_topic.data.hcil_number;
+        var topic_id = tr_topic.data.topic_id;
         if(topic_id===null) { continue; }
         var tr_ = kshf.dt_id.trs[tr_id_];
-        if(!tr_.data[trsCol.Topic]) { tr_.data[trsCol.Topic] = []; }
-        tr_.data[trsCol.Topic].push(topic_id);
+        if(!tr_.data.Topic) { tr_.data.Topic = []; }
+        tr_.data.Topic.push(topic_id);
     }
     // go over the list of tr_projects, and add the conditions under trial table
     for(t=0; t<kshf.dt.tr_projects.length ; t++){
         var tr_project = kshf.dt.tr_projects[t];
-        var tr_id__ = tr_project.data[0];
-        var project_id = tr_project.data[1];
+        var tr_id__ = tr_project.data.hcil_number;
+        var project_id = tr_project.data.project_id;
         if(project_id===null) { continue; }
         // if project id doesn't exist, skip
         if(kshf.dt_id.projects[project_id]===undefined){continue;}
         var tr__ = kshf.dt_id.trs[tr_id__];
-        if(!tr__.data[trsCol.Project]) { tr__.data[trsCol.Project] = []; }
-        tr__.data[trsCol.Project].push(project_id);
+        if(!tr__.data.Project) { tr__.data.Project = []; }
+        tr__.data.Project.push(project_id);
     }
 }
 
 google.setOnLoadCallback( function() {
-    // set div height accordingly 
-    $('#chart_div').height($(window).height()-45);
-    $('#chart_div').width ($(window).width()*0.9);
+    // set div height accordingly
+    resizeBrowser(45,90);
     // set resize callback
     $(window).resize(function() {
-        $('#chart_div4').height($(window).height()-45);
-        $('#chart_div4').width ($(window).width()*0.9);
+        resizeBrowser(45,90);
         browser.updateLayout();
     });
     
@@ -105,15 +86,15 @@ google.setOnLoadCallback( function() {
             {
                 facetTitle: "Topic",
                 catTableName: "topics",
-                catLabelText: function(topic) { return topic.data[topicsCol.topic]; },
-                catTooltipText: function(topic) { return topic.data[topicsCol.topic]; },
+                catLabelText: function(topic) { return topic.data.topic; },
+                catTooltipText: function(topic) { return topic.data.topic; },
                 visibleRows: 9
             },{
                 facetTitle: "Author",
                 catTableName: "people",
                 catLabelText: function(author) {
-                    var f_name = author.data[peopleCol.first_name];
-                    var l_name = author.data[peopleCol.last_name];
+                    var f_name = author.data.first_name;
+                    var l_name = author.data.last_name;
                     var str="";
                     if(f_name) str+=f_name+". ";
                     if(f_name) str+=l_name;
@@ -125,11 +106,11 @@ google.setOnLoadCallback( function() {
                 catItemMap : function(pub){
                     var typeList = {};
                     var r = [];
-                    var authors = pub.data[trsCol.Author];
+                    var authors = pub.data.Author;
                     if(authors===undefined) { return undefined; }
                     for(i=0; i<authors.length; i++){
                         var autData=kshf.dt_id.people[authors[i]];
-                        var typeID = autData.data[peopleCol.member_type_id];
+                        var typeID = autData.data.member_type_id;
                         if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
                         if(!typeList[typeID]){
                             typeList[typeID] = true;
@@ -138,15 +119,15 @@ google.setOnLoadCallback( function() {
                     }
                     return r;
                 },
-                catLabelText: function(member_type) { return member_type.data[member_typesCol.type];  },
+                catLabelText: function(member_type){ return member_type.data.type;  },
             },{
                 facetTitle: "Project",
                 catTableName: "projects",
-                catLabelText: function(project) { return project.data[projectsCol.project];  },
+                catLabelText: function(project){ return project.data.project;  },
             },{
                 facetTitle: "Date",
-                layout: "bottom-mid",
-                catItemMap : function(pub){ return new Date(pub.data[trsCol.Date]); },
+                layout: "middle",
+                catItemMap : function(pub){ return new Date(pub.data.Date); },
                 type: 'interval',
                 intervalScale: 'time'
             }
@@ -155,7 +136,7 @@ google.setOnLoadCallback( function() {
             sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Year',
-                    value: function(pub){ return parseInt(pub.data[trsCol.Date].slice(0,4)); }
+                    value: function(pub){ return parseInt(pub.data.Date.slice(0,4)); }
                 }
             ],
             detailsToggle : "Multi",
@@ -165,53 +146,53 @@ google.setOnLoadCallback( function() {
                 var str="";
                 // paper name
                     str+="<div class=\"iteminfo iteminfo_0\">";
-                    var url=pub.data[trsCol.reference_url];
+                    var url=pub.data.reference_url;
                     if(url && url.trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+pub.data[trsCol.reference_url]+"\">"+pub.data[trsCol.title]+"</a>";
+                        str+="<a target=\"_blank\" href=\""+pub.data.reference_url+"\">"+pub.data.title+"</a>";
                     } else {
-                        str+=pub.data[trsCol.title];
+                        str+=pub.data.title;
                     }
                     str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
                 // author names
-                var authors = pub.data[trsCol.Author];
+                var authors = pub.data.Author;
                 if(authors){
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     for(j=0; j<authors.length; j++){
                         var authData=kshf.dt_id.people[authors[j]].data;
-                        str+=authData[peopleCol.first_name]+" "+authData[peopleCol.last_name];
+                        str+=authData.first_name+" "+authData.last_name;
                         if(j!==authors.length-1) { str+=', '; }
                     }
                     str+="</div>";
                 }
                 // venue
-                    var ref=pub.data[trsCol.reference];
+                    var ref=pub.data.reference;
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     if(ref && ref.trim()!==""){
-                        str+="<b>["+pub.data[trsCol.Date]+"]</b> "+pub.data[trsCol.reference]+"</a>";
+                        str+="<b>["+pub.data.Date+"]</b> "+pub.data.reference+"</a>";
                     }
                     str+="</div>";
                 // keywords
-                var topics = pub.data[trsCol.Topic];
+                var topics = pub.data.Topic;
                 if(topics){
                     str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
                     for(j=0; j<topics.length; j++){
-                        str+=kshf.dt_id.topics[topics[j]].data[topicsCol.topic];
+                        str+=kshf.dt_id.topics[topics[j]].data.topic;
                         if(j!==topics.length-1) { str+=', '; }
                     }
                     str+="</div>";
                 }
                 // links
                 str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
-                var pdf=pub.data[trsCol.pdf];
-                var video=pub.data[trsCol.video];
+                var pdf=pub.data.pdf;
+                var video=pub.data.video;
                 if(pdf && pdf.trim()!==""){
-                    str+="<a target=\"_blank\" href=\""+pub.data[trsCol.pdf]+"\"><img src=\"img/pdf-logo.gif\"></a>";
+                    str+="<a target=\"_blank\" href=\""+pub.data.pdf+"\"><img src=\"img/pdf-logo.gif\"></a>";
                 }
                 if(video && video.trim()!==""){
-                    str+=" [<a target=\"_blank\" href=\""+pub.data[trsCol.video]+"\">Video</a>]";
+                    str+=" [<a target=\"_blank\" href=\""+pub.data.video+"\">Video</a>]";
                 }
                 str+="</div>";
 
@@ -226,9 +207,6 @@ google.setOnLoadCallback( function() {
         <style>
             #chart_div {
                 width: 100%;
-            }
-            div.listItem{
-                padding-bottom:3px;
             }
 		</style>
 	</head>

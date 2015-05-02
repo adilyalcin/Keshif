@@ -16,50 +16,41 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-        var cols;
-        google.setOnLoadCallback(function(){
-            browser = new kshf.Browser({
-                domID: "#chart_div",
-                categoryTextWidth: 200,
-                rightPanelLabelWidth: 110,
-                source: {
-                    gdocId : '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
-                    sheets : [ {name:"Banks"},{name:"States"} ]
-                },
-                loadedCb: function(){
-                    kshf.Util.cellToArray(kshf.dt.Banks, [7], /\//, false);
-                    cols = kshf.dt_ColNames.Banks;
-                },
-                facets: [
-                    {
-                        facetTitle: "Loss Share Type"
-                    },{ facetTitle: "State",
-                        catItemMap: "ST",
-                        catTableName: "States",
-                        layout: 'right',
-//                        timeTitle: "Closing Date"
-                    },{ facetTitle: "City", layout: 'right',
-                    },{ facetTitle: "Acquiring Institution"
-                    },{ facetTitle: "Closing Date", layout: 'bottom', intervalScale: 'time'
-                    }
-                ],
-                itemDisplay: {
-                    sortColWidth: 90,
-                    sortingOpts : [ {
-                        name: 'Closing Date',
-                        value: function(d){
-                            return d.data[cols['Closing Date']];
-                        },
-                        label: function(d){
-                            return moment(d.data[cols['Closing Date']]).fromNow();
-                        },
-                        inverse: true
-                    } ],
-                    textSearch: "Bank Name",
-                    content: "Bank Name"
-                }
-            });
-        });
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 200,
+        rightPanelLabelWidth: 110,
+        source: {
+            gdocId : '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
+            sheets : [ {name:"Banks"},{name:"States"} ]
+        },
+        loadedCb: function(){
+            kshf.Util.cellToArray(kshf.dt.Banks, ['Loss Share Type'], /\//, false);
+        },
+        facets: [
+            {   facetTitle: "Loss Share Type"
+            },{ facetTitle: "State", layout: 'right',
+                catItemMap: "ST",
+                catTableName: "States",
+                catLabelText: function(state){ return state.data.name; }
+            },{ facetTitle: "City", layout: 'right',
+            },{ facetTitle: "Acquiring Institution"
+            },{ facetTitle: "Closing Date", layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 90,
+            sortingOpts : [ {
+                name: 'Closing Date',
+                label: function(d){ return moment(d.data['Closing Date']).fromNow(); },
+                inverse: true
+            } ],
+            textSearch: "Bank Name",
+            content: "Bank Name"
+        }
+    });
+});
         </script>
         <style>
             #chart_div {

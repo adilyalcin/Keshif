@@ -16,28 +16,28 @@
 
 var demoID = 7;
 var socialShare = false;
+var noRibbon = true;
 var BEDERSON_ID = 3;
 
-function resizeChart(){
-    var h=$(window).height()-90;
-    h = 700; // temp
-    var w=$(window).width()-29;
-    h = Math.max(h,500);
-    w = Math.max(w,700);
-    w-=50;
-    if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
-    $('#chart_div').height(h);
-    $('#chart_div').width (w);
-    return true;
-}
-
 google.setOnLoadCallback(function() {
+
+    function resizeChart(){
+        var h=$(window).height()-90;
+        h = 700; // temp
+        var w=$(window).width()-29;
+        h = Math.max(h,500);
+        w = Math.max(w,700);
+        w-=50;
+        if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
+        $('#chart_div').height(h);
+        $('#chart_div').width (w);
+        return true;
+    }
+
     resizeChart();
     $(window).resize(function() {
         if(resizeChart()) browser.updateLayout();
     });
-
-    var authorCol, pubCol, keywordCol;
 
     browser = new kshf.Browser({
         domID : "#chart_div",
@@ -55,11 +55,8 @@ google.setOnLoadCallback(function() {
             ]
         },
         loadedCb: function(){
-            authorCol = kshf.dt_ColNames.Authors;
-            pubCol = kshf.dt_ColNames.Publications;
-            keywordCol = kshf.dt_ColNames.Keywords;
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Publications, [pubCol.Coauthors, pubCol.Topics]);
+            kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);
         },
         readyCb: function(){
             $(".paperName").click(function(d){
@@ -68,14 +65,12 @@ google.setOnLoadCallback(function() {
             browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         facets: [
-            {
-                facetTitle: "Topics",
+            {   facetTitle: "Topics",
                 catTableName: "Keywords",
-                catLabelText: function(cat){ return cat.data[keywordCol.keyword]; }
-            },{
-                facetTitle: "Coauthors",
+                catLabelText: function(k){ return k.data.keyword; }
+            },{ facetTitle: "Coauthors",
                 catItemMap : function(pub){
-                    var authors = pub.data[pubCol.Coauthors];
+                    var authors = pub.data.Coauthors;
                     // remove Ben Bederson's ID
                     newAuthors = [];
                     for(i=0 ; i<authors.length ; i++){
@@ -84,64 +79,61 @@ google.setOnLoadCallback(function() {
                     return newAuthors;
                 },
                 catTableName: "Authors",
-                catLabelText: function(auth){ return auth.data[authorCol.first_names][0]+". "+auth.data[authorCol.last_name]; },
-                catTooltipText: function(auth){ return auth.data[authorCol.first_names]+" "+auth.data[authorCol.last_name]; },
-//                barClassFunc: function(auth){ return "bar_style_coauthor_"+auth.data[authorCol.author_type];},
+                catLabelText: function(auth){ return auth.data.first_names[0]+". "+auth.data.last_name; },
+                catTooltipText: function(auth){ return auth.data.first_names+" "+auth.data.last_name; },
                 facets: [
-                    {
-                        facetTitle: "Type",
+                    {   facetTitle: "Type",
+                        catItemMap : function(coAuth){ return coAuth.data.author_type; },
                         catTableName: "AuthorTypes",
-                        catItemMap : function(coAuth){
-                            return coAuth.data[3];
-                        },
-//                        barClassFunc: function(typ){ return "bar_style_coauthor_"+typ.data[0];},
+                        catLabelText: function(at){
+                            return at.data.keyword;
+                        }
                     }
                 ]
-            },{
-                facetTitle: "Publication Type",
-                catItemMap: function(pub){ return pub.data[0];},
-                catLabelText: function(d){ return kshf.dt_id.VenueTypes[d.data[1]].data[1]; }
-            },{
-                facetTitle: "Venue",
+            },{ facetTitle: "Publication Type",
+                catItemMap: function(pub){ return pub.data.type;},
+                catLabelText: function(d){ 
+                    return kshf.dt_id.VenueTypes[d.data[0]].data.keyword;
+                }
+            },{ facetTitle: "Venue",
                 collapsed: true,
+                catItemMap : function(pub){ return pub.data.Venue; },
                 catTableName: "Venues",
-                catItemMap : function(pub){ return pub.data[pubCol.Venue]; },
-                catTooltipText: function(venue){ return venue.data[2]; },
-            },{
-                facetTitle: "Date",
+                catLabelText: function(d){ return d.data.venue; }
+            },{ facetTitle: "Date",
                 intervalScale: 'time',
-                layout: 'bottom-mid'
+                layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
             sortingOpts : [
                 {   name: 'Year',
-                    value: function(pub){return pub.data[pubCol['Date']].getFullYear();}
+                    value: function(pub){return pub.data.Date.getFullYear();}
                 }
             ],
             textSearch : 'title',
             detailsToggle : "One",
-            autoExpandMore: true,
+            autoExpandMore: false,
             contentFunc : function(d){
                 var j;
                 var str="";
 
-                if(d.data[pubCol.img]!==""&&d.data[pubCol.img]!==null){
-                    str+="<img class='pdfImage' src='"+d.data[pubCol.img]+"'>";
+                if(d.data.img!==""&&d.data.img!==null){
+                    str+="<img class='pdfImage' src='"+d.data.img+"'>";
                 }
 
                 // paper name
                     str+="<div class=''> <span>";
-                    str+="<span class='paperName'>"+d.data[pubCol.title]+"</span>";
-                    if(d.data[pubCol.pdf]!==""&&d.data[pubCol.pdf]!==null){
-                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data[pubCol.pdf]+"' target='_blank'></a>";
+                    str+="<span class='paperName'>"+d.data.title+"</span>";
+                    if(d.data.pdf!==""&&d.data.pdf!==null){
+                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data.pdf+"' target='_blank'></a>";
                     }
-                    if(d.data[pubCol.doi]!==""&&d.data[pubCol.doi]!==null){
-                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data[pubCol.doi]+"' target='_blank'>[doi]</a>";
+                    if(d.data.doi!==""&&d.data.doi!==null){
+                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data.doi+"' target='_blank'>[doi]</a>";
                     }
-                    if(d.data[pubCol.url].trim()!==""){
-                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+d.data[pubCol.url]+"' "+
+                    if(d.data.url.trim()!==""){
+                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+d.data.url+"' "+
                                 "onclick='sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})'>external</a>";
                     }
                     str+="</div>";
@@ -149,38 +141,38 @@ google.setOnLoadCallback(function() {
                 str+="<span class='item_details'>";
 
                 // author names
-                var authors = d.data[pubCol.Coauthors];
+                var authors = d.data.Coauthors;
                     str+="<div class=\"authorNames\"><span class='header'></span> ";
                     for(j=0; j<authors.length; j++){
                         var authData=kshf.dt_id.Authors[authors[j]].data;
-                        if(authData[authorCol.id]===BEDERSON_ID) { str+="<span class='benb'>"; }
-                        str+=authData[authorCol.first_names]+" "+authData[authorCol.last_name];
-                        if(authData[authorCol.id]===BEDERSON_ID) { str+="</span>"; }
+                        if(authData.id===BEDERSON_ID) { str+="<span class='benb'>"; }
+                        str+=authData.first_names+" "+authData.last_name;
+                        if(authData.id===BEDERSON_ID) { str+="</span>"; }
                         if(j!==authors.length-1) { str+=', '; }
                     }
                     str+="</div>";
                 // Venue + details
-                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+d.data[pubCol['Date']].getFullYear()+"</span>";
-                    if(d.data[pubCol.Venue]) {
-                        str+=" " + kshf.dt_id.Venues[d.data[pubCol.Venue]].data[2];
+                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+d.data.Date.getFullYear()+"</span>";
+                    if(d.data.Venue) {
+                        str+=" " + kshf.dt_id.Venues[d.data.Venue].data[2];
                     }
-                    if(d.data[pubCol.details].trim()!=="") {
-                        str+=" - " + d.data[pubCol.details];
+                    if(d.data.details.trim()!=="") {
+                        str+=" - " + d.data.details;
                     }
                     str+="</div>";
                 // keywords
-                    var cats = d.data[pubCol.Topics];
+                    var cats = d.data.Topics;
                     if(cats.length>0){
                         str+="<div class=\"topics\"> <span class='header'>Topics</span>: ";
                         for(j=0; j<cats.length; j++){
-                            str+=kshf.dt_id.Keywords[cats[j]].data[keywordCol.keyword];
+                            str+=kshf.dt_id.Keywords[cats[j]].data.keyword;
                             if(j!==cats.length-1) { str+=', '; }
                         }
                         str+="</div>";
                     }
                 // award
-                    if(d.data[pubCol.award]!==""&d.data[pubCol.award]!==null){
-                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data[pubCol.award]+"</div>";
+                    if(d.data.award!==""&d.data.award!==null){
+                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data.award+"</div>";
                     }
 
                 return str;

@@ -17,15 +17,31 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-80);
-}
+function loadData(browser){
+    browser.primaryTableName = "Posters";
+    kshf.dt.Posters = [];
+    $.ajax({
+        url: "./data/world_war_2_posters.json",
+        success: function(data){
+            data.forEach(function(poster){
+                poster.id = 1*poster.arcIdentifier;
+                kshf.dt.Posters.push(new kshf.Item(poster,"id"))
+            });
+
+            browser.items = kshf.dt.Posters;
+            browser.itemsSelectedCt = kshf.dt.Posters.length;
+
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 50);
+        }
+    });
+};
 
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -35,44 +51,14 @@ $(document).ready( function(){
         categoryTextWidth: 150,
         source: { 
             url: "https://catalog.archives.gov/search?q=*:*&f.parentNaId=513498",
-        callback : function(browser){
-            browser.primaryTableName = "Posters";
-
-            kshf.dt.Posters = [];
-            var arr = kshf.dt.Posters;
-
-            $.ajax({
-                //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-                // url: "./data_private/dc_homicides.json", // original source
-                url: "./data/world_war_2_posters.json",
-                error: function(e,f){
-                    console.log(e+" - "+f);
-                },
-                success: function(data){
-                    data.forEach(function(poster){
-                        poster.id = 1*poster.arcIdentifier;
-                        arr.push(new kshf.Item(poster,"id"))
-                    });
-
-                    browser.items = arr;
-                    browser.itemsSelectedCt = arr.length;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
-                }
-            });
-        }},
+            callback: loadData
+        },
         facets: [
             {   facetTitle: "date"
             },{ facetTitle: "Collection",
-                catItemMap: function(poster){
-                    return poster.data.from;
-                }
+                catItemMap: function(poster){ return poster.data.from; }
             },{ facetTitle: "Subjects",
-                catItemMap: function(poster){
-                    return poster.data.subjects;
-                }
+                catItemMap: function(poster){ return poster.data.subjects; }
             },{ facetTitle: "Tags",
                 catItemMap: function(poster){
                     var contribs = poster.data.publicContributions;
@@ -106,24 +92,17 @@ $(document).ready( function(){
                     return r;
                 }
             },{ facetTitle: "Types",
-                catItemMap: function(poster){
-                    return poster.data.typesOfArchivalMaterials;
-                }
+                catItemMap: function(poster){ return poster.data.typesOfArchivalMaterials; }
             },{ facetTitle: "levelOfDescription", collapsed: true
             },{ facetTitle: "Use Restrictions", collapsed: true,
-                catItemMap: function(poster){
-                    return poster.data.useRestrictions;
-                }
+                catItemMap: function(poster){ return poster.data.useRestrictions; }
             },{ facetTitle: "Access Restrictions", collapsed: true,
-                catItemMap: function(poster){
-                    return poster.data.accessRestrictions;
-                }
+                catItemMap: function(poster){ return poster.data.accessRestrictions; }
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [ { name: 'id' } ],
-            autoExpandMore: true,
             displayType: 'grid',
             textSearch: "title",
             contentFunc : function(d){

@@ -16,11 +16,61 @@
 
         <script type="text/javascript">
 
-String.prototype.toProperCase = function () {
-    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-};
-
 var paperBrowser;
+
+function loadData(browser){
+    browser.primaryTableName = "Articles";
+
+    kshf.dt.Articles = [];
+    kshf.dt_id.Articles = {};
+    kshf.dt.Proceedings = [];
+    kshf.dt.People = [];
+    kshf.dt_id.People = {};
+    
+    paperBrowser = browser;
+    var fileList = [
+        /*"CHI1982",
+        "CHI1983",
+        "CHI1985",
+        "CHI1986",
+        "CHI1987",
+        "CHI1988",
+        "CHI1989",
+        "CHI1990",
+        "CHI1991",
+        "CHI1992",*/
+        "CHI1993",
+        "CHI1994",
+        "CHI1995",
+        "CHI1996",
+        "CHI1997",
+        "CHI1998",
+        "CHI1999",
+        "CHI2000",
+        "CHI2001",/*
+        "CHI2002",
+        "CHI2003",
+        "CHI2004"*/
+    ];
+    fileList.forEach(function(fileName){
+        $.ajax( {
+            url:"./data_private/"+fileName+".xml",
+            type:"GET",
+            dataType:"xml",
+            async: false,
+            success: function(xmlData){ return loadProceeding(xmlData); }
+        });
+    });
+
+    // process through citation links
+    paperBrowser.items = kshf.dt.Articles;
+    paperBrowser.itemsSelectedCt = kshf.dt.Articles.length;
+    
+    // finish loading....
+    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+    d3.select(".kshf.layout_infobox div.status_text div").text("");
+    window.setTimeout(function() { paperBrowser.loadCharts(); }, 50);
+};
 
 function loadProceeding(xmlData) {
     $xmlData = $(xmlData);
@@ -71,7 +121,7 @@ function loadProceeding(xmlData) {
                         authorData.first_name = xml_author.find("> first_name").text();
                         authorData.middle_name = xml_author.find("> middle_name").text();
                         authorData.last_name = xml_author.find("> last_name").text();
-                        authorData.affiliation = xml_author.find("> affiliation").text();
+                        authorData.Affiliation = xml_author.find("> affiliation").text();
                     var authorItem = new kshf.Item(authorData,"id");
                     kshf.dt.People.push(authorItem);
                     kshf.dt_id.People[authorID] = authorItem;
@@ -103,90 +153,27 @@ function loadProceeding(xmlData) {
 };
 
 google.setOnLoadCallback(function(){
-    
-    kshf.dt.Articles = [];
-    kshf.dt_id.Articles = {};
-
-    kshf.dt.Proceedings = [];
-    
-    kshf.dt.People = [];
-    kshf.dt_id.People = {};
-    
     browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Articles",
         categoryTextWidth: 230,
         source : {
-            callback: function(browser){
-                browser.primaryTableName = "Articles";
-                paperBrowser = browser;
-                var fileList = [
-                    /*"CHI1982",
-                    "CHI1983",
-                    "CHI1985",
-                    "CHI1986",
-                    "CHI1987",
-                    "CHI1988",
-                    "CHI1989",
-                    "CHI1990",
-                    "CHI1991",
-                    "CHI1992",*/
-                    "CHI1993",
-                    "CHI1994",
-                    "CHI1995",
-                    "CHI1996",
-                    "CHI1997",
-                    "CHI1998",
-                    "CHI1999",
-                    "CHI2000",
-                    "CHI2001",/*
-                    "CHI2002",
-                    "CHI2003",
-                    "CHI2004"*/
-                ];
-                fileList.forEach(function(fileName){
-                    $.ajax( {
-                        url:"./data_private/"+fileName+".xml",
-                        type:"GET",
-                        dataType:"xml",
-                        async: false,
-                        success: function(xmlData){ return loadProceeding(xmlData); }
-                    });
-                });
-
-                // process through citation links
-
-                paperBrowser.items = kshf.dt.Articles;
-                paperBrowser.itemsSelectedCt = kshf.dt.Articles.length;
-                
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { paperBrowser.loadCharts(); }, 50);
-            }
+            callback: loadData
         },
         facets: [
-            { facetTitle: "Category"
-            },{ facetTitle: "Proceeding",
+            {   facetTitle: "Category"
+            },{ facetTitle: "Year",
                 catItemMap: function(paper){
                     return paper.data.Proceeding.data.year;
                 },
                 intervalScale: 'step',
-                layout: 'bottom-mid'
+                layout: 'middle'
             },{ facetTitle: "Author",
                 catTableName: "People",
                 catLabelText: function(person){
                     return person.data.last_name+", "+person.data.first_name;
                 },
-                // collapsed: true,
-                facets: [
-                    {
-                        facetTitle: "Affiliaton",
-                        catItemMap: function(person){
-                            return person.data.affiliation;
-                        }
-                    }
-                ]
+                facets: [{ facetTitle: "Affiliaton" }]
             },
             /*,{ facetTitle: "Term"
             },{ facetTitle: "# of References", collapsed: true,
@@ -211,11 +198,9 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [ {
-                name: 'Citations',
-                inverse:false,
-                value: function(d){ return d.data.CitedByTotal; }
-            } ],
+            sortingOpts : [{
+                name: 'Citations', value: function(d){ return d.data.CitedByTotal; }
+            }],
             textSearch: "Title",
             linkText: 'Citations to',
             detailsToggle : "Zoom",

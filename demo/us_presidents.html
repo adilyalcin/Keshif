@@ -15,62 +15,48 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-    	google.setOnLoadCallback( function(){
-            new kshf.Browser({
-                domID: "#chart_div",
-                categoryTextWidth: 160,
-                source: {
-                    gdocId : '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
-                    sheets : [ {name:"Presidents"} ]
-                },
-                facets: [
-                    {   facetTitle: "Party", 
-                    },{ facetTitle: "State of Birth",
-                    },{ facetTitle: "Occupation",
-                    },{ facetTitle: "College", layout: 'right'
-                    },{ facetTitle: "Religion", layout: 'right'
-                    },{ facetTitle: "Notes", layout: 'right'
-                    },{
-                        facetTitle: "Age at inaguration",
-                        layout: 'right'
-                    },{
-                        facetTitle: "Term Start",
-                        catItemMap : function(d){
-                            var year=d.data[3].substr(0,4);
-                            return new Date(moment(year+"01-01","YYYY-MM-DD"));
-                        },
-                        intervalScale: 'time',
-                        layout: 'bottom'
-                    }
-                ],
-                itemDisplay: {
-                    sortColWidth: 40,
-                    textSearch: 'Name',
-                    autoExpandMore: true,
-                    maxVisibleItems_Default: 5,
-                    sortingOpts : [
-                        {   name: '',
-                            value: function(d){ return d.data[0]; }
-                        }
-                    ],
-                    displayType: 'grid',
-                    contentFunc: function(d){ 
-                        return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data[15]+"' target='_blank'><img></a>";
-                    },
-                    visibleCb: function(d){
-                        d3.select(d.DOM.result).select("img").attr("src",d.data[11]);
-                    }
-                }
-            });
-        });
+google.setOnLoadCallback( function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 160,
+        source: {
+            gdocId : '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
+            sheets : [ {name:"Presidents"} ]
+        },
+        facets: [
+            {   facetTitle: "Party", 
+            },{ facetTitle: "State of Birth",
+            },{ facetTitle: "Occupation",
+            },{ facetTitle: "College", layout: 'right'
+            },{ facetTitle: "Religion", layout: 'right'
+            },{ facetTitle: "Notes", layout: 'right'
+            },{ facetTitle: "Age at inaguration", layout: 'right'
+            },{ facetTitle: "Term Start", layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 40,
+            textSearch: 'Name',
+            maxVisibleItems_Default: 5,
+            sortingOpts : [ {name: 'id'} ],
+            displayType: 'grid',
+            contentFunc: function(d){ 
+                return "<a href='http://www.whitehouse.gov/about/presidents/"+d.data.Link+"' target='_blank'><img></a>";
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.result).select("img").attr("src",d.data.Image);
+            }
+        }
+    });
+});
         </script>
         <style>
             #chart_div {
                 width: 900px;
                 height: 700px;
             }
-            div.content img{
-                width: 350px;
+            .content img{
+                width: 100%;
                 padding-left: 2px;
             }
             .mainTextSearch input{

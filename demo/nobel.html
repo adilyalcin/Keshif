@@ -15,127 +15,125 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-var demoID = 14;
-
-function getGender(v){
-    switch(v){
+function getGender(genderValue){
+    switch(genderValue){
         case 1: return "Male";
         case 2: return "Female";
         case 3: return "Organization";
     }
-}
+};
+var getIcon = function(genderName){
+    var iconName="";
+    switch(genderName){
+        case "Male": iconName = "male"; break;
+        case "Female": iconName = "female"; break;
+        case "Organization": iconName = "university"; break;
+        case "Medicine": iconName = "stethoscope"; break;
+        case "Economics": iconName = "money"; break;
+        case "Literature": iconName = "book"; break;
+        case "Physics": iconName = "bolt"; break;
+        case "Chemistry": iconName = "flask"; break;
+        case "Peace": iconName = "flag-o"; break;
+    }
+    return "<span class='fa fa-"+iconName+"'></span>";
+};
 
 $(document).ready( function(){
-    var prizeCols;
-    var lautCols;
-
     logIf.Check = logIf.All();
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Winners",
         categoryTextWidth: 190,
+        leftPanelLabelWidth: 120,
         source: {
             gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
-            sheets : [ {name:"Prizes"},{name:"Laureates"} ]
-        },
-        loadedCb: function(){
-            prizeCols = kshf.dt_ColNames.Prizes;
-            lautCols = kshf.dt_ColNames.Laureates;
+            sheets : [ {name:"Prizes"}, {name:"Laureates"} ]
         },
         facets: [
-            {
-                facetTitle: "Category",
-                textFilter: 'about'
-            }, {
-                facetTitle: "Born Country",
+            {   facetTitle: "Category",
+                textFilter: 'about',
+                catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
+            },{ facetTitle: "Born Country",
                 catItemMap : function(prize){ 
-                    var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
-                    return laureate.data[lautCols.bornCountry];
+                    return kshf.dt_id.Laureates[prize.data.laureate_id].data.bornCountry;
                 },
-                textGroup: 'countries'
-            }, {
-                facetTitle: "Affiliation",
-                layout: 'right',
+            },{ facetTitle: "Affiliation", layout: 'right',
                 catItemMap : function(prize){ 
-                    var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
-                    return laureate.data[lautCols.name];
+                    return kshf.dt_id.Laureates[prize.data.laureate_id].data.name;
                 },
                 facets:[
-                    {
-                        facetTitle:"# of Winners",
-                        catItemMap: function(d){
-                            return d.items.length;
-                        },
-                        type: 'interval', intervalScale: 'log'
+                    {   facetTitle:"# of Winners",
+                        catItemMap: function(d){ return d.items.length; },
+                        intervalScale: 'log'
                     }
                 ]
-            }, {
-                facetTitle: "Gender",
-                layout: 'right',
-                catItemMap : function(prize){ 
-                    var laureate = kshf.dt_id.Laureates[prize.data[prizeCols.laureate_id]];
-                    return laureate.data[lautCols.gender];
-                },
-                catLabelText: function(d) { return getGender(d.data[1]); }
-            }, {
-                facetTitle: "Joint Awards",
-                catDispCountFix: 2,
+            },{ facetTitle: "Joint Awards",
                 catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
-            },{
-                facetTitle: "Year",
-                catItemMap : function(prize){
-                    return new Date(moment(prize.data[prizeCols['Year']]+"01-01","YYYY-MM-DD"));
+            },{ facetTitle: "Gender",
+                catItemMap : function(prize){ 
+                    return getGender(kshf.dt_id.Laureates[prize.data.laureate_id].data.gender);
                 },
-                layout: 'bottom',
+                catLabelText: function(d) { 
+                    return d.data[0]+" "+getIcon(d.data[0]);
+                }
+            },{ facetTitle: "Year", layout: 'bottom',
+                catItemMap : function(prize){
+                    return new Date(moment(prize.data.Year+"01-01","YYYY-MM-DD"));
+                },
             }
         ],
         itemDisplay: {
             sortColWidth: 55,
             sortingOpts : [ {name: 'Year'} ],
-            detailsToggle : "One",
-            textSearch : "names",
+            detailsToggle : "zoom",
+            textSearch : "name",
             textSearchFunc : function (d) {
-                var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
-                return laureate.data[lautCols.firstname] + " " + (laureate.data[lautCols.surname] || "");
+                var laureate = kshf.dt_id.Laureates[d.data.laureate_id];
+                return laureate.data.firstname + " " + (laureate.data.surname || "");
             },
-            contentFunc : function(d) {
-                var j;
-                var str="";
-                var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
-                var surname_short = (laureate.data[lautCols.surname]||"").toLowerCase().replace(/ /g,"_");
+            displayType: 'grid',
+            contentFunc: function(prize){
+                var laureate = kshf.dt_id.Laureates[prize.data.laureate_id];
+                var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
+                var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
 
-                if(laureate.data[lautCols.gender]!==3){
-                    str+="<img class=\"item_details\" style=\"float:right;\">";
-                } else {
+                return "<span class='thumbnail'><img class='thumbImg'></span>"+
+                    "<span class='laureateName'>"+fullname+"</span>"+
+                    "<div style='text-align: center;'>"+
+                    "<span class='prizeCategory'>"+getIcon(prize.data.Category)+" "+prize.data.Category+"</span> "+
+                    //getIcon(getGender(laureate.data.gender))+
+                    "</div>";
+            },
+            /*
+            contentFunc : function(d) {
+                var str="";
+
+                if(laureate.data.gender!==3){
+                    str+="<img class='item_details' style='float:right;'>";
                 }
-                str+="<div style=\"float:left; width:calc(80%);\">";
+                str+="<div style='float:left; width:calc(80%);'>";
 
-                // description
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=laureate.data[lautCols.firstname] + " " + (laureate.data[lautCols.surname]||"");
-                str+="</div>";
+                str+="<span class='item_details'>";
 
-                str+="<span class=\"item_details\">";
-
-                str+="<div class=\"iteminfo iteminfo_3\">";
-                if(laureate.data[lautCols.gender]!=='org'){
-                    var born=laureate.data[lautCols.born];
-                    var died=laureate.data[lautCols.died];
-                    str+="Born: "+laureate.data[lautCols.bornCountry]+", "+laureate.data[lautCols.bornCity]+
+                str+="<div class='iteminfo iteminfo_3'>";
+                if(laureate.data.gender!=='org'){
+                    var born=laureate.data.born;
+                    var died=laureate.data.died;
+                    str+="Born: "+laureate.data.bornCountry+", "+laureate.data.bornCity+
                         (born!==null?(", "+moment(born).format("MMM. DD YYYY")):"")+
                         (died!==null?(", Died in "+moment(died).format("MMM. DD YYYY")):"")
                         ;
                 }
                 str+="</div>";
 
-                str+="<div class=\"iteminfo iteminfo_1\">Nobel Prize In: "+d.data[prizeCols['Category']]+"</div>";
-                str+="<div class=\"iteminfo iteminfo_2\">Motivation: "+d.data[prizeCols['Motivation']]+"</div>";
+                str+="<div class='iteminfo iteminfo_1'>Nobel Prize In: "+d.data.Category+"</div>";
+                str+="<div class='iteminfo iteminfo_2'>Motivation: "+d.data.Motivation+"</div>";
 
-                var mot = d.data[prizeCols['Overall Motivation']];
+                var mot = d.data['Overall Motivation'];
                 if(mot!=="" && mot!== null){
-                    str+="<div class=\"iteminfo iteminfo_3\">Overall motivation: ";
+                    str+="<div class='iteminfo iteminfo_3'>Overall motivation: ";
                     str+=mot;
                     str+="</div>";
                 }
@@ -144,25 +142,46 @@ $(document).ready( function(){
                 str+="</span>";
 
                 return str;
-            },
-            detailCb: function(d){
-                // insert the image url
-                var laureate = kshf.dt_id.Laureates[d.data[prizeCols.laureate_id]];
-                var surname_short = laureate.data[lautCols.surname].toLowerCase().replace(/ /g,"_");
-                surname_short = surname_short.replace("von_","").replace("la_","");
-                var imgUrl="./img/nobel_photo/"+surname_short+".jpg";
-                if(laureate.data[lautCols.gender]!==3){
-                    d3.select(d.DOM.result).select("img").attr("src",imgUrl);
+            },*/
+            visibleCb: function(prize){
+                var laureate = kshf.dt_id.Laureates[prize.data.laureate_id];
+                if(laureate.data.gender!==3){
+                    // insert the image url
+                    var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
+                    surname_short = surname_short.replace("von_","").replace("la_","");
+                    var imgUrl="./img/nobel_photo/"+surname_short+".jpg";
+                    d3.select(prize.DOM.result).select("img").attr("src",imgUrl);
                 }
             }
         }
     });
 });
+var demoID = 14;
+
         </script>
         <style>
-            div.listItem{ padding-bottom: 2 px; }
-            div.listItem img{ width: 60px;}
-            #chart_div { height: 700px; width:1150px; }
+#chart_div {
+    height: 700px;
+    width:1150px;
+}
+.attrib .fa{
+    width: 15px;
+    text-align: center;
+}
+.listItem{
+    width: 130px;
+}
+.content{
+    padding: 3px;
+    text-align: center;
+}
+.prizeCategory{
+    font-size: 0.8em;
+}
+.laureateName{
+    font-weight: 700;
+}
+
         </style>
 	</head>
     <body>

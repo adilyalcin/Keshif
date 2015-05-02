@@ -78,20 +78,20 @@ google.setOnLoadCallback( function(){
                 catTableName: "Severity",
             },{
                 facetTitle: "Area",
-                catLabelText: function(d) { return (d.data[1]===1)? "Urban":"Rural"; }
+                catLabelText: function(d) { return (d.data[0]===1)?"Urban":"Rural"; }
             },{
                 facetTitle: "Time of Day",
                 catItemMap : function(accident){
-                    var hour= accident.data[accCol['Time of Day']][0];
+                    var hour=accident.data['Time of Day'].getHours();
                     if(hour<6) return 0;
                     if(hour<12) return 1;
                     if(hour<18) return 2;
                     return 3;
                 },
-                catLabelText: function(d){ return timeOfDayText(d.data[1]); }
+                catLabelText: function(d){ return timeOfDayText(d.data[0]); }
             },{
                 facetTitle: "Speed Limit (mph)",
-                catItemMap: function(d){ return d.data[7]; }
+                catItemMap: function(d){ return d.data['Speed Limit']; }
             },{
                 facetTitle: "# of Vehicles",
                 sortingOpts: [{
@@ -102,43 +102,47 @@ google.setOnLoadCallback( function(){
                 facetTitle: "Road Surface",
                 catTableName: "RoadSurface",
                 catItemMap : function(accident){
-                    var c=accident.data[accCol['Road Surface Condition']];
+                    var c=accident.data['Road Surface Condition'];
                     return (c===-1)?null:c; // skip if -1
+                },
+                catLabelText: function(d){ 
+                    return d.data.name;
                 }
             },{
                 facetTitle: "Light Condition",
                 layout: 'right',
                 catTableName: "LightCond",
-                catTooltipText: function(d) { return d.data[2]; }
+                catLabelText: function(d) {
+                    return d.data.name;
+                }
             },{
                 facetTitle: "Weather Condition",
                 layout: 'right',
                 catTableName: "WeatherCond",
-                catTooltipText: function(d) { return d.data[2];}
+                catLabelText: function(d) { return d.data.name;}
             },{
                 facetTitle: "Special Condition",
                 layout: 'right',
                 catTableName: "SpecCond",
                 catItemMap : function(accident){
-                    var c=accident.data[accCol['Special Condition']];
+                    var c=accident.data['Special Condition'];
                     return (c===0)?null:c; // skip if 0
                 },
-                catTooltipText: function(d) { return d.data[2]; }
+                catLabelText: function(d) { return d.data.name; }
             },{
                 facetTitle: "Junction Detail",
                 layout: 'right',
                 catTableName: "JuncDet",
                 catItemMap : function(accident){
-                    var c=accident.data[accCol['Junction Detail']];
+                    var c=accident.data['Junction Detail'];
                     return (c===-0)?null:c; // skip if 0
-                },
-                collapsed: true
+                }
             },{
                 facetTitle: "Junction Control",
                 layout: 'right',
                 catTableName: "JuncCont",
                 catItemMap : function(accident){
-                    var c=accident.data[accCol['Junction Control']];
+                    var c=accident.data['Junction Control'];
                     return (c===-1)?null:c; // skip if 0
                 },
                 collapsed: true
@@ -151,7 +155,7 @@ google.setOnLoadCallback( function(){
             sortingOpts : [
                 {   name: 'Date',
                     label: function(accident){ 
-                        var date=accident.data[accCol.Date];
+                        var date=accident.data.Date;
                         return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
                     }
                 }

@@ -17,21 +17,18 @@
         <script type="text/javascript">
 
 $(document).ready( function(){
-    $('#chart_div').width(1000);
-    $('#chart_div').height(500);
-
     var dateFormat=d3.time.format("%m/%d/%Y");
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 270,
         barChartWidth: 270,
         itemName: "Unclaimed Deads",
-        source : {
+        source: {
             url: "http://spreadsheets.latimes.com/unclaimed-dead/",
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
+            sheets: [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
             /*
             callback: function(browser){
                 browser.primaryTableName = "Deaths";
@@ -70,8 +67,7 @@ $(document).ready( function(){
             */
         },
         facets: [
-            {
-                facetTitle: "WHO?",
+            {   facetTitle: "WHO?",
                 catItemMap: function(d){
                     var r=[];
                     switch(d.data.Sex){
@@ -85,27 +81,18 @@ $(document).ready( function(){
                     if(d.data.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
-            },{
-                facetTitle: "Age",
-            },{
-                facetTitle: "Death Date", intervalScale: 'time',
-                catItemMap: function(d){
-                    return dateFormat.parse(d.data.Death);
-                }
-            },{
-                facetTitle: "After Story is Published...",
-                catItemMap: function(d){
-                    if(d.data.claimed) return "Claimed";
-                }
+            },{ facetTitle: "Age",
+            },{ facetTitle: "Death Date", intervalScale: 'time',
+                catItemMap: function(d){ return dateFormat.parse(d.data.Death); }
+            },{ facetTitle: "After Story is Published...",
+                catItemMap: function(d){ if(d.data.claimed) return "Claimed"; }
             }
         ],
         itemDisplay: {
             sortColWidth: 82,
-            sortingOpts : [
-                {
-                    name:'Age', inverse:false,
-                },{
-                    name:'Death', inverse:true,
+            sortingOpts: [
+                {   name:'Age', inverse:false,
+                },{ name:'Death', inverse:true,
                     value: function(d){ return d.data.Death; },
                     label: function(d){
                         if(d.data.Death===null) return '-';
@@ -114,7 +101,6 @@ $(document).ready( function(){
                 }
             ],
             textSearch : "name",
-            autoExpandMore: true,
             textSearchFunc: function(d){ return d.data.Last+", "+d.data.Middle+" "+d.data.First; },
             maxVisibleItems_Default: 28,
 //            detailsToggle : "Zoom",
@@ -139,6 +125,10 @@ $(document).ready( function(){
 });
         </script>
 <style>
+#chart_div{
+    width: 1000px;
+    height: 500px;
+}
 .listItem{
     width: 20%;
 }

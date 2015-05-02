@@ -16,11 +16,6 @@
 
         <script type="text/javascript">
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-120);
-}
-
 var references = {
     "Abello2013Modular": "Farrugia2011Effective Frishman2008Online Reitz2009Focused",
     "Ahlers2014Replicable": "Federico2011Visual Dutot2007GraphStream",
@@ -173,10 +168,77 @@ var references = {
 };
 
 
+function loadData(browser){
+    browser.primaryTableName = "Publications";
+
+    kshf.dt.Publications = [];
+    kshf.dt_id.Publications = {};
+
+    $.ajax( {
+        url: "./data/dyngraphviz.bib",
+        async: false,
+        success: function(bibdata){
+            var entries = BibtexParser(bibdata);
+
+            entries.entries.forEach(function(entry){
+                var entryData = {};
+
+                entryData.Key = entry.EntryKey;
+                entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
+                entryData.Type = entry.EntryType;
+                entryData.Authors = [];
+                if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+                entryData.Title = entry.Fields.title;
+                entryData.Year = entry.Fields.year;
+                if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
+                entryData.Date = new Date(entryData.Year,1,1);
+
+                entryData.Paradigms = [];
+                entryData.Applications = [];
+                entryData.Type = [];
+                entryData.Time = [];
+                entryData.Evaluations = [];
+
+                if(entry.Fields.keywords){
+                    entry.Fields.keywords.split(", ").forEach(function(keyword){
+                        keyword = keyword.split(":");
+                        switch(keyword[0]){
+                            case 'paradigm': entryData.Paradigms.push(keyword[1]); break;
+                            case 'type': entryData.Type.push(keyword[1]); break;
+                            case 'time': entryData.Time.push(keyword[1]); break;
+                            case 'application': entryData.Applications.push(keyword[1]); break;
+                            case 'evaluation': entryData.Evaluations.push(keyword[1]); break;
+                        }
+                    });
+                }
+                
+                if(entry.Fields.journal)
+                    entryData.Journal = entry.Fields.journal;
+                else if(entry.Fields.booktitle)
+                    entryData.Journal = entry.Fields.booktitle;
+
+                var kshfItem = new kshf.Item(entryData,'Key');
+                kshf.dt.Publications.push(kshfItem);
+                kshf.dt_id.Publications[kshfItem.id()] = kshfItem;
+            });
+
+            // there will be some entries.errors, for incorrect entry types (like online)
+
+            browser.items = kshf.dt.Publications;
+            browser.itemsSelectedCt = browser.items.length;                
+
+            // finish loading....
+            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
+            d3.select(".kshf.layout_infobox div.status_text div").text("");
+            window.setTimeout(function() { browser.loadCharts(); }, 100);
+        }
+    });
+};
+
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(100,120);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(100,120);
         browser.updateLayout();
     });
 
@@ -187,83 +249,14 @@ $(document).ready( function(){
         itemName: "Dynamic Graph Vis. Papers",
         source : {
             url: "http://dynamicgraphs.fbeck.com/",
-            callback: function(browser){
-                browser.primaryTableName = "Publications";
-
-                kshf.dt.Publications = [];
-                kshf.dt_id.Publications = {};
-
-                $.ajax( {
-                    url: "./data/dyngraphviz.bib",
-                    async: false,
-                    success: function(bibdata){
-                        var entries = BibtexParser(bibdata);
-
-                        entries.entries.forEach(function(entry){
-                            var entryData = {};
-
-                            entryData.Key = entry.EntryKey;
-                            entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
-                            entryData.Type = entry.EntryType;
-                            entryData.Authors = [];
-                            if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
-                            entryData.Title = entry.Fields.title;
-                            entryData.Year = entry.Fields.year;
-                            if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
-
-                            entryData.Paradigms = [];
-                            entryData.Applications = [];
-                            entryData.Type = [];
-                            entryData.Time = [];
-                            entryData.Evaluations = [];
-
-                            if(entry.Fields.keywords){
-                                entry.Fields.keywords.split(", ").forEach(function(keyword){
-                                    keyword = keyword.split(":");
-                                    switch(keyword[0]){
-                                        case 'paradigm': entryData.Paradigms.push(keyword[1]); break;
-                                        case 'type': entryData.Type.push(keyword[1]); break;
-                                        case 'time': entryData.Time.push(keyword[1]); break;
-                                        case 'application': entryData.Applications.push(keyword[1]); break;
-                                        case 'evaluation': entryData.Evaluations.push(keyword[1]); break;
-                                    }
-                                });
-                            }
-                            
-                            if(entry.Fields.journal)
-                                entryData.Journal = entry.Fields.journal;
-                            else if(entry.Fields.booktitle)
-                                entryData.Journal = entry.Fields.booktitle;
-
-                            var kshfItem = new kshf.Item(entryData,'Key');
-                            kshf.dt.Publications.push(kshfItem);
-                            kshf.dt_id.Publications[kshfItem.id()] = kshfItem;
-                        });
-
-                        // there will be some entries.errors, for incorrect entry types (like online)
-
-                        browser.items = kshf.dt.Publications;
-                        browser.itemsSelectedCt = browser.items.length;                
-
-                        // finish loading....
-                        d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                        d3.select(".kshf.layout_infobox div.status_text div").text("");
-                        window.setTimeout(function() { browser.loadCharts(); }, 100);
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
-            {
-                facetTitle: "Type",
-            },{
-                facetTitle: "Time",
-            },{
-                facetTitle: "Paradigms",
-            },{
-                facetTitle: "Applications",
-            },{
-                facetTitle: "Evaluations",
+            {   facetTitle: "Type",
+            },{ facetTitle: "Time",
+            },{ facetTitle: "Paradigms",
+            },{ facetTitle: "Applications",
+            },{ facetTitle: "Evaluations",
 /*            },{
                 facetTitle: "Citations",
                 catItemMap: function(d){
@@ -272,14 +265,9 @@ $(document).ready( function(){
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true*/
-            },{
-                facetTitle: "Authors", layout: 'right'
-            },{
-                facetTitle: "Journal", collapsed: false, layout: 'right'
-            },{
-                facetTitle: "Year",
-                layout: "bottom",
-                type: 'interval',
+            },{ facetTitle: "Authors", layout: 'right'
+            },{ facetTitle: "Journal", collapsed: false, layout: 'right'
+            },{ facetTitle: "Year", layout: "bottom",
                 intervalScale: 'step'
             }
         ],
@@ -287,12 +275,10 @@ $(document).ready( function(){
             sortColWidth: 92,
             sortingOpts : [{ name:'Year'}],
             textSearch : "Title",
-            autoExpandMore: true,
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle : "Zoom",
             contentFunc : function(d){
-//                return d.data.Title;
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
             },
