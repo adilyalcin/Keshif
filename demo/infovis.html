@@ -34,9 +34,9 @@ google.setOnLoadCallback(function () {
         facets: [
             {   title: "Concepts",
             },{ title: "Year", layout: "middle",
-                catItemMap: function(d){ return d.data.time; },
+                attribMap: "time",
             },{ title: "Highlights",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var toRet = [];
                     if(d.data[8]===true) toRet.push("Best in Year");
 //                    if(d.data[6].length>10) toRet.push("Cited +10");
@@ -46,12 +46,12 @@ google.setOnLoadCallback(function () {
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
-                catItemMap: function(d){ return d.data.Citations; },
+                attribMap: "Citations",
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
             },{ title: "Total Citations",
-                catItemMap: function(d){ if(d.data.num===0) return; return d.data.num; },
+                attribMap: function(d){ if(d.data.num===0) return; return d.data.num; },
                 intervalScale: 'log'
             },{ title: "Authors",
                 layout: 'right'

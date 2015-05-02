@@ -67,11 +67,11 @@ $(document).ready( function(){
         facets: [
             {
                 title: "Type",
-                catItemMap: function(location){ return location.data.l_type; }
+                attribMap: "l_type"
             },{
                 title: "Part of",
                 catTableName: "Locations",
-                catItemMap: function(location){ return location.data.parent_location_uuid; },
+                attribMap: "parent_location_uuid",
                 catLabelText: function(location){ return location.data.name; },
             }
         ],

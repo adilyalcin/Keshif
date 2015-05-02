@@ -92,14 +92,14 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
-                catItemMap: function(outbreak){ return outbreak.data['National Cuisine']; }
+                attribMap: 'National Cuisine'
             },
             // leaf
             {   title: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
-                catItemMap: function(d){ return d.data['Food Types']; }
+                attribMap: 'Food Types'
             },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=d.data['Pathogens / Toxins'];
                     var a=[r];
                     if(r==undefined || r===null) return r;
@@ -108,12 +108,12 @@ google.setOnLoadCallback(function(){
                 }
             },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
                 layout: 'right',
-                catItemMap: function(d){ return d.data['Contributing Factors']; }
+                attribMap: 'Contributing Factors'
             },{
                 title: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>", 
                 layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
-                catItemMap: function(d){ return d.data['Setting']; }
+                attribMap: 'Setting'
             }
         ],
     });

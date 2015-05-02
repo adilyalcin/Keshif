@@ -48,10 +48,8 @@ $(document).ready( function(){
         source: { callback: loadData },
         facets: [
             {   title: "subreddit"
-            },{ title: "num_comments",
-                catItemMap: function(post){ return post.data.num_comments; }
-            },{ title: "score",
-                catItemMap: function(post){ return post.data.score; }
+            },{ title: "num_comments"
+            },{ title: "score"
             },{ title: "gilded",  
                 type: "categorical"
             }

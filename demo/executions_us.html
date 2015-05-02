@@ -26,7 +26,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Crime",
-                catItemMap: function(d){ return d.data.Crime.split(" - "); }
+                attribMap: function(d){ return d.data.Crime.split(" - "); }
             },{ title: "Method",
             },{ title: "State", layout: 'right',
                 catLabelText: function(d){ return getStateName(d.data[0]); }

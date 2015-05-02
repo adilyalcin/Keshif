@@ -160,78 +160,75 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Class",
                 catLabelText: getName.Class
-            },{ title: "Population",
-                layout: "middle",
-                catLabelText: getName.Population
             },{ title: "Habitat",
                 catLabelText: getName.Habitat
             },{ title: "Odor",
                 catLabelText: getName.Odor
             },{ title: "Bruises", collapsed: true,
-            },{ title: "Cap", layout: "middle",
-                facets: [
-                    {   title: "Shape",
-                        catItemMap: function(d){ return d.data.Cap_Shape; },
-                        catLabelText: getName.Shape
-                    },{ title: "Surface",
-                        catItemMap: function(d){ return d.data.Cap_Surface; },
-                        catLabelText: getName.Surface
-                    },{ title: "Color",
-                        catItemMap: function(d){ return d.data.Cap_Color; },
-                        catLabelText: getName.Color
-                    }
-                ]
-            },{
-                title: "Ring", layout: "middle",
-                facets: [
-                    {   title: "Number",
-                        catItemMap: function(d){ return d.data.Ring_Number; },
-                        catLabelText: getName.RingNumber
-                    },{ title: "Type",
-                        catItemMap: function(d){ return d.data.Ring_Type; },
-                        catLabelText: getName.RingType
-                    }
-                ]
             },{ title: "Gill",
                 facets:[
                     {   title: "Attachment",
-                        catItemMap: function(d){ return d.data.Gill_Attachment; },
+                        attribMap: "Gill Attachment",
                         catLabelText: getName.GillAttachment
                     },{ title: "Spacing",
-                        catItemMap: function(d){ return d.data.Gill_Spacing; },
+                        attribMap: "Gill Spacing",
                         catLabelText: getName.GillSpacing
                     },{ title: "Size",
-                        catItemMap: function(d){ return d.data.Gill_Size; },
+                        attribMap: "Gill Size",
                         catLabelText: getName.GillSize
                     },{ title: "Color",
-                        catItemMap: function(d){ return d.data.Gill_Color; },
+                        attribMap: "Gill Color",
                         catLabelText: getName.Color
                     }
                 ]
-            },{
-                title: "Spore Print Color", layout: 'right',
-                catItemMap: function(d){ return d.data.Spore_Pring_Color; },
+
+            },{ title: "Population", layout: "middle",
+                catLabelText: getName.Population
+            },{ title: "Cap", layout: "middle",
+                facets: [
+                    {   title: "Shape",
+                        attribMap: "Cap Shape",
+                        catLabelText: getName.Shape
+                    },{ title: "Surface",
+                        attribMap: "Cap Surface",
+                        catLabelText: getName.Surface
+                    },{ title: "Color",
+                        attribMap: "Cap Color",
+                        catLabelText: getName.Color
+                    }
+                ]
+            },{ title: "Ring", layout: "middle",
+                facets: [
+                    {   title: "Number",
+                        attribMap: "Ring Number",
+                        catLabelText: getName.RingNumber
+                    },{ title: "Type",
+                        attribMap: "Ring Type",
+                        catLabelText: getName.RingType
+                    }
+                ]
+
+            },{ title: "Spore Print Color", layout: 'right',
                 catLabelText: getName.Color
-            },{
-                title: "Stalk", layout: 'right',
+            },{ title: "Stalk", layout: 'right',
                 facets:[
                     {   title: "Shape",
-                        catItemMap: function(d){ return d.data.Stalk_Shape; },
+                        attribMap: "Stalk Shape",
                         catLabelText: getName.Shape
                     },{ title: "Root",
-                        catItemMap: function(d){ return d.data.Stalk_Root; },
+                        attribMap: "Stalk Root",
                         catLabelText: getName.Root
                     },{ title: "Surface Above Ring",
-                        catItemMap: function(d){ return d.data.Stalk_Surface_Above_Ring; },
+                        attribMap: "Stalk Surface Above Ring",
                         catLabelText: getName.Surface
                     },{ title: "Surface Below Ring",
-                        catItemMap: function(d){ return d.data.Stalk_Surface_Below_Ring; },
+                        attribMap: "Stalk Surface Below Ring",
                         catLabelText: getName.Surface
                     },{ title: "Color Above Ring",
-                        catItemMap: function(d){ return d.data.Stalk_Color_Above_Ring; },
+                        attribMap: "Stalk Color Above Ring",
                         catLabelText: getName.Color
                     },{ title: "Color Below Ring",
-                        catItemMap: function(d){ return d.data.Stalk_Color_Below_Ring; },
+                        attribMap: "Stalk Color Below Ring",
                         catLabelText: getName.Color
                     }
                 ]

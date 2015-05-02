@@ -63,7 +63,7 @@ $(document).ready( function(){
             {   title: "Architect",
             },{ title: "Style", layout: 'right'
             },{ title: "Year (Post 14th century)", layout: 'bottom',
-                catItemMap: function(d){
+                attribMap: function(d){
                     if(d.data.Year.getFullYear()<1500) return;
                     return d.data.Year;
                 }

@@ -48,7 +48,7 @@ google.setOnLoadCallback(function(){
                     }
                 }],
             },{ title: "Month", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data[3].getMonth(); },
+                attribMap: function(d){ return d.data[3].getMonth(); },
                 sortingOpts: [
                     {func: kshf.Util.sortFunc_Column_Int_Incr}
                 ],

@@ -74,7 +74,7 @@ $(document).ready( function(){
                 layout: 'right',
                 facets: [
                     {   title: "Name", collapsed: true,
-                        catItemMap: function(d){ return d.data.Artist; }
+                        attribMap: "Artist"
                     },{ title: "Nationality"
                     },{ title: "Gender"
                     },{ title: "Living"
@@ -85,8 +85,7 @@ $(document).ready( function(){
             },{ title: "Object Type",
 //            },{ title: "Medium",
             },{ title: "Creation Date",
-                catItemMap: function(d){ return d.data.Time},
-                intervalScale: 'time'
+                attribMap: "Time"
             },{ title: "Department",
             },{ title: "On Display",
 //            },{ title: "Key Words", collapsed: true

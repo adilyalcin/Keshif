@@ -263,7 +263,7 @@ $(document).ready( function(){
         facets: [
             {   title: "GeneralCategory", 
             },{ title: "ComparisonCategory",
-                catItemMap: function(d){ 
+                attribMap: function(d){ 
                     return d.data.ComparisonCategory.split("/");
                 } 
             },{ title: "DataTypeCompared", 
@@ -274,7 +274,7 @@ $(document).ready( function(){
             },{ title: "Authors", layout: 'right',
             },{ title: "Venue", layout: 'right'
             },{ title: "Categorized By",  layout: 'right', collapsed: true,
-                catItemMap: function(d){
+                attribMap: function(d){
                     switch(d.data.CategorizedBy){
                         case 'DA'  : return "Danielle Albers";
                         case 'Ilir': return "Ilir Jusuf";

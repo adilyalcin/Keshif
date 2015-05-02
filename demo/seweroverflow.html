@@ -65,30 +65,30 @@ $(document).ready(function(){
         },
         facets: [
             {   title: "Overflow Type",
-                catItemMap: function(overflow){ return overflow.data[8]; }
+                attribMap: function(overflow){ return overflow.data[8]; }
             },{ title: "Cause",
-                catItemMap: function(overflow){ return overflow.data[21]; }
+                attribMap: function(overflow){ return overflow.data[21]; }
             },{ title: "Time",
                 facets: [
                     {   title: "Year Discovered", 
-                        catItemMap: function(overflow){ 
+                        attribMap: function(overflow){ 
                             // parses the date string and returns the year
                             return new Date(moment(overflow.data[11]));
                         },
                         intervalScale: 'time'
                     },{ title: "Duration",
-                        catItemMap: getDuration_Human
+                        attribMap: getDuration_Human
                     }
                 ]
             },{ title: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [
                     {   title: "Zip Code", 
-                        catItemMap: function(overflow){ return overflow.data[17]; }
+                        attribMap: function(overflow){ return overflow.data[17]; }
                     },{ title: "County", 
-                        catItemMap: function(overflow){ return overflow.data[23]; }
+                        attribMap: function(overflow){ return overflow.data[23]; }
                     },{ title: "Municipality/Facility",
-                        catItemMap: function(overflow){ return overflow.data[9]; }
+                        attribMap: function(overflow){ return overflow.data[9]; }
                     }
                 ]
             }

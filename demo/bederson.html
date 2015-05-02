@@ -69,7 +69,7 @@ google.setOnLoadCallback(function() {
                 catTableName: "Keywords",
                 catLabelText: function(k){ return k.data.keyword; }
             },{ title: "Coauthors",
-                catItemMap : function(pub){
+                attribMap : function(pub){
                     var authors = pub.data.Coauthors;
                     // remove Ben Bederson's ID
                     newAuthors = [];
@@ -83,7 +83,7 @@ google.setOnLoadCallback(function() {
                 catTooltipText: function(auth){ return auth.data.first_names+" "+auth.data.last_name; },
                 facets: [
                     {   title: "Type",
-                        catItemMap : function(coAuth){ return coAuth.data.author_type; },
+                        attribMap : function(coAuth){ return coAuth.data.author_type; },
                         catTableName: "AuthorTypes",
                         catLabelText: function(at){
                             return at.data.keyword;
@@ -91,13 +91,12 @@ google.setOnLoadCallback(function() {
                     }
                 ]
             },{ title: "Publication Type",
-                catItemMap: function(pub){ return pub.data.type;},
+                attribMap: "type",
                 catLabelText: function(d){ 
                     return kshf.dt_id.VenueTypes[d.data[0]].data.keyword;
                 }
             },{ title: "Venue",
                 collapsed: true,
-                catItemMap : function(pub){ return pub.data.Venue; },
                 catTableName: "Venues",
                 catLabelText: function(d){ return d.data.venue; }
             },{ title: "Date",

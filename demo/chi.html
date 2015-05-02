@@ -163,7 +163,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Category"
             },{ title: "Year",
-                catItemMap: function(paper){
+                attribMap: function(paper){
                     return paper.data.Proceeding.data.year;
                 },
                 intervalScale: 'step',
@@ -177,9 +177,9 @@ google.setOnLoadCallback(function(){
             },
             /*,{ title: "Term"
             },{ title: "# of References", collapsed: true,
-                catItemMap: function(paper){ return paper.data.ReferenceTotal; }
+                attribMap: "ReferenceTotal"}
             }*/,{ title: "# of Citations",
-                catItemMap: function(paper){
+                attribMap: function(paper){
                     if(paper.data.CitedByTotal===0) return;
                     return paper.data.CitedByTotal;
                 },
@@ -189,9 +189,7 @@ google.setOnLoadCallback(function(){
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
-                catItemMap: function(d){
-                    return d.data.References;
-                },
+                attribMap: "References",
                 // Using the main table name, this will enable linking through items
                 catTableName: "Articles"
             }*/

@@ -34,12 +34,12 @@ $(document).ready( function(){
     logIf.Check = logIf.All();
     
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 100,
         rightPanelLabelWidth: 90,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
-            sheets : [ {name:"Posts"}, {name:"Authors"} ]
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
+            sheets: [ {name:"Posts"}, {name:"Authors"} ]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
@@ -50,18 +50,18 @@ $(document).ready( function(){
                 catTableName: "Authors", collapsed: true,
                 catLabelText: function(d){ return d.data.Name; }
             },{ title: "# Comments", 
-                catItemMap : function(post){
+                attribMap: function(post){
                     var v=post.data['# of Comments'];
                     if(v>0) return v;
                 },
                 intervalScale: "log"
             },{ title: "Time", layout: 'bottom',
-                catItemMap : function(post){ return post.data.Date; },
+                attribMap: "Date",
             }
         ],
         itemDisplay: {
             sortColWidth: 85,
-            sortingOpts : [
+            sortingOpts: [
                 {   name: 'Date',
                     value: function(d){ return d.data.Date.getTime(); },
                     label: function(d){ return moment(d.data.Date).format("MMM Do, YY"); }
@@ -69,9 +69,9 @@ $(document).ready( function(){
                     value: function(d){ return d.data[5]; }
                 }
             ],
-            textSearch : "Title",
-/*            detailsToggle : "One",
-            recordView : function(d) {
+            textSearch: "Title",
+/*            detailsToggle: "One",
+            recordView: function(d) {
                 var str="";
                 
                 str+="<div class='iteminfo iteminfo_0 postName'>"
@@ -94,7 +94,7 @@ $(document).ready( function(){
             },*/
             displayType: 'grid',
             maxVisibleItems_Default: 50,
-            detailsToggle : "zoom",
+            detailsToggle: "zoom",
             recordView: function(d){
                 return "<a target='_blank' href='"+d.data.URL+
                     "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data.Title+"</span></a>";

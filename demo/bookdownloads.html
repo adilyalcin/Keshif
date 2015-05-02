@@ -52,13 +52,13 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Hour", layout: 'bottom',
-                catItemMap: function(download){ return download.data.downloadTime.hour(); },
+                attribMap: function(download){ return download.data.downloadTime.hour(); },
                 intervalScale: 'step',
                 intervalTickFormat: function(d){ return d3.format("d")(d)+":00"; }
             },{ title: "Time", layout: 'bottom',
-                catItemMap: function(download){ return new Date(download.data.downloadTime);}
+                attribMap: function(download){ return new Date(download.data.downloadTime);}
             },{ title: "Day",
-                catItemMap: function(download){ return download.data.downloadTime.day(); },
+                attribMap: function(download){ return download.data.downloadTime.day(); },
                 catLabelText: function(v){
                     switch(v.data[1]){
                         case 0: return "Sunday";
@@ -75,14 +75,14 @@ $(document).ready( function(){
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
             },{ title: "Month", layout: 'right',
-                catItemMap: function(download){ return download.data.downloadTime.month(); },
+                attribMap: function(download){ return download.data.downloadTime.month(); },
                 catLabelText: function(v){ return getMonthNameFromNumber(v.data[0]); },
                 sortingOpts: [{
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                 }]
             },{ title: "Year",
-                catItemMap: function(download){ return download.data.downloadTime.year(); },
+                attribMap: function(download){ return download.data.downloadTime.year(); },
                 type: 'categorical',
                 sortingOpts: [{
                     no_resort: true,

@@ -72,7 +72,7 @@ $(document).ready( function(){
             {   title: "Tasks",
                 facets: [
                     {   title: "Analytics",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="sentiment-analysis" ||
                                     c==="text-summarization" ||
@@ -86,7 +86,7 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Visualizations",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="roi" ||
                                     c==="classification" ||
@@ -102,7 +102,7 @@ $(document).ready( function(){
             },{ title: "Data", layout: 'right',
                 facets:[
                     {   title: "Sources",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="document" ||
                                     c==="corpora" ||
@@ -110,7 +110,7 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Properties",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="geospatial" ||
                                     c==="time-series" ||
@@ -120,7 +120,7 @@ $(document).ready( function(){
                     }
                 ]
             },{ title: "Domains",
-                catItemMap: function(d){
+                attribMap: function(d){
                     return d.data.categories.filter(function(c){
                         return c==="social-media" ||
                             c==="communication" ||
@@ -134,7 +134,7 @@ $(document).ready( function(){
             },{ title: "Visualization", layout: 'right',
                 facets:[
                     {   title: "Dimensionalities",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="1d" ||
                                     c==="2d" ||
@@ -142,7 +142,7 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Representations",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="line-plot" ||
                                     c==="pixel-area" ||
@@ -154,7 +154,7 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Alignments",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="radial" ||
                                     c==="linear" ||
@@ -164,7 +164,7 @@ $(document).ready( function(){
                     }
                 ]
             },{ title: "Year", layout: 'bottom', 
-                catItemMap: function(d){ return new Date(d.data.year,0); },
+                attribMap: function(d){ return new Date(d.data.year,0); },
             }
         ],
         itemDisplay: {

@@ -52,33 +52,33 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Category",
-                catItemMap: function(d){ return d.data.category; }
+                attribMap: "category"
             },{ title: "Implementation Status",
-                catItemMap: function(d){ return d.data.impl_status_chrome; }
+                attribMap: "impl_status_chrome"
             },{ title: "Standardization",
-                catItemMap: function(d){ return d.data.standardization.text; }
+                attribMap: function(d){ return d.data.standardization.text; }
             },{ title: "Visibility", layout: 'left',
-                catItemMap: function(d){ return d.data.visibility; }
+                attribMap: "visibility"
             },{ title: "Milestone", layout: 'right', 
-                catItemMap: function(d){ return d.data.shipped_milestone; }
+                attribMap: "shipped_milestone"
             },{ title: "Prefixed", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.prefixed; }
+                attribMap: "prefixed"
             },{ title: "Owner", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.owner; }
+                attribMap: "owner"
             },{ title: "Updated By", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.updated_by; }
+                attribMap: "updated_by"
             },{ title: "Status (vs.)", layout: 'right',
                 facets: [
                     {   title: "FF Status",
-                        catItemMap: function(d){ return d.data.ff_views.text; },
+                        attribMap: function(d){ return d.data.ff_views.text; },
                     },{ title: "IE Status",
-                        catItemMap: function(d){ return d.data.ie_views.text; },
+                        attribMap: function(d){ return d.data.ie_views.text; },
                     },{ title: "Safari Status",
-                        catItemMap: function(d){ return d.data.safari_views.text; },
+                        attribMap: function(d){ return d.data.safari_views.text; },
                     }
                 ]
             },{ title: "Update Date", layout: 'bottom',
-                catItemMap: function(d){ return new Date(moment(d.data.updated)); },
+                attribMap: function(d){ return new Date(moment(d.data.updated)); },
             }
         ],
         itemDisplay: {

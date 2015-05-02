@@ -49,7 +49,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Categories"
             },{ title: "Year",
-                catItemMap: function(d){ return d.data.Award; },
+                attribMap: "Award",
                 intervalScale: 'step'
             },{ title: "Credits", collapsed: true
             }

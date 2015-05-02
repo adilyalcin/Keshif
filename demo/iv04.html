@@ -120,29 +120,29 @@ $(document).ready( function(){
                 catLabelText: function(d){ return kshf.dt_id.Authors[d.data[0]]; }
             },{ title: "Keywords", layout: 'right'
             },{ title: "# of Keywords", layout: 'right', collapsed: true,
-                catItemMap: function(d){ return d.data.Keywords.length; }
+                attribMap: function(d){ return d.data.Keywords.length; }
             },{ title: "Abstract", layout: 'right',
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     if(d.data.Abstract) r.push("Has Abstract");
 //                    if(d.data.Keywords.length>0) r.push("Has Keywords");
                     return r;
                 }
             },{ title: "# References To (Within)", layout: 'right',
-                catItemMap: function(d){ return d.data.References_To.length; }, 
+                attribMap: function(d){ return d.data.References_To.length; }, 
                 intervalScale: 'log'
             },{ title: "# References Within (Total)", layout: 'right',  collapsed: true,
-                catItemMap: function(d){
+                attribMap: function(d){
                     return d.data.References_Internal.length+
                         d.data.References_External.length+
                         d.data.References_Other.length;
                 }, intervalScale: 'log'
             },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
-                catItemMap: function(d){
+                attribMap: function(d){
                     return d.data.References_Internal.length;
                 }, intervalScale: 'log'
             },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
-                catItemMap: function(d){
+                attribMap: function(d){
                     return d.data.References_External.length+d.data.References_Other.length;
                 }, intervalScale: 'log'
             },{ title: "Date", layout: "bottom"

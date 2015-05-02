@@ -44,14 +44,12 @@ $(document).ready(function(){
         },
         facets: [
             {   title: "Program",
-                catItemMap: function(d){
-                    return d.data['Program(s)'];
-                }
+                attribMap: "Program(s)"
             },{ title: "Name",
-                catItemMap: function(d){ return d.data.Organization; }
+                attribMap: "Organization"
             },{ title: "AwardInstrument",
             },{ title: "Start Date", layout: 'bottom',
-                catItemMap: function(d){
+                attribMap: function(d){
                     var dt = d.data.StartDate;
                     if(dt===""){ return null; }
                     var m = moment(dt,"MM/DD/YYYY");
@@ -66,7 +64,7 @@ $(document).ready(function(){
             },{ title: "NSFDirectorate", collapsed: true
             },{ title: "ProgramManager", collapsed: true
             },{ title: "Awarded Amount",
-                catItemMap: function(d){ return d.data.AwardedAmountToDate; },
+                attribMap: "AwardedAmountToDate",
                 intervalScale: 'log',
                 unitName: "$",
 /*            },{
@@ -75,9 +73,9 @@ $(document).ready(function(){
             },{ title: "-Institution-", layout: 'right',
                 facets: [
                     {   title: "Name",
-                        catItemMap: function(d){ return d.data.Organization; }
+                        attribMap: "Organization"
                     },{ title: "State", collapsed: true,
-                        catItemMap: function(d){ return d.data.OrganizationState; }
+                        attribMap: "OrganizationState"
                     }
 /*                    },{
                         catTableName: 'states',

@@ -62,13 +62,13 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "<span class='fa fa-home'></span> # of Homes",
-                catItemMap: function(d){ return d.data.homes; },
+                attribMap: "homes",
                 intervalScale: "log"
             },{ title: "<span class='fa fa-money'></span> Average Value",
-                catItemMap: function(d){ return d.data.Value; },
+                attribMap: "Value",
                 intervalScale: "log"
             },{ title: "Name Features",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     if(d.data.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
                     if(d.data.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
@@ -79,7 +79,7 @@ $(document).ready( function(){
                 }
             }
 //            },{ title: "In # Counties",
-//                catItemMap: function(d){ return d.data.in_counties;},
+//                attribMap: "in_counties",
 //                intervalScale: "log"
         ],
         itemDisplay: {

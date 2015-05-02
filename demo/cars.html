@@ -25,7 +25,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Origin",
-                catItemMap: function(d){
+                attribMap: function(d){
                     switch(d.data.Origin){
                         case 1: return "American";
                         case 2: return "European";

@@ -85,13 +85,13 @@ $(document).ready( function(){
                     {   title: "Genre", forceSearch: false
                     },{ title: "Rated"
                     },{ title: "IMDB Rating",
-                        catItemMap: function(movie){ return movie.data.imdbRating; }
+                        attribMap: "imdbRating"
                     }
                 ]
             },{ title: "Location",
                 layout: "right",
                 catTableName: "Series",
-                catItemMap: function(d){ return d.data.Series; },
+                attribMap: "Series",
                 sortingOpts : [
                     {   name: "# of Screenings"},
                     {   name: "Distance",  
@@ -118,7 +118,7 @@ $(document).ready( function(){
                 facets : [/*{
                     title: "Soon",
                     removeInactiveAttrib: false,
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var m_scr = moment(d.data[1]);
                         if(m_scr.isBefore(m_now)) return null;
                         if(m_scr.isBefore(m_thisweek)) return "This Week";
@@ -129,12 +129,11 @@ $(document).ready( function(){
                     title: "Day Of Week",
                     type: 'categorical',
                     catTableName: "Weekdays",
-                    catItemMap: function(d){ return (moment(d.data.Date).days()+6)%7;  },
+                    attribMap: function(d){ return (moment(d.data.Date).days()+6)%7;  },
                     sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
                 }]
             },{ title: "Date",
                 layout: "bottom",
-                catItemMap: function(d){ return d.data.Date; },
                 intervalScale: 'time'
             }
         ],

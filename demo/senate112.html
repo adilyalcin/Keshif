@@ -25,11 +25,9 @@ google.setOnLoadCallback( function(){
             sheets : [ {name:"Senate112"} ]
         },
         facets: [
-            {
-                title: "Result",
+            {   title: "Result",
                 textFilter: 'resulting in'
-            },{
-                title: "Session",
+            },{ title: "Session",
                 catLabelText: function(d) {
                     if(d.data[1]===1) { return "1st Session"; }
                     if(d.data[1]===2) { return "2nd Session"; }
@@ -38,26 +36,17 @@ google.setOnLoadCallback( function(){
                     no_resort: true,
                     func:kshf.Util.sortFunc_Column_ParseInt_Incr
                     }]
-            },{
-                title: "Yea's",
-                catItemMap : function(vote){ return vote.data['Yea\'s']; },
-            },{
-                title: "Nay's",
-                catItemMap : function(vote){ return vote.data['Nay\'s']; },
-            },{
-                title: "Bill",
-            },{
-                title: "Vote Date",
-                intervalScale: 'time',
-                layout: 'middle'
+            },{ title: "Yea's",
+            },{ title: "Nay's",
+            },{ title: "Bill",
+            },{ title: "Vote Date", layout: 'middle'
             }
         ],
         itemDisplay: {
-            sortColWidth: 73,
+            sortColWidth: 80,
             sortingOpts : [
-                {   name: 'Vote Date',
-                    value: function(d){ return d.data[1]; },
-                    label: function(d){ return moment(d.data[1]).format('MMM YYYY'); }
+                {   name: 'Vote Date', inverse: true,
+                    label: function(d){ return moment(d.data['Vote Date']).format('MMM YYYY'); }
                 },{ name:'Result' }
             ],
             textSearchFunc : function (vote) { return vote.data[7]; },

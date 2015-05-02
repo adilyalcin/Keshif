@@ -113,7 +113,7 @@ $(document).ready( function(){
             },{ title: "Average Facility Rating", layout: 'right'
             },{ title: "Average Service Rating", layout: 'right'
             },{ title: "Number Of Reviews", collapsed: true, layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){
+                attribMap: function(d){
                     if(d.data['Total Number Of Reviews']==0) return;
                     return d.data['Total Number Of Reviews'];
                 }

@@ -29,11 +29,11 @@ google.setOnLoadCallback(function(){
             {   title: "State",
                 catLabelText: function(d){ return getStateName(d.data[0]) }
             },{ title: "County", layout: 'middle', minAggrValue: 50,
-                catItemMap: function(d){ return d.data.County+", "+d.data.State; }
+                attribMap: function(d){ return d.data.County+", "+d.data.State; }
             },{ title: "Listed Time", layout: 'bottom',
-                catItemMap: function(d){ return moment(d.data.Listed,"YYYYMMDD")._d; }
+                attribMap: function(d){ return moment(d.data.Listed,"YYYYMMDD")._d; }
             },{ title: "City", layout: 'right', minAggrValue: 50,
-                catItemMap: function(d){ return d.data.City+", "+d.data.State; }
+                attribMap: function(d){ return d.data.City+", "+d.data.State; }
             }
         ],
     });

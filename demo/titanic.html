@@ -22,20 +22,20 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 150,
         rightPanelLabelWidth: 150,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
-            sheets : [ {name:"Passengers"} ]
+            gdocId: '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
+            sheets: [ {name:"Passengers"} ]
         },
         facets: [
             {   title: "Survived",
-                catItemMap : function(d){ 
+                attribMap: function(d){ 
                     var s = d.data.survived;
                     if(s) return 'Yes';
                     return 'No';
                 },
-                sortingOpts : [{ no_resort: true }]
+                sortingOpts: [{ no_resort: true }]
             },{ title: "Class",
-                catItemMap: function(d){ return d.data.pclass;},
-                sortingOpts : [{ 
+                attribMap: function(d){ return d.data.pclass;},
+                sortingOpts: [{ 
                     func: function(a,b){
                         if(a==="3rd") return 1;
                         if(a==="1st") return -1;
@@ -45,10 +45,10 @@ google.setOnLoadCallback(function(){
                     no_resort: true 
                 }]
             },{ title: "Sex",
-                catItemMap: function(d){ return d.data.sex;},
-                sortingOpts : [{ no_resort: true }]
+                attribMap: "sex",
+                sortingOpts: [{ no_resort: true }]
             },{ title: "Age",
-                catItemMap : function(d){
+                attribMap: function(d){
                     var age = d.data.age;
                     if(age===null) return null;
                     return age;
@@ -62,7 +62,7 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [ 
+            sortingOpts: [ 
                 {name: 'id', inverse:true},
                 {name: 'age'}
             ],

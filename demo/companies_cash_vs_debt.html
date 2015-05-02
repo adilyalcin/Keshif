@@ -39,16 +39,16 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Industry",
-                catItemMap: function(d){ return d.data.Industry+" "+getIcon(d.data.Industry); }
+                attribMap: function(d){ return d.data.Industry+" "+getIcon(d.data.Industry); }
             },{ title: "Cash vs. Debt", layout: 'left',
-                catItemMap: function(d){
+                attribMap: function(d){
                     return ((d.data['Cash ($B)']-d.data['Debt ($B)'])>0)?"More cash":"More debt";
                 }
             },{ title: "Cash (Billions)",
-                catItemMap: function(d){return d.data['Cash ($B)'];},
+                attribMap: 'Cash ($B)',
                 unitName: 'B$', intervalScale: 'log'
             },{ title: "Debt (Billions)",
-                catItemMap: function(d){ return d.data['Debt ($B)'];},
+                attribMap: 'Debt ($B)',
                 unitName: 'B$', intervalScale: 'log',
 //                        },{ title: "Market Capitalization", layout: 'right'
 //                        },{ title: "Profit Margin", layout: 'right'

@@ -44,7 +44,7 @@ browser = new kshf.Browser({
             title: "Code complexity",
             description: "Relative code complexity of demo source",
             layout: 'right', collapsed: true,
-            catItemMap: function(d){
+            attribMap: function(d){
                 switch(d.data['Code Complexity']){
                     case 1: return "A breeze *";
                     case 2: return "Simple **"; 
@@ -62,12 +62,12 @@ browser = new kshf.Browser({
             }]
         },{
             title: "Keywords", layout: 'right',
-            catItemMap: function(d){
+            attribMap: function(d){
                 return d.data['Keywords'].split("+");
             }
         },{
             title: "Facet Types &amp; Features",
-            catItemMap: function(d){
+            attribMap: function(d){
                 var r = [];
                 if(d.data['Facets - Histogram']>0)
                     r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
@@ -81,7 +81,7 @@ browser = new kshf.Browser({
             }
         },{
             title: "Data Structure",
-            catItemMap: function(d){
+            attribMap: function(d){
                 var r = [];
                 if(d.data['Linked'])
                     r.push("Linked/Networked <span class='fa fa-chain'></span>");
@@ -92,7 +92,7 @@ browser = new kshf.Browser({
             }
         }, {
             title: "Result Display",
-            catItemMap: function(d){
+            attribMap: function(d){
                 var r = [];
                 if(d.data['Results-Details'])
                     r.push("Detail View <span class='fa fa-bullseye'></span>");
@@ -106,7 +106,7 @@ browser = new kshf.Browser({
             }
         }, {
             title: "Other",
-            catItemMap: function(d){
+            attribMap: function(d){
                 var r = [];
                 if(d.data['Right Column'])
                     r.push("Right Panel");
@@ -122,7 +122,7 @@ browser = new kshf.Browser({
         },{
             title: "Data Source",
             layout: 'right',
-            catItemMap: function(d){ 
+            attribMap: function(d){ 
                 return d.data['Source'].split("+");
             }
         },{
@@ -132,7 +132,7 @@ browser = new kshf.Browser({
             showPercentile: true
         },{
             title: "Creation Time",
-            catItemMap: function(d){
+            attribMap: function(d){
                 return d.data['Authored'].getFullYear();
             },
             collapsed: false,

@@ -44,7 +44,7 @@ google.setOnLoadCallback(function(){
                     { title: "Department", }
                 ]
             },{ title: "Type", layout: 'right',
-                catItemMap: function(d){
+                attribMap: function(d){
                     return kshf.dt_id.Organizations[d.data.Organization].data.Type;
                 },
                 catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }

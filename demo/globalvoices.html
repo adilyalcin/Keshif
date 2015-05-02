@@ -73,17 +73,17 @@ $(document).ready( function(){
             {
                 title: "Tag",
                 catTableName: "Types",
-                catItemMap: function(d){
+                attribMap: function(d){
                     return d.data[2].t;
                 }
             },{
                 title: "Author",
-                catItemMap: function(d){ return d.data[6]; },
+                attribMap: function(d){ return d.data[6]; },
                 collapsed: true,
             },{
                 title: "Time",
                 layout: "bottom",
-                catItemMap: function(d){
+                attribMap: function(d){
                     // the date is also in epoch format, nice...
                     return new Date(d.data[7]);
                 },

@@ -55,30 +55,30 @@ $(document).ready( function(){
                 textFilter: 'about',
                 catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
             },{ title: "Born Country",
-                catItemMap : function(prize){ 
+                attribMap : function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.bornCountry;
                 },
             },{ title: "Affiliation", layout: 'right',
-                catItemMap : function(prize){ 
+                attribMap : function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.name;
                 },
                 facets:[
                     {   title:"# of Winners",
-                        catItemMap: function(d){ return d.items.length; },
+                        attribMap: function(d){ return d.items.length; },
                         intervalScale: 'log'
                     }
                 ]
             },{ title: "Joint Awards",
                 catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
             },{ title: "Gender",
-                catItemMap : function(prize){ 
+                attribMap : function(prize){ 
                     return getGender(kshf.dt_id.Laureates[prize.data.laureate_id].data.gender);
                 },
                 catLabelText: function(d) { 
                     return d.data[0]+" "+getIcon(d.data[0]);
                 }
             },{ title: "Year", layout: 'bottom',
-                catItemMap : function(prize){
+                attribMap : function(prize){
                     return new Date(moment(prize.data.Year+"01-01","YYYY-MM-DD"));
                 },
             }

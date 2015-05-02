@@ -87,11 +87,11 @@ $(document).ready(function() {
             {
                 title: "Sexe",
                 description: "Votre sexe",
-                catItemMap: function(d){ return d.data[col_s.q_01_sexe]; }
+                attribMap: function(d){ return d.data[col_s.q_01_sexe]; }
             },{
                 title: "Âge",
                 description: "Votre groupe d'âge",
-                catItemMap: function(d){ 
+                attribMap: function(d){ 
                     var v=d.data[col_s.q_02_groupe_âge];
                     if(v===null || v===undefined) return;
                     // remove "_ans...."
@@ -105,27 +105,27 @@ $(document).ready(function() {
             },{
                 title: "Région Géographique",
                 description: "Votre région de résidence",
-                catItemMap: function(d){ return d.data[col_s.q_03_région_géographique]; }
+                attribMap: function(d){ return d.data[col_s.q_03_région_géographique]; }
             },{
                 title: "Diplôme Plus Élevé",
                 description: "Votre diplôme le plus élevé ",
-                catItemMap: function(d){ return d.data[col_s.q_04_diplôme_plus_élevé]; }
+                attribMap: function(d){ return d.data[col_s.q_04_diplôme_plus_élevé]; }
             },{
                 title: "Diplôme en Cours",
                 description: "Si vous étudiez, quel est votre cycle d’études?",
-                catItemMap: function(d){ return d.data[col_s.q_05_diplôme_en_cours]; }
+                attribMap: function(d){ return d.data[col_s.q_05_diplôme_en_cours]; }
             },{
                 title: "Domaine Formation",
                 description: "Votre principal domaine de formation ou d’études:",
-                catItemMap: function(d){ return d.data[col_s.q_06_domaine_formation]; }
+                attribMap: function(d){ return d.data[col_s.q_06_domaine_formation]; }
             },{
                 title: "Domaine Emploi",
                 description: "Le principal secteur dans lequel vous travaillez :",
-                catItemMap: function(d){ return d.data[col_s.q_07_domaine_emploi]; }
+                attribMap: function(d){ return d.data[col_s.q_07_domaine_emploi]; }
             },{
                 title: "Principaux Problèmes Époque Mondiale",
                 description: "Selon vous, quels sont les principaux problèmes de notre époque, à l’échelle mondiale? (en choisir trois au maximum)",
-                catItemMap: function(d){ return d.data[col_s['q_08_principaux_problèmes_époque_mondiale+']]; }
+                attribMap: function(d){ return d.data[col_s['q_08_principaux_problèmes_époque_mondiale+']]; }
 
             },{
                 title: 'L’accès à l’information scientifique',
@@ -134,15 +134,15 @@ $(document).ready(function() {
                     {
                         title: "Principes Guider Scientifiques Travaux",
                         description: "Quels sont les principes essentiels qui devraient guider les scientifiques dans leurs travaux ? (choix de trois au maximum)",
-                        catItemMap: function(d){ return d.data[col_s['q_19_principes_guider_scientifiques_travaux+']]; }
+                        attribMap: function(d){ return d.data[col_s['q_19_principes_guider_scientifiques_travaux+']]; }
                     },{
                         title: "Respect des Principes",
                         description: "Croyez-vous que les principes que vous avez choisis sont respectés par la majorité des scientifiques?",
-                        catItemMap: function(d){ return d.data[col_s['q_20_respect_des_principes']]; }
+                        attribMap: function(d){ return d.data[col_s['q_20_respect_des_principes']]; }
                     },{
                         title: "Indiquer Énoncés Scientifiques",
                         description: "Quelle est, selon vous, la meilleure attitude possible des scientifiques sur la place publique?",
-                        catItemMap: function(d){ return d.data[col_s['q_21_indiquer_énoncés_scientifiques']]; }
+                        attribMap: function(d){ return d.data[col_s['q_21_indiquer_énoncés_scientifiques']]; }
                     }
                 ]
             },{
@@ -152,11 +152,11 @@ $(document).ready(function() {
                     {
                         title: "Principaux Médias Sci. Québécois Consultés",
                         description: "Quels sont les médias scientifiques québécois que vous consultez le plus souvent? (en choisir trois au maximum)",
-                        catItemMap: function(d){ return d.data[col_s['q_29_principaux_médias_scientifiques_québécois_consultés+']]; }
+                        attribMap: function(d){ return d.data[col_s['q_29_principaux_médias_scientifiques_québécois_consultés+']]; }
                     },{
                         title: "Organismes Scientifiques Connus",
                         description: "Quels sont les organismes québécois de communication scientifiques que vous connaissez le mieux? (en choisir trois au maximum)",
-                        catItemMap: function(d){ return d.data[col_s['q_30_organismes_scientifiques_connus+']]; }
+                        attribMap: function(d){ return d.data[col_s['q_30_organismes_scientifiques_connus+']]; }
                     }
                 ]
             },{
@@ -166,19 +166,19 @@ $(document).ready(function() {
                     {
                         title: "Finalités Prioritaires",
                         description: "La recherche scientifique peut avoir plusieurs finalités. Quelles sont les finalités qui vous paraissent prioritaires? (en choisir trois au maximum)",
-                        catItemMap: function(d){ return d.data[col_s['q_35_finalités_prioritaires+']]; }
+                        attribMap: function(d){ return d.data[col_s['q_35_finalités_prioritaires+']]; }
                     },{
                         title: "Domaines Prioritaires",
                         description: "Choisissez un maximum de cinq domaines de recherche qui devraient mobiliser les gouvernements et les scientifiques de manière prioritaire actuellement : la recherche sur...",
-                        catItemMap: function(d){ return d.data[col_s['q_36_domaines_prioritaires+']]; }
+                        attribMap: function(d){ return d.data[col_s['q_36_domaines_prioritaires+']]; }
                     },{
                         title: "Financement Privé ou Public",
                         description: "Selon vous, la recherche scientifique québécoise doit être financée :",
-                        catItemMap: function(d){ return d.data[col_s['q_37_financement_privé_ou_public']]; }
+                        attribMap: function(d){ return d.data[col_s['q_37_financement_privé_ou_public']]; }
                     },{
                         title: "Vision Influence Politique",
                         description: "Si le gouvernement décidait de mettre fin à la recherche scientifique sur un sujet qui vous tient à cœur, quelle serait votre position?",
-                        catItemMap: function(d){ return d.data[col_s['q_39_vision_influence_politique']]; }
+                        attribMap: function(d){ return d.data[col_s['q_39_vision_influence_politique']]; }
                     }
                 ]
             }

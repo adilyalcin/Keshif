@@ -3055,23 +3055,25 @@ kshf.Browser.prototype = {
             this.listDef.hasLinkedItems = true;
         }
 
-        if(options.catItemMap) options.attribAccess = options.catItemMap;
+        if(options.attribMap) {
+            options.attribMap = options.attribMap;
+        }
 
         // How do you get the value from items...
 
-        if(options.attribAccess===undefined){
+        if(options.attribMap===undefined){
             // if we have a column name mapping, use that
             if(kshf.dt_ColNames[primTableName]!==undefined) {
                 var ID = options.title;
                 if(ID!==undefined)
-                    options.attribAccess = function(d){ return d.data[ID]; };
+                    options.attribMap = function(d){ return d.data[ID]; };
             } else {
-                options.attribAccess = function(d){ 
+                options.attribMap = function(d){ 
                     return d.data[options.title];
                 };
             }
-        } else if(typeof(options.attribAccess)==="string"){
-            options.attribAccess = this.getColumnData(primTableName,options.attribAccess);
+        } else if(typeof(options.attribMap)==="string"){
+            options.attribMap = this.getColumnData(primTableName,options.attribMap);
         }
 
         if(options.items===undefined){
@@ -3086,10 +3088,10 @@ kshf.Browser.prototype = {
                 options.type="categorical";
             } else if(options.intervalScale || options.showPercentile){
                 options.type="interval";
-            } else if(options.attribAccess!==undefined){
+            } else if(options.attribMap!==undefined){
                 options.type="categorical";
                 for(var index=0; index<kshf.dt[primTableName].length; index++){
-                    var item = options.attribAccess(kshf.dt[primTableName][index]);
+                    var item = options.attribMap(kshf.dt[primTableName][index]);
                     if(item===null) continue;
                     if(item===undefined) continue;
                     if( typeof(item)==="number" || item instanceof Date ) {
@@ -3100,7 +3102,7 @@ kshf.Browser.prototype = {
                     break;
                 }
             } else {
-                // undefined attribAccess means it's a hierarchical facet (most probably)
+                // undefined attribMap means it's a hierarchical facet (most probably)
                 options.type="categorical";
             }
         }
@@ -3651,7 +3653,7 @@ kshf.Facet_Categorical.prototype = {
         if(this._attribs){
             if(this._attribs.length===0) return false;
         }
-        return this.options.attribAccess!==undefined;
+        return this.options.attribMap!==undefined;
     },
     /** -- */
     initAttribs: function(options){
@@ -3687,7 +3689,7 @@ kshf.Facet_Categorical.prototype = {
         // generate row table if necessary
         if(this.options.catTableName===undefined){
             this.catTableName = this.options.title+"_h_"+this.id;
-            this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.options.attribAccess,
+            this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.options.attribMap,
                 this.options.attribNameFunc);
         } else {
             if(this.options.catTableName===this.browser.primaryTableName){
@@ -3710,8 +3712,8 @@ kshf.Facet_Categorical.prototype = {
             this.getAttribs().push(newItem);
             this.getAttribs_wID()[noneID] = newItem;
 
-            var _attribAccess = this.options.attribAccess;
-            this.options.attribAccess = function(d){
+            var _attribAccess = this.options.attribMap;
+            this.options.attribMap = function(d){
                 var r=_attribAccess(d);
                 if(r===null) return noneID;
                 if(r===undefined) return noneID;
@@ -3927,7 +3929,7 @@ kshf.Facet_Categorical.prototype = {
      */
     mapAttribs: function(options){
         var filterId = this.attribFilter.id;
-        this.browser.mapItemData(this.filteredItems,this.options.attribAccess, this.getAttribs_wID(), filterId);
+        this.browser.mapItemData(this.filteredItems,this.options.attribMap, this.getAttribs_wID(), filterId);
 
         this.hasMultiValueItem = false;
         var maxDegree = 0
@@ -3946,7 +3948,7 @@ kshf.Facet_Categorical.prototype = {
             else fscale = 'step';
             var facetDescr = {
                 title:"<i class='fa fa-hand-o-up'></i> # of "+this.options.title,
-                attribAccess: function(d){
+                attribMap: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;
                     return arr.length;
@@ -5560,7 +5562,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.hasTime  = false;
 
     this.filteredItems.forEach(function(item){
-        var v=this.options.attribAccess(item);
+        var v=this.options.attribMap(item);
         if(isNaN(v)) v=null;
         if(v===undefined) v=null;
         if(v!==null){

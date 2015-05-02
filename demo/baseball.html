@@ -54,16 +54,14 @@ $(document).ready(function() {
                     {
                         title: "Team",
                         catTableName: "baseball_teams_1",
-                        catItemMap: function(d){
-                            return d.data['From Team'];
-                        },
+                        attribMap: "From Team",
                         catLabelText: function(d){
                             return d.data.name;
                         },
                     },{
                         title: "League",
                         catTableName: "baseball_leagues_1",
-                        catItemMap : function(tr){
+                        attribMap : function(tr){
                             var x = tr.data['From Team'];
                             if(x==="") return null;
                             return kshf.dt_id.baseball_teams_1[x].data.league;
@@ -76,11 +74,11 @@ $(document).ready(function() {
                 facets: [
                     {   title: "Team",
                         catTableName: "baseball_teams_2",
-                        catItemMap: function(d){ return d.data['To Team']; },
+                        attribMap: "To Team",
                         catLabelText: function(d){ return d.data.name; },
                     },{ title: "League",
                         catTableName: "baseball_leagues_2",
-                        catItemMap : function(tr){
+                        attribMap : function(tr){
                             var x = tr.data['To Team'];
                             if(x==="") return null;
                             return kshf.dt_id.baseball_teams_2[x].data.league;
@@ -91,7 +89,7 @@ $(document).ready(function() {
             },{
                 title: "Transaction Date",
                 layout: "bottom",
-                catItemMap : function(tr){ 
+                attribMap : function(tr){ 
                     var dt = tr.data['primary-date'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));

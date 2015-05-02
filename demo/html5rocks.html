@@ -67,7 +67,7 @@ $(document).ready( function(){
         facets: [
             {   title: "Author", 
             },{ title: "Date", layout: "bottom",
-                catItemMap: function(tut){ return new Date(tut.data.Date);},
+                attribMap: function(tut){ return new Date(tut.data.Date);},
             },{ title: "Tags", layout: 'right'
             }
         ],

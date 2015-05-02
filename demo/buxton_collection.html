@@ -186,7 +186,7 @@ $(document).ready( function(){
             {   title: "Type", 
             },{ title: "Year", layout: 'middle', intervalScale: 'time'
             },{ title: "Price ($) [Log]",
-                catItemMap: function(d){ return d.data.Price; },
+                attribMap: "Price",
                 intervalScale: "log"
             },{ title: "Company", layout: "right" 
             },{ title: "Degree of Freedom",  intervalScale: "step"

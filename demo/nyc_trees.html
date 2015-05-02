@@ -58,22 +58,22 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Total Number of <span class='fa fa-tree'></span>'s",
-                catItemMap: function(d){ return d.data.Total;},
+                attribMap: "Total",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Bronx",
-                catItemMap: function(d){ return d.data.Bronx;},
+                attribMap: "Bronx",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Brooklyn",
-                catItemMap: function(d){ return d.data.Brooklyn;},
+                attribMap: "Brooklyn",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Queens",
-                catItemMap: function(d){ return d.data.Queens;},
+                attribMap: "Queens",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Manhattan",
-                catItemMap: function(d){ return d.data.Manhattan;},
+                attribMap: "Manhattan",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Staten Island",
-                catItemMap: function(d){ return d.data['Staten Island'];},
+                attribMap: "Staten Island",
                 intervalScale: "log"
             }
         ],

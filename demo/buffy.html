@@ -141,20 +141,20 @@ $(document).ready(function(){
                 catTooltipText: function(episode){ return episode.data.Synopsis; },
                 facets:[
                     {   title: "Dead Count (Total)", collapsed: true,
-                        catItemMap: function(d){ return d.data.bodycount.total; }
+                        attribMap: function(d){ return d.data.bodycount.total; }
                     },{ title: "Dead Count (Humans)", collapsed: true,
-                        catItemMap: function(d){ return d.data.bodycount.humans; }
+                        attribMap: function(d){ return d.data.bodycount.humans; }
                     },{ title: "Dead Count (Vampires)", collapsed: true,
-                        catItemMap: function(d){ return d.data.bodycount.vampires; }
+                        attribMap: function(d){ return d.data.bodycount.vampires; }
                     },{ title: "Dead Count (Demons)", collapsed: true,
-                        catItemMap: function(d){ return d.data.bodycount.demons; }, 
+                        attribMap: function(d){ return d.data.bodycount.demons; }, 
                     },{ title: "Dead Count (Animals)", collapsed: true,
-                        catItemMap: function(d){ return d.data.bodycount.animals; },
+                        attribMap: function(d){ return d.data.bodycount.animals; },
                     }
                 ]
             },{ title: "Location", layout: 'right'
             },{ title: "Characters",
-                catItemMap: function(d){ return d.data.Appears; },
+                attribMap: "Appears",
                 catTableName: "Characters",
                 catLabelText: function(character){ 
                     return character.data.Name+"<img src='./img/buffy/"+character.data.char_id+".jpg' class='charImg'>";
@@ -162,8 +162,8 @@ $(document).ready(function(){
                 facets: [
                     {   title: "Episodic Appearance", collapsed: true,
                         sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
-                        catItemMap: function(d){
-                            if(d.data.episode===undefined) return 0;
+                        attribMap: function(d){
+                            if(d.data.episode===undefined) return 0; // --> Many 
                             return d.data.episode;
                         },
                         catLabelText: function(d){
@@ -175,7 +175,7 @@ $(document).ready(function(){
                     }
                 ]
             },{ title: "Time (Minutes into the episode)",
-                catItemMap: function(d){ return d.data.second/60; },
+                attribMap: function(d){ return d.data.second/60; },
                 layout: "bottom",
                 unitName: "min"
             }

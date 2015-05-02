@@ -40,13 +40,13 @@ $(document).ready( function() {
             },{ title: "Salary", layout: 'right',
                 facets:[
                 { title: "Total", layout: 'right',intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.TCOE; }, unitName: '$'
+                    attribMap: "TCOE", unitName: '$'
                 },{ title: "Base", layout: 'right',intervalScale: 'log', unitName: '$'
                 },{ title: "Overtime", layout: 'right',intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.OT; }, unitName: '$'
+                    attribMap: "OT", unitName: '$'
                 },{ title: "Other",layout: 'right', intervalScale: 'log', unitName: '$'
                 },{ title: "Medical,Dental,Vision",layout: 'right',collapsed: true, intervalScale: 'log',
-                    catItemMap: function(d){ return d.data.MDV; }, unitName: '$'
+                    attribMap: "MDV", unitName: '$'
                 },{ title: "ER",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
                 },{ title: "EE",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
                 },{ title: "DC",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'

@@ -104,7 +104,7 @@ $(document).ready( function(){
                     },{ title: "Zone", collapsed: true,
                         catLabelText: function(d) { return zoneText(d.data[1]); }
                     },{ title: "Language",
-                        catItemMap : function(flag){
+                        attribMap : function(flag){
                             var r= flag.data.Language;
                             if(r===9) return 10;
                             return r;
@@ -113,7 +113,7 @@ $(document).ready( function(){
                     },{ title: "Religion",
                         catLabelText: function(d) { return religionText(d.data[1]); }
                     },{ title: "Flag Date", layout: 'left',
-                        catItemMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
+                        attribMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
                         intervalScale: 'time', unitName: 'yr'
                     }
                 ]
@@ -122,7 +122,7 @@ $(document).ready( function(){
                 layout: 'right',
                 facets: [
                     {   title: "Flag Color", 
-                        catItemMap : function(flag){
+                        attribMap : function(flag){
                             var toRet = [];
                             if(flag.data.Red) toRet.push("Red");
                             if(flag.data.Green) toRet.push("Green");
@@ -134,7 +134,7 @@ $(document).ready( function(){
                             return toRet;
                         },
                     },{ title: "Flag Shape",
-                        catItemMap : function(flag){
+                        attribMap : function(flag){
                             var toRet = [];
                             if(flag.data.Circles) toRet.push("Circle");
                             if(flag.data.Crosses) toRet.push("Crosses");
@@ -146,18 +146,18 @@ $(document).ready( function(){
                             return toRet;
                         },
                     },{ title: "Number of Bars",
-                        catItemMap : function(flag){ 
+                        attribMap : function(flag){ 
                             var r=flag.data.Bars;
                             return (r===0)?0:r;
                         },
                         intervalScale: 'step', unitName: "bar"
                     },{ title: "Number of Stripes",
-                        catItemMap : function(flag){ 
+                        attribMap : function(flag){ 
                             var r=flag.data.Stripes;
                             return (r===0)?null:r;
                         }, unitName: "strp"
                     },{ title: "Other", collapsed: true,
-                        catItemMap : function(flag){
+                        attribMap : function(flag){
                             var toRet = [];
                             if(flag.data.Text!==0) toRet.push("Text");
                             if(flag.data.Icon!==0) toRet.push("Icon");

@@ -103,7 +103,7 @@ google.setOnLoadCallback( function() {
             },{
                 title: "Member Type",
                 catTableName: "member_types",
-                catItemMap : function(pub){
+                attribMap : function(pub){
                     var typeList = {};
                     var r = [];
                     var authors = pub.data.Author;
@@ -127,7 +127,7 @@ google.setOnLoadCallback( function() {
             },{
                 title: "Date",
                 layout: "middle",
-                catItemMap : function(pub){ return new Date(pub.data.Date); },
+                attribMap : function(pub){ return new Date(pub.data.Date); },
                 type: 'interval',
                 intervalScale: 'time'
             }

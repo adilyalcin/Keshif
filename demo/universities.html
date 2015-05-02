@@ -159,23 +159,19 @@ $(document).ready( function(){
             {   title: "Groups", collapsed: false,
 /*            },{
                 title: "Institution Size", collapsed: true,
-                catItemMap: function(d){
-                    return d.data["HD2013.Institution size category"];
-                },
+                attribMap: "HD2013.Institution size category",
             },{
                 title: "Total  enrollment", collapsed: true,
-                catItemMap: function(d){
-                    return d.data["DRVEF2013.Total  enrollment"];
-                },
+                attribMap: "DRVEF2013.Total  enrollment",
                 intervalScale: 'log'*/
             },{ title: "Undergraduate enrollment",
-                catItemMap: function(d){ return d.data["DRVEF2013.Undergraduate enrollment"]; },
+                attribMap: "DRVEF2013.Undergraduate enrollment",
                 intervalScale: 'log'
             },{ title: "Graduate enrollment",
-                catItemMap: function(d){ return d.data["DRVEF2013.Graduate enrollment"]; },
+                attribMap: "DRVEF2013.Graduate enrollment",
                 intervalScale: 'log'
             },{ title: "Institution Type",
-                catItemMap: function(d){
+                attribMap: function(d){
                     switch(d.data["HD2013.Sector of institution"]){
                         case 'Public, 4-year or above': return 0;
                         case 'Private not-for-profit, 4-year or above': return 1;
@@ -191,107 +187,78 @@ $(document).ready( function(){
                 },
                 sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
             },{ title: "State", layout: "middle", collapsed: true,
-                catItemMap: function(d){ return d.data["HD2013.State abbreviation"]; }
+                attribMap: "HD2013.State abbreviation"
             },{ title: "Geographic region", layout: "middle", collapsed: true,
-                catItemMap: function(d){ return d.data["HD2013.Geographic region"]; }
+                attribMap: "HD2013.Geographic region"
             },{ title: "Degree of urbanization", layout: "middle", collapsed: true,
-                catItemMap: function(d){ return d.data["HD2013.Degree of urbanization (Urban-centric locale)"]; }
+                attribMap: "HD2013.Degree of urbanization (Urban-centric locale)"
             },{ title: "Carnegie Classification 2010",
                 facets: [
                     {   title: "Basic", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Basic"];
-                        }
-                    },{
-                        title: "Size and Setting", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Size and Setting"];
-                        }
-                    },{
-                        title: "Undergraduate Instructional Program", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"];
-                        }
-                    },{
-                        title: "Graduate Instructional Program",collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Graduate Instructional Program"];
-                        }
+                        attribMap: "HD2013.Carnegie Classification 2010: Basic"
+                    },{ title: "Size and Setting", collapsed: true,
+                        attribMap: "HD2013.Carnegie Classification 2010: Size and Setting"
+                    },{ title: "Undergraduate Instructional Program", collapsed: true,
+                        attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
+                    },{ title: "Graduate Instructional Program", collapsed: true,
+                        attribMap: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
 /*                    },{
-                        title: "Undergraduate Profile",
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Undergraduate Profile"];
-                        }, collapsed: true
+                        title: "Undergraduate Profile", collapsed: true,
+                        attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
                     },{
-                        title: "Enrollment Profile",
-                        catItemMap: function(d){
-                            return d.data["HD2013.Carnegie Classification 2010: Enrollment Profile"];
-                        }, collapsed: true*/
+                        title: "Enrollment Profile", collapsed: true,
+                        attribMap: "HD2013.Carnegie Classification 2010: Enrollment Profile",*/
                     }
                 ]
             },{ title: "Diversity", layout: 'right',
                 facets: [
                     {   title: "% American Indian/Alaska Native", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native"];
-                        },
+                        attribMap: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
                         description: "Percent of total enrollment that are American Indian or Alaska Native",
                         intervalScale: 'log'
                     },{ title: "% Asian", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Asian"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Asian",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are Asian",
+                        description: "Percent of total enrollment that are Asian",
                         intervalScale: 'log'
                     },{ title: "% Hispanic / Latino", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Hispanic/Latino"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
+                        description: "Percent of total enrollment that are Hispanic/Latino",
                         intervalScale: 'log'
                     },{ title: "% Nativa Hawaiian / Pac. Isl.", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
+                        attribMap: "Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
+                        description: "Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
                         intervalScale: 'log'
                     },{ title: "% Nonresident Alien", collapsed: true,
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Nonresident Alien"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
+                        description: "Percent of total enrollment that are Nonresident Alien",
                         intervalScale: 'log'
                     },{ title: "% White",
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are White"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are White",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are White",
+                        description: "Percent of total enrollment that are White",
                         intervalScale: 'log'
                     },{ title: "% Black / African American",
-                        catItemMap: function(d){
-                            return d.data["DRVEF2013.Percent of total enrollment that are Black or African American"];
-                        },
-                        description: "DRVEF2013.Percent of total enrollment that are Black or African American",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are Black or African American",
+                        description: "Percent of total enrollment that are Black or African American",
                         intervalScale: 'log'
                     },{ title: "% Women",
-                        catItemMap: function(d){ return d.data["DRVEF2013.Percent of total enrollment that are women"]; },
-                        description: "DRVEF2013.Percent of total enrollment that are women",
+                        attribMap: "DRVEF2013.Percent of total enrollment that are women"]
+                        description: "Percent of total enrollment that are women",
                         intervalScale: 'log'
                     }
                 ]
             },{ title: "6 Year Graduation Rates", layout: 'right',
                 facets: [
                     {   title: "% Total Cohort",
-                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"]; },
-                        description: "DRVGR2013.Graduation rate, total cohort",
+                        attribMap: "DRVGR2013.Graduation rate, total cohort",
+                        description: "Graduation rate, total cohort",
                         intervalScale: 'log', unitName: "%"
                     },{ title: "% Men",
-                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, men"]; },
-                        description: "DRVGR2013.Graduation rate, men",
+                        attribMap: "DRVGR2013.Graduation rate, men",
+                        description: "Graduation rate, men",
                         intervalScale: 'log', collapsed: true, unitName: "%"
                     },{ title: "% Women",
-                        catItemMap: function(d){ return d.data["DRVGR2013.Graduation rate, women"]; },
-                        description: "DRVGR2013.Graduation rate, women",
+                        attribMap: "DRVGR2013.Graduation rate, women",
+                        description: "Graduation rate, women",
                         intervalScale: 'log', collapsed: true, unitName: "%"
                     }
                 ]
@@ -300,8 +267,8 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 82,
             sortingOpts : [
-                { name:'Enrollment', value: function(d){ return d.data["DRVEF2013.Total  enrollment"]; }},
-                { name:'Grad. Rate', value: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"]; }},
+                { name:'Enrollment', value: "DRVEF2013.Total  enrollment"];
+                { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort"];
             ],
             textSearch : "institution name",
             detailsToggle: "zoom",

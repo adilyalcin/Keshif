@@ -37,9 +37,9 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Movie Passes Bechdel Test ?",
-                catItemMap: function(movie){ return movie.data["Passes Bechdel Test?"]; }
+                attribMap: "Passes Bechdel Test?"
             },{ title: "Bechdel Criterias",
-                catItemMap: function(movie){
+                attribMap: function(movie){
                     var r=[];
                     if(movie.data["Has at least two [named] women in it"]==="Pass")
                         r.push("Has at least two [named] women in it");
@@ -51,11 +51,11 @@ google.setOnLoadCallback(function(){
                 }
             },{ title: "Clarity of Pass", collapsed: true
 /*            },{ title: "Director",
-                catItemMap: function(movie){
+                attribMap: function(movie){
                     return movie.data.Director.split(", ");
                 }*/
 /*                        },{ title: "Plot Keywords (top 10)",
-                catItemMap: function(movie){
+                attribMap: function(movie){
                     var keywords = movie.data["Plot Keywords (top 10)"];
                     if(keywords !== undefined && keywords.split) 
                         return keywords.split(", ");

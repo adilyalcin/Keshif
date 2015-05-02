@@ -24,7 +24,7 @@ google.setOnLoadCallback(function () {
         facets: [
             {   title: "# of Legs", intervalScale: 'step'
             },{ title: "Properties",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r =[];
                     if(d.data[2 ]) r.push("Has Tail");
                     if(d.data[3 ]) r.push("Has Hair");

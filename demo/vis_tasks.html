@@ -42,15 +42,15 @@ google.setOnLoadCallback(function(){
                 catLabelText: function(d){ return d.data.Task; },
                 facets:[
                     {   title: "Categories",
-                        catItemMap: function(d){ return d.data.Category; }
+                        attribMap: "Category"
                     },{
                         title: "Levels",
-                        catItemMap: function(d){ return kshf.dt_id.Levels[d.data.Category].data.Level; }
+                        attribMap: function(d){ return kshf.dt_id.Levels[d.data.Category].data.Level; }
                     }
                 ]
             },{ title: "Authors", layout: 'right', 
             },{ title: "Features", layout: 'right', 
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     if(d.data[2]==="*") r.push("Highlighted");
                     if(d.data[1] && d.data[1].length>0) r.push("Presents Taxonomy");

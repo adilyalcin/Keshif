@@ -38,7 +38,7 @@ google.setOnLoadCallback(function(){
             {   title: "Categories"
             },{ title: "Credits", layout: 'right',
             },{ title: "Month", layout: 'right',
-                catItemMap: function(d){ 
+                attribMap: function(d){ 
                     if(d.data.Date) return d.data.Date.getMonth();
                 },
                 catLabelText: function(d){ return getMonthNameFromNumber(d.data.Date); },

@@ -52,7 +52,7 @@ google.setOnLoadCallback( function() {
         facets: [
             {
                 title: "Category",
-                catItemMap : function(news){
+                attribMap : function(news){
                     var topics = news.data[newsCol.Topic];
                     var cats= {};
                     for(var i=0; i<topics.length; i++){

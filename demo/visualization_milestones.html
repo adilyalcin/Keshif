@@ -217,7 +217,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "ERA",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var year=d.data.Year;
                     if(year<1600) return 0;
                     if(year<1700) return 1;
@@ -247,7 +247,7 @@ google.setOnLoadCallback(function(){
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
             },{ title: "Main Category",
-                catItemMap: function(d){ return d.data.Category;}
+                attribMap: "Category"
             },{ title: "Keywords", layout: "right",
                 description: "Keywords are generated from the pdf report at "
             },{ title: "Author"

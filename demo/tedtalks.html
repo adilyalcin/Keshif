@@ -46,7 +46,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Feelings",
             },{ title: "Talk Duration",
-                catItemMap: function(d){ return d.data.Duration[0]; }
+                attribMap: function(d){ return d.data.Duration[0]; }
             },{ title: "Views", intervalScale: 'log'
             },{ title: "Speaker", layout: 'right'
             },{ title: "Date", layout: 'bottom'

@@ -40,7 +40,7 @@ $(document).ready( function(){
             {   title: "Demographics",
                 facets:[
                     {   title: "City",
-                        catItemMap: function(d){
+                        attribMap: function(d){
                             switch(d.data.city){
                                 case 'ny': return "New York";
                                 case 'bangkok': return "Bangkok";
@@ -50,37 +50,37 @@ $(document).ready( function(){
                             }
                         }
                     },{ title: "Sex", 
-                        catItemMap: function(d){ return d.data.sex; }
+                        attribMap: "sex"
                     },{ title: "Age", 
-                        catItemMap: function(d){ return d.data.age; },
+                        attribMap: "age"
                         showPercentile: true
                     }
                 ]
             },{ title: "Features",
                 facets:[
                     {   title: "Eyes Closed",
-                        catItemMap: function(d){ return d.data.eye_closed; }
+                        attribMap: "eye_closed"
                     },{ title: "Mouth Open", collapsed: true,
-                        catItemMap: function(d){ return d.data.mouth_open_wide; }
+                        attribMap: "mouth_open_wide"
                     },{ title: "Has Glasses",
-                        catItemMap: function(d){ return d.data.glasses; }
+                        attribMap: "glasses"
                     }
                 ]
             },{ title: "Mood", layout: 'right',
                 facets:[
                     {   title: "Happy",
-                        catItemMap: function(d){ return d.data.emotion_happy; },
+                        attribMap: "emotion_happy",
                         showPercentile: true
                     },{ title: "Calm", type: 'interval', // TODO: Why need to define type?
-                        catItemMap: function(d){ return d.data.emotion_calm; }
+                        attribMap: "emotion_calm"
                     },{ title: "Confused", type: 'interval', // TODO: Why need to define type?
-                        catItemMap: function(d){ return d.data.emotion_confused; }
+                        attribMap: "emotion_confused"
                     },{ title: "Sad",
-                        catItemMap: function(d){ return d.data.emotion_sad; }
+                        attribMap: "emotion_sad"
                     },{ title: "Angry", collapsed: true,
-                        catItemMap: function(d){ return d.data.emotion_angry; }
+                        attribMap: "emotion_angry"
                     },{ title: "Disgust", collapsed: true, type: 'interval', // TODO: Why need to define type?
-                        catItemMap: function(d){ return d.data.emotion_disgust; }
+                        attribMap: "emotion_disgust"
                     }
                 ]
             }

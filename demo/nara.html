@@ -77,7 +77,7 @@ var loadBrowser = function(){
         },
         facets: [
             { title: "Tags",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -93,7 +93,7 @@ var loadBrowser = function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -110,18 +110,12 @@ var loadBrowser = function(){
                 }
             },{ title: "contributors",
             },{ title: "Types",
-                catItemMap: function(poster){
-                    return poster.data.typesOfArchivalMaterials;
-                }
+                attribMap: "typesOfArchivalMaterials"
             },{ title: "levelOfDescription", collapsed: true
             },{ title: "Use Restrictions", collapsed: true,
-                catItemMap: function(poster){
-                    return poster.data.useRestrictions;
-                }
+                attribMap: "useRestrictions"
             },{ title: "Access Restrictions", collapsed: true,
-                catItemMap: function(poster){
-                    return poster.data.accessRestrictions;
-                }
+                attribMap: "accessRestrictions"
             }
         ],
         itemDisplay: {

@@ -56,11 +56,11 @@ $(document).ready( function(){
         facets: [
             {   title: "date"
             },{ title: "Collection",
-                catItemMap: function(poster){ return poster.data.from; }
+                attribMap: function(poster){ return poster.data.from; }
             },{ title: "Subjects",
-                catItemMap: function(poster){ return poster.data.subjects; }
+                attribMap: function(poster){ return poster.data.subjects; }
             },{ title: "Tags",
-                catItemMap: function(poster){
+                attribMap: function(poster){
                     var contribs = poster.data.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -76,7 +76,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var contribs = d.data.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -92,12 +92,12 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Types",
-                catItemMap: function(poster){ return poster.data.typesOfArchivalMaterials; }
+                attribMap: "typesOfArchivalMaterials"
             },{ title: "levelOfDescription", collapsed: true
             },{ title: "Use Restrictions", collapsed: true,
-                catItemMap: function(poster){ return poster.data.useRestrictions; }
+                attribMap: "useRestrictions"
             },{ title: "Access Restrictions", collapsed: true,
-                catItemMap: function(poster){ return poster.data.accessRestrictions; }
+                attribMap: "accessRestrictions"
             }
         ],
         itemDisplay: {

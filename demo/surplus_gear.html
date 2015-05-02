@@ -31,7 +31,7 @@ $(document).ready( function() {
             {   title: "state",
                 catLabelText: function(d){ return getStateName(d.data[1]); }
             },{ title: "Gear Category",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     if(d.data['Armored Vehicle']>0) r.push('Received Armored Vehicles');
                     if(d.data['Casspir Armored Vehicle']>0) r.push('Received Armored Vehicles');
@@ -53,7 +53,7 @@ $(document).ready( function() {
                     return r;
                 }
             },{ title: "Gear",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     if(d.data['Armored Vehicle']>0) r.push('Armored Vehicle');
                     if(d.data['Bayonet/Knife']>0) r.push('Bayonet/Knife');
@@ -77,24 +77,18 @@ $(document).ready( function() {
                     return r;
                 }
             },{ title: "Machine Gun", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Machine Gun'];},
             },{ title: "Pistol", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Pistol'];},
             },{ title: "Magazine", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Magazine'];},
             },{ title: "Shotgun", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Shotgun'];},
             },{ title: "Armored Vehicle", layout: 'right', intervalScale: 'step',
-                catItemMap: function(d){ 
+                attribMap: function(d){ 
                     if(d.data['Armored Vehicle']===0) return; // skip 0
                     return d.data['Armored Vehicle'];
                 },
                 collapsed: true
             },{ title: "Personal Armor", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Personal Armor'];},
                 collapsed: true
             },{ title: "Night Vision", layout: 'right', intervalScale: 'log',
-                catItemMap: function(d){ return d.data['Night Vision'];},
                 collapsed: true
             }
         ],

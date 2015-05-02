@@ -68,7 +68,7 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "WHO?",
-                catItemMap: function(d){
+                attribMap: function(d){
                     var r=[];
                     switch(d.data.Sex){
                         case 'M': r.push("Men <span class='fa gender-icon fa-male'></span>"); break;
@@ -83,9 +83,9 @@ $(document).ready( function(){
                 }
             },{ title: "Age",
             },{ title: "Death Date", intervalScale: 'time',
-                catItemMap: function(d){ return dateFormat.parse(d.data.Death); }
+                attribMap: function(d){ return dateFormat.parse(d.data.Death); }
             },{ title: "After Story is Published...",
-                catItemMap: function(d){ if(d.data.claimed) return "Claimed"; }
+                attribMap: function(d){ if(d.data.claimed) return "Claimed"; }
             }
         ],
         itemDisplay: {

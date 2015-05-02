@@ -92,7 +92,7 @@ $(document).ready( function(){
             {   title: "Data",
                 facets: [
                 {   title: "Frame of Reference",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
@@ -100,7 +100,7 @@ $(document).ready( function(){
                         return r;
                     }
                 },{ title: "Number of Variables",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
@@ -112,7 +112,7 @@ $(document).ready( function(){
             },{ title: "Time",
                 facets: [
                 {   title: "Arrangement",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
@@ -120,7 +120,7 @@ $(document).ready( function(){
                         return r;
                     }
                 },{ title: "Time Primitives",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
@@ -133,7 +133,7 @@ $(document).ready( function(){
             },{ title: "Visualization",
                 facets: [
                 {   title: "Mapping",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
@@ -142,7 +142,7 @@ $(document).ready( function(){
                         return r;
                     }
                 },{ title: "Dimensionality",
-                    catItemMap: function(d){
+                    attribMap: function(d){
                         var r=[];
                         d.data.categories.forEach(function(cat){
                             if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");

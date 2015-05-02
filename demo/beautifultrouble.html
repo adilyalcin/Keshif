@@ -85,7 +85,7 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Category",
-                catItemMap: function(d){ return d.data.type; },
+                attribMap: "type",
                 catLabelText: function(d){
                     return getType(d.data[0])+" <span class='typeImg'></span>";
                 },
@@ -94,10 +94,10 @@ $(document).ready( function(){
             },{
                 title: "Number of Related Posts",
 //                showPercentile: true,
-                catItemMap: function(d){ return d.data.links.length; },
+                attribMap: function(d){ return d.data.links.length; },
             },{
                 title: "Related To",
-                catItemMap: function(d){ return d.data.links; },
+                attribMap: "links",
                 domStyle: function(d){ return "itemType_"+d.data.type; },
                 catLabelText: function(d){ return d.data.title; },
                 // Using the main table name, this will enable linking through items
