@@ -154,11 +154,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   user-select: none;
 }
 .kshf .attributeList {
-  position: absolute;
-  right: -110px;
-  width: 100px;
-  top: 10px;
   display: none;
+  position: absolute;
+  overflow: scroll;
+  right: -160px;
+  width: 155px;
+  top: 10px;
+  height: 100%;
 }
 .kshf .attributeList > .attributeName {
   font-size: 0.8em;
@@ -170,12 +172,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  /*white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;*/
 }
 .kshf .attributeList > .attributeName > .summaryTitle {
-  display: inline-block;
+  display: inline;
 }
 .kshf .attributeList > .attributeName > .editTitleButton {
   font-size: 0.8em;
@@ -2298,15 +2300,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   overflow: hidden;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header {
+.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
   padding: 1px;
   font-size: 0.9em;
   font-weight: 700;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_header:after {
+.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
   content: ': ';
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .summary_details {
+.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails {
   padding: 1px 0px 1px 0px;
   display: inline;
   margin-right: 15px;

@@ -190,11 +190,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .attributeList{
-        position: absolute;
-        right: -110px;
-        width: 100px;
-        top: 10px;
         display: none;
+        position: absolute;
+        overflow: scroll;
+
+        right: -160px;
+        width: 155px;
+        top: 10px;
+        height: 100%;
 
         > .attributeName{
             font-size: 0.8em;
@@ -206,11 +209,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
-            white-space: nowrap;
+            /*white-space: nowrap;
             text-overflow: ellipsis;
-            overflow: hidden;
+            overflow: hidden;*/
             > .summaryTitle{
-                display: inline-block;
+                display: inline;
             }
             > .editTitleButton{
                 font-size: 0.8em;
@@ -2346,7 +2349,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             // margin-right: 20px;
                             white-space: nowrap;
                             overflow: hidden;
-                            > .summary_header{
+                            > .filterHeader{
                                 padding: 1px;
                                 font-size: 0.9em;
                                 font-weight: 700;
@@ -2354,7 +2357,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     content: ': ';
                                 }
                             }
-                            > .summary_details{
+                            > .filterDetails{
                                 padding:1px 0px 1px 0px;
                                 display: inline;
                                 margin-right: 15px;
