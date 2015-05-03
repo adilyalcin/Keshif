@@ -138,13 +138,11 @@ $(document).ready( function(){
                         d.data.References_Other.length;
                 }, intervalScale: 'log'
             },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
-                attribMap: function(d){
-                    return d.data.References_Internal.length;
-                }, intervalScale: 'log'
+                attribMap: function(d){ return d.data.References_Internal.length; },
+                intervalScale: 'log'
             },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
-                attribMap: function(d){
-                    return d.data.References_External.length+d.data.References_Other.length;
-                }, intervalScale: 'log'
+                attribMap: function(d){ return d.data.References_External.length+d.data.References_Other.length; },
+                intervalScale: 'log'
             },{ title: "Date", layout: "bottom"
             }
         ],

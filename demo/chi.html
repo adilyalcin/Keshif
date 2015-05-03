@@ -163,9 +163,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Category"
             },{ title: "Year",
-                attribMap: function(paper){
-                    return paper.data.Proceeding.data.year;
-                },
+                attribMap: function(paper){ return paper.data.Proceeding.data.year; },
                 intervalScale: 'step',
                 layout: 'middle'
             },{ title: "Author",

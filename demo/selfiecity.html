@@ -24,17 +24,17 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 150,
         itemName: "Selfies",
         source: {
             url: 'http://selfiecity.net/selfiexploratory/',
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [ {name:"selfiecity", id:"id"} ]
+            sheets: [ {name:"selfiecity", id:"id"} ]
             // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
 //            dirPath: 'http://s3.amazonaws.com/selfiecity/data/',
-//sheets : [ {name:"selfies_rekognized_full", id:"id"} ]
+//sheets: [ {name:"selfies_rekognized_full", id:"id"} ]
         },
         facets: [
             {   title: "Demographics",
@@ -68,16 +68,16 @@ $(document).ready( function(){
                 ]
             },{ title: "Mood", layout: 'right',
                 facets:[
-                    {   title: "Happy",
+                    {   title: "Happyness",
                         attribMap: "emotion_happy",
                         showPercentile: true
-                    },{ title: "Calm", type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Calmness", type: 'interval', // TODO: Why need to define type?
                         attribMap: "emotion_calm"
-                    },{ title: "Confused", type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Confusion", type: 'interval', // TODO: Why need to define type?
                         attribMap: "emotion_confused"
-                    },{ title: "Sad",
+                    },{ title: "Sadness",
                         attribMap: "emotion_sad"
-                    },{ title: "Angry", collapsed: true,
+                    },{ title: "Anger", collapsed: true,
                         attribMap: "emotion_angry"
                     },{ title: "Disgust", collapsed: true, type: 'interval', // TODO: Why need to define type?
                         attribMap: "emotion_disgust"
@@ -87,10 +87,10 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 52,
-            sortingOpts : [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
+            sortingOpts: [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
             displayType: 'grid',
             maxVisibleItems_Default: 104,
-            recordView : function(d){return "<img>"; },
+            recordView: function(d){return "<img>"; },
             visibleCb: function(d){
                 var imgRoot = 'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/';
                 d3.select(d.DOM.result).select("img").attr("src",imgRoot+d.data.city+'/'+d.data.id);

@@ -161,17 +161,68 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .attributeList > .attributeName {
+  font-size: 0.8em;
   padding: 2px;
   margin: 2px;
   border-radius: 3px;
   background-color: #e8e8e8;
-  border: solid 1px gray;
+  border: solid 1px lightgray;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.kshf .attributeList > .attributeName > .summaryTitle {
+  display: inline-block;
+}
+.kshf .attributeList > .attributeName > .editTitleButton {
+  font-size: 0.8em;
+  display: none;
+  color: gray;
+  vertical-align: middle;
+  margin: 2px;
+  vertical-align: top;
+}
+.kshf .attributeList > .attributeName > .editTitleButton:hover {
+  color: black;
+}
+.kshf .attributeList > .attributeName > input.summaryTitleEdit {
+  width: calc(100% - 20px);
+  display: none;
+  border-width: 0px;
+  background-color: rgba(250, 250, 250, 0.9);
+  color: orangered;
+}
+.kshf .attributeList > .attributeName > input.summaryTitleEdit:focus {
+  outline-color: #cb5454;
+  outline-width: 0px;
+}
+.kshf .attributeList > .attributeName > input.summaryTitleEdit:hover {
+  border-width: 0px;
+  background-color: white;
+  margin: 0px;
+}
+.kshf .attributeList > .attributeName > input.summaryTitleEdit::-webkit-input-placeholder {
+  font-weight: 500;
+  color: #cb5454;
 }
 .kshf .attributeList > .attributeName:hover {
-  background-color: orange;
+  background-color: #E8E0CE;
+  border-color: #B8B6B1;
+}
+.kshf .attributeList > .attributeName:hover > .editTitleButton {
+  display: inline-block;
+}
+.kshf .attributeList > .attributeName[edittitle="true"] > .summaryTitle {
+  display: none;
+}
+.kshf .attributeList > .attributeName[edittitle="true"] > .summaryTitleEdit {
+  display: inline-block;
+}
+.kshf .attributeList > .attributeName[edittitle="true"] > .editTitleButton::before {
+  content: "\f00c";
 }
 .kshf .attributeList > .attributeListHeader {
   font-weight: 700;
@@ -649,21 +700,73 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
   background-image: linear-gradient(to left, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
 }
-.kshf .headerGroup .header_label {
+.kshf .headerGroup .summaryTitle {
+  display: inline-block;
   font-weight: 700;
   cursor: default;
   font-variant: small-caps;
-  pointer-events: none;
   margin-top: 2px;
   line-height: 1em;
   text-rendering: initial;
+  /*white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;*/
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_text {
+  display: inline-block;
+  /*white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;*/
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_edit {
+  display: none;
+  border-width: 0px;
+  background-color: rgba(250, 250, 250, 0.9);
+  color: orangered;
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_edit:focus {
+  outline-color: #cb5454;
+  outline-width: 0px;
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_edit:hover {
+  border-width: 0px;
+  background-color: white;
+  margin: 0px;
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_edit::-webkit-input-placeholder {
+  font-weight: 500;
+  color: #cb5454;
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_editButton {
+  display: none;
+  position: relative;
+  font-size: 0.7em;
+  color: gray;
+  cursor: pointer;
+  vertical-align: top;
+  margin-left: 3px;
+  margin-top: 2px;
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_editButton:before {
+  content: '\f040';
+}
+.kshf .headerGroup .summaryTitle > .summaryTitle_editButton:hover {
+  color: black;
+}
+.kshf .headerGroup .summaryTitle:hover > .summaryTitle_editButton {
   display: inline-block;
 }
-.kshf .headerGroup .header_label > .title_of {
-  font-weight: 300;
+.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_text {
+  display: none;
 }
-.kshf .headerGroup .header_label > .fa-level-up {
-  font-size: 0.9em;
+.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_edit {
+  display: inline-block;
+}
+.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton {
+  display: inline-block;
+}
+.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton:before {
+  content: "\f00c";
 }
 .kshf .headerGroup .save_filter_as_set {
   display: none;
@@ -688,7 +791,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   color: gray;
   position: absolute;
-  right: 20px;
+  right: 3px;
   top: 1px;
 }
 .kshf .headerGroup span.facetIcons .fa {
@@ -1334,7 +1437,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .background {
   width: 20px;
-  height: calc(88%);
+  height: calc(100% - 12px);
   top: -6px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick {
@@ -1602,7 +1705,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: auto;
   background-color: black;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup span.header_label {
+.kshf .kshfChart[collapsed=true] > .headerGroup .summaryTitle {
   cursor: pointer;
 }
 .kshf .kshfChart[collapsed=true] > .headerGroup .facetControls {
@@ -1654,7 +1757,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);;
   background-image: linear-gradient(to left, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);;
 }
-.kshf .kshfChart[hasFacets=true] > .headerGroup .header_label {
+.kshf .kshfChart[hasFacets=true] > .headerGroup .summaryTitle {
   font-size: 1.3em;
 }
 .kshf .belowAttribs {
@@ -2248,7 +2351,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   color: #cb5454;
   padding: 0px 2px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0);
   pointer-events: all;
   border-width: 0px;
   border-style: solid;

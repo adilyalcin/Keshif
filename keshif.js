@@ -58,16 +58,7 @@ var kshf = {
     maxVisibleItems_default: 100, 
     dt: {},
     dt_id: {},
-    dt_ColNames: {},
     dt_ColNames_Arr: {},
-    createColumnNames: function(tableName){
-        this.dt_ColNames    [tableName] = {};
-        this.dt_ColNames_Arr[tableName] = [];
-    },
-    insertColumnName: function(tableName, colName, index){
-        this.dt_ColNames    [tableName][colName] = index;
-        this.dt_ColNames_Arr[tableName][index  ] = colName;
-    },
     LOG: {
         // Note: id parameter is integer alwats, info is string
         CONFIG                 : 1,
@@ -332,7 +323,7 @@ kshf.Summary_Base = {
 
         draggedSummary = null;
         draggedTarget = null;
-        this.dom.headerGroup = this.divRoot.append("div").attr("class","headerGroup")
+        this.DOM.headerGroup = this.divRoot.append("div").attr("class","headerGroup")
             .attr("draggable",true)
             .each(function(d){
                 this.__data__ = me;
@@ -423,9 +414,9 @@ kshf.Summary_Base = {
                 }, false);
             });
 
-        this.dom.headerGroup.append("div").attr("class","border_line");
+        this.DOM.headerGroup.append("div").attr("class","border_line");
 
-        var header_display_control = this.dom.headerGroup.append("span").attr("class","header_display_control");
+        var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
         if(this.collapsed!==undefined){
             header_display_control.append("span").attr("class","fa fa-collapse")
@@ -470,14 +461,14 @@ kshf.Summary_Base = {
                     me.clearDOM();
 
                     // add the facet title back
-                    me.browser.insertOneAttribute(me.options.title);
+                    me.browser.insertOneAttribute(me.options.attribMapName);
 
                     me.browser.updateLayout();
                 }
             })
             ;
 
-        var topRow = this.dom.headerGroup.append("span").style('position','relative');
+        var topRow = this.DOM.headerGroup.append("span").style('position','relative');
 
         topRow.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
@@ -498,15 +489,52 @@ kshf.Summary_Base = {
             .append("span").attr("class","fa fa-times")
             ;
 
-        topRow.append("span").attr("class", "header_label")
+        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
+            .attr("edittitle",false)
+            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
+            ;
+
+        this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
             .html((this.parentFacet && this.parentFacet.hasAttribs())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
                     this.parentFacet.options.title+":</span> "+"  "+this.options.title):
-                this.options.title)
-            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
-            .on("mouseover",function(){
+                this.options.title
+            );
 
-            });
+        this.DOM.summaryTitle_edit = this.DOM.summaryTitle.append("input").attr("class","summaryTitle_edit")
+            .on("keydown",function(){
+                if(event.keyCode===13){ // ENTER
+                    var newTitle = this.value;
+                    this.parentNode.setAttribute("edittitle",false);
+                    d3.select(this.parentNode).select(".summaryTitle_text").text(newTitle);
+                    me.options.title = newTitle;
+                }
+            })
+            .html((this.parentFacet && this.parentFacet.hasAttribs())?
+                ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
+                    this.parentFacet.options.title+":</span> "+"  "+this.options.title):
+                this.options.title
+            );
+
+        this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
+            .attr("class","summaryTitle_editButton fa")
+            .on("click",function(d){
+                var curState=this.parentNode.getAttribute("edittitle");
+                if(curState===null || curState==="false"){
+                    this.parentNode.setAttribute("edittitle",true);
+                    var parentDOM = d3.select(this.parentNode);
+                    var currentTitle = parentDOM.select(".summaryTitle_text")[0][0].textContent;
+                    parentDOM.select(".summaryTitle_edit")[0][0].value = currentTitle;
+                    parentDOM.select(".summaryTitle_edit")[0][0].focus();
+                } else {
+                    var parentDOM = d3.select(this.parentNode);
+                    var newTitle = parentDOM.select(".summaryTitle_edit")[0][0].value;
+                    me.options.title = newTitle;
+                    parentDOM.select(".summaryTitle_text").text(newTitle);
+                    this.parentNode.setAttribute("edittitle",false);
+                }
+            })
+;
 
         topRow.append("span").attr("class", "")
             .attr("class","save_filter_as_set fa fa-save")
@@ -523,7 +551,7 @@ kshf.Summary_Base = {
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.facetFilter.id});
             });
 
-        var facetIcons = this.dom.headerGroup.append("span").attr("class","facetIcons");
+        var facetIcons = this.DOM.headerGroup.append("span").attr("class","facetIcons");
         facetIcons.append("span").attr("class", "hasMultiMappings fa fa-ellipsis-v")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
@@ -564,13 +592,13 @@ kshf.Summary_Base = {
                 .on("mouseout" ,function(d){ this.tipsy.hide(); });
         }
 
-        this.dom.headerGroup.append("div").attr("class","border_line border_line_bottom");
+        this.DOM.headerGroup.append("div").attr("class","border_line border_line_bottom");
     },
     /** -- */
     insertChartAxis_Measure: function(dom, pos1, pos2){
         var me=this;
-        this.dom.chartAxis_Measure = dom.append("div").attr("class","chartAxis_Measure");
-        this.dom.chartAxis_Measure.append("span").attr("class","percentSign")
+        this.DOM.chartAxis_Measure = dom.append("div").attr("class","chartAxis_Measure");
+        this.DOM.chartAxis_Measure.append("span").attr("class","percentSign")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: pos1, title: function(){
@@ -581,7 +609,7 @@ kshf.Summary_Base = {
             .on("click",function(){ me.browser.setPercentMode(!me.browser.percentModeActive); })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(){ this.tipsy.hide(); });
-        this.dom.chartAxis_Measure.append("span").attr("class","background")
+        this.DOM.chartAxis_Measure.append("span").attr("class","background")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: pos2, title: function(){ 
@@ -1210,8 +1238,8 @@ kshf.Filter.prototype = {
     insertFilterSummaryBlock: function(){
         var x;
         var me=this;
-        if(this.browser.dom.filtercrumbs===undefined) return false;
-        x = this.browser.dom.filtercrumbs
+        if(this.browser.DOM.filtercrumbs===undefined) return false;
+        x = this.browser.DOM.filtercrumbs
             .append("span").attr("class","filter-block")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
@@ -1257,7 +1285,7 @@ kshf.Filter.prototype = {
 kshf.List = function(kshf_, config, root){
     var me = this;
     this.browser = kshf_;
-    this.dom = {};
+    this.DOM = {};
 
     this.scrollTop_cache=0;
 
@@ -1273,7 +1301,7 @@ kshf.List = function(kshf_, config, root){
     if(config.recordView!==undefined){
         if(typeof config.recordView === 'string'){
             var tmp=config.recordView;
-            this.recordView = this.browser.getColumnData(this.browser.primaryTableName,tmp);
+            this.recordView = function(d){ return d.data.tmp;};
         }
         if(typeof config.recordView === 'function'){
             this.recordView = config.recordView;
@@ -1307,7 +1335,7 @@ kshf.List = function(kshf_, config, root){
     this.sortingOpts = config.sortingOpts;
     this.sortingOpts.forEach(function(sortOpt){
         if(sortOpt.value===undefined) {
-            sortOpt.value = this.browser.getColumnData(this.browser.primaryTableName,sortOpt.name);
+            sortOpt.value = function(d){ return d.data[sortOpt.name]; };
         }
         if(!sortOpt.label) sortOpt.label = sortOpt.value;
         if(sortOpt.inverse===undefined) sortOpt.inverse = false;
@@ -1333,7 +1361,7 @@ kshf.List = function(kshf_, config, root){
     this.textSearchFunc = config.textSearchFunc;
     if(this.textSearch!==undefined){
         if(this.textSearchFunc===undefined){
-            this.textSearchFunc = this.browser.getColumnData(this.browser.primaryTableName,this.textSearch);
+            this.textSearchFunc = function(d){ return d.data[this.textSearch]; };
         }
         if(this.textSearch[0]==="*")
             this.textSearch = this.textSearch.substring(1);
@@ -1354,26 +1382,26 @@ kshf.List = function(kshf_, config, root){
         .attr('displayType',this.displayType);
 
 
-    this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
+    this.DOM.listHeader=this.listDiv.append("div").attr("class","listHeader");
 
-    this.dom.listHeader_TopRow = this.dom.listHeader.append("div").attr("class","topRow");
+    this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
 
-    this.dom.listHeader_BottomRow = this.dom.listHeader.append("div").attr("class","bottomRow")
+    this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow")
         .append("span").attr("class","bottomRowRow");
 
-    this.dom.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
+    this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
         .on("scroll",function(d){
             // showMore display
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
                 if(me.autoExpandMore===false){
-                    me.dom.showMore.style("bottom","4px");
+                    me.DOM.showMore.style("bottom","4px");
                 } else {
                     me.showMore();
                 }
             } else{
-                me.dom.showMore.style("bottom","-27px");
+                me.DOM.showMore.style("bottom","-27px");
             }
-            me.dom.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+            me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
         });
 
     this.sortFilters = [];
@@ -1412,12 +1440,12 @@ kshf.List = function(kshf_, config, root){
     // Header stuff *************************************************************************************
 
     this.insertHeaderSortSelect();
-    this.dom.filtercrumbs = this.dom.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
+    this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
     this.insertHeaderLinkedItems();
-    this.dom.scrollToTop = this.dom.listHeader_BottomRow.append("div")
+    this.DOM.scrollToTop = this.DOM.listHeader_BottomRow.append("div")
         .attr("class","scrollToTop fa fa-arrow-up")
         .on("click",function(d){ 
-            kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
+            kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
             if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
         })
         .each(function(){
@@ -1430,7 +1458,7 @@ kshf.List = function(kshf_, config, root){
     this.sortItems();
     this.insertItems();
 
-    this.dom.showMore = this.listDiv.append("div").attr("class","showMore")
+    this.DOM.showMore = this.listDiv.append("div").attr("class","showMore")
         .on("click",function(){
             me.showMore();
         })
@@ -1441,17 +1469,17 @@ kshf.List = function(kshf_, config, root){
             d3.select(this).selectAll(".loading_dots").attr("anim",null);
         })
         ;
-    this.dom.showMore.append("span").attr("class","MoreText").html("Show More");
-    this.dom.showMore.append("span").attr("class","Count CountAbove");
-    this.dom.showMore.append("span").attr("class","Count CountBelow");
-    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_1");
-    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_2");
-    this.dom.showMore.append("span").attr("class","loading_dots loading_dots_3");
+    this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
+    this.DOM.showMore.append("span").attr("class","Count CountAbove");
+    this.DOM.showMore.append("span").attr("class","Count CountBelow");
+    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
+    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
+    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
 };
 kshf.List.prototype = {
     /* -- */
     insertTotalViz: function(){
-        var adsdasda=this.dom.listHeader_TopRow.append("div").attr("class","totalViz");
+        var adsdasda=this.DOM.listHeader_TopRow.append("div").attr("class","totalViz");
         adsdasda.append("span").attr("class","aggr total");
         adsdasda.append("span").attr("class","aggr active");
         adsdasda.append("span").attr("class","aggr preview");
@@ -1459,10 +1487,10 @@ kshf.List.prototype = {
     },
     /* -- */
     refreshTotalViz: function(){
-        this.dom.listHeader_TopRow.select(".aggr.active")
+        this.DOM.listHeader_TopRow.select(".aggr.active")
             .style("width",
             (100*this.browser.itemsWantedCount/this.browser.items.length)+"%" );
-        this.dom.listHeader_TopRow.select(".aggr.preview")
+        this.DOM.listHeader_TopRow.select(".aggr.preview")
             .style("width",
                 (100*this.browser.itemCount_Previewed/this.browser.items.length)+"%" );
     },
@@ -1479,7 +1507,7 @@ kshf.List.prototype = {
             // no summary_item_cb function, filtering text is already shown as part of input/filter
             onClear: function(filter){
                 filter.filterStr = "";
-                this.dom.mainTextSearch[0][0].value = "";
+                this.DOM.mainTextSearch[0][0].value = "";
                 listHeaderTopRowTextSearch.select(".clearText").style('display','none');
             },
             onFilter: function(filter){
@@ -1499,9 +1527,9 @@ kshf.List.prototype = {
             hideCrumb: true,
         });
 
-        listHeaderTopRowTextSearch = this.dom.listHeader_TopRow.append("span").attr("class","mainTextSearch");
+        listHeaderTopRowTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch");
         listHeaderTopRowTextSearch.append("i").attr("class","fa fa-search searchIcon");
-        this.dom.mainTextSearch = listHeaderTopRowTextSearch.append("input")
+        this.DOM.mainTextSearch = listHeaderTopRowTextSearch.append("input")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:"title"))
             //.attr("autofocus","true")
             .on("keydown",function(){
@@ -1527,7 +1555,7 @@ kshf.List.prototype = {
     /** -- */
     insertHeaderSortSelect: function(){
         var me=this;
-        var x = this.dom.listHeader_BottomRow.append("div").attr("class","listsortcolumn")
+        var x = this.DOM.listHeader_BottomRow.append("div").attr("class","listsortcolumn")
             .style("width",(this.sortColWidth)+"px")
             .style('white-space','nowrap');
         // just insert it as text
@@ -1546,7 +1574,7 @@ kshf.List.prototype = {
                     me.updateItemVisibility();
                     if(me.displayType==='list'){
                         // update sort column labels
-                        me.dom.listsortcolumn_label
+                        me.DOM.listsortcolumn_label
                             .html(function(d){
                                 return me.sortingOpt_Active.label(d);
                             })
@@ -1554,7 +1582,7 @@ kshf.List.prototype = {
                                 this.columnValue = me.sortingOpt_Active.label(d);
                             });
                     }
-                    kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
+                    kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                     if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
                 })
                 .selectAll("input.list_sort_label").data(this.sortingOpts)
@@ -1564,19 +1592,19 @@ kshf.List.prototype = {
                     ;
         }
 
-        this.dom.listHeader_BottomRow.append("span").attr("class","sortColumn")
+        this.DOM.listHeader_BottomRow.append("span").attr("class","sortColumn")
             .append("span").attr("class","sortButton fa")
             .on("click",function(d){
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
                 me.browser.items.reverse();
-                me.dom.listItems = me.dom.listItemGroup.selectAll("div.listItem")
+                me.DOM.listItems = me.DOM.listItemGroup.selectAll("div.listItem")
                     .data(me.browser.items, function(d){ return d.id(); })
                     .order();
                 me.updateVisibleIndex();
                 me.maxVisibleItems = kshf.maxVisibleItems_default;
                 me.updateItemVisibility(false,true);
-                kshf.Util.scrollToPos_do(me.dom.listItemGroup[0][0],0);
+                kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
             .each(function(){
@@ -1590,7 +1618,7 @@ kshf.List.prototype = {
     insertHeaderLinkedItems: function(){
         var me=this;
         if(this.hasLinkedItems){
-            var x = this.dom.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
+            var x = this.DOM.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
             x.append("span").attr("class","linkTitleText").text(this.linkText);
             var y =x.append("span").attr("class","linkAll")
                 .each(function(d){
@@ -1634,7 +1662,7 @@ kshf.List.prototype = {
     insertItems: function(){
         var me = this;
 
-        this.dom.listItems = this.dom.listItemGroup.selectAll("div.listItem")
+        this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
             // TODO (?) if recordView is not defined, provide an empty list
             .data(this.browser.items, function(d){ return d.id(); })
         .enter()
@@ -1680,7 +1708,7 @@ kshf.List.prototype = {
             });            
 
         if(this.hasLinkedItems){
-            this.dom.listItems.attr("selectedForLink","false")
+            this.DOM.listItems.attr("selectedForLink","false")
         }
         if(this.displayType==='list'){
             this.insertItemSortColumn();
@@ -1688,13 +1716,13 @@ kshf.List.prototype = {
         if(this.detailsToggle!=="off"){
             this.insertItemToggleDetails();
         }
-        this.dom.listItems_Content = this.dom.listItems.append("div").attr("class","content")
+        this.DOM.listItems_Content = this.DOM.listItems.append("div").attr("class","content")
             .html(me.recordView);
 
         if(this.hasLinkedItems){
-            this.dom.itemLinkStateColumn = this.dom.listItems.append("span").attr("class","itemLinkStateColumn")
+            this.DOM.itemLinkStateColumn = this.DOM.listItems.append("span").attr("class","itemLinkStateColumn")
                     .style("width",this.selectColumnWidth+"px");
-            this.dom.itemLinkStateColumn.append("span").attr("class","itemLinkIcon fa fa-link")
+            this.DOM.itemLinkStateColumn.append("span").attr("class","itemLinkIcon fa fa-link")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
@@ -1719,11 +1747,11 @@ kshf.List.prototype = {
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
                 });
 
-            this.dom.itemLinkStateColumn_Count = this.dom.itemLinkStateColumn.append("span")
+            this.DOM.itemLinkStateColumn_Count = this.DOM.itemLinkStateColumn.append("span")
                 .attr("class","measureLabel").text(function(d){return d.aggregate_Active;});
 
             if(this.showSelectBox){
-                this.dom.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox")
+                this.DOM.itemLinkStateColumn.append("i").attr("class","itemSelectCheckbox")
                     .each(function(d){
                         this.tipsy = new Tipsy(this, {
                             gravity: 'n',
@@ -1746,7 +1774,7 @@ kshf.List.prototype = {
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
         var me=this;
-        this.dom.listsortcolumn = this.dom.listItems.append("div").attr("class","listsortcolumn")
+        this.DOM.listsortcolumn = this.DOM.listItems.append("div").attr("class","listsortcolumn")
             .style("width",this.sortColWidth+"px")
             .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
             .each(function(d){
@@ -1772,18 +1800,18 @@ kshf.List.prototype = {
                 me.sortFilter_Active.addFilter(true);
             })
             ;
-        this.dom.listsortcolumn_label = this.dom.listsortcolumn.append("span").attr("class","columnLabel")
+        this.DOM.listsortcolumn_label = this.DOM.listsortcolumn.append("span").attr("class","columnLabel")
             .html(function(d){ return me.sortingOpt_Active.label(d); })
             ;
         if(this.showRank){
-            this.dom.ranks = this.dom.listsortcolumn.append("span").attr("class","itemRank");
+            this.DOM.ranks = this.DOM.listsortcolumn.append("span").attr("class","itemRank");
         }
     },
     /** -- */
     insertItemToggleDetails: function(){
         var me=this;
         if(this.detailsToggle==="one" && this.displayType==='list'){
-            this.dom.listItems.append("div")
+            this.DOM.listItems.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
@@ -1804,7 +1832,7 @@ kshf.List.prototype = {
                 .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
         }
         if(this.detailsToggle==="zoom"){
-            this.dom.listItems.append("div")
+            this.DOM.listItems.append("div")
                 .attr("class","itemToggleDetails")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
@@ -1820,7 +1848,7 @@ kshf.List.prototype = {
                     var mousePos = d3.mouse(me.browser.root[0][0]);
 //                    mousePos[0] = me.browser.root[0][0].offsetWidth - mousePos[0];
                     var origin=mousePos[0]+"px "+mousePos[1]+"px";
-                    var dom=me.browser.dom.infobox_itemZoom[0][0];
+                    var dom=me.browser.DOM.infobox_itemZoom[0][0];
                     dom.style.webkitTransformOrigin = origin;
                     dom.style.MozTransformOrigin = origin;
                     dom.style.msTransformOrigin = origin;
@@ -1851,7 +1879,7 @@ kshf.List.prototype = {
         var me = this;
         if(this.displayType==='list') {
             if(this.sortingOpt_Active.noGroupBorder===true){
-                this.dom.listItems.style("border-top-width", "0px");
+                this.DOM.listItems.style("border-top-width", "0px");
             } else {
                 // go over item list
                 var pItem=null;
@@ -1873,7 +1901,7 @@ kshf.List.prototype = {
     showMore: function(){
         this.maxVisibleItems *= 2;
         this.updateItemVisibility(true);
-        this.dom.showMore.style("bottom","-27px"); // hide panel
+        this.DOM.showMore.style("bottom","-27px"); // hide panel
         if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
     },
     /** Reorders items in the DOM
@@ -1881,7 +1909,7 @@ kshf.List.prototype = {
      */
     reorderItemsOnDOM: function(){
         this.sortItems();
-        this.dom.listItems = this.dom.listItemGroup.selectAll("div.listItem")
+        this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
             .data(this.browser.items, function(d){ return d.id(); })
             .order();
     },
@@ -1956,7 +1984,7 @@ kshf.List.prototype = {
         var me = this;
         var visibleItemCount=0;
 
-        this.dom.listItems.each(function(item){
+        this.DOM.listItems.each(function(item){
             var domItem = this;
 
             var isVisible     = (item.visibleOrder>=0) && (item.visibleOrder<me.maxVisibleItems);
@@ -2011,16 +2039,16 @@ kshf.List.prototype = {
         });
 
         var hiddenItemCount = this.browser.itemsWantedCount-visibleItemCount;
-        this.dom.showMore.style("display",(hiddenItemCount===0)?"none":"block");
-        this.dom.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
-        this.dom.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
+        this.DOM.showMore.style("display",(hiddenItemCount===0)?"none":"block");
+        this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
+        this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
     },
     /** -- */
     updateContentWidth: function(contentWidth){
         contentWidth-=4; // 2*2 border left&right
 //        contentWidth-=this.stateWidth;
         contentWidth-=this.browser.scrollWidth; // assume scroll is displayed
-        this.dom.showMore.style("width",(contentWidth-5)+"px");
+        this.DOM.showMore.style("width",(contentWidth-5)+"px");
     },
     updateAfterFiltering_do:function(){
         this.updateVisibleIndex();
@@ -2036,7 +2064,7 @@ kshf.List.prototype = {
         }
         // scroll to top
         var startTime = null;
-        var scrollDom = this.dom.listItemGroup[0][0];
+        var scrollDom = this.DOM.listItemGroup[0][0];
         var scrollInit = scrollDom.scrollTop;
         var easeFunc = d3.ease('cubic-in-out');
         var scrollTime = 1000;
@@ -2069,7 +2097,7 @@ kshf.List.prototype = {
         },this);
 
         if(this.showRank){
-            this.dom.ranks.text(function(d){ return "#"+(d.visibleOrder+1);});
+            this.DOM.ranks.text(function(d){ return "#"+(d.visibleOrder+1);});
         }
     }
 };
@@ -2344,7 +2372,7 @@ kshf.Browser = function(options){
     this.previewCompareCb = options.previewCompareCb;
     this.ratioModeCb = options.ratioModeCb;
 
-    this.dom = {};
+    this.DOM = {};
 
     // itemName
     if(options.itemName!==undefined){
@@ -2386,17 +2414,17 @@ kshf.Browser = function(options){
     if(options.showResizeCorner === true) this.insertResize();
     this.insertInfobox();
 
-    this.dom.panelsTop=this.root.append("div");
+    this.DOM.panelsTop=this.root.append("div");
 
 
     this.panels.left = new kshf.Panel({
         widthCatLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'left',
-        parentDOM: this.dom.panelsTop
+        parentDOM: this.DOM.panelsTop
     });
 
-    var asdasds=this.dom.panelsTop.append("div").attr("class","middleStuff");
+    var asdasds=this.DOM.panelsTop.append("div").attr("class","middleStuff");
 
     this.layoutList = asdasds.append("div").attr("class", "layout_block listDiv")
 
@@ -2410,7 +2438,7 @@ kshf.Browser = function(options){
         widthCatLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'right',
-        parentDOM: this.dom.panelsTop
+        parentDOM: this.DOM.panelsTop
     });
     this.panels.bottom = new kshf.Panel({
         widthCatLabel : options.categoryTextWidth || 115,
@@ -2419,8 +2447,8 @@ kshf.Browser = function(options){
         parentDOM: this.root
     });
 
-    this.dom.attributeList = this.root.append("div").attr("class","attributeList");
-    this.dom.attributeList.append("div").attr("class","attributeListHeader").text("Attributes:");
+    this.DOM.attributeList = this.root.append("div").attr("class","attributeList");
+    this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Attributes");
 
     this.root.selectAll(".layout_block").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
@@ -2513,14 +2541,14 @@ kshf.Browser.prototype = {
                 me.layout_infobox.attr("show","none");
             })
             ;
-        this.dom.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
-//        this.dom.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
-        var ssdsd = this.dom.loadingBox.append("span").attr("class","loadinggg");
+        this.DOM.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
+//        this.DOM.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
+        var ssdsd = this.DOM.loadingBox.append("span").attr("class","loadinggg");
         ssdsd.append("span").attr("class","loading_dots loading_dots_1").attr("anim",true);
         ssdsd.append("span").attr("class","loading_dots loading_dots_2").attr("anim",true);
         ssdsd.append("span").attr("class","loading_dots loading_dots_3").attr("anim",true);
 
-        var hmmm=this.dom.loadingBox.append("div").attr("class","status_text");
+        var hmmm=this.DOM.loadingBox.append("div").attr("class","status_text");
         hmmm.append("span").attr("class","status_text_sub info").text("Loading data sources...");
         hmmm.append("span").attr("class","status_text_sub dynamic")
             .text(
@@ -2536,15 +2564,15 @@ kshf.Browser.prototype = {
             .append("span").attr("class","fa fa-times");
         infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
 
-        this.dom.infobox_itemZoom = this.layout_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
+        this.DOM.infobox_itemZoom = this.layout_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
 
-        this.dom.infobox_itemZoom.append("div").attr("class","infobox_close_button")
+        this.DOM.infobox_itemZoom.append("div").attr("class","infobox_close_button")
             .on("click",function(){
                 me.layout_infobox.attr("show","none");
             })
             .append("span").attr("class","fa fa-times");
 
-        this.dom.infobox_itemZoom_content = this.dom.infobox_itemZoom.append("span").attr("class","content");
+        this.DOM.infobox_itemZoom_content = this.DOM.infobox_itemZoom.append("span").attr("class","content");
     },
     /** -- */
     updateItemZoomText: function(item){
@@ -2554,8 +2582,8 @@ kshf.Browser.prototype = {
             if(v===undefined || v===null) continue;
             str+="<b>"+column+":</b> "+ v.toString()+"<br>";
         }
-        this.dom.infobox_itemZoom_content.html(str);
-//        this.dom.infobox_itemZoom_content.html(item.data.toString());
+        this.DOM.infobox_itemZoom_content.html(str);
+//        this.DOM.infobox_itemZoom_content.html(item.data.toString());
     },
     /** --- */
     insertClearAll: function(){
@@ -2563,10 +2591,10 @@ kshf.Browser.prototype = {
         // insert clear all option
         if(this.listDisplay===undefined) {
             // none
-            this.dom.filterClearAll = this.root.select(".ffffffff");
+            this.DOM.filterClearAll = this.root.select(".ffffffff");
             return;
         }
-        this.dom.filterClearAll = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","filterClearAll")
+        this.DOM.filterClearAll = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","filterClearAll")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
@@ -2588,8 +2616,8 @@ kshf.Browser.prototype = {
                 me.clearFilters_All();
             })
             ;
-        this.dom.filterClearAll.append("span").attr("class","title").text("Clear");
-        this.dom.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
+        this.DOM.filterClearAll.append("span").attr("class","title").text("Clear");
+        this.DOM.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
             .append("span").attr("class","fa fa-times")
             ;
     },
@@ -2674,9 +2702,9 @@ kshf.Browser.prototype = {
             }
 
             // create the column name tables
-            kshf.createColumnNames(sheet.tableName);
+            this.dt_ColNames_Arr[sheet.tableName] = [];
             for(j=0; j<dataTable.getNumberOfColumns(); j++){
-                kshf.insertColumnName(sheet.tableName,dataTable.getColumnLabel(j).trim(),j);
+                this.dt_ColNames_Arr[sheet.tableName].push(dataTable.getColumnLabel(j).trim());
             }
 
             var columnNames = kshf.dt_ColNames_Arr[sheet.tableName];
@@ -2695,8 +2723,7 @@ kshf.Browser.prototype = {
 
             if(idIndex===numCols) {
                 // push the 'id' column
-                kshf.dt_ColNames[sheet.tableName][sheet.id] = idIndex;
-                kshf.dt_ColNames_Arr[sheet.tableName][idIndex] = sheet.id;
+                kshf.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
             }
 
             me.finishDataLoad(sheet,arr);
@@ -2706,11 +2733,11 @@ kshf.Browser.prototype = {
     loadSheet_File: function(sheet){
         var me=this;
         var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
-        $.ajax( {
-            url:fileName,
-            type:"GET",
+        $.ajax({
+            url: fileName,
+            type: "GET",
             async: (me.source.callback===undefined)?true:false,
-            contentType:"text/csv",
+            contentType: "text/csv",
             success: function(data) {
                 // if data is already loaded, nothing else to do...
                 if(kshf.dt[sheet.tableName]!==undefined){
@@ -2729,6 +2756,8 @@ kshf.Browser.prototype = {
                 if(sheet.dynamicTyping!==undefined) config.dynamicTyping = sheet.dynamicTyping;
 
                 var parsedData = Papa.parse(data, config);
+
+                kshf.dt_ColNames_Arr[sheet.tableName] = parsedData.meta.fields;
 
                 parsedData.data.forEach(function(row,i){
                     if(row[idColumn]===undefined) row[idColumn] = i;
@@ -2749,15 +2778,15 @@ kshf.Browser.prototype = {
             this.incrementLoadedSheetCount();
             return;
         }
-        this.createColumnNames(sheet.tableName);
+        this.dt_ColNames_Arr[sheet.tableName] = [];
         sheet.data.forEach(function(c,i){
             if(i===0){ // header 
                 c.forEach(function(colName,j){
-                    kshf.insertColumnName(sheet.tableName,colName,j);
+                    this.dt_ColNames_Arr[sheet.tableName].push(colName);
                     if(colName===sheet.id){ idIndex = j;}
                 });
                 if(idIndex===-1){ // id column not found, you need to create your own
-                    kshf.insertColumnName(sheet.tableName,sheet.id,j);
+                    this.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
                     idIndex = j;
                 }
             }else{
@@ -2889,8 +2918,8 @@ kshf.Browser.prototype = {
         if(this.listDef!==undefined){
             this.listDisplay = new kshf.List(this,this.listDef, this.root);
 
-            var resultInfo = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","resultInfo");
-            this.dom.listheader_count = resultInfo.append("span").attr("class","listheader_count")
+            var resultInfo = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
+            this.DOM.listheader_count = resultInfo.append("span").attr("class","listheader_count")
                 .style("width",this.listDisplay.sortColWidth+"px");
             resultInfo.append("span").attr("class","listheader_itemName").html(this.itemName);
 
@@ -2898,9 +2927,9 @@ kshf.Browser.prototype = {
                 this.listDisplay.insertGlobalTextSearch();
             }
 
-            this.dom.filtercrumbs = this.listDisplay.dom.filtercrumbs;
+            this.DOM.filtercrumbs = this.listDisplay.DOM.filtercrumbs;
 
-            var rightSpan = this.listDisplay.dom.listHeader_TopRow.append("span").attr("class","rightBoxes");
+            var rightSpan = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","rightBoxes");
             if(this.listDef.enableSave){
                 rightSpan.append("i").attr("class","fa fa-save ")
                     .each(function(d){
@@ -3005,7 +3034,7 @@ kshf.Browser.prototype = {
     addAttribDragListeners: function(dom){
         dom.addEventListener("dragstart",function(event){
             browser.root.attr("showdropzone",true);
-            event.dataTransfer.setData("text/plain",dom.textContent);
+            event.dataTransfer.setData("text/plain",dom.__data__); // use the d3 bound value
             event.dataTransfer.setData("text/info","new_summary");
         });
         dom.addEventListener("dragend",function(event){
@@ -3026,22 +3055,61 @@ kshf.Browser.prototype = {
             if(attrName===kshf.dt[tableName][0].idIndex) return false;
             // remove those already in the view
             if(me.summaries.some(function(summary){
-                return summary.options.title===attrName;
+                return summary.options.attribMapName===attrName;
             })) return false;
             return true;
-        })
-        this.dom.attributeList.selectAll("div.attributeName").data(attribNames).enter()
+        });
+
+        var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
+            .data(attribNames).enter();
+
+        this.insertAttributeDOMs(newAttributes);
+    },
+    /** -- */
+    insertAttributeDOMs: function(selection){
+        var me=this;
+        this.DOM.attributeNames = selection
             .append("div").attr("class","attributeName")
             .attr("draggable",true)
-            .text(function(d){ return d;})
-            .each(function(){ me.addAttribDragListeners(this) });
+            .each(function(){
+                me.addAttribDragListeners(this);
+            });
+
+        this.DOM.attributeNames.append("input").attr("class","summaryTitleEdit")
+            .on("keydown",function(){
+                if(event.keyCode===13){ // ENTER
+                    var parentDOM = d3.select(this.parentNode);
+                    var newTitle = parentDOM.select(".summaryTitleEdit")[0][0].value;
+                    parentDOM.select(".summaryTitle").text(newTitle);
+                    this.parentNode.setAttribute("edittitle",false);
+                }
+            })
             ;
+        this.DOM.attributeNames.append("span").attr("class","summaryTitle")
+            .text(function(d){ return d;})
+            ;
+        this.DOM.attributeNames.append("div").attr("class","fa fa-pencil editTitleButton")
+            .on("click",function(d){
+                var curState=this.parentNode.getAttribute("edittitle");
+                if(curState===null || curState==="false"){
+                    this.parentNode.setAttribute("edittitle",true);
+                    var parentDOM = d3.select(this.parentNode);
+                    var currentTitle = parentDOM.select(".summaryTitle")[0][0].textContent;
+                    parentDOM.select(".summaryTitleEdit")[0][0].value = currentTitle;
+                    parentDOM.select(".summaryTitleEdit")[0][0].focus();
+                } else {
+                    var parentDOM = d3.select(this.parentNode);
+                    var newTitle = parentDOM.select(".summaryTitleEdit")[0][0].value;
+                    parentDOM.select(".summaryTitle").text(newTitle);
+                    this.parentNode.setAttribute("edittitle",false);
+                }
+            });
     },
     /** -- */
     insertOneAttribute: function(name){
         var me=this;
-        var tableName = this.primaryTableName;
-        this.dom.attributeList
+        // TODO: Bind the summary title, and summary info...
+        this.DOM.attributeList
             .append("div").attr("class","attributeName")
             .attr("draggable",true)
             .text(name)
@@ -3055,25 +3123,15 @@ kshf.Browser.prototype = {
             this.listDef.hasLinkedItems = true;
         }
 
-        if(options.attribMap) {
-            options.attribMap = options.attribMap;
-        }
-
         // How do you get the value from items...
 
         if(options.attribMap===undefined){
-            // if we have a column name mapping, use that
-            if(kshf.dt_ColNames[primTableName]!==undefined) {
-                var ID = options.title;
-                if(ID!==undefined)
-                    options.attribMap = function(d){ return d.data[ID]; };
-            } else {
-                options.attribMap = function(d){ 
-                    return d.data[options.title];
-                };
-            }
+            options.attribMapName = options.title;
         } else if(typeof(options.attribMap)==="string"){
-            options.attribMap = this.getColumnData(primTableName,options.attribMap);
+            options.attribMapName = options.attribMap;
+        }
+        if(options.attribMapName){
+            options.attribMap = function(d){ return d.data[options.attribMapName]; };
         }
 
         if(options.items===undefined){
@@ -3141,17 +3199,6 @@ kshf.Browser.prototype = {
         this.summaries.push(fct);
         return fct;
     },
-    getColumnID: function(tableName, columnName){
-        if(kshf.dt_ColNames[tableName]===undefined) return undefined;
-        return kshf.dt_ColNames[tableName][columnName];
-    },
-    getColumnData: function(tableName, columnName){
-//        var ID = this.getColumnID(tableName, columnName);
-//        if(ID===undefined) {
-            return function(d){ return d.data[columnName]; };
-//        }
-//        return function(d){ return d.data[ID]; };
-    },
     /** For each primary item
      *  - Run the mapFunc
      *  - If result is array, remove duplicates
@@ -3218,8 +3265,8 @@ kshf.Browser.prototype = {
             if(item.isWanted) this.itemsWantedCount++;
         },this);
 
-        if(this.dom.listheader_count)
-            this.dom.listheader_count.text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No");
+        if(this.DOM.listheader_count)
+            this.DOM.listheader_count.text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No");
         if(this.listDisplay){
             this.listDisplay.refreshTotalViz();
         }
@@ -3242,7 +3289,7 @@ kshf.Browser.prototype = {
     refresh_filterClearAll: function(){
         var filteredCount=0;
         this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
-        this.dom.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
+        this.DOM.filterClearAll.style("display",(filteredCount>0)?"inline-block":"none");
     },
     /** Ratio mode is when glyphs scale to their max */
     setRatioMode: function(how){
@@ -3406,7 +3453,7 @@ kshf.Browser.prototype = {
         var topPanelsHeight = divHeight_Total;
         if(this.panels.bottom.summaries.length>0) topPanelsHeight-=bottomFacetsHeight;
 
-        this.dom.panelsTop.style("height",topPanelsHeight+"px");
+        this.DOM.panelsTop.style("height",topPanelsHeight+"px");
 
         // Left Panel
         if(this.panels.left.summaries.length>0){
@@ -3432,13 +3479,13 @@ kshf.Browser.prototype = {
         if(this.listDisplay) {
             var listDivTop = 0;
             // get height of header
-            var listHeaderHeight=this.listDisplay.dom.listHeader[0][0].offsetHeight;
+            var listHeaderHeight=this.listDisplay.DOM.listHeader[0][0].offsetHeight;
             var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
             if(this.panels.bottom.summaries.length>0){
                 listDisplayHeight-=bottomFacetsHeight;
             }
             listDisplayHeight-=midPanelHeight;
-            this.listDisplay.dom.listItemGroup.style("height",listDisplayHeight+"px");
+            this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
     /** -- */
@@ -3535,7 +3582,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.sortingOpts = options.sortingOpts;
     this.parentFacet = options.parentFacet;
 
-    this.dom = {};
+    this.DOM = {};
 
     this.chartScale_Measure = d3.scale.linear();
 
@@ -3599,7 +3646,7 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     getHeight_Header: function(){
         if(this._height_header==undefined) {
-            this._height_header = this.dom.headerGroup[0][0].offsetHeight;
+            this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
             if(this.hasSubFacets()){
                 // add some padding below
                 this._height_header+=2;
@@ -3899,9 +3946,9 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     insertSubFacets: function(){
-        this.dom.subFacets=this.divRoot.append("div").attr("class","subFacets");
+        this.DOM.subFacets=this.divRoot.append("div").attr("class","subFacets");
 
-        this.dom.subFacets.append("span").attr("class","facetGroupBar").append("span").attr("class","facetGroupBarSub");
+        this.DOM.subFacets.append("span").attr("class","facetGroupBar").append("span").attr("class","facetGroupBarSub");
             //.text("["+this.options.title+"]");
 
         if(!this.hasAttribs()){
@@ -4042,12 +4089,12 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     initDOM: function(){
-        if(this.dom.inited===true) return;
+        if(this.DOM.inited===true) return;
         var me = this;
 
         var root,before;
         if(this.parentFacet){
-            root = this.parentFacet.dom.subFacets;
+            root = this.parentFacet.DOM.subFacets;
             this.divRoot = root.append("div")
         } else {
             root = this.browser.panels[this.options.layout].DOM.root;
@@ -4080,23 +4127,23 @@ kshf.Facet_Categorical.prototype = {
             this.refreshLabelWidth();
         }
 
-        this.dom.inited = true;
+        this.DOM.inited = true;
     },
     /** -- */
     init_DOM_Attrib: function(){
         var me=this;
-        this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
+        this.DOM.wrapper = this.divRoot.append("div").attr("class","wrapper");
 
-        this.dom.facetCategorical = this.dom.wrapper.append("div").attr("class","facetCategorical");
+        this.DOM.facetCategorical = this.DOM.wrapper.append("div").attr("class","facetCategorical");
 
         // create config row(s) if needed
         if(this.showTextSearch || this.sortingOpts.length>1) {
-            this.dom.facetControls = this.dom.facetCategorical.append("div").attr("class","facetControls");
+            this.DOM.facetControls = this.DOM.facetCategorical.append("div").attr("class","facetControls");
             if(this.showTextSearch){
                 this.initDOM_TextSearch();
                 this.configRowCount++;
                 if(this.sortingOpts.length<=1){
-                    this.initDOM_insertSortButton(this.dom.facetControls.select(".attribTextSearch"));
+                    this.initDOM_insertSortButton(this.DOM.facetControls.select(".attribTextSearch"));
                 }
             }
             if(this.sortingOpts.length>1) {
@@ -4105,10 +4152,10 @@ kshf.Facet_Categorical.prototype = {
             }
         }
 
-        this.dom.scrollToTop = this.dom.facetCategorical.append("div")
+        this.DOM.scrollToTop = this.DOM.facetCategorical.append("div")
             .attr("class","scrollToTop fa fa-arrow-up")
             .on("click",function(d){ 
-                kshf.Util.scrollToPos_do(me.dom.attribGroup[0][0],0);
+                kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
                 this.tipsy.hide();
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
             })
@@ -4119,12 +4166,12 @@ kshf.Facet_Categorical.prototype = {
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
             ;
 
-        this.dom.attribGroup = this.dom.facetCategorical.append("div").attr("class","attribGroup")
+        this.DOM.attribGroup = this.DOM.facetCategorical.append("div").attr("class","attribGroup")
             .on("scroll",function(d){
                 if(kshf.Util.ignoreScrollEvents===true) return;
-                me.scrollTop_cache = me.dom.attribGroup[0][0].scrollTop;
+                me.scrollTop_cache = me.DOM.attribGroup[0][0].scrollTop;
 
-                me.dom.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
+                me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
                 me.attrib_InDisplay_First = Math.floor( me.scrollTop_cache/me.heightRow_attrib);
                 me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.attribCount_InDisplay);
@@ -4138,19 +4185,19 @@ kshf.Facet_Categorical.prototype = {
             })
             ;
 
-        this.dom.belowAttribs = this.dom.facetCategorical.append("div").attr("class","belowAttribs");
-        this.dom.belowAttribs.append("div").attr("class", "border_line");
+        this.DOM.belowAttribs = this.DOM.facetCategorical.append("div").attr("class","belowAttribs");
+        this.DOM.belowAttribs.append("div").attr("class", "border_line");
         
-        kshf.Summary_Base.insertChartAxis_Measure.call(this,this.dom.belowAttribs,'e','e');
+        kshf.Summary_Base.insertChartAxis_Measure.call(this,this.DOM.belowAttribs,'e','e');
 
         // this helps us makes sure that the div height is correctly set to visible number of rows
-        this.dom.chartBackground = this.dom.attribGroup.append("span").attr("class","chartBackground");
+        this.DOM.chartBackground = this.DOM.attribGroup.append("span").attr("class","chartBackground");
 
-        var mmm=this.dom.belowAttribs.append("div").attr("class","hasLabelWidth");
-        this.dom.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
+        var mmm=this.DOM.belowAttribs.append("div").attr("class","hasLabelWidth");
+        this.DOM.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
             .on("click",function(){
                 kshf.Util.scrollToPos_do(
-                    me.dom.attribGroup[0][0],me.dom.attribGroup[0][0].scrollTop+me.heightRow_attrib);
+                    me.DOM.attribGroup[0][0],me.DOM.attribGroup[0][0].scrollTop+me.heightRow_attrib);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
 
@@ -4162,7 +4209,7 @@ kshf.Facet_Categorical.prototype = {
     },
     initDOM_insertSortButton: function(targetDom){
         var me=this;
-        this.dom.sortButton = targetDom.append("span").attr("class","sortButton fa")
+        this.DOM.sortButton = targetDom.append("span").attr("class","sortButton fa")
             .on("click",function(d){
                 if(me.dirtySort){
                     me.dirtySort=false;
@@ -4184,19 +4231,19 @@ kshf.Facet_Categorical.prototype = {
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); });
 
-        this.dom.sortButton.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"));
+        this.DOM.sortButton.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"));
     },
     /** -- */
     initDOM_SortingOpts: function(){
         var me=this;
-        var sortGr = this.dom.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
+        var sortGr = this.DOM.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
 
         sortGr.append("select").attr("class","optionSelect").attr("dir","rtl")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
-                me.dom.sortButton.style("display",(me.sortingOpt_Active.no_resort?"none":"inline-block"));
+                me.DOM.sortButton.style("display",(me.sortingOpt_Active.no_resort?"none":"inline-block"));
                 
-                me.dom.sortButton.attr("inverse",me.sortingOpt_Active.inverse);
+                me.DOM.sortButton.attr("inverse",me.sortingOpt_Active.inverse);
                 me.updateSorting.call(me,0,true);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
             })
@@ -4210,8 +4257,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     initDOM_TextSearch: function(){
         var me=this;
-        var textSearchRowDOM = this.dom.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
-        this.dom.attribTextSearch=textSearchRowDOM.append("input")
+        var textSearchRowDOM = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
+        this.DOM.attribTextSearch=textSearchRowDOM.append("input")
             .attr("class","attribTextSearchInput")
             .attr("type","text")
             .attr("placeholder","Search")// " in ...+kshf.Util.toProperCase(this.options.title))
@@ -4225,7 +4272,7 @@ kshf.Facet_Categorical.prototype = {
                     if(v===""){
                         me.attribFilter.clearFilter();
                     } else {
-                        me.dom.attribTextSearchControl.attr("showClear",true);
+                        me.DOM.attribTextSearchControl.attr("showClear",true);
                         me.attribFilter.selected_All_clear();
                         me._attribs.forEach(function(attrib){
                             if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
@@ -4256,7 +4303,7 @@ kshf.Facet_Categorical.prototype = {
                 d3.event.preventDefault();
             })
             ;
-        this.dom.attribTextSearchControl = textSearchRowDOM.append("span")
+        this.DOM.attribTextSearchControl = textSearchRowDOM.append("span")
             .attr("class","attribTextSearchControl fa")
             .on("click",function() { me.attribFilter.clearFilter(); });
     },
@@ -4337,8 +4384,8 @@ kshf.Facet_Categorical.prototype = {
     /** -- */
     clearLabelTextSearch: function(){
         if(!this.showTextSearch) return;
-        this.dom.attribTextSearchControl.attr("showClear",false);
-        this.dom.attribTextSearch[0][0].value = '';
+        this.DOM.attribTextSearchControl.attr("showClear",false);
+        this.DOM.attribTextSearch[0][0].value = '';
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
@@ -4361,9 +4408,9 @@ kshf.Facet_Categorical.prototype = {
         this.refreshViz_Compare();
         this.refreshViz_Axis();
 
-        this.dom.aggr_Preview.attr("fast",null); // take it slow for result preview animations
+        this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.dom.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
     },
     /** -- */
     setHeight: function(newHeight){
@@ -4416,9 +4463,9 @@ kshf.Facet_Categorical.prototype = {
     },
     /** -- */
     refreshWidth: function(){
-        if(this.dom.facetCategorical){
-            this.dom.facetCategorical.style("width",this.getWidth()+"px");
-            this.dom.chartAxis_Measure.select(".background")
+        if(this.DOM.facetCategorical){
+            this.DOM.facetCategorical.style("width",this.getWidth()+"px");
+            this.DOM.chartAxis_Measure.select(".background")
                 .style("width",this.chartScale_Measure.range()[1]+"px");
         }
     },
@@ -4427,9 +4474,9 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs()) return;
         var me=this;
 
-        this.dom.attribs.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
+        this.DOM.attribs.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
 
-        this.dom.measureLabel.each(function(attrib){
+        this.DOM.measureLabel.each(function(attrib){
             if(attrib.isCulled) return;
             var p=attrib.aggregate_Preview;
             if(me.browser.resultPreviewActive){
@@ -4467,9 +4514,9 @@ kshf.Facet_Categorical.prototype = {
         this.refreshViz_Total();
         this.refreshViz_Active();
 
-        this.dom.aggr_Preview.attr("fast",null); // take it slow for result preview animations
+        this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.dom.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
 
         this.refreshViz_Compare();
         this.refreshMeasureLabel();
@@ -4499,9 +4546,9 @@ kshf.Facet_Categorical.prototype = {
                 return (width_Text+me.chartScale_Measure(attrib.aggregate_Active))+"px";
             };
         }
-        this.dom.aggr_Active.each(func_barScale);
-        this.dom.attribClickArea.style("width",func_clickAreaScale);
-        this.dom.compareButton.style("left",func_clickAreaScale);
+        this.DOM.aggr_Active.each(func_barScale);
+        this.DOM.attribClickArea.style("width",func_clickAreaScale);
+        this.DOM.compareButton.style("left",func_clickAreaScale);
     },
     /** -- */
     refreshViz_Total: function(){
@@ -4509,18 +4556,18 @@ kshf.Facet_Categorical.prototype = {
         var me = this;
         // Do not need to update total. Total value is invisible. Percent view is based on active count.
         if(!this.browser.ratioModeActive){
-            this.dom.aggr_Total.each(function(attrib){
+            this.DOM.aggr_Total.each(function(attrib){
                 kshf.Util.setTransform(this,
                     "scaleX("+me.chartScale_Measure(attrib.aggregate_Total)+")");
             });
-            this.dom.aggr_TotalTip.each(function(attrib){
+            this.DOM.aggr_TotalTip.each(function(attrib){
                 kshf.Util.setTransform(this,
                     "translateX("+me.chartScale_Measure(attrib.aggregate_Total)+"px)");
             }).style("opacity",function(attrib){
                 return (attrib.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
             });
         } else {
-            this.dom.aggr_TotalTip.style("opacity",0);
+            this.DOM.aggr_TotalTip.style("opacity",0);
         }
     },
     /** -- */
@@ -4534,12 +4581,12 @@ kshf.Facet_Categorical.prototype = {
                 }
             });
             if(this.browser.ratioModeActive){
-                this.dom.aggr_Compare.each(function(attrib){
+                this.DOM.aggr_Compare.each(function(attrib){
                     var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartScale_Measure.range()[1];
                     kshf.Util.setTransform(this,"scaleX("+(w)+")");
                 });
             } else {
-                this.dom.aggr_Compare.each(function(attrib){
+                this.DOM.aggr_Compare.each(function(attrib){
                     kshf.Util.setTransform(this,"scaleX("+
                         (me.chartScale_Measure(attrib.cache_compare))+")");
                 });
@@ -4555,7 +4602,7 @@ kshf.Facet_Categorical.prototype = {
         if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
         if(this.browser.ratioModeActive){
-            this.dom.aggr_Preview.each(function(attrib){
+            this.DOM.aggr_Preview.each(function(attrib){
                 var p=attrib.aggregate_Preview;
                 if(me.browser.preview_not) p = attrib.aggregate_Active-p;
                 attrib.cache_preview = p;
@@ -4563,7 +4610,7 @@ kshf.Facet_Categorical.prototype = {
                 kshf.Util.setTransform(this,"scaleX("+w+")");
             });
         } else {
-            this.dom.aggr_Preview.each(function(attrib){
+            this.DOM.aggr_Preview.each(function(attrib){
                 var p=attrib.aggregate_Preview;
                 if(me.browser.preview_not) p = attrib.aggregate_Active-p;
                 attrib.cache_preview = p;
@@ -4581,7 +4628,7 @@ kshf.Facet_Categorical.prototype = {
         });
         if(this.collapsed) return;
         var me = this;
-        this.dom.aggr_Preview.each(function(attrib){
+        this.DOM.aggr_Preview.each(function(attrib){
             attrib.aggregate_Preview=0;
             if(attrib.cache_preview===0) return;
             kshf.Util.setTransform(this,"scaleX(0)");
@@ -4625,7 +4672,7 @@ kshf.Facet_Categorical.prototype = {
         // remove non-integer values & 0...
         tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
 
-        var tickDoms = this.dom.chartAxis_Measure.selectAll("span.tick").data(tickValues,function(i){return i;});
+        var tickDoms = this.DOM.chartAxis_Measure.selectAll("span.tick").data(tickValues,function(i){return i;});
 
         var noanim=this.browser.root.attr("noanim");
 
@@ -4670,7 +4717,7 @@ kshf.Facet_Categorical.prototype = {
         }
 
         setTimeout(function(){
-            me.dom.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
+            me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
         });
 
         tickDoms.exit().remove();
@@ -4681,27 +4728,27 @@ kshf.Facet_Categorical.prototype = {
         var labelWidth = this.getWidth_Label();
         var barChartMinX = labelWidth + this.getPanel().width.catQueryPreview;
 
-        this.dom.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
-        this.dom.item_count_wrapper.style("left",labelWidth+"px");
-        this.dom.chartAxis_Measure.each(function(d){
+        this.DOM.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
+        this.DOM.item_count_wrapper.style("left",labelWidth+"px");
+        this.DOM.chartAxis_Measure.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
-        this.dom.aggr_Group.style("left",barChartMinX+"px");
-        this.dom.chartBackground.style("margin-left",barChartMinX+"px");
-        if(this.dom.sortButton)
-            this.dom.sortButton.style("width",this.getPanel().width.catQueryPreview+"px");
+        this.DOM.aggr_Group.style("left",barChartMinX+"px");
+        this.DOM.chartBackground.style("margin-left",barChartMinX+"px");
+        if(this.DOM.sortButton)
+            this.DOM.sortButton.style("width",this.getPanel().width.catQueryPreview+"px");
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
         if(this.attribCount_Total<=3) {
-            this.dom.scroll_display_more.style("display","none");
+            this.DOM.scroll_display_more.style("display","none");
             return;
         }
         var moreTxt = ""+this.attribCount_Visible+" Row";
         if(this.attribCount_Visible>1) moreTxt+="s";
         var below = this.attribCount_Visible-bottomItem-1;
         if(below>0) moreTxt+=", <span class='fa fa-angle-down'></span> "+below+" more ";
-        this.dom.scroll_display_more.html(moreTxt);
+        this.DOM.scroll_display_more.html(moreTxt);
     },
     /** -- */
     refreshHeight: function(){
@@ -4709,12 +4756,12 @@ kshf.Facet_Categorical.prototype = {
         // So far, should be pretty nice.
         if(!this.hasAttribs()) return;
 
-        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content()-2)+"px");
-        this.dom.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
+        this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content()-2)+"px");
+        this.DOM.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
         var h=this.attribHeight;
-        this.dom.chartAxis_Measure.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
-        this.dom.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-19)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
+        this.DOM.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-19)+"px");
     },
     /** -- */
     setHeightRow_attrib: function(h){
@@ -4726,7 +4773,7 @@ kshf.Facet_Categorical.prototype = {
         
         this.browser.updateLayout();
         
-        this.dom.attribs.each(function(attrib){
+        this.DOM.attribs.each(function(attrib){
             var yPos = me.heightRow_attrib*attrib.orderIndex;
             kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+yPos+"px)");
             // padding!
@@ -4736,7 +4783,7 @@ kshf.Facet_Categorical.prototype = {
             //}
             this.style.marginTop = marginTop+"px";
         });
-        this.dom.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
+        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
 
         setTimeout(function(){
             me.browser.root.attr("noanim",false);
@@ -4968,7 +5015,7 @@ kshf.Facet_Categorical.prototype = {
         var me = this;
         this.resultPreviewLogTimeout = null;
 
-        var domAttribs_new = this.dom.attribGroup.selectAll(".attrib")
+        var domAttribs_new = this.DOM.attribGroup.selectAll(".attrib")
             .data(this._attribs, function(attrib){ 
                 return attrib.id();
             })
@@ -5116,7 +5163,7 @@ kshf.Facet_Categorical.prototype = {
                     item2.DOM.facet.setAttribute("highlight",false);
                     item2.DOM.facet.setAttribute("highlight",false);
 
-                    me.dom.attribs.each(function(attrib){
+                    me.DOM.attribs.each(function(attrib){
                         if(attrib.isVisible){
                             attrib.posX = 0;
                             attrib.posY = me.heightRow_attrib*attrib.orderIndex;
@@ -5239,18 +5286,18 @@ kshf.Facet_Categorical.prototype = {
             })
             ;
 
-        this.dom.attribs = this.dom.attribGroup.selectAll(".attrib")
-        this.dom.attribClickArea = this.dom.attribs.selectAll(".clickArea");
-        this.dom.compareButton = this.dom.attribs.selectAll(".compareButton");
-        this.dom.item_count_wrapper = this.dom.attribs.selectAll(".item_count_wrapper");
-        this.dom.measureLabel = this.dom.attribs.selectAll(".item_count_wrapper > .measureLabel");
+        this.DOM.attribs = this.DOM.attribGroup.selectAll(".attrib")
+        this.DOM.attribClickArea = this.DOM.attribs.selectAll(".clickArea");
+        this.DOM.compareButton = this.DOM.attribs.selectAll(".compareButton");
+        this.DOM.item_count_wrapper = this.DOM.attribs.selectAll(".item_count_wrapper");
+        this.DOM.measureLabel = this.DOM.attribs.selectAll(".item_count_wrapper > .measureLabel");
 
-        this.dom.aggr_Group    = this.dom.attribs.selectAll(".aggr_Group");
-        this.dom.aggr_Total    = this.dom.aggr_Group.selectAll(".total");
-        this.dom.aggr_TotalTip = this.dom.aggr_Group.selectAll(".total_tip");
-        this.dom.aggr_Active   = this.dom.aggr_Group.selectAll(".active");
-        this.dom.aggr_Preview  = this.dom.aggr_Group.selectAll(".preview");
-        this.dom.aggr_Compare  = this.dom.aggr_Group.selectAll(".compare");
+        this.DOM.aggr_Group    = this.DOM.attribs.selectAll(".aggr_Group");
+        this.DOM.aggr_Total    = this.DOM.aggr_Group.selectAll(".total");
+        this.DOM.aggr_TotalTip = this.DOM.aggr_Group.selectAll(".total_tip");
+        this.DOM.aggr_Active   = this.DOM.aggr_Group.selectAll(".active");
+        this.DOM.aggr_Preview  = this.DOM.aggr_Group.selectAll(".preview");
+        this.DOM.aggr_Compare  = this.DOM.aggr_Group.selectAll(".compare");
     },
 
     /** -- */
@@ -5325,7 +5372,7 @@ kshf.Facet_Categorical.prototype = {
             // 1. Make items disappear
             // Note: do not cull with number of items made visible.
             // We are applying visible and block to ALL attributes as we animate the change
-            me.dom.attribs.each(function(attrib){
+            me.DOM.attribs.each(function(attrib){
                 if(!attrib.isVisible && attrib.isVisible_before){
                     // disappear into left panel...
                     this.style.opacity = 0;
@@ -5347,7 +5394,7 @@ kshf.Facet_Categorical.prototype = {
             });
             // 2. Re-sort
             setTimeout(function(){
-                me.dom.attribs.each(function(attrib){
+                me.DOM.attribs.each(function(attrib){
                     if(attrib.isVisible && attrib.isVisible_before){
                         var x = 0;
                         var y = me.heightRow_attrib*attrib.orderIndex;
@@ -5360,7 +5407,7 @@ kshf.Facet_Categorical.prototype = {
                 // 3. Make items appear
                 setTimeout(function(){
                     if(me.attribCount_NowVisible>=0){
-                        me.dom.attribs.each(function(attrib){
+                        me.DOM.attribs.each(function(attrib){
                             if(attrib.isVisible && !attrib.isVisible_before){
                                 this.style.opacity = 1;
                                 var x = 0;
@@ -5381,9 +5428,9 @@ kshf.Facet_Categorical.prototype = {
 
         // filler is used to insert the scroll bar. 
         // Items outside the view are not visible, something needs to expand the box
-        this.dom.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
+        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
         
-        var attribGroupScroll = me.dom.attribGroup[0][0];
+        var attribGroupScroll = me.DOM.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
         if(this.scrollTop_cache!==0)
             kshf.Util.scrollToPos_do(attribGroupScroll,0);
@@ -5395,7 +5442,7 @@ kshf.Facet_Categorical.prototype = {
     },
     cullAttribs: function(){
         var me=this;
-        this.dom.attribs
+        this.DOM.attribs
         .style("visibility",function(attrib){
             return (attrib.isCulled || !attrib.isVisible)?"hidden":"visible";
         }).style("display",function(attrib){
@@ -5464,7 +5511,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.width_histMargin = 6;
     this.vertAxisLabelWidth = 23;
 
-    this.dom = {};
+    this.DOM = {};
 
     if(options.optimumTickWidth===undefined)
         options.optimumTickWidth = 50;
@@ -5662,7 +5709,7 @@ kshf.Facet_Interval.prototype = {
     /** -- */
     getHeight_Header: function(){
         if(this._height_header==undefined) {
-            this._height_header = this.dom.headerGroup[0][0].offsetHeight;
+            this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
         }
         return this._height_header;
     },
@@ -5719,12 +5766,12 @@ kshf.Facet_Interval.prototype = {
     },
     /** -- */
     initDOM: function(){
-        if(this.dom.inited===true) return;
+        if(this.DOM.inited===true) return;
         var me = this;
         
         var root;
         if(this.parentFacet){
-            root = this.parentFacet.dom.subFacets;
+            root = this.parentFacet.DOM.subFacets;
             this.divRoot = root.append("div");
         } else {
             root = this.browser.panels[this.options.layout].DOM.root;
@@ -5739,28 +5786,28 @@ kshf.Facet_Interval.prototype = {
             ;
 
         kshf.Summary_Base.insertHeader.call(this);
-        this.dom.wrapper = this.divRoot.append("div").attr("class","wrapper");
-        this.dom.facetInterval = this.dom.wrapper.append("div").attr("class","facetInterval");
+        this.DOM.wrapper = this.divRoot.append("div").attr("class","wrapper");
+        this.DOM.facetInterval = this.DOM.wrapper.append("div").attr("class","facetInterval");
 
-        this.dom.histogram = this.dom.facetInterval.append("div").attr("class","histogram");
-        this.dom.histogram_bins = this.dom.histogram.append("div").attr("class","bins")
+        this.DOM.histogram = this.DOM.facetInterval.append("div").attr("class","histogram");
+        this.DOM.histogram_bins = this.DOM.histogram.append("div").attr("class","bins")
             .style("margin-left",(this.vertAxisLabelWidth)+"px")
             ;
 
         if(this.options.intervalScale==='time') {
-            this.dom.timeSVG = this.dom.histogram.append("svg")
+            this.DOM.timeSVG = this.DOM.histogram.append("svg")
                 .style("margin-left",(this.vertAxisLabelWidth+this.width_barGap)+"px")
                 .attr("class","timeSVG")
                 .attr("xmlns","http://www.w3.org/2000/svg");
         }
 
-        kshf.Summary_Base.insertChartAxis_Measure.call(this, this.dom.histogram, 'w', 'nw');
-        this.dom.chartAxis_Measure.style("padding-left",(this.vertAxisLabelWidth-2)+"px")
+        kshf.Summary_Base.insertChartAxis_Measure.call(this, this.DOM.histogram, 'w', 'nw');
+        this.DOM.chartAxis_Measure.style("padding-left",(this.vertAxisLabelWidth-2)+"px")
 
         this.initDOM_Slider();
 
         if(this.options.unitName)
-            this.dom.labelGroup.append("span").attr("class","unitName").text(this.options.unitName);
+            this.DOM.labelGroup.append("span").attr("class","unitName").text(this.options.unitName);
 
         if(this.options.showPercentile===true){
             this.initDOM_Percentile();
@@ -5772,18 +5819,18 @@ kshf.Facet_Interval.prototype = {
             this.setCollapsed(true);
         }
 
-        this.dom.inited=true;
+        this.DOM.inited=true;
     },
     initDOM_Percentile: function(){
         var me=this;
-        this.dom.percentileGroup = this.dom.facetInterval.append("div").attr("class","percentileGroup")
+        this.DOM.percentileGroup = this.DOM.facetInterval.append("div").attr("class","percentileGroup")
             .style('margin-left',this.vertAxisLabelWidth+"px");;
-        this.dom.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
+        this.DOM.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
 
-        this.dom.quantile = {};
+        this.DOM.quantile = {};
 
         [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
-            this.dom.quantile[""+qb[0]+"_"+qb[1]] = this.dom.percentileGroup.append("span")
+            this.DOM.quantile[""+qb[0]+"_"+qb[1]] = this.DOM.percentileGroup.append("span")
                 .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
@@ -5801,7 +5848,7 @@ kshf.Facet_Interval.prototype = {
         },this);
         
         [10,20,30,40,50,60,70,80,90].forEach(function(q){
-            this.dom.quantile[q] = this.dom.percentileGroup.append("span")
+            this.DOM.quantile[q] = this.DOM.percentileGroup.append("span")
                 .attr("class","quantile q_pos q_"+q)
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
@@ -5821,11 +5868,11 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         if(this.isEmpty) return;
 
-        this.dom.facetInterval.style("width",this.getWidth()+"px");
+        this.DOM.facetInterval.style("width",this.getWidth()+"px");
         this.intervalRange.width=w;
 
-        if(this.dom.timeSVG)
-            this.dom.timeSVG.style("width",(this.intervalRange.width+2)+"px")
+        if(this.DOM.timeSVG)
+            this.DOM.timeSVG.style("width",(this.intervalRange.width+2)+"px")
         var optimalTickCount = Math.floor(this.intervalRange.width/this.options.optimumTickWidth);
 
         // if we have enough width, and
@@ -5864,7 +5911,7 @@ kshf.Facet_Interval.prototype = {
 
         // HANDLE TIME CAREFULLY
         if(this.options.intervalScale==='time') {
-            this.dom.facetInterval.attr("istime",true);
+            this.DOM.facetInterval.attr("istime",true);
 
             // 1. Find the appropriate aggregation interval (day, month, etc)
             var timeRange = this.intervalRange.max-this.intervalRange.min; // in milliseconds
@@ -6056,22 +6103,22 @@ kshf.Facet_Interval.prototype = {
             }
             
             if(this.options.intervalScale==='time') {
-                if(this.dom.lineTrend_Total===undefined){
-                    this.dom.lineTrend_Total = this.dom.timeSVG.append("path").attr("class","lineTrend total")
+                if(this.DOM.lineTrend_Total===undefined){
+                    this.DOM.lineTrend_Total = this.DOM.timeSVG.append("path").attr("class","lineTrend total")
                         .datum(this.histBins);
-                    this.dom.lineTrend_Active = this.dom.timeSVG.append("path").attr("class","lineTrend active")
+                    this.DOM.lineTrend_Active = this.DOM.timeSVG.append("path").attr("class","lineTrend active")
                         .datum(this.histBins);
-                    this.dom.lineTrend_ActiveLine = this.dom.timeSVG.selectAll("line.activeLine")
+                    this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll("line.activeLine")
                         .data(this.histBins, function(d,i){ return i; })
                         .enter().append("line").attr("class","lineTrend activeLine");
-                    this.dom.lineTrend_Preview = this.dom.timeSVG.append("path").attr("class","lineTrend preview")
+                    this.DOM.lineTrend_Preview = this.DOM.timeSVG.append("path").attr("class","lineTrend preview")
                         .datum(this.histBins);
-                    this.dom.lineTrend_PreviewLine = this.dom.timeSVG.selectAll("line.previewLine")
+                    this.DOM.lineTrend_PreviewLine = this.DOM.timeSVG.selectAll("line.previewLine")
                         .data(this.histBins, function(d,i){ return i; })
                         .enter().append("line").attr("class","lineTrend previewLine");
-                    this.dom.lineTrend_Compare = this.dom.timeSVG.append("path").attr("class","lineTrend compare")
+                    this.DOM.lineTrend_Compare = this.DOM.timeSVG.append("path").attr("class","lineTrend compare")
                         .datum(this.histBins);
-                    this.dom.lineTrend_CompareLine = this.dom.timeSVG.selectAll("line.compareLine")
+                    this.DOM.lineTrend_CompareLine = this.DOM.timeSVG.selectAll("line.compareLine")
                         .data(this.histBins, function(d,i){ return i; })
                         .enter().append("line").attr("class","lineTrend compareLine");
                 }
@@ -6084,7 +6131,7 @@ kshf.Facet_Interval.prototype = {
             this.insertBins();
                 
             // Update text labels
-            var ddd = this.dom.labelGroup.selectAll(".tick").data(this.intervalTicks);
+            var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
             ddd.exit().remove();
             var ddd_enter = ddd.enter().append("span").attr("class","tick");
             ddd_enter.append("span").attr("class","line");
@@ -6098,7 +6145,7 @@ kshf.Facet_Interval.prototype = {
             this.refreshViz_Scale();
         }
 
-        this.dom.labelGroup.selectAll(".tick").style("left",function(d){
+        this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
             return (me.valueScale(d)+me.getAggreg_Width_Offset())+"px";
         });
 
@@ -6120,7 +6167,7 @@ kshf.Facet_Interval.prototype = {
 
         var filterId = this.intervalFilter.id;
 
-        var activeBins = this.dom.histogram_bins
+        var activeBins = this.DOM.histogram_bins
             .selectAll(".aggr_Group").data(this.histBins, function(d,i){ return i; });
         
         activeBins.exit().remove();
@@ -6258,15 +6305,15 @@ kshf.Facet_Interval.prototype = {
             kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
         });
 
-        this.dom.aggr_Group    = this.dom.histogram_bins.selectAll(".aggr_Group");
-        this.dom.aggr_Total    = this.dom.aggr_Group.selectAll(".total");
-        this.dom.aggr_TotalTip = this.dom.aggr_Group.selectAll(".total_tip");
-        this.dom.aggr_Active   = this.dom.aggr_Group.selectAll(".active");
-        this.dom.aggr_Preview  = this.dom.aggr_Group.selectAll(".preview");
-        this.dom.aggr_Compare  = this.dom.aggr_Group.selectAll(".compare");
+        this.DOM.aggr_Group    = this.DOM.histogram_bins.selectAll(".aggr_Group");
+        this.DOM.aggr_Total    = this.DOM.aggr_Group.selectAll(".total");
+        this.DOM.aggr_TotalTip = this.DOM.aggr_Group.selectAll(".total_tip");
+        this.DOM.aggr_Active   = this.DOM.aggr_Group.selectAll(".active");
+        this.DOM.aggr_Preview  = this.DOM.aggr_Group.selectAll(".preview");
+        this.DOM.aggr_Compare  = this.DOM.aggr_Group.selectAll(".compare");
 
-        this.dom.compareButton = this.dom.aggr_Group.selectAll(".compareButton");
-        this.dom.measureLabel  = this.dom.aggr_Group.selectAll(".measureLabel");
+        this.DOM.compareButton = this.DOM.aggr_Group.selectAll(".compareButton");
+        this.DOM.measureLabel  = this.DOM.aggr_Group.selectAll(".measureLabel");
 
         this.refreshBins_Translate();
 
@@ -6290,15 +6337,15 @@ kshf.Facet_Interval.prototype = {
     initDOM_Slider: function(){
         var me=this;
 
-        this.dom.intervalSlider = this.dom.facetInterval.append("div").attr("class","intervalSlider")
+        this.DOM.intervalSlider = this.DOM.facetInterval.append("div").attr("class","intervalSlider")
             .attr("anim",true)
             .style('margin-left',(this.vertAxisLabelWidth)+"px");
 
-        var controlLine = this.dom.intervalSlider.append("div").attr("class","controlLine")
+        var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
         controlLine.append("span").attr("class","base total")
             .on("mousedown", function (d, i) {
                 if(d3.event.which !== 1) return; // only respond to left-click
-                me.dom.intervalSlider.attr("anim",false);
+                me.DOM.intervalSlider.attr("anim",false);
                 var e=this.parentNode;
                 var initPos = me.valueScale.invert(d3.mouse(e)[0]);
                 d3.select("body").style('cursor','ew-resize')
@@ -6325,7 +6372,7 @@ kshf.Facet_Interval.prototype = {
                             }
                         },250);
                     }).on("mouseup", function(){
-                        me.dom.intervalSlider.attr("anim",true);
+                        me.DOM.intervalSlider.attr("anim",true);
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
@@ -6345,7 +6392,7 @@ kshf.Facet_Interval.prototype = {
                 this.tipsy.hide();
                 if(d3.event.which !== 1) return; // only respond to left-click
                 if(me.options.intervalScale==='time') return; // time is not supported for now.
-                me.dom.intervalSlider.attr("anim",false);
+                me.DOM.intervalSlider.attr("anim",false);
                 var e=this.parentNode;
                 var initMin = me.intervalFilter.active.min;
                 var initMax = me.intervalFilter.active.max;
@@ -6385,7 +6432,7 @@ kshf.Facet_Interval.prototype = {
                             }
                         },200);
                     }).on("mouseup", function(){
-                        me.dom.intervalSlider.attr("anim",true);
+                        me.DOM.intervalSlider.attr("anim",true);
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
@@ -6394,7 +6441,7 @@ kshf.Facet_Interval.prototype = {
         var handle_cb = function (d, i) {
             var mee = this;
             if(d3.event.which !== 1) return; // only respond to left-click
-            me.dom.intervalSlider.attr("anim",false);
+            me.DOM.intervalSlider.attr("anim",false);
             var e=this.parentNode;
             d3.select("body").style('cursor','ew-resize')
                 .on("mousemove", function() {
@@ -6430,7 +6477,7 @@ kshf.Facet_Interval.prototype = {
                 }).on("mouseup", function(){
                     mee.dragging = false;
                     me.browser.pauseResultPreview = false;
-                    me.dom.intervalSlider.attr("anim",true);
+                    me.DOM.intervalSlider.attr("anim",true);
                     d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                 });
             d3.event.preventDefault();
@@ -6452,14 +6499,14 @@ kshf.Facet_Interval.prototype = {
             })
             .append("span").attr("class","invalidArea");
 
-        this.dom.selectedItemValue = controlLine.append("div").attr("class","selectedItemValue");
-        this.dom.selectedItemValue.append("span").attr("class","circlee");
-        this.dom.selectedItemValueText = this.dom.selectedItemValue
+        this.DOM.selectedItemValue = controlLine.append("div").attr("class","selectedItemValue");
+        this.DOM.selectedItemValue.append("span").attr("class","circlee");
+        this.DOM.selectedItemValueText = this.DOM.selectedItemValue
             .append("span").attr("class","selected-item-value-text")
             .append("span").attr("class","selected-item-value-text-v");
 
 
-        this.dom.labelGroup = this.dom.intervalSlider.append("div").attr("class","labelGroup");
+        this.DOM.labelGroup = this.DOM.intervalSlider.append("div").attr("class","labelGroup");
     },
     /** -- */
     updateBarScale2Total: function(){
@@ -6498,7 +6545,7 @@ kshf.Facet_Interval.prototype = {
         var offset = 0;
         if(this.options.intervalScale==='step') offset=this.width_barGap-this.barWidth/2;
         if(this.options.intervalScale==='time') offset=this.width_barGap;
-        this.dom.aggr_Group
+        this.DOM.aggr_Group
             .style("width",this.getBarWidth_Real()+"px")
             .each(function(aggr){
                 kshf.Util.setTransform(this,"translateX("+(me.valueScale(aggr.x)+offset)+"px)");
@@ -6511,9 +6558,9 @@ kshf.Facet_Interval.prototype = {
         this.refreshViz_Total();
         this.refreshViz_Active();
 
-        this.dom.aggr_Preview.attr("fast",null); // take it slow for result preview animations
+        this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.dom.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
 
         this.refreshViz_Compare();
         this.refreshMeasureLabel();
@@ -6540,22 +6587,22 @@ kshf.Facet_Interval.prototype = {
                 .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
                 .y0(me.height_hist)
                 .y1(function(aggr){ return me.height_hist-getAggrHeight_Total(aggr); });
-            this.dom.lineTrend_Total
+            this.DOM.lineTrend_Total
                 .transition().duration(700)
                 .attr("d", this.timeSVGLine);
         } else {
-            this.dom.aggr_Total.each(function(aggr){
+            this.DOM.aggr_Total.each(function(aggr){
                 kshf.Util.setTransform(this,
                     "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Total(aggr)+")");
             });
             if(!this.browser.ratioModeActive){
-                this.dom.aggr_TotalTip
+                this.DOM.aggr_TotalTip
                     .style("opacity",function(aggr){
                         return (aggr.length>me.chartScale_Measure.domain()[1])?1:0;
                     })
                     .style("width",width+"px");
             } else {
-                this.dom.aggr_TotalTip.style("opacity",0);
+                this.DOM.aggr_TotalTip.style("opacity",0);
             }
         }
     },
@@ -6569,11 +6616,11 @@ kshf.Facet_Interval.prototype = {
             return me.chartScale_Measure(aggr.aggregate_Active);
         };
 
-        this.dom.aggr_Active.each(function(aggr){
+        this.DOM.aggr_Active.each(function(aggr){
             kshf.Util.setTransform(this,
                 "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Active(aggr)+")");
         });
-        this.dom.compareButton.each(function(aggr){
+        this.DOM.compareButton.each(function(aggr){
             var height = me.height_hist-getAggrHeight_Active(aggr)-9;
             kshf.Util.setTransform(this,"translateY("+height+"px)");
         });
@@ -6588,11 +6635,11 @@ kshf.Facet_Interval.prototype = {
                     return me.height_hist-getAggrHeight_Active(aggr);
                 });
             
-            this.dom.lineTrend_Active
+            this.DOM.lineTrend_Active
               .transition().duration(700)
               .attr("d", this.timeSVGLine);
 
-            this.dom.lineTrend_ActiveLine.transition().duration(700)
+            this.DOM.lineTrend_ActiveLine.transition().duration(700)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){ 
                     if(aggr.aggregate_Active===0) return me.height_hist+3;
@@ -6624,7 +6671,7 @@ kshf.Facet_Interval.prototype = {
             }
         });
         // update chart
-        this.dom.aggr_Compare.each(function(aggr){
+        this.DOM.aggr_Compare.each(function(aggr){
             kshf.Util.setTransform(this,
                 "translateY("+me.height_hist+"px) scale("+width_half+","+getAggrHeight_Compare(aggr)+")");
         });
@@ -6642,12 +6689,12 @@ kshf.Facet_Interval.prototype = {
                 durationTime=200;
             }
             
-            this.dom.lineTrend_Compare
+            this.DOM.lineTrend_Compare
                 .transition()
                 .duration(durationTime)
                 .attr("d", this.timeSVGLine);
 
-            this.dom.lineTrend_CompareLine.transition().duration(durationTime)
+            this.DOM.lineTrend_CompareLine.transition().duration(durationTime)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){ 
                     if(aggr.aggregate_Compare===0) return me.height_hist+3;
@@ -6675,7 +6722,7 @@ kshf.Facet_Interval.prototype = {
             }
         };
 
-        this.dom.aggr_Preview.each(function(aggr){
+        this.DOM.aggr_Preview.each(function(aggr){
             kshf.Util.setTransform(this,
                 "translateY("+me.height_hist+"px) scale("+
                     me.getBarWidth_Real()+","+getAggrHeight_Preview(aggr)+")");
@@ -6693,11 +6740,11 @@ kshf.Facet_Interval.prototype = {
                     return me.height_hist-getAggrHeight_Preview(aggr);
                 });
             
-            this.dom.lineTrend_Preview
+            this.DOM.lineTrend_Preview
                 .transition().duration(200)
                 .attr("d", this.timeSVGLine);
 
-            this.dom.lineTrend_PreviewLine.transition().duration(200)
+            this.DOM.lineTrend_PreviewLine.transition().duration(200)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
@@ -6714,7 +6761,7 @@ kshf.Facet_Interval.prototype = {
         var me=this;
         var width = this.getBarWidth_Real();
         var transform="translateY("+this.height_hist+"px) "+"scale("+this.getBarWidth_Real()+",0)";
-        this.dom.aggr_Preview.each(function(bar){
+        this.DOM.aggr_Preview.each(function(bar){
             bar.aggregate_Preview=0;
             kshf.Util.setTransform(this,transform);
         });
@@ -6729,7 +6776,7 @@ kshf.Facet_Interval.prototype = {
                     return me.height_hist;
                 });
             
-            this.dom.lineTrend_Preview
+            this.DOM.lineTrend_Preview
                 .transition().duration(200)
                 .attr("d", this.timeSVGLine);
         }
@@ -6765,7 +6812,7 @@ kshf.Facet_Interval.prototype = {
         // remove non-integer values & 0...
         tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
 
-        var tickDoms = this.dom.chartAxis_Measure.selectAll("span.tick")
+        var tickDoms = this.DOM.chartAxis_Measure.selectAll("span.tick")
             .data(tickValues,function(i){return i;});
         tickDoms.exit().remove();
         var tickData_new=tickDoms.enter().append("span").attr("class","tick");
@@ -6807,7 +6854,7 @@ kshf.Facet_Interval.prototype = {
                 }
             }
             if(noanim!=="true") me.browser.root.attr("noanim",true);
-            me.dom.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
+            me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
             if(noanim!=="true") me.browser.root.attr("noanim",false);
         });
     },
@@ -6815,9 +6862,9 @@ kshf.Facet_Interval.prototype = {
     refreshMeasureLabel: function(){
         var me=this;
 
-        this.dom.aggr_Group.attr("noitems",function(aggr){ return aggr.aggregate_Active===0; });
+        this.DOM.aggr_Group.attr("noitems",function(aggr){ return aggr.aggregate_Active===0; });
         
-        this.dom.measureLabel.each(function(aggr){
+        this.DOM.measureLabel.each(function(aggr){
             var p=aggr.aggregate_Preview;
             if(me.browser.resultPreviewActive){
                 if(me.browser.preview_not)
@@ -6858,25 +6905,25 @@ kshf.Facet_Interval.prototype = {
             maxPos+=this.barWidth/2;
         }
 
-        this.dom.intervalSlider.select(".base.active")
+        this.DOM.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
                 kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
             });
-        this.dom.intervalSlider.selectAll(".handle")
+        this.DOM.intervalSlider.selectAll(".handle")
             .each(function(d){
                 kshf.Util.setTransform(this,"translateX("+((d==="min")?minPos:maxPos)+"px)");
             });
     },
     /** -- */
     refreshHeight: function(){
-        this.dom.histogram.style("height",(this.height_hist+this.height_hist_topGap)+"px")
-        this.dom.wrapper.style("height",(this.collapsed?"0":this.getHeight_Wrapper())+"px");
+        this.DOM.histogram.style("height",(this.height_hist+this.height_hist_topGap)+"px")
+        this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Wrapper())+"px");
         var labelTranslate ="translateY("+this.height_hist+"px)";
-        if(this.dom.measureLabel)
-            this.dom.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });
-        if(this.dom.timeSVG)
-            this.dom.timeSVG.style("height",(this.height_hist+2)+"px");
+        if(this.DOM.measureLabel)
+            this.DOM.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });
+        if(this.DOM.timeSVG)
+            this.DOM.timeSVG.style("height",(this.height_hist+2)+"px");
     },
     /** -- */
     refreshWidth: function(){
@@ -6894,7 +6941,7 @@ kshf.Facet_Interval.prototype = {
         this.refreshViz_Preview();
         this.refreshHeight();
         this.refreshViz_Axis();
-        this.dom.labelGroup.style("height",this.height_labels+"px");
+        this.DOM.labelGroup.style("height",this.height_labels+"px");
     },
     /** -- */
     setCollapsed: function(v){
@@ -6926,27 +6973,27 @@ kshf.Facet_Interval.prototype = {
         this.refreshViz_Scale();
         this.refreshViz_Compare();
 
-        this.dom.aggr_Preview.attr("fast",null); // take it slow for result preview animations
+        this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
         this.refreshViz_Axis();
 
-        setTimeout(function(){ me.dom.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
     },
     /** -- */
     setSelectedPosition: function(v){
         if(v===null) return;
         if(this.valueScale===undefined) return;
         var t="translateX("+(this.valueScale(v))+"px)";
-        this.dom.selectedItemValue
+        this.DOM.selectedItemValue
             .each(function(){ kshf.Util.setTransform(this,t); })
             .style("display","block");
 
         var dateFormat = d3.time.format("%b %-e,'%y");
-        this.dom.selectedItemValueText.text( (v instanceof Date)?dateFormat(v):v);
+        this.DOM.selectedItemValueText.text( (v instanceof Date)?dateFormat(v):v);
     },
     /** -- */
     hideSelectedPosition: function(){
-         this.dom.selectedItemValue.style("display",null);
+         this.DOM.selectedItemValue.style("display",null);
     },
     /** -- */
     updateQuantiles: function(){
@@ -6970,11 +7017,11 @@ kshf.Facet_Interval.prototype = {
         [10,20,30,40,50,60,70,80,90].forEach(function(q){
             this.quantile_val[q] = d3.quantile(values,q/100);
             this.quantile_pos[q] = this.valueScale(this.quantile_val[q]);
-            kshf.Util.setTransform(this.dom.quantile[q][0][0],"translateX("+this.quantile_pos[q]+"px)");
+            kshf.Util.setTransform(this.DOM.quantile[q][0][0],"translateX("+this.quantile_pos[q]+"px)");
         },this);
 
         [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
-            kshf.Util.setTransform(this.dom.quantile[""+qb[0]+"_"+qb[1]][0][0],
+            kshf.Util.setTransform(this.DOM.quantile[""+qb[0]+"_"+qb[1]][0][0],
                 "translateX("+(this.quantile_pos[qb[0]])+"px) "+
                 "scaleX("+(this.quantile_pos[qb[1]]-this.quantile_pos[qb[0]])+") ");
         },this);

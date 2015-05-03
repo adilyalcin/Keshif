@@ -70,24 +70,13 @@ $(document).ready( function(){
             }
         },
         facets: [
-            {
-                title: "Tag",
+            {   title: "Tag",
                 catTableName: "Types",
-                attribMap: function(d){
-                    return d.data[2].t;
-                }
-            },{
-                title: "Author",
+                attribMap: function(d){ return d.data[2].t; }
+            },{ title: "Author", collapsed: true,
                 attribMap: function(d){ return d.data[6]; },
-                collapsed: true,
-            },{
-                title: "Time",
-                layout: "bottom",
-                attribMap: function(d){
-                    // the date is also in epoch format, nice...
-                    return new Date(d.data[7]);
-                },
-                intervalScale: 'time'
+            },{ title: "Time", layout: "bottom",
+                attribMap: function(d){ return new Date(d.data[7]); }
             }
         ],
         itemDisplay: {

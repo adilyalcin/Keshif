@@ -62,9 +62,7 @@ browser = new kshf.Browser({
             }]
         },{
             title: "Keywords", layout: 'right',
-            attribMap: function(d){
-                return d.data['Keywords'].split("+");
-            }
+            attribMap: function(d){ return d.data['Keywords'].split("+"); }
         },{
             title: "Facet Types &amp; Features",
             attribMap: function(d){
@@ -132,9 +130,7 @@ browser = new kshf.Browser({
             showPercentile: true
         },{
             title: "Creation Time",
-            attribMap: function(d){
-                return d.data['Authored'].getFullYear();
-            },
+            attribMap: function(d){ return d.data['Authored'].getFullYear(); },
             collapsed: false,
             intervalScale: 'step'
         }

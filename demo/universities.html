@@ -134,15 +134,15 @@ var Unizin_Group = {
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 240,
         barChartWidth: 107,
         itemName: "Universities",
-        source : {
+        source: {
             url: "https://nces.ed.gov/ipeds/datacenter/",
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [ {name:"universities", id:"unitid"} ]
+            sheets: [ {name:"universities", id:"unitid"} ]
         },
         loadedCb: function(d){
             // Add group information to the universities
@@ -185,7 +185,7 @@ $(document).ready( function(){
                         case 2: return "Private-for profit, 4-year or above";
                     }
                 },
-                sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
             },{ title: "State", layout: "middle", collapsed: true,
                 attribMap: "HD2013.State abbreviation"
             },{ title: "Geographic region", layout: "middle", collapsed: true,
@@ -241,7 +241,7 @@ $(document).ready( function(){
                         description: "Percent of total enrollment that are Black or African American",
                         intervalScale: 'log'
                     },{ title: "% Women",
-                        attribMap: "DRVEF2013.Percent of total enrollment that are women"]
+                        attribMap: "DRVEF2013.Percent of total enrollment that are women",
                         description: "Percent of total enrollment that are women",
                         intervalScale: 'log'
                     }
@@ -266,13 +266,13 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 82,
-            sortingOpts : [
-                { name:'Enrollment', value: "DRVEF2013.Total  enrollment"];
-                { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort"];
+            sortingOpts: [
+                { name:'Enrollment', value: function(d){ return d.data["DRVEF2013.Total  enrollment"];}},
+                { name:'Grad. Rate', value: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"];}}
             ],
-            textSearch : "institution name",
+            textSearch: "institution name",
             detailsToggle: "zoom",
-            recordView : function(d){
+            recordView: function(d){
                 return d.data['institution name'];
             },
         }
@@ -283,6 +283,9 @@ $(document).ready( function(){
 #chart_div{
     width: 1200px;
     height: 700px;
+}
+.attributeList{
+    display: block !important;
 }
 </style>
     </head>
