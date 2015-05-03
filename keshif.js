@@ -2702,9 +2702,9 @@ kshf.Browser.prototype = {
             }
 
             // create the column name tables
-            this.dt_ColNames_Arr[sheet.tableName] = [];
+            kshf.dt_ColNames_Arr[sheet.tableName] = [];
             for(j=0; j<dataTable.getNumberOfColumns(); j++){
-                this.dt_ColNames_Arr[sheet.tableName].push(dataTable.getColumnLabel(j).trim());
+                kshf.dt_ColNames_Arr[sheet.tableName].push(dataTable.getColumnLabel(j).trim());
             }
 
             var columnNames = kshf.dt_ColNames_Arr[sheet.tableName];
@@ -2778,15 +2778,15 @@ kshf.Browser.prototype = {
             this.incrementLoadedSheetCount();
             return;
         }
-        this.dt_ColNames_Arr[sheet.tableName] = [];
+        kshf.dt_ColNames_Arr[sheet.tableName] = [];
         sheet.data.forEach(function(c,i){
             if(i===0){ // header 
                 c.forEach(function(colName,j){
-                    this.dt_ColNames_Arr[sheet.tableName].push(colName);
+                    kshf.dt_ColNames_Arr[sheet.tableName].push(colName);
                     if(colName===sheet.id){ idIndex = j;}
                 });
                 if(idIndex===-1){ // id column not found, you need to create your own
-                    this.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
+                    kshf.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
                     idIndex = j;
                 }
             }else{
