@@ -58,7 +58,38 @@ var kshf = {
     maxVisibleItems_default: 100, 
     dt: {},
     dt_id: {},
-    dt_ColNames_Arr: {},
+    dt_attribTable: {},
+    dt_attribTable_id: {},
+    /** -- */
+    createAttribInfoTable: function(tableName){
+        this.dt_attribTable[tableName] = [];
+        this.dt_attribTable_id[tableName] = {};
+    },
+    /** -- */
+    insertAttribInfo: function(tableName,attribInfo){
+        if(this.dt_attribTable_id[tableName][attribInfo.name]!==undefined){
+            alert("The attribute name is already used. It must be unique. Try again");
+            return;
+        }
+        this.dt_attribTable[tableName].push(attribInfo);
+        this.dt_attribTable_id[tableName][attribInfo.name] = attribInfo;
+    },
+    /** -- */
+    changeAttribInfoName: function(tableName,curName,newName){
+        var attribInfo = this.dt_attribTable_id[tableName][curName];
+        if(attribInfo===undefined){
+            alert("The current attribute name is not there. Try again");
+            return;
+        }
+        if(this.dt_attribTable_id[tableName][newName]!==undefined){
+            alert("The new attribute name is already used. It must be unique. Try again");
+            return;
+        }
+        // remove old index
+        delete this.dt_attribTable_id[tableName][curName];
+        this.dt_attribTable_id[tableName][newName] = attribInfo;
+        attribInfo.name = newName;
+    },
     LOG: {
         // Note: id parameter is integer alwats, info is string
         CONFIG                 : 1,
@@ -461,7 +492,7 @@ kshf.Summary_Base = {
                     me.clearDOM();
 
                     // add the facet title back
-                    me.browser.insertOneAttribute(me.options.attribMapName);
+                    me.browser.refreshAttributeList();
 
                     me.browser.updateLayout();
                 }
@@ -507,6 +538,7 @@ kshf.Summary_Base = {
                     var newTitle = this.value;
                     this.parentNode.setAttribute("edittitle",false);
                     d3.select(this.parentNode).select(".summaryTitle_text").text(newTitle);
+                    kshf.changeAttribInfoName(me.browser.primaryTableName,me.options.title,newTitle);
                     me.options.title = newTitle;
                 }
             })
@@ -533,11 +565,9 @@ kshf.Summary_Base = {
                     parentDOM.select(".summaryTitle_text").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
                 }
-            })
-;
+            });
 
-        topRow.append("span").attr("class", "")
-            .attr("class","save_filter_as_set fa fa-save")
+        topRow.append("span").attr("class","save_filter_as_set fa fa-save")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n', title: function(){ return "Save filtering as new row"; }
@@ -2161,8 +2191,11 @@ kshf.Panel.prototype = {
             if(info==="new_summary"){
                 var attributeName = event.dataTransfer.getData("text/plain");
 
+                var attribInfo=kshf.dt_attribTable_id[me.browser.primaryTableName][attributeName];
+
                 var fct=me.browser.addFacet({
-                    title:attributeName,
+                    title:attribInfo.name,
+                    attribMap: attribInfo.column,
                     layout: me.name
                 },me.browser.primaryTableName);
                 fct.initDOM();
@@ -2348,8 +2381,6 @@ kshf.Browser = function(options){
     this.percentModeActive = false;
 //    this._percentView_Timeout_Set = null;
 //    this._percentView_Timeout_Clear = null;
-
-    this.columnsSkip = options.columnsSkip;
 
     this.subBrowser = options.subBrowser;
 
@@ -2645,8 +2676,6 @@ kshf.Browser.prototype = {
                     this.loadSheet_Google(sheet);
                 } else if(this.source.dirPath){
                     this.loadSheet_File(sheet);
-                } else if (sheet.data) { // load data from memory - ATR
-                    this.loadSheet_Memory(sheet);
                 }
             },this);
         } else {
@@ -2701,20 +2730,27 @@ kshf.Browser.prototype = {
                 }
             }
 
-            // create the column name tables
-            kshf.dt_ColNames_Arr[sheet.tableName] = [];
-            for(j=0; j<dataTable.getNumberOfColumns(); j++){
-                kshf.dt_ColNames_Arr[sheet.tableName].push(dataTable.getColumnLabel(j).trim());
-            }
+            var tmpTable=[];
 
-            var columnNames = kshf.dt_ColNames_Arr[sheet.tableName];
+            // create the column name tables
+            kshf.createAttribInfoTable(sheet.tableName);
+            for(j=0; j<dataTable.getNumberOfColumns(); j++){
+                var colName = dataTable.getColumnLabel(j).trim();
+                tmpTable.push(colName);
+                var attribInfo = {
+                    name: colName,
+                    column: colName,
+                    func: function(d){ return d.data[colName]; }
+                }
+                kshf.insertAttribInfo(sheet.tableName,attribInfo);
+            }
 
             // create the item array
             arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
             for(r=0; r<dataTable.getNumberOfRows() ; r++){
                 var c={};
                 for(i=0; i<numCols ; i++) {
-                    c[columnNames[i]] = dataTable.getValue(r,i);
+                    c[tmpTable[i]] = dataTable.getValue(r,i);
                 }
                 // push unique id as the last column if necessary
                 if(c[sheet.id]===undefined) c[sheet.id] = itemId++;
@@ -2722,8 +2758,12 @@ kshf.Browser.prototype = {
             }
 
             if(idIndex===numCols) {
-                // push the 'id' column
-                kshf.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
+                var attribInfo = {
+                    name: sheet.id,
+                    column: sheet.id,
+                    func: function(d){ return d.data[colName]; }
+                };
+                kshf.insertAttribInfo(sheet.tableName,attribInfo);
             }
 
             me.finishDataLoad(sheet,arr);
@@ -2757,7 +2797,15 @@ kshf.Browser.prototype = {
 
                 var parsedData = Papa.parse(data, config);
 
-                kshf.dt_ColNames_Arr[sheet.tableName] = parsedData.meta.fields;
+                kshf.createAttribInfoTable(sheet.tableName);
+                parsedData.meta.fields.forEach(function(field){
+                    var attribInfo = {
+                        name: field,
+                        column: field,
+                        func: function(d){ return d.data[field]; }
+                    };
+                    kshf.insertAttribInfo(sheet.tableName,attribInfo);
+                });
 
                 parsedData.data.forEach(function(row,i){
                     if(row[idColumn]===undefined) row[idColumn] = i;
@@ -2767,35 +2815,6 @@ kshf.Browser.prototype = {
                 me.finishDataLoad(sheet, arr);
             }
         });
-    },
-    /** load data from memory - ATR - Anne Rose */
-    loadSheet_Memory: function(sheet){
-        var j;
-        var arr = [];
-        var idIndex = -1;
-        var itemId=0;
-        if(kshf.dt[sheet.tableName]!==undefined){
-            this.incrementLoadedSheetCount();
-            return;
-        }
-        kshf.dt_ColNames_Arr[sheet.tableName] = [];
-        sheet.data.forEach(function(c,i){
-            if(i===0){ // header 
-                c.forEach(function(colName,j){
-                    kshf.dt_ColNames_Arr[sheet.tableName].push(colName);
-                    if(colName===sheet.id){ idIndex = j;}
-                });
-                if(idIndex===-1){ // id column not found, you need to create your own
-                    kshf.dt_ColNames_Arr[sheet.tableName].push(sheet.id);
-                    idIndex = j;
-                }
-            }else{
-                // push unique id as the last column if necessary
-                if(idIndex===c.length) c.push(itemId++);
-                arr.push(new kshf.Item(c,idIndex));
-            }
-        });
-        this.finishDataLoad(sheet,arr);
     },
     /** -- */
     createTableFromTable: function(srcItems, dstTableName, mapFunc, labelFunc){
@@ -2867,32 +2886,10 @@ kshf.Browser.prototype = {
             }
         }
     },
-    describeDefaultFacets: function(){
-        var r=[];
-
-        var skipFacet = {};
-        if(this.columnsSkip){
-            this.columnsSkip.forEach(function(c){ skipFacet[c] = true; },this);
-        }
-
-        kshf.dt_ColNames_Arr[this.primaryTableName].forEach(function(colName){
-            if(colName===this.source.sheets[0].id) return;
-            if(skipFacet[colName]===true) return;
-            if(colName[0]==="*") return;
-            r.push({title: colName});
-        },this);
-
-        return r;
-    },
     /** -- */
     loadCharts: function(){
         var me=this;
         if(this.loadedCb!==undefined) this.loadedCb.call(this);
-
-        // Use all the columns in the data, insert to view in order...
-        if(this.options.facets===undefined){
-            this.options.facets = this.describeDefaultFacets();
-        }
 
         this.options.facets.forEach(function(facetDescr){ 
             this.addFacet(facetDescr,this.primaryTableName);
@@ -3032,16 +3029,17 @@ kshf.Browser.prototype = {
         if(this.readyCb!==undefined) this.readyCb(this);
     },
     addAttribDragListeners: function(dom){
+        var me=this;
         dom.addEventListener("dragstart",function(event){
             browser.root.attr("showdropzone",true);
-            event.dataTransfer.setData("text/plain",dom.__data__); // use the d3 bound value
+            event.dataTransfer.setData("text/plain",dom.__data__.name); // use the d3 bound value
             event.dataTransfer.setData("text/info","new_summary");
         });
         dom.addEventListener("dragend",function(event){
             browser.root.attr("showdropzone",false);
             //alert(event.dataTransfer.dropEffect);
             if(event.dataTransfer.dropEffect==="copy"){
-                event.target.parentNode.removeChild(event.target);  
+                me.refreshAttributeList();
             }
         });
     },
@@ -3049,46 +3047,29 @@ kshf.Browser.prototype = {
     insertAttributeList: function(){
         var me=this;
         var tableName = this.primaryTableName;
-        if(kshf.dt_ColNames_Arr[tableName]===undefined) return;
-        var attribNames = kshf.dt_ColNames_Arr[tableName].filter(function(attrName){
-            // remove the unique key
-            if(attrName===kshf.dt[tableName][0].idIndex) return false;
-            // remove those already in the view
-            if(me.summaries.some(function(summary){
-                return summary.options.attribMapName===attrName;
-            })) return false;
-            return true;
-        });
+        if(kshf.dt_attribTable[tableName]===undefined) return;
 
         var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
-            .data(attribNames).enter();
+            .data(kshf.dt_attribTable[tableName]).enter();
 
-        this.insertAttributeDOMs(newAttributes);
-    },
-    /** -- */
-    insertAttributeDOMs: function(selection){
-        var me=this;
-        this.DOM.attributeNames = selection
+        var newNames = newAttributes
             .append("div").attr("class","attributeName")
             .attr("draggable",true)
-            .each(function(){
-                me.addAttribDragListeners(this);
-            });
+            .each(function(){ me.addAttribDragListeners(this); });
 
-        this.DOM.attributeNames.append("input").attr("class","summaryTitleEdit")
-            .on("keydown",function(){
+        newNames.append("input").attr("class","summaryTitleEdit")
+            .on("keydown",function(d){
                 if(event.keyCode===13){ // ENTER
                     var parentDOM = d3.select(this.parentNode);
                     var newTitle = parentDOM.select(".summaryTitleEdit")[0][0].value;
                     parentDOM.select(".summaryTitle").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
+                    kshf.changeAttribInfoName(me.primaryTableName,d.name,newTitle);
                 }
             })
             ;
-        this.DOM.attributeNames.append("span").attr("class","summaryTitle")
-            .text(function(d){ return d;})
-            ;
-        this.DOM.attributeNames.append("div").attr("class","fa fa-pencil editTitleButton")
+        newNames.append("span").attr("class","summaryTitle");
+        newNames.append("div").attr("class","fa fa-pencil editTitleButton")
             .on("click",function(d){
                 var curState=this.parentNode.getAttribute("edittitle");
                 if(curState===null || curState==="false"){
@@ -3104,6 +3085,27 @@ kshf.Browser.prototype = {
                     this.parentNode.setAttribute("edittitle",false);
                 }
             });
+
+        this.refreshAttributeList();
+    },
+    refreshAttributeList: function(){
+        var me=this;
+        var tableName = this.primaryTableName;
+        this.DOM.attributeList.selectAll(".attributeName")
+            .style("display",function(d){
+                // remove the unique key
+                if(d.name===kshf.dt[tableName][0].idIndex) return "none";
+                // remove those already in the view
+                if(me.summaries.some(function(summary){
+                    return summary.options.title===d.name;
+                })) return "none";
+                return "block";
+            });
+        this.DOM.attributeList.selectAll(".summaryTitle")
+            .text(function(d){
+                return d.name;
+            })
+            ;
     },
     /** -- */
     insertOneAttribute: function(name){
