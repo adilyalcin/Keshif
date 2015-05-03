@@ -194,8 +194,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         overflow: scroll;
 
-        right: -160px;
-        width: 155px;
+        right: -220px;
+        width: 215px;
         top: 10px;
         height: 100%;
 
@@ -223,10 +223,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin: 2px;
                 vertical-align: top;
                 &:hover{
-                    color: black;
+                    color: orangered;
                 }
             }
-            > input.summaryTitleEdit{
+            > .summaryTitleEdit{
                 width: calc(~"100% - 20px");
                 display: none;
                 border-width: 0px;
@@ -246,6 +246,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: #cb5454;
                 }
             }
+            > .summaryTypeIcon{
+                float: right;
+            }
+            > .dataTypeIcon{
+                font-weight: 900;
+                float: right;
+                font-size: 0.7em;
+            }
             &:hover{
                 background-color: #E8E0CE;
                 border-color: #B8B6B1;
@@ -262,6 +270,44 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .editTitleButton{
                     &::before{ content: "\f00c"; }
+                }
+            }
+            &[state='edited']{
+                > .editTitleButton{
+                    display: inline-block;
+                }
+            }
+            &[datatype='integer']{
+                > .dataTypeIcon{
+                    &:before {
+                        content: '#';
+                    }
+                }
+            }
+            &[datatype='floating']{
+                > .dataTypeIcon{
+                    &:before {
+                        content: '1.2';
+                    }
+                }
+            }
+            &[datatype='categorical']{
+                > .dataTypeIcon{
+                    &:before {
+                        content: 'ab';
+                    }
+                }
+            }
+            &[datatype='time']{
+                > .dataTypeIcon{
+                    &:before {
+                        content: '\f017'; // fa-clock-o
+                    }
+                }
+            }
+            &[state='custom']{
+                > .summaryTypeIcon{
+                    &::before{ content: "\f121"; } // Code
                 }
             }
         }
@@ -733,19 +779,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-top: 2px;
             line-height: 1em;
             text-rendering: initial;
+            white-space: nowrap;
             /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
             > .summaryTitle_text{
                 display: inline-block;
-                //max-width: calc(~"100% - 60px");
-                /*white-space: nowrap;
+                max-width: 100%;
+                white-space: nowrap;
                 overflow: hidden;
-                text-overflow: ellipsis;*/
+                text-overflow: ellipsis;
             }
             > .summaryTitle_edit{
                 display: none;
-                // width: calc(~"100% - 50px");
+                //width: calc(~"100% - 50px");
                 border-width: 0px;
                 background-color: rgba(250,250,250,0.9);
                 color: orangered;

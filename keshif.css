@@ -157,8 +157,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   position: absolute;
   overflow: scroll;
-  right: -160px;
-  width: 155px;
+  right: -220px;
+  width: 215px;
   top: 10px;
   height: 100%;
 }
@@ -188,27 +188,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
 }
 .kshf .attributeList > .attributeName > .editTitleButton:hover {
-  color: black;
+  color: orangered;
 }
-.kshf .attributeList > .attributeName > input.summaryTitleEdit {
+.kshf .attributeList > .attributeName > .summaryTitleEdit {
   width: calc(100% - 20px);
   display: none;
   border-width: 0px;
   background-color: rgba(250, 250, 250, 0.9);
   color: orangered;
 }
-.kshf .attributeList > .attributeName > input.summaryTitleEdit:focus {
+.kshf .attributeList > .attributeName > .summaryTitleEdit:focus {
   outline-color: #cb5454;
   outline-width: 0px;
 }
-.kshf .attributeList > .attributeName > input.summaryTitleEdit:hover {
+.kshf .attributeList > .attributeName > .summaryTitleEdit:hover {
   border-width: 0px;
   background-color: white;
   margin: 0px;
 }
-.kshf .attributeList > .attributeName > input.summaryTitleEdit::-webkit-input-placeholder {
+.kshf .attributeList > .attributeName > .summaryTitleEdit::-webkit-input-placeholder {
   font-weight: 500;
   color: #cb5454;
+}
+.kshf .attributeList > .attributeName > .summaryTypeIcon {
+  float: right;
+}
+.kshf .attributeList > .attributeName > .dataTypeIcon {
+  font-weight: 900;
+  float: right;
+  font-size: 0.7em;
 }
 .kshf .attributeList > .attributeName:hover {
   background-color: #E8E0CE;
@@ -225,6 +233,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .attributeList > .attributeName[edittitle="true"] > .editTitleButton::before {
   content: "\f00c";
+}
+.kshf .attributeList > .attributeName[state='edited'] > .editTitleButton {
+  display: inline-block;
+}
+.kshf .attributeList > .attributeName[datatype='integer'] > .dataTypeIcon:before {
+  content: '#';
+}
+.kshf .attributeList > .attributeName[datatype='floating'] > .dataTypeIcon:before {
+  content: '1.2';
+}
+.kshf .attributeList > .attributeName[datatype='categorical'] > .dataTypeIcon:before {
+  content: 'ab';
+}
+.kshf .attributeList > .attributeName[datatype='time'] > .dataTypeIcon:before {
+  content: '\f017';
+}
+.kshf .attributeList > .attributeName[state='custom'] > .summaryTypeIcon::before {
+  content: "\f121";
 }
 .kshf .attributeList > .attributeListHeader {
   font-weight: 700;
@@ -710,15 +736,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: 2px;
   line-height: 1em;
   text-rendering: initial;
+  white-space: nowrap;
   /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text {
   display: inline-block;
-  /*white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;*/
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_edit {
   display: none;
