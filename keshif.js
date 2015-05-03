@@ -58,40 +58,40 @@ var kshf = {
     maxVisibleItems_default: 100, 
     dt: {},
     dt_id: {},
-    dt_attribTable: {},
-    dt_attribTable_id: {},
+    dt_summaryTable: {},
+    dt_summaryTable_id: {},
     /** -- */
     createAttribInfoTable: function(tableName){
-        this.dt_attribTable[tableName] = [];
-        this.dt_attribTable_id[tableName] = {};
+        this.dt_summaryTable[tableName] = [];
+        this.dt_summaryTable_id[tableName] = {};
     },
     /** -- */
-    insertAttribInfo: function(tableName,attribInfo){
-        if(this.dt_attribTable_id[tableName][attribInfo.name]!==undefined){
+    insertAttribInfo: function(tableName,summaryInfo){
+        if(this.dt_summaryTable_id[tableName][summaryInfo.name]!==undefined){
             alert("The attribute name is already used. It must be unique. Try again");
             return;
         }
-        this.dt_attribTable[tableName].push(attribInfo);
-        this.dt_attribTable_id[tableName][attribInfo.name] = attribInfo;
+        this.dt_summaryTable[tableName].push(summaryInfo);
+        this.dt_summaryTable_id[tableName][summaryInfo.name] = summaryInfo;
     },
     /** -- */
     changeAttribInfoName: function(tableName,curName,newName){
         if(curName===newName) return;
-        var attribInfo = this.dt_attribTable_id[tableName][curName];
-        if(attribInfo===undefined){
+        var summaryInfo = this.dt_summaryTable_id[tableName][curName];
+        if(summaryInfo===undefined){
             alert("The current attribute name is not there. Try again");
             return;
         }
-        if(this.dt_attribTable_id[tableName][newName]!==undefined){
+        if(this.dt_summaryTable_id[tableName][newName]!==undefined){
             alert("The new attribute name is already used. It must be unique. Try again");
             return;
         }
         // remove the indexing using oldName IFF the old name was not original column name
-        if(curName!==attribInfo.column){
-            delete this.dt_attribTable_id[tableName][curName];
+        if(curName!==summaryInfo.column){
+            delete this.dt_summaryTable_id[tableName][curName];
         }
-        this.dt_attribTable_id[tableName][newName] = attribInfo;
-        attribInfo.name = newName;
+        this.dt_summaryTable_id[tableName][newName] = summaryInfo;
+        summaryInfo.name = newName;
     },
     LOG: {
         // Note: id parameter is integer alwats, info is string
@@ -531,8 +531,8 @@ kshf.Summary_Base = {
         this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
             .html((this.parentFacet && this.parentFacet.hasAttribs())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
-                    this.parentFacet.attribInfo.name+":</span> "+"  "+this.attribInfo.name):
-                this.attribInfo.name
+                    this.parentFacet.summaryInfo.name+":</span> "+"  "+this.summaryInfo.name):
+                this.summaryInfo.name
             );
 
         this.DOM.summaryTitle_edit = this.DOM.summaryTitle.append("input").attr("class","summaryTitle_edit")
@@ -541,13 +541,13 @@ kshf.Summary_Base = {
                     var newTitle = this.value;
                     this.parentNode.setAttribute("edittitle",false);
                     d3.select(this.parentNode).select(".summaryTitle_text").text(newTitle);
-                    kshf.changeAttribInfoName(me.browser.primaryTableName,me.attribInfo.name,newTitle);
+                    kshf.changeAttribInfoName(me.browser.primaryTableName,me.summaryInfo.name,newTitle);
                 }
             })
             .html((this.parentFacet && this.parentFacet.hasAttribs())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
-                    this.parentFacet.attribInfo.name+":</span> "+"  "+this.attribInfo.name):
-                this.attribInfo.name
+                    this.parentFacet.summaryInfo.name+":</span> "+"  "+this.summaryInfo.name):
+                this.summaryInfo.name
             );
 
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
@@ -588,7 +588,7 @@ kshf.Summary_Base = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne',//me.options.layout==='right'?'ne':'nw', 
-                    title: function(){ return "Multiple "+me.attribInfo.name+" possible.<br>Click to show relations.";}
+                    title: function(){ return "Multiple "+me.summaryInfo.name+" possible.<br>Click to show relations.";}
                 });
             })
             .on("mouseover",function(d){
@@ -1246,8 +1246,8 @@ kshf.Filter.prototype = {
                 }
             }
             if(this.filterHeader===undefined){
-                if(this.parentSummary.attribInfo!==undefined)
-                    this.filterHeader = this.parentSummary.attribInfo.name;
+                if(this.parentSummary.summaryInfo!==undefined)
+                    this.filterHeader = this.parentSummary.summaryInfo.name;
             }
             this.filterSummaryBlock.select(".filterHeader").html(this.filterHeader);
             this.filterSummaryBlock.select(".filterDetails").html(this.filterView_Detail.call(this));
@@ -2178,13 +2178,12 @@ kshf.Panel.prototype = {
             if(info==="new_summary"){
                 var attributeName = event.dataTransfer.getData("text/plain");
 
-                var attribInfo=kshf.dt_attribTable_id[me.browser.primaryTableName][attributeName];
+                var summaryInfo=kshf.dt_summaryTable_id[me.browser.primaryTableName][attributeName];
 
-                var fct=me.browser.addFacet({
-                    title:attribInfo.name,
-                    attribMap: attribInfo.column,
-                    layout: me.name
-                },me.browser.primaryTableName,true);
+                var fct=me.browser.addFacet({ 
+                    layout: me.name,
+                    summaryInfo: summaryInfo
+                },me.browser.primaryTableName);
                 fct.initDOM();
                 if(fct.options.type==='categorical'){
                     fct.updateBarPreviewScale2Active();
@@ -2722,14 +2721,14 @@ kshf.Browser.prototype = {
             for(j=0; j<dataTable.getNumberOfColumns(); j++){
                 var colName = dataTable.getColumnLabel(j).trim();
                 tmpTable.push(colName);
-                var attribInfo = {
+                var summaryInfo = {
                     name: colName,
                     column: colName,
                     func: function(d){
-                        return d.data[this.name];
+                        return d.data[this.column];
                     }
                 }
-                kshf.insertAttribInfo(sheet.tableName,attribInfo);
+                kshf.insertAttribInfo(sheet.tableName,summaryInfo);
             }
 
             // create the item array
@@ -2745,12 +2744,12 @@ kshf.Browser.prototype = {
             }
 
             if(idIndex===numCols) {
-                var attribInfo = {
+                var summaryInfo = {
                     name: sheet.id,
                     column: sheet.id,
                     func: function(d){ return d.data[sheet.id]; }
                 };
-                kshf.insertAttribInfo(sheet.tableName,attribInfo);
+                kshf.insertAttribInfo(sheet.tableName,summaryInfo);
             }
 
             me.finishDataLoad(sheet,arr);
@@ -2786,12 +2785,12 @@ kshf.Browser.prototype = {
 
                 kshf.createAttribInfoTable(sheet.tableName);
                 parsedData.meta.fields.forEach(function(field){
-                    var attribInfo = {
+                    var summaryInfo = {
                         name: field,
                         column: field,
                         func: function(d){ return d.data[field]; }
                     };
-                    kshf.insertAttribInfo(sheet.tableName,attribInfo);
+                    kshf.insertAttribInfo(sheet.tableName,summaryInfo);
                 });
 
                 parsedData.data.forEach(function(row,i){
@@ -2804,7 +2803,7 @@ kshf.Browser.prototype = {
         });
     },
     /** -- */
-    createTableFromTable: function(srcItems, dstTableName, attribInfo, labelFunc){
+    createTableFromTable: function(srcItems, dstTableName, summaryInfo, labelFunc){
         var i;
         var me=this;
         kshf.dt_id[dstTableName] = {};
@@ -2813,7 +2812,7 @@ kshf.Browser.prototype = {
         var dstTable = kshf.dt[dstTableName];
 
         srcItems.forEach(function(srcData_i){
-            var mapping = attribInfo.func(srcData_i);
+            var mapping = summaryInfo.func(srcData_i);
             if(mapping==="" || mapping===undefined || mapping===null) return;
             if(mapping instanceof Array) {
                 mapping.forEach(function(v2){
@@ -3034,10 +3033,10 @@ kshf.Browser.prototype = {
     insertAttributeList: function(){
         var me=this;
         var tableName = this.primaryTableName;
-        if(kshf.dt_attribTable[tableName]===undefined) return;
+        if(kshf.dt_summaryTable[tableName]===undefined) return;
 
         var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
-            .data(kshf.dt_attribTable[tableName]).enter();
+            .data(kshf.dt_summaryTable[tableName]).enter();
 
         var newNames = newAttributes
             .append("div").attr("class","attributeName")
@@ -3087,7 +3086,7 @@ kshf.Browser.prototype = {
                 if(d.name===kshf.dt[tableName][0].idIndex) return "none";
                 // remove those already in the view
                 if(me.summaries.some(function(summary){
-                    if(summary.attribInfo.name===d.name) return true;
+                    if(summary.summaryInfo.name===d.name) return true;
                     return false;
                 })) return "none";
                 return "block";
@@ -3099,44 +3098,49 @@ kshf.Browser.prototype = {
             ;
     },
     /** -- */
-    addFacet: function(options, primTableName, internal){
+    addFacet: function(options, primTableName){
         // if catTableName is the main table name, this is a self-referencing widget. Adjust listDef
         if(options.catTableName===this.primaryTableName){
             this.listDef.hasLinkedItems = true;
         }
 
         // How do you get the value from items...
+        if(options.summaryInfo===undefined){
+            var attribColumn=null;
+            var attribFunc=null;
+            if(options.attribMap===undefined){
+                attribColumn = options.title;
+            } else if(typeof(options.attribMap)==="string"){
+                attribColumn = options.attribMap;
+            } else if(typeof(options.attribMap)==="function"){
+                attribFunc = options.attribMap;
+            }
+            if(attribColumn){
+                if(attribColumn!==options.title && summaryInfo===undefined){
+                    // different title is used for an existing column
+                    kshf.changeAttribInfoName(primTableName,attribColumn,options.title);
+                }
+            }
+            // add summaryInfo if the name/title has not been seen yet
+            if(kshf.dt_summaryTable_id[primTableName][options.title]===undefined && attribFunc!==null){
+                if(attribColumn!==null){
+                    alert("something is possibly wrong. You cannot have attribColumn set at this stage");
+                }
+                var ai = {
+                    name: options.title,
+                    column: attribColumn,
+                    func: attribFunc
+                };
+                kshf.insertAttribInfo(primTableName,ai);
+                options.summaryInfo = ai;
+            } else {
+                options.summaryInfo = kshf.dt_summaryTable_id[primTableName][options.title];
+            }
 
-        var attribColumn=null;
-        var attribFunc=null;
-        if(options.attribMap===undefined){
-            attribColumn = options.title;
-        } else if(typeof(options.attribMap)==="string"){
-            attribColumn = options.attribMap;
-        } else if(typeof(options.attribMap)==="function"){
-            attribFunc = options.attribMap;
+            options.summaryInfo.catLabelText = options.catLabelText;
+            options.summaryInfo.catTooltipText = options.catTooltipText;
         }
-        if(attribColumn){
-            if(attribColumn!==options.title && internal===undefined){
-                // different title is used for an existing column
-                kshf.changeAttribInfoName(primTableName,attribColumn,options.title);
-            }
-        }
-        // add attribInfo if the name/title has not been seen yet
-        if(kshf.dt_attribTable_id[primTableName][options.title]===undefined && attribFunc!==null){
-            if(attribColumn!==null){
-                alert("something is possibly wrong. You cannot have attribColumn set at this stage");
-            }
-            var ai = {
-                name: options.title,
-                column: attribColumn,
-                func: attribFunc
-            };
-            kshf.insertAttribInfo(primTableName,ai);
-            options.attribInfo = ai;
-        } else {
-            options.attribInfo = kshf.dt_attribTable_id[primTableName][options.title];
-        }
+
 
         if(options.items===undefined){
             options.items = this.items;
@@ -3146,14 +3150,14 @@ kshf.Browser.prototype = {
             options.type = options.type.toLowerCase();
         } else {
             // If certain options are defined, load categorical
-            if(options.catLabelText || options.catTableName || options.sortingOpts){
+            if(options.summaryInfo.catLabelText || options.summaryInfo.catTooltipText || options.catTableName || options.sortingOpts){
                 options.type="categorical";
             } else if(options.intervalScale || options.showPercentile){
                 options.type="interval";
-            } else if(options.attribInfo.func!==undefined){
+            } else if(options.summaryInfo.func!==undefined){
                 options.type="categorical";
                 for(var index=0; index<kshf.dt[primTableName].length; index++){
-                    var item = options.attribInfo.func(kshf.dt[primTableName][index]);
+                    var item = options.summaryInfo.func(kshf.dt[primTableName][index]);
                     if(item===null) continue;
                     if(item===undefined) continue;
                     if( typeof(item)==="number" || item instanceof Date ) {
@@ -3188,7 +3192,7 @@ kshf.Browser.prototype = {
         // Note: the sorting option has defaults, so inserting an empty one is ok.
         if(options.sortingOpts===undefined) options.sortingOpts = [{}];
 
-        var fct=new kshf.Facet_Categorical(this,options);
+        var fct = new kshf.Summary_Categorical(this,options);
         this.summaries.push(fct);
         if(fct.isLinked) this.linkedFacets.push(fct);
         fct.init_1();
@@ -3198,7 +3202,7 @@ kshf.Browser.prototype = {
     addFacet_Interval: function(options){
         if(options.layout===undefined) options.layout = "left";
 
-        var fct=new kshf.Facet_Interval(this,options);
+        var fct = new kshf.Summary_Interval(this,options);
         this.summaries.push(fct);
         return fct;
     },
@@ -3208,11 +3212,11 @@ kshf.Browser.prototype = {
      *  - Store result in mappedDataCache[filterId]
      *  - For each result, add the primary item under that item.
      */
-    mapItemData: function(items, attribInfo, targetTable, filterId){
+    mapItemData: function(items, summaryInfo, targetTable, filterId){
         items.forEach(function(item){
             item.mappedDataCache[filterId] = null;
 
-            var mapping = attribInfo.func(item);
+            var mapping = summaryInfo.func(item);
             if(mapping===undefined || mapping==="" || mapping===null) return;
             if(mapping instanceof Array){
                 var found = {};
@@ -3564,7 +3568,7 @@ kshf.Browser.prototype = {
  * KESHIF FACET - Categorical
  * @constructor
  */
-kshf.Facet_Categorical = function(kshf_, options){
+kshf.Summary_Categorical = function(kshf_, options){
     this.id = ++kshf.num_of_charts;
     this.browser = kshf_;
     this.filteredItems = options.items;
@@ -3585,7 +3589,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.sortingOpts = options.sortingOpts;
     this.parentFacet = options.parentFacet;
 
-    this.attribInfo = options.attribInfo;
+    this.summaryInfo = options.summaryInfo;
 
     this.DOM = {};
 
@@ -3596,7 +3600,7 @@ kshf.Facet_Categorical = function(kshf_, options){
     this.configRowCount=0;
 };
 
-kshf.Facet_Categorical.prototype = {
+kshf.Summary_Categorical.prototype = {
     /** -- */
     getPanel: function(){
         return this.browser.panels[this.options.layout];
@@ -3705,7 +3709,7 @@ kshf.Facet_Categorical.prototype = {
         if(this._attribs){
             if(this._attribs.length===0) return false;
         }
-        return this.attribInfo.func!==undefined;
+        return this.summaryInfo.func!==undefined;
     },
     /** -- */
     initAttribs: function(options){
@@ -3727,12 +3731,12 @@ kshf.Facet_Categorical.prototype = {
         // ATTRIBUTE MAPPING / FILTERING SETTINGS
         if(this.options.showNoneCat===undefined) this.options.showNoneCat = false;
         if(this.options.removeInactiveAttrib===undefined) this.options.removeInactiveAttrib = true;
-        if(this.options.catLabelText===undefined){
+        if(this.summaryInfo.catLabelText===undefined){
             // get the 2nd attribute as row text [1st is expected to be the id]
-            this.options.catLabelText = function(d){ return d.data[1]; };
+            this.summaryInfo.catLabelText = function(d){ return d.data[1]; };
         } else {
-            var tt=this.options.catLabelText;
-            this.options.catLabelText = function(attrib){ 
+            var tt=this.summaryInfo.catLabelText;
+            this.summaryInfo.catLabelText = function(attrib){ 
                 if(attrib.savedAttrib) return attrib.data[1];
                 return tt(attrib);
             };
@@ -3740,13 +3744,13 @@ kshf.Facet_Categorical.prototype = {
 
         // generate row table if necessary
         if(this.options.catTableName===undefined){
-            this.catTableName = this.attribInfo.name+"_h_"+this.id;
-            this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.attribInfo,
+            this.catTableName = this.summaryInfo.name+"_h_"+this.id;
+            this.browser.createTableFromTable(this.filteredItems,this.catTableName, this.summaryInfo,
                 this.options.attribNameFunc);
         } else {
             if(this.options.catTableName===this.browser.primaryTableName){
                 this.isLinked=true;
-                this.options.catTableName = this.attribInfo.name+"_h_"+this.id;
+                this.options.catTableName = this.summaryInfo.name+"_h_"+this.id;
                 kshf.dt_id[this.options.catTableName] = kshf.dt_id[this.browser.primaryTableName];
                 kshf.dt[this.options.catTableName] = this.filteredItems.slice();
             }
@@ -3764,21 +3768,21 @@ kshf.Facet_Categorical.prototype = {
             this.getAttribs().push(newItem);
             this.getAttribs_wID()[noneID] = newItem;
 
-            var _attribAccess = this.attribInfo.func;
-            this.attribInfo.func = function(d){
+            var _attribAccess = this.summaryInfo.func;
+            this.summaryInfo.func = function(d){
                 var r=_attribAccess(d);
                 if(r===null) return noneID;
                 if(r===undefined) return noneID;
                 if(r instanceof Array && r.length===0) return noneID;
                 return r;
             }
-            var _catLabelText = this.options.catLabelText;
-            this.options.catLabelText = function(d){ 
+            var _catLabelText = this.summaryInfo.catLabelText;
+            this.summaryInfo.catLabelText = function(d){ 
                 return (d.id()===noneID)?"None":_catLabelText(d);
             };
-            if(this.options.catTooltipText){            
-                var _catTooltipText = this.options.catTooltipText;
-                this.options.catTooltipText = function(d){ 
+            if(this.summaryInfo.catTooltipText){            
+                var _catTooltipText = this.summaryInfo.catTooltipText;
+                this.summaryInfo.catTooltipText = function(d){ 
                     return (d.id()===noneID)?"None":_catTooltipText(d);
                 };
             }
@@ -3850,8 +3854,8 @@ kshf.Facet_Categorical.prototype = {
             filterView_Detail: function(){
                 // go over all items and prepare the list
                 var selectedItemsText="";
-                var catLabelText = me.options.catLabelText;
-                var catTooltipText = me.options.catTooltipText;
+                var catLabelText = me.summaryInfo.catLabelText;
+                var catTooltipText = me.summaryInfo.catTooltipText;
 
                 var totalSelectionCount = this.selectedCount_Total();
 
@@ -3978,7 +3982,7 @@ kshf.Facet_Categorical.prototype = {
      */
     mapAttribs: function(options){
         var filterId = this.attribFilter.id;
-        this.browser.mapItemData(this.filteredItems,this.attribInfo, this.getAttribs_wID(), filterId);
+        this.browser.mapItemData(this.filteredItems,this.summaryInfo, this.getAttribs_wID(), filterId);
 
         this.hasMultiValueItem = false;
         var maxDegree = 0
@@ -3996,7 +4000,7 @@ kshf.Facet_Categorical.prototype = {
             else if(maxDegree>10) fscale = 'linear';
             else fscale = 'step';
             var facetDescr = {
-                title:"<i class='fa fa-hand-o-up'></i> # of "+this.attribInfo.name,
+                title:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryInfo.name,
                 attribMap: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;
@@ -4277,12 +4281,12 @@ kshf.Facet_Categorical.prototype = {
                         me.DOM.attribTextSearchControl.attr("showClear",true);
                         me.attribFilter.selected_All_clear();
                         me._attribs.forEach(function(attrib){
-                            if(me.options.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
+                            if(me.summaryInfo.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
                                 attrib.set_OR(me.attribFilter.selected_OR);
                             } else {
                                 // search in tooltiptext
-                                if(me.options.catTooltipText && 
-                                    me.options.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1) {
+                                if(me.summaryInfo.catTooltipText && 
+                                    me.summaryInfo.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1) {
                                         attrib.set_OR(me.attribFilter.selected_OR);
                                 } else{
                                     attrib.set_NONE();
@@ -5059,9 +5063,9 @@ kshf.Facet_Categorical.prototype = {
             ;
         this.updateAttribCull();
 
-        if(this.options.catTooltipText){
+        if(this.summaryInfo.catTooltipText){
             domAttribs_new.attr("title",function(attrib){
-                return me.options.catTooltipText.call(this,attrib);
+                return me.summaryInfo.catTooltipText.call(this,attrib);
             });
         }
 
@@ -5240,7 +5244,7 @@ kshf.Facet_Categorical.prototype = {
                 .on("mouseleave",cbOrLeave)
                 .on("click",cbOrClick);
 
-        var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.options.catLabelText);
+        var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.summaryInfo.catLabelText);
 
         domAttribs_new.append("span")
             .attr("class", "item_count_wrapper")
@@ -5474,7 +5478,7 @@ kshf.Facet_Categorical.prototype = {
  * KESHIF FACET - Categorical
  * @constructor
  */
-kshf.Facet_Interval = function(kshf_, options){
+kshf.Summary_Interval = function(kshf_, options){
     // Call the parent's constructor
     var me = this;
     this.id = ++kshf.num_of_charts;
@@ -5490,7 +5494,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.options = options;
     this.layoutStr = options.layout;
     this.parentFacet = options.parentFacet;
-    this.attribInfo = options.attribInfo;
+    this.summaryInfo = options.summaryInfo;
 
     // pixel width settings...
     // Initial width (will be updated later...)
@@ -5609,7 +5613,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.hasTime  = false;
 
     this.filteredItems.forEach(function(item){
-        var v=this.attribInfo.func(item);
+        var v=this.summaryInfo.func(item);
         if(isNaN(v)) v=null;
         if(v===undefined) v=null;
         if(v!==null){
@@ -5680,7 +5684,7 @@ kshf.Facet_Interval = function(kshf_, options){
     this.resetIntervalFilterActive();
 };
 
-kshf.Facet_Interval.prototype = {
+kshf.Summary_Interval.prototype = {
     /** -- */
     getPanel: function(){
         return this.browser.panels[this.options.layout];
