@@ -30,29 +30,29 @@ $(document).ready( function() {
             url: "http://blog.vctr.me/bart/",
             dirPath: './data/',
             fileType: 'csv',
-            sheets : [ {name:"bart-comp-all", id:"ASIN"} ]
+            sheets : [ {name:"bart-comp-all"} ]
         },
         facets: [
             {   title: "Job Family"
             },{ title: "Union"
             },{ title: "Title"
             },{ title: "Source", collapsed: true
-            },{ title: "Salary", layout: 'right',
+            },{ /*title: "Salary", layout: 'right',
                 facets:[
-                { title: "Total", layout: 'right',intervalScale: 'log',
+                {*/ title: "Total", layout: 'right', intervalScale: 'log',
                     attribMap: "TCOE", unitName: '$'
-                },{ title: "Base", layout: 'right',intervalScale: 'log', unitName: '$'
-                },{ title: "Overtime", layout: 'right',intervalScale: 'log',
+                },{ title: "Base", layout: 'right', intervalScale: 'log', unitName: '$'
+                },{ title: "Overtime", layout: 'right', intervalScale: 'log',
                     attribMap: "OT", unitName: '$'
-                },{ title: "Other",layout: 'right', intervalScale: 'log', unitName: '$'
-                },{ title: "Medical,Dental,Vision",layout: 'right',collapsed: true, intervalScale: 'log',
+                },{ title: "Other", layout: 'right',  intervalScale: 'log', unitName: '$'
+                },{ title: "Medical,Dental,Vision", layout: 'right', collapsed: true, intervalScale: 'log',
                     attribMap: "MDV", unitName: '$'
-                },{ title: "ER",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
-                },{ title: "EE",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
-                },{ title: "DC",layout: 'right',collapsed: true, intervalScale: 'log', unitName: '$'
-                }
+                },{ title: "ER", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
+                },{ title: "EE", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
+                },{ title: "DC", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
+                }/*
                 ]
-            }
+            }*/
         ],
         itemDisplay: {
             sortColWidth: 70,

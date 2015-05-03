@@ -54,8 +54,6 @@ google.setOnLoadCallback( function(){
         sheetInfo.range = "A1:S100";
     }
 
-    var accCol;
-
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth:170,
@@ -65,9 +63,6 @@ google.setOnLoadCallback( function(){
                 {name:"JuncDet"} , {name:"JuncCont"} , {name:"SpecCond"} ,
                 {name:"Severity"} , {name:"LightCond"} , {name:"WeatherCond"}
             ]
-        },
-        loadedCb: function(){
-            accCol = kshf.dt_ColNames.Accidents;
         },
         facets : [
             {   title: "Road Type",
@@ -87,20 +82,14 @@ google.setOnLoadCallback( function(){
                 catLabelText: function(d){ return timeOfDayText(d.data[0]); }
             },{ title: "Speed Limit (mph)",
                 attribMap: function(d){ return d.data['Speed Limit']; }
-            },{ title: "# of Vehicles",
-                sortingOpts: [{
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                }]
+            },{ title: "# of Vehicles", intervalScale: 'step'
             },{ title: "Road Surface",
                 catTableName: "RoadSurface",
                 attribMap : function(accident){
                     var c=accident.data['Road Surface Condition'];
                     return (c===-1)?null:c; // skip if -1
                 },
-                catLabelText: function(d){ 
-                    return d.data.name;
-                }
+                catLabelText: function(d){ return d.data.name; }
             },{ title: "Light Condition", layout: 'right',
                 catTableName: "LightCond",
                 catLabelText: function(d) {
@@ -142,7 +131,7 @@ google.setOnLoadCallback( function(){
                     }
                 }
             ],
-            detailsToggle : "Multi",
+            detailsToggle : "zoom",
             recordView: 'Accident_Index'
         }
     });
