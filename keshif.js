@@ -2091,7 +2091,7 @@ kshf.Browser = function(options){
     });
 
     this.DOM.attributeList = this.root.append("div").attr("class","attributeList");
-    this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Attributes");
+    this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Available attributes");
 
     this.root.selectAll(".layout_block").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
@@ -2814,6 +2814,10 @@ kshf.Browser.prototype = {
 
         this.insertAttributeList();
 
+        this.summaries.forEach( function(summary){
+            summary.refreshNuggetViz();
+        });
+
         if(this.readyCb!==undefined) this.readyCb(this);
     },
     addAttribDragListeners: function(dom){
@@ -2842,20 +2846,26 @@ kshf.Browser.prototype = {
         var newNames = newAttributes
             .append("div").attr("class","attributeName")
             .attr("draggable",true)
-            .each(function(){ me.addAttribDragListeners(this); })
+            .each(function(summary){
+                summary.DOM.nugget = d3.select(this);
+                me.addAttribDragListeners(this);
+            })
             .attr("title",function(summary){ 
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
             })
             ;
 
-        newNames.append("span").attr("class","dataTypeIcon fa")
+        var adadasd = newNames.append("span").attr("class","attribNugget")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'e', title: function(){ return summary.getDataType(); }
+                    gravity: 'e', title: function(){ return summary.getDataType() + "<br> summary"; }
                 })
             })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); });
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(d,i){ this.tipsy.hide(); });
+
+        adadasd.append("span").attr("class","dataTypeIcon fa");
+        adadasd.append("span").attr("class","nuggetViz");
 
         newNames.append("input").attr("class","summaryTitleEdit")
             .on("keydown",function(summary){
@@ -3213,6 +3223,7 @@ kshf.Browser.prototype = {
             ;
         this.panels.middle.setTotalWidth(widthMiddlePanel);
         this.panels.middle.updateSummariesWidth();
+        this.panels.bottom.updateSummariesWidth();
     },
     /** -- */
     getFilterState: function() {
@@ -3671,6 +3682,35 @@ var Summary_Categorical_functions = {
         this.initCategories();
     },
     /** -- */
+    refreshNuggetViz: function(){
+        if(this.DOM.nugget===undefined){
+            console.log("refreshNuggetViz - nugget DOM was not available...");
+            return;
+        }
+        var nuggetViz = this.DOM.nugget.select(".nuggetViz");
+
+        var maxAggregate_Total = this.getMaxAggregate_Total();
+        if(maxAggregate_Total===1){
+            this.DOM.nugget.select(".dataTypeIcon").html("Unique<br>categories");
+            nuggetViz.style("display",'none');
+            return;
+        }
+
+        var barChartWidth= 25;
+        var heightPerBar = 30/this._cats.length;
+        
+        nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
+                .append("span").attr("class","nuggetBar")
+                .style("width",function(cat){
+                    return barChartWidth*(cat.items.length/maxAggregate_Total)+"px";
+                })
+                .style("height",(heightPerBar)+"px")
+                //.style("margin-bottom",(heightPerBar/3)+"px");
+            ;
+        
+        this.DOM.nugget.select(".dataTypeIcon").html(this._cats.length+"<br>rows");
+    },
+    /** -- */
     /** -- */
     hasEntityParent: function(){
         if(this.parentFacet===undefined) return false; 
@@ -3845,6 +3885,8 @@ var Summary_Categorical_functions = {
         this.createSummaryFilter();
 
         this.mapAttribs();
+
+        this.sortCats();
     },
     /*8 -- */
     createSummaryFilter: function(){
@@ -4535,8 +4577,8 @@ var Summary_Categorical_functions = {
     refreshWidth: function(){
         if(this.DOM.facetCategorical){
             this.DOM.facetCategorical.style("width",this.getWidth()+"px");
-            this.DOM.summaryTitle.style("max-width",(this.getWidth()-80)+"px");
-            this.DOM.summaryTitle_edit.style("width",(this.getWidth()-100)+"px");
+            this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
+            this.DOM.summaryTitle_edit.style("width",(this.getWidth()-80)+"px");
             this.DOM.chartAxis_Measure.select(".background")
                 .style("width",this.chartScale_Measure.range()[1]+"px");
         }
@@ -5405,10 +5447,7 @@ var Summary_Categorical_functions = {
             return x;
         };
         this._cats.sort(theSortFunc);
-        this._cats.forEach(function(attrib,i){
-            attrib.orderIndex=i;
-        });
-        this.updateAttribCull();
+        this._cats.forEach(function(cat,i){ cat.orderIndex=i; });
     },
     updateAttribCull: function(){
         var me=this;
@@ -5436,6 +5475,8 @@ var Summary_Categorical_functions = {
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortCats();
+        this.updateAttribCull();
+
         var xRemoveOffset = -100;
         if(this.panel.name==='right') xRemoveOffset *= -1;
         if(this.cbFacetSort) this.cbFacetSort.call(this);
@@ -5582,10 +5623,15 @@ var Summary_Interval_functions = {
         this.optimumTickWidth = 50;
 
         this.scaleType = 'linear';
-        this.tickIntegerOnly = false;
+        this.tickIntegerOnly = true;
 
         this.unitName = undefined;
         this.showPercentile=false;
+
+        this.intervalTickFormat = function(v){
+            if(me.tickIntegerOnly) return d3.format("s")(v);
+            return d3.format(".2f")(v);
+        };
 
         this.summaryFilter = kshf_.createFilter({
             browser: this.browser,
@@ -5739,6 +5785,30 @@ var Summary_Interval_functions = {
         }
 
         this.resetIntervalFilterActive();
+    },
+    /** -- */
+    refreshNuggetViz: function(){
+        if(this.DOM.nugget===undefined){
+            console.log("refreshNuggetViz - nugget DOM was not available...");
+            return;
+        }
+        var nuggetViz = this.DOM.nugget.select(".nuggetViz");
+/*
+        var barChartWidth= 25;
+        var heightPerBar = 30/this._cats.length;
+        
+        nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
+                .append("span").attr("class","nuggetBar")
+                .style("width",function(cat){
+                    return barChartWidth*(cat.items.length/maxAggregate_Total)+"px";
+                })
+                .style("height",(heightPerBar)+"px")
+                //.style("margin-bottom",(heightPerBar/3)+"px");
+            ;*/
+        
+        this.DOM.nugget.select(".dataTypeIcon").html(
+            "<span class='num_left'>"+this.intervalTickFormat(this.intervalRange.min)+"</span>"+
+            "<span class='num_right'>"+this.intervalTickFormat(this.intervalRange.max)+"</span>");
     },
     /** -- */
     setScaleType: function(t){
@@ -5945,8 +6015,8 @@ var Summary_Interval_functions = {
         if(this.isEmpty) return;
 
         this.DOM.facetInterval.style("width",this.getWidth()+"px");
-        this.DOM.summaryTitle.style("max-width",(this.getWidth()-80)+"px");
-        this.DOM.summaryTitle_edit.style("width",(this.getWidth()-100)+"px");
+        this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
+        this.DOM.summaryTitle_edit.style("width",(this.getWidth()-80)+"px");
 
         this.intervalRange.width=w;
 
@@ -6136,7 +6206,7 @@ var Summary_Interval_functions = {
                     this.intervalTickFormat = d3.format("d");
                     break;
                 default:
-                    this.intervalTickFormat = d3.format(this.tickIntegerOnly?"d":".2s");
+                    this.intervalTickFormat = d3.format(this.tickIntegerOnly?".2s":".2f");
                     break;
             }
         }

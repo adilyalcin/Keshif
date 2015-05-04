@@ -203,6 +203,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             padding: 2px;
             margin: 2px;
+            min-height: 3em;
             border-radius: 3px;
             background-color: rgb(232, 232, 232);
             border: solid 1px lightgray;
@@ -249,10 +250,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .summaryTypeIcon{
                 float: right;
             }
-            > .dataTypeIcon{
-                font-weight: 900;
-                float: right;
+            .dataTypeIcon{
+                display: inline-block;
+                width: 100%;
+                .flex(1);
+                .align-self(center);
+                font-weight: 500;
                 font-size: 0.7em;
+                vertical-align: top;
+                text-align: center;
+                height: 2em;
+                font-size: italic;
+                > .num_left{
+                    float:left;
+                    margin-left:2px;
+                }
+                > .num_right{
+                    float:right;
+                    margin-right:2px;
+                }
+            }
+            > .attribNugget{
+                .display(flex);
+                height: 30px;
+                background-color: rgba(255,255,255,0.5);
+                width: 50px;
+                float: right;
+                width: 60px;
+                border-radius: 5px;
+                border: solid 1px rgba(255,255,255,0.5);
+                &:hover{
+                    border-color: gray;
+                }
+                > .nuggetViz{
+                    .flex(1);
+                    height: 30px;
+                    margin-right: 3px;
+                    margin-left: 3px;
+                    > .nuggetBar{
+                        display: block;
+                        background-color: @color_bars;
+                    }
+                }
             }
             &:hover{
                 background-color: #E8E0CE;
@@ -278,28 +317,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &[datatype='integer']{
-                > .dataTypeIcon{
-                    &:before {
-                        content: '#';
-                    }
+                > .attribNugget{
+                    .flex-direction(column);
                 }
+                .nuggetViz{ .order(1); }
+                .dataTypeIcon{ .order(2); max-height: 1em; }
             }
             &[datatype='floating']{
-                > .dataTypeIcon{
-                    &:before {
-                        content: '1.2';
-                    }
+                > .attribNugget{
+                    .flex-direction(column);
                 }
+                .nuggetViz{ .order(1); }
+                .dataTypeIcon{ .order(2); max-height: 1em; }
             }
             &[datatype='categorical']{
-                > .dataTypeIcon{
-                    &:before {
-                        content: 'ab';
-                    }
+                > .attribNugget{
+                    .flex-direction(row);
                 }
             }
             &[datatype='time']{
-                > .dataTypeIcon{
+                .dataTypeIcon{
                     &:before {
                         content: '\f017'; // fa-clock-o
                     }
@@ -321,7 +358,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .layout_block {
         > .dropZone{
-            flex: 1;
+            .flex(1);
             display: none;
             position: absolute;
             background-color: rgba(200, 200, 200, 0.3);
@@ -396,10 +433,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.layout_left{
-            display: inline-flex;
-            display: -webkit-inline-flex;
-            flex-direction: column;
-            -webkit-flex-direction: column;
+            .display(inline-flex);
+            .flex-direction(column);
 
             vertical-align: top;
             position: relative;
@@ -420,11 +455,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.layout_right{
-            display: inline-flex;
-            display: -webkit-inline-flex;
-            flex-direction: column;
-            -webkit-flex-direction: column;
-
+            .display(inline-flex);
+            .flex-direction(column);
             vertical-align: top;
             position: relative;
             height: 100%;
@@ -1963,10 +1995,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .middleStuff{
-        display: inline-flex;
-        display: -webkit-inline-flex;
-        flex-direction: column;
-        -webkit-flex-direction: column;
+        .display(inline-flex);
+        .flex-direction(column);
     }
 
     .listDiv {
@@ -2211,12 +2241,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[displaytype="grid"] {
             > .listItemGroup {
-                display: -webkit-flex;
-                display: flex;
-                flex-direction: row;
-                -webkit-flex-direction: row;
-                flex-wrap: wrap;
-                -webkit-flex-wrap: wrap;
+                .display(flex);
+                .flex-direction(row);
+                .flex-wrap(wrap);
                 justify-content: space-around;
                 -webkit-justify-content: space-around;
                 > .listItem{
@@ -2237,8 +2264,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .listItemGroup {
                 display: block;
                 > .listItem {
-                    display: flex;
-                    display: -webkit-flex;
+                    .display(flex);
                     width: 100%;
                     max-height: 200px;
                     > .listsortcolumn{
@@ -2262,8 +2288,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         width: 18px;
                     }
                     > .content{
-                        flex: 1;
-                        -webkit-flex: 1;
+                        .flex(1);
                     }
                 }
             }
