@@ -4,7 +4,7 @@
 		<title>Zoo Animals</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -26,19 +26,19 @@ google.setOnLoadCallback(function () {
             },{ title: "Properties",
                 attribMap: function(d){
                     var r =[];
-                    if(d.data[2 ]) r.push("Has Tail");
-                    if(d.data[3 ]) r.push("Has Hair");
-                    if(d.data[4 ]) r.push("Has Feathers");
-                    if(d.data[5 ]) r.push("Has Backbone");
-                    if(d.data[6 ]) r.push("Has Eggs");
-                    if(d.data[7 ]) r.push("Has Milk");
-                    if(d.data[8 ]) r.push("Domestic");
-                    if(d.data[9 ]) r.push("Aquatic");
-                    if(d.data[10]) r.push("Airborn");
-                    if(d.data[11]) r.push("Venomous");
-                    if(d.data[12]) r.push("Predator");
-                    if(d.data[13]) r.push("Has Tooth");
-                    if(d.data[14]) r.push("Breathes");
+                    if(d.data["Has Tail"]) r.push("Has Tail");
+                    if(d.data["Has Hair"]) r.push("Has Hair");
+                    if(d.data["Has Feathers"]) r.push("Has Feathers");
+                    if(d.data["Has Backbone"]) r.push("Has Backbone");
+                    if(d.data["Has Eggs"]) r.push("Has Eggs");
+                    if(d.data["Has Milk"]) r.push("Has Milk");
+                    if(d.data["Domestic"]) r.push("Domestic");
+                    if(d.data["Aquatic"]) r.push("Aquatic");
+                    if(d.data["Airborn"]) r.push("Airborn");
+                    if(d.data["Venomous"]) r.push("Venomous");
+                    if(d.data["Predator"]) r.push("Predator");
+                    if(d.data["Tooth"]) r.push("Has Tooth");
+                    if(d.data["Breathes"]) r.push("Breathes");
                     return r;
                 },
                 catDispCountFix: 6
@@ -48,11 +48,11 @@ google.setOnLoadCallback(function () {
             sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Name',
-                    value: function(animal){ return animal.data[0][0]; } // first letter in name column
+                    value: function(animal){ return animal.data.Name[0]; } // first letter in name column
                 }
             ],
-            textSearch : '*Name',
-            recordView: '*Name'
+            textSearch : 'Name',
+            recordView: 'Name'
         }
     });
 });

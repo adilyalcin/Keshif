@@ -3,7 +3,7 @@
 	<head>
 		<title>InfoVis 2014 Contest</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -122,12 +122,7 @@ $(document).ready( function(){
             },{ title: "# of Keywords", layout: 'right', collapsed: true,
                 attribMap: function(d){ return d.data.Keywords.length; }
             },{ title: "Abstract", layout: 'right',
-                attribMap: function(d){
-                    var r=[];
-                    if(d.data.Abstract) r.push("Has Abstract");
-//                    if(d.data.Keywords.length>0) r.push("Has Keywords");
-                    return r;
-                }
+                attribMap: function(d){ if(d.data.Abstract) return "Has Abstract"; }
             },{ title: "# References To (Within)", layout: 'right',
                 attribMap: function(d){ return d.data.References_To.length; }, 
                 intervalScale: 'log'
@@ -136,13 +131,11 @@ $(document).ready( function(){
                     return d.data.References_Internal.length+
                         d.data.References_External.length+
                         d.data.References_Other.length;
-                }, intervalScale: 'log'
+                }
             },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.References_Internal.length; },
-                intervalScale: 'log'
+                attribMap: function(d){ return d.data.References_Internal.length; }
             },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.References_External.length+d.data.References_Other.length; },
-                intervalScale: 'log'
+                attribMap: function(d){ return d.data.References_External.length+d.data.References_Other.length; }
             },{ title: "Date", layout: "bottom"
             }
         ],

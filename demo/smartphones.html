@@ -4,7 +4,7 @@
 		<title>Smartphones</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css" type="text/css">
@@ -42,6 +42,7 @@ function loadData(browser){
                 phone.last_update = moment(phone.last_update).toDate();
                 phone.SaveDate = moment(phone.att_manually_saved).toDate();
 
+                // unused properties
                 delete phone.att_dual_sim;
                 delete phone.att_ram;
                 delete phone.att_screen_size;
@@ -91,22 +92,15 @@ $(document).ready( function() {
         facets: [
             {   title: "Brand"
             },{ title: "Model", collapsed: true
-            },{ title: "Price",
-                unitName: "$"
-            },{ title: "Screen Size",
-                unitName: 'in'//'″'
-            },{ title: "Weight",
-                unitName: "oz."
-            },{ title: "Storage", layout: 'right',
-                unitName: 'GB'
-            },{ title: "SDCard", layout: 'right',
-                unitName: "GB"
-            },{ title: "RAM", layout: 'right',
-                unitName: "GB", //intervalScale: 'step'
+            },{ title: "Price", unitName: "$"
+            },{ title: "Screen Size", unitName: "″"
+            },{ title: "Weight", unitName: " oz."
+            },{ title: "Storage", layout: 'right', unitName: 'GB'
+            },{ title: "SDCard", layout: 'right', unitName: "GB"
+            },{ title: "RAM", layout: 'right', unitName: "GB"
             },{ title: "att_pixels_x", layout: 'right'
             },{ title: "att_pixels_y", layout: 'right'
-            },{ title: "Has Dual SIM",
-                type: 'categorical', collapsed: true
+            },{ title: "Has Dual SIM", type: 'categorical', collapsed: true
             }
         ],
         itemDisplay: {

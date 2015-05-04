@@ -4,7 +4,7 @@
 		<title>2200 faculty in 50 top US Computer Science Programs</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -17,9 +17,9 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    resizeBrowser(100,120);
+    resizeBrowser(160,90);
     $(window).resize(function() {
-        resizeBrowser(100,120);
+        resizeBrowser(160,90);
         browser.updateLayout();
     });
 
@@ -38,26 +38,21 @@ google.setOnLoadCallback(function(){
             //sheets: [ {name: "Data"} ]
         },
         facets: [
-            {   title: "<i class='fa fa-university'></i> University",
-                description: "The name of the university they teach",
-                attribMap: "University"
+            {   title: "<i class='fa fa-university'></i> University", attribMap: "University",
+                description: "The name of the university they teach"
             },{ title: "<i class='fa fa-sitemap'></i> Subfield",
                 description: "Main field of research. One of the 20 fields reported by Microsoft Academic",
                 attribMap: "Subfield"
-            },{ title: "<i class='fa fa-th-large'></i> Rank",
-                attribMap: "Rank"
+            },{ title: "<i class='fa fa-th-large'></i> Rank", attribMap: "Rank"
             },{ title: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", layout: 'right',
                 description: "University they acquired their BSc degree from",
                 attribMap: "Bachelors"
             },{ title: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
-                description: "University they acquired their Masters degree from",
-                attribMap: "Masters"
+                description: "University they acquired their Masters degree from", attribMap: "Masters"
             },{ title: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
-                description: "University they acquired their Doctorate degree from",
-                attribMap: "Doctorate"
+                description: "University they acquired their Doctorate degree from", attribMap: "Doctorate"
             },{ title: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right', collapsed: true,
-                description: "University or Company they did their post-doctoral training",
-                attribMap: "PostDoc"
+                description: "University or Company they did their post-doctoral training", attribMap: "PostDoc"
             },{ title: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
                 description: "For each CS faculty, lists the countries that s/he received her degrees from",
                 attribMap: function(d){
@@ -80,7 +75,7 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 60,
             autoExpandMore: true,
-            sortingOpts: [ {name: 'Join-Year', value: function(d){return d.data.JoinYear;}} ],
+            sortingOpts: [{ name: 'JoinYear' }],
             textSearch: "Name",
             detailsToggle: "One",
             recordView: function(d){
@@ -114,10 +109,6 @@ google.setOnLoadCallback(function(){
 });
 </script>
 <style>
-    #chart_div {
-        width: 1100px;
-        height: 650px;
-    }
     #chart_div span.mainTextSearch{
         display: block;
         margin-left: 60px;

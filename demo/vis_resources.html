@@ -3,7 +3,7 @@
 	<head>
 		<title>Visualization Related Resources</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -40,6 +40,11 @@ function loadData(browser){
     });
 };
 
+function getImageName(url){
+    var x=url.split("/");
+    return x[x.length-1];
+};
+
 $(document).ready( function(){
     resizeBrowser(100,80);
     $(window).resize(function() {
@@ -68,11 +73,20 @@ $(document).ready( function(){
                     "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.image_src);
+                var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(d.data.image_src);
+                d3.select(d.DOM.result).select("img").attr("src",imgUrl);
             }
         }
     });
 });
+
+var imageDownloadScript = function(){
+    var src="";
+    kshf.dt.Resources.forEach(function(r){
+        src+= "curl -o "+getImageName(r.data.image_src)+" "+r.data.image_src+"\n";
+    });
+    return src;
+};
         </script>
 <style>
     .listItem{

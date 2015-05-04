@@ -3,7 +3,7 @@
 	<head>
 		<title>Selfiecity Portraits</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -37,9 +37,9 @@ $(document).ready( function(){
 //sheets: [ {name:"selfies_rekognized_full", id:"id"} ]
         },
         facets: [
-            {   title: "Demographics",
+            {   /*title: "Demographics",
                 facets:[
-                    {   title: "City",
+                    {*/   title: "City",
                         attribMap: function(d){
                             switch(d.data.city){
                                 case 'ny': return "New York";
@@ -49,40 +49,30 @@ $(document).ready( function(){
                                 case 'berlin': return "Berlin";
                             }
                         }
-                    },{ title: "Sex", 
-                        attribMap: "sex"
-                    },{ title: "Age", 
-                        attribMap: "age"
-                        showPercentile: true
-                    }
-                ]
-            },{ title: "Features",
+                    },{ title: "Sex", attribMap: "sex"
+                    },{ title: "Age", attribMap: "age", showPercentile: true
+                    /*}
+                ]*/
+            },{ /*title: "Features",
                 facets:[
-                    {   title: "Eyes Closed",
-                        attribMap: "eye_closed"
-                    },{ title: "Mouth Open", collapsed: true,
-                        attribMap: "mouth_open_wide"
-                    },{ title: "Has Glasses",
-                        attribMap: "glasses"
-                    }
-                ]
-            },{ title: "Mood", layout: 'right',
+                    {*/   title: "Eyes Closed", attribMap: "eye_closed"
+                    },{ title: "Mouth Open", attribMap: "mouth_open_wide", collapsed: true
+                    },{ title: "Has Glasses", attribMap: "glasses"
+                    /*}
+                ]*/
+            },{ /*title: "Mood", layout: 'right',
                 facets:[
-                    {   title: "Happyness",
-                        attribMap: "emotion_happy",
-                        showPercentile: true
-                    },{ title: "Calmness", type: 'interval', // TODO: Why need to define type?
+                    {*/   title: "Happyness", attribMap: "emotion_happy", layout: 'right', showPercentile: true
+                    },{ title: "Calmness", layout: 'right', type: 'interval', // TODO: Why need to define type?
                         attribMap: "emotion_calm"
-                    },{ title: "Confusion", type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Confusion", layout: 'right', type: 'interval', // TODO: Why need to define type?
                         attribMap: "emotion_confused"
-                    },{ title: "Sadness",
-                        attribMap: "emotion_sad"
-                    },{ title: "Anger", collapsed: true,
-                        attribMap: "emotion_angry"
-                    },{ title: "Disgust", collapsed: true, type: 'interval', // TODO: Why need to define type?
+                    },{ title: "Sadness", attribMap: "emotion_sad", layout: 'right',
+                    },{ title: "Anger", attribMap: "emotion_angry", collapsed: true, layout: 'right',
+                    },{ title: "Disgust", collapsed: true, layout: 'right', type: 'interval',
                         attribMap: "emotion_disgust"
-                    }
-                ]
+                    /*}
+                ]*/
             }
         ],
         itemDisplay: {
@@ -90,7 +80,7 @@ $(document).ready( function(){
             sortingOpts: [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
             displayType: 'grid',
             maxVisibleItems_Default: 104,
-            recordView: function(d){return "<img>"; },
+            recordView: function(d){ return "<img>"; },
             visibleCb: function(d){
                 var imgRoot = 'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/';
                 d3.select(d.DOM.result).select("img").attr("src",imgRoot+d.data.city+'/'+d.data.id);

@@ -4,7 +4,7 @@
 		<title>5 Years of Infosthetics</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -49,14 +49,8 @@ $(document).ready( function(){
             },{ title: "Author",
                 catTableName: "Authors", collapsed: true,
                 catLabelText: function(d){ return d.data.Name; }
-            },{ title: "# Comments", 
-                attribMap: function(post){
-                    var v=post.data['# of Comments'];
-                    if(v>0) return v;
-                },
-                intervalScale: "log"
-            },{ title: "Time", layout: 'bottom',
-                attribMap: "Date",
+            },{ title: "# Comments",  attribMap: '# of Comments'
+            },{ title: "Time", layout: 'bottom', attribMap: "Date",
             }
         ],
         itemDisplay: {
@@ -66,7 +60,7 @@ $(document).ready( function(){
                     value: function(d){ return d.data.Date.getTime(); },
                     label: function(d){ return moment(d.data.Date).format("MMM Do, YY"); }
                 },{ name: '#Comments',
-                    value: function(d){ return d.data[5]; }
+                    value: function(d){ return d.data['# of Comments']; }
                 }
             ],
             textSearch: "Title",

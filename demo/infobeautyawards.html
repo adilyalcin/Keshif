@@ -4,7 +4,7 @@
 		<title>Information is Beautiful Awards</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -15,7 +15,6 @@
         <script type="text/javascript">
 
 var demoID = 45;
-var cols=null;
 
 google.setOnLoadCallback(function(){
     resizeBrowser(100,120);
@@ -31,11 +30,10 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 90,
         source: {
             url: "http://www.informationisbeautifulawards.com/",
-            gdocId : '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
-            sheets : [ {name:"Showcases"} ]
+            gdocId: '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
+            sheets: [ {name:"Showcases"} ]
         },
         loadedCb: function(){
-            cols = kshf.dt_ColNames.Showcases;
             kshf.Util.cellToArray(kshf.dt.Showcases, ['Categories'], /\*/, false);
             kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
             kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
@@ -48,17 +46,15 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Categories"
-            },{ title: "Year",
-                attribMap: "Award",
-                intervalScale: 'step'
+            },{ title: "Year", attribMap: "Award", intervalScale: 'step'
             },{ title: "Credits", collapsed: true
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
             displayType: 'grid',
-            sortingOpts : [ {name: 'id', inverse:false, noGroupBorder: true} ],
-            textSearch : 'Title',
+            sortingOpts: [{name: 'id', inverse:false, noGroupBorder: true}],
+            textSearch: 'Title',
             recordView: function(d){ 
                 var str='';
                 str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>";

@@ -3,7 +3,7 @@
 	<head>
 		<title>BART Employee Salaries</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -14,9 +14,9 @@
 
         <script type="text/javascript">
 $(document).ready( function() {
-    resizeBrowser(90,90);
+    resizeBrowser(150,60);
     $(window).resize(function() {
-        resizeBrowser(90,90);
+        resizeBrowser(150,60);
         browser.updateLayout();
     });
 
@@ -36,23 +36,17 @@ $(document).ready( function() {
             {   title: "Job Family"
             },{ title: "Union"
             },{ title: "Title"
-            },{ title: "Source", collapsed: true
-            },{ /*title: "Salary", layout: 'right',
-                facets:[
-                {*/ title: "Total", layout: 'right', intervalScale: 'log',
-                    attribMap: "TCOE", unitName: '$'
-                },{ title: "Base", layout: 'right', intervalScale: 'log', unitName: '$'
-                },{ title: "Overtime", layout: 'right', intervalScale: 'log',
-                    attribMap: "OT", unitName: '$'
-                },{ title: "Other", layout: 'right',  intervalScale: 'log', unitName: '$'
-                },{ title: "Medical,Dental,Vision", layout: 'right', collapsed: true, intervalScale: 'log',
-                    attribMap: "MDV", unitName: '$'
-                },{ title: "ER", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
-                },{ title: "EE", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
-                },{ title: "DC", layout: 'right', collapsed: true, intervalScale: 'log', unitName: '$'
-                }/*
-                ]
-            }*/
+            },{ title: "Total Salary", attribMap: "TCOE", unitName: '$', layout: 'right'
+            },{ title: "Base Salary", unitName: '$', layout: 'right'
+            },{ title: "Overtime Salary", attribMap: "OT", unitName: '$', layout: 'right'
+            },{ title: "Other Salary", unitName: '$', layout: 'right'
+            },{ title: "Medical + Dental + Vision", attribMap: "MDV", unitName: '$', layout: 'right'
+            },{ title: "ER (Salary)", attribMap: 'ER', layout: 'right', collapsed: true,  unitName: '$'
+            },{ title: "EE (Salary)", attribMap: 'EE', layout: 'right', collapsed: true,  unitName: '$'
+            },{ title: "DC (Salary)", attribMap: 'DC', layout: 'right', collapsed: true,  unitName: '$',
+                intervalScale: 'log'
+            },{ title: "Source", layout: 'right'
+            }
         ],
         itemDisplay: {
             sortColWidth: 70,

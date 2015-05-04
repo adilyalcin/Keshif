@@ -4,7 +4,7 @@
 		<title>Supplements - Scientific evidence for popular health supplements</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -40,13 +40,13 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.apr_2011, ['condition', 'category'], /\b,\s+/, false);
         },
         facets: [
-            {   title: "<i class='fa fa-heart'></i> evidence <i class='fa fa-heart'></i>",
+            {   title: "<i class='fa fa-heart'></i> Evidence <i class='fa fa-heart'></i>",
                 description: "Is there scientific evidence for its benefits on a specific health condition?",
                 attribMap: function(d){ return d.data.evidence*2; }
             },{ title: "<i class='fa fa-eye'></i> One to Watch",
                 description: "Few studies but promising results",
                 attribMap: function(d){ if(d.data.onetowatch!=="") return true; }
-            },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity <i class='fa fa-thumbs-up popularity_icon'></i> ",
+            },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity",
                 description: "Popularity based on Google search results",
                 attribMap: "popularity",
                 intervalScale: "log",

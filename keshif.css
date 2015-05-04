@@ -156,7 +156,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .attributeList {
   display: none;
   position: absolute;
-  overflow: scroll;
+  overflow: auto;
   right: -220px;
   width: 215px;
   top: 10px;
@@ -249,7 +249,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .attributeList > .attributeName[datatype='time'] > .dataTypeIcon:before {
   content: '\f017';
 }
-.kshf .attributeList > .attributeName[state='custom'] > .summaryTypeIcon::before {
+.kshf .attributeList > .attributeName[state='custom'] > .editTitleButton {
+  display: inline-block;
+  font-size: 0.9em;
+  color: black;
+}
+.kshf .attributeList > .attributeName[state='custom'] > .editTitleButton:before {
   content: "\f121";
 }
 .kshf .attributeList > .attributeListHeader {
@@ -592,10 +597,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .facetCategorical .scrollToTop {
   right: 3px;
 }
-.kshf .chartFilterButtonParent {
-  position: absolute;
-  left: -18px;
-}
 .kshf .chartClearFilterButton {
   width: 14px;
   height: 100%;
@@ -729,20 +730,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
 }
 .kshf .headerGroup .summaryTitle {
-  display: inline-block;
+  display: block;
   font-weight: 700;
   cursor: default;
   font-variant: small-caps;
-  margin-top: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   line-height: 1em;
   text-rendering: initial;
   white-space: nowrap;
+  text-align: center;
+  margin: 0 auto;
   /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text {
-  display: inline-block;
+  display: inline;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -776,6 +780,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   margin-left: 3px;
   margin-top: 2px;
+  opacity: 0;
+  pointer-events: none;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_editButton:before {
   content: '\f040';
@@ -784,7 +790,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
 }
 .kshf .headerGroup .summaryTitle:hover > .summaryTitle_editButton {
-  display: inline-block;
+  opacity: 1;
+  pointer-events: all;
 }
 .kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_text {
   display: none;
@@ -793,7 +800,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton {
-  display: inline-block;
+  opacity: 1;
+  pointer-events: all;
 }
 .kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton:before {
   content: "\f00c";
@@ -812,9 +820,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .chartClearFilterButton.rowFilter {
   pointer-events: all;
-  height: 16px;
-  width: 16px;
-  padding-left: 1px;
+  height: 14px;
+  width: 14px;
+  line-height: 13px;
   margin-right: 3px;
 }
 .kshf .headerGroup span.facetIcons {
@@ -1335,7 +1343,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval {
-  padding: 7px 6px 0px 6px;
+  padding: 7px 11px 0px 6px;
   overflow: hidden;
 }
 .kshf .kshfChart > .wrapper > .facetInterval[istime="true"] span.aggr {
@@ -1479,8 +1487,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick > .text {
-  width: 20px;
-  left: -22px;
+  width: 25px;
+  left: -25px;
   text-align: right;
   top: -3px;
   position: relative;
@@ -1679,21 +1687,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
   cursor: default;
   position: relative;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .unitName {
-  font-size: 0.7em;
-  left: -27px;
-  width: 15px;
-  position: absolute;
-  text-align: right;
-  font-weight: 300;
-  /*
+  /*> .unitName{
+                            font-size: 0.7em;
+                            left: -27px;
+                            width: 15px;
+                            position: absolute;
+                            //top: -1px;
+                            text-align: right;
+                            font-weight: 300;/*
                             &::after{
                                 content: "]";
                             }
                             &::before{
                                 content: "[";
-                            }*/
+                            }
+                        }*/
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick {
   position: absolute;
@@ -1705,6 +1713,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: -50%;
   display: block;
   text-align: center;
+  white-space: nowrap;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
+  color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;

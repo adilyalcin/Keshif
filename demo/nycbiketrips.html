@@ -4,7 +4,7 @@
 		<title>Bike Trips in New York City</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -52,15 +52,9 @@ google.setOnLoadCallback(function(){
                 },
                 type: 'categorical'
             },{ title: "Station_Start",
-                type: 'categorical',
                 catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
             },{ title: "Station_End", layout: 'right',
-                type: 'categorical',
                 catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
-            },{ title: "Hour of Day", layout: 'bottom',
-                attribMap: function(d){ return d.data.TimeStart.hour(); },
-                unitName: "hr",
-                intervalScale: 'step'
             },{ title: "Day of Week", layout: 'right', collapsed: true,
                 attribMap: function(d){ return d.data.TimeStart.day(); },
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
@@ -75,11 +69,16 @@ google.setOnLoadCallback(function(){
                         case 0: return "Sunday";
                     }
                 }
-            },{ title: "Duration (minutes)", layout: 'bottom',
+            },{ title: "Hour of Day", layout: 'bottom',
+                attribMap: function(d){ return d.data.TimeStart.hour(); },
+                unitName: ":00",
+                intervalScale: 'step'
+            },{ title: "Duration", layout: 'bottom',
                 intervalScale: "log",
                 attribMap: function(d){ return Math.round(d.data.Duration/60); },
-                unitName: "sec"
-            },{ title: "BirthYear", layout: 'bottom', collapsed: true
+                unitName: " min"
+            },{ title: "BirthYear", layout: 'bottom', collapsed: true, intervalScale: 'linear'
+                // TODO: Actually this is time, the value is year, but the variance is high so kshf tries to map it to log-scale
             }
         ]
     });

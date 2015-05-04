@@ -3,7 +3,7 @@
     <head>
         <title>Ben Bederson's Book Library</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -148,24 +148,14 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Genres"
-            },{ title: "Bederson's Rating", type: 'categorical',
-                attribMap: "Rating",
+            },{ title: "Bederson's Rating", type: 'categorical', attribMap: "Rating",
                 catLabelText: function(d){ return getStars(d.data[0]); }
             },{ title: "Author", 
-            },{ title: "Reviewed",
-                description: "Mouse-over the book image to see my review",
+            },{ title: "Reviewed", description: "Mouse-over the book image to see my review",
                 attribMap: function(book){ return (book.data.Review!=="")?"Yes":"No"; }
-            },{ title: "# of Pages",
-                attribMap: "NumPages",
-                collapsed: true,
-//                intervalScale: 'log'
-            },{ title: "Year: Book Read", layout: "middle",
-                attribMap: "ReadYear",
-                intervalScale: 'step',
-                collapsed: true,
-            },{ title: "Year: Publication (Excl. Books Before 1990)", layout: "middle",
-                attribMap: "PubYear",
-                type: 'interval',
+            },{ title: "# of Pages", attribMap: "NumPages", collapsed: true,
+            },{ title: "Year: Book Read", attribMap: "ReadYear", layout: "middle", collapsed: true, intervalScale: 'step',
+            },{ title: "Year: Publication (Excl. Books Before 1990)", attribMap: "PubYear", layout: "middle",
                 intervalScale: 'step'
             }
         ],

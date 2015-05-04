@@ -3,7 +3,7 @@
 	<head>
 		<title>Text Visualization Techniques</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -69,9 +69,9 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "Tasks",
+            {   /*title: "Tasks",
                 facets: [
-                    {   title: "Analytics",
+                    {*/   title: "Analytics",
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="sentiment-analysis" ||
@@ -97,11 +97,11 @@ $(document).ready( function(){
                                     c==="uncertainty";
                             });
                         }
-                    }
-                ]
-            },{ title: "Data", layout: 'right',
+                    /*}
+                ]*/
+            },{ /*title: "Data", layout: 'right',
                 facets:[
-                    {   title: "Sources",
+                    {*/   title: "Sources", layout: 'right',
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="document" ||
@@ -109,7 +109,7 @@ $(document).ready( function(){
                                     c==="streams";
                             });
                         }
-                    },{ title: "Properties",
+                    },{ title: "Properties", layout: 'right',
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="geospatial" ||
@@ -117,8 +117,8 @@ $(document).ready( function(){
                                     c==="networks";
                             });
                         }
-                    }
-                ]
+                    /*}
+                ]*/
             },{ title: "Domains",
                 attribMap: function(d){
                     return d.data.categories.filter(function(c){
@@ -131,9 +131,9 @@ $(document).ready( function(){
                             c==="editorial-media";
                     });
                 }
-            },{ title: "Visualization", layout: 'right',
+            },{ /*title: "Visualization", layout: 'right',
                 facets:[
-                    {   title: "Dimensionalities",
+                    {*/   title: "Dimensionalities", layout: 'right',
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="1d" ||
@@ -141,7 +141,7 @@ $(document).ready( function(){
                                     c==="3d";
                             });
                         }
-                    },{ title: "Representations",
+                    },{ title: "Representations", layout: 'right',
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="line-plot" ||
@@ -153,7 +153,7 @@ $(document).ready( function(){
                                     c==="glyph";
                             });
                         }
-                    },{ title: "Alignments",
+                    },{ title: "Alignments", layout: 'right',
                         attribMap: function(d){
                             return d.data.categories.filter(function(c){
                                 return c==="radial" ||
@@ -161,8 +161,8 @@ $(document).ready( function(){
                                     c==="metric";
                             });
                         }
-                    }
-                ]
+                    /*}
+                ]*/
             },{ title: "Year", layout: 'bottom', 
                 attribMap: function(d){ return new Date(d.data.year,0); },
             }

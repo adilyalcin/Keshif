@@ -4,7 +4,7 @@
 		<title>Top 50 US Companies - Cash &amp; Debt</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -44,12 +44,8 @@ google.setOnLoadCallback(function(){
                 attribMap: function(d){
                     return ((d.data['Cash ($B)']-d.data['Debt ($B)'])>0)?"More cash":"More debt";
                 }
-            },{ title: "Cash (Billions)",
-                attribMap: 'Cash ($B)',
-                unitName: 'B$', intervalScale: 'log'
-            },{ title: "Debt (Billions)",
-                attribMap: 'Debt ($B)',
-                unitName: 'B$', intervalScale: 'log',
+//            },{ title: "Cash", attribMap: 'Cash ($B)', unitName: 'B$', intervalScale: 'log'
+//            },{ title: "Debt", attribMap: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
 //                        },{ title: "Market Capitalization", layout: 'right'
 //                        },{ title: "Profit Margin", layout: 'right'
             }

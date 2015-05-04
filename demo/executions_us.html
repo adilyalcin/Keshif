@@ -4,7 +4,7 @@
 		<title>Executions in the U.S.</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -25,11 +24,9 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Executions"} ]
         },
         facets: [
-            {   title: "Crime",
-                attribMap: function(d){ return d.data.Crime.split(" - "); }
+            {   title: "Crime", attribMap: function(d){ return d.data.Crime.split(" - "); }
             },{ title: "Method",
-            },{ title: "State", layout: 'right',
-                catLabelText: function(d){ return getStateName(d.data[0]); }
+            },{ title: "State", layout: 'right', catLabelText: function(d){ return getStateName(d.data[0]); }
             },{ title: "Race", layout: 'right'
             },{ title: "Sex", layout: 'right'
             },{ title: "Age", layout: 'right', type: 'interval'

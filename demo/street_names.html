@@ -3,7 +3,7 @@
 	<head>
 		<title>Road Map - Street Names, # of Homes, Values, &amp; More</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -21,7 +21,6 @@ var demoID = 117;
 function loadData(browser){
     browser.primaryTableName = "StreetNames";
     kshf.dt.StreetNames = [];
-
     $.ajax({
         //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
         // url: "./data_private/dc_homicides.json", // original source
@@ -50,8 +49,12 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-    $('#chart_div').width($(window).width()-150);
-    $('#chart_div').height($(window).height()-100);
+    resizeBrowser(150,100);
+    $(window).resize(function() {
+        resizeBrowser(150,100);
+        browser.updateLayout();
+    });
+
 	browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Street Names",
@@ -62,11 +65,9 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "<span class='fa fa-home'></span> # of Homes",
-                attribMap: "homes",
-                intervalScale: "log"
+                attribMap: "homes"
             },{ title: "<span class='fa fa-money'></span> Average Value",
-                attribMap: "Value",
-                intervalScale: "log"
+                attribMap: "Value"
             },{ title: "Name Features",
                 attribMap: function(d){
                     var r=[];
@@ -77,10 +78,8 @@ $(document).ready( function(){
                     if(parseInt(d.data.text)) r.push("Numbered <span class='featIcon'><img src='http://graphics8.nytimes.com/newsgraphics/2015/01/20/streetclouds/db6af38c9c61da220ded80f2c202cda1428ccc69/icon_numbered.png' style='height:15px'></span>");
                     return r;
                 }
+            },{ title: "In # Counties", attribMap: "in_counties", collapsed: true
             }
-//            },{ title: "In # Counties",
-//                attribMap: "in_counties",
-//                intervalScale: "log"
         ],
         itemDisplay: {
             sortColWidth: 90,

@@ -4,7 +4,7 @@
 		<title>Teaching Assistant Evaluations</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -23,29 +23,23 @@ google.setOnLoadCallback(function () {
         },
         facets: [
             {   title: "Instructor",
-                catLabelText: function(d) { return kshf.dt_id.Instructors[d.data[1]].data[1];}
-            },{ title: "Performance",
-                catLabelText: function(d) { return performanceText(d.data[1]); }
-            },{ title: "Native Speaker",
-                catLabelText: function(d) { 
-                    if(d.data[1]===1) return "Yes";
-                    if(d.data[1]===2) return "No";
+                catLabelText: function(d){
+                    return kshf.dt_id.Instructors[d.data[0]].data.Name;
                 }
+            },{ title: "Performance",
+                catLabelText: function(d){ return performanceText(d.data[0]); }
+            },{ title: "Native Speaker",
+                catLabelText: function(d){ return (d.data[1]===1)?"Yes":"No"; }
             },{ title: "Course"
             },{ title: "Semester",
-                catLabelText: function(d) { 
-                    if(d.data[1]===1) return "Summer";
-                    if(d.data[1]===2) return "Regular";
-                }
+                catLabelText: function(d){ return (d.data[1]===1)?"Summer":"Regular"; }
             },{ title: "Class Size",
             }
         ],
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts: [
-                {   name: 'Performance',
-                    label: function(ast){ return performanceText(ast.data['Performance']); },
-                }
+                { name: 'Performance', label: function(ast){ return performanceText(ast.data.Performance); } }
             ],
             textSearch: 'Name',
             recordView: 'Name'

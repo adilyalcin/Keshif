@@ -4,7 +4,7 @@
 		<title>TED Talks</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -27,8 +27,8 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 140,
         itemName: "TED Talks",
         source: {
-            gdocId : '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
-            sheets : [{ name:"Talks" }]
+            gdocId: '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
+            sheets: [{ name:"Talks" }]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Talks, ['Feelings'], "+", false);
@@ -45,19 +45,18 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Feelings",
-            },{ title: "Talk Duration",
-                attribMap: function(d){ return d.data.Duration[0]; }
-            },{ title: "Views", intervalScale: 'log'
+            },{ title: "Talk Duration", attribMap: function(d){ return d.data.Duration[0]; }
+            },{ title: "Views"
             },{ title: "Speaker", layout: 'right'
             },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts : [ {name:'Views'}, {name:'Date', inverse:true} ],
+            sortingOpts: [ {name:'Views'}, {name:'Date', inverse:true} ],
             textSearch: 'Title',
             displayType: 'grid',
-            recordView : function(d){
+            recordView: function(d){
                 var str='';
                 // Demo name
                 str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data.URL+"'><span class='thumbnail'>"+
@@ -66,9 +65,10 @@ google.setOnLoadCallback(function(){
                 str+="<span class='title'>"+d.data.Title+"</span>";
                 return str;
             },
-    visibleCb: function(d){
-        d3.select(this).select("img").attr("src","http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data.ThumbImg);
-    }
+            visibleCb: function(d){
+                d3.select(this).select("img").attr("src",
+                    "http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data.ThumbImg);
+            }
         }
     });
 });
@@ -98,7 +98,7 @@ var getData = function(){
                     logStr+=link+"\t"+thumb+"\t"+talkDur+"\t"+speaker+"\t"+title+"\t"+feelings+"\t"+views+"\t"+datee+"\n";
                 });
             },
-            error: function(e, e2, e3){console.log("NO : page:"+i+" code:"+e2); }
+            error: function(e, e2, e3){console.log("NO: page:"+i+" code:"+e2); }
         });
     }
     console.log(logStr);    

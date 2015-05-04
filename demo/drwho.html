@@ -4,7 +4,7 @@
 		<title>Doctor Who villains &amp; monsters since 1963</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -41,11 +41,11 @@ google.setOnLoadCallback( function () {
             },{ title: "Total Stories",
                 attribMap: function(d){ return d.data['Story titles'].length; },
                 intervalScale: 'log'
-            },{ title: "First Appearance", layout: 'bottom'
+            },{ title: "First Appearance", layout: 'bottom',
                 attribMap: function(d){ 
                     var y=d.data['Year first'];
                     if(y===null) return null;
-                    return new Date(moment(y+"01-01","YYYY-MM-DD"));
+                    return new Date(y,1,1);
                 }
             }
         ],

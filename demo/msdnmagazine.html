@@ -3,7 +3,7 @@
 	<head>
 		<title>MSDN Magazine Posts</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -97,23 +97,22 @@ $(document).ready( function(){
                     for(var i=0; i<d.data[1]; i++) str +="<span class='fa fa-star'></span>"
                     return str;
                 }
-            },{ title: "Page Views", layout: 'right',
-                intervalScale: 'log'
-            },{ title: "Authors", layout: 'right',
+            },{ title: "Page Views", layout: 'right'
+            },{ title: "Authors", layout: 'right'
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
             sortingOpts : [
-                { name: 'Page Views'},
-                { name: 'id', inverse: true},
+                { name:'Page Views' },
+                { name:'id', inverse:true },
             ],
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
             recordView: function(article){
-                return "<a target='_blank' class='articleLink' href='"+article.data.url+"'>"+article.data.Name+
-                    " <i class='fa fa-external-link'></i></a>";
+                return "<a target='_blank' class='articleLink' href='"+
+                    article.data.url+"'>"+article.data.Name+" <i class='fa fa-external-link'></i></a>";
             }
         }
     });

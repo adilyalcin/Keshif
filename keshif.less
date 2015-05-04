@@ -192,7 +192,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .attributeList{
         display: none;
         position: absolute;
-        overflow: scroll;
+        overflow: auto;
 
         right: -220px;
         width: 215px;
@@ -306,8 +306,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &[state='custom']{
-                > .summaryTypeIcon{
-                    &::before{ content: "\f121"; } // Code
+                > .editTitleButton{
+                    display: inline-block;
+                    font-size: 0.9em;
+                    color: black;
+                    &:before{ content: "\f121"; } // Code
                 }
             }
         }
@@ -638,8 +641,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     //}
 
     .chartFilterButtonParent{
-        position: absolute;
-        left: -18px;
+        //position: absolute;
+        //left: -18px;
     }
     .chartClearFilterButton{
         width: 14px;
@@ -772,19 +775,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
         .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);");
         .summaryTitle {
-            display: inline-block;
+            display: block;
             font-weight: 700;
             cursor: default;
             font-variant: small-caps;
-            margin-top: 2px;
+            padding-top: 1px;
+            padding-bottom: 1px;
             line-height: 1em;
             text-rendering: initial;
             white-space: nowrap;
+            text-align: center;
+            margin: 0 auto;
             /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
             > .summaryTitle_text{
-                display: inline-block;
+                display: inline;
                 max-width: 100%;
                 white-space: nowrap;
                 overflow: hidden;
@@ -819,6 +825,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 vertical-align: top;
                 margin-left: 3px;
                 margin-top: 2px;
+                opacity: 0;
+                pointer-events: none;
                 &:before{
                     content: '\f040';
                 }
@@ -828,7 +836,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &:hover{
                 > .summaryTitle_editButton{
-                    display: inline-block;
+                    opacity: 1;
+                    pointer-events: all;
                 }
             }
             &[edittitle="true"]{
@@ -839,7 +848,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                 }
                 > .summaryTitle_editButton{
-                    display: inline-block;
+                    opacity: 1;
+                    pointer-events: all;
                     &:before{
                         content: "\f00c";
                     }
@@ -860,9 +870,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .chartClearFilterButton.rowFilter{
             pointer-events: all;
-            height: 16px;
-            width: 16px;
-            padding-left: 1px;
+            height: 14px;
+            width: 14px;
+            line-height: 13px;
             margin-right: 3px;
         }
         span.facetIcons{
@@ -1382,7 +1392,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }// facetCategorical
 
             > .facetInterval {
-                padding: 7px 6px 0px 6px;
+                padding: 7px 11px 0px 6px;
                 overflow: hidden;
                 &[istime="true"]{
                     span.aggr{
@@ -1515,8 +1525,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 left: 0px;
                             }
                             > .text{
-                                width: 20px;
-                                left: -22px;
+                                width: 25px;
+                                left: -25px;
                                 text-align: right;
                                 top: -3px;
                                 position: relative;
@@ -1704,7 +1714,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .labelGroup{
                         cursor: default;
                         position:relative;
-                        > .unitName{
+                        /*> .unitName{
                             font-size: 0.7em;
                             left: -27px;
                             width: 15px;
@@ -1717,8 +1727,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             &::before{
                                 content: "[";
-                            }*/
-                        }
+                            }
+                        }*/
                         > .tick{
                             position:absolute;
                             > .text{
@@ -1728,6 +1738,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 left: -50%;
                                 display: block;
                                 text-align: center;
+                                white-space: nowrap;
+                                > .unitName{
+                                    color: gray;
+                                }
                             }
                             > .line{
                                 position: absolute;

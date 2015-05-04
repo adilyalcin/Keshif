@@ -4,7 +4,7 @@
 		<title>Architecture Work of Mies van der Rohe</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -17,7 +17,6 @@ google.setOnLoadCallback(function(){
     function resizeBrowser(){
         $('#chart_div').height($(window).height()-100);
     };
-
     resizeBrowser();
     $(window).resize(function() {
         resizeBrowser();
@@ -36,9 +35,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Continent", collapsed: true
             },{ title: "City / Location",
-                attribMap: function(d){
-                    return "<span style='color:gray'>"+d.data.Country+" </span> - "+d.data.City;
-                }
+                attribMap: function(d){return "<span style='color:gray'>"+d.data.Country+" </span> - "+d.data.City;}
             },{ title: "Year", layout: 'bottom'
             },{ title: "Type", layout: 'right'
             }
@@ -51,8 +48,7 @@ google.setOnLoadCallback(function(){
             recordView: function(d){
                 var str="";
                 str+="<span class='workTitle'>"+d.data.Name+"</span>";
-                if(d.data.Image)
-                    str+="<img class='workPhoto' src='"+d.data.Image+"'>";
+                if(d.data.Image) str+="<img class='workPhoto' src='"+d.data.Image+"'>";
                 return str;
             }
         }

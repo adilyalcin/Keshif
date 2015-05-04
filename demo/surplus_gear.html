@@ -4,7 +4,7 @@
 		<title>Military’s Surplus Gear - US</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css" type="text/css">
@@ -22,7 +22,7 @@ $(document).ready( function() {
         leftPanelLabelWidth: 160,
         source: {
             fileType: 'tsv',
-            sheets : [ {name:"counties-gear", id:"CombinedName"} ],
+            sheets: [ {name:"counties-gear", id:"CombinedName"} ],
             dirPath: 'data/',
 //  http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/'
             url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
@@ -76,28 +76,21 @@ $(document).ready( function() {
                     if(d.data['Other armored vehicle']>0) r.push('Other armored vehicle');
                     return r;
                 }
-            },{ title: "Machine Gun", layout: 'right', intervalScale: 'log',
-            },{ title: "Pistol", layout: 'right', intervalScale: 'log',
-            },{ title: "Magazine", layout: 'right', intervalScale: 'log',
-            },{ title: "Shotgun", layout: 'right', intervalScale: 'log',
-            },{ title: "Armored Vehicle", layout: 'right', intervalScale: 'step',
-                attribMap: function(d){ 
-                    if(d.data['Armored Vehicle']===0) return; // skip 0
-                    return d.data['Armored Vehicle'];
-                },
-                collapsed: true
-            },{ title: "Personal Armor", layout: 'right', intervalScale: 'log',
-                collapsed: true
-            },{ title: "Night Vision", layout: 'right', intervalScale: 'log',
-                collapsed: true
+            },{ title: "Machine Gun", layout: 'right'
+            },{ title: "Pistol", layout: 'right'
+            },{ title: "Magazine", layout: 'right'
+            },{ title: "Shotgun", layout: 'right'
+            },{ title: "Armored Vehicle", layout: 'right', collapsed: true
+            },{ title: "Personal Armor", layout: 'right', collapsed: true
+            },{ title: "Night Vision", layout: 'right', collapsed: true
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [{ name: 'ZipCode', value: function(d){ return d.data.fips;} }],
-            textSearch : 'County Name',
+            sortingOpts: [{ name: 'ZipCode', value: function(d){ return d.data.fips;} }],
+            textSearch: 'County Name',
             detailsToggle: 'zoom',
-            textSearchFunc: function(d){ return d.data.county;},
+            textSearch: 'county',
             recordView: "CombinedName"
         }
     });

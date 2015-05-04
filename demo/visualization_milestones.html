@@ -4,7 +4,7 @@
 		<title>Milestones in the History of Thematic Cartography, Statistical Graphics, and Data Visualization</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -216,7 +216,7 @@ google.setOnLoadCallback(function(){
             callback: loadData
         },
         facets: [
-            {   title: "ERA",
+            {   title: "Era",
                 attribMap: function(d){
                     var year=d.data.Year;
                     if(year<1600) return 0;
@@ -242,7 +242,7 @@ google.setOnLoadCallback(function(){
                     }
                 }
 //            },{ title: "IsDuration"
-            },{ title: "Year", layout: "bottom", type: "interval", collapsed: true
+            },{ title: "Year", layout: "bottom", intervalScale: "linear", collapsed: true
             },{ title: "Highlights",
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf

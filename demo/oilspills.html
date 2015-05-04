@@ -4,7 +4,7 @@
 		<title>Petroleum Spills &ge; 1 Barrel from OCS Oil &amp; Gas Activities</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -42,9 +42,9 @@ function getMaterial(spill){
 }
 
 google.setOnLoadCallback( function(){
-    resizeBrowser(100,90);
+    resizeBrowser(170,60);
     $(window).resize(function() {
-        resizeBrowser(100,90);
+        resizeBrowser(170,60);
         browser.updateLayout();
     });
 
@@ -65,24 +65,12 @@ google.setOnLoadCallback( function(){
             kshf.Util.cellToArray(kshf.dt.Spills, ['During Activity'], /\/\s*/, false);
         },
         facets: [
-            {   title: "Size",
-                sortingOpts: [{ no_resort: true }]
-            },{ title: "Amount (Barrel)", collapsed: true,
+            {   title: "Size"
+            },{ /*title: "Amount (Barrel)", collapsed: true,
                 facets: [
-                    {   title: "Total Spilled", collapsed: false,
-                        intervalScale: 'log',
-                    },{ title: "Crude & Condensate", collapsed: true,
-                        attribMap: function(d){
-                            if(d.data[11]===0) return;
-                            return d.data[11];
-                        },
-                        intervalScale: 'log',
-                    },{ title: "Refined Petroleum", collapsed: true,
-                        attribMap: function(d){
-                            if(d.data[12]===0) return;
-                            return d.data[12];
-                        },
-                        intervalScale: 'log',
+                    {*/   title: "Total Spilled", collapsed: false
+                    },{ title: "Crude & Condensate", collapsed: true
+                    },{ title: "Refined Petroleum", collapsed: true
                     }/*,{
                         title: "Synthetic Base Fluid", collapsed: true,
                         attribMap: function(d){
@@ -98,28 +86,21 @@ google.setOnLoadCallback( function(){
                         },
                         intervalScale: 'log',
                     }*/
-                ]
-            },{ title: "Source",
-                attribMap: getSource
-            },{ title: "Material",
-                attribMap: getMaterial
-            },{ title: "Company", layout: 'right',
-                catDispCountFix: 5
-            },{ title: "District", layout: 'left',
-                catTableName: "Districts",
+                /*]
+            }*/,{ title: "Source", attribMap: getSource
+            },{ title: "Material", attribMap: getMaterial
+            },{ title: "Company", layout: 'right', catDispCountFix: 5
+            },{ title: "District", layout: 'left', catTableName: "Districts",
                 catLabelText: function(d){ return d.data.Name; }
-            },{ title: "Water Depth", layout: 'right',
-                attribMap: 'Water Depth (feet)',
-                intervalScale: 'log',
-                unitName: 'feet'
+            },{ title: "Water Depth", layout: 'right', attribMap: 'Water Depth (feet)',
+                intervalScale: 'log', unitName: ' ft'
             },{ title: "During Activity", layout: 'right', collapsed: true
             },{ title: "Cause", layout: 'right'
             },{ title: "Other Properties", layout: 'right', collapsed: true,
                 catTableName: "Notes",
                 attribMap: "Notes",
                 catLabelText: function(d){ return d.data.name; }
-            },{ title: "Spill Date", layout: 'bottom',
-                attribMap: getDate,
+            },{ title: "Spill Date", layout: 'bottom', attribMap: getDate,
             }
         ],
         itemDisplay: {

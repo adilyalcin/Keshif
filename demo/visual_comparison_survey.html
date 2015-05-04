@@ -4,7 +4,7 @@
 		<title>Visual Comparison for Information Visualization</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -15,7 +15,6 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
 var paperMap = {
     1: 15,
     2: 52,
@@ -261,16 +260,14 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "GeneralCategory", 
-            },{ title: "ComparisonCategory",
-                attribMap: function(d){ 
-                    return d.data.ComparisonCategory.split("/");
-                } 
-            },{ title: "DataTypeCompared", 
-            },{ title: "ComparisonScale", 
+            {   title: "General Category", attribMap: "GeneralCategory"
+            },{ title: "Comparison Category",
+                attribMap: function(d){ return d.data.ComparisonCategory.split("/"); } 
+            },{ title: "Data Type Compared", attribMap: "DataTypeCompared" 
+            },{ title: "Comparison Scale", attribMap: "ComparisonScale" 
 //            },{ title: "CitedInPaper", layout: 'right'
 //            },{ title: "MentionedInPaper", layout: 'right'
-            },{ title: "TechniqueUsed", layout: 'right'
+            },{ title: "Technique Used", layout: 'right', attribMap: "TechniqueUsed"
             },{ title: "Authors", layout: 'right',
             },{ title: "Venue", layout: 'right'
             },{ title: "Categorized By",  layout: 'right', collapsed: true,
@@ -287,8 +284,8 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts : [
-                { name: 'Year', inverse: true},
-                { name: 'id', inverse: true },
+                {name: 'Year', inverse: true},
+                {name: 'id', inverse: true},
             ],
             detailsToggle: 'zoom',
             textSearch: "System",
@@ -321,6 +318,5 @@ $(document).ready( function(){
             Data collected from the <a href="http://graphics.cs.wisc.edu/Vis/CompIV/" target='_blank'>webpage report</a> and the references in the survey paper, converted to <a href="https://docs.google.com/spreadsheets/d/1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0/edit" target="_blank">Google Spreadsheet</a>.
             <span class="fa fa-info-circle"></span>
             </div>
-
     </body>
 </html>

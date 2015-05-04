@@ -4,7 +4,7 @@
 		<title>Titanic Passengers</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -13,9 +13,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-var sinkDate = d3.time.format("%Y-%m-%d").parse("1912-04-15"); // returns a Date
-
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -27,14 +24,9 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Survived",
-                attribMap: function(d){ 
-                    var s = d.data.survived;
-                    if(s) return 'Yes';
-                    return 'No';
-                },
-                sortingOpts: [{ no_resort: true }]
+                attribMap: function(d){ return (d.data.survived)?'Yes':'No'; }
             },{ title: "Class",
-                attribMap: function(d){ return d.data.pclass;},
+                attribMap: function(d){ return d.data.pclass; },
                 sortingOpts: [{ 
                     func: function(a,b){
                         if(a==="3rd") return 1;
@@ -45,18 +37,16 @@ google.setOnLoadCallback(function(){
                     no_resort: true 
                 }]
             },{ title: "Sex",
-                attribMap: "sex",
-                sortingOpts: [{ no_resort: true }]
-            },{ title: "Age",
+                attribMap: "sex"
+            },{ title: "Age", layout:'bottom',
                 attribMap: function(d){
                     var age = d.data.age;
                     if(age===null) return null;
                     return age;
                 },
-                layout:'bottom',
                 showPercentile: true
-            },{ title: "embarked",
-            },{ title: "room", collapsed: true,
+            },{ title: "Embarked", attribMap: "embarked"
+            },{ title: "Room", collapsed: true, attribMap: "room"
 //            },{ title: "boat", collapsed: true, type: 'categorical' // there are negative values and such
             }
         ],

@@ -4,7 +4,7 @@
 		<title>Data Breaches in the U.S.</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -23,17 +23,20 @@
         http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html
 */
 
-var typeInfo = {
-    'NAM': 'Name',
-    'PII': 'Personally Identifying Information',
-    'SSN': 'Social Security Number',
-    'DOB': 'Day of Birth',
-    'ADD': 'Address',
-    'EMA': 'Email',
-    'CCN': 'Credit Card Number',
-    'PSS': 'Password',
-    'LOG': 'Log',
-    'MED': 'Medical Records',
+var typeLabel = function(d){
+    switch(d.data[0]){
+        case 'NAM': return 'Name';
+        case 'PII': return 'Personally Identifying Information';
+        case 'SSN': return 'Social Security Number';
+        case 'DOB': return 'Day of Birth';
+        case 'ADD': return 'Address';
+        case 'EMA': return 'Email';
+        case 'CCN': return 'Credit Card Number';
+        case 'PSS': return 'Password';
+        case 'LOG': return 'Log';
+        case 'MED': return 'Medical Records';
+    }
+    return v;
 };
 
 var recordFormat = d3.format("s");
@@ -55,16 +58,11 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Industry"
-            },{ title: "# of Records",
-                intervalScale: "log"
+            },{ title: "# of Records"
             },{ title: "Source",
             },{ title: "Type", layout: 'right'
             },{ title: "Data Source", layout: 'right'
-            },{ title: "Record Types", layout: 'right',
-                catLabelText: function(d){
-                    if(typeInfo[d.data[1]]) return typeInfo[d.data[1]];
-                    return d.data[1];
-                }
+            },{ title: "Record Types", layout: 'right', catLabelText: typeLabel
             },{ title: "Date", layout: "bottom"
             }
         ],

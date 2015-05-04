@@ -4,7 +4,7 @@
 		<title>The Last Ten Years of NHMRC research funding dataset 2004 - 2013</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -17,12 +17,9 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback(function () {
-    // set div height accordingly 
-    $('#chart_div').height(700);
-    $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
+    resizeBrowser(170,50);
     $(window).resize(function() {
-        $('#chart_div').width ($(window).width()*0.9);
+        resizeBrowser(170,50);
         browser.updateLayout();
     });
     
@@ -38,12 +35,11 @@ google.setOnLoadCallback(function () {
             },{ title: "Broad Research Area", 
             },{ title: "Funding Purpose", 
             },{ title: "Main Funding Group", 
-            },{ title: "Sector", layout: 'right', 
+            },{ title: "Sector",
             },{ title: "Field Of Research / RFCD", layout: 'right',
             },{ title: "Main Funding Unit Type", layout: 'right',
             },{ title: "Grant Admin Institution", layout: 'right',
             },{ title: "State", layout: 'right',
-            },{ title: "Main Category RFCD", layout: 'right',
             }
         ],
         itemDisplay: {

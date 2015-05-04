@@ -3,7 +3,7 @@
 	<head>
 		<title>L.A. County’s unclaimed remains of 2011</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -93,10 +93,11 @@ $(document).ready( function(){
             sortingOpts: [
                 {   name:'Age', inverse:false,
                 },{ name:'Death', inverse:true,
-                    value: function(d){ return d.data.Death; },
+                    value: function(d){ return dateFormat.parse(d.data.Death); },
                     label: function(d){
-                        if(d.data.Death===null) return '-';
-                        return dateFormat(d.data.Death);
+                        if(d.data['Death']===null) return '-';
+                        if(d.data['Death']==="") return '-';
+                        return dateFormat(d.data['Death']);
                     }
                 }
             ],

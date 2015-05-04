@@ -3,7 +3,7 @@
 	<head>
 		<title>Chrome Feature Status</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -51,32 +51,24 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "Category",
-                attribMap: "category"
-            },{ title: "Implementation Status",
-                attribMap: "impl_status_chrome"
-            },{ title: "Standardization",
-                attribMap: function(d){ return d.data.standardization.text; }
-            },{ title: "Visibility", layout: 'left',
-                attribMap: "visibility"
-            },{ title: "Milestone", layout: 'right', 
-                attribMap: "shipped_milestone"
-            },{ title: "Prefixed", layout: 'right', collapsed: true,
-                attribMap: "prefixed"
-            },{ title: "Owner", layout: 'right', collapsed: true,
-                attribMap: "owner"
-            },{ title: "Updated By", layout: 'right', collapsed: true,
-                attribMap: "updated_by"
-            },{ title: "Status (vs.)", layout: 'right',
+            {   title: "Category", attribMap: "category"
+            },{ title: "Implementation Status", attribMap: "impl_status_chrome"
+            },{ title: "Standardization", attribMap: function(d){ return d.data.standardization.text; }
+            },{ title: "Visibility", attribMap: "visibility", layout: 'left'
+            },{ title: "Milestone", attribMap: "shipped_milestone", layout: 'right'
+            },{ title: "Prefixed", attribMap: "prefixed", layout: 'right', collapsed: true,
+            },{ title: "Owner", attribMap: "owner", layout: 'right', collapsed: true,
+            },{ title: "Updated By", attribMap: "updated_by", layout: 'right', collapsed: true,
+            },{ /*title: "Status (vs.)", layout: 'right',
                 facets: [
-                    {   title: "FF Status",
-                        attribMap: function(d){ return d.data.ff_views.text; },
-                    },{ title: "IE Status",
-                        attribMap: function(d){ return d.data.ie_views.text; },
-                    },{ title: "Safari Status",
-                        attribMap: function(d){ return d.data.safari_views.text; },
-                    }
-                ]
+            {*/ title: "FireFox Status", layout: 'right',
+                attribMap: function(d){ return d.data.ff_views.text; },
+            },{ title: "IE Status", layout: 'right',
+                attribMap: function(d){ return d.data.ie_views.text; },
+            },{ title: "Safari Status", layout: 'right',
+                attribMap: function(d){ return d.data.safari_views.text; },
+                /*}
+            ]*/
             },{ title: "Update Date", layout: 'bottom',
                 attribMap: function(d){ return new Date(moment(d.data.updated)); },
             }

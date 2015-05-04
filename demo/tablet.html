@@ -4,7 +4,7 @@
 		<title>Tablet Computers</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css" type="text/css">
@@ -35,21 +35,21 @@ $(document).ready( function() {
             {   title: "Brand Name",
             },{ title: "Operating System",
             },{ title: "Customer Reviews"
-            },{ title: "Flash Memory Size (GB)", layout: 'right',
+            },{ title: "Flash Memory Size", layout: 'right', unitName: "GB",
                 attribMap: function(tablet){
                     var n= parseFloat(tablet.data['Flash Memory Size']);
                     if(n<1) return null;
                     return n;
                 },
-                intervalScale: 'log'
-            },{ title: "Screen Size (inches)",
+                intervalScale: 'log',
+            },{ title: "Screen Size (inches)", unitName: "″",
                 attribMap: function(tablet){
                     var x= parseFloat(tablet.data['Screen Size']);
                     if(isNaN(x)) { return null; }
                     return x;
                 }
-            },{ title: "Weight", layout: 'right', intervalScale: 'log', unitName: 'oz'
-            },{ title: "Battery Life", layout: 'right', unitName: 'hr'
+            },{ title: "Weight", layout: 'right', unitName: ' oz'
+            },{ title: "Battery Life", layout: 'right', unitName: ' hr'
             },{ title: "Rating", layout: 'right',
                 attribMap: "Customer Reviews",
                 showPercentile: true
@@ -64,13 +64,15 @@ $(document).ready( function() {
         ],
         itemDisplay: {
             sortColWidth: 50,
+            detail: 'zoom',
             sortingOpts: [
                 { name: 'Rating', value: function(d){ return d.data['Customer Reviews']; } }
             ],
             textSearch: 'name',
-        recordView: function(d){
-            return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+d.data.url+"'>"+d.data.name+"</a></div>";
-        }
+            recordView: function(d){
+                return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+
+                    d.data.url+"'>"+d.data.name+"</a></div>";
+            }
         }
     });
 });

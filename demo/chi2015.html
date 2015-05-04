@@ -4,7 +4,7 @@
 		<title>CHI2015 Papers</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -64,9 +64,9 @@ function loadData(browser){
 };
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(100,100);
+    resizeBrowser(150,80);
     $(window).resize(function(){
-        resizeBrowser(100,100);
+        resizeBrowser(150,80);
         browser.updateLayout();
     });
 
@@ -81,8 +81,7 @@ google.setOnLoadCallback(function(){
             callback : loadData
         },
         facets: [
-            {   title: "Type", 
-                attribMap: "subtype"
+            {   title: "Type",  attribMap: "subtype"
             },{ title: "Highlights",
                 attribMap: function(d){
                     var r=[];
@@ -101,7 +100,7 @@ google.setOnLoadCallback(function(){
                 },
             },{ title: "Authors", 
                 attribMap: function(d){
-                    if(d.data.authors===undefined) return r;
+                    if(d.data.authors===undefined) return;
                     var r=[];
                     d.data.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.name));
@@ -110,7 +109,7 @@ google.setOnLoadCallback(function(){
                 },
             },{ title: "Author Institution", 
                 attribMap: function(d){
-                    if(d.data.authors===undefined) return r;
+                    if(d.data.authors===undefined) return;
                     var r=[];
                     d.data.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.institution));
@@ -119,7 +118,7 @@ google.setOnLoadCallback(function(){
                 },
             },{ title: "Author Country", 
                 attribMap: function(d){
-                    if(d.data.authors===undefined) return r;
+                    if(d.data.authors===undefined) return;
                     var r=[];
                     d.data.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.country));
@@ -180,21 +179,13 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 55,
             detailsToggle : "Zoom",
-            sortingOpts : [{
-                name: '', inverse: true, value: function(d){ return d.data.key; }
-            }],
+            sortingOpts : [{ name: '', inverse: true, value: function(d){ return d.data.key; } }],
             textSearch: 'title',
             recordView: 'title'
         }
     });
 });
         </script>
-        <style>
-            #chart_div {
-                width: 1090px;
-                height: 650px;
-            }
-        </style>
     </head>
     <body>
         <div class="pageTitle" align="center">CHI-2015 Papers &amp; Notes</div>
@@ -206,7 +197,5 @@ google.setOnLoadCallback(function(){
                 <a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a>.
             <span class="fa fa-info-circle"></span>
             </div>
-
-
     </body>
 </html>

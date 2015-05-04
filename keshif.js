@@ -2149,6 +2149,10 @@ kshf.Browser.prototype = {
         if(type===undefined){
             type = this.getTypeFromAttribFunc(attribFunc);
         }
+        if(type===null){
+            console.log("Summary data type could not be detected for name:"+name);
+            return;
+        }
 
         var summary;
         if(type==='categorical'){
@@ -2579,11 +2583,15 @@ kshf.Browser.prototype = {
             var summary = this.summaries_by_name[facetDescr.title];
             if(summary===undefined){
                 if(typeof(facetDescr.attribMap)==="string"){
+                    var summary = this.summaries_by_name[facetDescr.attribMap];
+                    if(summary===undefined){
+                        summary = this.createSummary(facetDescr.attribMap);
+                    }
                     summary = this.changeSummaryName(facetDescr.attribMap,facetDescr.title);
                 } else if(typeof(facetDescr.attribMap)==="function"){
                     summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
                 } else{
-                    alert("both title and attribMap properties are not defined. Cannot create a new summary");
+                    var asddsad='23232';
                     return;
                 }
             } else {
@@ -2598,7 +2606,16 @@ kshf.Browser.prototype = {
                 facetDescr.type = facetDescr.type.toLowerCase();
                 if(facetDescr.type!==summary.type){
                     summary.destroy();
-                    summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
+                    if(facetDescr.attribMap===undefined){
+                        facetDescr.attribMap = facetDescr.title;
+                    }
+                    if(typeof(facetDescr.attribMap)==="string"){
+                        summary = this.createSummary(facetDescr.attribMap,null,facetDescr.type);
+                        if(facetDescr.attribMap!==facetDescr.title)
+                            this.changeSummaryName(facetDescr.attribMap,facetDescr.title);
+                    } else if(typeof(facetDescr.attribMap)==="function"){
+                        summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
+                    }
                     // TODO!
                     // summary.updateSummaryDataType();
                 }
@@ -2608,7 +2625,7 @@ kshf.Browser.prototype = {
             summary.collapsed = facetDescr.collapsed || summary.collapsed;
             if(facetDescr.description) summary.summaryDescription = facetDescr.description;
 
-            if(facetDescr.type==='categorical'){
+            if(summary.type==='categorical'){
                 // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED 
                 // showNoneCat
                 // removeInactiveCats (was removeInactiveAttrib)
@@ -2624,7 +2641,7 @@ kshf.Browser.prototype = {
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
             }
 
-            if(facetDescr.type==='interval'){
+            if(summary.type==='interval'){
                 if(facetDescr.intervalScale) summary.setScaleType(facetDescr.intervalScale);
                 // tickIntegerOnly
                 // intervalRange
@@ -2818,7 +2835,7 @@ kshf.Browser.prototype = {
         var tableName = this.primaryTableName;
 
         var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
-            .data(browser.summaries).enter();
+            .data(this.summaries).enter();
 
         var newNames = newAttributes
             .append("div").attr("class","attributeName")
@@ -2829,8 +2846,14 @@ kshf.Browser.prototype = {
             })
             ;
 
-        newNames.append("span").attr("class","summaryTypeIcon fa");
-        newNames.append("span").attr("class","dataTypeIcon fa");
+        newNames.append("span").attr("class","dataTypeIcon fa")
+            .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'e', title: function(){ return summary.getDataType(); }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); });
 
         newNames.append("input").attr("class","summaryTitleEdit")
             .on("keydown",function(summary){
@@ -2847,6 +2870,10 @@ kshf.Browser.prototype = {
         newNames.append("span").attr("class","summaryTitle");
         newNames.append("div").attr("class","fa fa-pencil editTitleButton")
             .on("click",function(summary){
+                if(summary.summaryColumn===null){
+                    // custom
+                    return;
+                }
                 var curState=this.parentNode.getAttribute("edittitle");
                 if(curState===null || curState==="false"){
                     this.parentNode.setAttribute("edittitle",true);
@@ -2883,15 +2910,7 @@ kshf.Browser.prototype = {
                 if(summary.summaryColumn===null) return "custom";
                 return "edited";
             })
-            .attr("datatype",function(summary){
-                if(summary.type==='categorical') return "categorical";
-                if(summary.type==='interval') {
-                    if(summary.hasTime) return "time";
-                    if(summary.hasFloat) return "floating";
-                    return "integer";
-                }
-                return "?";
-            })
+            .attr("datatype",function(summary){ return summary.getDataType(); })
             ;
         this.DOM.attributeList.selectAll(".summaryTitle")
             .text(function(summary){ return summary.summaryName; })
@@ -3051,7 +3070,7 @@ kshf.Browser.prototype = {
         var bottomFacetsHeight=0;
         // process bottom summary too
         if(this.panels.bottom.summaries.length>0){
-            var targetHeight=divHeight_Total/5;
+            var targetHeight=divHeight_Total/3;
             var maxHeight=0;
             // they all share the same target height
             this.panels.bottom.summaries.forEach(function(summary){
@@ -3141,13 +3160,12 @@ kshf.Browser.prototype = {
             doLayout.call(this,topPanelsHeight,this.panels.right.summaries);
         }
         // Middle Panel
-        var midPanelHeight=0;
+        var midPanelHeight = 0;
         if(this.panels.middle.summaries.length>0){
             var panelHeight = divHeight_Total;
             if(this.panels.bottom.summaries.length>0) panelHeight-=bottomFacetsHeight;
-//            if(this.listDisplay)
-//                panelHeight = panelHeight/5;
-            midPanelHeight=panelHeight-doLayout.call(this,panelHeight,this.panels.middle.summaries);
+            if(this.listDisplay) panelHeight -= 200; // give 100px fo the list display
+            midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
 
         // The part where summary DOM is updated
@@ -3260,6 +3278,15 @@ kshf.Summary_Base.prototype = {
 
         // Only used when summary is inserted into browser
         this.collapsed = false;
+    },
+    getDataType: function(){
+        if(this.type==='categorical') return "categorical";
+        if(this.type==='interval') {
+            if(this.hasTime) return "time";
+            if(this.hasFloat) return "floating";
+            return "integer";
+        }
+        return "?";
     },
     /** -- */
     destroy: function(){
@@ -3449,7 +3476,12 @@ kshf.Summary_Base.prototype = {
 
         var topRow = this.DOM.headerGroup.append("span").style('position','relative');
 
-        topRow.append("span").attr("class","chartFilterButtonParent").append("div")
+        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
+            .attr("edittitle",false)
+            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
+            ;
+
+        this.DOM.summaryTitle.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
@@ -3466,11 +3498,6 @@ kshf.Summary_Base.prototype = {
                 if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.summaryFilter.id});
             })
             .append("span").attr("class","fa fa-times")
-            ;
-
-        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
-            .attr("edittitle",false)
-            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
             ;
 
         this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
@@ -4099,6 +4126,11 @@ var Summary_Categorical_functions = {
         this.updateShowTextSearch();
         if(this.catCount_Total===1){
             this.catBarScale = "scale_frequency";
+        }
+        if(this.catCount_Total<=3) {
+            this.sortingOpts.forEach(function(opt){
+                opt.no_resort=true;
+            });
         }
     },
     /** -- */
@@ -5398,6 +5430,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateSorting: function(sortDelay,force){
+        if(this.sortingOpt_Active.no_resort===true && force!==true) return;
         if(this.sortingOpt_Active.custom===true&&force!==true) return;
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
@@ -5546,7 +5579,7 @@ var Summary_Interval_functions = {
 
         // The width between neighboring histgoram bars
         this.width_barGap = 2;
-        this.width_histMargin = 6;
+        this.width_histMargin = 17;
         this.vertAxisLabelWidth = 23;
 
         this.optimumTickWidth = 50;
@@ -5689,6 +5722,16 @@ var Summary_Interval_functions = {
         }
         if(this.intervalRange.max===undefined){
             this.intervalRange.max = d3.max(this.filteredItems,accessor);
+        }
+
+        console.log("Summary Name:"+this.summaryName);
+        var range= this.intervalRange.max-this.intervalRange.min;
+        console.log("IntervalRange min:"+this.intervalRange.min+' max:'+this.intervalRange.max);
+        
+        var deviation = d3.deviation(this.filteredItems, accessor);
+        console.log("Deviation:"+deviation+" testScore:"+(deviation/range));
+        if(deviation/range<0.12 && this.intervalRange.min>=0){
+            this.setScaleType('log');
         }
 
         if(this.intervalRange.min===undefined){
@@ -5836,7 +5879,7 @@ var Summary_Interval_functions = {
 
         this.initDOM_Slider();
 
-        this.DOM.unitName = this.DOM.labelGroup.append("span").attr("class","unitName");
+//        this.DOM.unitName = this.DOM.labelGroup.append("span").attr("class","unitName");
         this.setUnitName(this.unitName);
 
         if(this.showPercentile===true){
@@ -5855,7 +5898,7 @@ var Summary_Interval_functions = {
     },
     setUnitName: function(v){
         this.unitName = v;
-        if(this.unitName && this.DOM.unitName) this.DOM.unitName.text(this.unitName);
+        this.updateTickLabels();
     },
     initDOM_Percentile: function(){
         var me=this;
@@ -5928,7 +5971,6 @@ var Summary_Interval_functions = {
         // UPDATE intervalScale
         switch(this.scaleType){
             case 'linear':
-            case 'percentage':
             case 'step':
                 this.valueScale = d3.scale.linear(); break;
             case 'log':
@@ -6173,11 +6215,8 @@ var Summary_Interval_functions = {
             ddd.exit().remove();
             var ddd_enter = ddd.enter().append("span").attr("class","tick");
             ddd_enter.append("span").attr("class","line");
-            ddd_enter.append("span").attr("class","text").html(function(d){
-                var v=me.intervalTickFormat(d);
-                if(me.scaleType==='percentage') v+="%";
-                return v;
-            });
+            ddd_enter.append("span").attr("class","text");
+            this.updateTickLabels();
         } else{
             this.refreshBins_Translate();
             this.refreshViz_Scale();
@@ -6193,6 +6232,16 @@ var Summary_Interval_functions = {
     getBarWidth_Real: function(){
         return this.barWidth-this.width_barGap*2;
     },
+    /** -- */
+    updateTickLabels: function(){
+        var me=this;
+        this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
+            var v=me.intervalTickFormat(d);
+            if(me.unitName) v+="<span class='unitName'>"+me.unitName+"</span>";
+            return v;
+        });
+    },
+    /** -- */
     getAggreg_Width_Offset: function(){
         if(this.scaleType==='time')
             return this.barWidth/2;
@@ -6967,12 +7016,13 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshWidth: function(){
-        this.updateIntervalWidth(this.getWidth()-2*this.width_histMargin-this.vertAxisLabelWidth);
+        this.updateIntervalWidth(this.getWidth()-this.width_histMargin-this.vertAxisLabelWidth);
     },
     /** -- */
     setHeight: function(targetHeight){
         if(this.histBins===undefined) return;
         var c = targetHeight-this.getHeight_Header()-this.getHeight_Extra();
+        c = Math.min(c,100);
         if(this.height_hist===c) return;
         this.height_hist = c;
         this.updateBarScale2Active();

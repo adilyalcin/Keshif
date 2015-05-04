@@ -3,7 +3,7 @@
 	<head>
 		<title>Wedding Venues in UK (by Witched.co.uk)</title><meta charset="utf-8">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -99,11 +99,12 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "Location",
+            {   /*title: "Location",
                 facets:[
-                    {title: "Region Name" },
-                    {title: "County Name", collapsed: true }
-                ]
+                    {*/ title: "Region Name"
+                    },{ title: "County Name", collapsed: true 
+/*                }
+                ]*/
             },{ title: "Venue Type", layout: 'right',
             },{ title: "Dining Options"
             },{ title: "Overnight Accommodation"
@@ -112,13 +113,10 @@ $(document).ready( function(){
             },{ title: "Venue Staff Assistance", layout: 'right'
             },{ title: "Average Facility Rating", layout: 'right'
             },{ title: "Average Service Rating", layout: 'right'
-            },{ title: "Number Of Reviews", collapsed: true, layout: 'right', intervalScale: 'log',
-                attribMap: function(d){
-                    if(d.data['Total Number Of Reviews']==0) return;
-                    return d.data['Total Number Of Reviews'];
-                }
-            },{ title: "Maximum Capacity", layout: 'right', unitName: "Ppl"
-            },{ title: "Minimum Capacity", layout: 'right', unitName: "Ppl"
+            },{ title: "Number Of Reviews", collapsed: true, layout: 'right',
+                attribMap: 'Total Number Of Reviews'
+            },{ title: "Maximum Capacity", layout: 'right', unitName: " ppl"
+            },{ title: "Minimum Capacity", layout: 'right', unitName: " ppl"
             }
         ],
         itemDisplay: {
