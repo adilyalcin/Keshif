@@ -746,11 +746,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-overflow: ellipsis;*/
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text {
-  display: inline;
-  max-width: 100%;
+  display: inline-block;
+  max-width: 70%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: -4px;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_edit {
   display: none;
@@ -772,7 +773,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_editButton {
-  display: none;
+  display: inline-block;
   position: relative;
   font-size: 0.7em;
   color: gray;
@@ -2430,27 +2431,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader .mainTextSearch i.fa.clearText:hover {
   color: #cb5454;
 }
-.kshf .listHeader span.rightBoxes {
+.kshf .listHeader .rightBoxes {
   position: absolute;
   right: 0px;
-  top: -2px;
+  top: -1px;
   font-size: 1.3em;
   color: #635d46;
 }
-.kshf .listHeader span.rightBoxes .credits {
+.kshf .listHeader .rightBoxes .credits {
   cursor: pointer;
   margin: 0px;
 }
-.kshf .listHeader span.rightBoxes .credits:hover {
+.kshf .listHeader .rightBoxes .credits:hover {
   color: #cb5454;
 }
-.kshf .listHeader span.rightBoxes .datasource {
+.kshf .listHeader .rightBoxes .datasource {
   cursor: pointer;
   text-decoration: none;
   margin: 0px 3px;
   color: #635d46;
 }
-.kshf .listHeader span.rightBoxes .datasource:hover {
+.kshf .listHeader .rightBoxes .datasource:hover {
   color: #cb5454;
 }
 .kshf .listHeader span.filterClearAll {

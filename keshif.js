@@ -2620,6 +2620,9 @@ kshf.Browser.prototype = {
                     // summary.updateSummaryDataType();
                 }
             }
+            if(summary===undefined){
+                return;
+            }
 
             // Common settings
             summary.collapsed = facetDescr.collapsed || summary.collapsed;
@@ -2633,7 +2636,6 @@ kshf.Browser.prototype = {
                 // catDispCountFix
                 // domStyle -> affects the class name
                 // Affects visual
-                // catTextSearch (of value: forceTextSearch)
                 summary.catLabelText = facetDescr.catLabelText || summary.catLabelText;
                 summary.catTooltipText = facetDescr.catTooltipText || summary.catTooltipText;
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
@@ -3666,9 +3668,6 @@ var Summary_Categorical_functions = {
 
         this.isLinked = false; // TODO: document / update
 
-        this.catTextSearch = false;
-        this.updateShowTextSearch();
-
         this.initCategories();
     },
     /** -- */
@@ -4123,7 +4122,6 @@ var Summary_Categorical_functions = {
     updateCatCount_Total: function(){
         this.catCount_Total = this._cats.length;
         this.catCount_Wanted = this.catCount_Total;
-        this.updateShowTextSearch();
         if(this.catCount_Total===1){
             this.catBarScale = "scale_frequency";
         }
@@ -4132,6 +4130,7 @@ var Summary_Categorical_functions = {
                 opt.no_resort=true;
             });
         }
+        this.showTextSearch = this.catCount_Total>=20;
     },
     /** -- */
     updateAttribCount_Wanted: function(){
@@ -4153,10 +4152,6 @@ var Summary_Categorical_functions = {
             if(cat.isVisible && !cat.isVisible_before) this.catCount_NowVisible++;
             if(cat.isVisible) this.catCount_Visible++;
         },this);
-    },
-    /**text search is automatically enabled if num of rows is more than 20. NOT dependent on number of displayed rows*/
-    updateShowTextSearch: function(){
-        this.showTextSearch = this.catTextSearch || (this.catTextSearch!==false && this.catCount_Total>=20);
     },
     /** -- */
     clearDOM: function(){
@@ -4540,6 +4535,8 @@ var Summary_Categorical_functions = {
     refreshWidth: function(){
         if(this.DOM.facetCategorical){
             this.DOM.facetCategorical.style("width",this.getWidth()+"px");
+            this.DOM.summaryTitle.style("max-width",(this.getWidth()-80)+"px");
+            this.DOM.summaryTitle_edit.style("width",(this.getWidth()-100)+"px");
             this.DOM.chartAxis_Measure.select(".background")
                 .style("width",this.chartScale_Measure.range()[1]+"px");
         }

@@ -790,11 +790,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow: hidden;
             text-overflow: ellipsis;*/
             > .summaryTitle_text{
-                display: inline;
-                max-width: 100%;
+                display: inline-block;
+                max-width: 70%;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                margin-bottom: -4px;
             }
             > .summaryTitle_edit{
                 display: none;
@@ -817,7 +818,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             > .summaryTitle_editButton{
-                display: none;
+                display: inline-block;
                 position: relative;
                 font-size: 0.7em;
                 color: gray;
@@ -2509,10 +2510,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        span.rightBoxes{
+        .rightBoxes{
             position: absolute;
             right: 0px;
-            top: -2px;
+            top: -1px;
             font-size: 1.3em;
             color: #635d46;
             .credits{
