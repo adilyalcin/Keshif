@@ -175,7 +175,7 @@ $(document).ready( function(){
             },{ title: "% Transfers",
                 attribMap: function(d){
                     return 100*d.data["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"] / d.data["DRVEF2013.Undergraduate enrollment"];
-                },
+                }, unitName: "%"//, intervalScale: "log"
             },{ title: "Institution Type",
                 attribMap: function(d){
                     switch(d.data["HD2013.Sector of institution"]){

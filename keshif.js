@@ -6236,7 +6236,13 @@ var Summary_Interval_functions = {
     updateTickLabels: function(){
         var me=this;
         this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
-            var v=me.intervalTickFormat(d);
+            var v;
+            if(me.scaleType!=='time'){
+                if(d<1) v=d.toFixed(1);
+                else v=me.intervalTickFormat(d);
+            } else {
+                v=me.intervalTickFormat(d);
+            }
             if(me.unitName) v+="<span class='unitName'>"+me.unitName+"</span>";
             return v;
         });
