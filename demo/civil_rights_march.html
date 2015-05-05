@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Civil Rights March on Washington Photos</title><meta charset="utf-8">
+		<title>Civil Rights March on Washington Photos</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -20,24 +22,19 @@
         <script type="text/javascript">
 
 function loadData(browser){
-    browser.primaryTableName = "Photos";
-
-    kshf.dt.Photos = [];
-
     $.ajax({
         //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
         // url: "./data_private/dc_homicides.json", // original source
         url: "./data/civil_rights_march.json",
         success: function(data){
+            browser.primaryTableName = "Photos";
+            kshf.dt.Photos = [];
             data.forEach(function(poster){
                 poster.id = 1*poster.arcIdentifier;
                 kshf.dt.Photos.push(new kshf.Item(poster,"id"))
             });
             browser.items = kshf.dt.Photos;
-            browser.itemsSelectedCt = kshf.dt.Photos.length;
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 50);
+            browser.loadCharts();
         }
     });
 };
@@ -91,13 +88,10 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "contributors",
-            },{ title: "Types",
-                attribMap: "typesOfArchivalMaterials"
+            },{ title: "Types", attribMap: "typesOfArchivalMaterials"
             },{ title: "levelOfDescription", collapsed: true
-            },{ title: "Use Restrictions", collapsed: true,
-                attribMap: "useRestrictions"
-            },{ title: "Access Restrictions", collapsed: true,
-                attribMap: "accessRestrictions"
+            },{ title: "Use Restrictions", attribMap: "useRestrictions", collapsed: true,
+            },{ title: "Access Restrictions", attribMap: "accessRestrictions", collapsed: true,
 /*            },{ title: "Date", layout: "bottom",
                 attribMap: function(d){
                     var pDate=d.data.productionDates;

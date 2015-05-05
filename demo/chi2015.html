@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>CHI2015 Papers</title><meta charset="utf-8">
+		<title>CHI2015 Papers</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -56,11 +58,7 @@ function loadData(browser){
     });
 
     browser.items = kshf.dt.Papers;
-    browser.itemsSelectedCt = kshf.dt.Papers.length;
-
-    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-    d3.select(".kshf.layout_infobox div.status_text div").text("");
-    window.setTimeout(function() { browser.loadCharts(); }, 50);
+    browser.loadCharts();
 };
 
 google.setOnLoadCallback(function(){

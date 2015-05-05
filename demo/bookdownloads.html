@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Download Times of the book D3 Tips and Tricks</title><meta charset="utf-8">
+		<title>Download Times of the book D3 Tips and Tricks</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -16,26 +18,20 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
-var dataLoad = function(browser){
-    browser.primaryTableName = "Downloads";
-    kshf.dt.Downloads = [];
-
+function dataLoad(browser){
     $.ajax({
         url: "./data/bookdownloads.json",
         success: function(data){
-            var id=0;
-            data.forEach(function(download){
-                var i = {'id':id++};
-                i.downloadTime = moment(download, "YYYY-MM-DD HH:mm:ss");
-                kshf.dt.Downloads.push(new kshf.Item(i,"id"));
+            browser.primaryTableName = "Downloads";
+            kshf.dt.Downloads = [];
+            data.forEach(function(download,i){
+                kshf.dt.Downloads.push(new kshf.Item({
+                    id:i,
+                    downloadTime: moment(download, "YYYY-MM-DD HH:mm:ss")
+                },"id"));
             });
-
             browser.items = kshf.dt.Downloads;
-            browser.itemsSelectedCt = kshf.dt.Downloads.length;
-
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 50);
+            browser.loadCharts();
         }
     });
 };
@@ -70,24 +66,14 @@ $(document).ready( function(){
                         case 6: return "Saturday";
                     }
                 },
-                sortingOpts: [{
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                }]
+                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             },{ title: "Month", layout: 'right',
                 attribMap: function(download){ return download.data.downloadTime.month(); },
                 catLabelText: function(v){ return getMonthNameFromNumber(v.data[0]); },
-                sortingOpts: [{
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                }]
+                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             },{ title: "Year",
                 attribMap: function(download){ return download.data.downloadTime.year(); },
-                type: 'categorical',
-                sortingOpts: [{
-                    no_resort: true,
-                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
-                }]
+                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             }
         ],
     });

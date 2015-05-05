@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Best-selling singles of 2008</title><meta charset="utf-8">
+		<title>Best-selling singles of 2008</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -20,8 +22,8 @@
                     leftPanelLabelWidth: 100,
                     rightPanelLabelWidth: 90,
                     source: {
-                        gdocId : '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
-                        sheets : [ {name:"Singles"} ]
+                        gdocId: '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
+                        sheets: [ {name:"Singles"} ]
                     },
                     facets: [
                         {   title: "Genre"
@@ -36,8 +38,8 @@
                     ],
                     itemDisplay: {
                         sortColWidth: 45,
-                        detailsToggle : "Zoom",
-                        sortingOpts : [ {name: 'Position', inverse:true} ],
+                        detailsToggle: "Zoom",
+                        sortingOpts: [ {name: 'Position', inverse:true} ],
                         textSearchFunc: function(d){return d.data['Artist(s)']+" "+d.data.Track; },
                         recordView: function(d){ return d.data['Artist(s)']+" - "+d.data.Track; }
                     }

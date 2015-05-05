@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Milestones in the History of Thematic Cartography, Statistical Graphics, and Data Visualization</title><meta charset="utf-8">
+		<title>Milestones in the History of Thematic Cartography, Statistical Graphics, and Data Visualization</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -194,7 +196,6 @@ function loadData(browser){
     });
     
     browser.items = kshf.dt.Milestones;
-    browser.itemsSelectedCt = browser.items.length;
     browser.loadCharts();   
 };
 
@@ -246,8 +247,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Highlights",
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
-            },{ title: "Main Category",
-                attribMap: "Category"
+            },{ title: "Main Category", attribMap: "Category"
             },{ title: "Keywords", layout: "right",
                 description: "Keywords are generated from the pdf report at "
             },{ title: "Author"

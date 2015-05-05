@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>German Lobbying Meetings</title><meta charset="utf-8">
+		<title>German Lobbying Meetings</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -14,7 +16,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 var getIcon = function(d){
     switch(d){
         case "Energy": return "<i class='fa fa-lightbulb-o catIcon'></i>";
@@ -54,9 +55,7 @@ google.setOnLoadCallback(function(){
                     return d.data.Organization+" "+getIcon(d.data.Type);
                 },
             },{ title: "Lobbyist", layout: 'right', collapsed: true
-            },{
-                title: "Date",
-                layout: "bottom"
+            },{ title: "Date", layout: "bottom"
             }
         ],
         itemDisplay: {
@@ -81,7 +80,6 @@ google.setOnLoadCallback(function(){
         }
     });
 });
-
         </script>
         <style>
             #chart_div {
@@ -132,7 +130,5 @@ google.setOnLoadCallback(function(){
 
             <span class="fa fa-info-circle"></span>
             </div>
-
-        
     </body>
 </html>

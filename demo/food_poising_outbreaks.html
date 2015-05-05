@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Food Poisoning Outbreaks in Restaurants, 1992-2009, England and Wales</title><meta charset="utf-8">
+		<title>Food Poisoning Outbreaks in Restaurants, 1992-2009, England and Wales</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -13,7 +15,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 var demoID = 677;
 
 function shuffle(array) {
@@ -30,8 +31,54 @@ function shuffle(array) {
         array[randomIndex] = temporaryValue;
     }
     return array;
-}
+};
 
+function loaded(browser){
+    kshf.dt.Outbreaks.forEach(function(o){
+        o.data['Contributing Factors'] = []; // empty array
+    });
+
+    var factorNames = kshf.dt["Contributing Factors"][0].data;
+    var outbreaks = [];
+
+    kshf.dt['Contributing Factors'].forEach(function(factorRow){
+        var cousineName = factorRow.data.id;
+        outbreaks = [];
+        kshf.dt.Outbreaks.forEach(function(o){
+            if(o.data['National Cuisine']===cousineName) outbreaks.push(o);
+        });
+
+        var i=0;
+        for(var facName in factorNames){
+            if(facName==='id') continue;
+            outbreaks = shuffle(outbreaks);
+            for(var j=0; j<factorRow.data[facName]; j++){
+                outbreaks[j].data['Contributing Factors'].push(facName);
+            }
+            i++;
+        };
+    });
+
+    // Add pathogen info to "other" food service setting.
+    var otherservicePathogens = kshf.dt_id['Pathogens/Toxins'][10];
+    // outbreaks will hold non-restaurant settings
+    outbreaks = [];
+    kshf.dt.Outbreaks.forEach(function(o){
+        if(o.data.Setting!=="Restaurant") outbreaks.push(o);
+    });
+    outbreaks = shuffle(outbreaks);
+    var index=0;
+    var i=0;
+    for(var patName in otherservicePathogens.data){
+        if(i==0) return;
+        if(i==14) return;
+        for(var j=0; j<v; j++){
+            outbreaks[index].data['Pathogens / Toxins'] = patName;
+            index++;
+        }
+        i++;
+    };
+};
 
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
@@ -40,62 +87,18 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 250,
         barChartWidth: 150,
         source: {
-            gdocId : '1RsaL3mPunz_DDHv2Gc7DBxa8O6VLoa4LxlOuvoGi_KA',
-            sheets : [ {name:"Outbreaks"},{name:"Contributing Factors"},{name:"Pathogens/Toxins"} ]
+            gdocId: '1RsaL3mPunz_DDHv2Gc7DBxa8O6VLoa4LxlOuvoGi_KA',
+            sheets: [ {name:"Outbreaks"}, {name:"Contributing Factors"}, {name:"Pathogens/Toxins"} ]
         },
-        loadedCb: function(){
-            kshf.dt.Outbreaks.forEach(function(o){
-                o.data['Contributing Factors'] = []; // empty array
-            });
-
-            var factorNames = kshf.dt_ColNames_Arr['Contributing Factors'].slice(1);
-            var outbreaks = [];
-
-            kshf.dt['Contributing Factors'].forEach(function(factorRow){
-                var cousineName = factorRow.data.id;
-                outbreaks = [];
-                kshf.dt.Outbreaks.forEach(function(o){
-                    if(o.data['National Cuisine']===cousineName) outbreaks.push(o);
-                });
-
-                factorNames.forEach(function(facName,i){
-                    outbreaks = shuffle(outbreaks);
-                    for(var j=0; j<factorRow.data[i+1]; j++){
-                        outbreaks[j].data['Contributing Factors'].push(facName);
-                    }
-                });
-            });
-
-            // Add pathogen info to "other" food service setting.
-            var otherservicePathogens = kshf.dt_id['Pathogens/Toxins'][10];
-            // outbreaks will hold non-restaurant settings
-            outbreaks = [];
-            kshf.dt.Outbreaks.forEach(function(o){
-                if(o.data.Setting!=="Restaurant") outbreaks.push(o);
-            });
-            outbreaks = shuffle(outbreaks);
-            var index=0;
-            var i=0;
-            for(var patName in otherservicePathogens.data){
-                if(i==0) return;
-                if(i==14) return;
-                for(var j=0; j<v; j++){
-                    outbreaks[index].data['Pathogens / Toxins'] = patName;
-                    index++;
-                }
-                i++;
-            };
-        },
+        loadedCb: loaded,
         readyCb: function(browser){
-            browser.summaries[0].setHeightRow_attrib(20);
+            browser.panels.left.summaries[0].setHeightRow_attrib(20);
         },
         facets: [
             {   title: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
                 attribMap: 'National Cuisine'
-            },
-            // leaf
-            {   title: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
+            },{ title: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
                 attribMap: 'Food Types'
             },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
@@ -109,9 +112,7 @@ google.setOnLoadCallback(function(){
             },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
                 layout: 'right',
                 attribMap: 'Contributing Factors'
-            },{
-                title: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>", 
-                layout:'right',
+            },{ title: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>",  layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
                 attribMap: 'Setting'
             }

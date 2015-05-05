@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Supplements - Scientific evidence for popular health supplements</title><meta charset="utf-8">
+		<title>Supplements - Scientific evidence for popular health supplements</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -48,21 +50,16 @@ google.setOnLoadCallback(function(){
                 attribMap: function(d){ if(d.data.onetowatch!=="") return true; }
             },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity",
                 description: "Popularity based on Google search results",
-                attribMap: "popularity",
-                intervalScale: "log",
-            },{ title: "<i class='fa fa-th-large type_icon'></i> Type",
+                attribMap: "popularity", intervalScale: "log",
+            },{ title: "<i class='fa fa-th-large type_icon'></i> Type", attribMap: "type",
                 description: "What type of substance is this?",
-                attribMap: "type"
-            },{ title: "Health Categories",
+            },{ title: "Health Categories", attribMap: "category",
                 description: "The type of condition", layout: 'right',
-                attribMap: "category"
-            },{ title: "Health Conditions",
+            },{ title: "Health Conditions", attribMap: "condition",
                 description: "What condition does the supplement purport to affect?", layout: 'right',
-                attribMap: "condition"
-            },{ title: "Source",
+            },{ title: "Source", attribMap: "source",
                 description: "The key study for grading the evidence", layout: 'right',
-                collapsed: true,
-                attribMap: "source"
+                collapsed: true
             }
         ],
         itemDisplay: {

@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Sewer overflows in Maryland, USA</title><meta charset="utf-8">
+		<title>Sewer overflows in Maryland, USA</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -14,14 +16,9 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
-// You can load data on keshif callback, or before you initialize keshif.
 function loadData(browser){
     browser.primaryTableName = "Overflow";
-
     kshf.dt.Overflow = [];
-    kshf.dt_id.Overflow = {};
-
     $.ajax( {
 //      To use dynamic data loaded from maryland.gov, use the following link instead
 //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
@@ -32,21 +29,11 @@ function loadData(browser){
             // If you want to, you can extract Keshif facet information from the metadata too.
             // In this example, I manually create facets & hierarchices that I thought can provide insights below in keshif
             // browser description.
-            var overflows = data.data;
-
-            overflows.forEach(function(overflow){
+            data.data.forEach(function(overflow){
                 kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
             });
-
-            if(browser){
-                browser.items = kshf.dt.Overflow;
-                browser.itemsSelectedCt = browser.items.length;
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 50);
-            }
+            browser.items = kshf.dt.Overflow;
+            browser.loadCharts();
         }
     });
 };
@@ -80,17 +67,17 @@ $(document).ready(function(){
                         attribMap: getDuration_Human
                     }
                 ]
-            },{ title: "Location",
+            },{ /*title: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [
-                    {   title: "Zip Code", 
+                    {*/   title: "Zip Code",  layout: 'right',
                         attribMap: function(overflow){ return overflow.data[17]; }
-                    },{ title: "County", 
+                    },{ title: "County",  layout: 'right',
                         attribMap: function(overflow){ return overflow.data[23]; }
-                    },{ title: "Municipality/Facility",
+                    },{ title: "Municipality/Facility",  layout: 'right',
                         attribMap: function(overflow){ return overflow.data[9]; }
-                    }
-                ]
+                    /*}
+                ]*/
             }
         ],
         itemDisplay: {

@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Smartphones</title><meta charset="utf-8">
+		<title>Smartphones</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -19,7 +21,6 @@
 function loadData(browser){
     browser.primaryTableName = "Smartphones";
     kshf.dt.Smartphones = [];
-    var arr = kshf.dt.Smartphones;
     $.ajax({
         url: "./data/smartphones.json",
         success: function(data){
@@ -60,23 +61,22 @@ function loadData(browser){
                 delete phone.att_manually_saved;
                 delete phone.last_update;
 
-                arr.push(new kshf.Item(phone,"id"));
+                delete phone.status;
+                delete phone.SaveDate;
+
+                kshf.dt.Smartphones.push(new kshf.Item(phone,"id"));
             });
 
-            browser.items = arr;
-            browser.itemsSelectedCt = arr.length;
-
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 50);
+            browser.items = kshf.dt.Smartphones;
+            browser.loadCharts();
         }
     });
 };
 
 $(document).ready( function() {
-    resizeBrowser(100,80);
+    resizeBrowser(300,80);
     $(window).resize(function() {
-        resizeBrowser(100,80);
+        resizeBrowser(300,80);
         browser.updateLayout();
     });
 
@@ -98,8 +98,8 @@ $(document).ready( function() {
             },{ title: "Storage", layout: 'right', unitName: 'GB'
             },{ title: "SDCard", layout: 'right', unitName: "GB"
             },{ title: "RAM", layout: 'right', unitName: "GB"
-            },{ title: "att_pixels_x", layout: 'right'
-            },{ title: "att_pixels_y", layout: 'right'
+            },{ title: "Pixels - Width", attribMap: "att_pixels_x", layout: 'right'
+            },{ title: "Pixels - Height", attribMap: "att_pixels_y", layout: 'right'
             },{ title: "Has Dual SIM", type: 'categorical', collapsed: true
             }
         ],
@@ -168,6 +168,10 @@ $(document).ready( function() {
           -webkit-transition: all 200ms linear;
           -o-transition: all 200ms linear;
           -moz-transition: all 200ms linear;
+        }
+        #chart_div {
+            width: 890px;
+            height: 600px;
         }
         </style>
 	</head>

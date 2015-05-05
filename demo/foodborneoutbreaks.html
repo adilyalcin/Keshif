@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Foodborne Outbreaks</title><meta charset="utf-8">
+		<title>Foodborne Outbreaks</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -12,21 +14,18 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 function loadData(browser){
     $.ajax( {
         url:"./data/foodborneoutbreaks.xml",
         dataType:"xml",
         async: false,
         success: function(collection){
-            var $collection = $(collection);
             browser.primaryTableName = "Outbreaks";
             kshf.dt.Outbreaks = [];
-            var id=0;
-            $collection.find("record").each(function(){
+            $(collection).find("record").each(function(i){
                 var $this = $(this);
                 var cData = {};
-                cData.id = id++;
+                cData.id = i;
                 cData.Year = parseInt($this.find("Year").text());
                 if(cData.Year){
                     cData.Year = new Date(cData.Year,1,1,1,1,1,1);
@@ -44,16 +43,14 @@ function loadData(browser){
                 
                 kshf.dt.Outbreaks.push(new kshf.Item(cData,"id"));
             });
-
             browser.items = kshf.dt.Outbreaks;
-            browser.itemsSelectedCt = browser.items.length;
             browser.loadCharts();   
         }
     });
 };
 
 $(document).ready( function(){
-    new kshf.Browser({
+    browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Outbreaks",
         categoryTextWidth: 200,

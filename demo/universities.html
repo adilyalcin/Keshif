@@ -1,7 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Universities</title><meta charset="utf-8">
+		<title>Universities</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -134,7 +137,7 @@ var Unizin_Group = {
 socialShare = false;
 noRibbon = true;
 
-$(document).ready( function(){
+google.setOnLoadCallback(function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 210,
@@ -142,13 +145,12 @@ $(document).ready( function(){
         itemName: "Universities",
         source: {
             url: "https://nces.ed.gov/ipeds/datacenter/",
-            dirPath: 'data/',
-            fileType: 'csv',
-            sheets: [ {name:"universities", id:"unitid"} ]
+            gdocId : '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
+            sheets : [{ name:"Universities" }]
         },
         loadedCb: function(d){
-            // Add group information to the universities
-            kshf.dt.universities.forEach(function(u){
+            // Add group information to the Universities
+            kshf.dt.Universities.forEach(function(u){
                 var name = u.data['institution name'];
                 u.data.Groups=[];
                 if(AAU_Group[name]){ u.data.Groups.push("AAU"); }
@@ -284,10 +286,6 @@ $(document).ready( function(){
 #chart_div{
     width: 1100px;
     height: 700px;
-    left:-100px;
-}
-.attributeList{
-    display: block !important;
 }
 </style>
     </head>

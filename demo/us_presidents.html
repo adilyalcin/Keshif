@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>U.S. Presidents</title><meta charset="utf-8">
+		<title>U.S. Presidents</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -24,7 +26,7 @@ google.setOnLoadCallback( function(){
             sheets: [ {name:"Presidents"} ]
         },
         facets: [
-            {   title: "Party", 
+/*            {   title: "Party", 
             },{ title: "State of Birth",
             },{ title: "Occupation",
             },{ title: "College", layout: 'right'
@@ -32,7 +34,7 @@ google.setOnLoadCallback( function(){
             },{ title: "Notes", layout: 'right'
             },{ title: "Age at inaguration", layout: 'right'
             },{ title: "Term Start", layout: 'bottom'
-            }
+            }*/
         ],
         itemDisplay: {
             sortColWidth: 40,
@@ -48,17 +50,19 @@ google.setOnLoadCallback( function(){
 });
         </script>
         <style>
-            #chart_div {
-                width: 900px;
-                height: 700px;
-            }
-            .content img{
-                width: 100%;
-                padding-left: 2px;
-            }
-            .mainTextSearch input{
-                width: 80px;
-            }
+#chart_div {
+    width: 900px;
+    height: 700px;
+    position: relative;
+    left: 100px;
+}
+.content img{
+    width: 100%;
+    padding-left: 2px;
+}
+.attributeList{
+    display: block !important;
+}
         </style>
 	</head>
     <body>

@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>NSF Awards, with ElementCode(s): 7364,7367,7495</title><meta charset="utf-8">
+		<title>NSF Awards, with ElementCode(s): 7364,7367,7495</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -43,10 +45,8 @@ $(document).ready(function(){
             kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)'], ", ", false);
         },
         facets: [
-            {   title: "Program",
-                attribMap: "Program(s)"
-            },{ title: "Name",
-                attribMap: "Organization"
+            {   title: "Program", attribMap: "Program(s)"
+            },{ title: "Name", attribMap: "Organization"
             },{ title: "AwardInstrument",
             },{ title: "Start Date", layout: 'bottom',
                 attribMap: function(d){
@@ -55,27 +55,22 @@ $(document).ready(function(){
                     var m = moment(dt,"MM/DD/YYYY");
                     return new Date(m);
                 },
-            },{ title: "NSFOrganization", 
-                collapsed: true,
+            },{ title: "NSFOrganization", collapsed: true,
 //                catTableName: 'nsf_orgs',
 //                catLabelText: function(org){
 //                    return org.data.name;
 //                }
             },{ title: "NSFDirectorate", collapsed: true
             },{ title: "ProgramManager", collapsed: true
-            },{ title: "Awarded Amount",
-                attribMap: "AwardedAmountToDate",
-                intervalScale: 'log',
-                unitName: "$",
+            },{ title: "Awarded Amount", attribMap: "AwardedAmountToDate", unitName: "$",
 /*            },{
                 title: "PrincipalInvestigator",
                 layout: 'right'*/
-            },{ title: "-Institution-", layout: 'right',
+            },{ /*title: "-Institution-", layout: 'right',
                 facets: [
-                    {   title: "Name",
-                        attribMap: "Organization"
-                    },{ title: "State", collapsed: true,
-                        attribMap: "OrganizationState"
+                    {*/   title: "Name", attribMap: "Organization", layout: 'right',
+                    },{ title: "State", attribMap: "OrganizationState", layout: 'right', collapsed: true,
+                        catLabelText: function(d){ return getStateName(d.data[0]); }
 /*                    },{
                         catTableName: 'states',
                         catLabelText: function(d){
@@ -83,8 +78,8 @@ $(document).ready(function(){
                         }
 //                    },{
 //                        title: "OrganizationCity", collapsed: true*/
-                    }
-                ]
+                    /*}
+                ]*/
             }
         ],
         itemDisplay: {

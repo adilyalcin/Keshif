@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Titanic Passengers</title><meta charset="utf-8">
+		<title>Titanic Passengers</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -23,21 +25,17 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Passengers"} ]
         },
         facets: [
-            {   title: "Survived",
-                attribMap: function(d){ return (d.data.survived)?'Yes':'No'; }
-            },{ title: "Class",
-                attribMap: function(d){ return d.data.pclass; },
+            {   title: "Survived", attribMap: function(d){ return (d.data.survived)?'Yes':'No'; }
+            },{ title: "Class", attribMap: function(d){ return d.data.pclass; },
                 sortingOpts: [{ 
                     func: function(a,b){
                         if(a==="3rd") return 1;
                         if(a==="1st") return -1;
                         if(b==="3rd") return -1;
                         if(b==="1st") return 1;
-                    },
-                    no_resort: true 
+                    }
                 }]
-            },{ title: "Sex",
-                attribMap: "sex"
+            },{ title: "Sex", attribMap: "sex"
             },{ title: "Age", layout:'bottom',
                 attribMap: function(d){
                     var age = d.data.age;

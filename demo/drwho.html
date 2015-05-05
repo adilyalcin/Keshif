@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Doctor Who villains &amp; monsters since 1963</title><meta charset="utf-8">
+		<title>Doctor Who villains &amp; monsters since 1963</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -15,9 +17,6 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
-var demoID = 11;
-
 google.setOnLoadCallback( function () {
     logIf.Check = logIf.All();
 	new kshf.Browser({
@@ -26,21 +25,17 @@ google.setOnLoadCallback( function () {
         categoryTextWidth: 200,
         source: {
             gdocId: '0AonYZs4MzlZbdHJNSVh6clE4MVR4OHhqZWs4WGpSZlE',
-            sheets: [ {name:"TELEVIZED VILLAINS"} ]
+            sheets: [{name:"TELEVIZED VILLAINS"}]
         },
         loadedCb: function(){
-            // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.Util.cellToArray(kshf.dt['TELEVIZED VILLAINS'], 
                 ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
         },
         facets:[
             {   title: "Doctor actor"
-            },{ title: "Motivation",
-                attribMap: function(d){ return d.data['Motivation (invasion earth, kill humans, etc)']; }
+            },{ title: "Motivation", attribMap: 'Motivation (invasion earth, kill humans, etc)'
             },{ title: "Story titles",
-            },{ title: "Total Stories",
-                attribMap: function(d){ return d.data['Story titles'].length; },
-                intervalScale: 'log'
+            },{ title: "Total Stories", attribMap: function(d){ return d.data['Story titles'].length; },
             },{ title: "First Appearance", layout: 'bottom',
                 attribMap: function(d){ 
                     var y=d.data['Year first'];
@@ -51,8 +46,7 @@ google.setOnLoadCallback( function () {
         ],
         itemDisplay:{
             sortColWidth: 63,
-            sortingOpts: [{   name: 'Year first' }
-            ],
+            sortingOpts: [{ name: 'Year first' }],
             textSearch: 'Villain',
             recordView: 'Villain'
         }

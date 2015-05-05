@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Mushrooms</title><meta charset="utf-8">
+		<title>Mushrooms</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -150,9 +152,9 @@ google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 110,
-        leftPanelLabelWidth: 128,
-        rightPanelLabelWidth: 128,
-        middlePanelLabelWidth: 128,
+        leftPanelLabelWidth: 148,
+        rightPanelLabelWidth: 148,
+        middlePanelLabelWidth: 148,
         source: {
             gdocId : '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
             sheets : [ {name:"Mushrooms"} ]
@@ -162,73 +164,73 @@ google.setOnLoadCallback(function(){
             },{ title: "Habitat", catLabelText: getName.Habitat
             },{ title: "Odor", catLabelText: getName.Odor
             },{ title: "Bruises", collapsed: true,
-            },{ title: "Gill",
+            },{ /*title: "Gill",
                 facets:[
-                    {   title: "Attachment",
+                    {*/   title: "Gill - Attachment",
                         attribMap: "Gill Attachment",
                         catLabelText: getName.GillAttachment
-                    },{ title: "Spacing",
+                    },{ title: "Gill - Spacing",
                         attribMap: "Gill Spacing",
                         catLabelText: getName.GillSpacing
-                    },{ title: "Size",
+                    },{ title: "Gill - Size",
                         attribMap: "Gill Size",
                         catLabelText: getName.GillSize
-                    },{ title: "Color",
+                    },{ title: "Gill - Color",
                         attribMap: "Gill Color",
                         catLabelText: getName.Color
-                    }
-                ]
+                    /*}
+                ]*/
 
             },{ title: "Population", layout: "middle",
                 catLabelText: getName.Population
-            },{ title: "Cap", layout: "middle",
+            },{ /*title: "Cap", layout: "middle",
                 facets: [
-                    {   title: "Shape",
+                    {*/   title: "Cap - Shape", layout: "middle",
                         attribMap: "Cap Shape",
                         catLabelText: getName.Shape
-                    },{ title: "Surface",
+                    },{ title: "Cap - Surface", layout: "middle",
                         attribMap: "Cap Surface",
                         catLabelText: getName.Surface
-                    },{ title: "Color",
+                    },{ title: "Cap - Color", layout: "middle",
                         attribMap: "Cap Color",
                         catLabelText: getName.Color
-                    }
-                ]
-            },{ title: "Ring", layout: "middle",
+                    /*}
+                ]*/
+            },{ /*title: "Ring", layout: "middle",
                 facets: [
-                    {   title: "Number",
+                    {*/   title: "Number", layout: "middle",
                         attribMap: "Ring Number",
                         catLabelText: getName.RingNumber
-                    },{ title: "Type",
+                    },{ title: "Type", layout: "middle",
                         attribMap: "Ring Type",
                         catLabelText: getName.RingType
-                    }
-                ]
+                    /*}
+                ]*/
 
             },{ title: "Spore Print Color", layout: 'right',
                 catLabelText: getName.Color
-            },{ title: "Stalk", layout: 'right',
+            },{ /*title: "Stalk", layout: 'right',
                 facets:[
-                    {   title: "Shape",
+                    {*/   title: "Stalk - Shape", layout: 'right',
                         attribMap: "Stalk Shape",
                         catLabelText: getName.Shape
-                    },{ title: "Root",
+                    },{ title: "Stalk - Root", layout: 'right',
                         attribMap: "Stalk Root",
                         catLabelText: getName.Root
-                    },{ title: "Surface Above Ring",
+                    },{ title: "Stalk - Surface Above Ring", layout: 'right',
                         attribMap: "Stalk Surface Above Ring",
                         catLabelText: getName.Surface
-                    },{ title: "Surface Below Ring",
+                    },{ title: "Stalk - Surface Below Ring", layout: 'right',
                         attribMap: "Stalk Surface Below Ring",
                         catLabelText: getName.Surface
-                    },{ title: "Color Above Ring",
+                    },{ title: "Stalk - Color Above Ring", layout: 'right',
                         attribMap: "Stalk Color Above Ring",
                         catLabelText: getName.Color
-                    },{ title: "Color Below Ring",
+                    },{ title: "Stalk - Color Below Ring", layout: 'right',
                         attribMap: "Stalk Color Below Ring",
                         catLabelText: getName.Color
-                    }
-                ]
+                    /*}
+                ]*/
             }
         ]
     });
@@ -236,7 +238,7 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
             #chart_div {
-                width: 890px;
+                width: 950px;
                 height: 670px;
             }
         </style>

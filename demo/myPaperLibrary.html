@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>My paper library</title><meta charset="utf-8">
+		<title>My paper library</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -129,7 +131,6 @@ function loadZotero(zoteroRDF, browser) {
     });
 
     browser.items = kshf.dt[browser.primaryTableName];
-    browser.itemsSelectedCt = browser.items.length;
     browser.loadCharts();   
 }
 
@@ -155,14 +156,13 @@ $(document).ready( function(){
             },{ title: "Item Type", collapsed: true
             },{ title: "Subject", 
 //            },{ title: "Author", 
-            },{ title: "Date", 
+            },{ title: "Date", layout: 'middle', 
                 attribMap: function(d){
                     if(d.data.Date===null) return;
                     var y= d.data.Date.getFullYear();
                     if(y<1990) return;
                     return d.data.Date;
-                },
-                intervalScale: 'time', layout: 'middle'
+                }
             },{ title: 'Series Title', 
             }
         ],

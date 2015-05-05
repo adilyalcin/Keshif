@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Time Magazine Covers</title><meta charset="utf-8">
+    <head>
+        <title>Time Magazine Covers</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -28,8 +30,8 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 160,
         rightPanelLabelWidth: 120,
         source: {
-            gdocId : '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
-            sheets : [ {name:"Covers"} ]
+            gdocId: '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
+            sheets: [ {name:"Covers"} ]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
@@ -46,9 +48,9 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 120,
-            //      detailsToggle : "Zoom",
+//          detailsToggle: "Zoom",
             displayType: 'grid',
-            sortingOpts : [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
+            sortingOpts: [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
             textSearchFunc: function(d){return d.data.Info; },
             recordView: function(d){ 
                 var str='';

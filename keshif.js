@@ -173,7 +173,10 @@ kshf.Util = {
             columns.forEach(function(column){
                 var list = p[column];
                 if(list===null) return;
-                if(typeof list==="number") return;
+                if(typeof list==="number") {
+                    p[column] = ""+list;
+                    return;
+                }
                 var list2 = list.split(splitExpr);
                 list = [];
                 // remove empty "" items
@@ -1193,7 +1196,7 @@ kshf.List.prototype = {
         listHeaderTopRowTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch");
         listHeaderTopRowTextSearch.append("i").attr("class","fa fa-search searchIcon");
         this.DOM.mainTextSearch = listHeaderTopRowTextSearch.append("input")
-            .attr("placeholder","Search "+(this.textSearch?this.textSearch:"title"))
+            .attr("placeholder","Search "+(this.textSearch?this.textSearch:""))
             //.attr("autofocus","true")
             .on("keydown",function(){
                 var x = this;
@@ -1508,8 +1511,8 @@ kshf.List.prototype = {
                     this.parentNode.tipsy.hide();
                     me.browser.updateItemZoomText(d);
 /*
-                    var mousePos = d3.mouse(me.browser.root[0][0]);
-//                    mousePos[0] = me.browser.root[0][0].offsetWidth - mousePos[0];
+                    var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
+//                    mousePos[0] = me.browser.DOM.root[0][0].offsetWidth - mousePos[0];
                     var origin=mousePos[0]+"px "+mousePos[1]+"px";
                     var dom=me.browser.DOM.infobox_itemZoom[0][0];
                     dom.style.webkitTransformOrigin = origin;
@@ -1855,7 +1858,7 @@ kshf.Panel.prototype = {
     /** -- */
     setupAdjustWidth: function(){
         var me=this;
-        var root = this.browser.root;
+        var root = this.browser.DOM.root;
         if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
         if(this.summaries.length===0){
             if(this.DOM.panelAdjustWidth){
@@ -2033,7 +2036,7 @@ kshf.Browser = function(options){
     this.forceHideBarAxis = false;
     if(options.forceHideBarAxis!==undefined) this.forceHideBarAxis = options.forceHideBarAxis;
 
-    this.root = d3.select(this.domID)
+    this.DOM.root = d3.select(this.domID)
         .classed("kshf",true)
         .attr("noanim",false)
         .attr("percentview",false)
@@ -2051,13 +2054,13 @@ kshf.Browser = function(options){
         ;
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
-    var rootDomNode = this.root[0][0];
+    var rootDomNode = this.DOM.root[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
 
     if(options.showResizeCorner === true) this.insertResize();
     this.insertInfobox();
 
-    this.DOM.panelsTop=this.root.append("div");
+    this.DOM.panelsTop=this.DOM.root.append("div");
 
 
     this.panels.left = new kshf.Panel({
@@ -2087,13 +2090,13 @@ kshf.Browser = function(options){
         widthCatLabel : options.categoryTextWidth || 115,
         browser: this,
         name: 'bottom',
-        parentDOM: this.root
+        parentDOM: this.DOM.root
     });
 
-    this.DOM.attributeList = this.root.append("div").attr("class","attributeList");
+    this.DOM.attributeList = this.DOM.root.append("div").attr("class","attributeList");
     this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Available attributes");
 
-    this.root.selectAll(".layout_block").on("mouseleave",function(){
+    this.DOM.root.selectAll(".layout_block").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
     });
 
@@ -2142,6 +2145,10 @@ kshf.Browser.prototype = {
         if(this.summaries_by_name[name]!==undefined){
             console.log("createSummary: The summary name["+name+"] is already used. It must be unique. Try again");
             return;
+        }
+        if(typeof(func)==="string"){
+            var x=func;
+            func = function(d){ return d.data[x]; }
         }
         // Check type before you instantiate the summary!
         var attribFunc=func || function(d){ return d.data[name]; }
@@ -2198,11 +2205,11 @@ kshf.Browser.prototype = {
     },
     /** -- */
     domHeight: function(){
-        return parseInt(this.root.style("height"));
+        return parseInt(this.DOM.root.style("height"));
     },
     /** -- */
     domWidth: function(){
-        return parseInt(this.root.style("width"));
+        return parseInt(this.DOM.root.style("width"));
     },
     // TODO: If names are the same and config options are different, what do you do?
     createFilter: function(opts){
@@ -2215,10 +2222,10 @@ kshf.Browser.prototype = {
     /** -- */
     insertResize: function(){
         var me=this;
-        this.root.append("div").attr("class", "layout_block layout_resize")
+        this.DOM.root.append("div").attr("class", "layout_block layout_resize")
             .on("mousedown", function (d, i) {
-                me.root.style('cursor','nwse-resize');
-                me.root.attr("noanim",true);
+                me.DOM.root.style('cursor','nwse-resize');
+                me.DOM.root.attr("noanim",true);
                 var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
                 var mouseDown_y = d3.mouse(d3.select("body")[0][0])[1];
                 var mouseDown_width  = parseInt(d3.select(this.parentNode).style("width"));
@@ -2231,8 +2238,8 @@ kshf.Browser.prototype = {
                     me.updateLayout();
                 }).on("mouseup", function(){
                     if(sendLog) sendLog(kshf.LOG.RESIZE);
-                    me.root.style('cursor','default');
-                    me.root.attr("noanim",false);
+                    me.DOM.root.style('cursor','default');
+                    me.DOM.root.attr("noanim",false);
                     // unregister mouse-move callbacks
                     d3.select("body").on("mousemove", null).on("mouseup", null);
                 });
@@ -2270,7 +2277,7 @@ kshf.Browser.prototype = {
         creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
-        this.layout_infobox = this.root.append("div").attr("class", "layout_block layout_infobox").attr("show","loading");
+        this.layout_infobox = this.DOM.root.append("div").attr("class", "layout_block layout_infobox").attr("show","loading");
         this.layout_infobox.append("div").attr("class","background")
             .on("click",function(){
                 me.layout_infobox.attr("show","none");
@@ -2326,7 +2333,7 @@ kshf.Browser.prototype = {
         // insert clear all option
         if(this.listDisplay===undefined) {
             // none
-            this.DOM.filterClearAll = this.root.select(".ffffffff");
+            this.DOM.filterClearAll = this.DOM.root.select(".ffffffff");
             return;
         }
         this.DOM.filterClearAll = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","filterClearAll")
@@ -2355,6 +2362,18 @@ kshf.Browser.prototype = {
         this.DOM.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
             .append("span").attr("class","fa fa-times")
             ;
+    },
+    /** -- */
+    showAttributes: function(){
+        if(this.attribsShown){
+            this.DOM.root.style("left","0px");
+            this.DOM.attributeList.style("display","none");
+            this.attribsShown = false;
+            return;
+        }
+        this.attribsShown = true;
+        this.DOM.root.style("left","120px").style("position","relative");
+        this.DOM.attributeList.style("display","block");
     },
     /** -- */
     showInfoBox: function(){
@@ -2502,6 +2521,8 @@ kshf.Browser.prototype = {
         var dstTable_Id = kshf.dt_id[dstTableName];
         var dstTable = kshf.dt[dstTableName];
 
+        var hasString = false;
+
         srcItems.forEach(function(srcData_i){
             var mapping = summaryFunc(srcData_i);
             if(mapping==="" || mapping===undefined || mapping===null) return;
@@ -2509,6 +2530,7 @@ kshf.Browser.prototype = {
                 mapping.forEach(function(v2){
                     if(v2==="" || v2===undefined || v2===null) return;
                     if(!dstTable_Id[v2]){
+                        if(typeof(v2)==="string") hasString=true;
                         var itemData = [v2,v2];
                         var item = new kshf.Item(itemData,0);
                         if(labelFunc){
@@ -2520,6 +2542,7 @@ kshf.Browser.prototype = {
                 });
             } else {
                 if(!dstTable_Id[mapping]){
+                    if(typeof(mapping)==="string") hasString=true;
                     var itemData = [mapping,mapping];
                     var item = new kshf.Item(itemData,0);
                     if(labelFunc){
@@ -2530,6 +2553,13 @@ kshf.Browser.prototype = {
                 }   
             }
         });
+
+        // If any of the table values are string, convert all to string
+        if(hasString){
+            dstTable.forEach(function(item){
+                item.data[0] = ""+item.data[0];
+            })
+        }
     },
     /** -- */
     finishDataLoad: function(sheet,arr) {
@@ -2554,10 +2584,7 @@ kshf.Browser.prototype = {
                         this.itemsWantedCount = this.items.length;
                     }
                 },this);
-
-                this.layout_infobox.select("div.status_text .info").text("Creating browser...");
-                this.layout_infobox.select("div.status_text .dynamic").text("");
-                window.setTimeout(function(){ me.loadCharts(); }, 50);
+                this.loadCharts();
             } else {
                 this.source.callback(this);
             }
@@ -2565,6 +2592,13 @@ kshf.Browser.prototype = {
     },
     /** -- */
     loadCharts: function(){
+        var me=this;
+        this.layout_infobox.select("div.status_text .info").text("Creating browser...");
+        this.layout_infobox.select("div.status_text .dynamic").text("");
+        window.setTimeout(function(){ me._loadCharts(); }, 100);
+    },
+    /** -- */
+    _loadCharts: function(){
         var me=this;
 
         if(this.loadedCb!==undefined) this.loadedCb.call(this);
@@ -2625,7 +2659,9 @@ kshf.Browser.prototype = {
             }
 
             // Common settings
-            summary.collapsed = facetDescr.collapsed || summary.collapsed;
+            if(facetDescr.collapsed){
+                summary.setCollapsed(true);
+            }
             if(facetDescr.description) summary.summaryDescription = facetDescr.description;
 
             if(summary.type==='categorical'){
@@ -2701,7 +2737,7 @@ kshf.Browser.prototype = {
         }
 
         if(this.listDef!==undefined){
-            this.listDisplay = new kshf.List(this,this.listDef, this.root);
+            this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
 
             var resultInfo = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
             this.DOM.listheader_count = resultInfo.append("span").attr("class","listheader_count")
@@ -2729,6 +2765,20 @@ kshf.Browser.prototype = {
                         if(sendLog) sendLog(kshf.LOG.DATASOURCE);
                     })
             }
+
+            // Attribute panel
+            rightSpan.append("i").attr("class","fa fa-cog")
+                .each(function(d){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'n',
+                        title: function(){ return "Show available attributes"; }
+                    })
+                })
+                .on("mouseover",function(){ this.tipsy.show(); })
+                .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                .on("click",function(){ 
+                    me.showAttributes();
+                });
             // TODO: implement popup for file-based resources
             if(this.showDataSource !== false){
                 var datasource = null;
@@ -2763,6 +2813,7 @@ kshf.Browser.prototype = {
                 .on("mouseover",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(){ me.showInfoBox();});
+
 
             this.listDisplay.insertTotalViz();
         } else {
@@ -2823,12 +2874,12 @@ kshf.Browser.prototype = {
     addAttribDragListeners: function(dom){
         var me=this;
         dom.addEventListener("dragstart",function(event){
-            browser.root.attr("showdropzone",true);
+            browser.DOM.root.attr("showdropzone",true);
             event.dataTransfer.setData("text/plain",dom.__data__.summaryName); // use the d3 bound value
             event.dataTransfer.setData("text/info","new_summary");
         });
         dom.addEventListener("dragend",function(event){
-            browser.root.attr("showdropzone",false);
+            browser.DOM.root.attr("showdropzone",false);
             //alert(event.dataTransfer.dropEffect);
             if(event.dataTransfer.dropEffect==="copy"){
                 me.refreshAttributeList();
@@ -2986,7 +3037,7 @@ kshf.Browser.prototype = {
     /** Ratio mode is when glyphs scale to their max */
     setRatioMode: function(how){
         this.ratioModeActive = how;
-        this.root.attr("ratiomode",how);
+        this.DOM.root.attr("ratiomode",how);
         this.setPercentMode(how);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_All();
@@ -2996,7 +3047,7 @@ kshf.Browser.prototype = {
     /** -- */
     setPercentMode: function(how){
         this.percentModeActive = how;
-        this.root.attr("percentview",how);
+        this.DOM.root.attr("percentview",how);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshMeasureLabel();
         });
@@ -3007,7 +3058,7 @@ kshf.Browser.prototype = {
     /** -- */
     clearPreviewCompare: function(){
         this._previewCompare_Active = false;
-        this.root.attr("previewcompare",false);
+        this.DOM.root.attr("previewcompare",false);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_Compare();
         });
@@ -3027,7 +3078,7 @@ kshf.Browser.prototype = {
         aggregate.DOM.facet.setAttribute("compare",true);
         this.comparedAggregate = aggregate;
         this._previewCompare_Active = true;
-        this.root.attr("previewcompare",true);
+        this.DOM.root.attr("previewcompare",true);
         this.summaries.forEach(function(summary){ 
             if(summary.inBrowser()) summary.refreshViz_Compare();
         });
@@ -3036,7 +3087,7 @@ kshf.Browser.prototype = {
     /** -- */
     clearResultPreviews: function(){
         this.resultPreviewActive = false;
-        this.root.attr("resultpreview",false);
+        this.DOM.root.attr("resultpreview",false);
         this.items.forEach(function(item){
             item.updatePreview_Cache = false;
         });
@@ -3053,7 +3104,7 @@ kshf.Browser.prototype = {
     refreshResultPreviews: function(){
         var me=this;
         this.resultPreviewActive = true;
-        this.root.attr("resultpreview",true);
+        this.DOM.root.attr("resultpreview",true);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_Preview();
         });
@@ -3281,6 +3332,7 @@ kshf.Summary_Base.prototype = {
         this.chartScale_Measure = d3.scale.linear();
 
         this.DOM = {};
+        this.DOM.inited = false;
 
         this.items = this.browser.getPrimaryItems();
         if(this.items===undefined||this.items===null||this.items.length===0){
@@ -3296,6 +3348,8 @@ kshf.Summary_Base.prototype = {
         if(this.type==='categorical') return "categorical";
         if(this.type==='interval') {
             if(this.hasTime) return "time";
+            return "numeric";
+            // 
             if(this.hasFloat) return "floating";
             return "integer";
         }
@@ -3315,8 +3369,31 @@ kshf.Summary_Base.prototype = {
         }
     },
     /** -- */
+    hasEntityParent: function(){
+        if(this.parentFacet===undefined) return false; 
+        return this.parentFacet.hasAttribs();
+    },
+    /** -- */
     hasSubFacets: function(){
         return this.subFacets.length>0;
+    },
+    /** -- */
+    clearDOM: function(){
+        var dom = this.DOM.root[0][0];
+        dom.parentNode.removeChild(dom);
+    },
+    /** -- */
+    getWidth: function(){
+        return this.panel.getWidth_Total()-this.getWidth_LeftOffset();
+    },
+    /** -- */
+    getWidth_LeftOffset: function(){
+        return (this.parentFacet)?17:0;
+    },
+    /** -- */
+    isFiltered: function(){
+        if(this.summaryFilter===undefined) return false;
+        return this.summaryFilter.isFiltered;
     },
     /** -- */
     addToPanel: function(panel){
@@ -3355,10 +3432,10 @@ kshf.Summary_Base.prototype = {
                     draggedTarget = event.target;
                     me.DOM.root
                         .style("opacity",0.5)
-                    me.browser.root.attr("showdropzone",true);
+                    me.browser.DOM.root.attr("showdropzone",true);
                 }, false);
                 this.addEventListener("dragend", function( event ) {
-                    me.browser.root.attr("showdropzone",false);
+                    me.browser.DOM.root.attr("showdropzone",false);
                     me.DOM.root
                         .style("opacity","")
                 }, false);
@@ -3691,30 +3768,20 @@ var Summary_Categorical_functions = {
 
         var maxAggregate_Total = this.getMaxAggregate_Total();
         if(maxAggregate_Total===1){
-            this.DOM.nugget.select(".dataTypeIcon").html("Unique<br>categories");
+            this.DOM.nugget.select(".dataTypeIcon").html("Unique");
             nuggetViz.style("display",'none');
             return;
         }
 
-        var barChartWidth= 25;
-        var heightPerBar = 30/this._cats.length;
-        
+        var totalWidth= 25;
         nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
                 .append("span").attr("class","nuggetBar")
                 .style("width",function(cat){
-                    return barChartWidth*(cat.items.length/maxAggregate_Total)+"px";
+                    return totalWidth*(cat.items.length/maxAggregate_Total)+"px";
                 })
-                .style("height",(heightPerBar)+"px")
-                //.style("margin-bottom",(heightPerBar/3)+"px");
             ;
         
         this.DOM.nugget.select(".dataTypeIcon").html(this._cats.length+"<br>rows");
-    },
-    /** -- */
-    /** -- */
-    hasEntityParent: function(){
-        if(this.parentFacet===undefined) return false; 
-        return this.parentFacet.hasAttribs();
     },
     /** -- */
     getCategoryTable: function(){
@@ -3723,10 +3790,6 @@ var Summary_Categorical_functions = {
     /** -- */
     getAttribs_wID: function(){
         return kshf.dt_id[this.catTableName];
-    },
-    /** -- */
-    getWidth: function(){
-        return this.panel.getWidth_Total()-this.getWidth_LeftOffset();
     },
     /** -- */
     getHeight: function(){
@@ -3742,16 +3805,6 @@ var Summary_Categorical_functions = {
     /** -- */
     getWidth_Text: function(){
         return this.getWidth_Label()+this.panel.width.catQueryPreview;
-    },
-    /** -- */
-    getWidth_LeftOffset: function(){
-        var offset=0;
-        if(this.parentFacet){
-            offset+=17;
-        } else if(this.hasSubFacets()){
-            // offset+=17;
-        }
-        return offset;
     },
     /** -- */
     getHeight_Header: function(){
@@ -3794,10 +3847,6 @@ var Summary_Categorical_functions = {
         return h;
     },
     /** -- */
-    isFiltered: function(state){
-        return this.summaryFilter.isFiltered;
-    },
-    /** -- */
     areAllAttribsInDisplay: function(){
         return this.catCount_Visible===this.catCount_InDisplay;
     },
@@ -3819,6 +3868,7 @@ var Summary_Categorical_functions = {
                 opt.func=kshf.Util.sortFunc_aggreage_Active_Total;
             } else {
                 opt.custom = true;
+                if(opt.no_resort===undefined) opt.no_resort=true;
             }
             if(opt.inverse===undefined)  opt.inverse=false;
         },this);
@@ -3886,7 +3936,9 @@ var Summary_Categorical_functions = {
 
         this.mapAttribs();
 
-        this.sortCats();
+        // If the categories are not unique, sort them
+        if(this.getMaxAggregate_Total()!=1 && this._cats.length>1)
+            this.sortCats();
     },
     /*8 -- */
     createSummaryFilter: function(){
@@ -4196,10 +4248,6 @@ var Summary_Categorical_functions = {
         },this);
     },
     /** -- */
-    clearDOM: function(){
-        this.DOM.root.style("display","none");
-    },
-    /** -- */
     initDOM: function(){
         if(this.DOM.inited===true) return;
         var me = this;
@@ -4484,10 +4532,12 @@ var Summary_Categorical_functions = {
     setCollapsed: function(v){
         var oldV = this.collapsed;
         this.collapsed = v;
-        if(oldV===true&v===false){
-            this.refreshViz_All();
+        if(this.DOM.root){
+            if(oldV===true&v===false){
+                this.refreshViz_All();
+            }
+            this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
         }
-        this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
         // collapse children only if this is a hierarchy, not sub-filtering
         if(this.hasSubFacets() && !this.hasAttribs()){
             this.subFacets.forEach(function(f){ f.setCollapsed(v); });
@@ -4788,7 +4838,7 @@ var Summary_Categorical_functions = {
 
         var tickDoms = this.DOM.chartAxis_Measure.selectAll("span.tick").data(tickValues,function(i){return i;});
 
-        var noanim=this.browser.root.attr("noanim");
+        var noanim=this.browser.DOM.root.attr("noanim");
 
         if(this.browser.ratioModeActive){
             transformFunc=function(d){
@@ -4806,9 +4856,9 @@ var Summary_Categorical_functions = {
             }
         }
 
-        if(noanim!=="true") this.browser.root.attr("noanim",true);
+        if(noanim!=="true") this.browser.DOM.root.attr("noanim",true);
         var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
-        if(noanim!=="true") this.browser.root.attr("noanim",false);
+        if(noanim!=="true") this.browser.DOM.root.attr("noanim",false);
 
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line")
@@ -4883,7 +4933,7 @@ var Summary_Categorical_functions = {
         if(this.heightRow_attrib===h) return;
         this.heightRow_attrib = h;
 
-        this.browser.root.attr("noanim",true);
+        this.browser.DOM.root.attr("noanim",true);
         
         this.browser.updateLayout();
         
@@ -4900,7 +4950,7 @@ var Summary_Categorical_functions = {
         this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
 
         setTimeout(function(){
-            me.browser.root.attr("noanim",false);
+            me.browser.DOM.root.attr("noanim",false);
         },100);
     },
     /** -- */
@@ -5316,7 +5366,7 @@ var Summary_Categorical_functions = {
             var DOM_facet = attrib.DOM.facet;
             DOM_facet.tipsy.hide();
             attrib.DOM.facet.setAttribute("selecttype","not");
-            me.browser.root.attr("preview-not",true);
+            me.browser.DOM.root.attr("preview-not",true);
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
             
@@ -5324,7 +5374,7 @@ var Summary_Categorical_functions = {
         };
         var cbNotLeave = function(attrib,i){
             attrib.DOM.facet.setAttribute("selecttype","and");
-            setTimeout(function(){me.browser.root.attr("preview-not",null);}, 0);
+            setTimeout(function(){me.browser.DOM.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
             d3.event.stopPropagation();
@@ -5333,7 +5383,7 @@ var Summary_Categorical_functions = {
             me.browser.preview_not = true;
             me.filterAttrib(attrib,"NOT");
             setTimeout(function(){
-                me.browser.root.attr("preview-not",null);
+                me.browser.DOM.root.attr("preview-not",null);
                 me.browser.preview_not = false;
             }, 1000);
             d3.event.stopPropagation();
@@ -5600,33 +5650,29 @@ var Summary_Interval_functions = {
         this.filteredItems = this.items;
 
         // pixel width settings...
-        // Initial width (will be updated later...)
-        this.height_hist = 1;
-        // Minimum possible histogram height
-        this.height_hist_min = 30;
-        // Maximim possible histogram height
-        this.height_hist_max = 100;
-        // Slider height
-        this.height_slider = 12;
-        // Height for labels
-        this.height_labels = 13;
-        // Height for percentile chart
-        this.height_percentile = 16;
-        // Height for histogram gap on top.
-        this.height_hist_topGap = 12;
+        
+        this.height_hist = 1; // Initial width (will be updated later...)
+        this.height_hist_min = 30; // Minimum possible histogram height
+        this.height_hist_max = 100; // Maximim possible histogram height
+        this.height_slider = 12; // Slider height
+        this.height_labels = 13; // Height for labels
+        this.height_percentile = 16; // Height for percentile chart
+        this.height_hist_topGap = 12; // Height for histogram gap on top.
 
-        // The width between neighboring histgoram bars
-        this.width_barGap = 2;
-        this.width_histMargin = 17;
-        this.vertAxisLabelWidth = 23;
+        this.width_barGap = 2; // The width between neighboring histgoram bars
+        this.width_histMargin = 17; // The width between neighboring histgoram bars
+        this.width_vertAxisLabel = 23; // ..
 
         this.optimumTickWidth = 50;
 
         this.scaleType = 'linear';
-        this.tickIntegerOnly = true;
+        this.tickIntegerOnly = false;
 
         this.unitName = undefined;
         this.showPercentile=false;
+
+        this.histBins = [];
+        this.intervalTicks = [];
 
         this.intervalTickFormat = function(v){
             if(me.tickIntegerOnly) return d3.format("s")(v);
@@ -5648,8 +5694,7 @@ var Summary_Interval_functions = {
                 this.refreshIntervalSlider();
             },
             onFilter: function(filter){
-                if(this.DOM.root.attr("filtered")!=="true")
-                    this.DOM.root.attr("filtered",true);
+                this.DOM.root.attr("filtered",true);
 
                 var i_min = filter.active.min;
                 var i_max = filter.active.max;
@@ -5676,20 +5721,15 @@ var Summary_Interval_functions = {
 
                 filter.filteredItems.forEach(function(item){
                     var v = item.mappedDataCache[filter.id].v;
-                    if(v===null)
-                        item.setFilterCache(filter.id, false);
-                    else
-                        item.setFilterCache(filter.id, isFiltered(v) );
+                    item.setFilterCache(filter.id, (v!==null)?isFiltered(v):false);
                     // TODO: Check if the interval scale is extending/shrinking or completely updated...
                 }, this);
-                // update handles
+
                 this.refreshIntervalSlider();
             },
             filterView_Detail: function(){
                 if(me.scaleType==='step'){
-                    if(this.active.min===this.active.max){
-                        return "<b>"+this.active.min+"</b>";
-                    }
+                    if(this.active.min===this.active.max) return "<b>"+this.active.min+"</b>";
                 }
                 if(me.scaleType==='time'){
                     return "<b>"+me.intervalTickFormat(this.active.min)+
@@ -5704,7 +5744,6 @@ var Summary_Interval_functions = {
                 }
             },
         });
-        this.summaryFilter.how = "All";
 
         var filterId = this.summaryFilter.id;
         
@@ -5734,17 +5773,14 @@ var Summary_Interval_functions = {
         },this);
 
         if(!this.hasFloat) this.tickIntegerOnly=true;
-        if(this.hasTime) this.scaleType = 'time';
+        if(this.hasTime) this.setScaleType('time');
 
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
         // remove items that map to null
-        var isLog = this.scaleType==='log';
         this.filteredItems = this.filteredItems.filter(function(item){
             var v = accessor(item);
-            if(v===null) return false;
-            if(isLog && v===0) { return false; }
-            return true;
+            return (v!==undefined && v!==null);
         });
 
         // sort items in increasing order
@@ -5760,31 +5796,18 @@ var Summary_Interval_functions = {
 
         // this value is static once the histogram is created
         this.intervalRange = {};
-        if(this.intervalRange.min===undefined){
-            this.intervalRange.min = d3.min(this.filteredItems,accessor);
-        }
-        if(this.intervalRange.max===undefined){
-            this.intervalRange.max = d3.max(this.filteredItems,accessor);
-        }
+        this.updateIntervalRangeMinMax();
 
-        console.log("Summary Name:"+this.summaryName);
         var range= this.intervalRange.max-this.intervalRange.min;
-        console.log("IntervalRange min:"+this.intervalRange.min+' max:'+this.intervalRange.max);
-        
         var deviation = d3.deviation(this.filteredItems, accessor);
-        console.log("Deviation:"+deviation+" testScore:"+(deviation/range));
         if(deviation/range<0.12 && this.intervalRange.min>=0){
             this.setScaleType('log');
         }
+        console.log("Summary Name:"+this.summaryName);
+        console.log("IntervalRange min:"+this.intervalRange.min+' max:'+this.intervalRange.max);
+        console.log("Deviation:"+deviation+" testScore:"+(deviation/range));
 
-        if(this.intervalRange.min===undefined){
-            this.isEmpty = true;
-            return;
-        } else {
-            this.isEmpty = false;
-        }
-
-        this.resetIntervalFilterActive();
+        this.updateScaleAndBins(30,10,false);
     },
     /** -- */
     refreshNuggetViz: function(){
@@ -5793,48 +5816,54 @@ var Summary_Interval_functions = {
             return;
         }
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
-/*
-        var barChartWidth= 25;
-        var heightPerBar = 30/this._cats.length;
         
-        nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
+        var maxAggregate_Total = this.getMaxBinTotalItems();
+
+        if(this.intervalRange.min===this.intervalRange.max){
+            this.DOM.nugget.select(".dataTypeIcon").html(this.intervalRange.min+"<br>only");
+            nuggetViz.style("display",'none');
+            return;
+        }
+
+        var totalHeight = 17;
+        nuggetViz.selectAll(".nuggetBar").data(this.histBins).enter()
                 .append("span").attr("class","nuggetBar")
-                .style("width",function(cat){
-                    return barChartWidth*(cat.items.length/maxAggregate_Total)+"px";
+                .style("height",function(aggr){
+                    return totalHeight*(aggr.length/maxAggregate_Total)+"px";
                 })
-                .style("height",(heightPerBar)+"px")
-                //.style("margin-bottom",(heightPerBar/3)+"px");
-            ;*/
+            ;
         
         this.DOM.nugget.select(".dataTypeIcon").html(
-            "<span class='num_left'>"+this.intervalTickFormat(this.intervalRange.min)+"</span>"+
-            "<span class='num_right'>"+this.intervalTickFormat(this.intervalRange.max)+"</span>");
+            "<span class='num_left'>"+this.intervalTickFormat(this.valueScale.domain()[0])+"</span>"+
+            "<span class='num_right'>"+this.intervalTickFormat(this.valueScale.domain()[1])+"</span>");
+    },
+    /** -- */
+    updateIntervalRangeMinMax: function(){
+        var filterId = this.summaryFilter.id;
+        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+
+        this.intervalRange.min= d3.min(this.filteredItems,accessor);
+        this.intervalRange.max= d3.max(this.filteredItems,accessor);
+        this.isEmpty = this.intervalRange.min===undefined;
+        this.resetIntervalFilterActive();
     },
     /** -- */
     setScaleType: function(t){
         if(this.scaleType===t) return;
         this.scaleType=t;
 
-        var filterId = this.summaryFilter.id;
-        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+        if(this.DOM.facetInterval)
+            this.DOM.facetInterval.attr("istime",this.scaleType==='time');
+
         if(this.scaleType==='log'){
+            var filterId = this.summaryFilter.id;
+            var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+            // remove items with 0 value (log(0) is invalid)
             this.filteredItems = this.filteredItems.filter(function(item){
                 return accessor(item)!==0;
             });
-            this.intervalRange.min = d3.min(this.filteredItems,accessor);
+            this.updateIntervalRangeMinMax();
         }
-    },
-    /** -- */
-    getPanel: function(){
-        return this.panel;
-    },
-    hasEntityParent: function(){
-        if(this.parentFacet===undefined) return false;
-        return this.parentFacet.hasAttribs();
-    },
-    /** -- */
-    getWidth: function(){
-        return this.panel.getWidth_Total()-this.getWidth_Offset();
     },
     /** -- */
     getHeight: function(){
@@ -5842,12 +5871,9 @@ var Summary_Interval_functions = {
         // Note: I don't know why I need -2 to match real dom height.
         return this.getHeight_Header()+this.getHeight_Wrapper();
     },
+    /** -- */
     getHeight_Wrapper: function(){
         return this.height_hist+this.getHeight_Extra();
-    },
-    /** -- */
-    getWidth_Offset: function(){
-        return this.parentFacet?17:0;
     },
     /** -- */
     getHeight_Header: function(){
@@ -5868,10 +5894,6 @@ var Summary_Interval_functions = {
     /** -- */
     getHeight_RangeMin: function(){
         return this.getHeight_Header()+this.height_hist_min+this.getHeight_Extra();
-    },
-    /** -- */
-    isFiltered: function(){
-        return this.summaryFilter.isFiltered;
     },
     /** -- */
     isFiltered_min: function(){
@@ -5900,12 +5922,9 @@ var Summary_Interval_functions = {
     getMaxBinActiveItems: function(){
         return d3.max(this.histBins,function(aggr){ return aggr.aggregate_Active; });
     },
-    clearDOM: function(){
-        var dom = this.DOM.root[0][0];
-        dom.parentNode.removeChild(dom);
-    },
     /** -- */
     initDOM: function(){
+        if(this.isEmpty) return;
         if(this.DOM.inited===true) return;
         var me = this;
         
@@ -5920,57 +5939,61 @@ var Summary_Interval_functions = {
 
         this.DOM.root
             .attr("class","kshfChart")
-            .attr("collapsed",this.collapsed===false?"false":"true")
+            .attr("collapsed",false)
             .attr("filtered",false)
             .attr("chart_id",this.id)
             ;
 
         this.insertHeader.call(this);
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
-        this.DOM.facetInterval = this.DOM.wrapper.append("div").attr("class","facetInterval");
+        this.DOM.facetInterval = this.DOM.wrapper.append("div").attr("class","facetInterval")
+            .attr("istime",this.scaleType==='time');
 
         this.DOM.histogram = this.DOM.facetInterval.append("div").attr("class","histogram");
         this.DOM.histogram_bins = this.DOM.histogram.append("div").attr("class","bins")
-            .style("margin-left",(this.vertAxisLabelWidth)+"px")
+            .style("margin-left",(this.width_vertAxisLabel)+"px")
             ;
 
-        if(this.scaleType==='time') {
+        if(this.scaleType==='time'){
             this.DOM.timeSVG = this.DOM.histogram.append("svg")
-                .style("margin-left",(this.vertAxisLabelWidth+this.width_barGap)+"px")
+                .style("margin-left",(this.width_vertAxisLabel+this.width_barGap)+"px")
                 .attr("class","timeSVG")
                 .attr("xmlns","http://www.w3.org/2000/svg");
         }
 
         this.insertChartAxis_Measure.call(this, this.DOM.histogram, 'w', 'nw');
-        this.DOM.chartAxis_Measure.style("padding-left",(this.vertAxisLabelWidth-2)+"px")
+        this.DOM.chartAxis_Measure.style("padding-left",(this.width_vertAxisLabel-2)+"px")
 
         this.initDOM_Slider();
-
-//        this.DOM.unitName = this.DOM.labelGroup.append("span").attr("class","unitName");
-        this.setUnitName(this.unitName);
 
         if(this.showPercentile===true){
             this.initDOM_Percentile();
         }
 
         // collapse if the mapping is empty
-        // TODO: Make this logic appear earlier and don't deal with the rest of the interface
+        // TODO: This shoudl be elsewhere, not here...
         if(this.intervalRange.min===0 && this.intervalRange.max===0){
             this.setCollapsed(true);
         }
 
         this.setCollapsed(this.collapsed);
+        this.setUnitName(this.unitName);
+
+        var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
+        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), true );
 
         this.DOM.inited=true;
     },
+    /** -- */
     setUnitName: function(v){
         this.unitName = v;
         this.updateTickLabels();
     },
+    /** -- */
     initDOM_Percentile: function(){
         var me=this;
         this.DOM.percentileGroup = this.DOM.facetInterval.append("div").attr("class","percentileGroup")
-            .style('margin-left',this.vertAxisLabelWidth+"px");;
+            .style('margin-left',this.width_vertAxisLabel+"px");;
         this.DOM.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
 
         this.DOM.quantile = {};
@@ -6010,98 +6033,71 @@ var Summary_Interval_functions = {
         },this);
     },
     /** -- */
-    updateIntervalWidth: function(w){
-        var me=this;
-        if(this.isEmpty) return;
-
+    updateDOMwidth: function(){
+        if(this.DOM.inited===false) return;
+        var chartWidth = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
         this.DOM.facetInterval.style("width",this.getWidth()+"px");
         this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
         this.DOM.summaryTitle_edit.style("width",(this.getWidth()-80)+"px");
-
-        this.intervalRange.width=w;
-
         if(this.DOM.timeSVG)
-            this.DOM.timeSVG.style("width",(this.intervalRange.width+2)+"px")
-        var optimalTickCount = Math.floor(this.intervalRange.width/this.optimumTickWidth);
-
-        // if we have enough width, and
-        var tmp=(this.intervalRange.max-this.intervalRange.min)+1;
-        var stepWidth=this.intervalRange.width/tmp;
-        if(!this.hasFloat && this.scaleType!=='step' && this.intervalRange.width/this.optimumTickWidth>tmp){
-            this.scaleType = 'step';
-        }
-        if(this.scaleType==='step'){
-            this.resetIntervalFilterActive();
-            this.intervalRange.width -= stepWidth;
-        }
-
-        // UPDATE intervalScale
-        switch(this.scaleType){
-            case 'linear':
-            case 'step':
-                this.valueScale = d3.scale.linear(); break;
-            case 'log':
-                this.valueScale = d3.scale.log().base(2); break;
-            case 'time':
-                this.valueScale = d3.time.scale.utc(); break;
-        }
-        this.valueScale
-            .domain([this.intervalRange.min, this.intervalRange.max])
-            .range([0, this.intervalRange.width]);
-
-        if(this.scaleType==='step'){
-            this.valueScale
-                .range([0+stepWidth/2, this.intervalRange.width+stepWidth/2]);
-        }
-
+            this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
+    },
+    /** --
+        Uses
+        - this.scaleType
+        - this.intervalRange min & max
+        Updates
+        - this.intervalTickFormat
+        - this.valueScale.nice()
+        Return
+        - the tick values in an array
+      */
+    getValueTicks: function(optimalTickCount){
         var ticks;
 
         // HANDLE TIME CAREFULLY
         if(this.scaleType==='time') {
-            this.DOM.facetInterval.attr("istime",true);
-
             // 1. Find the appropriate aggregation interval (day, month, etc)
-            var timeRange = this.intervalRange.max-this.intervalRange.min; // in milliseconds
+            var timeRange_ms = this.intervalRange.max-this.intervalRange.min; // in milliseconds
             var timeInterval;
             var timeIntervalStep = 1;
-            optimalTickCount = optimalTickCount*2;
-            if((timeRange/1000) < optimalTickCount){
+            if((timeRange_ms/1000) < optimalTickCount){
                 timeInterval = d3.time.second.utc;
                 this.intervalTickFormat = d3.time.format.utc("%S");
-            } else if((timeRange/(1000*5)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*5)) < optimalTickCount){
                 timeInterval = d3.time.second.utc;
                 timeIntervalStep = 5;
                 this.intervalTickFormat = d3.time.format.utc("%-S");
-            } else if((timeRange/(1000*15)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*15)) < optimalTickCount){
                 timeInterval = d3.time.second.utc;
                 timeIntervalStep = 15;
                 this.intervalTickFormat = d3.time.format.utc("%-S");
-            } else if((timeRange/(1000*60)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-M");
-            } else if((timeRange/(1000*60*5)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*5)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
                 timeIntervalStep = 5;
                 this.intervalTickFormat = d3.time.format.utc("%-M");
-            } else if((timeRange/(1000*60*15)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*15)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
                 timeIntervalStep = 15;
                 this.intervalTickFormat = d3.time.format.utc("%-M");
-            } else if((timeRange/(1000*60*60)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60)) < optimalTickCount){
                 timeInterval = d3.time.hour.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-H");
-            } else if((timeRange/(1000*60*60*6)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*6)) < optimalTickCount){
                 timeInterval = d3.time.hour.utc;
                 timeIntervalStep = 6;
                 this.intervalTickFormat = d3.time.format.utc("%-H");
-            } else if((timeRange/(1000*60*60*24)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24)) < optimalTickCount){
                 timeInterval = d3.time.day.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-e");
                 // TODO: kshf.Util.ordinal_suffix_of();
-            } else if((timeRange/(1000*60*60*24*7)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*7)) < optimalTickCount){
                 timeInterval = d3.time.week.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = function(v){
@@ -6110,10 +6106,9 @@ var Summary_Interval_functions = {
                     return suffix+"<br>"+first;
                 };
                 this.height_labels = 28;
-            } else if((timeRange/(1000*60*60*24*30)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*30)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
                 timeIntervalStep = 1;
-                this.intervalTickFormat = d3.time.format.utc("%-b");
                 this.intervalTickFormat = function(v){
                     var threeMonthsLater = timeInterval.offset(v, 3);
                     var first=d3.time.format.utc("%-b")(v);
@@ -6122,7 +6117,7 @@ var Summary_Interval_functions = {
                     return s;
                 };
                 this.height_labels = 28;
-            } else if((timeRange/(1000*60*60*24*30*3)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*30*3)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
                 timeIntervalStep = 3;
                 this.intervalTickFormat = function(v){
@@ -6133,7 +6128,7 @@ var Summary_Interval_functions = {
                     return s;
                 };
                 this.height_labels = 28;
-            } else if((timeRange/(1000*60*60*24*30*6)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*30*6)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
                 timeIntervalStep = 6;
                 this.intervalTickFormat = function(v){
@@ -6144,15 +6139,15 @@ var Summary_Interval_functions = {
                     return s;
                 };
                 this.height_labels = 28;
-            } else if((timeRange/(1000*60*60*24*365)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*365)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
-            } else if((timeRange/(1000*60*60*24*365*2)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*365*2)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 2;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
-            } else if((timeRange/(1000*60*60*24*365*5)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*365*5)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 5;
                 this.intervalTickFormat = function(v){
@@ -6163,11 +6158,11 @@ var Summary_Interval_functions = {
                     return s;
                 };
                 this.height_labels = 28;
-            } else if((timeRange/(1000*60*60*24*365*25)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*365*25)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 25;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
-            } else if((timeRange/(1000*60*60*24*365*100)) < optimalTickCount){
+            } else if((timeRange_ms/(1000*60*60*24*365*100)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 100;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
@@ -6179,51 +6174,84 @@ var Summary_Interval_functions = {
 
             this.valueScale.nice(timeInterval, timeIntervalStep);
             ticks = this.valueScale.ticks(timeInterval, timeIntervalStep);
-
+        } else if(this.scaleType==='step'){
+            ticks = [];
+            for(var i=this.intervalRange.min ; i<=this.intervalRange.max; i++){
+                ticks.push(i);
+            }
+            this.intervalTickFormat = d3.format("d");
+        } else if(this.scaleType==='log'){
+            this.valueScale.nice(optimalTickCount);
+            // Generate ticks
+            ticks = this.valueScale.ticks(optimalTickCount);
+            while(ticks.length > optimalTickCount*2){
+                ticks = ticks.filter(function(d,i){return i%2===0;});
+            }
+            if(this.tickIntegerOnly)
+                ticks = ticks.filter(function(d){return d%1===0;});
+            this.intervalTickFormat = d3.format(".1s");
         } else {
-            if(this.scaleType!=='step'){
-                this.valueScale.nice(optimalTickCount);
-                // Generate ticks
-                ticks = this.valueScale.ticks(optimalTickCount);
-                if(this.tickIntegerOnly)
-                    ticks = ticks.filter(function(d){return d%1===0;});
-            } else{
-                ticks = [];
-                for(var i=this.valueScale.domain()[0] ; i<=this.valueScale.domain()[1]; i++){
-                    ticks.push(i);
-                }
-            }
-
-            // Set tick format, and adjust ticks as necessary
-            switch(this.scaleType){
-                case 'log':
-                    this.intervalTickFormat = d3.format(".1s");
-                    while(ticks.length > optimalTickCount*2){
-                        ticks = ticks.filter(function(d,i){return i%2===0;});
-                    }
-                    break;
-                case 'step':
-                    this.intervalTickFormat = d3.format("d");
-                    break;
-                default:
-                    this.intervalTickFormat = d3.format(this.tickIntegerOnly?".2s":".2f");
-                    break;
-            }
+            this.valueScale.nice(optimalTickCount);
+            this.valueScale.nice(optimalTickCount);
+            ticks = this.valueScale.ticks(optimalTickCount);
+            this.valueScale.nice(optimalTickCount);
+            ticks = this.valueScale.ticks(optimalTickCount);
+//            if(this.tickIntegerOnly) ticks = ticks.filter(function(d){return d%1===0;});
+            this.intervalTickFormat = d3.format(this.tickIntegerOnly?".2s":".2f");
         }
+
+        return ticks;
+    },
+    /** 
+      Uses
+      - optimumTickWidth
+      - this.intervalRang
+      Updates:
+      - scaleType (if steps is more appropriate)
+      - valueScale
+      - intervalTickFormat
+      */
+    updateScaleAndBins: function(_width_,optimalTickCount,force){
+        if(this.isEmpty) return;
+        var me=this;
+
+        // Check if you can use a ste-scale instead
+        var stepRange=(this.intervalRange.max-this.intervalRange.min)+1;
+        var stepWidth=_width_/stepRange;
+        if(!this.hasFloat && this.scaleType!=='step' && optimalTickCount>=stepRange){
+            this.setScaleType('step');
+        }
+
+        // UPDATE intervalScale
+        switch(this.scaleType){
+            case 'linear': case 'step':
+                this.valueScale = d3.scale.linear();      break;
+            case 'log':
+                this.valueScale = d3.scale.log().base(2); break;
+            case 'time':
+                this.valueScale = d3.time.scale.utc();    break;
+        }
+
+        this.valueScale
+            .domain([this.intervalRange.min, this.intervalRange.max])
+            .range([0, _width_]);
+
+        if(this.scaleType==='step'){
+            this.valueScale.range([stepWidth/2, _width_-stepWidth/2]);
+        }
+
+        var ticks = this.getValueTicks(optimalTickCount);
 
         if(this.scaleType!=='step'){
             this.barWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
         } else {
-            this.barWidth = w/tmp;
+            this.barWidth = _width_/stepRange;
         }
-
-        var numExistingBins = 0;
-        if(this.intervalTicks) numExistingBins = this.histBins.length;
-
+        
         // If the number of bins is updated, re-compute stuff
-        if(numExistingBins!==ticks.length){
+        if(this.intervalTicks.length!==ticks.length || force){
             this.intervalTicks = ticks;
-            
+
             var filterId = this.summaryFilter.id;
             var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
@@ -6236,8 +6264,8 @@ var Summary_Interval_functions = {
                 this.histBins = [];
                 for(var bin=this.intervalRange.min; bin<=this.intervalRange.max; bin++){
                     var d=[];
-                    d.x=bin;
-                    d.y=0;
+                    d.x = bin;
+                    d.y = 0;
                     d.dx = 0;
                     this.histBins.push(d);
                 }
@@ -6249,51 +6277,67 @@ var Summary_Interval_functions = {
                 },this);
             }
             
-            if(this.scaleType==='time') {
-                if(this.DOM.lineTrend_Total===undefined){
-                    this.DOM.lineTrend_Total = this.DOM.timeSVG.append("path").attr("class","lineTrend total")
-                        .datum(this.histBins);
-                    this.DOM.lineTrend_Active = this.DOM.timeSVG.append("path").attr("class","lineTrend active")
-                        .datum(this.histBins);
-                    this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll("line.activeLine")
-                        .data(this.histBins, function(d,i){ return i; })
-                        .enter().append("line").attr("class","lineTrend activeLine");
-                    this.DOM.lineTrend_Preview = this.DOM.timeSVG.append("path").attr("class","lineTrend preview")
-                        .datum(this.histBins);
-                    this.DOM.lineTrend_PreviewLine = this.DOM.timeSVG.selectAll("line.previewLine")
-                        .data(this.histBins, function(d,i){ return i; })
-                        .enter().append("line").attr("class","lineTrend previewLine");
-                    this.DOM.lineTrend_Compare = this.DOM.timeSVG.append("path").attr("class","lineTrend compare")
-                        .datum(this.histBins);
-                    this.DOM.lineTrend_CompareLine = this.DOM.timeSVG.selectAll("line.compareLine")
-                        .data(this.histBins, function(d,i){ return i; })
-                        .enter().append("line").attr("class","lineTrend compareLine");
-                }
-            }
-
             this.updateActiveItems();
 
             this.updateBarScale2Active();
 
-            this.insertBins();
-                
-            // Update text labels
-            var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
-            ddd.exit().remove();
-            var ddd_enter = ddd.enter().append("span").attr("class","tick");
-            ddd_enter.append("span").attr("class","line");
-            ddd_enter.append("span").attr("class","text");
-            this.updateTickLabels();
-        } else{
-            this.refreshBins_Translate();
-            this.refreshViz_Scale();
+            if(this.DOM.inited || force){
+                this.insertVizDOM();
+            }
         }
 
-        this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
-            return (me.valueScale(d)+me.getAggreg_Width_Offset())+"px";
-        });
+        if(this.DOM.inited || force){
+            this.refreshBins_Translate();
+            this.refreshViz_Scale();
 
-        this.refreshIntervalSlider();
+            this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
+                return (me.valueScale(d)+me.getAggreg_Width_Offset())+"px";
+            });
+            this.refreshIntervalSlider();
+        }
+    },
+    /** -- */
+    insertVizDOM: function(){
+        if(this.scaleType==='time' && this.DOM.root) {
+            // delete existing DOM:
+            // TODO: Find  a way to avoid this?
+            this.DOM.timeSVG.select(".lineTrend.total").remove();
+            this.DOM.timeSVG.select(".lineTrend.active").remove();
+            this.DOM.timeSVG.select(".lineTrend.preview").remove();
+            this.DOM.timeSVG.select(".lineTrend.compare").remove();
+            this.DOM.timeSVG.selectAll("line.activeLine").remove();
+            this.DOM.timeSVG.selectAll("line.previewLine").remove();
+            this.DOM.timeSVG.selectAll("line.compareLine").remove();
+
+            this.DOM.lineTrend_Total = this.DOM.timeSVG.append("path").attr("class","lineTrend total")
+                .datum(this.histBins);
+            this.DOM.lineTrend_Active = this.DOM.timeSVG.append("path").attr("class","lineTrend active")
+                .datum(this.histBins);
+            this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll("line.activeLine")
+                .data(this.histBins, function(d,i){ return i; })
+                .enter().append("line").attr("class","lineTrend activeLine");
+            this.DOM.lineTrend_Preview = this.DOM.timeSVG.append("path").attr("class","lineTrend preview")
+                .datum(this.histBins);
+            this.DOM.lineTrend_PreviewLine = this.DOM.timeSVG.selectAll("line.previewLine")
+                .data(this.histBins, function(d,i){ return i; })
+                .enter().append("line").attr("class","lineTrend previewLine");
+            this.DOM.lineTrend_Compare = this.DOM.timeSVG.append("path").attr("class","lineTrend compare")
+                .datum(this.histBins);
+            this.DOM.lineTrend_CompareLine = this.DOM.timeSVG.selectAll("line.compareLine")
+                .data(this.histBins, function(d,i){ return i; })
+                .enter().append("line").attr("class","lineTrend compareLine");
+        }
+
+        this.insertBins();
+        this.refreshViz_Axis();
+        // remove all existing ticks
+        this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove();
+        // Update text labels
+        var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
+        var ddd_enter = ddd.enter().append("span").attr("class","tick");
+        ddd_enter.append("span").attr("class","line");
+        ddd_enter.append("span").attr("class","text");
+        this.updateTickLabels();
     },
     /** -- */
     getBarWidth_Real: function(){
@@ -6316,8 +6360,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getAggreg_Width_Offset: function(){
-        if(this.scaleType==='time')
-            return this.barWidth/2;
+        if(this.scaleType==='time') return this.barWidth/2;
         return 0;
     },
     /** -- */
@@ -6327,10 +6370,12 @@ var Summary_Interval_functions = {
 
         var filterId = this.summaryFilter.id;
 
+        // just remove everything that was in the histogram_bins befoe
+        this.DOM.histogram_bins
+            .selectAll(".aggr_Group").data([]).exit().remove();
+
         var activeBins = this.DOM.histogram_bins
             .selectAll(".aggr_Group").data(this.histBins, function(d,i){ return i; });
-        
-        activeBins.exit().remove();
 
         var newBins=activeBins.enter().append("span").attr("class","aggr_Group")
             .each(function(aggr){
@@ -6475,9 +6520,6 @@ var Summary_Interval_functions = {
         this.DOM.compareButton = this.DOM.aggr_Group.selectAll(".compareButton");
         this.DOM.measureLabel  = this.DOM.aggr_Group.selectAll(".measureLabel");
 
-        this.refreshBins_Translate();
-
-        this.refreshViz_Scale();
         this.refreshViz_Preview();
         this.refreshMeasureLabel();
     },
@@ -6499,7 +6541,7 @@ var Summary_Interval_functions = {
 
         this.DOM.intervalSlider = this.DOM.facetInterval.append("div").attr("class","intervalSlider")
             .attr("anim",true)
-            .style('margin-left',(this.vertAxisLabelWidth)+"px");
+            .style('margin-left',(this.width_vertAxisLabel)+"px");
 
         var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
         controlLine.append("span").attr("class","base total")
@@ -6979,7 +7021,7 @@ var Summary_Interval_functions = {
         tickDoms.exit().remove();
         var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
-        var noanim=this.browser.root.attr("noanim");
+        var noanim=this.browser.DOM.root.attr("noanim");
 
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line");
@@ -7015,9 +7057,9 @@ var Summary_Interval_functions = {
                     };
                 }
             }
-            if(noanim!=="true") me.browser.root.attr("noanim",true);
+            if(noanim!=="true") me.browser.DOM.root.attr("noanim",true);
             me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-            if(noanim!=="true") me.browser.root.attr("noanim",false);
+            if(noanim!=="true") me.browser.DOM.root.attr("noanim",false);
         });
     },
     /** -- */
@@ -7089,7 +7131,9 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshWidth: function(){
-        this.updateIntervalWidth(this.getWidth()-this.width_histMargin-this.vertAxisLabelWidth);
+        var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
+        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), false );
+        this.updateDOMwidth();
     },
     /** -- */
     setHeight: function(targetHeight){
@@ -7109,9 +7153,11 @@ var Summary_Interval_functions = {
     /** -- */
     setCollapsed: function(v){
         this.collapsed = v;
-        this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
-        if(v===false){
-            this.clearViz_Preview();
+        if(this.DOM.root){
+            this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
+            if(v===false){
+                this.clearViz_Preview();
+            }
         }
     },
     /** -- */
@@ -7140,8 +7186,10 @@ var Summary_Interval_functions = {
     },
     /** -- */
     setSelectedPosition: function(v){
+        if(this.DOM.inited===false) return;
         if(v===null) return;
         if(this.valueScale===undefined) return;
+        if(this.panel===undefined) return;
         var t="translateX("+(this.valueScale(v))+"px)";
         this.DOM.selectedItemValue
             .each(function(){ kshf.Util.setTransform(this,t); })

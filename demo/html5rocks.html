@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>HTML5Rocks - Tutorials</title><meta charset="utf-8">
+		<title>HTML5Rocks - Tutorials</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -14,7 +16,6 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
 function loadData(browser){
     kshf.dt.Tutorials = [];
     browser.primaryTableName = "Tutorials";
@@ -32,7 +33,7 @@ function loadData(browser){
                 d.author_id = $this.find(">a > .left .author").attr("data-author_id");
                 d.author_img = $this.find(">a > .left .author >img").attr("src");
                 d.Author = $this.find(">a > .left .author >img").attr("title");
-                d.Date = moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,""));
+                d.Date = new Date(moment($(this).find(">a > .right > .date").text().replace(/(\D*),/,"")));
                 d.Title = $(this).find(">a > .right > .title").text().trim();
                 d.Description = $(this).find(">a > .right > .description").text().trim();
                 d.Tags = [];
@@ -42,8 +43,6 @@ function loadData(browser){
                 kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
             });
             browser.items = kshf.dt.Tutorials;
-
-            browser.itemsSelectedCt = browser.items.length;
             browser.loadCharts();   
         }
     });
@@ -66,16 +65,13 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Author", 
-            },{ title: "Date", layout: "bottom",
-                attribMap: function(tut){ return new Date(tut.data.Date);},
+            },{ title: "Date", layout: "bottom"
             },{ title: "Tags", layout: 'right'
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [
-                { name: 'Date', value: function(tutorial){ return tutorial.data.Date.unix(); } }
-            ],
+            sortingOpts: [{ name: 'Date', inverse: true }],
             displayType: 'grid',
             textSearch: "Title",
             recordView: function(tutorial){

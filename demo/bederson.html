@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Publication Browser</title><meta charset="utf-8">
+		<title>Publication Browser</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -13,14 +15,12 @@
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
 var demoID = 7;
 var socialShare = false;
 var noRibbon = true;
 var BEDERSON_ID = 3;
 
 google.setOnLoadCallback(function() {
-
     function resizeChart(){
         var h=$(window).height()-90;
         h = 700; // temp
@@ -40,12 +40,12 @@ google.setOnLoadCallback(function() {
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         listMaxColWidthMult: 0.4,
         categoryTextWidth:185,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
-            sheets : [
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
+            sheets: [
                 {name: "Publications"},
                 {name: "Venues"},
                 {name: "Authors"},
@@ -55,7 +55,6 @@ google.setOnLoadCallback(function() {
             ]
         },
         loadedCb: function(){
-            // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);
         },
         readyCb: function(){
@@ -69,7 +68,7 @@ google.setOnLoadCallback(function() {
                 catTableName: "Keywords",
                 catLabelText: function(k){ return k.data.keyword; }
             },{ title: "Coauthors",
-                attribMap : function(pub){
+                attribMap: function(pub){
                     var authors = pub.data.Coauthors;
                     // remove Ben Bederson's ID
                     newAuthors = [];
@@ -83,38 +82,32 @@ google.setOnLoadCallback(function() {
                 catTooltipText: function(auth){ return auth.data.first_names+" "+auth.data.last_name; },
                 facets: [
                     {   title: "Type",
-                        attribMap : function(coAuth){ return coAuth.data.author_type; },
+                        attribMap: function(coAuth){ return coAuth.data.author_type; },
                         catTableName: "AuthorTypes",
                         catLabelText: function(at){
                             return at.data.keyword;
                         }
                     }
                 ]
-            },{ title: "Publication Type",
-                attribMap: "type",
+            },{ title: "Publication Type", attribMap: "type",
                 catLabelText: function(d){ 
                     return kshf.dt_id.VenueTypes[d.data[0]].data.keyword;
                 }
-            },{ title: "Venue",
-                collapsed: true,
+            },{ title: "Venue", collapsed: true,
                 catTableName: "Venues",
                 catLabelText: function(d){ return d.data.venue; }
-            },{ title: "Date",
-                intervalScale: 'time',
-                layout: 'middle'
+            },{ title: "Date", layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts : [
-                {   name: 'Year',
-                    value: function(pub){return pub.data.Date.getFullYear();}
-                }
+            sortingOpts: [
+                { name: 'Year', value: function(pub){return pub.data.Date.getFullYear(); } }
             ],
-            textSearch : 'title',
-            detailsToggle : "One",
+            textSearch: 'title',
+            detailsToggle: "One",
             autoExpandMore: false,
-            recordView : function(d){
+            recordView: function(d){
                 var j;
                 var str="";
 

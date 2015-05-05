@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>InfoVis 2014 Contest</title><meta charset="utf-8">
+		<title>InfoVis 2014 Contest</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -98,7 +100,6 @@ var loadData = function(browser){
             });
 
             browser.items = kshf.dt.Papers;
-            browser.itemsSelectedCt = browser.items.length;
             browser.loadCharts();   
         }
     });

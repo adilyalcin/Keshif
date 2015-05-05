@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Woman In Film</title><meta charset="utf-8">
+		<title>Woman In Film</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -33,11 +35,12 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"women_in_film"} ]
         },
         loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.women_in_film, ['Rating','Genre','Main Actors','Language'], ', ', false);
+            kshf.Util.cellToArray(kshf.dt.women_in_film, 
+                ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],
+                 ', ', false);
         },
         facets: [
-            {   title: "Movie Passes Bechdel Test ?",
-                attribMap: "Passes Bechdel Test?"
+            {   title: "Movie Passes Bechdel Test ?", attribMap: "Passes Bechdel Test?"
             },{ title: "Bechdel Criterias",
                 attribMap: function(movie){
                     var r=[];
@@ -67,7 +70,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Main Actors", layout: 'right', minAggrValue: 3
             },{ title: "Language", layout: 'right'
             },{ title: "Runtime (min)", layout: 'right', collapsed: true
-            },{ title: "Year", layout: "left", intervalScale: 'step'
+            },{ title: "Year", layout: "left"
             }
         ],
         itemDisplay: {

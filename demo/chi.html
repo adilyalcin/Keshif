@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>CHI PAPERS '82-'94</title><meta charset="utf-8">
+		<title>CHI PAPERS '82-'94</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -62,14 +64,8 @@ function loadData(browser){
         });
     });
 
-    // process through citation links
     paperBrowser.items = kshf.dt.Articles;
-    paperBrowser.itemsSelectedCt = kshf.dt.Articles.length;
-    
-    // finish loading....
-    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-    d3.select(".kshf.layout_infobox div.status_text div").text("");
-    window.setTimeout(function() { paperBrowser.loadCharts(); }, 50);
+    paperBrowser.loadCharts();
 };
 
 function loadProceeding(xmlData) {
@@ -157,9 +153,7 @@ google.setOnLoadCallback(function(){
         domID: "#chart_div",
         itemName: "Articles",
         categoryTextWidth: 230,
-        source : {
-            callback: loadData
-        },
+        source: { callback: loadData },
         facets: [
             {   title: "Category"
             },{ title: "Year",
@@ -194,12 +188,12 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [{
+            sortingOpts: [{
                 name: 'Citations', value: function(d){ return d.data.CitedByTotal; }
             }],
             textSearch: "Title",
             linkText: 'Citations to',
-            detailsToggle : "Zoom",
+            detailsToggle: "Zoom",
             recordView: "Title"
         }
     });

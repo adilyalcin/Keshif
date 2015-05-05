@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Chrome Feature Status</title><meta charset="utf-8">
+		<title>Chrome Feature Status</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -15,38 +17,31 @@
 
         <script type="text/javascript">
 var loadData = function(browser){
-    browser.primaryTableName = "Features";
-    kshf.dt.Features = [];
     $.ajax({
         // http://www.chromestatus.com/data/featurepopularity
         // http://www.chromestatus.com/features.json
         url: "./data/chromefeatures.json",
         async: false,
         success: function(data){
+            browser.primaryTableName = "Features";
+            kshf.dt.Features = [];
             data.forEach(function(v){
                 v.name = v.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                var kshfItem = new kshf.Item(v,'id');
-                kshf.dt.Features.push(kshfItem);
+                kshf.dt.Features.push(new kshf.Item(v,'id'));
             });
-
             browser.items = kshf.dt.Features;
-            browser.itemsSelectedCt = browser.items.length;                
-
-            // finish loading....
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 100);
+            browser.loadCharts();
         }
     });
 };
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 180,
         barChartWidth: 100,
         itemName: "Chromium Features",
-        source : {
+        source: {
             url: "http://www.chromestatus.com/features",
             callback: loadData
         },
@@ -75,12 +70,12 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
-            textSearch : "title",
+            sortingOpts: [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
+            textSearch: "title",
             textSearchFunc: function(d){ return d.data.title;},
             displayType: 'list',
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "Zoom",
+            recordView: function(d){
                 return "<a target='_blank' href='http://www.chromestatus.com/feature/"+d.data.id
                     +"'><span class='title'>"+d.data.name+"</span></a>";
             }

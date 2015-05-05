@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Wedding Venues in UK (by Witched.co.uk)</title><meta charset="utf-8">
+		<title>Wedding Venues in UK (by Witched.co.uk)</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -74,16 +76,15 @@ function loadData(browser){
             });
 
             browser.items = kshf.dt.Venues;
-            browser.itemsSelectedCt = browser.items.length;
             browser.loadCharts();   
         }
     });
 };
 
 $(document).ready( function(){
-    resizeBrowser(100,80);
+    resizeBrowser(240,80);
     $(window).resize(function() {
-        resizeBrowser(100,80);
+        resizeBrowser(240,80);
         browser.updateLayout();
     });
 
@@ -92,19 +93,15 @@ $(document).ready( function(){
         itemName: "Wedding Venues",
         categoryTextWidth: 220,
         rightPanelLabelWidth: 180,
-        barChartWidth: 150,
+        barChartWidth: 100,
         catBarScale: "scale_frequency",
         source: {
             url: 'http://www.hitched.co.uk/wedding-venues/visual-search.htm',
             callback: loadData
         },
         facets: [
-            {   /*title: "Location",
-                facets:[
-                    {*/ title: "Region Name"
-                    },{ title: "County Name", collapsed: true 
-/*                }
-                ]*/
+            {   title: "Region Name"
+            },{ title: "County Name", collapsed: true 
             },{ title: "Venue Type", layout: 'right',
             },{ title: "Dining Options"
             },{ title: "Overnight Accommodation"
@@ -113,8 +110,7 @@ $(document).ready( function(){
             },{ title: "Venue Staff Assistance", layout: 'right'
             },{ title: "Average Facility Rating", layout: 'right'
             },{ title: "Average Service Rating", layout: 'right'
-            },{ title: "Number Of Reviews", collapsed: true, layout: 'right',
-                attribMap: 'Total Number Of Reviews'
+            },{ title: "Number Of Reviews", attribMap: 'Total Number Of Reviews', layout: 'right', collapsed: true
             },{ title: "Maximum Capacity", layout: 'right', unitName: " ppl"
             },{ title: "Minimum Capacity", layout: 'right', unitName: " ppl"
             }

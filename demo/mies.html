@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Architecture Work of Mies van der Rohe</title><meta charset="utf-8">
+		<title>Architecture Work of Mies van der Rohe</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -33,10 +35,10 @@ google.setOnLoadCallback(function(){
             sheets : [ {name:"Projects"} ]
         },
         facets: [
-            {   title: "Continent", collapsed: true
+            {   title: "Continent"
             },{ title: "City / Location",
                 attribMap: function(d){return "<span style='color:gray'>"+d.data.Country+" </span> - "+d.data.City;}
-            },{ title: "Year", layout: 'bottom'
+            },{ title: "Year", layout: 'bottom', attribMap: function(d){ return new Date(d.data.Year,1,1); }
             },{ title: "Type", layout: 'right'
             }
         ],

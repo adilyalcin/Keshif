@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Nobel Prize Winners</title><meta charset="utf-8">
+		<title>Nobel Prize Winners</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -47,19 +49,19 @@ $(document).ready( function(){
         categoryTextWidth: 190,
         leftPanelLabelWidth: 120,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
-            sheets : [ {name:"Prizes"}, {name:"Laureates"} ]
+            gdocId: '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
+            sheets: [ {name:"Prizes"}, {name:"Laureates"} ]
         },
         facets: [
             {   title: "Category",
                 textFilter: 'about',
                 catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
             },{ title: "Born Country",
-                attribMap : function(prize){ 
+                attribMap: function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.bornCountry;
                 },
             },{ title: "Affiliation", layout: 'right',
-                attribMap : function(prize){ 
+                attribMap: function(prize){ 
                     return kshf.dt_id.Laureates[prize.data.laureate_id].data.name;
                 },
                 facets:[
@@ -71,24 +73,22 @@ $(document).ready( function(){
             },{ title: "Joint Awards",
                 catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
             },{ title: "Gender",
-                attribMap : function(prize){ 
+                attribMap: function(prize){ 
                     return getGender(kshf.dt_id.Laureates[prize.data.laureate_id].data.gender);
                 },
                 catLabelText: function(d) { 
                     return d.data[0]+" "+getIcon(d.data[0]);
                 }
             },{ title: "Year", layout: 'bottom',
-                attribMap : function(prize){
-                    return new Date(moment(prize.data.Year+"01-01","YYYY-MM-DD"));
-                },
+                attribMap: function(prize){ return new Date(prize.data.Year,1,1); },
             }
         ],
         itemDisplay: {
             sortColWidth: 55,
-            sortingOpts : [ {name: 'Year'} ],
-            detailsToggle : "zoom",
-            textSearch : "name",
-            textSearchFunc : function (d) {
+            sortingOpts: [ {name: 'Year'} ],
+            detailsToggle: "zoom",
+            textSearch: "name",
+            textSearchFunc: function (d) {
                 var laureate = kshf.dt_id.Laureates[d.data.laureate_id];
                 return laureate.data.firstname + " " + (laureate.data.surname || "");
             },
@@ -107,7 +107,7 @@ $(document).ready( function(){
                     "</div>";
             },
             /*
-            recordView : function(d) {
+            recordView: function(d) {
                 var str="";
 
                 if(laureate.data.gender!==3){

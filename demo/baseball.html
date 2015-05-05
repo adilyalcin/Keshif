@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Transactions In Major League Baseball</title><meta charset="utf-8">
+		<title>Transactions In Major League Baseball</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -49,17 +51,17 @@ $(document).ready(function() {
                 catLabelText: function(d){
                     return kshf.dt_id.baseball_trantype[d.data[1]].data.info;
                 }
-            },{ title: "From",
+            },{ /*title: "From",
                 facets: [
-                    {
-                        title: "Team",
+                    {*/
+                        title: "From: Team",
                         catTableName: "baseball_teams_1",
                         attribMap: "From Team",
                         catLabelText: function(d){
                             return d.data.name;
                         },
                     },{
-                        title: "League",
+                        title: "From: League",
                         catTableName: "baseball_leagues_1",
                         attribMap : function(tr){
                             var x = tr.data['From Team'];
@@ -67,16 +69,16 @@ $(document).ready(function() {
                             return kshf.dt_id.baseball_teams_1[x].data.league;
                         },
                         catLabelText: function(d){ return d.data.name; },
-                    }
-                ]
-            },{ title: "To",
+                    /*}
+                ]*/
+            },{ /*title: "To",
                 layout: 'right',
-                facets: [
-                    {   title: "Team",
+                facets: [*/
+                    {   title: "To: Team", layout: 'right',
                         catTableName: "baseball_teams_2",
                         attribMap: "To Team",
                         catLabelText: function(d){ return d.data.name; },
-                    },{ title: "League",
+                    },{ title: "To: League", layout: 'right',
                         catTableName: "baseball_leagues_2",
                         attribMap : function(tr){
                             var x = tr.data['To Team'];
@@ -84,17 +86,14 @@ $(document).ready(function() {
                             return kshf.dt_id.baseball_teams_2[x].data.league;
                         },
                         catLabelText: function(d){ return d.data.name; },
-                    }
-                ]
-            },{
-                title: "Transaction Date",
-                layout: "bottom",
+                    /*}
+                ]*/
+            },{ title: "Transaction Date", layout: "bottom",
                 attribMap : function(tr){ 
                     var dt = tr.data['primary-date'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
-                },
-                intervalScale: "time"
+                }
             }
         ],
         itemDisplay: {

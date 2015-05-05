@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Visual Comparison for Information Visualization</title><meta charset="utf-8">
+		<title>Visual Comparison for Information Visualization</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -197,9 +199,7 @@ function loadData(browser){
         url:"./data/CompIV.html",
         async: false,
         success: function(doc){
-            $$doc = $($.parseHTML(doc));
-
-            $($$doc[13]).find(" > table > tbody > tr").each(function(rowNo){
+            $(doc).find(" > table > tbody > tr").each(function(rowNo){
                 if(rowNo===0) return; // first row
                 var $row = $(this);
                 var d={};
@@ -231,12 +231,9 @@ function loadData(browser){
                         d.Authors = paper.data.Authors.split(", ");
                     }
                 }
-
                 kshf.dt.Projects.push(new kshf.Item(d,"id"));
             });
             browser.items = kshf.dt.Projects;
-
-            browser.itemsSelectedCt = browser.items.length;
             browser.loadCharts();   
         }
     });
@@ -250,10 +247,10 @@ $(document).ready( function(){
     });
     
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         itemName: "Techniques for Visual Comparison",
         categoryTextWidth: 200,
-        source : {
+        source: {
             url: "http://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/",
             gdocId: "1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0",
             sheets: [{name:'Papers'}],
@@ -267,7 +264,7 @@ $(document).ready( function(){
             },{ title: "Comparison Scale", attribMap: "ComparisonScale" 
 //            },{ title: "CitedInPaper", layout: 'right'
 //            },{ title: "MentionedInPaper", layout: 'right'
-            },{ title: "Technique Used", layout: 'right', attribMap: "TechniqueUsed"
+            },{ title: "Technique Used", attribMap: "TechniqueUsed", layout: 'right'
             },{ title: "Authors", layout: 'right',
             },{ title: "Venue", layout: 'right'
             },{ title: "Categorized By",  layout: 'right', collapsed: true,
@@ -283,7 +280,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [
+            sortingOpts: [
                 {name: 'Year', inverse: true},
                 {name: 'id', inverse: true},
             ],

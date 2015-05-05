@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>World Country Flags</title><meta charset="utf-8">
+		<title>World Country Flags</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -16,9 +18,6 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
-var demoID = 12;
-
 function landmassText(d){
     switch(d){
         case 1: return "North America";
@@ -30,7 +29,6 @@ function landmassText(d){
         default: return "-";
     }
 };
-
 function zoneText(d){
     switch(d){
         case 1: return "North East";
@@ -40,7 +38,6 @@ function zoneText(d){
         default: return "-";
     }
 };
-
 function languageText(d){
     switch(d){
         case 1: return "English";
@@ -57,7 +54,6 @@ function languageText(d){
         default: return "-";
     }
 };
-
 function religionText(d){
     switch(d){
         case 0: return "Catholic";
@@ -72,39 +68,34 @@ function religionText(d){
     }
 };
 
-function resizeBrowser(){
-    $('#chart_div').width($(window).width()-100);
-    $('#chart_div').height($(window).height()-30);
-}
-
 $(document).ready( function(){
-    resizeBrowser();
+    resizeBrowser(210,30);
     $(window).resize(function() {
-        resizeBrowser();
+        resizeBrowser(210,30);
         browser.updateLayout();
     });
 
     logIf.Check = logIf.All();
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 135,
-        source : {
+        source: {
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [ {name:"flags", id:'Country'} ]
-//            gdocId : '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
-//            sheets : [ {name:"Flags"} ]
+            sheets: [ {name:"flags", id:'Country'} ]
+//            gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
+//            sheets: [ {name:"Flags"} ]
         },
         facets: [
-            {   title: "-Country-",
+            {   /*title: "-Country-",
                 facets: [
-                    {   title: "Continent",
+                    {*/   title: "Continent",
                         catLabelText: function(d) { return landmassText(d.data[1]); },
                     },{ title: "Zone", collapsed: true,
                         catLabelText: function(d) { return zoneText(d.data[1]); }
                     },{ title: "Language",
-                        attribMap : function(flag){
+                        attribMap: function(flag){
                             var r= flag.data.Language;
                             if(r===9) return 10;
                             return r;
@@ -113,16 +104,13 @@ $(document).ready( function(){
                     },{ title: "Religion",
                         catLabelText: function(d) { return religionText(d.data[1]); }
                     },{ title: "Flag Date", layout: 'left',
-                        attribMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); },
-                        intervalScale: 'time', unitName: 'yr'
-                    }
-                ]
-            },
-            {   title: "Flag Properties",
-                layout: 'right',
+                        attribMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); }
+                    /*}
+                ]*/
+            },{ /*title: "Flag Properties", layout: 'right',
                 facets: [
-                    {   title: "Flag Color", 
-                        attribMap : function(flag){
+                    {*/   title: "Flag Color",  layout: 'right',
+                        attribMap: function(flag){
                             var toRet = [];
                             if(flag.data.Red) toRet.push("Red");
                             if(flag.data.Green) toRet.push("Green");
@@ -133,8 +121,8 @@ $(document).ready( function(){
                             if(flag.data.Orange) toRet.push("Orange / Brown");
                             return toRet;
                         },
-                    },{ title: "Flag Shape",
-                        attribMap : function(flag){
+                    },{ title: "Flag Shape", layout: 'right',
+                        attribMap: function(flag){
                             var toRet = [];
                             if(flag.data.Circles) toRet.push("Circle");
                             if(flag.data.Crosses) toRet.push("Crosses");
@@ -145,33 +133,33 @@ $(document).ready( function(){
                             if(flag.data.Triangle) toRet.push("Triangle");
                             return toRet;
                         },
-                    },{ title: "Number of Bars",
-                        attribMap : function(flag){ 
+                    },{ title: "Number of Bars", layout: 'right',
+                        attribMap: function(flag){ 
                             var r=flag.data.Bars;
                             return (r===0)?0:r;
                         },
                         intervalScale: 'step', unitName: "bar"
-                    },{ title: "Number of Stripes",
-                        attribMap : function(flag){ 
+                    },{ title: "Number of Stripes", layout: 'right',
+                        attribMap: function(flag){ 
                             var r=flag.data.Stripes;
                             return (r===0)?null:r;
                         }, unitName: "strp"
-                    },{ title: "Other", collapsed: true,
-                        attribMap : function(flag){
+                    },{ title: "Other", collapsed: true, layout: 'right',
+                        attribMap: function(flag){
                             var toRet = [];
                             if(flag.data.Text!==0) toRet.push("Text");
                             if(flag.data.Icon!==0) toRet.push("Icon");
                             if(flag.data.Animate!==0) toRet.push("Animate");
                             return toRet;
                         }
-                    }
-                ]
+                    /*}
+                ]*/
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [
-                {name:'Country Name', value : function(d){ return d.data.Country;}}
+            sortingOpts: [
+                {name:'Country Name', value: function(d){ return d.data.Country;}}
 /*                {   name: 'Flag Date',
                     value: function(d){ 
                         var r= d.data.Independence;
@@ -181,12 +169,12 @@ $(document).ready( function(){
                     }
                 }*/
             ],
-            textSearch : "Country",
-            detailsToggle : "Multi",
-            detailsDefault : false,
+            textSearch: "Country",
+            detailsToggle: "Multi",
+            detailsDefault: false,
             displayType: 'grid',
             maxVisibleItems_Default: 200,
-            recordView : function(d){
+            recordView: function(d){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
             visibleCb: function(d){

@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Beautiful Trouble</title><meta charset="utf-8">
+		<title>Beautiful Trouble</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -12,12 +14,9 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 var loadData = function(browser){
     browser.primaryTableName = "Posts";
-
     kshf.dt.Posts = [];
-    kshf.dt_id.Posts = {};
 
     // contributor data is manually added to this dataset...
     var contributorData = null;
@@ -48,16 +47,10 @@ var loadData = function(browser){
                 }*/
                 var kshfItem = new kshf.Item(item,"id");
                 kshf.dt.Posts.push(kshfItem);
-                kshf.dt_id.Posts[kshfItem.id()] = kshfItem;
             });
 
             browser.items = kshf.dt.Posts;
-            browser.itemsSelectedCt = browser.items.length;
-
-            // finish loading....
-            d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-            d3.select(".kshf.layout_infobox div.status_text div").text("");
-            window.setTimeout(function() { browser.loadCharts(); }, 50);
+            browser.loadCharts();
         }
     });
 };
@@ -75,11 +68,11 @@ function getType(v){
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 220,
         barChartWidth: 110,
         itemName: "Posts",
-        source : {
+        source: {
             url: "http://explore.beautifultrouble.org/app/data.json",
             callback: loadData
         },
@@ -106,7 +99,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 100,
-            sortingOpts : [
+            sortingOpts: [
                 { name:'First Contr.', inverse: true,
                     value: function(d){
                         if(d.data.Contributors===undefined) return "-";
@@ -118,10 +111,10 @@ $(document).ready( function(){
 //            showRank: true,
             showSelectBox: true,
             domStyle: function(d){ return "itemType_"+d.data.type},
-            detailsToggle : "One",
-            textSearch : "Title and text",
+            detailsToggle: "One",
+            textSearch: "Title and text",
             textSearchFunc: function(d){ return d.data.title + " " + d.data.text;},
-            recordView : function(d) {
+            recordView: function(d) {
                 var str="";
 
                 str +="<span class='typeImg'></span> "+d.data.title +" <a target='_blank' href='"+d.data.url+"' class='fa fa-external-link viewExternal'>view</a></div>";;

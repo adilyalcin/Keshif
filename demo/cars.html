@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Cars</title><meta charset="utf-8">
+		<title>Cars</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -16,8 +18,8 @@
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 100,
+        barChartWidth: 100,
+        leftPanelLabelWidth: 130,
         rightPanelLabelWidth: 150,
         source: {
             gdocId : '1UPaqtGuoeGXcxXKSVh1IJ-i40gbTgGfb_jZo494PlXk',
@@ -38,8 +40,8 @@ google.setOnLoadCallback(function(){
             },{ title: "Engine Displacement", unitName: " cu.\"", layout: 'right'
             },{ title: "Horsepower", layout: 'right'
             },{ title: "Weight", unitName: "lbs", layout: 'right'
-            },{ title: "Acceleration", unitName: "sec", description: "From 0 to 60 mph"
-            },{ title: "Year", layout: "bottom"
+            },{ title: "Acceleration (0-60mph)", attribMap: "Acceleration", unitName: "sec"
+            },{ title: "Year", layout: "bottom", attribMap: function(d){ return new Date(d.data.Year,1,1);}
             }
         ],
         itemDisplay: {
@@ -56,9 +58,6 @@ google.setOnLoadCallback(function(){
             #chart_div {
                 width: 890px;
                 height: 600px;
-            }
-            .attributeList{
-                display: block !important;
             }
         </style>
     </head>
