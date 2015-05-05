@@ -35,7 +35,8 @@ google.setOnLoadCallback(function(){
                         if(b==="1st") return 1;
                     }
                 }]
-            },{ title: "Sex", attribMap: "sex"
+            },{ title: "Sex", attribMap: "sex", 
+                catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); },
             },{ title: "Age", layout:'bottom',
                 attribMap: function(d){
                     var age = d.data.age;

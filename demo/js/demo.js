@@ -10,6 +10,33 @@ function resizeBrowser(minWidth, minHeight){
     $('#chart_div').height($(window).height()-minHeight);
 };
 
+var getIcon = function(v){
+    var iconName="";
+    switch(v.toLowerCase()){
+        case "male": 
+        case "m": 
+            iconName = "male"; break;
+        case "female": 
+        case "f": 
+            iconName = "female"; break;
+        case "organization": 
+            iconName = "university"; break;
+        case "medicine": 
+            iconName = "stethoscope"; break;
+        case "economics": 
+            iconName = "money"; break;
+        case "literature": 
+            iconName = "book"; break;
+        case "physics": 
+            iconName = "bolt"; break;
+        case "chemistry": 
+            iconName = "flask"; break;
+        case "peace": 
+            iconName = "flag-o"; break;
+    }
+    return "<span class='fa fa-"+iconName+"'></span>";
+};
+
 var getStateName = function(abbrv){
     switch(abbrv){
         case 'AL': return 'Alabama';

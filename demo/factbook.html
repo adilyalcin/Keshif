@@ -20,23 +20,10 @@
 
 var demoID = 253;
 
-var tableName = "Country";
-
 var factBrowser;
 
 noRibbon= true;
 socialShare = false;
-
-var notCountries = {
-    'xx' : 'World',
-    'ee' : 'European Union',
-    'ay' : 'Antarctica',
-    'oo' : 'Southern Ocean',
-    'xo' : 'Indian Ocean',
-    'xq' : 'Arctic Ocean',
-    'zh' : 'Atlantic Ocean',
-    'zn' : 'Pacific Ocean'
-};
 
 function loadData(browser){
     factBrowser = browser;
@@ -58,12 +45,12 @@ function cleanUpText(n){
 };
 
 function loadFactbook(facts){
-    factBrowser.primaryTableName = tableName;
-    kshf.dt[tableName] = [];
+    factBrowser.primaryTableName = "Countries";
+    kshf.dt.Countries = [];
     kshf.dt.Category = [];
-    var arr = kshf.dt[tableName];
+    var kshf.dt.Countries = ;
     var arr_cat = kshf.dt.Category;
-    arr_cat_id = {};
+    var arr_cat_id = {};
 
     $(facts).find("> factbook > category").each(function(){
         var catName = this.getAttribute("name");
@@ -91,10 +78,20 @@ function loadFactbook(facts){
             var country = this;
             var cData = {};
             cData.id = this.getAttribute("id"); // ag, tr, us, ...
+            var notCountries = {
+                'xx' : 'World',
+                'ee' : 'European Union',
+                'ay' : 'Antarctica',
+                'oo' : 'Southern Ocean',
+                'xo' : 'Indian Ocean',
+                'xq' : 'Arctic Ocean',
+                'zh' : 'Atlantic Ocean',
+                'zn' : 'Pacific Ocean'
+            };
             if(notCountries[cData.id]!==undefined) return; // Not a country
             cData.Name = this.getAttribute("name");
             cData.Region = regionName;
-            cData.RegionID = regionID;
+            cData.RegionID = regionID; // using it to lookup image
             cData.Flag = this.getAttribute("flag"); // if "1", country has a flag in the database
             $(this).find("> field").each(function(){
                 var field = this;
@@ -180,7 +177,7 @@ function loadFactbook(facts){
 //                var fieldName = 232;
             });
 
-            arr.push(new kshf.Item(cData,"id"));
+            kshf.dt.Countries.push(new kshf.Item(cData,"id"));
         });
     });
 
@@ -193,7 +190,7 @@ $(document).ready( function(){
         domID : "#chart_div",
         itemName: "Countries",
         categoryTextWidth: 180,
-        barChartWidth: 120,
+        barChartWidth: 110,
         source: { url: "http://jmatchparser.sourceforge.net/",
             callback: loadData
         },
@@ -209,8 +206,7 @@ $(document).ready( function(){
             },{ title: "Education Expend.s (%)", layout: "right", unitName: "%",
                 description: "This entry provides the public expenditure on education as a percent of GDP.",
                 attribMap: "Education Expenditures"
-            },{ title: "Population", layout: "right",
-                intervalScale: 'log', unitName: "ppl",
+            },{ title: "Population", layout: "right", unitName: "ppl",
                 description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."
 //            },{
 //                title: "Languages"
@@ -257,7 +253,7 @@ $(document).ready( function(){
             padding-bottom: 4px;
         }
         #chart_div {
-            width:1200px;
+            width:1100px;
             height:700px;
         }
         .content .name{

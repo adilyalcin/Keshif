@@ -30,7 +30,10 @@
                         },{ title: "Method",
                         },{ title: "State", layout: 'right', catLabelText: function(d){ return getStateName(d.data[0]); }
                         },{ title: "Race", layout: 'right'
-                        },{ title: "Sex", layout: 'right'
+                        },{ title: "Sex", layout: 'right',
+                            catLabelText: function(d){
+                                return (d.data[0]==="M"?"Male ":"Female ")+getIcon(d.data[0]);
+                            }
                         },{ title: "Age", layout: 'right', type: 'interval'
                         },{ title: "Year", layout: 'bottom'
                         }

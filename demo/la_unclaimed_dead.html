@@ -72,8 +72,8 @@ $(document).ready( function(){
                 attribMap: function(d){
                     var r=[];
                     switch(d.data.Sex){
-                        case 'M': r.push("Men <span class='fa gender-icon fa-male'></span>"); break;
-                        case 'F': r.push("Women <span class='fa gender-icon fa-female'></span>"); break;
+                        case 'M': r.push("Men "+getIcon("M")); break;
+                        case 'F': r.push("Women "+getIcon("F")); break;
                     }
                     // if(d.data.Birth_==='unknown') r.push("Unknown");
                     // Nope, above doesn't really work. We need to parse the last name

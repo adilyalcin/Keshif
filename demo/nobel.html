@@ -24,21 +24,6 @@ function getGender(genderValue){
         case 3: return "Organization";
     }
 };
-var getIcon = function(genderName){
-    var iconName="";
-    switch(genderName){
-        case "Male": iconName = "male"; break;
-        case "Female": iconName = "female"; break;
-        case "Organization": iconName = "university"; break;
-        case "Medicine": iconName = "stethoscope"; break;
-        case "Economics": iconName = "money"; break;
-        case "Literature": iconName = "book"; break;
-        case "Physics": iconName = "bolt"; break;
-        case "Chemistry": iconName = "flask"; break;
-        case "Peace": iconName = "flag-o"; break;
-    }
-    return "<span class='fa fa-"+iconName+"'></span>";
-};
 
 $(document).ready( function(){
     logIf.Check = logIf.All();

@@ -176,7 +176,8 @@ $(document).ready( function(){
                     "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","http://textvis.lnu.se/thumbs200/"+d.data.id+".png");
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/textvis/thumbs200_"+d.data.id+".png");
             }
         }
     });

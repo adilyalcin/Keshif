@@ -160,14 +160,6 @@ $(document).ready( function(){
             sortColWidth: 60,
             sortingOpts: [
                 {name:'Country Name', value: function(d){ return d.data.Country;}}
-/*                {   name: 'Flag Date',
-                    value: function(d){ 
-                        var r= d.data.Independence;
-                        if(r===null) return null;
-                        var dt=new Date(moment(r,"MM/DD/YYYY"));
-                        return dt.getUTCFullYear();
-                    }
-                }*/
             ],
             textSearch: "Country",
             detailsToggle: "Multi",
@@ -178,7 +170,8 @@ $(document).ready( function(){
                 return "<img><span class='title'>"+d.data.Country+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","img/"+d.data.Flag);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/"+d.data.Flag);
             }
         }
     });
