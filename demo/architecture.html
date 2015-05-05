@@ -35,7 +35,6 @@ function dataLoad(browser){
                 dt.img_url = v['/common/topic/image'][0].id[0];
                 kshf.dt.Architecture.push(new kshf.Item(dt,'id'));
             });
-            browser.items = kshf.dt.Architecture;
             browser.loadCharts();
         }
     });

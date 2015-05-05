@@ -17,14 +17,14 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    kshf.dt.Tutorials = [];
-    browser.primaryTableName = "Tutorials";
     $.ajax( {
         // YAY! The site allows cross-domain request!
         url:"http://www.html5rocks.com/en/tutorials/",
         async: false,
         success: function(doc){
-            $($.parseHTML(doc)).find("div.articles-list > ul > li").each(function(i){
+            kshf.dt.Tutorials = [];
+            browser.primaryTableName = "Tutorials";
+            $(doc).find("div.articles-list > ul > li").each(function(i){
                 var $this = $(this);
                 var d={};
 
@@ -42,7 +42,6 @@ function loadData(browser){
                 })
                 kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
             });
-            browser.items = kshf.dt.Tutorials;
             browser.loadCharts();   
         }
     });

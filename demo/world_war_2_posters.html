@@ -19,16 +19,15 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Posters";
-    kshf.dt.Posters = [];
     $.ajax({
         url: "./data/world_war_2_posters.json",
         success: function(data){
+            browser.primaryTableName = "Posters";
+            kshf.dt.Posters = [];
             data.forEach(function(poster){
                 poster.id = 1*poster.arcIdentifier;
                 kshf.dt.Posters.push(new kshf.Item(poster,"id"))
             });
-            browser.items = kshf.dt.Posters;
             browser.loadCharts();
         }
     });

@@ -19,14 +19,14 @@
         <script type="text/javascript">
 
 function loadData(browser){
-    browser.primaryTableName = "Visualizations";
-    kshf.dt.Visualizations = [];
-
     $.ajax({
         url: "./data/treevis.xml",
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         async: false,
         success: function(doc){
+            browser.primaryTableName = "Visualizations";
+            kshf.dt.Visualizations = [];
+
             $(doc).find("list > item").each(function(i){
                 var $this = $(this);
                 var d={};
@@ -61,7 +61,6 @@ function loadData(browser){
                 kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
             });
 
-            browser.items = kshf.dt.Visualizations;
             browser.loadCharts();
         }
     });

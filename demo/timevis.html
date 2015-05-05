@@ -18,7 +18,7 @@
 
         <script type="text/javascript">
 
-function getIcon(cat){
+function getSurveyIcon(cat){
     switch(cat){
         case "abstract": return "ils";
         case "spatial": return "arrows";
@@ -36,22 +36,19 @@ function getIcon(cat){
 };
 
 function getIt(cat){
-    return kshf.Util.toProperCase(cat)+" <span class='fa fa-"+getIcon(cat)+"'></span>";
+    return kshf.Util.toProperCase(cat)+" <span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
 };
 
 function loadData(browser){
-    browser.primaryTableName = "Visualizations";
-
-    kshf.dt.Visualizations = [];
-
     $.ajax( {
         url: "./data/timevis.html",
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         async: false,
         success: function(doc){
-            $doc = $(doc);
+            browser.primaryTableName = "Visualizations";
+            kshf.dt.Visualizations = [];
 
-            $doc.find("div.tec").each(function(i){
+            $(doc).find("div.tec").each(function(i){
                 var $this = $(this);
                 var d={};
                 d.id = this.getAttribute("data-id");
@@ -60,12 +57,9 @@ function loadData(browser){
                 d.imageURL = $this.find("img")[0].getAttribute("src");
                 d.imageURL_full = "http://www.informatik.uni-rostock.de/~ct/timeviz/"+d.imageURL;
                 d.Info = $this.find(".tec-source")[0].textContent.trim();
-
-                var kshfItem = new kshf.Item(d,'id');
-                kshf.dt.Visualizations.push(kshfItem);
+                kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
             });
 
-            browser.items = kshf.dt.Visualizations;
             browser.loadCharts();
         }
     });
@@ -162,7 +156,7 @@ $(document).ready( function(){
             recordView : function(d){
                 var iconList="<div class='iconList'>";
                 d.data.categories.forEach(function(cat){
-                    iconList+="<span class='fa fa-"+getIcon(cat)+"'></span>";
+                    iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
                 });
                 iconList+="</div>";
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Name+

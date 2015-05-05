@@ -31,7 +31,6 @@ function dataLoad(browser){
                 vic.incident_date = moment(vic.incident_date).toDate();
                 kshf.dt.Victims.push(new kshf.Item(vic,"id"));
             });
-            browser.items = kshf.dt.Victims;
             browser.loadCharts();
         }
     });

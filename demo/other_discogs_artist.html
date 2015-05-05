@@ -78,7 +78,6 @@ function checkRequestStatus(){
     });
     // finish loading
     if(pagesLoaded===totalPages && totalMasters===mastersLoaded && totalReleases===releasesLoaded){
-        kshf.items = kshf.dt[tableName];
         browser.loadCharts();
     }
 }

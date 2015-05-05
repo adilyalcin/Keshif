@@ -15,9 +15,6 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Posts";
-    kshf.dt.Posts = [];
-
     var subreddit = "hot";
     if(window.location.hash!==""){
         subreddit = window.location.hash.substring(1);
@@ -26,10 +23,11 @@ function loadData(browser){
         url: "http://api.reddit.com/"+subreddit+".json?limit=100",
         dataType: "json",
         success: function(data){
+            browser.primaryTableName = "Posts";
+            kshf.dt.Posts = [];
             data.data.children.forEach(function(p){
                 kshf.dt.Posts.push(new kshf.Item(p.data,'id'));
             });
-            browser.items = kshf.dt.Posts;
             browser.loadCharts();
         }
     });

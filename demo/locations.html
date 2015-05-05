@@ -27,34 +27,29 @@ $(document).ready( function(){
     resetSize();
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 300,
         itemName: "Locations",
-        source : {
+        source: {
             // http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
             callback: function(browser){
-                browser.primaryTableName = "Locations";
-
-                kshf.dt.Locations = [];
-                kshf.dt_id.Locations = {};
-
                 $.ajax( {
                     url: "./data_private/locations.json",
                     dataType: "json",
                     async: false,
                     success: function(data){
+                        browser.primaryTableName = "Locations";
+                        kshf.dt.Locations = [];
+
                         // create the categories list
                         data.locations.forEach(function(location,i){
                             if(location.l_type==="city") return;
                             location.id = location.path.substring(location.path.lastIndexOf("/")+1);
                             location.pos = i;
-                            var kshfItem = new kshf.Item(location,"id");
-                            kshf.dt.Locations.push(kshfItem);
-                            kshf.dt_id.Locations[kshfItem.id()] = kshfItem;
+                            kshf.dt.Locations.push(new kshf.Item(location,"id"));
                         });
 
                         if(browser){
-                            browser.items = kshf.dt.Locations;
                             browser.loadCharts();
                         }
                     }
@@ -62,11 +57,9 @@ $(document).ready( function(){
             }
         },
         facets: [
-            {
-                title: "Type",
+            {   title: "Type",
                 attribMap: "l_type"
-            },{
-                title: "Part of",
+            },{ title: "Part of",
                 catTableName: "Locations",
                 attribMap: "parent_location_uuid",
                 catLabelText: function(location){ return location.data.name; },
@@ -74,7 +67,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts : [{ name:'pos'},],
+            sortingOpts: [{ name:'pos'},],
             linkText: "Part of",
             recordView: "name"
         }

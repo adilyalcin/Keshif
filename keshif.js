@@ -1873,7 +1873,7 @@ kshf.Panel.prototype = {
                 .on("mousedown", function (d, i) {
                     if(d3.event.which !== 1) return; // only respond to left-click
                     root.style('cursor','ew-resize');
-                    root.attr('noanim',true);
+                    me.browser.setNoAnim(true);
                     var mouseDown_x = d3.mouse(document.body)[0];
                     var mouseDown_width = me.width.catChart;
                     root.on("mousemove", function() {
@@ -1888,7 +1888,7 @@ kshf.Panel.prototype = {
                         // TODO: Adjust other panel widths
                     }).on("mouseup", function(){
                         root.style('cursor','default');
-                        root.attr('noanim',false);
+                        me.browser.setNoAnim(false);
                         // unregister mouse-move callbacks
                         root.on("mousemove", null).on("mouseup", null);
                     });
@@ -1962,8 +1962,8 @@ kshf.Panel.prototype = {
             digits++;
             maxTotalCount = Math.floor(maxTotalCount/10);
         }
-        if(digits>4) {
-            digits = 4;
+        if(digits>3) {
+            digits = 3;
             this.width.catQueryPreview+=4; // "." character is used to split. It takes some space
         }
         this.width.catQueryPreview += digits*6;
@@ -2038,8 +2038,8 @@ kshf.Browser = function(options){
 
     this.DOM.root = d3.select(this.domID)
         .classed("kshf",true)
-        .attr("noanim",false)
         .attr("percentview",false)
+        .attr("noanim",false)
         .attr("ratiomode",false)
         .attr("showdropzone",false)
         .attr("previewcompare",false)
@@ -2052,6 +2052,7 @@ kshf.Browser = function(options){
             }
         })
         ;
+    this.noAnim=false;
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
     var rootDomNode = this.DOM.root[0][0];
@@ -2104,6 +2105,12 @@ kshf.Browser = function(options){
 };
 
 kshf.Browser.prototype = {
+    /** -- */
+    setNoAnim: function(v){
+        if(v===this.noAnim) return;
+        this.noAnim=v;
+        this.DOM.root.attr("noanim",this.noAnim);
+    },
     /** -- */
     removeSummary: function(summary){
         var indexFrom = -1;
@@ -2225,7 +2232,7 @@ kshf.Browser.prototype = {
         this.DOM.root.append("div").attr("class", "layout_block layout_resize")
             .on("mousedown", function (d, i) {
                 me.DOM.root.style('cursor','nwse-resize');
-                me.DOM.root.attr("noanim",true);
+                me.setNoAnim(true);
                 var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
                 var mouseDown_y = d3.mouse(d3.select("body")[0][0])[1];
                 var mouseDown_width  = parseInt(d3.select(this.parentNode).style("width"));
@@ -2239,7 +2246,7 @@ kshf.Browser.prototype = {
                 }).on("mouseup", function(){
                     if(sendLog) sendLog(kshf.LOG.RESIZE);
                     me.DOM.root.style('cursor','default');
-                    me.DOM.root.attr("noanim",false);
+                    me.setNoAnim(false);
                     // unregister mouse-move callbacks
                     d3.select("body").on("mousemove", null).on("mouseup", null);
                 });
@@ -2578,12 +2585,6 @@ kshf.Browser.prototype = {
             // finish loading
         if(this.source.loadedTableCount===this.source.sheets.length) {
             if(this.source.callback===undefined){
-                this.source.sheets.forEach(function(sheet){
-                    if(sheet.primary){
-                        this.items = kshf.dt[sheet.tableName];
-                        this.itemsWantedCount = this.items.length;
-                    }
-                },this);
                 this.loadCharts();
             } else {
                 this.source.callback(this);
@@ -2592,6 +2593,12 @@ kshf.Browser.prototype = {
     },
     /** -- */
     loadCharts: function(){
+        if(this.primaryTableName===undefined){
+            alert("Cannot load keshif. Please define browser.primaryTableName.");
+            return;
+        }
+        this.items = kshf.dt[this.primaryTableName];
+
         var me=this;
         this.layout_infobox.select("div.status_text .info").text("Creating browser...");
         this.layout_infobox.select("div.status_text .dynamic").text("");
@@ -3842,7 +3849,7 @@ var Summary_Categorical_functions = {
     /** -- */
     getHeight_Content: function(){
         var h = this.attribHeight + this.getHeight_Config();
-        if(!this.areAllAttribsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>3)
+        if(!this.areAllAttribsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>4)
             h+=this.getHeight_Bottom();
         return h;
     },
@@ -4219,7 +4226,7 @@ var Summary_Categorical_functions = {
         if(this.catCount_Total===1){
             this.catBarScale = "scale_frequency";
         }
-        if(this.catCount_Total<=3) {
+        if(this.catCount_Total<=4) {
             this.sortingOpts.forEach(function(opt){
                 opt.no_resort=true;
             });
@@ -4838,8 +4845,6 @@ var Summary_Categorical_functions = {
 
         var tickDoms = this.DOM.chartAxis_Measure.selectAll("span.tick").data(tickValues,function(i){return i;});
 
-        var noanim=this.browser.DOM.root.attr("noanim");
-
         if(this.browser.ratioModeActive){
             transformFunc=function(d){
                 kshf.Util.setTransform(this,"translateX("+(d*chartWidth/100-0.5)+"px)");
@@ -4856,9 +4861,9 @@ var Summary_Categorical_functions = {
             }
         }
 
-        if(noanim!=="true") this.browser.DOM.root.attr("noanim",true);
+        if(this.browser.noAnim===false) this.browser.setNoAnim(true);
         var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
-        if(noanim!=="true") this.browser.DOM.root.attr("noanim",false);
+        if(this.browser.noAnim===false) this.browser.setNoAnim(false);
 
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line")
@@ -4904,7 +4909,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-        if(this.catCount_Total<=3) {
+        if(this.catCount_Total<=4) {
             this.DOM.scroll_display_more.style("display","none");
             return;
         }
@@ -4933,7 +4938,7 @@ var Summary_Categorical_functions = {
         if(this.heightRow_attrib===h) return;
         this.heightRow_attrib = h;
 
-        this.browser.DOM.root.attr("noanim",true);
+        this.browser.setNoAnim(true);
         
         this.browser.updateLayout();
         
@@ -4950,7 +4955,7 @@ var Summary_Categorical_functions = {
         this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
 
         setTimeout(function(){
-            me.browser.DOM.root.attr("noanim",false);
+            me.browser.setNoAnim(false);
         },100);
     },
     /** -- */
@@ -6785,12 +6790,13 @@ var Summary_Interval_functions = {
         };
 
         if(this.scaleType==='time'){
+            var durationTime=this.browser.noAnim?0:700;
             this.timeSVGLine = d3.svg.area()
                 .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
                 .y0(me.height_hist)
                 .y1(function(aggr){ return me.height_hist-getAggrHeight_Total(aggr); });
             this.DOM.lineTrend_Total
-                .transition().duration(700)
+                .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
         } else {
             this.DOM.aggr_Total.each(function(aggr){
@@ -6828,6 +6834,7 @@ var Summary_Interval_functions = {
         });
 
         if(this.scaleType==='time'){
+            var durationTime=this.browser.noAnim?0:700;
             this.timeSVGLine = d3.svg.area()
                 .x(function(aggr){ 
                     return me.valueScale(aggr.x)+width/2;
@@ -6838,10 +6845,10 @@ var Summary_Interval_functions = {
                 });
             
             this.DOM.lineTrend_Active
-              .transition().duration(700)
+              .transition().duration(durationTime)
               .attr("d", this.timeSVGLine);
 
-            this.DOM.lineTrend_ActiveLine.transition().duration(700)
+            this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){ 
                     if(aggr.aggregate_Active===0) return me.height_hist+3;
@@ -6932,6 +6939,7 @@ var Summary_Interval_functions = {
         this.refreshMeasureLabel();
 
         if(this.scaleType==='time'){
+            var durationTime=200;
             this.timeSVGLine = d3.svg.area()
                 .x(function(aggr){ 
                     return me.valueScale(aggr.x)+width/2;
@@ -6943,10 +6951,10 @@ var Summary_Interval_functions = {
                 });
             
             this.DOM.lineTrend_Preview
-                .transition().duration(200)
+                .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
 
-            this.DOM.lineTrend_PreviewLine.transition().duration(200)
+            this.DOM.lineTrend_PreviewLine.transition().duration(durationTime)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
                 .attr("y2",function(aggr){
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
@@ -6972,6 +6980,7 @@ var Summary_Interval_functions = {
         this.refreshMeasureLabel();
 
         if(this.scaleType==='time'){
+            var durationTime=200;
             this.timeSVGLine = d3.svg.line()
                 .x(function(aggr){ 
                     return me.valueScale(aggr.x)+width/2;
@@ -6981,7 +6990,7 @@ var Summary_Interval_functions = {
                 });
             
             this.DOM.lineTrend_Preview
-                .transition().duration(200)
+                .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
         }
 
@@ -7021,8 +7030,6 @@ var Summary_Interval_functions = {
         tickDoms.exit().remove();
         var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
-        var noanim=this.browser.DOM.root.attr("noanim");
-
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line");
 
@@ -7057,9 +7064,9 @@ var Summary_Interval_functions = {
                     };
                 }
             }
-            if(noanim!=="true") me.browser.DOM.root.attr("noanim",true);
+            if(me.browser.noAnim===false) me.browser.setNoAnim(true);
             me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-            if(noanim!=="true") me.browser.DOM.root.attr("noanim",false);
+            if(me.browser.noAnim===false) me.browser.setNoAnim(false);
         });
     },
     /** -- */

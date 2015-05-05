@@ -192,13 +192,13 @@ var paperMap = {
 };
 
 function loadData(browser){
-    kshf.dt.Projects = [];
-    browser.primaryTableName = "Projects";
     $.ajax( {
-//      url:"http://www.html5rocks.com/en/tutorials/",
         url:"./data/CompIV.html",
         async: false,
         success: function(doc){
+            kshf.dt.Projects = [];
+            browser.primaryTableName = "Projects";
+
             $(doc).find(" > table > tbody > tr").each(function(rowNo){
                 if(rowNo===0) return; // first row
                 var $row = $(this);
@@ -233,7 +233,7 @@ function loadData(browser){
                 }
                 kshf.dt.Projects.push(new kshf.Item(d,"id"));
             });
-            browser.items = kshf.dt.Projects;
+
             browser.loadCharts();   
         }
     });

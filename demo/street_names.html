@@ -36,7 +36,6 @@ function loadData(browser){
                 streetName.Value = streetName.value;
                 kshf.dt.StreetNames.push(new kshf.Item(streetName,"id"));
             });
-            browser.items = kshf.dt.StreetNames;
             browser.loadCharts();
         }
     });

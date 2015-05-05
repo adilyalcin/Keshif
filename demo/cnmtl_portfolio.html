@@ -18,20 +18,18 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Projects";
-    kshf.dt.Projects = [];
     $.ajax( {
         url: "./data/cnmtl_portfolio.json",
         async: false,
         success: function(dataset){
+            browser.primaryTableName = "Projects";
+            kshf.dt.Projects = [];
             var format = d3.time.format("%Y-%m-%d");
             dataset.forEach(function(r,i){
                 r.id=i;
                 r['Released Year'] = format.parse(r.released);
                 kshf.dt.Projects.push(new kshf.Item(r,'id'));
             });
-
-            browser.items = kshf.dt.Projects;
             browser.loadCharts();
         }
     });

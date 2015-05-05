@@ -15,9 +15,6 @@
 
         <script type="text/javascript">
 var loadData = function(browser){
-    browser.primaryTableName = "Posts";
-    kshf.dt.Posts = [];
-
     // contributor data is manually added to this dataset...
     var contributorData = null;
     $.ajax({
@@ -32,6 +29,8 @@ var loadData = function(browser){
         url: "./data/beautifultrouble.json",
         async: false,
         success: function(data){
+            browser.primaryTableName = "Posts";
+            kshf.dt.Posts = [];
             data.forEach(function(item){
                 item.Contributors = contributorData[item.title];
 /*                            if(item.Contributors){
@@ -45,11 +44,8 @@ var loadData = function(browser){
                     });
                     item.Contributors = cc;
                 }*/
-                var kshfItem = new kshf.Item(item,"id");
-                kshf.dt.Posts.push(kshfItem);
+                kshf.dt.Posts.push(new kshf.Item(item,"id"));
             });
-
-            browser.items = kshf.dt.Posts;
             browser.loadCharts();
         }
     });

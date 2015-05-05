@@ -19,13 +19,12 @@
 
         <script type="text/javascript">
 var loadData= function(browser){
-    browser.primaryTableName = "TreeTypes";
-    kshf.dt.TreeTypes = [];
-
     $.ajax({
         //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
         url: "./data/nyc_trees.json",
         success: function(data){
+            browser.primaryTableName = "TreeTypes";
+            kshf.dt.TreeTypes = [];
             data.forEach(function(treeType){
                 treeType.Bronx = parseInt(treeType.Bronx);
                 treeType.Brooklyn = parseInt(treeType.Brooklyn);
@@ -35,11 +34,8 @@ var loadData= function(browser){
                 treeType.Total = treeType.Bronx + treeType.Brooklyn + treeType.Queens
                     + treeType.Manhattan + treeType['Staten Island'];
 
-                var item = new kshf.Item(treeType, "Common");
-                kshf.dt.TreeTypes.push(item);
+                kshf.dt.TreeTypes.push(new kshf.Item(treeType, "Common"));
             });
-
-            browser.items = kshf.dt.TreeTypes;
             browser.loadCharts();
         }
     });

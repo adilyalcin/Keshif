@@ -18,8 +18,8 @@
 
         <script type="text/javascript">
 var loadData = function(browser){
-    browser.primaryTableName = "Visualizations";
-    kshf.dt.Visualizations = [];
+    browser.primaryTableName = "Books";
+    kshf.dt.Books = [];
     
     var book_metadata = {}
     $.ajaxSetup({
@@ -100,11 +100,8 @@ var loadData = function(browser){
                 if (rating > 0) {
                     d.Rating = rating;
                 }
-                var kshfItem = new kshf.Item(d,'id');
-                kshf.dt.Visualizations.push(kshfItem);
+                kshf.dt.Books.push(new kshf.Item(d,'id'));
             });
-
-            browser.items = kshf.dt.Visualizations;
             browser.loadCharts();
         }
     });

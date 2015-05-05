@@ -29,7 +29,6 @@ var loadData = function(browser){
                 v.name = v.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 kshf.dt.Features.push(new kshf.Item(v,'id'));
             });
-            browser.items = kshf.dt.Features;
             browser.loadCharts();
         }
     });

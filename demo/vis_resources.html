@@ -18,16 +18,15 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Resources";
-    kshf.dt.Resources = [];
     $.ajax( {
         url: "./data/vis_resources.json",
         async: false,
         success: function(dataset){
+            browser.primaryTableName = "Resources";
+            kshf.dt.Resources = [];
             dataset.forEach(function(r){
                 kshf.dt.Resources.push(new kshf.Item(r,'id'));
             });
-            browser.items = kshf.dt.Resources;
             browser.loadCharts();
         }
     });

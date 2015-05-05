@@ -15,19 +15,17 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Jobs";
-    kshf.dt.Jobs = [];
     $.ajax({
         url: "./data/lyra_jobs.json",
         success: function(data){
-            var jobID = 0;
-            data.forEach(function(job){
-                job.id = jobID++;
+            browser.primaryTableName = "Jobs";
+            kshf.dt.Jobs = [];
+            data.forEach(function(job,i){
+                job.id = i;
                 var job_item = new kshf.Item(job,"id");
                 job_item.aggregate_Self = job.count;
                 kshf.dt.Jobs.push(job_item);
             });
-            browser.items = kshf.dt.Jobs;
             browser.loadCharts();
         }
     });

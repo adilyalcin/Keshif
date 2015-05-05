@@ -375,11 +375,6 @@ var senate = {
     source:{
         url: "http://www.cc.gatech.edu/gvu/ii/setvis/onset/",
         callback:function(browser){
-            browser.primaryTableName = "Senators";
-
-            kshf.dt.Senators = [];
-            var arr = kshf.dt.Senators;
-
             $.ajax({
                 //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
                 // url: "./data_private/dc_homicides.json", // original source
@@ -388,6 +383,8 @@ var senate = {
                     console.log(e+" - "+f);
                 },
                 success: function(data){
+                    browser.primaryTableName = "Senators";
+                    kshf.dt.Senators = [];
                     data.split("\n").forEach(function(line, i){
                         var s=line.split(",");
                         var d={Name:s[0], Votes:[], id:i};
@@ -396,14 +393,9 @@ var senate = {
                             if(s[k]==="") continue;
                             d.Votes.push(s[k]);
                         }
-                        var item = new kshf.Item(d,"id");
-                        arr.push(item);
+                        kshf.dt.Senators.push(new kshf.Item(d,"id"));
                     });
-                    browser.items = arr;
-
-                    d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                    d3.select(".kshf.layout_infobox div.status_text div").text("");
-                    window.setTimeout(function() { browser.loadCharts(); }, 50);
+                    browser.loadCharts();
                 }
             });
         }

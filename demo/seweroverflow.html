@@ -25,14 +25,10 @@ function loadData(browser){
         url: "./data/seweroverflows.json",
         dataType: "json",
         success: function(data){
-            // data.meta includes meta information
-            // If you want to, you can extract Keshif facet information from the metadata too.
-            // In this example, I manually create facets & hierarchices that I thought can provide insights below in keshif
-            // browser description.
+            // Note: data.meta includes meta information (column names, types, etc)
             data.data.forEach(function(overflow){
                 kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
             });
-            browser.items = kshf.dt.Overflow;
             browser.loadCharts();
         }
     });

@@ -58,12 +58,7 @@ $(document).ready( function(){
                     }
                 });
 
-                browser.items = kshf.dt.Deaths;
-
-                // finish loading....
-                d3.select(".kshf.layout_infobox div.status_text span").text("Creating browser");
-                d3.select(".kshf.layout_infobox div.status_text div").text("");
-                window.setTimeout(function() { browser.loadCharts(); }, 100);
+                browser.loadCharts();
             }
             */
         },
