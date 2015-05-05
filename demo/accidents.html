@@ -15,7 +15,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 var QueryString = function () {
   // This function is anonymous, is executed immediately and 
   // the return value is assigned to QueryString!
@@ -49,7 +48,6 @@ function timeOfDayText(d){
 }
 
 google.setOnLoadCallback( function(){
-
     var query = 'select *';
     var sheetInfo = {name:"Accidents"};
     if(QueryString.set==="small") {
@@ -57,16 +55,16 @@ google.setOnLoadCallback( function(){
     }
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth:170,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
-            sheets : [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
+            sheets: [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
                 {name:"JuncDet"} , {name:"JuncCont"} , {name:"SpecCond"} ,
                 {name:"Severity"} , {name:"LightCond"} , {name:"WeatherCond"}
             ]
         },
-        facets : [
+        facets: [
             {   title: "Road Type",
                 catTableName: "RoadType",
             },{ title: "Severity",
@@ -74,7 +72,7 @@ google.setOnLoadCallback( function(){
             },{ title: "Area",
                 catLabelText: function(d) { return (d.data[0]===1)?"Urban":"Rural"; }
             },{ title: "Time of Day",
-                attribMap : function(accident){
+                attribMap: function(accident){
                     var hour=accident.data['Time of Day'].getHours();
                     if(hour<6) return 0;
                     if(hour<12) return 1;
@@ -87,35 +85,33 @@ google.setOnLoadCallback( function(){
             },{ title: "# of Vehicles", intervalScale: 'step'
             },{ title: "Road Surface",
                 catTableName: "RoadSurface",
-                attribMap : function(accident){
+                attribMap: function(accident){
                     var c=accident.data['Road Surface Condition'];
                     return (c===-1)?null:c; // skip if -1
                 },
                 catLabelText: function(d){ return d.data.name; }
             },{ title: "Light Condition", layout: 'right',
                 catTableName: "LightCond",
-                catLabelText: function(d) {
-                    return d.data.name;
-                }
+                catLabelText: function(d) { return d.data.name; }
             },{ title: "Weather Condition", layout: 'right',
                 catTableName: "WeatherCond",
-                catLabelText: function(d) { return d.data.name;}
+                catLabelText: function(d) { return d.data.name; }
             },{ title: "Special Condition", layout: 'right',
                 catTableName: "SpecCond",
-                attribMap : function(accident){
+                attribMap: function(accident){
                     var c=accident.data['Special Condition'];
                     return (c===0)?null:c; // skip if 0
                 },
                 catLabelText: function(d) { return d.data.name; }
             },{ title: "Junction Detail", layout: 'right',
                 catTableName: "JuncDet",
-                attribMap : function(accident){
+                attribMap: function(accident){
                     var c=accident.data['Junction Detail'];
                     return (c===-0)?null:c; // skip if 0
                 }
             },{ title: "Junction Control", layout: 'right',
                 catTableName: "JuncCont",
-                attribMap : function(accident){
+                attribMap: function(accident){
                     var c=accident.data['Junction Control'];
                     return (c===-1)?null:c; // skip if 0
                 },
@@ -125,7 +121,7 @@ google.setOnLoadCallback( function(){
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts : [
+            sortingOpts: [
                 {   name: 'Date',
                     label: function(accident){ 
                         var date=accident.data.Date;
@@ -133,7 +129,7 @@ google.setOnLoadCallback( function(){
                     }
                 }
             ],
-            detailsToggle : "zoom",
+            detailsToggle: "zoom",
             recordView: 'Accident_Index'
         }
     });

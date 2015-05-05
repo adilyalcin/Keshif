@@ -33,8 +33,7 @@ function dataLoad(browser){
                 });
                 dt.Location = v['/location/location/geolocation'][0];
                 dt.img_url = v['/common/topic/image'][0].id[0];
-                var kshfItem = new kshf.Item(dt,'id');
-                kshf.dt.Architecture.push(kshfItem);
+                kshf.dt.Architecture.push(new kshf.Item(dt,'id'));
             });
             browser.items = kshf.dt.Architecture;
             browser.loadCharts();
@@ -49,15 +48,15 @@ $(document).ready( function(){
         browser.updateLayout();
     });
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 150,
         itemName: "Architectures",
-        source : {
+        source: {
             url: "http://moritz.stefaner.eu/projects/elastic-lists/MACE%20ProjectSearch/index.html",
             callback: dataLoad
         },
         facets: [
-            {   title: "Architect",
+            {   title: "Architect"
             },{ title: "Style", layout: 'right'
             },{ title: "Year (Post 14th century)", layout: 'bottom',
                 attribMap: function(d){
@@ -68,12 +67,12 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 52,
-            sortingOpts : [{ name:'Year' }],
-            textSearch : "Name",
+            sortingOpts: [{ name:'Year' }],
+            textSearch: "Name",
             autoExpandMore: false,
             displayType: 'grid',
             maxVisibleItems_Default: 48,
-            recordView : function(d){
+            recordView: function(d){
                 return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+d.data.Name+"</span>";
             },
             visibleCb: function(d){

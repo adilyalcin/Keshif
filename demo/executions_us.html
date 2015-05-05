@@ -23,7 +23,7 @@
                     rightPanelLabelWidth: 180,
                     source: {
                         gdocId: '1cPUVuvdCswIUdBYHNUUVkFMn91y9QglZC2gK6qqHo3I',
-                        sheets: [ {name:"Executions"} ]
+                        sheets: [{name:"Executions"}]
                     },
                     facets: [
                         {   title: "Crime", attribMap: function(d){ return d.data.Crime.split(" - "); }
@@ -35,7 +35,7 @@
                                 return (d.data[0]==="M"?"Male ":"Female ")+getIcon(d.data[0]);
                             }
                         },{ title: "Age", layout: 'right', type: 'interval'
-                        },{ title: "Year", layout: 'bottom'
+                        },{ title: "Year", layout: 'bottom', attribMap: function(d){ return new Date(d.data.Year,1,1); }
                         }
                     ],
                     itemDisplay: {
