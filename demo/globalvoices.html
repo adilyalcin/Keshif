@@ -16,54 +16,49 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+function loadData(browser){
+    $.ajax( {
+// http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
+        url: "./data_private/globalvoices.json",
+        dataType: "json",
+        async: false,
+        success: function(data){
+            browser.primaryTableName = "Articles";
 
+            kshf.dt.Articles = [];
+            kshf.dt_id.Articles = {};
+
+            kshf.dt.Types = [];
+            kshf.dt_id.Types = {};
+
+            // create the categories list
+            data.counts.t.forEach(function(cat,i){
+                var kshfItem = new kshf.Item([i,cat[1]],0);
+                kshf.dt.Types.push(kshfItem);
+                kshf.dt_id.Types[kshfItem.id()] = kshfItem;
+            });
+
+            // create the articles list
+            data.results.forEach(function(article,i){
+                if(i<5000) return;
+                // convert string timestamp to integer
+                article[7] = parseInt(article[7])*1000;
+                var kshfItem = new kshf.Item(article,0);
+                kshf.dt.Articles.push(kshfItem);
+                kshf.dt_id.Articles[kshfItem.id()] = kshfItem;
+            });
+
+            browser.loadCharts();
+        }
+    });
+}
 $(document).ready( function(){
 	browser = new kshf.Browser({
         domID : "#chart_div",
         categoryTextWidth: 130,
-        itemName: "Articles",
         source : {
             url: "http://globalvoicesonline.org/",
-            callback: function(browser){
-                browser.primaryTableName = "Articles";
-
-                kshf.dt.Articles = [];
-                kshf.dt_id.Articles = {};
-
-                kshf.dt.Types = [];
-                kshf.dt_id.Types = {};
-
-                $.ajax( {
-// http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
-                    url: "./data_private/globalvoices.json",
-                    dataType: "json",
-                    async: false,
-                    success: function(data){
-                        var gg=12121;
-
-                        // create the categories list
-                        data.counts.t.forEach(function(cat,i){
-                            var kshfItem = new kshf.Item([i,cat[1]],0);
-                            kshf.dt.Types.push(kshfItem);
-                            kshf.dt_id.Types[kshfItem.id()] = kshfItem;
-                        });
-
-                        // create the articles list
-                        data.results.forEach(function(article,i){
-                            if(i<5000) return;
-                            // convert string timestamp to integer
-                            article[7] = parseInt(article[7])*1000;
-                            var kshfItem = new kshf.Item(article,0);
-                            kshf.dt.Articles.push(kshfItem);
-                            kshf.dt_id.Articles[kshfItem.id()] = kshfItem;
-                        });
-
-                        if(browser){
-                            browser.loadCharts();
-                        }
-                    }
-                });
-            }
+            callback: loadData
         },
         facets: [
             {   title: "Tag",

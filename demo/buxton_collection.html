@@ -22,12 +22,10 @@ function dataLoad(browser){
         dataType:"xml",
         async: false,
         success: function(collection){
-            var $collection = $(collection);
             browser.primaryTableName = "Devices";
-            kshf.dt["Devices"] = [];
-            var arr = kshf.dt["Devices"];
+            kshf.dt.Devices = [];
 
-            $collection.find("> Collection > Items > Item").each(function(){
+            $(collection).find("> Collection > Items > Item").each(function(){
                 var $this = $(this);
                 var cData = {};
                 cData.url = $this.attr("Href");
@@ -158,7 +156,7 @@ function dataLoad(browser){
 
                 if(imageFix[cData.id]) cData['Related Images'] = [imageFix[cData.id]];
 
-                arr.push(new kshf.Item(cData,"id"));
+                kshf.dt.Devices.push(new kshf.Item(cData,"id"));
             });
             browser.loadCharts();   
         }
@@ -174,7 +172,6 @@ $(document).ready( function(){
 
     browser =new kshf.Browser({
         domID : "#chart_div",
-        itemName: "Devices",
         categoryTextWidth: 150,
         barChartWidth: 90,
         source : {

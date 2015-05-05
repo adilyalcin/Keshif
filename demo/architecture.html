@@ -19,8 +19,8 @@ function dataLoad(browser){
         url: "./data/freebase_architecture.json",
         async: false,
         success: function(data){
-            browser.primaryTableName = "Architecture";
-            kshf.dt.Architecture = [];
+            browser.primaryTableName = "Architectures";
+            kshf.dt.Architectures = [];
             data.result.forEach(function(v){
                 var dt = {};
                 dt.id = v.id;
@@ -33,7 +33,7 @@ function dataLoad(browser){
                 });
                 dt.Location = v['/location/location/geolocation'][0];
                 dt.img_url = v['/common/topic/image'][0].id[0];
-                kshf.dt.Architecture.push(new kshf.Item(dt,'id'));
+                kshf.dt.Architectures.push(new kshf.Item(dt,'id'));
             });
             browser.loadCharts();
         }
@@ -49,7 +49,6 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 150,
-        itemName: "Architectures",
         source: {
             url: "http://moritz.stefaner.eu/projects/elastic-lists/MACE%20ProjectSearch/index.html",
             callback: dataLoad

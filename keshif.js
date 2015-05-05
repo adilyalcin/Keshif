@@ -2020,12 +2020,8 @@ kshf.Browser = function(options){
 
     this.DOM = {};
 
-    // itemName
-    if(options.itemName!==undefined){
-        this.itemName = options.itemName;
-    } else {
-        this.itemName = this.source.sheets[0].name;
-    }
+    this.itemName = options.itemName || "";
+
     // primItemCatValue
     this.primItemCatValue = null;
     if(typeof options.catValue === 'string'){ this.primItemCatValue = options.catValue; }
@@ -2598,6 +2594,9 @@ kshf.Browser.prototype = {
             return;
         }
         this.items = kshf.dt[this.primaryTableName];
+        if(this.itemName==="") {
+            this.itemName=this.primaryTableName;
+        }
 
         var me=this;
         this.layout_infobox.select("div.status_text .info").text("Creating browser...");
@@ -2749,7 +2748,8 @@ kshf.Browser.prototype = {
             var resultInfo = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
             this.DOM.listheader_count = resultInfo.append("span").attr("class","listheader_count")
                 .style("width",this.listDisplay.sortColWidth+"px");
-            resultInfo.append("span").attr("class","listheader_itemName").html(this.itemName);
+            this.DOM.listheader_itemName = resultInfo.append("span").attr("class","listheader_itemName");
+            this.setItemName();
 
             if(this.listDisplay.hideTextSearch!==true){
                 this.listDisplay.insertGlobalTextSearch();
@@ -2892,6 +2892,10 @@ kshf.Browser.prototype = {
                 me.refreshAttributeList();
             }
         });
+    },
+    /** -- */
+    setItemName: function(){
+        this.DOM.listheader_itemName.html(this.itemName);
     },
     /** -- */
     insertAttributeList: function(){

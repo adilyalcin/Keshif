@@ -104,7 +104,12 @@ $(document).ready( function(){
                     },{ title: "Religion",
                         catLabelText: function(d) { return religionText(d.data[1]); }
                     },{ title: "Flag Date", layout: 'left',
-                        attribMap: function(flag){  return new Date(moment(flag.data.Independence,"MM/DD/YYYY")); }
+                        attribMap: function(flag){ 
+                            if(flag.data.Independence==="") return;
+                            if(flag.data.Independence===null) return;
+                            if(flag.data.Independence===undefined) return;
+                            return new Date(moment(flag.data.Independence,"MM/DD/YYYY"));
+                        }
                     /*}
                 ]*/
             },{ /*title: "Flag Properties", layout: 'right',
@@ -157,7 +162,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
+            sortColWidth: 80,
             sortingOpts: [
                 {name:'Country Name', value: function(d){ return d.data.Country;}}
             ],

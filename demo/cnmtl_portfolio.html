@@ -36,12 +36,10 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 160,
-        itemName: "Projects",
-        source : {
+        source: {
             url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
             callback: loadData
         },
@@ -56,12 +54,12 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 92,
-            sortingOpts : [{name:'Released', inverse: true}],
-            textSearch : "title",
+            sortingOpts: [{name:'Released', inverse: true}],
+            textSearch: "title",
             displayType: 'grid',
             maxVisibleItems_Default: 100,
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "Zoom",
+            recordView: function(d){
                 return "<a target='_blank' href='"+d.data.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
                     "<span class='title'>"+d.data.label+"</span>";
             },
