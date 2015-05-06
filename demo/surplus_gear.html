@@ -31,7 +31,7 @@ $(document).ready( function() {
         },
         facets: [
             {   title: "state",
-                catLabelText: function(d){ return getStateName(d.data[1]); }
+                catLabelText: function(d){ return getStateName(d.data[0]); }
             },{ title: "Gear Category",
                 attribMap: function(d){
                     var r=[];

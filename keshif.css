@@ -82,6 +82,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[previewcompare="true"] .compareLine {
   opacity: 1 !important;
 }
+.kshf[isfiltered=true] .listHeader .filterClearAll {
+  opacity: 1;
+  pointer-events: all;
+}
 .kshf .compareButton {
   display: block;
   position: absolute;
@@ -244,6 +248,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .attributeList > .attributeName .dataTypeIcon > .num_right {
   float: right;
   margin-right: 2px;
+}
+.kshf .attributeList > .attributeName .dataTypeIcon > .fa {
+  color: gray;
 }
 .kshf .attributeList > .attributeName > .attribNugget {
   display: -webkit-box;
@@ -422,6 +429,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .attributeList > .attributeListHeader {
   font-weight: 700;
+}
+.kshf .panels_Above {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 .kshf .layout_block > .dropZone {
   -webkit-box-flex: 1;
@@ -785,7 +806,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
   display: inline-block;
   cursor: pointer;
-  pointer-events: all;
   font-weight: 700;
   font-size: 11px;
   text-align: center;
@@ -2109,14 +2129,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   overflow: hidden;
   vertical-align: top;
-  border-top: double 0px gray;
-  padding-top: 2px;
-  padding-bottom: 0px;
+  margin: 1px 0px;
   position: relative;
-  -webkit-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  -moz-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  -o-transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
-  transition: max-height 500ms ease, padding 500ms ease, background-color 100ms ease, opacity 500ms ease;
+  -webkit-transition: opacity 500ms ease;
+  -moz-transition: opacity 500ms ease;
+  -o-transition: opacity 500ms ease;
+  transition: opacity 500ms ease;
 }
 .kshf .listDiv > .listItemGroup > .listItem > .content {
   vertical-align: top;
@@ -2372,15 +2390,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
   width: 100%;
-  max-height: 200px;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn {
   vertical-align: top;
-  cursor: cell;
   margin: 2px 0px 0px 0px;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
-  float: right;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: right;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .itemRank {
   margin-left: 2px;
@@ -2389,9 +2409,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   font-weight: 300;
   float: left;
-}
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn:hover {
-  color: red;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
   width: 18px;
@@ -2420,7 +2437,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader {
   font-weight: bold;
   color: black;
-  font: 500 100% Arial, sans-serif;
   font-size: 0.9em;
   position: relative;
   border-style: solid;
@@ -2430,13 +2446,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px 2px;
   background-color: #efeadf;
 }
-.kshf .listHeader > .topRow .totalViz {
+.kshf .listHeader .totalViz {
   height: 3px;
   margin-top: 1px;
   margin-bottom: 2px;
   position: relative;
 }
-.kshf .listHeader > .topRow .totalViz > .aggr {
+.kshf .listHeader .totalViz > .aggr {
   cursor: default !important;
   left: 0px;
   top: 0px;
@@ -2446,65 +2462,87 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 200ms ease-in-out;
   transition: all 200ms ease-in-out;
 }
-.kshf .listHeader > .topRow .totalViz > .aggr.total {
+.kshf .listHeader .totalViz > .aggr.total {
   width: 100%;
 }
-.kshf .listHeader > .topRow .totalViz > .aggr.preview {
+.kshf .listHeader .totalViz > .aggr.preview {
   transform: inherit;
 }
 .kshf .listHeader > .bottomRow {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   min-height: 18px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow {
-  display: table-row;
+.kshf .listHeader > .bottomRow > .header_listSortColumn {
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
+  align-self: flex-end;
+  white-space: nowrap;
+  text-align: center;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .sortColumn {
-  display: table-cell;
+.kshf .listHeader > .bottomRow > .header_listSortColumn > .sortColumnName {
+  font-weight: 300;
+  font-size: 0.9em;
+  margin: 0px 0px 1px 3px;
+  display: inline-block;
+  cursor: default;
+  -webkit-user-select: none;
+}
+.kshf .listHeader > .bottomRow > .sortColumn {
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
+  align-self: flex-end;
   width: 17px;
-  font-size: 0.7em;
+  font-size: 0.8em;
+  margin-bottom: 2px;
   vertical-align: bottom;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .sortColumn > .sortButton {
+.kshf .listHeader > .bottomRow > .sortColumn > .sortButton {
   padding: 2px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .scrollToTop {
-  display: table-cell;
+.kshf .listHeader > .bottomRow > .scrollToTop {
   vertical-align: bottom;
   text-align: right;
   width: 15px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .listsortcolumn {
-  display: table-cell;
+.kshf .listHeader > .bottomRow > .listsortcolumn {
   vertical-align: bottom;
+  margin: 0;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn {
-  display: table-cell;
+.kshf .listHeader > .bottomRow > .headerLinkStateColumn {
   font-size: 1.1em;
   text-align: right;
   width: 85px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkAll > .fa-link {
+.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll > .fa-link {
   cursor: pointer;
   font-size: 0.9em;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkAll > .headerLinkColumnAllResults {
+.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll > .headerLinkColumnAllResults {
   cursor: pointer;
   margin-right: 2px;
   font-size: 0.8em;
   font-weight: 300;
   font-family: sans-serif;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkAll:hover {
+.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll:hover {
   color: orangered;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .headerLinkStateColumn > .linkTitleText {
+.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkTitleText {
   /*                        font-size: 0.8em;
-                        font-variant: small-caps;
-                        font-weight: 300;
-                        cursor: default;*/
+                    font-variant: small-caps;
+                    font-weight: 300;
+                    cursor: default;*/
   display: block;
   font-size: 1.0em;
   font-weight: 700;
@@ -2514,14 +2552,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 16px;
   margin-left: 2px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs {
-  display: table-cell;
+.kshf .listHeader > .bottomRow > .filtercrumbs {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   font-size: 0.9em;
-  margin-left: 5px;
   vertical-align: top;
-  margin-top: 2px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block {
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -2537,66 +2577,134 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 250ms linear;
   transition: all 250ms linear;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds {
   pointer-events: none;
   /*
-                            max-width: 300px;
-                            max-width: 300px;
-                            -o-text-overflow: ellipsis;
-                            text-overflow: ellipsis;*/
+                        max-width: 300px;
+                        max-width: 300px;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;*/
   display: block;
   white-space: nowrap;
   overflow: hidden;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
   padding: 1px;
   font-size: 0.9em;
   font-weight: 700;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
   content: ': ';
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails {
   padding: 1px 0px 1px 0px;
   display: inline;
   margin-right: 15px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
   pointer-events: none;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[ready=true] {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=true] {
   max-width: 1000px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[ready=false] {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] {
   max-width: 0px;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
   display: none;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block:hover {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover {
   background-color: #ffffff;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block:hover .sdsdsds {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover .sdsdsds {
   text-decoration: line-through;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block:hover .chartClearFilterButton {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover .chartClearFilterButton {
   background-color: #B6AF96;
   color: #635d46;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block b {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block b {
   font-weight: 700;
 }
-.kshf .listHeader > .bottomRow > .bottomRowRow > .filtercrumbs > .filter-block[filtered=false] {
+.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[filtered=false] {
   display: none;
 }
-.kshf .listHeader .mainTextSearch {
+.kshf .listHeader .filterClearAll {
+  opacity: 0;
+  pointer-events: none;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  align-self: center;
+  right: 41px;
+  top: 0px;
+  cursor: pointer;
+  color: #252112;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  background-color: #E9E2CE;
+  padding-left: 1px;
+  -webkit-transition: background-color 100ms linear, opacity 300ms linear;
+  -moz-transition: background-color 100ms linear, opacity 300ms linear;
+  -o-transition: background-color 100ms linear, opacity 300ms linear;
+  transition: background-color 100ms linear, opacity 300ms linear;
+}
+.kshf .listHeader .filterClearAll:hover {
+  background-color: white;
+  box-shadow: none;
+}
+.kshf .listHeader .filterClearAll .title {
+  font-size: 0.8em;
+  padding-left: 1px;
+  vertical-align: middle;
+}
+.kshf .listHeader > .topRow {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.kshf .listHeader > .topRow > .resultInfo {
+  vertical-align: top;
+  display: block;
   white-space: nowrap;
-  margin-left: 5px;
+  pointer-events: none;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-shadow: 1px 1px lightgray;
+  margin-bottom: -3px;
+}
+.kshf .listHeader > .topRow > .resultInfo .listHeader_count {
+  display: inline-block;
+  text-align: right;
+  vertical-align: top;
+  margin-right: 4px;
+}
+.kshf .listHeader > .topRow > .resultInfo .listHeader_itemName {
+  margin-right: 4px;
+}
+.kshf .listHeader > .topRow > .mainTextSearch {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  align-self: center;
+  white-space: nowrap;
   display: inline-block;
   vertical-align: bottom;
   position: relative;
 }
-.kshf .listHeader .mainTextSearch input {
+.kshf .listHeader > .topRow > .mainTextSearch input {
   font-size: 0.8em;
   font-weight: 700;
   color: #cb5454;
@@ -2607,27 +2715,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-style: solid;
   border-color: #cb5454;
   margin: 1px;
+  width: calc(100% - 17px);
 }
-.kshf .listHeader .mainTextSearch input:focus {
+.kshf .listHeader > .topRow > .mainTextSearch input:focus {
   outline-color: #cb5454;
   outline-width: 2px;
 }
-.kshf .listHeader .mainTextSearch input:hover {
+.kshf .listHeader > .topRow > .mainTextSearch input:hover {
   border-width: 1px;
   background-color: white;
   margin: 0px;
 }
-.kshf .listHeader .mainTextSearch input::-webkit-input-placeholder {
+.kshf .listHeader > .topRow > .mainTextSearch input::-webkit-input-placeholder {
   color: #cb5454;
   font-weight: 300;
 }
-.kshf .listHeader .mainTextSearch input:focus::-webkit-input-placeholder {
+.kshf .listHeader > .topRow > .mainTextSearch input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .listHeader .mainTextSearch .searchIcon {
+.kshf .listHeader > .topRow > .mainTextSearch .searchIcon {
+  padding-left: 1px;
   color: #cb5454;
 }
-.kshf .listHeader .mainTextSearch i.fa.clearText {
+.kshf .listHeader > .topRow > .mainTextSearch i.fa.clearText {
   position: absolute;
   display: none;
   right: 2px;
@@ -2635,68 +2745,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   color: gray;
 }
-.kshf .listHeader .mainTextSearch i.fa.clearText:hover {
+.kshf .listHeader > .topRow > .mainTextSearch i.fa.clearText:hover {
   color: #cb5454;
 }
-.kshf .listHeader .rightBoxes {
-  position: absolute;
+.kshf .listHeader > .topRow > .rightBoxes {
   right: 0px;
   top: -1px;
   font-size: 1.3em;
   color: #635d46;
+  text-align: right;
+  white-space: nowrap;
 }
-.kshf .listHeader .rightBoxes .fa {
+.kshf .listHeader > .topRow > .rightBoxes .fa {
   cursor: pointer;
   margin-left: 2px;
 }
-.kshf .listHeader .rightBoxes .fa:hover {
+.kshf .listHeader > .topRow > .rightBoxes .fa:hover {
   color: #cb5454;
 }
-.kshf .listHeader .rightBoxes .datasource {
+.kshf .listHeader > .topRow > .rightBoxes .datasource {
   cursor: pointer;
   text-decoration: none;
   color: #635d46;
-}
-.kshf .listHeader span.filterClearAll {
-  display: none;
-  position: absolute;
-  right: 41px;
-  top: 0px;
-  cursor: pointer;
-  color: #252112;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  background-color: #E9E2CE;
-  padding-left: 1px;
-  -webkit-transition: background-color 100ms linear;
-  -moz-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
-}
-.kshf .listHeader span.filterClearAll:hover {
-  background-color: white;
-  box-shadow: none;
-}
-.kshf .listHeader span.filterClearAll .title {
-  font-size: 0.8em;
-  vertical-align: middle;
-}
-.kshf .listHeader span.resultInfo {
-  vertical-align: top;
-  display: inline-block;
-  white-space: nowrap;
-  pointer-events: none;
-  font-size: 1.5em;
-  font-weight: 700;
-  text-shadow: 1px 1px lightgray;
-  margin-bottom: -3px;
-}
-.kshf .listHeader span.resultInfo .listheader_count {
-  display: inline-block;
-  text-align: right;
-  vertical-align: top;
-  padding-right: 3px;
-  margin-right: 2px;
 }
 .kshf .boxinbox {
   margin-top: 10px;

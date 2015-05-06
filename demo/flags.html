@@ -91,18 +91,18 @@ $(document).ready( function(){
             {   /*title: "-Country-",
                 facets: [
                     {*/   title: "Continent",
-                        catLabelText: function(d) { return landmassText(d.data[1]); },
+                        catLabelText: function(d) { return landmassText(d.data[0]); },
                     },{ title: "Zone", collapsed: true,
-                        catLabelText: function(d) { return zoneText(d.data[1]); }
+                        catLabelText: function(d) { return zoneText(d.data[0]); }
                     },{ title: "Language",
                         attribMap: function(flag){
                             var r= flag.data.Language;
                             if(r===9) return 10;
                             return r;
                         },
-                        catLabelText: function(d) { return languageText(d.data[1]); }
+                        catLabelText: function(d) { return languageText(d.data[0]); }
                     },{ title: "Religion",
-                        catLabelText: function(d) { return religionText(d.data[1]); }
+                        catLabelText: function(d) { return religionText(d.data[0]); }
                     },{ title: "Flag Date", layout: 'left',
                         attribMap: function(flag){ 
                             if(flag.data.Independence==="") return;
@@ -162,7 +162,6 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 80,
             sortingOpts: [
                 {name:'Country Name', value: function(d){ return d.data.Country;}}
             ],

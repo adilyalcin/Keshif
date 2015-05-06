@@ -141,7 +141,7 @@ google.setOnLoadCallback(function(){
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }],
                 catLabelText: function(d){
-                    switch(d.data[1]){
+                    switch(d.data[0]){
                         case 0: return "Monday";
                         case 1: return "Tuesday";
                         case 2: return "Wednesday";
@@ -163,7 +163,7 @@ google.setOnLoadCallback(function(){
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }],
                 catLabelText: function(d){
-                    switch(d.data[1]){
+                    switch(d.data[0]){
                         case 0: return "9:30-10:50";
                         case 1: return "11:30-12:50";
                         case 2: return "14:30-15:50";

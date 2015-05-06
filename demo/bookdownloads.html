@@ -54,7 +54,7 @@ $(document).ready( function(){
             },{ title: "Day",
                 attribMap: function(download){ return download.data.downloadTime.day(); },
                 catLabelText: function(v){
-                    switch(v.data[1]){
+                    switch(v.data[0]){
                         case 0: return "Sunday";
                         case 1: return "Monday";
                         case 2: return "Tuesday";

@@ -39,29 +39,29 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "UserType",
                 catLabelText: function(d){
-                    switch(d.data[1]){
+                    switch(d.data[0]){
                         case "S": return "Subscriber";
                         case "C": return "Customer";
                     }
                 },
             },{ title: "Gender", layout: 'right',
                 catLabelText: function(d){
-                    switch(d.data[1]){
-                        case 2: return "Female";
-                        case 1: return "Male";
+                    switch(d.data[0]){
+                        case 2: return "Female "+getIcon("f");
+                        case 1: return "Male "+getIcon("m");
                         default: return "?";
                     }
                 },
                 type: 'categorical'
             },{ title: "Station_Start",
-                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
+                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[0]].data.Name; },
             },{ title: "Station_End", layout: 'right',
-                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[1]].data.Name; },
+                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[0]].data.Name; },
             },{ title: "Day of Week", layout: 'right', collapsed: true,
                 attribMap: function(d){ return d.data.TimeStart.day(); },
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
                 catLabelText: function(d){
-                    switch(d.data[1]){
+                    switch(d.data[0]){
                         case 1: return "Monday";
                         case 2: return "Tuesday";
                         case 3: return "Wednesday";

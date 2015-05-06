@@ -18,13 +18,13 @@
 
 var getName = {
     Class: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'e': return 'Edible';
             case 'p': return 'Poisonous';
         }
     },
     Shape: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'b': return "Bell";
             case 'c': return "Conical";
             case 'x': return "Convex";
@@ -36,7 +36,7 @@ var getName = {
         }
     },
     Surface: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'f': return "Fibrous";
             case 'g': return "Grooves";
             case 'y': return "Scaly";
@@ -45,7 +45,7 @@ var getName = {
         }
     },
     Color: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'n': return "Brown";
             case 'b': return "Buff";
             case 'c': return "Cinnamon";
@@ -62,7 +62,7 @@ var getName = {
         }
     },
     Odor: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'a': return "Almond";
             case 'l': return "Anise";
             case 'c': return "Creosote";
@@ -75,7 +75,7 @@ var getName = {
         }
     },
     GillAttachment: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'a': return 'Attached';
             case 'd': return 'Descending';
             case 'f': return 'Free';
@@ -83,20 +83,20 @@ var getName = {
         }
     },
     GillSpacing: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'c': return 'Close';
             case 'w': return 'Crowded';
             case 'd': return 'Distant';
         }
     },
     GillSize: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'b': return 'Broad';
             case 'n': return 'Narrow';
         }
     },
     Population: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'a': return 'Abundant';
             case 'c': return 'Clustered';
             case 'n': return 'Numerous';
@@ -106,7 +106,7 @@ var getName = {
         }
     },
     Habitat: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'g': return 'Grasses';
             case 'l': return 'Leaves';
             case 'm': return 'Meadows';
@@ -117,14 +117,14 @@ var getName = {
         }
     },
     RingNumber: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'n': return 'None';
             case 'o': return 'One';
             case 't': return 'Two';
         }
     },
     RingType: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'c': return 'Cobwebby';
             case 'e': return 'Evanescent';
             case 'f': return 'Flaring';
@@ -136,7 +136,7 @@ var getName = {
         }
     },
     Root: function(d){
-        switch(d.data[1]){
+        switch(d.data[0]){
             case 'b': return 'Bulbous';
             case 'c': return 'Club';
             case 'u': return 'Cup';

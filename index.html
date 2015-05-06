@@ -42,23 +42,18 @@ browser = new kshf.Browser({
         sheets: [ {name:"Demos"} ]
     },
     facets: [
-        {   title: "Code complexity", layout: 'right', collapsed: true,
+        {   title: "Code Complexity", layout: 'right', collapsed: true,
             description: "Relative code complexity of demo source",
-            attribMap: function(d){
-                switch(d.data['Code Complexity']){
+            sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
+            catLabelText: function(d){
+                switch(d.data[0]){
                     case 1: return "A breeze *";
                     case 2: return "Simple **"; 
                     case 3: return "Intermediate ***";
                     case 4: return "Detailed ****";
                     case 5: return "Fully featured *****";
                 }
-            },
-            sortingOpts: [{ func: function(a,b){
-                    a = a.data[1].split("*").length - 1;
-                    b = b.data[1].split("*").length - 1;
-                    return a-b;
-                }
-            }]
+            }
         },{ title: "Keywords", layout: 'right',
             attribMap: function(d){ return d.data['Keywords'].split("+"); }
         },{ title: "Facet Types &amp; Features",
@@ -107,16 +102,13 @@ browser = new kshf.Browser({
             }
         },{ title: "Data Source", layout: 'right',
             attribMap: function(d){ return d.data.Source.split("+"); }
-        },{ title: "# Items", layout: 'right',
-            intervalScale: 'log',
-            showPercentile: true
+        },{ title: "# Items", showPercentile: true, layout: 'right', 
         },{ title: "Creation Time", collapsed: false,
             attribMap: function(d){ return d.data.Authored.getFullYear(); },
             intervalScale: 'step'
         }
     ],
     itemDisplay: {
-        sortColWidth: 45,
         sortingOpts: [ { 
             name: '', value: function(d){ return d.id(); }, inverse: true
         } ],

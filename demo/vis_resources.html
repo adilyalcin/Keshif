@@ -54,7 +54,6 @@ $(document).ready( function(){
         },
         facets: [{ title: "category" }],
         itemDisplay: {
-            sortColWidth: 92,
             sortingOpts : [{name:'id', inverse: true}],
             textSearch : "title",
             displayType: 'grid',
@@ -65,8 +64,8 @@ $(document).ready( function(){
                     "<span class='title'>"+d.data.title+"</span>";
             },
             visibleCb: function(d){
-                var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(d.data.image_src);
-                d3.select(d.DOM.result).select("img").attr("src",imgUrl);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(d.data.image_src));
             }
         }
     });

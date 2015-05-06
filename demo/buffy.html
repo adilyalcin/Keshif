@@ -161,8 +161,8 @@ $(document).ready(function(){
                             return d.data.episode;
                         },
                         catLabelText: function(d){
-                            if(d.data[1]===0) return "Many Episodes";
-                            return "Episode "+d.data[1]+" Only";
+                            if(d.data[0]===0) return "Many Episodes";
+                            return "Episode "+d.data[0]+" Only";
                         }
                     },{ title: "Team",
                     },{ title: "Type", collapsed: true

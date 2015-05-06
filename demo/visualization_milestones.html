@@ -230,7 +230,7 @@ google.setOnLoadCallback(function(){
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}],
                 catLabelText: function(d){
-                    switch(d.data[1]){
+                    switch(d.data[0]){
                         case 0: return "Maps and diagrams <b>Pre-1600</b>";
                         case 1: return "Measurements &amp; theories <b>1600s</b>";
                         case 2: return "New graphic forms <b>1700s</b>";
@@ -253,7 +253,6 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 45,
             detailsToggle: "Zoom",
             sortingOpts: [ {name: 'Year', inverse: true} ],
             displayType: 'grid',

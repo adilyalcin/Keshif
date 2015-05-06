@@ -26,8 +26,8 @@
 var demoID = 89;
 
 var likertSort = function(a,b){
-    a= a.data[1];
-    b= b.data[1];
+    a= a.data[0];
+    b= b.data[0];
     if(b==="Strongly agree") return 1;
     if(a==="Strongly agree") return -1;
     if(b==="Somewhat agree") return 1;
@@ -41,8 +41,8 @@ var likertSort = function(a,b){
 };
 
 var ageSort = function(a,b){
-    a= a.data[1];
-    b= b.data[1];
+    a= a.data[0];
+    b= b.data[0];
     if(b==="18 - 24") return 1;
     if(a==="18 - 24") return -1;
     if(b==="25 - 34") return 1;

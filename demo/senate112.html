@@ -30,8 +30,7 @@ google.setOnLoadCallback( function(){
             {   title: "Result"
             },{ title: "Session",
                 catLabelText: function(d) {
-                    if(d.data[1]===1) { return "1st Session"; }
-                    if(d.data[1]===2) { return "2nd Session"; }
+                    return ((d.data[0]===1)?"1st":"2nd")+" Session";
                 },
                 sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             },{ title: "Yea's",

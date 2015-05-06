@@ -94,7 +94,7 @@ $(document).ready( function(){
                 sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
                 catLabelText: function(d){
                     var str='';
-                    for(var i=0; i<d.data[1]; i++) str +="<span class='fa fa-star'></span>"
+                    for(var i=0; i<d.data[0]; i++) str +="<span class='fa fa-star'></span>"
                     return str;
                 }
             },{ title: "Page Views", layout: 'right'

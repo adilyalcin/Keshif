@@ -56,7 +56,7 @@ $(document).ready( function(){
                     }
                 ]
             },{ title: "Joint Awards",
-                catLabelText: function(d) { return d.data[1]+" awardee"+(d.data[1]===1?"":"s"); }
+                catLabelText: function(d) { return d.data[0]+" awardee"+(d.data[0]===1?"":"s"); }
             },{ title: "Gender",
                 attribMap: function(prize){ 
                     return getGender(kshf.dt_id.Laureates[prize.data.laureate_id].data.gender);
@@ -69,7 +69,6 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 55,
             sortingOpts: [ {name: 'Year'} ],
             detailsToggle: "zoom",
             textSearch: "name",

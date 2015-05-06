@@ -75,9 +75,8 @@ $(document).ready( function(){
             {   title: "Category",
                 attribMap: "type",
                 catLabelText: function(d){
-                    return getType(d.data[0])+" <span class='typeImg'></span>";
-                },
-                domStyle: function(d){ return "itemType_"+d.data[0]; },
+                    return getType(d.data[0])+" <span class='typeImg_"++d.data[0]"'></span>";
+                }
             },{ title: "Contributors",
             },{
                 title: "Number of Related Posts",
@@ -85,8 +84,7 @@ $(document).ready( function(){
                 attribMap: function(d){ return d.data.links.length; },
             },{
                 title: "Related To",
-                attribMap: "links",
-                domStyle: function(d){ return "itemType_"+d.data.type; },
+                attribMap: "links"
                 catLabelText: function(d){ return d.data.title; },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Posts"
@@ -105,7 +103,6 @@ $(document).ready( function(){
             ],
 //            showRank: true,
             showSelectBox: true,
-            domStyle: function(d){ return "itemType_"+d.data.type},
             detailsToggle: "One",
             textSearch: "Title and text",
             textSearchFunc: function(d){ return d.data.title + " " + d.data.text;},
@@ -166,23 +163,23 @@ $(document).ready( function(){
         margin-left: 2px;
         float: right;
     }
-    .itemType_0 .typeImg{
+    .typeImg_0{
         background-color: #e7932e;
         background-image: url('img/bt_tactic.png');
     }
-    .itemType_1 .typeImg{
+    .typeImg_1{
         background-color: #12A3D9;
         background-image: url('img/bt_principle.png');
     }
-    .itemType_2 .typeImg{
+    .typeImg_2{
         background-color: #b50035;
         background-image: url('img/bt_theory.png');
     }
-    .itemType_3 .typeImg{
+    .typeImg_3{
         background-color: #7eb84f;
         background-image: url('img/bt_case.png');
     }
-    .itemType_4 .typeImg{
+    .typeImg_4{
         background-color: #5F41A3;
         background-image: url('img/bt_practitioner.png');
     }
