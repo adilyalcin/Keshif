@@ -171,11 +171,13 @@ google.setOnLoadCallback(function(){
                 attribMap: "DRVEF2013.Undergraduate enrollment",
             },{ title: "Graduate enrollment",
                 attribMap: "DRVEF2013.Graduate enrollment",
-            },{ title: "# Transfers",
-                attribMap: "DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment",
+//            },{ title: "# Transfers",
+//                attribMap: "DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment",
             },{ title: "% Transfers",
                 attribMap: function(d){
-                    return 100*d.data["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"] / d.data["DRVEF2013.Undergraduate enrollment"];
+                    var transfer = d.data["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
+                    var firstTime = d.data["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
+                    return 100*transfer/(transfer+firstTime);
                 }, unitName: "%"//, intervalScale: "log"
             },{ title: "Institution Type",
                 attribMap: function(d){
@@ -276,7 +278,10 @@ google.setOnLoadCallback(function(){
             ],
             textSearch: "institution name",
             detailsToggle: "zoom",
-            recordView: "institution name"
+            recordView: function(d){
+                return "<a href='http://"+d.data["HD2013.Institution's internet website address"]
+                    +"' target='_blank'>"+d.data["institution name"]+"</a>"
+            }
         }
     });
 });
@@ -285,6 +290,12 @@ google.setOnLoadCallback(function(){
 #chart_div{
     width: 1100px;
     height: 700px;
+}
+.listItem a{
+    color: black;
+}
+.listItem a:hover{
+    color: blue;
 }
 </style>
     </head>
