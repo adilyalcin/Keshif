@@ -137,6 +137,14 @@ var Unizin_Group = {
 socialShare = false;
 noRibbon = true;
 
+function getInstTypeOrder(v){
+    switch(v){
+        case 'Public, 4-year or above': return 0;
+        case 'Private not-for-profit, 4-year or above': return 1;
+        case 'Private for-profit, 4-year or above': return 2;
+    }
+};
+
 google.setOnLoadCallback(function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -179,22 +187,10 @@ google.setOnLoadCallback(function(){
                     var firstTime = d.data["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
                     return 100*transfer/(transfer+firstTime);
                 }, unitName: "%"//, intervalScale: "log"
-            },{ title: "Institution Type",
-                attribMap: function(d){
-                    switch(d.data["HD2013.Sector of institution"]){
-                        case 'Public, 4-year or above': return 0;
-                        case 'Private not-for-profit, 4-year or above': return 1;
-                        case 'Private for-profit, 4-year or above': return 2;
-                    }
-                },
-                catLabelText: function(d){
-                    switch(d.data[0]){
-                        case 0: return "Public, 4-year or above";
-                        case 1: return "Private-not-for profit, 4-year or above";
-                        case 2: return "Private-for profit, 4-year or above";
-                    }
-                },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}]
+            },{ title: "Institution Type", attribMap: "HD2013.Sector of institution",
+                sortingOpts: [{
+                    func: function(a,b){ return getInstTypeOrder(a.data[0])-getInstTypeOrder(b.data[0]); }
+                }],
             },{ title: "State", layout: "middle", collapsed: true,
                 attribMap: "HD2013.State abbreviation"
             },{ title: "Geographic region", layout: "middle", collapsed: true,
