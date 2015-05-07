@@ -259,12 +259,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
   height: 30px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
   width: 50px;
   float: right;
   width: 60px;
   border-radius: 5px;
-  border: solid 1px rgba(255, 255, 255, 0.5);
+  border: solid 1px rgba(255, 255, 255, 0.8);
 }
 .kshf .attributeList > .attributeName > .attribNugget:hover {
   border-color: gray;
@@ -1776,7 +1776,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue {
   position: absolute;
   z-index: 20;
-  top: 2px;
+  top: 1px;
   display: none;
   -webkit-transition: all 450ms ease-in-out;
   -moz-transition: all 450ms ease-in-out;
@@ -2129,7 +2129,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   overflow: hidden;
   vertical-align: top;
-  margin: 1px 0px;
+  padding: 1px 0px;
   position: relative;
   -webkit-transition: opacity 500ms ease;
   -moz-transition: opacity 500ms ease;

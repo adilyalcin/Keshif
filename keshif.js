@@ -5733,7 +5733,7 @@ var Summary_Interval_functions = {
         var maxAggregate_Total = this.getMaxBinTotalItems();
 
         if(this.intervalRange.min===this.intervalRange.max){
-            this.DOM.nugget.select(".dataTypeIcon").html(this.intervalRange.min+"<br>only");
+            this.DOM.nugget.select(".dataTypeIcon").html("only<br>"+this.intervalRange.min);
             nuggetViz.style("display",'none');
             return;
         }
@@ -7112,7 +7112,9 @@ var Summary_Interval_functions = {
             .style("display","block");
 
         var dateFormat = d3.time.format("%b %-e,'%y");
-        this.DOM.selectedItemValueText.text( (v instanceof Date)?dateFormat(v):v);
+        this.DOM.selectedItemValueText.html(
+            this.intervalTickFormat(v)+(this.unitName?("<span class='unitName'>"+this.unitName+"</span>"):"")
+        );
     },
     /** -- */
     hideSelectedPosition: function(){
