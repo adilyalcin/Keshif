@@ -32,7 +32,7 @@ $(document).ready( function() {
             url: "http://blog.vctr.me/bart/",
             dirPath: './data/',
             fileType: 'csv',
-            sheets : [ {name:"bart-comp-all"} ]
+            sheets: [ {name:"bart-comp-all"} ]
         },
         facets: [
             {   title: "Job Family"
@@ -52,8 +52,8 @@ $(document).ready( function() {
         ],
         itemDisplay: {
             sortColWidth: 70,
-            detailsToggle : "Zoom",
-            sortingOpts : [
+            detailsToggle: "zoom",
+            sortingOpts: [
                 {name: 'Total', value: function(d){ return d.data.TCOE;}},
                 {name: 'Base'},
             ],

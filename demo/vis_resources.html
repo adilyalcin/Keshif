@@ -45,21 +45,21 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 120,
         itemName: "Visualization Resources",
-        source : {
+        source: {
             url: "http://www.visualisingdata.com/index.php/resources/",
             callback: loadData
         },
         facets: [{ title: "category" }],
         itemDisplay: {
-            sortingOpts : [{name:'id', inverse: true}],
-            textSearch : "title",
+            sortingOpts: [{name:'id', inverse: true}],
+            textSearch: "title",
             displayType: 'grid',
             maxVisibleItems_Default: 100,
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "zoom",
+            recordView: function(d){
                 return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'><img class='thumbImg'></a>"+
                     "<span class='title'>"+d.data.title+"</span>";
             },

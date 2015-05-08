@@ -1190,14 +1190,11 @@ kshf.List.prototype = {
                     me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                     me.reorderItemsOnDOM();
                     me.updateVisibleIndex();
-                    me.maxVisibleItems = me.maxVisibleItems_Default;
                     me.updateItemVisibility();
                     if(me.displayType==='list'){
                         // update sort column labels
                         me.DOM.listsortcolumn_label
-                            .html(function(d){
-                                return me.sortingOpt_Active.label(d);
-                            })
+                            .html(function(d){ return me.sortingOpt_Active.label(d); })
                             .each(function(d){
                                 this.columnValue = me.sortingOpt_Active.label(d);
                             });
@@ -1205,7 +1202,7 @@ kshf.List.prototype = {
                     kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                     if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
                 })
-                .selectAll("input.list_sort_label").data(this.sortingOpts)
+                .selectAll(".list_sort_label").data(this.sortingOpts)
                 .enter().append("option")
                     .attr("class", "list_sort_label")
                     .html(function(d){ return d.name; })
@@ -1222,7 +1219,6 @@ kshf.List.prototype = {
                     .data(me.browser.items, function(d){ return d.id(); })
                     .order();
                 me.updateVisibleIndex();
-                me.maxVisibleItems = me.maxVisibleItems_Default;
                 me.updateItemVisibility(false,true);
                 kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
@@ -1650,7 +1646,6 @@ kshf.List.prototype = {
     },
     updateAfterFiltering_do:function(){
         this.updateVisibleIndex();
-        this.maxVisibleItems = this.maxVisibleItems_Default;
         this.updateItemVisibility(false);
     },
     /** -- */
@@ -1692,11 +1687,13 @@ kshf.List.prototype = {
                 item.visibleOrder = -unwantedCount;
                 unwantedCount++;
             }
-        },this);
+        });
 
         if(this.showRank){
-            this.DOM.ranks.text(function(d){ return "#"+(d.visibleOrder+1);});
+            this.DOM.ranks.text(function(d){ return "#"+(d.visibleOrder+1); });
         }
+
+        this.maxVisibleItems = this.maxVisibleItems_Default;
     }
 };
 
@@ -3569,11 +3566,11 @@ kshf.Summary_Base.prototype = {
                 });
             })
             .on("mouseover",function(d){
-                this.tipsy.show();
+                //this.tipsy.show();
                 this.setAttribute("class","hasMultiMappings fa fa-th");
             })
             .on("mouseout" ,function(d){
-                this.tipsy.hide();
+                //this.tipsy.hide();
                 this.setAttribute("class","hasMultiMappings fa fa-tags");
             })
             .on("click",function(d){

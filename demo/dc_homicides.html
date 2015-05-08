@@ -75,7 +75,7 @@ $(document).ready( function(){
                 { name: 'Year', value: function(d){ return d.data.incident_date.getFullYear(); }},
                 { name: 'Age',  value: function(d){ return d.data.age; }}
             ],
-            detailsToggle: "Zoom",
+            detailsToggle: "zoom",
             recordView: function(d){ return d.data.last_name +", "+d.data.first_name; }
         }
     });

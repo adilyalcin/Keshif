@@ -60,10 +60,10 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 250,
         itemName: "Performance Visualization Techniques",
-        source : {
+        source: {
             url: "http://idav.ucdavis.edu/~ki/STAR/",
             callback: loadData
         },
@@ -75,12 +75,12 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [{ name:'Year'}],
-            textSearch : "Title",
+            sortingOpts: [{ name:'Year'}],
+            textSearch: "Title",
             displayType: 'grid',
             maxVisibleItems_Default: 100,
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "zoom",
+            recordView: function(d){
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
             },

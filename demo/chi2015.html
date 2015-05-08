@@ -74,7 +74,7 @@ google.setOnLoadCallback(function(){
         itemName: "Papers & Notes",
         source: {
             url: "http://confer.csail.mit.edu/chi2015/papers",
-            callback : loadData
+            callback: loadData
         },
         facets: [
             {   title: "Type",  attribMap: "subtype"
@@ -174,8 +174,8 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 55,
-            detailsToggle : "Zoom",
-            sortingOpts : [{ name: '', inverse: true, value: function(d){ return d.data.key; } }],
+            detailsToggle: "zoom",
+            sortingOpts: [{ name: '', inverse: true, value: function(d){ return d.data.key; } }],
             textSearch: 'title',
             recordView: 'title'
         }

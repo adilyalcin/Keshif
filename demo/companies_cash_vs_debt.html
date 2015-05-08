@@ -36,8 +36,8 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 170,
         rightPanelLabelWidth: 90,
         source: {
-            gdocId : '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
-            sheets : [ {name:"Companies", id:'Stock'} ]
+            gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
+            sheets: [ {name:"Companies", id:'Stock'} ]
         },
         facets: [
             {   title: "Industry",
@@ -53,8 +53,8 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            detailsToggle : "none",
-            sortingOpts : [ 
+            detailsToggle: "none",
+            sortingOpts: [ 
                 {name: 'Value', value:function(d){ return (d.data['Cash ($B)']-d.data['Debt ($B)']); }},
                 {name: 'Debt ($B)'},
                 {name: 'Cash ($B)'},

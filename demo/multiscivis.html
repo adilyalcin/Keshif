@@ -85,10 +85,10 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 210,
         itemName: "Multifaceted Scientific Data Visualization",
-        source : {
+        source: {
             url: "http://multivis.net/",
             callback: loadData
         },
@@ -101,12 +101,12 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [{ name:'Year'}],
-            textSearch : "Title",
+            sortingOpts: [{ name:'Year'}],
+            textSearch: "Title",
             displayType: 'grid',
             maxVisibleItems_Default: 100,
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "zoom",
+            recordView: function(d){
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
             },

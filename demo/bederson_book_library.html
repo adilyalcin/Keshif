@@ -129,10 +129,10 @@ $(document).ready( function(){
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 150,
         itemName: "Books Read by Ben Bederson",
-        source : {
+        source: {
     url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
     callback: loadData
         },
@@ -150,15 +150,15 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [
+            sortingOpts: [
                 { name:'Rating', value: function(d){ return d.data.Rating; }},
                 { name:'Date read', value: function(d){ return d.data.ReadYear + (d.data.ReadMonth / 12.0); }}
             ],
-            textSearch : "Title",
+            textSearch: "Title",
             displayType: 'grid',
             maxVisibleItems_Default: 200,
-            detailsToggle : "Zoom",
-            recordView : function(d){
+            detailsToggle: "zoom",
+            recordView: function(d){
                 var desc = "<a target='_blank' href="+d.data.URL+" class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='subTitle'>"+d.data.Author+"</span>";
                 desc+="<span class='title'>"+d.data.Title+"</span>";

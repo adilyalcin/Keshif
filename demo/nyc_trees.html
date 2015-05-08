@@ -72,12 +72,12 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [ { name: '# Total Trees', value: function(d){ return d.data.Total;} } ],
-            detailsToggle : "Zoom",
+            sortingOpts: [ { name: '# Total Trees', value: function(d){ return d.data.Total;} } ],
+            detailsToggle: "zoom",
             displayType: 'grid',
             textSearch: 'Tree Name',
-            textSearchFunc : function(d){ return d.data.Common;},
-            recordView : function(d){
+            textSearchFunc: function(d){ return d.data.Common;},
+            recordView: function(d){
     var str='';
     str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"' class='thumbImg'></span>";
     str+="<span class='authorName'>"+d.data.Latin+"</span>";

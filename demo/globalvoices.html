@@ -54,9 +54,9 @@ function loadData(browser){
 }
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth: 130,
-        source : {
+        source: {
             url: "http://globalvoicesonline.org/",
             callback: loadData
         },
@@ -72,17 +72,17 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 92,
-            sortingOpts : [
+            sortingOpts: [
                 { name:'Recent first', value: function(d){ return d.data[7]}, inverse: false, label: function(d){
                     return moment(d.data[7]).fromNow();
                     }
                     },
             ],
             showRank: false,
-            detailsToggle : "One",
-            textSearch : "Title and text",
+            detailsToggle: "one",
+            textSearch: "Title and text",
             textSearchFunc: function(d){ return d.data[4] + " " + d.data[5];},
-            recordView : function(d){
+            recordView: function(d){
                 var str="";
 
                 str +="<span class='typeImg'></span> <span class='postTitle'>"+d.data[4] +"</span> <a target='_blank' href='"+d.data[3]+"' class='fa fa-external-link'></a></div>";;

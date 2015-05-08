@@ -97,11 +97,10 @@ $(document).ready( function(){
                     }
                 }
             ],
-            textSearch : "name",
+            textSearch: "name",
             textSearchFunc: function(d){ return d.data.Last+", "+d.data.Middle+" "+d.data.First; },
             maxVisibleItems_Default: 28,
-//            detailsToggle : "Zoom",
-            recordView : function(d){
+            recordView: function(d){
                 var str="";
                 switch(d.data.Sex){
                     case 'M': str+="<span class='fa gender-icon fa-male'></span> ";    break;

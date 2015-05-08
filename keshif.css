@@ -1806,6 +1806,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   border-radius: 4px;
   border: solid 1px #DDDDDD;
+  padding: 0px 1px;
   font-size: 0.9em;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base {
@@ -2334,21 +2335,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv > .showMore:hover span.MoreText {
   text-decoration: underline;
 }
-.kshf .listDiv .listsortcolumn {
-  padding-right: 5px;
-  font-weight: 300;
-  text-align: right;
-  display: inline-block;
-  font-size: 0.8em;
-  margin: auto;
-  cursor: default;
-}
-.kshf .listDiv .listsortcolumn .sortBy {
-  margin-left: 2px;
-  margin-right: 2px;
-  font-weight: 700;
-  display: inline-block;
-}
 .kshf .listDiv select.listSortOptionSelect {
   bottom: 0px;
 }
@@ -2395,9 +2381,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn {
   vertical-align: top;
-  margin: 2px 0px 0px 0px;
+  margin: 0;
+  padding-right: 5px;
+  font-weight: 300;
+  text-align: right;
+  display: inline-block;
+  font-size: 0.8em;
+  margin: auto;
+  cursor: default;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
+  vertical-align: top;
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2516,10 +2510,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: bottom;
   text-align: right;
   width: 15px;
-}
-.kshf .listHeader > .bottomRow > .listsortcolumn {
-  vertical-align: bottom;
-  margin: 0;
 }
 .kshf .listHeader > .bottomRow > .headerLinkStateColumn {
   font-size: 1.1em;

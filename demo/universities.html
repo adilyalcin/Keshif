@@ -152,8 +152,8 @@ google.setOnLoadCallback(function(){
         barChartWidth: 90,
         source: {
             url: "https://nces.ed.gov/ipeds/datacenter/",
-            gdocId : '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
-            sheets : [{ name:"Universities" }]
+            gdocId: '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
+            sheets: [{ name:"Universities" }]
         },
         loadedCb: function(d){
             // Add group information to the Universities
@@ -168,19 +168,8 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Groups", collapsed: false,
-/*            },{
-                title: "Institution Size", collapsed: true,
-                attribMap: "HD2013.Institution size category",
-            },{
-                title: "Total  enrollment", collapsed: true,
-                attribMap: "DRVEF2013.Total  enrollment",
-                */
-            },{ title: "Undergraduate enrollment",
-                attribMap: "DRVEF2013.Undergraduate enrollment",
-            },{ title: "Graduate enrollment",
-                attribMap: "DRVEF2013.Graduate enrollment",
-//            },{ title: "# Transfers",
-//                attribMap: "DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment",
+            },{ title: "Undergraduate enrollment", attribMap: "DRVEF2013.Undergraduate enrollment",
+            },{ title: "Graduate enrollment", attribMap: "DRVEF2013.Graduate enrollment",
             },{ title: "% Transfers",
                 attribMap: function(d){
                     var transfer = d.data["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
@@ -191,10 +180,8 @@ google.setOnLoadCallback(function(){
                 sortingOpts: [{
                     func: function(a,b){ return getInstTypeOrder(a.data[0])-getInstTypeOrder(b.data[0]); }
                 }],
-            },{ title: "State", layout: "middle", collapsed: true,
-                attribMap: "HD2013.State abbreviation"
-            },{ title: "Geographic region", layout: "middle", collapsed: true,
-                attribMap: "HD2013.Geographic region"
+            },{ title: "State", attribMap: "HD2013.State abbreviation", layout: "middle", collapsed: true,
+            },{ title: "Geographic region", attribMap: "HD2013.Geographic region", layout: "middle", collapsed: true,
             },{ title: "Degree of urbanization", layout: "middle", collapsed: true,
                 attribMap: "HD2013.Degree of urbanization (Urban-centric locale)"
             },{ /*title: "Carnegie Classification 2010",

@@ -1699,6 +1699,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     background-color: white;
                                     border-radius: 4px;
                                     border: solid 1px #DDDDDD;
+                                    padding: 0px 1px;
                                     font-size: 0.9em;
                                 }
                             }
@@ -2256,21 +2257,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        .listsortcolumn{
-            padding-right:5px;
-            font-weight: 300;
-            text-align: right;
-            display:inline-block; 
-            font-size: 0.8em;
-            margin : auto; 
-            cursor: default;
-            .sortBy{
-                margin-left: 2px;
-                margin-right: 2px;
-                font-weight: 700;
-                display: inline-block;
-            }
-        }
         select.listSortOptionSelect{
             bottom:0px;
         }
@@ -2303,8 +2289,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     width: 100%;
                     > .listsortcolumn{
                         vertical-align: top;
-                        margin: 2px 0px 0px 0px;
+                        margin: 0;
+                        padding-right:5px;
+                        font-weight: 300;
+                        text-align: right;
+                        display:inline-block; 
+                        font-size: 0.8em;
+                        margin : auto; 
+                        cursor: default;
                         > .columnLabel{
+                            vertical-align: top;
                             display: block;
                             white-space: nowrap;
                             text-overflow: ellipsis;
@@ -2410,10 +2404,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    height: 100%;
 //                    margin-bottom: -3px;
             }
-            > .listsortcolumn{
-                vertical-align: bottom;
-                margin: 0;
-            }
+
             > .headerLinkStateColumn{
                 font-size: 1.1em;
                 text-align: right;
