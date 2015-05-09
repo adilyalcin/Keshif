@@ -45,8 +45,8 @@ browser = new kshf.Browser({
         {   title: "Code Complexity", layout: 'right', collapsed: true,
             description: "Relative code complexity of demo source",
             sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
-            catLabelText: function(d){
-                switch(d.data[0]){
+            catLabel: function(){
+                switch(this.id){
                     case 1: return "A breeze *";
                     case 2: return "Simple **"; 
                     case 3: return "Intermediate ***";
@@ -55,56 +55,56 @@ browser = new kshf.Browser({
                 }
             }
         },{ title: "Keywords", layout: 'right',
-            attribMap: function(d){ return d.data['Keywords'].split("+"); }
+            attribMap: function(){ return this.Keywords.split("+"); }
         },{ title: "Facet Types &amp; Features",
-            attribMap: function(d){
+            attribMap: function(){
                 var r = [];
-                if(d.data['Facets - Histogram']>0)
+                if(this['Facets - Histogram']>0)
                     r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
-                if(d.data['Facets - Hierarchical'])
+                if(this['Facets - Hierarchical'])
                     r.push("Hierarchical <span class='fa fa-outdent'></span>");
-                if(d.data['Has Time'])
+                if(this['Has Time'])
                     r.push("Time <span class='fa fa-clock-o'></span>");
-                if(d.data['Multi-Sort'])
+                if(this['Multi-Sort'])
                     r.push("Multi-Sort <span class='fa fa-sort-amount-desc'></span>");
                 return r;
             }
         },{ title: "Data Structure",
-            attribMap: function(d){
+            attribMap: function(){
                 var r = [];
-                if(d.data['Linked']) r.push("Linked/Networked <span class='fa fa-chain'></span>");
-                if(d.data['Tables']==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
+                if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
+                if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
                 return r;
             }
         },{ title: "Result Display",
-            attribMap: function(d){
+            attribMap: function(){
                 var r = [];
-                if(d.data['Results-Details'])
+                if(this['Results-Details'])
                     r.push("Detail View <span class='fa fa-bullseye'></span>");
-                if(d.data['Result Display']==="Grid")
+                if(this['Result Display']==="Grid")
                     r.push("Grid <span class='fa fa-th'></span>");
-                if(d.data['Result Display']==="List")
+                if(this['Result Display']==="List")
                     r.push("List <span class='fa fa-list'></span>");
                 return r;
             }
         },{ title: "Other",
-            attribMap: function(d){
+            attribMap: function(){
                 var r = [];
-                if(d.data['Right Column'])
+                if(this['Right Column'])
                     r.push("Right Panel");
-                if(d.data['Highlighted'])
+                if(this['Highlighted'])
                     r.push("Highlight <span class='fa fa-star'></span>");
-                if(d.data['Main Text Search'])
+                if(this['Main Text Search'])
                     r.push("Main Text search <span class='fa fa-search'></span>");
-                if(d.data['Dynamic Sizing']>0)
+                if(this['Dynamic Sizing']>0)
                     r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
                 return r;
             }
         },{ title: "Data Source", layout: 'right',
-            attribMap: function(d){ return d.data.Source.split("+"); }
+            attribMap: function(){ return this.Source.split("+"); }
         },{ title: "# Items", showPercentile: true, layout: 'right', 
         },{ title: "Creation Time", collapsed: false,
-            attribMap: function(d){ return d.data.Authored.getFullYear(); },
+            attribMap: function(){ return this.Authored.getFullYear(); },
             intervalScale: 'step'
         }
     ],

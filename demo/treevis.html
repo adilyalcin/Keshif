@@ -87,7 +87,7 @@ $(document).ready( function(){
             },{ title: "Alignment",
             },{ title: "Authors", collapsed: false
             },{ title: "Year", layout: "bottom",
-                attribMap: function(d){ return new Date(d.data.Year,1,1); }
+                attribMap: function(){ return new Date(this.Year,1,1); }
                 //intervalScale: 'step'
             }
         ],

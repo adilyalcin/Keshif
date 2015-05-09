@@ -92,7 +92,7 @@ $(document).ready( function(){
         facets: [
             {   title: "EntryType",
             },{ title: "Authors",
-            },{ title: "Journal", attribMap: function(d){ return d.data.Fields.journal; }
+            },{ title: "Journal", attribMap: function(){ return this.Fields.journal; }
             },{ title: "Year", layout: "bottom"
             }
         ],
@@ -102,7 +102,7 @@ $(document).ready( function(){
                 name:'Year', inverse: true, label: function(d){ return d.data.Year.getFullYear(); }
             }],
             textSearch : "title",
-            textSearchFunc: function(d){ return d.data.Fields.title;},
+            textSearchFunc: function(){ return this.Fields.title;},
             displayType: 'list',
             detailsToggle : "One",
             recordView : function(d){

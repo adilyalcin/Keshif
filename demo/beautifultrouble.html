@@ -72,22 +72,16 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "Category",
-                attribMap: "type",
-                catLabelText: function(d){
-                    return getType(d.data[0])+" <span class='typeImg_"++d.data[0]"'></span>";
-                }
+            {   title: "Category", attribMap: "type",
+                catLabel: function(){ return getType(d.data.id)+" <span class='typeImg_"+d.data.id+"'></span>"; }
             },{ title: "Contributors",
-            },{
-                title: "Number of Related Posts",
+            },{ title: "Number of Related Posts",
 //                showPercentile: true,
-                attribMap: function(d){ return d.data.links.length; },
-            },{
-                title: "Related To",
+                attribMap: function(){ return this.links.length; },
+            },{ title: "Related To",
                 attribMap: "links"
-                catLabelText: function(d){ return d.data.title; },
-                // Using the main table name, this will enable linking through items
-                catTableName: "Posts"
+                catTableName: "Posts",
+                catLabel: "title",
             }
         ],
         itemDisplay: {
@@ -105,7 +99,7 @@ $(document).ready( function(){
             showSelectBox: true,
             detailsToggle: "One",
             textSearch: "Title and text",
-            textSearchFunc: function(d){ return d.data.title + " " + d.data.text;},
+            textSearchFunc: function(){ return this.title + " " + this.text;},
             recordView: function(d) {
                 var str="";
 

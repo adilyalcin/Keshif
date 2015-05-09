@@ -91,70 +91,66 @@ $(document).ready( function(){
             {   /*title: "-Country-",
                 facets: [
                     {*/   title: "Continent",
-                        catLabelText: function(d) { return landmassText(d.data[0]); },
+                        catLabel: function(){ return landmassText(this.id); },
                     },{ title: "Zone", collapsed: true,
-                        catLabelText: function(d) { return zoneText(d.data[0]); }
+                        catLabel: function(){ return zoneText(this.id); }
                     },{ title: "Language",
-                        attribMap: function(flag){
-                            var r= flag.data.Language;
+                        attribMap: function(){
+                            var r= this.Language;
                             if(r===9) return 10;
                             return r;
                         },
-                        catLabelText: function(d) { return languageText(d.data[0]); }
+                        catLabel: function(){ return languageText(this.id); }
                     },{ title: "Religion",
-                        catLabelText: function(d) { return religionText(d.data[0]); }
+                        catLabel: function(){ return religionText(this.id); }
                     },{ title: "Flag Date", layout: 'left',
-                        attribMap: function(flag){ 
-                            if(flag.data.Independence==="") return;
-                            if(flag.data.Independence===null) return;
-                            if(flag.data.Independence===undefined) return;
-                            return new Date(moment(flag.data.Independence,"MM/DD/YYYY"));
+                        attribMap: function(){ 
+                            if(this.Independence==="") return;
+                            if(this.Independence===null) return;
+                            if(this.Independence===undefined) return;
+                            return new Date(moment(this.Independence,"MM/DD/YYYY"));
                         }
                     /*}
                 ]*/
             },{ /*title: "Flag Properties", layout: 'right',
                 facets: [
                     {*/   title: "Flag Color",  layout: 'right',
-                        attribMap: function(flag){
+                        attribMap: function(){
                             var toRet = [];
-                            if(flag.data.Red) toRet.push("Red");
-                            if(flag.data.Green) toRet.push("Green");
-                            if(flag.data.Blue) toRet.push("Blue");
-                            if(flag.data.Gold) toRet.push("Gold / Yellow");
-                            if(flag.data.White) toRet.push("White");
-                            if(flag.data.Black) toRet.push("Black");
-                            if(flag.data.Orange) toRet.push("Orange / Brown");
+                            if(this.Red) toRet.push("Red");
+                            if(this.Green) toRet.push("Green");
+                            if(this.Blue) toRet.push("Blue");
+                            if(this.Gold) toRet.push("Gold / Yellow");
+                            if(this.White) toRet.push("White");
+                            if(this.Black) toRet.push("Black");
+                            if(this.Orange) toRet.push("Orange / Brown");
                             return toRet;
                         },
                     },{ title: "Flag Shape", layout: 'right',
-                        attribMap: function(flag){
+                        attribMap: function(){
                             var toRet = [];
-                            if(flag.data.Circles) toRet.push("Circle");
-                            if(flag.data.Crosses) toRet.push("Crosses");
-                            if(flag.data.Saltires) toRet.push("Saltire");
-                            if(flag.data.Quarters) toRet.push("Quarter");
-                            if(flag.data.Sunstars) toRet.push("Sun / star");
-                            if(flag.data.Crescent) toRet.push("Crescent");
-                            if(flag.data.Triangle) toRet.push("Triangle");
+                            if(this.Circles) toRet.push("Circle");
+                            if(this.Crosses) toRet.push("Crosses");
+                            if(this.Saltires) toRet.push("Saltire");
+                            if(this.Quarters) toRet.push("Quarter");
+                            if(this.Sunstars) toRet.push("Sun / star");
+                            if(this.Crescent) toRet.push("Crescent");
+                            if(this.Triangle) toRet.push("Triangle");
                             return toRet;
                         },
-                    },{ title: "Number of Bars", layout: 'right',
-                        attribMap: function(flag){ 
-                            var r=flag.data.Bars;
-                            return (r===0)?0:r;
-                        },
-                        intervalScale: 'step', unitName: "bar"
+                    },{ title: "Number of Bars", attribMap: "Bars", layout: 'right', 
+                        intervalScale: 'step', unitName: "bars"
                     },{ title: "Number of Stripes", layout: 'right',
-                        attribMap: function(flag){ 
-                            var r=flag.data.Stripes;
+                        attribMap: function(){ 
+                            var r=this.Stripes;
                             return (r===0)?null:r;
                         }, unitName: "strp"
                     },{ title: "Other", collapsed: true, layout: 'right',
-                        attribMap: function(flag){
+                        attribMap: function(){
                             var toRet = [];
-                            if(flag.data.Text!==0) toRet.push("Text");
-                            if(flag.data.Icon!==0) toRet.push("Icon");
-                            if(flag.data.Animate!==0) toRet.push("Animate");
+                            if(this.Text!==0) toRet.push("Text");
+                            if(this.Icon!==0) toRet.push("Icon");
+                            if(this.Animate!==0) toRet.push("Animate");
                             return toRet;
                         }
                     /*}

@@ -64,24 +64,24 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "WHO?",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    switch(d.data.Sex){
+                    switch(this.Sex){
                         case 'M': r.push("Men "+getIcon("M")); break;
                         case 'F': r.push("Women "+getIcon("F")); break;
                     }
-                    // if(d.data.Birth_==='unknown') r.push("Unknown");
+                    // if(this.Birth_==='unknown') r.push("Unknown");
                     // Nope, above doesn't really work. We need to parse the last name
-                    if(d.data.Last.substr(0,3)==='Doe') r.push("Unknown <span class='fa gender-icon fa-question'></span>");
-//                    if(d.data.Note!=="") r.push("Has note <span class='fa fa-file-text'></span>");
-                    if(d.data.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
+                    if(this.Last.substr(0,3)==='Doe') r.push("Unknown <span class='fa gender-icon fa-question'></span>");
+//                    if(this.Note!=="") r.push("Has note <span class='fa fa-file-text'></span>");
+                    if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
             },{ title: "Age",
             },{ title: "Death Date", intervalScale: 'time',
-                attribMap: function(d){ return dateFormat.parse(d.data.Death); }
+                attribMap: function(){ return dateFormat.parse(this.Death); }
             },{ title: "After Story is Published...",
-                attribMap: function(d){ if(d.data.claimed) return "Claimed"; }
+                attribMap: function(){ if(this.claimed) return "Claimed"; }
             }
         ],
         itemDisplay: {
@@ -98,7 +98,7 @@ $(document).ready( function(){
                 }
             ],
             textSearch: "name",
-            textSearchFunc: function(d){ return d.data.Last+", "+d.data.Middle+" "+d.data.First; },
+            textSearchFunc: function(){ return this.Last+", "+this.Middle+" "+this.First; },
             maxVisibleItems_Default: 28,
             recordView: function(d){
                 var str="";

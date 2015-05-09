@@ -27,8 +27,8 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Origin",
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case 1: return "American";
                         case 2: return "European";
                         case 3: return "Japanese";
@@ -41,7 +41,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Horsepower", layout: 'right'
             },{ title: "Weight", unitName: "lbs", layout: 'right'
             },{ title: "Acceleration (0-60mph)", attribMap: "Acceleration", unitName: "sec"
-            },{ title: "Year", layout: "bottom", attribMap: function(d){ return new Date(d.data.Year,1,1);}
+            },{ title: "Year", layout: "bottom", attribMap: function(){ return new Date(this.Year,1,1);}
             }
         ],
         itemDisplay: {

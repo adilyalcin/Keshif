@@ -75,12 +75,12 @@ var loadData = function(browser){
 
 $(document).ready( function(){
     new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         itemName: "Articles on MSDN Magazine",
         categoryTextWidth: 180,
         leftPanelLabelWidth: 130,
         barChartWidth: 70,
-        source : {
+        source: {
             url: 'http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazinepivot.htm',
             callback: loadData
         },
@@ -91,10 +91,10 @@ $(document).ready( function(){
             },{ title: "Column Name",
             },{ title: "Issue Date", layout:'middle'
             },{ title: "Popularity", layout: 'right',
-                sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
-                catLabelText: function(d){
+                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
+                catLabel: function(){
                     var str='';
-                    for(var i=0; i<d.data[0]; i++) str +="<span class='fa fa-star'></span>"
+                    for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>"
                     return str;
                 }
             },{ title: "Page Views", layout: 'right'
@@ -103,7 +103,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [
+            sortingOpts: [
                 { name:'Page Views' },
                 { name:'id', inverse:true },
             ],

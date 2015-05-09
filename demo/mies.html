@@ -37,16 +37,16 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Continent"
             },{ title: "City / Location",
-                attribMap: function(d){return "<span style='color:gray'>"+d.data.Country+" </span> - "+d.data.City;}
-            },{ title: "Year", layout: 'bottom', attribMap: function(d){ return new Date(d.data.Year,1,1); }
+                attribMap: function(){return "<span style='color:gray'>"+this.Country+" </span> - "+this.City;}
+            },{ title: "Year", layout: 'bottom', attribMap: function(){ return new Date(this.Year,1,1); }
             },{ title: "Type", layout: 'right'
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
             detailsToggle: "zoom",
-            sortingOpts: [ {name: 'Year'} ],
-            textSearchFunc: function(d){return d.data.Name; },
+            sortingOpts: [{ name: 'Year' }],
+            textSearchFunc: function(){ return this.Name; },
             recordView: function(d){
                 var str="";
                 str+="<span class='workTitle'>"+d.data.Name+"</span>";

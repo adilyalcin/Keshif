@@ -23,15 +23,13 @@ google.setOnLoadCallback( function(){
         itemName: "Roll calls",
         barChartWidth: 150,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
-            sheets : [ {name:"Senate112"} ]
+            gdocId: '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
+            sheets: [ {name:"Senate112"} ]
         },
         facets: [
             {   title: "Result"
             },{ title: "Session",
-                catLabelText: function(d) {
-                    return ((d.data[0]===1)?"1st":"2nd")+" Session";
-                },
+                catLabel: function(){ return ((this.id===1)?"1st":"2nd")+" Session"; },
                 sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             },{ title: "Yea's",
             },{ title: "Nay's",
@@ -41,13 +39,13 @@ google.setOnLoadCallback( function(){
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts : [
+            sortingOpts: [
                 {   name: 'Vote Date', inverse: true,
                     label: function(d){ return moment(d.data['Vote Date']).format('MMM YYYY'); }
                 },{ name:'Result' }
             ],
-            textSearchFunc : function (vote) { return vote.data[7]; },
-            recordView : function(d){
+            textSearch: "Description",
+            recordView: function(d){
                 var j;
                 var str="";
                 // description

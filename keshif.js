@@ -114,22 +114,22 @@ kshf.Util = {
         return dif;
     },
     sortFunc_Column_Int_Incr: function(a,b){ 
-        return a.data[0] - b.data[0]; 
+        return a.data.id - b.data.id; 
     },
     sortFunc_Column_Int_Decr: function(a,b){ 
-        return b.data[0] - a.data[0]; 
+        return b.data.id - a.data.id; 
     },
     sortFunc_Column_ParseInt_Incr: function(a,b){ 
-        return parseFloat(a.data[0],10) -parseFloat(b.data[0],10);
+        return parseFloat(a.data.id,10) -parseFloat(b.data.id,10);
     },
     sortFunc_Column_ParseInt_Decr: function(a,b){ 
-        return parseFloat(b.data[0],10) -parseFloat(a.data[0],10);
+        return parseFloat(b.data.id,10) -parseFloat(a.data.id,10);
     },
     sortFunc_String_Decr: function(a,b){ 
-        return b.data[0].localeCompare(a.data[0]);
+        return b.data.id.localeCompare(a.data.id);
     },
     sortFunc_String_Incr: function(a,b){ 
-        return b.data[0].localeCompare(a.data[0]);
+        return b.data.id.localeCompare(a.data.id);
     },
     sortFunc_Time_Last: function(a, b){
         if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
@@ -1017,7 +1017,7 @@ kshf.List = function(kshf_, config, root){
     this.textSearchFunc = config.textSearchFunc;
     if(this.textSearch!==undefined){
         if(this.textSearchFunc===undefined){
-            this.textSearchFunc = function(d){ return d.data[this.textSearch]; };
+            this.textSearchFunc = function(){ return this[this.textSearch]; };
         }
     }
 
@@ -1128,7 +1128,7 @@ kshf.List.prototype = {
                 // If some search matches, return true (any function)
                 filter.filteredItems.forEach(function(item){
                     var f = ! filter.filterStr.every(function(v_i){
-                        var v=me.textSearchFunc(item);
+                        var v=me.textSearchFunc.call(item.data);
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
@@ -1171,8 +1171,14 @@ kshf.List.prototype = {
         if(this.displayType==='list'){
             this.sortColWidth = v;
             this.DOM.header_listSortColumn.style("min-width",this.sortColWidth+"px");
-            this.DOM.listsortcolumn.style("width",this.sortColWidth+"px")
+            this.DOM.listSortColumn.style("width",this.sortColWidth+"px")
         }
+    },
+    /** -- */
+    refrestSortColumnLabels: function(){
+        if(this.displayType!=="list") return;
+        var labelFunc=this.sortingOpt_Active.label;
+        this.DOM.listSortColumn.html(function(d){ return labelFunc(d); });
     },
     /** -- */
     insertHeaderSortSelect: function(){
@@ -1191,14 +1197,7 @@ kshf.List.prototype = {
                     me.reorderItemsOnDOM();
                     me.updateVisibleIndex();
                     me.updateItemVisibility();
-                    if(me.displayType==='list'){
-                        // update sort column labels
-                        me.DOM.listsortcolumn_label
-                            .html(function(d){ return me.sortingOpt_Active.label(d); })
-                            .each(function(d){
-                                this.columnValue = me.sortingOpt_Active.label(d);
-                            });
-                    }
+                    me.refrestSortColumnLabels();
                     kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                     if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
                 })
@@ -1384,16 +1383,11 @@ kshf.List.prototype = {
     },
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
-        var me=this;
-        this.DOM.listsortcolumn = this.DOM.listItems.append("div").attr("class","listsortcolumn")
-            .each(function(d){ this.columnValue = me.sortingOpt_Active.label(d); })
-            ;
-        this.DOM.listsortcolumn_label = this.DOM.listsortcolumn.append("span").attr("class","columnLabel")
-            .html(function(d){ return me.sortingOpt_Active.label(d); })
-            ;
         if(this.showRank){
-            this.DOM.ranks = this.DOM.listsortcolumn.append("span").attr("class","itemRank");
+            this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
         }
+        this.DOM.listSortColumn = this.DOM.listItems.append("div").attr("class","listSortColumn");
+        this.refrestSortColumnLabels();
     },
     /** -- */
     insertItemToggleDetails: function(){
@@ -1703,7 +1697,7 @@ kshf.Panel = function(options){
     this.DOM.root = options.parentDOM.append("div").attr("class", "layout_block layout_"+options.name);
     this.name = options.name;
     this.width={};
-    this.width.catLabel = options.widthCatLabel;
+    this.width_catLabel = options.widthCatLabel;
     this.width.catChart = 0;
     this.width.catQueryPreview = 1;
     this.summaries = [];
@@ -1714,7 +1708,7 @@ kshf.Panel.prototype = {
     /** -- */
     getWidth_Total: function(){
         if(this.name==="bottom") return this.browser.getWidth_Total();
-        return this.width.catLabel + this.width.catQueryPreview + this.width.catChart + this.browser.scrollWidth;
+        return this.width_catLabel + this.width.catQueryPreview + this.width.catChart + this.browser.scrollWidth;
     },
     /** -- */
     addSummary: function(summary){
@@ -1833,7 +1827,7 @@ kshf.Panel.prototype = {
     },
     /** -- */
     setTotalWidth: function(_w_){
-        this.width.catChart = _w_-this.width.catLabel-this.width.catQueryPreview-this.browser.scrollWidth;
+        this.width.catChart = _w_-this.width_catLabel-this.width.catQueryPreview-this.browser.scrollWidth;
     },
     /** -- */
     setWidthCatChart: function(_w_){
@@ -2063,7 +2057,7 @@ kshf.Browser.prototype = {
     getTypeFromAttribFunc: function(attribFunc){
         var type = null;
         this.getPrimaryItems().some(function(item,i){
-            var item=attribFunc(item);
+            var item=attribFunc.call(item.data,item);
             if(item===null) return false;
             if(item===undefined) return false;
             if(typeof(item)==="number" || item instanceof Date) {
@@ -2420,7 +2414,7 @@ kshf.Browser.prototype = {
         });
     },
     /** -- */
-    createTableFromTable: function(srcItems, dstTableName, summaryFunc, labelFunc){
+    createTableFromTable: function(srcItems, dstTableName, summaryFunc){
         var i;
         var me=this;
         kshf.dt_id[dstTableName] = {};
@@ -2431,18 +2425,15 @@ kshf.Browser.prototype = {
         var hasString = false;
 
         srcItems.forEach(function(srcData_i){
-            var mapping = summaryFunc(srcData_i);
+            var mapping = summaryFunc.call(srcData_i.data);
             if(mapping==="" || mapping===undefined || mapping===null) return;
             if(mapping instanceof Array) {
                 mapping.forEach(function(v2){
                     if(v2==="" || v2===undefined || v2===null) return;
                     if(!dstTable_Id[v2]){
                         if(typeof(v2)==="string") hasString=true;
-                        var itemData = [v2];
-                        var item = new kshf.Item(itemData,0);
-                        if(labelFunc){
-                            itemData.push(labelFunc(item));
-                        }
+                        var itemData = {id: v2};
+                        var item = new kshf.Item(itemData,'id');
                         dstTable_Id[v2] = item;
                         dstTable.push(item);
                     }   
@@ -2450,11 +2441,8 @@ kshf.Browser.prototype = {
             } else {
                 if(!dstTable_Id[mapping]){
                     if(typeof(mapping)==="string") hasString=true;
-                    var itemData = [mapping];
-                    var item = new kshf.Item(itemData,0);
-                    if(labelFunc){
-                        itemData.push(labelFunc(item));
-                    }
+                    var itemData = {id: mapping};
+                    var item = new kshf.Item(itemData,'id');
                     dstTable_Id[mapping] = item;
                     dstTable.push(item);
                 }   
@@ -2520,7 +2508,7 @@ kshf.Browser.prototype = {
         if(this.options.summaries) this.options.facets = this.options.summaries;
 
         this.options.facets.forEach(function(facetDescr){
-            if(facetDescr.catLabelText||facetDescr.catTooltipText||facetDescr.catTableName||facetDescr.sortingOpts){
+            if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.sortingOpts){
                 facetDescr.type="categorical";
             } else if(facetDescr.intervalScale || facetDescr.showPercentile || facetDescr.unitName ){
                 facetDescr.type="interval";
@@ -2576,13 +2564,15 @@ kshf.Browser.prototype = {
             }
             if(facetDescr.description) summary.summaryDescription = facetDescr.description;
 
+            // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED 
             if(summary.type==='categorical'){
-                // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED 
-                // catTableName
+                if(facetDescr.catTableName) summary.setCatTable(facetDescr.catTableName);
                 // catDispCountFix
                 // Affects visual
-                summary.catLabelText = facetDescr.catLabelText || summary.catLabelText;
-                summary.catTooltipText = facetDescr.catTooltipText || summary.catTooltipText;
+                summary.catLabel = facetDescr.catLabel || summary.catLabel;
+                if(facetDescr.catTooltip){
+                    summary.setCatTooltip(facetDescr.catTooltip);
+                }
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
                 if(facetDescr.minAggrValue) summary.updateMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
@@ -2596,11 +2586,6 @@ kshf.Browser.prototype = {
                 summary.unitName = facetDescr.unitName || summary.unitName;
                 summary.showPercentile = facetDescr.showPercentile || summary.showPercentile;
                 summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
-            }
-
-            // if catTableName is the main table name, this is a self-referencing widget. Adjust listDef
-            if(facetDescr.catTableName===this.primaryTableName){
-                this.listDef.hasLinkedItems = true;
             }
 
             if(facetDescr.items){
@@ -2729,15 +2714,15 @@ kshf.Browser.prototype = {
             var totalWidth = this.divWidth;
             var colCount = 0;
             if(this.panels.left.summaries.length>0){
-                totalWidth-=this.panels.left.width.catLabel+this.scrollWidth+this.panels.left.width.catQueryPreview;
+                totalWidth-=this.panels.left.width_catLabel+this.scrollWidth+this.panels.left.width.catQueryPreview;
                 colCount++;
             }
             if(this.panels.right.summaries.length>0){
-                totalWidth-=this.panels.right.width.catLabel+this.scrollWidth+this.panels.right.width.catQueryPreview;
+                totalWidth-=this.panels.right.width_catLabel+this.scrollWidth+this.panels.right.width.catQueryPreview;
                 colCount++;
             }
             if(this.panels.middle.summaries.length>0){
-                totalWidth-=this.panels.middle.width.catLabel+this.scrollWidth+this.panels.middle.width.catQueryPreview;
+                totalWidth-=this.panels.middle.width_catLabel+this.scrollWidth+this.panels.middle.width.catQueryPreview;
                 colCount++;
             }
             if(this.listDisplay===undefined) return totalWidth/colCount;
@@ -3239,7 +3224,7 @@ kshf.Summary_Base.prototype = {
 
         this.summaryName   = name;
         this.summaryColumn = func?null:name;
-        this.summaryFunc   = func || function(d){ return d.data[name]; };
+        this.summaryFunc   = func || function(d){ return this[name]; };
 
         this.chartScale_Measure = d3.scale.linear();
 
@@ -3647,10 +3632,9 @@ kshf.Summary_Categorical.prototype = new kshf.Summary_Base();
 var Summary_Categorical_functions = {
     /** -- */ 
     initialize: function(kshf_,name,func){
+        var me=this;
         kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,func);
         this.type='categorical';
-
-        this.setSortingOpts();
 
         this.heightRow_attrib = 18;
         this.heightRow_config = 16;
@@ -3662,12 +3646,29 @@ var Summary_Categorical_functions = {
         this.configRowCount=0;
 
         // These affect the categories
-        this.minAggrValue=0;
+        this.minAggrValue=1;
         this.removeInactiveCats = true;
 
         this.isLinked = false; // TODO: document / update
 
-        this.initCategories();
+        this.sortingOpts = [];
+
+        if(this.catLabel===undefined){
+            this.setCatLabel("id");
+        }
+
+        this.createSummaryFilter();
+
+        this.catTableName = this.summaryName+"_h_"+this.id;
+        this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
+
+        this.mapAttribs();
+
+        this.setSortingOpts();
+
+        // If the categories are not unique, sort them
+        if(this.getMaxAggregate_Total()!=1 && this._cats.length>1)
+            this.sortCats();
     },
     /** -- */
     refreshNuggetViz: function(){
@@ -3697,14 +3698,6 @@ var Summary_Categorical_functions = {
             this._cats.length+"<br>rows<br>");
     },
     /** -- */
-    getCategoryTable: function(){
-        return kshf.dt[this.catTableName];
-    },
-    /** -- */
-    getAttribs_wID: function(){
-        return kshf.dt_id[this.catTableName];
-    },
-    /** -- */
     getHeight: function(){
         if(!this.hasAttribs()) return this.getHeight_Header();
         if(this.collapsed) return this.getHeight_Header();
@@ -3713,7 +3706,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getWidth_Label: function(){
-        return this.panel.width.catLabel-this.getWidth_LeftOffset();
+        return this.panel.width_catLabel-this.getWidth_LeftOffset();
     },
     /** -- */
     getWidth_Text: function(){
@@ -3786,74 +3779,52 @@ var Summary_Categorical_functions = {
             if(opt.inverse===undefined)  opt.inverse=false;
         },this);
         this.sortingOpt_Active = this.sortingOpts[0];
+        this.updateSorting(0,true);
     },
     /** -- */
-    initCategories: function(){
-        var me=this;
-
-        this.setSortingOpts();
-
-        if(this.catLabelText===undefined){
-            this.catLabelText = function(cat){ return cat.data[0]; };
+    setCatLabel: function( catLabel ){
+        if(typeof(catLabel)==="function"){
+            this.catLabel = catLabel;
+        } else if(typeof(catLabel)==="string"){
+            this.catLabel = function(){ return this[catLabel]; };
         } else {
-            var tt=this.catLabelText;
-            this.catLabelText = function(cat){ 
-                if(cat.savedAttrib) return cat.data[0];
-                return tt(cat);
-            };
+            return;
         }
-
-        // generate row table if necessary
-        if(this.catTableName===undefined){
+        if(this.DOM.theLabel)
+            this.DOM.theLabel.html(function(cat){ return me.catLabel.call(cat.data); });
+    },
+    /** -- */
+    setCatTooltip: function( catTooltip ){
+        if(typeof(catTooltip)==="function"){
+            this.catTooltip = catLabel;
+        } else if(typeof(catLabel)==="string"){
+            this.catTooltip = function(){ return this[catTooltip]; };
+        } else {
+            return;
+        }
+        if(this.DOM.attribs)
+            this.DOM.attribs.attr("title",function(cat){ return me.catTooltip.call(cat.data); });
+    },
+    /** -- */
+    setCatTable: function(tableName){
+        this.catTableName = tableName;
+        if(tableName===""){
             this.catTableName = this.summaryName+"_h_"+this.id;
-            this.browser.createTableFromTable(this.items,this.catTableName, this.summaryFunc,
-                this.catLabelText);
         } else {
             if(this.catTableName===this.browser.primaryTableName){
                 this.isLinked=true;
+                this.browser.listDef.hasLinkedItems = true;
                 this.catTableName = this.summaryName+"_h_"+this.id;
                 kshf.dt_id[this.catTableName] = kshf.dt_id[this.browser.primaryTableName];
                 kshf.dt[this.catTableName] = this.items.slice();
             }
         }
 
-        // Add "none" category if it is requested
-        if(this.showNoneCat===true){
-            // TODO: Check if a category named "None" exist in table
-            var noneID = "None";
-            
-            var newItem = new kshf.Item([noneID,noneID],0)
-            this.getCategoryTable().push(newItem);
-            this.getAttribs_wID()[noneID] = newItem;
-
-            var _attribAccess = this.summaryFunc;
-            this.summaryFunc = function(d){
-                var r=_attribAccess(d);
-                if(r===null) return noneID;
-                if(r===undefined) return noneID;
-                if(r instanceof Array && r.length===0) return noneID;
-                return r;
-            }
-            var _catLabelText = this.catLabelText;
-            this.catLabelText = function(d){ 
-                return (d.id()===noneID)?"None":_catLabelText(d);
-            };
-            if(this.catTooltipText){            
-                var _catTooltipText = this.catTooltipText;
-                this.catTooltipText = function(d){ 
-                    return (d.id()===noneID)?"None":_catTooltipText(d);
-                };
-            }
-        }
-        this.createSummaryFilter();
-
         this.mapAttribs();
 
-        // If the categories are not unique, sort them
-        if(this.getMaxAggregate_Total()!=1 && this._cats.length>1)
-            this.sortCats();
+        this.updateCats();
     },
-    /*8 -- */
+    /** -- */
     createSummaryFilter: function(){
         var me=this;
         this.summaryFilter = this.browser.createFilter({
@@ -3923,8 +3894,7 @@ var Summary_Categorical_functions = {
                 // 'this' is the Filter
                 // go over all items and prepare the list
                 var selectedItemsText="";
-                var catLabelText = me.catLabelText;
-                var catTooltipText = me.catTooltipText;
+                var catTooltip = me.catTooltip;
 
                 var totalSelectionCount = this.selectedCount_Total();
 
@@ -3948,7 +3918,8 @@ var Summary_Categorical_functions = {
                         if(useBracket_or) selectedItemsText+="[";
                         // X or Y or ....
                         this.selected_OR.forEach(function(attrib,i){
-                            selectedItemsText+=((i!==0 || selectedItemsCount>0)?query_or:"")+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
+                            selectedItemsText+=((i!==0 || selectedItemsCount>0)?query_or:"")+"<span class='attribName'>"
+                                +me.catLabel.call(attrib.data)+"</span>";
                             selectedItemsCount++;
                         });
                         if(useBracket_or) selectedItemsText+="]";
@@ -3956,12 +3927,12 @@ var Summary_Categorical_functions = {
                     // AND selections
                     this.selected_AND.forEach(function(attrib,i){
                         selectedItemsText+=((selectedItemsText!=="")?query_and:"")
-                            +"<span class='attribName'>"+catLabelText(attrib)+"</span>";
+                            +"<span class='attribName'>"+me.catLabel.call(attrib.data)+"</span>";
                         selectedItemsCount++;
                     });
                     // NOT selections
                     this.selected_NOT.forEach(function(attrib,i){
-                        selectedItemsText+=query_not+"<span class='attribName'>"+catLabelText(attrib)+"</span>";
+                        selectedItemsText+=query_not+"<span class='attribName'>"+me.catLabel.call(attrib.data)+"</span>";
                         selectedItemsCount++;
                     });
                 }
@@ -3991,7 +3962,8 @@ var Summary_Categorical_functions = {
             // create new item in the attrib list
             // TODO: check inserted id when using a data table lookup...
             var randID=me._cats.length+10;
-            while(me.getAttribs_wID()[randID]!==undefined) {
+
+            while(kshf.dt_id[me.catTableName][randID]!==undefined) {
                 randID = Math.random();
             }
             var newAttrib = new kshf.Item(
@@ -4049,12 +4021,12 @@ var Summary_Categorical_functions = {
     mapAttribs: function(){
         var filterId = this.summaryFilter.id, me=this;
 
-        var targetTable = this.getAttribs_wID();
+        var targetTable = kshf.dt_id[this.catTableName];
         var maxDegree = 0
         this.items.forEach(function(item){
             item.mappedDataCache[filterId] = null; // default mapping to null
 
-            var mapping = this.summaryFunc(item);
+            var mapping = this.summaryFunc.call(item.data);
             if(mapping===undefined || mapping==="" || mapping===null)
                 return;
             if(mapping instanceof Array){
@@ -4105,23 +4077,22 @@ var Summary_Categorical_functions = {
             this.browser.addFacet(facetDescr,this.browser.primaryTableName);
         }
 
-        this._cats = this.getCategoryTable();
-
-        this.updateCatCount_Total();
-        this.updateCatCount_Visible();
+        this.updateCats();
 
         this.unselectAllAttribs();
     },
     // TODO: Check how isLinked and dataMap (old variable) affected this calculations...
     // Modified internal dataMap function - Skip rows with 0 active item count
     updateMinAggrValue: function(v){
+        v = Math.max(1,v);
         this.minAggrValue = v;
-        if(this.minAggrValue>0){
-            // remove attributes that have no items inside
-            this._cats = this.getCategoryTable().filter(function(cat){
-                return cat.items.length>=this.minAggrValue;
-            },this);
-        }
+        this.updateCats();
+    },
+    /** -- */
+    updateCats: function(){
+        this._cats = kshf.dt[this.catTableName].filter(function(cat){
+            return cat.items.length>=this.minAggrValue;
+        },this);
         this.updateCatCount_Total();
         this.updateCatCount_Visible();
     },
@@ -4350,12 +4321,12 @@ var Summary_Categorical_functions = {
                         me.DOM.attribTextSearchControl.attr("showClear",true);
                         me.summaryFilter.selected_All_clear();
                         me._cats.forEach(function(attrib){
-                            if(me.catLabelText(attrib).toString().toLowerCase().indexOf(v)!==-1){
+                            if(me.catLabel.call(attrib.data).toString().toLowerCase().indexOf(v)!==-1){
                                 attrib.set_OR(me.summaryFilter.selected_OR);
                             } else {
                                 // search in tooltiptext
-                                if(me.catTooltipText && 
-                                    me.catTooltipText(attrib).toLowerCase().indexOf(v)!==-1) {
+                                if(me.catTooltip && 
+                                    me.catTooltip.call(attrib.data).toLowerCase().indexOf(v)!==-1) {
                                         attrib.set_OR(me.summaryFilter.selected_OR);
                                 } else{
                                     attrib.set_NONE();
@@ -4651,25 +4622,25 @@ var Summary_Categorical_functions = {
         if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
         if(this.browser._previewCompare_Active){
-            this.getCategoryTable().forEach(function(attrib){
-                if(attrib.cache_compare===undefined){
-                    attrib.cache_compare=attrib.cache_preview;
+            this._cats.forEach(function(cat){
+                if(cat.cache_compare===undefined){
+                    cat.cache_compare=cat.cache_preview;
                 }
             });
             if(this.browser.ratioModeActive){
-                this.DOM.aggr_Compare.each(function(attrib){
-                    var w=(attrib.cache_compare/attrib.aggregate_Active)*me.chartScale_Measure.range()[1];
+                this.DOM.aggr_Compare.each(function(cat){
+                    var w=(cat.cache_compare/cat.aggregate_Active)*me.chartScale_Measure.range()[1];
                     kshf.Util.setTransform(this,"scaleX("+(w)+")");
                 });
             } else {
-                this.DOM.aggr_Compare.each(function(attrib){
+                this.DOM.aggr_Compare.each(function(cat){
                     kshf.Util.setTransform(this,"scaleX("+
-                        (me.chartScale_Measure(attrib.cache_compare))+")");
+                        (me.chartScale_Measure(cat.cache_compare))+")");
                 });
             }
         } else {
-            this.getCategoryTable().forEach(function(attrib){
-                delete attrib.cache_compare;
+            this._cats.forEach(function(cat){
+                delete cat.cache_compare;
             });
         }
     },
@@ -5133,12 +5104,6 @@ var Summary_Categorical_functions = {
             ;
         this.updateAttribCull();
 
-        if(this.catTooltipText){
-            domAttribs_new.attr("title",function(attrib){
-                return me.catTooltipText.call(this,attrib);
-            });
-        }
-
         var cbAttribClick = function(attrib){
             if(!me.isAttribSelectable(attrib)) return;
 
@@ -5314,7 +5279,9 @@ var Summary_Categorical_functions = {
                 .on("mouseleave",cbOrLeave)
                 .on("click",cbOrClick);
 
-        var domTheLabel = domAttrLabel.append("span").attr("class","theLabel").html(this.catLabelText);
+        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(cat){
+            return me.catLabel.call(cat.data);
+        });
 
         domAttribs_new.append("span").attr("class", "item_count_wrapper")
             .append("span").attr("class","measureLabel");
@@ -5435,6 +5402,9 @@ var Summary_Categorical_functions = {
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortCats();
+
+        // The rest deals with updating UI
+        if(this.panel===undefined) return;
         this.updateAttribCull();
 
         var xRemoveOffset = -100;
@@ -5508,8 +5478,8 @@ var Summary_Categorical_functions = {
         if(this.scrollTop_cache!==0)
             kshf.Util.scrollToPos_do(attribGroupScroll,0);
         this.refreshScrollDisplayMore(this.catCount_InDisplay);
-
     },
+    /** -- */
     getTotalAttribHeight: function(){
         return this.catCount_Visible*this.heightRow_attrib;
     },
@@ -5661,7 +5631,7 @@ var Summary_Interval_functions = {
         this.hasTime  = false;
 
         this.filteredItems.forEach(function(item){
-            var v=this.summaryFunc(item);
+            var v=this.summaryFunc.call(item.data);
             if(isNaN(v)) v=null;
             if(v===undefined) v=null;
             if(v!==null){

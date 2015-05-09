@@ -49,17 +49,15 @@ $(document).ready(function(){
             },{ title: "Name", attribMap: "Organization"
             },{ title: "AwardInstrument",
             },{ title: "Start Date", layout: 'bottom',
-                attribMap: function(d){
-                    var dt = d.data.StartDate;
+                attribMap: function(){
+                    var dt = this.StartDate;
                     if(dt===""){ return null; }
                     var m = moment(dt,"MM/DD/YYYY");
                     return new Date(m);
                 },
             },{ title: "NSFOrganization", collapsed: true,
 //                catTableName: 'nsf_orgs',
-//                catLabelText: function(org){
-//                    return org.data.name;
-//                }
+//                catLabel: "name"
             },{ title: "NSFDirectorate", collapsed: true
             },{ title: "ProgramManager", collapsed: true
             },{ title: "Awarded Amount", attribMap: "AwardedAmountToDate", unitName: "$",
@@ -70,10 +68,10 @@ $(document).ready(function(){
                 facets: [
                     {*/   title: "Name", attribMap: "Organization", layout: 'right',
                     },{ title: "State", attribMap: "OrganizationState", layout: 'right', collapsed: true,
-                        catLabelText: function(d){ return getStateName(d.data[0]); }
+                        catLabel: function(d){ return getStateName(data.id); }
 /*                    },{
                         catTableName: 'states',
-                        catLabelText: function(d){
+                        catLabel: function(d){
                             return kshf.dt_id.states[d.data[0]].data.name;
                         }
 //                    },{

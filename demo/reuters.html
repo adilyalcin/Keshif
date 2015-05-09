@@ -34,12 +34,12 @@ google.setOnLoadCallback( function() {
     var newsCol,peopleCol,topicsCol;
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
-        itemName : "News stories",
+        domID: "#chart_div",
+        itemName: "News stories",
         categoryTextWidth:150,
-        source : {
-            gdocId : '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
-            sheets : [ 
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
+            sheets: [ 
                 {name:"News"},
                 {name:"People"},
                 {name:"Topics", id:"Code"} 
@@ -52,10 +52,9 @@ google.setOnLoadCallback( function() {
             kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
         },
         facets: [
-            {
-                title: "Category",
-                attribMap : function(news){
-                    var topics = news.data[newsCol.Topic];
+            {   title: "Category",
+                attribMap: function(){
+                    var topics = this[newsCol.Topic];
                     var cats= {};
                     for(var i=0; i<topics.length; i++){
                         var t=topics[i];
@@ -68,27 +67,21 @@ google.setOnLoadCallback( function() {
                     }
                     return toRet;
                 }
-            },{
-                title: "Topic",
-            },{
-                title: "Country",
-                catLabelText: function(d) { return capitaliseFirstLetter(d.data[1]); }
-            },{
-                title: "People",
-                catLabelText: function(d) { return kshf.dt_id.People[d.data[1]].data[peopleCol.Name]; },
-                catTooltipText: function(d) { 
-                    var p = kshf.dt_id.People[d.data[1]];
+            },{ title: "Topic",
+            },{ title: "Country",
+                catLabel: function(){ return capitaliseFirstLetter(this.id); }
+            },{ title: "People",
+                catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
+                catTooltip: function(){ 
+                    var p = kshf.dt_id.People[this.id];
                     return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
                 }
-            },{
-                title: "Publish Time",
-                intervalScale: 'time',
-                layout: 'middle'
+            },{ title: "Publish Time", intervalScale: 'time', layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts : [
+            sortingOpts: [
                 {   name: 'Publish Time',
                     label: function(d){ 
                         var date=d.data[newsCol['Publish Time']];
@@ -96,8 +89,8 @@ google.setOnLoadCallback( function() {
                     }
                 }
             ],
-            textSearch : 'title',
-            recordView : function(news){
+            textSearch: 'title',
+            recordView: function(news){
                 var j;
                 var str=news.data[newsCol.title].replace("<","&lt;").replace(">","&gt;");
                 var cats = news.data[newsCol.Topic];

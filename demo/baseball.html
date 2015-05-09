@@ -30,14 +30,14 @@ $(document).ready(function() {
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
-        itemName : "transactions",
+        domID: "#chart_div",
+        itemName: "transactions",
         categoryTextWidth:160,
-        source : {
+        source: {
             url: 'http://www.infochimps.com/datasets/retrosheet-transactions-in-major-league-baseball-trade-signing-d',
             dirPath: 'data/',
             fileType: 'csv',
-            sheets : [
+            sheets: [
                 {name:"baseball", id:"Transact.ID"},
                 {name:"baseball_trantype"},
                 {name:"baseball_teams", tableName: "baseball_teams_1"},
@@ -48,27 +48,23 @@ $(document).ready(function() {
         },
         facets: [
             {   title: "Trans. Type",
-                catLabelText: function(d){
-                    return kshf.dt_id.baseball_trantype[d.data[0]].data.info;
-                }
+                catLabel: function(){ return kshf.dt_id.baseball_trantype[this.id].data.info; }
             },{ /*title: "From",
                 facets: [
                     {*/
                         title: "From: Team",
                         catTableName: "baseball_teams_1",
                         attribMap: "From Team",
-                        catLabelText: function(d){
-                            return d.data.name;
-                        },
+                        catLabel: function(){ return this.name; },
                     },{
                         title: "From: League",
                         catTableName: "baseball_leagues_1",
-                        attribMap : function(tr){
-                            var x = tr.data['From Team'];
+                        attribMap: function(){
+                            var x = this['From Team'];
                             if(x==="") return null;
                             return kshf.dt_id.baseball_teams_1[x].data.league;
                         },
-                        catLabelText: function(d){ return d.data.name; },
+                        catLabel: function(){ return this.name; },
                     /*}
                 ]*/
             },{ /*title: "To",
@@ -77,20 +73,20 @@ $(document).ready(function() {
                     {*/   title: "To: Team", layout: 'right',
                         catTableName: "baseball_teams_2",
                         attribMap: "To Team",
-                        catLabelText: function(d){ return d.data.name; },
+                        catLabel: function(){ return this.name; },
                     },{ title: "To: League", layout: 'right',
                         catTableName: "baseball_leagues_2",
-                        attribMap : function(tr){
-                            var x = tr.data['To Team'];
+                        attribMap: function(){
+                            var x = this['To Team'];
                             if(x==="") return null;
                             return kshf.dt_id.baseball_teams_2[x].data.league;
                         },
-                        catLabelText: function(d){ return d.data.name; },
+                        catLabel: function(){ return this.name; },
                     /*}
                 ]*/
             },{ title: "Transaction Date", layout: "bottom",
-                attribMap : function(tr){ 
-                    var dt = tr.data['primary-date'];
+                attribMap: function(){ 
+                    var dt = this['primary-date'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 }
@@ -98,7 +94,7 @@ $(document).ready(function() {
         ],
         itemDisplay: {
             sortColWidth: 75,
-            sortingOpts : [
+            sortingOpts: [
                 {   name: 'Date',
                     value: function(d){ 
                         var dt = d.data['primary-date'];
@@ -115,7 +111,7 @@ $(document).ready(function() {
                 },
                 {   name: 'Transact.ID' },
             ],
-            recordView : function(d){
+            recordView: function(d){
                 return "<div class=\"iteminfo iteminfo_0\">Player: "+
                         "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+d.data.player[0]+"/P"+
                         d.data.player+".htm\">"+d.data.player+"</a></div>";

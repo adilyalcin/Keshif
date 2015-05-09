@@ -25,16 +25,16 @@ google.setOnLoadCallback(function () {
         },
         facets: [
             {   title: "Instructor",
-                catLabelText: function(d){
-                    return kshf.dt_id.Instructors[d.data[0]].data.Name;
+                catLabel: function(){
+                    return kshf.dt_id.Instructors[this.id].data.Name;
                 }
             },{ title: "Performance",
-                catLabelText: function(d){ return performanceText(d.data[0]); }
+                catLabel: function(){ return performanceText(this.id); }
             },{ title: "Native Speaker",
-                catLabelText: function(d){ return (d.data[0]===1)?"Yes":"No"; }
+                catLabel: function(){ return (this.id===1)?"Yes":"No"; }
             },{ title: "Course"
             },{ title: "Semester",
-                catLabelText: function(d){ return (d.data[0]===1)?"Summer":"Regular"; }
+                catLabel: function(){ return (this.id===1)?"Summer":"Regular"; }
             },{ title: "Class Size",
             }
         ],

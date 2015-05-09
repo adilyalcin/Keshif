@@ -1651,7 +1651,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
-  top: 1px;
   display: block;
   position: relative;
   width: 100%;
@@ -1771,7 +1770,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine {
-  height: 12px;
+  height: 11px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue {
   position: absolute;
@@ -1802,7 +1801,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text > .selected-item-value-text-v {
   position: relative;
   left: -50%;
-  top: -1px;
+  top: -2px;
   background-color: white;
   border-radius: 4px;
   border: solid 1px #DDDDDD;
@@ -1915,6 +1914,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .text {
+  top: -1px;
   font-size: 0.7em;
   font-weight: 300;
   position: relative;
@@ -1928,7 +1928,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
-  top: -11px;
+  top: -10px;
   height: 10px;
   border-left: solid 1px gray;
   display: block;
@@ -2128,7 +2128,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv > .listItemGroup > .listItem {
   opacity: 1;
-  clear: left;
   cursor: default;
   overflow: hidden;
   vertical-align: top;
@@ -2182,8 +2181,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms;
   transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
   color: gray;
-  top: 2px;
-  left: 1px;
   position: relative;
 }
 .kshf .listDiv > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:hover {
@@ -2359,6 +2356,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem {
   display: block;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
 }
 .kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content {
   display: block;
@@ -2368,46 +2368,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   z-index: 10;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup {
-  display: block;
-}
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   width: 100%;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn {
-  vertical-align: top;
-  margin: 0;
-  padding-right: 5px;
+.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listSortColumn {
+  padding-right: 3px;
+  padding-top: 2px;
   font-weight: 300;
   text-align: right;
-  display: inline-block;
   font-size: 0.8em;
-  margin: auto;
   cursor: default;
-}
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .columnLabel {
   vertical-align: top;
-  display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-align: right;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listsortcolumn > .itemRank {
+.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemRank {
   margin-left: 2px;
   margin-top: 2px;
   color: gray;
   font-size: 0.8em;
   font-weight: 300;
   float: left;
+  width: 18px;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
   width: 18px;
+  padding-top: 2px;
+  text-align: center;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .content {
   -webkit-box-flex: 1;

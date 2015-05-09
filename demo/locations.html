@@ -59,10 +59,8 @@ $(document).ready( function(){
         facets: [
             {   title: "Type",
                 attribMap: "l_type"
-            },{ title: "Part of",
-                catTableName: "Locations",
-                attribMap: "parent_location_uuid",
-                catLabelText: function(location){ return location.data.name; },
+            },{ title: "Part of", attribMap: "parent_location_uuid",
+                catTableName: "Locations", catLabel: "name",
             }
         ],
         itemDisplay: {

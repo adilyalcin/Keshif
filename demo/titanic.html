@@ -25,8 +25,9 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Passengers"} ]
         },
         facets: [
-            {   title: "Survived", attribMap: function(d){ return (d.data.survived)?'Yes':'No'; }
-            },{ title: "Class", attribMap: function(d){ return d.data.pclass; },
+            {   title: "Survived", attribMap: "survived",
+                catLabel: function(){ return (this.id)?'Yes':'No'; }
+            },{ title: "Class", attribMap: "pclass",
                 sortingOpts: [{ 
                     func: function(a,b){
                         if(a==="3rd") return 1;
@@ -36,14 +37,8 @@ google.setOnLoadCallback(function(){
                     }
                 }]
             },{ title: "Sex", attribMap: "sex", 
-                catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); },
-            },{ title: "Age", layout:'bottom',
-                attribMap: function(d){
-                    var age = d.data.age;
-                    if(age===null) return null;
-                    return age;
-                },
-                showPercentile: true
+                catLabel: function(){ return this.id+" "+getIcon(this.id); },
+            },{ title: "Age", attribMap: "age", layout:'bottom', showPercentile: true
             },{ title: "Embarked", attribMap: "embarked"
             },{ title: "Room", collapsed: true, attribMap: "room"
 //            },{ title: "boat", collapsed: true, type: 'categorical' // there are negative values and such
@@ -51,10 +46,7 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts: [ 
-                {name: 'id', inverse:true},
-                {name: 'age'}
-            ],
+            sortingOpts: [ {name: 'id', inverse:true}, {name: 'age'} ],
             textSearch: 'name',
             recordView: "name"
         }
@@ -67,27 +59,6 @@ google.setOnLoadCallback(function(){
                 width: 750px;
                 height: 700px;
             }
-            #chart_div div.listItem{
-                max-height: 40px;
-            }
-/*            .layout_bottom > .kshfChart{
-                background-image: url("http://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Titanic-Cobh-Harbour-1912.JPG/640px-Titanic-Cobh-Harbour-1912.JPG");
-                background-size: 1000px 120px;
-            }
-            .layout_bottom .bar{
-                opacity: 0.6 !important;
-            }
-            .layout_bottom > .kshfChart .facetInterval span{
-                font-weight: 500 !important;
-            }
-            .layout_bottom > .kshfChart .facetInterval .item_count{
-                color: white !important;
-                text-shadow: 0px 0px 2px black;
-            }
-            .layout_bottom > .kshfChart .facetInterval .tick > .text{
-                color: black !important;
-                text-shadow: 0px 0px 2px white;
-            }*/
         </style>
     </head>
     <body>

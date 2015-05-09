@@ -33,8 +33,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Loss Share Type"
             },{ title: "State", attribMap: "ST", layout: 'right',
-                catTableName: "States",
-                catLabelText: function(state){ return state.data.name; }
+                catTableName: "States", catLabel: "name"
             },{ title: "City", layout: 'right',
             },{ title: "Acquiring Institution"
             },{ title: "Closing Date", layout: 'bottom'

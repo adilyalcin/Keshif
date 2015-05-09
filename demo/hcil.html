@@ -85,30 +85,25 @@ google.setOnLoadCallback( function() {
         },
         loadedCb: drawCharts,
         facets: [
-            {
-                title: "Topic",
-                catTableName: "topics",
-                catLabelText: function(topic) { return topic.data.topic; },
-                catTooltipText: function(topic) { return topic.data.topic; },
+            {   title: "Topic",
+                catTableName: "topics", catLabel: "topic",
                 visibleRows: 9
             },{
                 title: "Author",
                 catTableName: "people",
-                catLabelText: function(author) {
-                    var f_name = author.data.first_name;
-                    var l_name = author.data.last_name;
+                catLabel: function() {
+                    var f_name = this.first_name;
+                    var l_name = this.last_name;
                     var str="";
                     if(f_name) str+=f_name+". ";
                     if(f_name) str+=l_name;
                     return str;
                 }
-            },{
-                title: "Member Type",
-                catTableName: "member_types",
-                attribMap : function(pub){
+            },{ title: "Member Type",
+                attribMap : function(){
                     var typeList = {};
                     var r = [];
-                    var authors = pub.data.Author;
+                    var authors = this.Author;
                     if(authors===undefined) { return undefined; }
                     for(i=0; i<authors.length; i++){
                         var autData=kshf.dt_id.people[authors[i]];
@@ -121,17 +116,11 @@ google.setOnLoadCallback( function() {
                     }
                     return r;
                 },
-                catLabelText: function(member_type){ return member_type.data.type;  },
-            },{
-                title: "Project",
-                catTableName: "projects",
-                catLabelText: function(project){ return project.data.project;  },
-            },{
-                title: "Date",
-                layout: "middle",
-                attribMap : function(pub){ return new Date(pub.data.Date); },
-                type: 'interval',
-                intervalScale: 'time'
+                catTableName: "member_types", catLabel: "type",
+            },{ title: "Project",
+                catTableName: "projects", catLabel: "project",
+            },{ title: "Date", layout: "middle",
+                attribMap : function(){ return new Date(this.Date); }
             }
         ],
         itemDisplay: {

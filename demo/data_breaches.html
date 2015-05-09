@@ -24,8 +24,8 @@
         http://www.informationisbeautiful.net/visualizations/worlds-biggest-data-breaches-hacks/
         http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html
 */
-var typeLabel = function(d){
-    switch(d.data[0]){
+var typeLabel = function(){
+    switch(this.id){
         case 'NAM': return 'Name';
         case 'PII': return 'Personally Identifying Information';
         case 'SSN': return 'Social Security Number';
@@ -63,7 +63,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Source",
             },{ title: "Type", layout: 'right'
             },{ title: "Data Source", layout: 'right'
-            },{ title: "Record Types", layout: 'right', catLabelText: typeLabel
+            },{ title: "Record Types", layout: 'right', catLabel: typeLabel
             },{ title: "Date", layout: "bottom"
             }
         ],
@@ -78,7 +78,7 @@ google.setOnLoadCallback(function(){
                 value: function(breach){ return breach.data['# of Records']; },
                 label: function(breach){ return recordFormat(breach.data['# of Records']); }
             }],
-            textSearchFunc: function(breach){return breach.data.org; },
+            textSearchFunc: function(){ return this.org; },
             recordView: function(breach){
                 var str="";
                 str+=breach.data.org;

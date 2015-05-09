@@ -39,8 +39,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Politician",
-                catTableName: "Politicians",
-                catLabelText: function(d){ return d.data.Politician; },
+                catTableName: "Politicians", catLabel: "Politician",
                 facets:[
                     { title: "Department", }
                 ]
@@ -48,12 +47,10 @@ google.setOnLoadCallback(function(){
                 attribMap: function(d){
                     return kshf.dt_id.Organizations[d.data.Organization].data.Type;
                 },
-                catLabelText: function(d){ return d.data[0]+" "+getIcon(d.data[0]); }
+                catLabel: function(){ return this.id+" "+getIcon(this.id); }
             },{ title: "Organization", layout: 'right',
                 catTableName: "Organizations",
-                catLabelText: function(d){
-                    return d.data.Organization+" "+getIcon(d.data.Type);
-                },
+                catLabel: function(){ return this.Organization+" "+getIcon(this.Type); },
             },{ title: "Lobbyist", layout: 'right', collapsed: true
             },{ title: "Date", layout: "bottom"
             }

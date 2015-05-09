@@ -171,9 +171,9 @@ google.setOnLoadCallback(function(){
             },{ title: "Undergraduate enrollment", attribMap: "DRVEF2013.Undergraduate enrollment",
             },{ title: "Graduate enrollment", attribMap: "DRVEF2013.Graduate enrollment",
             },{ title: "% Transfers",
-                attribMap: function(d){
-                    var transfer = d.data["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
-                    var firstTime = d.data["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
+                attribMap: function(){
+                    var transfer = this["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
+                    var firstTime = this["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
                     return 100*transfer/(transfer+firstTime);
                 }, unitName: "%"//, intervalScale: "log"
             },{ title: "Institution Type", attribMap: "HD2013.Sector of institution",

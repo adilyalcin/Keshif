@@ -48,24 +48,24 @@ $(document).ready( function(){
             {   title: "Age", attribMap: "age"
             },{ title: "Race", attribMap: "race"
             },{ title: "Sex", attribMap: "sex", 
-                catLabelText: function(d){ return (d.data[0]==="m"?"Male ":"Female ")+getIcon(d.data[0]);
+                catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id);
             }
             },{ title: "Quadrant", layout: 'right', attribMap: "quadrant"
             },{ title: "Neighborhood", layout: 'right',
-                attribMap: function(d){ if(d.data.nbhd) return d.data.nbhd.subhood; }
+                attribMap: function(){ if(this.nbhd) return this.nbhd.subhood; }
             },{ title: "Status", layout: 'right',
-                attribMap: function(d){ 
+                attribMap: function(){ 
                     var r=[];
-                    r.push("Police Status: "+d.data.police_status.name);
-                    if(d.data.jury_trial) r.push("Had jury trial");
+                    r.push("Police Status: "+this.police_status.name);
+                    if(this.jury_trial) r.push("Had jury trial");
                     return r;
                 }
             },{ title: "Cases with +2 victims", layout: 'right', attribMap: "ccn", minAggrValue:2, collapsed: true
-            },{ title: "Manner", attribMap: function(d){ return d.data.manner.name; }
-            },{ title: "Motive", attribMap: function(d){ return d.data.motive.name; }
+            },{ title: "Manner", attribMap: function(){ return this.manner.name; }
+            },{ title: "Motive", attribMap: function(){ return this.motive.name; }
             },{ title: "Incident Date", layout: "bottom",
-                attribMap: function(d){
-                    if(d.data.incident_date.getFullYear()>=2000) return d.data.incident_date;
+                attribMap: function(){
+                    if(this.incident_date.getFullYear()>=2000) return this.incident_date;
                 }
             }
         ],

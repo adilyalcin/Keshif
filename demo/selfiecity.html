@@ -40,9 +40,9 @@ $(document).ready( function(){
         facets: [
             {   /*title: "Demographics",
                 facets:[
-                    {*/   title: "City",
-                        attribMap: function(d){
-                            switch(d.data.city){
+                    {*/   title: "City", attribMap: "city",
+                        catLabel: function(){
+                            switch(this.id){
                                 case 'ny': return "New York";
                                 case 'bangkok': return "Bangkok";
                                 case 'sao_paulo': return "Sao Paulo";

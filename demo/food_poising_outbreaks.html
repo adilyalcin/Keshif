@@ -102,8 +102,8 @@ google.setOnLoadCallback(function(){
                 attribMap: 'Food Types'
             },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
-                attribMap: function(d){
-                    var r=d.data['Pathogens / Toxins'];
+                attribMap: function(){
+                    var r=this['Pathogens / Toxins'];
                     var a=[r];
                     if(r==undefined || r===null) return r;
                     if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");

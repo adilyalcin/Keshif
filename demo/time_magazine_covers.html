@@ -40,8 +40,8 @@ google.setOnLoadCallback(function(){
             {   title: "Categories"
             },{ title: "Credits", layout: 'right',
             },{ title: "Month", layout: 'right',
-                attribMap: function(d){ if(d.data.Date) return d.data.Date.getMonth(); },
-                catLabelText: function(d){ return getMonthNameFromNumber(d.data[0]); },
+                attribMap: function(){ if(this.Date) return this.Date.getMonth(); },
+                catLabel: function(){ return getMonthNameFromNumber(this.id); },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
             },{ title: "Date",  layout: 'bottom', 
             }
@@ -50,7 +50,7 @@ google.setOnLoadCallback(function(){
             sortColWidth: 120,
             displayType: 'grid',
             sortingOpts: [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
-            textSearchFunc: function(d){return d.data.Info; },
+            textSearchFunc: function(){ return this.Info; },
             recordView: function(d){ 
                 var str='';
                 // Demo name

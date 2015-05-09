@@ -139,10 +139,10 @@ $(document).ready( function(){
         facets: [
             {   title: "Genres"
             },{ title: "Bederson's Rating", attribMap: "Rating",
-                catLabelText: function(d){ return getStars(d.data[0]); }
+                catLabel: function(){ return getStars(this.id); }
             },{ title: "Author", 
             },{ title: "Reviewed", description: "Mouse-over the book image to see my review",
-                attribMap: function(book){ return (book.data.Review!=="")?"Yes":"No"; }
+                attribMap: function(){ return (this.Review!=="")?"Yes":"No"; }
             },{ title: "# of Pages", attribMap: "NumPages", collapsed: true,
             },{ title: "Year: Book Read", attribMap: "ReadYear", layout: "middle", collapsed: true, intervalScale: 'step',
             },{ title: "Year: Publication (Excl. Books Before 1990)", attribMap: "PubYear", layout: "middle",

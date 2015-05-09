@@ -63,11 +63,11 @@ $(document).ready( function(){
         facets: [
             {   title: "Tag",
                 catTableName: "Types",
-                attribMap: function(d){ return d.data[2].t; }
+                attribMap: function(){ return this[2].t; }
             },{ title: "Author", collapsed: true,
-                attribMap: function(d){ return d.data[6]; },
+                attribMap: function(){ return this[6]; },
             },{ title: "Time", layout: "bottom",
-                attribMap: function(d){ return new Date(d.data[7]); }
+                attribMap: function(){ return new Date(this[7]); }
             }
         ],
         itemDisplay: {
@@ -81,7 +81,7 @@ $(document).ready( function(){
             showRank: false,
             detailsToggle: "one",
             textSearch: "Title and text",
-            textSearchFunc: function(d){ return d.data[4] + " " + d.data[5];},
+            textSearchFunc: function(){ return this[4] + " " + this[5];},
             recordView: function(d){
                 var str="";
 

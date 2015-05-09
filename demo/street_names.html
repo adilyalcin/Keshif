@@ -60,13 +60,13 @@ $(document).ready( function(){
             {   title: "<span class='fa fa-home'></span> # of Homes", attribMap: "homes"
             },{ title: "<span class='fa fa-money'></span> Average Value", attribMap: "Value"
             },{ title: "Name Features",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
-                    if(d.data.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
-                    if(d.data.scenic) r.push("Scenic <span class='fa fa-picture-o featIcon'></span>");
-                    if(d.data.geoname) r.push("Geo-name <span class='fa fa-map-marker featIcon'></span>");
-                    if(parseInt(d.data.text)) r.push("Numbered <span class='featIcon'><img src='http://graphics8.nytimes.com/newsgraphics/2015/01/20/streetclouds/db6af38c9c61da220ded80f2c202cda1428ccc69/icon_numbered.png' style='height:15px'></span>");
+                    if(this.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
+                    if(this.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
+                    if(this.scenic) r.push("Scenic <span class='fa fa-picture-o featIcon'></span>");
+                    if(this.geoname) r.push("Geo-name <span class='fa fa-map-marker featIcon'></span>");
+                    if(parseInt(this.text)) r.push("Numbered <span class='featIcon'><img src='http://graphics8.nytimes.com/newsgraphics/2015/01/20/streetclouds/db6af38c9c61da220ded80f2c202cda1428ccc69/icon_numbered.png' style='height:15px'></span>");
                     return r;
                 }
             },{ title: "In # Counties", attribMap: "in_counties", collapsed: true

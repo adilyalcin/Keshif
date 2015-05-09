@@ -76,7 +76,7 @@ $(document).ready( function(){
             detailsToggle: "zoom",
             displayType: 'grid',
             textSearch: 'Tree Name',
-            textSearchFunc: function(d){ return d.data.Common;},
+            textSearchFunc: function(){ return this.Common;},
             recordView: function(d){
     var str='';
     str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"' class='thumbImg'></span>";

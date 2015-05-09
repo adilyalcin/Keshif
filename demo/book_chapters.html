@@ -45,17 +45,16 @@
                         //browser.summaries_by_name.Properties.setHeightRow_attrib(30);
                     },
                     facets: [
-                        {
-                            title: "Domain Properties",
-                            attribMap: function(d){
+                        {   title: "Domain Properties",
+                            attribMap: function(){
                                 var r=[];
-                                if(d.data['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
-                                if(d.data['Shape & Space']===1) r.push('Shape & Space = 1.0');
-                                if(d.data['Shape & Space']===0.5) r.push('Shape & Space = 0.5');
-                                if(d.data['Function']===1) r.push('Function = 1.0');
-                                if(d.data['Function']===0.5) r.push('Function = 0.5');
-                                if(d.data['Chance & Data']===1) r.push('Chance & Data = 1.0');
-                                if(d.data['Arrangement']===1) r.push('Arrangement = 1.0');
+                                if(this['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
+                                if(this['Shape & Space']===1) r.push('Shape & Space = 1.0');
+                                if(this['Shape & Space']===0.5) r.push('Shape & Space = 0.5');
+                                if(this['Function']===1) r.push('Function = 1.0');
+                                if(this['Function']===0.5) r.push('Function = 0.5');
+                                if(this['Chance & Data']===1) r.push('Chance & Data = 1.0');
+                                if(this['Arrangement']===1) r.push('Arrangement = 1.0');
                                 return r;
                             },
                             sortingOpts: [{

@@ -102,12 +102,12 @@ function loadProceeding(xmlData) {
                 articleData.Term.push($(term).text().trim());
             });
             // parse authors
-            articleData.Author = [];
+            articleData.Authors = [];
             $this.find("> authors >").each(function(index, author){
                 // au
                 var xml_author = $(author);
                 var authorID = xml_author.find("> person_id").text();
-                articleData.Author.push(authorID);
+                articleData.Authors.push(authorID);
                 var authorItem=kshf.dt_id.People[authorID];
                 if(authorItem===undefined) {
                     var authorData = {};
@@ -152,27 +152,24 @@ google.setOnLoadCallback(function(){
         categoryTextWidth: 230,
         source: { callback: loadData },
         facets: [
-            {   title: "Category"
-            },{ title: "Year",
-                attribMap: function(paper){ return paper.data.Proceeding.data.year; },
+            {   title: "Term"
+            },{ title: "Category"
+            },{ title: "Year", attribMap: function(){ return this.Proceeding.data.year; },
                 intervalScale: 'step',
                 layout: 'middle'
-            },{ title: "Author",
+            },{ title: "Authors",
                 catTableName: "People",
-                catLabelText: function(person){
-                    return person.data.last_name+", "+person.data.first_name;
-                },
+                catLabel: function(){ return this.last_name+", "+this.first_name; },
                 facets: [{ title: "Affiliaton" }]
             },
             /*,{ title: "Term"
             },{ title: "# of References", collapsed: true,
                 attribMap: "ReferenceTotal"}
             }*/,{ title: "# of Citations",
-                attribMap: function(paper){
-                    if(paper.data.CitedByTotal===0) return;
-                    return paper.data.CitedByTotal;
-                },
-                intervalScale: "log"
+                attribMap: function(){
+                    if(this.CitedByTotal===0) return;
+                    return this.CitedByTotal;
+                }
             }/*,{
                 title: "Citations to",
                 // these are how the items are related.
@@ -185,9 +182,7 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [{
-                name: 'Citations', value: function(d){ return d.data.CitedByTotal; }
-            }],
+            sortingOpts: [{ name: 'Citations', value: function(d){ return d.data.CitedByTotal; } }],
             textSearch: "Title",
             linkText: 'Citations to',
             detailsToggle: "zoom",

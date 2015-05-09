@@ -38,15 +38,15 @@ $(document).ready( function() {
             },{ title: "Operating System",
             },{ title: "Customer Reviews"
             },{ title: "Flash Memory Size", layout: 'right', unitName: "GB",
-                attribMap: function(tablet){
-                    var n= parseFloat(tablet.data['Flash Memory Size']);
+                attribMap: function(){
+                    var n= parseFloat(this['Flash Memory Size']);
                     if(n<1) return null;
                     return n;
                 },
                 intervalScale: 'log',
             },{ title: "Screen Size (inches)", unitName: "″",
-                attribMap: function(tablet){
-                    var x= parseFloat(tablet.data['Screen Size']);
+                attribMap: function(){
+                    var x= parseFloat(this['Screen Size']);
                     if(isNaN(x)) { return null; }
                     return x;
                 }
@@ -56,8 +56,8 @@ $(document).ready( function() {
                 attribMap: "Customer Reviews",
                 showPercentile: true
             },{ title: "Release Date",
-                attribMap: function(tablet){ 
-                    var dt = tablet.data['Date First Available'];
+                attribMap: function(){ 
+                    var dt = this['Date First Available'];
                     if(dt===""){ return null; }
                     return new Date(moment(dt,"MM/DD/YYYY"));
                 },

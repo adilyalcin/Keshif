@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Feelings",
-            },{ title: "Talk Duration", attribMap: function(d){ return d.data.Duration[0]; }
+            },{ title: "Talk Duration", attribMap: function(){ return this.Duration[0]; }
             },{ title: "Views"
             },{ title: "Speaker", layout: 'right'
             },{ title: "Date", layout: 'bottom'

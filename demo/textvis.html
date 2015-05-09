@@ -68,8 +68,8 @@ $(document).ready( function(){
             {   /*title: "Tasks",
                 facets: [
                     {*/   title: "Analytics",
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="sentiment-analysis" ||
                                     c==="text-summarization" ||
                                     c==="discourse-analysis" ||
@@ -82,8 +82,8 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Visualizations",
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="roi" ||
                                     c==="classification" ||
                                     c==="comparison" ||
@@ -98,16 +98,16 @@ $(document).ready( function(){
             },{ /*title: "Data", layout: 'right',
                 facets:[
                     {*/   title: "Sources", layout: 'right',
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="document" ||
                                     c==="corpora" ||
                                     c==="streams";
                             });
                         }
                     },{ title: "Properties", layout: 'right',
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="geospatial" ||
                                     c==="time-series" ||
                                     c==="networks";
@@ -116,8 +116,8 @@ $(document).ready( function(){
                     /*}
                 ]*/
             },{ title: "Domains",
-                attribMap: function(d){
-                    return d.data.categories.filter(function(c){
+                attribMap: function(){
+                    return this.categories.filter(function(c){
                         return c==="social-media" ||
                             c==="communication" ||
                             c==="patents" ||
@@ -130,16 +130,16 @@ $(document).ready( function(){
             },{ /*title: "Visualization", layout: 'right',
                 facets:[
                     {*/   title: "Dimensionalities", layout: 'right',
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="1d" ||
                                     c==="2d" ||
                                     c==="3d";
                             });
                         }
                     },{ title: "Representations", layout: 'right',
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="line-plot" ||
                                     c==="pixel-area" ||
                                     c==="node-link" ||
@@ -150,8 +150,8 @@ $(document).ready( function(){
                             });
                         }
                     },{ title: "Alignments", layout: 'right',
-                        attribMap: function(d){
-                            return d.data.categories.filter(function(c){
+                        attribMap: function(){
+                            return this.categories.filter(function(c){
                                 return c==="radial" ||
                                     c==="linear" ||
                                     c==="metric";
@@ -160,7 +160,7 @@ $(document).ready( function(){
                     /*}
                 ]*/
             },{ title: "Year", layout: 'bottom', 
-                attribMap: function(d){ return new Date(d.data.year,1,1); },
+                attribMap: function(){ return new Date(this.year,1,1); },
             }
         ],
         itemDisplay: {

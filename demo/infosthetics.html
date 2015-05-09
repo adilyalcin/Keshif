@@ -48,9 +48,8 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Category"
-            },{ title: "Author",
-                catTableName: "Authors", collapsed: true,
-                catLabelText: function(d){ return d.data.Name; }
+            },{ title: "Author", collapsed: true
+                catTableName: "Authors", catLabel: "Name"
             },{ title: "# Comments",  attribMap: '# of Comments'
             },{ title: "Time", layout: 'bottom', attribMap: "Date",
             }

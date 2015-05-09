@@ -57,22 +57,22 @@ google.setOnLoadCallback(function(){
                 description: "University or Company they did their post-doctoral training", attribMap: "PostDoc"
             },{ title: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
                 description: "For each CS faculty, lists the countries that s/he received her degrees from",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    a = d.data.Bachelors.split(" - ");
+                    a = this.Bachelors.split(" - ");
                     r.push(a[a.length-1].trim());
-                    a = d.data.Masters.split(" - ");
+                    a = this.Masters.split(" - ");
                     r.push(a[a.length-1].trim());
-                    a = d.data.Doctorate.split(" - ");
+                    a = this.Doctorate.split(" - ");
                     r.push(a[a.length-1].trim());
-                    a = d.data.PostDoc.split(" - ");
+                    a = this.PostDoc.split(" - ");
                     r.push(a[a.length-1].trim());
                     return r;
                 }
             },{ title: "<span class='fa fa-calendar'></span> Joined Year", layout: "bottom",
                 description: "When they joined that department of Computer Science as faculty",
-                attribMap: function(d){ 
-                    if(d.data.JoinYear==="") return;
+                attribMap: function(){ 
+                    if(this.JoinYear==="") return;
                     return new Date(d.data.JoinYear,1,1);
                 }
             }

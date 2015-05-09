@@ -47,7 +47,7 @@ $(document).ready( function(){
         facets: [
             {   title: "Category", attribMap: "category"
             },{ title: "Implementation Status", attribMap: "impl_status_chrome"
-            },{ title: "Standardization", attribMap: function(d){ return d.data.standardization.text; }
+            },{ title: "Standardization", attribMap: function(){ return this.standardization.text; }
             },{ title: "Visibility", attribMap: "visibility", layout: 'left'
             },{ title: "Milestone", attribMap: "shipped_milestone", layout: 'right'
             },{ title: "Prefixed", attribMap: "prefixed", layout: 'right', collapsed: true,
@@ -56,22 +56,21 @@ $(document).ready( function(){
             },{ /*title: "Status (vs.)", layout: 'right',
                 facets: [
             {*/ title: "FireFox Status", layout: 'right',
-                attribMap: function(d){ return d.data.ff_views.text; },
+                attribMap: function(){ return this.ff_views.text; },
             },{ title: "IE Status", layout: 'right',
-                attribMap: function(d){ return d.data.ie_views.text; },
+                attribMap: function(){ return this.ie_views.text; },
             },{ title: "Safari Status", layout: 'right',
-                attribMap: function(d){ return d.data.safari_views.text; },
+                attribMap: function(){ return this.safari_views.text; },
                 /*}
             ]*/
             },{ title: "Update Date", layout: 'bottom',
-                attribMap: function(d){ return new Date(moment(d.data.updated)); },
+                attribMap: function(){ return new Date(moment(this.updated)); },
             }
         ],
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts: [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
             textSearch: "title",
-            textSearchFunc: function(d){ return d.data.title;},
             displayType: 'list',
             detailsToggle: "zoom",
             recordView: function(d){

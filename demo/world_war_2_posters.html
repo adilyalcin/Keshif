@@ -53,8 +53,8 @@ $(document).ready( function(){
             },{ title: "Collection", attribMap: "from"
             },{ title: "Subjects", attribMap: "subjects"
             },{ title: "Tags",
-                attribMap: function(poster){
-                    var contribs = poster.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;
@@ -69,8 +69,8 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                attribMap: function(d){
-                    var contribs = d.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;

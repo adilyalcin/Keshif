@@ -26,21 +26,21 @@ google.setOnLoadCallback(function () {
         facets: [
             {   title: "# of Legs", intervalScale: 'step'
             },{ title: "Properties",
-                attribMap: function(d){
+                attribMap: function(){
                     var r =[];
-                    if(d.data["Has Tail"]) r.push("Has Tail");
-                    if(d.data["Has Hair"]) r.push("Has Hair");
-                    if(d.data["Has Feathers"]) r.push("Has Feathers");
-                    if(d.data["Has Backbone"]) r.push("Has Backbone");
-                    if(d.data["Has Eggs"]) r.push("Has Eggs");
-                    if(d.data["Has Milk"]) r.push("Has Milk");
-                    if(d.data["Domestic"]) r.push("Domestic");
-                    if(d.data["Aquatic"]) r.push("Aquatic");
-                    if(d.data["Airborn"]) r.push("Airborn");
-                    if(d.data["Venomous"]) r.push("Venomous");
-                    if(d.data["Predator"]) r.push("Predator");
-                    if(d.data["Tooth"]) r.push("Has Tooth");
-                    if(d.data["Breathes"]) r.push("Breathes");
+                    if(this["Has Tail"]) r.push("Has Tail");
+                    if(this["Has Hair"]) r.push("Has Hair");
+                    if(this["Has Feathers"]) r.push("Has Feathers");
+                    if(this["Has Backbone"]) r.push("Has Backbone");
+                    if(this["Has Eggs"]) r.push("Has Eggs");
+                    if(this["Has Milk"]) r.push("Has Milk");
+                    if(this["Domestic"]) r.push("Domestic");
+                    if(this["Aquatic"]) r.push("Aquatic");
+                    if(this["Airborn"]) r.push("Airborn");
+                    if(this["Venomous"]) r.push("Venomous");
+                    if(this["Predator"]) r.push("Predator");
+                    if(this["Tooth"]) r.push("Has Tooth");
+                    if(this["Breathes"]) r.push("Breathes");
                     return r;
                 },
                 catDispCountFix: 6

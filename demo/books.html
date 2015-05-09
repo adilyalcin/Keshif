@@ -43,13 +43,13 @@ $(document).ready( function(){
     var sortFormat = d3.time.format("%Y-%m-%d");
 
 	browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         categoryTextWidth:175,
         // barChartWidth: 40,
         itemName: "Books in ICDL",
-        source : {
-            gdocId : '1gRAC1iElcJjqqn6zMg5Bfn059xj1qS1ilpkWlplR4C0',
-            sheets : [ 
+        source: {
+            gdocId: '1gRAC1iElcJjqqn6zMg5Bfn059xj1qS1ilpkWlplR4C0',
+            sheets: [ 
                 {name:"Books", id:"book_id"}, 
                 {name:"Book Metadata", id:"book_id"}, 
                 {name:"Countries"},
@@ -84,13 +84,13 @@ $(document).ready( function(){
             },{
                 title: "Rating",
                 attribMap: function(book){ return getIndicesWithParent(book,71); },
-                catLabelText: function(d){ return d.data[2]; },
+                catLabel: function(d){ return d.data[2]; },
                 attribNameFunc: getIndexTitle,
                 collapsed: true,
             },{
                 title: "Feeling",
                 attribMap: function(book){ return getIndicesWithParent(book,5); },
-                catLabelText: function(d){ return d.data[2]; },
+                catLabel: function(d){ return d.data[2]; },
                 attribNameFunc: getIndexTitle,
             },{   
                 title: "Audience",
@@ -99,23 +99,23 @@ $(document).ready( function(){
                     {
                         title: "Language",
                         attribMap: function(book){ return getIndicesWithParent(book,3); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Age",
                         attribMap: function(book){ return getIndicesWithParent(book,83); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Collection",
                         attribMap: function(book){ return getIndicesWithParent(book,473); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed:true
                     },{
                         title: "Publication Date",
                         attribMap: function(book){ return getIndicesWithParent(book,326); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed: true
                     }
@@ -128,23 +128,23 @@ $(document).ready( function(){
                     {
                         title: "Format",
                         attribMap: function(book){ return getIndicesWithParent(book,15); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Length",
                         attribMap: function(book){ return getIndicesWithParent(book,260); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Cover Color",
                         attribMap: function(book){ return getIndicesWithParent(book,4); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed: true
                     },{
                         title: "Shape",
                         attribMap: function(book){ return getIndicesWithParent(book,6); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed: true
                     }
@@ -157,17 +157,17 @@ $(document).ready( function(){
                     {
                         title: "Countries",
                         attribMap: function(book){ return getIndicesWithParent(book,359); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Characters",
                         attribMap: function(book){ return getIndicesWithParent(book,257); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle
                     },{
                         title: "Time Periods - When",
                         attribMap: function(book){ return getIndicesWithParent(book,287); },
-                        catLabelText: function(d){ return d.data[2]; },
+                        catLabel: function(d){ return d.data[2]; },
                         attribNameFunc: getIndexTitle,
                         collapsed: true
                     }
@@ -175,17 +175,17 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [
+            sortingOpts: [
                 { name: 'Date Added', label: function(d){ return sortFormat(d.data[5]); }}
             ],
-            textSearchFunc : function(d){ 
-                var metadata = kshf.dt_id['Book Metadata'][d.data[0]];
+            textSearchFunc: function(){ 
+                var metadata = kshf.dt_id['Book Metadata'][this[0]];
                 if(metadata===undefined) return "";
                 return metadata.data[2];
             },
             displayType: 'grid',
             maxVisibleItems_Default: 20,
-            recordView : function(d){
+            recordView: function(d){
                 var id = d.data[0];
                 var metadata = kshf.dt_id['Book Metadata'][id];
                 if(metadata===undefined){

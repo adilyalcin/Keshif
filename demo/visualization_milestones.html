@@ -217,8 +217,8 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Era",
-                attribMap: function(d){
-                    var year=d.data.Year;
+                attribMap: function(){
+                    var year=this.Year;
                     if(year<1600) return 0;
                     if(year<1700) return 1;
                     if(year<1800) return 2;
@@ -229,8 +229,8 @@ google.setOnLoadCallback(function(){
                     return 7;
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}],
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case 0: return "Maps and diagrams <b>Pre-1600</b>";
                         case 1: return "Measurements &amp; theories <b>1600s</b>";
                         case 2: return "New graphic forms <b>1700s</b>";

@@ -69,53 +69,52 @@ google.setOnLoadCallback( function(){
                 catTableName: "RoadType",
             },{ title: "Severity",
                 catTableName: "Severity",
-            },{ title: "Area",
-                catLabelText: function(d) { return (d.data[0]===1)?"Urban":"Rural"; }
+            },{ title: "Area", 
+                catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
             },{ title: "Time of Day",
-                attribMap: function(accident){
-                    var hour=accident.data['Time of Day'].getHours();
+                attribMap: function(){
+                    var hour=this['Time of Day'].getHours();
                     if(hour<6) return 0;
                     if(hour<12) return 1;
                     if(hour<18) return 2;
                     return 3;
                 },
-                catLabelText: function(d){ return timeOfDayText(d.data[0]); }
+                catLabel: function(){ return timeOfDayText(this.id); }
             },{ title: "Speed Limit (mph)",
-                attribMap: function(d){ return d.data['Speed Limit']; }
+                attribMap: function(){ return this['Speed Limit']; }
             },{ title: "# of Vehicles", intervalScale: 'step'
             },{ title: "Road Surface",
                 catTableName: "RoadSurface",
-                attribMap: function(accident){
-                    var c=accident.data['Road Surface Condition'];
+                attribMap: function(){
+                    var c=this['Road Surface Condition'];
                     return (c===-1)?null:c; // skip if -1
                 },
-                catLabelText: function(d){ return d.data.name; }
+                catLabel: function(){ return this.name; }
             },{ title: "Light Condition", layout: 'right',
                 catTableName: "LightCond",
-                catLabelText: function(d) { return d.data.name; }
+                catLabel: function() { return this.name; }
             },{ title: "Weather Condition", layout: 'right',
                 catTableName: "WeatherCond",
-                catLabelText: function(d) { return d.data.name; }
+                catLabel: function() { return this.name; }
             },{ title: "Special Condition", layout: 'right',
                 catTableName: "SpecCond",
-                attribMap: function(accident){
-                    var c=accident.data['Special Condition'];
+                attribMap: function(){
+                    var c=this['Special Condition'];
                     return (c===0)?null:c; // skip if 0
                 },
-                catLabelText: function(d) { return d.data.name; }
+                catLabel: function() { return this.name; }
             },{ title: "Junction Detail", layout: 'right',
                 catTableName: "JuncDet",
-                attribMap: function(accident){
-                    var c=accident.data['Junction Detail'];
+                attribMap: function(){
+                    var c=this['Junction Detail'];
                     return (c===-0)?null:c; // skip if 0
                 }
-            },{ title: "Junction Control", layout: 'right',
+            },{ title: "Junction Control", layout: 'right', collapsed: true,
                 catTableName: "JuncCont",
-                attribMap: function(accident){
-                    var c=accident.data['Junction Control'];
+                attribMap: function(){
+                    var c=this['Junction Control'];
                     return (c===-1)?null:c; // skip if 0
-                },
-                collapsed: true
+                }
             },{ title: "Date", layout: 'bottom'
             }
         ],

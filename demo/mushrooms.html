@@ -17,14 +17,14 @@
         <script type="text/javascript">
 
 var getName = {
-    Class: function(d){
-        switch(d.data[0]){
+    Class: function(){
+        switch(this.id){
             case 'e': return 'Edible';
             case 'p': return 'Poisonous';
         }
     },
-    Shape: function(d){
-        switch(d.data[0]){
+    Shape: function(){
+        switch(this.id){
             case 'b': return "Bell";
             case 'c': return "Conical";
             case 'x': return "Convex";
@@ -35,8 +35,8 @@ var getName = {
             case 't': return "Tapering";
         }
     },
-    Surface: function(d){
-        switch(d.data[0]){
+    Surface: function(){
+        switch(this.id){
             case 'f': return "Fibrous";
             case 'g': return "Grooves";
             case 'y': return "Scaly";
@@ -44,8 +44,8 @@ var getName = {
             case 'k': return "Silky";
         }
     },
-    Color: function(d){
-        switch(d.data[0]){
+    Color: function(){
+        switch(this.id){
             case 'n': return "Brown";
             case 'b': return "Buff";
             case 'c': return "Cinnamon";
@@ -61,8 +61,8 @@ var getName = {
             case 'o': return "Orange";
         }
     },
-    Odor: function(d){
-        switch(d.data[0]){
+    Odor: function(){
+        switch(this.id){
             case 'a': return "Almond";
             case 'l': return "Anise";
             case 'c': return "Creosote";
@@ -74,29 +74,29 @@ var getName = {
             case 's': return "Spicy";
         }
     },
-    GillAttachment: function(d){
-        switch(d.data[0]){
+    GillAttachment: function(){
+        switch(this.id){
             case 'a': return 'Attached';
             case 'd': return 'Descending';
             case 'f': return 'Free';
             case 'n': return 'Notched';
         }
     },
-    GillSpacing: function(d){
-        switch(d.data[0]){
+    GillSpacing: function(){
+        switch(this.id){
             case 'c': return 'Close';
             case 'w': return 'Crowded';
             case 'd': return 'Distant';
         }
     },
-    GillSize: function(d){
-        switch(d.data[0]){
+    GillSize: function(){
+        switch(this.id){
             case 'b': return 'Broad';
             case 'n': return 'Narrow';
         }
     },
-    Population: function(d){
-        switch(d.data[0]){
+    Population: function(){
+        switch(this.id){
             case 'a': return 'Abundant';
             case 'c': return 'Clustered';
             case 'n': return 'Numerous';
@@ -105,8 +105,8 @@ var getName = {
             case 'y': return 'Solitary';
         }
     },
-    Habitat: function(d){
-        switch(d.data[0]){
+    Habitat: function(){
+        switch(this.id){
             case 'g': return 'Grasses';
             case 'l': return 'Leaves';
             case 'm': return 'Meadows';
@@ -116,15 +116,15 @@ var getName = {
             case 'd': return 'Woods';
         }
     },
-    RingNumber: function(d){
-        switch(d.data[0]){
+    RingNumber: function(){
+        switch(this.id){
             case 'n': return 'None';
             case 'o': return 'One';
             case 't': return 'Two';
         }
     },
-    RingType: function(d){
-        switch(d.data[0]){
+    RingType: function(){
+        switch(this.id){
             case 'c': return 'Cobwebby';
             case 'e': return 'Evanescent';
             case 'f': return 'Flaring';
@@ -135,8 +135,8 @@ var getName = {
             case 'z': return 'Zone';
         }
     },
-    Root: function(d){
-        switch(d.data[0]){
+    Root: function(){
+        switch(this.id){
             case 'b': return 'Bulbous';
             case 'c': return 'Club';
             case 'u': return 'Cup';
@@ -156,79 +156,79 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 148,
         middlePanelLabelWidth: 148,
         source: {
-            gdocId : '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
-            sheets : [ {name:"Mushrooms"} ]
+            gdocId: '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
+            sheets: [ {name:"Mushrooms"} ]
         },
         facets: [
-            {   title: "Class", catLabelText: getName.Class
-            },{ title: "Habitat", catLabelText: getName.Habitat
-            },{ title: "Odor", catLabelText: getName.Odor
+            {   title: "Class", catLabel: getName.Class
+            },{ title: "Habitat", catLabel: getName.Habitat
+            },{ title: "Odor", catLabel: getName.Odor
             },{ title: "Bruises", collapsed: true,
             },{ /*title: "Gill",
                 facets:[
                     {*/   title: "Gill - Attachment",
                         attribMap: "Gill Attachment",
-                        catLabelText: getName.GillAttachment
+                        catLabel: getName.GillAttachment
                     },{ title: "Gill - Spacing",
                         attribMap: "Gill Spacing",
-                        catLabelText: getName.GillSpacing
+                        catLabel: getName.GillSpacing
                     },{ title: "Gill - Size",
                         attribMap: "Gill Size",
-                        catLabelText: getName.GillSize
+                        catLabel: getName.GillSize
                     },{ title: "Gill - Color",
                         attribMap: "Gill Color",
-                        catLabelText: getName.Color
+                        catLabel: getName.Color
                     /*}
                 ]*/
 
             },{ title: "Population", layout: "middle",
-                catLabelText: getName.Population
+                catLabel: getName.Population
             },{ /*title: "Cap", layout: "middle",
                 facets: [
                     {*/   title: "Cap - Shape", layout: "middle",
                         attribMap: "Cap Shape",
-                        catLabelText: getName.Shape
+                        catLabel: getName.Shape
                     },{ title: "Cap - Surface", layout: "middle",
                         attribMap: "Cap Surface",
-                        catLabelText: getName.Surface
+                        catLabel: getName.Surface
                     },{ title: "Cap - Color", layout: "middle",
                         attribMap: "Cap Color",
-                        catLabelText: getName.Color
+                        catLabel: getName.Color
                     /*}
                 ]*/
             },{ /*title: "Ring", layout: "middle",
                 facets: [
                     {*/   title: "Number", layout: "middle",
                         attribMap: "Ring Number",
-                        catLabelText: getName.RingNumber
+                        catLabel: getName.RingNumber
                     },{ title: "Type", layout: "middle",
                         attribMap: "Ring Type",
-                        catLabelText: getName.RingType
+                        catLabel: getName.RingType
                     /*}
                 ]*/
 
             },{ title: "Spore Print Color", layout: 'right',
-                catLabelText: getName.Color
+                catLabel: getName.Color
             },{ /*title: "Stalk", layout: 'right',
                 facets:[
                     {*/   title: "Stalk - Shape", layout: 'right',
                         attribMap: "Stalk Shape",
-                        catLabelText: getName.Shape
+                        catLabel: getName.Shape
                     },{ title: "Stalk - Root", layout: 'right',
                         attribMap: "Stalk Root",
-                        catLabelText: getName.Root
+                        catLabel: getName.Root
                     },{ title: "Stalk - Surface Above Ring", layout: 'right',
                         attribMap: "Stalk Surface Above Ring",
-                        catLabelText: getName.Surface
+                        catLabel: getName.Surface
                     },{ title: "Stalk - Surface Below Ring", layout: 'right',
                         attribMap: "Stalk Surface Below Ring",
-                        catLabelText: getName.Surface
+                        catLabel: getName.Surface
                     },{ title: "Stalk - Color Above Ring", layout: 'right',
                         attribMap: "Stalk Color Above Ring",
-                        catLabelText: getName.Color
+                        catLabel: getName.Color
                     },{ title: "Stalk - Color Below Ring", layout: 'right',
                         attribMap: "Stalk Color Below Ring",
-                        catLabelText: getName.Color
+                        catLabel: getName.Color
                     /*}
                 ]*/
             }

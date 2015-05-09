@@ -82,19 +82,18 @@ $(document).ready( function(){
         facets: [
             {   title: "Movie",
                 catTableName: "Movies",
-                catLabelText: function(d){ return d.data.Title; },
+                catLabel: function(d){ return d.data.Title; },
                 facets: [
                     {   title: "Genre"
                     },{ title: "Rated"
-                    },{ title: "IMDB Rating",
-                        attribMap: "imdbRating"
+                    },{ title: "IMDB Rating", attribMap: "imdbRating"
                     }
                 ]
             },{ title: "Location",
                 layout: "right",
                 catTableName: "Series",
                 attribMap: "Series",
-                sortingOpts : [
+                sortingOpts: [
                     {   name: "# of Screenings"},
                     {   name: "Distance",  
                         func: function(a,b){
@@ -117,11 +116,11 @@ $(document).ready( function(){
                 ]
             },{
                 title: "Time", layout: "right",
-                facets : [/*{
+                facets: [/*{
                     title: "Soon",
                     removeInactiveAttrib: false,
-                    attribMap: function(d){
-                        var m_scr = moment(d.data[0]);
+                    attribMap: function(){
+                        var m_scr = moment(this[0]);
                         if(m_scr.isBefore(m_now)) return null;
                         if(m_scr.isBefore(m_thisweek)) return "This Week";
                         if(m_scr.isBefore(m_nextweek)) return "Next Week";
@@ -131,8 +130,8 @@ $(document).ready( function(){
                     title: "Day Of Week",
                     type: 'categorical',
                     catTableName: "Weekdays",
-                    attribMap: function(d){ return (moment(d.data.Date).days()+6)%7;  },
-                    sortingOpts : [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
+                    attribMap: function(){ return (moment(this.Date).days()+6)%7;  },
+                    sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
                 }]
             },{ title: "Date",
                 layout: "bottom",
@@ -161,7 +160,7 @@ $(document).ready( function(){
         },
         itemDisplay: {
             sortColWidth: 90,
-            sortingOpts : [ {
+            sortingOpts: [ {
                 name: 'Date',
                 func: function(a,b){
                     // a and b are date objects
@@ -179,8 +178,8 @@ $(document).ready( function(){
                     return moment(d.data[0]).format('MMM.Do,ddd');
                 }
             } ],
-            detailsToggle : "One",
-            recordView : function(screening) {
+            detailsToggle: "One",
+            recordView: function(screening) {
                 var series = kshf.dt_id.Series[screening.data.Series];
                 var str="";
                 str+="<span class=\"item_details\">";
@@ -247,11 +246,11 @@ $(document).ready( function(){
 
 /*    $(".comment_popup").fancybox({
         type: 'iframe',
-        width    : 600,
-        height   : 300,
-        closeBtn    : true,
+        width   : 600,
+        height  : 300,
+        closeBtn   : true,
         iframe: {
-            preload   : true
+            preload  : true
         }
     });*/
 

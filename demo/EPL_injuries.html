@@ -45,9 +45,9 @@ google.setOnLoadCallback(function(){
                     }
                 }],
             },{ title: "Month", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.Date.getMonth(); },
+                attribMap: function(){ return this.Date.getMonth(); },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
-                catLabelText: function(d){ return getMonthNameFromNumber(d.data[0]); },
+                catLabel: function(){ return getMonthNameFromNumber(this.id); },
             },{ title: "Date", layout: 'bottom'
             }
         ],

@@ -38,15 +38,15 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "UserType",
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case "S": return "Subscriber";
                         case "C": return "Customer";
                     }
                 },
             },{ title: "Gender", layout: 'right',
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(d){
+                    switch(this.id){
                         case 2: return "Female "+getIcon("f");
                         case 1: return "Male "+getIcon("m");
                         default: return "?";
@@ -54,14 +54,14 @@ google.setOnLoadCallback(function(){
                 },
                 type: 'categorical'
             },{ title: "Station_Start",
-                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[0]].data.Name; },
+                catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
             },{ title: "Station_End", layout: 'right',
-                catLabelText: function(d){ return kshf.dt_id.Stations[d.data[0]].data.Name; },
+                catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
             },{ title: "Day of Week", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.TimeStart.day(); },
+                attribMap: function(){ return this.TimeStart.day(); },
                 sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case 1: return "Monday";
                         case 2: return "Tuesday";
                         case 3: return "Wednesday";
@@ -72,12 +72,12 @@ google.setOnLoadCallback(function(){
                     }
                 }
             },{ title: "Hour of Day", layout: 'bottom',
-                attribMap: function(d){ return d.data.TimeStart.hour(); },
+                attribMap: function(){ return this.TimeStart.hour(); },
                 unitName: ":00",
                 intervalScale: 'step'
             },{ title: "Duration", layout: 'bottom',
                 intervalScale: "log",
-                attribMap: function(d){ return Math.round(d.data.Duration/60); },
+                attribMap: function(){ return Math.round(this.Duration/60); },
                 unitName: " min"
             },{ title: "BirthYear", layout: 'bottom', collapsed: true, intervalScale: 'linear'
                 // TODO: Actually this is time, the value is year, but the variance is high so kshf tries to map it to log-scale

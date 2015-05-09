@@ -22,7 +22,6 @@
         <link rel="stylesheet" type="text/css" href="../demo/css/jquery.fancybox.css">
 
         <script type="text/javascript">
-
 var demoID = 89;
 
 var likertSort = function(a,b){
@@ -59,7 +58,7 @@ var ageSort = function(a,b){
 
 var columns = [
     "responseid",
-    "respid",
+    "-filler-",
     "status",
     "interview_start",
     "interview_end",
@@ -124,134 +123,128 @@ $(document).ready(function() {
     });
 
     browser = new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         itemName: "Participants",
         categoryTextWidth:250,
         leftPanelLabelWidth: 230,
         rightPanelLabelWidth: 270,
-        source : {
-            gdocId : '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
-            sheets : [ {name:"Participants", id:'Participants'}]
+        source: {
+            gdocId: '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
+            sheets: [ {name:"Participants", id:'Participants'}]
         },
         readyCb: function(browser){
             $(".listItem .content").click(function(){
                 browser.listDisplay.showListItemDetails(this.parentNode.__data__);
             });
         },
-/*        source : {
+/*        source: {
             dirPath: './',
             fileType: 'csv',
-            sheets : [
+            sheets: [
                 {name:"NPG_survey", header: false, id:0},
             ]
         },*/
         facets: [
-            {   title: "Capture Link Source", collapsed: true,
-                attribMap: function(d){ return d.data[columns[7]]; }
+            {   title: "Capture Link Source", collapsed: true, attribMap: columns[7]
             },{ title: "Area of Interest",
                 description: "Which of the following best describes your area of interest?",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[8]]!==null && d.data[columns[9]]===null && d.data[columns[10]]===null) r.push(d.data[columns[8]]);
-                    if(d.data[columns[9]]!==null) r.push("Other NaturalSci.: "+d.data[columns[9]]);
-                    if(d.data[columns[10]]!==null) r.push("Other SocialSci.: "+d.data[columns[10]]);
+                    if(this[columns[8]]!==null && this[columns[9]]===null && this[columns[10]]===null) r.push(this[columns[8]]);
+                    if(this[columns[9]]!==null) r.push("Other NaturalSci.: "+this[columns[9]]);
+                    if(this[columns[10]]!==null) r.push("Other SocialSci.: "+this[columns[10]]);
                     return r;
                 }
-            },{ title: "Age",
+            },{ title: "Age", attribMap: columns[12],
                 description: "What is your age?",
-                attribMap: function(d){ return d.data[columns[12]]; },
-                sortingOpts : [{ func: ageSort }]
-            },{ title: "Continent", collapsed: true,
+                sortingOpts: [{ func: ageSort }]
+            },{ title: "Continent", attribMap: columns[13], collapsed: true,
                 description: "In which continent do you live?",
-                attribMap: function(d){ return d.data[columns[13]]; }
             },{ title: "Country",
                 description: "In which country do you live?",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[14]]!==null) r.push(d.data[columns[14]]);
-                    if(d.data[columns[15]]!==null) r.push(d.data[columns[15]]);
-                    if(d.data[columns[16]]!==null) r.push(d.data[columns[16]]);
-                    if(d.data[columns[17]]!==null) r.push(d.data[columns[17]]);
-                    if(d.data[columns[18]]!==null) r.push(d.data[columns[18]]);
-                    if(d.data[columns[19]]!==null) r.push(d.data[columns[19]]);
+                    if(this[columns[14]]!==null) r.push(this[columns[14]]);
+                    if(this[columns[15]]!==null) r.push(this[columns[15]]);
+                    if(this[columns[16]]!==null) r.push(this[columns[16]]);
+                    if(this[columns[17]]!==null) r.push(this[columns[17]]);
+                    if(this[columns[18]]!==null) r.push(this[columns[18]]);
+                    if(this[columns[19]]!==null) r.push(this[columns[19]]);
                     return r;
                 }
             },{ title: "Industry",
                 description: "Which category best describes your industry?",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[20]]!==null && d.data[columns[21]]===null) r.push(d.data[columns[20]]);
-                    if(d.data[columns[21]]!==null) r.push("Other: "+d.data[columns[21]]);
+                    if(this[columns[20]]!==null && this[columns[21]]===null) r.push(this[columns[20]]);
+                    if(this[columns[21]]!==null) r.push("Other: "+this[columns[21]]);
                     return r;
                 }
             },{ title: "Job Title",
                 description: "Which job title best applies to you?",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[22]]!==null && d.data[columns[23]]===null) r.push(d.data[columns[22]]);
-                    if(d.data[columns[23]]!==null) r.push("Other: "+d.data[columns[23]]);
+                    if(this[columns[22]]!==null && this[columns[23]]===null) r.push(this[columns[22]]);
+                    if(this[columns[23]]!==null) r.push("Other: "+this[columns[23]]);
                     return r;
                 }
-            },{ title: "Research Webpage", collapsed: true, layout: 'right',
-                description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?",
-                attribMap: function(d){ return d.data[columns[24]]; }
-            },{ title: "Self-Maintained R. Webpage", collapsed: true, layout: 'right',
-                description: "Do you personally edit/update this? (research webpage)",
-                attribMap: function(d){ return d.data[columns[25]]; }
-            },{ title: "Written online research posts", layout: 'right',
+            },{ title: "Research Webpage", attribMap: columns[24], collapsed: true, layout: 'right',
+                description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?"
+            },{ title: "Self-Maintained R. Webpage", attribMap: columns[25], collapsed: true, layout: 'right',
+                description: "Do you personally edit/update this? (research webpage)"
+            },{ title: "Written online research posts", attribMap: columns[26], layout: 'right',
                 description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
-                attribMap: function(d){ return d.data[columns[26]]; }
             },{ title: "Social Network - Awareness", layout: 'right',
                 description: "\"I am aware of this site.\"",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[27]]!=="NotAware") r.push("Twitter");
-                    if(d.data[columns[28]]!=="NotAware") r.push("Facebook");
-                    if(d.data[columns[29]]!=="NotAware") r.push("Frontiers");
-                    if(d.data[columns[30]]!=="NotAware") r.push("Academia.edu");
-                    if(d.data[columns[31]]!=="NotAware") r.push("ResearchGate");
-                    if(d.data[columns[32]]!=="NotAware") r.push("LinkedIn");
-                    if(d.data[columns[33]]!=="NotAware") r.push("BioMedExperts");
-                    if(d.data[columns[34]]!=="NotAware") r.push("Google+");
-                    if(d.data[columns[35]]!=="NotAware") r.push("Mendeley");
-                    if(d.data[columns[36]]!=="NotAware") r.push("Pubchase");
-                    if(d.data[columns[37]]!=="NotAware") r.push("My Science Work");
-                    if(d.data[columns[38]]!=="NotAware") r.push("Google Scholar");
-                    if(d.data[columns[39]]!=="NotAware") r.push("Microsofot Academic Search");
-                    if(d.data[columns[40]]!=="NotAware") r.push("ORCID");
-                    if(d.data[columns[41]]!=="NotAware") r.push("ResearcherID");
-                    if(d.data[columns[42]]!=="NotAware") r.push("Figshare");
-                    if(d.data[columns[43]]!=="NotAware") r.push("MLA Commons");
+                    if(this[columns[27]]!=="NotAware") r.push("Twitter");
+                    if(this[columns[28]]!=="NotAware") r.push("Facebook");
+                    if(this[columns[29]]!=="NotAware") r.push("Frontiers");
+                    if(this[columns[30]]!=="NotAware") r.push("Academia.edu");
+                    if(this[columns[31]]!=="NotAware") r.push("ResearchGate");
+                    if(this[columns[32]]!=="NotAware") r.push("LinkedIn");
+                    if(this[columns[33]]!=="NotAware") r.push("BioMedExperts");
+                    if(this[columns[34]]!=="NotAware") r.push("Google+");
+                    if(this[columns[35]]!=="NotAware") r.push("Mendeley");
+                    if(this[columns[36]]!=="NotAware") r.push("Pubchase");
+                    if(this[columns[37]]!=="NotAware") r.push("My Science Work");
+                    if(this[columns[38]]!=="NotAware") r.push("Google Scholar");
+                    if(this[columns[39]]!=="NotAware") r.push("Microsofot Academic Search");
+                    if(this[columns[40]]!=="NotAware") r.push("ORCID");
+                    if(this[columns[41]]!=="NotAware") r.push("ResearcherID");
+                    if(this[columns[42]]!=="NotAware") r.push("Figshare");
+                    if(this[columns[43]]!=="NotAware") r.push("MLA Commons");
                     return r;
                 }
             },{ title: "Social Network - Regular Use", layout: 'right',
                 description: "\"I visit this site regularly.\"",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[27]]==="Aware,Regular") r.push("Twitter");
-                    if(d.data[columns[28]]==="Aware,Regular") r.push("Facebook");
-                    if(d.data[columns[29]]==="Aware,Regular") r.push("Frontiers");
-                    if(d.data[columns[30]]==="Aware,Regular") r.push("Academia.edu");
-                    if(d.data[columns[31]]==="Aware,Regular") r.push("ResearchGate");
-                    if(d.data[columns[32]]==="Aware,Regular") r.push("LinkedIn");
-                    if(d.data[columns[33]]==="Aware,Regular") r.push("BioMedExperts");
-                    if(d.data[columns[34]]==="Aware,Regular") r.push("Google+");
-                    if(d.data[columns[35]]==="Aware,Regular") r.push("Mendeley");
-                    if(d.data[columns[36]]==="Aware,Regular") r.push("Pubchase");
-                    if(d.data[columns[37]]==="Aware,Regular") r.push("My Science Work");
-                    if(d.data[columns[38]]==="Aware,Regular") r.push("Google Scholar");
-                    if(d.data[columns[39]]==="Aware,Regular") r.push("Microsofot Academic Search");
-                    if(d.data[columns[40]]==="Aware,Regular") r.push("ORCID");
-                    if(d.data[columns[41]]==="Aware,Regular") r.push("ResearcherID");
-                    if(d.data[columns[42]]==="Aware,Regular") r.push("Figshare");
-                    if(d.data[columns[43]]==="Aware,Regular") r.push("MLA Commons");
+                    if(this[columns[27]]==="Aware,Regular") r.push("Twitter");
+                    if(this[columns[28]]==="Aware,Regular") r.push("Facebook");
+                    if(this[columns[29]]==="Aware,Regular") r.push("Frontiers");
+                    if(this[columns[30]]==="Aware,Regular") r.push("Academia.edu");
+                    if(this[columns[31]]==="Aware,Regular") r.push("ResearchGate");
+                    if(this[columns[32]]==="Aware,Regular") r.push("LinkedIn");
+                    if(this[columns[33]]==="Aware,Regular") r.push("BioMedExperts");
+                    if(this[columns[34]]==="Aware,Regular") r.push("Google+");
+                    if(this[columns[35]]==="Aware,Regular") r.push("Mendeley");
+                    if(this[columns[36]]==="Aware,Regular") r.push("Pubchase");
+                    if(this[columns[37]]==="Aware,Regular") r.push("My Science Work");
+                    if(this[columns[38]]==="Aware,Regular") r.push("Google Scholar");
+                    if(this[columns[39]]==="Aware,Regular") r.push("Microsofot Academic Search");
+                    if(this[columns[40]]==="Aware,Regular") r.push("ORCID");
+                    if(this[columns[41]]==="Aware,Regular") r.push("ResearcherID");
+                    if(this[columns[42]]==="Aware,Regular") r.push("Figshare");
+                    if(this[columns[43]]==="Aware,Regular") r.push("MLA Commons");
                     return r;
                 }
             },{ title: "Comment Length",
-                attribMap: function(d){ 
-                    if(d.data[columns[11]]===null) return;
-                    if(d.data[columns[11]].length===0) return;
-                    return d.data[columns[11]].length; 
+                attribMap: function(){ 
+                    if(this[columns[11]]===null) return;
+                    if(this[columns[11]].length===0) return;
+                    return this[columns[11]].length; 
                 },
                 unitName: "ch.",
                 layout: 'middle',
@@ -259,51 +252,48 @@ $(document).ready(function() {
             },{ title: "Information Publicly Shared",
                 description: "What professional information do you make publicly available online?",
                 layout: 'right',
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data[columns[44]]===1) r.push("Contact details");
-                    if(d.data[columns[45]]===1) r.push("Areas of expertise");
-                    if(d.data[columns[46]]===1) r.push("Publishing history");
-                    if(d.data[columns[47]]===1) r.push("Links to published articles");
-                    if(d.data[columns[48]]===1) r.push("Copies of published papers");
-                    if(d.data[columns[49]]===1) r.push("Dataset (Published Research)");
-                    if(d.data[columns[50]]===1) r.push("Dataset (Unpublised Research)");
-                    if(d.data[columns[51]]===1) {
+                    if(this[columns[44]]===1) r.push("Contact details");
+                    if(this[columns[45]]===1) r.push("Areas of expertise");
+                    if(this[columns[46]]===1) r.push("Publishing history");
+                    if(this[columns[47]]===1) r.push("Links to published articles");
+                    if(this[columns[48]]===1) r.push("Copies of published papers");
+                    if(this[columns[49]]===1) r.push("Dataset (Published Research)");
+                    if(this[columns[50]]===1) r.push("Dataset (Unpublised Research)");
+                    if(this[columns[51]]===1) {
                         r.push("Other");
-                        r.push("<i>Other</i> - "+d.data[columns[52]]);
+                        r.push("<i>Other</i> - "+this[columns[52]]);
                     }
                     return r;
                 }
             },{ title: "\"... Profiles are useful\"", collapsed: true,
                 description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
-                layout: 'right',
-                attribMap: function(d){ return d.data[columns[53]]; },
-                sortingOpts : [{ func: likertSort }]
+                layout: 'right', attribMap: columns[53], 
+                sortingOpts: [{ func: likertSort }]
             },{ title: "\"... I need to promote more online\"", collapsed: true,
                 description: "\"I feel I should probably do more to promote my research using online networks\"",
-                layout: 'right',
-                attribMap: function(d){ return d.data[columns[54]]; },
-                sortingOpts : [{ func: likertSort }]
-            },{ title: "\"... Profiles are not important\"", collapsed: true,
+                layout: 'right', attribMap: columns[54], 
+                sortingOpts: [{ func: likertSort }]
+            },{ title: "\"... Profiles are not important\"", attribMap: columns[55], collapsed: true,
                 description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
                 layout: 'right',
-                attribMap: function(d){ return d.data[columns[55]]; },
-                sortingOpts : [{ func: likertSort }]
+                sortingOpts: [{ func: likertSort }]
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            detailsToggle : "One",
-            textSearch : 'content',
-            textSearchFunc : function(d){
+            detailsToggle: "One",
+            textSearch: 'content',
+            textSearchFunc: function(d){
                 return d.data[columns[11]];
             },
-            sortingOpts : [{ 
+            sortingOpts: [{ 
                 name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
                     if(d.data[columns[11]]===null) return 0;
                     return d.data[columns[11]].length; 
                 } }],
-            recordView : function(d){ 
+            recordView: function(d){ 
                 if(d.data[columns[11]]===null) return "-";
                 return "<blockquote>" + d.data[columns[11]] + "</blockquote>";
             }

@@ -155,11 +155,11 @@ $(document).ready( function(){
             },{ title: "Subject", 
 //            },{ title: "Author", 
             },{ title: "Date", layout: 'middle', 
-                attribMap: function(d){
-                    if(d.data.Date===null) return;
-                    var y= d.data.Date.getFullYear();
+                attribMap: function(){
+                    if(this.Date===null) return;
+                    var y= this.Date.getFullYear();
                     if(y<1990) return;
-                    return d.data.Date;
+                    return this.Date;
                 }
             },{ title: 'Series Title', 
             }

@@ -41,10 +41,10 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "Industry",
-                attribMap: function(d){ return d.data.Industry+" "+getIcon(d.data.Industry); }
+                attribMap: function(){ return this.Industry+" "+getIcon(this.Industry); }
             },{ title: "Cash vs. Debt", layout: 'left',
-                attribMap: function(d){
-                    return ((d.data['Cash ($B)']-d.data['Debt ($B)'])>0)?"More cash":"More debt";
+                attribMap: function(){
+                    return ((this['Cash ($B)']-this['Debt ($B)'])>0)?"More cash":"More debt";
                 }
             },{ title: "Cash", attribMap: 'Cash ($B)', unitName: 'B$', intervalScale: 'log'
             },{ title: "Debt", attribMap: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',

@@ -33,16 +33,13 @@ $(document).ready( function(){
         },
         facets: [ 
             {   title: "Category", 
-                catTableName: "Categories",
-                catLabelText: function(d){ return d.data.Category; }
-            },{ title: "Date",
-                attribMap: function(d){
+                catTableName: "Categories", catLabel: "Category"
+            },{ title: "Date", layout:'bottom',
+                attribMap: function(){
                     var r =new Date(Date.now());
-                    r.setDate(r.getDate()-d.data.id*4);
+                    r.setDate(r.getDate()-this.id*4);
                     return r;
-                },
-                intervalScale: 'time',
-                layout:'bottom'
+                } 
             }
         ],
         itemDisplay: {

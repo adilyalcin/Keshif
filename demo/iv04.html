@@ -116,25 +116,25 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Authors",
-                catLabelText: function(d){ return kshf.dt_id.Authors[d.data[0]]; }
+                catLabel: function(){ return kshf.dt_id.Authors[this.id]; }
             },{ title: "Keywords", layout: 'right'
             },{ title: "# of Keywords", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.Keywords.length; }
+                attribMap: function(){ return this.Keywords.length; }
             },{ title: "Abstract", layout: 'right',
-                attribMap: function(d){ if(d.data.Abstract) return "Has Abstract"; }
+                attribMap: function(){ if(this.Abstract) return "Has Abstract"; }
             },{ title: "# References To (Within)", layout: 'right',
-                attribMap: function(d){ return d.data.References_To.length; }, 
+                attribMap: function(){ return this.References_To.length; }, 
                 intervalScale: 'log'
             },{ title: "# References Within (Total)", layout: 'right',  collapsed: true,
-                attribMap: function(d){
-                    return d.data.References_Internal.length+
-                        d.data.References_External.length+
-                        d.data.References_Other.length;
+                attribMap: function(){
+                    return this.References_Internal.length+
+                        this.References_External.length+
+                        this.References_Other.length;
                 }
             },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.References_Internal.length; }
+                attribMap: function(){ return this.References_Internal.length; }
             },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
-                attribMap: function(d){ return d.data.References_External.length+d.data.References_Other.length; }
+                attribMap: function(){ return this.References_External.length+this.References_Other.length; }
             },{ title: "Date", layout: "bottom"
             }
         ],
@@ -143,7 +143,7 @@ $(document).ready( function(){
             sortingOpts: [
                 { name: "#Ref's", value: function(d){return d.data.References_To.length;} },
                 { name: 'Year' }
-                ],
+            ],
             detailsToggle: 'zoom',
             textSearch: "Title",
             recordView: "Title"

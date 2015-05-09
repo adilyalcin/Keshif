@@ -42,24 +42,24 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Movie Passes Bechdel Test ?", attribMap: "Passes Bechdel Test?"
             },{ title: "Bechdel Criterias",
-                attribMap: function(movie){
+                attribMap: function(){
                     var r=[];
-                    if(movie.data["Has at least two [named] women in it"]==="Pass")
+                    if(this["Has at least two [named] women in it"]==="Pass")
                         r.push("Has at least two [named] women in it");
-                    if(movie.data["The women talk to each other"]==="Pass")
+                    if(this["The women talk to each other"]==="Pass")
                         r.push("The women talk to each other");
-                    if(movie.data["The women talk about something besides a man"]==="Pass")
+                    if(this["The women talk about something besides a man"]==="Pass")
                         r.push("The women talk about something besides a man");
                     return r;
                 }
             },{ title: "Clarity of Pass", collapsed: true
 /*            },{ title: "Director",
-                attribMap: function(movie){
-                    return movie.data.Director.split(", ");
+                attribMap: function(){
+                    return this.Director.split(", ");
                 }*/
 /*                        },{ title: "Plot Keywords (top 10)",
-                attribMap: function(movie){
-                    var keywords = movie.data["Plot Keywords (top 10)"];
+                attribMap: function(){
+                    var keywords = this["Plot Keywords (top 10)"];
                     if(keywords !== undefined && keywords.split) 
                         return keywords.split(", ");
                 }*/

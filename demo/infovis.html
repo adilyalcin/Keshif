@@ -35,12 +35,11 @@ google.setOnLoadCallback(function () {
         },
         facets: [
             {   title: "Concepts",
-            },{ title: "Year", layout: "middle",
-                attribMap: "time",
+            },{ title: "Year", attribMap: "time", layout: "middle",
             },{ title: "Highlights",
-                attribMap: function(d){
+                attribMap: function(){
                     var toRet = [];
-                    if(d.data[8]===true) toRet.push("Best in Year");
+                    if(this.best===true) toRet.push("Best in Year");
 //                    if(d.data[6].length>10) toRet.push("Cited +10");
                     return toRet;
                 }
@@ -52,11 +51,8 @@ google.setOnLoadCallback(function () {
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
-            },{ title: "Total Citations",
-                attribMap: function(d){ if(d.data.num===0) return; return d.data.num; },
-                intervalScale: 'log'
-            },{ title: "Authors",
-                layout: 'right'
+            },{ title: "Total Citations", attribMap: "num", intervalScale: 'log'
+            },{ title: "Authors", layout: 'right'
             }/*,{
 //              title: "Keywords",
                 timeTitle: "Year",
@@ -73,12 +69,12 @@ google.setOnLoadCallback(function () {
 //            }*/
         ],
         itemDisplay: {
-            sortColWidth: 85,
+            sortColWidth: 35,
             sortingOpts : [
-                {   name: '# Cit.\'s To',
-                    value: function(d){ return d.items.length; }
-                },{ name: 'Year',
+                {   name: 'Year',
                     value: function(d){ return d.data.time.getFullYear(); }, inverse: true
+                },{ name: '# Cit.\'s To',
+                    value: function(d){ return d.items.length; }
                 },{ name: '# Cit.\'s- Total',
                     value: function(d){ return d.data.num; }
                 }

@@ -55,8 +55,8 @@ $(document).ready( function(){
         },
         facets: [
             { title: "Tags",
-                attribMap: function(d){
-                    var contribs = d.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;
@@ -71,8 +71,8 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                attribMap: function(d){
-                    var contribs = d.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;
@@ -92,8 +92,8 @@ $(document).ready( function(){
             },{ title: "Use Restrictions", attribMap: "useRestrictions", collapsed: true,
             },{ title: "Access Restrictions", attribMap: "accessRestrictions", collapsed: true,
 /*            },{ title: "Date", layout: "bottom",
-                attribMap: function(d){
-                    var pDate=d.data.productionDates;
+                attribMap: function(){
+                    var pDate=this.productionDates;
                     if(pDate===undefined ||pDate.length!==1) return;
                     var m=moment(pDate[0],["M/DD/YYYY"]);
                     var r=new Date(m);

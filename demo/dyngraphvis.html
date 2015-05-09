@@ -254,14 +254,14 @@ $(document).ready( function(){
             },{ title: "Evaluations",
 /*            },{
                 title: "Citations",
-                attribMap: function(d){ return references[d.id()].split(" "); },
+                attribMap: function(){ return references[d.Key].split(" "); },
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true*/
             },{ title: "Authors", layout: 'right'
             },{ title: "Journal", collapsed: false, layout: 'right'
             },{ title: "Year", layout: "bottom", 
-                // attribMap: function(d){ return new Date(d.data.Year,1,1); } // Years can be split at 6months, looks bad.
+                // attribMap: function(){ return new Date(this.Year,1,1); } // Years can be split at 6months, looks bad.
             }
         ],
         itemDisplay: {

@@ -29,13 +29,13 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "State",
-                catLabelText: function(d){ return getStateName(d.data[0]) }
+                catLabel: function(){ return getStateName(this.id) }
             },{ title: "County", layout: 'middle', minAggrValue: 50,
-                attribMap: function(d){ return d.data.County+", "+d.data.State; }
+                attribMap: function(){ return this.County+", "+this.State; }
             },{ title: "Listed Time", layout: 'bottom',
-                attribMap: function(d){ return moment(d.data.Listed,"YYYYMMDD")._d; }
+                attribMap: function(){ return moment(this.Listed,"YYYYMMDD")._d; }
             },{ title: "City", layout: 'right', minAggrValue: 50,
-                attribMap: function(d){ return d.data.City+", "+d.data.State; }
+                attribMap: function(){ return this.City+", "+this.State; }
             }
         ],
     });

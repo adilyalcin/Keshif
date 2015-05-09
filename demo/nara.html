@@ -74,8 +74,8 @@ var loadBrowser = function(){
         },
         facets: [
             { title: "Tags",
-                attribMap: function(d){
-                    var contribs = d.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;
@@ -90,8 +90,8 @@ var loadBrowser = function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                attribMap: function(d){
-                    var contribs = d.data.publicContributions;
+                attribMap: function(){
+                    var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
                     if(tags===undefined) return;

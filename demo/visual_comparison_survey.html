@@ -259,7 +259,7 @@ $(document).ready( function(){
         facets: [
             {   title: "General Category", attribMap: "GeneralCategory"
             },{ title: "Comparison Category",
-                attribMap: function(d){ return d.data.ComparisonCategory.split("/"); } 
+                attribMap: function(){ return this.ComparisonCategory.split("/"); } 
             },{ title: "Data Type Compared", attribMap: "DataTypeCompared" 
             },{ title: "Comparison Scale", attribMap: "ComparisonScale" 
 //            },{ title: "CitedInPaper", layout: 'right'
@@ -267,9 +267,9 @@ $(document).ready( function(){
             },{ title: "Technique Used", attribMap: "TechniqueUsed", layout: 'right'
             },{ title: "Authors", layout: 'right',
             },{ title: "Venue", layout: 'right'
-            },{ title: "Categorized By",  layout: 'right', collapsed: true,
-                attribMap: function(d){
-                    switch(d.data.CategorizedBy){
+            },{ title: "Categorized By", attribMap: "CategorizedBy", layout: 'right', collapsed: true,
+                catLabel: function(){
+                    switch(this.id){
                         case 'DA'  : return "Danielle Albers";
                         case 'Ilir': return "Ilir Jusuf";
                         case 'RW'  : return "Rick Walker";

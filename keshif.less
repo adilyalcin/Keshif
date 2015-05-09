@@ -1555,7 +1555,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 text-align: center;
                             }
                             > .measureLabel{
-                                top: 1px;
+                                // top: 1px;
                                 display: block;
                                 position: relative;
                                 width:100%;
@@ -1670,7 +1670,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     position:relative;
                     pointer-events: all;
                     > .controlLine {
-                        height: 12px;
+                        height: 11px;
                         > .selectedItemValue{
                             position:absolute;
                             z-index: 20;
@@ -1695,7 +1695,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 > .selected-item-value-text-v{
                                     position: relative;
                                     left: -50%;
-                                    top: -1px;
+                                    top: -2px;
                                     background-color: white;
                                     border-radius: 4px;
                                     border: solid 1px #DDDDDD;
@@ -1803,6 +1803,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .tick{
                             position:absolute;
                             > .text{
+                                top: -1px;
                                 font-size: 0.7em;
                                 font-weight: 300;
                                 position: relative;
@@ -1816,7 +1817,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             > .line{
                                 position: absolute;
-                                top: -11px;
+                                top: -10px;
                                 height: 10px;
                                 border-left: solid 1px gray;
                                 display: block;
@@ -2059,7 +2060,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             > .listItem{
                 opacity: 1;
-                clear: left;
                 cursor: default;
                 overflow: hidden;
                 vertical-align: top;
@@ -2107,8 +2107,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .item_details_toggle{
                         .transition(~'transform 500ms');
                         color: gray;
-                        top: 2px;
-                        left: 1px;
                         position: relative;
                         &:hover{ color:black; }
                     }
@@ -2209,6 +2207,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             } // listItem
         } // listItemGroup
+
         > .showMore{
             cursor: pointer;
             border: solid 1px lightgray;
@@ -2269,6 +2268,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 -webkit-justify-content: space-around;
                 > .listItem{
                     display: block;
+                    .align-self(flex-start);
                     > .content{
                         display: block;
                         //width: 100%;
@@ -2281,41 +2281,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
+
         &[displaytype="list"] {
             > .listItemGroup{
-                display: block;
                 > .listItem{
                     .display(flex);
+                    .flex-direction(row);
                     width: 100%;
-                    > .listsortcolumn{
-                        vertical-align: top;
-                        margin: 0;
-                        padding-right:5px;
+                    > .listSortColumn{
+                        padding-right: 3px;
+                        padding-top: 2px;
                         font-weight: 300;
                         text-align: right;
-                        display:inline-block; 
                         font-size: 0.8em;
-                        margin : auto; 
                         cursor: default;
-                        > .columnLabel{
-                            vertical-align: top;
-                            display: block;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            text-align: right;
-                        }
-                        > .itemRank{
-                            margin-left: 2px;
-                            margin-top: 2px;
-                            color: gray;
-                            font-size: 0.8em;
-                            font-weight: 300;
-                            float: left;
-                        }
+                        vertical-align: top;
+
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    > .itemRank{
+                        font-size: 0.8em;
+                        margin-left: 2px;
+                        margin-top: 2px;
+                        color: gray;
+                        font-size: 0.8em;
+                        font-weight: 300;
+                        float: left;
+                        width: 18px;
                     }
                     > .itemToggleDetails{
                         width: 18px;
+                        padding-top: 2px;
+                        text-align: center;
                     }
                     > .content{
                         .flex(1);

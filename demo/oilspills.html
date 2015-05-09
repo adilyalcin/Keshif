@@ -20,26 +20,26 @@
 
 var demoID = 15;
 
-function getDate(d){
-    var dt=d.data.Date;
+function getDate(){
+    var dt=this.Date;
     if(dt.getUTCFullYear) { return dt;}
     var m=moment(d.data.Date,["YYYY-MM-DD"]);
     dt = new Date(m);
     return dt;
 }
 
-function getSource(spill){
-    if(spill.data["Platform / Rig"]!==null){ return "Platform / Rig"; }
-    if(spill.data["Pipeline"]!==null){ return "Pipeline"; }
-    if(spill.data["Vessel"]!==null){ return "Vessel"; }
+function getSource(){
+    if(this["Platform / Rig"]!==null){ return "Platform / Rig"; }
+    if(this["Pipeline"]!==null){ return "Pipeline"; }
+    if(this["Vessel"]!==null){ return "Vessel"; }
     return "Unknown";
 }
 function getMaterial(spill){
     var toRet=[];
-    if(spill.data["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
-    if(spill.data["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
-    if(spill.data["Synthetic Base Fluid"]!==0) toRet.push("Synthetic Base Fluid");
-    if(spill.data["Other Chemicals"]!==0) toRet.push("Other Chemicals");
+    if(this["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
+    if(this["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
+    if(this["Synthetic Base Fluid"]!==0) toRet.push("Synthetic Base Fluid");
+    if(this["Other Chemicals"]!==0) toRet.push("Other Chemicals");
     return toRet;
 }
 
@@ -75,16 +75,16 @@ google.setOnLoadCallback( function(){
                     },{ title: "Refined Petroleum", collapsed: true
                     }/*,{
                         title: "Synthetic Base Fluid", collapsed: true,
-                        attribMap: function(d){
-                            if(d.data[13]===0) return;
-                            return d.data[13];
+                        attribMap: function(){
+                            if(this[13]===0) return;
+                            return this[13];
                         },
                         intervalScale: 'log',
                     },{
                         title: "Other Chemicals", collapsed: true,
-                        attribMap: function(d){
-                            if(d.data[14]===0) return;
-                            return d.data[14];
+                        attribMap: function(){
+                            if(this[14]===0) return;
+                            return this[14];
                         },
                         intervalScale: 'log',
                     }*/
@@ -92,8 +92,7 @@ google.setOnLoadCallback( function(){
             }*/,{ title: "Source", attribMap: getSource
             },{ title: "Material", attribMap: getMaterial
             },{ title: "Company", layout: 'right', catDispCountFix: 5
-            },{ title: "District", layout: 'left', catTableName: "Districts",
-                catLabelText: function(d){ return d.data.Name; }
+            },{ title: "District", layout: 'left', catTableName: "Districts", catLabel: "Name"
             },{ title: "Water Depth", layout: 'right', attribMap: 'Water Depth (feet)',
                 intervalScale: 'log', unitName: ' ft'
             },{ title: "During Activity", layout: 'right', collapsed: true
@@ -101,7 +100,7 @@ google.setOnLoadCallback( function(){
             },{ title: "Other Properties", layout: 'right', collapsed: true,
                 catTableName: "Notes",
                 attribMap: "Notes",
-                catLabelText: function(d){ return d.data.name; }
+                catLabel: "name"
             },{ title: "Spill Date", layout: 'bottom', attribMap: getDate,
             }
         ],

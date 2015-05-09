@@ -79,57 +79,57 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Type",  attribMap: "subtype"
             },{ title: "Highlights",
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data.award) r.push("Awarded");
-                    if(d.data.hm) r.push("Honorable Mention");
+                    if(this.award) r.push("Awarded");
+                    if(this.hm) r.push("Honorable Mention");
                     return r;
                 }
             },{ title: "Keywords", minAggrValue: 2,
-                attribMap: function(d){
-                    if(d.data.keywords===undefined) return;
+                attribMap: function(){
+                    if(this.keywords===undefined) return;
                     var r=[];
-                    d.data.keywords.forEach(function(keyword){
+                    this.keywords.forEach(function(keyword){
                         r.push(kshf.Util.toProperCase(keyword));
                     });
                     return r;
                 },
             },{ title: "Authors", 
-                attribMap: function(d){
-                    if(d.data.authors===undefined) return;
+                attribMap: function(){
+                    if(this.authors===undefined) return;
                     var r=[];
-                    d.data.authors.forEach(function(author){
+                    this.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.name));
                     });
                     return r;
                 },
             },{ title: "Author Institution", 
-                attribMap: function(d){
-                    if(d.data.authors===undefined) return;
+                attribMap: function(){
+                    if(this.authors===undefined) return;
                     var r=[];
-                    d.data.authors.forEach(function(author){
+                    this.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.institution));
                     });
                     return r;
                 },
             },{ title: "Author Country", 
-                attribMap: function(d){
-                    if(d.data.authors===undefined) return;
+                attribMap: function(){
+                    if(this.authors===undefined) return;
                     var r=[];
-                    d.data.authors.forEach(function(author){
+                    this.authors.forEach(function(author){
                         r.push(kshf.Util.toProperCase(author.country));
                     });
                     return r;
                 },
             },{ title: "Session Title", layout: 'right',
-                attribMap: function(d){
-                    if(d.data.session===undefined) return;
-                    return d.data.session.s_title.substring(8);
+                attribMap: function(){
+                    if(this.session===undefined) return;
+                    return this.session.s_title.substring(8);
                 },
             },{ title: "Session Day", layout: 'right',
-                attribMap: function(d){
-                    if(d.data.session===undefined) return;
-                    switch(d.data.session.day){
+                attribMap: function(){
+                    if(this.session===undefined) return;
+                    switch(this.session.day){
                         case "Monday": return 0;
                         case "Tuesday": return 1;
                         case "Wednesday": return 2;
@@ -140,8 +140,8 @@ google.setOnLoadCallback(function(){
                     no_resort: true,
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }],
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case 0: return "Monday";
                         case 1: return "Tuesday";
                         case 2: return "Wednesday";
@@ -149,9 +149,9 @@ google.setOnLoadCallback(function(){
                     }
                 }
             },{ title: "Session Time",  layout: 'right',
-                attribMap: function(d){
-                    if(d.data.session===undefined) return;
-                    switch(d.data.session.time){
+                attribMap: function(){
+                    if(this.session===undefined) return;
+                    switch(this.session.time){
                         case "9:30-10:50": return 0;
                         case "11:30-12:50": return 1;
                         case "14:30-15:50": return 2;
@@ -162,8 +162,8 @@ google.setOnLoadCallback(function(){
                     no_resort: true,
                     func: kshf.Util.sortFunc_Column_ParseInt_Incr
                 }],
-                catLabelText: function(d){
-                    switch(d.data[0]){
+                catLabel: function(){
+                    switch(this.id){
                         case 0: return "9:30-10:50";
                         case 1: return "11:30-12:50";
                         case 2: return "14:30-15:50";

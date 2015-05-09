@@ -19,8 +19,7 @@ google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 80,
-        leftPanelLabelWidth: 200,
-        rightPanelLabelWidth: 200,
+        categoryTextWidth: 200,
         source: {
             gdocId: '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
             sheets: [ {name:"Cereals"} ]
@@ -29,8 +28,8 @@ google.setOnLoadCallback(function(){
             {   title: "Brand"
             },{ title: "Type"
             },{ title: "Shelf Level",
-                catLabelText: function(d){
-                    switch(d.data[1]){
+                catLabel: function(){
+                    switch(this.id){
                         case 1: return "Bottom";
                         case 2: return "Middle";
                         case 3: return "Top";

@@ -38,24 +38,22 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
         },
         facets: [
-            {
-                title: "Tasks",
+            {   title: "Tasks",
                 catTableName: "Keywords",
-                catLabelText: function(d){ return d.data.Task; },
+                catLabel: "Task",
                 facets:[
                     {   title: "Categories",
                         attribMap: "Category"
-                    },{
-                        title: "Levels",
-                        attribMap: function(d){ return kshf.dt_id.Levels[d.data.Category].data.Level; }
+                    },{ title: "Levels",
+                        attribMap: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
                     }
                 ]
             },{ title: "Authors", layout: 'right', 
             },{ title: "Features", layout: 'right', 
-                attribMap: function(d){
+                attribMap: function(){
                     var r=[];
-                    if(d.data.H==="*") r.push("Highlighted");
-                    if(d.data.Tasks && d.data.Tasks.length>0) r.push("Presents Taxonomy");
+                    if(this.H==="*") r.push("Highlighted");
+                    if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
                     return r;
                 }
             },{ title: "Venue", layout: 'right', 
@@ -82,7 +80,5 @@ google.setOnLoadCallback(function(){
             Data from: M. Brehmer and T. Munzner. "A multi-level typology of abstract visualization tasks." <br>Visualization and Computer Graphics, IEEE Transactions on 19.12 (2013): 2376-2385.
             <span class="fa fa-info-circle"></span>
             </div>
-
-        
     </body>
 </html>
