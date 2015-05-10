@@ -34,10 +34,9 @@ google.setOnLoadCallback(function(){
                         case 3: return "Japanese";
                     }
                 }
-            },{ title: "Cyclinders",
-                sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
-            },{ title: "MPG", type: 'interval'
-            },{ title: "Engine Displacement", unitName: " cu.\"", layout: 'right'
+            },{ title: "Cyclinders", sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
+            },{ title: "MPG"
+            },{ title: "Engine Displacement", unitName: "cu.\"", layout: 'right'
             },{ title: "Horsepower", layout: 'right'
             },{ title: "Weight", unitName: "lbs", layout: 'right'
             },{ title: "Acceleration (0-60mph)", attribMap: "Acceleration", unitName: "sec"
@@ -45,7 +44,7 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 70,
+            sortColWidth: 50,
             detailsToggle: "zoom",
             sortingOpts: [ {name: "MPG"}, {name: "Weight"}, {name: "Year"} ],
             textSearch: "Name",

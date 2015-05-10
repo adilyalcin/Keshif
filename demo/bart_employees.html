@@ -35,30 +35,30 @@ $(document).ready( function() {
             sheets: [ {name:"bart-comp-all"} ]
         },
         facets: [
-            {   title: "Job Family"
-            },{ title: "Union"
-            },{ title: "Title"
-            },{ title: "Total Salary", attribMap: "TCOE", unitName: '$', layout: 'right'
-            },{ title: "Base Salary", unitName: '$', layout: 'right'
-            },{ title: "Overtime Salary", attribMap: "OT", unitName: '$', layout: 'right'
-            },{ title: "Other Salary", unitName: '$', layout: 'right'
-            },{ title: "Medical + Dental + Vision", attribMap: "MDV", unitName: '$', layout: 'right'
-            },{ title: "ER (Salary)", attribMap: 'ER', layout: 'right', collapsed: true,  unitName: '$'
-            },{ title: "EE (Salary)", attribMap: 'EE', layout: 'right', collapsed: true,  unitName: '$'
-            },{ title: "DC (Salary)", attribMap: 'DC', layout: 'right', collapsed: true,  unitName: '$',
-                intervalScale: 'log'
-            },{ title: "Source", layout: 'right'
+            {   title:"Job Family"
+            },{ title:"Union"
+            },{ title:"Title"
+            },{ title:"Total Salary", attribMap:"TCOE", unitName:'$', layout:'right'
+            },{ title:"Base Salary", attribMap:"Base", unitName:'$', layout:'right'
+            },{ title:"Overtime Salary", attribMap:"OT", unitName:'$', layout:'right'
+            },{ title:"Other Salary", unitName:'$', layout:'right'
+            },{ title:"Medical + Dental + Vision", attribMap:"MDV", unitName:'$', layout:'right'
+            },{ title:"ER (Salary)", attribMap:'ER', unitName:'$', collapsed:true, layout:'right'
+            },{ title:"EE (Salary)", attribMap:'EE', unitName:'$', collapsed:true, layout:'right'
+            },{ title:"DC (Salary)", attribMap:'DC', unitName:'$', intervalScale:'log', collapsed:true, layout:'right'
+            },{ title:"Source", layout: 'right'
             }
         ],
         itemDisplay: {
             sortColWidth: 70,
             detailsToggle: "zoom",
-            sortingOpts: [
-                {name: 'Total', value: function(d){ return d.data.TCOE;}},
-                {name: 'Base'},
+            sortingOpts: [ 
+                {name: 'Total Salary', value: "TCOE"}, 
+                {name: 'Base Salary', value: "Base"},
+                {name: 'Overtime Salary', value: "OT"},
             ],
             textSearch: "Name",
-            recordView: function(d){ return d.data.Name + " <span class='empTitle'>" +d.data.Title+"</span>"; }
+            recordView: function(){ return this.Name+" <span class='empTitle'>"+this.Title+"</span>"; }
         }
     });
 });

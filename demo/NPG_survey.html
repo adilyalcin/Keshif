@@ -284,18 +284,15 @@ $(document).ready(function() {
         itemDisplay: {
             sortColWidth: 45,
             detailsToggle: "One",
-            textSearch: 'content',
-            textSearchFunc: function(d){
-                return d.data[columns[11]];
-            },
+            textSearchFunc: function(){ return this[columns[11]]; },
             sortingOpts: [{ 
-                name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
-                    if(d.data[columns[11]]===null) return 0;
-                    return d.data[columns[11]].length; 
+                name: "| <span class='fa fa-comment'></span> |", value: function(){ 
+                    if(this[columns[11]]===null) return 0;
+                    return this[columns[11]].length; 
                 } }],
-            recordView: function(d){ 
-                if(d.data[columns[11]]===null) return "-";
-                return "<blockquote>" + d.data[columns[11]] + "</blockquote>";
+            recordView: function(){ 
+                if(this[columns[11]]===null) return "-";
+                return "<blockquote>" + this[columns[11]] + "</blockquote>";
             }
         }
     });

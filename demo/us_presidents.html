@@ -40,9 +40,9 @@ google.setOnLoadCallback( function(){
             textSearch: 'Name',
             sortingOpts: [{name: 'Position', inverse: true}],
             displayType: 'grid',
-            recordView: function(d){ 
-                return "<a href='http://www.whitehouse.gov/about/presidents/"+
-                    d.data.Link+"' target='_blank'><img src='"+d.data.Image+"'></a>";
+            recordView: function(){ 
+                return "<a href='http://www.whitehouse.gov/about/presidents/"+this.Link+"' target='_blank'>"+
+                    "<img src='"+this.Image+"'></a>";
             }
         }
     });

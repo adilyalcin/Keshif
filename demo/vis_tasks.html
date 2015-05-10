@@ -42,10 +42,8 @@ google.setOnLoadCallback(function(){
                 catTableName: "Keywords",
                 catLabel: "Task",
                 facets:[
-                    {   title: "Categories",
-                        attribMap: "Category"
-                    },{ title: "Levels",
-                        attribMap: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
+                    {   title: "Categories", attribMap: "Category"
+                    },{ title: "Levels", attribMap: function(){return kshf.dt_id.Levels[this.Category].data.Level;}
                     }
                 ]
             },{ title: "Authors", layout: 'right', 
@@ -57,7 +55,7 @@ google.setOnLoadCallback(function(){
                     return r;
                 }
             },{ title: "Venue", layout: 'right', 
-            },{ title: "Year", layout: 'bottom', intervalScale: 'linear'
+            },{ title: "Year", layout: 'bottom', attribMap: function(){return new Date(this.Year,1,1);}
             }
         ],
         itemDisplay: {
@@ -65,7 +63,7 @@ google.setOnLoadCallback(function(){
             detailsToggle: "zoom",
             sortingOpts: [ {name: 'id', inverse:true} ],
             textSearch: 'Title',
-            recordView: function(d){ return d.data.Title; }
+            recordView: "Title"
         }
     });
 });

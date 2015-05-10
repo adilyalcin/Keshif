@@ -15,17 +15,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-            var sortProps = function(s){
-                switch(s){
-                    case 'Number & Quantity = 1.0': return 1;
-                    case 'Shape & Space = 0.5': return 2;
-                    case 'Shape & Space = 1.0': return 3;
-                    case 'Function = 0.5': return 4;
-                    case 'Function = 1.0': return 5;
-                    case 'Chance & Data = 1.0': return 6;
-                    case 'Arrangement = 1.0': return 7;
-                }
-            };
             function pad(num, size) {
                 var s = num+"";
                 while (s.length < size) s = "0" + s;
@@ -41,9 +30,6 @@
                         gdocId: '1nqZTWMr2xsYawyQlT6zjwV4pW5ZKRiQPd24jOkNJVYM',
                         sheets: [ {name:"Book Chapters"} ]
                     },
-                    readyCb: function(browser){
-                        //browser.summaries_by_name.Properties.setHeightRow_attrib(30);
-                    },
                     facets: [
                         {   title: "Domain Properties",
                             attribMap: function(){
@@ -58,54 +44,55 @@
                                 return r;
                             },
                             sortingOpts: [{
-                                func: function(a,b){
-                                    return sortProps(a.data[0]) - sortProps(b.data[0]);
+                                value: function(){ 
+                                    switch(this.id){
+                                        case 'Number & Quantity = 1.0': return 1;
+                                        case 'Shape & Space = 0.5': return 2;
+                                        case 'Shape & Space = 1.0': return 3;
+                                        case 'Function = 0.5': return 4;
+                                        case 'Function = 1.0': return 5;
+                                        case 'Chance & Data = 1.0': return 6;
+                                        case 'Arrangement = 1.0': return 7;
+                                    }
                                 }
-                            }
-                            ]
-                        },{
-                            title: "Modeling / Formulating"
-                        },{
-                            title: "Manipulating / Transforming"
-                        },{
-                            title: "Inferring / Drawing Conclusions"
-                        },{
-                            title: "Communicating"
+                            }]
+                        },{ title: "Modeling / Formulating"
+                        },{ title: "Manipulating / Transforming"
+                        },{ title: "Inferring / Drawing Conclusions"
+                        },{ title: "Communicating"
                         },
                     ],
                     itemDisplay: {
                         sortColWidth: 45,
                         detailsToggle: "zoom",
                         sortingOpts: [ {
-                            name: 'id', inverse: true,
-                            value: function(d){ return d.data.id},
-                            label: function(d){ return d.data.Code+pad(d.data.id,3); }
+                            name: 'id', inverse: true, label: function(){ return this.Code+pad(this.id,3); }
                         } ],
                         textSearch: "Name",
-                        recordView: function(d){
+                        recordView: function(){
                             var str="";
-                            str+="<div class='chapterTitle'>"+d.data.Name+"</div>";
+                            str+="<div class='chapterTitle'>"+this.Name+"</div>";
                             str+="<span class='numTable'>";
-                                str+="<span class='act_mf act_"+d.data["Modeling / Formulating"]+"'>M/F</span>"
-                                str+="<span class='act_tf act_"+d.data["Manipulating / Transforming"]+"'>M/T</span>"
-                                str+="<span class='act_id act_"+d.data["Inferring / Drawing Conclusions"]+"'>I/D</span>"
-                                str+="<span class='act_c  act_"+d.data["Communicating"]+"'>C</span>"
+                                str+="<span class='act_mf act_"+this["Modeling / Formulating"]+"'>M/F</span>"
+                                str+="<span class='act_tf act_"+this["Manipulating / Transforming"]+"'>M/T</span>"
+                                str+="<span class='act_id act_"+this["Inferring / Drawing Conclusions"]+"'>I/D</span>"
+                                str+="<span class='act_c  act_"+this["Communicating"]+"'>C</span>"
                             str+="</span>";
                             str+="<span class='attrGroup'>Domains:</span> <span class='attrList'>";
-                            if(d.data['Number & Quantity']){
-                                str+="Number & Quantity ["+d.data['Number & Quantity']+"], ";
+                            if(this['Number & Quantity']){
+                                str+="Number & Quantity ["+this['Number & Quantity']+"], ";
                             }
-                            if(d.data['Shape & Space']){
-                                str+="Shape & Space ["+d.data['Shape & Space']+"], ";
+                            if(this['Shape & Space']){
+                                str+="Shape & Space ["+this['Shape & Space']+"], ";
                             }
-                            if(d.data['Function']){
-                                str+="Function ["+d.data['Function']+"], ";
+                            if(this['Function']){
+                                str+="Function ["+this['Function']+"], ";
                             }
-                            if(d.data['Arrangement']){
-                                str+="Arrangement ["+d.data['Arrangement']+"], ";
+                            if(this['Arrangement']){
+                                str+="Arrangement ["+this['Arrangement']+"], ";
                             }
-                            if(d.data['Chance & Data']){
-                                str+="Chance & Data ["+d.data['Chance & Data']+"], ";
+                            if(this['Chance & Data']){
+                                str+="Chance & Data ["+this['Chance & Data']+"], ";
                             }
                             str+="</span>";
                             return str;

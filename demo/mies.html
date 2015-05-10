@@ -37,7 +37,7 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Continent"
             },{ title: "City / Location",
-                attribMap: function(){return "<span style='color:gray'>"+this.Country+" </span> - "+this.City;}
+                attribMap: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; }
             },{ title: "Year", layout: 'bottom', attribMap: function(){ return new Date(this.Year,1,1); }
             },{ title: "Type", layout: 'right'
             }
@@ -47,10 +47,9 @@ google.setOnLoadCallback(function(){
             detailsToggle: "zoom",
             sortingOpts: [{ name: 'Year' }],
             textSearchFunc: function(){ return this.Name; },
-            recordView: function(d){
-                var str="";
-                str+="<span class='workTitle'>"+d.data.Name+"</span>";
-                if(d.data.Image) str+="<img class='workPhoto' src='"+d.data.Image+"'>";
+            recordView: function(){
+                var str="<span class='workTitle'>"+this.Name+"</span>";
+                if(this.Image) str+="<img class='workPhoto' src='"+this.Image+"'>";
                 return str;
             }
         }

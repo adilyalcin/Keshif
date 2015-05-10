@@ -81,7 +81,7 @@ $(document).ready( function() {
 
     browser = new kshf.Browser({
         domID: "#chart_div",
-        categoryTextWidth: 100,
+        categoryTextWidth: 110,
         barChartWidth: 140,
         source: {
             url: "http://www.productchart.com/smartphones/",
@@ -92,8 +92,8 @@ $(document).ready( function() {
             },{ title: "Model", collapsed: true
             },{ title: "Price", unitName: "$"
             },{ title: "Screen Size", unitName: "″"
-            },{ title: "Weight", unitName: " oz."
-            },{ title: "Storage", layout: 'right', unitName: 'GB'
+            },{ title: "Weight", unitName: "oz."
+            },{ title: "Storage", layout: 'right', unitName: "GB"
             },{ title: "SDCard", layout: 'right', unitName: "GB"
             },{ title: "RAM", layout: 'right', unitName: "GB"
             },{ title: "Pixels - Width", attribMap: "att_pixels_x", layout: 'right'
@@ -111,12 +111,12 @@ $(document).ready( function() {
             displayType: 'grid',
             detailsToggle: "zoom",
             textSearch: "name",
-            recordView : function(d){
-                return "<a target='_blank' href='"+d.data.URL+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Model+"</span>";
+            recordView : function(){
+                return "<a target='_blank' href='"+this.URL+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Model+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.image);
+                d3.select(d.DOM.result).select("img").attr("src",this.image);
             }
         }
     });

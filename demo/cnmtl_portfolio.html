@@ -54,16 +54,16 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [{name:'Released', inverse: true}],
-            textSearch: "title",
+            textSearch: 'title',
             displayType: 'grid',
             maxVisibleItems_Default: 100,
-            detailsToggle: "zoom",
+            detailsToggle: 'zoom',
             recordView: function(d){
-                return "<a target='_blank' href='"+d.data.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
-                    "<span class='title'>"+d.data.label+"</span>";
+                return "<a target='_blank' href='"+this.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
+                    "<span class='title'>"+this.label+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.thumb_URL).attr("title", d.data.description);
+                d3.select(d.DOM.result).select("img").attr("src",this.thumb_URL).attr("title",this.description);
             }
         }
     });

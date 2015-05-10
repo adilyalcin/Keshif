@@ -109,40 +109,38 @@ browser = new kshf.Browser({
         }
     ],
     itemDisplay: {
-        sortingOpts: [ { 
-            name: '', value: function(d){ return d.id(); }, inverse: true
-        } ],
+        sortingOpts: [{ name: '', value: function(){ return this.id; }, inverse: true }],
         displayType: 'grid',
         maxVisibleItems_Default: 100,
         textSearch: 'Name',
-        recordView: function(d){
+        recordView: function(){
             var str='';
             str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-                +d.data["Link"]+"'><img class='theImage'></a></span>";
+                +this["Link"]+"'><img class='theImage'></a></span>";
 //          str+="<div class=\"iteminfo iteminfo_0\">";
-            str+="<span class='title'>"+d.data["Name"]+"</span>";
+            str+="<span class='title'>"+this["Name"]+"</span>";
             str+="<span class='icons'>";
-                if(d.data['Linked']) str+="<span class='fa fa-chain'></span>";
-                if(d.data['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
-                if(d.data['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
-                if(d.data['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
-                if(d.data['Has Time']) str+="<span class='fa fa-clock-o'></span>";
-                if(d.data['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
-                if(d.data['Results-Details']) str+="<span class='fa fa-bullseye'></span>";
-                if(d.data['Result Display']==="Grid") str+="<span class='fa fa-th'></span>";
-                if(d.data['Result Display']==="List") str+="<span class='fa fa-list'></span>";
-                if(d.data['Highlighted']) str+="<span class='fa fa-star'></span>";
-                if(d.data['Main Text Search']) str+="<span class='fa fa-search'></span>";
-                if(d.data['Dynamic Sizing']) str+="<span class='fa fa-arrows-alt'></span>";
+                if(this['Linked']) str+="<span class='fa fa-chain'></span>";
+                if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
+                if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
+                if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
+                if(this['Has Time']) str+="<span class='fa fa-clock-o'></span>";
+                if(this['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
+                if(this['Results-Details']) str+="<span class='fa fa-bullseye'></span>";
+                if(this['Result Display']==="Grid") str+="<span class='fa fa-th'></span>";
+                if(this['Result Display']==="List") str+="<span class='fa fa-list'></span>";
+                if(this['Highlighted']) str+="<span class='fa fa-star'></span>";
+                if(this['Main Text Search']) str+="<span class='fa fa-search'></span>";
+                if(this['Dynamic Sizing']) str+="<span class='fa fa-arrows-alt'></span>";
             str+="</span>";
             str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
-                    +d.data["Link"]+".html' class='fa fa-code'></a></span>";
+                    +this["Link"]+".html' class='fa fa-code'></a></span>";
             return str;
         },
-        visibleCb: function(d){
-            var link=d.data["Link"];
+        visibleCb: function(item){
+            var link=this["Link"];
             if(link==="../index") link = "index";
-            d3.select(this).select("img").attr("src","demo/demo_img/"+link+".jpg");
+            d3.select(item.DOM.result).select("img").attr("src","demo/demo_img/"+link+".jpg");
         }
     }
 });

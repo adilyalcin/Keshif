@@ -97,14 +97,14 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.DOM.result).select("img").attr("src",
                     "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/thumbs100png/"+
-                    d.data.id+".png");
+                    this.id+".png");
             }
         }
     });

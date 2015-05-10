@@ -30,8 +30,7 @@ $(document).ready( function() {
             url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
         },
         facets: [
-            {   title: "state",
-                catLabel: function(d){ return getStateName(this.id); }
+            {   title: "state", catLabel: function(d){ return getStateName(this.id); }
             },{ title: "Gear Category",
                 attribMap: function(){
                     var r=[];
@@ -47,11 +46,6 @@ $(document).ready( function() {
                     if(this['Machine Gun']>0) r.push('Received Guns');
                     if(this['Pistol']>0) r.push('Received Guns');
                     if(this['Shotgun']>0) r.push('Received Guns');
-
-//                    if(this['Night Vision']>0) r.push('Night Vision');
-//                    if(this['Personal Armor']>0) r.push('Body Armor');
-
-//                    if(this['Silence']>0) r.push('Silence');
                     return r;
                 }
             },{ title: "Gear",
@@ -89,7 +83,7 @@ $(document).ready( function() {
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [{ name: 'ZipCode', value: function(d){ return d.data.fips;} }],
+            sortingOpts: [{ name: 'ZipCode', value: "fips" }],
             textSearch: 'County Name',
             detailsToggle: 'zoom',
             textSearch: 'county',

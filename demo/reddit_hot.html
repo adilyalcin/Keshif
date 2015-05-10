@@ -51,14 +51,13 @@ $(document).ready( function(){
             sortColWidth: 60,
             sortingOpts: [{ name: 'score' }],
             textSearch: "title",
-            recordView: function(d){
+            recordView: function(){
                 var str="";
-                if(d.data.thumbnail!=="") { 
-                    str+="<div style='float:right'><img src='"+d.data.thumbnail+"'/></div>";
+                if(this.thumbnail!=="") { 
+                    str+="<div style='float:right'><img src='"+this.thumbnail+"'/></div>";
                 }
-                str+=d.data.title;
-                str+="<a class='fa fa-external-link' target='_blank' href='"+d.data.url+"' "+
-                        "onclick='sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})'></a>";
+                str+=this.title;
+                str+=" <a class='fa fa-external-link' target='_blank' href='"+this.url+"'></a>";
                 return str;
             }
         }

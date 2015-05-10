@@ -337,14 +337,12 @@ google.setOnLoadCallback(function(){
         facets: [{ title: "HBO_Shows" }],
         itemDisplay: {
             sortColWidth: 65,
-            sortingOpts: [{
-                name: '# of Shows', value: function(d){ return d.data.HBO_Shows.length; }
-            }],
+            sortingOpts: [{ name: '# of Shows', value: function(){ return this.HBO_Shows.length; } }],
             textSearch: "Name",
             recordView: function(d){
                 // resize d based on # of shows!
-                d.DOM.result.style.fontSize = (0.8+(d.data.HBO_Shows.length*0.1))+"em";
-                return d.data.Name;
+                d.DOM.result.style.fontSize = (0.8+(this.HBO_Shows.length*0.1))+"em";
+                return this.Name;
             }
         }
     });

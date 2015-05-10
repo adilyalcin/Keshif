@@ -50,11 +50,9 @@ $(document).ready( function() {
                     if(isNaN(x)) { return null; }
                     return x;
                 }
-            },{ title: "Weight", layout: 'right', unitName: ' oz'
-            },{ title: "Battery Life", layout: 'right', unitName: ' hr'
-            },{ title: "Rating", layout: 'right',
-                attribMap: "Customer Reviews",
-                showPercentile: true
+            },{ title: "Weight", layout: 'right', unitName: 'oz'
+            },{ title: "Battery Life", layout: 'right', unitName: 'hr'
+            },{ title: "Rating", layout: 'right', attribMap: "Customer Reviews", showPercentile: true
             },{ title: "Release Date",
                 attribMap: function(){ 
                     var dt = this['Date First Available'];
@@ -67,13 +65,10 @@ $(document).ready( function() {
         itemDisplay: {
             sortColWidth: 50,
             detail: 'zoom',
-            sortingOpts: [
-                { name: 'Rating', value: function(d){ return d.data['Customer Reviews']; } }
-            ],
+            sortingOpts: [{ name: 'Rating', value: "Customer Reviews" }],
             textSearch: 'name',
-            recordView: function(d){
-                return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+
-                    d.data.url+"'>"+d.data.name+"</a></div>";
+            recordView: function(){
+                return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+this.url+"'>"+this.name+"</a></div>";
             }
         }
     });

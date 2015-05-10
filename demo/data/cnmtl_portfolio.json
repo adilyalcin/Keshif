@@ -12,7 +12,6 @@
   "Categories": ["Collaborative Sites", "Education", "History", "Repositories and Reference Tools"],
   "Disciplines": ["Education", "History"],
   "Types": ["Collaborative Sites","Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": " http://ccnmtl.columbia.edu/images/portfolio/thumbs/406.jpg"
 },{
   "label": "Education Leadership Development Experience (ELDEx)",
@@ -28,7 +27,6 @@
   "Categories": ["Education", "Simulations"],
   "Disciplines": ["Education"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/398.jpg"
 },{
   "label": "Teach Recovery",
@@ -44,7 +42,6 @@
   "Categories": ["Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/400.jpg"
 },{
   "label": "E-WORTH",
@@ -60,7 +57,6 @@
   "Categories": ["Social Work"],
   "Disciplines": ["Social Work"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/401.jpg"
 },{
   "label": "Civil War and Reconstruction MOOC",
@@ -76,7 +72,6 @@
   "Categories": ["History", "Online & Directed Learning"],
   "Disciplines": ["History"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/399.jpg"
 },{
   "label": "Mediathread",
@@ -92,7 +87,6 @@
   "Categories": ["Custom Software Applications and Tools"],
   "Disciplines": [],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/348.jpg"
 },{
   "label": "Edward M. Kennedy Prize",
@@ -108,7 +102,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/384.jpg"
 },{
   "label": "learn.nynjaetc",
@@ -124,7 +117,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/386.jpg"
 },{
   "label": "MATCH",
@@ -140,7 +132,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/375.jpg"
 },{
   "label": "PASS",
@@ -156,7 +147,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/363_pass.jpg"
 },{
   "label": "Social Work Video Commons",
@@ -172,7 +162,6 @@
   "Categories": ["Repositories and Reference Tools", "Social Work"],
   "Disciplines": ["Social Work"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/280.jpg"
 },{
   "label": "PediaLabs",
@@ -188,7 +177,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/315.jpg"
 },{
   "label": "Meaningful Consent",
@@ -204,7 +192,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/394.jpg"
 },{
   "label": "Epistolae",
@@ -220,7 +207,6 @@
   "Categories": ["Literature", "Repositories and Reference Tools"],
   "Disciplines": ["Literature"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/73.jpg"
 },{
   "label": "Dental Materials",
@@ -236,7 +222,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/331.jpg"
 },{
   "label": "Pediatric Healthcare Financing & Delivery Website",
@@ -252,7 +237,6 @@
   "Categories": ["Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/393.jpg"
 },{
   "label": "The PoLAR Hub",
@@ -268,7 +252,6 @@
   "Categories": ["Repositories and Reference Tools", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/381.jpg"
 },{
   "label": "eLearning Faculty Fellowship",
@@ -284,7 +267,6 @@
   "Categories": ["Philosophy and Religion", "Training"],
   "Disciplines": ["Philosophy and Religion"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/390.jpg"
 },{
   "label": "Getting Ready for School",
@@ -300,7 +282,6 @@
   "Categories": ["Education", "Medicine and Health", "Repositories and Reference Tools"],
   "Disciplines": ["Education", "Medicine and Health"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/380.png"
 },{
   "label": "Water and Climate Education Program",
@@ -316,7 +297,6 @@
   "Categories": ["Global and Distance Learning", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Global and Distance Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/378.jpg"
 },{
   "label": "Virtual Forest Initiative",
@@ -332,7 +312,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/318.jpg"
 },{
   "label": "LEADERS",
@@ -348,7 +327,6 @@
   "Categories": ["Collaborative Sites", "Education", "Repositories and Reference Tools"],
   "Disciplines": ["Education"],
   "Types": ["Collaborative Sites","Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/388.jpg"
 },{
   "label": "New Media in Education 2013",
@@ -364,7 +342,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/thumb_nme2013.jpg"
 },{
   "label": "Masivukeni",
@@ -380,7 +357,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/289.jpg"
 },{
   "label": "Learn.jtsa.edu",
@@ -396,7 +372,6 @@
   "Categories": ["Philosophy and Religion", "Repositories and Reference Tools"],
   "Disciplines": ["Philosophy and Religion"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/379.jpg"
 },{
   "label": "Public Health Training Center",
@@ -412,7 +387,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/372.jpg"
 },{
   "label": "Mapping Yiddish Theater",
@@ -428,7 +402,6 @@
   "Categories": ["Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/376.jpg"
 },{
   "label": "Mathkids",
@@ -444,7 +417,6 @@
   "Categories": ["Education", "Repositories and Reference Tools"],
   "Disciplines": ["Education"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/392.jpg"
 },{
   "label": "Major Minor Music",
@@ -460,7 +432,6 @@
   "Categories": ["Arts", "Training"],
   "Disciplines": ["Arts"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/76.jpg"
 },{
   "label": "Religious Worlds of New York",
@@ -476,7 +447,6 @@
   "Categories": ["Collaborative Sites", "Education", "Philosophy and Religion", "Training"],
   "Disciplines": ["Education", "Philosophy and Religion"],
   "Types": ["Collaborative Sites","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/373.jpg"
 },{
   "label": "PRIME",
@@ -492,7 +462,6 @@
   "Categories": ["Education", "Repositories and Reference Tools", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Repositories and Reference Tools","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/368.jpg"
 },{
   "label": "Biomedical Informatics Curriculum Development",
@@ -508,7 +477,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/353.jpg"
 },{
   "label": "WINGS",
@@ -524,7 +492,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health", "Social Work"],
   "Disciplines": ["Medicine and Health", "Social Work"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/370.jpg"
 },{
   "label": "Mobile Technologies for Community Health (MOTECH)",
@@ -540,7 +507,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/329.jpg"
 },{
   "label": "Inclusive Classrooms Project",
@@ -556,7 +522,6 @@
   "Categories": ["Education", "Repositories and Reference Tools", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Repositories and Reference Tools","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/360.jpg"
 },{
   "label": "ClassPoP",
@@ -572,7 +537,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/365.jpg"
 },{
   "label": "Tobacco Cessation",
@@ -588,7 +552,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/336.png"
 },{
   "label": "MySmileBuddy",
@@ -604,7 +567,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/341.jpg"
 },{
   "label": "IRI Remote Sensing ",
@@ -620,7 +582,6 @@
   "Categories": ["Case Studies", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/357.jpg"
 },{
   "label": "MindUP",
@@ -636,7 +597,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/364.jpg"
 },{
   "label": "MedSafety",
@@ -652,7 +612,6 @@
   "Categories": ["Field-Laboratory", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/362.jpg"
 },{
   "label": "Health Information Technology (HIT) Certificate Program",
@@ -668,7 +627,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/354.jpg"
 },{
   "label": "Frontiers of Science Public Repository",
@@ -684,7 +642,6 @@
   "Categories": ["Repositories and Reference Tools", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/359.jpg"
 },{
   "label": "New Media in Education 2010",
@@ -700,7 +657,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/news/images/nme_10.jpg"
 },{
   "label": "diaBeaters",
@@ -716,7 +672,6 @@
   "Categories": ["Online & Directed Learning", "Social Work", "Training"],
   "Disciplines": ["Social Work"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/347.jpg"
 },{
   "label": "Lanretam",
@@ -732,7 +687,6 @@
   "Categories": ["Case Studies", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/340.jpg"
 },{
   "label": "Spotlights on Health and Rights",
@@ -748,7 +702,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/351"
 },{
   "label": "Teaching Residents at Teachers College",
@@ -764,7 +717,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/346.jpg"
 },{
   "label": "Global Honors College",
@@ -780,7 +732,6 @@
   "Categories": ["Custom Software Applications and Tools", "Global and Distance Learning", "Online & Directed Learning", "Sciences", "Social Sciences"],
   "Disciplines": ["Sciences", "Social Sciences"],
   "Types": ["Custom Software Applications and Tools","Global and Distance Learning","Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/349.jpg"
 },{
   "label": "Collateral Consequences Calculator",
@@ -796,7 +747,6 @@
   "Categories": ["Custom Software Applications and Tools", "Law"],
   "Disciplines": ["Law"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/268.jpg"
 },{
   "label": "Engaging Digital Tibet",
@@ -812,7 +762,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/313.jpg"
 },{
   "label": "Network Planner",
@@ -828,7 +777,6 @@
   "Categories": ["Engineering", "Training"],
   "Disciplines": ["Engineering"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/338.jpg"
 },{
   "label": "Child Abuse Reporting Education (CARE-CDM)",
@@ -844,7 +792,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/337.jpg"
 },{
   "label": "Child Abuse Reporting Education (CARE-SSW)",
@@ -860,7 +807,6 @@
   "Categories": ["Medicine and Health", "Social Work", "Training"],
   "Disciplines": ["Medicine and Health", "Social Work"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/337.jpg"
 },{
   "label": "Mapping the African American Past",
@@ -876,7 +822,6 @@
   "Categories": ["Culture and Society", "History", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society", "History"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/302.jpg"
 },{
   "label": "Mailman Teachnology Fellowship ",
@@ -892,7 +837,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/350.jpg"
 },{
   "label": "PCORE Portal",
@@ -908,7 +852,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/314.jpg"
 },{
   "label": "Black Radical Archive",
@@ -924,7 +867,6 @@
   "Categories": ["History", "Repositories and Reference Tools", "Social Sciences"],
   "Disciplines": ["History", "Social Sciences"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/352.jpg"
 },{
   "label": "Connecta",
@@ -940,7 +882,6 @@
   "Categories": ["Social Sciences", "Training"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/342.jpg"
 },{
   "label": "Ground|Work",
@@ -956,7 +897,6 @@
   "Categories": ["Political Science and Social Policy", "Simulations"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/322.jpg"
 },{
   "label": "Multimedia WORTH",
@@ -972,7 +912,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health", "Social Work", "Training"],
   "Disciplines": ["Medicine and Health", "Social Work"],
   "Types": ["Custom Software Applications and Tools","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu//images/portfolio/thumbs/324.jpg"
 },{
   "label": "Global Master's in Development Practice ",
@@ -988,7 +927,6 @@
   "Categories": ["Business and Finance", "Custom Software Applications and Tools", "Education", "Global and Distance Learning", "Medicine and Health", "Online & Directed Learning", "Political Science and Social Policy", "Sciences"],
   "Disciplines": ["Business and Finance", "Education", "Medicine and Health", "Political Science and Social Policy", "Sciences"],
   "Types": ["Custom Software Applications and Tools","Global and Distance Learning","Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/330.jpg"
 },{
   "label": "Harlem Health History",
@@ -1004,7 +942,6 @@
   "Categories": ["History", "Repositories and Reference Tools"],
   "Disciplines": ["History"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/323.jpg"
 },{
   "label": "Columbia on YouTube EDU",
@@ -1020,7 +957,6 @@
   "Categories": ["Repositories and Reference Tools"],
   "Disciplines": [],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/345.jpg"
 },{
   "label": "Project Rebirth ",
@@ -1036,7 +972,6 @@
   "Categories": ["Education", "Medicine and Health", "Training"],
   "Disciplines": ["Education", "Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/320.jpg"
 },{
   "label": "Apollo Theater Project",
@@ -1052,7 +987,6 @@
   "Categories": ["Arts", "Culture and Society"],
   "Disciplines": ["Arts", "Culture and Society"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/312.jpg"
 },{
   "label": "Amistad Digital Resource",
@@ -1068,7 +1002,6 @@
   "Categories": ["Culture and Society", "History", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society", "History"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/316.jpg"
 },{
   "label": "Country X",
@@ -1084,7 +1017,6 @@
   "Categories": ["Political Science and Social Policy", "Simulations"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/300.jpg"
 },{
   "label": "SLATE",
@@ -1100,7 +1032,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/328.jpg"
 },{
   "label": "Project Vietnam",
@@ -1116,7 +1047,6 @@
   "Categories": ["History", "Repositories and Reference Tools"],
   "Disciplines": ["History"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/309.jpg"
 },{
   "label": "CCNMTL's 10th Anniversary: A Decade of Innovation",
@@ -1132,7 +1062,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/news/images/logo_10th_160w.jpg"
 },{
   "label": "REAL: Remote Electronic Arrhythmia Learning",
@@ -1148,7 +1077,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/321.jpg"
 },{
   "label": "New Media in Education 2008",
@@ -1164,7 +1092,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/nme.jpg"
 },{
   "label": "Jazz Studies Online",
@@ -1180,7 +1107,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/274.jpg"
 },{
   "label": "Columbia on iTunes U",
@@ -1196,7 +1122,6 @@
   "Categories": ["Repositories and Reference Tools"],
   "Disciplines": [],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/326.jpg"
 },{
   "label": "The Ad Council and AdoptUsKids Case Study",
@@ -1212,7 +1137,6 @@
   "Categories": ["Business and Finance", "Case Studies"],
   "Disciplines": ["Business and Finance"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/311.jpg"
 },{
   "label": "Multimedia Connect",
@@ -1228,7 +1152,6 @@
   "Categories": ["Medicine and Health", "Social Work", "Training"],
   "Disciplines": ["Medicine and Health", "Social Work"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/243.jpg"
 },{
   "label": "Innovation in the CUMC Classroom",
@@ -1244,7 +1167,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/327.jpg"
 },{
   "label": "Journalism School Case Studies",
@@ -1260,7 +1182,6 @@
   "Categories": ["Case Studies", "Journalism"],
   "Disciplines": ["Journalism"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/294.jpg"
 },{
   "label": "Southside Chicago Documentation Project",
@@ -1276,7 +1197,6 @@
   "Categories": ["Collaborative Sites", "Repositories and Reference Tools", "Social Sciences"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Collaborative Sites","Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/287.jpg"
 },{
   "label": "Millennium Village Simulation",
@@ -1292,7 +1212,6 @@
   "Categories": ["Simulations", "Social Sciences"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/288.gif"
 },{
   "label": "Global Classroom",
@@ -1308,7 +1227,6 @@
   "Categories": ["Distributed Learning", "Global and Distance Learning", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Distributed Learning","Global and Distance Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/298.gif"
 },{
   "label": "MAC AIDS Fund Leadership Initiative",
@@ -1324,7 +1242,6 @@
   "Categories": ["Collaborative Sites", "Global and Distance Learning"],
   "Disciplines": [],
   "Types": ["Collaborative Sites","Global and Distance Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/305.gif"
 },{
   "label": "New York Neighborhoods Wiki",
@@ -1340,7 +1257,6 @@
   "Categories": ["Collaborative Sites", "History"],
   "Disciplines": ["History"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/308.jpg"
 },{
   "label": "Harlem Heritage Project",
@@ -1356,7 +1272,6 @@
   "Categories": ["Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/290.jpg"
 },{
   "label": "Funeral Homes: The Living and the Dead",
@@ -1372,7 +1287,6 @@
   "Categories": ["Collaborative Sites", "Social Sciences"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/299.jpg"
 },{
   "label": "Virtual Microscopy",
@@ -1388,7 +1302,6 @@
   "Categories": ["Field-Laboratory", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/303.jpg"
 },{
   "label": "HIV Intervention Science Training Commons",
@@ -1404,7 +1317,6 @@
   "Categories": ["Collaborative Sites", "Global and Distance Learning", "Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Collaborative Sites","Global and Distance Learning","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/296.jpg"
 },{
   "label": "World Theater",
@@ -1420,7 +1332,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/306.jpg"
 },{
   "label": "Forced Migration Case Studies",
@@ -1436,7 +1347,6 @@
   "Categories": ["Case Studies", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/282.jpg"
 },{
   "label": "Korean Through Drama",
@@ -1452,7 +1362,6 @@
   "Categories": ["Culture and Society", "Languages", "Training"],
   "Disciplines": ["Culture and Society", "Languages"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/301.jpg"
 },{
   "label": "Brownfield Action 3.0",
@@ -1468,7 +1377,6 @@
   "Categories": ["Custom Software Applications and Tools", "Field-Laboratory", "Sciences", "Simulations"],
   "Disciplines": ["Sciences"],
   "Types": ["Custom Software Applications and Tools","Field-Laboratory","Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/277.jpg"
 },{
   "label": "StudyPlace - Education, Communication and Culture",
@@ -1484,7 +1392,6 @@
   "Categories": ["Collaborative Sites", "Education"],
   "Disciplines": ["Education"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/262.jpg"
 },{
   "label": "Video, Education, and Open Content Conference",
@@ -1500,7 +1407,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/292.gif"
 },{
   "label": "Podcasting at Columbia",
@@ -1516,7 +1422,6 @@
   "Categories": ["Event Archives", "Repositories and Reference Tools"],
   "Disciplines": [],
   "Types": ["Event Archives","Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/285.gif"
 },{
   "label": "CRED: Decision-Making Tools",
@@ -1532,7 +1437,6 @@
   "Categories": ["Online & Directed Learning", "Social Sciences"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/278.jpg"
 },{
   "label": "ReliefSim",
@@ -1548,7 +1452,6 @@
   "Categories": ["Medicine and Health", "Simulations"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/134.jpg"
 },{
   "label": "Columbia Artist/Teachers wiki",
@@ -1564,7 +1467,6 @@
   "Categories": ["Arts", "Collaborative Sites"],
   "Disciplines": ["Arts"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/279.gif"
 },{
   "label": "Havel at Columbia",
@@ -1580,7 +1482,6 @@
   "Categories": ["Culture and Society", "Event Archives"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/271.jpg"
 },{
   "label": "Sacred Gotham",
@@ -1596,7 +1497,6 @@
   "Categories": ["Culture and Society", "Field-Laboratory", "Philosophy and Religion"],
   "Disciplines": ["Culture and Society", "Philosophy and Religion"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/272.jpg"
 },{
   "label": "VITAL: Early Childhood Mathematics Education",
@@ -1612,7 +1512,6 @@
   "Categories": ["Custom Software Applications and Tools", "Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Custom Software Applications and Tools","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/231.jpg"
 },{
   "label": "Triplex",
@@ -1628,7 +1527,6 @@
   "Categories": ["Architecture", "Collaborative Sites"],
   "Disciplines": ["Architecture"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/275.jpg"
 },{
   "label": "Virtual Techniques in Dentistry (VirTechs)",
@@ -1644,7 +1542,6 @@
   "Categories": ["Field-Laboratory", "Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Field-Laboratory","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/138.jpg"
 },{
   "label": "Harlem Digital Archive Film",
@@ -1660,7 +1557,6 @@
   "Categories": ["Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/267.jpg"
 },{
   "label": "Emergency Preparedness Directed Learning Experiences",
@@ -1676,7 +1572,6 @@
   "Categories": ["Medicine and Health", "Online & Directed Learning"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/227.jpg"
 },{
   "label": "The African American Poets: Brooks and Hughes",
@@ -1692,7 +1587,6 @@
   "Categories": ["Collaborative Sites", "Literature"],
   "Disciplines": ["Literature"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/259.jpg"
 },{
   "label": "ELEAblog",
@@ -1708,7 +1602,6 @@
   "Categories": ["Collaborative Sites", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/265.jpg"
 },{
   "label": "World Leaders Forum Transcript Archive (2005)",
@@ -1724,7 +1617,6 @@
   "Categories": ["Event Archives", "Political Science and Social Policy", "Repositories and Reference Tools"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Event Archives","Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/254.jpg"
 },{
   "label": "Advanced Practice Nursing:  Mobile Decision Support",
@@ -1740,7 +1632,6 @@
   "Categories": ["Custom Software Applications and Tools", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/229.gif"
 },{
   "label": "New Media in Education 2006: A Progress Report",
@@ -1756,7 +1647,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/269.jpg"
 },{
   "label": "The Politics of Sustainable Development",
@@ -1772,7 +1662,6 @@
   "Categories": ["Collaborative Sites", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/258.jpg"
 },{
   "label": "Connect: Social Support Network Map",
@@ -1788,7 +1677,6 @@
   "Categories": ["Social Work", "Training"],
   "Disciplines": ["Social Work"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/256.gif"
 },{
   "label": "World Leaders Forum: Student Essays",
@@ -1804,7 +1692,6 @@
   "Categories": ["Event Archives", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/253.jpg"
 },{
   "label": "Teaching Assistant Training Environment",
@@ -1820,7 +1707,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/233.jpg"
 },{
   "label": "Seminar in Applied Mathematics Wiki",
@@ -1836,7 +1722,6 @@
   "Categories": ["Collaborative Sites", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/261.jpg"
 },{
   "label": "Latin American Humanities Resource Site",
@@ -1852,7 +1737,6 @@
   "Categories": ["Languages", "Repositories and Reference Tools"],
   "Disciplines": ["Languages"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/249.jpg"
 },{
   "label": "Film Language Glossary",
@@ -1868,7 +1752,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/217.jpg"
 },{
   "label": "Reading and Writing Women Wiki",
@@ -1884,7 +1767,6 @@
   "Categories": ["Collaborative Sites", "Literature"],
   "Disciplines": ["Literature"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/260.jpg"
 },{
   "label": "Music Humanities: Online Music Reserves",
@@ -1900,7 +1782,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/79.jpg"
 },{
   "label": "Personalized Lifelong Learning Plans for Dentists",
@@ -1916,7 +1797,6 @@
   "Categories": ["Collaborative Sites", "Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Collaborative Sites","Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/236.jpg"
 },{
   "label": "Spatial Information Design Lab",
@@ -1932,7 +1812,6 @@
   "Categories": ["Architecture", "Field-Laboratory"],
   "Disciplines": ["Architecture"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/250.jpg"
 },{
   "label": "Correcting Course of Copyright",
@@ -1948,7 +1827,6 @@
   "Categories": ["Event Archives", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/244.jpg"
 },{
   "label": "Quip",
@@ -1964,7 +1842,6 @@
   "Categories": ["Custom Software Applications and Tools"],
   "Disciplines": [],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/232.jpg"
 },{
   "label": "Washington Post Case Study",
@@ -1980,7 +1857,6 @@
   "Categories": ["Case Studies", "Journalism"],
   "Disciplines": ["Journalism"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/263.jpg"
 },{
   "label": "Black Rock Forest Data Capture and Class Integration",
@@ -1996,7 +1872,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/222.jpg"
 },{
   "label": "Tierno Bokar",
@@ -2012,7 +1887,6 @@
   "Categories": ["Arts", "Event Archives"],
   "Disciplines": ["Arts"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/242.jpg"
 },{
   "label": "Social Justice Movements wiki",
@@ -2028,7 +1902,6 @@
   "Categories": ["Collaborative Sites", "Culture and Society"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Collaborative Sites"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/247.jpg"
 },{
   "label": "Journalism School Content Management System (JSCMS)",
@@ -2044,7 +1917,6 @@
   "Categories": ["Custom Software Applications and Tools", "Journalism"],
   "Disciplines": ["Journalism"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/122.jpg"
 },{
   "label": "Undergraduate Writing Program's Instructors' Resource Site",
@@ -2060,7 +1932,6 @@
   "Categories": ["Literature", "Repositories and Reference Tools"],
   "Disciplines": ["Literature"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/234.jpg"
 },{
   "label": "Kaleidoscope",
@@ -2076,7 +1947,6 @@
   "Categories": ["Languages", "Training"],
   "Disciplines": ["Languages"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/224.jpg"
 },{
   "label": "Art  & Technology Lectures",
@@ -2092,7 +1962,6 @@
   "Categories": ["Arts", "Event Archives"],
   "Disciplines": ["Arts"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/228.jpg"
 },{
   "label": "The Autobiography of Malcolm X",
@@ -2108,7 +1977,6 @@
   "Categories": ["Culture and Society", "Multimedia Study Environments"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/119.jpg"
 },{
   "label": "Image Annotation Tool",
@@ -2124,7 +1992,6 @@
   "Categories": ["Custom Software Applications and Tools", "Field-Laboratory", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Custom Software Applications and Tools","Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/167.jpg"
 },{
   "label": "Dr. B.R. Ambedkar's Annihilation of Caste",
@@ -2140,7 +2007,6 @@
   "Categories": ["Culture and Society", "Multimedia Study Environments"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/200.jpg"
 },{
   "label": "Educational Multimedia Case Constructor (EMCC)",
@@ -2156,7 +2022,6 @@
   "Categories": ["Case Studies", "Education"],
   "Disciplines": ["Education"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/211.jpg"
 },{
   "label": "Frontiers of Science Field Experiment",
@@ -2172,7 +2037,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/248.jpg"
 },{
   "label": "Africana Criminal Justice Project",
@@ -2188,7 +2052,6 @@
   "Categories": ["Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/204.jpg"
 },{
   "label": "Commencement of the 250th year (2004)",
@@ -2204,7 +2067,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/00.jpg"
 },{
   "label": "Comprehensive Understanding of Physical Examination",
@@ -2220,7 +2082,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/136.jpg"
 },{
   "label": "News Budget",
@@ -2236,7 +2097,6 @@
   "Categories": ["Journalism", "Repositories and Reference Tools"],
   "Disciplines": ["Journalism"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/226.jpg"
 },{
   "label": "VITAL at the School of Social Work",
@@ -2252,7 +2112,6 @@
   "Categories": ["Custom Software Applications and Tools", "Social Work"],
   "Disciplines": ["Social Work"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/213.jpg"
 },{
   "label": "Library Compass",
@@ -2268,7 +2127,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/192.jpg"
 },{
   "label": "French Resources Database",
@@ -2284,7 +2142,6 @@
   "Categories": ["Languages", "Repositories and Reference Tools"],
   "Disciplines": ["Languages"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/150.jpg"
 },{
   "label": "Conflicts of Interest and Mentoring Directed Learning Experiences",
@@ -2300,7 +2157,6 @@
   "Categories": ["Online & Directed Learning", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/201.jpg"
 },{
   "label": "University Lecture: Brian Greene",
@@ -2316,7 +2172,6 @@
   "Categories": ["Sciences"],
   "Disciplines": ["Sciences"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/214.jpg"
 },{
   "label": "Heart Simulator",
@@ -2332,7 +2187,6 @@
   "Categories": ["Medicine and Health", "Simulations"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/105.jpg"
 },{
   "label": "Cultura",
@@ -2348,7 +2202,6 @@
   "Categories": ["Field-Laboratory", "Languages"],
   "Disciplines": ["Languages"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/218.jpg"
 },{
   "label": "NME 2003 Conference",
@@ -2364,7 +2217,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/216.jpg"
 },{
   "label": "Learning the Elements of the Nanoscale Sciences",
@@ -2380,7 +2232,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/208.jpg"
 },{
   "label": "OPTIMUS - Earth Science Engineering Grant",
@@ -2396,7 +2247,6 @@
   "Categories": ["Engineering", "Simulations"],
   "Disciplines": ["Engineering"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/187.jpg"
 },{
   "label": "Epiville: Disease Outbreak Simulation",
@@ -2412,7 +2262,6 @@
   "Categories": ["Case Studies", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/120.jpg"
 },{
   "label": "Seasonal Climate Prediction for Regional Scales",
@@ -2428,7 +2277,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/130.jpg"
 },{
   "label": "Deconstructor: An Online Film Analysis Tool",
@@ -2444,7 +2292,6 @@
   "Categories": ["Arts", "Custom Software Applications and Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/133.jpg"
 },{
   "label": "QMSS E-Lessons",
@@ -2460,7 +2307,6 @@
   "Categories": ["Custom Software Applications and Tools", "Social Sciences"],
   "Disciplines": ["Social Sciences"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/123.jpg"
 },{
   "label": "IRI Modules on Probability and Decision-Making",
@@ -2476,7 +2322,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/121.jpg"
 },{
   "label": "Medieval and Renaissance Manuscripts",
@@ -2492,7 +2337,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/202.jpg"
 },{
   "label": "Midnight's Children MSE",
@@ -2508,7 +2352,6 @@
   "Categories": ["Arts", "Multimedia Study Environments"],
   "Disciplines": ["Arts"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/189.jpg"
 },{
   "label": "Midnight's Children Humanities Festival",
@@ -2524,7 +2367,6 @@
   "Categories": ["Arts", "Event Archives"],
   "Disciplines": ["Arts"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/203.jpg"
 },{
   "label": "Paris Mapping Project Prototype",
@@ -2540,7 +2382,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/198.jpg"
 },{
   "label": "Cost Benefit Analysis in Health",
@@ -2556,7 +2397,6 @@
   "Categories": ["Case Studies", "Medicine and Health"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/128.jpg"
 },{
   "label": "The Holy Teaching of Vimalakirti: A Mahayana Scripture",
@@ -2572,7 +2412,6 @@
   "Categories": ["Multimedia Study Environments", "Philosophy and Religion"],
   "Disciplines": ["Philosophy and Religion"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/126.jpg"
 },{
   "label": "Living With the Genie: Post Conference Site",
@@ -2588,7 +2427,6 @@
   "Categories": ["Event Archives", "Online & Directed Learning", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Event Archives","Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/163.jpg"
 },{
   "label": "Frontiers of Science",
@@ -2604,7 +2442,6 @@
   "Categories": ["Large Class", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Large Class"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/191.jpg"
 },{
   "label": "Investiture Ceremony - Inauguration of Lee C. Bollinger",
@@ -2620,7 +2457,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/00.jpg"
 },{
   "label": "Radio Broadcast Content Management System",
@@ -2636,7 +2472,6 @@
   "Categories": ["Custom Software Applications and Tools", "Journalism"],
   "Disciplines": ["Journalism"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/141.jpg"
 },{
   "label": "Social Work Practice With Older Adults: A Video Archive",
@@ -2652,7 +2487,6 @@
   "Categories": ["Case Studies", "Social Work"],
   "Disciplines": ["Social Work"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/143.jpg"
 },{
   "label": "Harold Innis and Marshall McLuhan, Revisited",
@@ -2668,7 +2502,6 @@
   "Categories": ["Culture and Society", "Multimedia Study Environments"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/131.jpg"
 },{
   "label": "Res Gestae: Propaganda in the Ancient World",
@@ -2684,7 +2517,6 @@
   "Categories": ["Multimedia Study Environments", "Philosophy and Religion"],
   "Disciplines": ["Philosophy and Religion"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/125.jpg"
 },{
   "label": "Chemistry Instrument Lab Environment (UDL)",
@@ -2700,7 +2532,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/155.jpg"
 },{
   "label": "Sharing Circles: Skills for Social Decision-Making and Problem Solving",
@@ -2716,7 +2547,6 @@
   "Categories": ["Education", "Online & Directed Learning"],
   "Disciplines": ["Education"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/00.jpg"
 },{
   "label": "Poles Together",
@@ -2732,7 +2562,6 @@
   "Categories": ["Case Studies", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/135.jpg"
 },{
   "label": "Chinese Language Training Environment",
@@ -2748,7 +2577,6 @@
   "Categories": ["Languages", "Training"],
   "Disciplines": ["Languages"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/149.jpg"
 },{
   "label": "Organizing Engineering Presentations",
@@ -2764,7 +2592,6 @@
   "Categories": ["Education", "Training"],
   "Disciplines": ["Education"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/142.jpg"
 },{
   "label": "Seeing the Whole Symphony",
@@ -2780,7 +2607,6 @@
   "Categories": ["Custom Software Applications and Tools", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/196.jpg"
 },{
   "label": "David Dinkins Leadership and Policy Forum",
@@ -2796,7 +2622,6 @@
   "Categories": ["Event Archives", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/177.jpg"
 },{
   "label": "Responding to Climate Forecasts",
@@ -2812,7 +2637,6 @@
   "Categories": ["Case Studies", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/153.jpg"
 },{
   "label": "Cultural Studies Course Environments: The Media Machine",
@@ -2828,7 +2652,6 @@
   "Categories": ["Arts", "Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Arts", "Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/100.jpg"
 },{
   "label": "Art and Understanding",
@@ -2844,7 +2667,6 @@
   "Categories": ["Arts", "Online & Directed Learning"],
   "Disciplines": ["Arts"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/180.jpg"
 },{
   "label": "Cinema e Commedia",
@@ -2860,7 +2682,6 @@
   "Categories": ["Languages", "Repositories and Reference Tools"],
   "Disciplines": ["Languages"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/102.jpg"
 },{
   "label": "Casting Files/Facebook",
@@ -2876,7 +2697,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/172.jpg"
 },{
   "label": "Impression Formation Study Project",
@@ -2892,7 +2712,6 @@
   "Categories": ["Field-Laboratory", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Field-Laboratory"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/170.jpg"
 },{
   "label": "Chad-Cameroon Pipeline Project Case Study",
@@ -2908,7 +2727,6 @@
   "Categories": ["Case Studies", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/171.jpg"
 },{
   "label": "Shakespeare & The Book: Study Environment",
@@ -2924,7 +2742,6 @@
   "Categories": ["Literature", "Repositories and Reference Tools"],
   "Disciplines": ["Literature"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/175.jpg"
 },{
   "label": "Schoenberg and Modernism",
@@ -2940,7 +2757,6 @@
   "Categories": ["Arts", "Online & Directed Learning"],
   "Disciplines": ["Arts"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/184.jpg"
 },{
   "label": "Historical Studies for Sociomedical Sciences",
@@ -2956,7 +2772,6 @@
   "Categories": ["Custom Software Applications and Tools", "History"],
   "Disciplines": ["History"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/117.jpg"
 },{
   "label": "Electronic Encyclopedia of the Ancient World Prototype",
@@ -2972,7 +2787,6 @@
   "Categories": ["History", "Repositories and Reference Tools"],
   "Disciplines": ["History"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/124.jpg"
 },{
   "label": "New Teacher Academy",
@@ -2988,7 +2802,6 @@
   "Categories": ["Education", "Online & Directed Learning"],
   "Disciplines": ["Education"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/237.jpg"
 },{
   "label": "Chemistry Library Tutorial",
@@ -3004,7 +2817,6 @@
   "Categories": ["Sciences", "Training"],
   "Disciplines": ["Sciences"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/174.jpg"
 },{
   "label": "Nursing Clinical Rotation Palm Database",
@@ -3020,7 +2832,6 @@
   "Categories": ["Medicine and Health", "Training"],
   "Disciplines": ["Medicine and Health"],
   "Types": ["Training"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/110.jpg"
 },{
   "label": "Pierrot lunaire: The Melodramas",
@@ -3036,7 +2847,6 @@
   "Categories": ["Arts", "Multimedia Study Environments"],
   "Disciplines": ["Arts"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/103.jpg"
 },{
   "label": "Poverty, Wealth and History in the East End of London:  Part II",
@@ -3052,7 +2862,6 @@
   "Categories": ["Culture and Society", "Online & Directed Learning"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/183.jpg"
 },{
   "label": "Music Intellectual Property Cases",
@@ -3068,7 +2877,6 @@
   "Categories": ["Case Studies", "Law"],
   "Disciplines": ["Law"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/129.jpg"
 },{
   "label": "Universal Declaration of Human Rights (UDHR)",
@@ -3084,7 +2892,6 @@
   "Categories": ["Multimedia Study Environments", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/106.jpg"
 },{
   "label": "Poverty, Wealth and History in the East End of London: Part I",
@@ -3100,7 +2907,6 @@
   "Categories": ["Culture and Society", "Online & Directed Learning"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/182.jpg"
 },{
   "label": "Molecular and Cellular Biology",
@@ -3116,7 +2922,6 @@
   "Categories": ["Large Class", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Large Class"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/88.jpg"
 },{
   "label": "Shakespeare & The Book: Digital Exhibition",
@@ -3132,7 +2937,6 @@
   "Categories": ["Literature", "Repositories and Reference Tools"],
   "Disciplines": ["Literature"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/00.jpg"
 },{
   "label": "Arthur C. Danto's \"The Artworld\"",
@@ -3148,7 +2952,6 @@
   "Categories": ["Arts", "Multimedia Study Environments"],
   "Disciplines": ["Arts"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/116.jpg"
 },{
   "label": "Rohde to Srebrenica",
@@ -3164,7 +2967,6 @@
   "Categories": ["Case Studies", "Journalism"],
   "Disciplines": ["Journalism"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/173.jpg"
 },{
   "label": "News Reporting Simulation",
@@ -3180,7 +2982,6 @@
   "Categories": ["Journalism", "Simulations"],
   "Disciplines": ["Journalism"],
   "Types": ["Simulations"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/101.jpg"
 },{
   "label": "Experimental Digital Classroom",
@@ -3196,7 +2997,6 @@
   "Categories": ["Education"],
   "Disciplines": ["Education"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/165.jpg"
 },{
   "label": "Critical Issues in Journalism",
@@ -3212,7 +3012,6 @@
   "Categories": ["Journalism", "Large Class"],
   "Disciplines": ["Journalism"],
   "Types": ["Large Class"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/89.jpg"
 },{
   "label": "Lehman Letters",
@@ -3228,7 +3027,6 @@
   "Categories": ["Political Science and Social Policy", "Repositories and Reference Tools"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/108.jpg"
 },{
   "label": "Digital Learning Communities: Democracy Through Education",
@@ -3244,7 +3042,6 @@
   "Categories": ["Education", "Online & Directed Learning"],
   "Disciplines": ["Education"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/179.jpg"
 },{
   "label": "CU Analyzer",
@@ -3260,7 +3057,6 @@
   "Categories": ["Custom Software Applications and Tools"],
   "Disciplines": [],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/93.jpg"
 },{
   "label": "Malcolm X: Life After Death",
@@ -3276,7 +3072,6 @@
   "Categories": ["Culture and Society", "Online & Directed Learning"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/181.jpg"
 },{
   "label": "Environmental Sustainability: Perspectives on the World",
@@ -3292,7 +3087,6 @@
   "Categories": ["Online & Directed Learning", "Sciences"],
   "Disciplines": ["Sciences"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/95.jpg"
 },{
   "label": "The Impact of Technology on the Legal Profession",
@@ -3308,7 +3102,6 @@
   "Categories": ["Law", "Online & Directed Learning"],
   "Disciplines": ["Law"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/00.jpg"
 },{
   "label": "The Shakespearean Sonnet and the Modern Voice",
@@ -3324,7 +3117,6 @@
   "Categories": ["Arts", "Online & Directed Learning"],
   "Disciplines": ["Arts"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/97.jpg"
 },{
   "label": "Moving Education Into the 21st Century With New Media Conference",
@@ -3340,7 +3132,6 @@
   "Categories": ["Event Archives"],
   "Disciplines": [],
   "Types": ["Event Archives"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/na.jpg"
 },{
   "label": "\"Pops\" Out Here in the Cause of Happiness: The Louis Armstrong Story\"",
@@ -3356,7 +3147,6 @@
   "Categories": ["Arts", "Culture and Society", "Online & Directed Learning"],
   "Disciplines": ["Arts", "Culture and Society"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/98.jpg"
 },{
   "label": "Network Analysis Tool",
@@ -3372,7 +3162,6 @@
   "Categories": ["Business and Finance", "Custom Software Applications and Tools"],
   "Disciplines": ["Business and Finance"],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/104.jpg"
 },{
   "label": "Third Space",
@@ -3388,7 +3177,6 @@
   "Categories": ["Custom Software Applications and Tools"],
   "Disciplines": [],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/102.jpg"
 },{
   "label": "W.E.B. Du Bois and the Black Experience",
@@ -3404,7 +3192,6 @@
   "Categories": ["Culture and Society", "History", "Literature", "Online & Directed Learning"],
   "Disciplines": ["Culture and Society", "History", "Literature"],
   "Types": ["Online & Directed Learning"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/099.jpg"
 },{
   "label": "The Souls of Black Folk by W.E.B. Du Bois",
@@ -3420,7 +3207,6 @@
   "Categories": ["Literature", "Multimedia Study Environments"],
   "Disciplines": ["Literature"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/087.jpg"
 },{
   "label": "U6800: Conceptual Foundations of International Politics",
@@ -3436,7 +3222,6 @@
   "Categories": ["Large Class", "Political Science and Social Policy"],
   "Disciplines": ["Political Science and Social Policy"],
   "Types": ["Large Class"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/90.jpg"
 },{
   "label": "Video Case Studies for Social Work (CARLA)",
@@ -3452,7 +3237,6 @@
   "Categories": ["Case Studies", "Social Work"],
   "Disciplines": ["Social Work"],
   "Types": ["Case Studies"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/113.jpg"
 },{
   "label": "Paradise Lost Book IX by John Milton",
@@ -3468,7 +3252,6 @@
   "Categories": ["Multimedia Study Environments", "Philosophy and Religion"],
   "Disciplines": ["Philosophy and Religion"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/81.jpg"
 },{
   "label": "Television's Screens: Hegemony in Transition by Todd Gitlin",
@@ -3484,7 +3267,6 @@
   "Categories": ["Culture and Society", "Multimedia Study Environments"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/84.jpg"
 },{
   "label": "Hell's Kitchen South Project",
@@ -3500,7 +3282,6 @@
   "Categories": ["Architecture", "Multimedia Study Environments"],
   "Disciplines": ["Architecture"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/83.jpg"
 },{
   "label": "Reflections on the Revolution in France by Edmund Burke",
@@ -3516,7 +3297,6 @@
   "Categories": ["History", "Multimedia Study Environments"],
   "Disciplines": ["History"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/82.jpg"
 },{
   "label": "Postmodernism or the Cultural Logic of Late Capitalism, F. Jameson",
@@ -3532,7 +3312,6 @@
   "Categories": ["Culture and Society", "Multimedia Study Environments"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Multimedia Study Environments"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/80.jpg"
 },{
   "label": "Columbia Webcam (1999-2002)",
@@ -3548,7 +3327,6 @@
   "Categories": ["Custom Software Applications and Tools"],
   "Disciplines": [],
   "Types": ["Custom Software Applications and Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/072.png"
 },{
   "label": "East Asian Curriculum Project",
@@ -3564,7 +3342,6 @@
   "Categories": ["Culture and Society", "Repositories and Reference Tools"],
   "Disciplines": ["Culture and Society"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/74.jpg"
 },{
   "label": "The Sonic Glossary",
@@ -3580,7 +3357,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/78.jpg"
 },{
   "label": "Music Humanities: Virtual Tape Project",
@@ -3596,7 +3372,6 @@
   "Categories": ["Arts", "Repositories and Reference Tools"],
   "Disciplines": ["Arts"],
   "Types": ["Repositories and Reference Tools"],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/77.jpg"
 },{
    "label": "Footprints: Jewish Books Through Time and Place",
@@ -3612,7 +3387,6 @@
   "Categories": ["History", "Philosophy and Religion"],
   "Disciplines": ["History", "Philosophy and Religion"],
   "Types": [],
-  "tags": [],
   "thumb_URL": "http://ccnmtl.columbia.edu/images/portfolio/thumbs/403.jpg"
 }
 ]

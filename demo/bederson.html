@@ -64,9 +64,7 @@ google.setOnLoadCallback(function() {
             browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         facets: [
-            {   title: "Topics",
-                catTableName: "Keywords",
-                catLabel: "keyword"
+            {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
             },{ title: "Coauthors",
                 attribMap: function(){
                     var authors = this.Coauthors;
@@ -88,50 +86,44 @@ google.setOnLoadCallback(function() {
                     }
                 ]
             },{ title: "Publication Type", attribMap: "type",
-                catLabel: function(d){ 
-                    return kshf.dt_id.VenueTypes[d.data[0]].data.keyword;
-                }
-            },{ title: "Venue", collapsed: true,
-                catTableName: "Venues",
-                catLabel: "venue"
+                catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; }
+            },{ title: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true,
             },{ title: "Date", layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: [
-                { name: 'Year', value: function(pub){return pub.data.Date.getFullYear(); } }
-            ],
+            sortingOpts: [{ name: 'Year', value: function(){ return this.Date.getFullYear(); } }],
             textSearch: 'title',
             detailsToggle: "one",
             autoExpandMore: false,
-            recordView: function(d){
+            recordView: function(){
                 var j;
                 var str="";
 
-                if(d.data.img!==""&&d.data.img!==null){
-                    str+="<img class='pdfImage' src='"+d.data.img+"'>";
+                if(this.img!==""&&this.img!==null){
+                    str+="<img class='pdfImage' src='"+this.img+"'>";
                 }
 
                 // paper name
                     str+="<div class=''> <span>";
-                    str+="<span class='paperName'>"+d.data.title+"</span>";
-                    if(d.data.pdf!==""&&d.data.pdf!==null){
-                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+d.data.pdf+"' target='_blank'></a>";
+                    str+="<span class='paperName'>"+this.title+"</span>";
+                    if(this.pdf!==""&&this.pdf!==null){
+                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+this.pdf+"' target='_blank'></a>";
                     }
-                    if(d.data.doi!==""&&d.data.doi!==null){
-                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+d.data.doi+"' target='_blank'>[doi]</a>";
+                    if(this.doi!==""&&this.doi!==null){
+                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+this.doi+"' target='_blank'>[doi]</a>";
                     }
-                    if(d.data.url.trim()!==""){
-                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+d.data.url+"' "+
-                                "onclick='sendLog(CATID.ItemBased,ACTID_ITEM.FollowURL,{itemID:"+d.id()+"})'>external</a>";
+                    if(this.url.trim()!==""){
+                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+this.url+"' "+
+                                ">external</a>";
                     }
                     str+="</div>";
 
                 str+="<span class='item_details'>";
 
                 // author names
-                var authors = d.data.Coauthors;
+                var authors = this.Coauthors;
                     str+="<div class=\"authorNames\"><span class='header'></span> ";
                     for(j=0; j<authors.length; j++){
                         var authData=kshf.dt_id.Authors[authors[j]].data;
@@ -142,16 +134,16 @@ google.setOnLoadCallback(function() {
                     }
                     str+="</div>";
                 // Venue + details
-                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+d.data.Date.getFullYear()+"</span>";
-                    if(d.data.Venue) {
-                        str+=" " + kshf.dt_id.Venues[d.data.Venue].data[2];
+                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Date.getFullYear()+"</span>";
+                    if(this.Venue) {
+                        str+=" " + kshf.dt_id.Venues[this.Venue].data[2];
                     }
-                    if(d.data.details.trim()!=="") {
-                        str+=" - " + d.data.details;
+                    if(this.details.trim()!=="") {
+                        str+=" - " + this.details;
                     }
                     str+="</div>";
                 // keywords
-                    var cats = d.data.Topics;
+                    var cats = this.Topics;
                     if(cats.length>0){
                         str+="<div class=\"topics\"> <span class='header'>Topics</span>: ";
                         for(j=0; j<cats.length; j++){
@@ -161,8 +153,8 @@ google.setOnLoadCallback(function() {
                         str+="</div>";
                     }
                 // award
-                    if(d.data.award!==""&d.data.award!==null){
-                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+d.data.award+"</div>";
+                    if(this.award!==""&this.award!==null){
+                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+this.award+"</div>";
                     }
 
                 return str;

@@ -30,12 +30,12 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 280,
         rightPanelLabelWidth: 250,
         source: {
-            gdocId : '1B0vjide7zhHRjI2VVc_RF1-2rfoF_8AXl-7h7BvBkv8',
-            sheets : [ 
+            gdocId: '1B0vjide7zhHRjI2VVc_RF1-2rfoF_8AXl-7h7BvBkv8',
+            sheets: [ 
                 {name:"Meetings"},
                 {name:"Politicians",id:"Politician"},
                 {name:"Organizations",id:"Organization"}
-                ]
+            ]
         },
         facets: [
             {   title: "Politician",
@@ -44,9 +44,7 @@ google.setOnLoadCallback(function(){
                     { title: "Department", }
                 ]
             },{ title: "Type", layout: 'right',
-                attribMap: function(d){
-                    return kshf.dt_id.Organizations[d.data.Organization].data.Type;
-                },
+                attribMap: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
                 catLabel: function(){ return this.id+" "+getIcon(this.id); }
             },{ title: "Organization", layout: 'right',
                 catTableName: "Organizations",
@@ -57,20 +55,16 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 75,
-            sortingOpts : [ {
-                name: 'Date',
-                inverse: true,
-                label: function(meeting){
-                    return moment(meeting.data.Date).format("D MMM 'YY");
-                }
-            } ],
-            recordView: function(meeting){
-                return getIcon(kshf.dt_id.Organizations[meeting.data.Organization].data.Type) +
+            sortingOpts: [{
+                name: 'Date', inverse: true, label: function(){ return moment(this.Date).format("D MMM 'YY"); }
+            }],
+            recordView: function(){
+                return getIcon(kshf.dt_id.Organizations[this.Organization].data.Type) +
                     "<span style='display:block'>"+
                         "<i class='fa fa-bank commonIcon'></i> "+
-                        "<span class='person'>"+meeting.data.Politician+"</span></span>"+
+                        "<span class='person'>"+this.Politician+"</span></span>"+
                     "<span style='display:block; text-align:right; margin-right: 1.7em;'>"+
-                        "<span class='person' style='font-size: 0.8em'>("+meeting.data.Lobbyist+")</span> "+meeting.data.Organization+" "+
+                        "<span class='person' style='font-size: 0.8em'>("+this.Lobbyist+")</span> "+this.Organization+" "+
                         "<i class='fa fa-briefcase commonIcon'></i></span>";
             }
         }

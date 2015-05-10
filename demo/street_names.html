@@ -73,20 +73,16 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [
-                { name: 'Value' },
-                { name: '# Homes', value: function(d){ return d.data.homes; } },
-                { name: 'Name', value: function(d){ return d.data.text; } }
-            ],
+            sortingOpts : [ {name: 'Value'}, {name: '# Homes', value: "homes"} ],
             displayType: 'grid',
             textSearch: 'text',
             maxVisibleItems_Default: 400,
-            recordView : function(d){
-                var str=d.data.text;
-                if(d.data.president) str+="<span class='fa fa-flag-checkered featIcon'></span>";
-                if(d.data.tree) str+="<span class='fa fa-tree featIcon'></span>";
-                if(d.data.scenic) str+="<span class='fa fa-picture-o featIcon'></span>";
-                if(d.data.geoname) str+="<span class='fa fa-map-marker featIcon'></span>";
+            recordView : function(){
+                var str=this.text;
+                if(this.president) str+="<span class='fa fa-flag-checkered featIcon'></span>";
+                if(this.tree) str+="<span class='fa fa-tree featIcon'></span>";
+                if(this.scenic) str+="<span class='fa fa-picture-o featIcon'></span>";
+                if(this.geoname) str+="<span class='fa fa-map-marker featIcon'></span>";
                 return str;
             }
         }

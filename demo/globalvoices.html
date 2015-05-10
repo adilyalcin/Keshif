@@ -82,10 +82,10 @@ $(document).ready( function(){
             detailsToggle: "one",
             textSearch: "Title and text",
             textSearchFunc: function(){ return this[4] + " " + this[5];},
-            recordView: function(d){
+            recordView: function(){
                 var str="";
 
-                str +="<span class='typeImg'></span> <span class='postTitle'>"+d.data[4] +"</span> <a target='_blank' href='"+d.data[3]+"' class='fa fa-external-link'></a></div>";;
+                str +="<span class='typeImg'></span> <span class='postTitle'>"+this[4] +"</span> <a target='_blank' href='"+this[3]+"' class='fa fa-external-link'></a></div>";;
 
                 // add text / image
                 str+="<span class=\"item_details\">";
@@ -97,8 +97,8 @@ $(document).ready( function(){
             },
             detailCb: function(d){
                 var x=d3.select(d.DOM.result);
-                x.select(".postImg").attr("src",d.data[9]);
-                x.select(".postDetail").html(d.data[5]);
+                x.select(".postImg").attr("src",this[9]);
+                x.select(".postDetail").html(this[5]);
             }
         }
     });

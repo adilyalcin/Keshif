@@ -95,12 +95,11 @@ google.setOnLoadCallback(function(){
             browser.panels.left.summaries[0].setHeightRow_attrib(20);
         },
         facets: [
-            {   title: "<i class='fa fa-globe'></i> National Cuisine <i class='fa fa-globe'></i>",
+            {   title: "<i class='fa fa-globe'></i> National Cuisine",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
                 attribMap: 'National Cuisine'
-            },{ title: "<i class='fa fa-spoon'></i> Food Types <i class='fa fa-spoon'></i>",
-                attribMap: 'Food Types'
-            },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins <i class='fa fa-exclamation-triangle'></i>", layout: 'right',
+            },{ title: "<i class='fa fa-spoon'></i> Food Types", attribMap: 'Food Types'
+            },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
                 attribMap: function(){
                     var r=this['Pathogens / Toxins'];
@@ -109,10 +108,9 @@ google.setOnLoadCallback(function(){
                     if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");
                     return a;
                 }
-            },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors <i class='fa fa-exclamation-circle'></i>", 
-                layout: 'right',
+            },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors",  layout: 'right',
                 attribMap: 'Contributing Factors'
-            },{ title: "<i class='fa fa-coffee'></i> Setting <i class='fa fa-coffee'></i>",  layout:'right',
+            },{ title: "<i class='fa fa-coffee'></i> Setting",  layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
                 attribMap: 'Setting'
             }

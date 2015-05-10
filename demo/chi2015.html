@@ -175,7 +175,7 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 55,
             detailsToggle: "zoom",
-            sortingOpts: [{ name: '', inverse: true, value: function(d){ return d.data.key; } }],
+            sortingOpts: [{ name: '', inverse: true, value: function(){ return this.key; } }],
             textSearch: 'title',
             recordView: 'title'
         }

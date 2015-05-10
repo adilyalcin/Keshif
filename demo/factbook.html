@@ -48,7 +48,6 @@ function loadFactbook(facts){
     factBrowser.primaryTableName = "Countries";
     kshf.dt.Countries = [];
     kshf.dt.Category = [];
-    var kshf.dt.Countries = ;
     var arr_cat = kshf.dt.Category;
     var arr_cat_id = {};
 
@@ -215,8 +214,8 @@ $(document).ready( function(){
             sortColWidth: 90,
             sortingOpts : [
                 {   name: 'Population',
-                    label: function(d){
-                        var p=d.data.Population;
+                    label: function(){
+                        var p=this.Population;
                         if(p===undefined) return "-";
                         return d3.format(".4s")(p);
                     }
@@ -225,18 +224,18 @@ $(document).ready( function(){
             ],
             showRank: true,
             textSearch: 'Name',
-            recordView : function(d){
+            recordView : function(){
                 var str="";
                 // Country locator
                 str +="<img class='locator' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/locator/"
-                    +d.data.RegionID+"/"+d.data.id+"_large_locator.gif'/>"; 
+                    +this.RegionID+"/"+this.id+"_large_locator.gif'/>"; 
                 // Country flag
-                str += "<img class='flag' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/flags/large/"+d.data.id+"-lgflag.gif'/>"; 
+                str += "<img class='flag' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/flags/large/"+this.id+"-lgflag.gif'/>"; 
                 // Country name
-                str += "<div class='name'>"+d.data.Name+" <a target='_blank' href='"+
-                    "https://www.cia.gov/library/publications/the-world-factbook/geos/"+d.data.id+".html' class='fa fa-external-link'></a></div>";
+                str += "<div class='name'>"+this.Name+" <a target='_blank' href='"+
+                    "https://www.cia.gov/library/publications/the-world-factbook/geos/"+this.id+".html' class='fa fa-external-link'></a></div>";
                 // Country capital
-                str +="<div class='capital'> Capital: <span>"+d.data.Capital+"</span></div>";
+                str +="<div class='capital'> Capital: <span>"+this.Capital+"</span></div>";
                 
                 return str;
             }

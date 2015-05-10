@@ -22,10 +22,8 @@ var demoID = 15;
 
 function getDate(){
     var dt=this.Date;
-    if(dt.getUTCFullYear) { return dt;}
-    var m=moment(d.data.Date,["YYYY-MM-DD"]);
-    dt = new Date(m);
-    return dt;
+    if(dt.getUTCFullYear) { return dt; }
+    return new Date(moment(this.Date,["YYYY-MM-DD"]));
 }
 
 function getSource(){
@@ -34,7 +32,7 @@ function getSource(){
     if(this["Vessel"]!==null){ return "Vessel"; }
     return "Unknown";
 }
-function getMaterial(spill){
+function getMaterial(){
     var toRet=[];
     if(this["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
     if(this["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
@@ -70,9 +68,9 @@ google.setOnLoadCallback( function(){
             {   title: "Size"
             },{ /*title: "Amount (Barrel)", collapsed: true,
                 facets: [
-                    {*/   title: "Total Spilled", collapsed: false
-                    },{ title: "Crude & Condensate", collapsed: true
-                    },{ title: "Refined Petroleum", collapsed: true
+                    {*/   title: "Total Spilled", collapsed: false, layout: "middle"
+                    },{ title: "Crude & Condensate", collapsed: true, layout: "middle"
+                    },{ title: "Refined Petroleum", collapsed: true, layout: "middle"
                     }/*,{
                         title: "Synthetic Base Fluid", collapsed: true,
                         attribMap: function(){
@@ -94,60 +92,53 @@ google.setOnLoadCallback( function(){
             },{ title: "Company", layout: 'right', catDispCountFix: 5
             },{ title: "District", layout: 'left', catTableName: "Districts", catLabel: "Name"
             },{ title: "Water Depth", layout: 'right', attribMap: 'Water Depth (feet)',
-                intervalScale: 'log', unitName: ' ft'
-            },{ title: "During Activity", layout: 'right', collapsed: true
+                intervalScale: 'log', unitName: 'ft'
+            },{ title: "During Activity", collapsed: false
             },{ title: "Cause", layout: 'right'
-            },{ title: "Other Properties", layout: 'right', collapsed: true,
-                catTableName: "Notes",
-                attribMap: "Notes",
-                catLabel: "name"
+            },{ title: "Other Properties", attribMap: "Notes", layout: 'right', collapsed: true,
+                catTableName: "Notes", catLabel: "name"
             },{ title: "Spill Date", layout: 'bottom', attribMap: getDate,
             }
         ],
         itemDisplay: {
             sortColWidth: 58,
             sortingOpts: [
-                {   name: 'Date',
-                    value: function(d){ 
-                        var date=getDate(d);
-                        return new Date(date.getUTCFullYear(), date.getUTCMonth());
-                    },
-                    label: function(d){ 
-                        var date=getDate(d);
+                {   name: 'Date', inverse: true, value: getDate,
+                    label: function(){ 
+                        var date=getDate.call(this);
                         return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
-                    },
-                    inverse: true,
+                    }
                 },
-                { name: 'Amount',value: function(d){ return d.data["Total Spilled"]; }},
+                { name: 'Amount', value: "Total Spilled" },
             ],
             detailsToggle: "Multi",
-            recordView: function(d){
+            recordView: function(){
                 var j;
                 var str="";
                 // location
-                var district=kshf.dt_id.Districts[d.data.District];
-                if(district) district = district.data[1];
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b>"+d.data.Company+"</div>";
+                var district=kshf.dt_id.Districts[this.District];
+                if(district) district = district.data.Name;
+                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b> "+this.Company+"</div>";
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
                     +" <u>District</u>:"+district
-                    +" - <u>Area Block</u>:"+d.data["Area Block"]
-                    +" - <u>Water Depth</u>:"+d.data["Water Depth (feet)"]+"feet"
-                    +" - <u>Distance to Shore</u>:"+d.data["Distance to Shore (miles)"]+"miles"
+                    +" - <u>Area Block</u>:"+this["Area Block"]
+                    +" - <u>Water Depth</u>:"+this["Water Depth (feet)"]+"feet"
+                    +" - <u>Distance to Shore</u>:"+this["Distance to Shore (miles)"]+"miles"
                     +"</div>";
                 
                 str+="<span class=\"item_details\">";
                 
                 // Spillage
                 str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
-                str+=" <u>Total</u>:"+d.data["Total Spilled"];
-                str+=" <u>Crude & Condensate</u>:"+d.data["Crude & Condensate"];
-                str+=" <u>Refined Petroleum</u>:"+d.data["Refined Petroleum"];
-                str+=" <u>Synthetic Base Fluid</u>:"+d.data["Synthetic Base Fluid"];
-                str+=" <u>Other Chemicals</u>:"+d.data["Other Chemicals"];
+                str+=" <u>Total</u>:"+this["Total Spilled"];
+                str+=" <u>Crude & Condensate</u>:"+this["Crude & Condensate"];
+                str+=" <u>Refined Petroleum</u>:"+this["Refined Petroleum"];
+                str+=" <u>Synthetic Base Fluid</u>:"+this["Synthetic Base Fluid"];
+                str+=" <u>Other Chemicals</u>:"+this["Other Chemicals"];
                 str+="</div>"
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+d.data.Cause+"</div>";
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource(d)
-                    +" <b>Facility:</b> "+ d.data.Facility
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+this.Cause+"</div>";
+                str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource.call(this)
+                    +" <b>Facility:</b> "+ this.Facility
                     +"</div>";
 
                 str+="</span>";

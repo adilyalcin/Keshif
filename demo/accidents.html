@@ -38,16 +38,14 @@ var QueryString = function () {
     return query_string;
 } ();
 
-function timeOfDayText(d){
-    switch(d){
-        case 0: return "Night: 00-06";
-        case 1: return "Morning: 06-12";
-        case 2: return "Afternoon: 12-18";
-        case 3: return "Evening: 18-24";
-    }
-}
-
 google.setOnLoadCallback( function(){
+    
+    resizeBrowser(240,50);
+    $(window).resize(function() {
+        resizeBrowser(240,50);
+        browser.updateLayout();
+    });
+
     var query = 'select *';
     var sheetInfo = {name:"Accidents"};
     if(QueryString.set==="small") {
@@ -65,69 +63,27 @@ google.setOnLoadCallback( function(){
             ]
         },
         facets: [
-            {   title: "Road Type",
-                catTableName: "RoadType",
-            },{ title: "Severity",
-                catTableName: "Severity",
-            },{ title: "Area", 
-                catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
-            },{ title: "Time of Day",
-                attribMap: function(){
-                    var hour=this['Time of Day'].getHours();
-                    if(hour<6) return 0;
-                    if(hour<12) return 1;
-                    if(hour<18) return 2;
-                    return 3;
-                },
-                catLabel: function(){ return timeOfDayText(this.id); }
-            },{ title: "Speed Limit (mph)",
-                attribMap: function(){ return this['Speed Limit']; }
-            },{ title: "# of Vehicles", intervalScale: 'step'
-            },{ title: "Road Surface",
-                catTableName: "RoadSurface",
-                attribMap: function(){
-                    var c=this['Road Surface Condition'];
-                    return (c===-1)?null:c; // skip if -1
-                },
-                catLabel: function(){ return this.name; }
-            },{ title: "Light Condition", layout: 'right',
-                catTableName: "LightCond",
-                catLabel: function() { return this.name; }
-            },{ title: "Weather Condition", layout: 'right',
-                catTableName: "WeatherCond",
-                catLabel: function() { return this.name; }
-            },{ title: "Special Condition", layout: 'right',
-                catTableName: "SpecCond",
-                attribMap: function(){
-                    var c=this['Special Condition'];
-                    return (c===0)?null:c; // skip if 0
-                },
-                catLabel: function() { return this.name; }
-            },{ title: "Junction Detail", layout: 'right',
-                catTableName: "JuncDet",
-                attribMap: function(){
-                    var c=this['Junction Detail'];
-                    return (c===-0)?null:c; // skip if 0
-                }
-            },{ title: "Junction Control", layout: 'right', collapsed: true,
-                catTableName: "JuncCont",
-                attribMap: function(){
-                    var c=this['Junction Control'];
-                    return (c===-1)?null:c; // skip if 0
-                }
+            {   title: "Road Type", catTableName: "RoadType", catLabel: "name"
+            },{ title: "Severity", catTableName: "Severity", catLabel: "name"
+            },{ title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
+            },{ title: "Time of Day", attribMap: function(){ return this['Time of Day'].getHours(); },
+                layout: "middle", unitName: ":00"
+            },{ title: "Speed Limit", unitName: "mph", layout: 'middle'
+            },{ title: "# of Vehicles", layout: 'middle'
+            },{ title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right'
+            },{ title: "Light Condition", catTableName: "LightCond", catLabel: "name"
+            },{ title: "Weather Condition", catTableName: "WeatherCond", catLabel: "name"
+            },{ title: "Special Condition", catTableName: "SpecCond", catLabel: "name", layout: 'right',
+            },{ title: "Junction Detail", catTableName: "JuncDet", catLabel: "name", layout: 'right',
+            },{ title: "Junction Control", catTableName: "JuncCont",  catLabel: "name", layout: 'right'
             },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts: [
-                {   name: 'Date',
-                    label: function(accident){ 
-                        var date=accident.data.Date;
-                        return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
-                    }
-                }
-            ],
+            sortingOpts: [{
+                name: 'Date', label: function(){ return (this.Date.getUTCMonth()+1)+"-"+this.Date.getUTCFullYear(); }
+            }],
             detailsToggle: "zoom",
             recordView: 'Accident_Index'
         }
@@ -135,17 +91,6 @@ google.setOnLoadCallback( function(){
 });
 
 </script>
-<style>
-.iteminfo a{
-    color:#606060;
-    font-style:italic;
-}
-#chart_div{
-    height: 700px;
-    width: 1100px;
-}
-
-</style>
 	</head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

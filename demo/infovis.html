@@ -37,12 +37,7 @@ google.setOnLoadCallback(function () {
             {   title: "Concepts",
             },{ title: "Year", attribMap: "time", layout: "middle",
             },{ title: "Highlights",
-                attribMap: function(){
-                    var toRet = [];
-                    if(this.best===true) toRet.push("Best in Year");
-//                    if(d.data[6].length>10) toRet.push("Cited +10");
-                    return toRet;
-                }
+                attribMap: function(){ if(this.best) return "Best in Year"; }
             },{ title: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
@@ -65,45 +60,41 @@ google.setOnLoadCallback(function () {
 //            },{
 //                title: "Concepts",
 //            },{
-//                title: "Keywords", // HUGE LIST : 1k keywords
+//                title: "Keywords", // Big lisy : 1k keywords
 //            }*/
         ],
         itemDisplay: {
             sortColWidth: 35,
             sortingOpts : [
-                {   name: 'Year',
-                    value: function(d){ return d.data.time.getFullYear(); }, inverse: true
-                },{ name: '# Cit.\'s To',
-                    value: function(d){ return d.items.length; }
-                },{ name: '# Cit.\'s- Total',
-                    value: function(d){ return d.data.num; }
-                }
+                { name: 'Year', value: function(){ return this.time.getFullYear(); }, inverse: true },
+                { name: '# Cit.\'s To', value: function(d){ return d.items.length; } },
+                { name: '# Cit.\'s- Total', value: "num" } 
             ],
             detailsToggle : "one",
             textSearch : 'Title',
             showRank: true,
             showSelectBox: true,
             linkText: 'Citations to',
-            recordView : function(d) {
+            recordView : function() {
                 var j;
                 var str="";
 
                 // description
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=d.data.Title;
-                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+d.data.doi+"\">"+
+                str+=this.Title;
+                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+this.doi+"\">"+
                     "<i class='fa fa-external-link'></i></a>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + d.data.time.getFullYear()+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + d.data.Authors+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + d.data.Concepts+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + d.data.Keywords+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + d.data.IndexTerms+"</div>";
-                if(d.data[6])
-                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + d.data.Citations.length+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + this.time.getFullYear()+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + this.Authors+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + this.Concepts+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + this.Keywords+"</div>";
+                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + this.IndexTerms+"</div>";
+                if(this[6])
+                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + this.Citations.length+"</div>";
                 str+="</span>";
 
                 return str;

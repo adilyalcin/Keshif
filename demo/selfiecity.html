@@ -34,8 +34,6 @@ $(document).ready( function(){
             fileType: 'csv',
             sheets: [ {name:"selfiecity", id:"id"} ]
             // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
-//            dirPath: 'http://s3.amazonaws.com/selfiecity/data/',
-//sheets: [ {name:"selfies_rekognized_full", id:"id"} ]
         },
         facets: [
             {   /*title: "Demographics",
@@ -77,13 +75,13 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: [{ name:'Happyness', value: function(d){ return d.data.emotion_happy; }}],
+            sortingOpts: [{ name:'Happyness', value: "emotion_happy" }],
             displayType: 'grid',
             maxVisibleItems_Default: 104,
-            recordView: function(d){ return "<img>"; },
+            recordView: function(){ return "<img>"; },
             visibleCb: function(d){
-                var imgRoot = 'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/';
-                d3.select(d.DOM.result).select("img").attr("src",imgRoot+d.data.city+'/'+d.data.id);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/'+this.city+'/'+this.id);
             }
         }
     });

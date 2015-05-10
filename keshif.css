@@ -156,9 +156,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #808080;
 }
 .kshf .noselect {
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -181,11 +179,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #e8e8e8;
   border: solid 1px lightgray;
   cursor: pointer;
-  user-select: none;
   -webkit-user-select: none;
-  /*white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;*/
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .attributeList > .attributeName > .summaryTitle {
   display: inline;
@@ -1923,15 +1920,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   white-space: nowrap;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
-  color: gray;
-}
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
   top: -10px;
   height: 10px;
-  border-left: solid 1px gray;
+  border-left: solid 1px #a0a0a0;
   display: block;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider .unitName {
+  opacity: 0.6;
+  margin-left: 2px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[scaletype="log"] > .labelGroup > .tick > .line {
+  top: -22px;
+  height: 22px;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[scaletype="linear"] > .labelGroup > .tick > .line {
+  top: -22px;
+  height: 22px;
 }
 .kshf .kshfChart .subFacets {
   position: relative;
@@ -2396,13 +2402,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemRank {
-  margin-left: 2px;
   margin-top: 2px;
   color: gray;
   font-size: 0.8em;
   font-weight: 300;
   float: left;
-  width: 18px;
+  width: 13px;
+  font-style: italic;
+  text-align: right;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
   width: 18px;
@@ -2479,12 +2486,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: row;
   min-height: 18px;
 }
+.kshf .listHeader > .bottomRow > .itemRank {
+  width: 13px;
+  text-align: right;
+  font-weight: 100;
+  font-size: 0.9em;
+}
+.kshf .listHeader > .bottomRow > .itemRank:before {
+  content: "#";
+}
 .kshf .listHeader > .bottomRow > .header_listSortColumn {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
   white-space: nowrap;
-  text-align: center;
+  text-align: right;
+  padding-right: 3px;
 }
 .kshf .listHeader > .bottomRow > .header_listSortColumn > .sortColumnName {
   font-weight: 300;
@@ -2493,6 +2510,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   cursor: default;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .listHeader > .bottomRow > .sortColumn {
   -webkit-align-self: flex-end;
@@ -2597,7 +2617,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
 }
 .kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=true] {
-  max-width: 1000px;
+  max-width: 100%;
 }
 .kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] {
   max-width: 0px;
@@ -2732,8 +2752,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader > .topRow > .mainTextSearch i.fa.clearText {
   position: absolute;
   display: none;
-  right: 2px;
-  top: 1px;
+  right: 4px;
+  top: 2px;
   cursor: pointer;
   color: gray;
 }

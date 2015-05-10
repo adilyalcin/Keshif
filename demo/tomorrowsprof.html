@@ -18,7 +18,7 @@
 
 function resetSize(){
     $('#chart_div').height($(window).height()-40);
-    $('#chart_div').width (1100);
+    $('#chart_div').width(700);
 };
 
 $(document).ready( function(){
@@ -26,15 +26,14 @@ $(document).ready( function(){
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        categoryTextWidth: 160,
+        categoryTextWidth: 300,
         source: {
             gdocId: '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
             sheets: [ {name:"Posts"}, {name:"Categories"} ]
         },
         facets: [ 
-            {   title: "Category", 
-                catTableName: "Categories", catLabel: "Category"
-            },{ title: "Date", layout:'bottom',
+            {   title: "Category", catTableName: "Categories", catLabel: "Category", layout: "middle"
+            },{ title: "Date", layout:'middle',
                 attribMap: function(){
                     var r =new Date(Date.now());
                     r.setDate(r.getDate()-this.id*4);
@@ -47,17 +46,17 @@ $(document).ready( function(){
             sortingOpts: [ {name: 'id'} , {name:"Category"}],
             textSearch: "Title",
             detailsToggle: "One",
-            recordView: function(d){
+            recordView: function(){
                 var str="";
                 // title
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+d.data.id+"\" target=\"_blanl\">"+d.data.Title+"<a/>";
+                str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+this.id+"\" target=\"_blanl\">"+this.Title+"<a/>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
                 // categories
                 str+="<div class=\"iteminfo iteminfo_1\">In: "+
-                    kshf.dt_id.Categories[d.data.Category].data.Category+
+                    kshf.dt_id.Categories[this.Category].data.Category+
                     "</div>";
                 str+="</span>";
 

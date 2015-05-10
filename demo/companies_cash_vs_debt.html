@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+
 var getIcon = function(str){
     switch(str){
         case 'Financials': return ''+"<span class='industryIcon fa fa-money'></span>"
@@ -40,22 +41,19 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Companies", id:'Stock'} ]
         },
         facets: [
-            {   title: "Industry",
-                attribMap: function(){ return this.Industry+" "+getIcon(this.Industry); }
+            {   title: "Industry", attribMap: function(){ return this.Industry+" "+getIcon(this.Industry); }
             },{ title: "Cash vs. Debt", layout: 'left',
-                attribMap: function(){
-                    return ((this['Cash ($B)']-this['Debt ($B)'])>0)?"More cash":"More debt";
-                }
+                attribMap: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); }
             },{ title: "Cash", attribMap: 'Cash ($B)', unitName: 'B$', intervalScale: 'log'
             },{ title: "Debt", attribMap: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
-//                        },{ title: "Market Capitalization", layout: 'right'
-//                        },{ title: "Profit Margin", layout: 'right'
+//          },{ title: "Market Capitalization", layout: 'right'
+//          },{ title: "Profit Margin", layout: 'right'
             }
         ],
         itemDisplay: {
             detailsToggle: "none",
             sortingOpts: [ 
-                {name: 'Value', value:function(d){ return (d.data['Cash ($B)']-d.data['Debt ($B)']); }},
+                {name: 'Value', value:function(){ return (this['Cash ($B)']-this['Debt ($B)']); }},
                 {name: 'Debt ($B)'},
                 {name: 'Cash ($B)'},
                 {name: 'Profit Margin'},
@@ -63,11 +61,9 @@ google.setOnLoadCallback(function(){
             ],
             displayType: 'grid',
             textSearch: 'Stock',
-            recordView: function(d){
-                var str="";
-                str+=getIcon(d.data.Industry);
-                str+=" "+d.data.Stock;
-                var cash = (d.data['Cash ($B)']-d.data['Debt ($B)']);
+            recordView: function(){
+                var str=getIcon(this.Industry)+" "+this.Stock;
+                var cash = this['Cash ($B)']-this['Debt ($B)'];
                 if(cash>0){
                     str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
                 } else {

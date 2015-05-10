@@ -49,19 +49,14 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 120,
             displayType: 'grid',
-            sortingOpts: [{ name: 'Date', label: function(d){ return timeFormat(d.data.Date);} }],
+            sortingOpts: [{ name: 'Date', label: function(){ return timeFormat(this.Date);} }],
             textSearchFunc: function(){ return this.Info; },
-            recordView: function(d){ 
-                var str='';
-                // Demo name
-                str+="<a target='_blank' href='http://content.time.com"+d.data.MagazineURL+"'><img class='thumbImg'></a>";
-                str+="<span class='subTitle'>"+timeFormat(d.data.Date)+"</span>";
-                str+="<span class='title'>"+d.data.MagazineTitle+"</span>";
-                return str;
+            recordView: function(){ 
+                return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+
+                  "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
+                  "<span class='title'>"+this.MagazineTitle+"</span>";
             },
-            visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.Thumbnail_2);
-            }
+            visibleCb: function(d){ d3.select(d.DOM.result).select("img").attr("src",this.Thumbnail_2); }
         }
     });
 });

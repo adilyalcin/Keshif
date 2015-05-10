@@ -192,13 +192,13 @@ $(document).ready(function() {
                 return this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
             },
             sortingOpts: [{ 
-                name: "| <span class='fa fa-comment'></span> |", value: function(d){ 
-                    var v=d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+                name: "| <span class='fa fa-comment'></span> |", value: function(){ 
+                    var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                     if(v===null) return 0;
                     return v.length; 
                 } }],
-            recordView: function(d){ 
-                var v=d.data[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+            recordView: function(){ 
+                var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                 return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
             }
         }

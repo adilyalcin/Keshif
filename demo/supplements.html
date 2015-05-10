@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
                 attribMap: function(){ return this.evidence*2; }
             },{ title: "<i class='fa fa-eye'></i> One to Watch",
                 description: "Few studies but promising results",
-                attribMap: function(){ if(this.onetowatch!=="") return true; }
+                attribMap: function(){ this.onetowatch!=="") return true; }
             },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity",
                 description: "Popularity based on Google search results",
                 attribMap: "popularity", intervalScale: "log",
@@ -57,9 +57,8 @@ google.setOnLoadCallback(function(){
                 description: "The type of condition", layout: 'right',
             },{ title: "Health Conditions", attribMap: "condition",
                 description: "What condition does the supplement purport to affect?", layout: 'right',
-            },{ title: "Source", attribMap: "source",
-                description: "The key study for grading the evidence", layout: 'right',
-                collapsed: true
+            },{ title: "Source", attribMap: "source", collapsed: true,
+                description: "The key study for grading the evidence", layout: 'right'
             }
         ],
         itemDisplay: {
@@ -67,13 +66,13 @@ google.setOnLoadCallback(function(){
 //          detailsToggle: 'zoom',
             sortingOpts: [{ name: 'popularity' }],
             textSearch: 'name',
-            recordView: function(d){
+            recordView: function(){
                 var str="";
-                if(d.data.onetowatch!==""){
+                if(this.onetowatch!==""){
                     // one to watch
                     str+="<i class='fa fa-eye item_watch' title='One to Watch'></i>";
                 }
-                str+="<span class='item_title'>"+d.data.name+"</span><br>";
+                str+="<span class='item_title'>"+this.name+"</span><br>";
                 // add heartbeat with delay
                     var delay = Math.round(Math.random()*1000);
                     var delay_str = "animation-delay:"+delay+"ms;"+
@@ -82,16 +81,16 @@ google.setOnLoadCallback(function(){
                         "-o-animation-delay:"+delay+"ms;";
                     var str_heart = "<i class='fa fa-heart' style='"+delay_str+"'></i>";
                 str+="<span class='item_condition'>";
-                for(var i=0; i<d.data.evidence;i++){ str+=str_heart; }
-                str+="<span style='margin-left: 5px'>"+d.data[2]+"</span></span>";
+                for(var i=0; i<this.evidence;i++){ str+=str_heart; }
+                str+="<span style='margin-left: 5px'>"+this[2]+"</span></span>";
 
-                if(d.data.url){
+                if(this.url){
                     str+="<span class='item_source'> Study:";
-                    if(d.data.url){
-                        str+=" <a href='"+d.data.url+"' target='_blank' class='fa fa-external-link'></a>";
+                    if(this.url){
+                        str+=" <a href='"+this.url+"' target='_blank' class='fa fa-external-link'></a>";
                     }
-                    if(d.data['url of 2nd key study']){
-                        str+=" <a href='"+d.data['url of 2nd key study']+
+                    if(this['url of 2nd key study']){
+                        str+=" <a href='"+this['url of 2nd key study']+
                             "' target='_blank' class='fa fa-external-link'></a>";
                     }
                     str+="</span>";

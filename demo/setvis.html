@@ -86,13 +86,13 @@ $(document).ready( function(){
             textSearch: "Title",
             displayType: 'grid',
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.DOM.result).select("img").attr("src",
-                    "http://www.cs.umd.edu/~yalcin/keshif_res/setvis/"+d.data.Key+".png");
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/setvis/"+this.Key+".png");
             }
         }
     });

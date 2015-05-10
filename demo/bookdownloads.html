@@ -47,7 +47,7 @@ $(document).ready( function(){
         facets: [
             {   title: "Hour", layout: 'bottom',
                 attribMap: function(){ return this.downloadTime.hour(); },
-                intervalTickFormat: function(d){ return d3.format("d")(d)+":00"; }
+                unitName: ": 00"
             },{ title: "Time", layout: 'bottom',
                 attribMap: function(){ return new Date(this.downloadTime);}
             },{ title: "Day",
@@ -70,7 +70,7 @@ $(document).ready( function(){
                 sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
             },{ title: "Year",
                 attribMap: function(){ return this.downloadTime.year(); },
-                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
+                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }] // categorical facet
             }
         ],
     });

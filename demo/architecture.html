@@ -57,20 +57,17 @@ $(document).ready( function(){
             {   title: "Architect"
             },{ title: "Style", layout: 'right'
             },{ title: "Year (Post 14th century)", layout: 'bottom',
-                attribMap: function(){
-                    if(this.Year.getFullYear()<1500) return;
-                    return this.Year;
-                }
+                attribMap: function(){ if(this.Year.getFullYear()>1500) return this.Year; }
             }
         ],
         itemDisplay: {
             sortingOpts: [{ name:'Year' }],
-            textSearch: "Name",
             autoExpandMore: false,
             displayType: 'grid',
             maxVisibleItems_Default: 48,
-            recordView: function(d){
-                return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+d.data.Name+"</span>";
+            textSearch: "Name",
+            recordView: function(){
+                return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+this.Name+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.DOM.result).select("img").attr("src",

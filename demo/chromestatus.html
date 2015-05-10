@@ -55,12 +55,9 @@ $(document).ready( function(){
             },{ title: "Updated By", attribMap: "updated_by", layout: 'right', collapsed: true,
             },{ /*title: "Status (vs.)", layout: 'right',
                 facets: [
-            {*/ title: "FireFox Status", layout: 'right',
-                attribMap: function(){ return this.ff_views.text; },
-            },{ title: "IE Status", layout: 'right',
-                attribMap: function(){ return this.ie_views.text; },
-            },{ title: "Safari Status", layout: 'right',
-                attribMap: function(){ return this.safari_views.text; },
+            {*/ title: "Firefox Status", attribMap: function(){ return this.ff_views.text; }, layout: 'right',
+            },{ title: "IE Status", attribMap: function(){ return this.ie_views.text; }, layout: 'right',
+            },{ title: "Safari Status", attribMap: function(){ return this.safari_views.text; }, layout: 'right',
                 /*}
             ]*/
             },{ title: "Update Date", layout: 'bottom',
@@ -69,13 +66,13 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [{ name:'Milestone', value: function(d){ return d.data.shipped_milestone; }}],
-            textSearch: "title",
+            sortingOpts: [{ name:'Milestone', value: "shipped_milestone" }],
+            textSearch: 'title',
             displayType: 'list',
-            detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='http://www.chromestatus.com/feature/"+d.data.id
-                    +"'><span class='title'>"+d.data.name+"</span></a>";
+            detailsToggle: 'zoom',
+            recordView: function(){
+                return "<a target='_blank' href='http://www.chromestatus.com/feature/"+this.id
+                    +"'><span class='title'>"+this.name+"</span></a>";
             }
         }
     });

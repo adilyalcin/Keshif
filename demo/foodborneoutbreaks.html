@@ -78,14 +78,14 @@ $(document).ready( function(){
                 },
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
                 catLabel: function(d){ return getMonthNameFromNumber(this.id); }
-            },{ title: "Contaminated_Ingredient",
-            },{ title: "State", layout: 'middle'
-            },{ title: "LocationOfConsumption", layout: 'middle'
-            },{ title: "FoodVehicle", layout: 'middle', minAggrValue: 5
-            },{ title: "TotalIll", layout: 'right', intervalScale: 'log'
+            },{ title: "Contaminated Ingredient", layout: 'middle', attribMap: "Contaminated_Ingredient"
+            },{ title: "State"
+            },{ title: "Location Of Consumption", attribMap: "LocationOfConsumption", layout: 'middle'
+            },{ title: "Food Vehicle", attribMap: "FoodVehicle", layout: 'middle', minAggrValue: 5
+            },{ title: "Total Ill", attribMap: "TotalIll", layout: 'right', intervalScale: 'log'
             },{ title: "TotalHospitalizations", layout: 'right', intervalScale: 'log'
-            },{ title: "TotalDeaths", layout: 'right', intervalScale: 'log'
-            },{ title: "Genus_Species", layout: 'right'
+            },{ title: "Total Deaths", attribMap: "TotalDeaths", layout: 'right', intervalScale: 'log'
+            },{ title: "Genus Species", attribMap: "Genus_Species", layout: 'right'
             },{ title: "Status", layout: 'right'
             }
         ]

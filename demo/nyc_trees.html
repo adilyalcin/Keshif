@@ -51,42 +51,35 @@ $(document).ready( function(){
             callback: loadData
         },
         facets: [
-            {   title: "Total Number of <span class='fa fa-tree'></span>'s",
-                attribMap: "Total",
+            {   title: "Total Number of <span class='fa fa-tree'></span>'s", attribMap: "Total",
                 intervalScale: "log"
-            },{ title: "Number of <span class='fa fa-tree'></span>s in Bronx",
-                attribMap: "Bronx",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Bronx", attribMap: "Bronx",
                 intervalScale: "log"
-            },{ title: "Number of <span class='fa fa-tree'></span>s in Brooklyn",
-                attribMap: "Brooklyn",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Brooklyn", attribMap: "Brooklyn",
                 intervalScale: "log"
-            },{ title: "Number of <span class='fa fa-tree'></span>s in Queens",
-                attribMap: "Queens",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Queens", attribMap: "Queens",
                 intervalScale: "log"
-            },{ title: "Number of <span class='fa fa-tree'></span>s in Manhattan",
-                attribMap: "Manhattan",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Manhattan", attribMap: "Manhattan",
                 intervalScale: "log"
-            },{ title: "Number of <span class='fa fa-tree'></span>s in Staten Island",
-                attribMap: "Staten Island",
+            },{ title: "Number of <span class='fa fa-tree'></span>s in Staten Island", attribMap: "Staten Island",
                 intervalScale: "log"
             }
         ],
         itemDisplay: {
-            sortingOpts: [ { name: '# Total Trees', value: function(d){ return d.data.Total;} } ],
+            sortingOpts: [{ name: '# Total Trees', value: function(){ return this.Total;} }],
             detailsToggle: "zoom",
             displayType: 'grid',
             textSearch: 'Tree Name',
             textSearchFunc: function(){ return this.Common;},
-            recordView: function(d){
-    var str='';
-    str+="<span class='thumbnail'><img style='background-color:#"+d.data.color+"' class='thumbImg'></span>";
-    str+="<span class='authorName'>"+d.data.Latin+"</span>";
-    str+="<span class='title'>"+d.data.Common+"</span>";
-    return str;
+            recordView: function(){
+                return ""+
+                    "<span class='thumbnail'><img style='background-color:#"+this.color+"' class='thumbImg'></span>"+
+                    "<span class='authorName'>"+this.Latin+"</span>"+
+                    "<span class='title'>"+this.Common+"</span>";
             },
             visibleCb: function(d){
-                d3.select(this).select("img").attr("src",
-                    "http://www.cloudred.com/labprojects/nyctrees/trees/"+d.data.file);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "http://www.cloudred.com/labprojects/nyctrees/trees/"+this.file);
             }
         }
     });

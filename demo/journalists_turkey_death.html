@@ -27,14 +27,12 @@ google.setOnLoadCallback(function(){
         facets: [
             {   title: "Organization"
             },{ title: "Location", layout: 'right'
-            },{ title: "Date",
-                type: 'interval',
-                layout: 'bottom'
+            },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [ {name: 'Date',value: function(d){ return d.data.Date.getFullYear(); } } ],
+            sortingOpts : [ {name: 'Date',value: function(){ return this.Date.getFullYear(); } } ],
             textSearch : "Journalist",
             recordView: 'Journalist'
         }

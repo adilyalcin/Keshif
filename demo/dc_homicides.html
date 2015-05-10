@@ -50,7 +50,15 @@ $(document).ready( function(){
             },{ title: "Sex", attribMap: "sex", 
                 catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id);
             }
-            },{ title: "Quadrant", layout: 'right', attribMap: "quadrant"
+            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', attribMap: "quadrant",  
+                catLabel: function(){
+                    switch(this.id){
+                        case "SE": return "South-East";
+                        case "SW": return "South-West";
+                        case "NE": return "North-East";
+                        case "NW": return "North-West";
+                    }
+                }
             },{ title: "Neighborhood", layout: 'right',
                 attribMap: function(){ if(this.nbhd) return this.nbhd.subhood; }
             },{ title: "Status", layout: 'right',
@@ -72,11 +80,11 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 60,
             sortingOpts: [
-                { name: 'Year', value: function(d){ return d.data.incident_date.getFullYear(); }},
-                { name: 'Age',  value: function(d){ return d.data.age; }}
+                { name: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
+                { name: 'Age', value: "age" }
             ],
             detailsToggle: "zoom",
-            recordView: function(d){ return d.data.last_name +", "+d.data.first_name; }
+            recordView: function(){ return this.last_name +", "+this.first_name; }
         }
     });
 });

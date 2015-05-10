@@ -31,6 +31,7 @@ var loadData = function(browser){
         success: function(data){
             browser.primaryTableName = "Posts";
             kshf.dt.Posts = [];
+            kshf.dt_id.Posts = {};
             data.forEach(function(item){
                 item.Contributors = contributorData[item.title];
 /*                            if(item.Contributors){
@@ -44,7 +45,9 @@ var loadData = function(browser){
                     });
                     item.Contributors = cc;
                 }*/
-                kshf.dt.Posts.push(new kshf.Item(item,"id"));
+                var item=new kshf.Item(item,"id");
+                kshf.dt.Posts.push(item);
+                kshf.dt_id.Posts[item.id] = item;
             });
             browser.loadCharts();
         }
@@ -73,49 +76,35 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Category", attribMap: "type",
-                catLabel: function(){ return getType(d.data.id)+" <span class='typeImg_"+d.data.id+"'></span>"; }
+                catLabel: function(){ return getType(this.id)+" <span class='typeImg_"+this.id+"'></span>"; }
             },{ title: "Contributors",
-            },{ title: "Number of Related Posts",
-//                showPercentile: true,
+            },{ title: "Number of Related Posts", // showPercentile: true,
                 attribMap: function(){ return this.links.length; },
-            },{ title: "Related To",
-                attribMap: "links"
-                catTableName: "Posts",
-                catLabel: "title",
+            },{ title: "Related To", attribMap: "links", catTableName: "Posts", catLabel: "title"
             }
         ],
         itemDisplay: {
-            sortColWidth: 100,
+            sortColWidth: 80,
             sortingOpts: [
+                { name:'# Related Posts', value: function(){ return this.links.length}},
                 { name:'First Contr.', inverse: true,
-                    value: function(d){
-                        if(d.data.Contributors===undefined) return "-";
-                        return d.data.Contributors[0];
+                    value: function(){
+                        if(this.Contributors===undefined) return "-";
+                        return this.Contributors[0];
                     }
-                },
-                { name:'# Related', value: function(d){ return d.data.links.length}},
+                }
             ],
-//            showRank: true,
+            showRank: true,
             showSelectBox: true,
-            detailsToggle: "One",
+            detailsToggle: "one",
             textSearch: "Title and text",
             textSearchFunc: function(){ return this.title + " " + this.text;},
-            recordView: function(d) {
-                var str="";
-
-                str +="<span class='typeImg'></span> "+d.data.title +" <a target='_blank' href='"+d.data.url+"' class='fa fa-external-link viewExternal'>view</a></div>";;
-
-                // add text
-                str+="<span class=\"item_details\">";
-                    str+="<img class='itemImg' src=''>";
-                str+=d.data.text+"</span>";
-                
-                return str;
+            recordView: function() {
+                return "<span class='typeImg'></span> "+this.title +" <a target='_blank' href='"+this.url+"' class='fa fa-external-link viewExternal'>view</a></div>"+
+                    "<span class='item_details'><img class='itemImg' src=''></span>";
             },
             detailCb: function(d){
-                if(d.data.image ===undefined) return;
-                var d3Item = d3.select(d.DOM.result);
-                d3Item.select(".itemImg").attr("src",d.data.image);
+                if(this.image)  d3.select(d.DOM.result).select(".itemImg").attr("src",this.image);
             }
         }
     });

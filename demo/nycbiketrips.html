@@ -73,14 +73,14 @@ google.setOnLoadCallback(function(){
                 }
             },{ title: "Hour of Day", layout: 'bottom',
                 attribMap: function(){ return this.TimeStart.hour(); },
-                unitName: ":00",
+                unitName: ": 00",
                 intervalScale: 'step'
             },{ title: "Duration", layout: 'bottom',
                 intervalScale: "log",
                 attribMap: function(){ return Math.round(this.Duration/60); },
-                unitName: " min"
-            },{ title: "BirthYear", layout: 'bottom', collapsed: true, intervalScale: 'linear'
-                // TODO: Actually this is time, the value is year, but the variance is high so kshf tries to map it to log-scale
+                unitName: "min"
+            },{ title: "Birth Year", layout: 'bottom', collapsed: true,
+                attribMap: function(){ return new Date(this.BirthYear,1,1); }
             }
         ]
     });

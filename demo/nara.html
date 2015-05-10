@@ -106,31 +106,27 @@ var loadBrowser = function(){
                     return r;
                 }
             },{ title: "contributors",
-            },{ title: "Types",
-                attribMap: "typesOfArchivalMaterials"
+            },{ title: "Types", attribMap: "typesOfArchivalMaterials"
             },{ title: "levelOfDescription", collapsed: true
-            },{ title: "Use Restrictions", collapsed: true,
-                attribMap: "useRestrictions"
-            },{ title: "Access Restrictions", collapsed: true,
-                attribMap: "accessRestrictions"
+            },{ title: "Use Restrictions", attribMap: "useRestrictions", collapsed: true,
+            },{ title: "Access Restrictions", attribMap: "accessRestrictions", collapsed: true,
             }
         ],
         itemDisplay: {
-            sortingOpts : [ { name: 'id' } ],
+            sortingOpts: [ { name: 'id' } ],
             displayType: 'grid',
             textSearch: "title",
-            recordView : function(d){
-//                d.data.url = d.data.url.replace("govid","gov/id");
-                return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'>"+
-                    "<img class='thumbImg'></a><span class='title'>"+d.data.title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
+                    "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
             },
             visibleCb: function(poster){
-                if(poster.data.objects===undefined) return;
+                if(this.objects===undefined) return;
                 var url;
-                if(poster.data.objects.object.length){
-                    url = poster.data.objects.object[0].thumbnail['@url'];
+                if(this.objects.object.length){
+                    url = this.objects.object[0].thumbnail['@url'];
                 } else {
-                    url = poster.data.objects.object.thumbnail['@url'];
+                    url = this.objects.object.thumbnail['@url'];
                 }
                 // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
                 // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif

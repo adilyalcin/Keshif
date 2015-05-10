@@ -180,41 +180,29 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Type", 
-            },{ title: "Year", layout: 'middle', intervalScale: 'time'
-            },{ title: "Price ($) [Log]", attribMap: "Price", intervalScale: "log"
+            },{ title: "Year", layout: 'middle'
+            },{ title: "Price", intervalScale: "log", unitName: "$"
             },{ title: "Company", layout: "right" 
-            },{ title: "Degree of Freedom",  intervalScale: "step"
+            },{ title: "Degree of Freedom"
             }
         ],
         itemDisplay: {
             sortingOpts : [{
-                name: 'Year', value: function(d){ 
-                    if(d.data.Year===undefined) return 0;
-                    return d.data.Year.getTime();
-                },
-                label: function(d){
-                    if(d.data.Year===undefined) return 0;
-                    return d.data.Year.getFullYear();
-                }
-            },{
-                name: 'Price',
-                label: function(d){
-                    if(d.data.Price===undefined) return "NA";
-                    return d.data.Price+" $";
-                }
+                name: 'Year', value: function(){ if(this.Year) return this.Year.getTime(); },
+                label: function(){ if(this.Year) return this.Year.getFullYear(); }
             }],
             textSearch: "Name",
             displayType: 'grid',
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
-            recordView: function(d){
-                return "<a href='"+d.data.url+"' target='_blank'><img><span class='title'>"+d.data.Name+"</span></a>";
+            recordView: function(){
+                return "<a href='"+this.url+"' target='_blank'><img><span class='title'>"+this.Name+"</span></a>";
             },
             visibleCb: function(d){
-                if(d.data['Related Images'].length===0) return;
+                if(this['Related Images'].length===0) return;
                 d3.select(d.DOM.result).select("img").attr("src",
                     "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
-                    +d.data['Related Images'][0]);
+                    +this['Related Images'][0]);
             }
         }
     });

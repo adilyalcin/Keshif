@@ -29,48 +29,44 @@ google.setOnLoadCallback( function() {
         listMaxColWidthMult: 0.4,
         categoryTextWidth: 200,
         source: {
-            // google spreadsheet ID
             gdocId : '0Ai6LdDWgaqgNdDN4Qm5aQTVwQW1fSnE1RTl1LXhzbGc',
-            // the sheets to load from the spreadsheet
             sheets : [ {name: "Publications"} ]
         },
         loadedCb: function(){
-            // convert authors and keywords columns in publication table ( space separated IDs) to array
             kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );
         },
         facets: [
             {   title: "Topic",
             },{ title: "Co-Author",
             },{ title: "Pub. Type"
-            },{ title: "Date",
-                layout: 'middle'
+            },{ title: "Date", layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 72,
             sortingOpts : [
-                {   name: 'Year', value: function(d){ return d.data.Date.getFullYear(); } }
+                { name: 'Year', value: function(){ return this.Date.getFullYear(); } }
             ],
             textSearch : 'Title',
             detailsToggle : "Multi",
-            recordView : function(item){
+            recordView : function(){
                 var j;
                 var str="";
-                var ptype=item.data['Pub. Type'];
+                var ptype=this['Pub. Type'];
                 // paper name
                 str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=item.data.Title;
+                str+=this.Title;
                 if(ptype!=='') str+=" <i>("+ptype+")</i>";
                 str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
                 // Venue
-                var year = item.data.Date.getFullYear();
-                var venue=item.data.Venue;
-                var subvenue=item.data['Venue-Sub'];
-                var location=item.data.Location;
-                var publisher=item.data.Publisher;
+                var year = this.Date.getFullYear();
+                var venue=this.Venue;
+                var subvenue=this['Venue-Sub'];
+                var location=this.Location;
+                var publisher=this.Publisher;
                 if(venue!==''){
                     str+="<div class=\"iteminfo iteminfo_1\"> ["+year+"] "+venue;
                     if(subvenue!=='') str+=", "+subvenue;
@@ -79,12 +75,12 @@ google.setOnLoadCallback( function() {
                     str+="</div>";
                 }
                 // co-authors
-                var coAuthors=item.data['Co-Author'];
+                var coAuthors=this['Co-Author'];
                 if(coAuthors && coAuthors.length!==0){
                     str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: "+coAuthors+"</div>";
                 }
                 // topics
-                var topics=item.data.Topic;
+                var topics=this.Topic;
                 if(topics && topics.length!==0){
                     str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
                 }

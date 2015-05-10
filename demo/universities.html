@@ -256,14 +256,14 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 82,
             sortingOpts: [
-                { name:'Enrollment', value: function(d){ return d.data["DRVEF2013.Total  enrollment"];}},
-                { name:'Grad. Rate', value: function(d){ return d.data["DRVGR2013.Graduation rate, total cohort"];}}
+                { name:'Enrollment', value: "DRVEF2013.Total  enrollment" },
+                { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort" }
             ],
             textSearch: "institution name",
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a href='http://"+d.data["HD2013.Institution's internet website address"]
-                    +"' target='_blank'>"+d.data["institution name"]+"</a>"
+            recordView: function(){
+                return "<a href='http://"+this["HD2013.Institution's internet website address"]
+                    +"' target='_blank'>"+this["institution name"]+"</a>"
             }
         }
     });

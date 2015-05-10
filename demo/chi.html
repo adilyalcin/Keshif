@@ -158,19 +158,13 @@ google.setOnLoadCallback(function(){
                 intervalScale: 'step',
                 layout: 'middle'
             },{ title: "Authors",
-                catTableName: "People",
-                catLabel: function(){ return this.last_name+", "+this.first_name; },
+                catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
                 facets: [{ title: "Affiliaton" }]
-            },
-            /*,{ title: "Term"
-            },{ title: "# of References", collapsed: true,
+            },{
+            /*,{ title: "# of References", collapsed: true,
                 attribMap: "ReferenceTotal"}
-            }*/,{ title: "# of Citations",
-                attribMap: function(){
-                    if(this.CitedByTotal===0) return;
-                    return this.CitedByTotal;
-                }
-            }/*,{
+            },{ title: "# of Citations", attribMap: "CitedByTotal"
+            },{*/
                 title: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
@@ -178,11 +172,11 @@ google.setOnLoadCallback(function(){
                 attribMap: "References",
                 // Using the main table name, this will enable linking through items
                 catTableName: "Articles"
-            }*/
+            }
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [{ name: 'Citations', value: function(d){ return d.data.CitedByTotal; } }],
+            sortingOpts: [{ name: 'Citations', value: "CitedByTotal" }],
             textSearch: "Title",
             linkText: 'Citations to',
             detailsToggle: "zoom",

@@ -190,12 +190,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     .noselect {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        .user-select(none);
     }
 
     .attributeList{
@@ -217,11 +212,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             background-color: rgb(232, 232, 232);
             border: solid 1px lightgray;
             cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            /*white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;*/
+            .user-select(none);
             > .summaryTitle{
                 display: inline;
             }
@@ -1811,19 +1802,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 display: block;
                                 text-align: center;
                                 white-space: nowrap;
-                                > .unitName{
-                                    color: gray;
-                                }
                             }
                             > .line{
                                 position: absolute;
                                 top: -10px;
                                 height: 10px;
-                                border-left: solid 1px gray;
+                                border-left: solid 1px rgb(160, 160, 160);
                                 display: block;
                             }
                         }
                     } // labelGroup
+                    .unitName{
+                        opacity: 0.6;
+                        margin-left: 2px;
+                    }
+                    &[scaletype="log"] > .labelGroup > .tick > .line{
+                        top: -22px;
+                        height: 22px;
+                    }
+                    &[scaletype="linear"] > .labelGroup > .tick > .line{
+                        top: -22px;
+                        height: 22px;
+                    }
                 } // intervalSlider
 
             } // facetInterval
@@ -2303,13 +2303,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     > .itemRank{
                         font-size: 0.8em;
-                        margin-left: 2px;
                         margin-top: 2px;
                         color: gray;
                         font-size: 0.8em;
                         font-weight: 300;
                         float: left;
-                        width: 18px;
+                        width: 13px;
+                        font-style: italic;
+                        text-align: right;
                     }
                     > .itemToggleDetails{
                         width: 18px;
@@ -2372,17 +2373,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .display(flex);
             .flex-direction(row);
             min-height: 18px;
+            > .itemRank{
+                width: 13px;
+                text-align: right;
+                font-weight: 100;
+                font-size: 0.9em;
+                &:before{
+                    content: "#";
+                }
+            }
             > .header_listSortColumn{
                 .align-self(flex-end);
                 white-space: nowrap;
-                text-align: center;
+                text-align: right;
+                padding-right: 3px;
                 > .sortColumnName{
                     font-weight: 300;
                     font-size: 0.9em;
                     margin: 0px 0px 1px 3px;
                     display: inline-block;
                     cursor: default;
-                    -webkit-user-select: none;
+                    .user-select(none);
                 }
             }
             > .sortColumn {
@@ -2485,7 +2496,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     &[ready=true]{ 
         //                opacity: 1;
-                        max-width: 1000px;
+                        max-width: 100%;
                     }
                     &[ready=false]{ 
         //                opacity: 1;
@@ -2605,8 +2616,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 i.fa.clearText{
                     position: absolute;
                     display: none;
-                    right: 2px;
-                    top: 1px;
+                    right: 4px;
+                    top: 2px;
                     cursor: pointer;
                     color:gray;
                     &:hover{

@@ -94,7 +94,7 @@ $(document).ready( function(){
                 sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
                 catLabel: function(){
                     var str='';
-                    for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>"
+                    for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
                     return str;
                 }
             },{ title: "Page Views", layout: 'right'
@@ -103,16 +103,13 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts: [
-                { name:'Page Views' },
-                { name:'id', inverse:true },
-            ],
+            sortingOpts: [ {name:'Page Views'}, {name:'id', inverse:true} ],
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
-            recordView: function(article){
+            recordView: function(){
                 return "<a target='_blank' class='articleLink' href='"+
-                    article.data.url+"'>"+article.data.Name+" <i class='fa fa-external-link'></i></a>";
+                    this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";
             }
         }
     });

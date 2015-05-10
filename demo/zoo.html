@@ -20,8 +20,8 @@ google.setOnLoadCallback(function () {
         domID: "#chart_div",
         categoryTextWidth: 135,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
-            sheets : [ {name:"Animals"} ]
+            gdocId: '0Ai6LdDWgaqgNdF9UbDNXRmRCZThvb2I0YlIzT2pPN0E',
+            sheets: [ {name:"Animals"} ]
         },
         facets: [
             {   title: "# of Legs", intervalScale: 'step'
@@ -48,10 +48,8 @@ google.setOnLoadCallback(function () {
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [
-                { name: 'Name', value: function(animal){ return animal.data.Name[0]; } }
-            ],
-            textSearch : 'Name',
+            sortingOpts: [{ name: 'Name', value: function(){ return this.Name[0]; } }],
+            textSearch: 'Name',
             recordView: 'Name'
         }
     });

@@ -21,11 +21,6 @@
 var demoID = 13;
 var postCols;
 
-function getAuthorName(d){
-    var authorID = d.data[postCols['Author']];
-    return kshf.dt_id.Authors[authorID].data[1];
-};
-
 $(document).ready( function(){
     resizeBrowser(150,50);
     $(window).resize(function() {
@@ -57,44 +52,21 @@ $(document).ready( function(){
         itemDisplay: {
             sortingOpts: [
                 {   name: 'Date',
-                    value: function(d){ return d.data.Date.getTime(); },
-                    label: function(d){ return moment(d.data.Date).format("MMM Do, YY"); }
-                },{ name: '#Comments',
-                    value: function(d){ return d.data['# of Comments']; }
+                    value: function(){ return this.Date.getTime(); },
+                    label: function(){ return moment(this.Date).format("MMM Do, YY"); }
+                },{ name: '# of Comments'
                 }
             ],
             textSearch: "Title",
-/*            detailsToggle: "One",
-            recordView: function(d) {
-                var str="";
-                
-                str+="<div class='iteminfo iteminfo_0 postName'>"
-                   + "<a href='"+d.data[postCols['URL']]+"' target='_blanl'>"+d.data[postCols['Title']]+"<a/>"
-                   + "</div>";
-
-                str+="<span class='item_details'> <img>";
-                    // categories
-                    str+="<div class='iteminfo iteminfo_1'>About: "+d.data[postCols['Category']]+"</div>";
-                    // author
-                    str+="<div class='iteminfo iteminfo_1'>";
-                    str+="Written by: "+getAuthorName(d)+" Comments: "+d.data[postCols['# of Comments']];
-                    str+="</div>";
-                str+="</span>"; // item_details
-
-                return str;
-            },
-            detailCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data[postCols['Img']]);
-            },*/
             displayType: 'grid',
             maxVisibleItems_Default: 50,
             detailsToggle: "zoom",
             recordView: function(d){
-                return "<a target='_blank' href='"+d.data.URL+
-                    "'><img><span class='subTitle' style='margin-left:3px;'>"+d.data.Title+"</span></a>";
+                return "<a target='_blank' href='"+this.URL+
+                    "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.Img);
+                d3.select(d.DOM.result).select("img").attr("src",this.Img);
             },
         }
     });

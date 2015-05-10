@@ -152,18 +152,18 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle: "zoom",
-            recordView: function(d){
+            recordView: function(){
                 var iconList="<div class='iconList'>";
-                d.data.categories.forEach(function(cat){
+                this.categories.forEach(function(cat){
                     iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
                 });
                 iconList+="</div>";
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Name+
-                    "' class='thumbnail' title='"+d.data.Info+"'><img class='thumbImg'></a><span class='title'>"+d.data.Name+"</span>"+
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
+                    "' class='thumbnail' title='"+this.Info+"'><img class='thumbImg'></a><span class='title'>"+this.Name+"</span>"+
                     iconList;
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",d.data.imageURL_full);
+                d3.select(d.DOM.result).select("img").attr("src",this.imageURL_full);
             }
         }
     });

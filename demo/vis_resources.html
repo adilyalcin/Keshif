@@ -38,34 +38,29 @@ function getImageName(url){
 };
 
 $(document).ready( function(){
-    resizeBrowser(100,80);
-    $(window).resize(function() {
-        resizeBrowser(100,80);
-        browser.updateLayout();
-    });
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        categoryTextWidth: 120,
+        categoryTextWidth: 320,
         itemName: "Visualization Resources",
         source: {
             url: "http://www.visualisingdata.com/index.php/resources/",
             callback: loadData
         },
-        facets: [{ title: "category" }],
+        facets: [{ title: "category", layout: "middle" }],
         itemDisplay: {
             sortingOpts: [{name:'id', inverse: true}],
             textSearch: "title",
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='"+d.data.url+"' class='thumbnail'><img class='thumbImg'></a>"+
-                    "<span class='title'>"+d.data.title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='"+this.url+"' class='thumbnail'><img class='thumbImg'></a>"+
+                    "<span class='title'>"+this.title+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.DOM.result).select("img").attr("src",
-                    "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(d.data.image_src));
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(this.image_src));
             }
         }
     });
@@ -85,6 +80,10 @@ var imageDownloadScript = function(){
     }
     .content{
         padding: 3px;
+    }
+    #chart_div{
+        width: 800px;
+        height: 700px;
     }
 </style>
     </head>

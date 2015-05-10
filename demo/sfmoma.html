@@ -60,12 +60,13 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-    new kshf.Browser({
-        domID : "#chart_div",
+    browser = new kshf.Browser({
+        domID: "#chart_div",
         itemName: "Artworks in SFMOMA",
         categoryTextWidth: 180,
+        rightPanelLabelWidth: 280,
         barChartWidth: 70,
-        source : {
+        source: {
             url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
             callback: loadData
         },
@@ -92,7 +93,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [{ name: 'id'}],
+            sortingOpts: [{ name: 'id'}],
             textSearch: "Name",
             detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
@@ -104,7 +105,7 @@ $(document).ready( function(){
         <style>
             #chart_div {
                 height: 700px;
-                width: 1100px;
+                width: 1150px;
             }
         </style>
     </head>

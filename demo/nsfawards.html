@@ -42,7 +42,7 @@ $(document).ready(function(){
                 v=v.replace(/[^0-9]+/g,"");
                 d.data.AwardedAmountToDate = parseInt(v)/100;
             });
-            kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)'], ", ", false);
+            kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
         },
         facets: [
             {   title: "Program", attribMap: "Program(s)"
@@ -55,9 +55,7 @@ $(document).ready(function(){
                     var m = moment(dt,"MM/DD/YYYY");
                     return new Date(m);
                 },
-            },{ title: "NSFOrganization", collapsed: true,
-//                catTableName: 'nsf_orgs',
-//                catLabel: "name"
+            },{ title: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true,
             },{ title: "NSFDirectorate", collapsed: true
             },{ title: "ProgramManager", collapsed: true
             },{ title: "Awarded Amount", attribMap: "AwardedAmountToDate", unitName: "$",
@@ -68,7 +66,7 @@ $(document).ready(function(){
                 facets: [
                     {*/   title: "Name", attribMap: "Organization", layout: 'right',
                     },{ title: "State", attribMap: "OrganizationState", layout: 'right', collapsed: true,
-                        catLabel: function(d){ return getStateName(data.id); }
+                        catLabel: function(){ return getStateName(this.id); }
 /*                    },{
                         catTableName: 'states',
                         catLabel: function(d){
@@ -84,11 +82,9 @@ $(document).ready(function(){
             sortColWidth: 70,
             sortingOpts: [
                 {   name: 'Amount', 
-                    value: function(d){ 
-                        return d.data.AwardedAmountToDate;// "$333,360.00"
-                    },
-                    label: function(d){
-                        var v=d.data.AwardedAmountToDate;
+                    value: "AwardedAmountToDate",
+                    label: function(){
+                        var v=this.AwardedAmountToDate;
                         if(v===undefined) return "-";
                         return frmt(v) + " $";
                     }
@@ -97,9 +93,9 @@ $(document).ready(function(){
             ],
             textSearch: 'Title', // Off for now, content width is small.
             showRank: true,
-            recordView: function(d){
-                return " <a href='http://www.nsf.gov/awardsearch/showAward?AWD_ID="+d.data.AwardNumber
-                    +"' style='font-size: 1em' target='_blank'>"+d.data.Title
+            recordView: function(){
+                return " <a href='http://www.nsf.gov/awardsearch/showAward?AWD_ID="+this.AwardNumber
+                    +"' style='font-size: 1em' target='_blank'>"+this.Title
                     +" <span class='fa fa-external-link'></span></a>";
             }
         }

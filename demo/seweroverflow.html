@@ -47,50 +47,48 @@ $(document).ready(function(){
             url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
         },
         facets: [
-            {   title: "Overflow Type",
-                attribMap: function(){ return this[8]; }
-            },{ title: "Cause",
-                attribMap: function(){ return this[21]; }
-            },{ title: "Time",
+            {   title: "Overflow Type", attribMap: function(){ return this[8]; }
+            },{ title: "Cause", attribMap: function(){ return this[21]; }
+            },{ /*title: "Time",
                 facets: [
-                    {   title: "Year Discovered", 
+                    {*/   title: "Year Discovered", 
                         attribMap: function(){ 
                             // parses the date string and returns the year
                             return new Date(moment(this[11]));
                         }
                     },{ title: "Duration", attribMap: getDuration_Human
-                    }
-                ]
+                    /*}
+                ]*/
             },{ /*title: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [
                     {*/   title: "Zip Code",  layout: 'right',
                         attribMap: function(){ return this[17]; }
-                    },{ title: "County",  layout: 'right',
+                    },{ title: "County", layout: 'right',
                         attribMap: function(){ return this[23]; }
-                    },{ title: "Municipality/Facility",  layout: 'right',
+                    },{ title: "Municipality/Facility", layout: 'right',
                         attribMap: function(){ return this[9]; }
                     /*}
                 ]*/
             }
         ],
         itemDisplay: {
-            sortColWidth: 80,
+            sortColWidth: 110,
             sortingOpts: [
                 { name: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
-                { name: 'id', value: function(d){ return d.data[0]; } }
+                { name: 'id', value: function(){ return this[0]; } }
             ],
             recordView: function(d){
-                return d.data[16]+" -- "+getDuration_TotalMinutes(d)+" minutes";
+                return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";
             }
         }
     });
 });
 
-var getDuration_TotalMinutes = function(overflow){ 
-    var days = parseInt(overflow.data[13]);
-    var hours = parseInt(overflow.data[14]);
-    var minutes = parseInt(overflow.data[15]);
+var getDuration_TotalMinutes = function(){ 
+    var days = parseInt(this[13]);
+    var hours = parseInt(this[14]);
+    var minutes = parseInt(this[15]);
     if(isNaN(days)) days=0;
     if(isNaN(minutes)) minutes=0;
     if(isNaN(hours)) hours=0;

@@ -81,8 +81,7 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Movie",
-                catTableName: "Movies",
-                catLabel: function(d){ return d.data.Title; },
+                catTableName: "Movies", catLabel: function(){ return this.Title; },
                 facets: [
                     {   title: "Genre"
                     },{ title: "Rated"
@@ -149,7 +148,7 @@ $(document).ready( function(){
                 browserScreenings.listDisplay.showListItemDetails(this.parentNode.__data__);
             });
 
-            browserScreenings.listDisplay.dom.listItemGroup
+            browserScreenings.listDisplay.DOM.listItemGroup
                 .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
 
             if(myLoc) updateLocationSorting();
@@ -175,18 +174,18 @@ $(document).ready( function(){
                 },
                 inverse: true,
                 label: function(d){ 
-                    return moment(d.data[0]).format('MMM.Do,ddd');
+                    return moment(this.Date).format('MMM.Do,ddd');
                 }
             } ],
             detailsToggle: "One",
-            recordView: function(screening) {
-                var series = kshf.dt_id.Series[screening.data.Series];
+            recordView: function() {
+                var series = kshf.dt_id.Series[this.Series];
                 var str="";
                 str+="<span class=\"item_details\">";
                 str+="<a target='_blank'><img class='moviePoster' src=''></a>"
                 str+="</span>"; // item_details
 
-                str+="<span class='movieName'>"+screening.data.Movie+"</span>";
+                str+="<span class='movieName'>"+this.Movie+"</span>";
                 str+="<span class=\"item_details\">";
 
                 str+=
@@ -213,8 +212,8 @@ $(document).ready( function(){
                 // some of the data is already included in google spreadshee...
                 var d3Item = d3.select(screening.DOM.result);
 
-                var query="t="+screening.data.Movie;
-                var movieData = kshf.dt_id.Movies[screening.data.Movie];
+                var query="t="+this.Movie;
+                var movieData = kshf.dt_id.Movies[this.Movie];
                 if(movieData){
                     d3Item.select(".movieInfo").style("display","block");
                     d3Item.select(".moviePoster").attr("src",

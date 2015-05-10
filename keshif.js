@@ -970,7 +970,7 @@ kshf.List = function(kshf_, config, root){
 
     if(config.recordView!==undefined){
         if(typeof config.recordView === 'string'){
-            this.recordView = function(d){ return d.data[config.recordView];};
+            this.recordView = function(){ return this[config.recordView];};
         }
         if(typeof config.recordView === 'function'){
             this.recordView = config.recordView;
@@ -996,7 +996,12 @@ kshf.List = function(kshf_, config, root){
     this.sortingOpts = config.sortingOpts;
     this.sortingOpts.forEach(function(sortOpt){
         if(sortOpt.value===undefined) {
-            sortOpt.value = function(d){ return d.data[sortOpt.name]; };
+            sortOpt.value = function(){ return this[sortOpt.name]; };
+        } else {
+            if(typeof(sortOpt.value)==='string'){
+                var x=sortOpt.value;
+                sortOpt.value = function(){ return this[x]; };
+            }
         }
         if(!sortOpt.label) sortOpt.label = sortOpt.value;
         if(sortOpt.inverse===undefined) sortOpt.inverse = false;
@@ -1017,7 +1022,7 @@ kshf.List = function(kshf_, config, root){
     this.textSearchFunc = config.textSearchFunc;
     if(this.textSearch!==undefined){
         if(this.textSearchFunc===undefined){
-            this.textSearchFunc = function(){ return this[this.textSearch]; };
+            this.textSearchFunc = function(){ return this[me.textSearch]; };
         }
     }
 
@@ -1052,6 +1057,9 @@ kshf.List = function(kshf_, config, root){
     // **************************************************************************************************
     // Header stuff *************************************************************************************
 
+    if(this.showRank){
+        this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
+    }
     this.insertHeaderSortSelect();
     this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
     this.insertHeaderLinkedItems();
@@ -1111,13 +1119,12 @@ kshf.List.prototype = {
         var me=this;
 
         this.textFilter = this.browser.createFilter({
-            browser: this.browser,
             filteredItems: this.browser.items,
             parentSummary: this,
             // no filterView_Detail function, filtering text is already shown as part of input/filter
             onClear: function(filter){
                 this.DOM.mainTextSearch.select(".clearText").style('display','none');
-                this.DOM.mainTextSearch[0][0].value = "";
+                this.DOM.mainTextSearch.select("input")[0][0].value = "";
                 filter.filterStr = "";
             },
             onFilter: function(filter){
@@ -1143,7 +1150,7 @@ kshf.List.prototype = {
         if(this.textSearchFunc===undefined) return;
 
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-search searchIcon");
-        this.DOM.mainTextSearch = this.DOM.mainTextSearch.append("input")
+        this.DOM.mainTextSearch.append("input")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:""))
             //.attr("autofocus","true")
             .on("keydown",function(){
@@ -1178,7 +1185,7 @@ kshf.List.prototype = {
     refrestSortColumnLabels: function(){
         if(this.displayType!=="list") return;
         var labelFunc=this.sortingOpt_Active.label;
-        this.DOM.listSortColumn.html(function(d){ return labelFunc(d); });
+        this.DOM.listSortColumn.html(function(d){ return labelFunc.call(d.data); });
     },
     /** -- */
     insertHeaderSortSelect: function(){
@@ -1246,7 +1253,7 @@ kshf.List.prototype = {
                 .on("mouseover",function(){ this.tipsy.show(); })
                 .on("mouseout",function(d,i){ this.tipsy.hide(); })
                 .on("click",function(){
-                    var linkedFacet = me.browser.linkedFacets[0];
+                    var linkedFacet = me.browser.selfRefSummaries[0];
                     linkedFacet.summaryFilter.linkFilterSummary = me.browser.getFilterSummary();
 
                     me.browser.clearFilters_All(false);
@@ -1327,7 +1334,7 @@ kshf.List.prototype = {
             this.insertItemToggleDetails();
         }
         this.DOM.listItems_Content = this.DOM.listItems.append("div").attr("class","content")
-            .html(me.recordView);
+            .html(function(d){ return me.recordView.call(d.data,d); });
 
         if(this.hasLinkedItems){
             this.DOM.itemLinkStateColumn = this.DOM.listItems.append("span").attr("class","itemLinkStateColumn")
@@ -1349,7 +1356,7 @@ kshf.List.prototype = {
                     });
                     d.setSelectedForLink(true);
                     me.browser.clearFilters_All(false);
-                    me.browser.linkedFacets.forEach(function(f){
+                    me.browser.selfRefSummaries.forEach(function(f){
                         f.selectAllAttribsButton();
                         f.updateSorting(0);
                     });
@@ -1373,7 +1380,7 @@ kshf.List.prototype = {
                     .on("click",function(d){
                         this.tipsy.hide();
                         d.setSelectedForLink(!d.selectedForLink);
-                        me.browser.linkedFacets.forEach(function(f){
+                        me.browser.selfRefSummaries.forEach(function(f){
                             f.updateSorting(0);
                         });
                         me.browser.updateLayout_Height();
@@ -1453,7 +1460,7 @@ kshf.List.prototype = {
     showListItemDetails: function(item){
         item.DOM.result.setAttribute('details', true);
         item.showDetails=true;
-        if(this.detailCb) this.detailCb.call(this, item);
+        if(this.detailCb) this.detailCb.call(item.data, item);
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_ON,{info:item.id()});
     },
     /** --- */
@@ -1512,10 +1519,11 @@ kshf.List.prototype = {
         var inverse = this.sortingOpt_Active.inverse;
         this.browser.items.sort(
             function(a,b){
-                // Put unwanted data to later
-                // Don't. Then, when you change result set, you'd need to re-order
-                var v_a = sortValueFunc(a);
-                var v_b = sortValueFunc(b);
+                // Put filtered/remove data to later position
+                // !! Don't do above!! Then, when you filter set, you'd need to re-order
+                // Now, you don't need to re-order after filtering, which is a nice property to have.
+                var v_a = sortValueFunc.call(a.data,a);
+                var v_b = sortValueFunc.call(b.data,b);
                 
                 if(isNaN(v_a)) v_a = undefined;
                 if(isNaN(v_b)) v_b = undefined;
@@ -1536,16 +1544,15 @@ kshf.List.prototype = {
     /** Returns the sort value type for given sort Value function */
     getSortFunc: function(sortValueFunc){
         // 0: string, 1: date, 2: others
-        var sortValueType_, sortValueType_temp, same;
+        var sortValueFunction, same;
         
         // find appropriate sortvalue type
         for(var k=0, same=0; true ; k++){
             if(same===3 || k===this.browser.items.length){
-                sortValueType_ = sortValueType_temp;
                 break;
             }
             var item = this.browser.items[k];
-            var f = sortValueFunc(item);
+            var f = sortValueFunc.call(item.data,item);
             var sortValueType_temp2;
             switch(typeof f){
             case 'string': sortValueType_temp2 = kshf.Util.sortFunc_List_String; break;
@@ -1559,14 +1566,14 @@ kshf.List.prototype = {
             default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
             }
 
-            if(sortValueType_temp2===sortValueType_temp){
+            if(sortValueType_temp2===sortValueFunction){
                 same++;
             } else {
-                sortValueType_temp = sortValueType_temp2;
+                sortValueFunction = sortValueType_temp2;
                 same=0;
             }
         }
-        return sortValueType_;
+        return sortValueFunction;
     },
     /** Updates visibility of list items */
     updateItemVisibility: function(showMoreOnly, noAnimation){
@@ -1580,7 +1587,7 @@ kshf.List.prototype = {
             var isVisible_pre = (item.visibleOrder_pre>=0) && (item.visibleOrder_pre<me.maxVisibleItems);
             if(isVisible) {
                 visibleItemCount++;
-                if(me.visibleCb) me.visibleCb.call(this,item);
+                if(me.visibleCb) me.visibleCb.call(item.data,item);
             }
 
             if(showMoreOnly){
@@ -1624,6 +1631,9 @@ kshf.List.prototype = {
                 setTimeout(function(){
                     domItem.style.display = 'none';
                 },1000);
+            }
+            if(!isVisible && !isVisible_pre){
+                domItem.style.display = 'none';
             }
         });
 
@@ -1684,7 +1694,7 @@ kshf.List.prototype = {
         });
 
         if(this.showRank){
-            this.DOM.ranks.text(function(d){ return "#"+(d.visibleOrder+1); });
+            this.DOM.ranks.text(function(d){ return ""+(d.visibleOrder+1); });
         }
 
         this.maxVisibleItems = this.maxVisibleItems_Default;
@@ -1917,7 +1927,7 @@ kshf.Browser = function(options){
     this.summaries_by_name = {};
     this.panels = {};
 
-    this.linkedFacets = [];
+    this.selfRefSummaries = [];
     this.maxFilterID = 0;
 
     this.scrollWidth = 21;
@@ -2085,7 +2095,7 @@ kshf.Browser.prototype = {
         }
         if(typeof(func)==="string"){
             var x=func;
-            func = function(d){ return d.data[x]; }
+            func = function(){ return this[x]; }
         }
         // Check type before you instantiate the summary!
         var attribFunc=func || function(d){ return d.data[name]; }
@@ -2150,6 +2160,7 @@ kshf.Browser.prototype = {
     },
     // TODO: If names are the same and config options are different, what do you do?
     createFilter: function(opts){
+        opts.browser = this;
         // see if it has been created before TODO
         var newFilter = new kshf.Filter(this.maxFilterID,opts);
         ++this.maxFilterID;
@@ -2452,7 +2463,7 @@ kshf.Browser.prototype = {
         // If any of the table values are string, convert all to string
         if(hasString){
             dstTable.forEach(function(item){
-                item.data[0] = ""+item.data[0];
+                item.data.id = ""+item.data.id;
             })
         }
     },
@@ -2566,14 +2577,17 @@ kshf.Browser.prototype = {
 
             // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED 
             if(summary.type==='categorical'){
-                if(facetDescr.catTableName) summary.setCatTable(facetDescr.catTableName);
-                // catDispCountFix
-                // Affects visual
-                summary.catLabel = facetDescr.catLabel || summary.catLabel;
+                if(facetDescr.catTableName){
+                    summary.setCatTable(facetDescr.catTableName);
+                }
+                if(facetDescr.catLabel){
+                    summary.setCatLabel(facetDescr.catLabel);
+                }
                 if(facetDescr.catTooltip){
                     summary.setCatTooltip(facetDescr.catTooltip);
                 }
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
+                // catDispCountFix
                 if(facetDescr.minAggrValue) summary.updateMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
             }
@@ -2595,7 +2609,7 @@ kshf.Browser.prototype = {
             facetDescr.layout = facetDescr.layout || 'left';
             summary.addToPanel(this.panels[facetDescr.layout]);
 
-            if(summary.isLinked) this.linkedFacets.push(fct);
+            if(summary.isLinked) this.selfRefSummaries.push(summary);
         },this);
 
         this.panels.left.updateWidth_QueryPreview();
@@ -2760,12 +2774,12 @@ kshf.Browser.prototype = {
     addAttribDragListeners: function(dom){
         var me=this;
         dom.addEventListener("dragstart",function(event){
-            browser.DOM.root.attr("showdropzone",true);
+            me.DOM.root.attr("showdropzone",true);
             event.dataTransfer.setData("text/plain",dom.__data__.summaryName); // use the d3 bound value
             event.dataTransfer.setData("text/info","new_summary");
         });
         dom.addEventListener("dragend",function(event){
-            browser.DOM.root.attr("showdropzone",false);
+            me.DOM.root.attr("showdropzone",false);
             //alert(event.dataTransfer.dropEffect);
             if(event.dataTransfer.dropEffect==="copy"){
                 me.refreshAttributeList();
@@ -3217,14 +3231,14 @@ kshf.Browser.prototype = {
 
 kshf.Summary_Base = function(){},
 kshf.Summary_Base.prototype = {
-    initialize: function(browser,name,func){
+    initialize: function(browser,name,attribMap){
         this.id = ++kshf.num_of_charts;
         this.browser = browser;
 //        this.parentFacet = options.parentFacet;
 
         this.summaryName   = name;
-        this.summaryColumn = func?null:name;
-        this.summaryFunc   = func || function(d){ return this[name]; };
+        this.summaryColumn = attribMap?null:name;
+        this.summaryFunc   = attribMap || function(d){ return this[name]; };
 
         this.chartScale_Measure = d3.scale.linear();
 
@@ -3631,9 +3645,9 @@ kshf.Summary_Categorical = function(){};
 kshf.Summary_Categorical.prototype = new kshf.Summary_Base();
 var Summary_Categorical_functions = {
     /** -- */ 
-    initialize: function(kshf_,name,func){
+    initialize: function(kshf_,name,attribMap){
         var me=this;
-        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,func);
+        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribMap);
         this.type='categorical';
 
         this.heightRow_attrib = 18;
@@ -3768,15 +3782,19 @@ var Summary_Categorical_functions = {
         this.sortingOpts = opts || [{}];
         // ATTRIBUTE SORTING OPTIONS
         this.sortingOpts.forEach(function(opt){
-            // apply defaults
-            if(opt.no_resort===undefined) opt.no_resort=false;
+            opt.no_resort = opt.no_resort || false;
+            opt.inverse = opt.inverse || false;
+
             if(opt.func===undefined) {
-                opt.func=kshf.Util.sortFunc_aggreage_Active_Total;
+                if(opt.value){
+                    opt.func = function(a,b){ return a-b; };
+                } else {
+                    opt.func = kshf.Util.sortFunc_aggreage_Active_Total;
+                }
             } else {
-                opt.custom = true;
+                opt.no_resort = true;
                 if(opt.no_resort===undefined) opt.no_resort=true;
             }
-            if(opt.inverse===undefined)  opt.inverse=false;
         },this);
         this.sortingOpt_Active = this.sortingOpts[0];
         this.updateSorting(0,true);
@@ -3786,7 +3804,8 @@ var Summary_Categorical_functions = {
         if(typeof(catLabel)==="function"){
             this.catLabel = catLabel;
         } else if(typeof(catLabel)==="string"){
-            this.catLabel = function(){ return this[catLabel]; };
+            var x = catLabel;
+            this.catLabel = function(){ return this[x]; };
         } else {
             return;
         }
@@ -3796,9 +3815,10 @@ var Summary_Categorical_functions = {
     /** -- */
     setCatTooltip: function( catTooltip ){
         if(typeof(catTooltip)==="function"){
-            this.catTooltip = catLabel;
-        } else if(typeof(catLabel)==="string"){
-            this.catTooltip = function(){ return this[catTooltip]; };
+            this.catTooltip = catTooltip;
+        } else if(typeof(catTooltip)==="string"){
+            var x = catTooltip;
+            this.catTooltip = function(){ return this[x]; };
         } else {
             return;
         }
@@ -3828,7 +3848,6 @@ var Summary_Categorical_functions = {
     createSummaryFilter: function(){
         var me=this;
         this.summaryFilter = this.browser.createFilter({
-            browser: this.browser,
             filteredItems: this.items,
             parentSummary: this,
             hideCrumb: false,
@@ -5343,28 +5362,29 @@ var Summary_Categorical_functions = {
     /** -- */
     sortCats: function(){
         var me = this;
-        var selectedOnTop = this.sortingOpt_Active.no_resort!==true;
         var inverse = this.sortingOpt_Active.inverse;
         var sortFunc = this.sortingOpt_Active.func;
+        var valueFunc = this.sortingOpt_Active.value;
+
+        // pre-sorting callback
         var prepSort = this.sortingOpt_Active.prep;
         if(prepSort) prepSort.call(this);
 
+        // idCompareFunc can be based on integer or string comparison
         var idCompareFunc = function(a,b){return b-a;};
         if(typeof(this._cats[0].id())==="string") 
-            idCompareFunc = function(a,b){
-                return b.localeCompare(a);
-            };
+            idCompareFunc = function(a,b){ return b.localeCompare(a); };
 
         var theSortFunc = function(a,b){
             // linked items...
             if(a.selectedForLink && !b.selectedForLink) return -1;
             if(b.selectedForLink && !a.selectedForLink) return 1;
 
-            if(selectedOnTop){
-                if(!a.f_selected() &&  b.f_selected()) return  1;
-                if( a.f_selected() && !b.f_selected()) return -1;
-            }
-            // put the items with zero active items to the end of list (may not be displayed / inactive)
+            // selected on top of the list
+            if(!a.f_selected() &&  b.f_selected()) return  1;
+            if( a.f_selected() && !b.f_selected()) return -1;
+
+            // put the items with zero active items to the end of list (may not be displayed)
             if(a.aggregate_Active===0 && b.aggregate_Active!==0) return  1;
             if(b.aggregate_Active===0 && a.aggregate_Active!==0) return -1;
 
@@ -5392,9 +5412,16 @@ var Summary_Categorical_functions = {
         });
     },
     /** -- */
+    uniqueAttributes: function(){
+        return this.getMaxAggregate_Total()===1;
+    },
+    /** -- */
     updateSorting: function(sortDelay,force){
+        if(this._cats.length===0) return;
+        if(this.uniqueAttributes()) {
+            return; // Unique
+        }
         if(this.sortingOpt_Active.no_resort===true && force!==true) return;
-        if(this.sortingOpt_Active.custom===true&&force!==true) return;
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
         }
@@ -5520,8 +5547,8 @@ for(var index in Summary_Categorical_functions){
 kshf.Summary_Interval = function(){};
 kshf.Summary_Interval.prototype = new kshf.Summary_Base();
 var Summary_Interval_functions = {
-    initialize: function(kshf_,name,func){
-        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,func);
+    initialize: function(kshf_,name,attribFunc){
+        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribFunc);
         this.type='interval';
 
         // Call the parent's constructor
@@ -5560,7 +5587,6 @@ var Summary_Interval_functions = {
         };
 
         this.summaryFilter = kshf_.createFilter({
-            browser: this.browser,
             filteredItems: this.filteredItems,
             parentSummary: this,
             hideCrumb: false,
@@ -5732,8 +5758,10 @@ var Summary_Interval_functions = {
         if(this.scaleType===t) return;
         this.scaleType=t;
 
-        if(this.DOM.facetInterval)
+        if(this.DOM.facetInterval){
             this.DOM.facetInterval.attr("istime",this.scaleType==='time');
+            this.DOM.intervalSlider.attr("scaletype",this.scaleType);
+        }
 
         if(this.scaleType==='log'){
             var filterId = this.summaryFilter.id;
@@ -5867,7 +5895,7 @@ var Summary_Interval_functions = {
     /** -- */
     setUnitName: function(v){
         this.unitName = v;
-        this.updateTickLabels();
+        this.refreshTickLabels();
     },
     /** -- */
     initDOM_Percentile: function(){
@@ -5933,6 +5961,7 @@ var Summary_Interval_functions = {
         - the tick values in an array
       */
     getValueTicks: function(optimalTickCount){
+        var me=this;
         var ticks;
 
         // HANDLE TIME CAREFULLY
@@ -6077,7 +6106,14 @@ var Summary_Interval_functions = {
             this.valueScale.nice(optimalTickCount);
             ticks = this.valueScale.ticks(optimalTickCount);
 //            if(this.tickIntegerOnly) ticks = ticks.filter(function(d){return d%1===0;});
-            this.intervalTickFormat = d3.format(this.tickIntegerOnly?".2s":".2f");
+            var d3Formating = d3.format(this.tickIntegerOnly?".2s":".2f");
+            this.intervalTickFormat = function(d){
+                if(me.tickIntegerOnly && d<10) return d;
+                var x= d3Formating(d);
+                if(x.indexOf(".00")!==-1) x = x.substr(0,x.indexOf(".00"));
+                if(x.indexOf(".0")!==-1) x = x.substr(0,x.indexOf(".0"));
+                return x;
+            }
         }
 
         return ticks;
@@ -6217,14 +6253,14 @@ var Summary_Interval_functions = {
         var ddd_enter = ddd.enter().append("span").attr("class","tick");
         ddd_enter.append("span").attr("class","line");
         ddd_enter.append("span").attr("class","text");
-        this.updateTickLabels();
+        this.refreshTickLabels();
     },
     /** -- */
     getBarWidth_Real: function(){
         return this.barWidth-this.width_barGap*2;
     },
     /** -- */
-    updateTickLabels: function(){
+    refreshTickLabels: function(){
         var me=this;
         this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
             var v;
@@ -6421,7 +6457,8 @@ var Summary_Interval_functions = {
 
         this.DOM.intervalSlider = this.DOM.facetInterval.append("div").attr("class","intervalSlider")
             .attr("anim",true)
-            .style('margin-left',(this.width_vertAxisLabel)+"px");
+            .style('margin-left',(this.width_vertAxisLabel)+"px")
+            .attr("scaletype",this.scaleType);
 
         var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
         controlLine.append("span").attr("class","base total")
@@ -6939,7 +6976,7 @@ var Summary_Interval_functions = {
                     };
                 }
             }
-            var x = this.browser.noAnim;
+            var x = me.browser.noAnim;
             if(x===false) me.browser.setNoAnim(true);
             me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
             if(x===false) me.browser.setNoAnim(false);
@@ -7073,12 +7110,12 @@ var Summary_Interval_functions = {
         if(v===null) return;
         if(this.valueScale===undefined) return;
         if(this.panel===undefined) return;
-        var t="translateX("+(this.valueScale(v))+"px)";
+
+        var t="translateX("+(this.valueScale(v)+this.getAggreg_Width_Offset())+"px)";
         this.DOM.selectedItemValue
             .each(function(){ kshf.Util.setTransform(this,t); })
             .style("display","block");
 
-        var dateFormat = d3.time.format("%b %-e,'%y");
         this.DOM.selectedItemValueText.html(
             this.intervalTickFormat(v)+(this.unitName?("<span class='unitName'>"+this.unitName+"</span>"):"")
         );

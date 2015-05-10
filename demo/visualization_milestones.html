@@ -247,8 +247,7 @@ google.setOnLoadCallback(function(){
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
             },{ title: "Main Category", attribMap: "Category"
-            },{ title: "Keywords", layout: "right",
-                description: "Keywords are generated from the pdf report at "
+            },{ title: "Keywords", layout: "right"
             },{ title: "Author"
             }
         ],
@@ -258,36 +257,36 @@ google.setOnLoadCallback(function(){
             maxVisibleItems_Default: 25,
             detailsToggle: "zoom",
             textSearch: "Title",
-            recordView: function(d){
+            recordView: function(){
                 var str="";
-                str+="<a target='_blank' href='http://datavis.ca/milestones/"+d.data.URL+
+                str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+
                     "' class='thumbnail'><img class='thumbImg'></a>";
-                str+="<span class='title'>"+d.data.Title+"</span>";
-                str+="<span class='subTitle'>By: "+d.data.Author+" - "+d.data.Year+"</span>";
+                str+="<span class='title'>"+this.Title+"</span>";
+                str+="<span class='subTitle'>By: "+this.Author+" - "+this.Year+"</span>";
                 str+="<div class='references'>";
-                if(d.data.InfoLinks.length>0)
+                if(this.InfoLinks.length>0)
                     str+="Links: ";
-                    d.data.InfoLinks.forEach(function(ref){
+                    this.InfoLinks.forEach(function(ref){
                         str+="<a href='"+ref.URL+"' target='_blank'><span class='fa fa-external-link'></span></a>";
                     })
                 str+="</div>"
                 return str;
             },
             visibleCb: function(d){
-                if(d.data.Images===undefined) return;
-                if(d.data.Images.length===0) return;
-                var URL = d.data.Images[0].URL;
+                if(this.Images===undefined) return;
+                if(this.Images.length===0) return;
+                var URL = this.Images[0].URL;
                 // find first non-person image
-                for(var i=0; i<d.data.Images.length; i++){
-                    var img=d.data.Images[i];
+                for(var i=0; i<this.Images.length; i++){
+                    var img=this.Images[i];
                     if(img.URL.indexOf("people")===-1 && img.URL.indexOf("portraits")===-1){
-                        URL = d.data.Images[i].URL;
+                        URL = this.Images[i].URL;
                         break;
                     }
                 }
                 d3.select(d.DOM.result).select("img")
                     .attr("src",URL)
-                    .attr("title",d.data.Images[0].text);
+                    .attr("title",this.Images[0].text);
             }
         }
     });

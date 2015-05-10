@@ -67,8 +67,8 @@ $(document).ready( function(){
                 return laureate.data.firstname + " " + (laureate.data.surname || "");
             },
             displayType: 'grid',
-            recordView: function(prize){
-                var laureate = kshf.dt_id.Laureates[prize.data.laureate_id];
+            recordView: function(){
+                var laureate = kshf.dt_id.Laureates[this.laureate_id];
                 var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
                 surname_short = surname_short.replace("von_","").replace("la_","");
                 var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
@@ -76,7 +76,7 @@ $(document).ready( function(){
                 return "<span class='thumbnail'><img class='thumbImg'></span>"+
                     "<span class='laureateName'>"+fullname+"</span>"+
                     "<div style='text-align: center;'>"+
-                    "<span class='prizeCategory'>"+getIcon(prize.data.Category)+" "+prize.data.Category+"</span> "+
+                    "<span class='prizeCategory'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
                     //getIcon(getGender(laureate.data.gender))+
                     "</div>";
             },
@@ -117,14 +117,14 @@ $(document).ready( function(){
 
                 return str;
             },*/
-            visibleCb: function(prize){
-                var laureate = kshf.dt_id.Laureates[prize.data.laureate_id];
+            visibleCb: function(item){
+                var laureate = kshf.dt_id.Laureates[this.laureate_id];
                 if(laureate.data.gender!==3){
                     // insert the image url
                     var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
                     surname_short = surname_short.replace("von_","").replace("la_","");
                     var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
-                    d3.select(prize.DOM.result).select("img").attr("src",imgUrl);
+                    d3.select(item.DOM.result).select("img").attr("src",imgUrl);
                 }
             }
         }

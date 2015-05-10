@@ -57,18 +57,18 @@ google.setOnLoadCallback(function(){
             sortingOpts: [ {name:'Views'}, {name:'Date', inverse:true} ],
             textSearch: 'Title',
             displayType: 'grid',
-            recordView: function(d){
+            recordView: function(){
                 var str='';
                 // Demo name
-                str+="<a target='_blank' href='http://www.ted.com/talks/"+d.data.URL+"'><span class='thumbnail'>"+
+                str+="<a target='_blank' href='http://www.ted.com/talks/"+this.URL+"'><span class='thumbnail'>"+
                     "<img class='thumbImg'></span></a>";
-                str+="<span class='subTitle'>"+d.data.Speaker+"</span>";
-                str+="<span class='title'>"+d.data.Title+"</span>";
+                str+="<span class='subTitle'>"+this.Speaker+"</span>";
+                str+="<span class='title'>"+this.Title+"</span>";
                 return str;
             },
             visibleCb: function(d){
-                d3.select(this).select("img").attr("src",
-                    "http://img.tedcdn.com/r/images.ted.com/images/ted/"+d.data.ThumbImg);
+                d3.select(d.DOM.result).select("img").attr("src",
+                    "http://img.tedcdn.com/r/images.ted.com/images/ted/"+this.ThumbImg);
             }
         }
     });

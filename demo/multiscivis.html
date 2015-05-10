@@ -97,7 +97,7 @@ $(document).ready( function(){
             },{ title: "Main Goals",
             },{ title: "Techniques",
             },{ title: "Authors"
-            },{ title: "Year", attribMap: function(d){ return new Date(d.data.Year,1,1); }, layout: "bottom"
+            },{ title: "Year", attribMap: function(){ return new Date(this.Year,1,1); }, layout: "bottom"
             }
         ],
         itemDisplay: {
@@ -106,12 +106,12 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+d.data.Title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","http://multivis.net/t200/"+d.data.id+".png");
+                d3.select(d.DOM.result).select("img").attr("src","http://multivis.net/t200/"+this.id+".png");
             }
         }
     });

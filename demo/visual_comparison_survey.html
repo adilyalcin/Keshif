@@ -286,9 +286,9 @@ $(document).ready( function(){
             ],
             detailsToggle: 'zoom',
             textSearch: "System",
-            recordView: function(d){
-                return "<span class='sysName'>"+d.data.System + "</span>"+
-                       "<span class='sysDescription'>" + d.data.Description+"</span>";
+            recordView: function(){
+                return "<span class='sysName'>"+this.System + "</span>"+
+                       "<span class='sysDescription'>" + this.Description+"</span>";
             }
         }
     });

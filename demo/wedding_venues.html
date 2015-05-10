@@ -110,8 +110,8 @@ $(document).ready( function(){
             },{ title: "Average Facility Rating", layout: 'right'
             },{ title: "Average Service Rating", layout: 'right'
             },{ title: "Number Of Reviews", attribMap: 'Total Number Of Reviews', layout: 'right', collapsed: true
-            },{ title: "Maximum Capacity", layout: 'right', unitName: " ppl"
-            },{ title: "Minimum Capacity", layout: 'right', unitName: " ppl"
+            },{ title: "Maximum Capacity", layout: 'right', unitName: "ppl"
+            },{ title: "Minimum Capacity", layout: 'right', unitName: "ppl"
             }
         ],
         itemDisplay: {
@@ -121,7 +121,7 @@ $(document).ready( function(){
             textSearch: "Name",
             maxVisibleItems_Default: 40,
             recordView: function(d){
-                return d.data.Name+" <a href='http://www.hitched.co.uk"+d.data.url+
+                return this.Name+" <a href='http://www.hitched.co.uk"+this.url+
                     "' target='_blank' class='fa fa-external-link'></a>";
             }
         }

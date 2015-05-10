@@ -135,10 +135,10 @@ function loadZotero(zoteroRDF, browser) {
 
 $(document).ready( function(){
     new kshf.Browser({
-        domID : "#chart_div",
+        domID: "#chart_div",
         contentType:"application/rdf+xml",
         categoryTextWidth: 190,
-        source : {
+        source: {
             callback: function(browser){
                 $.ajax( {
                     url:"./data/myPaperLibrary.xml",
@@ -166,10 +166,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts : [ {name: 'Date', value: function(d){
-                if(d.data.Date===null) return;
-                return d.data.Date.getFullYear();
-            }} ],
+            sortingOpts: [ {name: 'Date', value: function(){ if(this.Date) return this.Date.getFullYear(); }} ],
             textSearch: "title",
             recordView: "title"
         }

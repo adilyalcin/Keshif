@@ -54,9 +54,9 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortingOpts: [ {name: 'Date'} ],
             displayType: 'grid',
-            recordView: function(d){
-                var img = "<img class='thumbImg' src='img/EPL/"+d.data.Team.replace(" ","_")+".svg'>";
-                return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+d.data.Player+"</span>";
+            recordView: function(){
+                var img = "<img class='thumbImg' src='img/EPL/"+this.Team.replace(" ","_")+".svg'>";
+                return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+this.Player+"</span>";
             }
         }
     });

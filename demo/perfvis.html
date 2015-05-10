@@ -80,13 +80,13 @@ $(document).ready( function(){
             displayType: 'grid',
             maxVisibleItems_Default: 100,
             detailsToggle: "zoom",
-            recordView: function(d){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+d.data.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+d.data.Title+"</span>";
+            recordView: function(){
+                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
                 d3.select(d.DOM.result).select("img").attr("src",
-                    "http://idav.ucdavis.edu/~ki/data/papers_img/"+d.data.Key+".png");
+                    "http://idav.ucdavis.edu/~ki/data/papers_img/"+this.Key+".png");
             }
         }
     });

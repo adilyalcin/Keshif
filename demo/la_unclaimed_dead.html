@@ -19,6 +19,7 @@
         <script type="text/javascript">
 
 $(document).ready( function(){
+
     var dateFormat=d3.time.format("%m/%d/%Y");
 
 	browser = new kshf.Browser({
@@ -31,36 +32,6 @@ $(document).ready( function(){
             dirPath: 'data/',
             fileType: 'csv',
             sheets: [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
-            /*
-            callback: function(browser){
-                browser.primaryTableName = "Deaths";
-                kshf.dt.Deaths = [];
-                kshf.dt_id.Deaths = {};
-                $.ajax( {
-                    url: "./data/la-unclaimed-dead.json",
-                    async: false,
-                    success: function(data){
-                        data.forEach(function(v){
-                            v.Death_ = v.Death;
-                            v.Birth_ = v.Birth;
-                            v.Death = dateFormat.parse(v.Death);
-                            v.Birth = dateFormat.parse(v.Birth);
-                            v.permit_date = dateFormat.parse(v.permit_date);
-                            v.cr_date = dateFormat.parse(v.cr_date);
-                            if(v.Age==="") v.Age=null;
-                            else v.Age = parseInt(v.Age);
-                            v.isBaby = (v.Note.substr(0,4)==="Baby");
-                            // convert string date to javascript date
-                            var kshfItem = new kshf.Item(v,'cr_no');
-                            kshf.dt.Deaths.push(kshfItem);
-                            kshf.dt_id.Deaths[kshfItem.id()] = kshfItem;
-                        });
-                    }
-                });
-
-                browser.loadCharts();
-            }
-            */
         },
         facets: [
             {   title: "WHO?",
@@ -78,8 +49,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Age",
-            },{ title: "Death Date", intervalScale: 'time',
-                attribMap: function(){ return dateFormat.parse(this.Death); }
+            },{ title: "Death Date", attribMap: function(){ return dateFormat.parse(this.Death); }
             },{ title: "After Story is Published...",
                 attribMap: function(){ if(this.claimed) return "Claimed"; }
             }
@@ -89,30 +59,30 @@ $(document).ready( function(){
             sortingOpts: [
                 {   name:'Age', inverse:false,
                 },{ name:'Death', inverse:true,
-                    value: function(d){ return dateFormat.parse(d.data.Death); },
-                    label: function(d){
-                        if(d.data['Death']===null) return '-';
-                        if(d.data['Death']==="") return '-';
-                        return dateFormat(d.data['Death']);
+                    value: function(){ return dateFormat.parse(this.Death); },
+                    label: function(){
+                        if(this['Death']===null) return '-';
+                        if(this['Death']==="") return '-';
+                        return dateFormat(this['Death']);
                     }
                 }
             ],
             textSearch: "name",
             textSearchFunc: function(){ return this.Last+", "+this.Middle+" "+this.First; },
             maxVisibleItems_Default: 28,
-            recordView: function(d){
+            recordView: function(){
                 var str="";
-                switch(d.data.Sex){
+                switch(this.Sex){
                     case 'M': str+="<span class='fa gender-icon fa-male'></span> ";    break;
                     case 'F': str+="<span class='fa gender-icon fa-female'></span> ";  break;
                     default:  str+="<span class='fa gender-icon fa-question'></span>"; break;
                 }
-                if(d.data.isBaby){
+                if(this.isBaby){
                     str+="<span class='fa gender-icon fa-child'></span> ";
                 }
-                str+=d.data.Last+", "+d.data.First;
-                if(d.data.Note){
-                    str+="<span class='note'>"+d.data.Note+" <span class='fa fa-file-text'></span></span>";
+                str+=this.Last+", "+this.First;
+                if(this.Note){
+                    str+="<span class='note'>"+this.Note+" <span class='fa fa-file-text'></span></span>";
                 }
                 return str;
             },

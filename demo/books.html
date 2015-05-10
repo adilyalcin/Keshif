@@ -175,9 +175,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: [
-                { name: 'Date Added', label: function(d){ return sortFormat(d.data[5]); }}
-            ],
+            sortingOpts: [{ name: 'Date Added', label: function(d){ return sortFormat(d.data[5]); } }],
             textSearchFunc: function(){ 
                 var metadata = kshf.dt_id['Book Metadata'][this[0]];
                 if(metadata===undefined) return "";
@@ -185,8 +183,8 @@ $(document).ready( function(){
             },
             displayType: 'grid',
             maxVisibleItems_Default: 20,
-            recordView: function(d){
-                var id = d.data[0];
+            recordView: function(){
+                var id = this[0];
                 var metadata = kshf.dt_id['Book Metadata'][id];
                 if(metadata===undefined){
                     console.log(d);

@@ -37,8 +37,8 @@ google.setOnLoadCallback( function () {
             },{ title: "Story titles",
             },{ title: "Total Stories", attribMap: function(){ return this['Story titles'].length; },
             },{ title: "First Appearance", layout: 'bottom',
-                attribMap: function(d){ 
-                    var y=d.data['Year first'];
+                attribMap: function(){ 
+                    var y=this['Year first'];
                     if(y===null) return null;
                     return new Date(y,1,1);
                 }

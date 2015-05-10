@@ -40,28 +40,28 @@ google.setOnLoadCallback( function(){
         itemDisplay: {
             sortColWidth: 80,
             sortingOpts: [
-                {   name: 'Vote Date', inverse: true,
-                    label: function(d){ return moment(d.data['Vote Date']).format('MMM YYYY'); }
+                {   name: 'Vote Date', inverse: true, 
+                    label: function(){ return moment(this['Vote Date']).format('MMM YYYY'); }
                 },{ name:'Result' }
             ],
             textSearch: "Description",
-            recordView: function(d){
+            recordView: function(){
                 var j;
                 var str="";
                 // description
                     str+="<div class=\"iteminfo iteminfo_1\">"+
                         "<a target=\"_blank\" href=\"http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?"+
-                        "congress=112&session="+d.data.Session+"&vote=00"+d.data.Number+"\">"+d.data.Description+"<a/></div>";
+                        "congress=112&session="+this.Session+"&vote=00"+this.Number+"\">"+this.Description+"<a/></div>";
                 // bill
                     str+="<div class=\"iteminfo iteminfo_2\">";
                 // question
-//                    str+="Question:"+d.data[5]+"</div>";
+//                    str+="Question:"+this[5]+"</div>";
                 // yay/nay
                     str+="<div class=\"iteminfo iteminfo_2\">";
-                    var r=d.data['Yea\'s']/d.data['Nay\'s'];
+                    var r=this['Yea\'s']/this['Nay\'s'];
                     str+="<span style=\"color:"+((r>1)?"green":"red")+"\">";
-                    str+="Yays:"+d.data['Yea\'s'];
-                    str+=" Nays:"+d.data['Nay\'s'];
+                    str+="Yays:"+this['Yea\'s'];
+                    str+=" Nays:"+this['Nay\'s'];
                     str+="</span>";
                     str+="</div>";
                 return str;

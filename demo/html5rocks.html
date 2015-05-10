@@ -72,12 +72,11 @@ $(document).ready( function(){
             sortingOpts: [{ name: 'Date', inverse: true }],
             displayType: 'grid',
             textSearch: "Title",
-            recordView: function(tutorial){
-                return "<img class='face'><a href='http://www.html5rocks.com"+tutorial.data.URL+"' target='_blank'><span class='title'>"+tutorial.data.Title+"</span></a>";
+            recordView: function(){
+                return "<img class='face'><a href='http://www.html5rocks.com"+this.URL+"' target='_blank'><span class='title'>"+this.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
-                    "http://www.html5rocks.com/"+d.data.author_img);
+                d3.select(d.DOM.result).select("img").attr("src","http://www.html5rocks.com/"+this.author_img);
             }
         }
     });

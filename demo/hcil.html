@@ -88,8 +88,7 @@ google.setOnLoadCallback( function() {
             {   title: "Topic",
                 catTableName: "topics", catLabel: "topic",
                 visibleRows: 9
-            },{
-                title: "Author",
+            },{ title: "Author",
                 catTableName: "people",
                 catLabel: function() {
                     var f_name = this.first_name;
@@ -117,37 +116,35 @@ google.setOnLoadCallback( function() {
                     return r;
                 },
                 catTableName: "member_types", catLabel: "type",
-            },{ title: "Project",
-                catTableName: "projects", catLabel: "project",
-            },{ title: "Date", layout: "middle",
-                attribMap : function(){ return new Date(this.Date); }
+            },{ title: "Project", catTableName: "projects", catLabel: "project",
+            },{ title: "Date", attribMap : function(){ return new Date(this.Date); }, layout: "middle",
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
             sortingOpts : [
                 {   name: 'Year',
-                    value: function(pub){ return parseInt(pub.data.Date.slice(0,4)); }
+                    value: function(){ return parseInt(this.Date.slice(0,4)); }
                 }
             ],
             textSearch : "title",
-            recordView : function(pub){
+            recordView : function(){
                 var j;
                 var str="";
                 // paper name
                     str+="<div class=\"iteminfo iteminfo_0\">";
-                    var url=pub.data.reference_url;
+                    var url=this.reference_url;
                     if(url && url.trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+pub.data.reference_url+"\">"+pub.data.title+"</a>";
+                        str+="<a target=\"_blank\" href=\""+this.reference_url+"\">"+this.title+"</a>";
                     } else {
-                        str+=pub.data.title;
+                        str+=this.title;
                     }
                     str+="</div>";
 
                 str+="<span class=\"item_details\">";
 
                 // author names
-                var authors = pub.data.Author;
+                var authors = this.Author;
                 if(authors){
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     for(j=0; j<authors.length; j++){
@@ -158,14 +155,14 @@ google.setOnLoadCallback( function() {
                     str+="</div>";
                 }
                 // venue
-                    var ref=pub.data.reference;
+                    var ref=this.reference;
                     str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
                     if(ref && ref.trim()!==""){
-                        str+="<b>["+pub.data.Date+"]</b> "+pub.data.reference+"</a>";
+                        str+="<b>["+this.Date+"]</b> "+this.reference+"</a>";
                     }
                     str+="</div>";
                 // keywords
-                var topics = pub.data.Topic;
+                var topics = this.Topic;
                 if(topics){
                     str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
                     for(j=0; j<topics.length; j++){
@@ -176,13 +173,13 @@ google.setOnLoadCallback( function() {
                 }
                 // links
                 str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
-                var pdf=pub.data.pdf;
-                var video=pub.data.video;
+                var pdf=this.pdf;
+                var video=this.video;
                 if(pdf && pdf.trim()!==""){
-                    str+="<a target=\"_blank\" href=\""+pub.data.pdf+"\"><img src=\"img/pdf-logo.gif\"></a>";
+                    str+="<a target=\"_blank\" href=\""+this.pdf+"\"><img src=\"img/pdf-logo.gif\"></a>";
                 }
                 if(video && video.trim()!==""){
-                    str+=" [<a target=\"_blank\" href=\""+pub.data.video+"\">Video</a>]";
+                    str+=" [<a target=\"_blank\" href=\""+this.video+"\">Video</a>]";
                 }
                 str+="</div>";
 

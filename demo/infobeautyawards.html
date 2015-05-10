@@ -38,10 +38,8 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
             kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
             kshf.dt.Showcases.forEach(function(d){
-                var t=d.data.Title;
-                var i=t.indexOf(" by ");
-                if(i>0)
-                    d.data.Title = t.substr(0,i);
+                var i=this.Title.indexOf(" by ");
+                if(i>0) d.data.Title = this.Title.substr(0,i);
             });
         },
         facets: [
@@ -54,15 +52,13 @@ google.setOnLoadCallback(function(){
             sortColWidth: 45,
             sortingOpts: [{name: 'id',inverse:false}],
             textSearch: 'Title',
-            recordView: function(d){ 
-                var str='';
-                str+="<a target='_blank' href='http://www.informationisbeautifulawards.com"+d.data.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>";
-                str+="<span class='subTitle'>"+d.data.Credits+"</span>";
-                str+="<span class='title'>"+d.data.Title+"</span>";
-                return str;
+            recordView: function(){ 
+                return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>"+
+                    "<span class='subTitle'>"+this.Credits+"</span>"+
+                    "<span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(this).select("img").attr("src",d.data.Thumbnail);
+                d3.select(d.DOM.result).select("img").attr("src",this.Thumbnail);
             }
         }
     });

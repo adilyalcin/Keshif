@@ -141,7 +141,7 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 65,
             sortingOpts: [
-                { name: "#Ref's", value: function(d){return d.data.References_To.length;} },
+                { name: "#Ref's", value: function(){ return this.References_To.length; } },
                 { name: 'Year' }
             ],
             detailsToggle: 'zoom',

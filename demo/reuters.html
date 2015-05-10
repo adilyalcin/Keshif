@@ -83,21 +83,21 @@ google.setOnLoadCallback( function() {
             sortColWidth: 70,
             sortingOpts: [
                 {   name: 'Publish Time',
-                    label: function(d){ 
-                        var date=d.data[newsCol['Publish Time']];
+                    label: function(){ 
+                        var date=this[newsCol['Publish Time']];
                         return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
                     }
                 }
             ],
             textSearch: 'title',
-            recordView: function(news){
+            recordView: function(){
                 var j;
-                var str=news.data[newsCol.title].replace("<","&lt;").replace(">","&gt;");
-                var cats = news.data[newsCol.Topic];
+                var str=this[newsCol.title].replace("<","&lt;").replace(">","&gt;");
+                var cats = this[newsCol.Topic];
                 if(cats.length>0){
                     str+="<div class=\"iteminfo iteminfo_1\"> Topics: " + cats + "</div>";
                 }
-                var ctrs = news.data[newsCol.Country];
+                var ctrs = this[newsCol.Country];
                 if(ctrs.length>0){
                     str+="<div class=\"iteminfo iteminfo_1\"> Countries: ";
                     for(j=0; j<ctrs.length; j++){
