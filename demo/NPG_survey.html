@@ -24,36 +24,15 @@
         <script type="text/javascript">
 var demoID = 89;
 
-var likertSort = function(a,b){
-    a= a.data[0];
-    b= b.data[0];
-    if(b==="Strongly agree") return 1;
-    if(a==="Strongly agree") return -1;
-    if(b==="Somewhat agree") return 1;
-    if(a==="Somewhat agree") return -1;
-    if(b==="Neutral") return 1;
-    if(a==="Neutral") return -1;
-    if(b==="Somewhat disagree") return 1;
-    if(a==="Somewhat disagree") return -1;
-    if(b==="Strongly disagree") return 1;
-    if(a==="Strongly disagree") return -1;
-};
-
-var ageSort = function(a,b){
-    a= a.data[0];
-    b= b.data[0];
-    if(b==="18 - 24") return 1;
-    if(a==="18 - 24") return -1;
-    if(b==="25 - 34") return 1;
-    if(a==="25 - 34") return -1;
-    if(b==="35 - 44") return 1;
-    if(a==="35 - 44") return -1;
-    if(b==="45 - 54") return 1;
-    if(a==="45 - 54") return -1;
-    if(b==="55 - 64") return 1;
-    if(a==="55 - 64") return -1;
-    if(b==="65 or over") return 1;
-    if(a==="65 or over") return -1;
+var likertSort = function(){
+    switch(this.id){
+        case "Strongly agree": return 0;
+        case "Somewhat agree": return 1;
+        case "Neutral": return 2;
+        case "Somewhat disagree": return 3;
+        case "Strongly disagree": return 4;
+        default: return 5;
+    }
 };
 
 var columns = [
@@ -157,7 +136,16 @@ $(document).ready(function() {
                 }
             },{ title: "Age", attribMap: columns[12],
                 description: "What is your age?",
-                sortingOpts: [{ func: ageSort }]
+                sortingOpts: [{ value: function(){
+                    switch(this.id){
+                        case "18 - 24": return 0;
+                        case "25 - 34": return 1;
+                        case "35 - 44": return 2;
+                        case "45 - 54": return 3;
+                        case "55 - 64": return 4;
+                        case "65 or over": return 5;
+                    }
+                } }]
             },{ title: "Continent", attribMap: columns[13], collapsed: true,
                 description: "In which continent do you live?",
             },{ title: "Country",
@@ -270,15 +258,15 @@ $(document).ready(function() {
             },{ title: "\"... Profiles are useful\"", collapsed: true,
                 description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
                 layout: 'right', attribMap: columns[53], 
-                sortingOpts: [{ func: likertSort }]
+                sortingOpts: [{ value: likertSort }]
             },{ title: "\"... I need to promote more online\"", collapsed: true,
                 description: "\"I feel I should probably do more to promote my research using online networks\"",
                 layout: 'right', attribMap: columns[54], 
-                sortingOpts: [{ func: likertSort }]
+                sortingOpts: [{ value: likertSort }]
             },{ title: "\"... Profiles are not important\"", attribMap: columns[55], collapsed: true,
                 description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
                 layout: 'right',
-                sortingOpts: [{ func: likertSort }]
+                sortingOpts: [{ value: likertSort }]
             }
         ],
         itemDisplay: {

@@ -77,10 +77,7 @@ google.setOnLoadCallback(function(){
             detailsToggle: "zoom",
             displayType: 'grid',
             textSearch: "Movie Title",
-            sortingOpts: [ 
-                { name: 'Popularity', value: "IMDb Popularity Score" },
-                { name: 'Year', inverse:true},
-            ],
+            sortingOpts: [ {name: 'Popularity', value: "IMDb Popularity Score"}, {name: 'Year', inverse: true} ],
             recordView: function(){
                 return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a>";

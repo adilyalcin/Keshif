@@ -60,24 +60,22 @@ $(document).ready( function(){
         facets: [
             {   title: "Year"
             },{ title: "Month",
-                attribMap: function(){
-                    switch(this.Month){
-                        case "January": return 0;
-                        case "February": return 1;
-                        case "March": return 2;
-                        case "April": return 3;
-                        case "May": return 4;
-                        case "June": return 5;
-                        case "July": return 6;
-                        case "August": return 7;
+                sortingOpts: [{ value: function(){
+                    switch(this.id){
+                        case "January"  : return 0;
+                        case "February" : return 1;
+                        case "March"    : return 2;
+                        case "April"    : return 3;
+                        case "May"      : return 4;
+                        case "June"     : return 5;
+                        case "July"     : return 6;
+                        case "August"   : return 7;
                         case "September": return 8;
-                        case "October": return 9;
-                        case "November": return 10;
-                        case "December": return 11;
+                        case "October"  : return 9;
+                        case "November" : return 10;
+                        case "December" : return 11;
                     }
-                },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
-                catLabel: function(d){ return getMonthNameFromNumber(this.id); }
+                } }],
             },{ title: "Contaminated Ingredient", layout: 'middle', attribMap: "Contaminated_Ingredient"
             },{ title: "State"
             },{ title: "Location Of Consumption", attribMap: "LocationOfConsumption", layout: 'middle'

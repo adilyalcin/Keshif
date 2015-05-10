@@ -46,14 +46,12 @@ function loadData(browser){
             for(var key in data){
                 var session = data[key];
                 session.key = key;
-
                 session.submissions.forEach(function(submissionKey){
                     var paper = kshf.dt_id.Papers[submissionKey];
                     // add session information to the paper
                     if(paper) paper.data.session = session;
                 });
             }
-
         }
     });
     browser.loadCharts();
@@ -127,49 +125,29 @@ google.setOnLoadCallback(function(){
                     return this.session.s_title.substring(8);
                 },
             },{ title: "Session Day", layout: 'right',
-                attribMap: function(){
-                    if(this.session===undefined) return;
-                    switch(this.session.day){
-                        case "Monday": return 0;
-                        case "Tuesday": return 1;
-                        case "Wednesday": return 2;
-                        case "Thursday": return 3;
+                attribMap: function(){ if(this.session) return this.session.day; },
+                sortingOpts: [{ 
+                    value: function(){
+                        switch(this.id){
+                            case "Monday": return 0;
+                            case "Tuesday": return 1;
+                            case "Wednesday": return 2;
+                            case "Thursday": return 3;
+                        }
                     }
-                },
-                sortingOpts: [{
-                    no_resort: true,
-                    func: kshf.Util.sortFunc_Column_ParseInt_Incr
-                }],
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "Monday";
-                        case 1: return "Tuesday";
-                        case 2: return "Wednesday";
-                        case 3: return "Thursday";
-                    }
-                }
+                }]
             },{ title: "Session Time",  layout: 'right',
-                attribMap: function(){
-                    if(this.session===undefined) return;
-                    switch(this.session.time){
-                        case "9:30-10:50": return 0;
-                        case "11:30-12:50": return 1;
-                        case "14:30-15:50": return 2;
-                        case "16:30-17:50": return 3;
+                attribMap: function(){ if(this.session) return this.session.time; },
+                sortingOpts: [{ 
+                    value: function(){
+                        switch(this.id){
+                            case "9:30-10:50" : return 0;
+                            case "11:30-12:50": return 1;
+                            case "14:30-15:50": return 2;
+                            case "16:30-17:50": return 3;
+                        }
                     }
-                },
-                sortingOpts: [{
-                    no_resort: true,
-                    func: kshf.Util.sortFunc_Column_ParseInt_Incr
-                }],
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "9:30-10:50";
-                        case 1: return "11:30-12:50";
-                        case 2: return "14:30-15:50";
-                        case 3: return "16:30-17:50";
-                    }
-                }
+                }]
             }
         ],
         itemDisplay: {

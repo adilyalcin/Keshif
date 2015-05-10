@@ -666,15 +666,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
-    .facetControls{
-        border-bottom: dotted 1px lightgray;
-        .attribTextSearchInput{
-            text-align: right;
-            &::-webkit-input-placeholder { 
-                text-align:right;
-            }
-        }
-    }
     .kshfChart[collapsed=true] {
         > .headerGroup > .header_display_control{ 
             > .fa-collapse{
@@ -1042,11 +1033,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             > .facetCategorical{
                 overflow: hidden;
-
                 > .facetControls{
-                    // margin-bottom: -1px;
+                    border-bottom: dotted 1px lightgray;
+                    margin-bottom: -1px;
+                    position: relative;
+                    display: none;
                     > .attribTextSearch{
-                        display: block;
+                        display: none;
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
@@ -1064,6 +1057,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             pointer-events: all;
                             margin: 0px;
                             cursor:text;
+                            text-align: right;
+
                             &:focus{
                                 outline-color: gray;
                                 outline-width: 4px;
@@ -1076,6 +1071,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             &::-webkit-input-placeholder { 
                                 font-weight: 500;
                                 color: #cb5454;
+                                text-align:right;
                             }
                             &:focus::-webkit-input-placeholder { 
                                 color: #F3CDCD;
@@ -1112,7 +1108,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                     .sortButton{
                         position: absolute;
-                        top: 3px;
+                        bottom: 1px;
                         font-size: 0.7em;
                         text-align: right;
                         &:hover{
@@ -1128,13 +1124,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                     > .sortOptionSelectGroup{
                         display: block;
-                        height: 16px;
                         vertical-align: top;
                         white-space:nowrap;
                         position: relative;
                         font-weight: 300;
                         > .optionSelect{
                             width: 100%;
+                            heigh: 16px;
                             font-size: 0.7em;
                             -webkit-appearance: none;
                             -moz-appearance: none;
@@ -1158,7 +1154,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 } // facetControls
 
                 .scrollToTop{
-                    margin-top: -16px;
+                    margin-top: -13px;
                     font-size: 0.8em;
                     pointer-events: all;
                     position: absolute;
@@ -1858,7 +1854,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .summaryTitle{
                     cursor: pointer;
                 }
-                .facetControls{ display: none; }
             }
             > .wrapper .facetCategorical{
                 > div { display: none; }

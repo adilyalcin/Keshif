@@ -25,25 +25,17 @@
 
 var demoID = 899;
 
-var ageSort = function(a,b){
-    a= a.data[0];
-    b= b.data[0];
-    if(b==="17-24") return 1;
-    if(a==="17-24") return -1;
-    if(b==="25-34") return 1;
-    if(a==="25-34") return -1;
-    if(b==="35-44") return 1;
-    if(a==="35-44") return -1;
-    if(b==="45-54") return 1;
-    if(a==="45-54") return -1;
-    if(b==="55-64") return 1;
-    if(a==="55-64") return -1;
-    if(b==="65-74") return 1;
-    if(a==="65-74") return -1;
-    if(b==="75-84") return 1;
-    if(a==="75-84") return -1;
-    if(b==="85+") return 1;
-    if(a==="85+") return -1;
+var ageSort = function(){
+    switch(this.id){
+        case "17-34": return 0;
+        case "25-34": return 1;
+        case "35-44": return 2;
+        case "45-54": return 3;
+        case "55-64": return 4;
+        case "65-74": return 5;
+        case "75-84": return 5;
+        case "85+": return 6;
+    }
 };
 
 $(document).ready(function() {
@@ -102,7 +94,7 @@ $(document).ready(function() {
                     if(v==="85") v= "85+";
                     return v;
                 },
-                sortingOpts: [{ func: ageSort }]
+                sortingOpts: [{ value: ageSort }]
             },{
                 title: "Région Géographique",
                 description: "Votre région de résidence",
@@ -192,11 +184,13 @@ $(document).ready(function() {
                 return this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
             },
             sortingOpts: [{ 
-                name: "| <span class='fa fa-comment'></span> |", value: function(){ 
+                name: "| <span class='fa fa-comment'></span> |", 
+                value: function(){ 
                     var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                     if(v===null) return 0;
                     return v.length; 
-                } }],
+                }
+            }],
             recordView: function(){ 
                 var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                 return (v===null)?"-":("<blockquote>" + v + "</blockquote>");

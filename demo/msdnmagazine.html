@@ -91,7 +91,7 @@ $(document).ready( function(){
             },{ title: "Column Name",
             },{ title: "Issue Date", layout:'middle'
             },{ title: "Popularity", layout: 'right',
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Decr }],
+                sortingOpts: [{ value: "id", inverse: true }],
                 catLabel: function(){
                     var str='';
                     for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";

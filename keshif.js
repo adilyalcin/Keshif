@@ -105,31 +105,11 @@ var kshf = {
 
 
 kshf.Util = {
-    dif_aggregate_Active: function(a,b){
-        return b.aggregate_Active - a.aggregate_Active;
-    },
-    sortFunc_aggreage_Active_Total: function(a,b){ 
-        var dif=kshf.Util.dif_aggregate_Active(a,b);
-        if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
-        return dif;
-    },
     sortFunc_Column_Int_Incr: function(a,b){ 
         return a.data.id - b.data.id; 
     },
-    sortFunc_Column_Int_Decr: function(a,b){ 
-        return b.data.id - a.data.id; 
-    },
     sortFunc_Column_ParseInt_Incr: function(a,b){ 
         return parseFloat(a.data.id,10) -parseFloat(b.data.id,10);
-    },
-    sortFunc_Column_ParseInt_Decr: function(a,b){ 
-        return parseFloat(b.data.id,10) -parseFloat(a.data.id,10);
-    },
-    sortFunc_String_Decr: function(a,b){ 
-        return b.data.id.localeCompare(a.data.id);
-    },
-    sortFunc_String_Incr: function(a,b){ 
-        return b.data.id.localeCompare(a.data.id);
     },
     sortFunc_Time_Last: function(a, b){
         if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
@@ -3663,9 +3643,9 @@ var Summary_Categorical_functions = {
         this.minAggrValue=1;
         this.removeInactiveCats = true;
 
-        this.isLinked = false; // TODO: document / update
+        this.sortingOpts = []; // matAttribs somehow wants to see the array. Make it easy for now.
 
-        this.sortingOpts = [];
+        this.isLinked = false; // TODO: document / update
 
         if(this.catLabel===undefined){
             this.setCatLabel("id");
@@ -3780,16 +3760,27 @@ var Summary_Categorical_functions = {
     /** -- */
     setSortingOpts: function(opts){
         this.sortingOpts = opts || [{}];
-        // ATTRIBUTE SORTING OPTIONS
-        this.sortingOpts.forEach(function(opt){
-            opt.no_resort = opt.no_resort || false;
-            opt.inverse = opt.inverse || false;
 
-            if(opt.func===undefined) {
+        this.sortingOpts.forEach(function(opt){
+            opt.no_resort = opt.no_resort || (this.catCount_Total<=4);
+            opt.inverse = opt.inverse || false;
+            if(opt.func===undefined){
                 if(opt.value){
-                    opt.func = function(a,b){ return a-b; };
+                    if(typeof(opt.value)==="string"){
+                        var x = opt.value;
+                        opt.value = function(){ return this[x]; }
+                        opt.name = x;
+                    }
+                    opt.no_resort = true;
+                    opt.custom = true;
                 } else {
-                    opt.func = kshf.Util.sortFunc_aggreage_Active_Total;
+                    opt.name = "# of Active";
+                    // order by active (and if same, total) count
+                    opt.func = function(a,b){
+                        var dif=b.aggregate_Active - a.aggregate_Active;
+                        if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
+                        return dif;
+                    };
                 }
             } else {
                 opt.no_resort = true;
@@ -3797,7 +3788,10 @@ var Summary_Categorical_functions = {
             }
         },this);
         this.sortingOpt_Active = this.sortingOpts[0];
+        
         this.updateSorting(0,true);
+        this.refreshSortOptions();
+        this.refreshSortButton();
     },
     /** -- */
     setCatLabel: function( catLabel ){
@@ -4123,9 +4117,7 @@ var Summary_Categorical_functions = {
             this.catBarScale = "scale_frequency";
         }
         if(this.catCount_Total<=4) {
-            this.sortingOpts.forEach(function(opt){
-                opt.no_resort=true;
-            });
+            this.sortingOpts.forEach(function(opt){ opt.no_resort=true; });
         }
         this.showTextSearch = this.catCount_Total>=20;
     },
@@ -4202,17 +4194,18 @@ var Summary_Categorical_functions = {
         this.DOM.facetCategorical = this.DOM.wrapper.append("div").attr("class","facetCategorical");
 
         // create config row(s) if needed
+        this.DOM.facetControls = this.DOM.facetCategorical.append("div").attr("class","facetControls");
+        this.initDOM_TextSearch();
+        this.initDOM_insertSortButton();
+        this.initDOM_SortingOpts();
+
         if(this.showTextSearch || this.sortingOpts.length>1) {
-            this.DOM.facetControls = this.DOM.facetCategorical.append("div").attr("class","facetControls");
+            this.DOM.facetControls.style("display","block");
             if(this.showTextSearch){
-                this.initDOM_TextSearch();
+                this.DOM.attribTextSearch.style("display","block");
                 this.configRowCount++;
-                if(this.sortingOpts.length<=1){
-                    this.initDOM_insertSortButton(this.DOM.facetControls.select(".attribTextSearch"));
-                }
             }
             if(this.sortingOpts.length>1) {
-                this.initDOM_SortingOpts();
                 this.configRowCount++;
             }
         }
@@ -4272,9 +4265,10 @@ var Summary_Categorical_functions = {
 
         this.updateSorting(0, true);
     },
-    initDOM_insertSortButton: function(targetDom){
+    /** -- */
+    initDOM_insertSortButton: function(){
         var me=this;
-        this.DOM.sortButton = targetDom.append("span").attr("class","sortButton fa")
+        this.DOM.sortButton = this.DOM.facetControls.append("span").attr("class","sortButton fa")
             .on("click",function(d){
                 if(me.dirtySort){
                     me.dirtySort=false;
@@ -4283,7 +4277,7 @@ var Summary_Categorical_functions = {
                     return;
                 }
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
-                this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+                me.refreshSortButton();
                 me.updateSorting(0,true);
             })
             .each(function(){
@@ -4295,35 +4289,47 @@ var Summary_Categorical_functions = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); });
-
-        this.DOM.sortButton.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"));
+        this.refreshSortButton();
     },
     /** -- */
     initDOM_SortingOpts: function(){
         var me=this;
-        var sortGr = this.DOM.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
+        var x = this.DOM.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
 
-        sortGr.append("select").attr("class","optionSelect").attr("dir","rtl")
+        this.DOM.optionSelect = x.append("select").attr("class","optionSelect").attr("dir","rtl")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
-                me.DOM.sortButton.style("display",(me.sortingOpt_Active.no_resort?"none":"inline-block"));
-                
-                me.DOM.sortButton.attr("inverse",me.sortingOpt_Active.inverse);
-                me.updateSorting.call(me,0,true);
+                me.refreshSortButton();
+                me.updateSorting(0,true);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
             })
-            .selectAll("input.sort_label").data(this.sortingOpts)
-              .enter().append("option").attr("class", "sort_label")
-                .text(function(d){ return d.name; })
-                ;
 
-        this.initDOM_insertSortButton(sortGr);
+        this.refreshSortOptions();
+    },
+    /** -- */
+    refreshSortButton: function(){
+        if(this.DOM.sortButton) this.DOM.sortButton
+            .style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
+            .attr("inverse",this.sortingOpt_Active.inverse);
+    },
+    /** -- */
+    refreshSortOptions: function(){
+        if(this.DOM.optionSelect===undefined) return;
+
+        this.DOM.optionSelect.style("display", (this.sortingOpts.length>1)?"block":"none" );
+        var x= this.DOM.optionSelect.selectAll("input.sort_label")
+            .data(this.sortingOpts, function(d){ return d.name} );
+
+        x.exit().remove();
+        x.enter().append("option").attr("class", "sort_label")
+            .text(function(d){ return d.name; })
+            ;
     },
     /** -- */
     initDOM_TextSearch: function(){
         var me=this;
-        var textSearchRowDOM = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
-        this.DOM.attribTextSearch=textSearchRowDOM.append("input")
+        this.DOM.attribTextSearch = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
+        this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
             .attr("class","attribTextSearchInput")
             .attr("type","text")
             .attr("placeholder","Search")
@@ -4368,7 +4374,7 @@ var Summary_Categorical_functions = {
                 d3.event.preventDefault();
             })
             ;
-        this.DOM.attribTextSearchControl = textSearchRowDOM.append("span")
+        this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
             .attr("class","attribTextSearchControl fa")
             .on("click",function() { me.summaryFilter.clearFilter(); });
     },
@@ -4449,7 +4455,7 @@ var Summary_Categorical_functions = {
     clearLabelTextSearch: function(){
         if(!this.showTextSearch) return;
         this.DOM.attribTextSearchControl.attr("showClear",false);
-        this.DOM.attribTextSearch[0][0].value = '';
+        this.DOM.attribTextSearchInput[0][0].value = '';
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
@@ -4803,6 +4809,7 @@ var Summary_Categorical_functions = {
         this.DOM.chartAxis_Measure.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
+        this.DOM.sortButton.style("left",labelWidth+"px");
         this.DOM.aggr_Group.style("left",barChartMinX+"px");
         this.DOM.chartBackground.style("margin-left",barChartMinX+"px");
         if(this.DOM.sortButton)
@@ -5393,6 +5400,17 @@ var Summary_Categorical_functions = {
             if(inverse) x=-x;
             return x;
         };
+        if(this.sortingOpt_Active.custom){
+            theSortFunc = function(a,b){
+                var v_a = valueFunc.call(a.data,a);
+                var v_b = valueFunc.call(b.data,b);
+                // TODO: Currently, assuming the sorting function returns a numeric value.
+                var x = v_a - v_b;
+                if(x===0) x=idCompareFunc(a.id(),b.id());
+                if(inverse) x=-x;
+                return x;
+            };
+        }
         this._cats.sort(theSortFunc);
         this._cats.forEach(function(cat,i){ cat.orderIndex=i; });
     },
@@ -6265,7 +6283,7 @@ var Summary_Interval_functions = {
         this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
             var v;
             if(me.scaleType!=='time'){
-                if(d<1) v=d.toFixed(1);
+                if(d<1 && d!==0) v=d.toFixed(1);
                 else v=me.intervalTickFormat(d);
             } else {
                 v=me.intervalTickFormat(d);

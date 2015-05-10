@@ -102,11 +102,11 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [{ name: 'id' }],
+            sortingOpts: [ {name: 'id'} ],
             autoExpandMore: false,
             displayType: 'grid',
             textSearch: "title",
-            recordView : function(){
+            recordView: function(){
                 return "<a target='_blank' href='"+this.url.replace("govid","gov/id")+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
             },

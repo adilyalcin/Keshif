@@ -38,12 +38,7 @@ google.setOnLoadCallback(function(){
         },
         facets: [
             {   title: "UserType",
-                catLabel: function(){
-                    switch(this.id){
-                        case "S": return "Subscriber";
-                        case "C": return "Customer";
-                    }
-                },
+                catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
             },{ title: "Gender", layout: 'right',
                 catLabel: function(d){
                     switch(this.id){
@@ -51,15 +46,14 @@ google.setOnLoadCallback(function(){
                         case 1: return "Male "+getIcon("m");
                         default: return "?";
                     }
-                },
-                type: 'categorical'
+                }
             },{ title: "Station_Start",
                 catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
             },{ title: "Station_End", layout: 'right',
                 catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
             },{ title: "Day of Week", layout: 'right', collapsed: true,
                 attribMap: function(){ return this.TimeStart.day(); },
-                sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
+                sortingOpts: [ {value: "id"} ],
                 catLabel: function(){
                     switch(this.id){
                         case 1: return "Monday";
@@ -71,14 +65,10 @@ google.setOnLoadCallback(function(){
                         case 0: return "Sunday";
                     }
                 }
-            },{ title: "Hour of Day", layout: 'bottom',
-                attribMap: function(){ return this.TimeStart.hour(); },
-                unitName: ": 00",
-                intervalScale: 'step'
-            },{ title: "Duration", layout: 'bottom',
-                intervalScale: "log",
-                attribMap: function(){ return Math.round(this.Duration/60); },
-                unitName: "min"
+            },{ title: "Hour of Day", layout: 'bottom', intervalScale: 'step', unitName: ": 00",
+                attribMap: function(){ return this.TimeStart.hour(); }
+            },{ title: "Duration", layout: 'bottom', intervalScale: "log", unitName: "min",
+                attribMap: function(){ return Math.round(this.Duration/60); }
             },{ title: "Birth Year", layout: 'bottom', collapsed: true,
                 attribMap: function(){ return new Date(this.BirthYear,1,1); }
             }

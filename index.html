@@ -44,7 +44,7 @@ browser = new kshf.Browser({
     facets: [
         {   title: "Code Complexity", layout: 'right', collapsed: true,
             description: "Relative code complexity of demo source",
-            sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
+            sortingOpts: [ {value: 'id'} ],
             catLabel: function(){
                 switch(this.id){
                     case 1: return "A breeze *";
@@ -109,7 +109,10 @@ browser = new kshf.Browser({
         }
     ],
     itemDisplay: {
-        sortingOpts: [{ name: '', value: function(){ return this.id; }, inverse: true }],
+        sortingOpts: [ 
+            {name: 'Highlighted', value: function(){ return this.id; }, inverse: true},
+            {name: '# Items'},
+        ],
         displayType: 'grid',
         maxVisibleItems_Default: 100,
         textSearch: 'Name',

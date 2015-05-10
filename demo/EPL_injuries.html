@@ -37,16 +37,10 @@ google.setOnLoadCallback(function(){
             },{ title: "Player"
             },{ title: "Injury",layout: 'right'
             },{ title: "Season", layout: 'right',
-                sortingOpts: [{
-                    func: function(a, b){
-                        a=parseInt(a.data[0].substr(0,4));
-                        b=parseInt(b.data[0].substr(0,4));
-                        return a - b; 
-                    }
-                }],
+                sortingOpts: [{ value: function(){ return parseInt(this.id.substr(0,4)); } }],
             },{ title: "Month", layout: 'right', collapsed: true,
                 attribMap: function(){ return this.Date.getMonth(); },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
+                sortingOpts: [{ value: "id" }],
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
             },{ title: "Date", layout: 'bottom'
             }

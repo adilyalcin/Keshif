@@ -127,10 +127,9 @@ $(document).ready(function(){
         },
         facets: [
             {   title: "Episode", layout: 'right',
-                sortingOpts: [{ func: function(a,b){ return a.data.ep_id - b.data.ep_id; } }],
-                catTableName: "Episodes",
+                sortingOpts: [{ value: "ep_id" }],
+                catTableName: "Episodes", catTooltip: "Synopsis",
                 catLabel: function(){ return this.Name+" <i>[Ep."+this.ep_id+"]</i>"; },
-                catTooltip: "Synopsis",
                 facets:[
                     {   title: "Dead Count (Total)", collapsed: true,
                         attribMap: function(){ return this.bodycount.total; }

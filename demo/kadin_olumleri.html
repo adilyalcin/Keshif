@@ -34,7 +34,7 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Oldurulen kadin", id:"ASIN"} ]
         },
         facets: [
-            {   title: "Yıl", sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr}]
+            {   title: "Yıl", sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Decr, inverse: true}]
             },{ title: "Kim tarafından",
             },{ title: "Neden"
             },{ title: "Nasıl", layout: 'right',
@@ -45,7 +45,7 @@ google.setOnLoadCallback(function(){
             sortColWidth: 60,
             detailsToggle: "zoom",
             textSearch: "İsim",
-            sortingOpts: [{name: 'Yıl'}],
+            sortingOpts: [ {name: 'Yıl'} ],
             recordView: function(){
                 var str=this['İsim'];
                 if(this['Kaynak-Foto'])

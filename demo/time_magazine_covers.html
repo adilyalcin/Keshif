@@ -41,8 +41,8 @@ google.setOnLoadCallback(function(){
             },{ title: "Credits", layout: 'right',
             },{ title: "Month", layout: 'right',
                 attribMap: function(){ if(this.Date) return this.Date.getMonth(); },
+                sortingOpts: [{ value: "id" }],
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
             },{ title: "Date",  layout: 'bottom', 
             }
         ],

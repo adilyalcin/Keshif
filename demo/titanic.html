@@ -28,14 +28,8 @@ google.setOnLoadCallback(function(){
             {   title: "Survived", attribMap: "survived",
                 catLabel: function(){ return (this.id)?'Yes':'No'; }
             },{ title: "Class", attribMap: "pclass",
-                sortingOpts: [{ 
-                    func: function(a,b){
-                        if(a==="3rd") return 1;
-                        if(a==="1st") return -1;
-                        if(b==="3rd") return -1;
-                        if(b==="1st") return 1;
-                    }
-                }]
+                /* 1st-2nd-3rd => 1-2-3 */
+                sortingOpts: [{ value: function(){ return 1*this.id.substr(0,1); } }]
             },{ title: "Sex", attribMap: "sex", 
                 catLabel: function(){ return this.id+" "+getIcon(this.id); },
             },{ title: "Age", attribMap: "age", layout:'bottom', showPercentile: true

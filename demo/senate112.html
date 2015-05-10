@@ -28,9 +28,8 @@ google.setOnLoadCallback( function(){
         },
         facets: [
             {   title: "Result"
-            },{ title: "Session",
-                catLabel: function(){ return ((this.id===1)?"1st":"2nd")+" Session"; },
-                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
+            },{ title: "Session", sortingOpts: [{ value: "id" }],
+                catLabel: function(){ return ((this.id===1)?"1st":"2nd")+" Session"; }
             },{ title: "Yea's",
             },{ title: "Nay's",
             },{ title: "Bill",

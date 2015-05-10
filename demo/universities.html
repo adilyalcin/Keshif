@@ -137,14 +137,6 @@ var Unizin_Group = {
 socialShare = false;
 noRibbon = true;
 
-function getInstTypeOrder(v){
-    switch(v){
-        case 'Public, 4-year or above': return 0;
-        case 'Private not-for-profit, 4-year or above': return 1;
-        case 'Private for-profit, 4-year or above': return 2;
-    }
-};
-
 google.setOnLoadCallback(function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -178,7 +170,13 @@ google.setOnLoadCallback(function(){
                 }, unitName: "%"//, intervalScale: "log"
             },{ title: "Institution Type", attribMap: "HD2013.Sector of institution",
                 sortingOpts: [{
-                    func: function(a,b){ return getInstTypeOrder(a.data[0])-getInstTypeOrder(b.data[0]); }
+                    value: function(){ 
+                        switch(this.id){
+                            case 'Public, 4-year or above': return 0;
+                            case 'Private not-for-profit, 4-year or above': return 1;
+                            case 'Private for-profit, 4-year or above': return 2;
+                        }
+                    }
                 }],
             },{ title: "State", attribMap: "HD2013.State abbreviation", layout: "middle", collapsed: true,
             },{ title: "Geographic region", attribMap: "HD2013.Geographic region", layout: "middle", collapsed: true,

@@ -88,23 +88,15 @@ $(document).ready( function(){
                     },{ title: "IMDB Rating", attribMap: "imdbRating"
                     }
                 ]
-            },{ title: "Location",
-                layout: "right",
-                catTableName: "Series",
-                attribMap: "Series",
+            },{ title: "Location", attribMap: "Series", layout: "right",
+                catTableName: "Series", catLabel: "Name",
                 sortingOpts: [
                     {   name: "# of Screenings"},
                     {   name: "Distance",  
-                        func: function(a,b){
-                            // lat-long columns: 10-11
-                            if(myLoc===null) {
-                                return kshf.Util.sortFunc_ActiveCount_TotalCount(a,b);
-                            }
-                            var dist_a = distanceKilometersGreatCircle(
+                        value: function(d){
+                            if(myLoc===null) { return d.aggregate_Active; }
+                            return distanceKilometersGreatCircle(
                                 myLoc.latitude,myLoc.longitude,a.data.Latitude,a.data.Longitude);
-                            var dist_b = distanceKilometersGreatCircle(
-                                myLoc.latitude,myLoc.longitude,b.data.Latitude,b.data.Longitude);
-                            return dist_a - dist_b;
                         }
                     }
                 ],

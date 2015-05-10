@@ -63,14 +63,14 @@ $(document).ready( function(){
                         case 6: return "Saturday";
                     }
                 },
-                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
+                sortingOpts: [{ value: 'id' }]
             },{ title: "Month", layout: 'right',
                 attribMap: function(){ return this.downloadTime.month(); },
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
-                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }]
+                sortingOpts: [{ value: 'id' }]
             },{ title: "Year",
                 attribMap: function(){ return this.downloadTime.year(); },
-                sortingOpts: [{ func:kshf.Util.sortFunc_Column_ParseInt_Incr }] // categorical facet
+                sortingOpts: [{ value: 'id' }] // makes a categorical facet
             }
         ],
     });

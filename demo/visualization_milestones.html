@@ -228,7 +228,7 @@ google.setOnLoadCallback(function(){
                     if(year<1975) return 6;
                     return 7;
                 },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr}],
+                sortingOpts: [{ value: "id" }],
                 catLabel: function(){
                     switch(this.id){
                         case 0: return "Maps and diagrams <b>Pre-1600</b>";
