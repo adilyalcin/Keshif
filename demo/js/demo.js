@@ -249,6 +249,7 @@ $(window).load(function(){
         var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
         var pageName = window.location.pathname.split("/");
         pageName = pageName[pageName.length-1];
+        if(pageName.indexOf("html")===-1) pageName+=".html";
 
         d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
             .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
