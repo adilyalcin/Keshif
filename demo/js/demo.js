@@ -4,6 +4,7 @@
 var socialShare = true;
 // turn on rubbon by default
 var noRibbon = false;
+var showLogo = true;
 
 function resizeBrowser(minWidth, minHeight){
     $('#chart_div').width($(window).width()-minWidth);
@@ -244,6 +245,15 @@ var sendLog = function(actID, dt, ts){
 };;
 
 $(window).load(function(){
+
+    if(showLogo){
+        var keshif_logo = d3.select("body").append("a").attr("class","keshif_logo")
+            .attr("href","http://www.keshif.me").attr("target","_blank");
+        keshif_logo.append("img").attr("class","keshif_logo_img").attr("src","./img/logo.png");
+        keshif_logo.append("span").attr("class","keshif_logo_content").html(
+            "<strong>Keshif</strong></br>Data Made Explorable"
+        );
+    }
 
     if(!noRibbon){
         var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";

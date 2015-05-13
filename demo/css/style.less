@@ -89,127 +89,6 @@ body{
 	line-height: 1.5em;
 }
 
-
-.meny {
-	display: none;
-	padding: 20px;
-	overflow: auto;
-	background: #333;
-	color: white;
-
-	background-color: #222;
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAGklEQVQIW2NkYGD4D8SMQAwGcAY2AbBKDBUAVuYCBQPd34sAAAAASUVORK5CYII=);
-	background-repeat: repeat;
-
-	font-family: 'Lato', Helvetica, sans-serif;
-	font-size: 16px;
-
-	-webkit-box-sizing: border-box;
-	   -moz-box-sizing: border-box;
-	        box-sizing: border-box;
-	div.credit{
-		right: 10px;
-		text-align: right;
-		position:absolute;
-		bottom:10px;
-		font-weight: 300;
-		font-size: 0.8em;
-		a{
-			color: rgb(170, 133, 133);
-		}
-	}
-	.developed{
-		font-weight: 300;
-		font-size: 0.9em;
-		.projectName{
-			font-weight: 500;
-			font-size: 1.3em;
-			color:red;
-		}
-		.me{
-			font-size:1em;
-			font-weight: 700;
-			margin-top: 10px;
-			display: inline-block;
-		}
-		.source_code{
-			display:block;
-			font-size: 0.8em;
-			.descr{
-				width: 140px;
-				line-height: 1.8em;
-				padding: 5px;
-				display: inline-block;
-			}
-			iframe{
-				float:right;
-				margin-top:5px;
-				clear:right;
-			}
-		}
-		position: absolute;
-		bottom: 80px;
-		a{ color: #C7C3B5; }
-		.hcil_img{
-			margin-top: 10px;
-			width:90px;
-			display: block;
-			margin-left: auto;
-			margin-right: auto;
-		}
-	}
-}
-
-/**
- * Hint graphic that appears while menu is inactive
- */
-.meny-arrow {
-	position: absolute;
-	z-index: 10;
-
-	border: 20px solid transparent;
-
-	-webkit-transition: opacity 0.4s ease 0.4s;
-	   -moz-transition: opacity 0.4s ease 0.4s;
-	    -ms-transition: opacity 0.4s ease 0.4s;
-	     -o-transition: opacity 0.4s ease 0.4s;
-	        transition: opacity 0.4s ease 0.4s;
-}
-.meny-left .meny-arrow {
-	left: 14px;
-	top: 50%;
-	margin-top: -25px;
-	border-left: 25px solid #333;
-}
-.meny-right .meny-arrow {
-	right: 14px;
-	top: 50%;
-	margin-top: -25px;
-	border-right: 25px solid #333;
-}
-.meny-top .meny-arrow {
-	left: 50%;
-	top: 14px;
-	margin-left: -25px;
-	border-top: 25px solid #333;
-}
-.meny-bottom .meny-arrow {
-	left: 50%;
-	bottom: 14px;
-	margin-left: -25px;
-	border-bottom: 25px solid #333;
-}
-.meny-active .meny-arrow {
-	opacity: 0;
-
-	-webkit-transition: opacity 0.2s ease;
-	   -moz-transition: opacity 0.2s ease;
-	    -ms-transition: opacity 0.2s ease;
-	     -o-transition: opacity 0.2s ease;
-	        transition: opacity 0.2s ease;
-}
-
-
 #infobox{
     width: 100%;
     left: 0%;
@@ -232,6 +111,38 @@ body{
     .fa{
         color:gray;
     }
+}
+
+.keshif_logo{
+	position: absolute;
+	display: block;
+	top: 5px;
+	left: 5px;
+	width: 33px;
+	height: 33px;
+	font-size: 12px;
+	overflow: hidden;
+	cursor: auto;
+	.transition(~'width 500ms ease-in-out, background-color 500ms ease-in-out');
+	border-radius: 5px;
+	cursor: pointer;
+	text-decoration: none;
+	&:hover{
+		background-color: #EEEEEE;
+		width: 200px;
+	}
+	> .keshif_logo_img{
+		height: 33px;
+		float: left;
+	}
+	> .keshif_logo_content{
+		display: block;
+		width: 300px;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		letter-spacing: .12em;
+		color: #727365;
+		vertical-align: center;
+	}
 }
 
 .comment_popup{
@@ -301,6 +212,7 @@ body{
 	    }
 	}
 }
+
 @media screen and (min-width:800px){
     .forkongithub{
         width:150px;
