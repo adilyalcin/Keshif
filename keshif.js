@@ -423,7 +423,7 @@ Tipsy.prototype = {
 kshf.Item = function(d, idIndex){
     // the main data within item
     this.data = d;
-    this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough!
+    this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough??
     // Selection state
     //  1: selected for inclusion (AND)
     //  2: selected for inclusion (OR)
@@ -973,20 +973,8 @@ kshf.List = function(kshf_, config, root){
     }
 
     // Sorting options
-    this.sortingOpts = config.sortingOpts;
-    this.sortingOpts.forEach(function(sortOpt){
-        if(sortOpt.value===undefined) {
-            sortOpt.value = function(){ return this[sortOpt.name]; };
-        } else {
-            if(typeof(sortOpt.value)==='string'){
-                var x=sortOpt.value;
-                sortOpt.value = function(){ return this[x]; };
-            }
-        }
-        if(!sortOpt.label) sortOpt.label = sortOpt.value;
-        if(sortOpt.inverse===undefined) sortOpt.inverse = false;
-        if(sortOpt.func===undefined) sortOpt.func = me.getSortFunc(sortOpt.value);
-    },this);
+    this.sortingOpts = config.sortingOpts || [{name:this.browser.items[0].idIndex}];
+    this.prepSortingOpts();
     this.sortingOpt_Active = this.sortingOpts[0];
 
     // can be 'grid' or 'list'
@@ -1007,17 +995,83 @@ kshf.List = function(kshf_, config, root){
     }
 
     // "off", "one", "zoom"
-    this.detailsToggle = config.detailsToggle || "off";
+    this.detailsToggle = config.detailsToggle || "zoom";
 
     this.listDiv = root.select("div.listDiv")
         .attr('detailsToggle',this.detailsToggle)
-        .attr('displayType',this.displayType);
+        .attr('displayType',this.displayType)
+        .attr('showRank',this.showRank);
 
     this.DOM.listHeader=this.listDiv.append("div").attr("class","listHeader");
 
     this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
     this.insertTotalViz();
     this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow");
+
+    this.DOM.listHeader_ConfigRow = this.DOM.listHeader.append("div").attr("class","configRow");
+
+    this.DOM.listHeader_ConfigRow.append("span").attr("class","itemRank")
+        .append("span").attr("class","fa")
+        .each(function(){
+            this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Show / hide ranking"; }});
+        })
+        .on("mouseover",function(){ 
+            this.tipsy.show();
+        })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+            me.setShowRank(!me.showRank);
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+        })
+        ;
+
+    this.DOM.adjustSortColumnWidth = this.DOM.listHeader_ConfigRow.append("div")
+        .attr("class","adjustSortColumnWidth")
+        ;
+
+    this.DOM.adjustSortColumnWidth.append("span").attr("class","removeSortOption fa")
+        .each(function(){
+            this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Remove current sorting option"; }});
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); })
+        .on("click",function(){
+            // TODO
+        })
+        ;
+
+    this.DOM.adjustSortColumnWidth.append("span").attr("class","handle")
+        .each(function(){
+            this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ return "Adjust column width"; }});
+            this.moving = false;
+        })
+        .on("mouseover",function(){ 
+            if(!this.moving) this.tipsy.show();
+        })
+        .on("mouseout",function(d,i){
+            this.tipsy.hide();
+        })
+        .on("mousedown", function (d, i) {
+            if(d3.event.which !== 1) return; // only respond to left-click
+            root.style('cursor','ew-resize');
+            var _this = this;
+            _this.tipsy.hide();
+            _this.moving = true;
+            var mouseDown_x = d3.mouse(document.body)[0];
+            var mouseDown_width = me.sortColWidth;
+            root.on("mousemove", function() {
+                var mouseMove_x = d3.mouse(document.body)[0];
+                var mouseDif = mouseMove_x-mouseDown_x;
+                me.updateSortColumnWidth(mouseDown_width+mouseDif);
+            }).on("mouseup", function(){
+                root.style('cursor','default');
+                root.on("mousemove", null).on("mouseup", null);
+                _this.moving = false;
+            });
+            d3.event.preventDefault();
+        });
+
 
     this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
         .on("scroll",function(d){
@@ -1037,9 +1091,8 @@ kshf.List = function(kshf_, config, root){
     // **************************************************************************************************
     // Header stuff *************************************************************************************
 
-    if(this.showRank){
-        this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
-    }
+    this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
+
     this.insertHeaderSortSelect();
     this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
     this.insertHeaderLinkedItems();
@@ -1125,12 +1178,27 @@ kshf.List.prototype = {
             hideCrumb: true,
         });
 
-        this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch");
+        this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch")
+            .attr("isActive",this.textSearchFunc!==undefined);
 
-        if(this.textSearchFunc===undefined) return;
+        var x= this.DOM.mainTextSearch.append("div").attr("class","dropZone_textSearch");
+        x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
+
+        $(x[0][0]).on("mouseenter",function(event){
+            this.style.backgroundColor = "rgb(255, 188, 163)";
+        });
+        $(x[0][0]).on("mouseleave",function(event){
+            this.style.backgroundColor = "";
+        });
+        $(x[0][0]).on("mouseup",function(event){
+            me.textSearchFunc = me.browser.movedSummary.summaryFunc;
+            me.DOM.mainTextSearch.attr("isActive",true);
+            me.DOM.mainTextSearch.select("input")
+                .attr("placeholder","Search "+me.browser.movedSummary.summaryName);
+        });
 
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-search searchIcon");
-        this.DOM.mainTextSearch.append("input")
+        this.DOM.mainTextSearch.append("input").attr("class","mainTextSearch_input")
             .attr("placeholder","Search "+(this.textSearch?this.textSearch:""))
             //.attr("autofocus","true")
             .on("keydown",function(){
@@ -1156,44 +1224,85 @@ kshf.List.prototype = {
     /** -- */
     updateSortColumnWidth: function(v){
         if(this.displayType==='list'){
-            this.sortColWidth = v;
+            this.sortColWidth = Math.max(Math.min(v,110),30);
             this.DOM.header_listSortColumn.style("min-width",this.sortColWidth+"px");
             this.DOM.listSortColumn.style("width",this.sortColWidth+"px")
+            this.DOM.adjustSortColumnWidth.style("width",this.sortColWidth+"px")
         }
     },
     /** -- */
     refrestSortColumnLabels: function(){
         if(this.displayType!=="list") return;
         var labelFunc=this.sortingOpt_Active.label;
-        this.DOM.listSortColumn.html(function(d){ return labelFunc.call(d.data); });
+        var unitName =this.sortingOpt_Active.unitName;
+        this.DOM.listSortColumn.html(function(d){
+            var s=labelFunc.call(d.data);
+            if(s===null || s===undefined) return "";
+            if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
+            return s;
+        });
     },
+    /** -- */
+    prepSortingOpts: function(){
+        this.sortingOpts.forEach(function(sortOpt){
+            if(sortOpt.value===undefined) {
+                sortOpt.value = function(){ return this[sortOpt.name]; };
+            } else {
+                if(typeof(sortOpt.value)==='string'){
+                    var x=sortOpt.value;
+                    sortOpt.value = function(){ return this[x]; };
+                }
+            }
+            if(!sortOpt.label) sortOpt.label = sortOpt.value;
+            sortOpt.inverse = sortOpt.inverse || false;
+            sortOpt.func    = sortOpt.func    || this.getSortFunc(sortOpt.value);
+        },this);
+    },
+    /** -- */
+    refreshSortingOptions: function(){
+        this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts, function(d){ return d.name} )
+            .enter().append("option").html(function(d){ return d.name; });
+        },
     /** -- */
     insertHeaderSortSelect: function(){
         var me=this;
+
         this.DOM.header_listSortColumn = this.DOM.listHeader_BottomRow.append("div")
             .attr("class","header_listSortColumn");
-        // just insert it as text
-        if(this.sortingOpts.length===1){
-            this.DOM.header_listSortColumn.append("span").attr("class","sortColumnName")
-                .html(this.sortingOpts[0].name);
-        } else {
-            this.DOM.header_listSortColumn.append("select")
-                .attr("class","listSortOptionSelect")
-                .on("change", function(){
-                    me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
-                    me.reorderItemsOnDOM();
-                    me.updateVisibleIndex();
-                    me.updateItemVisibility();
-                    me.refrestSortColumnLabels();
-                    kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
-                    if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
-                })
-                .selectAll(".list_sort_label").data(this.sortingOpts)
-                .enter().append("option")
-                    .attr("class", "list_sort_label")
-                    .html(function(d){ return d.name; })
-                    ;
-        }
+        var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort");
+        x.append("span").attr("class","dropZone_resultSort_text").text("Sort");
+        $(x[0][0]).on("mouseenter",function(event){
+            this.style.backgroundColor = "rgb(255, 188, 163)";
+        });
+        $(x[0][0]).on("mouseleave",function(event){
+            this.style.backgroundColor = "";
+        });
+        $(x[0][0]).on("mouseup",function(event){
+            var movedSummary = me.browser.movedSummary;
+            if(me.sortingOpts.some(function(o){ return o.name===movedSummary.summaryName; })) return;
+            var newOpt = {
+                name: movedSummary.summaryName,
+                value: movedSummary.summaryFunc,
+                unitName: movedSummary.unitName
+            };
+            me.sortingOpts.push(newOpt);
+            me.prepSortingOpts();
+            me.setSortingOpt_Active(me.sortingOpts.length-1);
+            me.refreshSortingOptions();
+            me.DOM.listSortOptionSelect[0][0].selectedIndex = me.sortingOpts.length-1;
+            if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
+        });
+
+        this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
+            .attr("dir","rtl")
+            .attr("class","listSortOptionSelect")
+            .on("change", function(){
+                me.setSortingOpt_Active(this.selectedIndex);
+                if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
+            })
+            ;
+
+        this.refreshSortingOptions();
 
         this.DOM.listHeader_BottomRow.append("span").attr("class","sortColumn")
             .append("span").attr("class","sortButton fa")
@@ -1217,6 +1326,17 @@ kshf.List.prototype = {
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(){ this.tipsy.hide(); });
     },
+    /** -- */
+    setSortingOpt_Active: function(index){
+        if(index<0 || index>=this.sortingOpts.length) return;
+        this.sortingOpt_Active = this.sortingOpts[index];
+        this.reorderItemsOnDOM();
+        this.updateVisibleIndex();
+        this.updateItemVisibility();
+        this.refrestSortColumnLabels();
+        kshf.Util.scrollToPos_do(this.DOM.listItemGroup[0][0],0);
+    },
+    /** -- */
     insertHeaderLinkedItems: function(){
         var me=this;
         if(this.hasLinkedItems){
@@ -1310,9 +1430,7 @@ kshf.List.prototype = {
         if(this.displayType==='list'){
             this.insertItemSortColumn();
         }
-        if(this.detailsToggle!=="off"){
-            this.insertItemToggleDetails();
-        }
+        this.insertItemToggleDetails();
         this.DOM.listItems_Content = this.DOM.listItems.append("div").attr("class","content")
             .html(function(d){ return me.recordView.call(d.data,d); });
 
@@ -1370,65 +1488,45 @@ kshf.List.prototype = {
     },
     /** Insert sort column into list items */
     insertItemSortColumn: function(){
-        if(this.showRank){
-            this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
-        }
+        this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
         this.DOM.listSortColumn = this.DOM.listItems.append("div").attr("class","listSortColumn");
         this.refrestSortColumnLabels();
     },
     /** -- */
     insertItemToggleDetails: function(){
         var me=this;
-        if(this.detailsToggle==="one" && this.displayType==='list'){
-            this.DOM.listItems.append("div")
-                .attr("class","itemToggleDetails")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity:'s',
-                        title: function(){ return d.showDetails===true?"Show less":"Show more"; }
-                    });
-                })
-            .append("span").attr("class","item_details_toggle fa fa-chevron-down")
-                .on("click", function(d){ 
+
+        this.DOM.itemToggleDetails = this.DOM.listItems.append("div")
+            .attr("class","itemToggleDetails")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity:'s',
+                    title: function(){
+                        if(me.detailsToggle==="one" && this.displayType==='list')
+                            return d.showDetails===true?"Show less":"Show more";
+                        return "Get more info";
+                    }
+                });
+            })
+            .on("mouseover",function(d){ this.tipsy.show(); })
+            .on("mouseout" ,function(d){ this.tipsy.hide(); })
+            ;
+
+        this.DOM.itemToggleDetails.append("span").attr("class","item_details_toggle fa")
+            .on("click", function(d){ 
+                this.parentNode.tipsy.hide();
+                if(me.detailsToggle==="one" && me.displayType==='list'){
                     if(d.showDetails===true){
                         me.hideListItemDetails(d);
                     } else {
                         me.showListItemDetails(d);
                     }
-                    this.parentNode.tipsy.hide();
-                })
-                .on("mouseover",function(d){ this.parentNode.tipsy.show(); })
-                .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
-        }
-        if(this.detailsToggle==="zoom"){
-            this.DOM.listItems.append("div")
-                .attr("class","itemToggleDetails")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity:'s',
-                        title: function(){ return "Get more info"; }
-                    });
-                })
-            .append("span").attr("class","item_details_toggle fa fa-bullseye")
-                .on("click", function(d){
-                    this.parentNode.tipsy.hide();
+                }
+                if(me.detailsToggle==="zoom"){
                     me.browser.updateItemZoomText(d);
-/*
-                    var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
-//                    mousePos[0] = me.browser.DOM.root[0][0].offsetWidth - mousePos[0];
-                    var origin=mousePos[0]+"px "+mousePos[1]+"px";
-                    var dom=me.browser.DOM.infobox_itemZoom[0][0];
-                    dom.style.webkitTransformOrigin = origin;
-                    dom.style.MozTransformOrigin = origin;
-                    dom.style.msTransformOrigin = origin;
-                    dom.style.OTransformOrigin = origin;
-                    dom.style.transformOrigin = origin;
-*/
                     me.browser.layout_infobox.attr("show","itemZoom");
-                })
-                .on("mouseover",function(d){ this.parentNode.tipsy.show(); })
-                .on("mouseout",function(d){ this.parentNode.tipsy.hide(); });
-        }
+                }
+            });
     },
     /** -- */
     hideListItemDetails: function(item){
@@ -1659,6 +1757,16 @@ kshf.List.prototype = {
         };
         window.requestAnimationFrame(animateToTop);
     },
+    /** -- */
+    setShowRank: function(v){
+        if(this.showRank===v) return;
+        this.showRank=v;
+        this.listDiv.attr('showRank',this.showRank);
+        if(this.showRank){
+            this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });
+        }
+    },
+    /** -- */
     updateVisibleIndex: function(){
         var wantedCount = 0;
         var unwantedCount = 1;
@@ -1674,7 +1782,7 @@ kshf.List.prototype = {
         });
 
         if(this.showRank){
-            this.DOM.ranks.text(function(d){ return ""+(d.visibleOrder+1); });
+            this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });
         }
 
         this.maxVisibleItems = this.maxVisibleItems_Default;
@@ -1684,7 +1792,9 @@ kshf.List.prototype = {
 kshf.Panel = function(options){
     this.browser = options.browser;
     this.DOM = {};
-    this.DOM.root = options.parentDOM.append("div").attr("class", "layout_block layout_"+options.name);
+    this.DOM.root = options.parentDOM.append("div")
+        .attr("class", "layout_block layout_"+options.name)
+        .attr("hasSummaries",false);
     this.name = options.name;
     this.width={};
     this.width_catLabel = options.widthCatLabel;
@@ -1701,11 +1811,24 @@ kshf.Panel.prototype = {
         return this.width_catLabel + this.width.catQueryPreview + this.width.catChart + this.browser.scrollWidth;
     },
     /** -- */
-    addSummary: function(summary){
-        this.summaries.push(summary);
-        this.DOM.dropZone.attr("asblock",true).style("background-color","");
-        this.updateWidth_QueryPreview();
-        this.setupAdjustWidth();
+    addSummary: function(summary,index){
+        var curIndex=-1;
+        this.summaries.forEach(function(s,i){
+            if(s===summary) curIndex=i;
+        });
+        if(curIndex===-1){
+            this.summaries.push(summary);
+            this.DOM.root.attr("hasSummaries",true);
+            this.updateWidth_QueryPreview();
+            this.setupAdjustWidth();
+        } else {
+            this.summaries.splice(curIndex,1);
+            this.summaries.splice(index,0,summary);
+        }
+        this.summaries.forEach(function(s,i){
+            s.panelOrder = i;
+        })
+        this.newDropZone(summary.DOM.root[0][0]);
     },
     /** -- */
     removeSummary: function(summary){
@@ -1714,61 +1837,97 @@ kshf.Panel.prototype = {
             if(s===summary) indexFrom = i;
         });
         if(indexFrom===-1) return; // given summary is not within this panel
+        
+        var toRemove=this.DOM.root.selectAll(".dropZone")[0][indexFrom];
+        toRemove.parentNode.removeChild(toRemove);
+        this.updateDropZoneIndex();
+
         this.summaries.splice(indexFrom,1);
-        if(this.summaries.length===0) this.DOM.dropZone.attr("asblock",false);
-        this.updateWidth_QueryPreview();
+        if(this.summaries.length===0) {
+            this.DOM.root.attr("hasSummaries",false);
+        } else {
+            this.updateWidth_QueryPreview();
+        }
         summary.panel = undefined;
         this.setupAdjustWidth();
     },
     /** -- */
+    newDropZone: function(beforeDOM){
+        var me=this;
+        var zone;
+        if(beforeDOM){
+            zone = this.DOM.root.insert("div",function(){return beforeDOM;}).attr("class","dropZone");
+        } else {
+            zone = this.DOM.root.append("div").attr("class","dropZone");
+        }
+
+        zone.append("div").attr("class","dropIcon fa fa-angle-double-down");
+
+        $(zone[0][0]).on("mouseenter",function(event){
+            this.style.backgroundColor = "rgb(255, 188, 163)";
+        });
+        $(zone[0][0]).on("mouseleave",function(event){
+            this.style.backgroundColor = "";
+        });
+        $(zone[0][0]).on("mouseup",function(event){
+            var movedSummary = me.browser.movedSummary;
+            if(movedSummary.panel){ // if the summary was in the panels already
+                movedSummary.DOM.root[0][0].nextSibling.style.display = "";
+                movedSummary.DOM.root[0][0].previousSibling.style.display = "";
+            }
+
+            movedSummary.addToPanel(me,this.__data__);
+
+            me.browser.refreshAttributeList();
+
+            if(movedSummary.type=="categorical"){
+                movedSummary.refreshLabelWidth();
+                movedSummary.updateBarPreviewScale2Active();
+            }
+            movedSummary.refreshWidth();
+
+            me.browser.updateLayout();
+        });
+        this.updateDropZoneIndex();
+    },
+    /** -- */
+    updateDropZoneIndex: function(){
+        this.DOM.root.selectAll(".dropZone").each(function(d,i){
+            this.__data__ = i;
+        });
+    },
+    /** -- */
     insertDropZone: function(dom){
         var me=this;
-        this.DOM.dropZone = this.DOM.root.append("div").attr("class","dropZone")
-            .attr("draggable",true);
+        this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone_panel");
 
-        this.DOM.dropZone.append("div").attr("class","dropIcon fa fa-toggle-down")
-
-        this.DOM.dropZone[0][0].addEventListener("dragenter", function( event ) {
-            this.style.backgroundColor = "rgba(255, 69, 0, 0.3)";;
-            event.preventDefault();
-        });
-        this.DOM.dropZone[0][0].addEventListener("dragleave", function( event ) {
-            this.style.backgroundColor = "";
-            event.preventDefault();
-        });
-        this.DOM.dropZone[0][0].addEventListener("dragover", function( event ) {
-            event.preventDefault();
-        });
-        this.DOM.dropZone[0][0].addEventListener("drop", function( event ) {
-            this.style.backgroundColor = "";
-            var info=event.dataTransfer.getData("text/info");
-            if(info==="new_summary"){
-                var attributeName = event.dataTransfer.getData("text/plain");
-
-                var summary = me.browser.summaries_by_name[attributeName];
-                summary.addToPanel(me);
-
-                if(summary.DOM.root===undefined) summary.initDOM();
-                if(summary.type==='categorical'){
-                    summary.updateBarPreviewScale2Active();
+        // ********************************************
+            var dom = this.DOM.dropZone_Panel[0][0];
+            $(dom).on("mouseenter",function(event){
+                this.style.backgroundColor = "rgb(255, 188, 163)";
+            });
+            $(dom).on("mouseleave",function(event){
+                this.style.backgroundColor = "";
+            });
+            $(dom).on("mouseup",function(event){
+                var movedSummary = me.browser.movedSummary;
+                if(movedSummary.panel){ // if the summary was in the panels already
+                    movedSummary.DOM.root[0][0].nextSibling.style.display = "";
+                    movedSummary.DOM.root[0][0].previousSibling.style.display = "";
                 }
-                summary.refreshWidth();
-                me.browser.updateLayout();
-            }
-            if(info==="xfer_summary"){
-                var movedSummary = draggedTarget.__data__;
                 movedSummary.addToPanel(me);
-
+                me.browser.refreshAttributeList();
                 if(movedSummary.type=="categorical"){
                     movedSummary.refreshLabelWidth();
                     movedSummary.updateBarPreviewScale2Active();
                 }
                 movedSummary.refreshWidth();
-
                 me.browser.updateLayout();
-            }
-            event.preventDefault();
-        });
+            });
+        // ********************************************
+
+        this.newDropZone();
+        this.DOM.dropZone_last = this.DOM.root.select(".dropZone");
     },
     /** -- */
     setupAdjustWidth: function(){
@@ -1867,8 +2026,8 @@ kshf.Panel.prototype = {
     /** --- */
     updateWidth_QueryPreview: function(){
         var maxTotalCount = d3.max(this.summaries, function(summary){
-            if(summary.getMaxAggregate_Total===undefined) return 0;
-            return summary.getMaxAggregate_Total();
+            if(summary.getMaxAggr_Total===undefined) return 0;
+            return summary.getMaxAggr_Total();
         });
 
         var oldPreviewWidth = this.width.catQueryPreview;
@@ -1961,6 +2120,7 @@ kshf.Browser = function(options){
         .attr("percentview",false)
         .attr("noanim",false)
         .attr("ratiomode",false)
+        .attr("attribsShown",false)
         .attr("showdropzone",false)
         .attr("previewcompare",false)
         .attr("resultpreview",false)
@@ -2257,15 +2417,8 @@ kshf.Browser.prototype = {
     },
     /** -- */
     showAttributes: function(){
-        if(this.attribsShown){
-            this.DOM.root.style("left","0px");
-            this.DOM.attributeList.style("display","none");
-            this.attribsShown = false;
-            return;
-        }
-        this.attribsShown = true;
-        this.DOM.root.style("left","120px").style("position","relative");
-        this.DOM.attributeList.style("display","block");
+        this.attribsShown = !this.attribsShown;
+        this.DOM.root.attr("attribsShown",this.attribsShown);
     },
     /** -- */
     showInfoBox: function(){
@@ -2596,30 +2749,6 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        // Init summary DOMs after all summaries are added / data mappings are completed
-        this.panels.left.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-        this.panels.right.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-        this.panels.middle.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-        this.panels.bottom.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-
-        this.panels.left.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-        this.panels.right.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-        this.panels.middle.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.initDOM();
-        });
-
         if(this.listDef!==undefined){
             this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
 
@@ -2751,21 +2880,6 @@ kshf.Browser.prototype = {
 
         if(this.readyCb!==undefined) this.readyCb(this);
     },
-    addAttribDragListeners: function(dom){
-        var me=this;
-        dom.addEventListener("dragstart",function(event){
-            me.DOM.root.attr("showdropzone",true);
-            event.dataTransfer.setData("text/plain",dom.__data__.summaryName); // use the d3 bound value
-            event.dataTransfer.setData("text/info","new_summary");
-        });
-        dom.addEventListener("dragend",function(event){
-            me.DOM.root.attr("showdropzone",false);
-            //alert(event.dataTransfer.dropEffect);
-            if(event.dataTransfer.dropEffect==="copy"){
-                me.refreshAttributeList();
-            }
-        });
-    },
     /** -- */
     setItemName: function(){
         this.DOM.listHeader_itemName.html(this.itemName);
@@ -2780,13 +2894,37 @@ kshf.Browser.prototype = {
 
         var newNames = newAttributes
             .append("div").attr("class","attributeName")
-            .attr("draggable",true)
             .each(function(summary){
                 summary.DOM.nugget = d3.select(this);
-                me.addAttribDragListeners(this);
+                //me.addAttribDragListeners(this);
             })
             .attr("title",function(summary){ 
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
+            })
+            .on("mousedown",function(summary){
+                if(d3.event.which !== 1) return; // only respond to left-click
+                me.movedSummary = summary;
+                var _this = this;
+                _this.style.opacity = 0.5;
+                d3.select("body")
+                    .style('cursor','move')
+                    .on("mousemove", function(){
+                        me.DOM.root.attr("showdropzone",true);
+                        me.DOM.root.attr("dropattrtype",summary.getDataType());
+                        d3.event.stopPropagation();
+                        d3.event.preventDefault();
+                    })
+                    .on("mouseup", function(){
+                        _this.style.opacity = null;
+                        // Mouse up on the header
+                        me.DOM.root.attr("showdropzone",false);
+                        d3.select("body")
+                            .style('cursor','auto')
+                            .on("mousemove",null)
+                            .on("mouseup",null)
+                            ;
+                    });
+                d3.event.preventDefault();
             })
             ;
 
@@ -3155,7 +3293,6 @@ kshf.Browser.prototype = {
         }
         if(this.listDisplay){
             this.listDisplay.updateContentWidth(widthMiddlePanel);
-            this.layoutList.style("width",widthMiddlePanel+"px");
             this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
             this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         }
@@ -3235,11 +3372,17 @@ kshf.Summary_Base.prototype = {
         // Only used when summary is inserted into browser
         this.collapsed = false;
     },
+    /** -- */
     getDataType: function(){
-        if(this.type==='categorical') return "categorical";
+        if(this.type==='categorical') {
+            var str="categorical";
+            if(this.uniqueAttributes()) str+=" unique";
+            str+=this.hasMultiValueItem?" multivalue":" singlevalue";
+            return str;
+        }
         if(this.type==='interval') {
-            if(this.hasTime) return "time";
-            return "numeric";
+            if(this.hasTime) return "interval time";
+            return "interval numeric";
             // 
             if(this.hasFloat) return "floating";
             return "integer";
@@ -3287,20 +3430,33 @@ kshf.Summary_Base.prototype = {
         return this.summaryFilter.isFiltered;
     },
     /** -- */
-    addToPanel: function(panel){
-        if(this.panel && this.panel!==panel){
-            this.panel.removeSummary(this);
-            this.panel = panel;
-            panel.addSummary(this); 
-        }
+    addToPanel: function(panel, index){
+        if(index===undefined) index = panel.summaries.length;
         if(this.panel===undefined){
             this.panel = panel;
-            panel.addSummary(this); 
+        } else if(this.panel && this.panel!==panel){
+            this.panel.removeSummary(this);
+            this.panel = panel;
+        } else{ // this.panel === panel
+            var curIndex;
+            // this.panel is the same as panel...
+            this.panel.summaries.forEach(function(s,i){
+                if(s===this) curIndex = i;
+            },this);
+            // inserting the summary to the same index as current one
+            if(curIndex===index) return;
+            var toRemove=this.panel.DOM.root.selectAll(".dropZone")[0][curIndex];
+            toRemove.parentNode.removeChild(toRemove);
+            this.panel.updateDropZoneIndex();
         }
         if(this.DOM.root){
             this.DOM.root.style("display","");
-            panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],panel.DOM.dropZone[0][0]);
+            var beforeDOM = this.panel.DOM.root.selectAll(".dropZone")[0][index];
+            panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
+        } else {
+            this.initDOM(panel.DOM.dropZone_last[0][0]);
         }
+        panel.addSummary(this,index); 
     },
     /** -- */
     inBrowser: function(){
@@ -3310,123 +3466,60 @@ kshf.Summary_Base.prototype = {
     insertHeader: function(){
         var me = this;
 
-        draggedSummary = null;
-        draggedTarget = null;
         this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
-            .attr("draggable",true)
-            .each(function(d){
-                this.__data__ = me;
-                this.addEventListener("dragstart", function( event ) {
-                    event.dataTransfer.setData("text/info","xfer_summary");
-                    // store a ref. on the dragged elem
-                    draggedSummary = me;
-                    draggedTarget = event.target;
-                    me.DOM.root
-                        .style("opacity",0.5)
-                    me.browser.DOM.root.attr("showdropzone",true);
-                }, false);
-                this.addEventListener("dragend", function( event ) {
-                    me.browser.DOM.root.attr("showdropzone",false);
-                    me.DOM.root
-                        .style("opacity","")
-                }, false);
-                this.addEventListener("dragover", function( event ) {
-                    // prevent default to allow drop
-                    event.preventDefault();
-                }, false);
-                this.addEventListener("dragenter", function( event ) {
-                    if(draggedTarget===null) return;
-                    // highlight potential drop target when the draggable element enters it
-                    if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
-                        event.target.style.background = "rgba(0,0,150,0.5)";
-                    }
-                }, false);
-                this.addEventListener("dragleave", function( event ) {
-                    if(draggedTarget===null) return;
-                    // reset background of potential drop target when the draggable element leaves it
-                    if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
-                        event.target.style.background = "";
-                    }
-                }, false);
-                this.addEventListener("drop", function( event ) {
-                    if(draggedTarget===null) return;
-                    if(draggedTarget !== event.target && draggedTarget.className===event.target.className){
-                        event.target.style.background = "";
-                    }
-                    // prevent default action (open as link for some elements)
-                    event.preventDefault();
-                    // move dragged elem to the selected drop target
-                    if ( event.target.className == "headerGroup" ) {
-                        var summaryFrom = draggedTarget.__data__;
-                        var summaryTo = event.target.__data__;
-                        
-                        var indexFrom = -1, indexTo = -1;
-                        var panelFrom = summaryFrom.panel;
-                        var panelTo = summaryTo.panel;
-                        
-                        panelTo.summaries.forEach(function(summary,i){
-                            if(summary===summaryTo) indexTo = i;
-                        });
-                        panelFrom.summaries.forEach(function(summary,i){
-                            if(summary===summaryFrom) indexFrom = i;
-                        });
-                        panelFrom.summaries[indexFrom] = summaryTo;
-                        panelTo.summaries[indexTo] = summaryFrom;
-
-                        var domTo        = summaryTo.DOM.root[0][0];
-                        var domAfterTo   = domTo.nextSibling;
-                        var domFrom      = summaryFrom.DOM.root[0][0];
-                        var domAfterFrom = domFrom.nextSibling;
-
-                        panelFrom.DOM.root[0][0].insertBefore(domTo,domAfterFrom);
-                        panelTo.DOM.root[0][0].insertBefore(domFrom,domAfterTo);
-
-                        summaryFrom.panel = summaryTo.panel;
-                        summaryTo.panel = panelFrom;
-
-                        if(summaryFrom.type=="categorical"){
-                            summaryFrom.refreshLabelWidth();
-                            summaryFrom.updateBarPreviewScale2Active();
-                        }
-                        if(summaryTo.type=="categorical"){
-                            summaryTo.refreshLabelWidth();
-                            summaryTo.updateBarPreviewScale2Active();
-                        }
-
-                        summaryFrom.refreshWidth();
-                        summaryTo.refreshWidth();
-
-                        me.browser.updateLayout();
-                        me.browser.updateLayout();
-                    }
-                }, false);
-            });
+            .on("mousedown", function(){
+                if(d3.event.which !== 1) return; // only respond to left-click
+                me.browser.movedSummary = me;
+                var _this = this;
+                _this.parentNode.nextSibling.style.display = "none";
+                _this.parentNode.previousSibling.style.display = "none";
+                d3.select("body")
+                    .style('cursor','move')
+                    .on("mousemove", function(){
+                        _this.parentNode.style.opacity = 0.5;
+                        me.browser.DOM.root.attr("showdropzone",true);
+                        me.browser.DOM.root.attr("dropattrtype",me.getDataType());
+                        d3.event.stopPropagation();
+                        d3.event.preventDefault();
+                    })
+                    .on("mouseup", function(){
+                        // Mouse up on the body
+                        d3.select("body")
+                            .style('cursor','auto')
+                            .on("mousemove",null)
+                            .on("mouseup",null)
+                            ;
+                        me.browser.DOM.root.attr("showdropzone",false);
+                        _this.parentNode.style.opacity = null;
+                        _this.parentNode.nextSibling.style.display = "";
+                        _this.parentNode.previousSibling.style.display = "";
+                    });
+                d3.event.preventDefault();
+            })
+            ;
 
         this.DOM.headerGroup.append("div").attr("class","border_line");
 
         var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
-        if(this.collapsed!==undefined){
-            header_display_control.append("span").attr("class","fa fa-collapse")
-                .each(function(){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'sw',
-                        title: function(){ return me.collapsed?"Open summary":"Minimize summary"; }
-                    })
+        header_display_control.append("span").attr("class","fa fa-collapse")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
+                    title: function(){ return me.collapsed?"Open summary":"Minimize summary"; }
                 })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                .on("click",function(){
-                    this.tipsy.hide();
-                    me.collapseFacet(!me.collapsed);
-                })
-                ;
-        }
-        // Clique
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                this.tipsy.hide();
+                me.collapseSummary(!me.collapsed);
+            })
+            ;
         header_display_control.append("span").attr("class","fa fa-remove")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'sw',
+                    gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
                     title: function(){ return "Remove summary"; }
                 })
             })
@@ -3459,16 +3552,15 @@ kshf.Summary_Base.prototype = {
 
         this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
             .attr("edittitle",false)
-            .on("click",function(){ if(me.collapsed) me.collapseFacet(false); })
+            .on("click",function(){ if(me.collapsed) me.collapseSummary(false); })
             ;
 
         this.DOM.summaryTitle.append("span").attr("class","chartFilterButtonParent").append("div")
             .attr("class","chartClearFilterButton rowFilter alone")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ 
-                        return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter";
-                    }
+                    gravity: function(){ return me.panelOrder!==0?'s':'n'; },
+                    title: function(){ return "Remove filter"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -3525,7 +3617,8 @@ kshf.Summary_Base.prototype = {
         topRow.append("span").attr("class","save_filter_as_set fa fa-save")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ return "Save filtering as new row"; }
+                    gravity: 'n',
+                    title: function(){ return "Save filtering as new row"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -3611,11 +3704,19 @@ kshf.Summary_Base.prototype = {
             .on("mouseout",function(){ this.tipsy.hide(); });
     },
     /** -- */
-    collapseFacet: function(hide){
+    collapseSummary: function(hide){
         this.setCollapsed(hide);
         this.browser.updateLayout_Height();
         if(sendLog) {
             sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
+        }
+    },
+    /** -- */
+    setCollapsed: function(v){
+        this.collapsed = v;
+        if(this.DOM.root){
+            this.DOM.root.attr("collapsed",this.collapsed);
+            if(!this.collapsed) this.refreshViz_All();
         }
     },
 };
@@ -3661,7 +3762,7 @@ var Summary_Categorical_functions = {
         this.setSortingOpts();
 
         // If the categories are not unique, sort them
-        if(this.getMaxAggregate_Total()!=1 && this._cats.length>1)
+        if(this.getMaxAggr_Total()!=1 && this._cats.length>1)
             this.sortCats();
     },
     /** -- */
@@ -3672,8 +3773,8 @@ var Summary_Categorical_functions = {
         }
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
 
-        var maxAggregate_Total = this.getMaxAggregate_Total();
-        if(maxAggregate_Total===1){
+        var maxAggregate_Total = this.getMaxAggr_Total();
+        if(this.uniqueAttributes()){
             this.DOM.nugget.select(".dataTypeIcon").html("<span class='fa fa-tag'></span><br>Unique");
             nuggetViz.style("display",'none');
             return;
@@ -3816,8 +3917,8 @@ var Summary_Categorical_functions = {
         } else {
             return;
         }
-        if(this.DOM.attribs)
-            this.DOM.attribs.attr("title",function(cat){ return me.catTooltip.call(cat.data); });
+        if(this.DOM.cats)
+            this.DOM.cats.attr("title",function(cat){ return me.catTooltip.call(cat.data); });
     },
     /** -- */
     setCatTable: function(tableName){
@@ -3833,9 +3934,7 @@ var Summary_Categorical_functions = {
                 kshf.dt[this.catTableName] = this.items.slice();
             }
         }
-
         this.mapAttribs();
-
         this.updateCats();
     },
     /** -- */
@@ -4027,7 +4126,6 @@ var Summary_Categorical_functions = {
         // Init facet DOMs after all facets are added / data mappings are completed
         this.subFacets.forEach(function(summary){ summary.initDOM(); });
     },
-
     /** -- 
      * Note: accesses summaryFilter, summaryFunc
      */
@@ -4097,8 +4195,7 @@ var Summary_Categorical_functions = {
     // TODO: Check how isLinked and dataMap (old variable) affected this calculations...
     // Modified internal dataMap function - Skip rows with 0 active item count
     updateMinAggrValue: function(v){
-        v = Math.max(1,v);
-        this.minAggrValue = v;
+        this.minAggrValue = Math.max(1,v);
         this.updateCats();
     },
     /** -- */
@@ -4143,18 +4240,16 @@ var Summary_Categorical_functions = {
         },this);
     },
     /** -- */
-    initDOM: function(){
+    initDOM: function(beforeDOM){
         if(this.DOM.inited===true) return;
         var me = this;
 
-        var root,before;
-        if(this.parentFacet){
-            root = this.parentFacet.DOM.subFacets;
-            this.DOM.root = root.append("div")
-        } else {
-            root = this.panel.DOM.root;
-            this.DOM.root = root.insert("div",function(){ return me.panel.DOM.dropZone[0][0];})
-        }
+//        if(this.parentFacet){
+//            this.DOM.root = this.parentFacet.DOM.subFacets.append("div")
+//        } else {
+        this.DOM.root = this.panel.DOM.root.insert("div",function(d){ return beforeDOM; });
+//        }
+
         this.DOM.root
             .attr("class","kshfChart")
             .attr("collapsed",this.collapsed===false?"false":"true")
@@ -4170,9 +4265,7 @@ var Summary_Categorical_functions = {
 
         this.insertHeader.call(this);
 
-        if(this.hasAttribs()){
-            this.init_DOM_Attrib();
-        }
+        if(this.hasAttribs()) this.init_DOM_Attrib();
 
         // TODO: Insert subfacets here
         if(this.facets){
@@ -4213,15 +4306,15 @@ var Summary_Categorical_functions = {
         this.DOM.scrollToTop = this.DOM.facetCategorical.append("div")
             .attr("class","scrollToTop fa fa-arrow-up")
             .on("click",function(d){ 
-                kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
                 this.tipsy.hide();
+                kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
             })
             .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
             ;
 
         this.DOM.attribGroup = this.DOM.facetCategorical.append("div").attr("class","attribGroup")
@@ -4231,7 +4324,7 @@ var Summary_Categorical_functions = {
 
                 me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
-                me.attrib_InDisplay_First = Math.floor( me.scrollTop_cache/me.heightRow_attrib);
+                me.attrib_InDisplay_First = Math.floor(me.scrollTop_cache/me.heightRow_attrib);
                 me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.catCount_InDisplay);
                 me.updateAttribCull();
                 me.cullAttribs();
@@ -4248,11 +4341,11 @@ var Summary_Categorical_functions = {
         
         this.insertChartAxis_Measure.call(this,this.DOM.belowAttribs,'e','e');
 
-        // this helps us makes sure that the div height is correctly set to visible number of rows
+        // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
         this.DOM.chartBackground = this.DOM.attribGroup.append("span").attr("class","chartBackground");
 
-        var mmm=this.DOM.belowAttribs.append("div").attr("class","hasLabelWidth");
-        this.DOM.scroll_display_more = mmm.append("span").attr("class","scroll_display_more")
+        this.DOM.scroll_display_more = this.DOM.belowAttribs.append("div").attr("class","hasLabelWidth")
+            .append("span").attr("class","scroll_display_more")
             .on("click",function(){
                 kshf.Util.scrollToPos_do(
                     me.DOM.attribGroup[0][0],me.DOM.attribGroup[0][0].scrollTop+me.heightRow_attrib);
@@ -4271,7 +4364,7 @@ var Summary_Categorical_functions = {
         this.DOM.sortButton = this.DOM.facetControls.append("span").attr("class","sortButton fa")
             .on("click",function(d){
                 if(me.dirtySort){
-                    me.dirtySort=false;
+                    me.dirtySort = false;
                     me.DOM.root.attr("refreshSorting",false);
                     me.updateSorting(0,true); // no delay
                     return;
@@ -4282,13 +4375,11 @@ var Summary_Categorical_functions = {
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){
-                        return me.dirtySort?"Reorder":"Reverse order";
-                    }
+                    gravity: 'w', title: function(){ return me.dirtySort?"Reorder":"Reverse order"; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); });
+            .on("mouseout" ,function(){ this.tipsy.hide(); });
         this.refreshSortButton();
     },
     /** -- */
@@ -4308,7 +4399,8 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshSortButton: function(){
-        if(this.DOM.sortButton) this.DOM.sortButton
+        if(this.DOM.sortButton===undefined) return;
+        this.DOM.sortButton
             .style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
             .attr("inverse",this.sortingOpt_Active.inverse);
     },
@@ -4321,9 +4413,7 @@ var Summary_Categorical_functions = {
             .data(this.sortingOpts, function(d){ return d.name} );
 
         x.exit().remove();
-        x.enter().append("option").attr("class", "sort_label")
-            .text(function(d){ return d.name; })
-            ;
+        x.enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
     },
     /** -- */
     initDOM_TextSearch: function(){
@@ -4379,17 +4469,17 @@ var Summary_Categorical_functions = {
             .on("click",function() { me.summaryFilter.clearFilter(); });
     },
     /** returns the maximum active aggregate value per row in chart data */
-    getMaxAggregate_Active: function(){
-        return d3.max(this._cats, function(d){ return d.aggregate_Active; });
+    getMaxAggr_Active: function(){
+        return d3.max(this._cats, function(cat){ return cat.aggregate_Active; });
     },
     /** returns the maximum total aggregate value stored per row in chart data */
-    getMaxAggregate_Total: function(){
+    getMaxAggr_Total: function(){
         var subMax=0;
         // recurse
         if(this.subFacets.length>0){
-            subMax = d3.max(this.subFacets, function(f){ return f.getMaxAggregate_Total(v); });
+            subMax = d3.max(this.subFacets, function(f){ return f.getMaxAggr_Total(v); });
         }
-        if(!this.hasAttribs()) return subMax;;
+        if(!this.hasAttribs()) return subMax;
         if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
         this._maxBarValueMaxPerAttrib = d3.max(this._cats, function(d){ return d.aggregate_Total;});
         return this._maxBarValueMaxPerAttrib;
@@ -4419,8 +4509,7 @@ var Summary_Categorical_functions = {
     /** -- */
     unselectAllAttribs: function(){
         this._cats.forEach(function(cat){ 
-            if(cat.f_selected() && cat.DOM.facet)
-                cat.DOM.facet.setAttribute("highlight",false);
+            if(cat.f_selected() && cat.DOM.facet) cat.DOM.facet.setAttribute("highlight",false);
             cat.set_NONE();
         });
         this.summaryFilter.selected_All_clear();
@@ -4438,14 +4527,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     setCollapsed: function(v){
-        var oldV = this.collapsed;
-        this.collapsed = v;
-        if(this.DOM.root){
-            if(oldV===true&v===false){
-                this.refreshViz_All();
-            }
-            this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
-        }
+        kshf.Summary_Base.prototype.setCollapsed.call(this,v);
         // collapse children only if this is a hierarchy, not sub-filtering
         if(this.hasSubFacets() && !this.hasAttribs()){
             this.subFacets.forEach(function(f){ f.setCollapsed(v); });
@@ -4469,7 +4551,7 @@ var Summary_Categorical_functions = {
                 0,
                 (this.catBarScale==="scale_frequency")?
                     this.browser.itemsWantedCount:
-                    this.getMaxAggregate_Active()
+                    this.getMaxAggr_Active()
             ])
             ;
 
@@ -4546,7 +4628,7 @@ var Summary_Categorical_functions = {
         if(!this.hasAttribs()) return;
         var me=this;
 
-        this.DOM.attribs.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
+        this.DOM.cats.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
 
         this.DOM.measureLabel.each(function(attrib){
             if(attrib.isCulled) return;
@@ -4729,7 +4811,7 @@ var Summary_Categorical_functions = {
                 .ticks(this.chartAxis_Measure_TickSkip());
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggregate_Active()/me.browser.itemsWantedCount);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.itemsWantedCount);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, chartWidth])
                     .nice(this.chartAxis_Measure_TickSkip())
@@ -4850,21 +4932,14 @@ var Summary_Categorical_functions = {
         
         this.browser.updateLayout();
         
-        this.DOM.attribs.each(function(attrib){
-            var yPos = me.heightRow_attrib*attrib.orderIndex;
-            kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+yPos+"px)");
-            // padding!
-            var marginTop = 0;
-            //if(me.heightRow_attrib>19){
-                marginTop = (me.heightRow_attrib-18)/2;
-            //}
-            this.style.marginTop = marginTop+"px";
+        this.DOM.cats.each(function(attrib){
+            kshf.Util.setTransform(this,
+                "translate("+attrib.posX+"px,"+(me.heightRow_attrib*attrib.orderIndex)+"px)");
+            this.style.marginTop = ((me.heightRow_attrib-18)/2)+"px";
         });
-        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
+        this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
 
-        setTimeout(function(){
-            me.browser.setNoAnim(false);
-        },100);
+        setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
     /** -- */
     isAttribVisible: function(attrib){
@@ -5229,7 +5304,7 @@ var Summary_Categorical_functions = {
                     item2.DOM.facet.setAttribute("highlight",false);
                     item2.DOM.facet.setAttribute("highlight",false);
 
-                    me.DOM.attribs.each(function(attrib){
+                    me.DOM.cats.each(function(attrib){
                         if(attrib.isVisible){
                             attrib.posX = 0;
                             attrib.posY = me.heightRow_attrib*attrib.orderIndex;
@@ -5352,20 +5427,19 @@ var Summary_Categorical_functions = {
             })
             ;
 
-        this.DOM.attribs = this.DOM.attribGroup.selectAll(".attrib")
-        this.DOM.attribClickArea = this.DOM.attribs.selectAll(".clickArea");
-        this.DOM.compareButton = this.DOM.attribs.selectAll(".compareButton");
-        this.DOM.item_count_wrapper = this.DOM.attribs.selectAll(".item_count_wrapper");
-        this.DOM.measureLabel = this.DOM.attribs.selectAll(".item_count_wrapper > .measureLabel");
+        this.DOM.cats = this.DOM.attribGroup.selectAll(".attrib")
+        this.DOM.attribClickArea = this.DOM.cats.selectAll(".clickArea");
+        this.DOM.compareButton = this.DOM.cats.selectAll(".compareButton");
+        this.DOM.item_count_wrapper = this.DOM.cats.selectAll(".item_count_wrapper");
+        this.DOM.measureLabel = this.DOM.cats.selectAll(".item_count_wrapper > .measureLabel");
 
-        this.DOM.aggr_Group    = this.DOM.attribs.selectAll(".aggr_Group");
+        this.DOM.aggr_Group    = this.DOM.cats.selectAll(".aggr_Group");
         this.DOM.aggr_Total    = this.DOM.aggr_Group.selectAll(".total");
         this.DOM.aggr_TotalTip = this.DOM.aggr_Group.selectAll(".total_tip");
         this.DOM.aggr_Active   = this.DOM.aggr_Group.selectAll(".active");
         this.DOM.aggr_Preview  = this.DOM.aggr_Group.selectAll(".preview");
         this.DOM.aggr_Compare  = this.DOM.aggr_Group.selectAll(".compare");
     },
-
     /** -- */
     sortCats: function(){
         var me = this;
@@ -5373,9 +5447,7 @@ var Summary_Categorical_functions = {
         var sortFunc = this.sortingOpt_Active.func;
         var valueFunc = this.sortingOpt_Active.value;
 
-        // pre-sorting callback
-        var prepSort = this.sortingOpt_Active.prep;
-        if(prepSort) prepSort.call(this);
+        if(this.sortingOpt_Active.prep) this.sortingOpt_Active.prep.call(this);
 
         // idCompareFunc can be based on integer or string comparison
         var idCompareFunc = function(a,b){return b-a;};
@@ -5414,6 +5486,7 @@ var Summary_Categorical_functions = {
         this._cats.sort(theSortFunc);
         this._cats.forEach(function(cat,i){ cat.orderIndex=i; });
     },
+    /** -- */
     updateAttribCull: function(){
         var me=this;
         this._cats.forEach(function(attrib,i){
@@ -5431,14 +5504,12 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     uniqueAttributes: function(){
-        return this.getMaxAggregate_Total()===1;
+        return this.getMaxAggr_Total()===1;
     },
     /** -- */
     updateSorting: function(sortDelay,force){
         if(this._cats.length===0) return;
-        if(this.uniqueAttributes()) {
-            return; // Unique
-        }
+        if(this.uniqueAttributes()) return; // Nothing to sort...
         if(this.sortingOpt_Active.no_resort===true && force!==true) return;
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
@@ -5448,8 +5519,8 @@ var Summary_Categorical_functions = {
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortCats();
 
-        // The rest deals with updating UI
-        if(this.panel===undefined) return;
+        if(this.panel===undefined) return; // The rest deals with updating UI
+
         this.updateAttribCull();
 
         var xRemoveOffset = -100;
@@ -5460,7 +5531,7 @@ var Summary_Categorical_functions = {
             // 1. Make items disappear
             // Note: do not cull with number of items made visible.
             // We are applying visible and block to ALL attributes as we animate the change
-            me.DOM.attribs.each(function(attrib){
+            me.DOM.cats.each(function(attrib){
                 if(!attrib.isVisible && attrib.isVisible_before){
                     // disappear into left panel...
                     this.style.opacity = 0;
@@ -5482,7 +5553,7 @@ var Summary_Categorical_functions = {
             });
             // 2. Re-sort
             setTimeout(function(){
-                me.DOM.attribs.each(function(attrib){
+                me.DOM.cats.each(function(attrib){
                     if(attrib.isVisible && attrib.isVisible_before){
                         var x = 0;
                         var y = me.heightRow_attrib*attrib.orderIndex;
@@ -5495,7 +5566,7 @@ var Summary_Categorical_functions = {
                 // 3. Make items appear
                 setTimeout(function(){
                     if(me.catCount_NowVisible>=0){
-                        me.DOM.attribs.each(function(attrib){
+                        me.DOM.cats.each(function(attrib){
                             if(attrib.isVisible && !attrib.isVisible_before){
                                 this.style.opacity = 1;
                                 var x = 0;
@@ -5528,28 +5599,29 @@ var Summary_Categorical_functions = {
     getTotalAttribHeight: function(){
         return this.catCount_Visible*this.heightRow_attrib;
     },
+    /** -- */
     cullAttribs: function(){
-        var me=this;
-        this.DOM.attribs
-        .style("visibility",function(attrib){
-            return (attrib.isCulled || !attrib.isVisible)?"hidden":"visible";
-        }).style("display",function(attrib){
-            return (attrib.isCulled || !attrib.isVisible)?"none":"block";
-        });
+        this.DOM.cats
+            .style("visibility",function(attrib){
+                return (attrib.isCulled || !attrib.isVisible)?"hidden":"visible";
+            }).style("display",function(attrib){
+                return (attrib.isCulled || !attrib.isVisible)?"none":"block";
+            });
 
-        if(me.cbCatCulled) me.cbCatCulled.call(this);
+        if(this.cbCatCulled) this.cbCatCulled.call(this);
     },
+    /** -- */
     chartAxis_Measure_TickSkip: function(){
         var width = this.chartScale_Measure.range()[1];
         var ticksSkip = width/25;
-        if(this.getMaxAggregate_Active()>100000){
+        if(this.getMaxAggr_Active()>100000){
             ticksSkip = width/30;
         }
         if(this.browser.percentModeActive){
             ticksSkip /= 1.1;
         }
         return ticksSkip;
-    },
+    }
 };
 
 for(var index in Summary_Categorical_functions){
@@ -5741,7 +5813,7 @@ var Summary_Interval_functions = {
         }
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
         
-        var maxAggregate_Total = this.getMaxBinTotalItems();
+        var maxAggregate_Total = this.getMaxAggr_Total();
 
         if(this.intervalRange.min===this.intervalRange.max){
             this.DOM.nugget.select(".dataTypeIcon").html("only<br>"+this.intervalRange.min);
@@ -5841,27 +5913,24 @@ var Summary_Interval_functions = {
         };
     },
     /** -- */
-    getMaxBinTotalItems: function(){
+    getMaxAggr_Total: function(){
         return d3.max(this.histBins,function(aggr){ return aggr.length; });
     },
     /** -- */
-    getMaxBinActiveItems: function(){
+    getMaxAggr_Active: function(){
         return d3.max(this.histBins,function(aggr){ return aggr.aggregate_Active; });
     },
     /** -- */
-    initDOM: function(){
+    initDOM: function(beforeDOM){
         if(this.isEmpty) return;
         if(this.DOM.inited===true) return;
         var me = this;
         
-        var root;
-        if(this.parentFacet){
-            root = this.parentFacet.DOM.subFacets;
-            this.DOM.root = root.append("div");
-        } else {
-            root = this.panel.DOM.root;
-            this.DOM.root = root.insert("div",function(){ return me.panel.DOM.dropZone[0][0];});
-        }
+//        if(this.parentFacet){
+//            this.DOM.root = this.parentFacet.DOM.subFacets.append("div");
+//        } else {
+        this.DOM.root = this.panel.DOM.root.insert("div", function(d){ return beforeDOM; });
+//        }
 
         this.DOM.root
             .attr("class","kshfChart")
@@ -5902,11 +5971,11 @@ var Summary_Interval_functions = {
             this.setCollapsed(true);
         }
 
-        this.setCollapsed(this.collapsed);
-        this.setUnitName(this.unitName);
-
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
         this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), true );
+
+        this.setCollapsed(this.collapsed);
+        this.setUnitName(this.unitName);
 
         this.DOM.inited=true;
     },
@@ -6128,8 +6197,8 @@ var Summary_Interval_functions = {
             this.intervalTickFormat = function(d){
                 if(me.tickIntegerOnly && d<10) return d;
                 var x= d3Formating(d);
-                if(x.indexOf(".00")!==-1) x = x.substr(0,x.indexOf(".00"));
-                if(x.indexOf(".0")!==-1) x = x.substr(0,x.indexOf(".0"));
+                if(x.indexOf(".00")!==-1) x = x.replace(".00","");
+                if(x.indexOf(".0")!==-1) x = x.replace(".0","");
                 return x;
             }
         }
@@ -6648,13 +6717,13 @@ var Summary_Interval_functions = {
     /** -- */
     updateBarScale2Total: function(){
         this.chartScale_Measure
-            .domain([0, this.getMaxBinTotalItems()])
+            .domain([0, this.getMaxAggr_Total()])
             .range ([0, this.height_hist]);
     },
     /** -- */
     updateBarScale2Active: function(){
         this.chartScale_Measure
-            .domain([0, this.getMaxBinActiveItems()])
+            .domain([0, this.getMaxAggr_Active()])
             .range ([0, this.height_hist]);
     },
     /** -- */
@@ -6898,7 +6967,6 @@ var Summary_Interval_functions = {
     clearViz_Preview: function(){
         if(this.isEmpty) return;
         if(this.collapsed) return;
-        // The DOM is not initialized in initDOM, but in adjusting to the facet width. I know, weird.
         if(this.DOM.aggr_Preview===undefined) return;
         var me=this;
         var width = this.getBarWidth_Real();
@@ -6923,7 +6991,6 @@ var Summary_Interval_functions = {
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
         }
-
     },
     /** -- */
     refreshViz_Axis: function(){
@@ -6940,7 +7007,7 @@ var Summary_Interval_functions = {
                 .filter(function(d){return d!==0;});
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxBinActiveItems()/me.browser.itemsWantedCount);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.itemsWantedCount);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, this.height_hist])
                     .nice(chartAxis_Measure_TickSkip)
@@ -7089,16 +7156,6 @@ var Summary_Interval_functions = {
         this.DOM.labelGroup.style("height",this.height_labels+"px");
     },
     /** -- */
-    setCollapsed: function(v){
-        this.collapsed = v;
-        if(this.DOM.root){
-            this.DOM.root.attr("collapsed",this.collapsed===false?"false":"true");
-            if(v===false){
-                this.clearViz_Preview();
-            }
-        }
-    },
-    /** -- */
     updateAfterFilter: function(resultChange){
         if(this.isEmpty) return;
         this.updateActiveItems();
@@ -7124,10 +7181,10 @@ var Summary_Interval_functions = {
     },
     /** -- */
     setSelectedPosition: function(v){
+        if(!this.inBrowser()) return;
         if(this.DOM.inited===false) return;
         if(v===null) return;
         if(this.valueScale===undefined) return;
-        if(this.panel===undefined) return;
 
         var t="translateX("+(this.valueScale(v)+this.getAggreg_Width_Offset())+"px)";
         this.DOM.selectedItemValue

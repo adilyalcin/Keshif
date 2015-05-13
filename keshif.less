@@ -78,6 +78,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'all 700ms ease-in-out');
         }
     }
+    &[attribsShown=true]{
+        left: 120px;
+        .attributeList{
+            display: block;
+        }
+        .listHeader > .configRow{
+            display: block;
+        }
+    }
     &[percentview=true]{
         .chartAxis_Measure {
             > .percentSign::after{
@@ -86,8 +95,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[showdropzone=true]{
-        .layout_block > .dropZone {
-            display: block;
+        &:not([dropattrtype~="unique"]){
+            .layout_block[hassummaries="true"] > .dropZone{
+                display: block;
+                cursor: s-resize;
+            }
+        }
+        &[dropattrtype~="interval"] .dropZone_resultSort{
+            display: block !important;
+        }
+        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch{
+            display: block !important;
         }
     }
     &[ratiomode=true]{
@@ -150,6 +168,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 content: "\f13e";
             }
         }
+    }
+
+    .unitName{
+        opacity: 0.6;
+        margin-left: 2px;
     }
 
     .sortButton{
@@ -319,7 +342,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                 }
             }
-            &[datatype='numeric']{
+            &[datatype~="interval"]{
                 > .attribNugget{
                     .flex-direction(column);
                     > .nuggetViz{
@@ -333,33 +356,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .nuggetViz{ .order(1); }
                 .dataTypeIcon{ .order(2); max-height: 1em; }
             }
-            &[datatype='time']{
-                > .attribNugget{
-                    .flex-direction(column);
-                    > .nuggetViz{
-                        .display(flex);
-                        .flex-direction(row);
-                        > .nuggetBar{
-                            .align-self(flex-end);
-                        }
+            &[datatype~='time']{
+                .dataTypeIcon{
+                    &:before {
+                        content: '\f017'; // fa-clock-o
                     }
                 }
-                .nuggetViz{ .order(1); }
-                .dataTypeIcon{ .order(2); max-height: 1em; }
             }
-            &[datatype='categorical']{
+            &[datatype~="categorical"]{
                 > .attribNugget{
                     .flex-direction(row);
                     > .nuggetViz{
                         .display(flex);
                         .flex-direction(column);
-                    }
-                }
-            }
-            &[datatype='time']{
-                .dataTypeIcon{
-                    &:before {
-                        content: '\f017'; // fa-clock-o
                     }
                 }
             }
@@ -385,31 +394,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .layout_block {
         > .dropZone{
             .flex(1);
+            pointer-events: all;
             display: none;
-            position: absolute;
             background-color: rgba(200, 200, 200, 0.3);
             border-radius: 10px;
             border-style: solid;
-            border-width: 0px;
             border-color: gray;
+            border-width: 2px;
             z-index: 50;
-            &[asblock="true"]{
-                position: relative;
-                width: auto !important;
-                height: auto !important;
-                top: auto !important;
-                right: auto !important;
-                border-radius: 40px !important;
-                border-width: 2px !important;
-            }
+            margin: 4px;
+            &:hover{ background-color: rgb(255, 188, 163); }
+        }
+        > .dropZone_panel{
+            display: none;
+            background-color: rgba(200, 200, 200, 0.3);
+            border-color: gray;
+            border-style: solid;
+            border-width: 0px;
+            // border-radius: 10px; // Set depending on the pane;
+            z-index: 50;
+            position: absolute;
+            &:hover{ background-color: rgb(255, 188, 163); }
         }
         .dropIcon{
             margin: 0px auto;
-            width: 30px;
             position: relative;
             display: block;
-            top: 40%;
-            font-size: 2em;
+            font-size: 1.3em;
+            pointer-events: none;
+            text-align: center;
         }
         &[hidebars=true] .kshf {
             .attrib .aggr_Group{ display:none; }
@@ -445,17 +458,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.layout_bottom{
-            display:block;
-            > .dropZone{
+            .display(inline-flex);
+            .flex-direction(column);
+            width: 100%;
+            > .dropZone_panel{
                 bottom: 2px;
                 height: 40px;
-                left: 5%;
-                width: 90%;
+                width: 100%;
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
-                > .dropIcon{
-                    top: 5px;
-                }
             }
         }
         &.layout_left{
@@ -468,8 +479,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .kshfChart{
                 display: block;
             }
-            > .dropZone{
-                left:2px;
+            > .dropZone_panel{
+                left: 2px;
                 height: 90%;
                 top: 5%;
                 width: 40px;
@@ -486,7 +497,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             vertical-align: top;
             position: relative;
             height: 100%;
-            > .dropZone{
+            > .dropZone_panel{
                 right:2px;
                 height: 90%;
                 top: 5%;
@@ -671,7 +682,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .fa-collapse{
                 opacity: 1;
                 &:hover{
-                    .animation-direction(reverse);
+                    //.animation-direction(reverse);
                 }
                 &::before{ content: "\f065"; }
             }
@@ -941,7 +952,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             span.isLinkedMark{
             }
-            span.facetDescription{
+            .facetDescription{
+                cursor: default;
             }
         }
         > .header_display_control{
@@ -958,14 +970,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color:#cb5454;
                 }
             }
-            > .fa-collapse:hover{
+/*            > .fa-collapse:hover{
                 .animation(shrink 800ms);
                 .animation-iteration-count(infinite);
                 .animation-timing-function(ease-in);
-            }
+            }*/
             > .fa-collapse{
                 font-size: 0.8em;
-                margin:1px;
+                margin: 1px;
+                width: 13px;
+                height: 13px;
                 &::before{
                     content: "\f066";
                 }
@@ -1591,7 +1605,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                 }
                 > .percentileGroup{
-                    height: 14px;
+                    height: 12px;
+                    margin-top: 1px;
                     position: relative;
                     border-style: solid;
                     border-color: lightgray;
@@ -1601,7 +1616,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: absolute;
                         display: inline-block;
                         font-weight: 300;
-                        bottom: 0px;
+                        top: 0px;
                         left: -9px;
                         text-shadow: 0px 0px 2px white;
                         z-index: 120;
@@ -1615,7 +1630,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .quantile {
                         display: inline-block;
                         position: absolute;
-                        height: 12px;
+                        height: 10px;
                         width:1px;
                         .transition(~'transform 700ms ease-in-out');
                         .transform-origin(0% 0%);
@@ -1772,21 +1787,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .labelGroup{
                         cursor: default;
                         position:relative;
-                        /*> .unitName{
-                            font-size: 0.7em;
-                            left: -27px;
-                            width: 15px;
-                            position: absolute;
-                            //top: -1px;
-                            text-align: right;
-                            font-weight: 300;/*
-                            &::after{
-                                content: "]";
-                            }
-                            &::before{
-                                content: "[";
-                            }
-                        }*/
                         > .tick{
                             position:absolute;
                             > .text{
@@ -1808,10 +1808,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     } // labelGroup
-                    .unitName{
-                        opacity: 0.6;
-                        margin-left: 2px;
-                    }
                     /*
                     &[scaletype="log"] > .labelGroup > .tick > .line{
                         top: -22px;
@@ -2033,6 +2029,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .middleStuff{
         .display(inline-flex);
         .flex-direction(column);
+        .flex(1);
     }
 
     .listDiv{
@@ -2097,6 +2094,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 > .itemToggleDetails{
+                    display: none;
                     vertical-align: top;
                     width:18px; // includes the padding, using box model...
                     cursor: pointer;
@@ -2279,7 +2277,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
+        &[showRank=true]{
+            .itemRank{
+                display: inline-block !important;
+            }
+            > .listHeader > .configRow > .itemRank{
+                color: orangered;
+            }
+            .adjustSortColumnWidth{
+                margin-left: 13px;
+            }
+        }
+
         &[displaytype="list"] {
+            > .listHeader > .configRow > .adjustSortColumnWidth >.handle{
+                display: block;
+            }
             > .listItemGroup{
                 > .listItem{
                     .display(flex);
@@ -2299,15 +2312,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         overflow: hidden;
                     }
                     > .itemRank{
-                        font-size: 0.8em;
-                        margin-top: 2px;
+                        display: none;
+                        font-size: 0.6em;
                         color: gray;
-                        font-size: 0.8em;
                         font-weight: 300;
                         float: left;
                         width: 13px;
                         font-style: italic;
                         text-align: right;
+                        margin-top: 4px;
                     }
                     > .itemToggleDetails{
                         width: 18px;
@@ -2318,6 +2331,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         .flex(1);
                     }
                 }
+            }
+            &[detailsToggle="zoom"] {
+                > .listItemGroup > .listItem > .itemToggleDetails{
+                    display: inline-block;
+                }
+            }
+            &[detailsToggle="one"] {
+                > .listItemGroup > .listItem > .itemToggleDetails{
+                    display: inline-block;
+                    > .item_details_toggle:before{
+                        content: "\f078";
+                    }
+                }
+            }
+        }
+        &[detailsToggle="zoom"] {
+            > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before{
+                content: "\f140";
             }
         }
     } // div.listDiv
@@ -2349,7 +2380,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .totalViz{
             height: 3px;
             margin-top: 1px;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             position:relative;
             > .aggr{
                 cursor: default !important;
@@ -2371,6 +2402,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .flex-direction(row);
             min-height: 18px;
             > .itemRank{
+                display: none;
                 width: 13px;
                 text-align: right;
                 font-weight: 100;
@@ -2383,7 +2415,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .align-self(flex-end);
                 white-space: nowrap;
                 text-align: right;
-                padding-right: 3px;
+                padding-right: 1px;
+                position: relative;
                 > .sortColumnName{
                     font-weight: 300;
                     font-size: 0.9em;
@@ -2391,6 +2424,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                     cursor: default;
                     .user-select(none);
+                }
+                > .dropZone_resultSort{
+                    display: none;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    z-index: 50;
+                    background-color: rgba(234, 234, 234, 1);
+                    border-radius: 5px;
+                    border-style: solid;
+                    border-width: 2px;
+                    border-color: gray;
+                    text-align: center;
+                    > .dropZone_resultSort_text{
+                        pointer-events: none;
+                        font-size: 0.8em;
+                        display: block;
+                        font-weight: 300;
+                    }
+                    &:hover{
+                        background-color: rgb(255, 188, 163);
+                    }
                 }
             }
             > .sortColumn {
@@ -2518,6 +2573,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         } // bottomRow
 
+        > .configRow{
+            display: none;
+            height: 18px;
+            position: relative;
+            border-top: dotted 1px rgb(153, 147, 131);
+            background-color: rgb(229, 226, 218);
+            > .itemRank{
+                display: inline-block;
+                position: absolute;
+                width: 13px;
+                text-align: right;
+                z-index: 10;
+                cursor: pointer;
+                color: gray;
+                .user-select(none);
+                > .fa:before{
+                    content: "\f102";
+                }
+                &:hover{
+                    color: black;
+                }
+            }
+            > .adjustSortColumnWidth{
+                display: inline-block;
+                position: relative;
+                height: 100%;
+                text-align: center;
+                > .handle{
+                    display: none;
+                    position: absolute;
+                    right: 0px;
+                    cursor: ew-resize;
+                    top: 0px;
+                    height: 100%;
+                    width: 3px;
+                    border-left: solid 1px gray;
+                    border-right: solid 1px gray;
+                }
+                >.removeSortOption{
+                    cursor: pointer;
+                    width: 14px;
+                    height: 14px;
+                    display: inline-block;
+                    color:gray;
+                    &:before{
+                        content: "\f00d";
+                    }
+                    &:hover{
+                        color: black;
+                    }
+                }
+            }
+        }// configRow
+
         .filterClearAll{
             opacity: 0;
             pointer-events: none;
@@ -2573,7 +2682,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: inline-block;
                 vertical-align: bottom;
                 position: relative;
-                input{
+                height: 18px;
+                > .dropZone_textSearch{
+                    display: none;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    z-index: 50;
+                    background-color: rgba(234, 234, 234, 1);
+                    border-radius: 5px;
+                    border-style: solid;
+                    border-width: 2px;
+                    border-color: gray;
+                    text-align: center;
+                    > .dropZone_textSearch_text{
+                        pointer-events: none;
+                        font-size: 0.7em;
+                        display: block;
+                        font-weight: 300;
+                    }
+                    &:hover{
+                        background-color: rgb(255, 188, 163);
+                    }
+                }
+                > .mainTextSearch_input{
+                    display: none;
                     font-size: 0.8em;
                     font-weight: 700;
                     color: #cb5454;
@@ -2587,7 +2720,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     width: calc(~"100% - 17px");
                     &:focus{
                         outline-color: #cb5454;
-                        outline-width: 2px;
+                        outline-width: 1px;
                     }
                     &:hover{
                         border-width: 1px;
@@ -2597,28 +2730,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         //margin: 0px 1px;
         //                padding: 0px 0px 1px 0px;
                     }
+                    &::-webkit-input-placeholder{
+                        color: #cb5454;
+                        font-weight: 300;
+                    }
+                    &:focus::-webkit-input-placeholder{
+                        color: #F3CDCD;
+                    }
                 }
-                input::-webkit-input-placeholder { 
-                    color: #cb5454;
-                    font-weight: 300;
-                }
-                input:focus::-webkit-input-placeholder { 
-                    color: #F3CDCD;
-                }
-
-                .searchIcon {
+                > .searchIcon{
+                    display: none;
                     padding-left: 1px;
                     color: #cb5454;
                 }
-                i.fa.clearText{
-                    position: absolute;
+                > .clearText{
                     display: none;
+                    position: absolute;
                     right: 4px;
                     top: 2px;
                     cursor: pointer;
                     color:gray;
                     &:hover{
                         color: #cb5454;
+                    }
+                }
+                &[isActive="true"]{
+                    > .mainTextSearch_input{
+                        display: inline-block;
+                    }
+                    > .searchIcon{
+                        display: inline-block;
                     }
                 }
             } // mainTextSearch
