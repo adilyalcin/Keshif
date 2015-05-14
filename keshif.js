@@ -1030,15 +1030,27 @@ kshf.List = function(kshf_, config, root){
         .attr("class","adjustSortColumnWidth")
         ;
 
-    this.DOM.adjustSortColumnWidth.append("span").attr("class","removeSortOption fa")
+    this.DOM.removeSortOption = this.DOM.adjustSortColumnWidth.append("span").attr("class","removeSortOption fa")
         .each(function(){
             this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Remove current sorting option"; }});
         })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout",function(d,i){ this.tipsy.hide(); })
         .on("click",function(){
-            // TODO
+            var index=-1;
+            me.sortingOpts.forEach(function(o,i){
+                if(o===me.sortingOpt_Active) index=i;
+            })
+            if(index!==-1){
+                me.sortingOpts.splice(index,1);
+                if(index===me.sortingOpts.length) index--;
+                me.prepSortingOpts();
+                me.setSortingOpt_Active(index);
+                me.refreshSortingOptions();
+                me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
+            }
         })
+        .style("display",(this.sortingOpts.length<2)?"none":"inline-block");
         ;
 
     this.DOM.adjustSortColumnWidth.append("span").attr("class","handle")
@@ -1257,9 +1269,12 @@ kshf.List.prototype = {
             sortOpt.inverse = sortOpt.inverse || false;
             sortOpt.func    = sortOpt.func    || this.getSortFunc(sortOpt.value);
         },this);
+        if(this.DOM.removeSortOption)
+            this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
     },
     /** -- */
     refreshSortingOptions: function(){
+        this.DOM.listSortOptionSelect.selectAll("option").remove();
         this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts, function(d){ return d.name} )
             .enter().append("option").html(function(d){ return d.name; });
         },
@@ -1817,7 +1832,10 @@ kshf.Panel.prototype = {
             if(s===summary) curIndex=i;
         });
         if(curIndex===-1){
-            this.summaries.push(summary);
+            if(index===this.summaries.length)
+                this.summaries.push(summary);
+            else
+                this.summaries.splice(index,0,summary);
             this.DOM.root.attr("hasSummaries",true);
             this.updateWidth_QueryPreview();
             this.setupAdjustWidth();
@@ -2765,7 +2783,7 @@ kshf.Browser.prototype = {
 
             var rightSpan = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","rightBoxes");
             if(this.listDef.enableSave){
-                rightSpan.append("i").attr("class","fa fa-save ")
+                rightSpan.append("i").attr("class","fa fa-save")
                     .each(function(d){
                         this.tipsy = new Tipsy(this, {
                             gravity: 'n',
@@ -2780,7 +2798,7 @@ kshf.Browser.prototype = {
             }
 
             // Attribute panel
-            rightSpan.append("i").attr("class","fa fa-cog")
+            rightSpan.append("i").attr("class","showConfigButton fa fa-cog")
                 .each(function(d){
                     this.tipsy = new Tipsy(this, {
                         gravity: 'n',
@@ -3166,6 +3184,7 @@ kshf.Browser.prototype = {
             var maxHeight=0;
             // they all share the same target height
             this.panels.bottom.summaries.forEach(function(summary){
+                targetHeight = Math.min(summary.getHeight_RangeMax(),targetHeight);
                 summary.setHeight(targetHeight);
                 summary.heightProcessed = true;
                 bottomFacetsHeight += summary.getHeight();
@@ -3449,12 +3468,12 @@ kshf.Summary_Base.prototype = {
             toRemove.parentNode.removeChild(toRemove);
             this.panel.updateDropZoneIndex();
         }
+        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone")[0][index];
         if(this.DOM.root){
             this.DOM.root.style("display","");
-            var beforeDOM = this.panel.DOM.root.selectAll(".dropZone")[0][index];
             panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
         } else {
-            this.initDOM(panel.DOM.dropZone_last[0][0]);
+            this.initDOM(beforeDOM);
         }
         panel.addSummary(this,index); 
     },
@@ -3531,12 +3550,6 @@ kshf.Summary_Base.prototype = {
                     me.parentFacet.show_cliques = !me.parentFacet.show_cliques;
                     me.parentFacet.DOM.root.attr("show_cliques",me.parentFacet.show_cliques);
                 } else {
-                    // REMOVE SUMMARY
-                    var summaryIndex = -1;
-                    me.browser.summaries.forEach(function(summary,i){
-                        if(summary===me) summaryIndex = i;
-                    });
-                    // remove it from the list
                     me.panel.removeSummary(me);
                     me.clearDOM();
 
@@ -3597,7 +3610,7 @@ kshf.Summary_Base.prototype = {
 
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
             .attr("class","summaryTitle_editButton fa")
-            .on("click",function(d){
+            .on("click",function(){
                 var curState=this.parentNode.getAttribute("edittitle");
                 if(curState===null || curState==="false"){
                     this.parentNode.setAttribute("edittitle",true);
@@ -3608,7 +3621,7 @@ kshf.Summary_Base.prototype = {
                 } else {
                     var parentDOM = d3.select(this.parentNode);
                     var newTitle = parentDOM.select(".summaryTitle_edit")[0][0].value;
-                    me.browser.changeSummaryName(me.browser.primaryTableName,d.name,newTitle);
+                    me.browser.changeSummaryName(me.browser.primaryTableName,newTitle);
                     parentDOM.select(".summaryTitle_text").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
                 }
@@ -3825,8 +3838,8 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getHeight_RangeMin: function(){
-        if(!this.hasAttribs()) return this.heightRow_attrib;
-        return this.getHeight_Header()+(this.configRowCount+Math.min(this.catCount_Visible,3)+1)*this.heightRow_attrib;
+        if(!this.hasAttribs()) return this.getHeight_Header();
+        return this.getHeight_Header()+this.getHeight_Config()+(Math.min(this.catCount_Visible,2)+1)*this.heightRow_attrib;
     },
     /** -- */
     getHeight_Config: function(){
@@ -3838,14 +3851,13 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getHeight_Bottom: function(){
-        return 18;
+        if(!this.areAllAttribsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>4)
+            return 18;
+        return 0;
     },
     /** -- */
     getHeight_Content: function(){
-        var h = this.attribHeight + this.getHeight_Config();
-        if(!this.areAllAttribsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>4)
-            h+=this.getHeight_Bottom();
-        return h;
+        return this.attribHeight + this.getHeight_Config() + this.getHeight_Bottom();
     },
     /** -- */
     areAllAttribsInDisplay: function(){
@@ -5649,7 +5661,7 @@ var Summary_Interval_functions = {
         // pixel width settings...
         
         this.height_hist = 1; // Initial width (will be updated later...)
-        this.height_hist_min = 30; // Minimum possible histogram height
+        this.height_hist_min = 20; // Minimum possible histogram height
         this.height_hist_max = 100; // Maximim possible histogram height
         this.height_slider = 12; // Slider height
         this.height_labels = 13; // Height for labels
@@ -6192,10 +6204,13 @@ var Summary_Interval_functions = {
             ticks = this.valueScale.ticks(optimalTickCount);
             this.valueScale.nice(optimalTickCount);
             ticks = this.valueScale.ticks(optimalTickCount);
-//            if(this.tickIntegerOnly) ticks = ticks.filter(function(d){return d%1===0;});
+
+            if(this.tickIntegerOnly) ticks = ticks.filter(function(d){return d===0||d%1===0;});
+
             var d3Formating = d3.format(this.tickIntegerOnly?".2s":".2f");
             this.intervalTickFormat = function(d){
                 if(me.tickIntegerOnly && d<10) return d;
+                if(Math.abs(ticks[1]-ticks[0])<1000) return d; // cannot apply k / m shortcuts.
                 var x= d3Formating(d);
                 if(x.indexOf(".00")!==-1) x = x.replace(".00","");
                 if(x.indexOf(".0")!==-1) x = x.replace(".0","");

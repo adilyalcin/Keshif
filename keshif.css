@@ -76,6 +76,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .listHeader > .configRow {
   display: block;
 }
+.kshf[attribsShown=true] .summaryTitle:hover > .summaryTitle_editButton {
+  opacity: 1;
+  pointer-events: all;
+}
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
@@ -936,6 +940,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px;
   background-color: rgba(250, 250, 250, 0.9);
   color: orangered;
+  text-align: center;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_edit:focus {
   outline-color: #cb5454;
@@ -967,10 +972,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_editButton:hover {
   color: black;
-}
-.kshf .headerGroup .summaryTitle:hover > .summaryTitle_editButton {
-  opacity: 1;
-  pointer-events: all;
 }
 .kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_text {
   display: none;
@@ -2344,9 +2345,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv[showRank=true] .itemRank {
   display: inline-block !important;
-}
-.kshf .listDiv[showRank=true] > .listHeader > .configRow > .itemRank {
-  color: orangered;
 }
 .kshf .listDiv[showRank=true] .adjustSortColumnWidth {
   margin-left: 13px;

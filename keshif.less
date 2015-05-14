@@ -83,8 +83,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attributeList{
             display: block;
         }
-        .listHeader > .configRow{
-            display: block;
+        .listHeader {
+            > .configRow{
+                display: block;
+            }
+        }
+        .summaryTitle:hover{
+            > .summaryTitle_editButton{
+                opacity: 1;
+                pointer-events: all;
+            }
         }
     }
     &[percentview=true]{
@@ -863,6 +871,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-width: 0px;
                 background-color: rgba(250,250,250,0.9);
                 color: orangered;
+                text-align: center;
                 &:focus{
                     outline-color: #cb5454;
                     outline-width: 0px;
@@ -893,12 +902,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 &:hover{
                     color: black;
-                }
-            }
-            &:hover{
-                > .summaryTitle_editButton{
-                    opacity: 1;
-                    pointer-events: all;
                 }
             }
             &[edittitle="true"]{
@@ -2282,7 +2285,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: inline-block !important;
             }
             > .listHeader > .configRow > .itemRank{
-                color: orangered;
+                // color: orangered; // Does not look nice...
             }
             .adjustSortColumnWidth{
                 margin-left: 13px;
@@ -2776,7 +2779,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     margin-left: 2px;
                     &:hover{ color: #cb5454; }
                 }
-                .fa-cog{
+                .showConfigButton{
+
                 }
                 .datasource{
                     cursor: pointer;
