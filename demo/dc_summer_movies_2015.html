@@ -111,33 +111,38 @@ $(document).ready( function(){
             browser.updateLayout();
         },
         facets: [
-            {   title: "Movie Name", attribMap: "Movie", collapsed: true
-            },{ title: "Movie Genres",
+            {   title: "Movie", attribMap: "Movie", collapsed: true
+            },{ title: "Genres",
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Genre;
                 }
-            },{ title: "Movie Year",
+            },{ title: "Year",
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Year;
                 }
-            },{ title: "Movie Actors", collapsed: true,
+            },{ title: "Actors", collapsed: true,
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Actors.split(/\b,\s+/);
                 }
-            },{ title: "Movie IMDb Rating",
+            },{ title: "Directors", collapsed: true,
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return movie.Director.split(/\b,\s+/);
+                }
+            },{ title: "IMDb Rating",
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.imdbRating;
                 }
-            },{ title: "Movie MetaScore", collapsed: true,
+            },{ title: "MetaScore", collapsed: true,
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Metascore;
                 }
-            },{ title: "Movie Rated", collapsed: true,
+            },{ title: "Rated", collapsed: true,
                 attribMap: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Rated;
@@ -197,7 +202,7 @@ $(document).ready( function(){
                     return a_m.isBefore(b_m);
                 },
                 inverse: true,
-                label: function(){ return moment(this.Date).format('MMM.Do,ddd'); }
+                label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
             },{
                 name: "IMDb Rating",
                 value: function(){
@@ -211,6 +216,7 @@ $(document).ready( function(){
                     if(movie) return 1*movie.Year;
                 }
             }],
+            textSearch: "Movie",
             detailsToggle: "one",
             recordView: function() {
                 var series = kshf.dt_id.Series[this.Series].data;
