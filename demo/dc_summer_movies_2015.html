@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Outdoor Movies in Washington D.C. Area - 2015</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <!-- Demos - shared -->
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <!-- Google font -->
+        <link href="http://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
+
+        <link rel="image_src" href="./img/movie_thumb.png" />
+        <meta property="og:image" content="http://www.cs.umd.edu/hcil/keshif/demo/img/movie_thumb.png" />
+
+        <script type="text/javascript">
+
+noRibbon = true;
+
+var demoID = 102;
+
+// https://software.intel.com/en-us/blogs/2012/11/25/calculating-geographic-distances-in-location-aware-apps
+function distanceKmGreatCircle (lat1, long1, lat2, long2) {
+    var degToRad= Math.PI / 180;
+    var phi1= lat1 * degToRad;
+    var phi2= lat2 * degToRad;
+    var lam1= long1 * degToRad;
+    var lam2= long2 * degToRad;
+    return  6371.01 * Math.acos( Math.sin(phi1) * Math.sin(phi2) + 
+        Math.cos(phi1) * Math.cos(phi2) * Math.cos(lam2 - lam1) );
+};
+
+var moviesByTitle = {};
+function loadMovies(browser){
+    $.ajax( {
+        url: "./data/dc_summer_movies_2015.json",
+        success: function(data){
+            kshf.dt.Movies = [];
+            kshf.dt_id.Movies = {};
+            data.forEach(function(movie){
+                moviesByTitle[movie.Title] = movie;
+                var item=new kshf.Item(movie,"imdbID");
+                kshf.dt.Movies.push(item);
+                kshf.dt_id.Movies[item.id()] = item;
+            });
+            browser.loadCharts();
+        }
+    });
+};
+
+var myLoc=null;
+
+$(document).ready( function(){
+    $('#div_screenings').height(Math.max($(window).height()-80,650));
+    $('#div_screenings').width (Math.max($(window).width()-110,1000));
+
+    if("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            myLoc = position.coords;
+        });
+    }
+
+    // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
+    var m_now = moment().subtract('days',1);
+    var m_thisweek = moment().add('days',7);
+    var m_nextweek = moment().add('days',14);
+
+    browser = new kshf.Browser({
+        domID: "#div_screenings",
+        categoryTextWidth: 210,
+        source: {
+            gdocId: '1tDXCp8nbwEGeH1_V90HBrKVSbuisAng-1GWdTSLcLAw',
+            sheets: [ {name:"Screenings"}, {name:"Series"} ],
+            callback: loadMovies
+        },
+        loadedCb: function(){
+            // expand cell content - movie*genres and series*features
+            kshf.Util.cellToArray(kshf.dt.Movies, ['Genre'], /\b,\s+/, false);
+            kshf.Util.cellToArray(kshf.dt.Series, ['Features'], ",", false);
+        },
+        readyCb: function(browser){
+            $(".movieName").click(function(){
+                browser.listDisplay.showListItemDetails(this.parentNode.__data__);
+            });
+
+            browser.listDisplay.DOM.listItemGroup
+                .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
+
+            if(myLoc) {
+                var seriesSummary = browser.summaries_by_name.Location;
+                seriesSummary.sortingOpt_Active = seriesSummary.sortingOpts[1];
+                seriesSummary.refreshSortButton();
+                seriesSummary.updateSorting(0,true);
+            }
+
+            for(var i=0; i<5; i++){
+                browser.listDisplay.showListItemDetails(kshf.dt.Screenings[i]);
+            }
+            browser.summaries_by_name.Date.height_hist_max = 60;
+            browser.updateLayout();
+        },
+        facets: [
+            {   title: "Movie Name", attribMap: "Movie", collapsed: true
+            },{ title: "Movie Genres",
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return movie.Genre;
+                }
+            },{ title: "Movie Year",
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return 1*movie.Year;
+                }
+            },{ title: "Movie Actors", collapsed: true,
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return movie.Actors.split(/\b,\s+/);
+                }
+            },{ title: "Movie IMDb Rating",
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return 1*movie.imdbRating;
+                }
+            },{ title: "Movie MetaScore", collapsed: true,
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return 1*movie.Metascore;
+                }
+            },{ title: "Movie Rated", collapsed: true,
+                attribMap: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return movie.Rated;
+                }
+            },{ title: "Location - State", layout: "right",
+                attribMap: function(){
+                    var series = kshf.dt_id.Series[this.Series];
+                    if(series===undefined) return;
+                    switch(series.data.State){
+                        case "MD": return "Maryland";
+                        case "DC": return "District of Columbia";
+                        case "VA": return "Virginia";
+                    }
+                }
+            },{ title: "Location", attribMap: "Series", layout: "right",
+                catTableName: "Series", catLabel: "Name",
+                sortingOpts: [
+                    {   name: "# of Screenings"},
+                    {   name: "Distance",  
+                        value: function(){
+                            return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
+                        }
+                    }
+                ],
+            },{
+                title: "Time: Day Of Week", layout: "right",
+                attribMap: function(){ return moment(this.Date).day();  },
+                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
+                catLabel: function(){
+                    switch(this.id){
+                        case 0: return "Sunday";
+                        case 1: return "Monday";
+                        case 2: return "Tuesday";
+                        case 3: return "Wednesday";
+                        case 4: return "Thursday";
+                        case 5: return "Friday";
+                        case 6: return "Saturday";
+                    }
+                }
+            },{ title: "Date", layout: "bottom",
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 90,
+            sortingOpts: [{
+                name: 'Coming Up...',
+                vale: "Date",
+                func: function(a,b){
+                    // a and b are date objects
+                    var a_m = moment(a);
+                    var b_m = moment(b);
+                    var a_isBeforeNow = a_m.isBefore(m_now);
+                    var b_isBeforeNow = b_m.isBefore(m_now);
+                    if(a_isBeforeNow && !b_isBeforeNow) return -1;
+                    if(b_isBeforeNow && !a_isBeforeNow) return 1;
+                    return b.getTime() - a.getTime();
+                    return a_m.isBefore(b_m);
+                },
+                inverse: true,
+                label: function(){ return moment(this.Date).format('MMM.Do,ddd'); }
+            },{
+                name: "IMDb Rating",
+                value: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return 1*movie.imdbRating;
+                }
+            },{
+                name: "Year",
+                value: function(){
+                    var movie = moviesByTitle[this.Movie];
+                    if(movie) return 1*movie.Year;
+                }
+            }],
+            detailsToggle: "one",
+            recordView: function() {
+                var series = kshf.dt_id.Series[this.Series].data;
+                var movie = moviesByTitle[this.Movie];
+                
+                var str="";
+                // movie poster
+                str+="<span class='item_details'><a target='_blank'><img class='moviePoster'></a></span>";
+                // movie name
+                str+="<div class='movieName'>"+this.Movie+"</div>";
+
+                // series
+                str+="<div class='SeriesLocation'><a target='_blank' href='"
+                        +series.Web+"'>"+
+                    series.Name+"</a> "+
+                    series.Location+"</b>, "+ series.State+
+                    (series.Twitter?
+                        " <a href='http://www.twitter.com/"+series.Twitter.substr(1)+"' class='fa fa-twitter'"+
+                            " target='_blank'></a>":
+                        "")+
+                    (series.Facebook?
+                        " <a href='http://www.facebook.com/"+series.Facebook.substr(1)+"' class='fa fa-facebook'"+
+                            " target='_blank'></a>":
+                        "")+
+                    "</div>";
+
+                if(movie===undefined) return str;
+
+                str+="<span class='item_details'>";
+
+                str+="<div class='movieInfo'>";
+                // Plot
+                str+="<div class='Plot'>"+movie.Plot+"</br></div>";
+
+                str+=
+                    "<span class='Year'>"+movie.Year+"</span> - "+
+                    "<span class='Rated'> Rated <span style='font-weight:500'>"+movie.Rated+"</span></span> - "+
+                    "<span class='Genre'>"+movie.Genre.toString()+"</span></br>"+
+                    "<span class='Awards'>"+movie.Awards+"</span></br>"+
+                    "<span class='imdbRating'> IMDb Rating: "+movie.imdbRating+"</span>, "+
+                    "<span class='MetaScore'> Metascore: "+movie.Metascore+"</span>"+
+                    "</div>" // movieInfo
+                    ;
+
+                str+="</span>"; // item_details
+                return str;
+            },
+            detailCb: function(screening){
+                var movieData = moviesByTitle[this.Movie];
+                if(movieData){
+                    d3.select(screening.DOM.result).select(".moviePoster").attr("src",
+                        "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg"
+                        );
+                }
+            }
+        }
+    });
+
+    $( window ).unload(function() {
+        sendLog(kshf.LOG.CLOSEPAGE);
+    })
+});
+
+</script>
+    <style type="text/css" media="screen">
+        .listItem{padding: 4px 0px 4px 0px !important;}
+        .listItem a{
+            color: rgb(95, 62, 21);
+        }
+        .layout_left{
+            margin-bottom: -1px; /* IE11 fix*/
+        }
+        .layout_right{
+            margin-bottom: -1px; /* IE11 fix*/
+        }
+        .moviePoster{ 
+            float:right; width:120px;
+            padding:4px;
+            border:solid;
+            border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+            border-width: 1px 2px 2px 1px;
+            background-color:white;
+        }
+        .moviePoster:hover{ 
+            background-color:rgb(240, 232, 194);
+            border-color: #aaaaaa #888888 #888888 #aaaaaa;
+        }
+        .movieName{
+            font-family: Josefin Slab;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+        .listItem[details=false] .movieName{
+            cursor: pointer !important;
+        }
+        .listItem[details=true] .movieName{
+            pointer-events: none;
+        }
+        .listItem[details=false]:hover .movieName{
+            text-decoration: underline;
+            color:rgb(151, 64, 43);
+        }
+        .listsortcolumn{
+            font-weight: 300 !important;
+            text-align: right !important;
+            padding-right: 5px !important;
+        }
+        .item_details .header{
+            font-weight: 300;
+        }
+        .movieInfo{
+            font-size: 0.9em;
+            font-weight: 300;
+            margin-top: 2px;
+        }
+        #div_screenings{
+            width: 1100px;
+            height: 700px;
+            vertical-align: top;
+            margin: 0px auto;
+        }
+        img.film{
+            position: absolute;
+            right: 18px;
+            bottom: 2px;
+            width: 120px;
+            /* z-index: -2; */
+            opacity: 0.4;
+            -moz-transform: scaleX(-1);
+            -o-transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        img.strip{
+            position:absolute;
+            top: 20px;
+            height:700px;
+            z-index: -3;
+            opacity: 0.7;
+        }
+        img.strip.left{
+            left: 10px;
+        }
+        img.strip.right{
+            right: 10px;
+        }
+        .contents{
+            padding-top: 0px !important;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+        .pageHeader{
+            font-size: 2.2em;
+            text-shadow: 0px 0px 10px #FFFFFF;
+            font-weight: 700;
+            font-family: sans-serif;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            padding: 3px 10px;
+            border-bottom: solid 2px rgb(43, 13, 13);
+            margin-bottom: 5px;
+            background-color: rgba(238, 225, 127, 0.2);
+            cursor: default;
+        }
+        .pageHeader::after {
+            background: url('img/strip_vertical.png');
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0.2;
+            z-index: -1;
+            height: 50px;
+            background-size: contain;
+        }
+        .fa-stack{
+            position: relative;
+            display: inline-block;
+            width: 1em;
+            vertical-align: top;
+            line-height: inherit;
+            height: inherit;
+            margin-left: 3px;
+        }
+        .bestFor{
+            font-size: 0.4em;
+            float: right;
+            text-align: right;
+        }
+        .bestFor a{
+            color: black;
+            text-decoration: none;
+            font-style: italic;
+        }
+        .listItem .Plot{
+            font-family: 'Handlee', cursive;
+            border-top: dotted 1px gray;
+            border-bottom: dotted 1px gray;
+        }
+        .listItem .SeriesLocation{
+            font-weight: 300;
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+        .listItem .Year{
+            font-weight: 700;
+        }
+        .SeriesLocation .fa{
+            text-decoration: none !important;
+            color: gray;
+        }
+        .SeriesLocation .fa-twitter:hover{
+            color: #55ACEE;
+        }
+        .SeriesLocation .fa-facebook:hover{
+            color: #3b5998;
+        }
+    </style>
+	</head>
+	<body>
+        <div class="pageHeader">
+            Washington D.C. Area Outdoor Movies - 2015
+            </div>
+
+        <div class="contents">
+
+            <div id="div_screenings"></div>
+            </div>
+
+    </body>
+</html>
