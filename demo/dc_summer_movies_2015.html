@@ -62,7 +62,7 @@ function loadMovies(browser){
 var myLoc=null;
 
 $(document).ready( function(){
-    $('#div_screenings').height(Math.max($(window).height()-80,650));
+    $('#div_screenings').height(Math.max($(window).height()-110,650));
     $('#div_screenings').width (Math.max($(window).width()-110,1000));
 
     if("geolocation" in navigator) {
@@ -184,7 +184,7 @@ $(document).ready( function(){
             sortColWidth: 90,
             sortingOpts: [{
                 name: 'Coming Up...',
-                vale: "Date",
+                value: "Date",
                 func: function(a,b){
                     // a and b are date objects
                     var a_m = moment(a);
@@ -327,8 +327,6 @@ $(document).ready( function(){
             margin-top: 2px;
         }
         #div_screenings{
-            width: 1100px;
-            height: 700px;
             vertical-align: top;
             margin: 0px auto;
         }
@@ -439,10 +437,14 @@ $(document).ready( function(){
             Washington D.C. Area Outdoor Movies - 2015
             </div>
 
-        <div class="contents">
+        <div class="contents"><div id="div_screenings"></div></div>
 
-            <div id="div_screenings"></div>
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Most screenings are around sunset time. Movies and screening dates may change. 
+            Please check screening location pages for more information.<br>
+            <b>For feedback: <a href="http://www.twitter.com/adilyalcin" class='fa fa-twitter' target='_blank'>adilyalcin</a>.</b>
+            <span class="fa fa-info-circle"></span>
             </div>
-
     </body>
 </html>
