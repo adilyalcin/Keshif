@@ -153,7 +153,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: absolute;
         font-size: 0.7em;
-        color: gray;
+        color: @color_preview_compare;
         opacity: 0;
         cursor: pointer;
         pointer-events: none;
@@ -164,8 +164,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover:after{
             content: "\f023";
         }
-        &:hover{
-            color: @color_preview_compare;
+        &[inside]{
+            color: white;
+            text-shadow: 0px 0px 1px rgb(0, 0, 0);
         }
     }
     span[showlock="true"]{
@@ -178,7 +179,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .compareButton{
             pointer-events: all;
             opacity: 1;
-            color: @color_preview_compare;
+//            color: @color_preview_compare;
             &:after{
                 content: "\f023";
             }
@@ -190,7 +191,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .unitName{
         opacity: 0.6;
-        margin-left: 2px;
+        margin-left: 1px;
     }
 
     .sortButton{
@@ -210,11 +211,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
     display: block;
 
+    // Used only in breadcrumb display
     .AndOrNot{
         color: white;
         display: inline-block;
         font-weight: 300;
-        font-size: 0.9em;
+        font-size: 0.8em;
         vertical-align: top;
         border-radius: 3px;
         padding: 0px 2px 0px 2px;
@@ -1009,10 +1011,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 opacity: 0;
                 color: black;
                 cursor: pointer;
-                margin-right: 3px;
+                margin-right: 2px;
                 font-size: 0.8em;
                 width: 14px;
                 height: 14px;
+                width: 13px;
+                height: 13px;
                 &:hover{ color:#cb5454; }
             }
 /*            > .fa-collapse:hover{
@@ -1021,16 +1025,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .animation-timing-function(ease-in);
             }*/
             > .fa-collapse{
-                margin: 1px;
-                width: 13px;
-                height: 13px;
                 &::before{ content: "\f066"; }
             }
             > .fa-remove{
                 display: none;
             }
             > .expand{
-                font-size: 0.7em;
                 display: none;
             }
         }
@@ -1040,10 +1040,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
         }
     } // headerGroup
-
-    .hasLabelWidth{
-        text-align: right;
-    }
 
     .aggr{
         display: block;
@@ -1290,7 +1286,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         .compareButton{
                             width: 9px;
                             text-align: right;
-                            top: 4px;
+                            top: 5px;
+                            z-index: 300;
+                            &[inside]{
+                                margin-left: -11px;
+                            }
                         }
                         > .attribLabel{
                             position: absolute;
@@ -1386,29 +1386,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                            margin-bottom: -2px;
 //                            font-size: 1.1em;
                             pointer-events: all;
-                            > .orButton {
+                            > .filterButton{
+                                display: none;
                                 pointer-events: all;
                                 margin-right: 2px;
                                 border-radius: 4px;
-                                display: none;
                                 vertical-align: middle;
-                                background-color: lighten(@color_query_or, 10%);
-                                color: white;
+                                padding: 1px 2px 0px 3px;
                                 line-height: 13px;
-                                padding: 1px 2px 0px 2px;
+                                color: white;
                                 font-weight: 300;
                                 font-size: 0.7em;
+                            }
+                            > .orButton {
+                                background-color: lighten(@color_query_or, 10%);
                                 &:hover { background-color: @color_query_or; }
                                 &:before{ content: "Or"; }
                             }
                             > .notButton {
-                                border-radius: 4px;
-                                pointer-events: all;
-                                display: none;
-                                margin-right: 2px;
-                                vertical-align: middle;
-                                color: gray;
-                                &:hover { color: black; }
+                                background-color: rgb(166, 166, 166);
+                                &:before{ content: "Not"; }
+                                &:hover { background-color: gray; }
                             }
                         }
                         
@@ -1463,8 +1461,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 color: @color_query_not;
                             }
                             > .attribLabel > .filterButtons > .notButton{
-                                display: inline-block;
-                                color: @color_query_not;
+                                display: inline;
+                                background-color: @color_query_not;
                             }
                         }
 
@@ -1596,6 +1594,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 position: absolute;
                                 width: 100%;
                                 text-align: center;
+                                &[inside]{
+                                    margin-top: 12px;
+                                }
                             }
                             > .measureLabel{
                                 // top: 1px;
@@ -1921,7 +1922,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &[filtered_or="0"][filtered_and="0"]{
                 > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
                     &[selected="0"] .notButton{
-                        display: inline-block;
+                        display: inline;
                     }
                 }
             }
@@ -1945,10 +1946,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[hasmultivalueitem=true]{
             > .wrapper > .facetCategorical > .attribGroup > .attrib {
-                &[selected="0"]{
-                    &[highlight="selected"] {
-                        .notButton{ display: inline-block; }
-                    }
+                &[selected="0"] &[highlight="selected"] .notButton{ 
+                    display: inline;
                 }
             }
             > .headerGroup .hasMultiMappings{

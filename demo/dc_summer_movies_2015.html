@@ -99,7 +99,7 @@ $(document).ready( function(){
                     seriesSummary.sortingOpt_Active = seriesSummary.sortingOpts[1];
                     seriesSummary.DOM.optionSelect[0][0].value = "Close to me";
                     seriesSummary.refreshSortButton();
-                    seriesSummary.updateSorting(0,true);
+                    seriesSummary.updateCatSorting(0,true);
                 });
             }
 
@@ -437,6 +437,9 @@ $(document).ready( function(){
         }
         #infobox .fa-twitter:hover{
             color: #55ACEE;
+        }
+        .showConfigButton{
+            display: none !important;
         }
     </style>
 	</head>

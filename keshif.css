@@ -123,7 +123,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
   font-size: 0.7em;
-  color: gray;
+  color: #2f4f4f;
   opacity: 0;
   cursor: pointer;
   pointer-events: none;
@@ -138,8 +138,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .compareButton:hover:after {
   content: "\f023";
 }
-.kshf .compareButton:hover {
-  color: #2f4f4f;
+.kshf .compareButton[inside] {
+  color: white;
+  text-shadow: 0px 0px 1px #000000;
 }
 .kshf span[showlock="true"] .compareButton {
   pointer-events: all;
@@ -148,7 +149,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span[compare="true"] .compareButton {
   pointer-events: all;
   opacity: 1;
-  color: #2f4f4f;
 }
 .kshf span[compare="true"] .compareButton:after {
   content: "\f023";
@@ -158,7 +158,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .unitName {
   opacity: 0.6;
-  margin-left: 2px;
+  margin-left: 1px;
 }
 .kshf .sortButton {
   cursor: pointer;
@@ -176,7 +176,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: white;
   display: inline-block;
   font-weight: 300;
-  font-size: 0.9em;
+  font-size: 0.8em;
   vertical-align: top;
   border-radius: 3px;
   padding: 0px 2px 0px 2px;
@@ -1095,18 +1095,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   color: black;
   cursor: pointer;
-  margin-right: 3px;
+  margin-right: 2px;
   font-size: 0.8em;
   width: 14px;
   height: 14px;
+  width: 13px;
+  height: 13px;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
   color: #cb5454;
-}
-.kshf .headerGroup > .header_display_control > .fa-collapse {
-  margin: 1px;
-  width: 13px;
-  height: 13px;
 }
 .kshf .headerGroup > .header_display_control > .fa-collapse::before {
   content: "\f066";
@@ -1115,16 +1112,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .headerGroup > .header_display_control > .expand {
-  font-size: 0.7em;
   display: none;
 }
 .kshf .headerGroup span.showFilterText {
   display: inline-block;
   float: left;
   pointer-events: all;
-}
-.kshf .hasLabelWidth {
-  text-align: right;
 }
 .kshf .aggr {
   display: block;
@@ -1381,7 +1374,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .compareButton {
   width: 9px;
   text-align: right;
-  top: 4px;
+  top: 5px;
+  z-index: 300;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .compareButton[inside] {
+  margin-left: -11px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel {
   position: absolute;
@@ -1470,18 +1467,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 100;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton {
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .filterButton {
+  display: none;
   pointer-events: all;
   margin-right: 2px;
   border-radius: 4px;
-  display: none;
   vertical-align: middle;
-  background-color: #269aa3;
-  color: white;
+  padding: 1px 2px 0px 3px;
   line-height: 13px;
-  padding: 1px 2px 0px 2px;
+  color: white;
   font-weight: 300;
   font-size: 0.7em;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton {
+  background-color: #269aa3;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:hover {
   background-color: #1c737a;
@@ -1490,15 +1489,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "Or";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
-  border-radius: 4px;
-  pointer-events: all;
-  display: none;
-  margin-right: 2px;
-  vertical-align: middle;
-  color: gray;
+  background-color: #a6a6a6;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:before {
+  content: "Not";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:hover {
-  color: black;
+  background-color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[activeItems='0'] .measureLabel {
   visibility: hidden;
@@ -1544,8 +1541,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .filterButtons > .notButton {
-  display: inline-block;
-  color: #808080;
+  display: inline;
+  background-color: #808080;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight^="selected"] > .attribLabel > .theLabel {
   font-weight: 700 !important;
@@ -1674,6 +1671,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   width: 100%;
   text-align: center;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .compareButton[inside] {
+  margin-top: 12px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
   display: block;
@@ -1998,7 +1998,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"][filtered_and="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
-  display: inline-block;
+  display: inline;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="-1"] {
   cursor: pointer;
@@ -2009,8 +2009,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart:not([filtered_and="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton {
   display: inline;
 }
-.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .notButton {
-  display: inline-block;
+.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"] .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] .notButton {
+  display: inline;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {
   display: inline-block;

@@ -43,7 +43,6 @@ if(typeof sendLog !== 'function'){
 
 // kshf namespace
 var kshf = {
-    queryURL_base: 'https://docs.google.com/spreadsheet/tq?key=',
     surrogateCtor: function() {},
     // http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
     extendClass: function(base, sub) {
@@ -54,10 +53,10 @@ var kshf = {
       // Remember the constructor property was set wrong, let's fix it
       sub.prototype.constructor = sub;
     },
-    num_of_charts: 0,
+    summaryCount: 0,
     maxVisibleItems_Default: 100, 
-    dt: {},
     scrollWidth: 21,
+    dt: {},
     dt_id: {},
     LOG: {
         // Note: id parameter is integer alwats, info is string
@@ -347,8 +346,7 @@ Tipsy.prototype = {
     tip: function() {
         if(this.jq_tip) return this.jq_tip;
         this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
-        this.jq_tip
-            ;
+        this.jq_tip;
         this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
         return this.jq_tip;
     },
@@ -692,7 +690,7 @@ kshf.Filter.prototype = {
                 var changed = item.updateWanted(recursive);
                 stateChanged = stateChanged || changed;
             }
-            if(parentFacet && parentFacet.hasAttribs()){
+            if(parentFacet && parentFacet.hasCategories()){
                 if(item.isWanted)
                     item.set_OR(parentFacet.summaryFilter.selected_OR);
                 else 
@@ -701,7 +699,7 @@ kshf.Filter.prototype = {
         },this);
 
         // if this has a parent facet (multi-level), link selection from this to the parent facet
-        if(parentFacet && parentFacet.hasAttribs()){
+        if(parentFacet && parentFacet.hasCategories()){
             parentFacet.updateCatCount_Wanted();
             parentFacet.summaryFilter.how = "All";
             // re-run the parents attribute filter...
@@ -740,7 +738,7 @@ kshf.Filter.prototype = {
                 if(!item.isWanted){
                     item.updateWanted(recursive);
                 }
-                if(parentFacet && parentFacet.hasAttribs()){
+                if(parentFacet && parentFacet.hasCategories()){
                     if(item.isWanted)
                         item.set_OR(parentFacet.summaryFilter.selected_OR);
                     else 
@@ -1041,6 +1039,8 @@ kshf.List.prototype = {
     /** -- */
     initDOM_ConfigRow: function(){
         var me = this;
+        var root = this.browser.DOM.root;
+
         this.DOM.listHeader_ConfigRow = this.DOM.listHeader.append("div").attr("class","configRow");
 
         this.DOM.listHeader_ConfigRow.append("span").attr("class","itemRank")
@@ -1314,7 +1314,10 @@ kshf.List.prototype = {
     },
     /** -- */
     refreshRecordRank: function(){
-        if(this.showRank) this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });  
+        if(this.showRank) this.DOM.ranks.text(function(d){ 
+            if(d.visibleOrder<0) return "";
+            return d.visibleOrder+1; 
+        });  
     },
     /** -- */
     refrestSortColumnLabels: function(){
@@ -1946,7 +1949,7 @@ kshf.Panel.prototype = {
     /** --- */
     updateSummariesWidth: function(){
         this.summaries.forEach(function(summary){
-            if(summary.hasAttribs && summary.hasAttribs()){
+            if(summary.hasCategories && summary.hasCategories()){
                 summary.updateBarPreviewScale2Active();
             }
             summary.refreshWidth();
@@ -2374,7 +2377,7 @@ kshf.Browser.prototype = {
         if(sheet.headers){
             headers = sheet.headers;
         }
-        var qString=kshf.queryURL_base+this.source.gdocId+'&headers='+headers;
+        var qString='https://docs.google.com/spreadsheet/tq?key='+this.source.gdocId+'&headers='+headers;
         if(sheet.sheetID){
             qString+='&gid='+sheet.sheetID;
         } else {
@@ -2785,10 +2788,8 @@ kshf.Browser.prototype = {
                             moved = true;
                         }
                         var mousePos = d3.mouse(me.DOM.root[0][0]);
-                        me.DOM.attribDragBox
-                            .style("left",(mousePos[0]-100)+"px")
-                            .style("top",(mousePos[1]+9)+"px")
-                            ;
+                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
+                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px");
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
@@ -2918,14 +2919,15 @@ kshf.Browser.prototype = {
             if(item.isWanted) this.itemsWantedCount++;
         },this);
 
-        if(this.listDisplay.DOM.listHeader_count){
-            this.listDisplay.DOM.listHeader_count
-                .text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No")
-                .style("width",(this.items.length.toString().length*16)+"px")
-                ;
-        }
         if(this.listDisplay){
             this.listDisplay.refreshTotalViz();
+
+            if(this.listDisplay.DOM.listHeader_count){
+                this.listDisplay.DOM.listHeader_count
+                    .text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No")
+                    .style("width",(this.items.length.toString().length*16)+"px")
+                    ;
+            }
         }
     },
     /** @arg resultChange: 
@@ -3095,8 +3097,8 @@ kshf.Browser.prototype = {
                         if(summary.catDispCountFix){
                             // if you have more space than what's requested, you can skip this
                             if(finalPass) {
-                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_attrib;
-                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_attrib;
+                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_category;
+                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_category;
                                 newTarget = Math.max(newTarget,targetHeight);
                                 summary.setHeight(newTarget);
                             } else {
@@ -3234,7 +3236,7 @@ kshf.Browser.prototype = {
 kshf.Summary_Base = function(){}
 kshf.Summary_Base.prototype = {
     initialize: function(browser,name,attribMap){
-        this.id = ++kshf.num_of_charts;
+        this.id = ++kshf.summaryCount;
         this.browser = browser;
 //        this.parentFacet = options.parentFacet;
 
@@ -3273,7 +3275,7 @@ kshf.Summary_Base.prototype = {
         if(this.type==='categorical') {
             var str="categorical";
             if(!this.aggr_initialized) return str+=" uninitialized";
-            if(this.uniqueAttributes()) str+=" unique";
+            if(this.uniqueCategories()) str+=" unique";
             str+=this.hasMultiValueItem?" multivalue":" singlevalue";
             return str;
         }
@@ -3307,7 +3309,7 @@ kshf.Summary_Base.prototype = {
     /** -- */
     hasEntityParent: function(){
         if(this.parentFacet===undefined) return false; 
-        return this.parentFacet.hasAttribs();
+        return this.parentFacet.hasCategories();
     },
     /** -- */
     hasSubFacets: function(){
@@ -3486,7 +3488,7 @@ kshf.Summary_Base.prototype = {
             ;
 
         this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
-            .html((this.parentFacet && this.parentFacet.hasAttribs())?
+            .html((this.parentFacet && this.parentFacet.hasCategories())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
                     this.parentFacet.summaryName+":</span> "+"  "+this.summaryName):
                 this.summaryName
@@ -3545,7 +3547,7 @@ kshf.Summary_Base.prototype = {
         if(this.isLinked) {
             this.DOM.facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
         } else {
-//            if(this.parentFacet && this.parentFacet.hasAttribs()){
+//            if(this.parentFacet && this.parentFacet.hasCategories()){
 //                this.DOM.facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
 //            }
         }
@@ -3621,7 +3623,7 @@ var Summary_Categorical_functions = {
         kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribMap);
         this.type='categorical';
 
-        this.heightRow_attrib = 18;
+        this.heightRow_category = 18;
 
         this.show_cliques = false;
 
@@ -3650,7 +3652,7 @@ var Summary_Categorical_functions = {
         this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
         this.mapToAggregates();
         this.setSortingOpts();
-        if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCats();
+        if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
 
         this.aggr_initialized = true;
     },
@@ -3660,7 +3662,7 @@ var Summary_Categorical_functions = {
 
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
 
-        if(this.uniqueAttributes()){
+        if(this.uniqueCategories()){
             this.DOM.nugget.select(".dataTypeIcon").html("<span class='fa fa-tag'></span><br>Unique");
             nuggetViz.style("display",'none');
             return;
@@ -3678,8 +3680,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getHeight: function(){
-        if(!this.hasAttribs()) return this.getHeight_Header();
-        if(this.collapsed) return this.getHeight_Header();
+        if(!this.hasCategories() || this.collapsed) return this.getHeight_Header();
         // Note: I don't know why I need -2 to match real dom height.
         return this.getHeight_Header() + this.getHeight_Content()-2;
     },
@@ -3688,7 +3689,6 @@ var Summary_Categorical_functions = {
         if(this._height_header==undefined) {
             this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
             if(this.hasSubFacets()){
-                // add some padding below
                 this._height_header+=2;
             }
         }
@@ -3696,13 +3696,13 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getHeight_RangeMax: function(){
-        if(!this.hasAttribs()) return this.heightRow_attrib;
-        return this.getHeight_Header()+(this.configRowCount+this.catCount_Visible+1)*this.heightRow_attrib-1;
+        if(!this.hasCategories()) return this.heightRow_category;
+        return this.getHeight_Header()+(this.configRowCount+this.catCount_Visible+1)*this.heightRow_category-1;
     },
     /** -- */
     getHeight_RangeMin: function(){
-        if(!this.hasAttribs()) return this.getHeight_Header();
-        return this.getHeight_Header()+this.getHeight_Config()+(Math.min(this.catCount_Visible,2)+1)*this.heightRow_attrib;
+        if(!this.hasCategories()) return this.getHeight_Header();
+        return this.getHeight_Header()+this.getHeight_Config()+(Math.min(this.catCount_Visible,2)+1)*this.heightRow_category;
     },
     /** -- */
     getHeight_Config: function(){
@@ -3734,9 +3734,13 @@ var Summary_Categorical_functions = {
         return this.catCount_Visible===this.catCount_InDisplay;
     },
     /** -- */
-    hasAttribs: function(){
+    hasCategories: function(){
         if(this._cats && this._cats.length===0) return false;
         return this.summaryFunc!==undefined;
+    },
+    /** -- */
+    uniqueCategories: function(){
+        return this.getMaxAggr_Total()===1;
     },
     /** -- */
     setSortingOpts: function(opts){
@@ -3954,7 +3958,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.subFacets.append("span").attr("class","facetGroupBar").append("span").attr("class","facetGroupBarSub");
 
-        if(!this.hasAttribs()){
+        if(!this.hasCategories()){
             this.options.facets.forEach(function(facetDescr){
                 facetDescr.parentFacet = this;
                 facetDescr.panel = this.panel;
@@ -4113,7 +4117,7 @@ var Summary_Categorical_functions = {
 
         this.insertHeader.call(this);
 
-        if(this.hasAttribs()) this.init_DOM_Cat();
+        if(this.hasCategories()) this.init_DOM_Cat();
 
         // TODO: Insert subfacets here
         if(this.facets){
@@ -4171,7 +4175,7 @@ var Summary_Categorical_functions = {
 
                 me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
-                me.cat_InDisplay_First = Math.floor(me.scrollTop_cache/me.heightRow_attrib);
+                me.cat_InDisplay_First = Math.floor(me.scrollTop_cache/me.heightRow_category);
                 me.refreshScrollDisplayMore(me.cat_InDisplay_First+me.catCount_InDisplay);
                 me.updateAttribCull();
                 me.cullAttribs();
@@ -4193,7 +4197,7 @@ var Summary_Categorical_functions = {
             .append("span").attr("class","scroll_display_more")
             .on("click",function(){
                 kshf.Util.scrollToPos_do(
-                    me.DOM.attribGroup[0][0],me.DOM.attribGroup[0][0].scrollTop+me.heightRow_attrib);
+                    me.DOM.attribGroup[0][0],me.DOM.attribGroup[0][0].scrollTop+me.heightRow_category);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
 
@@ -4324,7 +4328,7 @@ var Summary_Categorical_functions = {
         if(this.subFacets.length>0){
             subMax = d3.max(this.subFacets, function(f){ return f.getMaxAggr_Total(v); });
         }
-        if(!this.hasAttribs()) return subMax;
+        if(!this.hasCategories()) return subMax;
         if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
         this._maxBarValueMaxPerAttrib = d3.max(this._cats, function(d){ return d.aggregate_Total;});
         return this._maxBarValueMaxPerAttrib;
@@ -4374,7 +4378,7 @@ var Summary_Categorical_functions = {
     setCollapsed: function(v){
         kshf.Summary_Base.prototype.setCollapsed.call(this,v);
         // collapse children only if this is a hierarchy, not sub-filtering
-        if(this.hasSubFacets() && !this.hasAttribs()){
+        if(this.hasSubFacets() && !this.hasCategories()){
             this.subFacets.forEach(function(f){ f.setCollapsed(v); });
         }
     },
@@ -4386,7 +4390,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
-        if(!this.hasAttribs()) return; // nothing to do
+        if(!this.hasCategories()) return; // nothing to do
         var me=this;
         this.chartScale_Measure
             .rangeRound([0, this.panel.width_catChart])
@@ -4411,18 +4415,18 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     setHeight: function(newHeight){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         var attribHeight_old = this.attribHeight;
         var attribHeight_new = Math.min(
             newHeight-this.getHeight_Header()-this.getHeight_Config()-this.getHeight_Bottom()+2,
-            this.heightRow_attrib*this.catCount_Visible);
+            this.heightRow_category*this.catCount_Visible);
 
 //        if(this.attribHeight===attribHeight_new) return;
         this.attribHeight = attribHeight_new;
 
         // update catCount_InDisplay
-        var c = Math.floor(this.attribHeight / this.heightRow_attrib);
-        var c = Math.floor(this.attribHeight / this.heightRow_attrib);
+        var c = Math.floor(this.attribHeight / this.heightRow_category);
+        var c = Math.floor(this.attribHeight / this.heightRow_category);
         if(c<0) c=1;
         if(c>this.catCount_Visible) c=this.catCount_Visible;
         if(this.catCount_Visible<=2){ 
@@ -4439,7 +4443,7 @@ var Summary_Categorical_functions = {
         this.cullAttribs();
 
         this.DOM.headerGroup.select(".expand").style("display",
-            (this.panel.getNumOfOpenSummaries()<=1||this.catCount_InDisplay===this.catCount_Total)?
+            (this.panel.getNumOfOpenSummaries()<=1||this.areAllCatsInDisplay())?
                 "none":
                 "inline-block"
         );
@@ -4448,7 +4452,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateAfterFilter: function(resultChange){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         this.refreshMeasureLabel();
         this.updateBarPreviewScale2Active();
 
@@ -4476,7 +4480,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshMeasureLabel: function(){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         var me=this;
 
         this.DOM.cats.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
@@ -4514,7 +4518,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_All: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
+        if(!this.hasCategories() || this.collapsed) return;
         var me=this;
         this.refreshViz_Total();
         this.refreshViz_Active();
@@ -4529,7 +4533,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Total: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
+        if(!this.hasCategories() || this.collapsed) return;
         var me = this;
         // Do not need to update total. Total value is invisible. Percent view is based on active count.
         if(!this.browser.ratioModeActive){
@@ -4549,35 +4553,32 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Active: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
-        var me=this;
+        if(!this.hasCategories() || this.collapsed) return;
+        var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
         var width_Text = this.getWidth_Text();
-        var width_vizFull = this.chartScale_Measure.range()[1];
-        var func_barScale, func_clickAreaScale;
-        if(this.browser.ratioModeActive){
-            func_barScale = function(attrib){
-                kshf.Util.setTransform(this,
-                    "scaleX("+((attrib.aggregate_Active===0)?0:width_vizFull)+")");
-            };
-            func_clickAreaScale = function(attrib){
-                return (width_Text+((attrib.aggregate_Active===0)?0:width_vizFull))+"px";
-            };
-        } else {
-            func_barScale = function(attrib){
-                kshf.Util.setTransform(this,
-                    "scaleX("+me.chartScale_Measure(attrib.aggregate_Active)+")");
-            };
-            func_clickAreaScale = function(attrib){
-                return (width_Text+me.chartScale_Measure(attrib.aggregate_Active))+"px";
-            };
-        }
-        this.DOM.aggr_Active.each(func_barScale);
+        this.DOM.aggr_Active.each(function(category){
+            kshf.Util.setTransform(this,"scaleX("+(ratioMode?
+                ((category.aggregate_Active===0)?0:maxWidth):
+                me.chartScale_Measure(category.aggregate_Active)
+            )+")");
+        });
+        var func_clickAreaScale=function(category){
+            return width_Text+(ratioMode?
+                ((category.aggregate_Active===0)?0:maxWidth):
+                me.chartScale_Measure(category.aggregate_Active)
+            )+"px";
+        };
         this.DOM.attribClickArea.style("width",func_clickAreaScale);
-        this.DOM.compareButton.style("left",func_clickAreaScale);
+        this.DOM.compareButton
+            .style("left",func_clickAreaScale)
+            .attr("inside",function(category){
+                if(ratioMode) return "";
+                if(maxWidth-me.chartScale_Measure(category.aggregate_Active)<10) return "";
+            });
     },
     /** -- */
     refreshViz_Preview: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
+        if(!this.hasCategories() || this.collapsed) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
         this.DOM.aggr_Preview.each(function(attrib){
             var p=attrib.aggregate_Preview;
@@ -4591,7 +4592,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Compare: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
+        if(!this.hasCategories() || this.collapsed) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
         if(this.browser.vizCompareActive){
             this.DOM.aggr_Compare.each(function(cat){
@@ -4603,7 +4604,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     clearViz_Preview: function(){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         this._cats.forEach(function(cat){
             cat.updatePreview_Cache = false;
         });
@@ -4617,7 +4618,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Axis: function(){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         var me=this;
 
         var tickValues;
@@ -4704,7 +4705,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshLabelWidth: function(w){
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
         if(this.DOM.facetCategorical===undefined) return;
         var labelWidth = this.getWidth_Label();
         var barChartMinX = labelWidth + this.panel.width_catMeasureLabel;
@@ -4739,7 +4740,7 @@ var Summary_Categorical_functions = {
     refreshHeight: function(){
         // Note: if this has attributes, the total height is computed from height of the children by html layout engine.
         // So far, should be pretty nice.
-        if(!this.hasAttribs()) return;
+        if(!this.hasCategories()) return;
 
         this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content()-2)+"px");
         this.DOM.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
@@ -4751,8 +4752,8 @@ var Summary_Categorical_functions = {
     /** -- */
     setHeightRow_attrib: function(h){
         var me=this;
-        if(this.heightRow_attrib===h) return;
-        this.heightRow_attrib = h;
+        if(this.heightRow_category===h) return;
+        this.heightRow_category = h;
 
         this.browser.setNoAnim(true);
         
@@ -4760,8 +4761,8 @@ var Summary_Categorical_functions = {
         
         this.DOM.cats.each(function(attrib){
             kshf.Util.setTransform(this,
-                "translate("+attrib.posX+"px,"+(me.heightRow_attrib*attrib.orderIndex)+"px)");
-            this.style.marginTop = ((me.heightRow_attrib-18)/2)+"px";
+                "translate("+attrib.posX+"px,"+(me.heightRow_category*attrib.orderIndex)+"px)");
+            this.style.marginTop = ((me.heightRow_category-18)/2)+"px";
         });
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
 
@@ -4931,29 +4932,6 @@ var Summary_Categorical_functions = {
             if(this.tipsy_title===undefined) return;
         }
     },
-    cbAttribEnter_Tipsy: function(attrib){
-        if(attrib.cliqueRow)
-            attrib.cliqueRow.setAttribute("highlight","selected");
-
-        var attribTipsy = attrib.DOM.facet.tipsy;
-        attribTipsy.options.className = "tipsyFilterAnd";
-        attribTipsy.hide();
-
-        attrib.DOM.facet.tipsy_active = attribTipsy;
-        this.tipsy_active = attribTipsy;
-
-        var offset=0;
-        if(this.browser.ratioModeActive){
-            offset+=this.chartScale_Measure.range()[1];
-        } else {
-            offset+=this.chartScale_Measure(attrib.aggregate_Active)
-        }
-        offset+=this.getWidth_Text();
-        offset+=9; // lock icon
-        attrib.DOM.facet.tipsy_active.options.offset_x = offset;
-        //attrib.DOM.facet.tipsy_active.options.offset_y = 8;//+(this.heightRow_attrib-18)/2;
-        attrib.DOM.facet.tipsy_active.show();
-    },
     /** -- */
     cbAttribLeave: function(attrib){
         if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
@@ -4990,51 +4968,30 @@ var Summary_Categorical_functions = {
         this.resultPreviewLogTimeout = null;
 
         var domAttribs_new = this.DOM.attribGroup.selectAll(".attrib")
-            .data(this._cats, function(attrib){ 
-                return attrib.id();
-            })
-        .enter().append("span")
-            .attr("class","attrib")
-            .on("mouseenter",function(attrib){ me.cbAttribEnter(attrib);})
-            .on("mouseleave",function(attrib){ me.cbAttribLeave(attrib);})
+            .data(this._cats, function(category){ return category.id(); })
+        .enter().append("span").attr("class","attrib")
             .attr("highlight",false)
             .attr("showlock" ,false)
             .attr("selected",0)
-            .each(function(attrib,i){
-                attrib.facet = me;
-                attrib.DOM.facet = this;
-                attrib.isVisible = true;
+            .each(function(category,i){
+                category.facet = me;
+                category.DOM.facet = this;
+                category.isVisible = true;
                 this.isLinked = me.isLinked;
 
-                attrib.pos_y = 0;
+                category.pos_y = 0;
                 kshf.Util.setTransform(this,"translateY(0px)");
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w',
-                    title: function(){
-                        if(this.tipsy_title) return this.tipsy_title;
-                        var hasMultiValueItem=attrib.facet.hasMultiValueItem;
-                        if(attrib.is_AND() || attrib.is_OR() || attrib.is_NOT())
-                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> from filter";
-                        if(!me.summaryFilter.selected_Any())
-                            return "<span class='action'><span class='fa fa-plus'></span> And</span>";
-                        if(hasMultiValueItem===false)
-                            return "<span class='action'><span class='fa fa-angle-double-left'></span> Change</span> filter";
-                        else
-                            return "<span class='action'><span class='fa fa-plus'></span> And<span>";
-                    }
-                });
             })
+            .on("mouseenter",function(category){ me.cbAttribEnter(category);})
+            .on("mouseleave",function(category){ me.cbAttribLeave(category);})
             ;
         this.updateAttribCull();
 
         var cbAttribClick = function(attrib){
             if(!me.isAttribSelectable(attrib)) return;
 
-///            if(attrib.DOM.facet.tipsy_active) attrib.DOM.facet.tipsy_active.hide();
-
-            if(this.timer){
-                // double click
-                // Only meaningul & active if facet has multi value items
+            if(this.timer){ // double click
+                if(!me.hasMultiValueItem) return;
                 me.unselectAllAttribs();
                 me.filterAttrib("AND","All");
                 if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_EXACT,{id: me.summaryFilter.id, info: attrib.id()});
@@ -5129,8 +5086,8 @@ var Summary_Categorical_functions = {
                     me.DOM.cats.each(function(attrib){
                         if(attrib.isVisible){
                             attrib.posX = 0;
-                            attrib.posY = me.heightRow_attrib*attrib.orderIndex;
-                            attrib.posY = me.heightRow_attrib*attrib.orderIndex;
+                            attrib.posY = me.heightRow_category*attrib.orderIndex;
+                            attrib.posY = me.heightRow_category*attrib.orderIndex;
                             kshf.Util.setTransform(this,"translate("+attrib.posX+"px,"+attrib.posY+"px)");
                         }
                     });
@@ -5145,10 +5102,6 @@ var Summary_Categorical_functions = {
             attrib.DOM.facet.setAttribute("selecttype","or");
             if(me.summaryFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
-
-            var DOM_facet = attrib.DOM.facet;
-            DOM_facet.tipsy.hide();
-
             d3.event.stopPropagation();
         };
         var cbOrLeave = function(attrib,i){
@@ -5157,24 +5110,17 @@ var Summary_Categorical_functions = {
         };
         var cbOrClick = function(attrib,i){
             me.filterAttrib(attrib,"OR");
-            this.__data__.DOM.facet.tipsy.hide();
             d3.event.stopPropagation();
         };
 
         var cbNotEnter = function(attrib,i){
-            // update the tooltip
-            var DOM_facet = attrib.DOM.facet;
-            DOM_facet.tipsy.hide();
             attrib.DOM.facet.setAttribute("selecttype","not");
-            me.browser.DOM.root.attr("preview-not",true);
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
-            
             d3.event.stopPropagation();
         };
         var cbNotLeave = function(attrib,i){
             attrib.DOM.facet.setAttribute("selecttype","and");
-            setTimeout(function(){me.browser.DOM.root.attr("preview-not",null);}, 0);
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
             d3.event.stopPropagation();
@@ -5182,28 +5128,24 @@ var Summary_Categorical_functions = {
         var cbNotClick = function(attrib,i){
             me.browser.preview_not = true;
             me.filterAttrib(attrib,"NOT");
-            setTimeout(function(){
-                me.browser.DOM.root.attr("preview-not",null);
-                me.browser.preview_not = false;
-            }, 1000);
+            setTimeout(function(){ me.browser.preview_not = false; }, 1000);
             d3.event.stopPropagation();
         };
 
         var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
 
-        // These are "invisible"...
-        var domLabelFilterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
-            domLabelFilterButtons.append("span").attr("class","notButton fa fa-minus-square")
+        var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
+            filterButtons.append("span").attr("class","filterButton notButton")
                 .on("mouseenter",cbNotEnter)
                 .on("mouseleave",cbNotLeave)
                 .on("click",cbNotClick);
-            domLabelFilterButtons.append("span").attr("class","orButton") //  fa fa-plus-square
+            filterButtons.append("span").attr("class","filterButton orButton")
                 .on("mouseenter",cbOrEnter)
                 .on("mouseleave",cbOrLeave)
                 .on("click",cbOrClick);
 
-        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(cat){
-            return me.catLabel.call(cat.data);
+        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(category){
+            return me.catLabel.call(category.data);
         });
 
         domAttribs_new.append("span").attr("class", "item_count_wrapper")
@@ -5217,34 +5159,23 @@ var Summary_Categorical_functions = {
         domBarGroup.append("span").attr("class", "aggr compare").attr("hidden",true);
 
         domAttribs_new.append("span").attr("class", "clickArea")
-            .on("click", cbAttribClick)
-            // drag & drop control
             .attr("draggable",true)
+            .on("click", cbAttribClick)
             .each(attribDrag)
             ;
     
         domAttribs_new.append("span").attr("class","compareButton fa")
+            .each(function(category){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w',
+                    title: function(){ return (me.browser.comparedAggregate!==category)?"Lock to compare":"Unlock"; }
+                });
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("click",function(attrib){
+                this.tipsy.hide();
                 me.browser.setPreviewCompare(attrib);
-                this.__data__.DOM.facet.tipsy.hide();
-                d3.event.stopPropagation();
-            })
-            .on("mouseenter",function(attrib){
-                me.cbAttribEnter_Tipsy(attrib);
-                var DOM_facet = attrib.DOM.facet;
-                DOM_facet.tipsy.options.className = "tipsyFilterLock";
-                DOM_facet.tipsy_title = (me.browser.comparedAggregate!==attrib)?"Lock to compare":"Unlock";
-                DOM_facet.tipsy.hide();
-                DOM_facet.tipsy.show();
-                DOM_facet.tipsy_active = DOM_facet.tipsy;
-                me.tipsy_active = DOM_facet.tipsy;
-                DOM_facet.tipsy.show();
-                d3.event.stopPropagation();
-            })
-            .on("mouseleave",function(attrib){
-                var DOM_facet = attrib.DOM.facet;
-                DOM_facet.tipsy.hide();
-                attrib.DOM.facet.setAttribute("selecttype","and");
                 d3.event.stopPropagation();
             })
             ;
@@ -5263,7 +5194,7 @@ var Summary_Categorical_functions = {
         this.DOM.aggr_Compare  = this.DOM.aggr_Group.selectAll(".compare");
     },
     /** -- */
-    sortCats: function(){
+    sortCategories: function(){
         var me = this;
         var inverse = this.sortingOpt_Active.inverse;
         var sortFunc = this.sortingOpt_Active.func;
@@ -5325,13 +5256,9 @@ var Summary_Categorical_functions = {
         });
     },
     /** -- */
-    uniqueAttributes: function(){
-        return this.getMaxAggr_Total()===1;
-    },
-    /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
         if(this._cats.length===0) return;
-        if(this.uniqueAttributes()) return; // Nothing to sort...
+        if(this.uniqueCategories()) return; // Nothing to sort...
         if(this.sortingOpt_Active.no_resort===true && force!==true) return;
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
@@ -5339,7 +5266,7 @@ var Summary_Categorical_functions = {
         
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
-        this.sortCats();
+        this.sortCategories();
 
         if(this.panel===undefined) return; // The rest deals with updating UI
         if(this.DOM.cats===undefined) return;
@@ -5362,7 +5289,7 @@ var Summary_Categorical_functions = {
         if(noAnim){
             this.DOM.cats.each(function(attrib){
                 var x = 0;
-                var y = me.heightRow_attrib*attrib.orderIndex;
+                var y = me.heightRow_category*attrib.orderIndex;
                 attrib.posX = x;
                 attrib.posY = y;
                 kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
@@ -5386,7 +5313,7 @@ var Summary_Categorical_functions = {
                 }
                 // if item is to appear, move it to the correct y position
                 if(attrib.isVisible && !attrib.isVisible_before){
-                    var y = me.heightRow_attrib*attrib.orderIndex;
+                    var y = me.heightRow_category*attrib.orderIndex;
                     kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+y+"px)");
                 }
                 if(attrib.isVisible || attrib.isVisible_before){
@@ -5399,7 +5326,7 @@ var Summary_Categorical_functions = {
                 me.DOM.cats.each(function(attrib){
                     if(attrib.isVisible && attrib.isVisible_before){
                         var x = 0;
-                        var y = me.heightRow_attrib*attrib.orderIndex;
+                        var y = me.heightRow_category*attrib.orderIndex;
                         attrib.posX = x;
                         attrib.posY = y;
                         kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
@@ -5413,7 +5340,7 @@ var Summary_Categorical_functions = {
                             if(attrib.isVisible && !attrib.isVisible_before){
                                 this.style.opacity = 1;
                                 var x = 0;
-                                var y = me.heightRow_attrib*attrib.orderIndex;
+                                var y = me.heightRow_category*attrib.orderIndex;
                                 attrib.posX = x;
                                 attrib.posY = y;
                                 kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
@@ -5430,7 +5357,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getTotalAttribHeight: function(){
-        return this.catCount_Visible*this.heightRow_attrib;
+        return this.catCount_Visible*this.heightRow_category;
     },
     /** -- */
     cullAttribs: function(){
@@ -6573,7 +6500,7 @@ var Summary_Interval_functions = {
     /** -- */
     updateActiveItems: function(){
         // indexed items are either primary or secondary
-        if(this.parentFacet && this.parentFacet.hasAttribs()){
+        if(this.parentFacet && this.parentFacet.hasCategories()){
             this.histBins.forEach(function(aggr){
                 aggr.aggregate_Active = 0;
                 aggr.forEach(function(item){
@@ -6678,10 +6605,16 @@ var Summary_Interval_functions = {
             kshf.Util.setTransform(this,
                 "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Active(aggr)+")");
         });
-        this.DOM.compareButton.each(function(aggr){
-            var height = me.height_hist-getAggrHeight_Active(aggr)-9;
-            kshf.Util.setTransform(this,"translateY("+height+"px)");
-        });
+        this.DOM.compareButton
+            .each(function(aggr){
+                var height = me.height_hist-getAggrHeight_Active(aggr)-9;
+                kshf.Util.setTransform(this,"translateY("+height+"px)");
+            })
+            .attr("inside",function(aggr){
+                if(me.browser.ratioModeActive) return "";
+                if(me.height_hist-getAggrHeight_Active(aggr)<6) return "";
+            });
+
 
         if(this.scaleType==='time'){
             var durationTime=this.browser.noAnim?0:700;
