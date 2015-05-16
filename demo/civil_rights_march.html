@@ -121,7 +121,7 @@ $(document).ready( function(){
                 // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
                 // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
                 url = url.replace("govOpaAPI","gov/OpaAPI");
-                d3.select(d.DOM.result).select("img").attr("src",url);
+                d3.select(d.DOM.record).select("img").attr("src",url);
             }
         }
     });

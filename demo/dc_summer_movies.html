@@ -122,7 +122,7 @@ $(document).ready( function(){
                     type: 'categorical',
                     catTableName: "Weekdays",
                     attribMap: function(){ return (moment(this.Date).days()+6)%7;  },
-                    sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }]
+                    sortingOpts: [{ value: "id" }]
                 }]
             },{ title: "Date",
                 layout: "bottom",
@@ -202,7 +202,7 @@ $(document).ready( function(){
             detailCb: function(screening){
                 if(screening.dataLoaded===true) return;
                 // some of the data is already included in google spreadshee...
-                var d3Item = d3.select(screening.DOM.result);
+                var d3Item = d3.select(screening.DOM.record);
 
                 var query="t="+this.Movie;
                 var movieData = kshf.dt_id.Movies[this.Movie];

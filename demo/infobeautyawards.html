@@ -38,8 +38,8 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
             kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
             kshf.dt.Showcases.forEach(function(d){
-                var i=this.Title.indexOf(" by ");
-                if(i>0) d.data.Title = this.Title.substr(0,i);
+                var i=d.data.Title.indexOf(" by ");
+                if(i>0) d.data.Title = d.data.Title.substr(0,i);
             });
         },
         facets: [
@@ -52,13 +52,14 @@ google.setOnLoadCallback(function(){
             sortColWidth: 45,
             sortingOpts: [ {name: 'id', inverse:false} ],
             textSearch: 'Title',
+            displayType: 'grid',
             recordView: function(){ 
                 return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>"+
                     "<span class='subTitle'>"+this.Credits+"</span>"+
                     "<span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",this.Thumbnail);
+                d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail);
             }
         }
     });

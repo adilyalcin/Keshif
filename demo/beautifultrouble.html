@@ -104,7 +104,7 @@ $(document).ready( function(){
                     "<span class='item_details'><img class='itemImg' src=''></span>";
             },
             detailCb: function(d){
-                if(this.image)  d3.select(d.DOM.result).select(".itemImg").attr("src",this.image);
+                if(this.image)  d3.select(d.DOM.record).select(".itemImg").attr("src",this.image);
             }
         }
     });

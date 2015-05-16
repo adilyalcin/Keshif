@@ -113,7 +113,7 @@ $(document).ready( function() {
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Model+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",this.image);
+                d3.select(d.DOM.record).select("img").attr("src",this.image);
             }
         }
     });

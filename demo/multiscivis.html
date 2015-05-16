@@ -111,7 +111,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","http://multivis.net/t200/"+this.id+".png");
+                d3.select(d.DOM.record).select("img").attr("src","http://multivis.net/t200/"+this.id+".png");
             }
         }
     });

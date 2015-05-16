@@ -98,7 +98,7 @@ $(document).ready( function(){
                 return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
             },
-            visibleCb: function(item){
+            visibleCb: function(d){
                 if(this.objects===undefined) return;
                 var url;
                 if(this.objects.object.length){
@@ -106,7 +106,7 @@ $(document).ready( function(){
                 } else {
                     url = this.objects.object.file['@url'];
                 }
-                d3.select(item.DOM.result).select("img").attr("src",url);
+                d3.select(d.DOM.record).select("img").attr("src",url);
             }
         }
     });

@@ -65,11 +65,6 @@ $(document).ready( function(){
     $('#div_screenings').height(Math.max($(window).height()-110,650));
     $('#div_screenings').width (Math.max($(window).width()-110,1000));
 
-    if("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            myLoc = position.coords;
-        });
-    }
 
     // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
     var m_now = moment().subtract('days',1);
@@ -97,11 +92,15 @@ $(document).ready( function(){
             browser.listDisplay.DOM.listItemGroup
                 .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
 
-            if(myLoc) {
-                var seriesSummary = browser.summaries_by_name.Location;
-                seriesSummary.sortingOpt_Active = seriesSummary.sortingOpts[1];
-                seriesSummary.refreshSortButton();
-                seriesSummary.updateSorting(0,true);
+            if("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    myLoc = position.coords;
+                    var seriesSummary = browser.summaries_by_name.Location;
+                    seriesSummary.sortingOpt_Active = seriesSummary.sortingOpts[1];
+                    seriesSummary.DOM.optionSelect[0][0].value = "Close to me";
+                    seriesSummary.refreshSortButton();
+                    seriesSummary.updateSorting(0,true);
+                });
             }
 
             for(var i=0; i<5; i++){
@@ -161,7 +160,7 @@ $(document).ready( function(){
                 catTableName: "Series", catLabel: "Name",
                 sortingOpts: [
                     {   name: "# of Screenings"},
-                    {   name: "Distance",  
+                    {   name: "Close to me",  
                         value: function(){
                             return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
                         }
@@ -170,7 +169,7 @@ $(document).ready( function(){
             },{
                 title: "Time: Day Of Week", layout: "right",
                 attribMap: function(){ return moment(this.Date).day();  },
-                sortingOpts: [{ func: kshf.Util.sortFunc_Column_Int_Incr }],
+                sortingOpts: [{ value: "id" }],
                 catLabel: function(){
                     switch(this.id){
                         case 0: return "Sunday";
@@ -188,7 +187,7 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts: [{
-                name: 'Coming Up...',
+                name: 'Coming Up',
                 value: "Date",
                 func: function(a,b){
                     // a and b are date objects
@@ -224,7 +223,9 @@ $(document).ready( function(){
                 
                 var str="";
                 // movie poster
-                str+="<span class='item_details'><a target='_blank'><img class='moviePoster'></a></span>";
+                if(movie)
+                    str+="<span class='item_details'><a target='_blank' href='http://www.imdb.com/title/"+
+                        movie.imdbID+"'><img class='moviePoster'></a></span>";
                 // movie name
                 str+="<div class='movieName'>"+this.Movie+"</div>";
 
@@ -264,13 +265,11 @@ $(document).ready( function(){
                 str+="</span>"; // item_details
                 return str;
             },
-            detailCb: function(screening){
+            detailCb: function(d){
                 var movieData = moviesByTitle[this.Movie];
-                if(movieData){
-                    d3.select(screening.DOM.result).select(".moviePoster").attr("src",
-                        "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg"
-                        );
-                }
+                if(movieData===undefined) return;
+                d3.select(d.DOM.record).select(".moviePoster").attr("src",
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg");
             }
         }
     });
@@ -430,18 +429,19 @@ $(document).ready( function(){
             text-decoration: none !important;
             color: gray;
         }
-        .SeriesLocation .fa-twitter:hover{
+        .fa-twitter:hover{
             color: #55ACEE;
         }
-        .SeriesLocation .fa-facebook:hover{
+        .fa-facebook:hover{
             color: #3b5998;
+        }
+        #infobox .fa-twitter:hover{
+            color: #55ACEE;
         }
     </style>
 	</head>
 	<body>
-        <div class="pageHeader">
-            Washington D.C. Area Outdoor Movies - 2015
-            </div>
+        <div class="pageHeader">Washington D.C. Area Outdoor Summer Movies - 2015</div>
 
         <div class="contents"><div id="div_screenings"></div></div>
 
@@ -449,7 +449,8 @@ $(document).ready( function(){
             <span class="fa fa-info-circle"></span>
             Most screenings are around sunset time. Movies and screening dates may change. 
             Please check screening location pages for more information.<br>
-            <b>For feedback: <a href="http://www.twitter.com/adilyalcin" class='fa fa-twitter' target='_blank'>adilyalcin</a>.</b>
+            <b>For feedback: <a href="http://www.twitter.com/adilyalcin" 
+                class='fa fa-twitter' style="text-decoration:none;" target='_blank'>/adilyalcin</a>.</b>
             <span class="fa fa-info-circle"></span>
             </div>
     </body>

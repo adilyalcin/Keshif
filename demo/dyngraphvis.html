@@ -275,7 +275,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://dynamicgraphs.fbeck.com/data/papers_img/"+this.Key+".png");
             }
         }

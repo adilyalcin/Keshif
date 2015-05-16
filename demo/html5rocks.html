@@ -76,7 +76,7 @@ $(document).ready( function(){
                 return "<img class='face'><a href='http://www.html5rocks.com"+this.URL+"' target='_blank'><span class='title'>"+this.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src","http://www.html5rocks.com/"+this.author_img);
+                d3.select(d.DOM.record).select("img").attr("src","http://www.html5rocks.com/"+this.author_img);
             }
         }
     });

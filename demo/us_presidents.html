@@ -38,7 +38,6 @@ google.setOnLoadCallback( function(){
         ],
         itemDisplay: {
             textSearch: 'Name',
-            sortingOpts: [ {name: 'Position', inverse: true} ],
             displayType: 'grid',
             recordView: function(){ 
                 return "<a href='http://www.whitehouse.gov/about/presidents/"+this.Link+"' target='_blank'>"+
@@ -53,13 +52,7 @@ google.setOnLoadCallback( function(){
     width: 900px;
     height: 700px;
 }
-.content img{
-    width: 100%;
-    display: block;
-}
-.content a{
-    display: block;
-}
+.content img{ width: 100% }
         </style>
 	</head>
     <body>

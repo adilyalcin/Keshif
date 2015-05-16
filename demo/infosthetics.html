@@ -18,7 +18,6 @@
 
         <script type="text/javascript">
 
-var demoID = 13;
 var postCols;
 
 $(document).ready( function(){
@@ -28,8 +27,6 @@ $(document).ready( function(){
         browser.updateLayout();
     });
 
-    logIf.Check = logIf.All();
-    
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 100,
@@ -43,8 +40,7 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "Category"
-            },{ title: "Author", collapsed: true
-                catTableName: "Authors", catLabel: "Name"
+            },{ title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true
             },{ title: "# Comments",  attribMap: '# of Comments'
             },{ title: "Time", layout: 'bottom', attribMap: "Date",
             }
@@ -66,7 +62,7 @@ $(document).ready( function(){
                     "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",this.Img);
+                d3.select(d.DOM.record).select("img").attr("src",this.Img);
             },
         }
     });

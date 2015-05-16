@@ -91,7 +91,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://www.cs.umd.edu/~yalcin/keshif_res/setvis/"+this.Key+".png");
             }
         }

@@ -120,7 +120,7 @@ var loadBrowser = function(){
                 return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
             },
-            visibleCb: function(poster){
+            visibleCb: function(item){
                 if(this.objects===undefined) return;
                 var url;
                 if(this.objects.object.length){
@@ -131,7 +131,7 @@ var loadBrowser = function(){
                 // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
                 // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
                 url = url.replace("govOpaAPI","gov/OpaAPI");
-                d3.select(poster.DOM.result).select("img").attr("src",url);
+                d3.select(item.DOM.record).select("img").attr("src",url);
             }
         }
     });

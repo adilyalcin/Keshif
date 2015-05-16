@@ -78,7 +78,7 @@ $(document).ready( function(){
                     "<span class='title'>"+this.Common+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://www.cloudred.com/labprojects/nyctrees/trees/"+this.file);
             }
         }

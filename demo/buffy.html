@@ -152,7 +152,7 @@ $(document).ready(function(){
                 },
                 facets: [
                     {   title: "Episodic Appearance", collapsed: true,
-                        sortingOpts: [{func: kshf.Util.sortFunc_Column_Int_Incr}],
+                        sortingOpts: [{ value: "id" }],
                         attribMap: function(){
                             if(this.episode===undefined) return 0; // --> Many 
                             return this.episode;

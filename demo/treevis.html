@@ -86,9 +86,7 @@ $(document).ready( function(){
             },{ title: "Representation",
             },{ title: "Alignment",
             },{ title: "Authors", collapsed: false
-            },{ title: "Year", layout: "bottom",
-                attribMap: function(){ return new Date(this.Year,1,1); }
-                //intervalScale: 'step'
+            },{ title: "Year", attribMap: function(){ return new Date(this.Year,1,1); }, layout: "bottom",
             }
         ],
         itemDisplay: {
@@ -102,7 +100,7 @@ $(document).ready( function(){
                     "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/thumbs100png/"+
                     this.id+".png");
             }

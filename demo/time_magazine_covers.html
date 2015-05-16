@@ -56,7 +56,7 @@ google.setOnLoadCallback(function(){
                   "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
                   "<span class='title'>"+this.MagazineTitle+"</span>";
             },
-            visibleCb: function(d){ d3.select(d.DOM.result).select("img").attr("src",this.Thumbnail_2); }
+            visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail_2); }
         }
     });
 });

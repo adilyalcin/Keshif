@@ -42,12 +42,11 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.apr_2011, ['condition', 'category'], /\b,\s+/, false);
         },
         facets: [
-            {   title: "<i class='fa fa-heart'></i> Evidence <i class='fa fa-heart'></i>",
-                description: "Is there scientific evidence for its benefits on a specific health condition?",
-                attribMap: function(){ return this.evidence*2; }
-            },{ title: "<i class='fa fa-eye'></i> One to Watch",
-                description: "Few studies but promising results",
-                attribMap: function(){ this.onetowatch!=="") return true; }
+            {   title: "<i class='fa fa-heart'></i> Evidence", attribMap: "evidence",
+                description: "Is there scientific evidence for its benefits on a specific health condition?"
+            },{ title: "<i class='fa fa-eye'></i> Promising Results",
+                description: "Few studies but promising results", attribMap: "onetowatch",
+                catLabel: function(){ if(this.id==="OTW") return "Promising"; }
             },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity",
                 description: "Popularity based on Google search results",
                 attribMap: "popularity", intervalScale: "log",
@@ -68,7 +67,7 @@ google.setOnLoadCallback(function(){
             textSearch: 'name',
             recordView: function(){
                 var str="";
-                if(this.onetowatch!==""){
+                if(this.onetowatch==="OTW"){
                     // one to watch
                     str+="<i class='fa fa-eye item_watch' title='One to Watch'></i>";
                 }

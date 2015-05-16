@@ -82,8 +82,8 @@ google.setOnLoadCallback(function(){
                 return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'>"+
                     "<img class='thumbImg'></a>";
             },
-            visibleCb: function(item){
-                d3.select(item.DOM.result).select("img").attr("src",
+            visibleCb: function(d){
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+this['IMDB Link'].substr(26,9)+".jpg");
             }
         }

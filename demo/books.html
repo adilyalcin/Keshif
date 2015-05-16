@@ -198,7 +198,7 @@ $(document).ready( function(){
             visibleCb: function(d){
                 // update image link / load image now
                 var id=d.data[0];
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg");
             }
         }

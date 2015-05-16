@@ -77,6 +77,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attrib{
             .transition(~'all 700ms ease-in-out');
         }
+        .wrapper{
+            .transition(~'height 700ms ease-in-out');
+        }
     }
     &[attribsShown=true]{
         left: 120px;
@@ -94,6 +97,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: all;
             }
         }
+        .headerGroup > .header_display_control > .fa-remove{
+            display: inline-block;
+        }
     }
     &[percentview=true]{
         .chartAxis_Measure {
@@ -105,6 +111,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &[showdropzone=true]{
         &:not([dropattrtype~="unique"]){
             .layout_block[hassummaries="true"] > .dropZone{
+                display: block;
+                cursor: s-resize;
+            }
+            .layout_block[hassummaries="false"] > .dropZone_panel{
                 display: block;
                 cursor: s-resize;
             }
@@ -303,6 +313,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: gray;
                 }
             }
+            &[aggr_initialized=false]{
+                > .attribNugget > .refreshNugget{ display: block; }
+                > .attribNugget > .nuggetViz{ display: none;  }
+            }
             > .attribNugget{
                 .display(flex);
                 height: 30px;
@@ -314,6 +328,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border: solid 1px rgba(255,255,255,0.8);
                 &:hover{
                     border-color: gray;
+                }
+                > .refreshNugget{
+                    display: none;
+                    font-size: 2em;
+                    text-align: center;
+                    position: relative;
+                    left: 30%; // TEMP TODO fix
+                    &:hover{
+                        -webkit-animation: fa-spin 2s infinite linear;
+                        animation: fa-spin 2s infinite linear;
+                    }
                 }
                 > .nuggetViz{
                     .flex(1);
@@ -399,10 +424,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .flex-direction(row);
     }
 
+    .attribDragBox{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 22px;
+        width: 200px;
+        background-color: lightgray;
+        border-radius: 10px;
+        border: double 3px gray;
+        display: none;
+        z-index: 200;
+        text-align: center;
+        font-weight: 500;
+        font-size: 0.8em;
+        cursor: default;
+        text-rendering: initial;
+        pointer-events: none;
+    }
+
     .layout_block {
         > .dropZone{
             .flex(1);
-            pointer-events: all;
             display: none;
             background-color: rgba(200, 200, 200, 0.3);
             border-radius: 10px;
@@ -412,6 +455,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             z-index: 50;
             margin: 4px;
             &:hover{ background-color: rgb(255, 188, 163); }
+            &[readyToDrop="true"] {
+                background-color: rgb(255, 188, 163);
+                border-color: orangered;
+            }
         }
         > .dropZone_panel{
             display: none;
@@ -431,6 +478,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 1.3em;
             pointer-events: none;
             text-align: center;
+        }
+        .dropZone[readyToDrop=true] .dropIcon{
+            color: orangered;
         }
         &[hidebars=true] .kshf {
             .attrib .aggr_Group{ display:none; }
@@ -471,7 +521,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width: 100%;
             > .dropZone_panel{
                 bottom: 2px;
-                height: 40px;
+                height: 30px;
                 width: 100%;
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
@@ -480,18 +530,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.layout_left{
             .display(inline-flex);
             .flex-direction(column);
-
             vertical-align: top;
             position: relative;
             height: 100%;
-            > .kshfChart{
-                display: block;
-            }
             > .dropZone_panel{
                 left: 2px;
-                height: 90%;
-                top: 5%;
-                width: 40px;
+                height: 100%;
+                top: 0%;
+                width: 30px;
                 border-radius: 0px 40px 40px 0px;
                 border-right-width: 2px;
             }
@@ -506,10 +552,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position: relative;
             height: 100%;
             > .dropZone_panel{
-                right:2px;
-                height: 90%;
-                top: 5%;
-                width: 40px;
+                right: 2px;
+                height: 100%;
+                top: 0%;
+                width: 30px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
             }
@@ -544,7 +590,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             .keyframes(~'itemZoom, 0%{transform: scale(0); opacity:1;} 100% {transform: scale(1); opacity:1;}');
 
-            div.infobox_close_button{
+            .infobox_close_button{
                 position: absolute;
                 right: 3px;
                 top: 3px;
@@ -662,14 +708,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .hasLabelWidth{ text-align: right; }
-    .headerGroup {
-        > .header_display_control{
-            left: 0px;
-        }
-        .chartFirstLineBackground{
-            direction: ltr;
-        }
-    }
     .attribGroup{
         direction:ltr;
         margin-right: 2px;
@@ -960,18 +998,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .header_display_control{
-            display: inline;
+            display: block;
             position: absolute;
             top: 0px;
             z-index: 10;
             .transition(~'color 250ms linear, opacity 100ms linear ');
             .transform-origin(50% 50%);
             > .fa{
+                display: inline-block;
                 opacity: 0;
+                color: black;
                 cursor: pointer;
-                &:hover{
-                    color:#cb5454;
-                }
+                margin-right: 3px;
+                font-size: 0.8em;
+                width: 14px;
+                height: 14px;
+                &:hover{ color:#cb5454; }
             }
 /*            > .fa-collapse:hover{
                 .animation(shrink 800ms);
@@ -979,18 +1021,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .animation-timing-function(ease-in);
             }*/
             > .fa-collapse{
-                font-size: 0.8em;
                 margin: 1px;
                 width: 13px;
                 height: 13px;
-                &::before{
-                    content: "\f066";
-                }
+                &::before{ content: "\f066"; }
             }
             > .fa-remove{
-                font-size: 0.8em;
-                margin-left: 3px;
-                color:gray;
+                display: none;
+            }
+            > .expand{
+                font-size: 0.7em;
+                display: none;
             }
         }
         span.showFilterText{
@@ -1046,8 +1087,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         > .wrapper{
-            .transition(~'height 700ms ease-in-out');
-
             > .facetCategorical{
                 overflow: hidden;
                 > .facetControls{
@@ -1855,10 +1894,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             > .wrapper .facetCategorical{
-                > div { display: none; }
+                > .facetControls { display: none; }
+                > .scrollToTop { display: none; }
+                > .attribGroup { display: none; }
+                > .belowAttribs { display: none; }
             }
             > .wrapper .facetInterval{ 
-                > div { display: none; }
+                > .histogram { display: none; }
+                > .intervalSlider { display: none; }
             }
         }
 
@@ -2029,7 +2072,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .middleStuff{
+    .middleColumn{
         .display(inline-flex);
         .flex-direction(column);
         .flex(1);
@@ -2217,6 +2260,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             background-color: #eee;
             height: 20px;
+            width: calc(~"100% - 23px");
 
             text-align: center;
             position:absolute;
@@ -2680,7 +2724,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             > .mainTextSearch {
                 .flex(1);
-                .align-self(center);
+                .align-self(flex-end);
                 white-space: nowrap;
                 display: inline-block;
                 vertical-align: bottom;
@@ -2780,9 +2824,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &:hover{ color: #cb5454; }
                 }
                 .showConfigButton{
-
+                    &:hover{
+                        animation: fa-spin 2s infinite linear;
+                        -webkit-animation: fa-spin 2s infinite linear;
+                    }
                 }
                 .datasource{
+                    display: none;
                     cursor: pointer;
                     text-decoration: none;
                     color: #635d46; // if dom type is a, it will show visited links in different color

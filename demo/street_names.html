@@ -19,13 +19,13 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "StreetNames";
-    kshf.dt.StreetNames = [];
     $.ajax({
         //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
         // url: "./data_private/dc_homicides.json", // original source
         url: "./data/street_names.json",
         success: function(data){
+            browser.primaryTableName = "StreetNames";
+            kshf.dt.StreetNames = [];
             var nameRegistry={};
             data.forEach(function(streetName, i){
                 var n= kshf.Util.toProperCase(streetName.text);
@@ -33,7 +33,6 @@ function loadData(browser){
                 nameRegistry[n] = true;
                 streetName.text = n;
                 streetName.id = i;
-                streetName.Value = streetName.value;
                 kshf.dt.StreetNames.push(new kshf.Item(streetName,"id"));
             });
             browser.loadCharts();
@@ -58,7 +57,7 @@ $(document).ready( function(){
         },
         facets: [
             {   title: "<span class='fa fa-home'></span> # of Homes", attribMap: "homes"
-            },{ title: "<span class='fa fa-money'></span> Average Value", attribMap: "Value"
+            },{ title: "<span class='fa fa-money'></span> Average Value", attribMap: "value"
             },{ title: "Name Features",
                 attribMap: function(){
                     var r=[];
@@ -66,16 +65,17 @@ $(document).ready( function(){
                     if(this.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
                     if(this.scenic) r.push("Scenic <span class='fa fa-picture-o featIcon'></span>");
                     if(this.geoname) r.push("Geo-name <span class='fa fa-map-marker featIcon'></span>");
-                    if(parseInt(this.text)) r.push("Numbered <span class='featIcon'><img src='http://graphics8.nytimes.com/newsgraphics/2015/01/20/streetclouds/db6af38c9c61da220ded80f2c202cda1428ccc69/icon_numbered.png' style='height:15px'></span>");
+                    if(parseInt(this.text)) r.push("Numbered");
                     return r;
                 }
             },{ title: "In # Counties", attribMap: "in_counties", collapsed: true
             }
         ],
         itemDisplay: {
-            sortingOpts : [ {name: 'Value'}, {name: '# Homes', value: "homes"} ],
+            sortingOpts : [ {name: 'value'}, {name: '# Homes', value: "homes"} ],
             displayType: 'grid',
             textSearch: 'text',
+            detailsToggle: "off",
             maxVisibleItems_Default: 400,
             recordView : function(){
                 var str=this.text;

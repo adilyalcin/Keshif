@@ -57,6 +57,7 @@ var kshf = {
     num_of_charts: 0,
     maxVisibleItems_Default: 100, 
     dt: {},
+    scrollWidth: 21,
     dt_id: {},
     LOG: {
         // Note: id parameter is integer alwats, info is string
@@ -101,201 +102,139 @@ var kshf = {
         BARCHARTWIDTH          : 73, // param: info (width)
         RESIZE                 : 74, // param: -
     },
-};
-
-
-kshf.Util = {
-    sortFunc_Column_Int_Incr: function(a,b){ 
-        return a.data.id - b.data.id; 
-    },
-    sortFunc_Column_ParseInt_Incr: function(a,b){ 
-        return parseFloat(a.data.id,10) -parseFloat(b.data.id,10);
-    },
-    sortFunc_Time_Last: function(a, b){
-        if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
-            return b.xMax_Dyn - a.xMax_Dyn;
-        }
-        if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
-            return b.xMax - a.xMax;
-        }
-        if(b.xMax_Dyn===undefined){ return -1; }
-        return 1;
-    },
-    sortFunc_Time_First: function(a, b){
-        if(a.xMax_Dyn!==undefined && b.xMax_Dyn!==undefined){
-            return a.xMin_Dyn - b.xMin_Dyn;
-        }
-        if(a.xMax_Dyn===undefined && b.xMax_Dyn===undefined){
-            return a.xMin - b.xMin;
-        }
-        if(b.xMin_Dyn===undefined){ return -1; }
-        return 1;
-    },
-    sortFunc_List_String: function(a, b){
-        return a.localeCompare(b);
-    },
-    sortFunc_List_Date: function(a, b){
-        if(a===null) return -1;
-        if(b===null) return 1;
-        return a.getTime() - b.getTime();
-    },
-    sortFunc_List_Number: function(a, b){
-        return b - a;
-    },
-    /** Given a list of columns which hold multiple IDs, breaks them into an array */
-    cellToArray: function(dt, columns, splitExpr, convertInt){
-        if(splitExpr===undefined){
-            splitExpr = /\b\s+/;
-        }
-        var j;
-        dt.forEach(function(p){
-            p = p.data;
-            columns.forEach(function(column){
-                var list = p[column];
-                if(list===null) return;
-                if(typeof list==="number") {
-                    p[column] = ""+list;
-                    return;
-                }
-                var list2 = list.split(splitExpr);
-                list = [];
-                // remove empty "" items
-                for(j=0; j<list2.length; j++){
-                    list2[j] = list2[j].trim();
-                    if(list2[j]!=="") list.push(list2[j]);
-                }
-                // convert to int - TODO: what if the IDs are string?
-                if(convertInt!==false){
-                    for(j=0; j<list.length; j++){
-                        list[j] = parseInt(list[j],10);
+    Util: {
+        sortFunc_List_String: function(a, b){
+            return a.localeCompare(b);
+        },
+        sortFunc_List_Date: function(a, b){
+            if(a===null) return -1;
+            if(b===null) return 1;
+            return a.getTime() - b.getTime();
+        },
+        sortFunc_List_Number: function(a, b){
+            return b - a;
+        },
+        /** Given a list of columns which hold multiple IDs, breaks them into an array */
+        cellToArray: function(dt, columns, splitExpr, convertInt){
+            if(splitExpr===undefined){
+                splitExpr = /\b\s+/;
+            }
+            var j;
+            dt.forEach(function(p){
+                p = p.data;
+                columns.forEach(function(column){
+                    var list = p[column];
+                    if(list===null) return;
+                    if(typeof list==="number") {
+                        p[column] = ""+list;
+                        return;
                     }
-                }
-                p[column] = list;
+                    var list2 = list.split(splitExpr);
+                    list = [];
+                    // remove empty "" items
+                    for(j=0; j<list2.length; j++){
+                        list2[j] = list2[j].trim();
+                        if(list2[j]!=="") list.push(list2[j]);
+                    }
+                    // convert to int - TODO: what if the IDs are string?
+                    if(convertInt!==false){
+                        for(j=0; j<list.length; j++){
+                            list[j] = parseInt(list[j],10);
+                        }
+                    }
+                    p[column] = list;
+                });
             });
-        });
-    },
-    unescapeCommas: function(c){
-        var k=0,j;
-        var escaped=false;
-        var cell;
-        var a=[];
-        c.forEach(function(c_i){
-            if(escaped){
-                cell+=","+c_i;
-                if(c_i[c_i.length-1]==="\""){
-                    escaped=false;
-                } else {
-                    return;
-                }
-            } else {
-                if(c_i[0]==="\""){
-                    escaped = true;
-                    cell = c_i.slice(1,c_i.length-1);
-                    return;
-                }
-                cell = c_i;
+        },
+        /** You should only display at most 3 digits + k/m/etc */
+        formatForItemCount: function(n){
+            if(n<1000) {
+                return n;
             }
-            // convert to num
-            var n=+cell;
-            if(!isNaN(n) && cell!==""){
-                cell=n;
-            } else {/*
-                // convert to date
-                var dt = Date.parse(cell);
-                if(!isNaN(dt)){ cell = new Date(dt); } */
+            if(n<1000000) {
+                // 1,000-999,999
+                var thousands=n/1000;
+                if(thousands<10){
+                    return (Math.floor(n/100)/10)+"k";
+                }
+                return Math.floor(thousands)+"k";
             }
-            a.push(cell);
-        });
-        return a;
-    },
-    /** You should only display at most 3 digits + k/m/etc */
-    formatForItemCount: function(n){
-        if(n<1000) {
+            if(n<1000000000) return Math.floor(n/1000000)+"m";
             return n;
-        }
-        if(n<1000000) {
-            // 1,000-999,999
-            var thousands=n/1000;
-            if(thousands<10){
-                return (Math.floor(n/100)/10)+"k";
+        },
+        nearestYear: function(d){
+            var dr = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            if(d.getUTCMonth()>6) dr.setUTCFullYear(dr.getUTCFullYear()+1);
+            return dr;
+        },
+        nearestMonth: function(d){
+            var dr = new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1));
+            if(d.getUTCDate()>15) dr.setUTCMonth(dr.getUTCMonth()+1);
+            return dr;
+        },
+        nearestDay: function(d){
+            var dr = new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));
+            if(d.getUTCHours()>12) dr.setUTCDate(dr.getUTCDate()+1);
+            return dr;
+        },
+        nearestHour: function(d){
+        },
+        nearestMinute: function(d){
+        },
+        clearArray: function(arr){
+            while (arr.length > 0) {
+              arr.pop();
             }
-            return Math.floor(thousands)+"k";
-        }
-        if(n<1000000000) return Math.floor(n/1000000)+"m";
-        return n;
-    },
-    nearestYear: function(d){
-        var dr = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-        if(d.getUTCMonth()>6) dr.setUTCFullYear(dr.getUTCFullYear()+1);
-        return dr;
-    },
-    nearestMonth: function(d){
-        var dr = new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1));
-        if(d.getUTCDate()>15) dr.setUTCMonth(dr.getUTCMonth()+1);
-        return dr;
-    },
-    nearestDay: function(d){
-        var dr = new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));
-        if(d.getUTCHours()>12) dr.setUTCDate(dr.getUTCDate()+1);
-        return dr;
-    },
-    nearestHour: function(d){
-    },
-    nearestMinute: function(d){
-    },
-    clearArray: function(arr){
-        while (arr.length > 0) {
-          arr.pop();
-        }
-    },
-    ignoreScrollEvents: false,
-    scrollToPos_do: function(scrollDom, targetPos){
-        kshf.Util.ignoreScrollEvents = true;
-        // scroll to top
-        var startTime = null;
-        var scrollInit = scrollDom.scrollTop;
-        var easeFunc = d3.ease('cubic-in-out');
-        var scrollTime = 500;
-        var animateToTop = function(timestamp){
-            var progress;
-            if(startTime===null) startTime = timestamp;
-            // complete animation in 500 ms
-            progress = (timestamp - startTime)/scrollTime;
-            var m=easeFunc(progress);
-            scrollDom.scrollTop = (1-m)*scrollInit+m*targetPos;
-            if(scrollDom.scrollTop!==targetPos){
-                window.requestAnimationFrame(animateToTop);
-            } else {
-                kshf.Util.ignoreScrollEvents = false;
+        },
+        ignoreScrollEvents: false,
+        scrollToPos_do: function(scrollDom, targetPos){
+            kshf.Util.ignoreScrollEvents = true;
+            // scroll to top
+            var startTime = null;
+            var scrollInit = scrollDom.scrollTop;
+            var easeFunc = d3.ease('cubic-in-out');
+            var scrollTime = 500;
+            var animateToTop = function(timestamp){
+                var progress;
+                if(startTime===null) startTime = timestamp;
+                // complete animation in 500 ms
+                progress = (timestamp - startTime)/scrollTime;
+                var m=easeFunc(progress);
+                scrollDom.scrollTop = (1-m)*scrollInit+m*targetPos;
+                if(scrollDom.scrollTop!==targetPos){
+                    window.requestAnimationFrame(animateToTop);
+                } else {
+                    kshf.Util.ignoreScrollEvents = false;
+                }
+            };
+            window.requestAnimationFrame(animateToTop);
+        },
+        toProperCase: function(str){
+            return str.toLowerCase().replace(/\b[a-z]/g,function(f){return f.toUpperCase()});
+        },
+        setTransform: function(dom,transform){
+            dom.style.webkitTransform = transform;
+            dom.style.MozTransform = transform;
+            dom.style.msTransform = transform;
+            dom.style.OTransform = transform;
+            dom.style.transform = transform;
+        },
+        // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+        ordinal_suffix_of: function(i) {
+            var j = i % 10,
+                k = i % 100;
+            if (j == 1 && k != 11) {
+                return i + "st";
             }
-        };
-        window.requestAnimationFrame(animateToTop);
-    },
-    toProperCase: function(str){
-        return str.toLowerCase().replace(/\b[a-z]/g,function(f){return f.toUpperCase()});
-    },
-    setTransform: function(dom,transform){
-        dom.style.webkitTransform = transform;
-        dom.style.MozTransform = transform;
-        dom.style.msTransform = transform;
-        dom.style.OTransform = transform;
-        dom.style.transform = transform;
-    },
-    // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
-    ordinal_suffix_of: function(i) {
-        var j = i % 10,
-            k = i % 100;
-        if (j == 1 && k != 11) {
-            return i + "st";
-        }
-        if (j == 2 && k != 12) {
-            return i + "nd";
-        }
-        if (j == 3 && k != 13) {
-            return i + "rd";
-        }
-        return i + "th";
-    },
+            if (j == 2 && k != 12) {
+                return i + "nd";
+            }
+            if (j == 3 && k != 13) {
+                return i + "rd";
+            }
+            return i + "th";
+        },
+    }
 };
 
 // tipsy, facebook style tooltips for jquery
@@ -415,8 +354,6 @@ Tipsy.prototype = {
     },
 };
 
-
-
 /**
  * @constructor
  */
@@ -437,12 +374,10 @@ kshf.Item = function(d, idIndex){
     // You can modify this with a non-negative value
     // Note that the aggregation currently works by summation only.
     this.aggregate_Self = 1;
-    // Active aggregate value
-    this.aggregate_Active = 0;
-    // Previewed aggregate value
-    this.aggregate_Preview = 0;
-    // Total aggregate value
-    this.aggregate_Total = 0;
+    
+    this.aggregate_Active = 0;  // Active aggregate value
+    this.aggregate_Preview = 0; // Previewed aggregate value
+    this.aggregate_Total = 0;   // Total aggregate value
 
     // If true, filter/wanted state is dirty and needs to be updated.
     this._filterCacheIsDirty = true;
@@ -464,16 +399,14 @@ kshf.Item = function(d, idIndex){
 
     this.DOM = {};
     // If item is primary type, this will be set
-    this.DOM.result = undefined;
+    this.DOM.record = undefined;
     // If item is used as a filter (can be primary if looking at links), this will be set
     this.DOM.facet  = undefined;
     // If true, updatePreview has propogated changes above
     this.updatePreview_Cache = false;
 };
 kshf.Item.prototype = {
-    /**
-     * Returns unique ID of the item.
-     */
+    /** Returns unique ID of the item. */
     id: function(){
         return this.data[this.idIndex];
     },
@@ -498,22 +431,22 @@ kshf.Item.prototype = {
             this.inList.splice(this.inList.indexOf(this),1);
         }
         this.inList = undefined;
-        this.selected = 0; this._setFacetDOM();
+        this.selected = 0; this.refreshFacetDOMSelected();
     },
     set_NOT: function(l){ 
         if(this.is_NOT()) return;
         this._insertToList(l);
-        this.selected =-1; this._setFacetDOM(); 
+        this.selected =-1; this.refreshFacetDOMSelected(); 
     },
     set_AND: function(l){ 
         if(this.is_AND()) return;
         this._insertToList(l);
-        this.selected = 1; this._setFacetDOM();
+        this.selected = 1; this.refreshFacetDOMSelected();
     },
     set_OR: function(l){ 
         if(this.is_OR()) return;
         this._insertToList(l);
-        this.selected = 2; this._setFacetDOM();
+        this.selected = 2; this.refreshFacetDOMSelected();
     },
 
     _insertToList: function(l){
@@ -524,7 +457,7 @@ kshf.Item.prototype = {
         l.push(this);
     },
 
-    _setFacetDOM: function(){
+    refreshFacetDOMSelected: function(){
         if(this.DOM.facet) this.DOM.facet.setAttribute("selected",this.selected);
     },
 
@@ -630,7 +563,7 @@ kshf.Item.prototype = {
             return;
         }
 
-        if(this.DOM.result) this.DOM.result.setAttribute("highlight",true);
+        if(this.DOM.record) this.DOM.record.setAttribute("highlight",true);
 
         // This is where you pass highlight information to through parent facet (which is primary entity)
         // if this item appears in a facet, it means it's used as a filter itself, propogate above
@@ -667,14 +600,14 @@ kshf.Item.prototype = {
      * Higlights all relevant UI parts to this UI item
      */
     highlightAll: function(recurse){
-        if(this.DOM.result) {
-            this.DOM.result.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.record) {
+            this.DOM.record.setAttribute("highlight",recurse?"selected":true);
         }
         if(this.DOM.facet) {
             this.DOM.facet.setAttribute("highlight",recurse?"selected":true);
         }
 
-        if(this.DOM.result && !recurse) return;
+        if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d){
             if(d===null) return; // no mapping for this index
             if(d.h){ // interval facet
@@ -682,7 +615,7 @@ kshf.Item.prototype = {
             } else { // categorical facet
                 d.forEach(function(item){
                     // skip going through main items that contain a link TO this item
-                    if(this.DOM.result && item.DOM.result)
+                    if(this.DOM.record && item.DOM.record)
                         return;
                     item.highlightAll(false);
                 },this);
@@ -691,10 +624,10 @@ kshf.Item.prototype = {
     },
     /** Removes higlight from all relevant UI parts to this UI item */
     nohighlightAll: function(recurse){
-        if(this.DOM.result) this.DOM.result.setAttribute("highlight",false);
+        if(this.DOM.record) this.DOM.record.setAttribute("highlight",false);
         if(this.DOM.facet)  this.DOM.facet .setAttribute("highlight",false);
 
-        if(this.DOM.result && !recurse) return;
+        if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
             if(d===null) return; // no mapping for this index
             if(d.h){ // interval facet
@@ -702,7 +635,7 @@ kshf.Item.prototype = {
             } else { // categorical facet
                 d.forEach(function(item){
                     // skip going through main items that contain a link TO this item
-                    if(this.DOM.result && item.DOM.result) return;
+                    if(this.DOM.record && item.DOM.record) return;
                     item.nohighlightAll(false);
                 },this);
             }
@@ -710,8 +643,8 @@ kshf.Item.prototype = {
     },
     setSelectedForLink: function(v){
         this.selectedForLink = v;
-        if(this.DOM.result){
-            this.DOM.result.setAttribute("selectedForLink",v);
+        if(this.DOM.record){
+            this.DOM.record.setAttribute("selectedForLink",v);
         }
         if(v===false){
             this.set_NONE();
@@ -725,16 +658,14 @@ kshf.Filter = function(id, opts){
     this.browser = opts.browser;
     this.parentSummary = opts.parentSummary;
 
-    // filter needs to know about filteredItems because it auto clears, etc...
-    this.filteredItems = opts.filteredItems;
     this.onClear = opts.onClear;
     this.onFilter = opts.onFilter;
-    this.hideCrumb = opts.hideCrumb;
+    this.hideCrumb = opts.hideCrumb || false;
     this.filterView_Detail = opts.filterView_Detail; // must be a function
     this.filterHeader = opts.filterHeader;
 
     this.id = id;
-    this.filteredItems.forEach(function(item){
+    this.parentSummary.items.forEach(function(item){
         item.setFilterCache(this.id,true);
     },this);
     this.how = "All";
@@ -745,7 +676,7 @@ kshf.Filter.prototype = {
         var parentFacet=this.parentSummary.parentFacet;
         this.isFiltered = true;
 
-        if(this.onFilter) this.onFilter.call(this.parentSummary, this);
+        if(this.onFilter) this.onFilter.call(this,this.parentSummary);
 
         var stateChanged = false;
         if(recursive===undefined) recursive=true;
@@ -754,7 +685,7 @@ kshf.Filter.prototype = {
         if(this.how==="LessResults") how = -1;
         if(this.how==="MoreResults") how = 1;
 
-        this.filteredItems.forEach(function(item){
+        this.parentSummary.items.forEach(function(item){
             // if you will show LESS results and item is not wanted, skip
             // if you will show MORE results and item is wanted, skip
             if(!(how<0 && !item.isWanted) && !(how>0 && item.isWanted)){
@@ -771,7 +702,7 @@ kshf.Filter.prototype = {
 
         // if this has a parent facet (multi-level), link selection from this to the parent facet
         if(parentFacet && parentFacet.hasAttribs()){
-            parentFacet.updateAttribCount_Wanted();
+            parentFacet.updateCatCount_Wanted();
             parentFacet.summaryFilter.how = "All";
             // re-run the parents attribute filter...
             parentFacet.summaryFilter.linkFilterSummary = "";
@@ -798,14 +729,14 @@ kshf.Filter.prototype = {
         this.isFiltered = false;
 
         // clear filter cache - no other logic is necessary
-        this.filteredItems.forEach(function(item){ item.setFilterCache(this.id,true); },this);
+        this.parentSummary.items.forEach(function(item){ item.setFilterCache(this.id,true); },this);
 
-        if(this.onClear) this.onClear.call(this.parentSummary,this);
+        if(this.onClear) this.onClear.call(this,this.parentSummary);
 
         if(recursive===undefined) recursive=true;
 
         if(updateWanted!==false){
-            this.filteredItems.forEach(function(item){
+            this.parentSummary.items.forEach(function(item){
                 if(!item.isWanted){
                     item.updateWanted(recursive);
                 }
@@ -822,7 +753,7 @@ kshf.Filter.prototype = {
 
         if(forceUpdate!==false){
             if(hasEntityParent){
-                parentFacet.updateAttribCount_Wanted();
+                parentFacet.updateCatCount_Wanted();
                 parentFacet.summaryFilter.how = "All";
                 if(parentFacet.catCount_Wanted===parentFacet.catCount_Total){
                     parentFacet.summaryFilter.clearFilter(false,parentFacet); // force update
@@ -860,9 +791,6 @@ kshf.Filter.prototype = {
 
     /** Don't call this directly */
     _refreshFilterSummary: function(){
-        if(this.hideCrumb===undefined){
-            this.hideCrumb = true;
-        }
         if(this.hideCrumb===true) return;
         if(!this.isFiltered){
             var root = this.filterSummaryBlock;
@@ -879,10 +807,9 @@ kshf.Filter.prototype = {
                     return;
                 }
             }
-            if(this.parentSummary!==undefined)
-                this.filterHeader = this.parentSummary.summaryName;
+            if(this.parentSummary!==undefined) this.filterHeader = this.parentSummary.summaryName;
             this.filterSummaryBlock.select(".filterHeader").html(this.filterHeader);
-            this.filterSummaryBlock.select(".filterDetails").html(this.filterView_Detail.call(this));
+            this.filterSummaryBlock.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
         }
     },
     /** Inserts a summary block to the list breadcrumb DOM */
@@ -946,7 +873,7 @@ kshf.List = function(kshf_, config, root){
     this.linkColumnWidth_BarMax = this.linkColumnWidth-this.linkColumnWidth_ItemCount-3;
     this.selectColumnWidth = 17;
 
-    this.config = config;
+    this.items = this.browser.items;
 
     if(config.recordView!==undefined){
         if(typeof config.recordView === 'string'){
@@ -957,11 +884,11 @@ kshf.List = function(kshf_, config, root){
         }
     }
 
-    this.autoExpandMore = config.autoExpandMore || true;
+    this.autoExpandMore = true;
+    if(config.autoExpandMore===false) this.autoExpandMore = false;
 
     this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
-    // The property below is the dynamic property
-    this.maxVisibleItems = this.maxVisibleItems_Default;
+    this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
 
     this.hasLinkedItems = config.hasLinkedItems || false;
     if(this.hasLinkedItems){
@@ -973,29 +900,24 @@ kshf.List = function(kshf_, config, root){
     }
 
     // Sorting options
-    this.sortingOpts = config.sortingOpts || [{name:this.browser.items[0].idIndex}];
+    this.sortingOpts = config.sortingOpts || [ {name:this.browser.items[0].idIndex} ];
     this.prepSortingOpts();
     this.sortingOpt_Active = this.sortingOpts[0];
 
-    // can be 'grid' or 'list'
-    this.displayType = config.displayType || 'list';
+    this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
+    this.detailsToggle = config.detailsToggle || 'zoom'; // 'off', 'one', 'zoom'
+    this.linkText      = config.linkText      || "Related To";
+    
     this.visibleCb = config.visibleCb;
-    this.detailCb = config.detailCb;
-
-    this.linkText = config.linkText || "Related To";
+    this.detailCb  = config.detailCb;
 
     this.showRank = config.showRank || false;
 
     this.textSearch = config.textSearch;
     this.textSearchFunc = config.textSearchFunc;
-    if(this.textSearch!==undefined){
-        if(this.textSearchFunc===undefined){
-            this.textSearchFunc = function(){ return this[me.textSearch]; };
-        }
+    if(this.textSearch!==undefined && this.textSearchFunc===undefined){
+        this.textSearchFunc = function(){ return this[me.textSearch]; };
     }
-
-    // "off", "one", "zoom"
-    this.detailsToggle = config.detailsToggle || "zoom";
 
     this.listDiv = root.select("div.listDiv")
         .attr('detailsToggle',this.detailsToggle)
@@ -1003,87 +925,10 @@ kshf.List = function(kshf_, config, root){
         .attr('showRank',this.showRank);
 
     this.DOM.listHeader=this.listDiv.append("div").attr("class","listHeader");
-
-    this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
-    this.insertTotalViz();
-    this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow");
-
-    this.DOM.listHeader_ConfigRow = this.DOM.listHeader.append("div").attr("class","configRow");
-
-    this.DOM.listHeader_ConfigRow.append("span").attr("class","itemRank")
-        .append("span").attr("class","fa")
-        .each(function(){
-            this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Show / hide ranking"; }});
-        })
-        .on("mouseover",function(){ 
-            this.tipsy.show();
-        })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(){
-            me.setShowRank(!me.showRank);
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        })
-        ;
-
-    this.DOM.adjustSortColumnWidth = this.DOM.listHeader_ConfigRow.append("div")
-        .attr("class","adjustSortColumnWidth")
-        ;
-
-    this.DOM.removeSortOption = this.DOM.adjustSortColumnWidth.append("span").attr("class","removeSortOption fa")
-        .each(function(){
-            this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Remove current sorting option"; }});
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); })
-        .on("click",function(){
-            var index=-1;
-            me.sortingOpts.forEach(function(o,i){
-                if(o===me.sortingOpt_Active) index=i;
-            })
-            if(index!==-1){
-                me.sortingOpts.splice(index,1);
-                if(index===me.sortingOpts.length) index--;
-                me.prepSortingOpts();
-                me.setSortingOpt_Active(index);
-                me.refreshSortingOptions();
-                me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
-            }
-        })
-        .style("display",(this.sortingOpts.length<2)?"none":"inline-block");
-        ;
-
-    this.DOM.adjustSortColumnWidth.append("span").attr("class","handle")
-        .each(function(){
-            this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ return "Adjust column width"; }});
-            this.moving = false;
-        })
-        .on("mouseover",function(){ 
-            if(!this.moving) this.tipsy.show();
-        })
-        .on("mouseout",function(d,i){
-            this.tipsy.hide();
-        })
-        .on("mousedown", function (d, i) {
-            if(d3.event.which !== 1) return; // only respond to left-click
-            root.style('cursor','ew-resize');
-            var _this = this;
-            _this.tipsy.hide();
-            _this.moving = true;
-            var mouseDown_x = d3.mouse(document.body)[0];
-            var mouseDown_width = me.sortColWidth;
-            root.on("mousemove", function() {
-                var mouseMove_x = d3.mouse(document.body)[0];
-                var mouseDif = mouseMove_x-mouseDown_x;
-                me.updateSortColumnWidth(mouseDown_width+mouseDif);
-            }).on("mouseup", function(){
-                root.style('cursor','default');
-                root.on("mousemove", null).on("mouseup", null);
-                _this.moving = false;
-            });
-            d3.event.preventDefault();
-        });
-
+        this.initDOM_TopRow();
+        this.initDOM_TotalViz();
+        this.initDOM_BottomRow();
+        this.initDOM_ConfigRow();
 
     this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
         .on("scroll",function(d){
@@ -1092,7 +937,7 @@ kshf.List = function(kshf_, config, root){
                 if(me.autoExpandMore===false){
                     me.DOM.showMore.style("bottom","4px");
                 } else {
-                    me.showMore();
+                    me.showMore(); // automatically add more records
                 }
             } else{
                 me.DOM.showMore.style("bottom","-27px");
@@ -1103,91 +948,193 @@ kshf.List = function(kshf_, config, root){
     // **************************************************************************************************
     // Header stuff *************************************************************************************
 
-    this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
-
-    this.insertHeaderSortSelect();
-    this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
-    this.insertHeaderLinkedItems();
-    this.DOM.scrollToTop = this.DOM.listHeader_BottomRow.append("div")
-        .attr("class","scrollToTop fa fa-arrow-up")
-        .on("click",function(d){ 
-            kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
-            if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
-        })
-        .each(function(){
-            this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); })
-        ;
-
-    this.sortItems();
-    this.insertItems();
+    this.sortRecords();
+    this.insertRecords();
 
     this.DOM.showMore = this.listDiv.append("div").attr("class","showMore")
-        .on("click",function(){
-            me.showMore();
-        })
-        .on("mouseenter",function(){
-            d3.select(this).selectAll(".loading_dots").attr("anim",true);
-        })
-        .on("mouseleave",function(){
-            d3.select(this).selectAll(".loading_dots").attr("anim",null);
-        })
+        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
+        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
+        .on("click",function(){ me.showMore(); })
         ;
-    this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
-    this.DOM.showMore.append("span").attr("class","Count CountAbove");
-    this.DOM.showMore.append("span").attr("class","Count CountBelow");
-    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
-    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
-    this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
+        this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
+        this.DOM.showMore.append("span").attr("class","Count CountAbove");
+        this.DOM.showMore.append("span").attr("class","Count CountBelow");
+        this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
+        this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
+        this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
 
-    this.updateSortColumnWidth(config.sortColWidth || 50); // default: 50px;
+    this.setSortColumnWidth(config.sortColWidth || 50); // default: 50px;
 };
 
 kshf.List.prototype = {
-    /* -- */
-    insertTotalViz: function(){
-        var adsdasda=this.DOM.listHeader.append("div").attr("class","totalViz");
+    /** -- */
+    initDOM_TotalViz: function(){
+        var adsdasda = this.DOM.listHeader.append("div").attr("class","totalViz");
         this.DOM.totalViz_total = adsdasda.append("span").attr("class","aggr total");
         this.DOM.totalViz_active = adsdasda.append("span").attr("class","aggr active");
         this.DOM.totalViz_preview = adsdasda.append("span").attr("class","aggr preview");
-        this.DOM.totalViz_compare = adsdasda.append("span").attr("class","aggr compare");
+    },
+    /** -- */
+    initDOM_BottomRow: function(){
+        this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow");
+        this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
+        this.initDOM_SortSelect();
+        this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
+        this.initDOM_HeaderLinkedItems();
+        this.DOM.scrollToTop = this.DOM.listHeader_BottomRow.append("div").attr("class","scrollToTop fa fa-arrow-up")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout", function(){ this.tipsy.hide(); })
+            .on("click",function(d){ 
+                kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
+                if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
+            })
+            ;
+    },
+    /** -- */
+    initDOM_TopRow: function(){
+        var me=this;
+        this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
+        
+        var resultInfo = this.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
+            this.DOM.listHeader_count = resultInfo.append("span").attr("class","listHeader_count");
+            this.DOM.listHeader_itemName = resultInfo.append("span").attr("class","listHeader_itemName");
+        
+        this.initDOM_GlobalTextSearch();
+        
+        this.initDOM_ClearAllFilters();
+
+        var rightBoxes = this.DOM.listHeader_TopRow.append("span").attr("class","rightBoxes");
+        // Attribute panel
+        rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return "Modify browser"; } });
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout", function(){ this.tipsy.hide(); })
+            .on("click",function(){ me.browser.showAttributes(); })
+            ;
+        // Datasource
+        this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
+            .attr("target","_blank")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return "Open Data Source"; } });
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                if(sendLog) sendLog(kshf.LOG.DATASOURCE);
+            })
+            ;
+        // Info & Credits
+        rightBoxes.append("i").attr("class","fa fa-info-circle credits")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return "Show Info & Credits"; } });
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){ me.browser.showInfoBox();})
+            ;
+    },
+    /** -- */
+    initDOM_ConfigRow: function(){
+        var me = this;
+        this.DOM.listHeader_ConfigRow = this.DOM.listHeader.append("div").attr("class","configRow");
+
+        this.DOM.listHeader_ConfigRow.append("span").attr("class","itemRank")
+            .append("span").attr("class","fa")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Show / hide ranking"; }});
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("click",function(){
+                me.setShowRank(!me.showRank);
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
+            ;
+
+        this.DOM.adjustSortColumnWidth = this.DOM.listHeader_ConfigRow.append("div").attr("class","adjustSortColumnWidth");
+
+        this.DOM.removeSortOption = this.DOM.adjustSortColumnWidth.append("span").attr("class","removeSortOption fa")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Remove current sorting option"; }});
+            })
+            .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){
+                var index=-1;
+                me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
+                if(index!==-1){
+                    me.sortingOpts.splice(index,1);
+                    if(index===me.sortingOpts.length) index--;
+                    me.prepSortingOpts();
+                    me.setSortingOpt_Active(index);
+                    me.refreshSortingOptions();
+                    me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
+                }
+            })
+            ;
+
+        this.DOM.adjustSortColumnWidth.append("span").attr("class","handle")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ return "Adjust column width"; }});
+                this.moving = false;
+            })
+            .on("mouseover",function(){ 
+                if(!this.moving) this.tipsy.show();
+            })
+            .on("mouseout",function(d,i){
+                this.tipsy.hide();
+            })
+            .on("mousedown", function (d, i) {
+                if(d3.event.which !== 1) return; // only respond to left-click
+                root.style('cursor','ew-resize');
+                var _this = this;
+                _this.tipsy.hide();
+                _this.moving = true;
+                var mouseDown_x = d3.mouse(document.body)[0];
+                var mouseDown_width = me.sortColWidth;
+                root.on("mousemove", function() {
+                    me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
+                }).on("mouseup", function(){
+                    root.style('cursor','default');
+                    root.on("mousemove", null).on("mouseup", null);
+                    _this.moving = false;
+                });
+                d3.event.preventDefault();
+            });
     },
     /* -- */
-    refreshTotalViz: function(){
-        this.DOM.totalViz_active.style("width",(100*this.browser.itemsWantedCount/this.browser.items.length)+"%");
-        this.DOM.totalViz_preview.style("width",(100*this.browser.itemCount_Previewed/this.browser.items.length)+"%");
-    },
-    /* -- */
-    insertGlobalTextSearch: function(){
+    initDOM_GlobalTextSearch: function(){
         var me=this;
 
         this.textFilter = this.browser.createFilter({
-            filteredItems: this.browser.items,
             parentSummary: this,
-            // no filterView_Detail function, filtering text is already shown as part of input/filter
-            onClear: function(filter){
-                this.DOM.mainTextSearch.select(".clearText").style('display','none');
-                this.DOM.mainTextSearch.select("input")[0][0].value = "";
-                filter.filterStr = "";
+            hideCrumb: true,
+            onClear: function(summary){
+                summary.DOM.mainTextSearch.select(".clearText").style('display','none');
+                summary.DOM.mainTextSearch.select("input")[0][0].value = "";
             },
-            onFilter: function(filter){
-                this.DOM.mainTextSearch.select(".clearText").style('display','inline-block');
+            onFilter: function(summary){
+                summary.DOM.mainTextSearch.select(".clearText").style('display','inline-block');
                 // split the search string, search for each item individually
-                filter.filterStr=filter.filterStr.split(" ");
+                this.filterStr = this.filterStr.split(" ");
                 // go over all the items in the list, search each keyword separately
                 // If some search matches, return true (any function)
-                filter.filteredItems.forEach(function(item){
-                    var f = ! filter.filterStr.every(function(v_i){
-                        var v=me.textSearchFunc.call(item.data);
+                summary.items.forEach(function(item){
+                    var f = ! this.filterStr.every(function(v_i){
+                        var v = summary.textSearchFunc.call(item.data);
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
-                    item.setFilterCache(filter.id,f);
-                });
+                    item.setFilterCache(this.id,f);
+                },this);
             },
-            hideCrumb: true,
         });
 
         this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch")
@@ -1205,8 +1152,7 @@ kshf.List.prototype = {
         $(x[0][0]).on("mouseup",function(event){
             me.textSearchFunc = me.browser.movedSummary.summaryFunc;
             me.DOM.mainTextSearch.attr("isActive",true);
-            me.DOM.mainTextSearch.select("input")
-                .attr("placeholder","Search "+me.browser.movedSummary.summaryName);
+            me.DOM.mainTextSearch.select("input").attr("placeholder","Search "+me.browser.movedSummary.summaryName);
         });
 
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-search searchIcon");
@@ -1234,52 +1180,7 @@ kshf.List.prototype = {
             .on("click",function() { me.textFilter.clearFilter(); });
     },
     /** -- */
-    updateSortColumnWidth: function(v){
-        if(this.displayType==='list'){
-            this.sortColWidth = Math.max(Math.min(v,110),30);
-            this.DOM.header_listSortColumn.style("min-width",this.sortColWidth+"px");
-            this.DOM.listSortColumn.style("width",this.sortColWidth+"px")
-            this.DOM.adjustSortColumnWidth.style("width",this.sortColWidth+"px")
-        }
-    },
-    /** -- */
-    refrestSortColumnLabels: function(){
-        if(this.displayType!=="list") return;
-        var labelFunc=this.sortingOpt_Active.label;
-        var unitName =this.sortingOpt_Active.unitName;
-        this.DOM.listSortColumn.html(function(d){
-            var s=labelFunc.call(d.data);
-            if(s===null || s===undefined) return "";
-            if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
-            return s;
-        });
-    },
-    /** -- */
-    prepSortingOpts: function(){
-        this.sortingOpts.forEach(function(sortOpt){
-            if(sortOpt.value===undefined) {
-                sortOpt.value = function(){ return this[sortOpt.name]; };
-            } else {
-                if(typeof(sortOpt.value)==='string'){
-                    var x=sortOpt.value;
-                    sortOpt.value = function(){ return this[x]; };
-                }
-            }
-            if(!sortOpt.label) sortOpt.label = sortOpt.value;
-            sortOpt.inverse = sortOpt.inverse || false;
-            sortOpt.func    = sortOpt.func    || this.getSortFunc(sortOpt.value);
-        },this);
-        if(this.DOM.removeSortOption)
-            this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
-    },
-    /** -- */
-    refreshSortingOptions: function(){
-        this.DOM.listSortOptionSelect.selectAll("option").remove();
-        this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts, function(d){ return d.name} )
-            .enter().append("option").html(function(d){ return d.name; });
-        },
-    /** -- */
-    insertHeaderSortSelect: function(){
+    initDOM_SortSelect: function(){
         var me=this;
 
         this.DOM.header_listSortColumn = this.DOM.listHeader_BottomRow.append("div")
@@ -1341,18 +1242,29 @@ kshf.List.prototype = {
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(){ this.tipsy.hide(); });
     },
-    /** -- */
-    setSortingOpt_Active: function(index){
-        if(index<0 || index>=this.sortingOpts.length) return;
-        this.sortingOpt_Active = this.sortingOpts[index];
-        this.reorderItemsOnDOM();
-        this.updateVisibleIndex();
-        this.updateItemVisibility();
-        this.refrestSortColumnLabels();
-        kshf.Util.scrollToPos_do(this.DOM.listItemGroup[0][0],0);
+    /** --- */
+    initDOM_ClearAllFilters: function(){
+        var me=this;
+        this.DOM.filterClearAll = this.DOM.listHeader_TopRow.append("span").attr("class","filterClearAll")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n', title: function(){ return "<span class='action'>Remove</span> all filters"; } 
+                });
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
+            .on("click",function(){ 
+                this.tipsy.hide();
+                me.browser.clearFilters_All();
+            })
+            ;
+        this.DOM.filterClearAll.append("span").attr("class","title").text("Clear");
+        this.DOM.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
+            .append("span").attr("class","fa fa-times")
+            ;
     },
     /** -- */
-    insertHeaderLinkedItems: function(){
+    initDOM_HeaderLinkedItems: function(){
         var me=this;
         if(this.hasLinkedItems){
             var x = this.DOM.listHeader_BottomRow.append("span").attr("class","headerLinkStateColumn")
@@ -1382,7 +1294,7 @@ kshf.List.prototype = {
                             item.set_NONE();
                         }
                     });
-                    linkedFacet.updateSorting(0);
+                    linkedFacet.updateCatSorting(0);
                     linkedFacet._update_Selected();
                     linkedFacet.summaryFilter.how="All";
                     linkedFacet.summaryFilter.addFilter(true);
@@ -1395,8 +1307,84 @@ kshf.List.prototype = {
             y.append("span").attr("class","headerLinkColumnAllResults").html(" All <i class='fa fa-hand-o-down'></i>");
         }
     },
+    /** -- */
+    refreshTotalViz: function(){
+        this.DOM.totalViz_active .style("width",(100*this.browser.itemsWantedCount/this.browser.items.length)+"%");
+        this.DOM.totalViz_preview.style("width",(100*this.browser.itemCount_Previewed/this.browser.items.length)+"%");
+    },
+    /** -- */
+    refreshRecordRank: function(){
+        if(this.showRank) this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });  
+    },
+    /** -- */
+    refrestSortColumnLabels: function(){
+        if(this.displayType!=="list") return;
+        var labelFunc=this.sortingOpt_Active.label;
+        var unitName =this.sortingOpt_Active.unitName;
+        this.DOM.listSortColumn.html(function(d){
+            var s=labelFunc.call(d.data);
+            if(s===null || s===undefined) return "";
+            if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
+            return s;
+        });
+    },
+    /** -- */
+    refreshSortingOptions: function(){
+        this.DOM.listSortOptionSelect.selectAll("option").remove();
+        this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts)
+            .enter().append("option").html(function(d){ return d.name; });
+    },
+    /** -- */
+    prepSortingOpts: function(){
+        this.sortingOpts.forEach(function(sortOpt){
+            if(sortOpt.value===undefined) {
+                sortOpt.value = function(){ return this[sortOpt.name]; };
+            } else {
+                if(typeof(sortOpt.value)==='string'){
+                    var x=sortOpt.value;
+                    sortOpt.value = function(){ return this[x]; };
+                }
+            }
+            if(!sortOpt.label) sortOpt.label = sortOpt.value;
+            sortOpt.inverse = sortOpt.inverse || false;
+            sortOpt.func    = sortOpt.func    || this.getSortFunc(sortOpt.value);
+        },this);
+        if(this.DOM.removeSortOption)
+            this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
+    },
+    /** -- */
+    setSortingOpt_Active: function(index){
+        if(index<0 || index>=this.sortingOpts.length) return;
+        this.sortingOpt_Active = this.sortingOpts[index];
+        
+        this.sortRecords();
+        this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
+            .data(this.browser.items, function(d){ return d.id(); })
+            .order();
+
+        this.updateVisibleIndex();
+        this.updateItemVisibility();
+        this.refrestSortColumnLabels();
+        kshf.Util.scrollToPos_do(this.DOM.listItemGroup[0][0],0);
+    },
+    /** -- */
+    setSortColumnWidth: function(v){
+        if(this.displayType==='list'){
+            this.sortColWidth = Math.max(Math.min(v,110),30);
+            this.DOM.header_listSortColumn.style("min-width",this.sortColWidth+"px");
+            this.DOM.adjustSortColumnWidth.style("width",this.sortColWidth+"px")
+            this.DOM.listSortColumn.style("width",this.sortColWidth+"px")
+        }
+    },
+    /** -- */
+    setShowRank: function(v){
+        if(this.showRank===v) return;
+        this.showRank=v;
+        this.listDiv.attr('showRank',this.showRank);
+        this.refreshRecordRank();
+    },
     /** Insert items into the UI, called once on load */
-    insertItems: function(){
+    insertRecords: function(){
         var me = this;
 
         this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
@@ -1409,7 +1397,7 @@ kshf.List.prototype = {
             .attr("animSt","visible")
             .attr("itemID",function(d){return d.id();}) // can be used to apply custom CSS
             // store the link to DOM in the data item
-            .each(function(d){ d.DOM.result = this; })
+            .each(function(d){ d.DOM.record = this; })
             .on("mouseenter",function(d,i){
                 d.highlightAll(true);
                 
@@ -1418,7 +1406,7 @@ kshf.List.prototype = {
                 });
                 
                 if(me.hasLinkedItems){
-                    d.DOM.result.setAttribute("selectedForLink",true);
+                    d.DOM.record.setAttribute("selectedForLink",true);
                     // update result previews
                     d.items.forEach(function(item){item.updatePreview();});
                     me.browser.itemCount_Previewed = d.items.length;
@@ -1434,7 +1422,7 @@ kshf.List.prototype = {
                 })
                 // update result previews
                 if(me.hasLinkedItems){
-                    d.DOM.result.setAttribute("selectedForLink",false);
+                    d.DOM.record.setAttribute("selectedForLink",false);
                     me.browser.clearResultPreviews();
                 }
             });            
@@ -1443,7 +1431,9 @@ kshf.List.prototype = {
             this.DOM.listItems.attr("selectedForLink","false")
         }
         if(this.displayType==='list'){
-            this.insertItemSortColumn();
+            this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
+            this.DOM.listSortColumn = this.DOM.listItems.append("div").attr("class","listSortColumn");
+            this.refrestSortColumnLabels();
         }
         this.insertItemToggleDetails();
         this.DOM.listItems_Content = this.DOM.listItems.append("div").attr("class","content")
@@ -1471,7 +1461,7 @@ kshf.List.prototype = {
                     me.browser.clearFilters_All(false);
                     me.browser.selfRefSummaries.forEach(function(f){
                         f.selectAllAttribsButton();
-                        f.updateSorting(0);
+                        f.updateCatSorting(0);
                     });
                     // delay layout height update
                     setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
@@ -1494,18 +1484,12 @@ kshf.List.prototype = {
                         this.tipsy.hide();
                         d.setSelectedForLink(!d.selectedForLink);
                         me.browser.selfRefSummaries.forEach(function(f){
-                            f.updateSorting(0);
+                            f.updateCatSorting(0);
                         });
                         me.browser.updateLayout_Height();
                     });
             }
         }
-    },
-    /** Insert sort column into list items */
-    insertItemSortColumn: function(){
-        this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
-        this.DOM.listSortColumn = this.DOM.listItems.append("div").attr("class","listSortColumn");
-        this.refrestSortColumnLabels();
     },
     /** -- */
     insertItemToggleDetails: function(){
@@ -1545,46 +1529,16 @@ kshf.List.prototype = {
     },
     /** -- */
     hideListItemDetails: function(item){
-        item.DOM.result.setAttribute('details', false);
+        item.DOM.record.setAttribute('details', false);
         item.showDetails=false;
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_OFF, {info:item.id()});
     },
     /** -- */
     showListItemDetails: function(item){
-        item.DOM.result.setAttribute('details', true);
+        item.DOM.record.setAttribute('details', true);
         item.showDetails=true;
         if(this.detailCb) this.detailCb.call(item.data, item);
         if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_ON,{info:item.id()});
-    },
-    /** --- */
-    insertFilterClearAll: function(){
-        var me=this;
-        this.DOM.filterClearAll = this.DOM.listHeader_TopRow.append("span").attr("class","filterClearAll")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ 
-                        return "<span class='action'>Remove</span> all filters";
-                    }
-                })
-            })
-            .on("mouseenter",function(){
-                this.tipsy.show();
-                d3.event.stopPropagation();
-            })
-            .on("mouseleave",function(d,i){
-                this.tipsy.hide();
-                d3.event.stopPropagation();
-            })
-            .on("click",function(){ 
-                this.tipsy.hide();
-                me.browser.clearFilters_All();
-            })
-            ;
-        this.DOM.filterClearAll.append("span").attr("class","title").text("Clear");
-        this.DOM.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
-            .append("span").attr("class","fa fa-times")
-            ;
     },
     /** -- */
     showMore: function(){
@@ -1593,20 +1547,11 @@ kshf.List.prototype = {
         this.DOM.showMore.style("bottom","-27px"); // hide panel
         if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
     },
-    /** Reorders items in the DOM
-     *  Only called after list is re-sorted (not called after filtering)
-     */
-    reorderItemsOnDOM: function(){
-        this.sortItems();
-        this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
-            .data(this.browser.items, function(d){ return d.id(); })
-            .order();
-    },
     /** Sort all items given the active sort option 
      *  List items are only sorted on list init and when sorting options change.
      *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
      */
-    sortItems: function(){
+    sortRecords: function(){
         var sortValueFunc = this.sortingOpt_Active.value;
         var sortFunc = this.sortingOpt_Active.func;
         var inverse = this.sortingOpt_Active.inverse;
@@ -1736,23 +1681,13 @@ kshf.List.prototype = {
         this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
     },
     /** -- */
-    updateContentWidth: function(contentWidth){
-        contentWidth-=4; // 2*2 border left&right
-        contentWidth-=this.browser.scrollWidth; // assume scroll is displayed
-        this.DOM.showMore.style("width",(contentWidth-5)+"px");
-    },
-    updateAfterFiltering_do:function(){
+    updateAfterFilter_do:function(){
         this.updateVisibleIndex();
         this.updateItemVisibility(false);
     },
     /** -- */
     updateAfterFilter: function(){
         var me=this;
-        if(this.scrollTop_cache===0 && false){
-            me.updateAfterFiltering_do();
-            return;
-        }
-        // scroll to top
         var startTime = null;
         var scrollDom = this.DOM.listItemGroup[0][0];
         var scrollInit = scrollDom.scrollTop;
@@ -1765,21 +1700,12 @@ kshf.List.prototype = {
             progress = (timestamp - startTime)/scrollTime;
             scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
             if(scrollDom.scrollTop===0){
-                me.updateAfterFiltering_do();
+                me.updateAfterFilter_do();
             } else {
                 window.requestAnimationFrame(animateToTop);
             }
         };
         window.requestAnimationFrame(animateToTop);
-    },
-    /** -- */
-    setShowRank: function(v){
-        if(this.showRank===v) return;
-        this.showRank=v;
-        this.listDiv.attr('showRank',this.showRank);
-        if(this.showRank){
-            this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });
-        }
     },
     /** -- */
     updateVisibleIndex: function(){
@@ -1795,97 +1721,91 @@ kshf.List.prototype = {
                 unwantedCount++;
             }
         });
-
-        if(this.showRank){
-            this.DOM.ranks.text(function(d){ return d.visibleOrder+1; });
-        }
-
+        this.refreshRecordRank();
         this.maxVisibleItems = this.maxVisibleItems_Default;
     }
 };
 
 kshf.Panel = function(options){
     this.browser = options.browser;
+    this.name = options.name;
+    this.width_catLabel = options.widthCatLabel;
+    this.width_catChart = 0;
+    this.width_catMeasureLabel = 1;
+    this.summaries = [];
+
     this.DOM = {};
     this.DOM.root = options.parentDOM.append("div")
         .attr("class", "layout_block layout_"+options.name)
         .attr("hasSummaries",false);
-    this.name = options.name;
-    this.width={};
-    this.width_catLabel = options.widthCatLabel;
-    this.width.catChart = 0;
-    this.width.catQueryPreview = 1;
-    this.summaries = [];
-    this.insertDropZone();
+    this.initDOM_DropZone();
+    this.initDOM_AdjustWidth();
 };
 
 kshf.Panel.prototype = {
     /** -- */
     getWidth_Total: function(){
         if(this.name==="bottom") return this.browser.getWidth_Total();
-        return this.width_catLabel + this.width.catQueryPreview + this.width.catChart + this.browser.scrollWidth;
+        return this.width_catLabel + this.width_catMeasureLabel + this.width_catChart + kshf.scrollWidth;
     },
     /** -- */
     addSummary: function(summary,index){
         var curIndex=-1;
-        this.summaries.forEach(function(s,i){
-            if(s===summary) curIndex=i;
-        });
-        if(curIndex===-1){
+        this.summaries.forEach(function(s,i){ if(s===summary) curIndex=i; });
+        if(curIndex===-1){ // summary is new to this panel
             if(index===this.summaries.length)
                 this.summaries.push(summary);
             else
                 this.summaries.splice(index,0,summary);
             this.DOM.root.attr("hasSummaries",true);
             this.updateWidth_QueryPreview();
-            this.setupAdjustWidth();
-        } else {
+            this.refreshAdjustWidth();
+        } else { // summary was in the panel. Change position
             this.summaries.splice(curIndex,1);
             this.summaries.splice(index,0,summary);
         }
-        this.summaries.forEach(function(s,i){
-            s.panelOrder = i;
-        })
-        this.newDropZone(summary.DOM.root[0][0]);
+        this.summaries.forEach(function(s,i){ s.panelOrder = i; });
+        this.addDOM_DropZone(summary.DOM.root[0][0]);
     },
     /** -- */
     removeSummary: function(summary){
         var indexFrom = -1;
-        this.summaries.forEach(function(s,i){
-            if(s===summary) indexFrom = i;
-        });
+        this.summaries.forEach(function(s,i){ if(s===summary) indexFrom = i; });
         if(indexFrom===-1) return; // given summary is not within this panel
         
         var toRemove=this.DOM.root.selectAll(".dropZone")[0][indexFrom];
         toRemove.parentNode.removeChild(toRemove);
-        this.updateDropZoneIndex();
+        this.refreshDropZoneIndex();
 
         this.summaries.splice(indexFrom,1);
+        this.summaries.forEach(function(s,i){ s.panelOrder = i; });
+
         if(this.summaries.length===0) {
             this.DOM.root.attr("hasSummaries",false);
         } else {
             this.updateWidth_QueryPreview();
         }
         summary.panel = undefined;
-        this.setupAdjustWidth();
+        this.refreshAdjustWidth();
     },
     /** -- */
-    newDropZone: function(beforeDOM){
+    addDOM_DropZone: function(beforeDOM){
         var me=this;
         var zone;
         if(beforeDOM){
-            zone = this.DOM.root.insert("div",function(){return beforeDOM;}).attr("class","dropZone");
+            zone = this.DOM.root.insert("div",function(){return beforeDOM;});
         } else {
-            zone = this.DOM.root.append("div").attr("class","dropZone");
+            zone = this.DOM.root.append("div");
         }
+        zone.attr("class","dropZone");
 
         zone.append("div").attr("class","dropIcon fa fa-angle-double-down");
 
         $(zone[0][0]).on("mouseenter",function(event){
-            this.style.backgroundColor = "rgb(255, 188, 163)";
+            this.setAttribute("readyToDrop",true);
         });
         $(zone[0][0]).on("mouseleave",function(event){
-            this.style.backgroundColor = "";
+            this.setAttribute("readyToDrop",false);
         });
         $(zone[0][0]).on("mouseup",function(event){
             var movedSummary = me.browser.movedSummary;
@@ -1906,16 +1826,10 @@ kshf.Panel.prototype = {
 
             me.browser.updateLayout();
         });
-        this.updateDropZoneIndex();
+        this.refreshDropZoneIndex();
     },
     /** -- */
-    updateDropZoneIndex: function(){
-        this.DOM.root.selectAll(".dropZone").each(function(d,i){
-            this.__data__ = i;
-        });
-    },
-    /** -- */
-    insertDropZone: function(dom){
+    initDOM_DropZone: function(dom){
         var me=this;
         this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone_panel");
 
@@ -1944,74 +1858,71 @@ kshf.Panel.prototype = {
             });
         // ********************************************
 
-        this.newDropZone();
-        this.DOM.dropZone_last = this.DOM.root.select(".dropZone");
+        this.addDOM_DropZone();
     },
     /** -- */
-    setupAdjustWidth: function(){
+    initDOM_AdjustWidth: function(){
+        if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
         var me=this;
         var root = this.browser.DOM.root;
-        if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
-        if(this.summaries.length===0){
-            if(this.DOM.panelAdjustWidth){
-                this.DOM.root[0][0].removeChild(this.DOM.panelAdjustWidth[0][0]);
-                this.DOM.panelAdjustWidth = undefined;
-            }
-        } else {
-            if(this.DOM.panelAdjustWidth) return;
-            this.DOM.panelAdjustWidth = this.DOM.root.append("span")
-                .attr("class","panelAdjustWidth")
-                .attr("title","Drag to adjust panel width")
-                .on("mousedown", function (d, i) {
-                    if(d3.event.which !== 1) return; // only respond to left-click
-                    root.style('cursor','ew-resize');
-                    me.browser.setNoAnim(true);
-                    var mouseDown_x = d3.mouse(document.body)[0];
-                    var mouseDown_width = me.width.catChart;
-                    root.on("mousemove", function() {
-                        var mouseMove_x = d3.mouse(document.body)[0];
-                        var mouseDif = mouseMove_x-mouseDown_x;
-                        if(me.name==='right') mouseDif *= -1;
-                        var oldhideBarAxis = me.hideBarAxis;
-                        me.setWidthCatChart(mouseDown_width+mouseDif);
-                        if(me.hideBarAxis!==oldhideBarAxis){
-                            me.browser.updateLayout_Height();
-                        }
-                        // TODO: Adjust other panel widths
-                    }).on("mouseup", function(){
-                        root.style('cursor','default');
-                        me.browser.setNoAnim(false);
-                        // unregister mouse-move callbacks
-                        root.on("mousemove", null).on("mouseup", null);
-                    });
-                    d3.event.preventDefault();
-                })
-                .on("click",function(){
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
+        this.DOM.panelAdjustWidth = this.DOM.root.append("span")
+            .attr("class","panelAdjustWidth")
+            .on("mousedown", function (d, i) {
+                if(d3.event.which !== 1) return; // only respond to left-click
+                root.style('cursor','ew-resize');
+                me.browser.setNoAnim(true);
+                var mouseDown_x = d3.mouse(document.body)[0];
+                var mouseDown_width = me.width_catChart;
+                root.on("mousemove", function() {
+                    var mouseMove_x = d3.mouse(document.body)[0];
+                    var mouseDif = mouseMove_x-mouseDown_x;
+                    if(me.name==='right') mouseDif *= -1;
+                    var oldhideBarAxis = me.hideBarAxis;
+                    me.setWidthCatChart(mouseDown_width+mouseDif);
+                    if(me.hideBarAxis!==oldhideBarAxis){
+                        me.browser.updateLayout_Height();
+                    }
+                    // TODO: Adjust other panel widths
+                }).on("mouseup", function(){
+                    root.style('cursor','default');
+                    me.browser.setNoAnim(false);
+                    // unregister mouse-move callbacks
+                    root.on("mousemove", null).on("mouseup", null);
                 });
-        }
+                d3.event.preventDefault();
+            })
+            .on("click",function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            });
+    },
+    /** -- */
+    refreshDropZoneIndex: function(){
+        this.DOM.root.selectAll(".dropZone").each(function(d,i){ this.__data__ = i; });
+    },
+    /** -- */
+    refreshAdjustWidth: function(){
+        if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
+        this.DOM.panelAdjustWidth.style("display",(this.summaries.length===0)?"none":"");
     },
     /** -- */
     setTotalWidth: function(_w_){
-        this.width.catChart = _w_-this.width_catLabel-this.width.catQueryPreview-this.browser.scrollWidth;
+        this.width_catChart = _w_-this.width_catLabel-this.width_catMeasureLabel-kshf.scrollWidth;
+    },
+    /** -- */
+    getNumOfOpenSummaries: function(){
+        return this.summaries.reduce(function(prev,cur){return prev+!cur.collapsed;},0);
+    },
+    /** -- */
+    collapseAllSummaries: function(){
+        this.summaries.forEach(function(summary){ summary.setCollapsed(true); });
     },
     /** -- */
     setWidthCatChart: function(_w_){
-        if(_w_>200) {
-            this.hideBars = false;
-            this.hideBarAxis = false;
-        } else if(_w_>45){
-            this.hideBars = false;
-            this.hideBarAxis = false;
-        } else if(_w_>10){
-            this.hideBars = false;
-            this.hideBarAxis = true;
-        } else {
-            this.hideBars = true;
-            this.hideBarAxis = true;
-            _w_ = 0; // collapse to 0
-        }
+        _w_ = Math.max(_w_,0);
+        this.hideBars = _w_<=5;
+        this.hideBarAxis = _w_<=20;
+
         if(this.forceHideBarAxis===true){
             this.hideBarAxis = true;
         }
@@ -2026,7 +1937,7 @@ kshf.Panel.prototype = {
             this.DOM.root.attr("hideBarAxis",true);
         }
 
-        this.width.catChart = _w_;
+        this.width_catChart = _w_;
 
         this.updateSummariesWidth();
         if(this.name!=="middle")
@@ -2039,7 +1950,7 @@ kshf.Panel.prototype = {
                 summary.updateBarPreviewScale2Active();
             }
             summary.refreshWidth();
-        },this);
+        });
     },
     /** --- */
     updateWidth_QueryPreview: function(){
@@ -2048,9 +1959,9 @@ kshf.Panel.prototype = {
             return summary.getMaxAggr_Total();
         });
 
-        var oldPreviewWidth = this.width.catQueryPreview;
+        var oldPreviewWidth = this.width_catMeasureLabel;
 
-        this.width.catQueryPreview = 13;
+        this.width_catMeasureLabel = 13;
         var digits = 1;
         while(maxTotalCount>9){
             digits++;
@@ -2058,15 +1969,13 @@ kshf.Panel.prototype = {
         }
         if(digits>3) {
             digits = 3;
-            this.width.catQueryPreview+=4; // "." character is used to split. It takes some space
+            this.width_catMeasureLabel+=4; // "." character is used to split. It takes some space
         }
-        this.width.catQueryPreview += digits*6;
+        this.width_catMeasureLabel += digits*6;
 
-        if(oldPreviewWidth!==this.width.catQueryPreview){
+        if(oldPreviewWidth!==this.width_catMeasureLabel){
             this.summaries.forEach(function(summary){
-                if(summary.refreshLabelWidth){
-                    summary.refreshLabelWidth();
-                }
+                if(summary.refreshLabelWidth) summary.refreshLabelWidth();
             });
         }
     }
@@ -2076,7 +1985,6 @@ kshf.Panel.prototype = {
  * @constructor
  */
 kshf.Browser = function(options){
-    var me = this;
     this.options = options;
 
     // BASIC OPTIONS
@@ -2087,31 +1995,24 @@ kshf.Browser = function(options){
     this.selfRefSummaries = [];
     this.maxFilterID = 0;
 
-    this.scrollWidth = 21;
-    this.filterList = [];
+    this.filters = [];
+
     this.pauseResultPreview = false;
-
-    this.resultPreviewActive = false;
-
-    this._previewCompare_Active = false;
-
+    this.vizPreviewActive = false;
+    this.vizCompareActive = false;
     this.ratioModeActive = false;
     this.percentModeActive = false;
-//    this._percentView_Timeout_Set = null;
-//    this._percentView_Timeout_Clear = null;
+
+    this.noAnim=false;
 
     this.listDef = options.itemDisplay;
     if(options.list) this.listDef = options.list;
 
-    if(options.listMaxColWidthMult){
-        this.listMaxColWidthMult = options.listMaxColWidthMult;
-    } else {
-        this.listMaxColWidthMult = 0.25;
-    }
-
     this.domID = options.domID;
     this.source = options.source;
     this.source.loadedTableCount=0;
+
+    // Callbacks
     this.loadedCb = options.loadedCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
@@ -2119,24 +2020,19 @@ kshf.Browser = function(options){
     this.previewCompareCb = options.previewCompareCb;
     this.ratioModeCb = options.ratioModeCb;
 
-    this.DOM = {};
-
     this.itemName = options.itemName || "";
 
-    // primItemCatValue
-    this.primItemCatValue = null;
-    if(typeof options.catValue === 'string'){ this.primItemCatValue = options.catValue; }
-    // showDataSource
     this.showDataSource = true;
-    if(options.showDataSource!==undefined) this.showDataSource = options.showDataSource;
-    // forceHideBarAxis
+    if(options.showDataSource===false) this.showDataSource = false;
+
     this.forceHideBarAxis = false;
     if(options.forceHideBarAxis!==undefined) this.forceHideBarAxis = options.forceHideBarAxis;
 
+    this.DOM = {};
     this.DOM.root = d3.select(this.domID)
         .classed("kshf",true)
         .attr("percentview",false)
-        .attr("noanim",false)
+        .attr("noanim",true)
         .attr("ratiomode",false)
         .attr("attribsShown",false)
         .attr("showdropzone",false)
@@ -2150,17 +2046,18 @@ kshf.Browser = function(options){
             }
         })
         ;
-    this.noAnim=false;
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
     var rootDomNode = this.DOM.root[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
 
-    if(options.showResizeCorner === true) this.insertResize();
-    this.insertInfobox();
+    if(options.showResizeCorner === true) this.insertDOM_ResizeBrowser();
+    this.insertDOM_Infobox();
 
-    this.DOM.panelsTop=this.DOM.root.append("div").attr("class","panels_Above");
+    this.DOM.panelsTop = this.DOM.root.append("div").attr("class","panels_Above");
 
+    // Dragbox is the attribute that's dragged.
+    this.DOM.attribDragBox = this.DOM.root.append("div").attr("class","attribDragBox");
 
     this.panels.left = new kshf.Panel({
         widthCatLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
@@ -2169,7 +2066,7 @@ kshf.Browser = function(options){
         parentDOM: this.DOM.panelsTop
     });
 
-    var asdasds=this.DOM.panelsTop.append("div").attr("class","middleStuff");
+    var asdasds=this.DOM.panelsTop.append("div").attr("class","middleColumn");
 
     this.layoutList = asdasds.append("div").attr("class", "layout_block listDiv")
 
@@ -2195,8 +2092,10 @@ kshf.Browser = function(options){
     this.DOM.attributeList = this.DOM.root.append("div").attr("class","attributeList");
     this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Available attributes");
 
+    var me = this;
+
     this.DOM.root.selectAll(".layout_block").on("mouseleave",function(){
-        setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.75 seconds
+        setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
     });
 
     window.setTimeout(function() { me.loadSource(); }, 50);
@@ -2206,6 +2105,7 @@ kshf.Browser.prototype = {
     /** -- */
     setNoAnim: function(v){
         if(v===this.noAnim) return;
+        if(this.finalized===undefined) return;
         this.noAnim=v;
         this.DOM.root.attr("noanim",this.noAnim);
     },
@@ -2222,7 +2122,8 @@ kshf.Browser.prototype = {
     getPrimaryItems: function(){
         return kshf.dt[this.primaryTableName];
     },
-    getTypeFromAttribFunc: function(attribFunc){
+    /** -- */
+    getAttribTypeFromFunc: function(attribFunc){
         var type = null;
         this.getPrimaryItems().some(function(item,i){
             var item=attribFunc.call(item.data,item);
@@ -2255,14 +2156,13 @@ kshf.Browser.prototype = {
             var x=func;
             func = function(){ return this[x]; }
         }
-        // Check type before you instantiate the summary!
+
         var attribFunc=func || function(d){ return d.data[name]; }
-        
         if(type===undefined){
-            type = this.getTypeFromAttribFunc(attribFunc);
+            type = this.getAttribTypeFromFunc(attribFunc);
         }
         if(type===null){
-            console.log("Summary data type could not be detected for name:"+name);
+            console.log("Summary data type could not be detected for summary name:"+name);
             return;
         }
 
@@ -2285,12 +2185,12 @@ kshf.Browser.prototype = {
         if(curName===newName) return;
         var summary = this.summaries_by_name[curName];
         if(summary===undefined){
-            alert("The given summary name is not there. Try again");
+            console.log("The given summary name is not there. Try again");
             return;
         }
         if(this.summaries_by_name[newName]!==undefined){
             if(newName!==this.summaries_by_name[newName].summaryColumn){
-                alert("The new summary name is already used. It must be unique. Try again");
+                console.log("The new summary name is already used. It must be unique. Try again");
                 return;
             }
         }
@@ -2299,9 +2199,7 @@ kshf.Browser.prototype = {
             delete this.summaries_by_name[curName];
         }
         this.summaries_by_name[newName] = summary;
-        summary.summaryName = newName;
-        if(summary.DOM.summaryTitle_text)
-            summary.DOM.summaryTitle_text.text(summary.summaryName);
+        summary.setSummaryName(newName);
         return summary;
     },
     /** -- */
@@ -2322,11 +2220,11 @@ kshf.Browser.prototype = {
         // see if it has been created before TODO
         var newFilter = new kshf.Filter(this.maxFilterID,opts);
         ++this.maxFilterID;
-        this.filterList.push(newFilter);
+        this.filters.push(newFilter);
         return newFilter;
     },
     /** -- */
-    insertResize: function(){
+    insertDOM_ResizeBrowser: function(){
         var me=this;
         this.DOM.root.append("div").attr("class", "layout_block layout_resize")
             .on("mousedown", function (d, i) {
@@ -2353,7 +2251,7 @@ kshf.Browser.prototype = {
            });
     },
     /* -- */
-    insertInfobox: function(){
+    insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
         creditString += "<div align='center'>";
@@ -2668,6 +2566,7 @@ kshf.Browser.prototype = {
         }
 
         if(this.options.summaries) this.options.facets = this.options.summaries;
+        this.options.facets = this.options.facets || [];
 
         this.options.facets.forEach(function(facetDescr){
             if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.sortingOpts){
@@ -2720,9 +2619,14 @@ kshf.Browser.prototype = {
                 return;
             }
 
+            summary.initializeAggregates();
+
             // Common settings
             if(facetDescr.collapsed){
                 summary.setCollapsed(true);
+            }
+            if(facetDescr.items){
+                summary.items = facetDescr.items;
             }
             if(facetDescr.description) summary.summaryDescription = facetDescr.description;
 
@@ -2739,26 +2643,32 @@ kshf.Browser.prototype = {
                 }
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
                 // catDispCountFix
-                if(facetDescr.minAggrValue) summary.updateMinAggrValue(facetDescr.minAggrValue);
+                if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
+
+                facetDescr.layout = facetDescr.layout || 'left';
+                summary.addToPanel(this.panels[facetDescr.layout]);
             }
 
             if(summary.type==='interval'){
-                if(facetDescr.intervalScale) summary.setScaleType(facetDescr.intervalScale);
+                summary.unitName = facetDescr.unitName || summary.unitName;
+                if(facetDescr.showPercentile){
+                    summary.showPercentile = true;
+                    summary.initDOM_Percentile();
+                }
+                summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
+
+                // add to panel before you set scale type and other options: TODO: Fix
+                facetDescr.layout = facetDescr.layout || 'left';
+                summary.addToPanel(this.panels[facetDescr.layout]);
+
+                if(facetDescr.intervalScale) {
+                    summary.setScaleType(facetDescr.intervalScale);
+                }
                 // tickIntegerOnly
                 // intervalRange
                 // intervalTickFormat
-                summary.unitName = facetDescr.unitName || summary.unitName;
-                summary.showPercentile = facetDescr.showPercentile || summary.showPercentile;
-                summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
             }
-
-            if(facetDescr.items){
-                summary.items = facetDescr.items;
-            }
-
-            facetDescr.layout = facetDescr.layout || 'left';
-            summary.addToPanel(this.panels[facetDescr.layout]);
 
             if(summary.isLinked) this.selfRefSummaries.push(summary);
         },this);
@@ -2769,81 +2679,15 @@ kshf.Browser.prototype = {
 
         if(this.listDef!==undefined){
             this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
-
-            var resultInfo = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
-            this.DOM.listHeader_count = resultInfo.append("span").attr("class","listHeader_count");
-            this.DOM.listHeader_itemName = resultInfo.append("span").attr("class","listHeader_itemName");
-            this.setItemName();
-
-            this.listDisplay.insertGlobalTextSearch();
-
             this.DOM.filtercrumbs = this.listDisplay.DOM.filtercrumbs;
 
-            this.listDisplay.insertFilterClearAll();
+            this.setItemName();
 
-            var rightSpan = this.listDisplay.DOM.listHeader_TopRow.append("span").attr("class","rightBoxes");
-            if(this.listDef.enableSave){
-                rightSpan.append("i").attr("class","fa fa-save")
-                    .each(function(d){
-                        this.tipsy = new Tipsy(this, {
-                            gravity: 'n',
-                            title: function(){ return "Save results to Results facet"; }
-                        })
-                    })
-                    .on("mouseover",function(){ this.tipsy.show(); })
-                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                    .on("click",function(){
-                        if(sendLog) sendLog(kshf.LOG.DATASOURCE);
-                    })
+            if(this.showDataSource !== false && this.source.url){
+                this.listDisplay.DOM.datasource
+                    .style("display","inline-block")
+                    .attr("href",this.source.url);
             }
-
-            // Attribute panel
-            rightSpan.append("i").attr("class","showConfigButton fa fa-cog")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'n',
-                        title: function(){ return "Show available attributes"; }
-                    })
-                })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                .on("click",function(){ 
-                    me.showAttributes();
-                });
-            // TODO: implement popup for file-based resources
-            if(this.showDataSource !== false){
-                var datasource = null;
-                if(this.source.url){
-                    datasource = rightSpan.append("a").attr("class","fa fa-table datasource")
-                        .attr("href",this.source.url).attr("target","_blank");
-                } else if(this.source.dirPath){
-                    datasource = rightSpan.append("i").attr("class","fa fa-table datasource");    
-                }
-                if(datasource) datasource
-                    .each(function(d){
-                        this.tipsy = new Tipsy(this, {
-                            gravity: 'n',
-                            title: function(){ return "Open Data Source"; }
-                        })
-                    })
-                    .on("mouseover",function(){ this.tipsy.show(); })
-                    .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                    .on("click",function(){
-                        if(sendLog) sendLog(kshf.LOG.DATASOURCE);
-                    })
-                  ;
-            }
-            // Info & Credits
-            rightSpan.append("i").attr("class","fa fa-info-circle credits")
-                .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'n',
-                        title: function(){ return "Show Info & Credits"; }
-                    })
-                })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout",function(d,i){ this.tipsy.hide(); })
-                .on("click",function(){ me.showInfoBox();});
         } else {
             this.layoutList.style("display","none");
         }
@@ -2855,15 +2699,15 @@ kshf.Browser.prototype = {
             var totalWidth = this.divWidth;
             var colCount = 0;
             if(this.panels.left.summaries.length>0){
-                totalWidth-=this.panels.left.width_catLabel+this.scrollWidth+this.panels.left.width.catQueryPreview;
+                totalWidth-=this.panels.left.width_catLabel+kshf.scrollWidth+this.panels.left.width_catMeasureLabel;
                 colCount++;
             }
             if(this.panels.right.summaries.length>0){
-                totalWidth-=this.panels.right.width_catLabel+this.scrollWidth+this.panels.right.width.catQueryPreview;
+                totalWidth-=this.panels.right.width_catLabel+kshf.scrollWidth+this.panels.right.width_catMeasureLabel;
                 colCount++;
             }
             if(this.panels.middle.summaries.length>0){
-                totalWidth-=this.panels.middle.width_catLabel+this.scrollWidth+this.panels.middle.width.catQueryPreview;
+                totalWidth-=this.panels.middle.width_catLabel+kshf.scrollWidth+this.panels.middle.width_catMeasureLabel;
                 colCount++;
             }
             if(this.listDisplay===undefined) return totalWidth/colCount;
@@ -2893,14 +2737,20 @@ kshf.Browser.prototype = {
         this.insertAttributeList();
 
         this.summaries.forEach( function(summary){
-            summary.refreshNuggetViz();
+            if(summary.aggr_initialized) summary.refreshNuggetViz();
         });
 
         if(this.readyCb!==undefined) this.readyCb(this);
+        this.finalized = true;
+
+        setTimeout(function(){
+            me.setNoAnim(false);
+        },10000);
+
     },
     /** -- */
     setItemName: function(){
-        this.DOM.listHeader_itemName.html(this.itemName);
+        this.listDisplay.DOM.listHeader_itemName.html(this.itemName);
     },
     /** -- */
     insertAttributeList: function(){
@@ -2910,31 +2760,42 @@ kshf.Browser.prototype = {
         var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
             .data(this.summaries).enter();
 
-        var newNames = newAttributes
+        var newSummaries = newAttributes
             .append("div").attr("class","attributeName")
-            .each(function(summary){
-                summary.DOM.nugget = d3.select(this);
-                //me.addAttribDragListeners(this);
-            })
+            .each(function(summary){ summary.DOM.nugget = d3.select(this); })
             .attr("title",function(summary){ 
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
             })
+            .attr("aggr_initialized",function(summary){ return summary.aggr_initialized;} )
             .on("mousedown",function(summary){
                 if(d3.event.which !== 1) return; // only respond to left-click
                 me.movedSummary = summary;
                 var _this = this;
-                _this.style.opacity = 0.5;
+                var moved = false;
                 d3.select("body")
                     .style('cursor','move')
                     .on("mousemove", function(){
-                        me.DOM.root.attr("showdropzone",true);
-                        me.DOM.root.attr("dropattrtype",summary.getDataType());
+                        if(!moved){
+                            _this.style.opacity = 0.5;
+                            me.DOM.root.attr("showdropzone",true);
+                            me.DOM.root.attr("dropattrtype",summary.getDataType());
+                            me.DOM.attribDragBox
+                                .style("display","block")
+                                .text(summary.summaryName);
+                            moved = true;
+                        }
+                        var mousePos = d3.mouse(me.DOM.root[0][0]);
+                        me.DOM.attribDragBox
+                            .style("left",(mousePos[0]-100)+"px")
+                            .style("top",(mousePos[1]+9)+"px")
+                            ;
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
                         _this.style.opacity = null;
                         // Mouse up on the header
+                        me.DOM.attribDragBox.style("display","none");
                         me.DOM.root.attr("showdropzone",false);
                         d3.select("body")
                             .style('cursor','auto')
@@ -2946,7 +2807,7 @@ kshf.Browser.prototype = {
             })
             ;
 
-        var adadasd = newNames.append("span").attr("class","attribNugget")
+        var attribNugget = newSummaries.append("span").attr("class","attribNugget")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'e', title: function(){
@@ -2958,10 +2819,18 @@ kshf.Browser.prototype = {
             .on("mouseenter",function(){ this.tipsy.show(); })
             .on("mouseleave",function(d,i){ this.tipsy.hide(); });
 
-        adadasd.append("span").attr("class","dataTypeIcon fa");
-        adadasd.append("span").attr("class","nuggetViz");
+        attribNugget.append("span").attr("class","refreshNugget fa fa-spinner")
+            .on("click",function(summary){
+                summary.initializeAggregates();
+                summary.refreshNuggetViz();
+                me.refreshAttributeList();
+                summary.DOM.nugget.attr("aggr_initialized",summary.aggr_initialized);
+            });
 
-        newNames.append("input").attr("class","summaryTitleEdit")
+        attribNugget.append("span").attr("class","dataTypeIcon fa");
+        var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
+        
+        newSummaries.append("input").attr("class","summaryTitleEdit")
             .on("keydown",function(summary){
                 if(event.keyCode===13){ // ENTER
                     var parentDOM = d3.select(this.parentNode);
@@ -2973,8 +2842,9 @@ kshf.Browser.prototype = {
                 }
             })
             ;
-        newNames.append("span").attr("class","summaryTitle");
-        newNames.append("div").attr("class","fa fa-pencil editTitleButton")
+        newSummaries.append("span").attr("class","summaryTitle")
+            .text(function(summary){ return summary.summaryName; });
+        newSummaries.append("div").attr("class","fa fa-pencil editTitleButton")
             .on("click",function(summary){
                 if(summary.summaryColumn===null){
                     // custom
@@ -3018,9 +2888,6 @@ kshf.Browser.prototype = {
             })
             .attr("datatype",function(summary){ return summary.getDataType(); })
             ;
-        this.DOM.attributeList.selectAll(".summaryTitle")
-            .text(function(summary){ return summary.summaryName; })
-            ;
     },
     /** External method - used by demos to auto-select certain features on load -- */
     filterFacetAttribute: function(facetID, itemId){
@@ -3030,7 +2897,7 @@ kshf.Browser.prototype = {
     clearFilters_All: function(force){
         var me=this;
         // clear all registered filters
-        this.filterList.forEach(function(filter){
+        this.filters.forEach(function(filter){
             filter.clearFilter(false,false,false);
         })
         if(force!==false){
@@ -3051,8 +2918,8 @@ kshf.Browser.prototype = {
             if(item.isWanted) this.itemsWantedCount++;
         },this);
 
-        if(this.DOM.listHeader_count){
-            this.DOM.listHeader_count
+        if(this.listDisplay.DOM.listHeader_count){
+            this.listDisplay.DOM.listHeader_count
                 .text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No")
                 .style("width",(this.items.length.toString().length*16)+"px")
                 ;
@@ -3078,7 +2945,7 @@ kshf.Browser.prototype = {
     /** -- */
     refresh_filterClearAll: function(){
         var filteredCount=0;
-        this.filterList.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
+        this.filters.forEach(function(filter){ filteredCount+=filter.isFiltered?1:0; })
         this.DOM.root.attr("isfiltered",filteredCount>0);
     },
     /** Ratio mode is when glyphs scale to their max */
@@ -3104,7 +2971,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearPreviewCompare: function(){
-        this._previewCompare_Active = false;
+        this.vizCompareActive = false;
         this.DOM.root.attr("previewcompare",false);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_Compare();
@@ -3124,7 +2991,7 @@ kshf.Browser.prototype = {
         }
         aggregate.DOM.facet.setAttribute("compare",true);
         this.comparedAggregate = aggregate;
-        this._previewCompare_Active = true;
+        this.vizCompareActive = true;
         this.DOM.root.attr("previewcompare",true);
         this.summaries.forEach(function(summary){ 
             if(summary.inBrowser()) summary.refreshViz_Compare();
@@ -3133,7 +3000,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearResultPreviews: function(){
-        this.resultPreviewActive = false;
+        this.vizPreviewActive = false;
         this.DOM.root.attr("resultpreview",false);
         this.items.forEach(function(item){
             item.updatePreview_Cache = false;
@@ -3150,7 +3017,7 @@ kshf.Browser.prototype = {
     /** -- */
     refreshResultPreviews: function(){
         var me=this;
-        this.resultPreviewActive = true;
+        this.vizPreviewActive = true;
         this.DOM.root.attr("resultpreview",true);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_Preview();
@@ -3311,7 +3178,6 @@ kshf.Browser.prototype = {
             widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
         }
         if(this.listDisplay){
-            this.listDisplay.updateContentWidth(widthMiddlePanel);
             this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
             this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         }
@@ -3331,7 +3197,7 @@ kshf.Browser.prototype = {
 
         r.filtered="";
         r.selected="";
-        this.filterList.forEach(function(filter){
+        this.filters.forEach(function(filter){
             if(filter.isFiltered){
                 // set filtered to true for this summary ID
                 if(r.filtered!=="") r.filtered+="x";
@@ -3348,7 +3214,7 @@ kshf.Browser.prototype = {
     /** -- */
     getFilterSummary: function(){
         var str="";
-        this.filterList.forEach(function(filter,i){
+        this.filters.forEach(function(filter,i){
             if(!filter.isFiltered) return;
             if(filter.filterView_Detail){
                 if(i!=0) str+=" & ";
@@ -3365,7 +3231,7 @@ kshf.Browser.prototype = {
 // ***********************************************************************************************************
 // ***********************************************************************************************************
 
-kshf.Summary_Base = function(){},
+kshf.Summary_Base = function(){}
 kshf.Summary_Base.prototype = {
     initialize: function(browser,name,attribMap){
         this.id = ++kshf.num_of_charts;
@@ -3390,16 +3256,29 @@ kshf.Summary_Base.prototype = {
 
         // Only used when summary is inserted into browser
         this.collapsed = false;
+
+        this.createSummaryFilter();
+    },
+    /** -- */
+    setSummaryName: function(name){
+        this.summaryName = name;
+        if(this.DOM.summaryTitle_text)
+            this.DOM.summaryTitle_text.text(this.summaryName);
+        if(this.DOM.nugget)
+            this.DOM.nugget.select(".summaryTitle").text(this.summaryName);
+        this.summaryFilter._refreshFilterSummary();
     },
     /** -- */
     getDataType: function(){
         if(this.type==='categorical') {
             var str="categorical";
+            if(!this.aggr_initialized) return str+=" uninitialized";
             if(this.uniqueAttributes()) str+=" unique";
             str+=this.hasMultiValueItem?" multivalue":" singlevalue";
             return str;
         }
         if(this.type==='interval') {
+            if(!this.aggr_initialized) return str+=" uninitialized";
             if(this.hasTime) return "interval time";
             return "interval numeric";
             // 
@@ -3420,6 +3299,10 @@ kshf.Summary_Base.prototype = {
         if(this.DOM.root){
             this.DOM.root[0][0].parentNode.removeChild(this.DOM.root[0][0]);
         }
+    },
+    /** -- */
+    inBrowser: function(){
+        return this.panel!==undefined;
     },
     /** -- */
     hasEntityParent: function(){
@@ -3445,7 +3328,6 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     isFiltered: function(){
-        if(this.summaryFilter===undefined) return false;
         return this.summaryFilter.isFiltered;
     },
     /** -- */
@@ -3466,7 +3348,7 @@ kshf.Summary_Base.prototype = {
             if(curIndex===index) return;
             var toRemove=this.panel.DOM.root.selectAll(".dropZone")[0][curIndex];
             toRemove.parentNode.removeChild(toRemove);
-            this.panel.updateDropZoneIndex();
+            this.panel.refreshDropZoneIndex();
         }
         var beforeDOM = this.panel.DOM.root.selectAll(".dropZone")[0][index];
         if(this.DOM.root){
@@ -3478,36 +3360,42 @@ kshf.Summary_Base.prototype = {
         panel.addSummary(this,index); 
     },
     /** -- */
-    inBrowser: function(){
-        return this.panel!==undefined;
-    },
-    /** -- */
     insertHeader: function(){
         var me = this;
 
         this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
             .on("mousedown", function(){
                 if(d3.event.which !== 1) return; // only respond to left-click
+                if(!me.browser.attribsShown) {
+                    d3.event.preventDefault();
+                    return;
+                }
                 me.browser.movedSummary = me;
                 var _this = this;
-                _this.parentNode.nextSibling.style.display = "none";
-                _this.parentNode.previousSibling.style.display = "none";
+                var moved = false;
                 d3.select("body")
                     .style('cursor','move')
                     .on("mousemove", function(){
-                        _this.parentNode.style.opacity = 0.5;
-                        me.browser.DOM.root.attr("showdropzone",true);
-                        me.browser.DOM.root.attr("dropattrtype",me.getDataType());
+                        if(!moved){
+                            _this.parentNode.nextSibling.style.display = "none";
+                            _this.parentNode.previousSibling.style.display = "none";
+                            me.browser.DOM.attribDragBox.style("display","block").text(me.summaryName);
+                            _this.parentNode.style.opacity = 0.5;
+                            moved = true;
+                        }
+                        var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
+                        kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px");
+                        me.browser.DOM.root
+                            .attr("showdropzone",true)
+                            .attr("dropattrtype",me.getDataType());
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
                         // Mouse up on the body
-                        d3.select("body")
-                            .style('cursor','auto')
-                            .on("mousemove",null)
-                            .on("mouseup",null)
-                            ;
+                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                        me.browser.DOM.attribDragBox.style("display","none");
                         me.browser.DOM.root.attr("showdropzone",false);
                         _this.parentNode.style.opacity = null;
                         _this.parentNode.nextSibling.style.display = "";
@@ -3529,10 +3417,24 @@ kshf.Summary_Base.prototype = {
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
             .on("click",function(){
                 this.tipsy.hide();
-                me.collapseSummary(!me.collapsed);
+                me.setCollapsedAndLayout(!me.collapsed); // flip
+            })
+            ;
+        header_display_control.append("span").attr("class","expand fa fa-arrows-alt")
+            .each(function(){
+                this.tipsy = new Tipsy(this, {
+                    gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
+                    title: function(){ return "Maximize summary"; }
+                })
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("click",function(){
+                me.panel.collapseAllSummaries();
+                me.setCollapsedAndLayout(false); // uncollapse this one
             })
             ;
         header_display_control.append("span").attr("class","fa fa-remove")
@@ -3543,7 +3445,7 @@ kshf.Summary_Base.prototype = {
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
             .on("click",function(){
                 // Clique control
                 if(false){
@@ -3552,10 +3454,7 @@ kshf.Summary_Base.prototype = {
                 } else {
                     me.panel.removeSummary(me);
                     me.clearDOM();
-
-                    // add the facet title back
-                    me.browser.refreshAttributeList();
-
+                    me.DOM.nugget.style("display","block");
                     me.browser.updateLayout();
                 }
             })
@@ -3565,7 +3464,7 @@ kshf.Summary_Base.prototype = {
 
         this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
             .attr("edittitle",false)
-            .on("click",function(){ if(me.collapsed) me.collapseSummary(false); })
+            .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); })
             ;
 
         this.DOM.summaryTitle.append("span").attr("class","chartFilterButtonParent").append("div")
@@ -3577,7 +3476,7 @@ kshf.Summary_Base.prototype = {
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("mouseout" ,function(){ this.tipsy.hide(); })
             .on("click", function(d,i){
                 this.tipsy.hide();
                 me.summaryFilter.clearFilter();
@@ -3602,11 +3501,7 @@ kshf.Summary_Base.prototype = {
                     me.browser.changeSummaryName(me.summaryName,newTitle);
                 }
             })
-            .html((this.parentFacet && this.parentFacet.hasAttribs())?
-                ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
-                    this.parentFacet.summaryName+":</span> "+"  "+this.summaryName):
-                this.summaryName
-            );
+            .html(this.summaryName);
 
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
             .attr("class","summaryTitle_editButton fa")
@@ -3627,27 +3522,11 @@ kshf.Summary_Base.prototype = {
                 }
             });
 
-        topRow.append("span").attr("class","save_filter_as_set fa fa-save")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ return "Save filtering as new row"; }
-                })
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click", function(d,i){
-                this.tipsy.hide();
-                me.summaryFilter.saveFilter();
-                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.summaryFilter.id});
-            });
-
         this.DOM.facetIcons = this.DOM.headerGroup.append("span").attr("class","facetIcons");
         this.DOM.facetIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'ne',
-                    title: function(){ return "Multiple "+me.summaryName+" possible.<br>Click to show relations within.";}
+                    gravity: 'ne', title: function(){ return "Multiple "+me.summaryName+" possible.<br>Click to show relations.";}
                 });
             })
             .on("mouseover",function(d){
@@ -3681,10 +3560,7 @@ kshf.Summary_Base.prototype = {
         if(description===null) return;
         this.DOM.facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
             .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'ne',
-                    title: function(){ return description;}
-                });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return description;} });
             })
             .on("mouseover",function(d){ this.tipsy.show(); })
             .on("mouseout" ,function(d){ this.tipsy.hide(); });
@@ -3717,76 +3593,73 @@ kshf.Summary_Base.prototype = {
             .on("mouseout",function(){ this.tipsy.hide(); });
     },
     /** -- */
-    collapseSummary: function(hide){
+    setCollapsedAndLayout: function(hide){
         this.setCollapsed(hide);
         this.browser.updateLayout_Height();
-        if(sendLog) {
-            sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
-        }
+        if(sendLog) sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
     },
     /** -- */
     setCollapsed: function(v){
         this.collapsed = v;
         if(this.DOM.root){
             this.DOM.root.attr("collapsed",this.collapsed);
-            if(!this.collapsed) this.refreshViz_All();
+            if(!this.collapsed) {
+                this.clearViz_Preview();
+                this.refreshViz_All();
+            } else {
+                this.DOM.headerGroup.select(".expand").style("display","none");
+            }
         }
     },
 };
-
 
 kshf.Summary_Categorical = function(){};
 kshf.Summary_Categorical.prototype = new kshf.Summary_Base();
 var Summary_Categorical_functions = {
     /** -- */ 
     initialize: function(kshf_,name,attribMap){
-        var me=this;
         kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribMap);
         this.type='categorical';
 
         this.heightRow_attrib = 18;
-        this.heightRow_config = 16;
 
         this.show_cliques = false;
 
         this.scrollTop_cache=0;
-        this.attrib_InDisplay_First = 0;
+        this.cat_InDisplay_First = 0;
         this.configRowCount=0;
 
-        // These affect the categories
+        // These settings affect the categories
         this.minAggrValue=1;
         this.removeInactiveCats = true;
 
-        this.sortingOpts = []; // matAttribs somehow wants to see the array. Make it easy for now.
+        this.sortingOpts = []; // matAttribs somehow wants to see the array. Make it easy for now
 
         this.isLinked = false; // TODO: document / update
 
-        if(this.catLabel===undefined){
-            this.setCatLabel("id");
-        }
+        this.aggr_initialized = false;
 
-        this.createSummaryFilter();
+        this.setCatLabel("id");
 
+        if(this.items.length<=1000) this.initializeAggregates();
+    },
+    /** -- */
+    initializeAggregates: function(){
+        if(this.aggr_initialized) return;
         this.catTableName = this.summaryName+"_h_"+this.id;
         this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
-
-        this.mapAttribs();
-
+        this.mapToAggregates();
         this.setSortingOpts();
+        if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCats();
 
-        // If the categories are not unique, sort them
-        if(this.getMaxAggr_Total()!=1 && this._cats.length>1)
-            this.sortCats();
+        this.aggr_initialized = true;
     },
     /** -- */
     refreshNuggetViz: function(){
-        if(this.DOM.nugget===undefined){
-            console.log("refreshNuggetViz - nugget DOM was not available...");
-            return;
-        }
+        if(this.DOM.nugget===undefined) return;
+
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
 
-        var maxAggregate_Total = this.getMaxAggr_Total();
         if(this.uniqueAttributes()){
             this.DOM.nugget.select(".dataTypeIcon").html("<span class='fa fa-tag'></span><br>Unique");
             nuggetViz.style("display",'none');
@@ -3794,12 +3667,10 @@ var Summary_Categorical_functions = {
         }
 
         var totalWidth= 25;
+        var maxAggregate_Total = this.getMaxAggr_Total();
         nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
-                .append("span").attr("class","nuggetBar")
-                .style("width",function(cat){
-                    return totalWidth*(cat.items.length/maxAggregate_Total)+"px";
-                })
-            ;
+            .append("span").attr("class","nuggetBar")
+                .style("width",function(cat){ return totalWidth*(cat.items.length/maxAggregate_Total)+"px"; });
         
         this.DOM.nugget.select(".dataTypeIcon").html(
             "<span class='fa fa-tag"+(this.hasMultiValueItem?"s":"")+"'></span><br>"+
@@ -3811,14 +3682,6 @@ var Summary_Categorical_functions = {
         if(this.collapsed) return this.getHeight_Header();
         // Note: I don't know why I need -2 to match real dom height.
         return this.getHeight_Header() + this.getHeight_Content()-2;
-    },
-    /** -- */
-    getWidth_Label: function(){
-        return this.panel.width_catLabel-this.getWidth_LeftOffset();
-    },
-    /** -- */
-    getWidth_Text: function(){
-        return this.getWidth_Label()+this.panel.width.catQueryPreview;
     },
     /** -- */
     getHeight_Header: function(){
@@ -3851,8 +3714,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getHeight_Bottom: function(){
-        if(!this.areAllAttribsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>4)
-            return 18;
+        if(!this.areAllCatsInDisplay() || !this.panel.hideBarAxis || this.catCount_Total>4) return 18;
         return 0;
     },
     /** -- */
@@ -3860,14 +3722,20 @@ var Summary_Categorical_functions = {
         return this.attribHeight + this.getHeight_Config() + this.getHeight_Bottom();
     },
     /** -- */
-    areAllAttribsInDisplay: function(){
+    getWidth_Label: function(){
+        return this.panel.width_catLabel-this.getWidth_LeftOffset();
+    },
+    /** -- */
+    getWidth_Text: function(){
+        return this.getWidth_Label()+this.panel.width_catMeasureLabel;
+    },
+    /** -- */
+    areAllCatsInDisplay: function(){
         return this.catCount_Visible===this.catCount_InDisplay;
     },
     /** -- */
     hasAttribs: function(){
-        if(this._cats){
-            if(this._cats.length===0) return false;
-        }
+        if(this._cats && this._cats.length===0) return false;
         return this.summaryFunc!==undefined;
     },
     /** -- */
@@ -3902,7 +3770,7 @@ var Summary_Categorical_functions = {
         },this);
         this.sortingOpt_Active = this.sortingOpts[0];
         
-        this.updateSorting(0,true);
+        this.updateCatSorting(0,true,true);
         this.refreshSortOptions();
         this.refreshSortButton();
     },
@@ -3916,6 +3784,7 @@ var Summary_Categorical_functions = {
         } else {
             return;
         }
+        var me=this;
         if(this.DOM.theLabel)
             this.DOM.theLabel.html(function(cat){ return me.catLabel.call(cat.data); });
     },
@@ -3946,73 +3815,69 @@ var Summary_Categorical_functions = {
                 kshf.dt[this.catTableName] = this.items.slice();
             }
         }
-        this.mapAttribs();
+        this.mapToAggregates();
         this.updateCats();
     },
     /** -- */
     createSummaryFilter: function(){
         var me=this;
         this.summaryFilter = this.browser.createFilter({
-            filteredItems: this.items,
             parentSummary: this,
-            hideCrumb: false,
-            onClear: function(filter){
-                this.clearLabelTextSearch();
-                this.unselectAllAttribs();
-                this._update_Selected();
+            onClear: function(summary){
+                summary.clearCatTextSearch();
+                summary.unselectAllAttribs();
+                summary._update_Selected();
             },
-            onFilter: function(filter){
-                this._update_Selected();
+            onFilter: function(summary){
+                // at least one category is selected in some modality (and/ or/ not)
+                summary._update_Selected();
 
-                var filterId = filter.id;
+                var filterId = this.id;
 
-                this.items.forEach(function(item){
+                summary.items.forEach(function(item){
                     var recordVal_s=item.mappedDataCache[filterId];
 
                     if(recordVal_s===null){
-                        if(filter.selected_AND.length>0 || filter.selected_OR.length>0){
-                            item.setFilterCache(filterId,false); return;
-                        }
-                        item.setFilterCache(filterId,true); return;
+                        // survives if AND and OR is not selected
+                        item.setFilterCache(filterId, this.selected_AND.length===0 && this.selected_OR.length===0 );
+                        return;
                     }
 
                     // Check NOT selections - If any mapped item is NOT, return false
                     // Note: no other filtering depends on NOT state.
-        /*            if(filter.selected_NOT.length>0){
+                    // This is for ,multi-level filtering using not query
+        /*            if(this.selected_NOT.length>0){
                         if(!recordVal_s.every(function(item){ 
                             return !item.is_NOT() && item.isWanted;
                         })){
                             item.setFilterCache(filterId,false); return;
                         }
-                    }*/ // THIS THING ABOVE IS FOR MULTI_LEVEL FILTERING AND NOT QUERY
+                    }*/
                     
                     // If any of the record values are selected with NOT, the item will be removed
-                    if(filter.selected_NOT.length>0){
+                    if(this.selected_NOT.length>0){
                         if(!recordVal_s.every(function(val){ return !val.is_NOT(); })){
                             item.setFilterCache(filterId,false); return;
                         }
                     }
                     // All AND selections must be among the record values
-                    if(filter.selected_AND.length>0){
+                    if(this.selected_AND.length>0){
                         // Compute the number of record values selected with AND.
                         var t=0;
                         recordVal_s.forEach(function(m){ if(m.is_AND()) t++; })
-                        if(t!==filter.selected_AND.length){
+                        if(t!==this.selected_AND.length){
                             item.setFilterCache(filterId,false); return;
                         }
                     }
                     // One of the OR selections must be among the item values
                     // Check OR selections - If any mapped item is OR, return true
-                    if(filter.selected_OR.length>0){
-                        if(recordVal_s.some(function(d){ return (d.is_OR()); })){
-                            item.setFilterCache(filterId,true); return;
-                        } else {
-                            item.setFilterCache(filterId,false); return;
-                        }
+                    if(this.selected_OR.length>0){
+                        item.setFilterCache(filterId, recordVal_s.some(function(d){return (d.is_OR());}) );
+                        return;
                     }
                     // only NOT selection
                     item.setFilterCache(filterId,true);
-                },this);
+                }, this);
             },
             filterView_Detail: function(){
                 // 'this' is the Filter
@@ -4022,7 +3887,7 @@ var Summary_Categorical_functions = {
 
                 var totalSelectionCount = this.selectedCount_Total();
 
-                if(this.parentSummary.subFacets.some(function(summary){ return summary.isFiltered();})){
+                if(me.subFacets.some(function(summary){ return summary.isFiltered();})){
                     return " <i class='fa fa-hand-o-right'></i>";;
                 }
 
@@ -4082,35 +3947,6 @@ var Summary_Categorical_functions = {
             kshf.Util.clearArray(this.selected_OR);
             kshf.Util.clearArray(this.selected_NOT);
         };
-        this.summaryFilter.saveFilter = function(){
-            // create new item in the attrib list
-            // TODO: check inserted id when using a data table lookup...
-            var randID=me._cats.length+10;
-
-            while(kshf.dt_id[me.catTableName][randID]!==undefined) {
-                randID = Math.random();
-            }
-            var newAttrib = new kshf.Item(
-                [randID,this.filterView_Detail()],
-                0 // id row (first row by default) TODO: check when using a data table..
-            );
-            newAttrib.savedAttrib = true;
-            this.filteredItems.forEach(function(item){
-                if(item.isWanted) {
-                    newAttrib.addItem(item);
-                    item.mappedDataCache[this.id].push(newAttrib);
-                }
-            },this);
-            if(newAttrib.items.length>0){
-                me._cats.push(newAttrib);
-                me.insertAttribs();
-                me.updateCatCount_Total();
-                me.refreshLabelWidth();
-                me.updateSorting(0, true);
-            }
-            this.clearFilter();
-            if(me.cbSaveFilter) me.cbSaveFilter.call(this);
-        };
     },
     /** -- */
     insertSubFacets: function(){
@@ -4141,7 +3977,7 @@ var Summary_Categorical_functions = {
     /** -- 
      * Note: accesses summaryFilter, summaryFunc
      */
-    mapAttribs: function(){
+    mapToAggregates: function(){
         var filterId = this.summaryFilter.id, me=this;
 
         var targetTable = kshf.dt_id[this.catTableName];
@@ -4176,7 +4012,7 @@ var Summary_Categorical_functions = {
 
         this.hasMultiValueItem = maxDegree>1;
 
-        // TODO: Fix set visualization!
+        // TODO: Fix!!!!
         // add degree filter if attrib has multi-value items and set-vis is enabled
         if(this.hasMultiValueItem && this.enableSetVis){
             var fscale;
@@ -4206,7 +4042,7 @@ var Summary_Categorical_functions = {
     },
     // TODO: Check how isLinked and dataMap (old variable) affected this calculations...
     // Modified internal dataMap function - Skip rows with 0 active item count
-    updateMinAggrValue: function(v){
+    setMinAggrValue: function(v){
         this.minAggrValue = Math.max(1,v);
         this.updateCats();
     },
@@ -4231,11 +4067,9 @@ var Summary_Categorical_functions = {
         this.showTextSearch = this.catCount_Total>=20;
     },
     /** -- */
-    updateAttribCount_Wanted: function(){
+    updateCatCount_Wanted: function(){
         this.catCount_Wanted = 0;
-        this._cats.forEach(function(cat){
-            if(cat.isWanted) this.catCount_Wanted++;
-        },this);
+        this._cats.forEach(function(cat){ if(cat.isWanted) this.catCount_Wanted++; },this);
     },
     /** -- */
     updateCatCount_Visible: function(){
@@ -4253,6 +4087,8 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     initDOM: function(beforeDOM){
+        this.initializeAggregates();
+
         if(this.DOM.inited===true) return;
         var me = this;
 
@@ -4277,7 +4113,7 @@ var Summary_Categorical_functions = {
 
         this.insertHeader.call(this);
 
-        if(this.hasAttribs()) this.init_DOM_Attrib();
+        if(this.hasAttribs()) this.init_DOM_Cat();
 
         // TODO: Insert subfacets here
         if(this.facets){
@@ -4292,7 +4128,7 @@ var Summary_Categorical_functions = {
         this.DOM.inited = true;
     },
     /** -- */
-    init_DOM_Attrib: function(){
+    init_DOM_Cat: function(){
         var me=this;
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
 
@@ -4300,33 +4136,32 @@ var Summary_Categorical_functions = {
 
         // create config row(s) if needed
         this.DOM.facetControls = this.DOM.facetCategorical.append("div").attr("class","facetControls");
-        this.initDOM_TextSearch();
-        this.initDOM_insertSortButton();
-        this.initDOM_SortingOpts();
+        this.initDOM_CatTextSearch();
+        this.initDOM_CatSortButton();
+        this.initDOM_CatSortOpts();
 
-        if(this.showTextSearch || this.sortingOpts.length>1) {
+        if(this.showTextSearch){
+            this.DOM.attribTextSearch.style("display","block");
+            this.configRowCount++;
+        }
+        if(this.sortingOpts.length>1) {
+            this.configRowCount++;
+        }
+        if(this.configRowCount>0){
             this.DOM.facetControls.style("display","block");
-            if(this.showTextSearch){
-                this.DOM.attribTextSearch.style("display","block");
-                this.configRowCount++;
-            }
-            if(this.sortingOpts.length>1) {
-                this.configRowCount++;
-            }
         }
 
-        this.DOM.scrollToTop = this.DOM.facetCategorical.append("div")
-            .attr("class","scrollToTop fa fa-arrow-up")
-            .on("click",function(d){ 
-                this.tipsy.hide();
-                kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
-                if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
-            })
+        this.DOM.scrollToTop = this.DOM.facetCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
             .each(function(){
                 this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Scroll to top"; }});
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("click",function(d){ 
+                this.tipsy.hide();
+                kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
+                if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
+            })
             ;
 
         this.DOM.attribGroup = this.DOM.facetCategorical.append("div").attr("class","attribGroup")
@@ -4336,8 +4171,8 @@ var Summary_Categorical_functions = {
 
                 me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
-                me.attrib_InDisplay_First = Math.floor(me.scrollTop_cache/me.heightRow_attrib);
-                me.refreshScrollDisplayMore(me.attrib_InDisplay_First+me.catCount_InDisplay);
+                me.cat_InDisplay_First = Math.floor(me.scrollTop_cache/me.heightRow_attrib);
+                me.refreshScrollDisplayMore(me.cat_InDisplay_First+me.catCount_InDisplay);
                 me.updateAttribCull();
                 me.cullAttribs();
                 me.refreshMeasureLabel();
@@ -4345,16 +4180,14 @@ var Summary_Categorical_functions = {
                 me.browser.pauseResultPreview = true;
                 if(this.pauseTimer) clearTimeout(this.pauseTimer);
                 this.pauseTimer = setTimeout(function(){me.browser.pauseResultPreview=false;}, 200);
-            })
-            ;
+            });
+        // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
+        this.DOM.chartBackground = this.DOM.attribGroup.append("span").attr("class","chartBackground");
 
         this.DOM.belowAttribs = this.DOM.facetCategorical.append("div").attr("class","belowAttribs");
         this.DOM.belowAttribs.append("div").attr("class", "border_line");
         
         this.insertChartAxis_Measure.call(this,this.DOM.belowAttribs,'e','e');
-
-        // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
-        this.DOM.chartBackground = this.DOM.attribGroup.append("span").attr("class","chartBackground");
 
         this.DOM.scroll_display_more = this.DOM.belowAttribs.append("div").attr("class","hasLabelWidth")
             .append("span").attr("class","scroll_display_more")
@@ -4368,22 +4201,21 @@ var Summary_Categorical_functions = {
 
         this.refreshLabelWidth();
 
-        this.updateSorting(0, true);
+        this.updateCatSorting(0,true,true);
     },
     /** -- */
-    initDOM_insertSortButton: function(){
+    initDOM_CatSortButton: function(){
         var me=this;
         this.DOM.sortButton = this.DOM.facetControls.append("span").attr("class","sortButton fa")
             .on("click",function(d){
                 if(me.dirtySort){
                     me.dirtySort = false;
                     me.DOM.root.attr("refreshSorting",false);
-                    me.updateSorting(0,true); // no delay
-                    return;
+                } else{
+                    me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+                    me.refreshSortButton();
                 }
-                me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
-                me.refreshSortButton();
-                me.updateSorting(0,true);
+                me.updateCatSorting(0,true);
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
@@ -4395,7 +4227,7 @@ var Summary_Categorical_functions = {
         this.refreshSortButton();
     },
     /** -- */
-    initDOM_SortingOpts: function(){
+    initDOM_CatSortOpts: function(){
         var me=this;
         var x = this.DOM.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
 
@@ -4403,7 +4235,7 @@ var Summary_Categorical_functions = {
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.refreshSortButton();
-                me.updateSorting(0,true);
+                me.updateCatSorting(0,true);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
             })
 
@@ -4413,7 +4245,8 @@ var Summary_Categorical_functions = {
     refreshSortButton: function(){
         if(this.DOM.sortButton===undefined) return;
         this.DOM.sortButton
-            .style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
+            //.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
+            .style("display","inline-block")
             .attr("inverse",this.sortingOpt_Active.inverse);
     },
     /** -- */
@@ -4428,7 +4261,7 @@ var Summary_Categorical_functions = {
         x.enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
     },
     /** -- */
-    initDOM_TextSearch: function(){
+    initDOM_CatTextSearch: function(){
         var me=this;
         this.DOM.attribTextSearch = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
         this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
@@ -4546,7 +4379,7 @@ var Summary_Categorical_functions = {
         }
     },
     /** -- */
-    clearLabelTextSearch: function(){
+    clearCatTextSearch: function(){
         if(!this.showTextSearch) return;
         this.DOM.attribTextSearchControl.attr("showClear",false);
         this.DOM.attribTextSearchInput[0][0].value = '';
@@ -4556,7 +4389,7 @@ var Summary_Categorical_functions = {
         if(!this.hasAttribs()) return; // nothing to do
         var me=this;
         this.chartScale_Measure
-            .rangeRound([0, this.panel.width.catChart])
+            .rangeRound([0, this.panel.width_catChart])
             .nice(this.chartAxis_Measure_TickSkip())
             .clamp(true)
             .domain([
@@ -4605,6 +4438,12 @@ var Summary_Categorical_functions = {
         this.updateAttribCull();
         this.cullAttribs();
 
+        this.DOM.headerGroup.select(".expand").style("display",
+            (this.panel.getNumOfOpenSummaries()<=1||this.catCount_InDisplay===this.catCount_Total)?
+                "none":
+                "inline-block"
+        );
+
         if(this.cbSetHeight && attribHeight_old!==attribHeight_new) this.cbSetHeight(this);
     },
     /** -- */
@@ -4619,7 +4458,7 @@ var Summary_Categorical_functions = {
         }
 
         if(!this.dirtySort) {
-            this.updateSorting();
+            this.updateCatSorting();
         } else {
             this.refreshViz_All();
             this.refreshViz_Active();
@@ -4645,7 +4484,7 @@ var Summary_Categorical_functions = {
         this.DOM.measureLabel.each(function(attrib){
             if(attrib.isCulled) return;
             var p=attrib.aggregate_Preview;
-            if(me.browser.resultPreviewActive){
+            if(me.browser.vizPreviewActive){
                 if(me.browser.preview_not)
                     p = attrib.aggregate_Active-attrib.aggregate_Preview;
                 else
@@ -4658,7 +4497,7 @@ var Summary_Categorical_functions = {
                     this.textContent = "";
                 } else {
                     if(me.browser.ratioModeActive){
-                        if(!me.browser.resultPreviewActive){
+                        if(!me.browser.vizPreviewActive){
                             this.textContent = "";
                             return;
                         }
@@ -4675,7 +4514,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_All: function(){
-        if(!this.hasAttribs()) return;
+        if(!this.hasAttribs() || this.collapsed) return;
         var me=this;
         this.refreshViz_Total();
         this.refreshViz_Active();
@@ -4687,6 +4526,26 @@ var Summary_Categorical_functions = {
         this.refreshViz_Compare();
         this.refreshMeasureLabel();
         this.refreshViz_Axis();
+    },
+    /** -- */
+    refreshViz_Total: function(){
+        if(!this.hasAttribs() || this.collapsed) return;
+        var me = this;
+        // Do not need to update total. Total value is invisible. Percent view is based on active count.
+        if(!this.browser.ratioModeActive){
+            this.DOM.aggr_Total.each(function(attrib){
+                kshf.Util.setTransform(this,
+                    "scaleX("+me.chartScale_Measure(attrib.aggregate_Total)+")");
+            });
+            this.DOM.aggr_TotalTip.each(function(attrib){
+                kshf.Util.setTransform(this,
+                    "translateX("+me.chartScale_Measure(attrib.aggregate_Total)+"px)");
+            }).style("opacity",function(attrib){
+                return (attrib.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
+            });
+        } else {
+            this.DOM.aggr_TotalTip.style("opacity",0);
+        }
     },
     /** -- */
     refreshViz_Active: function(){
@@ -4717,86 +4576,41 @@ var Summary_Categorical_functions = {
         this.DOM.compareButton.style("left",func_clickAreaScale);
     },
     /** -- */
-    refreshViz_Total: function(){
+    refreshViz_Preview: function(){
         if(!this.hasAttribs() || this.collapsed) return;
-        var me = this;
-        // Do not need to update total. Total value is invisible. Percent view is based on active count.
-        if(!this.browser.ratioModeActive){
-            this.DOM.aggr_Total.each(function(attrib){
-                kshf.Util.setTransform(this,
-                    "scaleX("+me.chartScale_Measure(attrib.aggregate_Total)+")");
-            });
-            this.DOM.aggr_TotalTip.each(function(attrib){
-                kshf.Util.setTransform(this,
-                    "translateX("+me.chartScale_Measure(attrib.aggregate_Total)+"px)");
-            }).style("opacity",function(attrib){
-                return (attrib.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
-            });
-        } else {
-            this.DOM.aggr_TotalTip.style("opacity",0);
-        }
+        var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
+        this.DOM.aggr_Preview.each(function(attrib){
+            var p=attrib.aggregate_Preview;
+            if(me.browser.preview_not) p = attrib.aggregate_Active-p;
+            attrib.cache_preview = p;
+            kshf.Util.setTransform(this,"scaleX("+(
+                ratioMode ? ((p/attrib.aggregate_Active)*maxWidth ) : me.chartScale_Measure(p)
+            )+")");
+        });
+        this.refreshMeasureLabel();
     },
     /** -- */
     refreshViz_Compare: function(){
         if(!this.hasAttribs() || this.collapsed) return;
-        var me=this;
-        if(this.browser._previewCompare_Active){
-            this._cats.forEach(function(cat){
-                if(cat.cache_compare===undefined){
-                    cat.cache_compare=cat.cache_preview;
-                }
-            });
-            if(this.browser.ratioModeActive){
-                this.DOM.aggr_Compare.each(function(cat){
-                    var w=(cat.cache_compare/cat.aggregate_Active)*me.chartScale_Measure.range()[1];
-                    kshf.Util.setTransform(this,"scaleX("+(w)+")");
-                });
-            } else {
-                this.DOM.aggr_Compare.each(function(cat){
-                    kshf.Util.setTransform(this,"scaleX("+
-                        (me.chartScale_Measure(cat.cache_compare))+")");
-                });
-            }
-        } else {
-            this._cats.forEach(function(cat){
-                delete cat.cache_compare;
+        var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
+        if(this.browser.vizCompareActive){
+            this.DOM.aggr_Compare.each(function(cat){
+                kshf.Util.setTransform(this,"scaleX("+(
+                    ratioMode ? ((cat.cache_preview/cat.aggregate_Active)*maxWidth) : me.chartScale_Measure(cat.cache_preview)
+                )+")");
             });
         }
-    },
-    /** -- */
-    refreshViz_Preview: function(){
-        if(!this.hasAttribs() || this.collapsed) return;
-        var me=this;
-        if(this.browser.ratioModeActive){
-            this.DOM.aggr_Preview.each(function(attrib){
-                var p=attrib.aggregate_Preview;
-                if(me.browser.preview_not) p = attrib.aggregate_Active-p;
-                attrib.cache_preview = p;
-                var w= (p / attrib.aggregate_Active)*me.chartScale_Measure.range()[1];
-                kshf.Util.setTransform(this,"scaleX("+w+")");
-            });
-        } else {
-            this.DOM.aggr_Preview.each(function(attrib){
-                var p=attrib.aggregate_Preview;
-                if(me.browser.preview_not) p = attrib.aggregate_Active-p;
-                attrib.cache_preview = p;
-                kshf.Util.setTransform(this,"scaleX("+me.chartScale_Measure(p)+")");
-            });
-        }
-        this.refreshMeasureLabel();
     },
     /** -- */
     clearViz_Preview: function(){
-        var me=this;
         if(!this.hasAttribs()) return;
-        this._cats.forEach(function(attrib){
-            attrib.updatePreview_Cache = false;
+        this._cats.forEach(function(cat){
+            cat.updatePreview_Cache = false;
         });
         if(this.collapsed) return;
-        var me = this;
-        this.DOM.aggr_Preview.each(function(attrib){
-            attrib.aggregate_Preview=0;
-            if(attrib.cache_preview===0) return;
+        this.DOM.aggr_Preview.each(function(cat){
+            cat.aggregate_Preview=0;
+            if(cat.cache_preview===0) return;
             kshf.Util.setTransform(this,"scaleX(0)");
         });
         this.refreshMeasureLabel();
@@ -4811,7 +4625,7 @@ var Summary_Categorical_functions = {
 
         var maxValue;
 
-        var chartWidth = this.panel.width.catChart;
+        var chartWidth = this.panel.width_catChart;
 
         if(this.browser.ratioModeActive) {
             maxValue = 100;
@@ -4893,11 +4707,11 @@ var Summary_Categorical_functions = {
         if(!this.hasAttribs()) return;
         if(this.DOM.facetCategorical===undefined) return;
         var labelWidth = this.getWidth_Label();
-        var barChartMinX = labelWidth + this.panel.width.catQueryPreview;
+        var barChartMinX = labelWidth + this.panel.width_catMeasureLabel;
 
         this.DOM.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
         this.DOM.item_count_wrapper
-            .style("width",(this.panel.width.catQueryPreview)+"px")
+            .style("width",(this.panel.width_catMeasureLabel)+"px")
             .style("left",labelWidth+"px")
             ;
         this.DOM.chartAxis_Measure.each(function(d){
@@ -4907,7 +4721,7 @@ var Summary_Categorical_functions = {
         this.DOM.aggr_Group.style("left",barChartMinX+"px");
         this.DOM.chartBackground.style("margin-left",barChartMinX+"px");
         if(this.DOM.sortButton)
-            this.DOM.sortButton.style("width",this.panel.width.catQueryPreview+"px");
+            this.DOM.sortButton.style("width",this.panel.width_catMeasureLabel+"px");
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
@@ -5080,7 +4894,7 @@ var Summary_Categorical_functions = {
             this.summaryFilter.clearFilter();
             return;
         }
-        this.clearLabelTextSearch();
+        this.clearCatTextSearch();
         this.summaryFilter.linkFilterSummary = "";
         this.summaryFilter.addFilter(true);
     },
@@ -5095,7 +4909,7 @@ var Summary_Categorical_functions = {
             }
             attrib.highlightAll(true);
             var timeoutTime = 400;
-            if(this.browser._previewCompare_Active) timeoutTime = 0;
+            if(this.browser.vizCompareActive) timeoutTime = 0;
             this.resultPreviewShowTimeout = setTimeout(function(){
                 if(!me.browser.pauseResultPreview && 
                   (me.hasMultiValueItem || me.summaryFilter.selected_OR.length===0) &&
@@ -5116,8 +4930,6 @@ var Summary_Categorical_functions = {
         } else {
             if(this.tipsy_title===undefined) return;
         }
-
-//        this.cbAttribEnter_Tipsy(attrib);
     },
     cbAttribEnter_Tipsy: function(attrib){
         if(attrib.cliqueRow)
@@ -5131,12 +4943,10 @@ var Summary_Categorical_functions = {
         this.tipsy_active = attribTipsy;
 
         var offset=0;
-        if(!this.panel.hideBars){
-            if(this.browser.ratioModeActive){
-                offset+=this.chartScale_Measure.range()[1];
-            } else {
-                offset+=this.chartScale_Measure(attrib.aggregate_Active)
-            }
+        if(this.browser.ratioModeActive){
+            offset+=this.chartScale_Measure.range()[1];
+        } else {
+            offset+=this.chartScale_Measure(attrib.aggregate_Active)
         }
         offset+=this.getWidth_Text();
         offset+=9; // lock icon
@@ -5161,7 +4971,7 @@ var Summary_Categorical_functions = {
             clearTimeout(this.resultPreviewLogTimeout);
         }
         this.browser.items.forEach(function(item){
-            if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
+            if(item.DOM.record) item.DOM.record.setAttribute("highlight",false);
         },this);
 
         if(!this.browser.pauseResultPreview){
@@ -5504,10 +5314,10 @@ var Summary_Categorical_functions = {
         this._cats.forEach(function(attrib,i){
             attrib.isCulled_before = attrib.isCulled;
             // not visible if it is not within visible range...
-            if(attrib.orderIndex<me.attrib_InDisplay_First) { 
+            if(attrib.orderIndex<me.cat_InDisplay_First) { 
                 attrib.isCulled=true;
             }
-            else if(attrib.orderIndex>me.attrib_InDisplay_First+me.catCount_InDisplay) {
+            else if(attrib.orderIndex>me.cat_InDisplay_First+me.catCount_InDisplay) {
                 attrib.isCulled=true;
             } else {            
                 attrib.isCulled=false;
@@ -5519,7 +5329,7 @@ var Summary_Categorical_functions = {
         return this.getMaxAggr_Total()===1;
     },
     /** -- */
-    updateSorting: function(sortDelay,force){
+    updateCatSorting: function(sortDelay,force,noAnim){
         if(this._cats.length===0) return;
         if(this.uniqueAttributes()) return; // Nothing to sort...
         if(this.sortingOpt_Active.no_resort===true && force!==true) return;
@@ -5532,12 +5342,33 @@ var Summary_Categorical_functions = {
         this.sortCats();
 
         if(this.panel===undefined) return; // The rest deals with updating UI
+        if(this.DOM.cats===undefined) return;
 
         this.updateAttribCull();
 
         var xRemoveOffset = -100;
         if(this.panel.name==='right') xRemoveOffset *= -1;
         if(this.cbFacetSort) this.cbFacetSort.call(this);
+
+        // filler is used to insert the scroll bar. 
+        // Items outside the view are not visible, something needs to expand the box
+        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
+        
+        var attribGroupScroll = me.DOM.attribGroup[0][0];
+        // always scrolls to top row automatically when re-sorted
+        if(this.scrollTop_cache!==0) kshf.Util.scrollToPos_do(attribGroupScroll,0);
+        this.refreshScrollDisplayMore(this.catCount_InDisplay);
+
+        if(noAnim){
+            this.DOM.cats.each(function(attrib){
+                var x = 0;
+                var y = me.heightRow_attrib*attrib.orderIndex;
+                attrib.posX = x;
+                attrib.posY = y;
+                kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
+            });
+            return;
+        }
 
         setTimeout(function(){
             // 1. Make items disappear
@@ -5596,16 +5427,6 @@ var Summary_Categorical_functions = {
             },(me.catCount_NowInvisible>0)?300:0);
 
         },sortDelay);
-
-        // filler is used to insert the scroll bar. 
-        // Items outside the view are not visible, something needs to expand the box
-        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
-        
-        var attribGroupScroll = me.DOM.attribGroup[0][0];
-        // always scrolls to top row automatically when re-sorted
-        if(this.scrollTop_cache!==0)
-            kshf.Util.scrollToPos_do(attribGroupScroll,0);
-        this.refreshScrollDisplayMore(this.catCount_InDisplay);
     },
     /** -- */
     getTotalAttribHeight: function(){
@@ -5656,10 +5477,7 @@ var Summary_Interval_functions = {
         // Call the parent's constructor
         var me = this;
 
-        this.filteredItems = this.items;
-
         // pixel width settings...
-        
         this.height_hist = 1; // Initial width (will be updated later...)
         this.height_hist_min = 20; // Minimum possible histogram height
         this.height_hist_max = 100; // Maximim possible histogram height
@@ -5676,64 +5494,135 @@ var Summary_Interval_functions = {
 
         this.scaleType = 'linear';
         this.tickIntegerOnly = false;
+        this.hasFloat = false;
+        this.hasTime  = false;
 
         this.unitName = undefined;
         this.showPercentile=false;
 
         this.histBins = [];
         this.intervalTicks = [];
+        this.intervalRange = {};
 
         this.intervalTickFormat = function(v){
             if(me.tickIntegerOnly) return d3.format("s")(v);
             return d3.format(".2f")(v);
         };
 
-        this.summaryFilter = kshf_.createFilter({
-            filteredItems: this.filteredItems,
-            parentSummary: this,
-            hideCrumb: false,
-            onClear: function(){
-                if(this.summaryFilter.filteredBin){
-                    this.summaryFilter.filteredBin.setAttribute("filtered",false);
-                    this.summaryFilter.filteredBin=undefined;
-                }
-                this.DOM.root.attr("filtered",false);
-                this.resetIntervalFilterActive();
-                this.refreshIntervalSlider();
-            },
-            onFilter: function(filter){
-                this.DOM.root.attr("filtered",true);
+        this.aggr_initialized = false;
 
-                var i_min = filter.active.min;
-                var i_max = filter.active.max;
-
-                var isFiltered;
-                if(me.isFiltered_min() && me.isFiltered_max()){
-                    if(filter.max_inclusive)
-                        isFiltered = function(v){ return v>=i_min && v<=i_max; };
-                    else
-                        isFiltered = function(v){ return v>=i_min && v<i_max; };
-                } else if(me.isFiltered_min()){
-                    isFiltered = function(v){ return v>=i_min; };
+        if(this.items.length<=1000) this.initializeAggregates();
+    },
+    /** -- */
+    initializeAggregates: function(){
+        if(this.aggr_initialized) return;
+        var filterId = this.summaryFilter.id;
+        
+        this.items.forEach(function(item){
+            var v=this.summaryFunc.call(item.data);
+            if(isNaN(v)) v=null;
+            if(v===undefined) v=null;
+            if(v!==null){
+                if(v instanceof Date){
+                    this.hasTime = true;
                 } else {
-                    if(filter.max_inclusive)
-                        isFiltered = function(v){ return v<=i_max; };
-                    else
-                        isFiltered = function(v){ return v<i_max; };
+                    if(typeof v!=='number'){
+                        v = null;
+                    } else{
+                        this.hasFloat = this.hasFloat || v%1!==0;
+                    }
                 }
-                if(me.scaleType==='step'){
+            }
+            item.mappedDataCache[filterId] = { 
+                v: v,
+                h: this,
+            };
+        },this);
+
+        if(!this.hasFloat) this.tickIntegerOnly=true;
+        if(this.hasTime) this.setScaleType('time');
+
+        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+
+        // remove items that map to null
+        this.items = this.items.filter(function(item){
+            var v = accessor(item);
+            return (v!==undefined && v!==null);
+        });
+
+        // sort items in increasing order
+        if(!this.hasTime){
+            this.items.sort(function(a,b){
+                return accessor(a)-accessor(b);
+            });
+        } else {
+            this.items.sort(function(a,b){
+                return accessor(a).getTime()-accessor(b).getTime();
+            });
+        }
+
+        // this value is static once the histogram is created
+        this.updateIntervalRangeMinMax();
+
+        if(this.scaleType!=="time"){
+            var range= this.intervalRange.max-this.intervalRange.min;
+            var deviation = d3.deviation(this.items, accessor);
+            if(deviation/range<0.12 && this.intervalRange.min>=0){
+                this.setScaleType('log');
+            }
+        }
+
+        this.updateScaleAndBins(30,10,false);
+
+        this.aggr_initialized = true;
+    },
+    /** -- */
+    createSummaryFilter: function(){
+        var me=this;
+        this.summaryFilter = this.browser.createFilter({
+            parentSummary: this,
+            onClear: function(summary){
+                if(this.filteredBin){
+                    this.filteredBin.setAttribute("filtered",false);
+                    this.filteredBin = undefined;
+                }
+                summary.DOM.root.attr("filtered",false);
+                summary.resetIntervalFilterActive();
+                summary.refreshIntervalSlider();
+            },
+            onFilter: function(summary){
+                summary.DOM.root.attr("filtered",true);
+
+                var i_min = this.active.min;
+                var i_max = this.active.max;
+
+                var isFilteredCb;
+                if(summary.isFiltered_min() && summary.isFiltered_max()){
+                    if(this.max_inclusive)
+                        isFilteredCb = function(v){ return v>=i_min && v<=i_max; };
+                    else
+                        isFilteredCb = function(v){ return v>=i_min && v<i_max; };
+                } else if(summary.isFiltered_min()){
+                    isFilteredCb = function(v){ return v>=i_min; };
+                } else {
+                    if(this.max_inclusive)
+                        isFilteredCb = function(v){ return v<=i_max; };
+                    else
+                        isFilteredCb = function(v){ return v<i_max; };
+                }
+                if(summary.scaleType==='step'){
                     if(i_min===i_max){
-                        isFiltered = function(v){ return v===i_max; };
+                        isFilteredCb = function(v){ return v===i_max; };
                     }
                 }
 
-                filter.filteredItems.forEach(function(item){
-                    var v = item.mappedDataCache[filter.id].v;
-                    item.setFilterCache(filter.id, (v!==null)?isFiltered(v):false);
-                    // TODO: Check if the interval scale is extending/shrinking or completely updated...
-                }, this);
+                // TODO: Optimize: Check if the interval scale is extending/shrinking or completely updated...
+                summary.items.forEach(function(item){
+                    var v = item.mappedDataCache[this.id].v;
+                    item.setFilterCache(this.id, (v!==null)?isFilteredCb(v):false);
+                },this);
 
-                this.refreshIntervalSlider();
+                summary.refreshIntervalSlider();
             },
             filterView_Detail: function(){
                 if(me.scaleType==='step'){
@@ -5752,77 +5641,11 @@ var Summary_Interval_functions = {
                 }
             },
         });
-
-        var filterId = this.summaryFilter.id;
-        
-        this.hasFloat = false;
-        this.hasTime  = false;
-
-        this.filteredItems.forEach(function(item){
-            var v=this.summaryFunc.call(item.data);
-            if(isNaN(v)) v=null;
-            if(v===undefined) v=null;
-            if(v!==null){
-                if(v instanceof Date){
-                    this.hasTime = true;
-                } else {
-                    if(typeof v!=='number'){
-                        v = null;
-                    } else{
-                        if(!this.hasFloat)
-                            this.hasFloat = this.hasFloat || v%1!==0;
-                    }
-                }
-            }
-            item.mappedDataCache[filterId] = { 
-                v: v,
-                h: this,
-            };
-        },this);
-
-        if(!this.hasFloat) this.tickIntegerOnly=true;
-        if(this.hasTime) this.setScaleType('time');
-
-        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
-
-        // remove items that map to null
-        this.filteredItems = this.filteredItems.filter(function(item){
-            var v = accessor(item);
-            return (v!==undefined && v!==null);
-        });
-
-        // sort items in increasing order
-        if(!this.hasTime){
-            this.filteredItems.sort(function(a,b){
-                return accessor(a)-accessor(b);
-            });
-        } else {
-            this.filteredItems.sort(function(a,b){
-                return accessor(a).getTime()-accessor(b).getTime();
-            });
-        }
-
-        // this value is static once the histogram is created
-        this.intervalRange = {};
-        this.updateIntervalRangeMinMax();
-
-        var range= this.intervalRange.max-this.intervalRange.min;
-        var deviation = d3.deviation(this.filteredItems, accessor);
-        if(deviation/range<0.12 && this.intervalRange.min>=0){
-            this.setScaleType('log');
-        }
-        console.log("Summary Name:"+this.summaryName);
-        console.log("IntervalRange min:"+this.intervalRange.min+' max:'+this.intervalRange.max);
-        console.log("Deviation:"+deviation+" testScore:"+(deviation/range));
-
-        this.updateScaleAndBins(30,10,false);
     },
     /** -- */
     refreshNuggetViz: function(){
-        if(this.DOM.nugget===undefined){
-            console.log("refreshNuggetViz - nugget DOM was not available...");
-            return;
-        }
+        if(this.DOM.nugget===undefined) return;
+
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
         
         var maxAggregate_Total = this.getMaxAggr_Total();
@@ -5850,8 +5673,8 @@ var Summary_Interval_functions = {
         var filterId = this.summaryFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
-        this.intervalRange.min= d3.min(this.filteredItems,accessor);
-        this.intervalRange.max= d3.max(this.filteredItems,accessor);
+        this.intervalRange.min= d3.min(this.items,accessor);
+        this.intervalRange.max= d3.max(this.items,accessor);
         this.isEmpty = this.intervalRange.min===undefined;
         this.resetIntervalFilterActive();
     },
@@ -5869,10 +5692,11 @@ var Summary_Interval_functions = {
             var filterId = this.summaryFilter.id;
             var accessor = function(item){ return item.mappedDataCache[filterId].v; };
             // remove items with 0 value (log(0) is invalid)
-            this.filteredItems = this.filteredItems.filter(function(item){
+            this.items = this.items.filter(function(item){
                 return accessor(item)!==0;
             });
             this.updateIntervalRangeMinMax();
+            this.updateScaleAndBins();
         }
     },
     /** -- */
@@ -5934,6 +5758,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     initDOM: function(beforeDOM){
+        this.initializeAggregates();
         if(this.isEmpty) return;
         if(this.DOM.inited===true) return;
         var me = this;
@@ -5999,6 +5824,7 @@ var Summary_Interval_functions = {
     /** -- */
     initDOM_Percentile: function(){
         var me=this;
+        if(this.DOM.facetInterval===undefined) return;
         this.DOM.percentileGroup = this.DOM.facetInterval.append("div").attr("class","percentileGroup")
             .style('margin-left',this.width_vertAxisLabel+"px");;
         this.DOM.percentileGroup.append("span").attr("class","percentileTitle").html("Percentiles");
@@ -6192,7 +6018,7 @@ var Summary_Interval_functions = {
             this.valueScale.nice(optimalTickCount);
             // Generate ticks
             ticks = this.valueScale.ticks(optimalTickCount);
-            while(ticks.length > optimalTickCount*2){
+            while(ticks.length > optimalTickCount*1.6){
                 ticks = ticks.filter(function(d,i){return i%2===0;});
             }
             if(this.tickIntegerOnly)
@@ -6210,7 +6036,7 @@ var Summary_Interval_functions = {
             var d3Formating = d3.format(this.tickIntegerOnly?".2s":".2f");
             this.intervalTickFormat = function(d){
                 if(me.tickIntegerOnly && d<10) return d;
-                if(Math.abs(ticks[1]-ticks[0])<1000) return d; // cannot apply k / m shortcuts.
+                if(me.tickIntegerOnly && Math.abs(ticks[1]-ticks[0])<1000) return d;
                 var x= d3Formating(d);
                 if(x.indexOf(".00")!==-1) x = x.replace(".00","");
                 if(x.indexOf(".0")!==-1) x = x.replace(".0","");
@@ -6276,7 +6102,7 @@ var Summary_Interval_functions = {
             // this calculates aggregation based on the intervalTicks, the filtered item list and the accessor function
             if(this.scaleType!=='step'){
                 this.histBins = d3.layout.histogram().bins(this.intervalTicks)
-                    .value(accessor)(this.filteredItems);
+                    .value(accessor)(this.items);
             } else {
                 // I'll do the bins myself, d3 just messes everything up when you want to use a simple step scale!
                 this.histBins = [];
@@ -6287,7 +6113,7 @@ var Summary_Interval_functions = {
                     d.dx = 0;
                     this.histBins.push(d);
                 }
-                this.filteredItems.forEach(function(item){
+                this.items.forEach(function(item){
                     var v = accessor(item);
                     var bin=this.histBins[v-this.intervalRange.min];
                     bin.push(item);
@@ -6348,9 +6174,12 @@ var Summary_Interval_functions = {
 
         this.insertBins();
         this.refreshViz_Axis();
+        this.updateTicks();
+    },
+    /** -- */
+    updateTicks: function(){
         // remove all existing ticks
         this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove();
-        // Update text labels
         var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
         var ddd_enter = ddd.enter().append("span").attr("class","tick");
         ddd_enter.append("span").attr("class","line");
@@ -6426,7 +6255,7 @@ var Summary_Interval_functions = {
 
                 if(!me.browser.pauseResultPreview){
                     var timeoutTime = 400;
-                    if(me.browser._previewCompare_Active) timeoutTime = 0;
+                    if(me.browser.vizCompareActive) timeoutTime = 0;
                     this.resultPreviewShowTimeout = setTimeout(function(){
                         aggr.forEach(function(item){item.updatePreview(me.parentFacet);});
                         me.browser.itemCount_Previewed = aggr.length;
@@ -6459,7 +6288,7 @@ var Summary_Interval_functions = {
                     this.setAttribute("showlock",false);
 
                     me.browser.items.forEach(function(item){
-                        if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
+                        if(item.DOM.record) item.DOM.record.setAttribute("highlight",false);
                     })
                     me.browser.clearResultPreviews();
                 }
@@ -6774,7 +6603,7 @@ var Summary_Interval_functions = {
     },
     /** -- Note: Same as the function used for categorical facet */
     refreshViz_All: function(){
-        if(this.isEmpty) return;
+        if(this.isEmpty || this.collapsed) return;
         var me=this;
         this.refreshViz_Total();
         this.refreshViz_Active();
@@ -6794,6 +6623,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Total: function(){
+        if(this.isEmpty || this.collapsed) return;
         var me=this;
         var width=this.getBarWidth_Real();
         
@@ -6806,9 +6636,14 @@ var Summary_Interval_functions = {
         if(this.scaleType==='time'){
             var durationTime=this.browser.noAnim?0:700;
             this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+                .x(function(aggr){
+                    return me.valueScale(aggr.x)+width/2;
+                })
                 .y0(me.height_hist)
-                .y1(function(aggr){ return me.height_hist-getAggrHeight_Total(aggr); });
+                .y1(function(aggr){
+                    if(aggr.aggregate_Total===0) return me.height_hist+3;
+                    return me.height_hist-getAggrHeight_Total(aggr);
+                });
             this.DOM.lineTrend_Total
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
@@ -6830,6 +6665,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Active: function(){
+        if(this.isEmpty || this.collapsed) return;
         var me=this;
         var width = this.getBarWidth_Real();
 
@@ -6855,6 +6691,7 @@ var Summary_Interval_functions = {
                 })
                 .y0(me.height_hist+2)
                 .y1(function(aggr){
+                    if(aggr.aggregate_Active===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Active(aggr);
                 });
             
@@ -6874,9 +6711,8 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Compare: function(){
+        if(this.isEmpty || this.collapsed) return;
         var me=this;
-        if(this.isEmpty) return;
-        if(this.collapsed) return;
 
         var getAggrHeight_Compare = function(aggr){
             if(me.browser.ratioModeActive) 
@@ -6908,7 +6744,7 @@ var Summary_Interval_functions = {
                 });
 
             var durationTime=0;
-            if(this.browser._previewCompare_Active){
+            if(this.browser.vizCompareActive){
                 durationTime=200;
             }
             
@@ -6929,8 +6765,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Preview: function(){
-        if(this.isEmpty) return;
-        if(this.collapsed) return;
+        if(this.isEmpty || this.collapsed) return;
         var me=this;
         var width = this.getBarWidth_Real();
 
@@ -6980,8 +6815,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     clearViz_Preview: function(){
-        if(this.isEmpty) return;
-        if(this.collapsed) return;
+        if(this.isEmpty || this.collapsed) return;
         if(this.DOM.aggr_Preview===undefined) return;
         var me=this;
         var width = this.getBarWidth_Real();
@@ -7009,6 +6843,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Axis: function(){
+        if(this.isEmpty || this.collapsed) return;
         var me = this, tickValues, maxValue;
 
         var chartAxis_Measure_TickSkip = me.height_hist/17;
@@ -7090,7 +6925,7 @@ var Summary_Interval_functions = {
         
         this.DOM.measureLabel.each(function(aggr){
             var p=aggr.aggregate_Preview;
-            if(me.browser.resultPreviewActive){
+            if(me.browser.vizPreviewActive){
                 if(me.browser.preview_not)
                     p = aggr.aggregate_Active-aggr.aggregate_Preview;
                 else
@@ -7101,7 +6936,7 @@ var Summary_Interval_functions = {
             if(me.browser.percentModeActive){
                 if(me.browser.ratioModeActive){
                     p = 100*p/aggr.aggregate_Active;
-                    if(!me.browser.resultPreviewActive){
+                    if(!me.browser.vizPreviewActive){
                         this.textContent = "";
                         return;
                     }
@@ -7223,11 +7058,11 @@ var Summary_Interval_functions = {
         var filterId = this.summaryFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
         if(!this.hasEntityParent()){
-            this.filteredItems.forEach(function(item){
+            this.items.forEach(function(item){
                 if(item.isWanted) values.push(accessor(item));
             });
         } else {
-            this.filteredItems.forEach(function(item){
+            this.items.forEach(function(item){
                 if(item.aggregate_Active>0) values.push(accessor(item));
             });
         }

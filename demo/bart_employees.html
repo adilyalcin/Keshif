@@ -16,9 +16,9 @@
 
         <script type="text/javascript">
 $(document).ready( function() {
-    resizeBrowser(230,60);
+    resizeBrowser(300,60);
     $(window).resize(function() {
-        resizeBrowser(230,60);
+        resizeBrowser(300,60);
         browser.updateLayout();
     });
 
@@ -34,7 +34,7 @@ $(document).ready( function() {
             fileType: 'csv',
             sheets: [ {name:"bart-comp-all"} ]
         },
-        facets: [
+        summaries: [
             {   title:"Job Family"
             },{ title:"Union"
             },{ title:"Title"

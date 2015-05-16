@@ -49,7 +49,11 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Age",
-            },{ title: "Death Date", attribMap: function(){ return dateFormat.parse(this.Death); }
+            },{ title: "Death Date", attribMap: function(){ 
+                var x=dateFormat.parse(this.Death);
+                if(x===null) return;
+                return new Date(x);
+            }
             },{ title: "After Story is Published...",
                 attribMap: function(){ if(this.claimed) return "Claimed"; }
             }

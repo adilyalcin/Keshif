@@ -70,7 +70,7 @@ $(document).ready( function(){
                 return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+this.Name+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
             }
         }

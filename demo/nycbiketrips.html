@@ -34,11 +34,11 @@ google.setOnLoadCallback(function(){
         loadedCb: function(){
             kshf.dt.Trips.forEach(function(trip){
                 trip.data.TimeStart = moment(trip.data.Time_Start,"M/D/YY HH:mm"); // 2/28/14 21:07
+                delete trip.data.Time_Start; // Remove unused variable
             })
         },
-        facets: [
-            {   title: "UserType",
-                catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
+        summaries: [
+            {   title: "UserType", catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
             },{ title: "Gender", layout: 'right',
                 catLabel: function(d){
                     switch(this.id){
@@ -47,10 +47,9 @@ google.setOnLoadCallback(function(){
                         default: return "?";
                     }
                 }
-            },{ title: "Station_Start",
-                catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
-            },{ title: "Station_End", layout: 'right',
-                catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
+            },{ title: "Station_Start", catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
+            },{ title: "Station_End",   catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; }, 
+                layout: 'right'
             },{ title: "Day of Week", layout: 'right', collapsed: true,
                 attribMap: function(){ return this.TimeStart.day(); },
                 sortingOpts: [ {value: "id"} ],

@@ -25,23 +25,20 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Passengers"} ]
         },
         facets: [
-            {   title: "Survived", attribMap: "survived",
-                catLabel: function(){ return (this.id)?'Yes':'No'; }
+            {   title: "Survived", attribMap: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; }
             },{ title: "Class", attribMap: "pclass",
                 /* 1st-2nd-3rd => 1-2-3 */
                 sortingOpts: [{ value: function(){ return 1*this.id.substr(0,1); } }]
-            },{ title: "Sex", attribMap: "sex", 
-                catLabel: function(){ return this.id+" "+getIcon(this.id); },
+            },{ title: "Sex", attribMap: "sex", catLabel: function(){ return this.id+" "+getIcon(this.id); },
             },{ title: "Age", attribMap: "age", layout:'bottom', showPercentile: true
             },{ title: "Embarked", attribMap: "embarked"
-            },{ title: "Room", collapsed: true, attribMap: "room"
-//            },{ title: "boat", collapsed: true, type: 'categorical' // there are negative values and such
+            },{ title: "Room", attribMap: "room", collapsed: true
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
-            sortingOpts: [ {name: 'id', inverse:true}, {name: 'age'} ],
-            textSearch: 'name',
+            sortColWidth: 30,
+            sortingOpts: [ {name: 'Age', value: "age"} ],
+            textSearch: "name",
             recordView: "name"
         }
     });

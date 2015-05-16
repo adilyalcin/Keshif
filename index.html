@@ -104,8 +104,7 @@ browser = new kshf.Browser({
             attribMap: function(){ return this.Source.split("+"); }
         },{ title: "# Items", showPercentile: true, layout: 'right', 
         },{ title: "Creation Time", collapsed: false,
-            attribMap: function(){ return this.Authored.getFullYear(); },
-            intervalScale: 'step'
+            attribMap: function(){ return this.Authored.getFullYear(); }
         }
     ],
     itemDisplay: {
@@ -140,10 +139,10 @@ browser = new kshf.Browser({
                     +this["Link"]+".html' class='fa fa-code'></a></span>";
             return str;
         },
-        visibleCb: function(item){
+        visibleCb: function(d){
             var link=this["Link"];
             if(link==="../index") link = "index";
-            d3.select(item.DOM.result).select("img").attr("src","demo/demo_img/"+link+".jpg");
+            d3.select(d.DOM.record).select("img").attr("src","demo/demo_img/"+link+".jpg");
         }
     }
 });

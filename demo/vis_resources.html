@@ -59,7 +59,7 @@ $(document).ready( function(){
                     "<span class='title'>"+this.title+"</span>";
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",
+                d3.select(d.DOM.record).select("img").attr("src",
                     "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+getImageName(this.image_src));
             }
         }

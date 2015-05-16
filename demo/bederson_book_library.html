@@ -165,7 +165,7 @@ $(document).ready( function(){
                     getStars(this.Rating);
             },
             visibleCb: function(d){
-                d3.select(d.DOM.result).select("img").attr("src",this.Thumb).attr("title", this.Review);
+                d3.select(d.DOM.record).select("img").attr("src",this.Thumb).attr("title", this.Review);
             }
         }
     });
