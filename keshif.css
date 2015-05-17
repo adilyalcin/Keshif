@@ -123,7 +123,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
   font-size: 0.7em;
-  color: #2f4f4f;
+  color: gray;
   opacity: 0;
   cursor: pointer;
   pointer-events: none;
@@ -149,6 +149,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span[compare="true"] .compareButton {
   pointer-events: all;
   opacity: 1;
+}
+.kshf span[compare="true"] .compareButton:not([inside]) {
+  color: #2f4f4f;
 }
 .kshf span[compare="true"] .compareButton:after {
   content: "\f023";
@@ -258,7 +261,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .attributeList > .attributeName > .summaryTypeIcon {
   float: right;
 }
-.kshf .attributeList > .attributeName .dataTypeIcon {
+.kshf .attributeList > .attributeName .nuggetInfo {
   display: inline-block;
   width: 100%;
   -webkit-box-flex: 1;
@@ -273,24 +276,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   vertical-align: top;
   text-align: center;
-  font-size: italic;
 }
-.kshf .attributeList > .attributeName .dataTypeIcon > .num_left {
+.kshf .attributeList > .attributeName .nuggetInfo > .num_left {
   float: left;
   margin-left: 2px;
 }
-.kshf .attributeList > .attributeName .dataTypeIcon > .num_right {
+.kshf .attributeList > .attributeName .nuggetInfo > .num_right {
   float: right;
   margin-right: 2px;
 }
-.kshf .attributeList > .attributeName .dataTypeIcon > .fa {
+.kshf .attributeList > .attributeName .nuggetInfo > .fa {
   color: gray;
 }
-.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .refreshNugget {
-  display: block;
+.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo {
+  font-size: 2em;
+  text-align: center;
+  position: relative;
+}
+.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo:before {
+  content: "\f110";
 }
 .kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetViz {
-  display: none;
+  display: none !important;
+}
+.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget:hover > .nuggetInfo {
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
 }
 .kshf .attributeList > .attributeName > .attribNugget {
   display: -webkit-box;
@@ -308,17 +319,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .attributeList > .attributeName > .attribNugget:hover {
   border-color: gray;
-}
-.kshf .attributeList > .attributeName > .attribNugget > .refreshNugget {
-  display: none;
-  font-size: 2em;
-  text-align: center;
-  position: relative;
-  left: 30%;
-}
-.kshf .attributeList > .attributeName > .attribNugget > .refreshNugget:hover {
-  -webkit-animation: fa-spin 2s infinite linear;
-  animation: fa-spin 2s infinite linear;
 }
 .kshf .attributeList > .attributeName > .attribNugget > .nuggetViz {
   -webkit-box-flex: 1;
@@ -393,7 +393,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-order: 1;
   order: 1;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] .dataTypeIcon {
+.kshf .attributeList > .attributeName[datatype~="interval"] .nuggetInfo {
   -webkit-box-ordinal-group: 2;
   -moz-box-ordinal-group: 2;
   -ms-flex-order: 2;
@@ -401,7 +401,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   order: 2;
   max-height: 1em;
 }
-.kshf .attributeList > .attributeName[datatype~='time'] .dataTypeIcon:before {
+.kshf .attributeList > .attributeName[datatype~='time'] .nuggetInfo:before {
   content: '\f017';
 }
 .kshf .attributeList > .attributeName[datatype~="categorical"] > .attribNugget {
@@ -1374,7 +1374,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .compareButton {
   width: 9px;
   text-align: right;
-  top: 5px;
+  top: 4px;
   z-index: 300;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .compareButton[inside] {

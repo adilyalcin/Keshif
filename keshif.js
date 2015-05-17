@@ -1336,6 +1336,7 @@ kshf.List.prototype = {
         this.DOM.listSortOptionSelect.selectAll("option").remove();
         this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts)
             .enter().append("option").html(function(d){ return d.name; });
+        this.DOM.listSortOptionSelect[0][0].value = this.sortingOpt_Active.name;
     },
     /** -- */
     prepSortingOpts: function(){
@@ -2824,23 +2825,28 @@ kshf.Browser.prototype = {
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'e', title: function(){
+                        if(!summary.aggr_initialized){
+                            return "Click to initialize";
+                        }
                         var t=summary.getDataType();
                         return t+"<br>summary";
                     }
                 })
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(d,i){ this.tipsy.hide(); });
-
-        attribNugget.append("span").attr("class","refreshNugget fa fa-spinner")
+            .on("mouseleave",function(d,i){ this.tipsy.hide(); })
             .on("click",function(summary){
-                summary.initializeAggregates();
-                summary.refreshNuggetViz();
-                me.refreshAttributeList();
-                summary.DOM.nugget.attr("aggr_initialized",summary.aggr_initialized);
+                if(!summary.aggr_initialized){
+                    summary.initializeAggregates();
+                    summary.refreshNuggetViz();
+                    me.refreshAttributeList();
+                    summary.DOM.nugget.attr("aggr_initialized",summary.aggr_initialized);
+                    this.tipsy.hide();
+                    this.tipsy.show();
+                }
             });
 
-        attribNugget.append("span").attr("class","dataTypeIcon fa");
+        attribNugget.append("span").attr("class","nuggetInfo fa");
         var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
         
         newSummaries.append("input").attr("class","summaryTitleEdit")
@@ -3281,6 +3287,9 @@ kshf.Summary_Base.prototype = {
         if(this.DOM.nugget)
             this.DOM.nugget.select(".summaryTitle").text(this.summaryName);
         this.summaryFilter._refreshFilterSummary();
+        // This summary may be used for sorting options. Refresh the list
+        if(this.browser.listDisplay)
+            this.browser.listDisplay.refreshSortingOptions();
     },
     /** -- */
     getDataType: function(){
@@ -3675,7 +3684,7 @@ var Summary_Categorical_functions = {
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
 
         if(this.uniqueCategories()){
-            this.DOM.nugget.select(".dataTypeIcon").html("<span class='fa fa-tag'></span><br>Unique");
+            this.DOM.nugget.select(".nuggetInfo").html("<span class='fa fa-tag'></span><br>Unique");
             nuggetViz.style("display",'none');
             return;
         }
@@ -3686,7 +3695,7 @@ var Summary_Categorical_functions = {
             .append("span").attr("class","nuggetBar")
                 .style("width",function(cat){ return totalWidth*(cat.items.length/maxAggregate_Total)+"px"; });
         
-        this.DOM.nugget.select(".dataTypeIcon").html(
+        this.DOM.nugget.select(".nuggetInfo").html(
             "<span class='fa fa-tag"+(this.hasMultiValueItem?"s":"")+"'></span><br>"+
             this._cats.length+"<br>rows<br>");
     },
@@ -5590,7 +5599,7 @@ var Summary_Interval_functions = {
         var maxAggregate_Total = this.getMaxAggr_Total();
 
         if(this.intervalRange.min===this.intervalRange.max){
-            this.DOM.nugget.select(".dataTypeIcon").html("only<br>"+this.intervalRange.min);
+            this.DOM.nugget.select(".nuggetInfo").html("only<br>"+this.intervalRange.min);
             nuggetViz.style("display",'none');
             return;
         }
@@ -5603,7 +5612,7 @@ var Summary_Interval_functions = {
                 })
             ;
         
-        this.DOM.nugget.select(".dataTypeIcon").html(
+        this.DOM.nugget.select(".nuggetInfo").html(
             "<span class='num_left'>"+this.intervalTickFormat(this.intervalRange.min)+"</span>"+
             "<span class='num_right'>"+this.intervalTickFormat(this.intervalRange.max)+"</span>");
     },
