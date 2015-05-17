@@ -74,7 +74,7 @@ $(document).ready( function(){
             url: "http://explore.beautifultrouble.org/app/data.json",
             callback: loadData
         },
-        facets: [
+        summaries: [
             {   title: "Category", attribMap: "type",
                 catLabel: function(){ return getType(this.id)+" <span class='typeImg_"+this.id+"'></span>"; }
             },{ title: "Contributors",

@@ -45,12 +45,13 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         itemName: "Tree Types",
-        categoryTextWidth: 450,
+        categoryTextWidth: 200,
+        barChartWidth: 300,
         source: { 
             url: "http://www.cloudred.com/labprojects/nyctrees/",
             callback: loadData
         },
-        facets: [
+        summaries: [
             {   title: "Total Number of <span class='fa fa-tree'></span>'s", attribMap: "Total",
                 intervalScale: "log"
             },{ title: "Number of <span class='fa fa-tree'></span>s in Bronx", attribMap: "Bronx",

@@ -151,7 +151,7 @@ google.setOnLoadCallback(function(){
         domID: "#chart_div",
         categoryTextWidth: 230,
         source: { callback: loadData },
-        facets: [
+        summaries: [
             {   title: "Term"
             },{ title: "Category"
             },{ title: "Year", attribMap: function(){ return this.Proceeding.data.year; },
@@ -159,7 +159,7 @@ google.setOnLoadCallback(function(){
                 layout: 'middle'
             },{ title: "Authors",
                 catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
-                facets: [{ title: "Affiliaton" }]
+                summaries: [{ title: "Affiliaton" }]
             },{
             /*,{ title: "# of References", collapsed: true,
                 attribMap: "ReferenceTotal"}

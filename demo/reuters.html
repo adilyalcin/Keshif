@@ -51,7 +51,7 @@ google.setOnLoadCallback( function() {
             topicsCol = kshf.dt_ColNames.Topics;
             kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
         },
-        facets: [
+        summaries: [
             {   title: "Category",
                 attribMap: function(){
                     var topics = this[newsCol.Topic];

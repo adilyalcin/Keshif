@@ -18,13 +18,13 @@
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
-        leftPanelLabelWidth: 150,
-        rightPanelLabelWidth: 150,
+        categoryTextWidth: 150,
+        itemName: "Titanic Passengers",
         source: {
             gdocId: '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
             sheets: [ {name:"Passengers"} ]
         },
-        facets: [
+        summaries: [
             {   title: "Survived", attribMap: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; }
             },{ title: "Class", attribMap: "pclass",
                 /* 1st-2nd-3rd => 1-2-3 */
@@ -46,7 +46,6 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
             #chart_div {
-                margin-top: 40px;
                 width: 750px;
                 height: 700px;
             }

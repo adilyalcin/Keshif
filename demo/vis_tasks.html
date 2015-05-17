@@ -37,11 +37,11 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.Papers, ['Authors'],", ",false);
             kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
         },
-        facets: [
+        summaries: [
             {   title: "Tasks",
                 catTableName: "Keywords",
                 catLabel: "Task",
-                facets:[
+                summaries: [
                     {   title: "Categories", attribMap: "Category"
                     },{ title: "Levels", attribMap: function(){return kshf.dt_id.Levels[this.Category].data.Level;}
                     }

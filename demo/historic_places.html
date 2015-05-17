@@ -27,7 +27,7 @@ google.setOnLoadCallback(function(){
             gdocId: '15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ',
             sheets: [ {name:"Places"} ]
         },
-        facets: [
+        summaries: [
             {   title: "State", catLabel: function(){ return getStateName(this.id) }
             },{ title: "County", layout: 'middle', minAggrValue: 50,
                 attribMap: function(){ return this.County+", "+this.State; }

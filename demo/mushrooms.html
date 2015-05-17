@@ -159,13 +159,13 @@ google.setOnLoadCallback(function(){
             gdocId: '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
             sheets: [ {name:"Mushrooms"} ]
         },
-        facets: [
+        summaries: [
             {   title: "Class", catLabel: getName.Class
             },{ title: "Habitat", catLabel: getName.Habitat
             },{ title: "Odor", catLabel: getName.Odor
             },{ title: "Bruises", collapsed: true,
             },{ /*title: "Gill",
-                facets:[
+                summaries:[
                     {*/   title: "Gill - Attachment",
                         attribMap: "Gill Attachment",
                         catLabel: getName.GillAttachment
@@ -184,7 +184,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Population", layout: "middle",
                 catLabel: getName.Population
             },{ /*title: "Cap", layout: "middle",
-                facets: [
+                summaries: [
                     {*/   title: "Cap - Shape", layout: "middle",
                         attribMap: "Cap Shape",
                         catLabel: getName.Shape
@@ -197,7 +197,7 @@ google.setOnLoadCallback(function(){
                     /*}
                 ]*/
             },{ /*title: "Ring", layout: "middle",
-                facets: [
+                summaries: [
                     {*/   title: "Number", layout: "middle",
                         attribMap: "Ring Number",
                         catLabel: getName.RingNumber
@@ -210,7 +210,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Spore Print Color", layout: 'right',
                 catLabel: getName.Color
             },{ /*title: "Stalk", layout: 'right',
-                facets:[
+                summaries:[
                     {*/   title: "Stalk - Shape", layout: 'right',
                         attribMap: "Stalk Shape",
                         catLabel: getName.Shape

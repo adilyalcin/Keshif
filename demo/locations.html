@@ -56,11 +56,9 @@ $(document).ready( function(){
                 });
             }
         },
-        facets: [
-            {   title: "Type",
-                attribMap: "l_type"
-            },{ title: "Part of", attribMap: "parent_location_uuid",
-                catTableName: "Locations", catLabel: "name",
+        summaries: [
+            {   title: "Type", attribMap: "l_type"
+            },{ title: "Part of", attribMap: "parent_location_uuid", catTableName: "Locations", catLabel: "name",
             }
         ],
         itemDisplay: {

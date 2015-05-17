@@ -40,7 +40,7 @@ google.setOnLoadCallback(function(){
             gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
             sheets: [ {name:"Companies", id:'Stock'} ]
         },
-        facets: [
+        summaries: [
             {   title: "Industry", attribMap: function(){ return this.Industry+" "+getIcon(this.Industry); }
             },{ title: "Cash vs. Debt", layout: 'left',
                 attribMap: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); }

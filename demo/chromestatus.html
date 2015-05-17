@@ -44,7 +44,7 @@ $(document).ready( function(){
             url: "http://www.chromestatus.com/features",
             callback: loadData
         },
-        facets: [
+        summaries: [
             {   title: "Category", attribMap: "category"
             },{ title: "Implementation Status", attribMap: "impl_status_chrome"
             },{ title: "Standardization", attribMap: function(){ return this.standardization.text; }

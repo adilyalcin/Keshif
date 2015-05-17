@@ -38,7 +38,7 @@ $(document).ready( function(){
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
         },
-        facets: [
+        summaries: [
             {   title: "Category"
             },{ title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true
             },{ title: "# Comments",  attribMap: '# of Comments'

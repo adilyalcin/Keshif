@@ -70,18 +70,13 @@ $(document).ready( function(){
             url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
             callback: loadData
         },
-        facets: [
-            {   /*title: " Artist",
-                layout: 'right',
-                facets: [
-                    {*/   title: "Name", collapsed: true, layout: 'right',
-                        attribMap: "Artist", minAggrValue: 3
-                    },{ title: "Nationality", layout: 'right'
-                    },{ title: "Gender", layout: 'right'
-                    },{ title: "Living", layout: 'right'
-                    },{ title: "Year Born", layout: 'right'
-                    /*}
-                ]*/
+        summaries: [
+            {   title: "Artist", minAggrValue: 3, collapsed: true, layout: 'right',
+            },{ title: "Nationality", layout: 'right'
+            },{ title: "Gender", layout: 'right'
+            },{ title: "Living", layout: 'right'
+            },{ title: "Year Born", layout: 'right'
+
             },{ title: "Collection", collapsed: true,
             },{ title: "Object Type",
 //            },{ title: "Medium",

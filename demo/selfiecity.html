@@ -35,23 +35,19 @@ $(document).ready( function(){
             sheets: [ {name:"selfiecity", id:"id"} ]
             // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
         },
-        facets: [
-            {   /*title: "Demographics",
-                facets:[
-                    {*/   title: "City", attribMap: "city",
-                        catLabel: function(){
-                            switch(this.id){
-                                case 'ny': return "New York";
-                                case 'bangkok': return "Bangkok";
-                                case 'sao_paulo': return "Sao Paulo";
-                                case 'moscow': return "Moscow";
-                                case 'berlin': return "Berlin";
-                            }
-                        }
-                    },{ title: "Sex", attribMap: "sex"
-                    },{ title: "Age", attribMap: "age", showPercentile: true
-                    /*}
-                ]*/
+        summaries: [
+            {   title: "City", attribMap: "city",
+                catLabel: function(){
+                    switch(this.id){
+                        case 'ny': return "New York";
+                        case 'bangkok': return "Bangkok";
+                        case 'sao_paulo': return "Sao Paulo";
+                        case 'moscow': return "Moscow";
+                        case 'berlin': return "Berlin";
+                    }
+                }
+            },{ title: "Sex", attribMap: "sex"
+            },{ title: "Age", attribMap: "age", showPercentile: true
             },{ /*title: "Features",
                 facets:[
                     {*/   title: "Eyes Closed", attribMap: "eye_closed"

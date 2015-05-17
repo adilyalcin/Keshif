@@ -136,7 +136,7 @@ $(document).ready( function(){
     url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
     callback: loadData
         },
-        facets: [
+        summaries: [
             {   title: "Genres"
             },{ title: "Bederson's Rating", attribMap: "Rating",
                 catLabel: function(){ return getStars(this.id); }

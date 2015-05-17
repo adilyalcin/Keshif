@@ -60,7 +60,7 @@ $(document).ready( function(){
             url: "http://globalvoicesonline.org/",
             callback: loadData
         },
-        facets: [
+        summaries: [
             {   title: "Tag", catTableName: "Types",
                 attribMap: function(){ return this[2].t; }
             },{ title: "Author", collapsed: true,

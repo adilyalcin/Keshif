@@ -44,7 +44,7 @@ $(document).ready(function(){
             });
             kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
         },
-        facets: [
+        summaries: [
             {   title: "Program", attribMap: "Program(s)"
             },{ title: "Name", attribMap: "Organization"
             },{ title: "AwardInstrument",
@@ -62,20 +62,9 @@ $(document).ready(function(){
 /*            },{
                 title: "PrincipalInvestigator",
                 layout: 'right'*/
-            },{ /*title: "-Institution-", layout: 'right',
-                facets: [
-                    {*/   title: "Name", attribMap: "Organization", layout: 'right',
-                    },{ title: "State", attribMap: "OrganizationState", layout: 'right', collapsed: true,
-                        catLabel: function(){ return getStateName(this.id); }
-/*                    },{
-                        catTableName: 'states',
-                        catLabel: function(d){
-                            return kshf.dt_id.states[d.data[0]].data.name;
-                        }
-//                    },{
-//                        title: "OrganizationCity", collapsed: true*/
-                    /*}
-                ]*/
+            },{ title: "Name", attribMap: "Organization", layout: 'right',
+            },{ title: "State", attribMap: "OrganizationState", layout: 'right', collapsed: true,
+                catLabel: function(){ return getStateName(this.id); }
             }
         ],
         itemDisplay: {

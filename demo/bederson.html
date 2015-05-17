@@ -63,7 +63,7 @@ google.setOnLoadCallback(function() {
             });
             browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
-        facets: [
+        summaries: [
             {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
             },{ title: "Coauthors",
                 attribMap: function(){
@@ -78,7 +78,7 @@ google.setOnLoadCallback(function() {
                 catTableName: "Authors",
                 catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
                 catTooltip: function(){ return this.first_names+" "+this.last_name; },
-                facets: [
+                summaries: [
                     {   title: "Type",
                         attribMap: function(){ return this.author_type; },
                         catTableName: "AuthorTypes",

@@ -36,13 +36,13 @@ google.setOnLoadCallback(function(){
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
         },
-        facets: [
+        summaries: [
             {   title: "Categories"
             },{ title: "Credits", layout: 'right',
             },{ title: "Month", layout: 'right',
                 attribMap: function(){ if(this.Date) return this.Date.getMonth(); },
-                sortingOpts: [{ value: "id" }],
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
+                sortingOpts: [{ value: "id" }],
             },{ title: "Date",  layout: 'bottom', 
             }
         ],

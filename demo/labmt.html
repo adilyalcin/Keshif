@@ -15,68 +15,68 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    leftPanelLabelWidth: 100,
-                    rightPanelLabelWidth: 90,
-                    source: {
-                        gdocId: '1sS7M8HkLWbvmGHarPrIN8T-f2zujPDvioIGUPjAN4z4',
-                        sheets: [ {name:"Words"} ]
-                    },
-                    facets: [
-                        {   title: "Happiness Avg.", layout: "middle"
-                        },{ title: "Rank: Twitter", layout: "right",
-                            description: "The ranking of a word by frequency of occurrence in the top 5000 words in Twitter"
-                        },{ title: "Rank: Google", layout: "right",
-                            description: "The ranking of a word by frequency of occurrence in the top 5000 words in Google"
-                        },{ title: "Rank: NYTimes", layout: "right",
-                            description: "The ranking of a word by frequency of occurrence in the top 5000 words in NYTimes"
-                        },{ title: "Rank: Lyrics", layout: "right",
-                            description: "The ranking of a word by frequency of occurrence in the top 5000 words in Lyrics"
-                        }
-                    ],
-                    itemDisplay: {
-                        maxVisibleItems_Default: 250,
-                        showRank: true,
-                        sortingOpts: [ 
-                            {name: 'Happiness Avg.'},
-                            {name: 'Rank: Twitter'},
-                            {name: 'Rank: Google'},
-                            {name: 'Rank: NYTimes'},
-                            {name: 'Rank: Lyrics'}
-                        ],
-                        detailsToggle: "off",
-                        displayType: "grid",
-                        textSearch: "Word",
-                        recordView: function(){
-                            var str=this.Word;
-                            var v=this['Happiness Avg.'];
-                            var smile = "<i class='fa fa-smile-o'></i>";
-                            var frown = "<i class='fa fa-frown-o'></i>";
-                            if(v>8) {
-                                str+=smile+smile+smile;
-                            } else if(v>7) {
-                                str+=smile+smile;
-                            } else if(v>6) {
-                                str+=smile+smile;
-                            } else if(v>4) {
-                                // str+=;//smile+smile;
-                            } else if(v>3) {
-                                str+=frown;
-                            } else if(v>2) {
-                                str+=frown+frown;
-                            } else if(v>1) {
-                                str+=frown+frown+frown;
-                            } else if(v>0) {
-                                str+=frown+frown+frown+frown;
-                            }
-                            return str;
-                        }
-                    }
-                });
-            });
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 90,
+        source: {
+            gdocId: '1sS7M8HkLWbvmGHarPrIN8T-f2zujPDvioIGUPjAN4z4',
+            sheets: [ {name:"Words"} ]
+        },
+        summaries: [
+            {   title: "Happiness Avg.", layout: "middle"
+            },{ title: "Rank: Twitter", layout: "right",
+                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Twitter"
+            },{ title: "Rank: Google", layout: "right",
+                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Google"
+            },{ title: "Rank: NYTimes", layout: "right",
+                description: "The ranking of a word by frequency of occurrence in the top 5000 words in NYTimes"
+            },{ title: "Rank: Lyrics", layout: "right",
+                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Lyrics"
+            }
+        ],
+        itemDisplay: {
+            maxVisibleItems_Default: 250,
+            showRank: true,
+            sortingOpts: [ 
+                {name: 'Happiness Avg.'},
+                {name: 'Rank: Twitter'},
+                {name: 'Rank: Google'},
+                {name: 'Rank: NYTimes'},
+                {name: 'Rank: Lyrics'}
+            ],
+            detailsToggle: "off",
+            displayType: "grid",
+            textSearch: "Word",
+            recordView: function(){
+                var str=this.Word;
+                var v=this['Happiness Avg.'];
+                var smile = "<i class='fa fa-smile-o'></i>";
+                var frown = "<i class='fa fa-frown-o'></i>";
+                if(v>8) {
+                    str+=smile+smile+smile;
+                } else if(v>7) {
+                    str+=smile+smile;
+                } else if(v>6) {
+                    str+=smile+smile;
+                } else if(v>4) {
+                    // str+=;//smile+smile;
+                } else if(v>3) {
+                    str+=frown;
+                } else if(v>2) {
+                    str+=frown+frown;
+                } else if(v>1) {
+                    str+=frown+frown+frown;
+                } else if(v>0) {
+                    str+=frown+frown+frown+frown;
+                }
+                return str;
+            }
+        }
+    });
+});
         </script>
         <style>
             #chart_div {
