@@ -2766,6 +2766,25 @@ kshf.Browser.prototype = {
 
     },
     /** -- */
+    prepareDropZones: function(summary){
+        this.DOM.root.attr("showdropzone",true).attr("dropattrtype",summary.getDataType());
+        this.DOM.attribDragBox.style("display","block").text(summary.summaryName);
+        this.summaries.forEach(function(summary){
+            if(summary.panel) summary.setCollapsed(true);
+        });
+        this.updateLayout_Height();
+    },
+    /** -- */
+    clearDropZones: function(summaryName){
+        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+        this.DOM.root.attr("showdropzone",false);
+        this.DOM.attribDragBox.style("display","none");
+        this.summaries.forEach(function(summary){
+            if(summary.panel) summary.unrollCollapsed();
+        });
+        this.updateLayout_Height();
+    },
+    /** -- */
     setItemName: function(){
         this.listDisplay.DOM.listHeader_itemName.html(this.itemName);
     },
@@ -2794,11 +2813,7 @@ kshf.Browser.prototype = {
                     .on("mousemove", function(){
                         if(!moved){
                             _this.style.opacity = 0.5;
-                            me.DOM.root.attr("showdropzone",true);
-                            me.DOM.root.attr("dropattrtype",summary.getDataType());
-                            me.DOM.attribDragBox
-                                .style("display","block")
-                                .text(summary.summaryName);
+                            me.prepareDropZones(summary);
                             moved = true;
                         }
                         var mousePos = d3.mouse(me.DOM.root[0][0]);
@@ -2808,15 +2823,10 @@ kshf.Browser.prototype = {
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
-                        _this.style.opacity = null;
                         // Mouse up on the header
-                        me.DOM.attribDragBox.style("display","none");
-                        me.DOM.root.attr("showdropzone",false);
-                        d3.select("body")
-                            .style('cursor','auto')
-                            .on("mousemove",null)
-                            .on("mouseup",null)
-                            ;
+                        _this.style.opacity = null;
+                        me.clearDropZones();
+                        d3.event.preventDefault();
                     });
                 d3.event.preventDefault();
             })
@@ -2835,7 +2845,13 @@ kshf.Browser.prototype = {
                 })
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(d,i){ this.tipsy.hide(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
+            .on("mousedown",function(){
+                if(!summary.aggr_initialized){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                }
+            })
             .on("click",function(summary){
                 if(!summary.aggr_initialized){
                     summary.initializeAggregates();
@@ -3202,10 +3218,6 @@ kshf.Browser.prototype = {
             this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
             this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         }
-        this.panels.middle.DOM.root
-            .style("width",widthMiddlePanel+"px")
-            .style("display",this.panels.middle.summaries.length>0?"inline-block":"none")
-            ;
         this.panels.middle.setTotalWidth(widthMiddlePanel);
         this.panels.middle.updateSummariesWidth();
         this.panels.bottom.updateSummariesWidth();
@@ -3276,6 +3288,7 @@ kshf.Summary_Base.prototype = {
         this.subFacets = [];
 
         // Only used when summary is inserted into browser
+        this.collapsed_pre = false;
         this.collapsed = false;
 
         this.createSummaryFilter();
@@ -3403,27 +3416,23 @@ kshf.Summary_Base.prototype = {
                         if(!moved){
                             _this.parentNode.nextSibling.style.display = "none";
                             _this.parentNode.previousSibling.style.display = "none";
-                            me.browser.DOM.attribDragBox.style("display","block").text(me.summaryName);
                             _this.parentNode.style.opacity = 0.5;
+                            me.browser.prepareDropZones(me);
                             moved = true;
                         }
                         var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
                         kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
                             "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px");
-                        me.browser.DOM.root
-                            .attr("showdropzone",true)
-                            .attr("dropattrtype",me.getDataType());
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
                         // Mouse up on the body
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                        me.browser.DOM.attribDragBox.style("display","none");
-                        me.browser.DOM.root.attr("showdropzone",false);
+                        me.browser.clearDropZones();
                         _this.parentNode.style.opacity = null;
                         _this.parentNode.nextSibling.style.display = "";
                         _this.parentNode.previousSibling.style.display = "";
+                        d3.event.preventDefault();
                     });
                 d3.event.preventDefault();
             })
@@ -3442,12 +3451,16 @@ kshf.Summary_Base.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("mousedown", function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
             .on("click",function(){
                 this.tipsy.hide();
                 me.setCollapsedAndLayout(!me.collapsed); // flip
             })
             ;
-        header_display_control.append("span").attr("class","expand fa fa-arrows-alt")
+        header_display_control.append("span").attr("class","expandButton fa fa-arrows-alt")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
@@ -3456,6 +3469,10 @@ kshf.Summary_Base.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("mousedown", function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
             .on("click",function(){
                 me.panel.collapseAllSummaries();
                 me.setCollapsedAndLayout(false); // uncollapse this one
@@ -3470,6 +3487,10 @@ kshf.Summary_Base.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("mousedown", function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
             .on("click",function(){
                 // Clique control
                 if(false){
@@ -3623,7 +3644,12 @@ kshf.Summary_Base.prototype = {
         if(sendLog) sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
     },
     /** -- */
+    unrollCollapsed: function(){
+        this.setCollapsed(this.collapsed_pre);
+    },
+    /** -- */
     setCollapsed: function(v){
+        this.collapsed_pre = this.collapsed;
         this.collapsed = v;
         if(this.DOM.root){
             this.DOM.root.attr("collapsed",this.collapsed);
@@ -3631,7 +3657,7 @@ kshf.Summary_Base.prototype = {
                 this.clearViz_Preview();
                 this.refreshViz_All();
             } else {
-                this.DOM.headerGroup.select(".expand").style("display","none");
+                this.DOM.headerGroup.select(".expandButton").style("display","none");
             }
         }
     },
@@ -4464,7 +4490,7 @@ var Summary_Categorical_functions = {
         this.updateAttribCull();
         this.cullAttribs();
 
-        this.DOM.headerGroup.select(".expand").style("display",
+        this.DOM.headerGroup.select(".expandButton").style("display",
             (this.panel.getNumOfOpenSummaries()<=1||this.areAllCatsInDisplay())?
                 "none":
                 "inline-block"

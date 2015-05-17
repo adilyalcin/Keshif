@@ -73,6 +73,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
+.kshf[noanim=false] .panels_Above {
+  -webkit-transition: height 700ms ease-in-out;
+  -moz-transition: height 700ms ease-in-out;
+  -o-transition: height 700ms ease-in-out;
+  transition: height 700ms ease-in-out;
+}
 .kshf[attribsShown=true] {
   left: 120px;
 }
@@ -477,13 +483,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   display: none;
-  background-color: rgba(200, 200, 200, 0.3);
+  background-color: #f0f0f0;
   border-radius: 10px;
   border-style: solid;
   border-color: gray;
   border-width: 2px;
   z-index: 50;
-  margin: 4px;
+  margin: 2px;
 }
 .kshf .layout_block > .dropZone:hover {
   background-color: #ffbca3;
@@ -559,11 +565,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
 }
 .kshf .layout_block.layout_bottom > .dropZone_panel {
-  bottom: 2px;
+  bottom: -30px;
   height: 30px;
   width: 100%;
-  border-radius: 40px 40px 0px 0px;
-  border-top-width: 2px;
+  border-radius: 0px 0px 40px 40px;
+  border-bottom-width: 2px;
+  border-top-width: 1px;
 }
 .kshf .layout_block.layout_left {
   display: -webkit-box;
@@ -583,12 +590,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
 }
 .kshf .layout_block.layout_left > .dropZone_panel {
-  left: 2px;
+  left: 0px;
   height: 100%;
   top: 0%;
   width: 30px;
   border-radius: 0px 40px 40px 0px;
   border-right-width: 2px;
+  border-left-width: 1px;
 }
 .kshf .layout_block.layout_left > .panelAdjustWidth {
   right: -2px;
@@ -611,18 +619,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
 }
 .kshf .layout_block.layout_right > .dropZone_panel {
-  right: 2px;
+  right: 0px;
   height: 100%;
   top: 0%;
   width: 30px;
   border-radius: 40px 0px 0px 40px;
   border-left-width: 2px;
+  border-right-width: 1px;
 }
 .kshf .layout_block.layout_right > .panelAdjustWidth {
   left: -2px;
 }
 .kshf .layout_block.layout_middle {
-  display: inline-block;
+  display: block;
+}
+.kshf .layout_block.layout_middle > .dropZone_panel {
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+  border-radius: 40px 40px 0px 0px;
+  border-top-width: 2px;
+  border-bottom-width: 1px;
+  position: relative;
 }
 .kshf .layout_block.layout_resize {
   position: absolute;
@@ -1111,7 +1129,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control > .fa-remove {
   display: none;
 }
-.kshf .headerGroup > .header_display_control > .expand {
+.kshf .headerGroup > .header_display_control > .expandButton {
   display: none;
 }
 .kshf .headerGroup span.showFilterText {
@@ -1286,9 +1304,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect:hover {
   color: orangered;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect::-ms-expand {
-  display: none;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical .scrollToTop {
   margin-top: -13px;

@@ -80,6 +80,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .wrapper{
             .transition(~'height 700ms ease-in-out');
         }
+        .panels_Above{
+            .transition(~'height 700ms ease-in-out');
+        }
     }
     &[attribsShown=true]{
         left: 120px;
@@ -456,13 +459,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .dropZone{
             .flex(1);
             display: none;
-            background-color: rgba(200, 200, 200, 0.3);
+            background-color: rgb(240, 240, 240);
             border-radius: 10px;
             border-style: solid;
             border-color: gray;
             border-width: 2px;
             z-index: 50;
-            margin: 4px;
+            margin: 2px;
             &:hover{ background-color: rgb(255, 188, 163); }
             &[readyToDrop="true"] {
                 background-color: rgb(255, 188, 163);
@@ -530,11 +533,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .flex-direction(column);
             width: 100%;
             > .dropZone_panel{
-                bottom: 2px;
+                bottom: -30px;
                 height: 30px;
                 width: 100%;
-                border-radius: 40px 40px 0px 0px;
-                border-top-width: 2px;
+                border-radius: 0px 0px 40px 40px;
+                border-bottom-width: 2px;
+                border-top-width: 1px;
             }
         }
         &.layout_left{
@@ -544,12 +548,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position: relative;
             height: 100%;
             > .dropZone_panel{
-                left: 2px;
+                left: 0px;
                 height: 100%;
                 top: 0%;
                 width: 30px;
                 border-radius: 0px 40px 40px 0px;
                 border-right-width: 2px;
+                border-left-width: 1px;
             }
             > .panelAdjustWidth{
                 right: -2px;
@@ -562,19 +567,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position: relative;
             height: 100%;
             > .dropZone_panel{
-                right: 2px;
+                right: 0px;
                 height: 100%;
                 top: 0%;
                 width: 30px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
+                border-right-width: 1px;
             }
             > .panelAdjustWidth{
                 left: -2px;
             }
         }
         &.layout_middle{
-            display:inline-block;
+            display:block;
+            > .dropZone_panel{
+                bottom: 0px;
+                height: 30px;
+                width: 100%;
+                border-radius: 40px 40px 0px 0px;
+                border-top-width: 2px;
+                border-bottom-width: 1px;
+                position: relative;
+            }
         }
         &.layout_resize{
             position: absolute;
@@ -1037,7 +1052,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .fa-remove{
                 display: none;
             }
-            > .expand{
+            > .expandButton{
                 display: none;
             }
         }
@@ -1204,9 +1219,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10px' height='15px'><polyline points='0,2 10,2, 5,11'/></svg>") no-repeat top right;
                             &:hover{
                                 color: orangered;
-                            }
-                            &::-ms-expand {
-                                display: none;
                             }
                         }
                     }
