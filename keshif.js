@@ -1210,7 +1210,6 @@ kshf.List.prototype = {
         });
 
         this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
-            .attr("dir","rtl")
             .attr("class","listSortOptionSelect")
             .on("change", function(){
                 me.setSortingOpt_Active(this.selectedIndex);
@@ -1314,7 +1313,8 @@ kshf.List.prototype = {
     },
     /** -- */
     refreshRecordRank: function(){
-        if(this.showRank) this.DOM.ranks.text(function(d){ 
+        if(!this.showRank) return;
+        this.DOM.ranks.text(function(d){ 
             if(d.visibleOrder<0) return "";
             return d.visibleOrder+1; 
         });  
@@ -1433,8 +1433,20 @@ kshf.List.prototype = {
         if(this.hasLinkedItems){
             this.DOM.listItems.attr("selectedForLink","false")
         }
+        this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'e',
+                    title: function(){ 
+                        var v=(d.visibleOrder+1);
+                        return kshf.Util.ordinal_suffix_of(v);
+                    }
+                });
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseout"  ,function(){ this.tipsy.hide(); })
+            ;
         if(this.displayType==='list'){
-            this.DOM.ranks = this.DOM.listItems.append("span").attr("class","itemRank");
             this.DOM.listSortColumn = this.DOM.listItems.append("div").attr("class","listSortColumn");
             this.refrestSortColumnLabels();
         }
@@ -1453,7 +1465,7 @@ kshf.List.prototype = {
                     })
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseout",function(d,i){ this.tipsy.hide(); })
+                .on("mouseout"  ,function(){ this.tipsy.hide(); })
                 .on("click",function(d){
                     this.tipsy.hide();
                     // unselect all other items
@@ -4235,7 +4247,7 @@ var Summary_Categorical_functions = {
         var me=this;
         var x = this.DOM.facetControls.append("span").attr("class","sortOptionSelectGroup hasLabelWidth");
 
-        this.DOM.optionSelect = x.append("select").attr("class","optionSelect").attr("dir","rtl")
+        this.DOM.optionSelect = x.append("select").attr("class","optionSelect")
             .on("change", function(){
                 me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
                 me.refreshSortButton();
@@ -5472,18 +5484,18 @@ var Summary_Interval_functions = {
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
         // remove items that map to null
-        this.items = this.items.filter(function(item){
+        this.filteredItems = this.items.filter(function(item){
             var v = accessor(item);
             return (v!==undefined && v!==null);
         });
 
         // sort items in increasing order
         if(!this.hasTime){
-            this.items.sort(function(a,b){
+            this.filteredItems.sort(function(a,b){
                 return accessor(a)-accessor(b);
             });
         } else {
-            this.items.sort(function(a,b){
+            this.filteredItems.sort(function(a,b){
                 return accessor(a).getTime()-accessor(b).getTime();
             });
         }
@@ -5493,7 +5505,7 @@ var Summary_Interval_functions = {
 
         if(this.scaleType!=="time"){
             var range= this.intervalRange.max-this.intervalRange.min;
-            var deviation = d3.deviation(this.items, accessor);
+            var deviation = d3.deviation(this.filteredItems, accessor);
             if(deviation/range<0.12 && this.intervalRange.min>=0){
                 this.setScaleType('log');
             }
@@ -5600,8 +5612,8 @@ var Summary_Interval_functions = {
         var filterId = this.summaryFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
 
-        this.intervalRange.min= d3.min(this.items,accessor);
-        this.intervalRange.max= d3.max(this.items,accessor);
+        this.intervalRange.min= d3.min(this.filteredItems,accessor);
+        this.intervalRange.max= d3.max(this.filteredItems,accessor);
         this.isEmpty = this.intervalRange.min===undefined;
         this.resetIntervalFilterActive();
     },
@@ -5619,7 +5631,7 @@ var Summary_Interval_functions = {
             var filterId = this.summaryFilter.id;
             var accessor = function(item){ return item.mappedDataCache[filterId].v; };
             // remove items with 0 value (log(0) is invalid)
-            this.items = this.items.filter(function(item){
+            this.filteredItems = this.filteredItems.filter(function(item){
                 return accessor(item)!==0;
             });
             this.updateIntervalRangeMinMax();
@@ -6029,7 +6041,7 @@ var Summary_Interval_functions = {
             // this calculates aggregation based on the intervalTicks, the filtered item list and the accessor function
             if(this.scaleType!=='step'){
                 this.histBins = d3.layout.histogram().bins(this.intervalTicks)
-                    .value(accessor)(this.items);
+                    .value(accessor)(this.filteredItems);
             } else {
                 // I'll do the bins myself, d3 just messes everything up when you want to use a simple step scale!
                 this.histBins = [];
@@ -6040,7 +6052,7 @@ var Summary_Interval_functions = {
                     d.dx = 0;
                     this.histBins.push(d);
                 }
-                this.items.forEach(function(item){
+                this.filteredItems.forEach(function(item){
                     var v = accessor(item);
                     var bin=this.histBins[v-this.intervalRange.min];
                     bin.push(item);
@@ -6991,11 +7003,11 @@ var Summary_Interval_functions = {
         var filterId = this.summaryFilter.id;
         var accessor = function(item){ return item.mappedDataCache[filterId].v; };
         if(!this.hasEntityParent()){
-            this.items.forEach(function(item){
+            this.filteredItems.forEach(function(item){
                 if(item.isWanted) values.push(accessor(item));
             });
         } else {
-            this.items.forEach(function(item){
+            this.filteredItems.forEach(function(item){
                 if(item.aggregate_Active>0) values.push(accessor(item));
             });
         }

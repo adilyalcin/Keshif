@@ -2170,6 +2170,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms ease;
   transition: opacity 500ms ease;
 }
+.kshf .listDiv > .listItemGroup > .listItem > .itemRank {
+  display: none;
+  font-size: 0.6em;
+  color: gray;
+  font-weight: 300;
+  font-style: italic;
+  text-align: right;
+}
 .kshf .listDiv > .listItemGroup > .listItem > .content {
   vertical-align: top;
   border: solid 0px lightgray;
@@ -2369,6 +2377,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv select.listSortOptionSelect {
   bottom: 0px;
 }
+.kshf .listDiv[showRank=true] .itemRank {
+  display: inline-block !important;
+}
+.kshf .listDiv[showRank=true] .adjustSortColumnWidth {
+  margin-left: 13px;
+}
 .kshf .listDiv[displaytype="grid"] > .listItemGroup {
   display: -webkit-box;
   display: -moz-box;
@@ -2394,19 +2408,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-item-align: start;
   align-self: flex-start;
 }
+.kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .itemRank {
+  vertical-align: top;
+  margin-right: 2px;
+}
 .kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content {
-  display: block;
+  display: inline-block;
 }
 .kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .itemToggleDetails {
   display: block;
   position: absolute;
   z-index: 10;
-}
-.kshf .listDiv[showRank=true] .itemRank {
-  display: inline-block !important;
-}
-.kshf .listDiv[showRank=true] .adjustSortColumnWidth {
-  margin-left: 13px;
 }
 .kshf .listDiv[displaytype="list"] > .listHeader > .configRow > .adjustSortColumnWidth > .handle {
   display: block;
@@ -2439,15 +2451,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemRank {
-  display: none;
-  font-size: 0.6em;
-  color: gray;
-  font-weight: 300;
   float: left;
-  width: 13px;
-  font-style: italic;
-  text-align: right;
   margin-top: 4px;
+  width: 13px;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
   width: 18px;

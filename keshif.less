@@ -2106,6 +2106,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: relative;
                 .transition(~"opacity 500ms ease");
 
+                > .itemRank{
+                    display: none;
+                    font-size: 0.6em;
+                    color: gray;
+                    font-weight: 300;
+                    font-style: italic;
+                    text-align: right;
+                }
+
                 > .content{
                     vertical-align: top;
                     border: solid 0px lightgray;
@@ -2300,29 +2309,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         select.listSortOptionSelect{
             bottom:0px;
         }
-        &[displaytype="grid"] {
-            > .listItemGroup {
-                .display(flex);
-                .flex-direction(row);
-                .flex-wrap(wrap);
-                justify-content: space-around;
-                -webkit-justify-content: space-around;
-                > .listItem{
-                    display: block;
-                    .align-self(flex-start);
-                    > .content{
-                        display: block;
-                        //width: 100%;
-                    }
-                    > .itemToggleDetails{
-                        display: block;
-                        position: absolute;
-                        z-index: 10;
-                    }
-                }
-            }
-        }
-
         &[showRank=true]{
             .itemRank{
                 display: inline-block !important;
@@ -2335,6 +2321,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
+        &[displaytype="grid"] {
+            > .listItemGroup {
+                .display(flex);
+                .flex-direction(row);
+                .flex-wrap(wrap);
+                justify-content: space-around;
+                -webkit-justify-content: space-around;
+                > .listItem{
+                    display: block;
+                    .align-self(flex-start);
+                    > .itemRank{
+                        vertical-align: top;
+                        margin-right: 2px;
+                    }
+                    > .content{
+                        display: inline-block;
+                    }
+                    > .itemToggleDetails{
+                        display: block;
+                        position: absolute;
+                        z-index: 10;
+                    }
+                }
+            }
+        }
         &[displaytype="list"] {
             > .listHeader > .configRow > .adjustSortColumnWidth >.handle{
                 display: block;
@@ -2358,15 +2369,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         overflow: hidden;
                     }
                     > .itemRank{
-                        display: none;
-                        font-size: 0.6em;
-                        color: gray;
-                        font-weight: 300;
                         float: left;
-                        width: 13px;
-                        font-style: italic;
-                        text-align: right;
                         margin-top: 4px;
+                        width: 13px;
                     }
                     > .itemToggleDetails{
                         width: 18px;
