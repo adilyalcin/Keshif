@@ -55,7 +55,7 @@ var kshf = {
     },
     summaryCount: 0,
     maxVisibleItems_Default: 100, 
-    scrollWidth: 21,
+    scrollWidth: 19,
     dt: {},
     dt_id: {},
     LOG: {
@@ -1782,6 +1782,7 @@ kshf.Panel.prototype = {
         }
         this.summaries.forEach(function(s,i){ s.panelOrder = i; });
         this.addDOM_DropZone(summary.DOM.root[0][0]);
+        this.refreshAdjustWidth();
     },
     /** -- */
     removeSummary: function(summary){
@@ -1919,7 +1920,7 @@ kshf.Panel.prototype = {
     /** -- */
     refreshAdjustWidth: function(){
         if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
-        this.DOM.panelAdjustWidth.style("display",(this.summaries.length===0)?"none":"");
+        this.DOM.panelAdjustWidth.style("display",(this.summaries.length>0)?"block":"");
     },
     /** -- */
     setTotalWidth: function(_w_){
@@ -4741,7 +4742,6 @@ var Summary_Categorical_functions = {
         });
         this.DOM.sortButton.style("left",labelWidth+"px");
         this.DOM.aggr_Group.style("left",barChartMinX+"px");
-        this.DOM.chartBackground.style("margin-left",barChartMinX+"px");
         if(this.DOM.sortButton)
             this.DOM.sortButton.style("width",this.panel.width_catMeasureLabel+"px");
     },
@@ -4753,8 +4753,8 @@ var Summary_Categorical_functions = {
         }
         var moreTxt = ""+this.catCount_Visible+" Row";
         if(this.catCount_Visible>1) moreTxt+="s";
-        var below = this.catCount_Visible-bottomItem-1;
-        if(below>0) moreTxt+=", <span class='fa fa-angle-down'></span> "+below+" more ";
+        var below = this.catCount_Visible-bottomItem;
+        if(below>0) moreTxt+=", <span class='fa fa-angle-down'></span> "+below+" more";
         this.DOM.scroll_display_more.html(moreTxt);
     },
     /** -- */
