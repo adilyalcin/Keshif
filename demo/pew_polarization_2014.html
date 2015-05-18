@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>PEW Research Center - Polarization Survey 2014</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+google.setOnLoadCallback(function(){
+    resizeBrowser(350,80);
+    $(window).resize(function() {
+        resizeBrowser(350,80);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 210,
+        barChartWidth: 100,
+        itemName: "Participants",
+        source: {
+            url: "http://www.pewresearch.org/packages/political-polarization/",
+            gdocId: '1wcqbRDj7JTFDSWqD--ZJuYYmb5fbr4b_s-fXoaSVS1s',
+            sheets: [ 
+                {name:"Questions"}, 
+                {name:"lang"},
+                {name:"phase"},
+                {name:"happy"},
+                {name:"happy_2"},
+                {name:"approval"},
+                {name:"strength"},
+                {name:"strength_2"},
+                {name:"satisfaction"},
+                {name:"yes/no"},
+                {name:"yes/no/mixed"},
+                {name:"opinion"},
+                {name:"opinion_2"},
+                {name:"opinion_3"},
+                {name:"opinion_4"},
+                {name:"outlook"},
+                {name:"difference"},
+                {name:"area"},
+                {name:"community"},
+                {name:"follow"},
+                {name:"frequency"},
+                {name:"frequency_voting"},
+                {name:"usborn"},
+                {name:"religion"},
+                {name:"attend"},
+                {name:"income"},
+                {name:"ideo"},
+                {name:"party"},
+                {name:"party_candidate"},
+                {name:"sex"},
+                {name:"marital"},
+                {name:"education"},
+                {name:"race"},
+                {name:"birth_hisp"},
+                {name:"voting_past"},
+                {name:"importance"},
+                {name:"divided"},
+                {name:"success"},
+                {name:"opinion_us"},
+                {name:"global_warming"},
+                {name:"global_warm_skeptic"},
+                {name:"reg_status"},
+                /*
+                {name:"qb40b"},
+                {name:"qb40a"},
+                {name:"q106"},
+                {name:"qb107"},
+                {name:"qb109"},
+                {name:"qb115"},
+                {name:"qb117"},
+                {name:"q123"},
+                {name:"q123a"},
+                {name:"q123b"},
+                
+                {name:"q124"},
+                {name:"q124a"},
+                {name:"q124b"},
+                {name:"qc135"},
+                {name:"q150"},
+
+                {name:"agreement"},*/
+                
+            ],
+            callback: function(browser){
+                function createTable(tableName, arr){
+                    kshf.dt[tableName] = [];
+                    var arr = kshf.dt[tableName];
+                    arr.forEach(function(o){
+                        arr.push(new kshf.Item(0,"id"));
+                    });
+                };
+
+                createTable("agreement",[
+                    {id: 1, Name: "Agree"},
+                    {id: 2, Name: "Disagree"},
+                    {id: 3, Name: "No opinion either way"},
+                    {id: 8, Name: "Haven’t heard of"},
+                    {id: 9, Name: "Refused"}
+                ]);
+                createTable("qb40a",[
+                    {id: 1, Name: "Basically content"},
+                    {id: 2, Name: "Frustrated"},
+                    {id: 3, Name: "Angry"},
+                    {id: 9, Name: "Don’t know/Refused"}
+                ]);
+                createTable("qb40b",[
+                    {id:1, Name: "Just about always"},
+                    {id:2, Name: "Most of the time"},
+                    {id:3, Name: "Only some of the time"},
+                    {id:4, Name: "Never"},
+                    {id:9, Name: "Don’t know/Refused"}
+                ]);
+                createTable("q106",[
+                    {id:1, Name: "Yes, have run for elected office"},
+                    {id:2, Name: "No, have not run for elected office"},
+                    {id:9, Name: "Don’t know/Refused"}
+                ]);
+
+                var parseDate = d3.time.format("%Y%m%e");
+                $.ajax({
+                    url: "./data/pew_polarization_2014.csv",
+                    type: "GET",
+                    async: false,
+                    contentType: "text/csv",
+                    success: function(data) {
+                        browser.primaryTableName = "Participants";
+                        var arr = [];
+                        kshf.dt.Participants = arr;
+
+                        var parsedData = Papa.parse(data, {
+                            dynamicTyping: true,
+                            header: true,
+                        });
+
+                        parsedData.data.forEach(function(row,i){
+                            row.id = i;
+                            row.int_date = parseDate.parse(""+row.int_date);
+                            arr.push(new kshf.Item(row,'id'));
+                        });
+
+                        browser.loadCharts();
+                    }
+                });
+            }
+        },
+        newSummaryCb: function(summary){
+            var summaryName = summary.summaryName;
+            var question = kshf.dt_id.Questions[summaryName];
+            if(question===undefined) return;
+            
+            if(question.data.ResponseList){
+                if(summary.type!=='categorical'){
+                    summary.destroy();
+                    summary = this.createSummary(summaryName,null,'categorical');
+                    return;
+                }
+                if(question.data.Name){
+                    this.changeSummaryName(summaryName,question.data.Name);
+                }
+                summary.setCatTable(question.data.ResponseList);
+                summary.setCatLabel("Name");
+                summary.setSortingOpts([{ value: "id" }]);
+            } else {
+                if(question.data.Name){
+                    this.changeSummaryName(summaryName,question.data.Name);
+                }
+            }
+
+            if(question.data.Short){
+                summary.summaryDescription = question.data.Short;
+            }
+            
+        }
+    });
+});
+        </script>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
