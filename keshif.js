@@ -1312,6 +1312,13 @@ kshf.List.prototype = {
         this.DOM.totalViz_preview.style("width",(100*this.browser.itemCount_Previewed/this.browser.items.length)+"%");
     },
     /** -- */
+    refreshActiveItemCount: function(){
+        this.DOM.listHeader_count
+            .text((this.browser.itemsWantedCount!==0)?this.browser.itemsWantedCount:"No")
+            .style("width",(this.browser.items.length.toString().length*16)+"px")
+            ;
+    },
+    /** -- */
     refreshRecordRank: function(){
         if(!this.showRank) return;
         this.DOM.ranks.text(function(d){ 
@@ -2731,7 +2738,6 @@ kshf.Browser.prototype = {
                 totalWidth-=this.panels.middle.width_catLabel+kshf.scrollWidth+this.panels.middle.width_catMeasureLabel;
                 colCount++;
             }
-            if(this.listDisplay===undefined) return totalWidth/colCount;
             return Math.floor((totalWidth)/8);
         };
         var defaultBarChartWidth = x.call(this);
@@ -2958,16 +2964,8 @@ kshf.Browser.prototype = {
             if(item.isWanted) this.itemsWantedCount++;
         },this);
 
-        if(this.listDisplay){
-            this.listDisplay.refreshTotalViz();
-
-            if(this.listDisplay.DOM.listHeader_count){
-                this.listDisplay.DOM.listHeader_count
-                    .text((this.itemsWantedCount!==0)?this.itemsWantedCount:"No")
-                    .style("width",(this.items.length.toString().length*16)+"px")
-                    ;
-            }
-        }
+        this.listDisplay.refreshTotalViz();
+        this.listDisplay.refreshActiveItemCount();
     },
     /** @arg resultChange: 
      * - If positive, more results are shown
@@ -2979,7 +2977,7 @@ kshf.Browser.prototype = {
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.updateAfterFilter(resultChange);
         });
-        if(this.listDisplay) this.listDisplay.updateAfterFilter();
+        this.listDisplay.updateAfterFilter();
 
         if(this.updateCb) this.updateCb(this);
     },
@@ -3050,22 +3048,17 @@ kshf.Browser.prototype = {
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.clearViz_Preview();
         });
-        if(this.listDisplay){
-            this.listDisplay.refreshTotalViz();
-        }
+        this.listDisplay.refreshTotalViz();
         if(this.previewCb) this.previewCb.call(this,true);
     },
     /** -- */
     refreshResultPreviews: function(){
-        var me=this;
         this.vizPreviewActive = true;
         this.DOM.root.attr("resultpreview",true);
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshViz_Preview();
         });
-        if(this.listDisplay){
-            this.listDisplay.refreshTotalViz();
-        }
+        this.listDisplay.refreshTotalViz();
         if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
@@ -3183,12 +3176,10 @@ kshf.Browser.prototype = {
         if(this.panels.middle.summaries.length>0){
             var panelHeight = divHeight_Total;
             if(this.panels.bottom.summaries.length>0) panelHeight-=bottomFacetsHeight;
-            if(this.listDisplay) {
-                if(this.listDisplay.recordView){
-                    panelHeight -= 200; // give 100px fo the list display
-                } else {
-                    panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; // give 100px fo the list display
-                }
+            if(this.listDisplay.recordView){
+                panelHeight -= 200; // give 200px fo the list display
+            } else {
+                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; // give 100px fo the list display
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
@@ -3198,7 +3189,7 @@ kshf.Browser.prototype = {
             if(summary.inBrowser()) summary.refreshHeight();
         });
  
-        if(this.listDisplay) {
+        if(this.listDisplay){
             var listDivTop = 0;
             // get height of header
             var listHeaderHeight=this.listDisplay.DOM.listHeader[0][0].offsetHeight;
@@ -3224,10 +3215,8 @@ kshf.Browser.prototype = {
             marginRight=2;
             widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
         }
-        if(this.listDisplay){
-            this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
-            this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
-        }
+        this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
+        this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
         this.panels.middle.setTotalWidth(widthMiddlePanel);
         this.panels.middle.updateSummariesWidth();
         this.panels.bottom.updateSummariesWidth();
