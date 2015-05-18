@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Film Set Accidents in L.A. area</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+$(document).ready( function(){
+    resizeBrowser(300,140);
+    $(window).resize(function() {
+        resizeBrowser(300,140);
+        browser.updateLayout();
+    });
+
+    var timeFormat = d3.time.format("%d %b, %y");
+
+    var printPeople = function(){
+        var str="";
+        for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
+        return str;
+    };
+
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 150,
+        source: {
+            url: "http://spreadsheets.latimes.com/film-set-accidents/",
+            gdocId: '1ooCfrHUY0stGmrMK84Dh3RkgXBkmKCMU5tIB7VNRpss',
+            sheets: [  {name:"Accidents"}]
+        },
+        summaries: [
+            {   title: "Injury type"
+            },{ title: "Injury source"
+            },{ title: "Company"
+            },{ title: "Injuries", catLabel: printPeople, sortingOpts: [{value: 'id'}], layout: "right"
+            },{ title: "Fatalities", catLabel: printPeople, sortingOpts: [{value: 'id'}], layout: "right"
+            },{ title: "Fine", intervalScale: "log", unitName: "$", layout: "right"
+            },{ title: "State", collapsed: true, layout: "right"
+            },{ title: "Date", layout: "bottom"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 70,
+            sortingOpts: [
+                {name: 'Date', label: function(){ return timeFormat(this.Date); }, inverse: true},
+                {name: 'Injuries'}, {name: 'Fatalities'},
+            ],
+            recordView: function(){ return this.Description; }
+        }
+    });
+});
+</script>
+<style type="text/css" media="screen">
+    .theLabel > .fa{
+        margin-left: 2px;
+    }
+</style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">Film Set Accidents</div>
+        <div class="pageSubtitle">
+            A breakdown of 205 production accidents from 1990 through 2014 involving 251 catastrophic injuries and 44 deaths.
+            </div>
+
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data from <a href="http://spreadsheets.latimes.com/film-set-accidents/" target="_blank">Los Angeles Times</a> - 
+            News story: <a href="http://www.latimes.com/entertainment/envelope/cotown/la-et-ct-film-set-accidents-deaths-20150311-story.html#page=1"
+            target="_blank">As deaths rise on reality TV, films sets, many blame need to get 'dramatic footage'</a>.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
