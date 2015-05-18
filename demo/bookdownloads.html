@@ -45,9 +45,8 @@ $(document).ready( function(){
             callback: dataLoad
         },
         summaries: [
-            {   title: "Hour", layout: 'bottom',
+            {   title: "Hour", unitName: ": 00", layout: 'bottom',
                 attribMap: function(){ return this.downloadTime.hour(); },
-                unitName: ": 00"
             },{ title: "Time", layout: 'bottom',
                 attribMap: function(){ return new Date(this.downloadTime);}
             },{ title: "Day", layout: 'right',
@@ -72,7 +71,7 @@ $(document).ready( function(){
                 attribMap: function(){ return this.downloadTime.year(); },
                 sortingOpts: [{ value: 'id' }] // makes a categorical facet
             }
-        ],
+        ]
     });
 });
 

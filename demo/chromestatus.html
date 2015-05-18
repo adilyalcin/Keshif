@@ -34,22 +34,34 @@ var loadData = function(browser){
     });
 };
 
+function mileSort(v){
+    switch(v){
+        case "In development": return 99;
+        case "Proposed": return 98;
+        case "No active development": return 97;
+        default: return v;
+    }
+};
+
 $(document).ready( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 180,
-        barChartWidth: 100,
+        barChartWidth: 80,
         itemName: "Chromium Features",
         source: {
             url: "http://www.chromestatus.com/features",
             callback: loadData
         },
         summaries: [
-            {   title: "Category", attribMap: "category"
+            {   title: "Milestone", attribMap: function(){
+                    return this.meta["milestone_str"];
+                },
+                sortingOpts: [{  value: function(){ return mileSort(this.id); }, inverse: true}]
+            },{ title: "Category", attribMap: "category"
             },{ title: "Implementation Status", attribMap: "impl_status_chrome"
             },{ title: "Standardization", attribMap: function(){ return this.standardization.text; }
-            },{ title: "Visibility", attribMap: "visibility", layout: 'left'
-            },{ title: "Milestone", attribMap: "shipped_milestone", layout: 'right'
+            },{ title: "Visibility", attribMap: "visibility", layout: 'right'
             },{ title: "Prefixed", attribMap: "prefixed", layout: 'right', collapsed: true,
             },{ title: "Owner", attribMap: "owner", layout: 'right', collapsed: true,
             },{ title: "Updated By", attribMap: "updated_by", layout: 'right', collapsed: true,
@@ -60,19 +72,22 @@ $(document).ready( function(){
             },{ title: "Safari Status", attribMap: function(){ return this.safari_views.text; }, layout: 'right',
                 /*}
             ]*/
-            },{ title: "Update Date", layout: 'bottom',
+            },{ title: "Update Date", layout: 'bottom', collapsed: true,
                 attribMap: function(){ return new Date(moment(this.updated)); },
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
-            sortingOpts: [ {name:'Milestone', value: "shipped_milestone"} ],
+            sortColWidth: 90,
+            sortingOpts: [ {name:'Milestone', 
+                value: function(){ return mileSort(this.meta["milestone_str"]); },
+                label: function(){ return this.meta["milestone_str"]; }
+            } ],
             textSearch: 'title',
             displayType: 'list',
-            detailsToggle: 'zoom',
             recordView: function(){
-                return "<a target='_blank' href='http://www.chromestatus.com/feature/"+this.id
-                    +"'><span class='title'>"+this.name+"</span></a>";
+                return "<span class='title'>"+this.name+"</span>"+
+                    " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+
+                    "<span class='summary'>"+this.summary+"</span>";
             }
         }
     });
@@ -80,19 +95,42 @@ $(document).ready( function(){
         </script>
 <style>
     #chart_div{
-        width: 1100px;
+        width: 1150px;
         height: 700px;
     }
     .content a{
         color: #496B86;
+        font-size: 0.8em;
+        text-decoration: none;
+    }
+    .content a:hover{
+        color: orangered;
     }
     .content .title{
-        display: block;
+        display: inline;
         margin-left: auto;
         margin-right: auto;
         margin-top: 2px;
         text-align: left;
+        font-size: 1em;
+        font-weight: 700;
+    }
+    canvas{
+        display: none;
+    }
+    iframe{
+        display: none;
+    }
+    .summary{
+        display: block;
         font-size: 0.8em;
+        color: gray;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .summary:hover{
+        white-space: initial;
     }
 </style>
     </head>

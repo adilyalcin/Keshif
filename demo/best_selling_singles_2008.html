@@ -15,36 +15,34 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-            google.setOnLoadCallback(function(){
-                browser = new kshf.Browser({
-                    domID: "#chart_div",
-                    barChartWidth: 90,
-                    leftPanelLabelWidth: 100,
-                    rightPanelLabelWidth: 90,
-                    source: {
-                        gdocId: '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
-                        sheets: [ {name:"Singles"} ]
-                    },
-                    summaries: [
-                        {   title: "Genre"
-                        },{ title: "Country", layout: 'right', 
-                            description: "Country of origin"
-                        },{ title: "Sex", layout: 'right'
-                        },{ title: "Age", layout: 'right'
-                        },{ title: "Type", layout: 'right'
-                        },{ title: "Race", layout: 'right'
-                        },{ title: "Label"
-                        }
-                    ],
-                    itemDisplay: {
-                        sortColWidth: 45,
-                        detailsToggle: "zoom",
-                        sortingOpts: [ {name: 'Position', inverse:true} ],
-                        textSearchFunc: function(){return this['Artist(s)']+" "+this.Track; },
-                        recordView: function(){ return this['Artist(s)']+" - "+this.Track; }
-                    }
-                });
-            });
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 90,
+        source: {
+            gdocId: '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
+            sheets: [ {name:"Singles", id:"Position"} ]
+        },
+        summaries: [
+            {   title: "Genre"
+            },{ title: "Country", layout: 'right', description: "Country of origin"
+            },{ title: "Sex", layout: 'right'
+            },{ title: "Age", layout: 'right'
+            },{ title: "Type", layout: 'right'
+            },{ title: "Race", layout: 'right'
+            },{ title: "Label"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 45,
+            sortingOpts: [ {name: 'Position', inverse:true} ],
+            textSearchFunc: function(){return this['Artist(s)']+" "+this.Track; },
+            recordView: function(){ return this['Artist(s)']+" - "+this.Track; }
+        }
+    });
+});
         </script>
         <style>
             #chart_div {

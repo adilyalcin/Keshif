@@ -133,18 +133,17 @@ $(document).ready( function(){
         categoryTextWidth: 150,
         itemName: "Books Read by Ben Bederson",
         source: {
-    url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
-    callback: loadData
+            url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
+            callback: loadData
         },
         summaries: [
             {   title: "Genres"
-            },{ title: "Bederson's Rating", attribMap: "Rating",
-                catLabel: function(){ return getStars(this.id); }
+            },{ title: "Bederson's Rating", attribMap: "Rating", catLabel: function(){ return getStars(this.id); }
             },{ title: "Author", 
             },{ title: "Reviewed", description: "Mouse-over the book image to see my review",
                 attribMap: function(){ return (this.Review!=="")?"Yes":"No"; }
             },{ title: "# of Pages", attribMap: "NumPages", collapsed: true,
-            },{ title: "Year: Book Read", attribMap: "ReadYear", layout: "middle", collapsed: true, intervalScale: 'step',
+            },{ title: "Year: Book Read", attribMap: "ReadYear", intervalScale: 'step', layout: "middle", collapsed: true
             },{ title: "Year: Publication (Excl. Books Before 1990)", attribMap: "PubYear", layout: "middle",
                 intervalScale: 'step'
             }
@@ -156,13 +155,10 @@ $(document).ready( function(){
             ],
             textSearch: "Title",
             displayType: 'grid',
-            maxVisibleItems_Default: 200,
-            detailsToggle: "zoom",
             recordView: function(){
                 return "<a target='_blank' href="+this.URL+" class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='subTitle'>"+this.Author+"</span>"+
-                    "<span class='title'>"+this.Title+"</span>"+
-                    getStars(this.Rating);
+                    "<span class='title'>"+this.Title+"</span>"+getStars(this.Rating);
             },
             visibleCb: function(d){
                 d3.select(d.DOM.record).select("img").attr("src",this.Thumb).attr("title", this.Review);

@@ -188,13 +188,13 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts : [{
-                name: 'Year', value: function(){ if(this.Year) return this.Year.getTime(); },
+                name: 'Year',
+                value: function(){ if(this.Year) return this.Year.getTime(); },
                 label: function(){ if(this.Year) return this.Year.getFullYear(); }
             }],
-            textSearch: "Name",
             displayType: 'grid',
-            detailsToggle: 'zoom',
             maxVisibleItems_Default: 40,
+            textSearch: "Name",
             recordView: function(){
                 return "<a href='"+this.url+"' target='_blank'><img><span class='title'>"+this.Name+"</span></a>";
             },

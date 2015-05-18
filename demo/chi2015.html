@@ -129,10 +129,10 @@ google.setOnLoadCallback(function(){
                 sortingOpts: [{ 
                     value: function(){
                         switch(this.id){
-                            case "Monday": return 0;
-                            case "Tuesday": return 1;
+                            case "Monday"   : return 0;
+                            case "Tuesday"  : return 1;
                             case "Wednesday": return 2;
-                            case "Thursday": return 3;
+                            case "Thursday" : return 3;
                         }
                     }
                 }]
@@ -151,9 +151,7 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 55,
-            detailsToggle: "zoom",
-            sortingOpts: [{ name: '', inverse: true, value: function(){ return this.key; } }],
+            sortingOpts: [{ name: '', value: function(){ return this.key; }, inverse: true }],
             textSearch: 'title',
             recordView: 'title'
         }

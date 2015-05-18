@@ -78,22 +78,13 @@ $(document).ready( function(){
             {   title: "Category", attribMap: "type",
                 catLabel: function(){ return getType(this.id)+" <span class='typeImg_"+this.id+"'></span>"; }
             },{ title: "Contributors",
-            },{ title: "Number of Related Posts", // showPercentile: true,
-                attribMap: function(){ return this.links.length; },
+            },{ title: "Number of Related Posts", attribMap: function(){ return this.links.length; }//, showPercentile: true,
             },{ title: "Related To", attribMap: "links", catTableName: "Posts", catLabel: "title"
             }
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts: [
-                { name:'# Related Posts', value: function(){ return this.links.length}},
-                { name:'First Contr.', inverse: true,
-                    value: function(){
-                        if(this.Contributors===undefined) return "-";
-                        return this.Contributors[0];
-                    }
-                }
-            ],
+            sortingOpts: [{ name:'# Related Posts', value: function(){ return this.links.length}],
             showRank: true,
             showSelectBox: true,
             detailsToggle: "one",

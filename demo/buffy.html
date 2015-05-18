@@ -122,9 +122,6 @@ $(document).ready(function(){
             // http://visualizingbuffy.com/data/season1_data.js
             callback: dataLoad
         },
-        readyCb: function(browser){
-//            browser.facets[2].setHeightRow_attrib(20);
-        },
         summaries: [
             {   title: "Episode", layout: 'middle',
                 sortingOpts: [{ value: "ep_id" }],
@@ -165,10 +162,8 @@ $(document).ready(function(){
                     },{ title: "Type", collapsed: true
                     }
                 ]
-            },{ title: "Time (Minutes into the episode)",
+            },{ title: "Time (Minutes into the episode)", unitName: "min", layout: "bottom",
                 attribMap: function(){ return this.second/60; },
-                layout: "bottom",
-                unitName: "min"
             }
         ]
     });

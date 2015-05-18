@@ -155,8 +155,7 @@ google.setOnLoadCallback(function(){
             {   title: "Term"
             },{ title: "Category"
             },{ title: "Year", attribMap: function(){ return this.Proceeding.data.year; },
-                intervalScale: 'step',
-                layout: 'middle'
+                intervalScale: 'step', layout: 'middle'
             },{ title: "Authors",
                 catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
                 summaries: [{ title: "Affiliaton" }]
@@ -175,11 +174,9 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
             sortingOpts: [ {name: 'Citations', value: "CitedByTotal"} ],
             textSearch: "Title",
             linkText: 'Citations to',
-            detailsToggle: "zoom",
             recordView: "Title"
         }
     });
