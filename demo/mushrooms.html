@@ -151,6 +151,7 @@ var getName = {
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
+        itemName: "Mushroom Species",
         barChartWidth: 110,
         leftPanelLabelWidth: 148,
         rightPanelLabelWidth: 148,
@@ -238,13 +239,12 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
             #chart_div {
-                width: 950px;
+                width: 1020px;
                 height: 670px;
             }
         </style>
     </head>
     <body>
-        <div class="pageTitle" align="center">Mushroom Species</div>
         <div class="contents"><div id="chart_div"></div></div>
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>

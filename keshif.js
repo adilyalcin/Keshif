@@ -929,6 +929,7 @@ kshf.List = function(kshf_, config, root){
         this.initDOM_ConfigRow();
 
     this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
+        .style("display",this.recordView?"":"none")
         .on("scroll",function(d){
             // showMore display
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
@@ -943,12 +944,6 @@ kshf.List = function(kshf_, config, root){
             me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
         });
 
-    // **************************************************************************************************
-    // Header stuff *************************************************************************************
-
-    this.sortRecords();
-    this.insertRecords();
-
     this.DOM.showMore = this.listDiv.append("div").attr("class","showMore")
         .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
         .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
@@ -961,7 +956,11 @@ kshf.List = function(kshf_, config, root){
         this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
         this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
 
-    this.setSortColumnWidth(config.sortColWidth || 50); // default: 50px;
+    if(config.recordView){
+        this.sortRecords();
+        this.insertRecords();
+        this.setSortColumnWidth(config.sortColWidth || 50); // default: 50px;
+    }
 };
 
 kshf.List.prototype = {
@@ -974,7 +973,8 @@ kshf.List.prototype = {
     },
     /** -- */
     initDOM_BottomRow: function(){
-        this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow");
+        this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow")
+            .style("display",this.recordView?"":"none");
         this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
         this.initDOM_SortSelect();
         this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
@@ -1539,7 +1539,7 @@ kshf.List.prototype = {
                 }
                 if(me.detailsToggle==="zoom"){
                     me.browser.updateItemZoomText(d);
-                    me.browser.layout_infobox.attr("show","itemZoom");
+                    me.browser.panel_infobox.attr("show","itemZoom");
                 }
             });
     },
@@ -1698,6 +1698,7 @@ kshf.List.prototype = {
     },
     /** -- */
     updateAfterFilter_do:function(){
+        if(this.recordView===undefined) return;
         this.updateVisibleIndex();
         this.updateItemVisibility(false);
     },
@@ -1752,7 +1753,7 @@ kshf.Panel = function(options){
 
     this.DOM = {};
     this.DOM.root = options.parentDOM.append("div")
-        .attr("class", "layout_block layout_"+options.name)
+        .attr("class", "panel panel_"+options.name)
         .attr("hasSummaries",false);
     this.initDOM_DropZone();
     this.initDOM_AdjustWidth();
@@ -2014,6 +2015,8 @@ kshf.Browser = function(options){
 
     this.filters = [];
 
+    this.attribsShown = false;
+
     this.pauseResultPreview = false;
     this.vizPreviewActive = false;
     this.vizCompareActive = false;
@@ -2031,6 +2034,7 @@ kshf.Browser = function(options){
 
     // Callbacks
     this.loadedCb = options.loadedCb;
+    this.newSummaryCb = options.newSummaryCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
     this.previewCb = options.previewCb;
@@ -2085,7 +2089,7 @@ kshf.Browser = function(options){
 
     var asdasds=this.DOM.panelsTop.append("div").attr("class","middleColumn");
 
-    this.layoutList = asdasds.append("div").attr("class", "layout_block listDiv")
+    this.layoutList = asdasds.append("div").attr("class", "panel listDiv")
 
     this.panels.middle = new kshf.Panel({
         widthCatLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
@@ -2111,7 +2115,7 @@ kshf.Browser = function(options){
 
     var me = this;
 
-    this.DOM.root.selectAll(".layout_block").on("mouseleave",function(){
+    this.DOM.root.selectAll(".panel").on("mouseleave",function(){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
     });
 
@@ -2195,6 +2199,8 @@ kshf.Browser.prototype = {
 
         this.summaries.push(summary);
         this.summaries_by_name[name] = summary;
+
+        if(this.newSummaryCb) this.newSummaryCb.call(this,summary);
         return summary;
     },
     /** -- */
@@ -2243,7 +2249,7 @@ kshf.Browser.prototype = {
     /** -- */
     insertDOM_ResizeBrowser: function(){
         var me=this;
-        this.DOM.root.append("div").attr("class", "layout_block layout_resize")
+        this.DOM.root.append("div").attr("class", "panel panel_resize")
             .on("mousedown", function (d, i) {
                 me.DOM.root.style('cursor','nwse-resize');
                 me.setNoAnim(true);
@@ -2298,13 +2304,13 @@ kshf.Browser.prototype = {
         creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
-        this.layout_infobox = this.DOM.root.append("div").attr("class", "layout_block layout_infobox").attr("show","loading");
-        this.layout_infobox.append("div").attr("class","background")
+        this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox").attr("show","loading");
+        this.panel_infobox.append("div").attr("class","background")
             .on("click",function(){
-                me.layout_infobox.attr("show","none");
+                me.panel_infobox.attr("show","none");
             })
             ;
-        this.DOM.loadingBox = this.layout_infobox.append("div").attr("class","infobox_content infobox_loading");
+        this.DOM.loadingBox = this.panel_infobox.append("div").attr("class","infobox_content infobox_loading");
 //        this.DOM.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
         var ssdsd = this.DOM.loadingBox.append("span").attr("class","loadinggg");
         ssdsd.append("span").attr("class","loading_dots loading_dots_1").attr("anim",true);
@@ -2319,19 +2325,19 @@ kshf.Browser.prototype = {
                 "("+this.source.loadedTableCount+"/"+this.source.sheets.length+")":""
                 );
 
-        var infobox_credit = this.layout_infobox.append("div").attr("class","infobox_content infobox_credit");
+        var infobox_credit = this.panel_infobox.append("div").attr("class","infobox_content infobox_credit");
         infobox_credit.append("div").attr("class","infobox_close_button")
             .on("click",function(){
-                me.layout_infobox.attr("show","none");
+                me.panel_infobox.attr("show","none");
             })
             .append("span").attr("class","fa fa-times");
         infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
 
-        this.DOM.infobox_itemZoom = this.layout_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
+        this.DOM.infobox_itemZoom = this.panel_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
 
         this.DOM.infobox_itemZoom.append("div").attr("class","infobox_close_button")
             .on("click",function(){
-                me.layout_infobox.attr("show","none");
+                me.panel_infobox.attr("show","none");
             })
             .append("span").attr("class","fa fa-times");
 
@@ -2355,7 +2361,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     showInfoBox: function(){
-        this.layout_infobox.attr("show","credit");
+        this.panel_infobox.attr("show","credit");
         if(sendLog) sendLog(kshf.LOG.INFOBOX);
     },
     /** -- */
@@ -2401,7 +2407,7 @@ kshf.Browser.prototype = {
             qString+="&range="+sheet.range;
         }
 
-        var googleQuery=new google.visualization.Query(qString);
+        var googleQuery = new google.visualization.Query(qString);
         if(sheet.query) googleQuery.setQuery(sheet.query);
 
         googleQuery.send( function(response){
@@ -2410,11 +2416,11 @@ kshf.Browser.prototype = {
                 return;
             }
             if(response.isError()) {
-                me.layout_infobox.select("div.status_text .info")
+                me.panel_infobox.select("div.status_text .info")
                     .text("Cannot load data");
-                me.layout_infobox.select("span.loadinggg").selectAll("span").remove();
-                me.layout_infobox.select("span.loadinggg").append('i').attr("class","fa fa-warning");
-                me.layout_infobox.select("div.status_text .dynamic")
+                me.panel_infobox.select("span.loadinggg").selectAll("span").remove();
+                me.panel_infobox.select("span.loadinggg").append('i').attr("class","fa fa-warning");
+                me.panel_infobox.select("div.status_text .dynamic")
                     .text("("+response.getMessage()+")");
                 return;
             }
@@ -2545,7 +2551,7 @@ kshf.Browser.prototype = {
     incrementLoadedSheetCount: function(){
         var me=this;
         this.source.loadedTableCount++;
-        this.layout_infobox.select("div.status_text .dynamic")
+        this.panel_infobox.select("div.status_text .dynamic")
             .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
             // finish loading
         if(this.source.loadedTableCount===this.source.sheets.length) {
@@ -2568,8 +2574,8 @@ kshf.Browser.prototype = {
         }
 
         var me=this;
-        this.layout_infobox.select("div.status_text .info").text("Creating browser...");
-        this.layout_infobox.select("div.status_text .dynamic").text("");
+        this.panel_infobox.select("div.status_text .info").text("Creating browser...");
+        this.panel_infobox.select("div.status_text .dynamic").text("");
         window.setTimeout(function(){ me._loadCharts(); }, 100);
     },
     /** -- */
@@ -2694,19 +2700,17 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        if(this.listDef!==undefined){
-            this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
-            this.DOM.filtercrumbs = this.listDisplay.DOM.filtercrumbs;
+        if(this.listDef===undefined) this.listDef = {}
 
-            this.setItemName();
+        this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
+        this.DOM.filtercrumbs = this.listDisplay.DOM.filtercrumbs;
 
-            if(this.showDataSource !== false && this.source.url){
-                this.listDisplay.DOM.datasource
-                    .style("display","inline-block")
-                    .attr("href",this.source.url);
-            }
-        } else {
-            this.layoutList.style("display","none");
+        this.setItemName();
+
+        if(this.showDataSource !== false && this.source.url){
+            this.listDisplay.DOM.datasource
+                .style("display","inline-block")
+                .attr("href",this.source.url);
         }
 
         this.loaded = true;
@@ -2749,7 +2753,7 @@ kshf.Browser.prototype = {
         this.updateLayout_Height();
 
         // hide infobox
-        this.layout_infobox.attr("show","none");
+        this.panel_infobox.attr("show","none");
 
         this.insertAttributeList();
 
@@ -2823,7 +2827,7 @@ kshf.Browser.prototype = {
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
-                        // Mouse up on the header
+                        if(!moved) return;
                         _this.style.opacity = null;
                         me.clearDropZones();
                         d3.event.preventDefault();
@@ -2846,7 +2850,7 @@ kshf.Browser.prototype = {
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
             .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("mousedown",function(){
+            .on("mousedown",function(summary){
                 if(!summary.aggr_initialized){
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -3179,7 +3183,13 @@ kshf.Browser.prototype = {
         if(this.panels.middle.summaries.length>0){
             var panelHeight = divHeight_Total;
             if(this.panels.bottom.summaries.length>0) panelHeight-=bottomFacetsHeight;
-            if(this.listDisplay) panelHeight -= 200; // give 100px fo the list display
+            if(this.listDisplay) {
+                if(this.listDisplay.recordView){
+                    panelHeight -= 200; // give 100px fo the list display
+                } else {
+                    panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; // give 100px fo the list display
+                }
+            }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
 
@@ -3192,7 +3202,7 @@ kshf.Browser.prototype = {
             var listDivTop = 0;
             // get height of header
             var listHeaderHeight=this.listDisplay.DOM.listHeader[0][0].offsetHeight;
-            var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
+            var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight;
             if(this.panels.bottom.summaries.length>0){
                 listDisplayHeight-=bottomFacetsHeight;
             }
@@ -3522,6 +3532,10 @@ kshf.Summary_Base.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
+            .on("mousedown", function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
             .on("click", function(d,i){
                 this.tipsy.hide();
                 me.summaryFilter.clearFilter();
@@ -3696,10 +3710,12 @@ var Summary_Categorical_functions = {
     /** -- */
     initializeAggregates: function(){
         if(this.aggr_initialized) return;
-        this.catTableName = this.summaryName+"_h_"+this.id;
-        this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
+        if(this.catTableName===undefined){
+            this.catTableName = this.summaryName+"_h_"+this.id;
+            this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
+        }
         this.mapToAggregates();
-        this.setSortingOpts();
+        if(this.sortingOpts.length===0) this.setSortingOpts();
         if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
 
         this.aggr_initialized = true;
@@ -3799,6 +3815,9 @@ var Summary_Categorical_functions = {
             opt.inverse = opt.inverse || false;
             if(opt.func===undefined){
                 if(opt.value){
+                    if(opt.name && opt.value===undefined){
+                        opt.value = opt.name;
+                    }
                     if(typeof(opt.value)==="string"){
                         var x = opt.value;
                         opt.value = function(){ return this[x]; }
@@ -3830,7 +3849,7 @@ var Summary_Categorical_functions = {
     setCatLabel: function( catLabel ){
         if(typeof(catLabel)==="function"){
             this.catLabel = catLabel;
-        } else if(typeof(catLabel)==="string"){
+        } else if(typeof(catLabel)==="string" || typeof(catLabel)=="number"){
             var x = catLabel;
             this.catLabel = function(){ return this[x]; };
         } else {
@@ -3867,8 +3886,10 @@ var Summary_Categorical_functions = {
                 kshf.dt[this.catTableName] = this.items.slice();
             }
         }
-        this.mapToAggregates();
-        this.updateCats();
+        if(this.aggr_initialized){
+            this.mapToAggregates();
+            this.updateCats();
+        }
     },
     /** -- */
     createSummaryFilter: function(){
@@ -4032,8 +4053,15 @@ var Summary_Categorical_functions = {
     mapToAggregates: function(){
         var filterId = this.summaryFilter.id, me=this;
 
-        var targetTable = kshf.dt_id[this.catTableName];
-        var maxDegree = 0
+        var targetTable_id = {};
+        var targetTable = [];
+        kshf.dt[this.catTableName].forEach(function(srcI){
+            var i = new kshf.Item(srcI.data,srcI.idIndex);
+            targetTable_id[i.id()] = i;
+            targetTable.push(i);
+        });
+        this.catTable = targetTable;
+        var maxDegree = 0;
         this.items.forEach(function(item){
             item.mappedDataCache[filterId] = null; // default mapping to null
 
@@ -4055,7 +4083,7 @@ var Summary_Categorical_functions = {
             
             item.mappedDataCache[filterId] = [];
             mapping.forEach(function(a){
-                var m=targetTable[a];
+                var m=targetTable_id[a];
                 if(m==undefined) return;
                 item.mappedDataCache[filterId].push(m);
                 m.addItem(item);
@@ -4100,7 +4128,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateCats: function(){
-        this._cats = kshf.dt[this.catTableName].filter(function(cat){
+        this._cats = this.catTable.filter(function(cat){
             return cat.items.length>=this.minAggrValue;
         },this);
         this.updateCatCount_Total();
@@ -4249,7 +4277,7 @@ var Summary_Categorical_functions = {
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
             });
 
-        this.insertAttribs();
+        this.insertCategories();
 
         this.refreshLabelWidth();
 
@@ -4956,7 +4984,7 @@ var Summary_Categorical_functions = {
                 return;
             }
             attrib.highlightAll(true);
-            var timeoutTime = 400;
+            var timeoutTime = 250;
             if(this.browser.vizCompareActive) timeoutTime = 0;
             this.resultPreviewShowTimeout = setTimeout(function(){
                 if(!me.browser.pauseResultPreview && 
@@ -5010,7 +5038,7 @@ var Summary_Categorical_functions = {
         }
     },
     /** - */
-    insertAttribs: function(){
+    insertCategories: function(){
         var me = this;
         this.resultPreviewLogTimeout = null;
 
@@ -5304,6 +5332,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
+        if(this._cats===undefined) return;
         if(this._cats.length===0) return;
         if(this.uniqueCategories()) return; // Nothing to sort...
         if(this.sortingOpt_Active.no_resort===true && force!==true) return;

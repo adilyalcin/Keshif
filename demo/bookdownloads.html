@@ -50,7 +50,7 @@ $(document).ready( function(){
                 unitName: ": 00"
             },{ title: "Time", layout: 'bottom',
                 attribMap: function(){ return new Date(this.downloadTime);}
-            },{ title: "Day",
+            },{ title: "Day", layout: 'right',
                 attribMap: function(){ return this.downloadTime.day(); },
                 catLabel: function(){
                     switch(this.id){
@@ -64,11 +64,11 @@ $(document).ready( function(){
                     }
                 },
                 sortingOpts: [{ value: 'id' }]
-            },{ title: "Month", layout: 'right',
+            },{ title: "Month", layout: 'middle',
                 attribMap: function(){ return this.downloadTime.month(); },
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
                 sortingOpts: [{ value: 'id' }]
-            },{ title: "Year",
+            },{ title: "Year", layout: 'right',
                 attribMap: function(){ return this.downloadTime.year(); },
                 sortingOpts: [{ value: 'id' }] // makes a categorical facet
             }

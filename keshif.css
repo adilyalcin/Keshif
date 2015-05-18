@@ -98,11 +98,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .layout_block[hassummaries="true"] > .dropZone {
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone {
   display: block;
   cursor: s-resize;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .layout_block[hassummaries="false"] > .dropZone_panel {
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
   cursor: s-resize;
 }
@@ -476,7 +476,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-rendering: initial;
   pointer-events: none;
 }
-.kshf .layout_block > .dropZone {
+.kshf .panel > .dropZone {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -491,14 +491,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 50;
   margin: 2px;
 }
-.kshf .layout_block > .dropZone:hover {
+.kshf .panel > .dropZone:hover {
   background-color: #ffbca3;
 }
-.kshf .layout_block > .dropZone[readyToDrop="true"] {
+.kshf .panel > .dropZone[readyToDrop="true"] {
   background-color: #ffbca3;
   border-color: orangered;
 }
-.kshf .layout_block > .dropZone_panel {
+.kshf .panel > .dropZone_panel {
   display: none;
   background-color: rgba(200, 200, 200, 0.3);
   border-color: gray;
@@ -507,10 +507,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 50;
   position: absolute;
 }
-.kshf .layout_block > .dropZone_panel:hover {
+.kshf .panel > .dropZone_panel:hover {
   background-color: #ffbca3;
 }
-.kshf .layout_block .dropIcon {
+.kshf .panel .dropIcon {
   margin: 0px auto;
   position: relative;
   display: block;
@@ -518,19 +518,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   text-align: center;
 }
-.kshf .layout_block .dropZone[readyToDrop=true] .dropIcon {
+.kshf .panel .dropZone[readyToDrop=true] .dropIcon {
   color: orangered;
 }
-.kshf .layout_block[hidebars=true] .kshf .attrib .aggr_Group {
+.kshf .panel[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
 }
-.kshf .layout_block[hidebaraxis=true] .facetCategorical .chartAxis_Measure {
+.kshf .panel[hidebaraxis=true] .facetCategorical .chartAxis_Measure {
   display: none;
 }
-.kshf .layout_block[hidebaraxis=true] .facetCategorical .barChartMainInfo {
+.kshf .panel[hidebaraxis=true] .facetCategorical .barChartMainInfo {
   display: none;
 }
-.kshf .layout_block > .panelAdjustWidth {
+.kshf .panel > .panelAdjustWidth {
   display: none;
   position: absolute;
   pointer-events: all;
@@ -544,12 +544,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0.5;
   z-index: 10;
 }
-.kshf .layout_block > .panelAdjustWidth:hover {
+.kshf .panel > .panelAdjustWidth:hover {
   border-width: 0px 2px 0px 0px;
   border-style: dotted;
   border-color: gray;
 }
-.kshf .layout_block.layout_bottom {
+.kshf .panel.panel_bottom {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-inline-flex;
@@ -564,7 +564,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: column;
   width: 100%;
 }
-.kshf .layout_block.layout_bottom > .dropZone_panel {
+.kshf .panel.panel_bottom > .dropZone_panel {
   bottom: -30px;
   height: 30px;
   width: 100%;
@@ -572,7 +572,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-bottom-width: 2px;
   border-top-width: 1px;
 }
-.kshf .layout_block.layout_left {
+.kshf .panel.panel_left {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-inline-flex;
@@ -589,7 +589,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 100%;
 }
-.kshf .layout_block.layout_left > .dropZone_panel {
+.kshf .panel.panel_left > .dropZone_panel {
   left: 0px;
   height: 100%;
   top: 0%;
@@ -598,10 +598,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-right-width: 2px;
   border-left-width: 1px;
 }
-.kshf .layout_block.layout_left > .panelAdjustWidth {
+.kshf .panel.panel_left > .panelAdjustWidth {
   right: -2px;
 }
-.kshf .layout_block.layout_right {
+.kshf .panel.panel_right {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-inline-flex;
@@ -618,7 +618,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 100%;
 }
-.kshf .layout_block.layout_right > .dropZone_panel {
+.kshf .panel.panel_right > .dropZone_panel {
   right: 0px;
   height: 100%;
   top: 0%;
@@ -627,22 +627,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-left-width: 2px;
   border-right-width: 1px;
 }
-.kshf .layout_block.layout_right > .panelAdjustWidth {
+.kshf .panel.panel_right > .panelAdjustWidth {
   left: -2px;
 }
-.kshf .layout_block.layout_middle {
-  display: block;
+.kshf .panel.panel_middle {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  vertical-align: top;
+  position: relative;
+  flex: 1;
 }
-.kshf .layout_block.layout_middle > .dropZone_panel {
+.kshf .panel.panel_middle > .dropZone_panel {
   bottom: 0px;
   height: 30px;
   width: 100%;
   border-radius: 40px 40px 0px 0px;
   border-top-width: 2px;
   border-bottom-width: 1px;
-  position: relative;
 }
-.kshf .layout_block.layout_resize {
+.kshf .panel.panel_resize {
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -654,10 +667,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-right: 16px solid lightgray;
   border-top: 16px solid transparent;
 }
-.kshf .layout_block.layout_resize :hover {
+.kshf .panel.panel_resize :hover {
   border-right: 16px solid gray;
 }
-.kshf .layout_block.layout_infobox {
+.kshf .panel.panel_infobox {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -669,14 +682,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 500ms;
 }
-.kshf .layout_block.layout_infobox lesshat-selector {
+.kshf .panel.panel_infobox lesshat-selector {
   -lh-property: 0; } 
 @-webkit-keyframes itemZoom{ 0%{-webkit-transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1); opacity:1;}}
 @-moz-keyframes itemZoom{ 0%{-moz-transform: scale(0); opacity:1;} 100% {-moz-transform: scale(1); opacity:1;}}
 @-o-keyframes itemZoom{ 0%{-o-transform: scale(0); opacity:1;} 100% {-o-transform: scale(1); opacity:1;}}
 @keyframes itemZoom{ 0%{-webkit-transform: scale(0);-moz-transform: scale(0);-ms-transform: scale(0);transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); opacity:1;};
 }
-.kshf .layout_block.layout_infobox .infobox_close_button {
+.kshf .panel.panel_infobox .infobox_close_button {
   position: absolute;
   right: 3px;
   top: 3px;
@@ -689,10 +702,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 20px;
   color: white;
 }
-.kshf .layout_block.layout_infobox .infobox_close_button:hover {
+.kshf .panel.panel_infobox .infobox_close_button:hover {
   background-color: #6f6f6f;
 }
-.kshf .layout_block.layout_infobox > .background {
+.kshf .panel.panel_infobox > .background {
   width: 100%;
   height: 100%;
   z-index: -2;
@@ -705,7 +718,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: all 0.5s;
   border-radius: 20px;
 }
-.kshf .layout_block.layout_infobox > .infobox_content {
+.kshf .panel.panel_infobox > .infobox_content {
   display: none;
   margin: auto;
   box-shadow: 0px 0px 20px gray;
@@ -718,7 +731,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
 }
-.kshf .layout_block.layout_infobox > .infobox_loading {
+.kshf .panel.panel_infobox > .infobox_loading {
   width: 300px;
   height: 35px;
   position: absolute;
@@ -727,26 +740,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf .layout_block.layout_infobox > .infobox_loading .loadinggg {
+.kshf .panel.panel_infobox > .infobox_loading .loadinggg {
   position: absolute;
   top: 8px;
   left: 10px;
 }
-.kshf .layout_block.layout_infobox > .infobox_loading .loadinggg i.fa-warning {
+.kshf .panel.panel_infobox > .infobox_loading .loadinggg i.fa-warning {
   margin-left: 20px;
   font-size: 1.5em;
 }
-.kshf .layout_block.layout_infobox > .infobox_loading div.status_text {
+.kshf .panel.panel_infobox > .infobox_loading div.status_text {
   margin: auto;
   position: absolute;
   top: 10px;
   left: 70px;
   height: 20px;
 }
-.kshf .layout_block.layout_infobox > .infobox_loading div.status_text > .status_text_sub {
+.kshf .panel.panel_infobox > .infobox_loading div.status_text > .status_text_sub {
   margin-left: 5px;
 }
-.kshf .layout_block.layout_infobox > .infobox_credit {
+.kshf .panel.panel_infobox > .infobox_credit {
   display: none;
   width: 390px;
   height: 260px;
@@ -756,10 +769,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf .layout_block.layout_infobox > .infobox_credit div.all-the-credits {
+.kshf .panel.panel_infobox > .infobox_credit div.all-the-credits {
   margin: auto;
 }
-.kshf .layout_block.layout_infobox > .infobox_credit div.header {
+.kshf .panel.panel_infobox > .infobox_credit div.header {
   background-color: #d8ddd4;
   width: 100%;
   padding-top: 5px;
@@ -767,32 +780,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-right-radius: 15px;
   border-bottom: solid 2px #3c5e43;
 }
-.kshf .layout_block.layout_infobox > .infobox_credit span.libName {
+.kshf .panel.panel_infobox > .infobox_credit span.libName {
   font-size: 1.4em;
   font-weight: 700;
 }
-.kshf .layout_block.layout_infobox > .infobox_credit div.project_fund {
+.kshf .panel.panel_infobox > .infobox_credit div.project_fund {
   font-size: 0.8em;
   font-weight: 300;
 }
-.kshf .layout_block.layout_infobox > .infobox_itemZoom {
+.kshf .panel.panel_infobox > .infobox_itemZoom {
   position: relative;
   margin: 20px;
   padding: 10px;
 }
-.kshf .layout_block.layout_infobox[show=loading] > .infobox_loading {
+.kshf .panel.panel_infobox[show=loading] > .infobox_loading {
   display: inline-block;
 }
-.kshf .layout_block.layout_infobox[show=credit] > .infobox_credit {
+.kshf .panel.panel_infobox[show=credit] > .infobox_credit {
   display: inline-block;
 }
-.kshf .layout_block.layout_infobox[show=none] {
+.kshf .panel.panel_infobox[show=none] {
   pointer-events: none;
 }
-.kshf .layout_block.layout_infobox[show=none] > .background {
+.kshf .panel.panel_infobox[show=none] > .background {
   opacity: 0;
 }
-.kshf .layout_block.layout_infobox[show=itemZoom] > .infobox_itemZoom {
+.kshf .panel.panel_infobox[show=itemZoom] > .infobox_itemZoom {
   -webkit-animation: itemZoom 500ms forwards;
   -moz-animation: itemZoom 500ms forwards;
   -o-animation: itemZoom 500ms forwards;

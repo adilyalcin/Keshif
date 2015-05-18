@@ -61,12 +61,9 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Tag", catTableName: "Types",
-                attribMap: function(){ return this[2].t; }
-            },{ title: "Author", collapsed: true,
-                attribMap: function(){ return this[6]; },
-            },{ title: "Time", layout: "bottom",
-                attribMap: function(){ return new Date(this[7]); }
+            {   title: "Tag", attribMap: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1
+            },{ title: "Author", attribMap: function(){ return this[6]; }, collapsed: true,
+            },{ title: "Time", attribMap: function(){ return new Date(this[7]); }, layout: "bottom",
             }
         ],
         itemDisplay: {

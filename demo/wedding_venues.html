@@ -115,19 +115,19 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
-            sortingOpts: [{ name: 'id', inverse: true }],
-            detailsToggle: "zoom",
             textSearch: "Name",
-            maxVisibleItems_Default: 40,
             recordView: function(d){
-                return this.Name+" <a href='http://www.hitched.co.uk"+this.url+
-                    "' target='_blank' class='fa fa-external-link'></a>";
+                return "<a href='http://www.hitched.co.uk"+this.url+"' target='_blank'>"+this.Name+"</a>";
             }
         }
     });
 });
         </script>
+        <style type="text/css" media="screen">
+            .content a{
+                color: black !important;
+            }
+        </style>
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

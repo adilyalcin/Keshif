@@ -38,7 +38,7 @@ google.setOnLoadCallback(function(){
             })
         },
         summaries: [
-            {   title: "UserType", catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
+            {   title: "UserType", layout: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
             },{ title: "Gender", layout: 'right',
                 catLabel: function(d){
                     switch(this.id){
@@ -47,8 +47,8 @@ google.setOnLoadCallback(function(){
                         default: return "?";
                     }
                 }
-            },{ title: "Station_Start", catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
-            },{ title: "Station_End",   catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; }, 
+            },{ title: "Station_Start", layout: 'middle', catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; },
+            },{ title: "Station_End",   layout: 'middle', catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; }, 
                 layout: 'right'
             },{ title: "Day of Week", layout: 'right', collapsed: true,
                 attribMap: function(){ return this.TimeStart.day(); },

@@ -113,11 +113,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[showdropzone=true]{
         &:not([dropattrtype~="unique"]){
-            .layout_block[hassummaries="true"] > .dropZone{
+            .panel[hassummaries="true"] > .dropZone{
                 display: block;
                 cursor: s-resize;
             }
-            .layout_block[hassummaries="false"] > .dropZone_panel{
+            .panel[hassummaries="false"] > .dropZone_panel{
                 display: block;
                 cursor: s-resize;
             }
@@ -455,7 +455,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
     }
 
-    .layout_block {
+    .panel {
         > .dropZone{
             .flex(1);
             display: none;
@@ -528,7 +528,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
             }
         }
-        &.layout_bottom{
+        &.panel_bottom{
             .display(inline-flex);
             .flex-direction(column);
             width: 100%;
@@ -541,7 +541,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-top-width: 1px;
             }
         }
-        &.layout_left{
+        &.panel_left{
             .display(inline-flex);
             .flex-direction(column);
             vertical-align: top;
@@ -560,7 +560,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 right: -2px;
             }
         }
-        &.layout_right{
+        &.panel_right{
             .display(inline-flex);
             .flex-direction(column);
             vertical-align: top;
@@ -579,8 +579,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 left: -2px;
             }
         }
-        &.layout_middle{
-            display:block;
+        &.panel_middle{
+            .display(inline-flex);
+            .flex-direction(column);
+            vertical-align: top;
+            position: relative;
+            flex: 1;
             > .dropZone_panel{
                 bottom: 0px;
                 height: 30px;
@@ -588,10 +592,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
                 border-bottom-width: 1px;
-                position: relative;
             }
         }
-        &.layout_resize{
+        &.panel_resize{
             position: absolute;
             right: 0px;
             bottom: 0px;
@@ -604,7 +607,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-top: 16px solid transparent;
             :hover{ border-right: 16px solid gray; }
         }
-        &.layout_infobox {
+        &.panel_infobox {
             position: absolute;
             height: 100%;
             width: 100%;
@@ -729,7 +732,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                 }
             }
-        } // layout_infobox
+        } // panel_infobox
     }
 
     .hasLabelWidth{ text-align: right; }

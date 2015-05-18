@@ -116,7 +116,7 @@ $(document).ready(function(){
         domID: "#chart_div",
         barChartWidth: 90,
         leftPanelLabelWidth: 290,
-        rightPanelLabelWidth: 290,
+        middlePanelLabelWidth: 290,
         source: {
             url: "http://visualizingbuffy.com/season1.html",
             // http://visualizingbuffy.com/data/season1_data.js
@@ -126,7 +126,7 @@ $(document).ready(function(){
 //            browser.facets[2].setHeightRow_attrib(20);
         },
         summaries: [
-            {   title: "Episode", layout: 'right',
+            {   title: "Episode", layout: 'middle',
                 sortingOpts: [{ value: "ep_id" }],
                 catTableName: "Episodes", catTooltip: "Synopsis",
                 catLabel: function(){ return this.Name+" <i>[Ep."+this.ep_id+"]</i>"; },
@@ -143,7 +143,7 @@ $(document).ready(function(){
                         attribMap: function(){ return this.bodycount.animals; },
                     }
                 ]
-            },{ title: "Location", layout: 'right'
+            },{ title: "Location", layout: 'middle'
             },{ title: "Characters",
                 attribMap: "Appears",
                 catTableName: "Characters",
@@ -206,7 +206,7 @@ $(document).ready(function(){
               transform: scale(2.5);
               z-index: 1000;
             }
-            .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel{
+            .kshf .kshfChart[chart_id="2"] > .wrapper > .facetCategorical > .attribGroup > .attrib > .attribLabel{
                 overflow: visible !important;
             }
         </style>
