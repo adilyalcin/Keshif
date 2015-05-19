@@ -102,11 +102,8 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
             sortingOpts: [ {name:'Page Views'}, {name:'id', inverse:true} ],
             textSearch: "Name",
-            detailsToggle: 'zoom',
-            maxVisibleItems_Default: 40,
             recordView: function(){
                 return "<a target='_blank' class='articleLink' href='"+
                     this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";

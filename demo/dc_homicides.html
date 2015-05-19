@@ -72,18 +72,14 @@ $(document).ready( function(){
             },{ title: "Manner", attribMap: function(){ return this.manner.name; }
             },{ title: "Motive", attribMap: function(){ return this.motive.name; }
             },{ title: "Incident Date", layout: "bottom",
-                attribMap: function(){
-                    if(this.incident_date.getFullYear()>=2000) return this.incident_date;
-                }
+                attribMap: function(){ if(this.incident_date.getFullYear()>=2000) return this.incident_date; }
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
             sortingOpts: [
                 { name: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
                 { name: 'Age', value: "age" }
             ],
-            detailsToggle: "zoom",
             recordView: function(){ return this.last_name +", "+this.first_name; }
         }
     });

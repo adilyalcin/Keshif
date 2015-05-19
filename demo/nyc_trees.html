@@ -68,19 +68,17 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [ {name: '# Total Trees', value: "Total"} ],
-            detailsToggle: "zoom",
+            detailsToggle: "off",
             displayType: 'grid',
             textSearch: 'Tree Name',
-            textSearchFunc: function(){ return this.Common;},
+            textSearchFunc: function(){ return this.Common; },
             recordView: function(){
                 return ""+
-                    "<span class='thumbnail'><img style='background-color:#"+this.color+"' class='thumbImg'></span>"+
+                    "<span class='thumbnail'><img style='background-color:#"+this.color+"' class='thumbImg' "+
+                        "src='http://www.cloudred.com/labprojects/nyctrees/trees/"+this.file+"'>"+
+                    "</span>"+
                     "<span class='authorName'>"+this.Latin+"</span>"+
                     "<span class='title'>"+this.Common+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "http://www.cloudred.com/labprojects/nyctrees/trees/"+this.file);
             }
         }
     });

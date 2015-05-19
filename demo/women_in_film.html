@@ -36,8 +36,7 @@ google.setOnLoadCallback(function(){
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.women_in_film, 
-                ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],
-                 ', ', false);
+                ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],', ', false);
         },
         summaries: [
             {   title: "Movie Passes Bechdel Test ?", attribMap: "Passes Bechdel Test?"
@@ -53,24 +52,15 @@ google.setOnLoadCallback(function(){
                     return r;
                 }
             },{ title: "Clarity of Pass", collapsed: true
-/*            },{ title: "Director",
-                attribMap: function(){
-                    return this.Director.split(", ");
-                }*/
-/*                        },{ title: "Plot Keywords (top 10)",
-                attribMap: function(){
-                    var keywords = this["Plot Keywords (top 10)"];
-                    if(keywords !== undefined && keywords.split) 
-                        return keywords.split(", ");
-                }*/
-            },{ title: "IMDb Popularity Score", layout: 'left',
+            },{ title: "Plot Keywords (top 10)", minAggrValue: 5
+            },{ title: "IMDb Popularity Score", layout: 'middle',
             },{ title: "Award Popularity", layout: 'left', collapsed: true
             },{ title: "Rating"
             },{ title: "Genre", layout: 'right'
-            },{ title: "Main Actors", layout: 'right', minAggrValue: 3
+            },{ title: "Main Actors", minAggrValue: 3, layout: 'right'
             },{ title: "Language", layout: 'right'
             },{ title: "Runtime (min)", layout: 'right', collapsed: true
-            },{ title: "Year", layout: "left"
+            },{ title: "Year", layout: "middle", collapsed: true
             }
         ],
         itemDisplay: {

@@ -67,11 +67,9 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 85,
-            detailsToggle: "zoom",
-            sortingOpts: [ {
-                name: 'Date', inverse: true,
-                label: function(){ return moment(this.Date).format('MMM DD, YYYY'); },
-            },{ name: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
+            sortingOpts: [ 
+                { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
+                { name: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
             }],
             textSearchFunc: function(){ return this.org; },
             recordView: function(){

@@ -92,8 +92,6 @@ $(document).ready( function(){
         itemName: "Wedding Venues",
         categoryTextWidth: 220,
         rightPanelLabelWidth: 180,
-        barChartWidth: 100,
-        catBarScale: "scale_frequency",
         source: {
             url: 'http://www.hitched.co.uk/wedding-venues/visual-search.htm',
             callback: loadData
@@ -116,7 +114,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             textSearch: "Name",
-            recordView: function(d){
+            recordView: function(){
                 return "<a href='http://www.hitched.co.uk"+this.url+"' target='_blank'>"+this.Name+"</a>";
             }
         }

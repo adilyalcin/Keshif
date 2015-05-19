@@ -30,7 +30,7 @@ google.setOnLoadCallback(function () {
         categoryTextWidth: 300,
         source: {
             gdocId: '0Ai6LdDWgaqgNdFVvN1otMW1VdzhubkZuWFZIWHZhZVE',
-            sheets: [ {name:"Grants", range:"A1:U4000"} ]
+            sheets: [ {name:"Grants"} ]
         },
         summaries: [
             {   title: "Main Category RFCD",
@@ -45,10 +45,9 @@ google.setOnLoadCallback(function () {
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
             sortingOpts: [{ name: 'App Year' }],
             textSearch: 'Simplified Title',
-            recordView: 'Simplified Title'
+            //recordView: 'Simplified Title' // Slow loading if all records are added to the view
         }
     });
 });

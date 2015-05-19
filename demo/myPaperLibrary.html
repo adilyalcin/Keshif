@@ -53,6 +53,16 @@ function readBasic(c,item, $item){
     return item;
 };
 
+function loadData(browser){
+    $.ajax({
+        url:"./data/myPaperLibrary.xml",
+        type:"GET",
+        dataType:"xml",
+        async: false,
+        success: function(zotero){ return loadZotero(zotero,browser); }
+    });
+};
+
 function loadZotero(zoteroRDF, browser) {
     zoteroRDF = zoteroRDF.children[0];
     paperBrowser = browser;
@@ -136,18 +146,9 @@ function loadZotero(zoteroRDF, browser) {
 $(document).ready( function(){
     new kshf.Browser({
         domID: "#chart_div",
-        contentType:"application/rdf+xml",
         categoryTextWidth: 190,
         source: {
-            callback: function(browser){
-                $.ajax( {
-                    url:"./data/myPaperLibrary.xml",
-                    type:"GET",
-                    dataType:"xml",
-                    async: false,
-                    success: function(zotero){ return loadZotero(zotero,browser); }
-                });
-            }
+            callback: loadData
         },
         summaries: [
             {   title: "Collection", 

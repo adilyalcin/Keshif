@@ -258,8 +258,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "General Category", attribMap: "GeneralCategory"
-            },{ title: "Comparison Category",
-                attribMap: function(){ return this.ComparisonCategory.split("/"); } 
+            },{ title: "Comparison Category", attribMap: function(){ return this.ComparisonCategory.split("/"); } 
             },{ title: "Data Type Compared", attribMap: "DataTypeCompared" 
             },{ title: "Comparison Scale", attribMap: "ComparisonScale" 
 //            },{ title: "CitedInPaper", layout: 'right'
@@ -279,9 +278,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 60,
             sortingOpts: [ {name: 'Year', inverse: true}, {name: 'id', inverse: true} ],
-            detailsToggle: 'zoom',
             textSearch: "System",
             recordView: function(){
                 return "<span class='sysName'>"+this.System + "</span>"+

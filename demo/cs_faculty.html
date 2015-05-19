@@ -71,10 +71,7 @@ google.setOnLoadCallback(function(){
                 }
             },{ title: "<span class='fa fa-calendar'></span> Joined Year", layout: "bottom",
                 description: "When they joined that department of Computer Science as faculty",
-                attribMap: function(){ 
-                    if(this.JoinYear==="") return;
-                    return new Date(this.JoinYear,1,1);
-                }
+                attribMap: function(){ if(this.JoinYear) return new Date(this.JoinYear,1,1); }
             }
         ],
         itemDisplay: {

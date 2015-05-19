@@ -71,7 +71,7 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Artist", minAggrValue: 3, collapsed: true, layout: 'right',
+            {   title: "Artist", minAggrValue: 3, layout: 'right', collapsed: true
             },{ title: "Nationality", layout: 'right'
             },{ title: "Gender", layout: 'right'
             },{ title: "Living", layout: 'right'
@@ -87,11 +87,8 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
             sortingOpts: [ {name: 'id'} ],
             textSearch: "Name",
-            detailsToggle: 'zoom',
-            maxVisibleItems_Default: 40,
             recordView: "Name"
         }
     });

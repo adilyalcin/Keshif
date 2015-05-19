@@ -49,16 +49,12 @@ $(document).ready(function(){
         summaries: [
             {   title: "Overflow Type", attribMap: function(){ return this[8]; }
             },{ title: "Cause", attribMap: function(){ return this[21]; }
-            },{ /*title: "Time",
-                facets: [
-                    {*/   title: "Year Discovered", 
-                        attribMap: function(){ 
-                            // parses the date string and returns the year
-                            return new Date(moment(this[11]));
-                        }
-                    },{ title: "Duration", attribMap: getDuration_Human
-                    /*}
-                ]*/
+            },{ title: "Date", 
+                attribMap: function(){ 
+                    // parses the date string and returns the year
+                    return new Date(moment(this[11]));
+                }
+            },{ title: "Duration", attribMap: getDuration_Human
             },{ /*title: "Location",
                 layout: 'right', // put this facet on the right side.
                 facets: [

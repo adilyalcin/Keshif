@@ -165,10 +165,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [ {name:'year'} ],
-            textSearch: "title",
             displayType: 'grid',
-            maxVisibleItems_Default: 50,
-            detailsToggle: "zoom",
+            textSearch: "title",
             recordView: function(){
                 return "<a target='_blank' href='"+this.url+"' class='thumbnail'><img class='thumbImg'></a></span>"+
                     "<span class='title'>"+this.title+"</span>";

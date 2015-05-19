@@ -97,12 +97,11 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
             sortingOpts: [{ name:'Year', inverse: true, label: function(){ return this.Year.getFullYear(); } }],
             textSearch: "title",
             textSearchFunc: function(){ return this.Fields.title;},
             displayType: 'list',
-            detailsToggle: "One",
+            detailsToggle: "one",
             recordView: function(){
                 var str="";
                 str+=this.Fields.title;

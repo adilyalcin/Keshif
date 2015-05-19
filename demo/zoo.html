@@ -42,12 +42,10 @@ google.setOnLoadCallback(function () {
                     if(this["Tooth"]) r.push("Has Tooth");
                     if(this["Breathes"]) r.push("Breathes");
                     return r;
-                },
-                catDispCountFix: 6
+                }
             }
         ],
         itemDisplay: {
-            sortColWidth: 50,
             sortingOpts: [{ name: 'Name', value: function(){ return this.Name[0]; } }],
             textSearch: 'Name',
             recordView: 'Name'

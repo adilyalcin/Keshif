@@ -68,8 +68,7 @@ google.setOnLoadCallback( function() {
                     return toRet;
                 }
             },{ title: "Topic",
-            },{ title: "Country",
-                catLabel: function(){ return capitaliseFirstLetter(this.id); }
+            },{ title: "Country", catLabel: function(){ return capitaliseFirstLetter(this.id); }
             },{ title: "People",
                 catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
                 catTooltip: function(){ 

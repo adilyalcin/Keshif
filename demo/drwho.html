@@ -19,7 +19,7 @@
         <script type="text/javascript">
 google.setOnLoadCallback( function () {
     logIf.Check = logIf.All();
-	new kshf.Browser({
+	browser = new kshf.Browser({
         itemName: "Villains",
         domID: "#chart_div",
         categoryTextWidth: 200,
@@ -39,14 +39,12 @@ google.setOnLoadCallback( function () {
             },{ title: "First Appearance", layout: 'bottom',
                 attribMap: function(){ 
                     var y=this['Year first'];
-                    if(y===null) return null;
-                    return new Date(y,1,1);
+                    if(y) return new Date(y,1,1);
                 }
             }
         ],
         itemDisplay:{
-            sortColWidth: 63,
-            sortingOpts: [ {name: 'Year first'} ],
+            sortingOpts: [ {name: '1st Appear.', value: 'Year first'} ],
             textSearch: 'Villain',
             recordView: 'Villain'
         }

@@ -252,13 +252,11 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 82,
             sortingOpts: [
                 { name:'Enrollment', value: "DRVEF2013.Total  enrollment" },
                 { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort" }
             ],
             textSearch: "institution name",
-            detailsToggle: "zoom",
             recordView: function(){
                 return "<a href='http://"+this["HD2013.Institution's internet website address"]
                     +"' target='_blank'>"+this["institution name"]+"</a>"

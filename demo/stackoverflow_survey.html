@@ -27,6 +27,7 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Responses"} ]
         },
         loadedCb: function(){
+            // split some strings using | character
             kshf.Util.cellToArray(kshf.dt.Responses, [
                 'Training & Education', 
                 'Current Language', 

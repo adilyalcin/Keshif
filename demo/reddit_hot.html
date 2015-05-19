@@ -56,8 +56,7 @@ $(document).ready( function(){
                 if(this.thumbnail!=="") { 
                     str+="<div style='float:right'><img src='"+this.thumbnail+"'/></div>";
                 }
-                str+=this.title;
-                str+=" <a class='fa fa-external-link' target='_blank' href='"+this.url+"'></a>";
+                str+=this.title+" <a class='fa fa-external-link' target='_blank' href='"+this.url+"'></a>";
                 return str;
             }
         }

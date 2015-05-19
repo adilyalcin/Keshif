@@ -259,17 +259,15 @@ $(document).ready( function(){
                 catTableName: "Publications",
                 collapsed: true*/
             },{ title: "Authors", layout: 'right'
-            },{ title: "Journal", collapsed: false, layout: 'right'
+            },{ title: "Journal", layout: 'right', collapsed: false
             },{ title: "Year", layout: "bottom", 
                 // attribMap: function(){ return new Date(this.Year,1,1); } // Years can be split at 6months, looks bad.
             }
         ],
         itemDisplay: {
             sortingOpts: [ {name:'Year'} ],
-            textSearch: "Title",
             displayType: 'grid',
-            maxVisibleItems_Default: 100,
-            detailsToggle: "zoom",
+            textSearch: "Title",
             recordView: function(){
                 return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
                     "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";

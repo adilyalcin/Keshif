@@ -23,7 +23,7 @@ $(document).ready(function(){
     
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        itemName: "NSF Awards in 2014",//"Active NSF Awards",
+        itemName: "NSF Awards in 2014",
         categoryTextWidth: 200,
         source: {
             url: 'http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true',
@@ -38,8 +38,7 @@ $(document).ready(function(){
         loadedCb: function(){
             // If you downloaded using csv file, convert award amount field
             kshf.dt.awards.forEach(function(d){
-                var v = d.data.AwardedAmountToDate;
-                v=v.replace(/[^0-9]+/g,"");
+                var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
                 d.data.AwardedAmountToDate = parseInt(v)/100;
             });
             kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);

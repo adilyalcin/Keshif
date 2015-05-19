@@ -47,13 +47,11 @@ $(document).ready( function(){
             url: "http://www.visualisingdata.com/index.php/resources/",
             callback: loadData
         },
-        summaries: [{ title: "category", layout: "middle" }],
+        summaries: [{ title: "category", layout: "middle" }], // 1 summary only
         itemDisplay: {
             sortingOpts: [ {name:'id', inverse: true} ],
             textSearch: "title",
             displayType: 'grid',
-            maxVisibleItems_Default: 100,
-            detailsToggle: "zoom",
             recordView: function(){
                 return "<a target='_blank' href='"+this.url+"' class='thumbnail'><img class='thumbImg'></a>"+
                     "<span class='title'>"+this.title+"</span>";

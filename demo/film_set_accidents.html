@@ -28,7 +28,7 @@ $(document).ready( function(){
 
     var timeFormat = d3.time.format("%d %b, %y");
 
-    var printPeople = function(){
+    var printPeopleIcons = function(){
         var str="";
         for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
         return str;
@@ -46,10 +46,10 @@ $(document).ready( function(){
             {   title: "Injury type"
             },{ title: "Injury source"
             },{ title: "Company"
-            },{ title: "Injuries", catLabel: printPeople, sortingOpts: [{value: 'id'}], layout: "right"
-            },{ title: "Fatalities", catLabel: printPeople, sortingOpts: [{value: 'id'}], layout: "right"
+            },{ title: "Injuries", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
+            },{ title: "Fatalities", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
             },{ title: "Fine", intervalScale: "log", unitName: "$", layout: "right"
-            },{ title: "State", collapsed: true, layout: "right"
+            },{ title: "State", layout: "right", collapsed: true
             },{ title: "Date", layout: "bottom"
             }
         ],
@@ -57,9 +57,10 @@ $(document).ready( function(){
             sortColWidth: 70,
             sortingOpts: [
                 {name: 'Date', label: function(){ return timeFormat(this.Date); }, inverse: true},
-                {name: 'Injuries'}, {name: 'Fatalities'},
+                {name: 'Injuries'},
+                {name: 'Fatalities'},
             ],
-            recordView: function(){ return this.Description; }
+            recordView: "Description"
         }
     });
 });
