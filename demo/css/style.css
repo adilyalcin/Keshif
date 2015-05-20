@@ -78,7 +78,6 @@ body {
   line-height: 1.5em;
 }
 #infobox {
-  width: 100%;
   left: 0%;
   position: fixed;
   text-align: center;
@@ -86,7 +85,7 @@ body {
   font-family: sans-serif;
   font-size: 0.8em;
   bottom: 0px;
-  padding: 3px;
+  padding: 3px 120px 3px 120px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
   background-image: -moz-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
