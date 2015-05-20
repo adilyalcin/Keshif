@@ -113,7 +113,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:not([dropattrtype~="unique"]){
             .panel[hassummaries="true"] > .dropZone{
                 display: block;
-                cursor: s-resize;
             }
             .panel[hassummaries="false"] > .dropZone_panel{
                 display: block;
@@ -250,6 +249,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: 100%;
 
         > .attributeName{
+            display: block;
             font-size: 0.8em;
             padding: 2px;
             margin: 2px;
@@ -462,6 +462,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-style: solid;
             border-color: gray;
             border-width: 2px;
+            cursor: s-resize;
             z-index: 50;
             margin: 2px;
             &:hover{ background-color: rgb(255, 188, 163); }
@@ -488,9 +489,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 1.3em;
             pointer-events: none;
             text-align: center;
+            padding-left: 4px;
+            font-size: 0.8em;
+            &:after{
+                margin-left: 4px;
+                content: "Drop...";
+            }
         }
         .dropZone[readyToDrop=true] .dropIcon{
             color: orangered;
+            &:after{
+                content: "Drop here";
+            }
         }
         &[hidebars=true] .kshf {
             .attrib .aggr_Group{ display:none; }
@@ -2024,7 +2034,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .chartAxis_Measure {
             > .percentSign{
-                right: 2px;
+                right: 0px;
             }
             > .background{
                 height: 15px;
@@ -2239,7 +2249,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 &[details=false]{
                     .item_details_toggle{
-                        display:block;
+                        display:inline-block;
                     }
                     .item_details{
                         display:none;
@@ -2396,7 +2406,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     > .itemToggleDetails{
                         width: 18px;
-                        padding-top: 2px;
                         text-align: center;
                     }
                     > .content{
@@ -2499,6 +2508,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .dropZone_resultSort{
                     display: none;
+                    cursor: s-resize;
                     position: absolute;
                     height: 100%;
                     width: 100%;
@@ -2514,6 +2524,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         font-size: 0.8em;
                         display: block;
                         font-weight: 300;
+                        &:before{
+                            content: "Sort by";
+                        }
                     }
                     &:hover{
                         background-color: rgb(255, 188, 163);
@@ -2695,6 +2708,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &:hover{
                         color: black;
                     }
+                }
+            }
+            >.detailViewSetting{
+                >.detailViewSettingHeader{
+                    font-size: 0.8em;
+                    font-weight: 300;
+                    margin-right: 2px;
+                    margin-left: 5px;
                 }
             }
         }// configRow

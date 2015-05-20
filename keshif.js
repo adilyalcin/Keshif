@@ -257,7 +257,7 @@ Tipsy.prototype = {
         offset: 0,
         offset_x: 0,
         offset_y: 0,
-        opacity: 0.9
+        opacity: 1
     },
     show: function() {
         var maybeCall = function(thing, ctx) {
@@ -965,6 +965,11 @@ kshf.List = function(kshf_, config, root){
 
 kshf.List.prototype = {
     /** -- */
+    setDetailsToggle: function(v){
+        this.detailsToggle = v;
+        this.listDiv.attr('detailsToggle',this.detailsToggle)
+    },
+    /** -- */
     initDOM_TotalViz: function(){
         var adsdasda = this.DOM.listHeader.append("div").attr("class","totalViz");
         this.DOM.totalViz_total = adsdasda.append("span").attr("class","aggr total");
@@ -1108,6 +1113,14 @@ kshf.List.prototype = {
                 });
                 d3.event.preventDefault();
             });
+
+        var y=this.DOM.listHeader_ConfigRow.append("span").attr("class","detailViewSetting");
+        y.append("span").attr("class","detailViewSettingHeader").text("Detail View:");
+        var x=y.append("select")
+            .on("change", function(){ me.setDetailsToggle(this.value); });
+        x.append("option").text("off");
+        x.append("option").text("one");
+        x.append("option").text("zoom");
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
@@ -1186,7 +1199,7 @@ kshf.List.prototype = {
         this.DOM.header_listSortColumn = this.DOM.listHeader_BottomRow.append("div")
             .attr("class","header_listSortColumn");
         var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort");
-        x.append("span").attr("class","dropZone_resultSort_text").text("Sort");
+        x.append("span").attr("class","dropZone_resultSort_text");
         $(x[0][0]).on("mouseenter",function(event){
             this.style.backgroundColor = "rgb(255, 188, 163)";
         });
@@ -1679,13 +1692,13 @@ kshf.List.prototype = {
                 },500);
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","visible");
-                },1100+item.visibleOrder*10);
+                },1100+item.visibleOrder_pre*20);
             }
             if(!isVisible && isVisible_pre){
                 // not in view now, but in view before
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","open");
-                },-item.visibleOrder*10);
+                },-item.visibleOrder_pre*20);
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","closed");
                 },500);
@@ -1841,8 +1854,6 @@ kshf.Panel.prototype = {
 
             movedSummary.addToPanel(me,this.__data__);
 
-            me.browser.refreshAttributeList();
-
             if(movedSummary.type=="categorical"){
                 movedSummary.refreshLabelWidth();
                 movedSummary.updateBarPreviewScale2Active();
@@ -1873,7 +1884,6 @@ kshf.Panel.prototype = {
                     movedSummary.DOM.root[0][0].previousSibling.style.display = "";
                 }
                 movedSummary.addToPanel(me);
-                me.browser.refreshAttributeList();
                 if(movedSummary.type=="categorical"){
                     movedSummary.refreshLabelWidth();
                     movedSummary.updateBarPreviewScale2Active();
@@ -1993,7 +2003,7 @@ kshf.Panel.prototype = {
             maxTotalCount = Math.floor(maxTotalCount/10);
         }
         if(digits>3) {
-            digits = 3;
+            digits = 2;
             this.width_catMeasureLabel+=4; // "." character is used to split. It takes some space
         }
         this.width_catMeasureLabel += digits*6;
@@ -2047,6 +2057,8 @@ kshf.Browser = function(options){
     this.previewCb = options.previewCb;
     this.previewCompareCb = options.previewCompareCb;
     this.ratioModeCb = options.ratioModeCb;
+
+    this.showDropZones = false;
 
     this.itemName = options.itemName || "";
 
@@ -2145,6 +2157,8 @@ kshf.Browser.prototype = {
         });
         if(indexFrom===-1) return; // given summary is not within this panel
         this.summaries.splice(indexFrom,1);
+
+        summary.removeFromPanel();
     },
     /** -- */
     getPrimaryItems: function(){
@@ -2762,10 +2776,6 @@ kshf.Browser.prototype = {
 
         this.insertAttributeList();
 
-        this.summaries.forEach( function(summary){
-            if(summary.aggr_initialized) summary.refreshNuggetViz();
-        });
-
         if(this.readyCb!==undefined) this.readyCb(this);
         this.finalized = true;
 
@@ -2776,22 +2786,30 @@ kshf.Browser.prototype = {
     },
     /** -- */
     prepareDropZones: function(summary){
+        this.movedSummary = summary;
+        this.showDropZones = true;
         this.DOM.root.attr("showdropzone",true).attr("dropattrtype",summary.getDataType());
         this.DOM.attribDragBox.style("display","block").text(summary.summaryName);
-        this.summaries.forEach(function(summary){
-            if(summary.panel) summary.setCollapsed(true);
-        });
-        this.updateLayout_Height();
+        if(!summary.uniqueCategories()){
+            this.summaries.forEach(function(summary){
+                if(summary.panel) summary.setCollapsed(true);
+            });
+            this.updateLayout_Height();
+        }
     },
     /** -- */
-    clearDropZones: function(summaryName){
+    clearDropZones: function(){
+        this.showDropZones = false;
         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
         this.DOM.root.attr("showdropzone",false);
         this.DOM.attribDragBox.style("display","none");
-        this.summaries.forEach(function(summary){
-            if(summary.panel) summary.unrollCollapsed();
-        });
-        this.updateLayout_Height();
+        if(!this.movedSummary.uniqueCategories()){
+            this.summaries.forEach(function(summary){
+                if(summary.panel) summary.unrollCollapsed();
+            });
+            this.updateLayout_Height();
+        }
+        this.movedSummary = undefined;
     },
     /** -- */
     setItemName: function(){
@@ -2807,14 +2825,29 @@ kshf.Browser.prototype = {
 
         var newSummaries = newAttributes
             .append("div").attr("class","attributeName")
-            .each(function(summary){ summary.DOM.nugget = d3.select(this); })
+            .each(function(summary){
+                summary.DOM.nugget = d3.select(this);
+            })
             .attr("title",function(summary){ 
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
             })
-            .attr("aggr_initialized",function(summary){ return summary.aggr_initialized;} )
+            .attr("state",function(summary){
+                if(summary.summaryColumn===null) return "custom"; // calculated
+                if(summary.summaryName===summary.summaryColumn) return "exact";
+                return "edited";
+            })
+            .attr("datatype",function(summary){
+                return summary.getDataType();
+            })
+            .attr("aggr_initialized",function(summary){ 
+                return summary.aggr_initialized;
+            })
+            .style("display",function(summary){
+                if(summary.panel!==undefined) return "none";
+            })
             .on("mousedown",function(summary){
                 if(d3.event.which !== 1) return; // only respond to left-click
-                me.movedSummary = summary;
+
                 var _this = this;
                 var moved = false;
                 d3.select("body")
@@ -2858,6 +2891,7 @@ kshf.Browser.prototype = {
             .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("mousedown",function(summary){
                 if(!summary.aggr_initialized){
+                    // stop dragging event start
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                 }
@@ -2865,9 +2899,7 @@ kshf.Browser.prototype = {
             .on("click",function(summary){
                 if(!summary.aggr_initialized){
                     summary.initializeAggregates();
-                    summary.refreshNuggetViz();
-                    me.refreshAttributeList();
-                    summary.DOM.nugget.attr("aggr_initialized",summary.aggr_initialized);
+                    // refresh tipsy (it uses summary data)
                     this.tipsy.hide();
                     this.tipsy.show();
                 }
@@ -2884,7 +2916,6 @@ kshf.Browser.prototype = {
                     parentDOM.select(".summaryTitle").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
                     me.changeSummaryName(summary.summaryName,newTitle);
-                    me.refreshAttributeList();
                 }
             })
             ;
@@ -2893,7 +2924,7 @@ kshf.Browser.prototype = {
         newSummaries.append("div").attr("class","fa fa-pencil editTitleButton")
             .on("click",function(summary){
                 if(summary.summaryColumn===null){
-                    // custom
+                    // custom: TODO
                     return;
                 }
                 var curState=this.parentNode.getAttribute("edittitle");
@@ -2909,31 +2940,17 @@ kshf.Browser.prototype = {
                     parentDOM.select(".summaryTitle").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
                     me.changeSummaryName(summary.summaryName,newTitle);
-                    me.refreshAttributeList();
+                }
+                if(!summary.aggr_initialized){
+                    // stop dragging event start
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
                 }
             });
 
-        this.refreshAttributeList();
-    },
-    /** -- */
-    refreshAttributeList: function(){
-        var me=this;
-        var tableName = this.primaryTableName;
-        this.DOM.attributeList.selectAll(".attributeName")
-            .style("display",function(summary){
-                // remove the unique key
-                if(summary.summaryName===kshf.dt[tableName][0].idIndex) return "none";
-                // remove those already in the view
-                if(summary.panel!==undefined) return "none";
-                return "block";
-            })
-            .attr("state",function(summary){
-                if(summary.summaryName===summary.summaryColumn) return "exact";
-                if(summary.summaryColumn===null) return "custom";
-                return "edited";
-            })
-            .attr("datatype",function(summary){ return summary.getDataType(); })
-            ;
+        this.summaries.forEach(function(summary){
+            if(summary.aggr_initialized) summary.refreshViz_Nugget();
+        });
     },
     /** External method - used by demos to auto-select certain features on load -- */
     filterFacetAttribute: function(facetID, itemId){
@@ -3164,8 +3181,7 @@ kshf.Browser.prototype = {
         // Middle Panel
         var midPanelHeight = 0;
         if(this.panels.middle.summaries.length>0){
-            var panelHeight = divHeight_Total;
-            if(this.panels.bottom.summaries.length>0) panelHeight-=bottomFacetsHeight;
+            var panelHeight = topPanelsHeight;
             if(this.listDisplay.recordView){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
@@ -3188,6 +3204,7 @@ kshf.Browser.prototype = {
                 listDisplayHeight-=bottomFacetsHeight;
             }
             listDisplayHeight-=midPanelHeight;
+            if(this.showDropZones) listDisplayHeight=0;
             this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
@@ -3280,6 +3297,8 @@ kshf.Summary_Base.prototype = {
         this.collapsed_pre = false;
         this.collapsed = false;
 
+        this.aggr_initialized = false;
+
         this.createSummaryFilter();
     },
     /** -- */
@@ -3293,6 +3312,13 @@ kshf.Summary_Base.prototype = {
         // This summary may be used for sorting options. Refresh the list
         if(this.browser.listDisplay)
             this.browser.listDisplay.refreshSortingOptions();
+
+        if(this.DOM.nugget) 
+            this.DOM.nugget.attr("state",function(summary){
+                if(summary.summaryColumn===null) return "custom"; // calculated
+                if(summary.summaryName===summary.summaryColumn) return "exact";
+                return "edited";
+            });
     },
     /** -- */
     getDataType: function(){
@@ -3318,9 +3344,6 @@ kshf.Summary_Base.prototype = {
         delete this.browser.summaries_by_name[this.summaryName];
         if(this.summaryColumn)
             delete this.browser.summaries_by_name[this.summaryColumn];
-        if(this.panel){
-            this.panel.removeSummary(this);
-        }
         this.browser.removeSummary(this);
         if(this.DOM.root){
             this.DOM.root[0][0].parentNode.removeChild(this.DOM.root[0][0]);
@@ -3353,6 +3376,10 @@ kshf.Summary_Base.prototype = {
         return (this.parentFacet)?17:0;
     },
     /** -- */
+    uniqueCategories: function(){
+        return false;
+    },
+    /** -- */
     isFiltered: function(){
         return this.summaryFilter.isFiltered;
     },
@@ -3383,7 +3410,14 @@ kshf.Summary_Base.prototype = {
         } else {
             this.initDOM(beforeDOM);
         }
-        panel.addSummary(this,index); 
+        panel.addSummary(this,index);
+        if(this.DOM.nugget) this.DOM.nugget.style("display","none");
+    },
+    /** -- */
+    removeFromPanel: function(){
+        if(this.panel===undefined) return;
+        this.panel.removeSummary(this);
+        if(this.DOM.nugget) this.DOM.nugget.style("display","");
     },
     /** -- */
     insertHeader: function(){
@@ -3396,7 +3430,6 @@ kshf.Summary_Base.prototype = {
                     d3.event.preventDefault();
                     return;
                 }
-                me.browser.movedSummary = me;
                 var _this = this;
                 var moved = false;
                 d3.select("body")
@@ -3486,7 +3519,7 @@ kshf.Summary_Base.prototype = {
                     me.parentFacet.show_cliques = !me.parentFacet.show_cliques;
                     me.parentFacet.DOM.root.attr("show_cliques",me.parentFacet.show_cliques);
                 } else {
-                    me.panel.removeSummary(me);
+                    me.removeFromPanel();
                     me.clearDOM();
                     me.DOM.nugget.style("display","block");
                     me.browser.updateLayout();
@@ -3680,8 +3713,6 @@ var Summary_Categorical_functions = {
 
         this.isLinked = false; // TODO: document / update
 
-        this.aggr_initialized = false;
-
         this.setCatLabel("id");
 
         if(this.items.length<=1000) this.initializeAggregates();
@@ -3698,12 +3729,18 @@ var Summary_Categorical_functions = {
         if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
 
         this.aggr_initialized = true;
+        this.refreshViz_Nugget();
     },
     /** -- */
-    refreshNuggetViz: function(){
+    refreshViz_Nugget: function(){
         if(this.DOM.nugget===undefined) return;
-
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
+
+        this.DOM.nugget
+            .attr("aggr_initialized",this.aggr_initialized)
+            .attr("datatype",this.getDataType());
+
+        if(!this.aggr_initialized) return;
 
         if(this.uniqueCategories()){
             this.DOM.nugget.select(".nuggetInfo").html("<span class='fa fa-tag'></span><br>Unique");
@@ -5491,8 +5528,6 @@ var Summary_Interval_functions = {
             return d3.format(".2f")(v);
         };
 
-        this.aggr_initialized = false;
-
         if(this.items.length<=1000) this.initializeAggregates();
     },
     /** -- */
@@ -5557,6 +5592,7 @@ var Summary_Interval_functions = {
         this.updateScaleAndBins(30,10,false);
 
         this.aggr_initialized = true;
+        this.refreshViz_Nugget();
     },
     /** -- */
     createSummaryFilter: function(){
@@ -5625,11 +5661,17 @@ var Summary_Interval_functions = {
         });
     },
     /** -- */
-    refreshNuggetViz: function(){
+    refreshViz_Nugget: function(){
         if(this.DOM.nugget===undefined) return;
 
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
         
+        this.DOM.nugget
+            .attr("aggr_initialized",this.aggr_initialized)
+            .attr("datatype",this.getDataType());
+
+        if(!this.aggr_initialized) return;
+
         var maxAggregate_Total = this.getMaxAggr_Total();
 
         if(this.intervalRange.min===this.intervalRange.max){
@@ -5963,15 +6005,20 @@ var Summary_Interval_functions = {
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 2;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else if((timeRange_ms/(1000*60*60*24*365*3)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 3;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
+            } else if((timeRange_ms/(1000*60*60*24*365*4)) < optimalTickCount){
+                timeInterval = d3.time.year.utc;
+                timeIntervalStep = 4;
+                this.intervalTickFormat = d3.time.format.utc("%Y");
             } else if((timeRange_ms/(1000*60*60*24*365*5)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
                 timeIntervalStep = 5;
                 this.intervalTickFormat = function(v){
                     var later = timeInterval.offset(v, 4);
-                    var first=d3.time.format.utc("%Y")(v);
-                    var s=first;
-                    s+="<br>"+d3.time.format.utc("%Y")(later);
-                    return s;
+                    return d3.time.format.utc("%Y")(v);
                 };
                 this.height_labels = 28;
             } else if((timeRange_ms/(1000*60*60*24*365*25)) < optimalTickCount){
@@ -6117,7 +6164,7 @@ var Summary_Interval_functions = {
             this.refreshViz_Scale();
 
             this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
-                return (me.valueScale(d)+me.getAggreg_Width_Offset())+"px";
+                return (me.valueScale(d))+"px";
             });
             this.refreshIntervalSlider();
         }
@@ -6186,11 +6233,6 @@ var Summary_Interval_functions = {
             if(me.unitName) v+="<span class='unitName'>"+me.unitName+"</span>";
             return v;
         });
-    },
-    /** -- */
-    getAggreg_Width_Offset: function(){
-        if(this.scaleType==='time') return this.barWidth/2;
-        return 0;
     },
     /** -- */
     insertBins: function(){
@@ -7011,7 +7053,7 @@ var Summary_Interval_functions = {
         if(v===null) return;
         if(this.valueScale===undefined) return;
 
-        var t="translateX("+(this.valueScale(v)+this.getAggreg_Width_Offset())+"px)";
+        var t="translateX("+(this.valueScale(v))+"px)";
         this.DOM.selectedItemValue
             .each(function(){ kshf.Util.setTransform(this,t); })
             .style("display","block");

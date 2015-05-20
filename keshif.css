@@ -100,7 +100,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone {
   display: block;
-  cursor: s-resize;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
@@ -217,6 +216,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
 }
 .kshf .attributeList > .attributeName {
+  display: block;
   font-size: 0.8em;
   padding: 2px;
   margin: 2px;
@@ -488,6 +488,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-style: solid;
   border-color: gray;
   border-width: 2px;
+  cursor: s-resize;
   z-index: 50;
   margin: 2px;
 }
@@ -517,9 +518,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.3em;
   pointer-events: none;
   text-align: center;
+  padding-left: 4px;
+  font-size: 0.8em;
+}
+.kshf .panel .dropIcon:after {
+  margin-left: 4px;
+  content: "Drop...";
 }
 .kshf .panel .dropZone[readyToDrop=true] .dropIcon {
   color: orangered;
+}
+.kshf .panel .dropZone[readyToDrop=true] .dropIcon:after {
+  content: "Drop here";
 }
 .kshf .panel[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
@@ -2073,7 +2083,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0.6;
 }
 .kshf .belowAttribs > .chartAxis_Measure > .percentSign {
-  right: 2px;
+  right: 0px;
 }
 .kshf .belowAttribs > .chartAxis_Measure > .background {
   height: 15px;
@@ -2315,7 +2325,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
 }
 .kshf .listDiv > .listItemGroup > .listItem[details=false] .item_details_toggle {
-  display: block;
+  display: inline-block;
 }
 .kshf .listDiv > .listItemGroup > .listItem[details=false] .item_details {
   display: none;
@@ -2486,7 +2496,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
   width: 18px;
-  padding-top: 2px;
   text-align: center;
 }
 .kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .content {
@@ -2603,6 +2612,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort {
   display: none;
+  cursor: s-resize;
   position: absolute;
   height: 100%;
   width: 100%;
@@ -2619,6 +2629,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   display: block;
   font-weight: 300;
+}
+.kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text:before {
+  content: "Sort by";
 }
 .kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort:hover {
   background-color: #ffbca3;
@@ -2805,6 +2818,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .configRow > .adjustSortColumnWidth > .removeSortOption:hover {
   color: black;
+}
+.kshf .listHeader > .configRow > .detailViewSetting > .detailViewSettingHeader {
+  font-size: 0.8em;
+  font-weight: 300;
+  margin-right: 2px;
+  margin-left: 5px;
 }
 .kshf .listHeader .filterClearAll {
   opacity: 0;
