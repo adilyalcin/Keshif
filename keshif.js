@@ -1692,13 +1692,13 @@ kshf.List.prototype = {
                 },500);
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","visible");
-                },1100+item.visibleOrder_pre*20);
+                },1100+item.visibleOrder*20);
             }
             if(!isVisible && isVisible_pre){
                 // not in view now, but in view before
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","open");
-                },-item.visibleOrder_pre*20);
+                },-item.visibleOrder*20);
                 setTimeout(function(){ 
                     domItem.setAttribute("animSt","closed");
                 },500);

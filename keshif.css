@@ -2819,11 +2819,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader > .configRow > .adjustSortColumnWidth > .removeSortOption:hover {
   color: black;
 }
+.kshf .listHeader > .configRow > .detailViewSetting {
+  display: inline-block;
+  vertical-align: top;
+}
 .kshf .listHeader > .configRow > .detailViewSetting > .detailViewSettingHeader {
   font-size: 0.8em;
   font-weight: 300;
   margin-right: 2px;
   margin-left: 5px;
+}
+.kshf .listHeader > .configRow > .detailViewSetting > select {
+  font-size: 0.7em;
 }
 .kshf .listHeader .filterClearAll {
   opacity: 0;
