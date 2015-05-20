@@ -552,9 +552,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_bottom {
   display: -webkit-box;
   display: -moz-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -575,9 +575,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_left {
   display: -webkit-box;
   display: -moz-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -604,9 +604,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_right {
   display: -webkit-box;
   display: -moz-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -633,9 +633,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_middle {
   display: -webkit-box;
   display: -moz-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -643,7 +643,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  vertical-align: top;
   position: relative;
   flex: 1;
 }
@@ -853,7 +852,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-left: 17px;
 }
 .kshf .facetCategorical .scrollToTop {
-  right: 3px;
+  right: 1px;
 }
 .kshf .chartClearFilterButton {
   width: 14px;
@@ -1278,19 +1277,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:before {
   content: "\f057";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton {
   position: absolute;
   bottom: 1px;
   font-size: 0.7em;
   text-align: right;
+  padding-right: 2px;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton:hover {
   color: #ff4500;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton:before {
   content: "\f161";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .sortButton[inverse='true']:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton[inverse='true']:before {
   content: "\f160";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
@@ -2046,7 +2046,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
   display: inline-block;
 }
-.kshf .kshfChart[refreshSorting="true"] .sortButton:before {
+.kshf .kshfChart[refreshSorting="true"] .catSortButton:before {
   content: "\f175" !important;
 }
 .kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
@@ -2162,6 +2162,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  position: relative;
 }
 .kshf .listDiv {
   position: relative;
@@ -2942,7 +2943,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   position: absolute;
   right: 4px;
-  top: 2px;
+  top: 1px;
   cursor: pointer;
   color: gray;
 }

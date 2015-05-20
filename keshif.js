@@ -903,7 +903,7 @@ kshf.List = function(kshf_, config, root){
     this.sortingOpt_Active = this.sortingOpts[0];
 
     this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
-    this.detailsToggle = config.detailsToggle || 'zoom'; // 'off', 'one', 'zoom'
+    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
     this.linkText      = config.linkText      || "Related To";
     
     this.visibleCb = config.visibleCb;
@@ -2672,7 +2672,6 @@ kshf.Browser.prototype = {
                     summary.setCatTooltip(facetDescr.catTooltip);
                 }
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
-                // catDispCountFix
                 if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
 
@@ -2827,8 +2826,9 @@ kshf.Browser.prototype = {
                             moved = true;
                         }
                         var mousePos = d3.mouse(me.DOM.root[0][0]);
-                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
-                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px");
+                        console.log("mousePos: "+mousePos[0]+","+mousePos[1]);
+                        var str="translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px)";
+                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],str);
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
@@ -3126,17 +3126,7 @@ kshf.Browser.prototype = {
                         summary.setCollapsed(true);
                     }
                     if(!summary.collapsed){
-                        if(summary.catDispCountFix){
-                            // if you have more space than what's requested, you can skip this
-                            if(finalPass) {
-                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_category;
-                                var newTarget = summary.getHeight_Header()+(summary.catDispCountFix+1)*summary.heightRow_category;
-                                newTarget = Math.max(newTarget,targetHeight);
-                                summary.setHeight(newTarget);
-                            } else {
-                                return;
-                            }
-                        } else if(summary.getHeight_RangeMax()<=targetHeight){
+                        if(summary.getHeight_RangeMax()<=targetHeight){
                             // You have 10 rows available, but I need max 5. Thanks,
                             summary.setHeight(summary.getHeight_RangeMax());
                         } else if(finalPass){
@@ -3421,7 +3411,7 @@ kshf.Summary_Base.prototype = {
                         }
                         var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
                         kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
-                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px");
+                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px)");
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
@@ -4275,7 +4265,7 @@ var Summary_Categorical_functions = {
     /** -- */
     initDOM_CatSortButton: function(){
         var me=this;
-        this.DOM.sortButton = this.DOM.facetControls.append("span").attr("class","sortButton fa")
+        this.DOM.catSortButton = this.DOM.facetControls.append("span").attr("class","catSortButton sortButton fa")
             .on("click",function(d){
                 if(me.dirtySort){
                     me.dirtySort = false;
@@ -4312,8 +4302,8 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshSortButton: function(){
-        if(this.DOM.sortButton===undefined) return;
-        this.DOM.sortButton
+        if(this.DOM.catSortButton===undefined) return;
+        this.DOM.catSortButton
             //.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
             .style("display","inline-block")
             .attr("inverse",this.sortingOpt_Active.inverse);
@@ -4783,10 +4773,10 @@ var Summary_Categorical_functions = {
         this.DOM.chartAxis_Measure.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
         });
-        this.DOM.sortButton.style("left",labelWidth+"px");
+        this.DOM.catSortButton.style("left",labelWidth+"px");
         this.DOM.aggr_Group.style("left",barChartMinX+"px");
-        if(this.DOM.sortButton)
-            this.DOM.sortButton.style("width",this.panel.width_catMeasureLabel+"px");
+        if(this.DOM.catSortButton)
+            this.DOM.catSortButton.style("width",this.panel.width_catMeasureLabel+"px");
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
@@ -6224,26 +6214,9 @@ var Summary_Interval_functions = {
                 },this);
                 aggr.DOM = {}
                 aggr.DOM.facet = this;
-                this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    offset_y: 3,
-                    title: function(){
-                        if(this.tipsy_title) return this.tipsy_title;
-                        if(this.getAttribute("filtered")==="true"){
-                            return "<span class='action'><span class='fa fa-times'></span> Remove</span> filter"
-                        }
-                        return "<span class='action'><span class='fa fa-plus'></span> And</span>"
-                    }
-                });
             })
             .on("mouseenter",function(aggr){
                 var thiss= this;
-                // Show tipsy
-                this.tipsy.options.offset_x = 0;
-                this.tipsy.options.offset_y = me.browser.percentModeActive?
-                    (-9):(me.height_hist-me.chartScale_Measure(aggr.aggregate_Active)-9);
-                this.tipsy.options.className = "tipsyFilterAnd";
-//                this.tipsy.show();
 
                 if(!me.browser.pauseResultPreview){
                     var timeoutTime = 400;
@@ -6267,7 +6240,6 @@ var Summary_Interval_functions = {
                 }
             })
             .on("mouseleave",function(aggr){
-                // this.tipsy.hide();
                 if(resultPreviewLogTimeout){
                     clearTimeout(resultPreviewLogTimeout);
                 }
@@ -6286,8 +6258,6 @@ var Summary_Interval_functions = {
                 }
             })
             .on("click",function(aggr){
-                this.tipsy.hide();
-
                 if(me.summaryFilter.filteredBin===this){
                     me.summaryFilter.clearFilter();
                     return;
@@ -6326,21 +6296,28 @@ var Summary_Interval_functions = {
         newBins.append("span").attr("class","aggr compare").attr("hidden",true);
 
         newBins.append("span").attr("class","compareButton fa")
+            .each(function(aggr){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 's',
+                    title: function(){
+                        return (me.browser.comparedAggregate!==aggr)?"Lock to compare":"Unlock"
+                    }
+                });
+            })
             .on("click",function(aggr){
+                this.tipsy.hide();
                 me.browser.setPreviewCompare(aggr);
-                this.parentNode.tipsy.hide();
                 d3.event.stopPropagation();
             })
             .on("mouseenter",function(aggr){
-                this.parentNode.tipsy.options.className = "tipsyFilterLock";
-                this.parentNode.tipsy_title = (me.browser.comparedAggregate!==aggr)?"Lock to compare":"Unlock";
-                this.parentNode.tipsy.hide();
-                this.parentNode.tipsy.show();
+                this.tipsy.options.className = "tipsyFilterLock";
+                this.tipsy.hide();
+                this.tipsy.show();
                 d3.event.stopPropagation();
             })
             .on("mouseleave",function(aggr){
-                this.parentNode.tipsy_title = undefined;
-                this.parentNode.tipsy.hide();
+                this.tipsy_title = undefined;
+                this.tipsy.hide();
                 d3.event.stopPropagation();
             })
             ;

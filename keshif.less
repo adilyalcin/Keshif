@@ -89,10 +89,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .attributeList{
             display: block;
         }
-        .listHeader {
-            > .configRow{
-                display: block;
-            }
+        .listHeader > .configRow{
+            display: block;
         }
         .summaryTitle:hover{
             > .summaryTitle_editButton{
@@ -529,7 +527,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.panel_bottom{
-            .display(inline-flex);
+            .display(flex);
             .flex-direction(column);
             width: 100%;
             > .dropZone_panel{
@@ -542,7 +540,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.panel_left{
-            .display(inline-flex);
+            .display(flex);
             .flex-direction(column);
             vertical-align: top;
             position: relative;
@@ -561,7 +559,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.panel_right{
-            .display(inline-flex);
+            .display(flex);
             .flex-direction(column);
             vertical-align: top;
             position: relative;
@@ -580,9 +578,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.panel_middle{
-            .display(inline-flex);
+            .display(flex);
             .flex-direction(column);
-            vertical-align: top;
             position: relative;
             flex: 1;
             > .dropZone_panel{
@@ -768,7 +765,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .facetCategorical{
         .scrollToTop{
-            right: 3px;
+            right: 1px;
         }
     }
     //}
@@ -1183,11 +1180,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     } // attribTextSearch
 
-                    .sortButton{
+                    .catSortButton{
                         position: absolute;
                         bottom: 1px;
                         font-size: 0.7em;
                         text-align: right;
+                        padding-right: 2px;
                         &:hover{
                             color:orangered
                         }
@@ -1981,7 +1979,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[refreshSorting="true"]{
-            .sortButton:before{
+            .catSortButton:before{
                 content: "\f175" !important;
             }
         }
@@ -2097,6 +2095,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .display(inline-flex);
         .flex-direction(column);
         .flex(1);
+        position: relative;
     }
 
     .listDiv{
