@@ -49,6 +49,12 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
+    resizeBrowser(300,70);
+    $(window).resize(function() {
+        resizeBrowser(300,70);
+        browser.updateLayout();
+    });
+
     browser = new kshf.Browser({
         domID: "#chart_div",
         leftPanelLabelWidth: 250,
@@ -56,6 +62,9 @@ $(document).ready( function(){
         source: {
             url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
             callback: loadData
+        },
+        readyCb: function(browser){
+            browser.panels.left.setWidthCatChart(120);
         },
         summaries: [
             {   title: "Year"
@@ -90,12 +99,6 @@ $(document).ready( function(){
     });
 });
         </script>
-        <style>
-            #chart_div {
-                height: 700px;
-                width: 1100px;
-            }
-        </style>
     </head>
     <body>
         <div class="pageTitle" align="center">
