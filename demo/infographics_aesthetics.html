@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Infographic Aesthetics: Designing for the First Impression</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    // Stimulus  browser
+    browser = new kshf.Browser({
+        domID: "#browser_stimulus",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 100,
+        source: {
+            gdocId: '1TkomROX3z9p-na5-SGXbE08iU1KbwlkldBJ5ls93XSk',
+            sheets: [ {name:"Stimulus"}, {name:"Participants"} ]
+        },
+        readyCb: function(browser){
+            // TODO: create participant browser
+
+            browser2 = new kshf.Browser({
+                domID: "#browser_participants",
+                barChartWidth: 90,
+                itemName: "Pacticipants",
+                source: {
+                    callback: function(browser){ 
+                        browser.primaryTableName = "Participants",
+                        browser.loadCharts();
+                    }
+                },
+                summaries: [
+                    {title: "Gender", layout: "middle"},
+                    {title: "Education Level", layout: "middle"},
+                    {title: "Age", layout: "middle"},
+                    {title: "Web Usage", layout: "middle"},
+                    {title: "Profession", layout: "middle"},
+                    {title: "Country of Residence", layout: "middle"},
+                ],
+            });
+        },
+        summaries: [
+            {title: "Complexity"},
+            {title: "Colorfulness1"},
+            {title: "Saturation"},
+            {title: "QuadTree"},
+            {title: "TextArea"},
+            {title: "NonTextArea"},
+            {title: "TextGroup"},
+            {title: "ImageArea"}
+        ],
+        itemDisplay: {
+            sortingOpts: [ 
+                {name: "Complexity"},
+                {name: "Colorfulness1"},
+                {name: "Saturation"},
+                {name: "QuadTree"},
+                {name: "TextArea"},
+                {name: "NonTextArea"},
+                {name: "TextGroup"},
+                {name: "ImageArea"}
+            ],
+            displayType: 'grid',
+            detailsToggle: 'off',
+            maxVisibleItems_Default: 104,
+            recordView: function(){ return "<img>"; },
+            visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this['Image Link']); }
+        }
+    });
+});
+        </script>
+        <style>
+#browser_stimulus {
+    display: inline-block;
+    margin-left: 100px;
+    width: 800px;
+    height: 700px;
+}
+#browser_participants{
+    display: inline-block;
+    width: 300px;
+    height: 700px;
+    margin-left: 50px;
+}
+.listItem{
+    width: 250px;
+    padding-top: 0px !important;
+    margin: 2px !important;
+    background-color: black !important;
+    overflow: visible !important;
+}
+.listItem[highlight=true]{
+    background-color: orangered !important;
+}
+.listItem[highlight=true] .content img{
+    border-color: orangered;
+    border-width: 3px;
+}
+/*.listItem:hover{
+    z-index: 200 !important;
+}
+.listItem:hover .content img{
+    transform: scale(2);
+}*/
+.listItem > .itemRow{
+    display: block !important;
+    overflow: visible !important;
+}
+.content img{
+    display: block;
+    border: solid;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 0px;
+    background-color: white;
+    width: 100%;
+    transition: all 200ms linear;
+    -webkit-transition: all 200ms linear;
+    -o-transition: all 200ms linear;
+    -moz-transition: all 200ms linear;
+}
+.listItem[highlight=true] .content img{
+    background-color: orangered;
+}
+        </style>
+    </head>
+    <body>
+        <div class="contents">
+            <span id="browser_stimulus"></span>
+            <span id="browser_participants"></span>
+            </div>
+    </body>
+</html>
