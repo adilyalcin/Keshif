@@ -1746,6 +1746,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: -6px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick {
+  left: 21px;
   width: 100%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick > .line {
@@ -1788,6 +1789,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   position: absolute;
   height: 10px;
+  left: 0px;
   width: 1px;
   -webkit-transition: -webkit-transform 700ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out;

@@ -3185,7 +3185,7 @@ kshf.Browser.prototype = {
             if(this.listDisplay.recordView){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
-                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; // give 100px fo the list display
+                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; 
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
