@@ -15,19 +15,56 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
+
+function genderLabel(){
+    switch(this.id){
+        case 0: return "Unknown";
+        case 1: return "Female";
+        case 2: return "Male";
+    }
+};
+
 google.setOnLoadCallback(function(){
     // Stimulus  browser
     browser = new kshf.Browser({
         domID: "#browser_stimulus",
-        barChartWidth: 90,
+        barChartWidth: 130,
         leftPanelLabelWidth: 100,
         source: {
             gdocId: '1TkomROX3z9p-na5-SGXbE08iU1KbwlkldBJ5ls93XSk',
-            sheets: [ {name:"Stimulus"}, {name:"Participants"} ]
+            sheets: [ {name:"Stimulus"}, {name:"Participants"}, {name: "Responses"} ]
+        },
+        loadedCb: function(browser){
+            kshf.dt.Stimulus.forEach(function(stimulus){
+                stimulus.data.responses = [];
+            });
+            kshf.dt.Participants.forEach(function(participant){
+                participant.data.responses = [];
+            });
+
+            kshf.dt.Responses.forEach(function(response){
+                var stimulusID = response.data['Stimulus ID'];
+                var stimulus   = kshf.dt_id.Stimulus[stimulusID];
+                var participantID = response.data['Participant ID'];
+                var participant   = kshf.dt_id.Participants[participantID];
+                
+                response.data.stimulus = stimulus;
+                response.data.participant = participant;
+
+                stimulus.data.responses.push(response);
+                participant.data.responses.push(response);
+            });
+
+            kshf.dt.Stimulus.forEach(function(stimulus){
+                stimulus.data.phase_1_data = stimulus.data.responses.map(function(v){ return v.data.Phase_1; });
+                stimulus.data.phase_2_data = stimulus.data.responses.map(function(v){ return v.data.Phase_2; });
+                stimulus.data.all_avg = d3.mean(stimulus.data.phase_1_data.concat(stimulus.data.phase_2_data));
+                stimulus.data.phase_1_avg = d3.mean(stimulus.data.phase_1_data);
+                stimulus.data.phase_2_avg = d3.mean(stimulus.data.phase_2_data);
+            });
         },
         readyCb: function(browser){
-            // TODO: create participant browser
-
+            // Participant browser
             browser2 = new kshf.Browser({
                 domID: "#browser_participants",
                 barChartWidth: 90,
@@ -39,29 +76,38 @@ google.setOnLoadCallback(function(){
                     }
                 },
                 summaries: [
-                    {title: "Gender", layout: "middle"},
+                    {title: "Gender", layout: "middle", catLabel: genderLabel},
                     {title: "Education Level", layout: "middle"},
-                    {title: "Age", layout: "middle"},
-                    {title: "Web Usage", layout: "middle"},
+                    {title: "Age", layout: "middle", showPercentile: true},
+                    {title: "Web Usage", layout: "middle", collapsed: true},
                     {title: "Profession", layout: "middle"},
-                    {title: "Country of Residence", layout: "middle"},
-                ],
+                    {title: "Country of Residence", layout: "middle", collapsed: true},
+                ]
             });
         },
         summaries: [
-            {title: "Complexity"},
-            {title: "Colorfulness1"},
-            {title: "Saturation"},
-            {title: "QuadTree"},
-            {title: "TextArea"},
-            {title: "NonTextArea"},
-            {title: "TextGroup"},
-            {title: "ImageArea"}
+            { title: "All Avg.", attribMap: "all_avg" },
+            { title: "Phase-1 Response Avg.", attribMap: "phase_1_avg", collapsed: true },
+            { title: "Phase-2 Response Avg.", attribMap: "phase_2_avg", collapsed: true },
+            { title: "Complexity" },
+            { title: "Colorfulness1" },
+            { title: "Colorfulness2" },
+            { title: "Saturation" },
+            { title: "# of Responses", attripMap: function(){ return this.responses.length; } },
+            { title: "QuadTree", collapsed: true },
+            { title: "TextArea", collapsed: true },
+            { title: "NonTextArea", collapsed: true },
+            { title: "TextGroup", collapsed: true },
+            { title: "ImageArea", collapsed: true }
         ],
         itemDisplay: {
             sortingOpts: [ 
+                {name: "All Avg.", value: "all_avg"},
+                {name: "Phase-1 Response Avg.", value: "phase_1_avg"},
+                {name: "Phase-2 Response Avg.", value: "phase_2_avg"},
                 {name: "Complexity"},
                 {name: "Colorfulness1"},
+                {name: "Colorfulness2"},
                 {name: "Saturation"},
                 {name: "QuadTree"},
                 {name: "TextArea"},
@@ -71,39 +117,105 @@ google.setOnLoadCallback(function(){
             ],
             displayType: 'grid',
             detailsToggle: 'off',
-            maxVisibleItems_Default: 104,
-            recordView: function(){ return "<img>"; },
+            maxVisibleItems_Default: 20,
+            recordView: function(){ 
+                return "<a href='"+this['Image Link']+"' target='_blank'><img></a>";
+            },
             visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this['Image Link']); }
         }
     });
 });
+
+var browser3=null;
+function showBrowsers(v){
+    d3.select('body').attr('show',v);
+    if(v==='responses' && browser3===null){
+        // Response browser
+        browser3 = new kshf.Browser({
+            domID: "#browser_responses",
+            barChartWidth: 100,
+            leftPanelLabelWidth: 200,
+            itemName: "Responses",
+            source: {
+                callback: function(browser){ 
+                    browser.primaryTableName = "Responses",
+                    browser.loadCharts();
+                }
+            },
+            summaries: [
+                {title: "Phase-1 Responses", attribMap: 'Phase_1', layout: "middle"},
+                {title: "Phase-2 Responses", attribMap: 'Phase_2', layout: "middle"},
+                {
+                    title: "Participant - Gender", layout: "middle", type: "categorical", catLabel: genderLabel,
+                    attribMap: function(){ return this.participant.data.Gender; }
+                },{
+                    title: "Participant - Education Level", layout: "middle", type: "categorical",
+                    attribMap: function(){ return this.participant.data['Education Level']; }
+                },{
+                    title: "Participant - Age", layout: "middle",
+                    attribMap: function(){ return this.participant.data['Age']; }
+                },
+
+                {title: "Stimulus", attribMap: 'Stimulus ID', layout: "left", type: "categorical", collapsed: true},
+
+                { 
+                    title: "Complexity", 
+                    attribMap: function(){ return this.stimulus.data.Complexity; }
+                },{ 
+                    title: "Colorfulness1", 
+                    attribMap: function(){ return this.stimulus.data.Colorfulness1; }
+                },{ 
+                    title: "Colorfulness2", 
+                    attribMap: function(){ return this.stimulus.data.Colorfulness2; }
+                },{ 
+                    title: "TextArea", 
+                    attribMap: function(){ return this.stimulus.data.TextArea; }
+                },{ 
+                    title: "Saturation", 
+                    attribMap: function(){ return this.stimulus.data.Saturation; }
+                },
+            ]
+        });
+    }
+};
         </script>
         <style>
 #browser_stimulus {
     display: inline-block;
-    margin-left: 100px;
+    vertical-align: top;
     width: 800px;
     height: 700px;
 }
 #browser_participants{
     display: inline-block;
+    vertical-align: top;
     width: 300px;
     height: 700px;
-    margin-left: 50px;
+    margin-left: 20px;
 }
+#browser_responses{
+    display: none;
+    width: 1100px;
+    height: 700px;
+    margin: 0 auto;
+}
+
+body[show="responses"] #browser_stimulus{ display: none;}
+body[show="responses"] #browser_participants{ display: none;}
+body[show="responses"] #browser_responses{ display: block;}
+body[show="responses"] .opt_responses{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
+body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
+
 .listItem{
-    width: 250px;
+    width: 220px;
     padding-top: 0px !important;
     margin: 2px !important;
     background-color: black !important;
     overflow: visible !important;
 }
-.listItem[highlight=true]{
-    background-color: orangered !important;
-}
 .listItem[highlight=true] .content img{
     border-color: orangered;
-    border-width: 3px;
+    border-width: 2px;
 }
 /*.listItem:hover{
     z-index: 200 !important;
@@ -119,7 +231,7 @@ google.setOnLoadCallback(function(){
     display: block;
     border: solid;
     border-color: black;
-    border-width: 1px;
+    border-width: 2px;
     border-radius: 0px;
     background-color: white;
     width: 100%;
@@ -131,22 +243,51 @@ google.setOnLoadCallback(function(){
 .listItem[highlight=true] .content img{
     background-color: orangered;
 }
+.chooseBrowser{
+    margin: 0 auto;
+    width: 1200px;
+    text-align: center;
+}
+.chooseBrowser .browserOption{
+    width: 45%;
+    display: inline-block;
+    border: solid 2px gray;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: gray;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    padding: 2px;
+    font-size: 0.9em;
+}
+.chooseBrowser .browserOption:hover{
+    border-color: orangered;
+}
         </style>
     </head>
-    <body>
-        <div class="contents">
+    <body show="stim_part">
+
+        <div class='chooseBrowser'>
+            <span class="browserOption opt_stim_part" onClick="showBrowsers('stim_part')">Show Stimulus &amp; Participants</span>
+            <span class="browserOption opt_responses" onClick="showBrowsers('responses')">Show Responses</span>
+            </div>
+
+        <div style='margin: 0 auto; width: 1200px; text-align: center;' id="browserGroup1">
             <span id="browser_stimulus"></span>
             <span id="browser_participants"></span>
             </div>
 
+        <div id="browser_responses" id="browserGroup2"></div>
 
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
 
-            Data from paper title 
+            Data from
             <a href="http://valt.cs.tufts.edu/papers/infographic-aesthetics/" target="_blank">
                 "Infographic Aesthetics: Designing for the First Impression"</a>,
-            by Lane Harrison, Katharina Reinecke, and Remco Chang.<br>
+            by Lane Harrison, Katharina Reinecke, and Remco Chang, published CHI-2015.<br>
             The data is originally hosted at <a href="https://github.com/TuftsVALT/infographic-aesthetics" target="_blank"
                 class='fa fa-github'> Github</a>.
 
