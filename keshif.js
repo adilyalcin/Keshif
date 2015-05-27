@@ -978,6 +978,7 @@ kshf.List.prototype = {
     },
     /** -- */
     initDOM_BottomRow: function(){
+        var me=this;
         this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow")
             .style("display",this.recordView?"":"none");
         this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
@@ -1328,7 +1329,7 @@ kshf.List.prototype = {
     refreshActiveItemCount: function(){
         this.DOM.listHeader_count
             .text((this.browser.itemsWantedCount!==0)?this.browser.itemsWantedCount:"No")
-            .style("width",(this.browser.items.length.toString().length*16)+"px")
+            .style("width",(this.browser.items.length.toString().length*13+5)+"px")
             ;
     },
     /** -- */
@@ -2129,8 +2130,23 @@ kshf.Browser = function(options){
         parentDOM: this.DOM.root
     });
 
-    this.DOM.attributeList = this.DOM.root.append("div").attr("class","attributeList");
-    this.DOM.attributeList.append("div").attr("class","attributeListHeader").text("Available attributes");
+    this.DOM.attributePanel = this.DOM.root.append("div").attr("class","attributePanel");
+    var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
+    xx.append("span").text("Available attributes");
+    xx.append("span").attr("class","addAttrib fa fa-plus")
+        .each(function(){
+            this.tipsy = new Tipsy(this, {
+                gravity: "e",
+                title: function(){ return "Add new"; }
+            })
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+            me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
+            me.insertAttributeList();
+        });
+    this.DOM.attributePanel.append("div").attr("class","attributeList");
 
     var me = this;
 
@@ -2605,9 +2621,13 @@ kshf.Browser.prototype = {
 
         if(this.loadedCb!==undefined) this.loadedCb.call(this);
 
+        // Create a summary for each existing column in the data
         for(var column in this.getPrimaryItems()[0].data){
             if(typeof(column)==="string") this.createSummary(column);
         }
+
+        // Should do this here, because bottom panel width calls for browser width, and this reads the browser width...
+        this.divWidth = this.domWidth();
 
         if(this.options.summaries) this.options.facets = this.options.summaries;
         this.options.facets = this.options.facets || [];
@@ -2630,12 +2650,11 @@ kshf.Browser.prototype = {
                 } else if(typeof(facetDescr.attribMap)==="function"){
                     summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
                 } else{
-                    var asddsad='23232';
                     return;
                 }
             } else {
                 if(facetDescr.attribMap){
-                    // Requesting a new summarywith the same name. Boo!
+                    // Requesting a new summarywith the same name.
                     summary.destroy();
                     summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
                 }
@@ -2734,7 +2753,6 @@ kshf.Browser.prototype = {
         }
 
         this.loaded = true;
-        this.divWidth = this.domWidth();
 
         var x = function(){
             var totalWidth = this.divWidth;
@@ -2782,7 +2800,14 @@ kshf.Browser.prototype = {
         setTimeout(function(){
             me.setNoAnim(false);
         },10000);
-
+    },
+    /** -- */
+    unregisterBodyCallbacks: function(){
+        // TODO: Revert to previous handlers...
+        d3.select("body").style('cursor','auto')
+            .on("mousemove",null)
+            .on("mouseup",null)
+            .on("keydown",null);
     },
     /** -- */
     prepareDropZones: function(summary){
@@ -2800,7 +2825,7 @@ kshf.Browser.prototype = {
     /** -- */
     clearDropZones: function(){
         this.showDropZones = false;
-        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+        this.unregisterBodyCallbacks();
         this.DOM.root.attr("showdropzone",false);
         this.DOM.attribDragBox.style("display","none");
         if(!this.movedSummary.uniqueCategories()){
@@ -2818,10 +2843,12 @@ kshf.Browser.prototype = {
     /** -- */
     insertAttributeList: function(){
         var me=this;
-        var tableName = this.primaryTableName;
+        var x=this.DOM.attributePanel.select(".attributeList");
 
-        var newAttributes = this.DOM.attributeList.selectAll("div.attributeName")
+        var newAttributes = x.selectAll("div.attributeName")
             .data(this.summaries).enter();
+
+        this.attribMoved = false;
 
         var newSummaries = newAttributes
             .append("div").attr("class","attributeName")
@@ -2849,29 +2876,37 @@ kshf.Browser.prototype = {
                 if(d3.event.which !== 1) return; // only respond to left-click
 
                 var _this = this;
-                var moved = false;
+                me.attribMoved = false;
                 d3.select("body")
                     .style('cursor','move')
+                    .on("keydown", function(){
+                        if(event.keyCode===27){ // ESP key
+                            _this.style.opacity = null;
+                            me.clearDropZones();
+                        }
+                    })
                     .on("mousemove", function(){
-                        if(!moved){
+                        if(!me.attribMoved){
                             _this.style.opacity = 0.5;
                             me.prepareDropZones(summary);
-                            moved = true;
+                            me.attribMoved = true;
                         }
                         var mousePos = d3.mouse(me.DOM.root[0][0]);
-                        console.log("mousePos: "+mousePos[0]+","+mousePos[1]);
                         var str="translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px)";
                         kshf.Util.setTransform(me.DOM.attribDragBox[0][0],str);
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
-                        if(!moved) return;
+                        if(!me.attribMoved) return;
                         _this.style.opacity = null;
                         me.clearDropZones();
                         d3.event.preventDefault();
                     });
                 d3.event.preventDefault();
+            })
+            .on("mouseup",function(summary){
+                if(me.attribMoved===false) me.unregisterBodyCallbacks();
             })
             ;
 
@@ -2882,13 +2917,12 @@ kshf.Browser.prototype = {
                         if(!summary.aggr_initialized){
                             return "Click to initialize";
                         }
-                        var t=summary.getDataType();
-                        return t+"<br>summary";
+                        return summary.getDataType();
                     }
                 })
             })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
+//            .on("mouseenter",function(){ this.tipsy.show(); })
+//            .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("mousedown",function(summary){
                 if(!summary.aggr_initialized){
                     // stop dragging event start
@@ -2907,46 +2941,85 @@ kshf.Browser.prototype = {
 
         attribNugget.append("span").attr("class","nuggetInfo fa");
         var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
-        
-        newSummaries.append("input").attr("class","summaryTitleEdit")
+        newSummaries.append("span").attr("class","summaryTitle")
+            .attr("contenteditable",false)
+            .text(function(summary){ return summary.summaryName; })
+            .on("blur",function(summary){
+                this.parentNode.setAttribute("edittitle",false);
+                this.setAttribute("contenteditable",false);
+                me.changeSummaryName(summary.summaryName,this.textContent);
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            })
             .on("keydown",function(summary){
-                if(event.keyCode===13){ // ENTER
-                    var parentDOM = d3.select(this.parentNode);
-                    var newTitle = parentDOM.select(".summaryTitleEdit")[0][0].value;
-                    parentDOM.select(".summaryTitle").text(newTitle);
+                if(d3.event.keyCode===13){ // ENTER
                     this.parentNode.setAttribute("edittitle",false);
-                    me.changeSummaryName(summary.summaryName,newTitle);
+                    this.setAttribute("contenteditable",false);
+                    me.changeSummaryName(summary.summaryName,this.textContent);
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
                 }
             })
             ;
-        newSummaries.append("span").attr("class","summaryTitle")
-            .text(function(summary){ return summary.summaryName; });
         newSummaries.append("div").attr("class","fa fa-pencil editTitleButton")
+            .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w', title: function(){
+                        if(summary.summaryColumn===null) return "Edit Code"; // calculated
+                        return "Edit Name";
+                    }
+                })
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
+            .on("mousedown",function(summary){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            })
             .on("click",function(summary){
-                if(summary.summaryColumn===null){
-                    // custom: TODO
-                    return;
-                }
+                this.tipsy.hide();
+                var parentDOM = d3.select(this.parentNode);
+                var summaryTitle = parentDOM.select(".summaryTitle");
+                var summaryTitle_DOM = parentDOM.select(".summaryTitle")[0][0];
+
                 var curState=this.parentNode.getAttribute("edittitle");
                 if(curState===null || curState==="false"){
                     this.parentNode.setAttribute("edittitle",true);
-                    var parentDOM = d3.select(this.parentNode);
-                    var currentTitle = parentDOM.select(".summaryTitle")[0][0].textContent;
-                    parentDOM.select(".summaryTitleEdit")[0][0].value = currentTitle;
-                    parentDOM.select(".summaryTitleEdit")[0][0].focus();
+                    summaryTitle_DOM.setAttribute("contenteditable",true);
+
+                    summaryTitle_DOM.focus();
+                    // var currentTitle = summaryTitle_DOM.textContent;
+                    // parentDOM.select(".summaryTitleEdit")[0][0].value = currentTitle;
+                    // parentDOM.select(".summaryTitleEdit")[0][0].focus();
                 } else {
-                    var parentDOM = d3.select(this.parentNode);
-                    var newTitle = parentDOM.select(".summaryTitleEdit")[0][0].value;
-                    parentDOM.select(".summaryTitle").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
-                    me.changeSummaryName(summary.summaryName,newTitle);
+                    summaryTitle_DOM.setAttribute("contenteditable",false);
+                    me.changeSummaryName(summary.summaryName,summaryTitle_DOM.textContent);
                 }
-                if(!summary.aggr_initialized){
+                // stop dragging event start
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            });
+
+        newSummaries.append("div").attr("class","fa fa-code editCodeButton")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 'w', title: function(){ return "Edit Code"; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); })
+                .on("mousedown",function(summary){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                })
+                .on("click",function(summary){
+                    alert("TODO: Edit code");
                     // stop dragging event start
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                }
-            });
+                })
+                ;
 
         this.summaries.forEach(function(summary){
             if(summary.aggr_initialized) summary.refreshViz_Nugget();
@@ -3272,14 +3345,14 @@ kshf.Browser.prototype = {
 
 kshf.Summary_Base = function(){}
 kshf.Summary_Base.prototype = {
-    initialize: function(browser,name,attribMap){
+    initialize: function(browser,name,attribFunc){
         this.id = ++kshf.summaryCount;
         this.browser = browser;
 //        this.parentFacet = options.parentFacet;
 
         this.summaryName   = name;
-        this.summaryColumn = attribMap?null:name;
-        this.summaryFunc   = attribMap || function(d){ return this[name]; };
+        this.summaryColumn = attribFunc?null:name;
+        this.summaryFunc   = attribFunc || function(){ return this[name]; };
 
         this.chartScale_Measure = d3.scale.linear();
 
@@ -3434,6 +3507,12 @@ kshf.Summary_Base.prototype = {
                 var moved = false;
                 d3.select("body")
                     .style('cursor','move')
+                    .on("keydown", function(){
+                        if(event.keyCode===27){ // ESP key
+                            _this.style.opacity = null;
+                            me.browser.clearDropZones();
+                        }
+                    })
                     .on("mousemove", function(){
                         if(!moved){
                             _this.parentNode.nextSibling.style.display = "none";
@@ -3557,39 +3636,50 @@ kshf.Summary_Base.prototype = {
             ;
 
         this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
+            .attr("contenteditable",false)
+            .on("mousedown", function(){
+                // stop dragging event start
+                d3.event.stopPropagation();
+            })
+            .on("blur",function(){
+                this.parentNode.setAttribute("edittitle",false);
+                this.setAttribute("contenteditable", false);
+                me.browser.changeSummaryName(me.summaryName,this.textContent);
+            })
+            .on("keydown",function(){
+                if(event.keyCode===13){ // ENTER
+                    this.parentNode.setAttribute("edittitle",false);
+                    this.setAttribute("contenteditable", false);
+                    me.browser.changeSummaryName(me.summaryName,this.textContent);
+                }
+            })
             .html((this.parentFacet && this.parentFacet.hasCategories())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
                     this.parentFacet.summaryName+":</span> "+"  "+this.summaryName):
                 this.summaryName
             );
 
-        this.DOM.summaryTitle_edit = this.DOM.summaryTitle.append("input").attr("class","summaryTitle_edit")
-            .on("keydown",function(){
-                if(event.keyCode===13){ // ENTER
-                    var newTitle = this.value;
-                    this.parentNode.setAttribute("edittitle",false);
-                    d3.select(this.parentNode).select(".summaryTitle_text").text(newTitle);
-                    me.browser.changeSummaryName(me.summaryName,newTitle);
-                }
-            })
-            .html(this.summaryName);
-
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
             .attr("class","summaryTitle_editButton fa")
+            .on("mousedown", function(){
+                // stop dragging event start
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            })
             .on("click",function(){
                 var curState=this.parentNode.getAttribute("edittitle");
                 if(curState===null || curState==="false"){
                     this.parentNode.setAttribute("edittitle",true);
                     var parentDOM = d3.select(this.parentNode);
-                    var currentTitle = parentDOM.select(".summaryTitle_text")[0][0].textContent;
-                    parentDOM.select(".summaryTitle_edit")[0][0].value = currentTitle;
-                    parentDOM.select(".summaryTitle_edit")[0][0].focus();
+                    var v=parentDOM.select(".summaryTitle_text")[0][0];
+                    v.setAttribute("contenteditable",true);
+                    v.focus();
                 } else {
-                    var parentDOM = d3.select(this.parentNode);
-                    var newTitle = parentDOM.select(".summaryTitle_edit")[0][0].value;
-                    me.browser.changeSummaryName(me.browser.primaryTableName,newTitle);
-                    parentDOM.select(".summaryTitle_text").text(newTitle);
                     this.parentNode.setAttribute("edittitle",false);
+                    var parentDOM = d3.select(this.parentNode);
+                    var v=parentDOM.select(".summaryTitle_text")[0][0];
+                    v.setAttribute("contenteditable",false);
+                    me.browser.changeSummaryName(me.summaryName,v.textContent);
                 }
             });
 
@@ -3693,8 +3783,8 @@ kshf.Summary_Categorical = function(){};
 kshf.Summary_Categorical.prototype = new kshf.Summary_Base();
 var Summary_Categorical_functions = {
     /** -- */ 
-    initialize: function(kshf_,name,attribMap){
-        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribMap);
+    initialize: function(browser,name,attribFunc){
+        kshf.Summary_Base.prototype.initialize.call(this,browser,name,attribFunc);
         this.type='categorical';
 
         this.heightRow_category = 18;
@@ -4415,6 +4505,7 @@ var Summary_Categorical_functions = {
     },
     /** returns the maximum total aggregate value stored per row in chart data */
     getMaxAggr_Total: function(){
+        if(this._cats===undefined) return 0;
         var subMax=0;
         // recurse
         if(this.subFacets.length>0){
@@ -4565,7 +4656,6 @@ var Summary_Categorical_functions = {
         if(this.DOM.facetCategorical){
             this.DOM.facetCategorical.style("width",this.getWidth()+"px");
             this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
-            this.DOM.summaryTitle_edit.style("width",(this.getWidth()-80)+"px");
             this.DOM.chartAxis_Measure.select(".background")
                 .style("width",this.chartScale_Measure.range()[1]+"px");
         }
@@ -5489,8 +5579,8 @@ for(var index in Summary_Categorical_functions){
 kshf.Summary_Interval = function(){};
 kshf.Summary_Interval.prototype = new kshf.Summary_Base();
 var Summary_Interval_functions = {
-    initialize: function(kshf_,name,attribFunc){
-        kshf.Summary_Base.prototype.initialize.call(this,kshf_,name,attribFunc);
+    initialize: function(browser,name,attribFunc){
+        kshf.Summary_Base.prototype.initialize.call(this,browser,name,attribFunc);
         this.type='interval';
 
         // Call the parent's constructor
@@ -5895,7 +5985,6 @@ var Summary_Interval_functions = {
         var chartWidth = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
         this.DOM.facetInterval.style("width",this.getWidth()+"px");
         this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
-        this.DOM.summaryTitle_edit.style("width",(this.getWidth()-80)+"px");
         if(this.DOM.timeSVG)
             this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
     },
@@ -6203,6 +6292,8 @@ var Summary_Interval_functions = {
 
         this.insertBins();
         this.refreshViz_Axis();
+        //this.refreshViz_Preview();
+        this.refreshMeasureLabel();
         this.updateTicks();
     },
     /** -- */
@@ -6377,9 +6468,6 @@ var Summary_Interval_functions = {
 
         this.DOM.compareButton = this.DOM.aggr_Group.selectAll(".compareButton");
         this.DOM.measureLabel  = this.DOM.aggr_Group.selectAll(".measureLabel");
-
-        this.refreshViz_Preview();
-        this.refreshMeasureLabel();
     },
     fixIntervalFilterRange: function(){
         if(this.scaleType==='log' || this.scaleType==='step'){
@@ -6722,7 +6810,9 @@ var Summary_Interval_functions = {
                     if(aggr.aggregate_Active===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Active(aggr);
                 })
-                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2; })
+                .attr("x1",function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2;
+                })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
         }
     },
@@ -6776,7 +6866,9 @@ var Summary_Interval_functions = {
                     if(aggr.aggregate_Compare===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Compare(aggr);
                 })
-                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2+1; })
+                .attr("x1",function(aggr){ 
+                    return me.valueScale(aggr.x)+width/2+1;
+                })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2+1; });
         }
     },
@@ -6826,7 +6918,9 @@ var Summary_Interval_functions = {
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Preview(aggr);
                 })
-                .attr("x1",function(aggr){ return me.valueScale(aggr.x)+width/2-1; })
+                .attr("x1",function(aggr){
+                    return me.valueScale(aggr.x)+width/2-1;
+                })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2-1; });
         }
     },

@@ -82,8 +82,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] {
   left: 120px;
 }
-.kshf[attribsShown=true] .attributeList {
-  display: block;
+.kshf[attribsShown=true] .attributePanel {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 .kshf[attribsShown=true] .listHeader > .configRow {
   display: block;
@@ -206,16 +210,50 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
-.kshf .attributeList {
+.kshf .attributePanel {
   display: none;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   position: absolute;
-  overflow: auto;
   left: -220px;
   width: 215px;
-  top: 5px;
+  top: 0px;
   height: 100%;
 }
-.kshf .attributeList > .attributeName {
+.kshf .attributePanel > .attributePanelHeader {
+  cursor: default;
+  text-align: center;
+  border-color: #dfd2a9;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px 2px;
+  background-color: #efeadf;
+  text-shadow: 0px 1px lightgray;
+  padding-top: 3px;
+}
+.kshf .attributePanel > .attributePanelHeader > .addAttrib {
+  color: gray;
+  position: absolute;
+  right: 3px;
+  cursor: pointer;
+}
+.kshf .attributePanel > .attributePanelHeader > .addAttrib:hover {
+  color: orangered;
+}
+.kshf .attributePanel > .attributeList {
+  overflow: auto;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.kshf .attributePanel .attributeName {
   display: block;
   font-size: 0.8em;
   padding: 2px;
@@ -230,10 +268,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
-.kshf .attributeList > .attributeName > .summaryTitle {
+.kshf .attributePanel .attributeName > .summaryTitle {
   display: inline;
+  margin: 1px;
 }
-.kshf .attributeList > .attributeName > .editTitleButton {
+.kshf .attributePanel .attributeName > .summaryTitle:focus {
+  background-color: white;
+  box-shadow: 0 0 3px #2CABCF;
+  border-color: #2CABCF;
+  border-style: solid;
+  border-width: 1px;
+  outline: 0 none;
+  margin: 0px;
+}
+.kshf .attributePanel .attributeName > .editTitleButton {
   font-size: 0.8em;
   display: none;
   color: gray;
@@ -241,33 +289,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 2px;
   vertical-align: top;
 }
-.kshf .attributeList > .attributeName > .editTitleButton:hover {
-  color: orangered;
+.kshf .attributePanel .attributeName > .editTitleButton:hover {
+  color: black;
 }
-.kshf .attributeList > .attributeName > .summaryTitleEdit {
+.kshf .attributePanel .attributeName > .editCodeButton {
+  display: none;
+  font-size: 0.9em;
+  color: black;
+}
+.kshf .attributePanel .attributeName > .editCodeButton:hover {
+  color: black;
+}
+.kshf .attributePanel .attributeName > .summaryTitleEdit {
   width: calc(100% - 20px);
   display: none;
   border-width: 0px;
   background-color: rgba(250, 250, 250, 0.9);
   color: orangered;
 }
-.kshf .attributeList > .attributeName > .summaryTitleEdit:focus {
+.kshf .attributePanel .attributeName > .summaryTitleEdit:focus {
   outline-color: #cb5454;
   outline-width: 0px;
 }
-.kshf .attributeList > .attributeName > .summaryTitleEdit:hover {
+.kshf .attributePanel .attributeName > .summaryTitleEdit:hover {
   border-width: 0px;
   background-color: white;
   margin: 0px;
 }
-.kshf .attributeList > .attributeName > .summaryTitleEdit::-webkit-input-placeholder {
+.kshf .attributePanel .attributeName > .summaryTitleEdit::-webkit-input-placeholder {
   font-weight: 500;
   color: #cb5454;
 }
-.kshf .attributeList > .attributeName > .summaryTypeIcon {
+.kshf .attributePanel .attributeName > .summaryTypeIcon {
   float: right;
 }
-.kshf .attributeList > .attributeName .nuggetInfo {
+.kshf .attributePanel .attributeName .nuggetInfo {
   display: inline-block;
   width: 100%;
   -webkit-box-flex: 1;
@@ -283,33 +339,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   text-align: center;
 }
-.kshf .attributeList > .attributeName .nuggetInfo > .num_left {
+.kshf .attributePanel .attributeName .nuggetInfo > .num_left {
   float: left;
   margin-left: 2px;
 }
-.kshf .attributeList > .attributeName .nuggetInfo > .num_right {
+.kshf .attributePanel .attributeName .nuggetInfo > .num_right {
   float: right;
   margin-right: 2px;
 }
-.kshf .attributeList > .attributeName .nuggetInfo > .fa {
+.kshf .attributePanel .attributeName .nuggetInfo > .fa {
   color: gray;
 }
-.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo {
+.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo {
   font-size: 2em;
   text-align: center;
   position: relative;
 }
-.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo:before {
+.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo:before {
   content: "\f110";
 }
-.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget > .nuggetViz {
+.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetViz {
   display: none !important;
 }
-.kshf .attributeList > .attributeName[aggr_initialized=false] > .attribNugget:hover > .nuggetInfo {
+.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget:hover > .nuggetInfo {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
-.kshf .attributeList > .attributeName > .attribNugget {
+.kshf .attributePanel .attributeName > .attribNugget {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -323,10 +379,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 5px;
   border: solid 1px rgba(255, 255, 255, 0.8);
 }
-.kshf .attributeList > .attributeName > .attribNugget:hover {
-  border-color: gray;
-}
-.kshf .attributeList > .attributeName > .attribNugget > .nuggetViz {
+.kshf .attributePanel .attributeName > .attribNugget > .nuggetViz {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -336,7 +389,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 3px;
   margin-left: 3px;
 }
-.kshf .attributeList > .attributeName > .attribNugget > .nuggetViz > .nuggetBar {
+.kshf .attributePanel .attributeName > .attribNugget > .nuggetViz > .nuggetBar {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -345,26 +398,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   background-color: #b8c7d2;
 }
-.kshf .attributeList > .attributeName:hover {
+.kshf .attributePanel .attributeName:hover {
   background-color: #E8E0CE;
   border-color: #B8B6B1;
 }
-.kshf .attributeList > .attributeName:hover > .editTitleButton {
+.kshf .attributePanel .attributeName:hover > .editTitleButton {
   display: inline-block;
 }
-.kshf .attributeList > .attributeName[edittitle="true"] > .summaryTitle {
-  display: none;
+.kshf .attributePanel .attributeName:hover > .attribNugget {
+  border-color: gray;
 }
-.kshf .attributeList > .attributeName[edittitle="true"] > .summaryTitleEdit {
-  display: inline-block;
-}
-.kshf .attributeList > .attributeName[edittitle="true"] > .editTitleButton::before {
+.kshf .attributePanel .attributeName[edittitle="true"] > .editTitleButton::before {
   content: "\f00c";
 }
-.kshf .attributeList > .attributeName[state='edited'] > .editTitleButton {
+.kshf .attributePanel .attributeName[state='edited'] > .editTitleButton {
   display: inline-block;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] > .attribNugget {
+.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -373,7 +423,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz {
+.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -387,19 +437,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz > .nuggetBar {
+.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz > .nuggetBar {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] .nuggetViz {
+.kshf .attributePanel .attributeName[datatype~="interval"] .nuggetViz {
   -webkit-box-ordinal-group: 1;
   -moz-box-ordinal-group: 1;
   -ms-flex-order: 1;
   -webkit-order: 1;
   order: 1;
 }
-.kshf .attributeList > .attributeName[datatype~="interval"] .nuggetInfo {
+.kshf .attributePanel .attributeName[datatype~="interval"] .nuggetInfo {
   -webkit-box-ordinal-group: 2;
   -moz-box-ordinal-group: 2;
   -ms-flex-order: 2;
@@ -407,10 +457,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   order: 2;
   max-height: 1em;
 }
-.kshf .attributeList > .attributeName[datatype~='time'] .nuggetInfo:before {
+.kshf .attributePanel .attributeName[datatype~='time'] .nuggetInfo:before {
   content: '\f017';
 }
-.kshf .attributeList > .attributeName[datatype~="categorical"] > .attribNugget {
+.kshf .attributePanel .attributeName[datatype~="categorical"] > .attribNugget {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: horizontal;
@@ -419,7 +469,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.kshf .attributeList > .attributeName[datatype~="categorical"] > .attribNugget > .nuggetViz {
+.kshf .attributePanel .attributeName[datatype~="categorical"] > .attribNugget > .nuggetViz {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -433,16 +483,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.kshf .attributeList > .attributeName[state='custom'] > .editTitleButton {
+.kshf .attributePanel .attributeName[state='custom'] > .editCodeButton {
   display: inline-block;
-  font-size: 0.9em;
-  color: black;
-}
-.kshf .attributeList > .attributeName[state='custom'] > .editTitleButton:before {
-  content: "\f121";
-}
-.kshf .attributeList > .attributeListHeader {
-  font-weight: 700;
 }
 .kshf .panels_Above {
   display: -webkit-box;
@@ -462,7 +504,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 22px;
   width: 200px;
   background-color: lightgray;
   border-radius: 10px;
@@ -899,9 +940,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .chartClearFilterButton.allFilter {
   display: inline-block;
-  float: right;
   margin-left: 2px;
   height: 16px;
+  vertical-align: top;
+  border-width: 0px 0px 0px 1px;
+  line-height: 16px;
 }
 .kshf .selection_bar rect {
   fill: #788890;
@@ -1020,6 +1063,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   margin-bottom: -4px;
 }
+.kshf .headerGroup .summaryTitle > .summaryTitle_text:focus {
+  background-color: white;
+  box-shadow: 0 0 3px #2CABCF;
+  outline: 0 none;
+  padding-left: 3px;
+  padding-right: 3px;
+}
 .kshf .headerGroup .summaryTitle > .summaryTitle_edit {
   display: none;
   border-width: 0px;
@@ -1057,12 +1107,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_editButton:hover {
   color: black;
-}
-.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_text {
-  display: none;
-}
-.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_edit {
-  display: inline-block;
 }
 .kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton {
   opacity: 1;
@@ -2848,6 +2892,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
   padding-left: 1px;
+  white-space: nowrap;
   -webkit-transition: background-color 100ms linear, opacity 300ms linear;
   -moz-transition: background-color 100ms linear, opacity 300ms linear;
   -o-transition: background-color 100ms linear, opacity 300ms linear;
