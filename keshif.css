@@ -1239,10 +1239,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggr.compare {
   background-color: #2f4f4f;
   pointer-events: none;
-  -webkit-transition: opacity 400ms ease-in-out, -webkit-transform 200ms ease-in-out;
-  -moz-transition: opacity 400ms ease-in-out, -moz-transform 200ms ease-in-out;
-  -o-transition: opacity 400ms ease-in-out, -o-transform 200ms ease-in-out;
-  transition: opacity 400ms ease-in-out,-webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, opacity 400ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, opacity 400ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, opacity 400ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, opacity 400ms ease-in-out;
   opacity: 0;
 }
 .kshf .kshfChart {

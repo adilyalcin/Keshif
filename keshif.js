@@ -2934,8 +2934,8 @@ kshf.Browser.prototype = {
                 if(!summary.aggr_initialized){
                     summary.initializeAggregates();
                     // refresh tipsy (it uses summary data)
-                    this.tipsy.hide();
-                    this.tipsy.show();
+//                    this.tipsy.hide();
+//                    this.tipsy.show();
                 }
             });
 
@@ -3123,7 +3123,10 @@ kshf.Browser.prototype = {
         this.vizCompareActive = true;
         this.DOM.root.attr("previewcompare",true);
         this.summaries.forEach(function(summary){ 
-            if(summary.inBrowser()) summary.refreshViz_Compare();
+            if(summary.inBrowser()) {
+                summary.cachePreviewValue();
+                summary.refreshViz_Compare();
+            }
         });
         if(this.previewCompareCb) this.previewCompareCb.call(this,false);
     },
@@ -4762,15 +4765,25 @@ var Summary_Categorical_functions = {
     refreshViz_Preview: function(){
         if(!this.hasCategories() || this.collapsed) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
-        this.DOM.aggr_Preview.each(function(attrib){
-            var p=attrib.aggregate_Preview;
-            if(me.browser.preview_not) p = attrib.aggregate_Active-p;
-            attrib.cache_preview = p;
+        this.DOM.aggr_Preview.each(function(aggr){
+            var p=aggr.aggregate_Preview;
+            if(me.browser.preview_not) p = aggr.aggregate_Active-p;
             kshf.Util.setTransform(this,"scaleX("+(
-                ratioMode ? ((p/attrib.aggregate_Active)*maxWidth ) : me.chartScale_Measure(p)
+                ratioMode ? ((p/aggr.aggregate_Active)*maxWidth ) : me.chartScale_Measure(p)
             )+")");
         });
         this.refreshMeasureLabel();
+    },
+    /** Gets the active previewed value, and stores it in the cache */
+    cachePreviewValue: function(){
+        if(!this.hasCategories() || this.collapsed) return;
+        var preview_not=this.browser.preview_not;
+        this.DOM.aggr_Preview.each(function(aggr){
+            aggr.aggregate_Compare = aggr.aggregate_Preview;
+            if(preview_not) {
+                aggr.aggregate_Compare = aggr.aggregate_Active-aggr.aggregate_Compare;
+            }
+        });
     },
     /** -- */
     refreshViz_Compare: function(){
@@ -4779,7 +4792,7 @@ var Summary_Categorical_functions = {
         if(this.browser.vizCompareActive){
             this.DOM.aggr_Compare.each(function(cat){
                 kshf.Util.setTransform(this,"scaleX("+(
-                    ratioMode ? ((cat.cache_preview/cat.aggregate_Active)*maxWidth) : me.chartScale_Measure(cat.cache_preview)
+                    ratioMode ? ((cat.aggregate_Compare/cat.aggregate_Active)*maxWidth) : me.chartScale_Measure(cat.aggregate_Compare)
                 )+")");
             });
         }
@@ -4793,7 +4806,7 @@ var Summary_Categorical_functions = {
         if(this.collapsed) return;
         this.DOM.aggr_Preview.each(function(cat){
             cat.aggregate_Preview=0;
-            if(cat.cache_preview===0) return;
+            if(cat.aggregate_Compare===0) return;
             kshf.Util.setTransform(this,"scaleX(0)");
         });
         this.refreshMeasureLabel();
@@ -6816,6 +6829,17 @@ var Summary_Interval_functions = {
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
         }
     },
+    /** Gets the active previewed value, and stores it in the cache */
+    cachePreviewValue: function(){
+        if(this.isEmpty || this.collapsed) return;
+        var preview_not=this.browser.preview_not;
+        this.histBins.forEach(function(aggr){
+            aggr.aggregate_Compare = aggr.aggregate_Preview;
+            if(preview_not) {
+                aggr.aggregate_Compare = aggr.aggregate_Active-aggr.aggregate_Preview;
+            }
+        });
+    },
     /** -- */
     refreshViz_Compare: function(){
         if(this.isEmpty || this.collapsed) return;
@@ -6829,13 +6853,6 @@ var Summary_Interval_functions = {
 
         var width = this.getBarWidth_Real();
         var width_half = this.getBarWidth_Real()/2;
-        // update aggregate_Compare value in each aggregate
-        this.histBins.forEach(function(aggr){
-            aggr.aggregate_Compare = aggr.aggregate_Preview;
-            if(me.browser.preview_not) {
-                aggr.aggregate_Compare = aggr.aggregate_Active-aggr.aggregate_Preview;
-            }
-        });
         // update chart
         this.DOM.aggr_Compare.each(function(aggr){
             kshf.Util.setTransform(this,
