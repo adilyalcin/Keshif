@@ -20,15 +20,14 @@ var dt_book_indices,dt_indices;
 
 // Returns list of IDs of a book given the parent property
 var getIndicesWithParent = function(book, parentId){
-    var book_id = book.data[0];
-    var indices = dt_book_indices[book_id];
-    if(indices===undefined) return null;
+    var indices = dt_book_indices[book.id];
+    if(indices===undefined) return;
     // parent needs to be 1
     var list = [];
-    indices.data[1].forEach(function(i){
+    indices.data.Indices.forEach(function(i){
         var indexData=dt_indices[i];
         if(indexData===undefined) return;
-        if(indexData.data[3]===parentId) list.push(i);
+        if(indexData.data.Parent===parentId) list.push(i);
     });
     return list;
 };
@@ -36,11 +35,17 @@ var getIndicesWithParent = function(book, parentId){
 var getIndexTitle = function(i){
     var d = dt_indices[i];
     if(d===undefined) return "--";
-    return d.data[1];
+    return d.data.Attribute;
 };
 
 $(document).ready( function(){
     var sortFormat = d3.time.format("%Y-%m-%d");
+
+    resizeBrowser(150,100);
+    $(window).resize(function() {
+        resizeBrowser(150,100);
+        browser.updateLayout();
+    });
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -48,157 +53,131 @@ $(document).ready( function(){
         // barChartWidth: 40,
         itemName: "Books in ICDL",
         source: {
-            gdocId: '1gRAC1iElcJjqqn6zMg5Bfn059xj1qS1ilpkWlplR4C0',
+            gdocId: '1rBXoLpfJyyBG_vWMZDvHmTgtoGb3v5pm6eHdAWcJPQk',
             sheets: [ 
-                {name:"Books", id:"book_id"}, 
-                {name:"Book Metadata", id:"book_id"}, 
+                {name:"Books"}, 
+                {name:"Book Metadata"}, 
                 {name:"Countries"},
-                {name:"Book Indices",id:"book_id"},
+                {name:"Book Indices"},
                 {name:"Indices"}
                 ]
         },
         loadedCb: function(){
             // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Books, [3,4],"-",true);
-            kshf.Util.cellToArray(kshf.dt["Book Metadata"], [1,5],"-",false);
-            kshf.Util.cellToArray(kshf.dt["Book Indices"], [1],"-",true);
-
+            kshf.Util.cellToArray(kshf.dt.Books, ['From Countries','About Countries'],"-",true);
+            kshf.Util.cellToArray(kshf.dt["Book Metadata"], ['Language','Genres'],"-",false);
+            kshf.Util.cellToArray(kshf.dt["Book Indices"], ['Indices'],"-",true);
             dt_book_indices = kshf.dt_id['Book Indices'];
             dt_indices = kshf.dt_id['Indices'];
         },
         summaries: [
-            {
-                title: "Type",
-                attribMap: function(book){
-                    var metadata = kshf.dt_id['Book Metadata'][book.data[0]];
+            {   title: "Type",
+                attribMap: function(){
+                    var metadata = kshf.dt_id['Book Metadata'][this.id];
                     if(metadata===undefined) return null;
-                    return metadata.data[4];
+                    return metadata.data.Type;
                 }
-            },{
-                title: "Genre",
-                attribMap: function(book){
-                    var metadata = kshf.dt_id['Book Metadata'][book.data[0]];
+            },{ title: "Genre",
+                attribMap: function(){
+                    var metadata = kshf.dt_id['Book Metadata'][this.id];
                     if(metadata===undefined) return null;
-                    return metadata.data[5];
+                    return metadata.data.Genres;
                 }
-            },{
-                title: "Rating",
-                attribMap: function(book){ return getIndicesWithParent(book,71); },
-                catLabel: function(d){ return d.data[2]; },
-                attribNameFunc: getIndexTitle,
+            },{ title: "Features",
+                attribMap: function(){
+                    var r=[];
+                    if(this['Public Domain']) r.push('Public Domain');
+                    if(this['Featured']) r.push('Featured');
+                    return r;
+                }
+            },{ title: "Number of Pages", collapsed: true,
+                attribMap: "Pages"
+            },{ title: "Rating",
+                attribMap: function(){ return getIndicesWithParent(this,71); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
                 collapsed: true,
+            },{ title: "Feeling",
+                attribMap: function(){ return getIndicesWithParent(this,5); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Audience: Language",
+                attribMap: function(){ return getIndicesWithParent(this,3); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Audience: Age",
+                attribMap: function(){ return getIndicesWithParent(this,83); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Audience: Collection",
+                attribMap: function(){ return getIndicesWithParent(this,473); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+                collapsed:true
+            },{ title: "Audience: Publication Date",
+                attribMap: function(){ return getIndicesWithParent(this,326); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+                collapsed: true
+            },{ title: "Appearance: Format", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,15); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Appearance: Length", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,260); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Appearance: Cover Color", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,4); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+                collapsed: true
+            },{ title: "Appearance: Shape", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,6); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+                collapsed: true
+            },{ title: "Content: Countries", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,359); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Content: Characters", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,257); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+            },{ title: "Content: Time Periods - When", layout: 'right',
+                attribMap: function(){ return getIndicesWithParent(this,287); },
+                catTableName: "Indices",
+                catLabel: "Attribute",
+                collapsed: true
             },{
-                title: "Feeling",
-                attribMap: function(book){ return getIndicesWithParent(book,5); },
-                catLabel: function(d){ return d.data[2]; },
-                attribNameFunc: getIndexTitle,
-            },{   
-                title: "Audience",
-                collapsed: true,
-                facets: [
-                    {
-                        title: "Language",
-                        attribMap: function(book){ return getIndicesWithParent(book,3); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Age",
-                        attribMap: function(book){ return getIndicesWithParent(book,83); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Collection",
-                        attribMap: function(book){ return getIndicesWithParent(book,473); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed:true
-                    },{
-                        title: "Publication Date",
-                        attribMap: function(book){ return getIndicesWithParent(book,326); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true
-                    }
-                ]
-            },{
-                title: "Appearance",
-                layout: 'right',
-                collapsed: true,
-                facets: [
-                    {
-                        title: "Format",
-                        attribMap: function(book){ return getIndicesWithParent(book,15); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Length",
-                        attribMap: function(book){ return getIndicesWithParent(book,260); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Cover Color",
-                        attribMap: function(book){ return getIndicesWithParent(book,4); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true
-                    },{
-                        title: "Shape",
-                        attribMap: function(book){ return getIndicesWithParent(book,6); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true
-                    }
-                ]
-            },{
-                title: "Content",
-                layout: 'right',
-                collapsed: true,
-                facets: [
-                    {
-                        title: "Countries",
-                        attribMap: function(book){ return getIndicesWithParent(book,359); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Characters",
-                        attribMap: function(book){ return getIndicesWithParent(book,257); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle
-                    },{
-                        title: "Time Periods - When",
-                        attribMap: function(book){ return getIndicesWithParent(book,287); },
-                        catLabel: function(d){ return d.data[2]; },
-                        attribNameFunc: getIndexTitle,
-                        collapsed: true
-                    }
-                ]
+                title: "Date Added",
+                layout: "bottom", collapsed: true
             }
         ],
         itemDisplay: {
-            sortingOpts: [{ name: 'Date Added', label: function(d){ return sortFormat(d.data[5]); } }],
+            sortingOpts: [{ name: 'Date Added', label: function(){ return sortFormat(d['Date Added']); } }],
             textSearchFunc: function(){ 
-                var metadata = kshf.dt_id['Book Metadata'][this[0]];
+                var metadata = kshf.dt_id['Book Metadata'][this.id];
                 if(metadata===undefined) return "";
-                return metadata.data[2];
+                return metadata.data.Title;
             },
             displayType: 'grid',
             maxVisibleItems_Default: 20,
             recordView: function(){
-                var id = this[0];
+                var id = this.id;
                 var metadata = kshf.dt_id['Book Metadata'][id];
-                if(metadata===undefined){
-                    console.log(d);
-                    return id;
-                }
+                if(metadata===undefined) return;
+                //return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+                    //"' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
                 return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
-                        +id+"&route=text'>"+
-                        "<img>"+
-                        "<span class='title'>"+metadata.data[2]+"</span></a>";
+                        +id+"&route=text' class='thumbnail'><img class='thumbImg'></a>"+
+                        "<span class='title'>"+metadata.data.Title+"</span>";
             },
             visibleCb: function(d){
                 // update image link / load image now
-                var id=d.data[0];
-                d3.select(d.DOM.record).select("img").attr("src",
+                var id=d.data.id;
+                d3.select(d.DOM.record).select(".thumbImg").attr("src",
                     "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg");
             }
         }
@@ -207,51 +186,29 @@ $(document).ready( function(){
 
 </script>
 <style>
-    #chart_div{
-        width:1300px;
-        height:750px;
-    }
-    div.listItem{
-        padding-bottom: 4px;
-        max-height: 230px !important;
-        vertical-align: top;
-    }
-    div.content{
-        width: 150px;
-    }
-    div.content a{
-        vertical-align: top;
-        color: #496B86;
-    }
-    div.content img{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 10px;
-        padding: 3px;
-        border: solid;
-        border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-        border-width: 1px 2px 2px 1px;
-        background-color: white;
-        max-width: 130px;
-        transition: background-color 300ms linear;
-        -webkit-transition: background-color 300ms linear;
-        -o-transition: background-color 300ms linear;
-        -moz-transition: background-color 300ms linear;
-    }
-    div.listItem[highlight=true] div.content img{
-        background-color: orangered;
-    }
-    div.content span.title{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: center;
-    }
+.listItem{
+    width: 140px;
+}
+.content{
+    padding: 3px;
+}
+.thumbnail{
+    height: 165px;
+}
+.thumbImg{
+    width: 100% !important;
+}
 </style>
     </head>
     <body>
+        <div class="pageTitle" align="center">
+            <a href="http://en.childrenslibrary.org/" target="_blank">
+            <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
+            International Childrens Digital Library
+            <a href="http://en.childrenslibrary.org/" target="_blank">
+                <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
+            Collection
+            </div>
         <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>
