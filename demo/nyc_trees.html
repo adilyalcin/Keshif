@@ -70,8 +70,7 @@ $(document).ready( function(){
             sortingOpts: [ {name: '# Total Trees', value: "Total"} ],
             detailsToggle: "off",
             displayType: 'grid',
-            textSearch: 'Tree Name',
-            textSearchFunc: function(){ return this.Common; },
+            textSearch: {title: 'Tree Name', value: "Common"},
             recordView: function(){
                 return ""+
                     "<span class='thumbnail'><img style='background-color:#"+this.color+"' class='thumbImg' "+

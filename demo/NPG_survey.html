@@ -271,7 +271,7 @@ $(document).ready(function() {
         ],
         itemDisplay: {
             detailsToggle: "one",
-            textSearchFunc: function(){ return this[columns[11]]; },
+            textSearch: {title: "Comment", value: columns[11] },
             sortingOpts: [{ 
                 name: "| <span class='fa fa-comment'></span> |", value: function(){ 
                     if(this[columns[11]]===null) return 0;

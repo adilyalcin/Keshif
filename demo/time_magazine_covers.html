@@ -50,7 +50,7 @@ google.setOnLoadCallback(function(){
             sortColWidth: 120,
             displayType: 'grid',
             sortingOpts: [{ name: 'Date', label: function(){ return timeFormat(this.Date);} }],
-            textSearchFunc: function(){ return this.Info; },
+            textSearch: "Info",
             recordView: function(){ 
                 return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+
                   "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+

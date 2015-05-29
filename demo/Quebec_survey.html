@@ -179,10 +179,7 @@ $(document).ready(function() {
         itemDisplay: {
             sortColWidth: 45,
             detailsToggle: "One",
-            textSearch: 'content',
-            textSearchFunc: function(){
-                return this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
-            },
+            textSearch: { title: 'content', value: 'Question_ouverte q_41_commentaires_généraux_questionnaire'},
             sortingOpts: [{ 
                 name: "| <span class='fa fa-comment'></span> |", 
                 value: function(){ 

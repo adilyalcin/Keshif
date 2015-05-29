@@ -76,8 +76,7 @@ $(document).ready( function(){
             ],
             showRank: false,
             detailsToggle: "one",
-            textSearch: "Title and text",
-            textSearchFunc: function(){ return this[4] + " " + this[5];},
+            textSearch: { title: "Title and text", value: function(){return this[4]+" "+this[5];} },
             recordView: function(){
                 var str="";
 

@@ -24,8 +24,8 @@ $(document).ready( function(){
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        categoryTextWidth: 270,
-        barChartWidth: 270,
+        categoryTextWidth: 250,
+        barChartWidth: 200,
         itemName: "Unclaimed Deads",
         source: {
             url: "http://spreadsheets.latimes.com/unclaimed-dead/",
@@ -48,7 +48,7 @@ $(document).ready( function(){
                     if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
-            },{ title: "Age",
+            },{ title: "Age at Death", attribMap: "Age"
             },{ title: "Death Date", attribMap: function(){ 
                 var x=dateFormat.parse(this.Death);
                 if(x!==null) return new Date(x);
@@ -58,11 +58,14 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortColWidth: 82,
             sortingOpts: [
-                {   name:'Age', inverse:false,
-                },{ name:'Death', inverse:true,
-                    value: function(){ return dateFormat.parse(this.Death); },
+                {   name:'Age at Death', value: "Age", inverse:false,
+                },{ name:'Death Date', inverse:true,
+                    value: function(){ 
+                        if(this['Death']===null) return;
+                        if(this['Death']==="") return;
+                        return dateFormat.parse(this.Death);
+                    },
                     label: function(){
                         if(this['Death']===null) return '-';
                         if(this['Death']==="") return '-';
@@ -70,8 +73,7 @@ $(document).ready( function(){
                     }
                 }
             ],
-            textSearch: "name",
-            textSearchFunc: function(){ return this.Last+", "+this.Middle+" "+this.First; },
+            textSearch: { title: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
             recordView: function(){
                 var str="";
                 switch(this.Sex){
@@ -94,7 +96,7 @@ $(document).ready( function(){
         </script>
 <style>
 #chart_div{
-    width: 1000px;
+    width: 950px;
     height: 500px;
 }
 .listItem{

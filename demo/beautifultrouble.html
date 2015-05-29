@@ -88,8 +88,7 @@ $(document).ready( function(){
             showRank: true,
             showSelectBox: true,
             detailsToggle: "one",
-            textSearch: "Title and text",
-            textSearchFunc: function(){ return this.title + " " + this.text;},
+            textSearch: { title: "Title and text", value: function(){return this.title+" "+this.text;} },
             recordView: function() {
                 return "<span class='typeImg'></span> "+this.title +" <a target='_blank' href='"+this.url+"' class='fa fa-external-link viewExternal'>view</a></div>"+
                     "<span class='item_details'><img class='itemImg' src=''></span>";

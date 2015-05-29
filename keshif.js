@@ -805,7 +805,7 @@ kshf.Filter.prototype = {
                     return;
                 }
             }
-            if(this.parentSummary!==undefined) this.filterHeader = this.parentSummary.summaryName;
+            if(this.parentSummary!==undefined) this.filterHeader = this.parentSummary.summaryTitle;
             this.filterSummaryBlock.select(".filterHeader").html(this.filterHeader);
             this.filterSummaryBlock.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
         }
@@ -911,10 +911,34 @@ kshf.List = function(kshf_, config, root){
 
     this.showRank = config.showRank || false;
 
-    this.textSearch = config.textSearch;
-    this.textSearchFunc = config.textSearchFunc;
-    if(this.textSearch!==undefined && this.textSearchFunc===undefined){
-        this.textSearchFunc = function(){ return this[me.textSearch]; };
+    this.textSearchSummary = null; // no text search summary by default
+    
+    if(config.textSearch){
+        // Find the summary. If it is not there, create it
+        if(typeof(config.textSearch)==="string"){
+            var summary = browser.summaries_by_name[config.textSearch];
+            if(summary){
+                this.textSearchSummary = summary;
+            }
+        } else {
+            var title = config.textSearch.title;
+            var value = config.textSearch.value;
+            if(title!==undefined){
+                var summary = browser.summaries_by_name[config.textSearch];
+                if(summary){
+                    this.textSearchSummary = summary;
+                } else {
+                    if(typeof(value)==="function"){
+                        this.textSearchSummary = browser.createSummary(title,value,'categorical');
+                    } else if(typeof(value)==="string"){
+                        this.textSearchSummary = browser.changeSummaryName(value,title);
+                    };
+                }
+            }
+        }
+    }
+    if(this.textSearchSummary!==null){
+        this.textSearchSummary.isTextSearch = true;
     }
 
     this.listDiv = root.select("div.listDiv")
@@ -1140,9 +1164,10 @@ kshf.List.prototype = {
                 this.filterStr = this.filterStr.split(" ");
                 // go over all the items in the list, search each keyword separately
                 // If some search matches, return true (any function)
+                var summaryFunc = summary.textSearchSummary.summaryFunc;
                 summary.items.forEach(function(item){
                     var f = ! this.filterStr.every(function(v_i){
-                        var v = summary.textSearchFunc.call(item.data);
+                        var v = summaryFunc.call(item.data);
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
@@ -1152,7 +1177,7 @@ kshf.List.prototype = {
         });
 
         this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch")
-            .attr("isActive",this.textSearchFunc!==undefined);
+            .attr("isActive",this.textSearchSummary!==null);
 
         var x= this.DOM.mainTextSearch.append("div").attr("class","dropZone_textSearch");
         x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
@@ -1164,14 +1189,15 @@ kshf.List.prototype = {
             this.style.backgroundColor = "";
         });
         $(x[0][0]).on("mouseup",function(event){
-            me.textSearchFunc = me.browser.movedSummary.summaryFunc;
+            me.textSearchSummary = me.browser.movedSummary;
+            me.textSearchSummary.isTextSearch = true;
             me.DOM.mainTextSearch.attr("isActive",true);
-            me.DOM.mainTextSearch.select("input").attr("placeholder","Search "+me.browser.movedSummary.summaryName);
+            me.DOM.mainTextSearch.select("input").attr("placeholder","Search "+me.browser.movedSummary.summaryTitle);
         });
 
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-search searchIcon");
         this.DOM.mainTextSearch.append("input").attr("class","mainTextSearch_input")
-            .attr("placeholder","Search "+(this.textSearch?this.textSearch:""))
+            .attr("placeholder","Search "+(this.textSearchSummary?this.textSearchSummary.summaryTitle:""))
             //.attr("autofocus","true")
             .on("keydown",function(){
                 var x = this;
@@ -1209,9 +1235,9 @@ kshf.List.prototype = {
         });
         $(x[0][0]).on("mouseup",function(event){
             var movedSummary = me.browser.movedSummary;
-            if(me.sortingOpts.some(function(o){ return o.name===movedSummary.summaryName; })) return;
+            if(me.sortingOpts.some(function(o){ return o.name===movedSummary.summaryTitle; })) return;
             var newOpt = {
-                name: movedSummary.summaryName,
+                name: movedSummary.summaryTitle,
                 value: movedSummary.summaryFunc,
                 unitName: movedSummary.unitName
             };
@@ -2817,7 +2843,7 @@ kshf.Browser.prototype = {
         this.movedSummary = summary;
         this.showDropZones = true;
         this.DOM.root.attr("showdropzone",true).attr("dropattrtype",summary.getDataType());
-        this.DOM.attribDragBox.style("display","block").text(summary.summaryName);
+        this.DOM.attribDragBox.style("display","block").text(summary.summaryTitle);
         if(!summary.uniqueCategories()){
             this.summaries.forEach(function(summary){
                 if(summary.panel) summary.setCollapsed(true);
@@ -2863,7 +2889,7 @@ kshf.Browser.prototype = {
             })
             .attr("state",function(summary){
                 if(summary.summaryColumn===null) return "custom"; // calculated
-                if(summary.summaryName===summary.summaryColumn) return "exact";
+                if(summary.summaryTitle===summary.summaryColumn) return "exact";
                 return "edited";
             })
             .attr("datatype",function(summary){
@@ -2946,11 +2972,11 @@ kshf.Browser.prototype = {
         var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
         newSummaries.append("span").attr("class","summaryTitle")
             .attr("contenteditable",false)
-            .text(function(summary){ return summary.summaryName; })
+            .text(function(summary){ return summary.summaryTitle; })
             .on("blur",function(summary){
                 this.parentNode.setAttribute("edittitle",false);
                 this.setAttribute("contenteditable",false);
-                me.changeSummaryName(summary.summaryName,this.textContent);
+                me.changeSummaryName(summary.summaryTitle,this.textContent);
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
             })
@@ -2958,7 +2984,7 @@ kshf.Browser.prototype = {
                 if(d3.event.keyCode===13){ // ENTER
                     this.parentNode.setAttribute("edittitle",false);
                     this.setAttribute("contenteditable",false);
-                    me.changeSummaryName(summary.summaryName,this.textContent);
+                    me.changeSummaryName(summary.summaryTitle,this.textContent);
                     d3.event.preventDefault();
                     d3.event.stopPropagation();
                 }
@@ -2993,15 +3019,11 @@ kshf.Browser.prototype = {
                 if(curState===null || curState==="false"){
                     this.parentNode.setAttribute("edittitle",true);
                     summaryTitle_DOM.setAttribute("contenteditable",true);
-
                     summaryTitle_DOM.focus();
-                    // var currentTitle = summaryTitle_DOM.textContent;
-                    // parentDOM.select(".summaryTitleEdit")[0][0].value = currentTitle;
-                    // parentDOM.select(".summaryTitleEdit")[0][0].focus();
                 } else {
                     this.parentNode.setAttribute("edittitle",false);
                     summaryTitle_DOM.setAttribute("contenteditable",false);
-                    me.changeSummaryName(summary.summaryName,summaryTitle_DOM.textContent);
+                    me.changeSummaryName(summary.summaryTitle,summaryTitle_DOM.textContent);
                 }
                 // stop dragging event start
                 d3.event.stopPropagation();
@@ -3360,7 +3382,7 @@ kshf.Summary_Base.prototype = {
         this.browser = browser;
 //        this.parentFacet = options.parentFacet;
 
-        this.summaryName   = name;
+        this.summaryTitle   = name;
         this.summaryColumn = attribFunc?null:name;
         this.summaryFunc   = attribFunc || function(){ return this[name]; };
 
@@ -3386,20 +3408,23 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     setSummaryName: function(name){
-        this.summaryName = name;
+        this.summaryTitle = name;
         if(this.DOM.summaryTitle_text)
-            this.DOM.summaryTitle_text.text(this.summaryName);
+            this.DOM.summaryTitle_text.text(this.summaryTitle);
         if(this.DOM.nugget)
-            this.DOM.nugget.select(".summaryTitle").text(this.summaryName);
+            this.DOM.nugget.select(".summaryTitle").text(this.summaryTitle);
         this.summaryFilter._refreshFilterSummary();
         // This summary may be used for sorting options. Refresh the list
         if(this.browser.listDisplay)
             this.browser.listDisplay.refreshSortingOptions();
-
+        if(this.isTextSearch){
+            this.browser.listDisplay.DOM.mainTextSearch.select("input")
+                .attr("placeholder","Search "+this.summaryTitle);
+        }
         if(this.DOM.nugget) 
             this.DOM.nugget.attr("state",function(summary){
                 if(summary.summaryColumn===null) return "custom"; // calculated
-                if(summary.summaryName===summary.summaryColumn) return "exact";
+                if(summary.summaryTitle===summary.summaryColumn) return "exact";
                 return "edited";
             });
     },
@@ -3424,7 +3449,7 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     destroy: function(){
-        delete this.browser.summaries_by_name[this.summaryName];
+        delete this.browser.summaries_by_name[this.summaryTitle];
         if(this.summaryColumn)
             delete this.browser.summaries_by_name[this.summaryColumn];
         this.browser.removeSummary(this);
@@ -3654,19 +3679,19 @@ kshf.Summary_Base.prototype = {
             .on("blur",function(){
                 this.parentNode.setAttribute("edittitle",false);
                 this.setAttribute("contenteditable", false);
-                me.browser.changeSummaryName(me.summaryName,this.textContent);
+                me.browser.changeSummaryName(me.summaryTitle,this.textContent);
             })
             .on("keydown",function(){
                 if(event.keyCode===13){ // ENTER
                     this.parentNode.setAttribute("edittitle",false);
                     this.setAttribute("contenteditable", false);
-                    me.browser.changeSummaryName(me.summaryName,this.textContent);
+                    me.browser.changeSummaryName(me.summaryTitle,this.textContent);
                 }
             })
             .html((this.parentFacet && this.parentFacet.hasCategories())?
                 ("<i class='fa fa-hand-o-up'></i> <span style='font-weight:500'>"+
-                    this.parentFacet.summaryName+":</span> "+"  "+this.summaryName):
-                this.summaryName
+                    this.parentFacet.summaryTitle+":</span> "+"  "+this.summaryTitle):
+                this.summaryTitle
             );
 
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
@@ -3703,7 +3728,7 @@ kshf.Summary_Base.prototype = {
                     var parentDOM = d3.select(this.parentNode);
                     var v=parentDOM.select(".summaryTitle_text")[0][0];
                     v.setAttribute("contenteditable",false);
-                    me.browser.changeSummaryName(me.summaryName,v.textContent);
+                    me.browser.changeSummaryName(me.summaryTitle,v.textContent);
                 }
             });
 
@@ -3711,7 +3736,7 @@ kshf.Summary_Base.prototype = {
         this.DOM.facetIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'ne', title: function(){ return "Multiple "+me.summaryName+" possible.<br>Click to show relations.";}
+                    gravity: 'ne', title: function(){ return "Multiple "+me.summaryTitle+" possible.<br>Click to show relations.";}
                 });
             })
             .on("mouseover",function(d){
@@ -3835,7 +3860,7 @@ var Summary_Categorical_functions = {
     initializeAggregates: function(){
         if(this.aggr_initialized) return;
         if(this.catTableName===undefined){
-            this.catTableName = this.summaryName+"_h_"+this.id;
+            this.catTableName = this.summaryTitle+"_h_"+this.id;
             this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
         }
         this.mapToAggregates();
@@ -4006,12 +4031,12 @@ var Summary_Categorical_functions = {
     setCatTable: function(tableName){
         this.catTableName = tableName;
         if(tableName===""){
-            this.catTableName = this.summaryName+"_h_"+this.id;
+            this.catTableName = this.summaryTitle+"_h_"+this.id;
         } else {
             if(this.catTableName===this.browser.primaryTableName){
                 this.isLinked=true;
                 this.browser.listDef.hasLinkedItems = true;
-                this.catTableName = this.summaryName+"_h_"+this.id;
+                this.catTableName = this.summaryTitle+"_h_"+this.id;
                 kshf.dt_id[this.catTableName] = kshf.dt_id[this.browser.primaryTableName];
                 kshf.dt[this.catTableName] = this.items.slice();
             }
@@ -4231,7 +4256,7 @@ var Summary_Categorical_functions = {
             else fscale = 'step';
             // TODO: FIX!!!
             var facetDescr = {
-                title:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
+                title:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryTitle,
                 attribMap: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;

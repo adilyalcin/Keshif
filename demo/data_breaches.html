@@ -71,7 +71,7 @@ google.setOnLoadCallback(function(){
                 { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
                 { name: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
             }],
-            textSearchFunc: function(){ return this.org; },
+            textSearch: {title: "Organization", value: "org" },
             recordView: function(){
                 var str = this.org;
                 if(this.source_1){

@@ -54,11 +54,10 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [{ name: 'Year' }],
-            textSearch: "name",
-            textSearchFunc: function () {
+            textSearch: { title: "name", value: function () {
                 var laureate = kshf.dt_id.Laureates[this.laureate_id];
                 return laureate.data.firstname + " " + (laureate.data.surname || "");
-            },
+            } },
             displayType: 'grid',
             recordView: function(){
                 var laureate = kshf.dt_id.Laureates[this.laureate_id];
