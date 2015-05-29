@@ -28,10 +28,10 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title: "Crime", attribMap: function(){ return this.Crime.split(" - "); }
             },{ title: "Method",
-            },{ title: "State", layout: 'right', catLabel: function(d){ return getStateName(this.id); }
+            },{ title: "State", layout: 'right', catLabel: function(){ return getStateName(this.id); }
             },{ title: "Race", layout: 'right'
             },{ title: "Sex", layout: 'right',
-                catLabel: function(d){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); }
+                catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); }
             },{ title: "Age", layout: 'right', type: 'interval'
             },{ title: "Year", layout: 'bottom', attribMap: function(){ return new Date(this.Year,1,1); }
             }

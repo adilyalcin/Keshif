@@ -17,8 +17,31 @@
 
         <script type="text/javascript">
 
+function loadData(browser){
+    $.ajax( {
+        url: "./data_private/locations.json",
+        dataType: "json",
+        async: false,
+        success: function(data){
+            browser.primaryTableName = "Locations";
+            kshf.dt.Locations = [];
+
+            // create the categories list
+            data.locations.forEach(function(location,i){
+                if(location.l_type==="city") return;
+                location.id = location.path.substring(location.path.lastIndexOf("/")+1);
+                location.pos = i;
+                kshf.dt.Locations.push(new kshf.Item(location,"id"));
+            });
+
+            if(browser){
+                browser.loadCharts();
+            }
+        }
+    });
+})
+
 function resetSize(){
-//    $('#chart_div').height($(window).height()-10);
     $('#chart_div').height(700);
     $('#chart_div').width (1000);
 };
@@ -30,32 +53,7 @@ $(document).ready( function(){
         domID: "#chart_div",
         categoryTextWidth: 300,
         itemName: "Locations",
-        source: {
-            // http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
-            callback: function(browser){
-                $.ajax( {
-                    url: "./data_private/locations.json",
-                    dataType: "json",
-                    async: false,
-                    success: function(data){
-                        browser.primaryTableName = "Locations";
-                        kshf.dt.Locations = [];
-
-                        // create the categories list
-                        data.locations.forEach(function(location,i){
-                            if(location.l_type==="city") return;
-                            location.id = location.path.substring(location.path.lastIndexOf("/")+1);
-                            location.pos = i;
-                            kshf.dt.Locations.push(new kshf.Item(location,"id"));
-                        });
-
-                        if(browser){
-                            browser.loadCharts();
-                        }
-                    }
-                });
-            }
-        },
+        source: { callback: loadData },
         summaries: [
             {   title: "Type", attribMap: "l_type"
             },{ title: "Part of", attribMap: "parent_location_uuid", catTableName: "Locations", catLabel: "name",

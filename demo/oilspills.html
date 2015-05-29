@@ -66,31 +66,16 @@ google.setOnLoadCallback( function(){
         },
         summaries: [
             {   title: "Size"
-            },{ /*title: "Amount (Barrel)", collapsed: true,
-                facets: [
-                    {*/   title: "Total Spilled", collapsed: false, layout: "middle"
-                    },{ title: "Crude & Condensate", collapsed: true, layout: "middle"
-                    },{ title: "Refined Petroleum", collapsed: true, layout: "middle"
-                    }/*,{
-                        title: "Synthetic Base Fluid", collapsed: true,
-                        attribMap: function(){
-                            if(this[13]===0) return;
-                            return this[13];
-                        },
-                        intervalScale: 'log',
-                    },{
-                        title: "Other Chemicals", collapsed: true,
-                        attribMap: function(){
-                            if(this[14]===0) return;
-                            return this[14];
-                        },
-                        intervalScale: 'log',
-                    }*/
-                /*]
-            }*/,{ title: "Source", attribMap: getSource
+            },{ 
+                title: "Total Spilled", collapsed: false, layout: "middle"
+            },{ title: "Crude & Condensate", collapsed: true, layout: "middle"
+            },{ title: "Refined Petroleum", collapsed: true, layout: "middle"
+            },{ title: "Synthetic Base Fluid", collapsed: true, layout: "middle"
+            },{ title: "Other Chemicals", collapsed: true, layout: "middle"
+            },{ title: "Source", attribMap: getSource
             },{ title: "Material", attribMap: getMaterial
             },{ title: "Company", layout: 'right'
-            },{ title: "District", layout: 'left', catTableName: "Districts", catLabel: "Name"
+            },{ title: "District", catTableName: "Districts", catLabel: "Name", layout: 'left'
             },{ title: "Water Depth", layout: 'right', attribMap: 'Water Depth (feet)',
                 intervalScale: 'log', unitName: 'ft'
             },{ title: "During Activity", collapsed: false

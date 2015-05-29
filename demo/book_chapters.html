@@ -65,9 +65,9 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 45,
             detailsToggle: "zoom",
-            sortingOpts: [ {
-                name: 'id', inverse: true, label: function(){ return this.Code+pad(this.id,3); }
-            } ],
+            sortingOpts: [{
+                name: 'id', label: function(){ return this.Code+pad(this.id,3); }, inverse: true
+            }],
             textSearch: "Name",
             recordView: function(){
                 var str="";

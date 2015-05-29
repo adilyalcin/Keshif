@@ -81,69 +81,57 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   /*title: "Data",
-                facets: [
-                {*/   title: "Frame of Reference",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
-                        });
-                        return r;
-                    }
-                },{ title: "Number of Variables",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
-                        });
-                        return r;
-                    }
-                /*}
-                ]*/
-            },{ /*title: "Time",
-                facets: [
-                {*/   title: "Arrangement",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
-                        });
-                        return r;
-                    }
-                },{ title: "Time Primitives",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
-                            if(cat==="interval") r.push("Interval <span class='fa fa-arrows-h'></span>");
-                        });
-                        return r;
-                    }
-                /*}
-                ]*/
-            },{ /*title: "Visualization",
-                facets: [
-                {*/   title: "Mapping",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
-                            if(cat==="dynamic") r.push("Dynamic <span class='fa fa-spinner fa-spin'></span>");
-                        });
-                        return r;
-                    }
-                },{ title: "Dimensionality",
-                    attribMap: function(){
-                        var r=[];
-                        this.categories.forEach(function(cat){
-                            if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");
-                            if(cat==="3D") r.push("3D <span class='fa fa-cube'></span>");
-                        });
-                        return r;
-                    }
-                /*}
-                ]*/
+            {   title: "Data: Frame of Reference",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
+                    });
+                    return r;
+                }
+            },{ title: "Data: Number of Variables",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
+                    });
+                    return r;
+                }
+            },{ title: "Time: Arrangement",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
+                    });
+                    return r;
+                }
+            },{ title: "Time: Primitives",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
+                        if(cat==="interval") r.push("Interval <span class='fa fa-arrows-h'></span>");
+                    });
+                    return r;
+                }
+            },{ title: "Vis: Mapping",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
+                        if(cat==="dynamic") r.push("Dynamic <span class='fa fa-spinner fa-spin'></span>");
+                    });
+                    return r;
+                }
+            },{ title: "Vis: Dimensionality",
+                attribMap: function(){
+                    var r=[];
+                    this.categories.forEach(function(cat){
+                        if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");
+                        if(cat==="3D") r.push("3D <span class='fa fa-cube'></span>");
+                    });
+                    return r;
+                }
             }
         ],
         itemDisplay: {

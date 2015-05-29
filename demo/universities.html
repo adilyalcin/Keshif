@@ -182,25 +182,22 @@ google.setOnLoadCallback(function(){
             },{ title: "Geographic region", attribMap: "HD2013.Geographic region", layout: "middle", collapsed: true,
             },{ title: "Degree of urbanization", layout: "middle", collapsed: true,
                 attribMap: "HD2013.Degree of urbanization (Urban-centric locale)"
-            },{ /*title: "Carnegie Classification 2010",
-                facets: [
-                    {*/   title: "Carnegie Class. - Basic", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Basic"
-                    },{ title: "Carnegie Class. - Size and Setting", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Size and Setting"
-                    },{ title: "Carnegie Class. - Undergrad. Instr. Prog.", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
-                    },{ title: "Carnegie Class. - Grad. Instr. Prog.", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
-                    },{/*
-                        title: "Undergraduate Profile", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
-                    },{
-                        title: "Enrollment Profile", collapsed: true,
-                        attribMap: "HD2013.Carnegie Classification 2010: Enrollment Profile",*/
-                    /*}
-                ]
-            },{ /*title: "Diversity", layout: 'right',
+            
+            },{ title: "Carnegie Class. - Basic", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Basic"
+            },{ title: "Carnegie Class. - Size and Setting", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Size and Setting"
+            },{ title: "Carnegie Class. - Undergrad. Instr. Prog.", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
+            },{ title: "Carnegie Class. - Grad. Instr. Prog.", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
+            },{/*
+                title: "Undergraduate Profile", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
+            },{
+                title: "Enrollment Profile", collapsed: true,
+                attribMap: "HD2013.Carnegie Classification 2010: Enrollment Profile",
+            },{ title: "Diversity", layout: 'right',
                 facets: [
                     {*/   title: "% American Indian / Alaska Native", collapsed: true, layout: 'right',
                         attribMap: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
@@ -236,25 +233,22 @@ google.setOnLoadCallback(function(){
                         unitName: "%"
                     /*}
                 ]*/
-            },{ /*title: "6 Year Graduation Rates", layout: 'right',
-                facets: [
-                    {*/ title: "6-Year Grad Rate: % Total", layout: 'right',
-                        attribMap: "DRVGR2013.Graduation rate, total cohort",
-                        description: "Graduation rate, total cohort", unitName: "%"
-                    },{ title: "6-Year Grad Rate: % Men", layout: 'right', collapsed: true, unitName: "%",
-                        attribMap: "DRVGR2013.Graduation rate, men",
-                        description: "Graduation rate, men"
-                    },{ title: "6-Year Grad Rate: % Women", layout: 'right', collapsed: true, unitName: "%",
-                        attribMap: "DRVGR2013.Graduation rate, women",
-                        description: "Graduation rate, women"
-                    /*}
-                ]*/
+
+            },{ title: "6-Year Grad Rate: % Total", layout: 'right',
+                attribMap: "DRVGR2013.Graduation rate, total cohort",
+                description: "Graduation rate, total cohort", unitName: "%"
+            },{ title: "6-Year Grad Rate: % Men", layout: 'right', collapsed: true, unitName: "%",
+                attribMap: "DRVGR2013.Graduation rate, men",
+                description: "Graduation rate, men"
+            },{ title: "6-Year Grad Rate: % Women", layout: 'right', collapsed: true, unitName: "%",
+                attribMap: "DRVGR2013.Graduation rate, women",
+                description: "Graduation rate, women"
             }
         ],
         itemDisplay: {
             sortingOpts: [
                 { name:'Enrollment', value: "DRVEF2013.Total  enrollment" },
-                { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort" }
+                { name:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort", unitName: "%" }
             ],
             textSearch: "institution name",
             recordView: function(){

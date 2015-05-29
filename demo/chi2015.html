@@ -87,43 +87,32 @@ google.setOnLoadCallback(function(){
                 attribMap: function(){
                     if(this.keywords===undefined) return;
                     var r=[];
-                    this.keywords.forEach(function(keyword){
-                        r.push(kshf.Util.toProperCase(keyword));
-                    });
+                    this.keywords.forEach(function(keyword){ r.push(kshf.Util.toProperCase(keyword)); });
                     return r;
                 },
             },{ title: "Authors", 
                 attribMap: function(){
                     if(this.authors===undefined) return;
                     var r=[];
-                    this.authors.forEach(function(author){
-                        r.push(kshf.Util.toProperCase(author.name));
-                    });
+                    this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.name)); });
                     return r;
                 },
             },{ title: "Author Institution", 
                 attribMap: function(){
                     if(this.authors===undefined) return;
                     var r=[];
-                    this.authors.forEach(function(author){
-                        r.push(kshf.Util.toProperCase(author.institution));
-                    });
+                    this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.institution)); });
                     return r;
                 },
             },{ title: "Author Country", 
                 attribMap: function(){
                     if(this.authors===undefined) return;
                     var r=[];
-                    this.authors.forEach(function(author){
-                        r.push(kshf.Util.toProperCase(author.country));
-                    });
+                    this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.country)); });
                     return r;
                 },
             },{ title: "Session Title", layout: 'right',
-                attribMap: function(){
-                    if(this.session===undefined) return;
-                    return this.session.s_title.substring(8);
-                },
+                attribMap: function(){ if(this.session) return this.session.s_title.substring(8); },
             },{ title: "Session Day", layout: 'right',
                 attribMap: function(){ if(this.session) return this.session.day; },
                 sortingOpts: [{ 

@@ -17,6 +17,7 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+
 function getGender(genderValue){
     switch(genderValue){
         case 1: return "Male";
@@ -43,13 +44,11 @@ $(document).ready( function(){
                 attribMap: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.bornCountry; },
             },{ title: "Affiliation", layout: 'right',
                 attribMap: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.name; },
-                summaries: [
-                    { title: "# of Winners", attribMap: function(d){ return d.items.length; } }
-                ]
+                summaries: [{ title: "# of Winners", attribMap: function(d){ return d.items.length; } }]
             },{ title: "Joint Awards", catLabel: function() { return this.id+" awardee"+(this.id===1?"":"s"); }
             },{ title: "Gender",
                 attribMap: function(){ return getGender(kshf.dt_id.Laureates[this.laureate_id].data.gender); },
-                catLabel: function(d){ return this.id+" "+getIcon(this.id); }
+                catLabel: function(){ return this.id+" "+getIcon(this.id); }
             },{ title: "Year", layout: 'bottom', attribMap: function(){ return new Date(this.Year,1,1); },
             }
         ],

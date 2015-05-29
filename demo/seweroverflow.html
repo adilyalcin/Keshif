@@ -49,23 +49,11 @@ $(document).ready(function(){
         summaries: [
             {   title: "Overflow Type", attribMap: function(){ return this[8]; }
             },{ title: "Cause", attribMap: function(){ return this[21]; }
-            },{ title: "Date", 
-                attribMap: function(){ 
-                    // parses the date string and returns the year
-                    return new Date(moment(this[11]));
-                }
+            },{ title: "Date",  attribMap: function(){ return new Date(moment(this[11])); }
             },{ title: "Duration", attribMap: getDuration_Human
-            },{ /*title: "Location",
-                layout: 'right', // put this facet on the right side.
-                facets: [
-                    {*/   title: "Zip Code",  layout: 'right',
-                        attribMap: function(){ return this[17]; }
-                    },{ title: "County", layout: 'right',
-                        attribMap: function(){ return this[23]; }
-                    },{ title: "Municipality/Facility", layout: 'right',
-                        attribMap: function(){ return this[9]; }
-                    /*}
-                ]*/
+            },{ title: "Zip Code", attribMap: function(){ return this[17]; }, layout: 'right',
+            },{ title: "County", attribMap: function(){ return this[23]; }, layout: 'right',
+            },{ title: "Municipality/Facility", attribMap: function(){ return this[9]; }, layout: 'right',
             }
         ],
         itemDisplay: {

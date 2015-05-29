@@ -44,7 +44,14 @@ google.setOnLoadCallback(function(){
             ]
         },
         loadedCb: function(browser){
-            kshf.Util.cellToArray(kshf.dt.Publications, ['Authors', 'RegDomains', 'ResTopics', 'StudyDesign', 'StudyType', 'Summarized']);
+            kshf.Util.cellToArray(kshf.dt.Publications, [
+                'Authors', 
+                'Regulatory Domains', 
+                'Research Topics',
+                'Study Design',
+                'Study Type',
+                'Summarized'
+            ]);
         },
         readyCb: function(browser){
             $(".paperName").click(function(d){
@@ -53,36 +60,25 @@ google.setOnLoadCallback(function(){
             browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         summaries: [
-            {   title: "Regulatory Domains", 
-                attribMap: "RegDomains",
-                catTableName: "Domains",  catLabel: "Name",
-            },{ title: "Research Topics", 
-                attribMap: "ResTopics",
-                catTableName: "ResearchTopics", catLabel: "Name",
-            },{ title: "Study Design", 
-                attribMap: "StudyDesign",
-                catTableName: "StudyDesigns", catLabel: "Name",
+            {   title: "Regulatory Domains", catTableName: "Domains",  catLabel: "Name",
+            },{ title: "Research Topics", catTableName: "ResearchTopics", catLabel: "Name",
+            },{ title: "Study Design", catTableName: "StudyDesigns", catLabel: "Name",
                 description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental",
                 collapsed: false,
-            },{ title: "Study Type", 
-                attribMap: 'StudyType',
-                catTableName: "StudyTypes", catLabel: "Name",
+            },{ title: "Study Type", catTableName: "StudyTypes", catLabel: "Name",
                 description: "Venue where study was published",
                 collapsed: false
-            },{ title: "Authors", 
-                attribMap: "Authors", 
+            },{ title: "Authors",
                 catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
-            },{ title: "Summarized by MCEP", 
-                attribMap: 'Summarized',
+            },{ title: "Summarized by MCEP", attribMap: 'Summarized',
                 catTableName: "Summarized", catLabel: "mcep_summarized",
                 collapsed: true
-            },{ title: "Date",
-                layout: 'middle'
+            },{ title: "Date", layout: 'middle'
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: [ { name: 'Year', value: function(){return this.Date.getFullYear();} } ],
+            sortingOpts: [ { name: 'Date', label: function(){return this.Date.getFullYear();}, inverse: true} ],
             textSearch: 'title',
             detailsToggle: "one",
             autoExpandMore: true,
@@ -110,7 +106,7 @@ google.setOnLoadCallback(function(){
                 }
                 str+="</div>";
                 // keywords for sujects
-                var cats = this.RegDomains;
+                var cats = this['Regulatory Domains'];
                 if(cats.length>0){
                     str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: ";
                     for(j=0; j<cats.length; j++){
@@ -120,7 +116,7 @@ google.setOnLoadCallback(function(){
                     str+="</div>";
                 }
                 // keywords for aspects
-                var cats = this.ResTopics;
+                var cats = this['Research Topics'];
                 if(cats.length>0){
                     str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: ";
                     for(j=0; j<cats.length; j++){
@@ -130,7 +126,7 @@ google.setOnLoadCallback(function(){
                     str+="</div>";
                 }
                 // keywords for peer reviewed
-                var cats = this.StudyType;
+                var cats = this['Study Type'];
                 if(cats.length>0){
                     str+="<div class=\"peer\"> <span class='header'>Study Type</span>: ";
                     for(j=0; j<cats.length; j++){
@@ -141,7 +137,7 @@ google.setOnLoadCallback(function(){
                 }
 
                 // keywords for study type
-                var cats = this.StudyDesign;
+                var cats = this['Study Design'];
                 if(cats.length>0){
                     str+="<div class=\"study\"> <span class='header'>Study Design</span>: ";
                     for(j=0; j<cats.length; j++){

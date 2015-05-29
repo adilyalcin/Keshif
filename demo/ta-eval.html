@@ -24,8 +24,7 @@ google.setOnLoadCallback(function () {
             sheets: [ {name:"Assistants"}, {name:"Instructors"} ]
         },
         summaries: [
-            {   title: "Instructor",
-                catLabel: function(){ return kshf.dt_id.Instructors[this.id].data.Name; }
+            {   title: "Instructor", catLabel: function(){ return kshf.dt_id.Instructors[this.id].data.Name; }
             },{ title: "Performance", catLabel: function(){ return performanceText(this.id); }
             },{ title: "Native Speaker", catLabel: function(){ return (this.id===1)?"Yes":"No"; }
             },{ title: "Course"
@@ -34,9 +33,7 @@ google.setOnLoadCallback(function () {
             }
         ],
         itemDisplay: {
-            sortingOpts: [
-                { name: 'Performance', label: function(){ return performanceText(this.Performance); } }
-            ],
+            sortingOpts: [{name: 'Performance', label: function(){ return performanceText(this.Performance); } }],
             textSearch: 'Name',
             recordView: 'Name'
         }

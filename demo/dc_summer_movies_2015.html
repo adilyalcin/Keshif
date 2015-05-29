@@ -166,8 +166,7 @@ $(document).ready( function(){
                         }
                     }
                 ],
-            },{
-                title: "Time: Day Of Week", layout: "right",
+            },{ title: "Time: Day Of Week", layout: "right",
                 attribMap: function(){ return moment(this.Date).day();  },
                 sortingOpts: [{ value: "id" }],
                 catLabel: function(){
@@ -202,14 +201,12 @@ $(document).ready( function(){
                 },
                 inverse: true,
                 label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
-            },{
-                name: "IMDb Rating",
+            },{ name: "IMDb Rating",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.imdbRating;
                 }
-            },{
-                name: "Year",
+            },{ name: "Year",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Year;
@@ -273,10 +270,6 @@ $(document).ready( function(){
             }
         }
     });
-
-    $( window ).unload(function() {
-        sendLog(kshf.LOG.CLOSEPAGE);
-    })
 });
 
 </script>

@@ -48,26 +48,16 @@ $(document).ready( function(){
                 }
             },{ title: "Sex", attribMap: "sex"
             },{ title: "Age", attribMap: "age", showPercentile: true
-            },{ /*title: "Features",
-                facets:[
-                    {*/   title: "Eyes Closed", attribMap: "eye_closed"
-                    },{ title: "Mouth Open", attribMap: "mouth_open_wide", collapsed: true
-                    },{ title: "Has Glasses", attribMap: "glasses"
-                    /*}
-                ]*/
-            },{ /*title: "Mood", layout: 'right',
-                facets:[
-                    {*/   title: "Happyness", attribMap: "emotion_happy", layout: 'right', showPercentile: true
-                    },{ title: "Calmness", layout: 'right', type: 'interval', // TODO: Why need to define type?
-                        attribMap: "emotion_calm"
-                    },{ title: "Confusion", layout: 'right', type: 'interval', // TODO: Why need to define type?
-                        attribMap: "emotion_confused"
-                    },{ title: "Sadness", attribMap: "emotion_sad", layout: 'right',
-                    },{ title: "Anger", attribMap: "emotion_angry", collapsed: true, layout: 'right',
-                    },{ title: "Disgust", collapsed: true, layout: 'right', type: 'interval',
-                        attribMap: "emotion_disgust"
-                    /*}
-                ]*/
+            },{ title: "Photo: Eyes Closed", attribMap: "eye_closed"
+            },{ title: "Photo: Mouth Open", attribMap: "mouth_open_wide", collapsed: true
+            },{ title: "Photo: Has Glasses", attribMap: "glasses"
+            
+            },{ title: "Happyness", attribMap: "emotion_happy", layout: 'right', showPercentile: true
+            },{ title: "Calmness", attribMap: "emotion_calm", layout: 'right', type: 'interval', // TODO: Why need to define type?
+            },{ title: "Confusion", attribMap: "emotion_confused", layout: 'right', type: 'interval', // TODO: Why need to define type?
+            },{ title: "Sadness", attribMap: "emotion_sad", layout: 'right',
+            },{ title: "Anger", attribMap: "emotion_angry", collapsed: true, layout: 'right',
+            },{ title: "Disgust", attribMap: "emotion_disgust", collapsed: true, layout: 'right', type: 'interval'
             }
         ],
         itemDisplay: {

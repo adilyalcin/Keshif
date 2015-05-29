@@ -67,9 +67,8 @@ google.setOnLoadCallback(function() {
             {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
             },{ title: "Coauthors",
                 attribMap: function(){
-                    var authors = this.Coauthors;
-                    // remove Ben Bederson's ID
                     newAuthors = [];
+                    var authors = this.Coauthors;
                     for(i=0 ; i<authors.length ; i++){
                         if(authors[i]!==BEDERSON_ID) newAuthors.push(authors[i]);
                     }

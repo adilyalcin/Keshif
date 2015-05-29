@@ -54,9 +54,7 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Milestone", attribMap: function(){
-                    return this.meta["milestone_str"];
-                },
+            {   title: "Milestone", attribMap: function(){ return this.meta["milestone_str"]; },
                 sortingOpts: [{  value: function(){ return mileSort(this.id); }, inverse: true}]
             },{ title: "Category", attribMap: "category"
             },{ title: "Implementation Status", attribMap: "impl_status_chrome"
@@ -65,23 +63,19 @@ $(document).ready( function(){
             },{ title: "Prefixed", attribMap: "prefixed", layout: 'right', collapsed: true,
             },{ title: "Owner", attribMap: "owner", layout: 'right', collapsed: true,
             },{ title: "Updated By", attribMap: "updated_by", layout: 'right', collapsed: true,
-            },{ /*title: "Status (vs.)", layout: 'right',
-                facets: [
-            {*/ title: "Firefox Status", attribMap: function(){ return this.ff_views.text; }, layout: 'right',
-            },{ title: "IE Status", attribMap: function(){ return this.ie_views.text; }, layout: 'right',
-            },{ title: "Safari Status", attribMap: function(){ return this.safari_views.text; }, layout: 'right',
-                /*}
-            ]*/
+            },{ title: "Firefox Status", attribMap: function(){ return this.ff_views.text;     }, layout: 'right'
+            },{ title: "IE Status"     , attribMap: function(){ return this.ie_views.text;     }, layout: 'right'
+            },{ title: "Safari Status" , attribMap: function(){ return this.safari_views.text; }, layout: 'right'
             },{ title: "Update Date", layout: 'bottom', collapsed: true,
                 attribMap: function(){ return new Date(moment(this.updated)); },
             }
         ],
         itemDisplay: {
             sortColWidth: 90,
-            sortingOpts: [ {name:'Milestone', 
+            sortingOpts: [{ name:'Milestone', 
                 value: function(){ return mileSort(this.meta["milestone_str"]); },
                 label: function(){ return this.meta["milestone_str"]; }
-            } ],
+            }],
             textSearch: 'title',
             displayType: 'list',
             recordView: function(){

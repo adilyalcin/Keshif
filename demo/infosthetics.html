@@ -42,21 +42,19 @@ $(document).ready( function(){
             {   title: "Category"
             },{ title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true
             },{ title: "# Comments",  attribMap: '# of Comments'
-            },{ title: "Time", layout: 'bottom', attribMap: "Date",
+            },{ title: "Date", layout: 'bottom'
             }
         ],
         itemDisplay: {
             sortingOpts: [
-                {   name: 'Date',
-                    value: function(){ return this.Date.getTime(); },
-                    label: function(){ return moment(this.Date).format("MMM Do, YY"); }
+                {   name: 'Date', inverse: true, label: function(){ return moment(this.Date).format("MMM Do, YY"); }
                 },{ name: '# of Comments'
                 }
             ],
             textSearch: "Title",
             displayType: 'grid',
             maxVisibleItems_Default: 50,
-            recordView: function(d){
+            recordView: function(){
                 return "<a target='_blank' href='"+this.URL+
                     "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
             },

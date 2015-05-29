@@ -51,8 +51,7 @@ $(document).ready( function(){
             },{ title: "Age",
             },{ title: "Death Date", attribMap: function(){ 
                 var x=dateFormat.parse(this.Death);
-                if(x===null) return;
-                return new Date(x);
+                if(x!==null) return new Date(x);
             }
             },{ title: "After Story is Published...",
                 attribMap: function(){ if(this.claimed) return "Claimed"; }

@@ -100,45 +100,41 @@ $(document).ready( function(){
                     if(this.Independence===undefined) return;
                     return new Date(moment(this.Independence,"MM/DD/YYYY"));
                 }
-            },{ /*title: "Flag Properties", layout: 'right',
-                facets: [
-                    {*/   title: "Flag Color",  layout: 'right',
-                        attribMap: function(){
-                            var toRet = [];
-                            if(this.Red) toRet.push("Red");
-                            if(this.Green) toRet.push("Green");
-                            if(this.Blue) toRet.push("Blue");
-                            if(this.Gold) toRet.push("Gold / Yellow");
-                            if(this.White) toRet.push("White");
-                            if(this.Black) toRet.push("Black");
-                            if(this.Orange) toRet.push("Orange / Brown");
-                            return toRet;
-                        },
-                    },{ title: "Flag Shape", layout: 'right',
-                        attribMap: function(){
-                            var toRet = [];
-                            if(this.Circles) toRet.push("Circle");
-                            if(this.Crosses) toRet.push("Crosses");
-                            if(this.Saltires) toRet.push("Saltire");
-                            if(this.Quarters) toRet.push("Quarter");
-                            if(this.Sunstars) toRet.push("Sun / star");
-                            if(this.Crescent) toRet.push("Crescent");
-                            if(this.Triangle) toRet.push("Triangle");
-                            return toRet;
-                        },
-                    },{ title: "Number of Bars", attribMap: "Bars", layout: 'right'
-                    },{ title: "Number of Stripes", layout: 'right', unitName: "strp",
-                        attribMap: function(){ return (this.Stripes===0)?null:this.Stripes; }
-                    },{ title: "Other", collapsed: true, layout: 'right',
-                        attribMap: function(){
-                            var toRet = [];
-                            if(this.Text!==0) toRet.push("Text");
-                            if(this.Icon!==0) toRet.push("Icon");
-                            if(this.Animate!==0) toRet.push("Animate");
-                            return toRet;
-                        }
-                    /*}
-                ]*/
+            },{ title: "Flag Color",  layout: 'right',
+                attribMap: function(){
+                    var toRet = [];
+                    if(this.Red) toRet.push("Red");
+                    if(this.Green) toRet.push("Green");
+                    if(this.Blue) toRet.push("Blue");
+                    if(this.Gold) toRet.push("Gold / Yellow");
+                    if(this.White) toRet.push("White");
+                    if(this.Black) toRet.push("Black");
+                    if(this.Orange) toRet.push("Orange / Brown");
+                    return toRet;
+                },
+            },{ title: "Flag Shape", layout: 'right',
+                attribMap: function(){
+                    var toRet = [];
+                    if(this.Circles) toRet.push("Circle");
+                    if(this.Crosses) toRet.push("Crosses");
+                    if(this.Saltires) toRet.push("Saltire");
+                    if(this.Quarters) toRet.push("Quarter");
+                    if(this.Sunstars) toRet.push("Sun / star");
+                    if(this.Crescent) toRet.push("Crescent");
+                    if(this.Triangle) toRet.push("Triangle");
+                    return toRet;
+                },
+            },{ title: "Number of Bars", attribMap: "Bars", layout: 'right'
+            },{ title: "Number of Stripes", layout: 'right', unitName: "strp",
+                attribMap: function(){ if(this.Stripes!==0) return this.Stripes; }
+            },{ title: "Other", collapsed: true, layout: 'right',
+                attribMap: function(){
+                    var toRet = [];
+                    if(this.Text!==0) toRet.push("Text");
+                    if(this.Icon!==0) toRet.push("Icon");
+                    if(this.Animate!==0) toRet.push("Animate");
+                    return toRet;
+                }
             }
         ],
         itemDisplay: {

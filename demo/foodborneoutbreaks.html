@@ -69,22 +69,7 @@ $(document).ready( function(){
         summaries: [
             {   title: "Year"
             },{ title: "Month",
-                sortingOpts: [{ value: function(){
-                    switch(this.id){
-                        case "January"  : return 0;
-                        case "February" : return 1;
-                        case "March"    : return 2;
-                        case "April"    : return 3;
-                        case "May"      : return 4;
-                        case "June"     : return 5;
-                        case "July"     : return 6;
-                        case "August"   : return 7;
-                        case "September": return 8;
-                        case "October"  : return 9;
-                        case "November" : return 10;
-                        case "December" : return 11;
-                    }
-                } }],
+                sortingOpts: [{ value: function(){ getMonthNumberFromName(this.id); } }],
             },{ title: "Contaminated Ingredient", attribMap: "Contaminated_Ingredient", layout: 'middle'
             },{ title: "State"
             },{ title: "Location Of Consumption", attribMap: "LocationOfConsumption", layout: 'middle'

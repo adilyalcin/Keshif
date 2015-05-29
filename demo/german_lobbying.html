@@ -40,9 +40,7 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title: "Politician",
                 catTableName: "Politicians", catLabel: "Politician",
-                summaries: [
-                    { title: "Department" }
-                ]
+                summaries: [{ title: "Department" }]
             },{ title: "Type", layout: 'right',
                 attribMap: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
                 catLabel: function(){ return this.id+" "+getIcon(this.id); }

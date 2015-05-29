@@ -65,56 +65,44 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   /*title: "Tasks",
-                facets: [
-                    {*/   title: "Analytics",
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="sentiment-analysis" ||
-                                    c==="text-summarization" ||
-                                    c==="discourse-analysis" ||
-                                    c==="stance-analysis" ||
-                                    c==="event-analysis" ||
-                                    c==="trend-analysis" ||
-                                    c==="lexical-analysis" ||
-                                    c==="relation-analysis" ||
-                                    c==="category-entry";
-                            });
-                        }
-                    },{ title: "Visualizations",
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="roi" ||
-                                    c==="classification" ||
-                                    c==="comparison" ||
-                                    c==="overview" ||
-                                    c==="monitoring" ||
-                                    c==="navigation" ||
-                                    c==="uncertainty";
-                            });
-                        }
-                    /*}
-                ]*/
-            },{ /*title: "Data", layout: 'right',
-                facets:[
-                    {*/   title: "Sources", layout: 'right',
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="document" ||
-                                    c==="corpora" ||
-                                    c==="streams";
-                            });
-                        }
-                    },{ title: "Properties", layout: 'right',
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="geospatial" ||
-                                    c==="time-series" ||
-                                    c==="networks";
-                            });
-                        }
-                    /*}
-                ]*/
+            {   title: "Tasks: Analytics",
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="sentiment-analysis" ||
+                            c==="text-summarization" ||
+                            c==="discourse-analysis" ||
+                            c==="stance-analysis" ||
+                            c==="event-analysis" ||
+                            c==="trend-analysis" ||
+                            c==="lexical-analysis" ||
+                            c==="relation-analysis" ||
+                            c==="category-entry";
+                    });
+                }
+            },{ title: "Tasks: Visualizations",
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="roi" ||
+                            c==="classification" ||
+                            c==="comparison" ||
+                            c==="overview" ||
+                            c==="monitoring" ||
+                            c==="navigation" ||
+                            c==="uncertainty";
+                    });
+                }
+            },{ title: "Data: Sources", layout: 'right',
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="document" || c==="corpora" || c==="streams";
+                    });
+                }
+            },{ title: "Data: Properties", layout: 'right',
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="geospatial" || c==="time-series" || c==="networks";
+                    });
+                }
             },{ title: "Domains",
                 attribMap: function(){
                     return this.categories.filter(function(c){
@@ -127,38 +115,30 @@ $(document).ready( function(){
                             c==="editorial-media";
                     });
                 }
-            },{ /*title: "Visualization", layout: 'right',
-                facets:[
-                    {*/   title: "Dimensionalities", layout: 'right',
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="1d" ||
-                                    c==="2d" ||
-                                    c==="3d";
-                            });
-                        }
-                    },{ title: "Representations", layout: 'right',
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="line-plot" ||
-                                    c==="pixel-area" ||
-                                    c==="node-link" ||
-                                    c==="clouds" ||
-                                    c==="maps" ||
-                                    c==="text" ||
-                                    c==="glyph";
-                            });
-                        }
-                    },{ title: "Alignments", layout: 'right',
-                        attribMap: function(){
-                            return this.categories.filter(function(c){
-                                return c==="radial" ||
-                                    c==="linear" ||
-                                    c==="metric";
-                            });
-                        }
-                    /*}
-                ]*/
+            },{ title: "Vis: Dimensionalities", layout: 'right',
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="1d" || c==="2d" || c==="3d";
+                    });
+                }
+            },{ title: "Vis: Representations", layout: 'right',
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="line-plot" ||
+                            c==="pixel-area" ||
+                            c==="node-link" ||
+                            c==="clouds" ||
+                            c==="maps" ||
+                            c==="text" ||
+                            c==="glyph";
+                    });
+                }
+            },{ title: "Vis: Alignments", layout: 'right',
+                attribMap: function(){
+                    return this.categories.filter(function(c){
+                        return c==="radial" || c==="linear" || c==="metric";
+                    });
+                }
             },{ title: "Year", layout: 'bottom', 
                 attribMap: function(){ return new Date(this.year,1,1); },
             }
