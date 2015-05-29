@@ -1157,7 +1157,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control {
   display: block;
   position: absolute;
-  top: 0px;
+  top: 2px;
   z-index: 10;
   -webkit-transition: color 250ms linear, opacity 100ms linear ;
   -moz-transition: color 250ms linear, opacity 100ms linear ;

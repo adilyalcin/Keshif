@@ -1775,7 +1775,9 @@ kshf.Panel = function(options){
     this.DOM = {};
     this.DOM.root = options.parentDOM.append("div")
         .attr("class", "panel panel_"+options.name)
-        .attr("hasSummaries",false);
+        //.attr("hasSummaries",false)
+        .attr("hasSummaries",this.name==='middle')
+        ;
     this.initDOM_DropZone();
     this.initDOM_AdjustWidth();
 };
@@ -1820,7 +1822,8 @@ kshf.Panel.prototype = {
         this.summaries.forEach(function(s,i){ s.panelOrder = i; });
 
         if(this.summaries.length===0) {
-            this.DOM.root.attr("hasSummaries",false);
+            this.DOM.root//.attr("hasSummaries",false);
+                .attr("hasSummaries",this.name==='middle');
         } else {
             this.updateWidth_QueryPreview();
         }
@@ -4596,8 +4599,14 @@ var Summary_Categorical_functions = {
     updateBarPreviewScale2Active: function(){
         if(!this.hasCategories()) return; // nothing to do
         var me=this;
+        var width_catChart = this.panel.width_catChart;
+
+        if(this.attribHeight>=this.catCount_Total*this.heightRow_category){
+            width_catChart += kshf.scrollWidth-5;
+        }
+
         this.chartScale_Measure
-            .rangeRound([0, this.panel.width_catChart])
+            .rangeRound([0, width_catChart])
             .nice(this.chartAxis_Measure_TickSkip())
             .clamp(true)
             .domain([
@@ -4651,6 +4660,8 @@ var Summary_Categorical_functions = {
                 "none":
                 "inline-block"
         );
+
+        this.updateBarPreviewScale2Active();
 
         if(this.cbSetHeight && attribHeight_old!==attribHeight_new) this.cbSetHeight(this);
     },
