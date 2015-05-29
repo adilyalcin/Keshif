@@ -2965,8 +2965,12 @@ kshf.Browser.prototype = {
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w', title: function(){
-                        if(summary.summaryColumn===null) return "Edit Code"; // calculated
-                        return "Edit Name";
+                        var curState=this.parentNode.getAttribute("edittitle");
+                        if(curState===null || curState==="false"){
+                            return "Edit Title";
+                        } else {
+                            return "OK";
+                        }
                     }
                 })
             })
@@ -3664,6 +3668,20 @@ kshf.Summary_Base.prototype = {
 
         this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
             .attr("class","summaryTitle_editButton fa")
+            .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w', title: function(){ 
+                        var curState=this.parentNode.getAttribute("edittitle");
+                        if(curState===null || curState==="false"){
+                            return "Edit Title";
+                        } else {
+                            return "OK";
+                        }
+                    }
+                })
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("mousedown", function(){
                 // stop dragging event start
                 d3.event.stopPropagation();
