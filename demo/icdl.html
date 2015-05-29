@@ -16,7 +16,7 @@
 
         <script type="text/javascript">
 
-var dt_book_indices,dt_indices;
+var dt_book_indices,dt_indices,dt_metadata;
 
 // Returns list of IDs of a book given the parent property
 var getIndicesWithParent = function(book, parentId){
@@ -30,12 +30,6 @@ var getIndicesWithParent = function(book, parentId){
         if(indexData.data.Parent===parentId) list.push(i);
     });
     return list;
-};
-
-var getIndexTitle = function(i){
-    var d = dt_indices[i];
-    if(d===undefined) return "--";
-    return d.data.Attribute;
 };
 
 $(document).ready( function(){
@@ -69,19 +63,19 @@ $(document).ready( function(){
             kshf.Util.cellToArray(kshf.dt["Book Indices"], ['Indices'],"-",true);
             dt_book_indices = kshf.dt_id['Book Indices'];
             dt_indices = kshf.dt_id['Indices'];
+            dt_metadata = kshf.dt_id['Book Metadata'];
+
         },
         summaries: [
             {   title: "Type",
                 attribMap: function(){
-                    var metadata = kshf.dt_id['Book Metadata'][this.id];
-                    if(metadata===undefined) return null;
-                    return metadata.data.Type;
+                    var metadata = dt_metadata[this.id];
+                    if(metadata) return metadata.data.Type;
                 }
             },{ title: "Genre",
                 attribMap: function(){
-                    var metadata = kshf.dt_id['Book Metadata'][this.id];
-                    if(metadata===undefined) return null;
-                    return metadata.data.Genres;
+                    var metadata = dt_metadata[this.id];
+                    if(metadata) return metadata.data.Genres;
                 }
             },{ title: "Features",
                 attribMap: function(){
@@ -90,92 +84,72 @@ $(document).ready( function(){
                     if(this['Featured']) r.push('Featured');
                     return r;
                 }
-            },{ title: "Number of Pages", collapsed: true,
-                attribMap: "Pages"
+            },{ title: "Number of Pages", attribMap: "Pages", collapsed: true,
             },{ title: "Rating",
                 attribMap: function(){ return getIndicesWithParent(this,71); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true,
             },{ title: "Feeling",
                 attribMap: function(){ return getIndicesWithParent(this,5); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Language",
                 attribMap: function(){ return getIndicesWithParent(this,3); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Age",
                 attribMap: function(){ return getIndicesWithParent(this,83); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Collection",
                 attribMap: function(){ return getIndicesWithParent(this,473); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed:true
             },{ title: "Audience: Publication Date",
                 attribMap: function(){ return getIndicesWithParent(this,326); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Appearance: Format", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,15); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Appearance: Length", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,260); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Appearance: Cover Color", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,4); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Appearance: Shape", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,6); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Content: Countries", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,359); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Content: Characters", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,257); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Content: Time Periods - When", layout: 'right',
                 attribMap: function(){ return getIndicesWithParent(this,287); },
-                catTableName: "Indices",
-                catLabel: "Attribute",
+                catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
-            },{
-                title: "Date Added",
-                layout: "bottom", collapsed: true
+            },{ title: "Date Added", layout: "bottom", collapsed: true
             }
         ],
         itemDisplay: {
-            sortingOpts: [{ name: 'Date Added', label: function(){ return sortFormat(d['Date Added']); } }],
+            sortingOpts: [{ name: 'Date Added' }],
             textSearchFunc: function(){ 
-                var metadata = kshf.dt_id['Book Metadata'][this.id];
-                if(metadata===undefined) return "";
-                return metadata.data.Title;
+                var metadata = dt_metadata[this.id];
+                if(metadata) return metadata.data.Title;
             },
             displayType: 'grid',
             maxVisibleItems_Default: 20,
             recordView: function(){
                 var id = this.id;
-                var metadata = kshf.dt_id['Book Metadata'][id];
-                if(metadata===undefined) return;
-                //return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-                    //"' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
-                return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
-                        +id+"&route=text' class='thumbnail'><img class='thumbImg'></a>"+
-                        "<span class='title'>"+metadata.data.Title+"</span>";
+                var metadata = dt_metadata[id];
+                if(metadata)
+                    return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
+                            +id+"&route=text' class='thumbnail'><img class='thumbImg'></a>"+
+                            "<span class='title'>"+metadata.data.Title+"</span>";
             },
             visibleCb: function(d){
-                // update image link / load image now
                 var id=d.data.id;
                 d3.select(d.DOM.record).select(".thumbImg").attr("src",
                     "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg");
