@@ -69,8 +69,8 @@ google.setOnLoadCallback(function(){
             sortColWidth: 85,
             sortingOpts: [ 
                 { title: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
-                { title: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
-            }],
+                '# of Records'
+            ],
             textSearch: {title: "Organization", value: "org" },
             recordView: function(){
                 var str = this.org;

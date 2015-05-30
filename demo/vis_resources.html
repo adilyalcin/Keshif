@@ -24,9 +24,7 @@ function loadData(browser){
         success: function(dataset){
             browser.primaryTableName = "Resources";
             kshf.dt.Resources = [];
-            dataset.forEach(function(r){
-                kshf.dt.Resources.push(new kshf.Item(r,'id'));
-            });
+            dataset.forEach(function(r){ kshf.dt.Resources.push(new kshf.Item(r,'id')); });
             browser.loadCharts();
         }
     });
@@ -38,6 +36,11 @@ function getImageName(url){
 };
 
 $(document).ready( function(){
+    resizeBrowser(100,80);
+    $(window).resize(function() {
+        resizeBrowser(100,80);
+        browser.updateLayout();
+    });
 
 	browser = new kshf.Browser({
         domID: "#chart_div",
@@ -78,10 +81,6 @@ var imageDownloadScript = function(){
     }
     .content{
         padding: 3px;
-    }
-    #chart_div{
-        width: 800px;
-        height: 700px;
     }
 </style>
     </head>

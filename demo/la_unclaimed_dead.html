@@ -58,21 +58,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: [
-                {   title:'Age at Death', value: "Age", inverse:false },
-                {   title:'Death Date', inverse:true,
-                    value: function(){ 
-                        if(this['Death']===null) return;
-                        if(this['Death']==="") return;
-                        return dateFormat.parse(this.Death);
-                    },
-                    label: function(){
-                        if(this['Death']===null) return '-';
-                        if(this['Death']==="") return '-';
-                        return dateFormat(this['Death']);
-                    }
-                }
-            ],
+            sortingOpts: { title: 'Age at Death', value: "Age", inverse:false },
             textSearch: { title: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
             recordView: function(){
                 var str="";

@@ -28,20 +28,22 @@ google.setOnLoadCallback(function () {
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 300,
+        rightPanelLabelWidth: 180,
+        barChartWidth: 100,
         source: {
             gdocId: '0Ai6LdDWgaqgNdFVvN1otMW1VdzhubkZuWFZIWHZhZVE',
             sheets: [ {name:"Grants"} ]
         },
         summaries: [
             {   title: "Main Category RFCD",
-            },{ title: "Broad Research Area", 
-            },{ title: "Funding Purpose", 
-            },{ title: "Main Funding Group", 
             },{ title: "Sector",
-            },{ title: "Field Of Research / RFCD", layout: 'right',
-            },{ title: "Main Funding Unit Type", layout: 'right',
-            },{ title: "Grant Admin Institution", layout: 'right',
             },{ title: "State", layout: 'right',
+            },{ title: "Broad Research Area", layout: 'middle',
+            },{ title: "Field Of Research / RFCD", layout: 'middle',
+            },{ title: "Grant Admin Institution", layout: 'right',
+            },{ title: "Funding Purpose", layout: 'right',
+            },{ title: "Main Funding Group",  layout: 'right'
+            },{ title: "Main Funding Unit Type", layout: 'right',
             }
         ],
         itemDisplay: {

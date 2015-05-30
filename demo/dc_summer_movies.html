@@ -153,7 +153,7 @@ $(document).ready( function(){
             sortColWidth: 90,
             sortingOpts: [ {
                 title: 'Date',
-                func: function(a,b){
+                sortFunc: function(a,b){
                     // a and b are date objects
                     var a_m = moment(a);
                     var b_m = moment(b);

@@ -51,11 +51,7 @@ $(document).ready( function() {
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts: [ 
-                { title: 'Total Salary'   , value: "TCOE" }, 
-                { title: 'Base Salary'    , value: "Base" },
-                { title: 'Overtime Salary', value: "OT"   },
-            ],
+            sortingOpts: [ 'Total Salary', 'Base Salary', 'Overtime Salary' ],
             textSearch: "Name",
             recordView: function(){ return this.Name+" <span class='empTitle'>"+this.Title+"</span>"; }
         }

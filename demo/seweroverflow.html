@@ -62,7 +62,7 @@ $(document).ready(function(){
                 { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
                 { title: 'id', value: function(){ return this[0]; } }
             ],
-            recordView: function(d){
+            recordView: function(){
                 return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";
             }
         }

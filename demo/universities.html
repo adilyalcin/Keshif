@@ -248,7 +248,9 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortingOpts: [
                 { title:'Enrollment', value: "DRVEF2013.Total  enrollment" },
-                { title:'Grad. Rate', value: "DRVGR2013.Graduation rate, total cohort", unitName: "%" }
+                { title:'Grad. Rate', value: 
+                    function(){return this["DRVGR2013.Graduation rate, total cohort"];}, 
+                    unitName: "%" }
             ],
             textSearch: "institution name",
             recordView: function(){

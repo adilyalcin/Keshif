@@ -187,8 +187,8 @@ $(document).ready( function(){
             sortColWidth: 90,
             sortingOpts: [{
                 title: 'Coming Up',
-                value: "Date",
-                func: function(a,b){
+                value: function(){ return this.Date; },
+                sortFunc: function(a,b){
                     // a and b are date objects
                     var a_m = moment(a);
                     var b_m = moment(b);
@@ -197,7 +197,6 @@ $(document).ready( function(){
                     if(a_isBeforeNow && !b_isBeforeNow) return -1;
                     if(b_isBeforeNow && !a_isBeforeNow) return 1;
                     return b.getTime() - a.getTime();
-                    return a_m.isBefore(b_m);
                 },
                 inverse: true,
                 label: function(){ return moment(this.Date).format('MMM Do, ddd'); }

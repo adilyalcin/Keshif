@@ -43,7 +43,7 @@ google.setOnLoadCallback(function(){
                 catLabel: "Task",
                 summaries: [
                     {   title: "Categories", attribMap: "Category"
-                    },{ title: "Levels", attribMap: function(){return kshf.dt_id.Levels[this.Category].data.Level;}
+                    },{ title: "Levels", attribMap: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
                     }
                 ]
             },{ title: "Authors", layout: 'right', 
@@ -55,11 +55,11 @@ google.setOnLoadCallback(function(){
                     return r;
                 }
             },{ title: "Venue", layout: 'right', 
-            },{ title: "Year", layout: 'bottom', attribMap: function(){return new Date(this.Year,1,1);}
+            },{ title: "Date", layout: 'bottom', attribMap: function(){return new Date(this.Year,1,1);}
             }
         ],
         itemDisplay: {
-            sortingOpts: {title: 'id', inverse:true},
+            sortingOpts: ['Year', {title: 'id', inverse:true} ],
             textSearch: "Title",
             recordView: "Title"
         }

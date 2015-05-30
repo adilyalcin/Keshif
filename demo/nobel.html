@@ -53,7 +53,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: "Year",
+            sortingOpts: {title: "Year", inverse: true},
             textSearch: { title: "name", value: function () {
                 var laureate = kshf.dt_id.Laureates[this.laureate_id];
                 return laureate.data.firstname + " " + (laureate.data.surname || "");

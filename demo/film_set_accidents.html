@@ -49,7 +49,7 @@ $(document).ready( function(){
             },{ title: "Injuries", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
             },{ title: "Fatalities", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
             },{ title: "Fine", intervalScale: "log", unitName: "$", layout: "right"
-            },{ title: "State", layout: "right", collapsed: true
+            },{ title: "State", catLabel: function(){return getStateName(this.id);}, layout: "right", collapsed: true
             },{ title: "Date", layout: "bottom"
             }
         ],

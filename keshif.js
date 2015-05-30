@@ -919,7 +919,7 @@ kshf.List = function(kshf_, config, root){
     if(config.textSearch){
         // Find the summary. If it is not there, create it
         if(typeof(config.textSearch)==="string"){
-            var summary = browser.summaries_by_name[config.textSearch];
+            var summary = this.browser.summaries_by_name[config.textSearch];
             if(summary){
                 this.textSearchSummary = summary;
             }
@@ -927,7 +927,7 @@ kshf.List = function(kshf_, config, root){
             var title = config.textSearch.title;
             var value = config.textSearch.value;
             if(title!==undefined){
-                var summary = browser.summaries_by_name[config.textSearch];
+                var summary = this.browser.summaries_by_name[config.textSearch];
                 if(summary){
                     this.textSearchSummary = summary;
                 } else {
@@ -1170,7 +1170,7 @@ kshf.List.prototype = {
                 var summaryFunc = summary.textSearchSummary.summaryFunc;
                 summary.items.forEach(function(item){
                     var f = ! this.filterStr.every(function(v_i){
-                        var v = summaryFunc.call(item.data);
+                        var v = summaryFunc.call(item.data,item);
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
                     });
@@ -1238,13 +1238,13 @@ kshf.List.prototype = {
         });
         $(x[0][0]).on("mouseup",function(event){
             var movedSummary = me.browser.movedSummary;
-            if(me.sortingOpts.some(function(o){ return o.title===movedSummary.summaryTitle; })) return;
-            var newOpt = {
-                title: movedSummary.summaryTitle,
-                value: movedSummary.summaryFunc,
-                unitName: movedSummary.unitName
-            };
-            me.sortingOpts.push(newOpt);
+            if(me.sortingOpts.some(function(o){ return o===movedSummary; })) return;
+            me.sortingOpts.push(movedSummary);
+            // PREP-PRE
+            movedSummary.sortLabel   = movedSummary.summaryFunc;
+            movedSummary.sortInverse = false;
+            movedSummary.sortFunc    = me.getSortFunc(movedSummary.summaryFunc);
+
             me.prepSortingOpts();
             me.setSortingOpt_Active(me.sortingOpts.length-1);
             me.refreshSortingOptions();
@@ -1372,7 +1372,7 @@ kshf.List.prototype = {
     /** -- */
     refrestSortColumnLabels: function(){
         if(this.displayType!=="list") return;
-        var labelFunc=this.sortingOpt_Active.label;
+        var labelFunc=this.sortingOpt_Active.sortLabel;
         var unitName =this.sortingOpt_Active.unitName;
         this.DOM.listSortColumn.html(function(d){
             var s=labelFunc.call(d.data);
@@ -1385,28 +1385,31 @@ kshf.List.prototype = {
     refreshSortingOptions: function(){
         this.DOM.listSortOptionSelect.selectAll("option").remove();
         this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts)
-            .enter().append("option").html(function(d){ return d.title; });
-        this.DOM.listSortOptionSelect[0][0].value = this.sortingOpt_Active.title;
+            .enter().append("option").html(function(summary){ return summary.summaryTitle; });
+        this.DOM.listSortOptionSelect[0][0].value = this.sortingOpt_Active.summaryTitle;
     },
     /** -- */
     prepSortingOpts: function(){
         this.sortingOpts.forEach(function(sortOpt,i){
-            if(typeof(sortOpt)==="string"){ 
-                this.sortingOpts[i] = { title: sortOpt};
-                sortOpt = this.sortingOpts[i];
+            if(sortOpt.summaryTitle) return; // It already points to a summary
+            if(typeof(sortOpt)==="string"){
+                sortOpt = { title: sortOpt };
             }
 
-            if(sortOpt.value===undefined) {
-                sortOpt.value = function(){ return this[sortOpt.title]; };
-            } else {
-                if(typeof(sortOpt.value)==='string'){
-                    var x=sortOpt.value;
-                    sortOpt.value = function(){ return this[x]; };
+            var summary = this.browser.summaries_by_name[sortOpt.title];
+            if(summary===undefined){
+                if(typeof(sortOpt.value)==="string"){
+                    summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.title);
+                } else{
+                    summary = this.browser.createSummary(sortOpt.title,sortOpt.value, "interval");
                 }
             }
-            if(!sortOpt.label) sortOpt.label = sortOpt.value;
-            sortOpt.inverse = sortOpt.inverse || false;
-            sortOpt.func    = sortOpt.func    || this.getSortFunc(sortOpt.value);
+
+            summary.sortLabel   = sortOpt.label || summary.summaryFunc;
+            summary.sortInverse = sortOpt.inverse  || false;
+            summary.sortFunc    = sortOpt.sortFunc || this.getSortFunc(summary.summaryFunc);
+
+            this.sortingOpts[i] = summary;
         },this);
         if(this.DOM.removeSortOption)
             this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
@@ -1623,9 +1626,9 @@ kshf.List.prototype = {
      *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
      */
     sortRecords: function(){
-        var sortValueFunc = this.sortingOpt_Active.value;
-        var sortFunc = this.sortingOpt_Active.func;
-        var inverse = this.sortingOpt_Active.inverse;
+        var sortValueFunc = this.sortingOpt_Active.summaryFunc;
+        var sortFunc = this.sortingOpt_Active.sortFunc;
+        var inverse = this.sortingOpt_Active.sortInverse;
         this.browser.items.sort(
             function(a,b){
                 // Put filtered/remove data to later position
@@ -4228,7 +4231,7 @@ var Summary_Categorical_functions = {
         this.items.forEach(function(item){
             item.mappedDataCache[filterId] = null; // default mapping to null
 
-            var mapping = this.summaryFunc.call(item.data);
+            var mapping = this.summaryFunc.call(item.data,item);
             if(mapping===undefined || mapping==="" || mapping===null)
                 return;
             if(mapping instanceof Array){
@@ -5701,7 +5704,7 @@ var Summary_Interval_functions = {
         var filterId = this.summaryFilter.id;
         
         this.items.forEach(function(item){
-            var v=this.summaryFunc.call(item.data);
+            var v=this.summaryFunc.call(item.data,item);
             if(isNaN(v)) v=null;
             if(v===undefined) v=null;
             if(v!==null){
