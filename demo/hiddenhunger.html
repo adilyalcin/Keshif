@@ -18,51 +18,55 @@
 google.setOnLoadCallback(function(){
     browser_eth_anth = new kshf.Browser({
         domID: "#browser_eth_anth",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 150,
-        rightPanelLabelWidth: 90,
-        itemName: "Ethiopian Anthropometrics",
+        barChartWidth: 140,
+        leftPanelLabelWidth: 130,
+        rightPanelLabelWidth: 150,
+        middlePanelLabelWidth: 230,
+        itemName: "Ethiopian Anth. (Per-Child)",
         source: {
             gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-            sheets: [ 
-                {name:"eth_anth", id:"individual_id"},
-                {name:"eth_anth_cbook", id:"varCode"},
-                ]
+            sheets: [{name:"eth_anth", id:"individual_id"}]
         },
         summaries: [
-            {title:"Region", attribMap: "region", layout: "middle"},
+            {   title:"Indicators", layout: "middle",
+                description: "",
+                attribMap:function(){
+                    var r=[];
+                    if(this.gender==="Male") {
+                        if(this.underweight_m===1) r.push("Under-Weight");
+                        if(this.stunted_m    ===1) r.push("Stunted (Low Height for Age)");
+                        if(this.wasted_m     ===1) r.push("Wasted (Low Weight for Height)");
+                    }
+                    if(this.gender==="Female"){
+                        if(this.underweight_f===1) r.push("Under-Weight");
+                        if(this.stunted_f    ===1) r.push("Stunted (Low Height for Age)");
+                        if(this.wasted_f     ===1) r.push("Wasted (Low Weight for Height)");
+                    }
+                    return r;
+                }
+            },
+            {title:"Region", attribMap: "region", layout: "left"},
+            {title:"Zone", attribMap: "zone", layout: "left", type: "categorical", collapsed: true},
             {title:"Rural", attribMap: "rural", layout: "middle"},
-            {title:"Zone", attribMap: "zone", layout: "middle", type: "categorical", collapsed: true},
             {title:"Gender", attribMap: "gender"},
-            {title:"Household Head Gender", attribMap: "head_sex", collapsed: true},
+            {title:"Household Head Gender", attribMap: "head_sex"},
             {title:"Literate", attribMap: "literate", type: "categorical",description:"Completed education?"},
             {title:"Highest Grade", attribMap: "highest_grade", type: "categorical",description:"Highest grade completed",
                 sortingOpts:[{value:"id"}], collapsed: true},
-            {title:"Age", attribMap: "agem", layout: "bottom"},
-            {title:"Weight", attribMap: "weight", layout: "middle", intervalScale: "linear", unitName: "kg"},
+            {title:"Age (Months)", attribMap: "agem", layout: "bottom"},
+            {title:"Weight", 
+                attribMap: function(){
+                    return Math.max(Math.min(this.weight,30),0);
+                },
+                layout: "middle", intervalScale: "linear", unitName: "kg"},
             {title:"Height", unitName: "cm",
                 attribMap: function(){
-                    return Math.max(Math.min(this.height,100),60);
+                    return Math.max(Math.min(this.height,120),50);
                 },
                 layout: "middle"},
-            {title:"Underweight", attribMap:function(){
-                if(this.gender==="Male") return this.underweight_m?"Yes":"No";
-                if(this.gender==="Female") return this.underweight_f?"Yes":"No";
-                return "nope??";
-            }},
-            {title:"Stunted", attribMap:function(){
-                if(this.gender==="Male") return this.stunted_m?"Yes":"No";
-                if(this.gender==="Female") return this.stunted_f?"Yes":"No";
-                return "nope??";
-            }},
-            {title:"Wasted", attribMap:function(){
-                if(this.gender==="Male") return this.wasted_m?"Yes":"No";
-                if(this.gender==="Female") return this.wasted_f?"Yes":"No";
-                return "nope??";
-            }},
-            {title: "haz", description:"Length/height-for-age Z-score", layout:"right"},
-            {title: "waz", description:"Weight-for-age Z-score", layout:"right"},
-            {title: "whz", description:"Weight-for-length/height Z-score", layout:"right"}
+            {attribMap: "haz", title:"Length / height for age", layout:"right"},
+            {attribMap: "waz", title:"Weight for age", layout:"right"},
+            {attribMap: "whz", title:"Weight for length/height", layout:"right"}
         ]
     });
 });
@@ -71,51 +75,65 @@ var browser_mwi_anth=null;
 var browser_mwi_nutr=null;
 function showBrowsers(v){
     d3.select('body').attr('show',v);
+    if(v==='eth_nutr' && browser_mwi_anth===null){
+        browser_eth_nutr = new kshf.Browser({
+            domID: "#browser_eth_nutr",
+            barChartWidth: 100,
+            leftPanelLabelWidth: 200,
+            itemName: "Ethiopian Nutrition (Per-Household)",
+            source: {
+                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+                sheets: [{name:"eth_nutrition"}]
+            },
+            summaries: [
+                {title:"Region", attribMap:"cq11"},
+                //{title:"Urban/Rural"}
+            ]
+        });
+    }
     if(v==='mwi_anth' && browser_mwi_anth===null){
-        // Response browser
         browser_mwi_anth = new kshf.Browser({
             domID: "#browser_mwi_anth",
             barChartWidth: 100,
             leftPanelLabelWidth: 200,
-            itemName: "Malawi Anthropometrics",
+            itemName: "Malawi Anthropometrics (Per-Child)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: [ 
-                    {name:"mwi_anth"},
-                    {name:"mwi_anth_cbook", id:"varCode"},
-                    ]
+                sheets: [{name:"mwi_anth"}]
             },
             summaries: [
                 {title:"Sex",attribMap:"sex"},
                 
-                {title:"haz06", description:"Length/height-for-age Z-score", layout:"middle"},
-                {title:"waz06", description:"Weight-for-age Z-score", layout:"middle"},
-                {title:"whz06", description:"Weight-for-length/height Z-score", layout:"middle"},
-                {title:"bmiz06", description:"BMI-for-age Z-score", layout:"middle"},
+                {attribMap:"haz06", title:"Length/height-for-age Z-score", layout:"middle"},
+                {attribMap:"waz06", title:"Weight-for-age Z-score", layout:"middle"},
+                {attribMap:"whz06", title:"Weight-for-length/height Z-score", layout:"middle"},
+                {attribMap:"bmiz06", title:"BMI-for-age Z-score", layout:"middle"},
 
-
-                {attribMap:"wa_m", title:"Child is underweight (moderate)"},
-                {attribMap:"wa_s", title:"Child is underweight (severe)"},
-                {attribMap:"ha_m", title:"Child is stunted (moderate)"},
-                {attribMap:"ha_s", title:"Child is stunted (severe)"},
-                {attribMap:"wh_m", title:"Child is wasted (moderate)"},
-                {attribMap:"wh_s", title:"Child is wasted (severe)"},
+                {title: "Under-Weight", attribMap: function(){
+                    if(this.wa_s) return "Severely";
+                    if(this.wa_m) return "Moderately";
+                }},
+                {title: "Stunted (Low Height for Age)", attribMap: function(){
+                    if(this.ha_s) return "Severely";
+                    if(this.ha_m) return "Moderately";
+                }},
+                {title: "Wasted (Low Weight for Height)", attribMap: function(){
+                    if(this.wh_s) return "Severely";
+                    if(this.wh_m) return "Moderately";
+                }}
             ]
         });
     }
     if(v==='mwi_nutr' && browser_mwi_nutr===null){
-        // Response browser
         browser_mwi_nutr = new kshf.Browser({
             domID: "#browser_mwi_nutr",
             barChartWidth: 100,
             leftPanelLabelWidth: 200,
-            itemName: "Malawi Nutrition",
+            rightPanelLabelWidth: 160,
+            itemName: "Malawi Nutrition (Per-Household)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: [ 
-                    {name:"mwi_nutrition"},
-                    {name:"mwi_nutrition_cbook", id:"varCode"},
-                    ]
+                sheets: [ {name:"mwi_nutrition"} ]
             },
             summaries: [
                 { title: "District", attribMap: "a1" },
@@ -135,18 +153,18 @@ function showBrowsers(v){
                     layout: "middle",
                     attribMap: function(){
                         var r=[];
-                        if(this.def_kcal_rec_hh==="Yes") r.push("KCal");
+                        if(this.def_kcal_rec_hh==="Yes") r.push("Calories");
                         if(this.def_prot_rec_hh==="Yes") r.push("Protein");
                         if(this.def_iron_rec_hh==="Yes") r.push("Iron");
                         if(this.def_zinc_rec_hh==="Yes") r.push("Zinc");
                         if(this.def_vita_A_rec_hh==="Yes") r.push("Vitamin A");
                         if(this.def_vita_E_rec_hh==="Yes") r.push("Vitamin E");
                         if(this.def_vita_C_rec_hh==="Yes") r.push("Vitamin C");
-                        if(this.def_ribof_rec_hh==="Yes") r.push("Ribof");
-                        if(this.def_thia_rec_hh==="Yes") r.push("Thia");
-                        if(this.def_nia_rec_hh==="Yes") r.push("Nia");
+                        if(this.def_ribof_rec_hh==="Yes") r.push("Riboflavin");
+                        if(this.def_thia_rec_hh==="Yes") r.push("Thiamin");
+                        if(this.def_nia_rec_hh==="Yes") r.push("Niacin");
                         if(this.def_vita_B6_rec_hh==="Yes") r.push("Vitamin B6");
-                        if(this.def_fol_rec_hh==="Yes") r.push("Fol");
+                        if(this.def_fol_rec_hh==="Yes") r.push("Folate");
                         if(this.def_calcium_rec_hh==="Yes") r.push("Calcium");
                         if(this.def_vita_B12_rec_hh==="Yes") r.push("Vitamin B12");
                         return r;
@@ -156,18 +174,18 @@ function showBrowsers(v){
                     layout: "middle",
                     attribMap: function(){
                         var r=[];
-                        if(this.def_kcal_req_hh==="Yes") r.push("KCal");
+                        if(this.def_kcal_req_hh==="Yes") r.push("Calories");
                         if(this.def_prot_req_hh==="Yes") r.push("Protein");
                         if(this.def_iron_req_hh==="Yes") r.push("Iron");
                         if(this.def_zinc_req_hh==="Yes") r.push("Zinc");
                         if(this.def_vita_A_req_hh==="Yes") r.push("Vitamin A");
                         if(this.def_vita_E_req_hh==="Yes") r.push("Vitamin E");
                         if(this.def_vita_C_req_hh==="Yes") r.push("Vitamin C");
-                        if(this.def_ribof_req_hh==="Yes") r.push("Ribof");
-                        if(this.def_thia_req_hh==="Yes") r.push("Thia");
-                        if(this.def_nia_req_hh==="Yes") r.push("Nia");
+                        if(this.def_ribof_req_hh==="Yes") r.push("Riboflavin");
+                        if(this.def_thia_req_hh==="Yes") r.push("Thiamin");
+                        if(this.def_nia_req_hh==="Yes") r.push("Niacin");
                         if(this.def_vita_B6_req_hh==="Yes") r.push("Vitamin B6");
-                        if(this.def_fol_req_hh==="Yes") r.push("Fol");
+                        if(this.def_fol_req_hh==="Yes") r.push("Folate");
                         if(this.def_calcium_req_hh==="Yes") r.push("Calcium");
                         if(this.def_vita_B12_req_hh==="Yes") r.push("Vitamin B12");
                         return r;
@@ -185,6 +203,9 @@ function showBrowsers(v){
 #browser_eth_anth {
     height: 650px;
 }
+#browser_eth_nutr {
+    height: 650px;
+}
 #browser_mwi_anth {
     height: 650px;
 }
@@ -193,20 +214,29 @@ function showBrowsers(v){
 }
 
 body[show="eth_anth"] #browser_eth_anth{ display: block;}
+body[show="eth_anth"] #browser_eth_nutr{ display: none;}
 body[show="eth_anth"] #browser_mwi_anth{ display: none;}
 body[show="eth_anth"] #browser_mwi_nutr{ display: none;}
 
+body[show="eth_nutr"] #browser_eth_anth{ display: none;}
+body[show="eth_nutr"] #browser_eth_nutr{ display: block;}
+body[show="eth_nutr"] #browser_mwi_anth{ display: none;}
+body[show="eth_nutr"] #browser_mwi_nutr{ display: none;}
+
 body[show="mwi_anth"] #browser_eth_anth{ display: none;}
+body[show="mwi_anth"] #browser_eth_nutr{ display: none;}
 body[show="mwi_anth"] #browser_mwi_anth{ display: block;}
 body[show="mwi_anth"] #browser_mwi_nutr{ display: none;}
 
 body[show="mwi_nutr"] #browser_eth_anth{ display: none;}
+body[show="mwi_nutr"] #browser_eth_nutr{ display: none;}
 body[show="mwi_nutr"] #browser_mwi_anth{ display: none;}
 body[show="mwi_nutr"] #browser_mwi_nutr{ display: block;}
 
 body[show="eth_anth"] .opt_eth_anth{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
+body[show="eth_nutr"] .opt_eth_nutr{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
 body[show="mwi_anth"] .opt_mwi_anth{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
-
+body[show="mwi_nutr"] .opt_mwi_nutr{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
 
 .chooseBrowser{
     margin: 0 auto;
@@ -214,7 +244,7 @@ body[show="mwi_anth"] .opt_mwi_anth{ background-color: rgb(234, 227, 217); color
     text-align: center;
 }
 .chooseBrowser .browserOption{
-    width: 30%;
+    width: 24%;
     display: inline-block;
     border: solid 2px gray;
     border-radius: 10px;
@@ -235,16 +265,20 @@ body[show="mwi_anth"] .opt_mwi_anth{ background-color: rgb(234, 227, 217); color
     <body>
         <div class="pageTitle" align="center">#HiddenHunger Vizathon - 2015</div>
 
-        <body show="stim_part">
+        <body show="eth_anth">
 
             <div class='chooseBrowser'>
                 <span class="browserOption opt_eth_anth" onClick="showBrowsers('eth_anth')">Show Ethiopia Anthropometrics</span>
+                <span class="browserOption opt_eth_nutr" onClick="showBrowsers('eth_nutr')">Show Ethiopia Nutrition</span>
                 <span class="browserOption opt_mwi_anth" onClick="showBrowsers('mwi_anth')">Show Malawi Anthropometrics</span>
                 <span class="browserOption opt_mwi_nutr" onClick="showBrowsers('mwi_nutr')">Show Malawi Nutrition</span>
                 </div>
 
             <div style='margin: 0 auto; width: 1200px; text-align: center;'>
                 <span id="browser_eth_anth"></span>
+                </div>
+            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+                <span id="browser_eth_nutr"></span>
                 </div>
             <div style='margin: 0 auto; width: 1200px; text-align: center;'>
                 <span id="browser_mwi_anth"></span>
@@ -258,7 +292,7 @@ body[show="mwi_anth"] .opt_mwi_anth{ background-color: rgb(234, 227, 217); color
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
             Built for the #HiddenHunger vizathon in Washington D.C.
-            <a href="helpmeviz.com/2015/05/07/vizathon-with-bread-for-the-world-institute/" target='_blank'>Info</a>.
+            <a href="http://helpmeviz.com/2015/05/07/vizathon-with-bread-for-the-world-institute/" target='_blank'>Info</a>.
             <span class="fa fa-info-circle"></span><br>
 
             <a href="http://www.bread.org/institute/" target="_blank">Bread for the World Institute</a> **
