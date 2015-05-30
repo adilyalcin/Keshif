@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Hidden Hunger Vizathon</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    browser_eth_anth = new kshf.Browser({
+        domID: "#browser_eth_anth",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 150,
+        rightPanelLabelWidth: 90,
+        itemName: "Ethiopian Anthropometrics",
+        source: {
+            gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+            sheets: [ 
+                {name:"eth_anth", id:"individual_id"},
+                {name:"eth_anth_cbook", id:"varCode"},
+                {name:"eth_nutrition_cbook", id:"varCode"},
+                //{name:"eth_nutrition"},
+                {name:"mwi_anth"},
+                {name:"mwi_anth_cbook", id:"varCode"},
+                {name:"mwi_nutrition_cbook", id:"varCode"},
+                {name:"mwi_nutrition"},
+                ]
+        },
+        summaries: [
+            {title:"Region", attribMap: "region", layout: "middle"},
+            {title:"Rural", attribMap: "rural", layout: "middle"},
+            {title:"Gender", attribMap: "gender"},
+            {title:"Head Sex", attribMap: "head_sex", collapsed: true},
+            {title:"Literate", attribMap: "literate", type: "categorical",description:"Completed education?"},
+            {title:"Highest Grade", attribMap: "highest_grade", type: "categorical",description:"Highest grade completed",
+                sortingOpts:[{value:"id"}]},
+            {title:"Age", attribMap: "agem", layout: "bottom"},
+            {title:"Weight", attribMap: "weight", layout: "middle", intervalScale: "linear", unitName: "kg"},
+            {title:"Height", unitName: "cm",
+                attribMap: function(){
+                    return Math.max(Math.min(this.height,100),60);
+                },
+                layout: "middle"},
+            {title:"Underweight", attribMap:function(){
+                if(this.gender==="Male") return this.underweight_m?"Yes":"No";
+                if(this.gender==="Female") return this.underweight_f?"Yes":"No";
+                return "nope??";
+            }},
+            {title:"Stunted", attribMap:function(){
+                if(this.gender==="Male") return this.stunted_m?"Yes":"No";
+                if(this.gender==="Female") return this.stunted_f?"Yes":"No";
+                return "nope??";
+            }},
+            {title:"Wasted", attribMap:function(){
+                if(this.gender==="Male") return this.wasted_m?"Yes":"No";
+                if(this.gender==="Female") return this.wasted_f?"Yes":"No";
+                return "nope??";
+            }},
+            {title: "haz", description:"Length/height-for-age Z-score", layout:"right"},
+            {title: "waz", description:"Weight-for-age Z-score", layout:"right"},
+            {title: "whz", description:"Weight-for-length/height Z-score", layout:"right"}
+        ]
+    });
+});
+
+var browser_mwi_anth=null;
+var browser_mwi_nutr=null;
+function showBrowsers(v){
+    d3.select('body').attr('show',v);
+    if(v==='mwi_anth' && browser_mwi_anth===null){
+        // Response browser
+        browser_mwi_anth = new kshf.Browser({
+            domID: "#browser_mwi_anth",
+            barChartWidth: 100,
+            leftPanelLabelWidth: 200,
+            itemName: "Malawi Anthropometrics",
+            source: {
+                callback: function(browser){ 
+                    browser.primaryTableName = "mwi_anth",
+                    browser.loadCharts();
+                }
+            },
+            summaries: [
+                {title:"Sex",attribMap:"sex"},
+                
+                {title:"haz06", description:"Length/height-for-age Z-score", layout:"middle"},
+                {title:"waz06", description:"Weight-for-age Z-score", layout:"middle"},
+                {title:"whz06", description:"Weight-for-length/height Z-score", layout:"middle"},
+                {title:"bmiz06", description:"BMI-for-age Z-score", layout:"middle"},
+
+
+                {title:"wa_m", description:"Child is underweight (moderate)"},
+                {title:"wa_s", description:"Child is underweight (severe)"},
+                {title:"ha_m", description:"Child is stunted (moderate)"},
+                {title:"ha_s", description:"Child is stunted (severe)"},
+                {title:"wh_m", description:"Child is wasted (moderate)"},
+                {title:"wh_s", description:"Child is wasted (severe)"},
+            ]
+        });
+    }
+    if(v==='mwi_nutr' && browser_mwi_anth===null){
+        // Response browser
+        browser_mwi_nutr = new kshf.Browser({
+            domID: "#browser_mwi_nutr",
+            barChartWidth: 100,
+            leftPanelLabelWidth: 200,
+            itemName: "Malawi Nutrition",
+            source: {
+                callback: function(browser){ 
+                    browser.primaryTableName = "mwi_nutrition",
+                    browser.loadCharts();
+                }
+            },
+            summaries: [
+                { title: "District", attribMap: "a1" },
+                { title: "EPA", attribMap: "a2" },
+                { title: "Section", attribMap: "a3" },
+                { title: "Village", attribMap: "a4", collapsed:true },
+                { title: "Household Size", attribMap: "hhsize", collapsed:true, layout:"bottom" },
+                { title: "Household Head - Average Age", attribMap: "hh_age", collapsed:true, layout:"bottom" },
+                { title: "Total wealth index", attribMap: "wealth", collapsed:true, layout:"bottom" },
+                {   title: "Below Recommended", description: "Consumes less than the reccommended amount of ...",
+                    layout: "middle",
+                    attribMap: function(){
+                        var r=[];
+                        if(this.def_kcal_rec_hh==="Yes") r.push("KCal");
+                        if(this.def_prot_rec_hh==="Yes") r.push("Protein");
+                        if(this.def_iron_rec_hh==="Yes") r.push("Iron");
+                        if(this.def_zinc_rec_hh==="Yes") r.push("Zinc");
+                        if(this.def_vita_A_rec_hh==="Yes") r.push("Vitamin A");
+                        if(this.def_vita_E_rec_hh==="Yes") r.push("Vitamin E");
+                        if(this.def_vita_C_rec_hh==="Yes") r.push("Vitamin C");
+                        if(this.def_ribof_rec_hh==="Yes") r.push("Ribof");
+                        if(this.def_thia_rec_hh==="Yes") r.push("Thia");
+                        if(this.def_nia_rec_hh==="Yes") r.push("Nia");
+                        if(this.def_vita_B6_rec_hh==="Yes") r.push("Vitamin B6");
+                        if(this.def_fol_rec_hh==="Yes") r.push("Fol");
+                        if(this.def_calcium_rec_hh==="Yes") r.push("Calcium");
+                        if(this.def_vita_B12_rec_hh==="Yes") r.push("Vitamin B12");
+                        return r;
+                    }
+                },
+                {   title: "Below Required", description: "Consumes less than the required amount of ...",
+                    layout: "middle",
+                    attribMap: function(){
+                        var r=[];
+                        if(this.def_kcal_req_hh==="Yes") r.push("KCal");
+                        if(this.def_prot_req_hh==="Yes") r.push("Protein");
+                        if(this.def_iron_req_hh==="Yes") r.push("Iron");
+                        if(this.def_zinc_req_hh==="Yes") r.push("Zinc");
+                        if(this.def_vita_A_req_hh==="Yes") r.push("Vitamin A");
+                        if(this.def_vita_E_req_hh==="Yes") r.push("Vitamin E");
+                        if(this.def_vita_C_req_hh==="Yes") r.push("Vitamin C");
+                        if(this.def_ribof_req_hh==="Yes") r.push("Ribof");
+                        if(this.def_thia_req_hh==="Yes") r.push("Thia");
+                        if(this.def_nia_req_hh==="Yes") r.push("Nia");
+                        if(this.def_vita_B6_req_hh==="Yes") r.push("Vitamin B6");
+                        if(this.def_fol_req_hh==="Yes") r.push("Fol");
+                        if(this.def_calcium_req_hh==="Yes") r.push("Calcium");
+                        if(this.def_vita_B12_req_hh==="Yes") r.push("Vitamin B12");
+                        return r;
+                    }
+                }
+            ]
+        });
+    }
+};
+
+        </script>
+        <style>
+#browser_eth_anth {
+    height: 650px;
+}
+#browser_mwi_anth {
+    height: 650px;
+}
+#browser_mwi_nutr{
+    height: 650px;
+}
+
+body[show="eth_anth"] #browser_eth_anth{ display: block;}
+body[show="eth_anth"] #browser_mwi_anth{ display: none;}
+body[show="eth_anth"] #browser_mwi_nutr{ display: none;}
+
+body[show="mwi_anth"] #browser_eth_anth{ display: none;}
+body[show="mwi_anth"] #browser_mwi_anth{ display: block;}
+body[show="mwi_anth"] #browser_mwi_nutr{ display: none;}
+
+body[show="mwi_nutr"] #browser_eth_anth{ display: none;}
+body[show="mwi_nutr"] #browser_mwi_anth{ display: none;}
+body[show="mwi_nutr"] #browser_mwi_nutr{ display: block;}
+
+body[show="eth_anth"] .opt_eth_anth{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
+body[show="mwi_anth"] .opt_mwi_anth{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
+
+
+.chooseBrowser{
+    margin: 0 auto;
+    width: 1200px;
+    text-align: center;
+}
+.chooseBrowser .browserOption{
+    width: 30%;
+    display: inline-block;
+    border: solid 2px gray;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: gray;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    padding: 2px;
+    font-size: 0.9em;
+}
+.chooseBrowser .browserOption:hover{
+    border-color: orangered;
+}
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">#HiddenHunger Vizathon - 2015</div>
+
+        <body show="stim_part">
+
+            <div class='chooseBrowser'>
+                <span class="browserOption opt_eth_anth" onClick="showBrowsers('eth_anth')">Show Ethiopia Anthropometrics</span>
+                <span class="browserOption opt_mwi_anth" onClick="showBrowsers('mwi_anth')">Show Malawi Anthropometrics</span>
+                <span class="browserOption opt_mwi_nutr" onClick="showBrowsers('mwi_nutr')">Show Malawi Nutrition</span>
+                </div>
+
+            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+                <span id="browser_eth_anth"></span>
+                </div>
+            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+                <span id="browser_mwi_anth"></span>
+                </div>
+            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+                <span id="browser_mwi_nutr"></span>
+                </div>
+
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Built for the #HiddenHunger vizathon in Washington D.C.
+            <a href="helpmeviz.com/2015/05/07/vizathon-with-bread-for-the-world-institute/" target='_blank'>Info</a>.
+            <span class="fa fa-info-circle"></span><br>
+
+            <a href="http://www.bread.org/institute/" target="_blank">Bread for the World Institute</a> **
+            <a href="http://www.ifpri.org/" target="_blank">the International Food Policy Research Institute (IFPRI)</a> **
+            <a href="http://helpmeviz.com/" target="_blank">HelpMeViz.com</a><br>
+            Data source: https://github.com/harvestchoice/nutrition_indicators
+            </div>
+    </body>
+</html>
