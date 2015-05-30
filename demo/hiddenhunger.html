@@ -27,22 +27,17 @@ google.setOnLoadCallback(function(){
             sheets: [ 
                 {name:"eth_anth", id:"individual_id"},
                 {name:"eth_anth_cbook", id:"varCode"},
-                {name:"eth_nutrition_cbook", id:"varCode"},
-                //{name:"eth_nutrition"},
-                {name:"mwi_anth"},
-                {name:"mwi_anth_cbook", id:"varCode"},
-                {name:"mwi_nutrition_cbook", id:"varCode"},
-                {name:"mwi_nutrition"},
                 ]
         },
         summaries: [
             {title:"Region", attribMap: "region", layout: "middle"},
             {title:"Rural", attribMap: "rural", layout: "middle"},
+            {title:"Zone", attribMap: "zone", layout: "middle", type: "categorical", collapsed: true},
             {title:"Gender", attribMap: "gender"},
-            {title:"Head Sex", attribMap: "head_sex", collapsed: true},
+            {title:"Household Head Gender", attribMap: "head_sex", collapsed: true},
             {title:"Literate", attribMap: "literate", type: "categorical",description:"Completed education?"},
             {title:"Highest Grade", attribMap: "highest_grade", type: "categorical",description:"Highest grade completed",
-                sortingOpts:[{value:"id"}]},
+                sortingOpts:[{value:"id"}], collapsed: true},
             {title:"Age", attribMap: "agem", layout: "bottom"},
             {title:"Weight", attribMap: "weight", layout: "middle", intervalScale: "linear", unitName: "kg"},
             {title:"Height", unitName: "cm",
@@ -84,10 +79,11 @@ function showBrowsers(v){
             leftPanelLabelWidth: 200,
             itemName: "Malawi Anthropometrics",
             source: {
-                callback: function(browser){ 
-                    browser.primaryTableName = "mwi_anth",
-                    browser.loadCharts();
-                }
+                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+                sheets: [ 
+                    {name:"mwi_anth"},
+                    {name:"mwi_anth_cbook", id:"varCode"},
+                    ]
             },
             summaries: [
                 {title:"Sex",attribMap:"sex"},
@@ -98,16 +94,16 @@ function showBrowsers(v){
                 {title:"bmiz06", description:"BMI-for-age Z-score", layout:"middle"},
 
 
-                {title:"wa_m", description:"Child is underweight (moderate)"},
-                {title:"wa_s", description:"Child is underweight (severe)"},
-                {title:"ha_m", description:"Child is stunted (moderate)"},
-                {title:"ha_s", description:"Child is stunted (severe)"},
-                {title:"wh_m", description:"Child is wasted (moderate)"},
-                {title:"wh_s", description:"Child is wasted (severe)"},
+                {attribMap:"wa_m", title:"Child is underweight (moderate)"},
+                {attribMap:"wa_s", title:"Child is underweight (severe)"},
+                {attribMap:"ha_m", title:"Child is stunted (moderate)"},
+                {attribMap:"ha_s", title:"Child is stunted (severe)"},
+                {attribMap:"wh_m", title:"Child is wasted (moderate)"},
+                {attribMap:"wh_s", title:"Child is wasted (severe)"},
             ]
         });
     }
-    if(v==='mwi_nutr' && browser_mwi_anth===null){
+    if(v==='mwi_nutr' && browser_mwi_nutr===null){
         // Response browser
         browser_mwi_nutr = new kshf.Browser({
             domID: "#browser_mwi_nutr",
@@ -115,10 +111,11 @@ function showBrowsers(v){
             leftPanelLabelWidth: 200,
             itemName: "Malawi Nutrition",
             source: {
-                callback: function(browser){ 
-                    browser.primaryTableName = "mwi_nutrition",
-                    browser.loadCharts();
-                }
+                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+                sheets: [ 
+                    {name:"mwi_nutrition"},
+                    {name:"mwi_nutrition_cbook", id:"varCode"},
+                    ]
             },
             summaries: [
                 { title: "District", attribMap: "a1" },
@@ -128,6 +125,12 @@ function showBrowsers(v){
                 { title: "Household Size", attribMap: "hhsize", collapsed:true, layout:"bottom" },
                 { title: "Household Head - Average Age", attribMap: "hh_age", collapsed:true, layout:"bottom" },
                 { title: "Total wealth index", attribMap: "wealth", collapsed:true, layout:"bottom" },
+                
+                { title: "Can read and write?", attribMap: "b7", layout:"right"},
+                { title: "Primary activity", attribMap: "b8", layout:"right"},
+                { title: "Marital status", attribMap: "b10", layout:"right"},
+                { title: "Indiv. Highest Education Lvl", attribMap: "edu", layout:"right"},
+
                 {   title: "Below Recommended", description: "Consumes less than the reccommended amount of ...",
                     layout: "middle",
                     attribMap: function(){
@@ -169,6 +172,8 @@ function showBrowsers(v){
                         if(this.def_vita_B12_req_hh==="Yes") r.push("Vitamin B12");
                         return r;
                     }
+                },{
+                    attribMap:"depend_ratio",title: "Dependency ratio", unitName: "%"
                 }
             ]
         });
