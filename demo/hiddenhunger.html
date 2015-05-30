@@ -79,8 +79,8 @@ function showBrowsers(v){
     if(v==='eth_nutr' && browser_eth_nutr===null){
         browser_eth_nutr = new kshf.Browser({
             domID: "#browser_eth_nutr",
-            barChartWidth: 100,
-            leftPanelLabelWidth: 100,
+            barChartWidth: 120,
+            categoryTextWidth: 170,
             itemName: "Ethiopian Nutrition (Per-Household)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
@@ -110,13 +110,13 @@ function showBrowsers(v){
                 //{title: "Minimum Dietary Energy Requirement for HH (2005 standards)", attribMap:"mder", layout: "middle"},
                 {title: "Revealed Optimal Diversity index", attribMap:"rodi", layout: "middle"},
 
-                {title:"calcium_ae", layout: "right"},
-                {title:"protein_ae", layout: "right"},
-                {title:"iron_ae", layout: "right"},
-                {title:"calories_ae", layout: "right"},
-                {title:"vitamin_ae", layout: "right"},
-                {title:"zinc_ae", layout: "right"},
-                {title:"calcium_ae", layout: "right"},
+                {title:"calcium_ae", layout: "right", unitName:"kcal"},
+                {title:"protein_ae", layout: "right", unitName:"g"},
+                {title:"iron_ae", layout: "right", unitName: "mg"},
+                {title:"calories_ae", layout: "left"},
+                {title:"vitamina_ae", layout: "right",unitName: "µg RE"},
+                {title:"zinc_ae", layout: "right", unitName:"mg"},
+                {title:"calcium_ae", layout: "left", unitName:"mg"},
             ]
         });
     }
