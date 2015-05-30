@@ -71,23 +71,52 @@ google.setOnLoadCallback(function(){
     });
 });
 
+var browser_eth_nutr=null;
 var browser_mwi_anth=null;
 var browser_mwi_nutr=null;
 function showBrowsers(v){
     d3.select('body').attr('show',v);
-    if(v==='eth_nutr' && browser_mwi_anth===null){
+    if(v==='eth_nutr' && browser_eth_nutr===null){
         browser_eth_nutr = new kshf.Browser({
             domID: "#browser_eth_nutr",
             barChartWidth: 100,
-            leftPanelLabelWidth: 200,
+            leftPanelLabelWidth: 100,
             itemName: "Ethiopian Nutrition (Per-Household)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: [{name:"eth_nutrition"}]
+                sheets: [{
+                    name:"eth_nutrition",
+                }]
             },
             summaries: [
                 {title:"Region", attribMap:"cq11"},
-                //{title:"Urban/Rural"}
+                {title:"Is Rural?", attribMap: "ur",
+                    catLabel: function(){
+                        if(this.id===1) return "Not-Rural";
+                        if(this.id===2) return "Rural";
+                    }
+                },
+                {
+                    title: "Diversity (Using Shannon Index)",
+                    description: 
+                        "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual",
+                    attribMap: "simpson",
+                    layout: "middle"
+                },
+
+                {title: "Dietary Diversity Index ", attribMap:"ddi", layout: "middle"},
+                {title: "Household Dietary Diversity Score", attribMap:"hdds", layout: "middle",
+                    description:"It categorizes every food item into 12 food groups and computes how many food groups were consumed by the household over the week preceding the interview."},
+                //{title: "Minimum Dietary Energy Requirement for HH (2005 standards)", attribMap:"mder", layout: "middle"},
+                {title: "Revealed Optimal Diversity index", attribMap:"rodi", layout: "middle"},
+
+                {title:"calcium_ae", layout: "right"},
+                {title:"protein_ae", layout: "right"},
+                {title:"iron_ae", layout: "right"},
+                {title:"calories_ae", layout: "right"},
+                {title:"vitamin_ae", layout: "right"},
+                {title:"zinc_ae", layout: "right"},
+                {title:"calcium_ae", layout: "right"},
             ]
         });
     }
