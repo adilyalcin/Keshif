@@ -80,14 +80,13 @@ google.setOnLoadCallback( function() {
         ],
         itemDisplay: {
             sortColWidth: 70,
-            sortingOpts: [
-                {   name: 'Publish Time',
-                    label: function(){ 
-                        var date=this[newsCol['Publish Time']];
-                        return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
-                    }
+            sortingOpts: {
+                title: 'Publish Time',
+                label: function(){ 
+                    var date=this[newsCol['Publish Time']];
+                    return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
                 }
-            ],
+            },
             textSearch: 'title',
             recordView: function(){
                 var j;

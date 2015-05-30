@@ -84,7 +84,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 80,
-            sortingOpts: [{ name:'# Related Posts', value: function(){ return this.links.length}],
+            sortingOpts: { title:'# Related Posts', value: function(){ return this.links.length},
             showRank: true,
             showSelectBox: true,
             detailsToggle: "one",

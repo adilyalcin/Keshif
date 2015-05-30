@@ -52,9 +52,9 @@ $(document).ready( function() {
         itemDisplay: {
             sortColWidth: 70,
             sortingOpts: [ 
-                {name: 'Total Salary', value: "TCOE"}, 
-                {name: 'Base Salary', value: "Base"},
-                {name: 'Overtime Salary', value: "OT"},
+                { title: 'Total Salary'   , value: "TCOE" }, 
+                { title: 'Base Salary'    , value: "Base" },
+                { title: 'Overtime Salary', value: "OT"   },
             ],
             textSearch: "Name",
             recordView: function(){ return this.Name+" <span class='empTitle'>"+this.Title+"</span>"; }

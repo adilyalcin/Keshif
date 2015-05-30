@@ -186,7 +186,7 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts: [{
-                name: 'Coming Up',
+                title: 'Coming Up',
                 value: "Date",
                 func: function(a,b){
                     // a and b are date objects
@@ -201,12 +201,12 @@ $(document).ready( function(){
                 },
                 inverse: true,
                 label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
-            },{ name: "IMDb Rating",
+            },{ title: "IMDb Rating",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.imdbRating;
                 }
-            },{ name: "Year",
+            },{ title: "Year",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Year;

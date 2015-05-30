@@ -38,9 +38,8 @@ google.setOnLoadCallback( function(){
         itemDisplay: {
             sortColWidth: 80,
             sortingOpts: [
-                {   name: 'Vote Date', inverse: true, 
-                    label: function(){ return moment(this['Vote Date']).format('MMM YYYY'); }
-                },{ name:'Result' }
+                { title:'Vote Date', label:function(){return moment(this['Vote Date']).format('MMM YYYY');}, inverse: true },
+                'Result'
             ],
             textSearch: "Description",
             recordView: function(){

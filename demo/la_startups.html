@@ -30,7 +30,7 @@ $(document).ready( function(){
         source: {
             url: "http://spreadsheets.latimes.com/film-set-accidents/",
             gdocId: '1ZqZhF545lD11qG_p2IvBqlLecjzgTdmGbH1NmdSr-n8',
-            sheets: [  {name:"Startups"} ]
+            sheets: [{name:"Startups"}]
         },
         summaries: [ // Company Name    Founding Year   Capital raised to date (millions)   Industry    City
             {   title: "Founding Year", layout: "bottom"
@@ -42,8 +42,8 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 82,
             sortingOpts: [
-                { name:'Capital Raised', inverse:false,  unitName: "M$" },
-                { name:'Founding Year', inverse:false },
+                { title:'Capital Raised', inverse:false,  unitName: "M$"},
+                { title:'Founding Year', inverse:false },
             ],
             textSearch: "Company Name",
             recordView: "Company Name",

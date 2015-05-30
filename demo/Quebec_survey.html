@@ -180,14 +180,14 @@ $(document).ready(function() {
             sortColWidth: 45,
             detailsToggle: "One",
             textSearch: { title: 'content', value: 'Question_ouverte q_41_commentaires_généraux_questionnaire'},
-            sortingOpts: [{ 
-                name: "| <span class='fa fa-comment'></span> |", 
+            sortingOpts: { 
+                title: "| <span class='fa fa-comment'></span> |", 
                 value: function(){ 
                     var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                     if(v===null) return 0;
                     return v.length; 
                 }
-            }],
+            },
             recordView: function(){ 
                 var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                 return (v===null)?"-":("<blockquote>" + v + "</blockquote>");

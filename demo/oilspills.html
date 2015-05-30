@@ -88,13 +88,15 @@ google.setOnLoadCallback( function(){
         itemDisplay: {
             sortColWidth: 58,
             sortingOpts: [
-                {   name: 'Date', inverse: true, value: getDate,
+                { title: 'Date', inverse: true, value: getDate,
                     label: function(){ 
                         var date=getDate.call(this);
                         return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
                     }
                 },
-                { name: 'Amount', value: "Total Spilled" },
+                { title: "Total Spilled" },
+                { title: "Crude & Condensate" },
+                { title: "Synthetic Base Fluid" }
             ],
             detailsToggle: "Multi",
             recordView: function(){

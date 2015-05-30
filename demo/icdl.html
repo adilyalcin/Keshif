@@ -134,7 +134,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: [{ name: 'Date Added' }],
+            sortingOpts: 'Date Added',
             textSearchFunc: function(){ 
                 var metadata = dt_metadata[this.id];
                 if(metadata) return metadata.data.Title;

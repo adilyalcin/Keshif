@@ -97,7 +97,7 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: [{ name:'Year', inverse: true, label: function(){ return this.Year.getFullYear(); } }],
+            sortingOpts: { title:'Year', label: function(){ return this.Year.getFullYear(); }, inverse: true },
             textSearch: { title: "title", value: function(){ return this.Fields.title;} },
             displayType: 'list',
             detailsToggle: "one",

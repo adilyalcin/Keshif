@@ -213,14 +213,14 @@ $(document).ready( function(){
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts : [
-                {   name: 'Population',
+                {   title: 'Population',
                     label: function(){
                         var p=this.Population;
                         if(p===undefined) return "-";
                         return d3.format(".4s")(p);
                     }
                 },
-                { name: 'Education Expenditures'}
+                'Education Expenditures'
             ],
             showRank: true,
             textSearch: "Name",

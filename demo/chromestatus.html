@@ -55,7 +55,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Milestone", attribMap: function(){ return this.meta["milestone_str"]; },
-                sortingOpts: [{  value: function(){ return mileSort(this.id); }, inverse: true}]
+                sortingOpts: [{ value: function(){ return mileSort(this.id); }, inverse: true}]
             },{ title: "Category", attribMap: "category"
             },{ title: "Implementation Status", attribMap: "impl_status_chrome"
             },{ title: "Standardization", attribMap: function(){ return this.standardization.text; }
@@ -72,10 +72,11 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 90,
-            sortingOpts: [{ name:'Milestone', 
+            sortingOpts: {
+                title:'Milestone', 
                 value: function(){ return mileSort(this.meta["milestone_str"]); },
                 label: function(){ return this.meta["milestone_str"]; }
-            }],
+            },
             textSearch: 'title',
             displayType: 'list',
             recordView: function(){

@@ -149,8 +149,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [
-                { name:'Rating' },
-                { name:'Date read', value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
+                'Rating',
+                { title: 'Date read', value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
             ],
             textSearch: "Title",
             displayType: 'grid',

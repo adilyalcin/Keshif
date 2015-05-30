@@ -53,7 +53,7 @@ $(document).ready( function(){
         categoryTextWidth: 150,
         source: { 
             url: "http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r",
-            callback : loadData
+            callback: loadData
         },
         summaries: [
             {   title: "<span class='fa fa-home'></span> # of Homes", attribMap: "homes"
@@ -72,12 +72,12 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [ {name: 'value'}, {name: '# Homes', value: "homes"} ],
+            sortingOpts: ['value', {title: '# Homes', value: "homes"} ],
             displayType: 'grid',
             textSearch: 'text',
             detailsToggle: "off",
             maxVisibleItems_Default: 400,
-            recordView : function(){
+            recordView: function(){
                 var str=this.text;
                 if(this.president) str+="<span class='fa fa-flag-checkered featIcon'></span>";
                 if(this.tree) str+="<span class='fa fa-tree featIcon'></span>";

@@ -59,8 +59,8 @@ $(document).ready(function(){
         itemDisplay: {
             sortColWidth: 110,
             sortingOpts: [
-                { name: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
-                { name: 'id', value: function(){ return this[0]; } }
+                { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
+                { title: 'id', value: function(){ return this[0]; } }
             ],
             recordView: function(d){
                 return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";

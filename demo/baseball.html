@@ -76,7 +76,7 @@ $(document).ready(function() {
         itemDisplay: {
             sortColWidth: 75,
             sortingOpts: [
-                {   name: 'Date',
+                {   title: 'Date',
                     value: function(){ 
                         var dt = this['primary-date'];
                         if(dt===""){ return null; }
@@ -90,7 +90,7 @@ $(document).ready(function() {
                         return moment(dt,"MM/DD/YYYY").format("MMM YYYY"); 
                     }
                 },
-                {   name: 'Transact.ID' },
+                'Transact.ID',
             ],
             recordView: function(){
                 return "<div class=\"iteminfo iteminfo_0\">Player: "+

@@ -187,11 +187,11 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts : [{
-                name: 'Year',
+            sortingOpts : {
+                title: 'Year',
                 value: function(){ if(this.Year) return this.Year.getTime(); },
                 label: function(){ if(this.Year) return this.Year.getFullYear(); }
-            }],
+            },
             displayType: 'grid',
             maxVisibleItems_Default: 40,
             textSearch: "Name",

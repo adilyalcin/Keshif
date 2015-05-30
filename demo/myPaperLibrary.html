@@ -167,7 +167,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 60,
-            sortingOpts: [ {name: 'Date', value: function(){ if(this.Date) return this.Date.getFullYear(); }} ],
+            sortingOpts: {title: 'Date', value: function(){ if(this.Date) return this.Date.getFullYear(); }},
             textSearch: "title",
             recordView: "title"
         }

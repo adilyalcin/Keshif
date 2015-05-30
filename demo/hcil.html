@@ -70,8 +70,8 @@ google.setOnLoadCallback( function() {
         itemName: "publications",
         categoryTextWidth: 180,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
-            sheets : [
+            gdocId: '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
+            sheets: [
                 {name:"trs",query:'select A,D,E,F,G,M,N,O,P'},
                 {name:"tr_people", query:"select A,B,D"}, //query:"select * where B = 84"},
                 {name:"tr_projects"},
@@ -99,7 +99,7 @@ google.setOnLoadCallback( function() {
                     return str;
                 }
             },{ title: "Member Type",
-                attribMap : function(){
+                attribMap: function(){
                     var typeList = {};
                     var r = [];
                     var authors = this.Author;
@@ -117,18 +117,14 @@ google.setOnLoadCallback( function() {
                 },
                 catTableName: "member_types", catLabel: "type",
             },{ title: "Project", catTableName: "projects", catLabel: "project",
-            },{ title: "Date", attribMap : function(){ return new Date(this.Date); }, layout: "middle",
+            },{ title: "Date", attribMap: function(){ return new Date(this.Date); }, layout: "middle",
             }
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [
-                {   name: 'Year',
-                    value: function(){ return parseInt(this.Date.slice(0,4)); }
-                }
-            ],
-            textSearch : "title",
-            recordView : function(){
+            sortingOpts: { title: 'Year', value: function(){ return parseInt(this.Date.slice(0,4)); } }
+            textSearch: "title",
+            recordView: function(){
                 var j;
                 var str="";
                 // paper name

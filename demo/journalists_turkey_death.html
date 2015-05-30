@@ -21,8 +21,8 @@ google.setOnLoadCallback(function(){
         categoryTextWidth: 130,
         rightPanelLabelWidth: 100,
         source: {
-            gdocId : '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
-            sheets : [ {name:"Journalists"} ]
+            gdocId: '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
+            sheets: [ {name:"Journalists"} ]
         },
         summaries: [
             {   title: "Organization"
@@ -32,8 +32,8 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [ {name: 'Date',value: function(){ return this.Date.getFullYear(); } } ],
-            textSearch : "Journalist",
+            sortingOpts: {title: 'Date',value: function(){ return this.Date.getFullYear(); } },
+            textSearch: "Journalist",
             recordView: 'Journalist'
         }
     });

@@ -33,7 +33,7 @@ google.setOnLoadCallback(function () {
             }
         ],
         itemDisplay: {
-            sortingOpts: [{name: 'Performance', label: function(){ return performanceText(this.Performance); } }],
+            sortingOpts: {title: 'Performance', label: function(){ return performanceText(this.Performance); } },
             textSearch: 'Name',
             recordView: 'Name'
         }

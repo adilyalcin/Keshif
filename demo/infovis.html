@@ -66,9 +66,9 @@ google.setOnLoadCallback(function () {
         itemDisplay: {
             sortColWidth: 35,
             sortingOpts : [
-                { name: 'Year', value: function(){ return this.time.getFullYear(); }, inverse: true },
-                { name: '# Cit.\'s To', value: function(d){ return d.items.length; } },
-                { name: '# Cit.\'s- Total', value: "num" } 
+                { title: 'Year', value: function(){ return this.time.getFullYear(); }, inverse: true },
+                { title: '# Cit.\'s To', value: function(d){ return d.items.length; } },
+                { title: '# Cit.\'s- Total', value: "num" } 
             ],
             detailsToggle : "one",
             textSearch : 'Title',

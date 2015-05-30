@@ -68,8 +68,8 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortColWidth: 85,
             sortingOpts: [ 
-                { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
-                { name: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
+                { title: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
+                { title: '# of Records', label: function(){ return d3.format("s")(this['# of Records']); }
             }],
             textSearch: {title: "Organization", value: "org" },
             recordView: function(){

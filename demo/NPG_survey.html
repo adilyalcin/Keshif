@@ -273,10 +273,11 @@ $(document).ready(function() {
             detailsToggle: "one",
             textSearch: {title: "Comment", value: columns[11] },
             sortingOpts: [{ 
-                name: "| <span class='fa fa-comment'></span> |", value: function(){ 
-                    if(this[columns[11]]===null) return 0;
-                    return this[columns[11]].length; 
-                } }],
+                title: "| <span class='fa fa-comment'></span> |", 
+                value: function(){ 
+                    if(this[columns[11]]!==null) return this[columns[11]].length; 
+                }
+            }],
             recordView: function(){ 
                 if(this[columns[11]]===null) return "-";
                 return "<blockquote>" + this[columns[11]] + "</blockquote>";

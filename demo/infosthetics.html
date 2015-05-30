@@ -47,9 +47,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [
-                {   name: 'Date', inverse: true, label: function(){ return moment(this.Date).format("MMM Do, YY"); }
-                },{ name: '# of Comments'
-                }
+                { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
+                '# of Comments'
             ],
             textSearch: "Title",
             displayType: 'grid',

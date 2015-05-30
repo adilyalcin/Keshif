@@ -68,12 +68,10 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 92,
-            sortingOpts: [
-                { name:'Recent first', value: function(){ return this[7]}, inverse: false, label: function(d){
-                    return moment(this[7]).fromNow();
-                    }
-                    },
-            ],
+            sortingOpts: {
+                title:'Recent first', value: function(){ return this[7]}, inverse: false, 
+                label: function(){ return moment(this[7]).fromNow(); }
+            },
             showRank: false,
             detailsToggle: "one",
             textSearch: { title: "Title and text", value: function(){return this[4]+" "+this[5];} },

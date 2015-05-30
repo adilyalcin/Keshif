@@ -77,8 +77,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [
-                { name: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
-                { name: 'Age', value: "age" }
+                { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
+                { title: 'Age', value: "age" }
             ],
             recordView: function(){ return this.last_name +", "+this.first_name; }
         }

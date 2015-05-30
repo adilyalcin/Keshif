@@ -43,7 +43,7 @@ google.setOnLoadCallback( function() {
         ],
         itemDisplay: {
             sortColWidth: 72,
-            sortingOpts : [ {name: 'Year', value: function(){ return this.Date.getFullYear();} } ],
+            sortingOpts : {title: 'Year', value: function(){ return this.Date.getFullYear();} },
             textSearch : 'Title',
             recordView : function(){
                 var j;

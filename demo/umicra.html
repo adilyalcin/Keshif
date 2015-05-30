@@ -78,7 +78,7 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: [ { name: 'Date', label: function(){return this.Date.getFullYear();}, inverse: true} ],
+            sortingOpts: { title: 'Date', label: function(){return this.Date.getFullYear();}, inverse: true},
             textSearch: 'title',
             detailsToggle: "one",
             autoExpandMore: true,

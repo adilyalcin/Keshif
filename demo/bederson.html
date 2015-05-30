@@ -92,7 +92,7 @@ google.setOnLoadCallback(function() {
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: [ {name: 'Year', value: "Date", label: function(){ return this.Date.getFullYear();}, inverse:true } ],
+            sortingOpts: {title: 'Year', value: "Date", label: function(){ return this.Date.getFullYear();}, inverse:true },
             textSearch: 'title',
             detailsToggle: "one",
             recordView: function(){

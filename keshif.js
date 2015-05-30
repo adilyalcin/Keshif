@@ -898,7 +898,10 @@ kshf.List = function(kshf_, config, root){
     }
 
     // Sorting options
-    this.sortingOpts = config.sortingOpts || [ {name:this.browser.items[0].idIndex} ];
+    this.sortingOpts = config.sortingOpts || [ {title:this.browser.items[0].idIndex} ];
+    if(!Array.isArray(this.sortingOpts)){
+        this.sortingOpts = [this.sortingOpts];
+    }
     this.prepSortingOpts();
     this.sortingOpt_Active = this.sortingOpts[0];
 
@@ -1235,9 +1238,9 @@ kshf.List.prototype = {
         });
         $(x[0][0]).on("mouseup",function(event){
             var movedSummary = me.browser.movedSummary;
-            if(me.sortingOpts.some(function(o){ return o.name===movedSummary.summaryTitle; })) return;
+            if(me.sortingOpts.some(function(o){ return o.title===movedSummary.summaryTitle; })) return;
             var newOpt = {
-                name: movedSummary.summaryTitle,
+                title: movedSummary.summaryTitle,
                 value: movedSummary.summaryFunc,
                 unitName: movedSummary.unitName
             };
@@ -1382,14 +1385,19 @@ kshf.List.prototype = {
     refreshSortingOptions: function(){
         this.DOM.listSortOptionSelect.selectAll("option").remove();
         this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts)
-            .enter().append("option").html(function(d){ return d.name; });
-        this.DOM.listSortOptionSelect[0][0].value = this.sortingOpt_Active.name;
+            .enter().append("option").html(function(d){ return d.title; });
+        this.DOM.listSortOptionSelect[0][0].value = this.sortingOpt_Active.title;
     },
     /** -- */
     prepSortingOpts: function(){
-        this.sortingOpts.forEach(function(sortOpt){
+        this.sortingOpts.forEach(function(sortOpt,i){
+            if(typeof(sortOpt)==="string"){ 
+                this.sortingOpts[i] = { title: sortOpt};
+                sortOpt = this.sortingOpts[i];
+            }
+
             if(sortOpt.value===undefined) {
-                sortOpt.value = function(){ return this[sortOpt.name]; };
+                sortOpt.value = function(){ return this[sortOpt.title]; };
             } else {
                 if(typeof(sortOpt.value)==='string'){
                     var x=sortOpt.value;

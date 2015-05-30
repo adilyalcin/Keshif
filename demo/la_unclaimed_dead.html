@@ -59,8 +59,8 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [
-                {   name:'Age at Death', value: "Age", inverse:false,
-                },{ name:'Death Date', inverse:true,
+                {   title:'Age at Death', value: "Age", inverse:false },
+                {   title:'Death Date', inverse:true,
                     value: function(){ 
                         if(this['Death']===null) return;
                         if(this['Death']==="") return;

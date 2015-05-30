@@ -49,7 +49,7 @@ $(document).ready( function(){
         },
         summaries: [{ title: "category", layout: "middle" }], // 1 summary only
         itemDisplay: {
-            sortingOpts: [ {name:'id', inverse: true} ],
+            sortingOpts: {title:'id', inverse: true},
             textSearch: "title",
             displayType: 'grid',
             recordView: function(){
