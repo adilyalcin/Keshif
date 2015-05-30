@@ -3432,6 +3432,9 @@ kshf.Summary_Base.prototype = {
             this.browser.listDisplay.DOM.mainTextSearch.select("input")
                 .attr("placeholder","Search "+this.summaryTitle);
         }
+        if(this.sortFunc){
+            this.browser.listDisplay.refreshSortingOptions();
+        }
         if(this.DOM.nugget) 
             this.DOM.nugget.attr("state",function(summary){
                 if(summary.summaryColumn===null) return "custom"; // calculated
