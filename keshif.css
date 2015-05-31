@@ -2094,7 +2094,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart:not([filtered_and="0"]) > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton {
   display: inline;
 }
-.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"] .kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[highlight="selected"] .notButton {
+.kshf .kshfChart[hasmultivalueitem=true] > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"][highlight="selected"] .notButton {
   display: inline;
 }
 .kshf .kshfChart[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {
