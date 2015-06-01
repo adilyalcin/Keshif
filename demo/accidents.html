@@ -55,6 +55,7 @@ google.setOnLoadCallback( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth:170,
+        barChartWidth: 120,
         source: {
             gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
             sheets: [ sheetInfo, {name:"RoadType"}, {name:"RoadSurface"}, 
@@ -68,8 +69,10 @@ google.setOnLoadCallback( function(){
             },{ title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
             },{ title: "Time of Day", attribMap: function(){ return this['Time of Day'].getHours(); },
                 layout: "middle", unitName: ":00"
-            },{ title: "Speed Limit", unitName: "mph", layout: 'middle'
             },{ title: "# of Vehicles", layout: 'middle'
+            },{ title: "Speed Limit", layout: 'middle', 
+                sortingOpts: [{ value: 'id' }],
+                catLabel: function(){ return this.id+"mph"}//, unitName: "mph"
             },{ title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right'
             },{ title: "Light Condition", catTableName: "LightCond", catLabel: "name"
             },{ title: "Weather Condition", catTableName: "WeatherCond", catLabel: "name"

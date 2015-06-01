@@ -23,9 +23,9 @@ http://www.retrosheet.org/transactions/index.html
 */
 
 $(document).ready(function() {
-    resizeBrowser(150,90);
+    resizeBrowser(null,90);
     $(window).resize(function() {
-        resizeBrowser(150,90);
+        resizeBrowser(null,90);
         browser.updateLayout();
     });
 
@@ -71,6 +71,7 @@ $(document).ready(function() {
                     var dt = this['primary-date'];
                     if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
                 }
+            },{ title: "Player", attribMap: "player", layout: "middle", minAggrValue: 2
             }
         ],
         itemDisplay: {
@@ -106,6 +107,9 @@ $(document).ready(function() {
             .iteminfo a{
                 color:#606060;
                 font-style:italic;
+            }
+            #chart_div{
+                width: 900px;
             }
         </style>
 	</head>

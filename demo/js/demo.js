@@ -7,8 +7,8 @@ var noRibbon = false;
 var showLogo = true;
 
 function resizeBrowser(minWidth, minHeight){
-    $('#chart_div').width($(window).width()-minWidth);
-    $('#chart_div').height($(window).height()-minHeight);
+    if(minWidth) $('#chart_div').width($(window).width()-minWidth);
+    if(minHeight) $('#chart_div').height($(window).height()-minHeight);
 };
 
 var getIcon = function(v){
