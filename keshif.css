@@ -929,7 +929,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   vertical-align: top;
   pointer-events: all;
-  box-shadow: 1px 1px 1px #474940;
+  box-shadow: 0px 0px 1px #474940;
+  margin-top: 1px;
+  font-size: 0.8em;
+}
+.kshf .chartClearFilterButton.alone > .fa-times {
+  top: -1px;
+  position: relative;
 }
 .kshf .chartClearFilterButton.summary {
   display: inline-block;
@@ -988,8 +994,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   position: absolute;
   color: gray;
-  font-size: 0.7em;
-  font-weight: 700;
+  font-size: 0.8em;
+  font-weight: 500;
   cursor: pointer;
 }
 .kshf .chartAxis_Measure > .percentSign:after {
@@ -1659,6 +1665,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval[istime="true"] span.aggr {
   opacity: 0 !important;
 }
+.kshf .kshfChart > .wrapper > .facetInterval[zoomed="false"] .zoomControl:before {
+  content: "\f00e";
+}
+.kshf .kshfChart > .wrapper > .facetInterval[zoomed="true"] .zoomControl:before {
+  content: "\f010";
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram {
   position: relative;
   pointer-events: all;
@@ -1780,7 +1792,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .percentSign {
-  bottom: 0px;
+  bottom: -1px;
   left: 0px;
   width: 20px;
   text-align: right;
@@ -1890,8 +1902,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                     */
 }
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl {
+  display: none;
+  position: absolute;
+  left: -20px;
+  top: -2px;
+  font-size: 0.8em;
+  color: gray;
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl:hover {
+  color: black;
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine {
   height: 11px;
+  cursor: ew-resize;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue {
   position: absolute;
@@ -1943,7 +1968,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
   height: 3px;
   top: 3px;
-  cursor: ew-resize;
   background-color: lightgray;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active {
@@ -1981,24 +2005,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.min > .rangeLimitOnChart {
+  left: 3px;
+}
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.max {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle > .invalidArea {
-  position: relative;
-  display: block;
-  background-color: lightgray;
-  opacity: 0.3;
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.max > .rangeLimitOnChart {
+  left: -2px;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.min > .invalidArea {
-  border-right: double 3px black;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle.max > .invalidArea {
-  border-left: double 3px black;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[filtered=false] span.invalidArea {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
+  position: absolute;
   display: none;
+  width: 2px;
+  background-color: #39b1bc;
+  cursor: ew-resize;
+  box-shadow: 0px 0px 2px white;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[anim=true] > .base {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
@@ -2081,6 +2104,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton {
   display: inline-block;
+}
+.kshf .kshfChart[filtered=true]:hover > .wrapper > .facetInterval > .intervalSlider > .zoomControl {
+  display: block;
+}
+.kshf .kshfChart[filtered=true]:hover > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
+  display: block;
 }
 .kshf .kshfChart[hasmultivalueitem=false][filtered_or="0"][filtered_and="0"] > .wrapper > .facetCategorical > .attribGroup > .attrib:hover[selected="0"] .notButton {
   display: inline;

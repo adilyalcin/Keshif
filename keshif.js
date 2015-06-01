@@ -3797,7 +3797,7 @@ kshf.Summary_Base.prototype = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: pos1, title: function(){
-                        return "Show "+(me.browser.percentModeActive?"absolute":"percent")+" values";
+                        return "Show "+(me.browser.percentModeActive?"|#| absolute":"% percent")+" values";
                     },
                 })
             })
@@ -5688,7 +5688,8 @@ var Summary_Interval_functions = {
         this.hasTime  = false;
 
         this.unitName = undefined;
-        this.showPercentile=false;
+        this.showPercentile = false;
+        this.zoomed = false;
 
         this.histBins = [];
         this.intervalTicks = [];
@@ -5973,8 +5974,11 @@ var Summary_Interval_functions = {
 
         this.insertHeader.call(this);
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
-        this.DOM.facetInterval = this.DOM.wrapper.append("div").attr("class","facetInterval")
-            .attr("istime",this.scaleType==='time');
+        this.DOM.facetInterval = this.DOM.wrapper.append("div")
+            .attr("class","facetInterval")
+            .attr("istime",this.scaleType==='time')
+            .attr("zoomed",this.zoomed)
+            ;
 
         this.DOM.histogram = this.DOM.facetInterval.append("div").attr("class","histogram");
         this.DOM.histogram_bins = this.DOM.histogram.append("div").attr("class","bins")
@@ -6571,8 +6575,27 @@ var Summary_Interval_functions = {
             .style('margin-left',(this.width_vertAxisLabel)+"px")
             .attr("scaletype",this.scaleType);
 
+        this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w',
+                    title: function(){ return (me.zoomed)?"Zoom out":"Zoom into range";  }
+                })
+            })
+            .on("mouseenter",function(){
+                this.tipsy.show();
+            })
+            .on("mouseleave",function(d,i){
+                this.tipsy.hide();
+            })
+            .on("click",function(){
+                me.zoomed = !me.zoomed;
+                me.DOM.facetInterval.attr("zoomed",me.zoomed)
+                this.tipsy.hide();
+            })
+            ;
+
         var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
-        controlLine.append("span").attr("class","base total")
             .on("mousedown", function (d, i) {
                 if(d3.event.which !== 1) return; // only respond to left-click
                 me.DOM.intervalSlider.attr("anim",false);
@@ -6606,13 +6629,15 @@ var Summary_Interval_functions = {
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
-            });;
+            });
+
+        controlLine.append("span").attr("class","base total");
 
         controlLine.append("span")
             .attr("class","base active")
-            .each(function(){
+            .each(function(d,i){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 's',
+                    gravity: i==0?"e":"w",
                     title: function(){ return "Drag to filter" }
                 })
             })
@@ -6666,6 +6691,7 @@ var Summary_Interval_functions = {
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
+                d3.event.stopPropagation();
             });
 
         var handle_cb = function (d, i) {
@@ -6711,14 +6737,15 @@ var Summary_Interval_functions = {
                     d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                 });
             d3.event.preventDefault();
+            d3.event.stopPropagation();
         };
 
         controlLine.selectAll(".handle").data(['min','max']).enter()
             .append("span").attr("class",function(d){ return "handle "+d; })
-            .each(function(){
+            .each(function(d,i){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 's',
-                    title: function(){ return "<span class='action fa fa-arrows-h' style='font-weight: 900;'></span> Drag to filter" }
+                    gravity: i==0?"e":"w",
+                    title: function(){ return "Drag to filter" }
                 })
             })
             .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
@@ -6727,14 +6754,13 @@ var Summary_Interval_functions = {
                 this.tipsy.hide();
                 handle_cb.call(this,d,i);
             })
-            .append("span").attr("class","invalidArea");
+            .append("span").attr("class","rangeLimitOnChart");
 
         this.DOM.selectedItemValue = controlLine.append("div").attr("class","selectedItemValue");
         this.DOM.selectedItemValue.append("span").attr("class","circlee");
         this.DOM.selectedItemValueText = this.DOM.selectedItemValue
             .append("span").attr("class","selected-item-value-text")
             .append("span").attr("class","selected-item-value-text-v");
-
 
         this.DOM.labelGroup = this.DOM.intervalSlider.append("div").attr("class","labelGroup");
     },
@@ -6854,10 +6880,40 @@ var Summary_Interval_functions = {
             return me.chartScale_Measure(aggr.aggregate_Active);
         };
 
-        this.DOM.aggr_Active.each(function(aggr){
-            kshf.Util.setTransform(this,
-                "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Active(aggr)+")");
-        });
+        if(!this.isFiltered() || this.scaleType==='step'){
+            this.DOM.aggr_Active.each(function(aggr){
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Active(aggr)+")");
+            });
+        } else {
+            // is filtered & not step scale
+            var filter_min = this.summaryFilter.active.min;
+            var filter_max = this.summaryFilter.active.max;
+            var minPos = this.valueScale(filter_min);
+            var maxPos = this.valueScale(filter_max);
+            this.DOM.aggr_Active.each(function(aggr){
+                var translateX = "";
+                var width_self=width;
+                var aggr_min = aggr.x;
+                var aggr_max = aggr.x + aggr.dx;
+                if(aggr.aggregate_Active>0){
+                    // it is within the filtered range
+                    if(aggr_min<filter_min){
+                        var lostWidth = minPos-me.valueScale(aggr_min);
+                        translateX = " translateX("+lostWidth+"px)";
+                        width_self -= lostWidth;
+                    }
+                    if(aggr_max>filter_max){
+                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+                        //translateX = " translateX("+lostWidth+"px)";
+                        width_self -= lostWidth;
+                    }
+                }
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) "+translateX+" scale("+width_self+","+getAggrHeight_Active(aggr)+")");
+            });
+        }
+
         this.DOM.compareButton
             .each(function(aggr){
                 var height = me.height_hist-getAggrHeight_Active(aggr)-9;
@@ -7200,6 +7256,9 @@ var Summary_Interval_functions = {
         this.refreshHeight();
         this.refreshViz_Axis();
         this.DOM.labelGroup.style("height",this.height_labels+"px");
+        this.DOM.intervalSlider.selectAll(".rangeLimitOnChart")
+            .style("height",this.height_hist+"px")
+            .style("top",(-this.height_hist-13)+"px")
     },
     /** -- */
     updateAfterFilter: function(resultChange){

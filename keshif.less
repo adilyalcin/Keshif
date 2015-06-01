@@ -838,7 +838,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
             vertical-align: top;
             pointer-events: all;
-            box-shadow: 1px 1px 1px #474940;
+            box-shadow: 0px 0px 1px #474940;
+            margin-top: 1px;
+            font-size: 0.8em;
+            > .fa-times{
+                top: -1px;
+                position: relative;
+            }
         }
         &.summary{
             display: inline-block;
@@ -894,8 +900,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             position: absolute;
             color: gray;
-            font-size: 0.7em;
-            font-weight: 700;
+            font-size: 0.8em;
+            font-weight: 500;
             cursor: pointer;
             &:after{
                 content: '#';
@@ -1570,6 +1576,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         opacity: 0 !important;
                     }
                 }
+                &[zoomed="false"]{
+                    .zoomControl:before{
+                        content: "\f00e"; // zoom-plus
+                    }
+                }
+                &[zoomed="true"]{
+                    .zoomControl:before{
+                        content: "\f010"; // zoom-minus
+                    }
+                }
                 > .histogram{
                     position:relative;
                     pointer-events: all;
@@ -1671,17 +1687,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 pointer-events: all;
                                 .transition(~'transform 700ms ease-in-out');
                             }
-                            &[noitems=true] {
+                            &[noitems=true]{
                                 > .measureLabel{ display: none; }
                             }
                         }
                     }
-                    > .chartAxis_Measure {
+                    > .chartAxis_Measure{
                         top: 0px;
                         width: 100%;
                         height: 100%;
                         > .percentSign{
-                            bottom: 0px;
+                            bottom: -1px;
                             left: 0px;
                             width: 20px;
                             text-align: right;
@@ -1778,8 +1794,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .intervalSlider{
                     position:relative;
                     pointer-events: all;
+                    > .zoomControl{
+                        display: none;
+                        position: absolute;
+                        left: -20px;
+                        top: -2px;
+                        font-size: 0.8em;
+                        color: gray;
+                        cursor: pointer;
+                        &:hover{
+                            color: black;
+                        }
+                    }
                     > .controlLine {
                         height: 11px;
+                        cursor: ew-resize;
                         > .selectedItemValue{
                             position:absolute;
                             z-index: 20;
@@ -1822,7 +1851,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 width: 100%;
                                 height: 3px;
                                 top: 3px;
-                                cursor: ew-resize;
                                 background-color: lightgray;
                             }
                             &.active{
@@ -1859,27 +1887,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 left: -5px;
                                 border-top-left-radius: 10px;
                                 border-bottom-left-radius: 10px;
+                                > .rangeLimitOnChart{
+                                    left: 3px;
+                                }
                             }
                             &.max{
                                 border-top-right-radius: 10px;
                                 border-bottom-right-radius: 10px;
+                                > .rangeLimitOnChart{
+                                    left: -2px;
+                                }
                             }
-                            > .invalidArea{
-                                position: relative;
-                                display: block;
-                                background-color: lightgray;
-                                opacity: 0.3;
-                            }
-                            &.min > .invalidArea{
-                                border-right: double 3px black;
-                            }
-                            &.max > .invalidArea{
-                                border-left: double 3px black;
-                            }
-                        }
-                        &[filtered=false]{
-                            span.invalidArea{
+                            > .rangeLimitOnChart{
+                                position: absolute;
                                 display: none;
+                                width: 2px;
+                                background-color: rgb(57, 177, 188);
+                                cursor: ew-resize;
+                                box-shadow: 0px 0px 2px white;
                             }
                         }
                         &[anim=true]{
@@ -1970,9 +1995,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        &[filtered=true] > .headerGroup {
-            .chartClearFilterButton{
-                display: inline-block;
+        &[filtered=true] {
+            > .headerGroup {
+                .chartClearFilterButton{
+                    display: inline-block;
+                }
+            }
+            &:hover > .wrapper > .facetInterval > .intervalSlider {
+                > .zoomControl{
+                    display: block;
+                }
+                > .controlLine > .handle > .rangeLimitOnChart{
+                    display: block;
+                }
             }
         }
         &:not([filtered_total="0"]):not([filtered_total="1"])[hasmultivalueitem=true]{
