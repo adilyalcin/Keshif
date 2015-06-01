@@ -1662,7 +1662,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 7px 11px 0px 6px;
   overflow: hidden;
 }
-.kshf .kshfChart > .wrapper > .facetInterval[istime="true"] span.aggr {
+.kshf .kshfChart > .wrapper > .facetInterval[scaletype="time"] span.aggr {
   opacity: 0 !important;
 }
 .kshf .kshfChart > .wrapper > .facetInterval[zoomed="false"] .zoomControl:before {
@@ -1891,16 +1891,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider {
   position: relative;
   pointer-events: all;
-  /*
-                    &[scaletype="log"] > .labelGroup > .tick > .line{
-                        top: -22px;
-                        height: 22px;
-                    }
-                    &[scaletype="linear"] > .labelGroup > .tick > .line{
-                        top: -22px;
-                        height: 22px;
-                    }
-                    */
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl {
   display: none;

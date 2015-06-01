@@ -154,8 +154,7 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title: "Term"
             },{ title: "Category"
-            },{ title: "Year", attribMap: function(){ return this.Proceeding.data.year; },
-                intervalScale: 'step', layout: 'middle'
+            },{ title: "Year", attribMap: function(){ return this.Proceeding.data.year; }, layout: 'middle'
             },{ title: "Authors",
                 catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
                 summaries: [{ title: "Affiliaton" }]

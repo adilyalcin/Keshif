@@ -143,8 +143,8 @@ $(document).ready( function(){
             },{ title: "Reviewed", description: "Mouse-over the book image to see my review",
                 attribMap: function(){ return (this.Review!=="")?"Yes":"No"; }
             },{ title: "# of Pages", attribMap: "NumPages", collapsed: true,
-            },{ title: "Year: Book Read", attribMap: "ReadYear", intervalScale: 'step', layout: "middle", collapsed: true
-            },{ title: "Year: Publication (Excl. Books Pre-1990)", attribMap: "PubYear", layout: "middle", intervalScale: 'step'
+            },{ title: "Year: Book Read", attribMap: "ReadYear", layout: "middle", collapsed: true
+            },{ title: "Year: Publication (Excl. Books Pre-1990)", attribMap: "PubYear", layout: "middle"
             }
         ],
         itemDisplay: {

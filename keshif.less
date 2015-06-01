@@ -1571,7 +1571,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .facetInterval {
                 padding: 7px 11px 0px 6px;
                 overflow: hidden;
-                &[istime="true"]{
+                &[scaletype="time"]{
                     span.aggr{
                         opacity: 0 !important;
                     }
@@ -1940,16 +1940,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     } // labelGroup
-                    /*
-                    &[scaletype="log"] > .labelGroup > .tick > .line{
-                        top: -22px;
-                        height: 22px;
-                    }
-                    &[scaletype="linear"] > .labelGroup > .tick > .line{
-                        top: -22px;
-                        height: 22px;
-                    }
-                    */
                 } // intervalSlider
 
             } // facetInterval

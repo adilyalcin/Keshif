@@ -38,9 +38,9 @@ google.setOnLoadCallback(function(){
             })
         },
         summaries: [
-            {   title: "UserType", layout: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer"; }
+            {   title: "UserType", layout: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer";
             },{ title: "Gender", layout: 'right',
-                catLabel: function(d){
+                catLabel: function(){
                     switch(this.id){
                         case 2: return "Female "+getIcon("f");
                         case 1: return "Male "+getIcon("m");
@@ -54,7 +54,7 @@ google.setOnLoadCallback(function(){
                 attribMap: function(){ return this.TimeStart.day(); },
                 sortingOpts: [ {value: "id"} ],
                 catLabel: function(){ return getDayNameFromNumber(this.id); }
-            },{ title: "Hour of Day", layout: 'bottom', intervalScale: 'step', unitName: ": 00",
+            },{ title: "Hour of Day", layout: 'bottom', optimumTickWidth: 40, unitName: ": 00",
                 attribMap: function(){ return this.TimeStart.hour(); }
             },{ title: "Duration", layout: 'bottom', intervalScale: "log", unitName: "min",
                 attribMap: function(){ return Math.round(this.Duration/60); }

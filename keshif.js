@@ -830,7 +830,7 @@ kshf.Filter.prototype = {
                 this.tipsy.show();
                 d3.event.stopPropagation();
             })
-            .on("mouseleave",function(d,i){
+            .on("mouseleave",function(){
                 this.tipsy.hide();
                 d3.event.stopPropagation();
             })
@@ -2767,7 +2767,6 @@ kshf.Browser.prototype = {
                 if(facetDescr.intervalScale) {
                     summary.setScaleType(facetDescr.intervalScale);
                 }
-                // tickIntegerOnly
                 // intervalRange
                 // intervalTickFormat
             }
@@ -5677,26 +5676,24 @@ var Summary_Interval_functions = {
         this.height_hist_topGap = 12; // Height for histogram gap on top.
 
         this.width_barGap = 2; // The width between neighboring histgoram bars
-        this.width_histMargin = 17; // The width between neighboring histgoram bars
+        this.width_histMargin = 17; // ..
         this.width_vertAxisLabel = 23; // ..
 
         this.optimumTickWidth = 50;
 
-        this.scaleType = 'linear';
-        this.tickIntegerOnly = false;
+        this.scaleType = 'linear'; // 'time', 'step', 'log'
         this.hasFloat = false;
         this.hasTime  = false;
 
-        this.unitName = undefined;
-        this.showPercentile = false;
+        this.unitName = undefined; // the text appended to the numeric value (TODO: should not apply to time)
+        this.showPercentile = false; // Percentile chart is a 1-line chart which shows %10-%20-%30-%40-%50 percentiles
         this.zoomed = false;
 
         this.histBins = [];
         this.intervalTicks = [];
         this.intervalRange = {};
-
         this.intervalTickFormat = function(v){
-            if(me.tickIntegerOnly) return d3.format("s")(v);
+            if(!me.hasFloat) return d3.format("s")(v);
             return d3.format(".2f")(v);
         };
 
@@ -5705,7 +5702,9 @@ var Summary_Interval_functions = {
     /** -- */
     initializeAggregates: function(){
         if(this.aggr_initialized) return;
+        var me=this;
         var filterId = this.summaryFilter.id;
+        this.itemV = function(item){ return item.mappedDataCache[filterId].v; };
         
         this.items.forEach(function(item){
             var v=this.summaryFunc.call(item.data,item);
@@ -5727,44 +5726,40 @@ var Summary_Interval_functions = {
                 h: this,
             };
         },this);
-
-        if(!this.hasFloat) this.tickIntegerOnly=true;
         if(this.hasTime) this.setScaleType('time');
 
-        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
-
-        // remove items that map to null
+        // remove items that map to null / undefined
         this.filteredItems = this.items.filter(function(item){
-            var v = accessor(item);
+            var v = me.itemV(item);
             return (v!==undefined && v!==null);
         });
 
-        // sort items in increasing order
-        if(!this.hasTime){
-            this.filteredItems.sort(function(a,b){
-                return accessor(a)-accessor(b);
-            });
-        } else {
-            this.filteredItems.sort(function(a,b){
-                return accessor(a).getTime()-accessor(b).getTime();
-            });
-        }
+        var sortValue = this.hasTime?
+            function(a){ return me.itemV(a).getTime(); }
+        :
+            function(a){ return me.itemV(a); };
 
-        // this value is static once the histogram is created
+        this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
+        
         this.updateIntervalRangeMinMax();
 
-        if(this.scaleType!=="time"){
-            var range= this.intervalRange.max-this.intervalRange.min;
-            var deviation = d3.deviation(this.filteredItems, accessor);
-            if(deviation/range<0.12 && this.intervalRange.min>=0){
-                this.setScaleType('log');
-            }
-        }
+        this.detectLogScale();
 
         this.updateScaleAndBins(30,10,false);
 
         this.aggr_initialized = true;
+
         this.refreshViz_Nugget();
+    },
+    /** -- */
+    detectLogScale: function(){
+        if(this.scaleType!=='time'){
+            var range= this.intervalRange.max-this.intervalRange.min;
+            var deviation = d3.deviation(this.filteredItems, this.itemV);
+            if(deviation/range<0.12 && this.intervalRange.min>=0){
+                this.setScaleType('log');
+            }
+        }
     },
     /** -- */
     createSummaryFilter: function(){
@@ -5866,11 +5861,14 @@ var Summary_Interval_functions = {
     },
     /** -- */
     updateIntervalRangeMinMax: function(){
-        var filterId = this.summaryFilter.id;
-        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
+        this.intervalRange.min = d3.min(this.filteredItems,this.itemV);
+        this.intervalRange.max = d3.max(this.filteredItems,this.itemV);
 
-        this.intervalRange.min= d3.min(this.filteredItems,accessor);
-        this.intervalRange.max= d3.max(this.filteredItems,accessor);
+        this.intervalRange.active = {
+            min: this.intervalRange.min,
+            max: this.intervalRange.max
+        };
+
         this.isEmpty = this.intervalRange.min===undefined;
         this.resetIntervalFilterActive();
     },
@@ -5879,18 +5877,12 @@ var Summary_Interval_functions = {
         if(this.scaleType===t) return;
         this.scaleType=t;
 
-        if(this.DOM.facetInterval){
-            this.DOM.facetInterval.attr("istime",this.scaleType==='time');
-            this.DOM.intervalSlider.attr("scaletype",this.scaleType);
-        }
+        if(this.DOM.facetInterval) this.DOM.facetInterval.attr("scaleType",this.scaleType);
 
-        if(this.scaleType==='log'){
-            var filterId = this.summaryFilter.id;
-            var accessor = function(item){ return item.mappedDataCache[filterId].v; };
-            // remove items with 0 value (log(0) is invalid)
-            this.filteredItems = this.filteredItems.filter(function(item){
-                return accessor(item)!==0;
-            });
+        // remove items with value:0 (because log(0) is invalid)
+        if(this.scaleType==='log' && (this.intervalRange.min===0 || this.intervalRange.max===0)) {
+            var itemV=this.itemV;
+            this.filteredItems = this.filteredItems.filter(function(item){ return itemV(item)!==0; });
             this.updateIntervalRangeMinMax();
             this.updateScaleAndBins();
         }
@@ -5907,7 +5899,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getHeight_Header: function(){
-        if(this._height_header==undefined) {
+        if(this._height_header===undefined) {
             this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
         }
         return this._height_header;
@@ -5976,7 +5968,7 @@ var Summary_Interval_functions = {
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
         this.DOM.facetInterval = this.DOM.wrapper.append("div")
             .attr("class","facetInterval")
-            .attr("istime",this.scaleType==='time')
+            .attr("scaleType",this.scaleType)
             .attr("zoomed",this.zoomed)
             ;
 
@@ -6224,7 +6216,7 @@ var Summary_Interval_functions = {
             while(ticks.length > optimalTickCount*1.6){
                 ticks = ticks.filter(function(d,i){return i%2===0;});
             }
-            if(this.tickIntegerOnly)
+            if(!this.hasFloat)
                 ticks = ticks.filter(function(d){return d%1===0;});
             this.intervalTickFormat = d3.format(".1s");
         } else {
@@ -6234,12 +6226,12 @@ var Summary_Interval_functions = {
             this.valueScale.nice(optimalTickCount);
             ticks = this.valueScale.ticks(optimalTickCount);
 
-            if(this.tickIntegerOnly) ticks = ticks.filter(function(d){return d===0||d%1===0;});
+            if(!this.hasFloat) ticks = ticks.filter(function(d){return d===0||d%1===0;});
 
-            var d3Formating = d3.format(this.tickIntegerOnly?".2s":".2f");
+            var d3Formating = d3.format(this.hasFloat?".2f":".2s");
             this.intervalTickFormat = function(d){
-                if(me.tickIntegerOnly && d<10) return d;
-                if(me.tickIntegerOnly && Math.abs(ticks[1]-ticks[0])<1000) return d;
+                if(!me.hasFloat && d<10) return d;
+                if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
                 var x= d3Formating(d);
                 if(x.indexOf(".00")!==-1) x = x.replace(".00","");
                 if(x.indexOf(".0")!==-1) x = x.replace(".0","");
@@ -6265,8 +6257,12 @@ var Summary_Interval_functions = {
         // Check if you can use a ste-scale instead
         var stepRange=(this.intervalRange.max-this.intervalRange.min)+1;
         var stepWidth=_width_/stepRange;
-        if(!this.hasFloat && this.scaleType!=='step' && optimalTickCount>=stepRange){
-            this.setScaleType('step');
+        if(!this.hasFloat && this.scaleType!=='log'){
+            if(optimalTickCount>=stepRange){
+                this.setScaleType('step');
+            } else {
+                this.setScaleType('linear');
+            }
         }
 
         // UPDATE intervalScale
@@ -6289,6 +6285,15 @@ var Summary_Interval_functions = {
 
         var ticks = this.getValueTicks(optimalTickCount);
 
+        // Sometimes, the number of bins generated is larger than the optimal
+        // In some cases, the ticks become suitable for step-scale. Detect it here.
+        if(!this.hasFloat && this.scaleType!=='log'){
+            if(ticks.length===stepRange){
+                this.setScaleType('step');
+                this.valueScale.range([stepWidth/2, _width_-stepWidth/2]);
+            }
+        }
+
         if(this.scaleType!=='step'){
             this.barWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
         } else {
@@ -6299,26 +6304,21 @@ var Summary_Interval_functions = {
         if(this.intervalTicks.length!==ticks.length || force){
             this.intervalTicks = ticks;
 
-            var filterId = this.summaryFilter.id;
-            var accessor = function(item){ return item.mappedDataCache[filterId].v; };
-
-            // this calculates aggregation based on the intervalTicks, the filtered item list and the accessor function
             if(this.scaleType!=='step'){
-                this.histBins = d3.layout.histogram().bins(this.intervalTicks)
-                    .value(accessor)(this.filteredItems);
+                this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(this.itemV)(this.filteredItems);
             } else {
-                // I'll do the bins myself, d3 just messes everything up when you want to use a simple step scale!
+                // I'll do the bins myself, d3 just messes it up when I need a simple step scale
                 this.histBins = [];
                 for(var bin=this.intervalRange.min; bin<=this.intervalRange.max; bin++){
-                    var d=[];
+                    var d = [];
                     d.x = bin;
                     d.y = 0;
                     d.dx = 0;
                     this.histBins.push(d);
                 }
                 this.filteredItems.forEach(function(item){
-                    var v = accessor(item);
-                    var bin=this.histBins[v-this.intervalRange.min];
+                    var v = this.itemV(item);
+                    var bin = this.histBins[v-this.intervalRange.min];
                     bin.push(item);
                     bin.y++;
                 },this);
@@ -6554,6 +6554,7 @@ var Summary_Interval_functions = {
         this.DOM.compareButton = this.DOM.aggr_Group.selectAll(".compareButton");
         this.DOM.measureLabel  = this.DOM.aggr_Group.selectAll(".measureLabel");
     },
+    /** --- */
     fixIntervalFilterRange: function(){
         if(this.scaleType==='log' || this.scaleType==='step'){
             this.summaryFilter.active.min=Math.round(this.summaryFilter.active.min);
@@ -6572,8 +6573,7 @@ var Summary_Interval_functions = {
 
         this.DOM.intervalSlider = this.DOM.facetInterval.append("div").attr("class","intervalSlider")
             .attr("anim",true)
-            .style('margin-left',(this.width_vertAxisLabel)+"px")
-            .attr("scaletype",this.scaleType);
+            .style('margin-left',(this.width_vertAxisLabel)+"px");
 
         this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
             .each(function(d){
@@ -6585,12 +6585,21 @@ var Summary_Interval_functions = {
             .on("mouseenter",function(){
                 this.tipsy.show();
             })
-            .on("mouseleave",function(d,i){
+            .on("mouseleave",function(){
                 this.tipsy.hide();
             })
             .on("click",function(){
                 me.zoomed = !me.zoomed;
-                me.DOM.facetInterval.attr("zoomed",me.zoomed)
+                me.DOM.facetInterval.attr("zoomed",me.zoomed);
+                if(me.zoomed){
+                    // set to active filtering
+                    me.intervalRange.active.min = me.summaryFilter.active.min;
+                    me.intervalRange.active.max = me.summaryFilter.active.max;
+                } else {
+                    // reset to original min/max
+                    me.intervalRange.active.min = me.intervalRange.min;
+                    me.intervalRange.active.max = me.intervalRange.max;
+                }
                 this.tipsy.hide();
             })
             ;
@@ -7364,18 +7373,17 @@ var Summary_Interval_functions = {
     },
     /** -- */
     updateQuantiles: function(){
+        var me=this;
         // get active values into an array
         // the items are already sorted by their numeric value, it's just a linear pass.
         var values = [];
-        var filterId = this.summaryFilter.id;
-        var accessor = function(item){ return item.mappedDataCache[filterId].v; };
         if(!this.hasEntityParent()){
             this.filteredItems.forEach(function(item){
-                if(item.isWanted) values.push(accessor(item));
+                if(item.isWanted) values.push(me.itemV(item));
             });
         } else {
             this.filteredItems.forEach(function(item){
-                if(item.aggregate_Active>0) values.push(accessor(item));
+                if(item.aggregate_Active>0) values.push(me.itemV(item));
             });
         }
 
