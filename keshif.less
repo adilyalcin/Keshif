@@ -48,6 +48,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_preview_compare: darkslategray; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
+@color_chart_background_highlight: rgba(194, 146, 124,0.2);
 
 @color_query_and: #1D4870;
 @color_query_or:  #1C737A;
@@ -900,14 +901,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: all;
             position: absolute;
             color: gray;
-            font-size: 0.8em;
-            font-weight: 500;
+            font-size: 0.7em;
+            font-weight: 700;
             cursor: pointer;
             &:after{
                 content: '#';
             }
             &:hover{
-                color: orangered;
+                color: black;
+                background-color: @color_chart_background_highlight;
             }
         }
         > .background{
@@ -916,10 +918,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             top: 0px;
             cursor: pointer;
             pointer-events: all;
-            background-color: rgb(194, 146, 124);
-            opacity: 0;
             &:hover{
-                opacity: 0.1;
+                background-color: @color_chart_background_highlight;
             }
         }
     }
@@ -1576,14 +1576,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         opacity: 0 !important;
                     }
                 }
-                &[zoomed="false"]{
-                    .zoomControl:before{
-                        content: "\f00e"; // zoom-plus
-                    }
-                }
-                &[zoomed="true"]{
-                    .zoomControl:before{
-                        content: "\f010"; // zoom-minus
+                &[scaletype="step"]{
+                    > .intervalSlider > .zoomControl[sign="plus"]{
+                        display: none !important;
                     }
                 }
                 > .histogram{
@@ -1804,6 +1799,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         cursor: pointer;
                         &:hover{
                             color: black;
+                        }
+                        &[sign="plus"]:before{
+                            content: "\f00e"; // zoom-plus
+                        }
+                        &[sign="minus"]:before{
+                            content: "\f010"; // zoom-minus
                         }
                     }
                     > .controlLine {

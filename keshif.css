@@ -994,15 +994,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   position: absolute;
   color: gray;
-  font-size: 0.8em;
-  font-weight: 500;
+  font-size: 0.7em;
+  font-weight: 700;
   cursor: pointer;
 }
 .kshf .chartAxis_Measure > .percentSign:after {
   content: '#';
 }
 .kshf .chartAxis_Measure > .percentSign:hover {
-  color: orangered;
+  color: black;
+  background-color: rgba(194, 146, 124, 0.2);
 }
 .kshf .chartAxis_Measure > .background {
   position: absolute;
@@ -1010,11 +1011,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   cursor: pointer;
   pointer-events: all;
-  background-color: #c2927c;
-  opacity: 0;
 }
 .kshf .chartAxis_Measure > .background:hover {
-  opacity: 0.1;
+  background-color: rgba(194, 146, 124, 0.2);
 }
 .kshf .border_line {
   position: relative;
@@ -1665,11 +1664,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval[scaletype="time"] span.aggr {
   opacity: 0 !important;
 }
-.kshf .kshfChart > .wrapper > .facetInterval[zoomed="false"] .zoomControl:before {
-  content: "\f00e";
-}
-.kshf .kshfChart > .wrapper > .facetInterval[zoomed="true"] .zoomControl:before {
-  content: "\f010";
+.kshf .kshfChart > .wrapper > .facetInterval[scaletype="step"] > .intervalSlider > .zoomControl[sign="plus"] {
+  display: none !important;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram {
   position: relative;
@@ -1903,6 +1899,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl:hover {
   color: black;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl[sign="plus"]:before {
+  content: "\f00e";
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .zoomControl[sign="minus"]:before {
+  content: "\f010";
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine {
   height: 11px;
