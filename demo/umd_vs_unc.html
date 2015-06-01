@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>UMD vs. UNC Basketball Game Events</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 120,
+        leftPanelLabelWidth: 170,
+        rightPanelLabelWidth: 170,
+        middlePanelLabelWidth: 170,
+        source: {
+            gdocId: '1fykbKNyTyWKBgZOLZXQpRC562oEaQfd7VIgLJBY8d7Q',
+            sheets: [ {name:"Game Events"}, {name:"Players"} ]
+        },
+        summaries: [
+            { title: "Half", catLabel: function(){ return this.id===1?"First":"Second"}, sortingOpts: [{value:"id"}]},
+            { title: "Flow",
+              catLabel: function(){ return this.id==="D2O"?"Defense-2-Offense":"Offense-2-Defense";}
+              },
+            { title: "Player", layout: "middle"},
+            { title: "Team", attribMap: function(){
+                if(this.Player) return kshf.dt_id.Players[this.Player].data.Team;
+              },
+              layout: "middle"},
+            { title: "Shot Type", layout: "right"},
+            { title: "Assisted By", layout: "right"},
+            { title: "Type"},
+            //{ title: "Round", layout: "bottom", collapsed: true},
+            { title: "Minute in Game", attribMap: function(){
+                return 1*this.Event.split(":")[0]+(this.Half===2?20:0);
+                }, layout: "bottom"},
+            { title: "UMD Score", layout: "bottom"},
+            { title: "UNC Score", layout: "bottom", collapsed: true}
+        ]/*,
+        itemDisplay: {
+            sortColWidth: 45,
+            sortingOpts: {title: 'Position', inverse:true},
+            textSearch: { title: "Artist & Track", value: function(){return this['Artist(s)']+" "+this.Track; } },
+            recordView: function(){ return this['Artist(s)']+" - "+this.Track; }
+        }*/
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1090px;
+                height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="pageTitle" align="center">UMD vs. UNC Basketball - March 16, 2013</div>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Game events from
+            <a href="http://www.bbstate.com/games/2013-03-16/UMD-UNC" target="_blank">UMD vs. UNC Basketball Game</a>,
+            Saturday, March 16, 2013.<span class="fa fa-info-circle"></span><br>
+            To analyze event sequences, you can use 
+                <a href="http://www.cs.umd.edu/hcil/eventflow/" target="_blank">EventFlow</a>.
+            
+            </div>
+    </body>
+</html>
