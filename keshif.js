@@ -6900,7 +6900,7 @@ var Summary_Interval_functions = {
                     // it is within the filtered range
                     if(aggr_min<filter_min){
                         var lostWidth = minPos-me.valueScale(aggr_min);
-                        translateX = " translateX("+lostWidth+"px)";
+                        translateX = "translateX("+lostWidth+"px) ";
                         width_self -= lostWidth;
                     }
                     if(aggr_max>filter_max){
@@ -6910,7 +6910,7 @@ var Summary_Interval_functions = {
                     }
                 }
                 kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) "+translateX+" scale("+width_self+","+getAggrHeight_Active(aggr)+")");
+                    "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+getAggrHeight_Active(aggr)+")");
             });
         }
 
@@ -6976,12 +6976,40 @@ var Summary_Interval_functions = {
         };
 
         var width = this.getBarWidth_Real();
-        var width_half = this.getBarWidth_Real()/2;
-        // update chart
-        this.DOM.aggr_Compare.each(function(aggr){
-            kshf.Util.setTransform(this,
-                "translateY("+me.height_hist+"px) scale("+width_half+","+getAggrHeight_Compare(aggr)+")");
-        });
+        
+        if(!this.isFiltered() || this.scaleType==='step'){
+            this.DOM.aggr_Compare.each(function(aggr){
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) scale("+(width/2)+","+getAggrHeight_Compare(aggr)+")");
+            });
+        } else {
+            // is filtered & not step scale
+            var filter_min = this.summaryFilter.active.min;
+            var filter_max = this.summaryFilter.active.max;
+            var minPos = this.valueScale(filter_min);
+            var maxPos = this.valueScale(filter_max);
+            this.DOM.aggr_Compare.each(function(aggr){
+                var translateX = "";
+                var width_self=width;
+                var aggr_min = aggr.x;
+                var aggr_max = aggr.x + aggr.dx;
+                if(aggr.aggregate_Active>0){
+                    // it is within the filtered range
+                    if(aggr_min<filter_min){
+                        var lostWidth = minPos-me.valueScale(aggr_min);
+                        translateX = "translateX("+lostWidth+"px) ";
+                        width_self -= lostWidth;
+                    }
+                    if(aggr_max>filter_max){
+                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+                        //translateX = " translateX("+lostWidth+"px)";
+                        width_self -= lostWidth;
+                    }
+                }
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) "+translateX+"scale("+(width_self/2)+","+getAggrHeight_Compare(aggr)+")");
+            });
+        }
 
         if(this.scaleType==='time'){
             this.timeSVGLine = d3.svg.line()
@@ -7030,11 +7058,40 @@ var Summary_Interval_functions = {
             }
         };
 
-        this.DOM.aggr_Preview.each(function(aggr){
-            kshf.Util.setTransform(this,
-                "translateY("+me.height_hist+"px) scale("+
-                    me.getBarWidth_Real()+","+getAggrHeight_Preview(aggr)+")");
-        });
+        if(!this.isFiltered() || this.scaleType==='step'){
+            this.DOM.aggr_Preview.each(function(aggr){
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Preview(aggr)+")");
+            });
+        } else {
+            // is filtered & not step scale
+            var filter_min = this.summaryFilter.active.min;
+            var filter_max = this.summaryFilter.active.max;
+            var minPos = this.valueScale(filter_min);
+            var maxPos = this.valueScale(filter_max);
+            this.DOM.aggr_Preview.each(function(aggr){
+                var translateX = "";
+                var width_self=width;
+                var aggr_min = aggr.x;
+                var aggr_max = aggr.x + aggr.dx;
+                if(aggr.aggregate_Active>0){
+                    // it is within the filtered range
+                    if(aggr_min<filter_min){
+                        var lostWidth = minPos-me.valueScale(aggr_min);
+                        translateX = "translateX("+lostWidth+"px) ";
+                        width_self -= lostWidth;
+                    }
+                    if(aggr_max>filter_max){
+                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+                        //translateX = " translateX("+lostWidth+"px)";
+                        width_self -= lostWidth;
+                    }
+                }
+                kshf.Util.setTransform(this,
+                    "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+getAggrHeight_Preview(aggr)+")");
+            });
+        }
+
         this.refreshMeasureLabel();
 
         if(this.scaleType==='time'){
