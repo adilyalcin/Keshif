@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>D.C. Metro Ridership Numbers - October 2014</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Passengers, Oct'14",
+        barChartWidth: 120,
+        leftPanelLabelWidth: 180,
+        rightPanelLabelWidth: 180,
+        middlePanelLabelWidth: 140,
+        source: {
+            gdocId: '1I2JxzR_dDN8Nl380chtmwaZWYpThC-0NhO3godx9hwc',
+            sheets: [ {name:"Time Periods"} ]
+        },
+        loadedCb: function(){
+            kshf.dt['Time Periods'].forEach(function(item){
+                item.aggregate_Self = item.data['# Riders'];
+            });
+        },
+        summaries: [
+            {   title: "Date-Holiday", layout: "middle"
+            },{ title: "Date-Service Type", layout: "middle"
+            },{ title: "Ent Time Period", layout: "middle",
+                sortingOpts: [{value: function(){
+                    switch(this.id){
+                        case 'AM Peak': return 0;
+                        case 'Midday': return 1;
+                        case 'PM Peak': return 2;
+                        case 'Evening': return 3;
+                        case 'Late Night Peak': return 4;
+                    }
+                }}]
+            },{ title: "Station - From", layout: "left"
+            },{ title: "Station - To", layout: "right"
+            },{ title: "Average Travel Minutes", layout: "bottom",
+                attribMap: function(){ return this['Total Travel Minutes']/this['# Riders'];}
+            }
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1150px;
+                height: 720px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data from <a href="http://planitmetro.com/2015/01/26/metrorail-data-download-october-2014/#comments"
+                target="_blank">D.C. Metro Planning Blog.</a><br>
+            Describing ridership in October 2014. The numbers shown are the number of total passangers.
+            <span class="fa fa-info-circle"></span>
+            </div>
+        
+    </body>
+</html>
