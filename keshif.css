@@ -1664,8 +1664,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval[scaletype="time"] span.aggr {
   opacity: 0 !important;
 }
-.kshf .kshfChart > .wrapper > .facetInterval[scaletype="step"] > .intervalSlider > .zoomControl[sign="plus"] {
+.kshf .kshfChart > .wrapper > .facetInterval[scaletype="step"] .zoomControl[sign="plus"] {
   display: none !important;
+}
+.kshf .kshfChart > .wrapper > .facetInterval[zoomed="true"] .zoomControl[sign="minus"] {
+  display: block !important;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram {
   position: relative;
@@ -1806,13 +1809,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-bottom: dotted 1px #b6b3b3;
   width: 100%;
   left: 0px;
+  pointer-events: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick > .text {
+  position: relative;
   width: 25px;
   left: -25px;
-  text-align: right;
   top: -3px;
-  position: relative;
+  text-align: right;
+  padding-right: 1px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup {
   height: 12px;
@@ -1892,7 +1897,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   position: absolute;
   left: -20px;
-  top: -2px;
+  top: -1px;
   font-size: 0.8em;
   color: gray;
   cursor: pointer;
@@ -1966,12 +1971,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 8px;
   top: 1px;
   width: 1px;
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  background-color: #30b8c4;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
-  display: block;
-  cursor: col-resize;
-  background-color: #30b8c4;
+  opacity: 1;
+  pointer-events: none;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;
@@ -2015,13 +2025,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: ew-resize;
   box-shadow: 0px 0px 2px white;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[anim=true] > .base {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[anim=true] > .controlLine > .base {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine[anim=true] > .handle {
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[anim=true] > .controlLine > .handle {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
@@ -2050,6 +2060,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 10px;
   border-left: solid 1px #a0a0a0;
   display: block;
+  pointer-events: none;
 }
 .kshf .kshfChart .subFacets {
   position: relative;

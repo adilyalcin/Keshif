@@ -730,8 +730,6 @@ kshf.Filter.prototype = {
         // clear filter cache - no other logic is necessary
         this.parentSummary.items.forEach(function(item){ item.setFilterCache(this.id,true); },this);
 
-        if(this.onClear) this.onClear.call(this,this.parentSummary);
-
         if(recursive===undefined) recursive=true;
 
         if(updateWanted!==false){
@@ -786,6 +784,8 @@ kshf.Filter.prototype = {
                 sendLog(kshf.LOG.FILTER_CLEAR,this.browser.getFilterState());
             }
         }
+
+        if(this.onClear) this.onClear.call(this,this.parentSummary);
     },
 
     /** Don't call this directly */
@@ -1358,8 +1358,8 @@ kshf.List.prototype = {
     /** -- */
     refreshActiveItemCount: function(){
         this.DOM.listHeader_count
-            .text((this.browser.itemsWantedCount!==0)?this.browser.itemsWantedCount:"No")
-            .style("width",(this.browser.items.length.toString().length*13+5)+"px")
+            .text((this.browser.itemsWanted_Aggregrate_Total!==0)?this.browser.itemsWanted_Aggregrate_Total:"No")
+            .style("width",(this.browser.itemsWanted_Aggregrate_Total.toString().length*13+5)+"px")
             ;
     },
     /** -- */
@@ -3087,8 +3087,12 @@ kshf.Browser.prototype = {
     /** -- */
     update_itemsWantedCount: function(){
         this.itemsWantedCount = 0;
+        this.itemsWanted_Aggregrate_Total = 0;
         this.items.forEach(function(item){
-            if(item.isWanted) this.itemsWantedCount++;
+            if(item.isWanted){
+                this.itemsWantedCount++;
+                this.itemsWanted_Aggregrate_Total+=item.aggregate_Self;
+            }
         },this);
 
         this.listDisplay.refreshTotalViz();
@@ -4380,10 +4384,7 @@ var Summary_Categorical_functions = {
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
 
         this.DOM.facetCategorical = this.DOM.wrapper.append("div").attr("class","facetCategorical")
-            .on("mousedown",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            });
+            ;
 
         // create config row(s) if needed
         this.DOM.facetControls = this.DOM.facetCategorical.append("div").attr("class","facetControls");
@@ -4416,6 +4417,10 @@ var Summary_Categorical_functions = {
             ;
 
         this.DOM.attribGroup = this.DOM.facetCategorical.append("div").attr("class","attribGroup")
+            .on("mousedown",function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            })
             .on("scroll",function(d){
                 if(kshf.Util.ignoreScrollEvents===true) return;
                 me.scrollTop_cache = me.DOM.attribGroup[0][0].scrollTop;
@@ -4519,6 +4524,7 @@ var Summary_Categorical_functions = {
             .attr("class","attribTextSearchInput")
             .attr("type","text")
             .attr("placeholder","Search")
+//            .on("mousedown",function(){alert('sdsdd');})
             .on("input",function(){
                 if(this.timer){
                     clearTimeout(this.timer);
@@ -4554,10 +4560,6 @@ var Summary_Categorical_functions = {
                         }
                     }
                 }, 750);
-            })
-            .on("blur",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
             })
             ;
         this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
@@ -5747,7 +5749,7 @@ var Summary_Interval_functions = {
         this.detectLogScale();
 
         // The default is for nugget viz...
-        this.updateScaleAndBins(30,10,false);
+        this.updateScaleAndBins(30,10);
 
         this.aggr_initialized = true;
 
@@ -5824,20 +5826,26 @@ var Summary_Interval_functions = {
 
                 summary.refreshIntervalSlider();
             },
-            filterView_Detail: function(){
-                if(me.scaleType==='step'){
-                    if(this.active.min===this.active.max) return "<b>"+this.active.min+"</b>";
+            filterView_Detail: function(summary){
+                var minValue = this.active.min;
+                var maxValue = this.active.max;
+                if(summary.scaleType==='step'){
+                    if(minValue===maxValue) return "<b>"+minValue+"</b>";
                 }
-                if(me.scaleType==='time'){
-                    return "<b>"+me.intervalTickFormat(this.active.min)+
-                        "</b> to <b>"+me.intervalTickFormat(this.active.max)+"</b>";
+                if(summary.scaleType==='time'){
+                    return "<b>"+summary.intervalTickFormat(minValue)+
+                        "</b> to <b>"+summary.intervalTickFormat(maxValue)+"</b>";
                 }
-                if(me.isFiltered_min() && me.isFiltered_max()){
-                    return "<b>"+this.active.min+"</b> to <b>"+this.active.max+"</b>";
-                } else if(me.isFiltered_min()){
-                    return "<b>at least "+this.active.min+"</b>";
+                if(summary.hasFloat){
+                    minValue = minValue.toFixed(2);
+                    maxValue = maxValue.toFixed(2);
+                }
+                if(summary.isFiltered_min() && summary.isFiltered_max()){
+                    return "<b>"+minValue+"</b> to <b>"+maxValue+"</b>";
+                } else if(summary.isFiltered_min()){
+                    return "<b>at least "+minValue+"</b>";
                 } else {
-                    return "<b>at most "+this.active.max+"</b>";
+                    return "<b>at most "+maxValue+"</b>";
                 }
             },
         });
@@ -5906,7 +5914,7 @@ var Summary_Interval_functions = {
             this.filteredItems = this.filteredItems.filter(function(item){ return me.itemV(item)!==0; });
             this.updateIntervalRangeMinMax();
             var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-            this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), true /*force*/ );
+            this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
         }
     },
     /** -- */
@@ -6000,7 +6008,7 @@ var Summary_Interval_functions = {
         }
 
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), true /*force*/ );
+        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
 
         this.setCollapsed(this.collapsed);
         this.setUnitName(this.unitName);
@@ -6009,7 +6017,6 @@ var Summary_Interval_functions = {
     },
     /** -- */
     setZoomed: function(v){
-        if(this.zoomed===v) return;
         this.zoomed = v;
         this.DOM.facetInterval.attr("zoomed",this.zoomed);
         if(this.zoomed){
@@ -6024,7 +6031,7 @@ var Summary_Interval_functions = {
         // TODO: enable this once all else is working...
         // this.detectLogScale();
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), false );
+        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
     },
     /** -- */
     setUnitName: function(v){
@@ -6269,7 +6276,7 @@ var Summary_Interval_functions = {
       - valueScale
       - intervalTickFormat
       */
-    updateScaleAndBins: function(_width_,optimalTickCount,force){
+    updateScaleAndBins: function(_width_,optimalTickCount){
         if(this.isEmpty) return;
         var me=this;
 
@@ -6318,13 +6325,24 @@ var Summary_Interval_functions = {
         } else {
             this.aggrWidth = _width_/stepRange;
         }
-        
-        // If the number of bins is updated, re-compute stuff
-        if(this.intervalTicks.length!==ticks.length || force){
-            this.intervalTicks = ticks;
 
+        var ticksChanged = (this.intervalTicks.length!==ticks.length) ||
+            this.intervalTicks[0]!==ticks[0] || 
+            this.intervalTicks[this.intervalTicks.length-1] !== ticks[ticks.length-1]
+            ;
+        
+        if(ticksChanged){
+            this.intervalTicks = ticks;
+            var filterId = this.summaryFilter.id;
+
+            var itemV = function(item){
+                if(item.isWanted) return item.mappedDataCache[filterId].v;
+            };
+            if(this.zoomed===false){
+                itemV = this.itemV;
+            }
             if(this.scaleType!=='step'){
-                this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(this.itemV)(this.filteredItems);
+                this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(itemV)(this.filteredItems);
             } else {
                 // I'll do the bins myself, d3 just messes it up when I need a simple step scale
                 this.histBins = [];
@@ -6336,7 +6354,8 @@ var Summary_Interval_functions = {
                     this.histBins.push(d);
                 }
                 this.filteredItems.forEach(function(item){
-                    var v = this.itemV(item);
+                    var v = itemV(item);
+                    if(v===null || v===undefined) return;
                     if(v<this.intervalRange.active.min) return;
                     if(v>this.intervalRange.active.max) return;
                     var bin = this.histBins[v-this.intervalRange.active.min];
@@ -6345,16 +6364,17 @@ var Summary_Interval_functions = {
                 },this);
             }
             
-            this.updateActiveItems();
-
+            this.updateAggregate_Active();
             this.updateBarScale2Active();
 
-            if(this.DOM.inited || force){
+            if(this.DOM.root){
                 this.insertVizDOM();
             }
         }
-
-        if(this.DOM.inited || force){
+        if(this.DOM.root){
+            if(this.DOM.aggr_Group===undefined){
+                this.insertVizDOM();
+            }
             this.refreshBins_Translate();
             this.refreshViz_Scale();
 
@@ -6607,7 +6627,7 @@ var Summary_Interval_functions = {
             .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("click",function(){
                 this.tipsy.hide();
-                me.setZoomed(!me.zoomed);
+                me.setZoomed(this.getAttribute("sign")==="plus");
             })
             ;
 
@@ -6792,18 +6812,17 @@ var Summary_Interval_functions = {
             .range ([0, this.height_hist]);
     },
     /** -- */
-    updateActiveItems: function(){
-        // indexed items are either primary or secondary
+    updateAggregate_Active: function(){
+        this.histBins.forEach(function(aggr){ aggr.aggregate_Active = 0; });
+
         if(this.parentFacet && this.parentFacet.hasCategories()){
             this.histBins.forEach(function(aggr){
-                aggr.aggregate_Active = 0;
                 aggr.forEach(function(item){
                     if(item.aggregate_Active>0) aggr.aggregate_Active+=item.aggregate_Self;
                 });
             });
         } else {
             this.histBins.forEach(function(aggr){
-                aggr.aggregate_Active = 0;
                 aggr.forEach(function(item){ if(item.isWanted) aggr.aggregate_Active+=item.aggregate_Self; });
             });
         }
@@ -7310,7 +7329,7 @@ var Summary_Interval_functions = {
     /** -- */
     refreshWidth: function(){
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth), false );
+        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
         this.updateDOMwidth();
     },
     /** -- */
@@ -7334,7 +7353,7 @@ var Summary_Interval_functions = {
     /** -- */
     updateAfterFilter: function(resultChange){
         if(this.isEmpty) return;
-        this.updateActiveItems();
+        this.updateAggregate_Active();
         this.refreshMeasureLabel();
         this.updateBarPreviewScale2Active();
         if(this.showPercentile) this.updateQuantiles();

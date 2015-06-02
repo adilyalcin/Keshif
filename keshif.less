@@ -1577,8 +1577,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 &[scaletype="step"]{
-                    > .intervalSlider > .zoomControl[sign="plus"]{
+                    .zoomControl[sign="plus"]{
                         display: none !important;
+                    }
+                }
+                &[zoomed="true"]{
+                    .zoomControl[sign="minus"]{
+                        display: block !important;
                     }
                 }
                 > .histogram{
@@ -1709,13 +1714,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 border-bottom: dotted 1px @color_axis_line;
                                 width: 100%;
                                 left: 0px;
+                                pointer-events: none;
                             }
                             > .text{
+                                position: relative;
                                 width: 25px;
                                 left: -25px;
-                                text-align: right;
                                 top: -3px;
-                                position: relative;
+                                text-align: right;
+                                padding-right: 1px;
                             }
                         }
                     }
@@ -1793,7 +1800,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         display: none;
                         position: absolute;
                         left: -20px;
-                        top: -2px;
+                        top: -1px;
                         font-size: 0.8em;
                         color: gray;
                         cursor: pointer;
@@ -1858,11 +1865,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 height: 8px;
                                 top: 1px;
                                 width:1px;
-                                display:none;
+                                opacity:0;
+                                pointer-events: none;
+                                background-color: @color_filtered;
+                                .transition(~"opacity 500ms");
                                 &[filtered=true]{
-                                    display: block;
-                                    cursor: col-resize;
-                                    background-color: @color_filtered;
+                                    opacity:1;
+                                    pointer-events: none;
                                 }
                                 &:hover{
                                     background-color: orangered !important;
@@ -1908,7 +1917,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 box-shadow: 0px 0px 2px white;
                             }
                         }
-                        &[anim=true]{
+                    }
+                    &[anim=true]{
+                        > .controlLine {
                             > .base {
                                 .transition(@bar_animation);
                             }
@@ -1938,6 +1949,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 height: 10px;
                                 border-left: solid 1px rgb(160, 160, 160);
                                 display: block;
+                                pointer-events: none;
                             }
                         }
                     } // labelGroup
