@@ -50,8 +50,7 @@ $(document).ready( function(){
             displayType: 'grid',
             textSearch: "caption",
             recordView: function(){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.caption+
-                    "' class='thumbnail'><img class='thumbImg'></a>"+
+                return "<img class='thumbImg'>"+
                     "<div class='links'>"+
                     (this.pdf!==""?" <a href='"+this.pdf+"' target='_blank' class='fa fa-file-pdf-o'></a>":"")+
                     (this.video!==""?" <a href='"+this.video+"' target='_blank' class='fa fa-file-video-o'></a>":"")+
