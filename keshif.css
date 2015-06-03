@@ -1981,7 +1981,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
   opacity: 1;
-  pointer-events: none;
+  pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;

@@ -1357,9 +1357,10 @@ kshf.List.prototype = {
     },
     /** -- */
     refreshActiveItemCount: function(){
+        var noneSelected=(this.browser.itemsWanted_Aggregrate_Total===0);
         this.DOM.listHeader_count
-            .text((this.browser.itemsWanted_Aggregrate_Total!==0)?this.browser.itemsWanted_Aggregrate_Total:"No")
-            .style("width",(this.browser.itemsWanted_Aggregrate_Total.toString().length*13+5)+"px")
+            .text(!noneSelected?this.browser.itemsWanted_Aggregrate_Total:"No")
+            .style("width",(noneSelected?"30":(this.browser.itemsWanted_Aggregrate_Total.toString().length*13+5))+"px")
             ;
     },
     /** -- */
@@ -5764,9 +5765,13 @@ var Summary_Interval_functions = {
             return item.mappedDataCache[filterId].v;
         };
         var deviation = d3.deviation(this.filteredItems, activeItemV);
-        var activeRange = this.intervalRange.active.max-this.intervalRange.active,min;
+        var activeRange = this.intervalRange.active.max-this.intervalRange.active.min;
         if(deviation/activeRange<0.12 && this.intervalRange.active.min>=0){
             this.setScaleType('log');
+        } else{
+            if(this.scaleType==='log'){
+                this.setScaleType("linear");
+            }
         }
     },
     /** -- */
@@ -5913,8 +5918,12 @@ var Summary_Interval_functions = {
         if(this.scaleType==='log' && (this.intervalRange.min===0 || this.intervalRange.max===0)) {
             this.filteredItems = this.filteredItems.filter(function(item){ return me.itemV(item)!==0; });
             this.updateIntervalRangeMinMax();
-            var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-            this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
+            if(this.panel===undefined){
+                this.updateScaleAndBins(30,10);
+            } else {
+                var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
+                this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
+            }
         }
     },
     /** -- */
@@ -6029,7 +6038,7 @@ var Summary_Interval_functions = {
             this.DOM.zoomControl.attr("sign","plus");
         }
         // TODO: enable this once all else is working...
-        // this.detectLogScale();
+        this.detectLogScale();
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
         this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
     },
