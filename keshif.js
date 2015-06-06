@@ -2749,8 +2749,10 @@ kshf.Browser.prototype = {
                 if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
 
-                facetDescr.layout = facetDescr.layout || 'left';
-                summary.addToPanel(this.panels[facetDescr.layout]);
+                if(facetDescr.layout!=="none"){
+                    facetDescr.layout = facetDescr.layout || 'left';
+                    summary.addToPanel(this.panels[facetDescr.layout]);
+                }
             }
 
             if(summary.type==='interval'){
@@ -2762,8 +2764,10 @@ kshf.Browser.prototype = {
                 summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
 
                 // add to panel before you set scale type and other options: TODO: Fix
-                facetDescr.layout = facetDescr.layout || 'left';
-                summary.addToPanel(this.panels[facetDescr.layout]);
+                if(facetDescr.layout!=="none"){
+                    facetDescr.layout = facetDescr.layout || 'left';
+                    summary.addToPanel(this.panels[facetDescr.layout]);
+                }
 
                 if(facetDescr.intervalScale) {
                     summary.setScaleType(facetDescr.intervalScale);
@@ -4766,9 +4770,11 @@ var Summary_Categorical_functions = {
                     } else {
                         p = 100*p/me.browser.itemsWantedCount;
                     }
+                    if(p<0) p=0;
                     this.textContent = p.toFixed(0)+"%";
                 }
             } else {
+                if(p<0) p=0;
                 this.textContent = kshf.Util.formatForItemCount(p);
             }
         });
@@ -4860,6 +4866,7 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshViz_Compare: function(){
         if(!this.hasCategories() || this.collapsed) return;
+        if(!this.browser.vizCompareActive) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
         if(this.browser.vizCompareActive){
             this.DOM.aggr_Compare.each(function(cat){
@@ -5233,13 +5240,13 @@ var Summary_Categorical_functions = {
         var me = this;
         this.resultPreviewLogTimeout = null;
 
-        var domAttribs_new = this.DOM.attribGroup.selectAll(".attrib")
+        var DOM_cats_new = this.DOM.attribGroup.selectAll(".attrib")
             .data(this._cats, function(category){ return category.id(); })
         .enter().append("span").attr("class","attrib")
             .attr("highlight",false)
             .attr("showlock" ,false)
             .attr("selected",0)
-            .each(function(category,i){
+            .each(function(category){
                 category.facet = me;
                 category.DOM.facet = this;
                 category.isVisible = true;
@@ -5248,7 +5255,7 @@ var Summary_Categorical_functions = {
                 category.pos_y = 0;
                 kshf.Util.setTransform(this,"translateY(0px)");
             })
-            .on("mouseenter",function(category){ me.cbAttribEnter(category);})
+            .on("mouseover",function(category){ me.cbAttribEnter(category);})
             .on("mouseleave",function(category){ me.cbAttribLeave(category);})
             ;
         this.updateAttribCull();
@@ -5363,74 +5370,74 @@ var Summary_Categorical_functions = {
             }, false);
         };
 
-        var cbOrEnter = function(attrib,i){
+        var cbOrEnter = function(attrib){
             me.browser.clearResultPreviews();
             attrib.DOM.facet.setAttribute("selecttype","or");
             if(me.summaryFilter.selected_OR.length>0)
                 me.browser.clearResultPreviews();
             d3.event.stopPropagation();
         };
-        var cbOrLeave = function(attrib,i){
+        var cbOrLeave = function(attrib){
             attrib.DOM.facet.setAttribute("selecttype","and");
-            d3.event.stopPropagation();
         };
-        var cbOrClick = function(attrib,i){
+        var cbOrClick = function(attrib){
             me.filterAttrib(attrib,"OR");
             d3.event.stopPropagation();
+            d3.event.preventDefault();
         };
 
-        var cbNotEnter = function(attrib,i){
+        var cbNotEnter = function(attrib){
             attrib.DOM.facet.setAttribute("selecttype","not");
             me.browser.preview_not = true;
             me.browser.refreshResultPreviews(attrib);
             d3.event.stopPropagation();
         };
-        var cbNotLeave = function(attrib,i){
+        var cbNotLeave = function(attrib){
             attrib.DOM.facet.setAttribute("selecttype","and");
             me.browser.preview_not = false;
             me.browser.clearResultPreviews();
-            d3.event.stopPropagation();
         };
-        var cbNotClick = function(attrib,i){
+        var cbNotClick = function(attrib){
             me.browser.preview_not = true;
             me.filterAttrib(attrib,"NOT");
             setTimeout(function(){ me.browser.preview_not = false; }, 1000);
             d3.event.stopPropagation();
+            d3.event.preventDefault();
         };
 
-        var domAttrLabel = domAttribs_new.append("span").attr("class", "attribLabel hasLabelWidth");
+        var domAttrLabel = DOM_cats_new.append("span").attr("class", "attribLabel hasLabelWidth");
 
         var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
             filterButtons.append("span").attr("class","filterButton notButton")
-                .on("mouseenter",cbNotEnter)
-                .on("mouseleave",cbNotLeave)
+                .on("mouseover",cbNotEnter)
+                .on("mouseout",cbNotLeave)
                 .on("click",cbNotClick);
             filterButtons.append("span").attr("class","filterButton orButton")
-                .on("mouseenter",cbOrEnter)
-                .on("mouseleave",cbOrLeave)
+                .on("mouseover",cbOrEnter)
+                .on("mouseout",cbOrLeave)
                 .on("click",cbOrClick);
 
         this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(category){
             return me.catLabel.call(category.data);
         });
 
-        domAttribs_new.append("span").attr("class", "item_count_wrapper")
+        DOM_cats_new.append("span").attr("class", "item_count_wrapper")
             .append("span").attr("class","measureLabel");
         
-        var domBarGroup = domAttribs_new.append("span").attr("class","aggr_Group");
+        var domBarGroup = DOM_cats_new.append("span").attr("class","aggr_Group");
         domBarGroup.append("span").attr("class", "aggr total");
         domBarGroup.append("span").attr("class", "aggr total_tip");
         domBarGroup.append("span").attr("class", "aggr active");
         domBarGroup.append("span").attr("class", "aggr preview").attr("fast",true);
         domBarGroup.append("span").attr("class", "aggr compare").attr("hidden",true);
 
-        domAttribs_new.append("span").attr("class", "clickArea")
+        DOM_cats_new.append("span").attr("class", "clickArea")
             .attr("draggable",true)
             .on("click", cbAttribClick)
             .each(attribDrag)
             ;
     
-        domAttribs_new.append("span").attr("class","compareButton fa")
+        DOM_cats_new.append("span").attr("class","compareButton fa")
             .each(function(category){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
@@ -5541,7 +5548,7 @@ var Summary_Categorical_functions = {
         this.updateAttribCull();
 
         var xRemoveOffset = -100;
-        if(this.panel.name==='right') xRemoveOffset *= -1;
+        if(this.panel.name==='right') xRemoveOffset *= -1; // disappear to the other edge
         if(this.cbFacetSort) this.cbFacetSort.call(this);
 
         // filler is used to insert the scroll bar. 
@@ -5568,52 +5575,46 @@ var Summary_Categorical_functions = {
             // 1. Make items disappear
             // Note: do not cull with number of items made visible.
             // We are applying visible and block to ALL attributes as we animate the change
-            me.DOM.cats.each(function(attrib){
-                if(!attrib.isVisible && attrib.isVisible_before){
+            me.DOM.cats.each(function(ctgry){
+                if(ctgry.isVisible_before && !ctgry.isVisible){
                     // disappear into left panel...
                     this.style.opacity = 0;
-                    var x=xRemoveOffset;
-                    var y=attrib.posY;
-                    attrib.posX = x;
-                    attrib.posY = y;
-                    kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
+                    ctgry.posX = xRemoveOffset;
+                    ctgry.posY = ctgry.posY;
+                    kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
                 }
-                // if item is to appear, move it to the correct y position
-                if(attrib.isVisible && !attrib.isVisible_before){
-                    var y = me.heightRow_category*attrib.orderIndex;
-                    kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+y+"px)");
+                if(!ctgry.isVisible_before && ctgry.isVisible){
+                    // will be made visible...
+                    ctgry.posY = me.heightRow_category*ctgry.orderIndex;
+                    kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+ctgry.posY+"px)");
                 }
-                if(attrib.isVisible || attrib.isVisible_before){
+                if(ctgry.isVisible || ctgry.isVisible_before){
                     this.style.visibility = "visible";
                     this.style.display = "block";
                 }
             });
+
             // 2. Re-sort
             setTimeout(function(){
-                me.DOM.cats.each(function(attrib){
-                    if(attrib.isVisible && attrib.isVisible_before){
-                        var x = 0;
-                        var y = me.heightRow_category*attrib.orderIndex;
-                        attrib.posX = x;
-                        attrib.posY = y;
-                        kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
+                me.DOM.cats.each(function(ctgry){
+                    if(ctgry.isVisible && ctgry.isVisible_before){
+                        ctgry.posX = 0;
+                        ctgry.posY = me.heightRow_category*ctgry.orderIndex;
+                        kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
                     }
                 });
 
                 // 3. Make items appear
                 setTimeout(function(){
-                    if(me.catCount_NowVisible>=0){
-                        me.DOM.cats.each(function(attrib){
-                            if(attrib.isVisible && !attrib.isVisible_before){
-                                this.style.opacity = 1;
-                                var x = 0;
-                                var y = me.heightRow_category*attrib.orderIndex;
-                                attrib.posX = x;
-                                attrib.posY = y;
-                                kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
-                            }
-                        });
-                    }
+                    me.DOM.cats.each(function(ctgry){
+                        if(!ctgry.isVisible_before && ctgry.isVisible){
+                            this.style.opacity = 1;
+                            ctgry.posX = 0;
+                            ctgry.posY = me.heightRow_category*ctgry.orderIndex;
+                            kshf.Util.setTransform(this,
+                                "translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
+                        }
+                    });
                     // 4. Apply culling
                     setTimeout(function(){ me.cullAttribs();} , 700);
                 },(me.catCount_NowVisible>0)?300:0);
@@ -6447,6 +6448,7 @@ var Summary_Interval_functions = {
     /** -- */
     refreshTickLabels: function(){
         var me=this;
+        if(this.DOM.labelGroup===undefined) return;
         this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
             if(me.scaleType==='time'){
                  return me.intervalTickFormat(d);
@@ -7007,6 +7009,8 @@ var Summary_Interval_functions = {
     /** -- */
     refreshViz_Compare: function(){
         if(this.isEmpty || this.collapsed) return;
+        if(!this.browser.vizCompareActive) return;
+        
         var me=this;
         var width = this.getBarWidth();
 
@@ -7292,8 +7296,10 @@ var Summary_Interval_functions = {
                 } else {
                     p = 100*p/me.browser.itemsWantedCount;
                 }
+                if(p<0) p=0;
                 this.textContent = p.toFixed(0)+"%";
             } else {
+                if(p<0) p=0;
                 this.textContent = kshf.Util.formatForItemCount(p);
             }
         });
@@ -7350,10 +7356,13 @@ var Summary_Interval_functions = {
         this.height_hist = c;
         this.updateBarScale2Active();
         this.refreshBins_Translate();
+
         this.refreshViz_Scale();
         this.refreshViz_Preview();
-        this.refreshHeight();
+        this.refreshViz_Compare();
         this.refreshViz_Axis();
+        this.refreshHeight();
+
         this.DOM.labelGroup.style("height",this.height_labels+"px");
         this.DOM.intervalSlider.selectAll(".rangeLimitOnChart")
             .style("height",this.height_hist+"px")

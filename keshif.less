@@ -1495,6 +1495,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                             .clickArea{ cursor: pointer; }
                         }
+                        &[selected="-1"] {
+                            > .attribLabel > .theLabel{
+                                text-decoration: line-through;
+                            }
+                        }
                         // AND
                         &[selected="1"]{
                             > .attribLabel > .theLabel{ color: @color_query_and; }
@@ -1550,6 +1555,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     }
                                     &[selecttype="not"] > .attribLabel > .theLabel{
                                         color: @color_query_not;
+                                        text-decoration: line-through;
                                     }
                                 }
                             }

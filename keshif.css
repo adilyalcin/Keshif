@@ -1597,6 +1597,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib:not([selected="0"]) .clickArea {
   cursor: pointer;
 }
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="-1"] > .attribLabel > .theLabel {
+  text-decoration: line-through;
+}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="1"] {
   /*                            &[show-box=true]{
                                 > .attribLabel > .theLabel:before{
@@ -1646,6 +1649,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight^="selected"][selected="0"][selecttype="not"] > .attribLabel > .theLabel {
   color: #808080;
+  text-decoration: line-through;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=false][highlight=true] > .attribLabel > .theLabel {
   color: #ff6a33;
