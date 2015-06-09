@@ -17,10 +17,6 @@
 
         <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
 
-        <!-- Fancybox -->
-        <script type="text/javascript" src="../demo/js/jquery.fancybox.pack.js" charset="utf-8"></script>
-        <link rel="stylesheet" type="text/css" href="../demo/css/jquery.fancybox.css">
-
         <script type="text/javascript">
 
 var demoID = 899;
@@ -192,18 +188,6 @@ $(document).ready(function() {
                 var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
                 return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
             }
-        }
-    });
-
-    $(".comment_popup").fancybox({
-        type: 'iframe',
-        width    : 600,
-        height   : 300,
-        closeBtn    : true,
-//        openEffect  : 'none',
-//        closeEffect : 'none',
-        iframe: {
-            preload   : true
         }
     });
 

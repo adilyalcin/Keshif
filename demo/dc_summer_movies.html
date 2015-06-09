@@ -17,9 +17,6 @@
 
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <!-- Fancybox -->
-        <script type="text/javascript" src="./js/jquery.fancybox.pack.js" charset="utf-8"></script>
-        <link rel="stylesheet" type="text/css" href="./css/jquery.fancybox.css">
         <!-- Google font -->
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
 
@@ -232,16 +229,6 @@ $(document).ready( function(){
             }
         }
     });
-
-/*    $(".comment_popup").fancybox({
-        type: 'iframe',
-        width   : 600,
-        height  : 300,
-        closeBtn   : true,
-        iframe: {
-            preload  : true
-        }
-    });*/
 
     $( window ).unload(function() {
         sendLog(kshf.LOG.CLOSEPAGE);
