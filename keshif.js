@@ -876,7 +876,8 @@ kshf.List = function(kshf_, config, root){
 
     if(config.recordView!==undefined){
         if(typeof config.recordView === 'string'){
-            this.recordView = function(){ return this[config.recordView];};
+            var x=config.recordView;
+            this.recordView = function(){ return this[x];};
         }
         if(typeof config.recordView === 'function'){
             this.recordView = config.recordView;
@@ -3769,12 +3770,10 @@ kshf.Summary_Base.prototype = {
                 });
             })
             .on("mouseover",function(d){
-                //this.tipsy.show();
-                this.setAttribute("class","hasMultiMappings fa fa-th");
+                this.tipsy.show();
             })
             .on("mouseout" ,function(d){
-                //this.tipsy.hide();
-                this.setAttribute("class","hasMultiMappings fa fa-tags");
+                this.tipsy.hide();
             })
             .on("click",function(d){
                 me.show_cliques = !me.show_cliques;
@@ -3854,6 +3853,7 @@ kshf.Summary_Base.prototype = {
                 this.DOM.headerGroup.select(".expandButton").style("display","none");
             }
         }
+        return this; // allow chaining
     },
 };
 
@@ -3957,7 +3957,7 @@ var Summary_Categorical_functions = {
         var r=0;
         if(this.configRowCount!=0) r+=1; // bottom border : 1 px
         if(this.showTextSearch) r+=15;
-        if(this.sortingOpts.length>1) r+=16;
+        if(this.sortingOpts.length>1) r+=17;
         return r;
     },
     /** -- */
@@ -3991,38 +3991,43 @@ var Summary_Categorical_functions = {
         return this.getMaxAggr_Total()===1;
     },
     /** -- */
+    prepareSortingOption: function(opt){
+        opt.no_resort = opt.no_resort || (this.catCount_Total<=4);
+        opt.inverse = opt.inverse || false;
+        if(opt.func===undefined){
+            if(opt.value){
+                if(opt.name && opt.value===undefined){
+                    opt.value = opt.name;
+                }
+                if(typeof(opt.value)==="string"){
+                    var x = opt.value;
+                    opt.value = function(){ return this[x]; }
+                    opt.name = x;
+                }
+                opt.no_resort = true;
+                opt.custom = true;
+            } else {
+                opt.name = "# of Active";
+                // order by active (and if same, total) count
+                opt.func = function(a,b){
+                    var dif=b.aggregate_Active - a.aggregate_Active;
+                    if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
+                    return dif;
+                };
+            }
+        } else {
+            opt.no_resort = true;
+            if(opt.no_resort===undefined) opt.no_resort=true;
+        }
+        return opt;
+    },
+    /** -- */
     setSortingOpts: function(opts){
         this.sortingOpts = opts || [{}];
-
         this.sortingOpts.forEach(function(opt){
-            opt.no_resort = opt.no_resort || (this.catCount_Total<=4);
-            opt.inverse = opt.inverse || false;
-            if(opt.func===undefined){
-                if(opt.value){
-                    if(opt.name && opt.value===undefined){
-                        opt.value = opt.name;
-                    }
-                    if(typeof(opt.value)==="string"){
-                        var x = opt.value;
-                        opt.value = function(){ return this[x]; }
-                        opt.name = x;
-                    }
-                    opt.no_resort = true;
-                    opt.custom = true;
-                } else {
-                    opt.name = "# of Active";
-                    // order by active (and if same, total) count
-                    opt.func = function(a,b){
-                        var dif=b.aggregate_Active - a.aggregate_Active;
-                        if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
-                        return dif;
-                    };
-                }
-            } else {
-                opt.no_resort = true;
-                if(opt.no_resort===undefined) opt.no_resort=true;
-            }
+            this.prepareSortingOption(opt);
         },this);
+
         this.sortingOpt_Active = this.sortingOpts[0];
         
         this.updateCatSorting(0,true,true);
@@ -4384,6 +4389,19 @@ var Summary_Categorical_functions = {
         this.DOM.inited = true;
     },
     /** -- */
+    refreshConfigRowCount: function(){
+        this.configRowCount = 0;
+        if(this.showTextSearch){
+            this.configRowCount++;
+        }
+        if(this.sortingOpts.length>1) {
+            this.configRowCount++;
+        }
+        if(this.configRowCount>0){
+            this.DOM.facetControls.style("display","block");
+        }
+    },
+    /** -- */
     init_DOM_Cat: function(){
         var me=this;
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
@@ -4399,14 +4417,8 @@ var Summary_Categorical_functions = {
 
         if(this.showTextSearch){
             this.DOM.attribTextSearch.style("display","block");
-            this.configRowCount++;
         }
-        if(this.sortingOpts.length>1) {
-            this.configRowCount++;
-        }
-        if(this.configRowCount>0){
-            this.DOM.facetControls.style("display","block");
-        }
+        this.refreshConfigRowCount();
 
         this.DOM.scrollToTop = this.DOM.facetCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
             .each(function(){
@@ -4514,12 +4526,15 @@ var Summary_Categorical_functions = {
     refreshSortOptions: function(){
         if(this.DOM.optionSelect===undefined) return;
 
-        this.DOM.optionSelect.style("display", (this.sortingOpts.length>1)?"block":"none" );
-        var x= this.DOM.optionSelect.selectAll("input.sort_label")
-            .data(this.sortingOpts, function(d){ return d.name} );
+        this.refreshConfigRowCount();
 
-        x.exit().remove();
-        x.enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
+        this.DOM.optionSelect.style("display", (this.sortingOpts.length>1)?"block":"none" );
+
+        this.DOM.optionSelect.selectAll(".sort_label").data([]).exit().remove(); // remove all existing options
+
+        var x= this.DOM.optionSelect.selectAll(".sort_label")
+            .data(this.sortingOpts)
+            .enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
     },
     /** -- */
     initDOM_CatTextSearch: function(){
@@ -4636,6 +4651,7 @@ var Summary_Categorical_functions = {
         if(this.hasSubFacets() && !this.hasCategories()){
             this.subFacets.forEach(function(f){ f.setCollapsed(v); });
         }
+        return this; // allow chaining
     },
     /** -- */
     clearCatTextSearch: function(){
@@ -4671,7 +4687,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
     },
     /** -- */
     setHeight: function(newHeight){
@@ -4788,7 +4804,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
 
         this.refreshViz_Compare();
         this.refreshMeasureLabel();
@@ -6859,7 +6875,7 @@ var Summary_Interval_functions = {
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
         this.refreshViz_Preview();
-        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
 
         this.refreshViz_Compare();
         this.refreshMeasureLabel();
@@ -7388,7 +7404,7 @@ var Summary_Interval_functions = {
         this.refreshViz_Preview();
         this.refreshViz_Axis();
 
-        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },700);
+        setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
     },
     /** -- */
     setSelectedPosition: function(v){

@@ -1362,7 +1362,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup > .optionSelect {
   width: 100%;
-  heigh: 16px;
+  height: 17px;
   font-size: 0.7em;
   -webkit-appearance: none;
   -moz-appearance: none;
