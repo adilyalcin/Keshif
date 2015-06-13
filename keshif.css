@@ -2967,14 +2967,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   text-shadow: 1px 1px lightgray;
   margin-bottom: -3px;
+  z-index: 10;
 }
-.kshf .listHeader > .topRow > .resultInfo .listHeader_count {
+.kshf .listHeader > .topRow > .resultInfo > .listHeader_count {
   display: inline-block;
   text-align: right;
   vertical-align: top;
   margin-right: 4px;
 }
-.kshf .listHeader > .topRow > .resultInfo .listHeader_itemName {
+.kshf .listHeader > .topRow > .resultInfo > .listHeader_itemName {
   margin-right: 4px;
 }
 .kshf .listHeader > .topRow > .mainTextSearch {
