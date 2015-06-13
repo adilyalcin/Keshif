@@ -17,9 +17,11 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    resizeBrowser(90,90);
+    kshf.lang.cur = kshf.lang.tr;
+
+    resizeBrowser(190,90);
     $(window).resize(function() {
-        resizeBrowser(90,90);
+        resizeBrowser(190,90);
         browser.updateLayout();
     });
 
@@ -57,11 +59,20 @@ google.setOnLoadCallback(function(){
 });
         </script>
         <style>
-            .kaynakFoto{
-                display: block;
-                width: 50%;
-                margin: 0 auto;
-            }
+.kaynakFoto{
+    display: block;
+    width: 50%;
+    margin: 0 auto;
+}
+.orButton:before {
+    content: "Veya" !important;
+}
+.andButton:before {
+    content: "Ve" !important;
+}
+.notButton:before {
+    content: "Değil" !important;
+}
         </style>
     </head>
     <body>
