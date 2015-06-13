@@ -4969,8 +4969,8 @@ var Summary_Categorical_functions = {
 
         // translate the ticks horizontally on scale
         tickData_new.append("span").attr("class","line")
-            .style("top","-"+(this.attribHeight+2)+"px")
-            .style("height",this.attribHeight+"px");
+            .style("top","-"+(this.attribHeight+3)+"px")
+            .style("height",(this.attribHeight-1)+"px");
 
         if(this.browser.ratioModeActive){
             tickData_new.append("span").attr("class","text").text(function(d){return d;});
@@ -5035,7 +5035,7 @@ var Summary_Categorical_functions = {
         this.DOM.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
         var h=this.attribHeight;
-        this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h-1)+"px").style("height",h+"px");
+        this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h+1)+"px").style("height",(h-2)+"px");
         this.DOM.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-19)+"px");
     },
     /** -- */
