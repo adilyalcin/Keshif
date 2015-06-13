@@ -25,7 +25,8 @@ google.setOnLoadCallback(function(){
             sheets: [ {name:"Cereals", id:"Name"} ]
         },
         summaries: [
-            {   title: "Brand"
+            {   title: "Brand",
+                sortingOpts: [{ func: function(a,b){ return a.id().localeCompare(b.id());} }]
             },{ title: "Type"
             },{ title: "Shelf Level",
                 catLabel: function(){
