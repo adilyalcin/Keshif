@@ -5353,6 +5353,7 @@ var Summary_Categorical_functions = {
             })
             .on("mouseover",function(category){ me.cbAttribEnter(category);})
             .on("mouseleave",function(category){ me.cbAttribLeave(category);})
+            .attr("title",me.catTooltip?function(cat){ return me.catTooltip.call(cat.data); }:null);
             ;
         this.updateAttribCull();
 
