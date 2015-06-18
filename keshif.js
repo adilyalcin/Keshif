@@ -87,8 +87,10 @@ var kshf = {
             Percent: "Percent",
             Relative: "Relative",
             Width: "Width",
-            DragToFilter: "Drag to filter"
-
+            DragToFilter: "Drag to filter",
+            And: "And",
+            Or: "Or",
+            Not: "Not",
             // AND / OR / NOT
         },
         tr: {
@@ -118,7 +120,10 @@ var kshf = {
             Percent: "Yüzde",
             Relative: "Görece",
             Width: "Genişlik",
-            DragToFilter: "Sürükley ve filtre"
+            DragToFilter: "Sürükle ve filtre",
+            And: "Ve",
+            Or: "Veya",
+            Not: "Değil",
         },
         fr: {
             ModifyBrowser: "Modifier le navigateur",
@@ -147,7 +152,10 @@ var kshf = {
             Percent: "Pourcentage",
             Relative: "Relative",
             Width: "Largeur",
-            DragToFilter: "??"
+            DragToFilter: "??",
+            And: "??",
+            Or: "??",
+            Not: "??",
         },
         cur: null // Will be set to en if not defined before a browser is loaded
     },
@@ -4252,9 +4260,9 @@ var Summary_Categorical_functions = {
                     return " <i class='fa fa-hand-o-right'></i>";;
                 }
 
-                var query_and = " <span class='AndOrNot AndOrNot_And'>And</span> ";
-                var query_or = " <span class='AndOrNot AndOrNot_Or'>Or</span> ";
-                var query_not = " <span class='AndOrNot AndOrNot_Not'>Not</span> ";
+                var query_and = " <span class='AndOrNot AndOrNot_And'>"+kshf.lang.cur.And+"</span> ";
+                var query_or = " <span class='AndOrNot AndOrNot_Or'>"+kshf.lang.cur.Or+"</span> ";
+                var query_not = " <span class='AndOrNot AndOrNot_Not'>"+kshf.lang.cur.Not+"</span> ";
 
                 if(totalSelectionCount>4 || this.linkFilterSummary){
                     selectedItemsText = "<b>"+totalSelectionCount+"</b> selected";
@@ -5533,13 +5541,16 @@ var Summary_Categorical_functions = {
 
         var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
             filterButtons.append("span").attr("class","filterButton notButton")
+                .text(kshf.lang.cur.Not)
                 .on("mouseover",cbNotEnter)
                 .on("mouseout",cbNotLeave)
                 .on("click",cbNotClick);
             filterButtons.append("span").attr("class","filterButton orButton")
+                .text(kshf.lang.cur.Or)
                 .on("mouseover",cbOrEnter)
                 .on("mouseout",cbOrLeave)
-                .on("click",cbOrClick);
+                .on("click",cbOrClick)
+                ;
 
         this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(category){
             return me.catLabel.call(category.data);

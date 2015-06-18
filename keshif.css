@@ -1140,24 +1140,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 13px;
   margin-right: 3px;
 }
-.kshf .headerGroup span.facetIcons {
+.kshf .headerGroup .facetIcons {
   font-size: 0.8em;
   color: gray;
   position: absolute;
   right: 3px;
-  top: 1px;
+  top: 2px;
 }
-.kshf .headerGroup span.facetIcons .fa {
+.kshf .headerGroup .facetIcons .fa {
   cursor: pointer;
   margin-left: 2px;
 }
-.kshf .headerGroup span.facetIcons .fa:hover {
+.kshf .headerGroup .facetIcons .fa:hover {
   color: black;
 }
-.kshf .headerGroup span.facetIcons .hasMultiMappings {
+.kshf .headerGroup .facetIcons .hasMultiMappings {
   display: none;
 }
-.kshf .headerGroup span.facetIcons .facetDescription {
+.kshf .headerGroup .facetIcons .facetDescription {
   cursor: default;
 }
 .kshf .headerGroup > .header_display_control {
@@ -1574,14 +1574,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:hover {
   background-color: #1c737a;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .orButton:before {
-  content: "Or";
-}
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton {
   background-color: #a6a6a6;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:before {
-  content: "Not";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib .filterButtons > .notButton:hover {
   background-color: gray;

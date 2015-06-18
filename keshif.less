@@ -1050,12 +1050,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             line-height: 13px;
             margin-right: 3px;
         }
-        span.facetIcons{
+        .facetIcons{
             font-size: 0.8em;
             color: gray;
             position: absolute;
             right: 3px;
-            top: 1px;
+            top: 2px;
             .fa{
                 cursor: pointer;
                 margin-left: 2px;
@@ -1471,11 +1471,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .orButton {
                                 background-color: lighten(@color_query_or, 10%);
                                 &:hover { background-color: @color_query_or; }
-                                &:before{ content: "Or"; }
                             }
                             > .notButton {
                                 background-color: rgb(166, 166, 166);
-                                &:before{ content: "Not"; }
                                 &:hover { background-color: gray; }
                             }
                         }
