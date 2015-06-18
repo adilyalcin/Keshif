@@ -108,6 +108,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
   cursor: s-resize;
+  z-index: 100;
 }
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
@@ -3081,6 +3082,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .topRow > .rightBoxes .fa:hover {
   color: #cb5454;
+}
+.kshf .listHeader > .topRow > .rightBoxes .showConfigButton {
+  display: none;
 }
 .kshf .listHeader > .topRow > .rightBoxes .showConfigButton:hover {
   animation: fa-spin 2s infinite linear;

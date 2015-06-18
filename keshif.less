@@ -119,6 +119,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .panel[hassummaries="false"] > .dropZone_panel{
                 display: block;
                 cursor: s-resize;
+                z-index: 100;
             }
         }
         &[dropattrtype~="interval"] .dropZone_resultSort{
@@ -2955,6 +2956,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &:hover{ color: #cb5454; }
                 }
                 .showConfigButton{
+                    display: none;
                     &:hover{
                         animation: fa-spin 2s infinite linear;
                         -webkit-animation: fa-spin 2s infinite linear;
