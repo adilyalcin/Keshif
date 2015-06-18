@@ -69,6 +69,7 @@ var kshf = {
             MinimizeSummary: "Minimize summary",
             OpenSummary: "Open summary",
             MaximizeSummary: "Maximize summary",
+            RemoveSummary: "Remove summary",
             ReverseOrder: "Reverse order",
             ReOrder: "Reorder",
             GetMoreInfo: "Get more info",
@@ -85,7 +86,9 @@ var kshf = {
             Absolute: "Absolute",
             Percent: "Percent",
             Relative: "Relative",
-            Width: "Width"
+            Width: "Width",
+            DragToFilter: "Drag to filter"
+
             // AND / OR / NOT
         },
         tr: {
@@ -97,6 +100,7 @@ var kshf = {
             MinimizeSummary: "Özeti ufalt",
             OpenSummary: "Özeti aç",
             MaximizeSummary: "Özeti büyüt",
+            RemoveSummary: "Özeti kaldır",
             ReverseOrder: "Ters sırala",
             ReOrder: "Yeniden sırala",
             GetMoreInfo: "Daha fazla bilgi",
@@ -108,19 +112,42 @@ var kshf = {
             CreatingBrowser: "Arayüz oluşturuluyor...",
             Rows: "Satır",
             More: "Daha",
-            ShowAll: "Hepsi",
+            ShowAll: "Tüm",
             ScrollToTop: "Yukarı",
             Absolute: "Net",
             Percent: "Yüzde",
             Relative: "Görece",
-            Width: "genişlik"
+            Width: "Genişlik",
+            DragToFilter: "Sürükley ve filtre"
         },
         fr: {
-            ModifyBrowser: "?",
-            OpenDataSource: "?",
-            ShowInfoCredits: "?",
-            RemoveFilter: "?",
-            RemoveAllFilters: "?",
+            ModifyBrowser: "Modifier le navigateur",
+            OpenDataSource: "Ouvrir la source de données",
+            ShowInfoCredits: "Afficher les credits",
+            RemoveFilter: "Supprimer le filtre",
+            RemoveAllFilters: "Supprimer tous les filtres",
+            MinimizeSummary: "Réduire le sommaire",
+            OpenSummary: "Ouvrir le sommaire",
+            MaximizeSummary: "Agrandir le sommaire",
+            RemoveSummary: "??",
+            ReverseOrder: "Inverser l'ordre",
+            ReOrder: "Réorganiser",
+            GetMoreInfo: "Plus d'informations",
+            Percentiles: "Percentiles",
+            LockToCompare: "Bloquer pour comparer",
+            Unlock: "Débloquer",
+            Search: "Rechercher",
+            CreatingBrowser: "Création du navigateur...",
+            Rows: "Lignes",
+            More: "Plus",
+            LoadingData: "Chargement des données...",
+            ShowAll: "Supprimer les filtres",
+            ScrollToTop: "Début",
+            Absolute: "Absolue",
+            Percent: "Pourcentage",
+            Relative: "Relative",
+            Width: "Largeur",
+            DragToFilter: "??"
         },
         cur: null // Will be set to en if not defined before a browser is loaded
     },
@@ -2614,7 +2641,7 @@ kshf.Browser.prototype = {
         $.ajax({
             url: fileName,
             type: "GET",
-            async: (me.source.callback===undefined)?true:false,
+            async: (this.source.callback===undefined)?true:false,
             contentType: "text/csv",
             success: function(data) {
                 // if data is already loaded, nothing else to do...
@@ -3717,7 +3744,7 @@ kshf.Summary_Base.prototype = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-                    title: function(){ return "Remove summary"; }
+                    title: function(){ return kshf.lang.cur.RemoveSummary; }
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -6784,7 +6811,7 @@ var Summary_Interval_functions = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: "s",
-                    title: function(){ return "Drag to filter"; }
+                    title: function(){ return kshf.lang.cur.DragToFilter; }
                 })
             })
             // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
@@ -6892,7 +6919,7 @@ var Summary_Interval_functions = {
             .append("span").attr("class",function(d){ return "handle "+d; })
             .each(function(d,i){
                 this.tipsy = new Tipsy(this, {
-                    gravity: i==0?"e":"w", title: function(){ return "Drag to filter" }
+                    gravity: i==0?"e":"w", title: function(){ return kshf.lang.cur.DragToFilter }
                 })
             })
             .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
