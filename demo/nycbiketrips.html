@@ -26,7 +26,8 @@ google.setOnLoadCallback(function(){
         leftPanelLabelWidth: 320,
         rightPanelLabelWidth: 320,
         source: {
-            dirPath: './data/nycbiketrips_',
+            //dirPath: './data/nycbiketrips_',
+            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/nycbiketrips_',
             fileType: 'csv',
             // gdocId : '1ftMNd_WmRYlvxxQS0eqCBwnJ-3vM1Z1oEEWpNA8FjtE',
             sheets : [ {name:"Trips"}, {name:"Stations"} ]
@@ -38,7 +39,7 @@ google.setOnLoadCallback(function(){
             })
         },
         summaries: [
-            {   title: "UserType", layout: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer";
+            {   title: "UserType", layout: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer";}
             },{ title: "Gender", layout: 'right',
                 catLabel: function(){
                     switch(this.id){

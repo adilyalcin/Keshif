@@ -29,7 +29,16 @@ $(document).ready( function(){
         itemName: "Unclaimed Deads",
         source: {
             url: "http://spreadsheets.latimes.com/unclaimed-dead/",
-            dirPath: 'data/',
+
+            // Link to folder "Public Datasets":
+                // Share: **With public** (not anyone who has link)
+            // https://drive.google.com/open?id=0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0
+                // https://googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0
+                    // Redirects to : USE THIS REDIRECTED LINK
+                        // https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/
+
+            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+
             fileType: 'csv',
             sheets: [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
         },
