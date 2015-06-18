@@ -34,8 +34,8 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Date-Holiday", layout: "middle"
-            },{ title: "Date-Service Type", layout: "middle"
-            },{ title: "Ent Time Period", layout: "middle",
+            },{ title: "Day In Week", attribMap: "Date-Service Type", layout: "middle"
+            },{ title: "Entry Time Period", attribMap: "Ent Time Period", layout: "middle",
                 sortingOpts: [{value: function(){
                     switch(this.id){
                         case 'AM Peak': return 0;
