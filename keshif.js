@@ -2193,8 +2193,6 @@ kshf.Browser = function(options){
     if(options.list) this.listDef = options.list;
 
     this.domID = options.domID;
-    this.source = options.source;
-    this.source.loadedTableCount=0;
 
     // Callbacks
     this.loadedCb = options.loadedCb;
@@ -2238,7 +2236,7 @@ kshf.Browser = function(options){
     var rootDomNode = this.DOM.root[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
 
-    if(options.showResizeCorner === true) this.insertDOM_ResizeBrowser();
+    if(options.showResizeCorner) this.insertDOM_ResizeBrowser();
     this.insertDOM_Infobox();
 
     this.DOM.panelsTop = this.DOM.root.append("div").attr("class","panels_Above");
@@ -2300,7 +2298,11 @@ kshf.Browser = function(options){
         setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
     });
 
-    window.setTimeout(function() { me.loadSource(); }, 50);
+    if(options.source){
+        window.setTimeout(function() { me.loadSource(options.source); }, 50);
+    } else {
+        this.panel_infobox.attr("show","source");
+    }
 };
 
 kshf.Browser.prototype = {
@@ -2487,7 +2489,7 @@ kshf.Browser.prototype = {
         creditString += "Funded in part by <a href='http://www.huawei.com'>Huawei</a>. </div>";
         creditString += "";
 
-        this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox").attr("show","loading");
+        this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox");
         this.panel_infobox.append("div").attr("class","background")
             .on("click",function(){
                 me.panel_infobox.attr("show","none");
@@ -2502,11 +2504,7 @@ kshf.Browser.prototype = {
 
         var hmmm=this.DOM.loadingBox.append("div").attr("class","status_text");
         hmmm.append("span").attr("class","status_text_sub info").text(kshf.lang.cur.LoadingData);
-        hmmm.append("span").attr("class","status_text_sub dynamic")
-            .text(
-                (this.source.sheets!==undefined)?
-                "("+this.source.loadedTableCount+"/"+this.source.sheets.length+")":""
-                );
+        this.DOM.status_text_sub_dynamic = hmmm.append("span").attr("class","status_text_sub dynamic");
 
         var infobox_credit = this.panel_infobox.append("div").attr("class","infobox_content infobox_credit");
         infobox_credit.append("div").attr("class","infobox_close_button")
@@ -2515,6 +2513,118 @@ kshf.Browser.prototype = {
             })
             .append("span").attr("class","fa fa-times");
         infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
+
+        this.DOM.infobox_source = this.panel_infobox.append("div").attr("class","infobox_content infobox_source");
+
+        this.DOM.infobox_source.append("div").attr("class","sourceHeader").text("Where's your data?");
+        var googleInfo = this.DOM.infobox_source.append("div").attr("class","gdocLink_Wrapper");
+        googleInfo.append("div").attr("class","title").text("Google Spreadsheet Link")
+            .append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        gravity: 's', title: function(){ return "The link to your Google Spreadsheet document."; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });
+        googleInfo.append("input")
+            .attr("type","text")
+            .attr("class","gdocLink")
+            .attr("placeholder",'httts://docs.google.com/spreadsheets/d/...');
+        var sheetInfo = this.DOM.infobox_source.append("div").attr("class","sheetInfo");
+        sheetInfo.append("div").attr("class","sheetHeader").html("Sheet")
+            .append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                        gravity: 's', title: function(){ return "Each sheet provides a new data table."; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });
+        var x;
+
+        x = sheetInfo.append("div").attr("class","sheet_wrapper sheetName_wrapper")
+            x.append("span").attr("class","subheading").text("Name");
+            x.append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                        gravity: 's', title: function(){ return "The name of the main data sheet."; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });
+            x.append("input").attr("class","sheetName").attr("type","text");
+        x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_ID_wrapper")
+            x.append("span").attr("class","subheading").text("ID Column");
+            x.append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                        gravity: 's', title: function(){ return "The column that uniqyely identifies each row.<br>If there is no such column, skip."; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });
+            x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
+
+        x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_Split_wrapper")
+            x.append("span").attr("class","subheading").text("Split Column");
+            x.append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                        gravity: 's', title: function(){ return "Splitter...."; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });
+            x.append("input").attr("class","sheetColumn_Splitter").attr("type","text");
+            x.append("span").text(" with")
+                .append("span").attr("class","fa fa-info-circle")
+                .each(function(summary){
+                    this.tipsy = new Tipsy(this, {
+                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                        gravity: 's', title: function(){ return "Seperator"; }
+                    });
+                })
+                .on("mouseenter",function(){ this.tipsy.show(); })
+                .on("mouseleave",function(){ this.tipsy.hide(); });;
+            x.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
+        this.DOM.infobox_source.append("div").attr("class","actionButton").text("Import it to Keshif")
+            .on("click",function(){
+                var gdocId;
+                var gdocId_input = me.DOM.infobox_source.select(".gdocLink")[0][0].value;
+                var firstIndex = gdocId_input.indexOf("docs.google.com/spreadsheets/d/");
+                if(firstIndex===-1){
+                    gdocId = gdocId_input;
+                } else {
+                    var gdocId = gdocId_input.substr(firstIndex+31);
+                    if(gdocId.indexOf("/")!==-1){
+                        gdocId = gdocId.substr(0,gdocId.indexOf("/"));
+                    }
+                }
+                // docs.google.com/spreadsheets/d/15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ/
+                // '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE'
+                var sheetName = me.DOM.infobox_source.select(".sheetName")[0][0].value;
+                var sheetID   = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
+                if(sheetID==="") sheetID = "id";
+                me.loadedCb = function(){
+                    var splitColumnName = me.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
+                    var splitSepName = me.DOM.infobox_source.select(".sheetColumn_Seperator")[0][0].value;
+                    if(splitColumnName){
+                        kshf.Util.cellToArray(this.items, [splitColumnName], splitSepName, false);
+                    }
+                };
+                me.readyCb = function(){
+                    me.showAttributes();
+                }
+                me.loadSource({
+                    gdocId: gdocId,
+                    sheets: [ {name:sheetName, id:sheetID} ]
+                });
+            });
 
         this.DOM.infobox_itemZoom = this.panel_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
 
@@ -2548,10 +2658,21 @@ kshf.Browser.prototype = {
         if(sendLog) sendLog(kshf.LOG.INFOBOX);
     },
     /** -- */
-    loadSource: function(){
+    loadSource: function(v){
+        this.source = v;
+        this.panel_infobox.attr("show","loading");
         if(this.source.sheets){
+            this.source.loadedTableCount=0;
+
+            this.DOM.status_text_sub_dynamic
+                .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
+
             this.source.sheets[0].primary = true;
             this.primaryTableName = this.source.sheets[0].name;
+            if(this.source.gdocId){
+                if(this.source.url===undefined)
+                    this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
+            }
             this.source.sheets.forEach(function(sheet){
                 if(sheet.id===undefined) sheet.id="id"; // set id column
                 if(sheet.tableName===undefined) sheet.tableName = sheet.name; // set table name
@@ -2561,8 +2682,6 @@ kshf.Browser.prototype = {
                     return;
                 }
                 if(this.source.gdocId){
-                    if(this.source.url===undefined)
-                        this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
                     this.loadSheet_Google(sheet);
                 } else if(this.source.dirPath){
                     this.loadSheet_File(sheet);
@@ -3870,7 +3989,9 @@ kshf.Summary_Base.prototype = {
         this.DOM.facetIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'ne', title: function(){ return "Multiple "+me.summaryTitle+" possible.<br>Click to show relations.";}
+                    gravity: 'ne', title: function(){
+                        return "Multiple "+me.summaryTitle+" possible.<br>Click to show relations.";
+                    }
                 });
             })
             .on("mouseover",function(d){

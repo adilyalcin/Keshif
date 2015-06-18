@@ -695,6 +695,89 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 overflow-x: hidden;
             }
 
+            > .infobox_source{
+                background-color:white;
+                width: 550px;
+                height: 220px;
+                position: absolute;
+                top: 0; left: 0; bottom: 0; right: 0;
+
+                .fa-info-circle{
+                    color: gray;
+                    cursor: pointer;
+                    padding: 0px 5px;
+                    &:hover{
+                        color: black;
+                    }
+                }
+
+                > .sourceHeader{
+                    font-weight: 700;
+                    font-size: 1.3em;
+                    margin: 5px;
+                }
+
+                > .gdocLink_Wrapper{
+                    width: 430px;
+                    display: inline-block;
+                    margin: 5px;
+                    padding: 5px;
+                    border: solid 1px lightgray;
+                    border-radius: 5px;
+                    .gdocLink{
+                        width: 400px;
+                    }
+                }
+
+                > .sheetInfo{
+                    border: solid 1px lightgray;
+                    border-radius: 5px;
+                    text-align: left;
+                    width: 430px;
+                    padding: 5px;
+                    margin: 0 auto;
+                    > .sheetHeader{
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                    > .sheet_wrapper{
+                        width: 500px;
+                        margin: 0 auto;
+                    }
+                    .sheetColumn_ID{
+                        width: 60px;
+                    }
+                    .subheading{
+                        font-style: italic;
+                        width: 40%;
+                        display: inline-block;
+                        text-align: right;
+                        float: left;
+                    }
+                    .sheetColumn_Splitter{
+                        width: 60px;
+                    }
+                    .sheetColumn_Seperator{
+                        width: 30px;
+                    }
+                }
+
+
+                >.actionButton{
+                    display: inline-block;
+                    border: solid 1px gray;
+                    padding: 5px;
+                    margin: 5px;
+                    border-radius: 5px;
+                    background-color: white;
+                    cursor: pointer;
+                    &:hover{
+                        box-shadow: 1px 1px 1px gray;
+                        background-color: #EEE;
+                    }
+                }
+            }
+
             > .infobox_loading{
                 width: 300px;
                 height: 35px;
@@ -755,6 +838,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: inline-block;
             }
             &[show=credit] > .infobox_credit{
+                display: inline-block;
+            }
+            &[show=source] > .infobox_source{
                 display: inline-block;
             }
             &[show=none]{

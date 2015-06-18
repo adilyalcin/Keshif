@@ -782,6 +782,85 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
 }
+.kshf .panel.panel_infobox > .infobox_source {
+  background-color: white;
+  width: 550px;
+  height: 220px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.kshf .panel.panel_infobox > .infobox_source .fa-info-circle {
+  color: gray;
+  cursor: pointer;
+  padding: 0px 5px;
+}
+.kshf .panel.panel_infobox > .infobox_source .fa-info-circle:hover {
+  color: black;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sourceHeader {
+  font-weight: 700;
+  font-size: 1.3em;
+  margin: 5px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .gdocLink_Wrapper {
+  width: 430px;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border: solid 1px lightgray;
+  border-radius: 5px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .gdocLink_Wrapper .gdocLink {
+  width: 400px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo {
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  text-align: left;
+  width: 430px;
+  padding: 5px;
+  margin: 0 auto;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo > .sheetHeader {
+  font-weight: 700;
+  text-align: center;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo > .sheet_wrapper {
+  width: 500px;
+  margin: 0 auto;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_ID {
+  width: 60px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .subheading {
+  font-style: italic;
+  width: 40%;
+  display: inline-block;
+  text-align: right;
+  float: left;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Splitter {
+  width: 60px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Seperator {
+  width: 30px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .actionButton {
+  display: inline-block;
+  border: solid 1px gray;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+}
+.kshf .panel.panel_infobox > .infobox_source > .actionButton:hover {
+  box-shadow: 1px 1px 1px gray;
+  background-color: #EEE;
+}
 .kshf .panel.panel_infobox > .infobox_loading {
   width: 300px;
   height: 35px;
@@ -848,6 +927,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .panel.panel_infobox[show=credit] > .infobox_credit {
+  display: inline-block;
+}
+.kshf .panel.panel_infobox[show=source] > .infobox_source {
   display: inline-block;
 }
 .kshf .panel.panel_infobox[show=none] {
