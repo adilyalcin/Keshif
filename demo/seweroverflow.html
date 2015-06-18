@@ -17,14 +17,14 @@
 
         <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Overflow";
-    kshf.dt.Overflow = [];
     $.ajax( {
 //      To use dynamic data loaded from maryland.gov, use the following link instead
 //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
         url: "./data/seweroverflows.json",
         dataType: "json",
         success: function(data){
+            browser.primaryTableName = "Overflow";
+            kshf.dt.Overflow = [];
             // Note: data.meta includes meta information (column names, types, etc)
             data.data.forEach(function(overflow){
                 kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
