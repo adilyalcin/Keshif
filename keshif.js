@@ -2684,7 +2684,11 @@ kshf.Browser.prototype = {
                 if(this.source.gdocId){
                     this.loadSheet_Google(sheet);
                 } else if(this.source.dirPath){
-                    this.loadSheet_File(sheet);
+                    if(this.source.fileType==="json"){
+                        this.loadSheet_JSON(sheet);
+                    } else if(this.source.fileType==="csv" || this.source.fileType==="tsv"){
+                        this.loadSheet_CSV(sheet);
+                    }
                 }
             },this);
         } else {
@@ -2761,8 +2765,8 @@ kshf.Browser.prototype = {
             me.finishDataLoad(sheet,arr);
         });
     },
-    /** The only place where jquery ajax load is used! */
-    loadSheet_File: function(sheet){
+    /** -- */
+    loadSheet_CSV: function(sheet){
         var me=this;
         var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
         $.ajax({
@@ -2793,6 +2797,33 @@ kshf.Browser.prototype = {
                     if(row[idColumn]===undefined) row[idColumn] = i;
                     arr.push(new kshf.Item(row,idColumn));
                 })
+
+                me.finishDataLoad(sheet, arr);
+            }
+        });
+    },
+    /** Note: Requires json root to be an array, and each object will be passed to keshif item. */
+    loadSheet_JSON: function(sheet){
+        var me=this;
+        var fileName=this.source.dirPath+sheet.name+".json";
+        $.ajax({
+            url: fileName,
+            type: "GET",
+            async: (this.source.callback===undefined)?true:false,
+            dataType: "json",
+            success: function(data) {
+                // if data is already loaded, nothing else to do...
+                if(kshf.dt[sheet.tableName]!==undefined){
+                    me.incrementLoadedSheetCount();
+                    return;
+                }
+                var arr = [];
+                var idColumn = sheet.id;
+
+                data.forEach(function(dataItem,i){
+                    if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
+                    arr.push(new kshf.Item(dataItem, idColumn));
+                });
 
                 me.finishDataLoad(sheet, arr);
             }

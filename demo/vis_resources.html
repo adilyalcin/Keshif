@@ -17,19 +17,6 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-function loadData(browser){
-    $.ajax( {
-        url: "./data/vis_resources.json",
-        async: false,
-        success: function(dataset){
-            browser.primaryTableName = "Resources";
-            kshf.dt.Resources = [];
-            dataset.forEach(function(r){ kshf.dt.Resources.push(new kshf.Item(r,'id')); });
-            browser.loadCharts();
-        }
-    });
-};
-
 function getImageName(url){
     var x=url.split("/");
     return x[x.length-1];
@@ -48,7 +35,9 @@ $(document).ready( function(){
         itemName: "Visualization Resources",
         source: {
             url: "http://www.visualisingdata.com/index.php/resources/",
-            callback: loadData
+            dirPath: "./data/",
+            fileType: 'json',
+            sheets: [{name:"vis_resources"}]
         },
         summaries: [{ title: "category", layout: "middle" }], // 1 summary only
         itemDisplay: {
@@ -69,7 +58,7 @@ $(document).ready( function(){
 
 var imageDownloadScript = function(){
     var src="";
-    kshf.dt.Resources.forEach(function(r){
+    kshf.dt.vis_resources.forEach(function(r){
         src+= "curl -o "+getImageName(r.data.image_src)+" "+r.data.image_src+"\n";
     });
     return src;

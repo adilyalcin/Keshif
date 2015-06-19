@@ -21,23 +21,6 @@
 
         <script type="text/javascript">
 
-function loadData(browser){
-    $.ajax({
-        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-        // url: "./data_private/dc_homicides.json", // original source
-        url: "./data/civil_rights_march.json",
-        success: function(data){
-            browser.primaryTableName = "Photos";
-            kshf.dt.Photos = [];
-            data.forEach(function(poster){
-                poster.id = 1*poster.arcIdentifier;
-                kshf.dt.Photos.push(new kshf.Item(poster,"id"))
-            });
-            browser.loadCharts();
-        }
-    });
-};
-
 $(document).ready( function(){
     resizeBrowser(100,80);
     $(window).resize(function() {
@@ -51,7 +34,9 @@ $(document).ready( function(){
         categoryTextWidth: 200,
         source: { 
             url: "https://catalog.archives.gov/id/541992",
-            callback: loadData
+            dirPath: "./data/",
+            fileType: 'json',
+            sheets: [{name:"civil_rights_march", id:"arcIdentifier"}]
         },
         summaries: [
             {   title: "Tags",

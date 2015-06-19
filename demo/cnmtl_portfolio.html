@@ -17,31 +17,17 @@
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-function loadData(browser){
-    $.ajax( {
-        url: "./data/cnmtl_portfolio.json",
-        async: false,
-        success: function(dataset){
-            browser.primaryTableName = "Projects";
-            kshf.dt.Projects = [];
-            var format = d3.time.format("%Y-%m-%d");
-            dataset.forEach(function(r,i){
-                r.id=i;
-                r['Released Year'] = format.parse(r.released);
-                kshf.dt.Projects.push(new kshf.Item(r,'id'));
-            });
-            browser.loadCharts();
-        }
-    });
-};
-
 $(document).ready( function(){
+    var dateFormat = d3.time.format("%Y-%m-%d");
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 160,
+        itemName: "CNMTL Projects",
         source: {
             url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
-            callback: loadData
+            dirPath: "./data/",
+            fileType: 'json',
+            sheets: [{name:"cnmtl_portfolio"}]
         },
         summaries: [
             {   title: "Disciplines"
@@ -49,7 +35,10 @@ $(document).ready( function(){
             },{ title: "Group", collapsed: true
             },{ title: "Access", collapsed: true
             },{ title: "Status"
-            },{ title: "Released Year", layout: "middle", collapsed: true
+            },{ title: "Released Year", layout: "middle", collapsed: true, 
+                attribMap: function(){
+                    return dateFormat.parse(this.released);
+                }
             }
         ],
         itemDisplay: {

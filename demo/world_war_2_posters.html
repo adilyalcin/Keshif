@@ -18,21 +18,6 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript">
-function loadData(browser){
-    $.ajax({
-        url: "./data/world_war_2_posters.json",
-        success: function(data){
-            browser.primaryTableName = "Posters";
-            kshf.dt.Posters = [];
-            data.forEach(function(poster){
-                poster.id = 1*poster.arcIdentifier;
-                kshf.dt.Posters.push(new kshf.Item(poster,"id"))
-            });
-            browser.loadCharts();
-        }
-    });
-};
-
 $(document).ready( function(){
     resizeBrowser(170,90);
     $(window).resize(function() {
@@ -45,8 +30,9 @@ $(document).ready( function(){
         itemName: "World War 2 Posters",
         categoryTextWidth: 150,
         source: { 
-            url: "https://catalog.archives.gov/search?q=*:*&f.parentNaId=513498",
-            callback: loadData
+            dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/",
+            fileType: 'json',
+            sheets: [{name:"world_war_2_posters", id:"arcIdentifier"}]
         },
         summaries: [
             {   title: "Date", attribMap: "date"

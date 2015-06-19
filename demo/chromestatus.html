@@ -16,24 +16,6 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-var loadData = function(browser){
-    $.ajax({
-        // http://www.chromestatus.com/data/featurepopularity
-        // http://www.chromestatus.com/features.json
-        url: "./data/chromefeatures.json",
-        async: false,
-        success: function(data){
-            browser.primaryTableName = "Features";
-            kshf.dt.Features = [];
-            data.forEach(function(v){
-                v.name = v.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                kshf.dt.Features.push(new kshf.Item(v,'id'));
-            });
-            browser.loadCharts();
-        }
-    });
-};
-
 function mileSort(v){
     switch(v){
         case "In development": return 99;
@@ -51,7 +33,9 @@ $(document).ready( function(){
         itemName: "Chromium Features",
         source: {
             url: "http://www.chromestatus.com/features",
-            callback: loadData
+            dirPath: "./data/",
+            fileType: 'json',
+            sheets: [{name:"chromefeatures"}]
         },
         summaries: [
             {   title: "Milestone", attribMap: function(){ return this.meta["milestone_str"]; },
@@ -80,7 +64,8 @@ $(document).ready( function(){
             textSearch: 'title',
             displayType: 'list',
             recordView: function(){
-                return "<span class='title'>"+this.name+"</span>"+
+                var name = this.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                return "<span class='title'>"+name+"</span>"+
                     " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+
                     "<span class='summary'>"+this.summary+"</span>";
             }

@@ -20,8 +20,6 @@
         <script type="text/javascript">
 function loadData(browser){
     $.ajax({
-        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-        // url: "./data_private/dc_homicides.json", // original source
         url: "./data/street_names.json",
         success: function(data){
             browser.primaryTableName = "StreetNames";
