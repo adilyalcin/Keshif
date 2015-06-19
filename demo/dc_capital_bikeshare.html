@@ -17,8 +17,6 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-// http://uk.timesofnews.com/dont-hide-your-data-show-it-in-all-its-glory/
-// http://gravyanecdote.com/visual-analytics/how-many-data-points/
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -37,7 +35,6 @@ google.setOnLoadCallback(function(){
                 attribMap: function(){
                     return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
                 }
-            
             },{ title: "Day of Month", layout: "bottom",
                 attribMap: function(){ return this["Start Time"].getUTCDate(); },
             },{ title: "Day of Week", layout: "middle",
@@ -60,5 +57,14 @@ google.setOnLoadCallback(function(){
     </head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.
+            <a href="https://www.capitalbikeshare.com/trip-history-data" target="_blank">
+                https://www.capitalbikeshare.com/trip-history-data</a>
+            <span class="fa fa-info-circle"></span>
+            </div>
+
     </body>
 </html>
