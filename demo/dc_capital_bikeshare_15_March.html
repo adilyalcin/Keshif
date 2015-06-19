@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Bike Trips in New York City</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+// http://uk.timesofnews.com/dont-hide-your-data-show-it-in-all-its-glory/
+// http://gravyanecdote.com/visual-analytics/how-many-data-points/
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 110,
+        leftPanelLabelWidth: 250,
+        rightPanelLabelWidth: 250,
+        source: {
+            gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
+            sheets: [{name:"Trips"}]
+        },
+        summaries: [
+            {   title: "Subscription Type", layout: 'middle'
+            },{ title: "Start Station", layout: 'left'
+            },{ title: "End Station", layout: 'right'
+            },{ title: "Total Duration", layout: 'bottom',
+                attribMap: function(){
+                    return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
+                }
+            
+            },{ title: "Day of Month", layout: "bottom",
+                attribMap: function(){ return this["Start Time"].getUTCDate(); },
+            },{ title: "Day of Week", layout: "middle",
+                attribMap: function(){ return this["Start Time"].getUTCDay(); },
+                sortingOpts: [ {value: "id"} ],
+                catLabel: function(){ return getDayNameFromNumber(this.id); }
+            },{ title: "Hour of Day", layout: "middle", collapsed: true,
+                attribMap: function(){ return this["Start Time"].getUTCHours(); },
+            }
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1100px;
+                height: 750px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
