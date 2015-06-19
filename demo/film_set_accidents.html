@@ -28,12 +28,6 @@ $(document).ready( function(){
 
     var timeFormat = d3.time.format("%d %b, %y");
 
-    var printPeopleIcons = function(){
-        var str="";
-        for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
-        return str;
-    };
-
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 150,

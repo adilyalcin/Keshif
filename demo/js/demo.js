@@ -175,6 +175,12 @@ function readCookie(name){
     return '';
 };
 
+var printPeopleIcons = function(){
+    var str="";
+    for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
+    return str;
+};
+
 function noop(){};
 
 // Logging

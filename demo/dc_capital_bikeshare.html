@@ -34,7 +34,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Total Duration", layout: 'bottom',
                 attribMap: function(){
                     return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
-                }
+                }, unitName: "min"
             },{ title: "Day of Month", layout: "bottom",
                 attribMap: function(){ return this["Start Time"].getUTCDate(); },
             },{ title: "Day of Week", layout: "middle",
