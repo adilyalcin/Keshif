@@ -62,7 +62,7 @@ var kshf = {
     lang: {
         en: {
             ModifyBrowser: "Modify browser",
-            OpenDataSource: "Open Data Source",
+            OpenDataSource: "Open data source",
             ShowInfoCredits: "Show info &amp; credits",
             RemoveFilter: "Remove filter",
             RemoveAllFilters: "Remove all filters",

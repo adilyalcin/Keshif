@@ -78,7 +78,9 @@ google.setOnLoadCallback(function(){
                     if(this.CitationsFrom.length===0) return;
                     return this.CitationsFrom.length;
                 }
-            },{ title: "First Author Affiliation", collapsed: false
+            },{ title: "First Author Affiliation", collapsed: false,
+                description: "Only affiliations with at least two papers are shown",
+                minAggrValue: 2,
             },{ title: "Year", layout: 'bottom', // attribMap: function(){ return new Date(this.Year,0,0);}
             },{ title: "Authors", attribMap: function(){ return this['Deduped author names']; }, layout: 'right',
                 description: "Only authors with at least two papers are shown",
