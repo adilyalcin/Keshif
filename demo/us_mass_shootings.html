@@ -45,11 +45,11 @@ google.setOnLoadCallback(function(){
             sortingOpts: ['# Killed', '# Injured', 'Date'],
             recordView: function(){ 
                 // Date State   City Or County  Address # Killed    # Injured
-                return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+
-                    "<div class='time'>"+this.Date.getUTCMonth()+"-"+this.Date.getUTCDay()+"-"+this.Date.getUTCFullYear()+"</div>"+
-                    "<div class='killed'>"+"Killed: "+printPeopleIcons.call({id:this['# Killed']})+"</div>"+
-                    "<div class='injured'>"+"Injured: "+printPeopleIcons.call({id:this['# Injured']})+"</div>"
-                    ;
+            return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+
+                "<div class='time'>"+this.Date.getUTCMonth()+"-"+this.Date.getUTCDay()+"-"+this.Date.getUTCFullYear()+"</div>"+
+                "<div class='killed'><span class='fwidth'>Killed</span>: "+printPeopleIcons.call({id:this['# Killed']})+"</div>"+
+                "<div class='injured'><span class='fwidth'>Injured</span>: "+printPeopleIcons.call({id:this['# Injured']})+"</div>"
+                ;
             }
         }
     });
@@ -71,6 +71,12 @@ google.setOnLoadCallback(function(){
 .kshfChart[chart_id="10"] .theLabel .fa{
     margin: 0px 2px;
 }
+.fwidth{
+    font-weight: 300;
+    display: inline-block;
+    width: 62px;
+    text-align: right;
+}
 .killed .fa{
     color: red;
     margin: 0px 2px;
@@ -80,7 +86,6 @@ google.setOnLoadCallback(function(){
 }
 .time{
     font-weight: 300;
-    font-style: italic;
 }
         </style>
     </head>
