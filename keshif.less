@@ -698,7 +698,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .infobox_source{
                 background-color:white;
                 width: 550px;
-                height: 220px;
+                height: 250px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
 
@@ -714,18 +714,74 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .sourceHeader{
                     font-weight: 700;
                     font-size: 1.3em;
-                    margin: 5px;
+                    margin: 5px 5px 0px 5px;
                 }
 
-                > .gdocLink_Wrapper{
+                > .source_wrapper{
                     width: 430px;
                     display: inline-block;
                     margin: 5px;
                     padding: 5px;
                     border: solid 1px lightgray;
                     border-radius: 5px;
+                    > .offpoofff{
+                        margin-bottom: 3px;
+                    }
                     .gdocLink{
-                        width: 400px;
+                        width: 350px;
+                    }
+                    .source_from{
+                        display: inline-block;
+                        border: solid 1px lightgray;
+                        padding: 2px 4px;
+                        border-radius: 7px;
+                        font-weight: 300;
+                        margin: 0px 5px;
+                        font-size: 0.8em;
+                        cursor: pointer;
+                        color: rgb(160, 160, 160);
+                        &:hover{
+                            color: black;
+                            box-shadow: 0px 0px 1px gray;
+                        }
+                    }
+                    .gdocLink_ready{
+                        opacity: 0;
+                        pointer-events: none;
+                        &:before{
+                            content: "\f057"; // X
+                            color: red;
+                        }
+                        &[ready=true]{
+                            pointer-events: all;
+                            &:before{
+                                content: "\f058"; // Check
+                                color: green;
+                            }
+                        }
+                    }
+                }
+                &[selected_source_type="spreadsheet"] {
+                    .source_from[source_type="spreadsheet"]{
+                        background-color: #EEE;
+                        color: black;
+                        cursor: default;
+                    }
+                    .tableHeader:before{
+                        content: "Sheet";
+                    }
+                }
+                &[selected_source_type="folder"] {
+                    .source_from[source_type="folder"]{
+                        background-color: #EEE;
+                        color: black;
+                        cursor: default;
+                    }
+                    .tableHeader:before{
+                        content: "File";
+                    }
+                    > .sheetInfo .fileType_wrapper{
+                        display: inline-block;
                     }
                 }
 
@@ -733,32 +789,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     border: solid 1px lightgray;
                     border-radius: 5px;
                     text-align: left;
-                    width: 430px;
-                    padding: 5px;
+                    width: 300px;
                     margin: 0 auto;
-                    > .sheetHeader{
+                    padding-bottom: 5px;
+                    .tableHeader{
                         font-weight: 700;
                         text-align: center;
+                        border-bottom: solid 1px lightgray;
+                        margin-bottom: 2px;
+                        margin-top: 5px;
                     }
                     > .sheet_wrapper{
-                        width: 500px;
                         margin: 0 auto;
                     }
                     .sheetColumn_ID{
                         width: 60px;
                     }
                     .subheading{
-                        font-style: italic;
-                        width: 40%;
+                        width: 110px;
                         display: inline-block;
                         text-align: right;
-                        float: left;
+                        cursor: default;
+                        &:not(.tableHeader){
+                            font-weight: 300;
+                        }
                     }
                     .sheetColumn_Splitter{
                         width: 60px;
                     }
+                    .sheetName{
+                        width: 85px;
+                    }
                     .sheetColumn_Seperator{
                         width: 30px;
+                    }
+                    .fileType_wrapper{
+                        display: none;
+                    }
+                    .sheetColumn_sep_wrapper{
+                        display: none;
+                        font-size: 0.8em;
+                        margin-left: 5px;
+                        cursor: default;
                     }
                 }
 
@@ -770,8 +842,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     margin: 5px;
                     border-radius: 5px;
                     background-color: white;
-                    cursor: pointer;
-                    &:hover{
+                    font-weight: 300;
+                    &[disabled=true]{
+                        //pointer-events: none;
+                        color: gray;
+                        border-color: lightgray;
+                        cursor: not-allowed;
+                    }
+                    &[disabled=false]:hover{
+                        cursor: pointer;
                         box-shadow: 1px 1px 1px gray;
                         background-color: #EEE;
                     }

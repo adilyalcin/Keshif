@@ -2492,7 +2492,10 @@ kshf.Browser.prototype = {
         this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox");
         this.panel_infobox.append("div").attr("class","background")
             .on("click",function(){
-                me.panel_infobox.attr("show","none");
+                var activePanel = this.parentNode.getAttribute("show");
+                if(activePanel==="credit" || activePanel==="itemZoom"){
+                    me.panel_infobox.attr("show","none");
+                }
             })
             ;
         this.DOM.loadingBox = this.panel_infobox.append("div").attr("class","infobox_content infobox_loading");
@@ -2514,35 +2517,111 @@ kshf.Browser.prototype = {
             .append("span").attr("class","fa fa-times");
         infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
 
-        this.DOM.infobox_source = this.panel_infobox.append("div").attr("class","infobox_content infobox_source");
+        this.insertSourceBox();
+
+
+        this.DOM.infobox_itemZoom = this.panel_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
+
+        this.DOM.infobox_itemZoom.append("div").attr("class","infobox_close_button")
+            .on("click",function(){
+                me.panel_infobox.attr("show","none");
+            })
+            .append("span").attr("class","fa fa-times");
+
+        this.DOM.infobox_itemZoom_content = this.DOM.infobox_itemZoom.append("span").attr("class","content");
+    },
+    /** -- */
+    insertSourceBox: function(){
+        var me=this;
+        var x,y,z;
+        var source_type="spreadsheet";
+        var sourceURL=null, sourceSheet="";
+        
+        var readyToLoad=function(){
+            return sourceURL!==null && sourceSheet!=="";
+        };
+
+        this.DOM.infobox_source = this.panel_infobox.append("div").attr("class","infobox_content infobox_source")
+            .attr("selected_source_type",source_type);
 
         this.DOM.infobox_source.append("div").attr("class","sourceHeader").text("Where's your data?");
-        var googleInfo = this.DOM.infobox_source.append("div").attr("class","gdocLink_Wrapper");
-        googleInfo.append("div").attr("class","title").text("Google Spreadsheet Link")
-            .append("span").attr("class","fa fa-info-circle")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){ return "The link to your Google Spreadsheet document."; }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); });
-        googleInfo.append("input")
+
+        var source_wrapper = this.DOM.infobox_source.append("div").attr("class","source_wrapper");
+
+        x = source_wrapper.append("div").attr("class","offpoofff");
+
+        x.append("span").attr("class","source_from").text("Google Spreadsheet").attr("source_type","spreadsheet");
+        x.append("span").attr("class","source_from").text("Google Drive Folder").attr("source_type","folder");
+
+        x.selectAll(".source_from").on("click",function(){
+            source_type=this.getAttribute("source_type");
+            me.DOM.infobox_source.attr("selected_source_type",source_type);
+            gdocLink.attr("placeholder",(source_type==="folder")?
+                'https://******.googledrive.com/host/**************/':
+                'https://docs.google.com/spreadsheets/d/**************'
+            );
+        });
+
+        x = source_wrapper.append("div");
+        var gdocLink = x.append("input")
             .attr("type","text")
             .attr("class","gdocLink")
-            .attr("placeholder",'httts://docs.google.com/spreadsheets/d/...');
-        var sheetInfo = this.DOM.infobox_source.append("div").attr("class","sheetInfo");
-        sheetInfo.append("div").attr("class","sheetHeader").html("Sheet")
-            .append("span").attr("class","fa fa-info-circle")
+            .attr("placeholder",'https://docs.google.com/spreadsheets/d/**************')
+            .on("keyup",function(){
+                gdocLink_ready.style("opacity",this.value===""?"0":"1");
+                var input = this.value;
+                if(source_type==="spreadsheet"){
+                    var firstIndex = input.indexOf("docs.google.com/spreadsheets/d/");
+                    if(firstIndex!==-1){
+                        var input = input.substr(firstIndex+31); // focus after the base url
+                        if(input.indexOf("/")!==-1){
+                            input = input.substr(0,input.indexOf("/"));
+                        }
+                    }
+                    if(input.length===44){
+                        sourceURL = input;
+                        gdocLink_ready.attr("ready",true);
+                    } else {
+                        sourceURL = null;
+                        gdocLink_ready.attr("ready",false);
+                    }
+                }
+                if(source_type==="folder"){
+                    var firstIndex = input.indexOf(".googledrive.com/host/");
+                    if(firstIndex!==-1){
+                        // Make sure last character is "/"
+                        if(input[input.length-1]!=="/") input+="/";
+                        sourceURL = input;
+                        gdocLink_ready.attr("ready",true);
+                    } else{
+                        sourceURL = null;
+                        gdocLink_ready.attr("ready",false);
+                    }
+                }
+                actionButton.attr("disabled",!readyToLoad());
+            });
+
+        x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ return "Each sheet provides a new data table."; }
+                        gravity: 's', title: function(){ 
+                            if(source_type==="spreadsheet")
+                                return "The link to your Google Spreadsheet";
+                            if(source_type==="folder")
+                                return "The link to *hosted* Google Drive folder";
+                        }
                     });
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
                 .on("mouseleave",function(){ this.tipsy.hide(); });
-        var x;
+
+        var gdocLink_ready = x.append("span").attr("class","gdocLink_ready fa").attr("ready",false);
+
+        var sheetInfo = this.DOM.infobox_source.append("div").attr("class","sheetInfo");
+
+        x = sheetInfo.append("div").attr("class","sheet_wrapper")
+            x.append("div").attr("class","subheading tableHeader")
+            ;
 
         x = sheetInfo.append("div").attr("class","sheet_wrapper sheetName_wrapper")
             x.append("span").attr("class","subheading").text("Name");
@@ -2550,19 +2629,36 @@ kshf.Browser.prototype = {
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ return "The name of the main data sheet."; }
+                        gravity: 's', title: function(){ 
+                            if(source_type==="spreadsheet")
+                                return "The name of the data sheet in the spreadsheet";
+                            if(source_type==="folder")
+                                return "The file name in the folder";
+                        }
                     });
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
                 .on("mouseleave",function(){ this.tipsy.hide(); });
-            x.append("input").attr("class","sheetName").attr("type","text");
+
+            x.append("input").attr("type","text").attr("class","sheetName")
+                .on("keyup",function(){
+                    sourceSheet = this.value;
+                    actionButton.attr("disabled",!readyToLoad());
+                });
+            z=x.append("span").attr("class","fileType_wrapper");
+            z.append("span").text(".");
+            var DOMfileType = z.append("select").attr("class","fileType");
+                DOMfileType.append("option").attr("value","csv").text("csv");
+                DOMfileType.append("option").attr("value","tsv").text("tsv");
+                DOMfileType.append("option").attr("value","json").text("json");
+
         x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_ID_wrapper")
-            x.append("span").attr("class","subheading").text("ID Column");
+            x.append("span").attr("class","subheading").text("ID column");
             x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ return "The column that uniqyely identifies each row.<br>If there is no such column, skip."; }
+                        gravity: 's', title: function(){ return "The column that uniquely identifies each item.<br><br>If no such column, skip."; }
                     });
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
@@ -2570,44 +2666,45 @@ kshf.Browser.prototype = {
             x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
 
         x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_Split_wrapper")
-            x.append("span").attr("class","subheading").text("Split Column");
+            x.append("span").attr("class","subheading").text("Split column");
             x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ return "Splitter...."; }
+                        gravity: 's', title: function(){ 
+                            return "If column has multi-values<br>(ex: action+drama),<br>split values using seperator";
+                        }
                     });
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
                 .on("mouseleave",function(){ this.tipsy.hide(); });
-            x.append("input").attr("class","sheetColumn_Splitter").attr("type","text");
-            x.append("span").text(" with")
-                .append("span").attr("class","fa fa-info-circle")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ return "Seperator"; }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); });;
-            x.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
-        this.DOM.infobox_source.append("div").attr("class","actionButton").text("Import it to Keshif")
+            x.append("input").attr("type","text").attr("class","sheetColumn_Splitter")
+                .on("keyup",function(){
+                    sheetColumn_sep_wrapper.style("display",this.value!==""?"inline-block":"none");
+                });
+            var sheetColumn_sep_wrapper = x.append("span").attr("class","sheetColumn_sep_wrapper");
+                sheetColumn_sep_wrapper.append("span").text(" with")
+                sheetColumn_sep_wrapper.append("span").attr("class","fa fa-info-circle")
+                    .each(function(summary){
+                        this.tipsy = new Tipsy(this, {
+                            //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
+                            gravity: 's', title: function(){ 
+                                return "Seperator";
+                            }
+                        });
+                    })
+                    .on("mouseenter",function(){ this.tipsy.show(); })
+                    .on("mouseleave",function(){ this.tipsy.hide(); });;
+                sheetColumn_sep_wrapper.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
+        
+
+        var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton").text("Explore it with Keshif")
+            .attr("disabled",true)
             .on("click",function(){
-                var gdocId;
-                var gdocId_input = me.DOM.infobox_source.select(".gdocLink")[0][0].value;
-                var firstIndex = gdocId_input.indexOf("docs.google.com/spreadsheets/d/");
-                if(firstIndex===-1){
-                    gdocId = gdocId_input;
-                } else {
-                    var gdocId = gdocId_input.substr(firstIndex+31);
-                    if(gdocId.indexOf("/")!==-1){
-                        gdocId = gdocId.substr(0,gdocId.indexOf("/"));
-                    }
+                if(!readyToLoad()){
+                    alert("Please provide your data source link and sheet name.");
+                    return;
                 }
-                // docs.google.com/spreadsheets/d/15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ/
-                // '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE'
-                var sheetName = me.DOM.infobox_source.select(".sheetName")[0][0].value;
                 var sheetID   = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
                 if(sheetID==="") sheetID = "id";
                 me.loadedCb = function(){
@@ -2620,21 +2717,20 @@ kshf.Browser.prototype = {
                 me.readyCb = function(){
                     me.showAttributes();
                 }
-                me.loadSource({
-                    gdocId: gdocId,
-                    sheets: [ {name:sheetName, id:sheetID} ]
-                });
+                if(source_type==="spreadsheet"){
+                    me.loadSource({
+                        gdocId: sourceURL,
+                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                    });
+                }
+                if(source_type==="folder"){
+                    me.loadSource({
+                        dirPath: sourceURL,
+                        fileType: DOMfileType[0][0].value,
+                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                    });
+                }
             });
-
-        this.DOM.infobox_itemZoom = this.panel_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
-
-        this.DOM.infobox_itemZoom.append("div").attr("class","infobox_close_button")
-            .on("click",function(){
-                me.panel_infobox.attr("show","none");
-            })
-            .append("span").attr("class","fa fa-times");
-
-        this.DOM.infobox_itemZoom_content = this.DOM.infobox_itemZoom.append("span").attr("class","content");
     },
     /** -- */
     updateItemZoomText: function(item){

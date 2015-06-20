@@ -785,7 +785,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_source {
   background-color: white;
   width: 550px;
-  height: 220px;
+  height: 250px;
   position: absolute;
   top: 0;
   left: 0;
@@ -803,9 +803,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_source > .sourceHeader {
   font-weight: 700;
   font-size: 1.3em;
-  margin: 5px;
+  margin: 5px 5px 0px 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .gdocLink_Wrapper {
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper {
   width: 430px;
   display: inline-block;
   margin: 5px;
@@ -813,40 +813,108 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px lightgray;
   border-radius: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .gdocLink_Wrapper .gdocLink {
-  width: 400px;
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper > .offpoofff {
+  margin-bottom: 3px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink {
+  width: 350px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .source_from {
+  display: inline-block;
+  border: solid 1px lightgray;
+  padding: 2px 4px;
+  border-radius: 7px;
+  font-weight: 300;
+  margin: 0px 5px;
+  font-size: 0.8em;
+  cursor: pointer;
+  color: #a0a0a0;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .source_from:hover {
+  color: black;
+  box-shadow: 0px 0px 1px gray;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready {
+  opacity: 0;
+  pointer-events: none;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready:before {
+  content: "\f057";
+  color: red;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready[ready=true] {
+  pointer-events: all;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready[ready=true]:before {
+  content: "\f058";
+  color: green;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="spreadsheet"] .source_from[source_type="spreadsheet"] {
+  background-color: #EEE;
+  color: black;
+  cursor: default;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="spreadsheet"] .tableHeader:before {
+  content: "Sheet";
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="folder"] .source_from[source_type="folder"] {
+  background-color: #EEE;
+  color: black;
+  cursor: default;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="folder"] .tableHeader:before {
+  content: "File";
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="folder"] > .sheetInfo .fileType_wrapper {
+  display: inline-block;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo {
   border: solid 1px lightgray;
   border-radius: 5px;
   text-align: left;
-  width: 430px;
-  padding: 5px;
+  width: 300px;
   margin: 0 auto;
+  padding-bottom: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo > .sheetHeader {
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .tableHeader {
   font-weight: 700;
   text-align: center;
+  border-bottom: solid 1px lightgray;
+  margin-bottom: 2px;
+  margin-top: 5px;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo > .sheet_wrapper {
-  width: 500px;
   margin: 0 auto;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_ID {
   width: 60px;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .subheading {
-  font-style: italic;
-  width: 40%;
+  width: 110px;
   display: inline-block;
   text-align: right;
-  float: left;
+  cursor: default;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .subheading:not(.tableHeader) {
+  font-weight: 300;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Splitter {
   width: 60px;
 }
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetName {
+  width: 85px;
+}
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Seperator {
   width: 30px;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .fileType_wrapper {
+  display: none;
+}
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_sep_wrapper {
+  display: none;
+  font-size: 0.8em;
+  margin-left: 5px;
+  cursor: default;
 }
 .kshf .panel.panel_infobox > .infobox_source > .actionButton {
   display: inline-block;
@@ -855,9 +923,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 5px;
   border-radius: 5px;
   background-color: white;
-  cursor: pointer;
+  font-weight: 300;
 }
-.kshf .panel.panel_infobox > .infobox_source > .actionButton:hover {
+.kshf .panel.panel_infobox > .infobox_source > .actionButton[disabled=true] {
+  color: gray;
+  border-color: lightgray;
+  cursor: not-allowed;
+}
+.kshf .panel.panel_infobox > .infobox_source > .actionButton[disabled=false]:hover {
+  cursor: pointer;
   box-shadow: 1px 1px 1px gray;
   background-color: #EEE;
 }
