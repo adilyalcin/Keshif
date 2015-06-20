@@ -23,6 +23,7 @@ google.setOnLoadCallback(function(){
         barChartWidth: 110,
         leftPanelLabelWidth: 250,
         rightPanelLabelWidth: 250,
+        itemName: "Bike Trips",
         source: {
             gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
             sheets: [{name:"Trips"}]
@@ -36,13 +37,15 @@ google.setOnLoadCallback(function(){
                     return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
                 }, unitName: "min"
             },{ title: "Day of Month", layout: "bottom",
-                attribMap: function(){ return this["Start Time"].getUTCDate(); },
+                attribMap: function(){ return this["Start Time"].getDate(); },
             },{ title: "Day of Week", layout: "middle",
-                attribMap: function(){ return this["Start Time"].getUTCDay(); },
+                attribMap: function(){ return this["Start Time"].getDay(); },
                 sortingOpts: [ {value: "id"} ],
                 catLabel: function(){ return getDayNameFromNumber(this.id); }
-            },{ title: "Hour of Day", layout: "middle", collapsed: true,
-                attribMap: function(){ return this["Start Time"].getUTCHours(); },
+            },{ title: "Hour of Day", layout: "bottom", collapsed: false,
+                attribMap: function(){ 
+                    return this["Start Time"].getHours();
+                },
             }
         ]
     });
@@ -60,7 +63,7 @@ google.setOnLoadCallback(function(){
 
         <div id="infobox" align="center">
             <span class="fa fa-info-circle"></span>
-            Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.
+            Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.<br>
             <a href="https://www.capitalbikeshare.com/trip-history-data" target="_blank">
                 https://www.capitalbikeshare.com/trip-history-data</a>
             <span class="fa fa-info-circle"></span>
