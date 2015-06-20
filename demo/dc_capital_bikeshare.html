@@ -28,6 +28,12 @@ google.setOnLoadCallback(function(){
             gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
             sheets: [{name:"Trips"}]
         },
+        readyCb: function(){
+            browser.summaries_by_name["Day of Month"].height_hist_max = 80; // total dur
+            browser.summaries_by_name["Total Duration"].height_hist_max = 80;
+            browser.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
+            browser.updateLayout();
+        },
         summaries: [
             {   title: "Subscription Type", layout: 'middle'
             },{ title: "Start Station", layout: 'left'
@@ -42,10 +48,10 @@ google.setOnLoadCallback(function(){
                 attribMap: function(){ return this["Start Time"].getDay(); },
                 sortingOpts: [ {value: "id"} ],
                 catLabel: function(){ return getDayNameFromNumber(this.id); }
-            },{ title: "Hour of Day", layout: "bottom", collapsed: false,
+            },{ title: "Trip Start Hour", layout: "bottom", collapsed: false,
                 attribMap: function(){ 
                     return this["Start Time"].getHours();
-                },
+                }, unitName: ":00"
             }
         ]
     });
@@ -54,7 +60,7 @@ google.setOnLoadCallback(function(){
         <style>
             #chart_div {
                 width: 1100px;
-                height: 750px;
+                height: 700px;
             }
         </style>
     </head>
