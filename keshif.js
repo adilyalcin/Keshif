@@ -77,10 +77,10 @@ var kshf = {
             LockToCompare: "Lock to compare",
             Unlock: "Unlock",
             Search: "Search",
-            CreatingBrowser: "Creating browser...",
+            CreatingBrowser: "Creating browser",
             Rows: "Rows",
             More: "More",
-            LoadingData: "Loading data sources...",
+            LoadingData: "Loading data sources",
             ShowAll: "All",
             ScrollToTop: "Top",
             Absolute: "Absolute",
@@ -142,10 +142,10 @@ var kshf = {
             LockToCompare: "Bloquer pour comparer",
             Unlock: "Débloquer",
             Search: "Rechercher",
-            CreatingBrowser: "Création du navigateur...",
+            CreatingBrowser: "Création du navigateur",
             Rows: "Lignes",
             More: "Plus",
-            LoadingData: "Chargement des données...",
+            LoadingData: "Chargement des données",
             ShowAll: "Supprimer les filtres",
             ScrollToTop: "Début",
             Absolute: "Absolue",
@@ -2500,10 +2500,12 @@ kshf.Browser.prototype = {
             ;
         this.DOM.loadingBox = this.panel_infobox.append("div").attr("class","infobox_content infobox_loading");
 //        this.DOM.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
-        var ssdsd = this.DOM.loadingBox.append("span").attr("class","loadinggg");
-        ssdsd.append("span").attr("class","loading_dots loading_dots_1").attr("anim",true);
-        ssdsd.append("span").attr("class","loading_dots loading_dots_2").attr("anim",true);
-        ssdsd.append("span").attr("class","loading_dots loading_dots_3").attr("anim",true);
+        var ssdsd = this.DOM.loadingBox.append("span").attr("class","spinner");
+        ssdsd.append("span").attr("class","spinner_x spinner_1");
+        ssdsd.append("span").attr("class","spinner_x spinner_2");
+        ssdsd.append("span").attr("class","spinner_x spinner_3");
+        ssdsd.append("span").attr("class","spinner_x spinner_4");
+        ssdsd.append("span").attr("class","spinner_x spinner_5");
 
         var hmmm=this.DOM.loadingBox.append("div").attr("class","status_text");
         hmmm.append("span").attr("class","status_text_sub info").text(kshf.lang.cur.LoadingData);
@@ -2820,8 +2822,8 @@ kshf.Browser.prototype = {
             if(response.isError()) {
                 me.panel_infobox.select("div.status_text .info")
                     .text("Cannot load data");
-                me.panel_infobox.select("span.loadinggg").selectAll("span").remove();
-                me.panel_infobox.select("span.loadinggg").append('i').attr("class","fa fa-warning");
+                me.panel_infobox.select("span.spinner").selectAll("span").remove();
+                me.panel_infobox.select("span.spinner").append('i').attr("class","fa fa-warning");
                 me.panel_infobox.select("div.status_text .dynamic")
                     .text("("+response.getMessage()+")");
                 return;

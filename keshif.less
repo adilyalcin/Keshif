@@ -862,13 +862,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 height: 35px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
-                .loadinggg{
+                // http://tobiasahlin.com/spinkit/
+                .spinner{
                     position: absolute;
-                    top: 8px;
-                    left: 10px;
-                    i.fa-warning{
-                        margin-left: 20px;
-                        font-size: 1.5em;
+                    left: 20px;
+                    top: 3px;
+                    font-size: 10px;
+                    width: 50px;
+                    height: 30px;
+                    text-align: center;
+                    font-size: 10px;
+                    > .spinner_x {
+                        margin-right: 2px;
+                        background-color: rgb(163, 189, 209);
+                        height: 100%;
+                        width: 6px;
+                        display: inline-block;
+
+                        -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+                        animation: stretchdelay 1.2s infinite ease-in-out;
+                    }
+                    > .spinner_2 {
+                      -webkit-animation-delay: -1.1s;
+                      animation-delay: -1.1s;
+                    }
+                    > .spinner_3 {
+                      -webkit-animation-delay: -1.0s;
+                      animation-delay: -1.0s;
+                    }
+                    > .spinner_4 {
+                      -webkit-animation-delay: -0.9s;
+                      animation-delay: -0.9s;
+                    }
+                    > .spinner_5 {
+                      -webkit-animation-delay: -0.8s;
+                      animation-delay: -0.8s;
                     }
                 }
                 div.status_text{
@@ -2248,7 +2276,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &[hasmultivalueitem=true] {
                 > .headerGroup .hasMultiMappings{
-                    //display: inline-block;
+                    display: inline-block;
                 }
             }
         }
@@ -2317,28 +2345,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width:2px;
         display:none;
         position:absolute;
-    }
-
-    .loading_dots {
-        width: 10px;
-        height: 10px;
-        background: gray;
-        border-radius: 50px;
-        margin: 4px;
-        display: inline-block;
-        &[anim]{
-            //background: black;
-            .animation(fade 900ms forwards);
-            .animation-iteration-count(infinite);
-            &.loading_dots_1 {
-            }
-            &.loading_dots_2 {
-                .animation-delay(300ms)
-            }
-            &.loading_dots_3 {
-                .animation-delay(600ms)
-            }
-        }
     }
 
     .middleColumn{
@@ -3168,6 +3174,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:relative;
         }
     } // boxinbox
+}
+
+@keyframes stretchdelay {
+  0%, 40%, 100% { 
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% { 
+    transform: scaleY(0.8);
+    background-color: rgb(250, 119, 70);
+    -webkit-transform: scaleY(0.8);
+  }
 }
 
 .tipsy { 

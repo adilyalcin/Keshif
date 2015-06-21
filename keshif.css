@@ -944,14 +944,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf .panel.panel_infobox > .infobox_loading .loadinggg {
+.kshf .panel.panel_infobox > .infobox_loading .spinner {
   position: absolute;
-  top: 8px;
-  left: 10px;
+  left: 20px;
+  top: 3px;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 10px;
 }
-.kshf .panel.panel_infobox > .infobox_loading .loadinggg i.fa-warning {
-  margin-left: 20px;
-  font-size: 1.5em;
+.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_x {
+  margin-right: 2px;
+  background-color: #a3bdd1;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_3 {
+  -webkit-animation-delay: -1s;
+  animation-delay: -1s;
+}
+.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
 }
 .kshf .panel.panel_infobox > .infobox_loading div.status_text {
   margin: auto;
@@ -2293,6 +2318,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
+.kshf .kshfChart:hover[hasmultivalueitem=true] > .headerGroup .hasMultiMappings {
+  display: inline-block;
+}
 .kshf .kshfChart[hasFacets=true] > .headerGroup {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxNTEsIDE1MSwgMTUxKSIgc3RvcC1vcGFjaXR5PSIwLjIiLz48c3RvcCBvZmZzZXQ9IjIwJSIgc3RvcC1jb2xvcj0icmdiKDE1MSwgMTUxLCAxNTEpIiBzdG9wLW9wYWNpdHk9IjAuNCIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMTUxLCAxNTEsIDE1MSkiIHN0b3Atb3BhY2l0eT0iMC40Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTUxLCAxNTEsIDE1MSkiIHN0b3Atb3BhY2l0eT0iMC4yIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(right, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);;
@@ -2351,36 +2379,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 2px;
   display: none;
   position: absolute;
-}
-.kshf .loading_dots {
-  width: 10px;
-  height: 10px;
-  background: gray;
-  border-radius: 50px;
-  margin: 4px;
-  display: inline-block;
-}
-.kshf .loading_dots[anim] {
-  -webkit-animation: fade 900ms forwards;
-  -moz-animation: fade 900ms forwards;
-  -o-animation: fade 900ms forwards;
-  animation: fade 900ms forwards;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  -o-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-}
-.kshf .loading_dots[anim].loading_dots_2 {
-  -webkit-animation-delay: 300ms;
-  -moz-animation-delay: 300ms;
-  -o-animation-delay: 300ms;
-  animation-delay: 300ms;
-}
-.kshf .loading_dots[anim].loading_dots_3 {
-  -webkit-animation-delay: 600ms;
-  -moz-animation-delay: 600ms;
-  -o-animation-delay: 600ms;
-  animation-delay: 600ms;
 }
 .kshf .middleColumn {
   display: -webkit-box;
@@ -3274,6 +3272,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .boxinbox.project_3rdparty img {
   position: relative;
+}
+@keyframes stretchdelay {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(0.8);
+    background-color: #fa7746;
+    -webkit-transform: scaleY(0.8);
+  }
 }
 .tipsy {
   font-size: 10px;
