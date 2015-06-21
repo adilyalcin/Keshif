@@ -56,7 +56,7 @@ browser = new kshf.Browser({
             }
         },{ title: "Keywords", layout: 'right',
             attribMap: function(){ return this.Keywords.split("+"); }
-        },{ title: "Facet Types &amp; Features",
+        },{ title: "Summary Types",
             attribMap: function(){
                 var r = [];
                 if(this['Facets - Histogram']>0)
@@ -65,8 +65,6 @@ browser = new kshf.Browser({
                     r.push("Hierarchical <span class='fa fa-outdent'></span>");
                 if(this['Has Time'])
                     r.push("Time <span class='fa fa-clock-o'></span>");
-                if(this['Multi-Sort'])
-                    r.push("Multi-Sort <span class='fa fa-sort-amount-desc'></span>");
                 return r;
             }
         },{ title: "Data Structure",
@@ -100,7 +98,7 @@ browser = new kshf.Browser({
             }
         },{ title: "Data Source", layout: 'right',
             attribMap: function(){ return this.Source.split("+"); }
-        },{ title: "# Items", showPercentile: true, layout: 'right', 
+        },{ title: "# Items", showPercentile: true, layout: 'right', intervalScale: "log"
         },{ title: "Creation Time", collapsed: false,
             attribMap: function(){ return this.Authored.getFullYear(); }
         }
