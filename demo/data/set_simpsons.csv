@@ -1,6 +1,6 @@
-	School	Blue Hair	Duff Fan	Evil	Male	Power Plant	Age
+Name	School	Blue Hair	Duff Fan	Evil	Male	Power Plant	Age
 Lisa	1	0	0	0	0	0	8
-Bart	1	0	0	0	1	0	10
+Bart	1	0	0	0	1	0	10	
 Homer	0	0	1	0	1	1	40
 Marge	0	1	0	0	0	0	36
 Maggie	0	0	0	0	0	0	1
@@ -16,7 +16,7 @@ Ralph	1	0	0	0	1	0	8
 Sideshow Bob	0	0	0	1	1	0	37
 Kent Brockman	0	0	0	0	1	0	45
 Fat Tony	0	0	0	1	1	0	50
-Jacqueline Bouvier 	0	1	0	0	0	0	76
+Jacqueline Bouvier	0	1	0	0	0	0	76
 Patty Bouvier	0	0	0	0	0	0	45
 Selma Bouvier	0	0	0	0	0	0	45
 Lenny Leonard	0	0	1	0	1	1	38
