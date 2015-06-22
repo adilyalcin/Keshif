@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Aggre-Set Set Visualization</title><meta charset="utf-8">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+        
+        <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:500,300,700,400' type='text/css'>
+
+        <link rel="stylesheet" href="./set.css"/ type="text/css">
+        <script type="text/javascript" src="./set.js" charset="utf-8"></script>
+        
+        <script type="text/javascript" src="./sample_browsers.js" charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+var theSetSummary = undefined;
+
+function resizeBrowser(){
+    $('#theBrowserDIV').height($(window).height()-40);
+};
+
+function loadDemo(config){
+	config.width = config.width || 760; // default is 760 pixel wide
+	
+	$('#theBrowserDIV')
+		.width(config.width)
+		.attr("name",config.id); // Allows customizing the style per-demo
+
+	config.browser.domID= "#theBrowserDIV";
+	if(config.browser.barChartWidth===undefined) 
+		config.browser.barChartWidth = 130;
+	if(config.browser.itemDisplay) 
+		config.browser.itemDisplay.detailsToggle = 'off';
+
+	config.browser.readyCb = function(browser){
+		var degreePanel = (browser.panels.left.summaries.length!==0)?"left":"middle";
+		var setListSummary = browser.panels[degreePanel].summaries[0];
+
+		if(config.name==="YourData"){
+			var setColumn = browser.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
+			if(setColumn==="") return; // Cannot show set-matrix
+			setListSummary = browser.summaries_by_name[setColumn];
+
+			setListSummary.addToPanel(this.panels.left);
+
+			browser.summaries.forEach(function(summary){
+				if(summary.summaryTitle===browser.items[0].idIndex) return;
+				if(summary.type==='interval'){
+					summary.addToPanel(this.panels.middle);
+					summary.setCollapsed(true);
+				}
+				if(summary.type==='categorical' && !summary.hasMultiValueItem){
+					summary.addToPanel(this.panels.middle);
+					summary.setCollapsed(true);
+				}
+			},this);
+			browser.showAttributes(); // actually hides / revert state
+		} else {
+			d3.select("#credits_wrapper").style("display","block");
+			d3.select("#credits").html(config.credits);
+		}
+		
+		{	// Add the degree sumary
+			var filterID = setListSummary.summaryFilter.id;
+			var setDegreeSummary = browser.createSummary(
+				"<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryTitle,
+				function(d){
+	                var arr=d.mappedDataCache[filterID];
+	                if(arr==null) return 0;
+	                return arr.length;
+	            }
+			);
+			if(config.id==="teaser") degreePanel = "right";
+			setDegreeSummary.addToPanel(browser.panels[degreePanel],1);
+		}
+		theSetSummary = new kshf.Summary_Set();
+		theSetSummary.initialize(browser,setListSummary);
+
+		if(config.id==="socialgraph" || config.id==="CpdsVsProteinFam" || config.id==="tedTalks" || config.id==="simpsons"){
+			theSetSummary.setListSummary.setHeightRow_attrib(40);
+			theSetSummary.DOM.chartRoot.attr("show_gridlines",false);
+			theSetSummary.setListSummary.cbSetHeight();
+			theSetSummary.refreshClique_Strength();
+		}
+		browser.updateLayout();
+		browser.panels.left.updateSummariesWidth();
+	};
+
+	browser = new kshf.Browser(config.browser); 
+};
+
+$(document).ready( function(){
+	resizeBrowser();
+	$(window).resize(function(){
+	    resizeBrowser();
+	    if(browser) browser.updateLayout();
+	});
+
+	$('.nav-ui-size').click(function(){
+		this.parentNode.setAttribute("shrink",this.parentNode.getAttribute("shrink")==="false"?true:false);
+	});
+
+	var selector = d3.select("#set-selector");
+	var configs = [];
+	for(var configID in browser_configs){
+		browser_configs[configID].id = configID;
+		configs.push(browser_configs[configID]);
+	}
+	selector.selectAll("option.sampleDataset").data(configs).enter().append("option").attr("class","sampleDataset")
+		.attr("value",function(d){ return d.id; })
+		.text(function(d){ return d.title+" ("+d.items+", "+d.sets+(d.attribs===""?"":(" + "+d.attribs))+")"; });
+	selector.on("change",function(){
+		d3.select("#SampleData").attr("ready",this.value!=="none");
+	});
+
+	$("#SampleData").click(function(){
+		var v=selector[0][0].value;
+		if(v==="none") return;
+		loadDemo(browser_configs[v]);
+	});
+
+	$("#YourData").click(function(){
+		loadDemo({
+			name:"YourData",
+			browser:{
+				leftPanelLabelWidth: 160,
+				rightPanelLabelWidth: 140,
+				middlePanelLabelWidth: 140,
+			}
+		});
+	});
+
+	$("#AboutButton").click(function(){
+		alert("Under Construction...");
+	});
+
+	// http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-url-parameter
+	function getQueryParams(qs) {
+	    qs = qs.split('+').join(' ');
+	    var params={}, tokens, re = /[?&]?([^=]+)=([^&]*)/g;
+	    while (tokens = re.exec(qs)) {
+	        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+	    }
+	    return params;
+	};
+
+	// Allow loading dataset given in the url
+	var urlQuery = getQueryParams(document.location.search);
+	if(urlQuery.dataset){
+		var config = browser_configs[urlQuery.dataset];
+		if(config) loadDemo(config);
+	}
+});
+        </script>
+        <style>
+
+html, body{
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+#theBrowserDIV {
+	position: absolute !important;
+	right: 15px;
+	top: 10px;
+	left: auto !important;
+	overflow-y: visible !important;
+}
+#theBrowserDIV[name="sharks"] .listItem{
+	width: 10px;
+	height: 10px;
+	background-color: #ACACAC;
+	margin: 1px;
+}
+#theBrowserDIV[name="sharks"] .listItem[highlight=selected]{
+	background-color: red;
+	box-shadow: none;
+}
+#theBrowserDIV[name="sharks"] .listItem[highlight=true]{
+	background-color: orangered;
+	box-shadow: none;
+}
+#theBrowserDIV[name="lesMiserables"] .listItem .fa{
+	color: gray;
+}
+#theBrowserDIV[name="movies"] .listItem .fa{
+	color: gray;
+}
+
+/* Simpson dataset */
+.simpson_head{
+	width: 100px;
+    display: block;
+    -webkit-transition: all 1s ease;
+       -moz-transition: all 1s ease;
+         -o-transition: all 1s ease;
+        -ms-transition: all 1s ease;
+            transition: all 1s ease;
+    -webkit-filter: grayscale(0%);
+       -moz-filter: grayscale(0%);
+         -o-filter: grayscale(0%);
+        -ms-filter: grayscale(0%);
+            filter: grayscale(0%);
+}
+#theBrowserDIV[resultpreview="true"] .listItem:not([highlight='true']) .simpson_head {
+	-webkit-filter: grayscale(100%);
+	   -moz-filter: grayscale(100%);
+	     -o-filter: grayscale(100%);
+	    -ms-filter: grayscale(100%);
+	        filter: grayscale(100%);
+	box-shadow: 0px 0px 0px black;
+}
+.simpson_name{
+	font-size: 0.8em;
+	font-weight: 300;
+	display: block;
+	text-align: center;
+}
+
+/* Factbook dataset */
+.content .locator{
+    float: left;
+    width: 50px;
+    margin-right: 5px;
+}
+
+#aggreset-logo{
+	width: 200px;
+}
+.nav-ui{
+	font-family: 'Roboto', sans-serif;
+	position: fixed;
+	left: 5px;
+	bottom: 5px;
+	z-index: 600;
+	background-color: rgba(255,255,255,1);
+	border: solid 1px gray;
+	box-shadow: 1px 1px 2px gray;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+}
+
+.nav-ui-size{
+	position: absolute;
+	right: 7px;
+	top: 7px;
+	cursor: pointer;
+}
+.nav-ui[shrink=true] .nav-ui-size:before {
+	content: '\f065';
+}
+.nav-ui[shrink=true] .set-selector-wrapper {
+	display: none;
+}
+.nav-ui[shrink=true] #aggreset-logo {
+	width: 150px;
+	padding-top: 10px;
+}
+.nav-ui[shrink=true] .projectName {
+	width: 150px;
+	font-size: 0.8em;
+	vertical-align: baseline;
+}
+.nav-ui-size:hover{
+	color: orangered;
+}
+.loadDataset_header{
+	padding-left: 5px;
+	padding-top: 3px;
+	background-color: #EEE;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 7px;
+	border-bottom: solid 1px lightgray;
+}
+.showConfigButton{
+	display: none;
+}
+.projectName{
+	display: inline-block;
+	width: 200px;
+	vertical-align: top;
+	margin-top: 6px;
+	font-weight: 400;
+	cursor: default;
+}
+.headerOption{
+	display: inline-block;
+	border-radius: 8px;
+	border: solid 1px gray;
+	cursor: pointer;
+	font-weight: 300;
+	padding: 0px 4px;
+	margin-bottom: 2px;
+}
+.headerOption:hover{
+	background-color: white;
+	box-shadow: 0px 0px 1px gray;
+}
+.headerOption:hover > .fa{
+	color: orangered;
+}
+.headerOption[ready="false"]{
+	pointer-events: none;
+	color: gray;
+}
+.headerOption[ready="true"]{
+	background-color: white;
+}
+#credits_wrapper{
+	display: none;
+	position: fixed;
+	bottom: 5px;
+	right: 5px;
+	font-style: italic;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	cursor: default;
+	color: gray;
+	font-size: 0.8em;
+}
+#credits > a{
+	color: black;
+}
+#credits {
+	display: inline-block;
+	margin-right: 5px;
+}
+#credits_wrapper > .fa{
+	font-size: 1.2em;
+	color: black;
+}
+
+</style>
+</head>
+<body>
+	<div id="theBrowserDIV"></div>
+	<div class="nav-ui" shrink="false">
+		<div class="nav-ui-size fa fa-compress"></div>
+	    <div class="set-selector-wrapper"> 
+	    	<div class="loadDataset_header">
+	    		<span class="headerOption" id="AboutButton"><span class='fa fa-info'></span> About</span>
+	    		<span class="headerOption" id="SampleData" ready="false">
+	    			<span class='fa fa-arrow-up'></span> Load sample data</span>
+	    		<span class="headerOption" id="YourData">
+	    			<span class='fa fa-cloud-upload'></span> Load your data</span>
+	    	</div>
+		    <select id="set-selector">
+		    	<option value="none">* * * * Select Sample * * * *</option>}
+		        </select>
+			</div>
+		<img id="aggreset-logo" src="img/aggre-set.png">
+		<span class="projectName">Rich and Scalable Set Exploration using Visualizations of Element Aggregations</span>
+		</div>
+	<div id="credits_wrapper">
+		<span id="credits"></span>
+		<span class='fa fa-file'></span>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,392 @@
+@import "../lesshat";
+
+@reorder_animation: ~'all 500ms ease-in-out';
+@layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
+@color_bars: #B0BFCA; //#8699A8;
+@color_filtered: #30B8C4;
+@color_bars_selected: darken(orangered, 10%); //#CC2320;
+@color_related: lighten(orangered, 10%); //#B2B227;
+@color_facet_arrow: rgb(231, 215, 97);
+@color_facet_group: #E9E5CB;
+@color_bar_preview: orangered;
+@color_preview_compare: #222222;
+@color_set_containment: rgb(64, 0, 255);
+@color_item_count: #969DA3;;
+
+@color_clique_background: rgba(229, 229, 229, 0.5);
+
+@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
+
+.kshf{
+	// Hide clique summary 
+	.kshfChart{
+		&.cliqueChart{
+			display: none;
+		}
+		&[show_cliques=true] > .kshfChart.cliqueChart{
+			display: block;
+		}
+	}
+
+	.Summary_Set{
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 100%;
+		box-sizing: border-box;
+		&[noanim="false"]{
+			.rows > .row {
+				.transition(@reorder_animation);
+				> .line{
+					.transition(~'all 200ms ease-in-out');
+				}
+			}
+		}
+		> .facetControls {
+			display: block;
+			position: relative;
+			text-align: center;
+			border-bottom: dotted 1px lightgray;
+			margin-bottom: -1px;
+			> .strengthControl{
+				font-size: 0.7em;
+				display: inline-block;
+				background-color: #eaeaea;
+				cursor: pointer;
+				border-width: 1px 2px 1px 1px;
+				border-style: solid;
+				border-color: #DFDFDF;
+				border-radius: 15px;
+				cursor: default;
+				padding: 1px 3px;
+				color: #474747;
+				cursor: pointer;
+				&:hover{
+					border-color: gray;
+				}
+				>.strengthLabel{
+					display: none;
+					width: 36px;
+					font-style: italic;
+					font-size: 0.8em;
+				}
+			}
+			> .heyooo{
+				display: block;
+				position: absolute;
+				right: 3px;
+				top: 0px;
+				font-size: 0.8em;
+			}
+			.configOpt{
+				display: inline-block;
+				background-color: rgb(234, 234, 234);
+				cursor: pointer;
+				border-width: 0px;
+				border-style: solid;
+				border-color: rgb(234, 234, 234);
+				border-radius: 15px;
+				cursor: default;
+				.sdsdssds{
+					color: gray;
+					font-size: 0.9em;
+					margin-right: 2px;
+				}
+				> .configOpt_icon{
+					font-size: 1em;
+					vertical-align: middle;
+					background-color: white;
+					display: inline-block;
+					width: 15px;
+					height: 15px;
+					text-align: center;
+					border-style: solid;
+					border-radius: 20px;
+					border-color: white;
+					border-width: 0px;
+					margin: 1px;
+				}
+				> .configOpt_label{
+					color: rgb(71, 71, 71);
+					display: none;
+					font-size: 0.9em;
+					padding-left: 3px;
+					height: 15px;
+					> .fa{
+						margin-right: 3px;
+					}
+				}
+				&.configRowHeight{
+					.fa:hover{
+						color: orangered;
+						cursor: pointer;
+					}
+				}
+				&:hover{
+					> .configOpt_label{
+						display: inline;
+					}
+				}
+			}
+
+			svg.sizeLegend{
+				position: absolute;
+				left: 10px;
+				margin-top: 4px;
+				overflow: visible;
+				cursor: default;
+				> .legendHeader{
+					font-size: 0.7em;
+					alignment-baseline: central;
+					fill: #969da3;
+					text-anchor: start;
+				}
+				.legendMark{
+					> .legendCircle{
+						stroke: gray;
+						stroke-width: 1;
+						fill: none;
+					}
+					> .legendLine{
+						stroke: gray;
+						stroke-width: 1;
+						stroke-dasharray: 0.8;
+					}
+					> .legendLabel{
+						font-size: 0.7em;
+						alignment-baseline: central;
+						fill: @color_item_count;
+					}
+				}
+			}
+
+		}
+		> .widthAdjust{
+			display: block;
+			position: absolute;
+			left: 0px;
+			width: 0px;
+			height: 100%;
+			pointer-events: all;
+			border-width: 0px 2px 0px 0px;
+			border-style: dotted;
+			border-color: lightgray;
+			cursor: col-resize;
+			opacity: 0.5;
+			z-index: 10;
+			&:hover{
+				border-style: solid;
+				border-color: gray;
+			}
+		}
+		.rows{
+			position: relative;
+			display: block;
+			width: 100%;
+			height: 100%;
+			> .row{
+				position: absolute;
+				left: 0px;
+				width: 100%;
+				display: block;
+				cursor: default;
+				&[highlight=selected] {
+					> .text{
+						fill: red;
+					}
+					> .label{
+						fill: red;
+						&.label_vert[show=true]{
+							display: block;
+						}
+					/*	border-width: 2px 0px 0px 2px; */
+					}
+					> .cliqueMark{
+						background-color: orangered;
+					/*	border-width: 2px 0px 0px 2px; */
+					}
+					> .line{
+						stroke: orangered;
+						stroke-width: 2px;
+					}
+				}
+				// hide the rows which have 0 items
+				&[crossingcount="0"]{
+					> .line{
+						border-width: 0px;
+					}
+				}
+				> .line{
+					display: block;
+					stroke: #DADADA;
+					stroke-width: 1px;
+					pointer-events: none;
+				}
+				> .label{
+					font-family: Helvetica, Arial, sans-serif;
+					font-size: 13px;
+					font-weight: 300;
+					font-size: 0.8em;
+					text-anchor: end;
+					alignment-baseline: middle;
+					&.label_vert{
+						text-anchor: start;
+						background-color: white;
+						display:none;
+					}
+				}
+			}
+		}
+		.cliqueGroup{
+			&[animate_position="true"]> .clique {
+				.transition(@reorder_animation);
+			}
+			> .clique{
+				position: absolute;
+				display: block;
+				// position (transform) is set dynamically
+				
+				> .crossing-center{
+					display: block;
+					width: 100%;
+					height: 100%;
+				}
+				> .cliqueBackground{
+					opacity: 0;
+					fill: @color_clique_background;
+					.transition(~'opacity 500ms linear');
+				}
+				> .cliqueMark{
+					.transition(@reorder_animation);
+					display: block;
+					position: absolute;
+					fill: @color_bars;
+					box-sizing: border-box;
+					cursor: pointer;
+					&.preview{
+						fill: @color_related;
+					}
+				}
+				> .cliqueMark-preview-compare{
+					fill: none;
+					stroke: @color_preview_compare;
+					stroke-width: 1px;
+					.transition(~'opacity 500ms linear');
+					opacity: 1;
+					&[hidden='true']{
+						opacity: 0;
+					}
+				}
+				> .cliqueText{
+					font-size: 0.7em;
+					text-align: center;
+					opacity: 0;
+					text-anchor: middle;
+					fill: gray;
+					text-shadow: 0px 0px 2px white;
+					transform: translate(0px,21px);
+					.transition(~'all 500ms ease-in-out');
+					.transition-delay(1000);
+					pointer-events: none;
+				}
+				&[empty=true] > .cliqueMark{
+					background-color: none;
+					border: solid 1px gray;
+				}
+				&[activesize="0"]{
+					display: none;
+				}
+			}
+		} //.cliqueGroup
+
+		&[showStrength='true']{
+			.facetControls > .strengthControl {
+				background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e6e6f7), color-stop(100%,#9595db)); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* IE10+ */
+				background: linear-gradient(to right, #e6e6f7 0%,#9595db 100%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6f7', endColorstr='#9595db',GradientType=1 ); /* IE6-9 */
+				border-right-color: @color_set_containment;
+				color: black;
+				text-shadow: 0px 0px 2px #FFFFFF;
+				> .strengthLabel{
+					display: inline-block;
+				}
+			}
+			.cliqueMark[subset=true]{
+				stroke-width: 2px;
+				stroke: @color_set_containment;
+			}
+		}
+		&[show_gridlines='false']{
+			.rows > .row > .line{
+				opacity: 0.3;
+			}
+		}
+		&[show_gridlines='true']{
+			.configGridLine >.configOpt_icon{
+				background-color: #E5E5E5;
+			}
+		}
+		&[highlight_cliques="true"] {
+			.configEmpty >.configOpt_icon{
+				background-color: @color_clique_background;
+			}
+			.cliqueGroup > .clique:not([activesize="0"]){
+				> .cliqueBackground{
+					opacity: 1;
+				}
+			}
+		}
+		.line_cat{
+			text-align: right;
+			> .label{
+				left: calc(~"-100% - 5px");
+				right: 0px;
+				text-align: left;
+				display: block;
+			}
+		}
+
+		.text{
+			position: relative;
+			top: -0.5em;
+			cursor: pointer;
+			white-space: nowrap;
+			width: 250px;
+			text-align: right;
+			display: inline-block;
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 13px;
+			font-weight: 300;
+		}
+		> .belowMatrix{
+			position: relative;
+			height: 18px;
+			text-align: right;
+			>.matrixInfo{
+				font-size: 0.7em;
+				color: #919191;
+				margin: 0px 3px;
+				display: inline-block;
+				cursor: default;
+				font-style: italic;
+				>.circleeee{
+					width:10px;
+					height: 10px;
+					border-radius: 10px;
+					display: inline-block;
+					margin-right: 2px;
+					background-color: @color_bars;
+					&.borrderr{
+						border-top: solid 2px @color_set_containment;
+						border-right: solid 2px @color_set_containment;
+						border-bottom: solid 2px @color_set_containment;
+					}
+				}
+			}
+		}
+	} // Summary_Set
+}

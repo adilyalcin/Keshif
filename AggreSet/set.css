@@ -1,0 +1,366 @@
+.kshf .kshfChart.cliqueChart {
+  display: none;
+}
+.kshf .kshfChart[show_cliques=true] > .kshfChart.cliqueChart {
+  display: block;
+}
+.kshf .Summary_Set {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.kshf .Summary_Set[noanim="false"] .rows > .row {
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.kshf .Summary_Set[noanim="false"] .rows > .row > .line {
+  -webkit-transition: all 200ms ease-in-out;
+  -moz-transition: all 200ms ease-in-out;
+  -o-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+.kshf .Summary_Set > .facetControls {
+  display: block;
+  position: relative;
+  text-align: center;
+  border-bottom: dotted 1px lightgray;
+  margin-bottom: -1px;
+}
+.kshf .Summary_Set > .facetControls > .strengthControl {
+  font-size: 0.7em;
+  display: inline-block;
+  background-color: #eaeaea;
+  border-width: 1px 2px 1px 1px;
+  border-style: solid;
+  border-color: #DFDFDF;
+  border-radius: 15px;
+  cursor: default;
+  padding: 1px 3px;
+  color: #474747;
+  cursor: pointer;
+}
+.kshf .Summary_Set > .facetControls > .strengthControl:hover {
+  border-color: gray;
+}
+.kshf .Summary_Set > .facetControls > .strengthControl > .strengthLabel {
+  display: none;
+  width: 36px;
+  font-style: italic;
+  font-size: 0.8em;
+}
+.kshf .Summary_Set > .facetControls > .heyooo {
+  display: block;
+  position: absolute;
+  right: 3px;
+  top: 0px;
+  font-size: 0.8em;
+}
+.kshf .Summary_Set > .facetControls .configOpt {
+  display: inline-block;
+  background-color: #eaeaea;
+  cursor: pointer;
+  border-width: 0px;
+  border-style: solid;
+  border-color: #eaeaea;
+  border-radius: 15px;
+  cursor: default;
+}
+.kshf .Summary_Set > .facetControls .configOpt .sdsdssds {
+  color: gray;
+  font-size: 0.9em;
+  margin-right: 2px;
+}
+.kshf .Summary_Set > .facetControls .configOpt > .configOpt_icon {
+  font-size: 1em;
+  vertical-align: middle;
+  background-color: white;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  border-style: solid;
+  border-radius: 20px;
+  border-color: white;
+  border-width: 0px;
+  margin: 1px;
+}
+.kshf .Summary_Set > .facetControls .configOpt > .configOpt_label {
+  color: #474747;
+  display: none;
+  font-size: 0.9em;
+  padding-left: 3px;
+  height: 15px;
+}
+.kshf .Summary_Set > .facetControls .configOpt > .configOpt_label > .fa {
+  margin-right: 3px;
+}
+.kshf .Summary_Set > .facetControls .configOpt.configRowHeight .fa:hover {
+  color: orangered;
+  cursor: pointer;
+}
+.kshf .Summary_Set > .facetControls .configOpt:hover > .configOpt_label {
+  display: inline;
+}
+.kshf .Summary_Set > .facetControls svg.sizeLegend {
+  position: absolute;
+  left: 10px;
+  margin-top: 4px;
+  overflow: visible;
+  cursor: default;
+}
+.kshf .Summary_Set > .facetControls svg.sizeLegend > .legendHeader {
+  font-size: 0.7em;
+  alignment-baseline: central;
+  fill: #969da3;
+  text-anchor: start;
+}
+.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendCircle {
+  stroke: gray;
+  stroke-width: 1;
+  fill: none;
+}
+.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendLine {
+  stroke: gray;
+  stroke-width: 1;
+  stroke-dasharray: 0.8;
+}
+.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendLabel {
+  font-size: 0.7em;
+  alignment-baseline: central;
+  fill: #969da3;
+}
+.kshf .Summary_Set > .widthAdjust {
+  display: block;
+  position: absolute;
+  left: 0px;
+  width: 0px;
+  height: 100%;
+  pointer-events: all;
+  border-width: 0px 2px 0px 0px;
+  border-style: dotted;
+  border-color: lightgray;
+  cursor: col-resize;
+  opacity: 0.5;
+  z-index: 10;
+}
+.kshf .Summary_Set > .widthAdjust:hover {
+  border-style: solid;
+  border-color: gray;
+}
+.kshf .Summary_Set .rows {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kshf .Summary_Set .rows > .row {
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  display: block;
+  cursor: default;
+}
+.kshf .Summary_Set .rows > .row[highlight=selected] > .text {
+  fill: red;
+}
+.kshf .Summary_Set .rows > .row[highlight=selected] > .label {
+  fill: red;
+  /*	border-width: 2px 0px 0px 2px; */
+}
+.kshf .Summary_Set .rows > .row[highlight=selected] > .label.label_vert[show=true] {
+  display: block;
+}
+.kshf .Summary_Set .rows > .row[highlight=selected] > .cliqueMark {
+  background-color: orangered;
+  /*	border-width: 2px 0px 0px 2px; */
+}
+.kshf .Summary_Set .rows > .row[highlight=selected] > .line {
+  stroke: orangered;
+  stroke-width: 2px;
+}
+.kshf .Summary_Set .rows > .row[crossingcount="0"] > .line {
+  border-width: 0px;
+}
+.kshf .Summary_Set .rows > .row > .line {
+  display: block;
+  stroke: #DADADA;
+  stroke-width: 1px;
+  pointer-events: none;
+}
+.kshf .Summary_Set .rows > .row > .label {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  font-size: 0.8em;
+  text-anchor: end;
+  alignment-baseline: middle;
+}
+.kshf .Summary_Set .rows > .row > .label.label_vert {
+  text-anchor: start;
+  background-color: white;
+  display: none;
+}
+.kshf .Summary_Set .cliqueGroup[animate_position="true"] > .clique {
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.kshf .Summary_Set .cliqueGroup > .clique {
+  position: absolute;
+  display: block;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .crossing-center {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueBackground {
+  opacity: 0;
+  fill: rgba(229, 229, 229, 0.5);
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark {
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+  display: block;
+  position: absolute;
+  fill: #b0bfca;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark.preview {
+  fill: #ff6a33;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark-preview-compare {
+  fill: none;
+  stroke: #222222;
+  stroke-width: 1px;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+  opacity: 1;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark-preview-compare[hidden='true'] {
+  opacity: 0;
+}
+.kshf .Summary_Set .cliqueGroup > .clique > .cliqueText {
+  font-size: 0.7em;
+  text-align: center;
+  opacity: 0;
+  text-anchor: middle;
+  fill: gray;
+  text-shadow: 0px 0px 2px white;
+  transform: translate(0px, 21px);
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+  -webkit-transition-delay: 1000ms;
+  -moz-transition-delay: 1000ms;
+  -o-transition-delay: 1000ms;
+  transition-delay: 1000ms;
+  pointer-events: none;
+}
+.kshf .Summary_Set .cliqueGroup > .clique[empty=true] > .cliqueMark {
+  background-color: none;
+  border: solid 1px gray;
+}
+.kshf .Summary_Set .cliqueGroup > .clique[activesize="0"] {
+  display: none;
+}
+.kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl {
+  background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #e6e6f7), color-stop(100%, #9595db));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, #e6e6f7 0%, #9595db 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e6f7', endColorstr='#9595db', GradientType=1);
+  /* IE6-9 */
+  border-right-color: #4000ff;
+  color: black;
+  text-shadow: 0px 0px 2px #FFFFFF;
+}
+.kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl > .strengthLabel {
+  display: inline-block;
+}
+.kshf .Summary_Set[showStrength='true'] .cliqueMark[subset=true] {
+  stroke-width: 2px;
+  stroke: #4000ff;
+}
+.kshf .Summary_Set[show_gridlines='false'] .rows > .row > .line {
+  opacity: 0.3;
+}
+.kshf .Summary_Set[show_gridlines='true'] .configGridLine > .configOpt_icon {
+  background-color: #E5E5E5;
+}
+.kshf .Summary_Set[highlight_cliques="true"] .configEmpty > .configOpt_icon {
+  background-color: rgba(229, 229, 229, 0.5);
+}
+.kshf .Summary_Set[highlight_cliques="true"] .cliqueGroup > .clique:not([activesize="0"]) > .cliqueBackground {
+  opacity: 1;
+}
+.kshf .Summary_Set .line_cat {
+  text-align: right;
+}
+.kshf .Summary_Set .line_cat > .label {
+  left: calc(-100% - 5px);
+  right: 0px;
+  text-align: left;
+  display: block;
+}
+.kshf .Summary_Set .text {
+  position: relative;
+  top: -0.5em;
+  cursor: pointer;
+  white-space: nowrap;
+  width: 250px;
+  text-align: right;
+  display: inline-block;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+}
+.kshf .Summary_Set > .belowMatrix {
+  position: relative;
+  height: 18px;
+  text-align: right;
+}
+.kshf .Summary_Set > .belowMatrix > .matrixInfo {
+  font-size: 0.7em;
+  color: #919191;
+  margin: 0px 3px;
+  display: inline-block;
+  cursor: default;
+  font-style: italic;
+}
+.kshf .Summary_Set > .belowMatrix > .matrixInfo > .circleeee {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-right: 2px;
+  background-color: #b0bfca;
+}
+.kshf .Summary_Set > .belowMatrix > .matrixInfo > .circleeee.borrderr {
+  border-top: solid 2px #4000ff;
+  border-right: solid 2px #4000ff;
+  border-bottom: solid 2px #4000ff;
+}
