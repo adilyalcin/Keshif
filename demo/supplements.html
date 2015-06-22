@@ -61,7 +61,7 @@ google.setOnLoadCallback(function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: "popularity",
+            sortingOpts: { title: "Popularity", value: function(){ return this.popularity; } },
             textSearch: "name",
             recordView: function(){
                 var str="";
