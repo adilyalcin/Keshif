@@ -752,7 +752,12 @@ var browser_configs = {
         browser: {
             middlePanelLabelWidth: 200,
             itemName: "cpds vs protein fam",
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinFam", id:'cpd'}] },
+            source:{ 
+                url:upsetSourceURL, 
+                dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/set_",
+                fileType:'txt', 
+                sheets:[{name:"CpdsVsProteinFam", id:'cpd'}]
+            },
             summaries: [
                 {   title: "Sets", layout: "middle",
                     attribMap: function(){
@@ -783,7 +788,12 @@ var browser_configs = {
         browser: {
             leftPanelLabelWidth: 110,
             itemName: "cpds vs protein table",
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'txt', sheets:[{name:"CpdsVsProteinTable", id:''}] },
+            source:{ 
+                url:upsetSourceURL,
+                dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/set_",
+                fileType:'txt',
+                sheets:[{name:"CpdsVsProteinTable", id:''}]
+            },
             summaries: [
                 {   title: "Sets", layout: "middle",
                     attribMap: function(){
