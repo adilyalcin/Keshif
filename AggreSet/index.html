@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Aggre-Set Set Visualization</title><meta charset="utf-8">
+		<title>AggreSet Visualization Technique</title><meta charset="utf-8">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -27,6 +27,7 @@ function resizeBrowser(){
 };
 
 function loadDemo(config){
+	d3.select("#aboutBox").style("display", "none");
 	config.width = config.width || 760; // default is 760 pixel wide
 	
 	$('#theBrowserDIV')
@@ -138,8 +139,25 @@ $(document).ready( function(){
 	});
 
 	$("#AboutButton").click(function(){
-		alert("Under Construction...");
+		var d=d3.select("#aboutBox").style("display");
+		d3.select("#aboutBox").style("display", d==="block"?"none":"block");
 	});
+
+	$("#aboutBox .fa-times-circle").click(function(){
+		d3.select("#aboutBox").style("display", "none");
+	});
+
+	d3.select("#import_privacy")
+		.each(function(summary){
+		    this.tipsy = new Tipsy(this, {
+		        gravity: 's', title: function(){ 
+		            return "<b>Confidentiality</b>: This website does not track the data you import.<br> You can "+
+		            	"use the source code to host your data and the browser locally.";
+		        }
+		    });
+		})
+		.on("mouseenter",function(){ this.tipsy.show(); })
+		.on("mouseleave",function(){ this.tipsy.hide(); });;
 
 	// http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-url-parameter
 	function getQueryParams(qs) {
@@ -174,6 +192,7 @@ html, body{
 	top: 10px;
 	left: auto !important;
 	overflow-y: visible !important;
+	z-index: 400;
 }
 #theBrowserDIV[name="sharks"] .listItem{
 	width: 10px;
@@ -339,6 +358,87 @@ html, body{
 	font-size: 1.2em;
 	color: black;
 }
+#aboutBox{
+	width: 750px;
+	height: 500px;
+	position: absolute;
+	left: calc(50% - 370px);
+	top: 50px;
+	border-radius: 30px;
+	box-shadow: 4px 5px 20px #888;
+	background-size: 100% 100%;
+	font-family: 'Roboto', sans-serif;
+	text-shadow: 0px 0px 2px white;
+	z-index: 700;
+	background-color: white;
+	cursor: default;
+}
+#aboutBox .aboutTitle{
+	display: block;
+	font-size: 1.7em;
+	padding: 10px 10px 0px 10px;
+	background-color: rgb(235, 235, 235);
+	border-top-left-radius: 30px;
+	border-top-right-radius: 30px;
+	border-bottom: double 4px gray;
+	margin-bottom: 10px;
+	line-height: 1.4em;
+}
+#aboutBox .aboutBackground{
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	width:70%;
+	opacity: 0.16;
+	z-index: -1;
+}
+#aboutBox a.fa{
+	color: black;
+	font-size: 1.2em;
+	text-decoration: none;
+}
+#aboutBox a.fa:hover{
+	color: orangered
+}
+#aboutBox .abstract{
+	display: block;
+	font-weight: 400;
+	margin: 0px 20px;
+	font-size: 0.9em;
+	text-shadow: 0px 0px 10px white;
+	line-height: 1.5em;
+	margin-bottom: 10px;
+}
+#aboutBox .getCode{
+	position: absolute;
+	right: -1px;
+	bottom: -1px;
+	text-align: right;
+	line-height: 1.6em;
+	background-color: rgba(255,255,255,0.5);
+	border-radius: 10px;
+	border-bottom-right-radius: 30px;
+	border: solid 1px lightgray;
+	padding: 10px;
+}
+#aboutBox .fa-times-circle{
+	position: absolute;
+	right: 10px; top: 10px; font-size: 2em;
+	cursor: pointer;
+	color: gray;	
+}
+#aboutBox .fa-times-circle:hover{
+	color: orangered;
+}
+
+#import_privacy{
+	color: gray;
+	cursor: pointer;
+}
+#import_privacy:hover{
+	color: black;
+}
+
 
 </style>
 </head>
@@ -365,5 +465,58 @@ html, body{
 		<span id="credits"></span>
 		<span class='fa fa-file'></span>
 		</div>
+		<div id="aboutBox" display="block">
+			
+			<span class="aboutTitle"> 
+			<img src="img/aggre-set.png" style="height: 70px; float: left; margin-right: 10px">
+			Rich and Scalable Set Exploration<br> using Visualizations of Element Aggregations</span>
+
+			<div class='fa fa-times-circle'></div>
+
+			<span class="abstract">
+			Datasets commonly include multi-value (set-typed) attributes that describe set memberships over elements;<br>
+				&nbsp; &nbsp; such as genres per movie or courses taken per student. <br>
+			Set-typed attributes describe rich relations across elements, sets, and the set intersections. <br>
+			<a href="https://en.wikipedia.org/?title=Venn_diagram" target="_blank"
+				style="color: black; text-decoration: none; font-style: italic">Venn diagrams</a> 
+				<img src="./img/venn.png" style="height: 16px">
+				are intuitive, but 
+				they cannot show more than a few sets and elements.<br><br>
+			With <b>AggreSet</b>, you can explore set-typed data from overview to detail.<br>
+			AggreSet supports selection, filtering, comparison, and analysis of set relations including<br>
+				&nbsp; &nbsp; subsets ⊆, identity =, disjoint sets ∅, and set intersection strength.
+
+			</span>
+
+			<div style='margin: 30px;'>
+				<b>Try it now!</b> Choose an existing dataset, or import your own data
+					<span class='fa fa-info-circle' id='import_privacy'></span> using the lower-left menu.<br><br>
+
+				<b>Authors:</b> 
+					<a href="http://www.adilyalcin.me" target="_blank">M. Adil Yalcin</a>
+						<span class='fa fa-code'></span>,
+					<a href="https://sites.umiacs.umd.edu/elm/" target="_blank">Niklas Elmvist</a>, and
+					<a href="http://www.cs.umd.edu/~bederson/" target="_blank">Ben Bederson</a><br><br>
+
+				<!-- Based on <a href='http://www.keshif.me' target='_blank' class='fa' style='font-size: 1em;'> Keshif</a> <br><br> -->
+				Paper (...)<br><br>
+
+				Video (...)
+			</div>
+
+			<!-- 
+				Author information: Email / twitter
+			-->
+
+			
+			<div class="getCode">Made with <span class='fa fa-heart-o'></span><br> Hosted at
+				<a href='http://www.github.com/adilyalcin/keshif' target='_blank' class='fa fa-github'></a><br>
+				<iframe src="https://ghbtns.com/github-btn.html?user=adilyalcin&repo=keshif&type=star&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="20px"></iframe><br>
+				<iframe src="https://ghbtns.com/github-btn.html?user=adilyalcin&repo=keshif&type=fork&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+				</div>
+
+			<img class="aboutBackground" src="./img/landing.png">
+
+	</div>
 	</body>
 </html>
