@@ -7,6 +7,7 @@
         <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="icon" href="../demo/img/favicon.png" type="image/png" >
 
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -411,15 +412,17 @@ html, body{
 }
 #aboutBox .getCode{
 	position: absolute;
-	right: -1px;
-	bottom: -1px;
+	right: 0px;
+	bottom: 0px;
 	text-align: right;
 	line-height: 1.6em;
 	background-color: rgba(255,255,255,0.5);
-	border-radius: 10px;
+	border-top-left-radius: 10px;
 	border-bottom-right-radius: 30px;
-	border: solid 1px lightgray;
 	padding: 10px;
+	border-width: 1px 0px 0px 1px;
+	border-style: solid;
+	border-color: rgb(176, 176, 176);
 }
 #aboutBox .fa-times-circle{
 	position: absolute;
@@ -438,6 +441,39 @@ html, body{
 #import_privacy:hover{
 	color: black;
 }
+
+#aboutBox .logo{
+	opacity: 0.8;
+	-webkit-filter: grayscale(50%);
+	   -moz-filter: grayscale(50%);
+	     -o-filter: grayscale(50%);
+	    -ms-filter: grayscale(50%);
+	        filter: grayscale(50%);
+}
+#aboutBox .logo:hover{
+	opacity: 1;
+	-webkit-filter: grayscale(0%);
+	   -moz-filter: grayscale(0%);
+	     -o-filter: grayscale(0%);
+	    -ms-filter: grayscale(0%);
+	        filter: grayscale(0%);
+}
+
+#logo_umd{
+	position: absolute;
+	width: 70px;
+	right: 10px;
+	top: 220px;
+}
+
+#logo_hcil{
+	position: absolute;
+	width: 70px;
+	right: 10px;
+	top: 140px;
+}
+
+
 
 
 </style>
@@ -504,6 +540,11 @@ html, body{
 
 				Video (...)
 			</div>
+
+			<a href='http://www.umd.edu' target='_blank'>
+				<img src="./img/logo_umd.png" id="logo_umd" class="logo"></a>
+			<a href='http://www.cs.umd.edu/hcil' target='_blank'>
+				<img src="./img/logo_hcil.gif" id="logo_hcil" class="logo"></a>
 
 			<!-- 
 				Author information: Email / twitter
