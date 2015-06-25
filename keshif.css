@@ -989,22 +989,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 6px;
   display: inline-block;
   -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  -moz-animation: stretchdelay 1.2s infinite ease-in-out;
+  -o-animation: stretchdelay 1.2s infinite ease-in-out;
   animation: stretchdelay 1.2s infinite ease-in-out;
 }
 .kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_2 {
   -webkit-animation-delay: -1.1s;
+  -moz-animation-delay: -1.1s;
+  -o-animation-delay: -1.1s;
   animation-delay: -1.1s;
 }
 .kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_3 {
   -webkit-animation-delay: -1s;
+  -moz-animation-delay: -1s;
+  -o-animation-delay: -1s;
   animation-delay: -1s;
 }
 .kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_4 {
   -webkit-animation-delay: -0.9s;
+  -moz-animation-delay: -0.9s;
+  -o-animation-delay: -0.9s;
   animation-delay: -0.9s;
 }
 .kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_5 {
   -webkit-animation-delay: -0.8s;
+  -moz-animation-delay: -0.8s;
+  -o-animation-delay: -0.8s;
   animation-delay: -0.8s;
 }
 .kshf .panel.panel_infobox > .infobox_loading div.status_text {
@@ -3302,17 +3312,99 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .boxinbox.project_3rdparty img {
   position: relative;
 }
+@-webkit-keyframes stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4);
+    -moz-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
+    -ms-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+  20% {
+    -webkit-transform: scaleY(0.8);
+    -moz-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
+    -ms-transform: scaleY(0.8);
+    transform: scaleY(0.8);
+    background-color: #fa7746;
+  }
+}
+@-moz-keyframes stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4);
+    -moz-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
+    -ms-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+  20% {
+    -webkit-transform: scaleY(0.8);
+    -moz-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
+    -ms-transform: scaleY(0.8);
+    transform: scaleY(0.8);
+    background-color: #fa7746;
+  }
+}
+@-ms-keyframes stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4);
+    -moz-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
+    -ms-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+  20% {
+    -webkit-transform: scaleY(0.8);
+    -moz-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
+    -ms-transform: scaleY(0.8);
+    transform: scaleY(0.8);
+    background-color: #fa7746;
+  }
+}
+@-o-keyframes stretchdelay {
+  0%,
+  40%,
+  100% {
+    -webkit-transform: scaleY(0.4);
+    -moz-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
+    -ms-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+  20% {
+    -webkit-transform: scaleY(0.8);
+    -moz-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
+    -ms-transform: scaleY(0.8);
+    transform: scaleY(0.8);
+    background-color: #fa7746;
+  }
+}
 @keyframes stretchdelay {
   0%,
   40%,
   100% {
-    transform: scaleY(0.4);
     -webkit-transform: scaleY(0.4);
+    -moz-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
+    -ms-transform: scaleY(0.4);
+    transform: scaleY(0.4);
   }
   20% {
+    -webkit-transform: scaleY(0.8);
+    -moz-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
+    -ms-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
-    -webkit-transform: scaleY(0.8);
   }
 }
 .tipsy {
