@@ -1246,7 +1246,6 @@ kshf.List.prototype = {
         var y=this.DOM.listHeader_ConfigRow.append("span").attr("class","detailViewSetting");
         y.append("span").attr("class","detailViewSettingHeader").text("Detail View:");
         var x=y.append("select")
-            .on("change", function(){ me.setDetailsToggle(this.value); });
         x.append("option").text("off");
         x.append("option").text("one");
         x.append("option").text("zoom");
@@ -2239,6 +2238,8 @@ kshf.Browser = function(options){
     if(options.showResizeCorner) this.insertDOM_ResizeBrowser();
     this.insertDOM_Infobox();
 
+    this.insertDOM_WarningBox();
+
     this.DOM.panelsTop = this.DOM.root.append("div").attr("class","panels_Above");
 
     // Dragbox is the attribute that's dragged.
@@ -2459,6 +2460,25 @@ kshf.Browser.prototype = {
            });
     },
     /* -- */
+    insertDOM_WarningBox: function(){
+        this.panel_warningBox = this.DOM.root.append("div").attr("class", "warningBox_wrapper").attr("shown",false)
+        var x = this.panel_warningBox.append("span").attr("class","warningBox");
+        this.DOM.warningText = x.append("span").attr("class","warningText");
+        x.append("span").attr("class","dismiss").text("Dismiss")
+            .on("click",function(){
+                this.parentNode.parentNode.setAttribute("shown",false);
+            });
+    },
+    /** -- */
+    showWarning: function(v){
+        this.panel_warningBox.attr("shown",true);
+        this.DOM.warningText.text(v);
+    },
+    /** -- */
+    hideWarning: function(){
+        this.panel_warningBox.attr("shown",false);
+    },
+    /* -- */
     insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
@@ -2632,10 +2652,13 @@ kshf.Browser.prototype = {
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                         gravity: 's', title: function(){ 
+                            var v;
                             if(source_type==="spreadsheet")
-                                return "The name of the data sheet in the spreadsheet";
+                                v="The name of the data sheet in the spreadsheet.";
                             if(source_type==="folder")
-                                return "The file name in the folder";
+                                v="The file name in the folder.";
+                            v+="<br>Also describes what each data row represents"
+                            return v;
                         }
                     });
                 })
@@ -2700,7 +2723,8 @@ kshf.Browser.prototype = {
                 sheetColumn_sep_wrapper.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
         
 
-        var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton").text("Explore it with Keshif")
+        var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton")
+            .html("Explore it with Keshif")
             .attr("disabled",true)
             .on("click",function(){
                 if(!readyToLoad()){
@@ -2709,15 +2733,19 @@ kshf.Browser.prototype = {
                 }
                 var sheetID   = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
                 if(sheetID==="") sheetID = "id";
+                var loadedCb_pre = me.loadedCb;
                 me.loadedCb = function(){
                     var splitColumnName = me.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
                     var splitSepName = me.DOM.infobox_source.select(".sheetColumn_Seperator")[0][0].value;
                     if(splitColumnName){
                         kshf.Util.cellToArray(this.items, [splitColumnName], splitSepName, false);
                     }
+                    if(loadedCb_pre) loadedCb_pre.call(this,this);
                 };
+                var readyCb_pre = me.readyCb;
                 me.readyCb = function(){
                     me.showAttributes();
+                    if(readyCb_pre) readyCb_pre.call(this,this);
                 }
                 if(source_type==="spreadsheet"){
                     me.loadSource({
@@ -3007,7 +3035,7 @@ kshf.Browser.prototype = {
         var me=this;
         this.panel_infobox.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
         this.panel_infobox.select("div.status_text .dynamic").text("");
-        window.setTimeout(function(){ me._loadCharts(); }, 100);
+        window.setTimeout(function(){ me._loadCharts(); }, 50);
     },
     /** -- */
     _loadCharts: function(){
@@ -3146,6 +3174,8 @@ kshf.Browser.prototype = {
                 .style("display","inline-block")
                 .attr("href",this.source.url);
         }
+
+        this.checkZoomLevel();
 
         this.loaded = true;
 
@@ -3554,8 +3584,26 @@ kshf.Browser.prototype = {
         if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
+    checkZoomLevel: function(){
+        // Using devicePixelRatio works in Chrome and Firefox, but not in Safari
+        // I have not tested IE yet.
+        if(window.devicePixelRatio!==undefined){
+            if(window.devicePixelRatio!==1 && window.devicePixelRatio!==2){
+                var me=this;
+                setTimeout(function(){
+                    me.showWarning("Please reset your browser zoom level for the best experience.")    
+                },1000);
+            } else {
+                this.hideWarning();
+            }
+        } else {
+            this.hideWarning();
+        }
+    },
+    /** -- */
     updateLayout: function(){
         if(this.loaded!==true) return;
+        this.checkZoomLevel();
         this.divWidth = this.domWidth();
         this.updateLayout_Height();
         this.updateMiddlePanelWidth();

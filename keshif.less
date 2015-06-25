@@ -97,8 +97,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .summaryTitle:hover{
             > .summaryTitle_editButton{
                 opacity: 1;
-                pointer-events: all;
-            }
+        }
         }
         .headerGroup > .header_display_control > .fa-remove{
             display: inline-block;
@@ -482,6 +481,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor: default;
         text-rendering: initial;
         pointer-events: none;
+    }
+
+    > .warningBox_wrapper{
+        position: absolute;
+        top: -20px;
+        opacity: 0;
+        margin: 0 auto;
+        width: 100%;
+        text-align: center;
+        z-index: 50;
+        .transition(~'opacity 500ms ease-in-out, top 500ms');
+        > .warningBox{
+            background-color: #F8EE82;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: 100;
+            padding: 2px 5px;
+            border: solid 1px rgb(214, 206, 121);
+            box-shadow: 1px 1px 3px gray;
+            > .warningText{
+                cursor: default;
+            }
+            > .dismiss{
+                margin-left: 5px;
+                color: gray;
+                cursor: pointer;
+                text-decoration: underline;
+                font-size: 0.8em;
+                &:hover{
+                    color: orangered;
+                }
+            }               
+        }
+        &[shown=true]{
+            opacity: 1;
+            top: 5px;
+        }
     }
 
     .panel {
@@ -3012,7 +3048,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .listHeader_count{
                     display: inline-block;
                     text-align: right;
-                    // min-width: 50px;
                     vertical-align: top;
                     margin-right: 4px;
                 }

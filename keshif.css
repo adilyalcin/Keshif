@@ -90,7 +90,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: flex;
 }
 .kshf[attribsShown=true] .listHeader > .configRow {
-  display: block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
 }
 .kshf[attribsShown=true] .summaryTitle:hover > .summaryTitle_editButton {
   opacity: 1;
@@ -517,6 +520,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   text-rendering: initial;
   pointer-events: none;
+}
+.kshf > .warningBox_wrapper {
+  position: absolute;
+  top: -20px;
+  opacity: 0;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  z-index: 50;
+  -webkit-transition: opacity 500ms ease-in-out, top 500ms;
+  -moz-transition: opacity 500ms ease-in-out, top 500ms;
+  -o-transition: opacity 500ms ease-in-out, top 500ms;
+  transition: opacity 500ms ease-in-out, top 500ms;
+}
+.kshf > .warningBox_wrapper > .warningBox {
+  background-color: #F8EE82;
+  border-radius: 5px;
+  font-size: 0.8em;
+  font-weight: 100;
+  padding: 2px 5px;
+  border: solid 1px #d6ce79;
+  box-shadow: 1px 1px 3px gray;
+}
+.kshf > .warningBox_wrapper > .warningBox > .warningText {
+  cursor: default;
+}
+.kshf > .warningBox_wrapper > .warningBox > .dismiss {
+  margin-left: 5px;
+  color: gray;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.8em;
+}
+.kshf > .warningBox_wrapper > .warningBox > .dismiss:hover {
+  color: orangered;
+}
+.kshf > .warningBox_wrapper[shown=true] {
+  opacity: 1;
+  top: 5px;
 }
 .kshf .panel > .dropZone {
   -webkit-box-flex: 1;
