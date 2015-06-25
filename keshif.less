@@ -92,12 +92,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .display(flex);
         }
         .listHeader > .configRow{
-            display: block;
+            .display(flex);
         }
-        .summaryTitle:hover{
-            > .summaryTitle_editButton{
-                opacity: 1;
+        .editableTextContainer{
         }
+        .editableTextContainer > .editTextButton{
+            display: inline-block;
+        }
+        .editableTextContainer:hover > .editTextButton{
+            opacity: 1; // Do not use display none-vs-inlineblock, because it changes layout
         }
         .headerGroup > .header_display_control > .fa-remove{
             display: inline-block;
@@ -125,6 +128,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: block !important;
         }
         &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch{
+            display: block !important;
+        }
+        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_recordView{
             display: block !important;
         }
     }
@@ -240,6 +246,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .user-select(none);
     }
 
+    .editableTextContainer{
+        > .editableText:focus{
+            background-color: white;
+            box-shadow: 0 0 3px #2CABCF;
+            border-color: #2CABCF;
+            border-style: solid;
+            border-width: 1px;
+            outline: 0 none;
+            margin: 0px;
+        }
+
+        > .editTextButton{
+            display: none;
+            opacity: 0;
+            font-size: 0.8em;
+            color:gray;
+            margin: 2px;
+            vertical-align: top;
+            cursor: pointer;
+            &:before{ content: '\f040'; }
+            &:hover{ color: black; }
+        }
+        &[edittitle="true"]{
+            > .editTextButton{
+                &::before{ content: "\f00c"; }
+            }
+        }
+        &[state='edited']{
+            > .editTextButton{
+                display: inline-block;
+            }
+        }
+    }
+
+
     .attributePanel{
         display: none;
         .flex-direction(column);
@@ -290,50 +331,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .summaryTitle{
                 display: inline;
                 margin: 1px;
-                &:focus{
-                    background-color: white;
-                    box-shadow: 0 0 3px #2CABCF;
-                    border-color: #2CABCF;
-                    border-style: solid;
-                    border-width: 1px;
-                    outline: 0 none;
-                    margin: 0px;
-                }
-            }
-            > .editTitleButton{
-                font-size: 0.8em;
-                display: none;
-                color:gray;
-                vertical-align: middle;
-                margin: 2px;
-                vertical-align: top;
-                &:hover{ color: black; }
             }
             > .editCodeButton{
                 display: none;
                 font-size: 0.9em;
                 color: black;
                 &:hover{ color: black; }
-            }
-            > .summaryTitleEdit{
-                width: calc(~"100% - 20px");
-                display: none;
-                border-width: 0px;
-                background-color: rgba(250,250,250,0.9);
-                color: orangered;
-                &:focus{
-                    outline-color: #cb5454;
-                    outline-width: 0px;
-                }
-                &:hover{
-                    border-width: 0px;
-                    background-color: white;
-                    margin: 0px;
-                }
-                &::-webkit-input-placeholder { 
-                    font-weight: 500;
-                    color: #cb5454;
-                }
             }
             > .summaryTypeIcon{
                 float: right;
@@ -404,21 +407,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{
                 background-color: #E8E0CE;
                 border-color: #B8B6B1;
-                > .editTitleButton{
-                    display: inline-block;
-                }
                 > .attribNugget{
                     border-color: gray;
-                }
-            }
-            &[edittitle="true"]{
-                > .editTitleButton{
-                    &::before{ content: "\f00c"; }
-                }
-            }
-            &[state='edited']{
-                > .editTitleButton{
-                    display: inline-block;
                 }
             }
             &[datatype~="interval"]{
@@ -1209,54 +1199,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     outline: 0 none;
                     padding-left: 3px;
                     padding-right: 3px;
-                }
-            }
-            > .summaryTitle_edit{
-                display: none;
-                //width: calc(~"100% - 50px");
-                border-width: 0px;
-                background-color: rgba(250,250,250,0.9);
-                color: orangered;
-                text-align: center;
-                &:focus{
-                    outline-color: #cb5454;
-                    outline-width: 0px;
-                }
-                &:hover{
-                    border-width: 0px;
-                    background-color: white;
-                    margin: 0px;
-                }
-                &::-webkit-input-placeholder { 
-                    font-weight: 500;
-                    color: #cb5454;
-                }
-            }
-            > .summaryTitle_editButton{
-                display: inline-block;
-                position: relative;
-                font-size: 0.7em;
-                color: gray;
-                cursor: pointer;
-                vertical-align: top;
-                margin-left: 3px;
-                margin-top: 2px;
-                opacity: 0;
-                pointer-events: none;
-                &:before{
-                    content: '\f040';
-                }
-                &:hover{
-                    color: black;
-                }
-            }
-            &[edittitle="true"]{
-                > .summaryTitle_editButton{
-                    opacity: 1;
-                    pointer-events: all;
-                    &:before{
-                        content: "\f00c";
-                    }
                 }
             }
         }
@@ -2714,6 +2656,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 content: "\f140";
             }
         }
+
+        &[hasRecordView="true"]{
+            .configRow {
+                > .itemRank{
+                    display: inline-block;
+                }
+                > .adjustSortColumnWidth{
+                    display: inline-block;
+                }
+                >.detailViewSetting{
+                    display: inline-block;
+                }
+            }
+        }
     } // div.listDiv
 
     .scrollToTop{
@@ -2743,7 +2699,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .totalViz{
             height: 3px;
             margin-top: 1px;
-            margin-bottom: 1px;
             position:relative;
             > .aggr{
                 cursor: default !important;
@@ -2942,12 +2897,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         > .configRow{
             display: none;
+            .flex-direction(row);
             height: 18px;
             position: relative;
-            border-top: dotted 1px rgb(153, 147, 131);
+            border-bottom: dotted 1px rgb(153, 147, 131);
             background-color: rgb(229, 226, 218);
             > .itemRank{
-                display: inline-block;
+                display: none;
                 position: absolute;
                 width: 13px;
                 text-align: right;
@@ -2963,7 +2919,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             > .adjustSortColumnWidth{
-                display: inline-block;
+                display: none;
                 position: relative;
                 height: 100%;
                 text-align: center;
@@ -2993,7 +2949,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             >.detailViewSetting{
-                display: inline-block;
+                display: none;
                 vertical-align: top;
                 >.detailViewSettingHeader{
                     font-size: 0.8em;
@@ -3003,6 +2959,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > select {
                     font-size: 0.7em;
+                }
+            }
+            > .recordView{
+                .flex(1);
+                position: relative;
+                .dropZone_recordView{
+                    display: none;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    z-index: 50;
+                    background-color: rgba(234, 234, 234, 1);
+                    border-radius: 5px;
+                    border-style: solid;
+                    border-width: 2px;
+                    border-color: gray;
+                    text-align: center;
+                    > .dropZone_recordView_text{
+                        pointer-events: none;
+                        font-size: 0.7em;
+                        display: block;
+                        font-weight: 300;
+                    }
+                    &[readyToDrop=true]{
+                        background-color: rgb(255, 188, 163);
+                    }
+                    &:hover{
+                        background-color: rgb(255, 188, 163);
+                    }
                 }
             }
         }// configRow
@@ -3039,7 +3024,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 vertical-align: top;
                 display: block;
                 white-space: nowrap;
-                pointer-events: none;
+                cursor: default;
                 font-size: 1.5em;
                 font-weight: 700;
                 text-shadow: 1px 1px lightgray;
@@ -3048,11 +3033,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .listHeader_count{
                     display: inline-block;
                     text-align: right;
-                    vertical-align: top;
-                    margin-right: 4px;
-                }
-                > .listHeader_itemName{
-                    margin-right: 4px;
+                    margin-right: 3px;
                 }
             }
             > .mainTextSearch {
@@ -3063,6 +3044,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 vertical-align: bottom;
                 position: relative;
                 height: 18px;
+                margin-left: 4px;
                 > .dropZone_textSearch{
                     display: none;
                     position: absolute;

@@ -94,10 +94,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
+  display: flex;
 }
-.kshf[attribsShown=true] .summaryTitle:hover > .summaryTitle_editButton {
+.kshf[attribsShown=true] .editableTextContainer > .editTextButton {
+  display: inline-block;
+}
+.kshf[attribsShown=true] .editableTextContainer:hover > .editTextButton {
   opacity: 1;
-  pointer-events: all;
 }
 .kshf[attribsShown=true] .headerGroup > .header_display_control > .fa-remove {
   display: inline-block;
@@ -117,6 +120,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block !important;
 }
 .kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
+  display: block !important;
+}
+.kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_recordView {
   display: block !important;
 }
 .kshf[ratiomode=true] .chartAxis_Measure > .tick > .text::after {
@@ -214,6 +220,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
+.kshf .editableTextContainer > .editableText:focus {
+  background-color: white;
+  box-shadow: 0 0 3px #2CABCF;
+  border-color: #2CABCF;
+  border-style: solid;
+  border-width: 1px;
+  outline: 0 none;
+  margin: 0px;
+}
+.kshf .editableTextContainer > .editTextButton {
+  display: none;
+  opacity: 0;
+  font-size: 0.8em;
+  color: gray;
+  margin: 2px;
+  vertical-align: top;
+  cursor: pointer;
+}
+.kshf .editableTextContainer > .editTextButton:before {
+  content: '\f040';
+}
+.kshf .editableTextContainer > .editTextButton:hover {
+  color: black;
+}
+.kshf .editableTextContainer[edittitle="true"] > .editTextButton::before {
+  content: "\f00c";
+}
+.kshf .editableTextContainer[state='edited'] > .editTextButton {
+  display: inline-block;
+}
 .kshf .attributePanel {
   display: none;
   -webkit-box-direction: normal;
@@ -276,26 +312,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   margin: 1px;
 }
-.kshf .attributePanel .attributeName > .summaryTitle:focus {
-  background-color: white;
-  box-shadow: 0 0 3px #2CABCF;
-  border-color: #2CABCF;
-  border-style: solid;
-  border-width: 1px;
-  outline: 0 none;
-  margin: 0px;
-}
-.kshf .attributePanel .attributeName > .editTitleButton {
-  font-size: 0.8em;
-  display: none;
-  color: gray;
-  vertical-align: middle;
-  margin: 2px;
-  vertical-align: top;
-}
-.kshf .attributePanel .attributeName > .editTitleButton:hover {
-  color: black;
-}
 .kshf .attributePanel .attributeName > .editCodeButton {
   display: none;
   font-size: 0.9em;
@@ -303,26 +319,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .attributePanel .attributeName > .editCodeButton:hover {
   color: black;
-}
-.kshf .attributePanel .attributeName > .summaryTitleEdit {
-  width: calc(100% - 20px);
-  display: none;
-  border-width: 0px;
-  background-color: rgba(250, 250, 250, 0.9);
-  color: orangered;
-}
-.kshf .attributePanel .attributeName > .summaryTitleEdit:focus {
-  outline-color: #cb5454;
-  outline-width: 0px;
-}
-.kshf .attributePanel .attributeName > .summaryTitleEdit:hover {
-  border-width: 0px;
-  background-color: white;
-  margin: 0px;
-}
-.kshf .attributePanel .attributeName > .summaryTitleEdit::-webkit-input-placeholder {
-  font-weight: 500;
-  color: #cb5454;
 }
 .kshf .attributePanel .attributeName > .summaryTypeIcon {
   float: right;
@@ -406,17 +402,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #E8E0CE;
   border-color: #B8B6B1;
 }
-.kshf .attributePanel .attributeName:hover > .editTitleButton {
-  display: inline-block;
-}
 .kshf .attributePanel .attributeName:hover > .attribNugget {
   border-color: gray;
-}
-.kshf .attributePanel .attributeName[edittitle="true"] > .editTitleButton::before {
-  content: "\f00c";
-}
-.kshf .attributePanel .attributeName[state='edited'] > .editTitleButton {
-  display: inline-block;
 }
 .kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget {
   -webkit-box-direction: normal;
@@ -1298,51 +1285,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   outline: 0 none;
   padding-left: 3px;
   padding-right: 3px;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_edit {
-  display: none;
-  border-width: 0px;
-  background-color: rgba(250, 250, 250, 0.9);
-  color: orangered;
-  text-align: center;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_edit:focus {
-  outline-color: #cb5454;
-  outline-width: 0px;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_edit:hover {
-  border-width: 0px;
-  background-color: white;
-  margin: 0px;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_edit::-webkit-input-placeholder {
-  font-weight: 500;
-  color: #cb5454;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_editButton {
-  display: inline-block;
-  position: relative;
-  font-size: 0.7em;
-  color: gray;
-  cursor: pointer;
-  vertical-align: top;
-  margin-left: 3px;
-  margin-top: 2px;
-  opacity: 0;
-  pointer-events: none;
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_editButton:before {
-  content: '\f040';
-}
-.kshf .headerGroup .summaryTitle > .summaryTitle_editButton:hover {
-  color: black;
-}
-.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton {
-  opacity: 1;
-  pointer-events: all;
-}
-.kshf .headerGroup .summaryTitle[edittitle="true"] > .summaryTitle_editButton:before {
-  content: "\f00c";
 }
 .kshf .headerGroup .save_filter_as_set {
   display: none;
@@ -2785,6 +2727,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv[detailsToggle="zoom"] > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before {
   content: "\f140";
 }
+.kshf .listDiv[hasRecordView="true"] .configRow > .itemRank {
+  display: inline-block;
+}
+.kshf .listDiv[hasRecordView="true"] .configRow > .adjustSortColumnWidth {
+  display: inline-block;
+}
+.kshf .listDiv[hasRecordView="true"] .configRow > .detailViewSetting {
+  display: inline-block;
+}
 .kshf .scrollToTop {
   display: inline-block;
   visibility: hidden;
@@ -2814,7 +2765,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader .totalViz {
   height: 3px;
   margin-top: 1px;
-  margin-bottom: 1px;
   position: relative;
 }
 .kshf .listHeader .totalViz > .aggr {
@@ -3033,13 +2983,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .configRow {
   display: none;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   height: 18px;
   position: relative;
-  border-top: dotted 1px #999383;
+  border-bottom: dotted 1px #999383;
   background-color: #e5e2da;
 }
 .kshf .listHeader > .configRow > .itemRank {
-  display: inline-block;
+  display: none;
   position: absolute;
   width: 13px;
   text-align: right;
@@ -3058,7 +3015,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
 }
 .kshf .listHeader > .configRow > .adjustSortColumnWidth {
-  display: inline-block;
+  display: none;
   position: relative;
   height: 100%;
   text-align: center;
@@ -3088,7 +3045,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
 }
 .kshf .listHeader > .configRow > .detailViewSetting {
-  display: inline-block;
+  display: none;
   vertical-align: top;
 }
 .kshf .listHeader > .configRow > .detailViewSetting > .detailViewSettingHeader {
@@ -3099,6 +3056,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .configRow > .detailViewSetting > select {
   font-size: 0.7em;
+}
+.kshf .listHeader > .configRow > .recordView {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  position: relative;
+}
+.kshf .listHeader > .configRow > .recordView .dropZone_recordView {
+  display: none;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 50;
+  background-color: #eaeaea;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: gray;
+  text-align: center;
+}
+.kshf .listHeader > .configRow > .recordView .dropZone_recordView > .dropZone_recordView_text {
+  pointer-events: none;
+  font-size: 0.7em;
+  display: block;
+  font-weight: 300;
+}
+.kshf .listHeader > .configRow > .recordView .dropZone_recordView[readyToDrop=true] {
+  background-color: #ffbca3;
+}
+.kshf .listHeader > .configRow > .recordView .dropZone_recordView:hover {
+  background-color: #ffbca3;
 }
 .kshf .listHeader .filterClearAll {
   opacity: 0;
@@ -3147,7 +3137,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   display: block;
   white-space: nowrap;
-  pointer-events: none;
+  cursor: default;
   font-size: 1.5em;
   font-weight: 700;
   text-shadow: 1px 1px lightgray;
@@ -3157,11 +3147,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader > .topRow > .resultInfo > .listHeader_count {
   display: inline-block;
   text-align: right;
-  vertical-align: top;
-  margin-right: 4px;
-}
-.kshf .listHeader > .topRow > .resultInfo > .listHeader_itemName {
-  margin-right: 4px;
+  margin-right: 3px;
 }
 .kshf .listHeader > .topRow > .mainTextSearch {
   -webkit-box-flex: 1;
@@ -3177,6 +3163,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: bottom;
   position: relative;
   height: 18px;
+  margin-left: 4px;
 }
 .kshf .listHeader > .topRow > .mainTextSearch > .dropZone_textSearch {
   display: none;

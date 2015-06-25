@@ -91,7 +91,7 @@ var kshf = {
             And: "And",
             Or: "Or",
             Not: "Not",
-            // AND / OR / NOT
+            EditTitle: "Edit"
         },
         tr: {
             ModifyBrowser: "Tarayıcıyı düzenle",
@@ -124,6 +124,7 @@ var kshf = {
             And: "Ve",
             Or: "Veya",
             Not: "Değil",
+            EditTitle: "Değiştir"
         },
         fr: {
             ModifyBrowser: "Modifier le navigateur",
@@ -1048,13 +1049,15 @@ kshf.List = function(kshf_, config, root){
     this.listDiv = root.select("div.listDiv")
         .attr('detailsToggle',this.detailsToggle)
         .attr('displayType',this.displayType)
-        .attr('showRank',this.showRank);
+        .attr('showRank',this.showRank)
+        .attr('hasRecordView',false)
+        ;
 
     this.DOM.listHeader=this.listDiv.append("div").attr("class","listHeader");
         this.initDOM_TopRow();
         this.initDOM_TotalViz();
-        this.initDOM_BottomRow();
         this.initDOM_ConfigRow();
+        this.initDOM_BottomRow();
 
     this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
         .style("display",this.recordView?"":"none")
@@ -1130,9 +1133,67 @@ kshf.List.prototype = {
         var me=this;
         this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
         
-        var resultInfo = this.DOM.listHeader_TopRow.append("span").attr("class","resultInfo");
-            this.DOM.listHeader_count = resultInfo.append("span").attr("class","listHeader_count");
-            this.DOM.listHeader_itemName = resultInfo.append("span").attr("class","listHeader_itemName");
+        var resultInfo = this.DOM.listHeader_TopRow.append("span").attr("class","resultInfo editableTextContainer")
+            .attr("edittitle",false);
+
+        this.DOM.listHeader_count = resultInfo.append("span").attr("class","listHeader_count");
+
+        this.DOM.listHeader_itemName = resultInfo.append("span").attr("class","listHeader_itemName editableText")
+            .attr("contenteditable",false)
+            .on("mousedown", function(){
+                // stop dragging event start
+                d3.event.stopPropagation();
+            })
+            .on("blur",function(){
+                this.parentNode.setAttribute("edittitle",false);
+                this.setAttribute("contenteditable", false);
+                me.browser.itemName = this.textContent;
+            })
+            .on("keydown",function(){
+                if(event.keyCode===13){ // ENTER
+                    this.parentNode.setAttribute("edittitle",false);
+                    this.setAttribute("contenteditable", false);
+                    me.browser.itemName = this.textContent;
+                }
+            });
+
+        resultInfo.append("span")
+            .attr("class","editTextButton fa")
+            .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'w', title: function(){ 
+                        var curState=this.parentNode.getAttribute("edittitle");
+                        if(curState===null || curState==="false"){
+                            return kshf.lang.cur.EditTitle;
+                        } else {
+                            return "OK";
+                        }
+                    }
+                })
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); })
+            .on("mousedown", function(){
+                // stop dragging event start
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            })
+            .on("click",function(){
+                var curState=this.parentNode.getAttribute("edittitle");
+                if(curState===null || curState==="false"){
+                    this.parentNode.setAttribute("edittitle",true);
+                    var parentDOM = d3.select(this.parentNode);
+                    var v=parentDOM.select(".listHeader_itemName")[0][0];
+                    v.setAttribute("contenteditable",true);
+                    v.focus();
+                } else {
+                    this.parentNode.setAttribute("edittitle",false);
+                    var parentDOM = d3.select(this.parentNode);
+                    var v=parentDOM.select(".listHeader_itemName")[0][0];
+                    v.setAttribute("contenteditable",false);
+                    me.browser.itemName = this.textContent;
+                }
+            });
         
         this.initDOM_GlobalTextSearch();
         
@@ -1244,11 +1305,37 @@ kshf.List.prototype = {
             });
 
         var y=this.DOM.listHeader_ConfigRow.append("span").attr("class","detailViewSetting");
-        y.append("span").attr("class","detailViewSettingHeader").text("Detail View:");
-        var x=y.append("select")
-        x.append("option").text("off");
-        x.append("option").text("one");
-        x.append("option").text("zoom");
+        y.append("span").attr("class","detailViewSettingHeader").text("Details:");
+        var x=y.append("select").on("change", function(){ me.setDetailsToggle(this.value); });
+            x.append("option").text("off");
+            x.append("option").text("one");
+            x.append("option").text("zoom");
+
+        var DOM_recordView = this.DOM.listHeader_ConfigRow.append("span").attr("class","recordView");
+        var zone=DOM_recordView.append("div").attr("class","dropZone_recordView")
+            zone.append("div").attr("class","dropZone_recordView_text").text("Record view...");
+
+        $(zone[0][0]).on("mouseenter",function(event){
+            this.setAttribute("readyToDrop",true);
+        });
+        $(zone[0][0]).on("mouseleave",function(event){
+            this.setAttribute("readyToDrop",false);
+        });
+        $(zone[0][0]).on("mouseup",function(event){
+            var movedSummary = me.browser.movedSummary;
+            if(movedSummary===null || movedSummary===undefined) return;
+
+            me.recordView = movedSummary.summaryFunc;
+
+            me.sortRecords();
+            me.insertRecords();
+            me.setSortColumnWidth(50);
+            me.DOM.listItemGroup.style("display",null);
+            me.DOM.listHeader_BottomRow.style("display",null);
+
+            me.browser.updateLayout();
+        });
+
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
@@ -1550,6 +1637,8 @@ kshf.List.prototype = {
     /** Insert items into the UI, called once on load */
     insertRecords: function(){
         var me = this;
+
+        this.listDiv.attr('hasRecordView',true);
 
         this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
             .data(this.browser.items, function(d){ return d.id(); })
@@ -2300,7 +2389,7 @@ kshf.Browser = function(options){
     });
 
     if(options.source){
-        window.setTimeout(function() { me.loadSource(options.source); }, 50);
+        window.setTimeout(function() { me.loadSource(options.source); }, 10);
     } else {
         this.panel_infobox.attr("show","source");
     }
@@ -3276,7 +3365,7 @@ kshf.Browser.prototype = {
         this.attribMoved = false;
 
         var newSummaries = newAttributes
-            .append("div").attr("class","attributeName")
+            .append("div").attr("class","attributeName editableTextContainer")
             .each(function(summary){
                 summary.DOM.nugget = d3.select(this);
             })
@@ -3366,7 +3455,7 @@ kshf.Browser.prototype = {
 
         attribNugget.append("span").attr("class","nuggetInfo fa");
         var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
-        newSummaries.append("span").attr("class","summaryTitle")
+        newSummaries.append("span").attr("class","summaryTitle editableText")
             .attr("contenteditable",false)
             .text(function(summary){ return summary.summaryTitle; })
             .on("blur",function(summary){
@@ -3386,13 +3475,13 @@ kshf.Browser.prototype = {
                 }
             })
             ;
-        newSummaries.append("div").attr("class","fa fa-pencil editTitleButton")
+        newSummaries.append("div").attr("class","fa editTextButton")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w', title: function(){
                         var curState=this.parentNode.getAttribute("edittitle");
                         if(curState===null || curState==="false"){
-                            return "Edit Title";
+                            return kshf.lang.cur.EditTitle;
                         } else {
                             return "OK";
                         }
@@ -4073,7 +4162,7 @@ kshf.Summary_Base.prototype = {
 
         var topRow = this.DOM.headerGroup.append("span").style('position','relative');
 
-        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle")
+        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle editableTextContainer")
             .attr("edittitle",false)
             .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); })
             ;
@@ -4100,7 +4189,7 @@ kshf.Summary_Base.prototype = {
             .append("span").attr("class","fa fa-times")
             ;
 
-        this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text")
+        this.DOM.summaryTitle_text = this.DOM.summaryTitle.append("span").attr("class","summaryTitle_text editableText")
             .attr("contenteditable",false)
             .on("mousedown", function(){
                 // stop dragging event start
@@ -4124,14 +4213,14 @@ kshf.Summary_Base.prototype = {
                 this.summaryTitle
             );
 
-        this.DOM.summaryTitle_editButton = this.DOM.summaryTitle.append("span")
-            .attr("class","summaryTitle_editButton fa")
+        this.DOM.summaryTitle.append("span")
+            .attr("class","editTextButton fa")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w', title: function(){ 
                         var curState=this.parentNode.getAttribute("edittitle");
                         if(curState===null || curState==="false"){
-                            return "Edit Title";
+                            return kshf.lang.cur.EditTitle;
                         } else {
                             return "OK";
                         }
