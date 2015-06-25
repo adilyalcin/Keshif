@@ -1,28 +1,18 @@
 @import "../lesshat";
 
+@import "../keshif";
+
 @reorder_animation: ~'all 500ms ease-in-out';
-@layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
-@color_bars: #B0BFCA; //#8699A8;
-@color_filtered: #30B8C4;
-@color_bars_selected: darken(orangered, 10%); //#CC2320;
-@color_related: lighten(orangered, 10%); //#B2B227;
-@color_facet_arrow: rgb(231, 215, 97);
-@color_facet_group: #E9E5CB;
-@color_bar_preview: orangered;
-@color_preview_compare: #222222;
+
+//@color_bar_preview: orangered;
+//@color_preview_compare: #222222;
 @color_set_containment: rgb(64, 0, 255);
-@color_item_count: #969DA3;;
-
-@color_clique_background: rgba(229, 229, 229, 0.5);
-
-@bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear 500ms, width 700ms ease-in-out, height 700ms ease-in-out';
+@color_clique_background: rgba(234, 234, 234, 0.5);
 
 .kshf{
-	// Hide clique summary 
 	.kshfChart{
-		&.cliqueChart{
-			display: none;
-		}
+		// Hide clique summary by default
+		&.cliqueChart{ display: none; }
 		&[show_cliques=true] > .kshfChart.cliqueChart{
 			display: block;
 		}
@@ -190,32 +180,6 @@
 				width: 100%;
 				display: block;
 				cursor: default;
-				&[highlight=selected] {
-					> .text{
-						fill: red;
-					}
-					> .label{
-						fill: red;
-						&.label_vert[show=true]{
-							display: block;
-						}
-					/*	border-width: 2px 0px 0px 2px; */
-					}
-					> .cliqueMark{
-						background-color: orangered;
-					/*	border-width: 2px 0px 0px 2px; */
-					}
-					> .line{
-						stroke: orangered;
-						stroke-width: 2px;
-					}
-				}
-				// hide the rows which have 0 items
-				&[crossingcount="0"]{
-					> .line{
-						border-width: 0px;
-					}
-				}
 				> .line{
 					display: block;
 					stroke: #DADADA;
@@ -234,6 +198,20 @@
 						background-color: white;
 						display:none;
 					}
+				}
+				&[highlight=selected] {
+					> .label{
+						fill: @color_preview;
+						font-weight: 700;
+						&.label_vert[show=true]{ display: block; }
+					}
+					> .line{
+						stroke: @color_preview;
+						stroke-width: 2px;
+					}
+				}
+				&[crossingcount="0"]{
+					> .line{ display: none; }
 				}
 			}
 		}
@@ -264,7 +242,7 @@
 					box-sizing: border-box;
 					cursor: pointer;
 					&.preview{
-						fill: @color_related;
+						fill: @color_preview;
 					}
 				}
 				> .cliqueMark-preview-compare{
@@ -340,28 +318,7 @@
 				}
 			}
 		}
-		.line_cat{
-			text-align: right;
-			> .label{
-				left: calc(~"-100% - 5px");
-				right: 0px;
-				text-align: left;
-				display: block;
-			}
-		}
 
-		.text{
-			position: relative;
-			top: -0.5em;
-			cursor: pointer;
-			white-space: nowrap;
-			width: 250px;
-			text-align: right;
-			display: inline-block;
-			font-family: Helvetica, Arial, sans-serif;
-			font-size: 13px;
-			font-weight: 300;
-		}
 		> .belowMatrix{
 			position: relative;
 			height: 18px;

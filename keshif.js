@@ -701,12 +701,9 @@ kshf.Item.prototype = {
      * Higlights all relevant UI parts to this UI item
      */
     highlightAll: function(recurse){
-        if(this.DOM.record) {
-            this.DOM.record.setAttribute("highlight",recurse?"selected":true);
-        }
-        if(this.DOM.facet) {
-            this.DOM.facet.setAttribute("highlight",recurse?"selected":true);
-        }
+        if(this.DOM.record) this.DOM.record.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.facet)  this.DOM.facet.setAttribute("highlight",recurse?"selected":true);
+        if(this.cliqueRow)  this.cliqueRow.setAttribute("highlight","selected");
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d){
@@ -727,6 +724,7 @@ kshf.Item.prototype = {
     nohighlightAll: function(recurse){
         if(this.DOM.record) this.DOM.record.setAttribute("highlight",false);
         if(this.DOM.facet)  this.DOM.facet .setAttribute("highlight",false);
+        if(this.cliqueRow)   this.cliqueRow.setAttribute("highlight",false);
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
@@ -5693,6 +5691,10 @@ var Summary_Categorical_functions = {
     /** -- */
     cbAttribEnter: function(attrib){
         var me=this;
+
+        if(attrib.cliqueRow)
+            attrib.cliqueRow.setAttribute("highlight","selected");
+
         if(this.isAttribSelectable(attrib)) {
             attrib.DOM.facet.setAttribute("selecttype","and");
             attrib.DOM.facet.setAttribute("highlight","selected");

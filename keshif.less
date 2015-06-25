@@ -41,10 +41,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_filtered: #30B8C4;
 @color_bars_selected: darken(orangered, 10%); //#CC2320;
 @color_bars_background: #DEE2E6;
+@color_preview: lighten(orangered, 10%); //#B2B227;
 @color_related: lighten(orangered, 10%); //#B2B227;
 @color_facet_arrow: rgb(231, 215, 97);
 @color_facet_group: #E9E5CB;
-@color_bar_preview: orangered;
+@color_bar_preview: lighten(orangered, 10%);
 @color_preview_compare: darkslategray; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
@@ -1293,7 +1294,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events: none;
         }
         &.preview{
-            background-color: @color_related;
+            background-color: @color_bar_preview;
             pointer-events: none;
             .transform(~'scaleX(0)');
             &[fast]{
@@ -2007,7 +2008,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             > .selected-item-value-text{
                                 position: relative;
                                 top: 0px;
-                                color: orangered;
+                                color: @color_related;
                                 font-size: 0.8em;
                                 white-space: nowrap;
                                 > .selected-item-value-text-v{
@@ -2495,8 +2496,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         display: inline;
                         color: gray;
                     }
-        //            .background-image(~"linear-gradient(left, #ff6a33 0%, #F2F2F2 50px, #F2F2F2 100%)");
-        //            box-shadow: inset 0px 0px 4px @color_related;
                 }
                 &[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
                     content: "\f046"; // checked

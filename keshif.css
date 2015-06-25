@@ -1867,8 +1867,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke-width: 2px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .lineTrend.preview {
-  fill: rgba(255, 69, 0, 0.3);
-  stroke: #ff4500;
+  fill: rgba(255, 106, 51, 0.3);
+  stroke: #ff6a33;
   stroke-width: 2px;
   opacity: 0;
   -webkit-transition: opacity 500ms linear;
@@ -1877,7 +1877,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 500ms linear;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .timeSVG .previewLine {
-  stroke: #ff4500;
+  stroke: #ff6a33;
   stroke-width: 2px;
   opacity: 0;
 }
@@ -2111,7 +2111,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text {
   position: relative;
   top: 0px;
-  color: orangered;
+  color: #ff6a33;
   font-size: 0.8em;
   white-space: nowrap;
 }

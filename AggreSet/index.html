@@ -160,6 +160,15 @@ $(document).ready( function(){
 		.on("mouseenter",function(){ this.tipsy.show(); })
 		.on("mouseleave",function(){ this.tipsy.hide(); });;
 
+	d3.select(".firstAuthor")
+		.each(function(summary){
+		    this.tipsy = new Tipsy(this, {
+		        gravity: 's', title: function(){ return "Implementation"; }
+		    });
+		})
+		.on("mouseenter",function(){ this.tipsy.show(); })
+		.on("mouseleave",function(){ this.tipsy.hide(); });;
+
 	// http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-url-parameter
 	function getQueryParams(qs) {
 	    qs = qs.split('+').join(' ');
@@ -537,8 +546,8 @@ html, body{
 					<span class='fa fa-info-circle' id='import_privacy'></span> using the lower-left menu.<br><br>
 
 				<b>Authors:</b> 
-					<a href="http://www.adilyalcin.me" target="_blank" class="author_link">M. Adil Yalcin</a>
-						<span class='fa fa-code'></span>,
+					<a href="http://www.adilyalcin.me" target="_blank" class="author_link">M. Adil Yalçın</a>
+						<span class='fa fa-code firstAuthor'></span>,
 					<a href="https://sites.umiacs.umd.edu/elm/" target="_blank" class="author_link">Niklas Elmqvist</a>, and
 					<a href="http://www.cs.umd.edu/~bederson/" target="_blank" class="author_link">Ben Bederson</a><br><br>
 
