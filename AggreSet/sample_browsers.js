@@ -1,6 +1,11 @@
 var theDirPath = '../demo/data/set_'; 
 var upsetSourceURL = 'http://vcg.github.io/upset/';
 
+var getRecordTypeLabel = function(){
+    if(breachTypeInfo[this.id]) return breachTypeInfo[this.id];
+    return this.id;
+};
+
 var browser_configs = {
     lesMiserables: {
         title: "Les Miserables",
@@ -65,7 +70,7 @@ var browser_configs = {
             leftPanelLabelWidth: 140,
             rightPanelLabelWidth: 100,
             barChartWidth: 80,
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies"}] },
+            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies_radialset"}] },
             summaries: [
                 {   title: "Genres",
                     attribMap: function(){
@@ -275,7 +280,7 @@ var browser_configs = {
         items: "284 breaches",
         attribs: "Industry, Date...",
         width: 900,
-        credits: "<a href='http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html' target='blnk'>Bloomberg</a> "+
+        credits: "<a href='http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html' target='blnk'>Bloomberg</a> - "+
             "Data Breaches in the U.S.",
         browser: {
             itemName: "Data Breaches",
@@ -878,7 +883,7 @@ var browser_configs = {
                     },
                     enableSetVis: true
                 },{ title: "Rating", attribMap: "AvgRating", layout: 'right'
-                },{ title: "Watched", attribMap: "Watches", layout: 'right', intervalScale: 'log', collapsed: true
+                //},{ title: "Watched", attribMap: "Watches", layout: 'right', intervalScale: 'log', collapsed: true
                 //},{ title: "Release Year", attribMap: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
                 }
             ],
@@ -909,11 +914,6 @@ var breachTypeInfo = {
     'PHO': 'Phone',
     '1 MILLAN DOLLAR': "1M $"
 };
-var getRecordTypeLabel = function(d){
-    if(breachTypeInfo[this.id]) return breachTypeInfo[this.id];
-    return this.id;
-};
-
 function loadFactbook(facts, factBrowser){
     var tableName = "Countries";
     factBrowser.primaryTableName = tableName;
@@ -1069,59 +1069,4 @@ function loadFactbook(facts, factBrowser){
     factBrowser.items = kshf.dt[factBrowser.primaryTableName];
     factBrowser.loadCharts();   
 };
-
-var study_borders = {
-    categoryTextWidth: 150,
-    rightPanelLabelWidth: 90,
-    barChartWidth: 90,
-    itemName: "Countries",
-    source: { 
-        url: "http://jmatchparser.sourceforge.net/",
-        callback: function(browser){
-            factBrowser = browser;
-            $.ajax( {
-                url:"./data/factbook.xml",
-                type:"GET",
-                dataType:"xml",
-                async: true,
-                success: function(facts){ return loadFactbook(facts, browser); }
-            });
-        }},
-    summaries: [
-        {
-            title: "Border countries"
-        },{
-            title: "RegionID", layout: "right"
-        },{
-            title: "Education Expend.s (%)", layout: "right", unitName: "%",
-            description: "This entry provides the public expenditure on education as a percent of GDP.",
-            attribMap: function(d){ return d.data["Education Expenditures"]; }
-        },{
-            title: "Natural resources", layout: "right",
-            description: "This entry lists a country's mineral, petroleum, hydropower, and other resources of commercial importance, such as rare earth elements (REEs). In general, products appear only if they make a significant contribution to the economy, or are likely to do so in the future."
-        }
-    ],
-    itemDisplay: {
-        sortColWidth: 52,
-        sortingOpts: [
-            { title: 'Population',
-                label: function(d){
-                    var p=d.data.Population;
-                    if(p===undefined) return "-";
-                    return d3.format(".4s")(p);
-                }
-            }
-        ],
-        recordView: function(d){
-            var str="";
-            // Country locator
-            str +="<img class='locator' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/locator/"
-                +d.data.RegionID+"/"+d.data.id+"_large_locator.gif'/>"; 
-            // Country name
-            str += "<div class='name'>"+d.data.Name;
-            return str;
-        },
-    }
-};
-
 

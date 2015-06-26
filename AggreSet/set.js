@@ -46,7 +46,7 @@ var Summary_Clique_functions = {
 			this.setListSummary.prepareSortingOption({
 				name: "Relatedness",
 				value: function(d){ return -d.MST.index; },
-				prep: function(){ theCliqueSummary.updatePerceptualOrder(); }
+				prep: function(){ theSetSummary.updatePerceptualOrder(); }
 			})
 		);
 		this.setListSummary.refreshSortOptions();
