@@ -1348,13 +1348,27 @@ kshf.List.prototype = {
             },
             onFilter: function(summary){
                 summary.DOM.mainTextSearch.select(".clearText").style('display','inline-block');
-                // split the search string, search for each item individually
-                this.filterStr = this.filterStr.split(" ");
+
+                var query = [];
+
+                // split the input by " character
+                var processed = this.filterStr.split('"');
+                processed.forEach(function(block,i){
+                    if(i%2===0) {
+                        block.split(/\s+/).forEach(function(q){ query.push(q)});
+                    } else {
+                        query.push(block);
+                    }
+                });
+
+                // Remove the empty strings
+                query = query.filter(function(v){ return v!==""});
+
                 // go over all the items in the list, search each keyword separately
                 // If some search matches, return true (any function)
                 var summaryFunc = summary.textSearchSummary.summaryFunc;
                 summary.items.forEach(function(item){
-                    var f = ! this.filterStr.every(function(v_i){
+                    var f = ! query.every(function(v_i){
                         var v = summaryFunc.call(item.data,item);
                         if(v===null || v===undefined) return true;
                         return v.toLowerCase().indexOf(v_i)===-1;
