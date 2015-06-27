@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>The Books of Aarhus</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+$(document).ready( function() {
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 160,
+        leftPanelLabelWidth: 150,
+        middlePanelLabelWidth: 150,
+        itemName: "Records",
+        source: {
+            url: "http://odaa.datavis.dk/pivot-viz/",
+            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+            fileType: 'csv',
+            sheets: [ {name:"20150202_inventoryLargeCompress_loan"} ]
+        },
+        loadedCb: function(browser){
+            this.items.forEach(function(item){
+                item.aggregate_Self = item.data.count;
+                if(isNaN(item.aggregate_Self)) item.aggregate_Self = 1;
+            });
+        },
+        summaries: [
+            //  weekday hour    published   language    dk5 material    count
+            {   title: "Location", attribMap: "location"
+            },{ title:"Day of Week", attribMap: "weekday", 
+                sortingOpts: [{value: function(){ return 1*this.id.substr(0,1);}}],
+            },{ title:"Hour", attribMap: "hour", layout: "bottom"
+            },{ title:"Language", attribMap:"language", layout: "middle"
+            },{ title:"Dk5", attribMap:"dk5", layout: "middle"
+            },{ title:"Material", attribMap:"material", layout: "middle"
+            }
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div{
+                width: 800px;
+                height: 650px;
+            }
+            .empTitle{
+                display:inline-block;
+                font-size: 0.8em;
+                color: gray;
+            }
+            .empTitle:before{
+                content: " - ";
+            }
+            .listsortcolumn > .columnLabel:after{
+                content: "$";
+                color: gray;
+                margin-left: 3px;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
