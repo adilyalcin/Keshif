@@ -74,8 +74,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .aggr{
             .transition(@bar_animation);
         }
-        .chartAxis_Measure .tick{
-            .transition(~'transform 500ms ease-out');
+        .chartAxis_Measure {
+            .transition(@layout_animation);
+            .tick{
+                .transition(~'transform 500ms ease-out');
+            }
         }
         .attrib{
             .transition(~'all 700ms ease-in-out');
@@ -86,6 +89,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .panels_Above{
             .transition(~'height 700ms ease-in-out');
         }
+        .controlLine {
+            > .base {
+                .transition(@bar_animation);
+            }
+            > .handle{
+                .transition(@bar_animation);
+            }
+        }
+    }
+    &[no_pointer_events=true]{
+        pointer-events: none;
+        .kshfChart > .wrapper > .facetCategorical > .attribGroup {
+            > .attrib > .clickArea{
+                pointer-events: none;
+            }
+            > .chartCatLabelResize{
+                display: block;
+                border-style: solid !important;
+                border-color: lightgray !important;
+            }
+        }
     }
     &[attribsShown=true]{
         left: 120px;
@@ -94,6 +118,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .listHeader > .configRow{
             .display(flex);
+        }
+        .kshfChart > .wrapper > .facetCategorical:hover > .attribGroup > .chartCatLabelResize{
+            display: block;
+        }
+        .panel > .panelAdjustWidth{
+            display: block;
         }
         .editableTextContainer{
         }
@@ -551,7 +581,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             &:after{
                 margin-left: 4px;
-                content: "Drop...";
+                content: "Drop to summarize";
             }
         }
         .dropZone[readyToDrop=true] .dropIcon{
@@ -571,28 +601,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .panelAdjustWidth{
             display: none;
+            opacity: 0;
             position: absolute;
-            pointer-events: all;
             height: 100%;
             width: 0px;
             top: 0px;
-            // border-bottom: solid 1px lightgray;
-            // border-top: solid 1px lightgray;
             border-width: 0px 2px 0px 0px;
             border-style: dotted;
             border-color: lightgray;
             cursor: col-resize;
-            // .background-image(~"linear-gradient(right, rgba(230, 230, 230, 0) 0%, rgba(230, 230, 230, 1) 40%, rgba(12, 12, 12, 1) 50%, rgba(230, 230, 230, 1) 60%, rgba(230, 230, 230, 0) 100%)");
-            opacity: 0.5;
+            opacity: 0.8;
             z-index: 10;
-            &:hover{
-                // border-bottom: solid 1px gray;
-                // border-top: solid 1px gray;
-                border-width: 0px 2px 0px 0px;
-                border-style: dotted;
-                border-color: gray;
-                // .background-image(~"linear-gradient(right, rgba(150, 150, 150, 0) 0%, rgba(150, 150, 150, 1) 40%, rgba(101, 101, 101, 1) 50%, rgba(150, 150, 150, 1) 60%, rgba(150, 150, 150, 0) 100%);");
-            }
+            pointer-events: all;
+            &:hover{ border-color: gray; border-style: dashed; }
+            &[dragging=true]{ border-color: gray; border-style: dashed; }
         }
         &.panel_bottom{
             .display(flex);
@@ -615,12 +637,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
             > .dropZone_panel{
                 left: 0px;
-                height: 100%;
-                top: 0%;
+                top: 50px;
+                height: calc(~"100% - 50px");
                 width: 30px;
                 border-radius: 0px 40px 40px 0px;
                 border-right-width: 2px;
                 border-left-width: 1px;
+                > .dropIcon{
+                    transform: rotate(-90deg);
+                    width: 200px;
+                    height: 20px;
+                    transform-origin: 0 0;
+                    top: 200px;
+                    text-align: left;
+                    left: 8px;
+                }
             }
             > .panelAdjustWidth{
                 right: -2px;
@@ -634,12 +665,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
             > .dropZone_panel{
                 right: 0px;
-                height: 100%;
-                top: 0%;
+                top: 50px;
+                height: calc(~"100% - 50px");
                 width: 30px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
                 border-right-width: 1px;
+                > .dropIcon{
+                    transform: rotate(-90deg);
+                    width: 200px;
+                    height: 20px;
+                    transform-origin: 0 0;
+                    top: 200px;
+                    text-align: left;
+                    left: 8px;
+                }
             }
             > .panelAdjustWidth{
                 left: -2px;
@@ -666,11 +706,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: nwse-resize;
             width: 0;
             height: 0;
-            z-index: 10;
-            border-left: 16px solid transparent;
+            z-index: 2500;
             border-right: 16px solid lightgray;
             border-top: 16px solid transparent;
-            :hover{ border-right: 16px solid gray; }
+            &:hover{ border-right: 16px solid orangered; }
+            &[dragging="true"]{ border-right: 16px solid orangered; }
         }
         &.panel_infobox {
             position: absolute;
@@ -989,9 +1029,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .hasLabelWidth{ text-align: right; }
-    .attribGroup{
-        direction:ltr;
-    }
     .attrib{
         // add background to the text area when an item is selected
         &:not([selected="0"]) {
@@ -1095,7 +1132,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position:absolute;
         z-index: 2;
         top: 0px;
-        .transition(@layout_animation);
         > .tick{
             opacity: 0;
             position:absolute;
@@ -1184,7 +1220,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-overflow: ellipsis;*/
             > .summaryTitle_text{
                 display: inline-block;
-                max-width: 70%;
+                max-width: calc(~"100% - 60px");
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -1486,7 +1522,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     overflow-y: auto;
                     overflow-x: hidden;
                     display: block;
-                    pointer-events: all;
                     z-index: 5;
                     .transition(~'height 700ms ease-in-out');
 
@@ -1495,6 +1530,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         width: 1px;
                         display: block;
                         .transition(~'opacity 250ms');
+                    }
+
+                    > .chartCatLabelResize{
+                        display: none;
+                        position: absolute;
+                        top: 0px;
+                        cursor: col-resize;
+                        height: 100%;
+                        border-width: 0px 0px 0px 2px;
+                        border-color: lightgray;
+                        border-style: dotted;
+                        z-index: 25;
+                        width: 4px;
+                        &:hover{ border-color: gray; }
+                        &[dragging="true"]{ border-color: gray; }
                     }
 
                     > .attrib{
@@ -2088,16 +2138,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 background-color: rgb(57, 177, 188);
                                 cursor: ew-resize;
                                 box-shadow: 0px 0px 2px white;
-                            }
-                        }
-                    }
-                    &[anim=true]{
-                        > .controlLine {
-                            > .base {
-                                .transition(@bar_animation);
-                            }
-                            > .handle{
-                                .transition(@bar_animation);
                             }
                         }
                     }

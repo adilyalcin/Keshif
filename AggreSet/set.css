@@ -55,6 +55,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
+.kshf[noanim=false] .chartAxis_Measure {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
+}
 .kshf[noanim=false] .chartAxis_Measure .tick {
   -webkit-transition: -webkit-transform 500ms ease-out;
   -moz-transition: -moz-transform 500ms ease-out;
@@ -79,6 +85,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
+.kshf[noanim=false] .controlLine > .base {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+}
+.kshf[noanim=false] .controlLine > .handle {
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+}
+.kshf[no_pointer_events=true] {
+  pointer-events: none;
+}
+.kshf[no_pointer_events=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea {
+  pointer-events: none;
+}
+.kshf[no_pointer_events=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
+  display: block;
+  border-style: solid !important;
+  border-color: lightgray !important;
+}
 .kshf[attribsShown=true] {
   left: 120px;
 }
@@ -95,6 +124,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+}
+.kshf[attribsShown=true] .kshfChart > .wrapper > .facetCategorical:hover > .attribGroup > .chartCatLabelResize {
+  display: block;
+}
+.kshf[attribsShown=true] .panel > .panelAdjustWidth {
+  display: block;
 }
 .kshf[attribsShown=true] .editableTextContainer > .editTextButton {
   display: inline-block;
@@ -594,7 +629,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel .dropIcon:after {
   margin-left: 4px;
-  content: "Drop...";
+  content: "Drop to summarize";
 }
 .kshf .panel .dropZone[readyToDrop=true] .dropIcon {
   color: orangered;
@@ -613,8 +648,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel > .panelAdjustWidth {
   display: none;
+  opacity: 0;
   position: absolute;
-  pointer-events: all;
   height: 100%;
   width: 0px;
   top: 0px;
@@ -622,13 +657,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-style: dotted;
   border-color: lightgray;
   cursor: col-resize;
-  opacity: 0.5;
+  opacity: 0.8;
   z-index: 10;
+  pointer-events: all;
 }
 .kshf .panel > .panelAdjustWidth:hover {
-  border-width: 0px 2px 0px 0px;
-  border-style: dotted;
   border-color: gray;
+  border-style: dashed;
+}
+.kshf .panel > .panelAdjustWidth[dragging=true] {
+  border-color: gray;
+  border-style: dashed;
 }
 .kshf .panel.panel_bottom {
   display: -webkit-box;
@@ -672,12 +711,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_left > .dropZone_panel {
   left: 0px;
-  height: 100%;
-  top: 0%;
+  top: 50px;
+  height: calc(100% - 50px);
   width: 30px;
   border-radius: 0px 40px 40px 0px;
   border-right-width: 2px;
   border-left-width: 1px;
+}
+.kshf .panel.panel_left > .dropZone_panel > .dropIcon {
+  transform: rotate(-90deg);
+  width: 200px;
+  height: 20px;
+  transform-origin: 0 0;
+  top: 200px;
+  text-align: left;
+  left: 8px;
 }
 .kshf .panel.panel_left > .panelAdjustWidth {
   right: -2px;
@@ -701,12 +749,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_right > .dropZone_panel {
   right: 0px;
-  height: 100%;
-  top: 0%;
+  top: 50px;
+  height: calc(100% - 50px);
   width: 30px;
   border-radius: 40px 0px 0px 40px;
   border-left-width: 2px;
   border-right-width: 1px;
+}
+.kshf .panel.panel_right > .dropZone_panel > .dropIcon {
+  transform: rotate(-90deg);
+  width: 200px;
+  height: 20px;
+  transform-origin: 0 0;
+  top: 200px;
+  text-align: left;
+  left: 8px;
 }
 .kshf .panel.panel_right > .panelAdjustWidth {
   left: -2px;
@@ -742,13 +799,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: nwse-resize;
   width: 0;
   height: 0;
-  z-index: 10;
-  border-left: 16px solid transparent;
+  z-index: 2500;
   border-right: 16px solid lightgray;
   border-top: 16px solid transparent;
 }
-.kshf .panel.panel_resize :hover {
-  border-right: 16px solid gray;
+.kshf .panel.panel_resize:hover {
+  border-right: 16px solid orangered;
+}
+.kshf .panel.panel_resize[dragging="true"] {
+  border-right: 16px solid orangered;
 }
 .kshf .panel.panel_infobox {
   position: absolute;
@@ -1094,9 +1153,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .hasLabelWidth {
   text-align: right;
 }
-.kshf .attribGroup {
-  direction: ltr;
-}
 .kshf .attrib:not([selected="0"]) .attribLabel {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyMjAsMjIwLDIyMCkiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDIyMCwyMjAsMjIwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
   background-image: -webkit-linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px);
@@ -1188,10 +1244,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   z-index: 2;
   top: 0px;
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
 .kshf .chartAxis_Measure > .tick {
   opacity: 0;
@@ -1283,7 +1335,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text {
   display: inline-block;
-  max-width: 70%;
+  max-width: calc(100% - 60px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1598,7 +1650,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
   display: block;
-  pointer-events: all;
   z-index: 5;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
@@ -1613,6 +1664,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: opacity 250ms;
   -o-transition: opacity 250ms;
   transition: opacity 250ms;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
+  display: none;
+  position: absolute;
+  top: 0px;
+  cursor: col-resize;
+  height: 100%;
+  border-width: 0px 0px 0px 2px;
+  border-color: lightgray;
+  border-style: dotted;
+  z-index: 25;
+  width: 4px;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize:hover {
+  border-color: gray;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize[dragging="true"] {
+  border-color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   display: block;
@@ -2198,18 +2267,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #39b1bc;
   cursor: ew-resize;
   box-shadow: 0px 0px 2px white;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[anim=true] > .controlLine > .base {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-}
-.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider[anim=true] > .controlLine > .handle {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
   cursor: default;

@@ -60,8 +60,9 @@ google.setOnLoadCallback(function(){
             browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         summaries: [
-            {   title: "Regulatory Domains", catTableName: "Domains",  catLabel: "Name",
-            },{ title: "Research Topics", catTableName: "ResearchTopics", catLabel: "Name",
+            {   title: "Regulatory Domains", catTableName: "Domains",  catLabel: "Name", 
+                catTooltip: function(){ return "Info: "+this.Name; }
+            },{ title: "Research Topics", catTableName: "ResearchTopics", catLabel: "Name", catTooltip: "Description"
             },{ title: "Study Design", catTableName: "StudyDesigns", catLabel: "Name",
                 description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental",
                 collapsed: false,
@@ -73,13 +74,13 @@ google.setOnLoadCallback(function(){
             },{ title: "Summarized by MCEP", attribMap: 'Summarized',
                 catTableName: "Summarized", catLabel: "mcep_summarized",
                 collapsed: true
-            },{ title: "Date", layout: 'middle'
+            },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear();}
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
             sortingOpts: { title: 'Date', label: function(){return this.Date.getFullYear();}, inverse: true},
-            textSearch: 'title',
+            textSearch: 'Title',
             detailsToggle: "one",
             autoExpandMore: true,
             recordView: function(){

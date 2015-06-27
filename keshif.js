@@ -71,7 +71,7 @@ var kshf = {
             MaximizeSummary: "Maximize summary",
             RemoveSummary: "Remove summary",
             ReverseOrder: "Reverse order",
-            ReOrder: "Reorder",
+            Reorder: "Reorder",
             GetMoreInfo: "Get more info",
             Percentiles: "Percentiles",
             LockToCompare: "Lock to compare",
@@ -91,7 +91,8 @@ var kshf = {
             And: "And",
             Or: "Or",
             Not: "Not",
-            EditTitle: "Edit"
+            EditTitle: "Edit",
+            ResizeBrowser: "Resize Browser"
         },
         tr: {
             ModifyBrowser: "Tarayıcıyı düzenle",
@@ -104,7 +105,7 @@ var kshf = {
             MaximizeSummary: "Özeti büyüt",
             RemoveSummary: "Özeti kaldır",
             ReverseOrder: "Ters sırala",
-            ReOrder: "Yeniden sırala",
+            Reorder: "Yeniden sırala",
             GetMoreInfo: "Daha fazla bilgi",
             Percentiles: "Yüzdeler",
             LockToCompare: "Kilitle ve karşılaştır",
@@ -124,7 +125,8 @@ var kshf = {
             And: "Ve",
             Or: "Veya",
             Not: "Değil",
-            EditTitle: "Değiştir"
+            EditTitle: "Değiştir",
+            ResizeBrowser: "Boyutlandır"
         },
         fr: {
             ModifyBrowser: "Modifier le navigateur",
@@ -137,7 +139,7 @@ var kshf = {
             MaximizeSummary: "Agrandir le sommaire",
             RemoveSummary: "??",
             ReverseOrder: "Inverser l'ordre",
-            ReOrder: "Réorganiser",
+            Reorder: "Réorganiser",
             GetMoreInfo: "Plus d'informations",
             Percentiles: "Percentiles",
             LockToCompare: "Bloquer pour comparer",
@@ -2007,9 +2009,9 @@ kshf.List.prototype = {
 kshf.Panel = function(options){
     this.browser = options.browser;
     this.name = options.name;
-    this.width_catLabel = options.widthCatLabel;
-    this.width_catChart = 0;
-    this.width_catMeasureLabel = 1;
+    this.width_catLabel = options.width_catLabel;
+    this.width_catBars = 0; // placeholder
+    this.width_catMeasureLabel = 1; // placeholder
     this.summaries = [];
 
     this.DOM = {};
@@ -2025,7 +2027,7 @@ kshf.Panel.prototype = {
     /** -- */
     getWidth_Total: function(){
         if(this.name==="bottom") return this.browser.getWidth_Total();
-        return this.width_catLabel + this.width_catMeasureLabel + this.width_catChart + kshf.scrollWidth;
+        return this.width_catLabel + this.width_catMeasureLabel + this.width_catBars + kshf.scrollWidth;
     },
     /** -- */
     addSummary: function(summary,index){
@@ -2111,6 +2113,7 @@ kshf.Panel.prototype = {
     initDOM_DropZone: function(dom){
         var me=this;
         this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone_panel");
+        this.DOM.dropZone_Panel.append("span").attr("class","dropIcon fa fa-angle-double-down");
 
         // ********************************************
             var dom = this.DOM.dropZone_Panel[0][0];
@@ -2147,25 +2150,33 @@ kshf.Panel.prototype = {
             .attr("class","panelAdjustWidth")
             .on("mousedown", function (d, i) {
                 if(d3.event.which !== 1) return; // only respond to left-click
-                root.style('cursor','ew-resize');
+                var adjustDOM = this;
+                adjustDOM.setAttribute("dragging",true);
+                root
+                    .style('cursor','ew-resize')
+                    .attr('no_pointer_events',true)
+                ;
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(document.body)[0];
-                var mouseDown_width = me.width_catChart;
-                root.on("mousemove", function() {
+                var mouseDown_width = me.width_catBars;
+                d3.select("body").on("mousemove", function() {
                     var mouseMove_x = d3.mouse(document.body)[0];
                     var mouseDif = mouseMove_x-mouseDown_x;
                     if(me.name==='right') mouseDif *= -1;
                     var oldhideBarAxis = me.hideBarAxis;
-                    me.setWidthCatChart(mouseDown_width+mouseDif);
+                    me.setWidthCatBars(mouseDown_width+mouseDif);
                     if(me.hideBarAxis!==oldhideBarAxis){
                         me.browser.updateLayout_Height();
                     }
                     // TODO: Adjust other panel widths
                 }).on("mouseup", function(){
-                    root.style('cursor','default');
+                    adjustDOM.setAttribute("dragging",false);
+                    root
+                        .style('cursor','default')
+                        .attr('no_pointer_events',null);
                     me.browser.setNoAnim(false);
                     // unregister mouse-move callbacks
-                    root.on("mousemove", null).on("mouseup", null);
+                    d3.select("body").on("mousemove", null).on("mouseup", null);
                 });
                 d3.event.preventDefault();
             })
@@ -2181,11 +2192,11 @@ kshf.Panel.prototype = {
     /** -- */
     refreshAdjustWidth: function(){
         if(this.name==='middle' || this.name==='bottom') return; // cannot have adjust handles for now
-        this.DOM.panelAdjustWidth.style("display",(this.summaries.length>0)?"block":"");
+        this.DOM.panelAdjustWidth.style("opacity",(this.summaries.length>0)?1:0);
     },
     /** -- */
     setTotalWidth: function(_w_){
-        this.width_catChart = _w_-this.width_catLabel-this.width_catMeasureLabel-kshf.scrollWidth;
+        this.width_catBars = _w_-this.width_catLabel-this.width_catMeasureLabel-kshf.scrollWidth;
     },
     /** -- */
     getNumOfOpenSummaries: function(){
@@ -2196,7 +2207,21 @@ kshf.Panel.prototype = {
         this.summaries.forEach(function(summary){ summary.setCollapsed(true); });
     },
     /** -- */
-    setWidthCatChart: function(_w_){
+    setWidthCatLabel: function(_w_){
+        console.log(_w_);
+        _w_ = Math.max(90,_w_); // use at least 90 pixels for the category label.
+        if(_w_===this.width_catLabel) return;
+        var widthDif = this.width_catLabel-_w_;
+        this.width_catLabel = _w_;
+        this.summaries.forEach(function(summary){
+            if(summary.refreshLabelWidth!==undefined){
+                summary.refreshLabelWidth();
+            }
+        });
+        this.setWidthCatBars(this.width_catBars+widthDif);
+    },
+    /** -- */
+    setWidthCatBars: function(_w_){
         _w_ = Math.max(_w_,0);
         this.hideBars = _w_<=5;
         this.hideBarAxis = _w_<=20;
@@ -2215,7 +2240,7 @@ kshf.Panel.prototype = {
             this.DOM.root.attr("hideBarAxis",true);
         }
 
-        this.width_catChart = _w_;
+        this.width_catBars = _w_;
 
         this.updateSummariesWidth();
         if(this.name!=="middle")
@@ -2347,7 +2372,7 @@ kshf.Browser = function(options){
     this.DOM.attribDragBox = this.DOM.root.append("div").attr("class","attribDragBox");
 
     this.panels.left = new kshf.Panel({
-        widthCatLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
+        width_catLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'left',
         parentDOM: this.DOM.panelsTop
@@ -2358,19 +2383,19 @@ kshf.Browser = function(options){
     this.layoutList = asdasds.append("div").attr("class", "panel listDiv")
 
     this.panels.middle = new kshf.Panel({
-        widthCatLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
+        width_catLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'middle',
         parentDOM: asdasds
     });
     this.panels.right = new kshf.Panel({
-        widthCatLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
+        width_catLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'right',
         parentDOM: this.DOM.panelsTop
     });
     this.panels.bottom = new kshf.Panel({
-        widthCatLabel : options.categoryTextWidth || 115,
+        width_catLabel : options.categoryTextWidth || 115,
         browser: this,
         name: 'bottom',
         parentDOM: this.DOM.root
@@ -2537,7 +2562,22 @@ kshf.Browser.prototype = {
     insertDOM_ResizeBrowser: function(){
         var me=this;
         this.DOM.root.append("div").attr("class", "panel panel_resize")
+            .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'e', title: function(){ return kshf.lang.cur.ResizeBrowser; }
+                });
+            })
+            .on("mouseover",function(){
+                if(this.getAttribute("dragging")==="true") return;
+                this.tipsy.show();
+            })
+            .on("mouseout",function(){
+                this.tipsy.hide();
+            })
             .on("mousedown", function (d, i) {
+                var resizeDOM = this;
+                this.tipsy.hide();
+                resizeDOM.setAttribute("dragging",true);
                 me.DOM.root.style('cursor','nwse-resize');
                 me.setNoAnim(true);
                 var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
@@ -2552,6 +2592,7 @@ kshf.Browser.prototype = {
                     me.updateLayout();
                 }).on("mouseup", function(){
                     if(sendLog) sendLog(kshf.LOG.RESIZE);
+                    resizeDOM.setAttribute("dragging",false);
                     me.DOM.root.style('cursor','default');
                     me.setNoAnim(false);
                     // unregister mouse-move callbacks
@@ -3299,9 +3340,9 @@ kshf.Browser.prototype = {
         };
         var defaultBarChartWidth = x.call(this);
 
-        this.panels.left.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
-        this.panels.right.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
-        this.panels.middle.setWidthCatChart(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.left.setWidthCatBars(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.right.setWidthCatBars(this.options.barChartWidth || defaultBarChartWidth);
+        this.panels.middle.setWidthCatBars(this.options.barChartWidth || defaultBarChartWidth);
         this.panels.bottom.updateSummariesWidth(this.options.barChartWidth || defaultBarChartWidth);
 
         this.updateMiddlePanelWidth();
@@ -4480,10 +4521,6 @@ var Summary_Categorical_functions = {
         return this.panel.width_catLabel-this.getWidth_LeftOffset();
     },
     /** -- */
-    getWidth_Text: function(){
-        return this.getWidth_Label()+this.panel.width_catMeasureLabel;
-    },
-    /** -- */
     areAllCatsInDisplay: function(){
         return this.catCount_Visible===this.catCount_InDisplay;
     },
@@ -4963,6 +5000,31 @@ var Summary_Categorical_functions = {
         // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
         this.DOM.chartBackground = this.DOM.attribGroup.append("span").attr("class","chartBackground");
 
+        this.DOM.chartCatLabelResize = this.DOM.attribGroup.append("span").attr("class","chartCatLabelResize")
+            .on("mousedown", function (d, i) {
+                var resizeDOM = this;
+                resizeDOM.setAttribute("dragging",true);
+                me.browser.DOM.root
+                    .style('cursor','col-resize')
+                    .attr('no_pointer_events',true);
+                me.browser.setNoAnim(true);
+                var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
+                var initWidth = me.panel.width_catLabel;
+
+                d3.select("body").on("mousemove", function() {
+                    var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
+                    me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
+                }).on("mouseup", function(){
+                    resizeDOM.setAttribute("dragging",false);
+                    me.browser.DOM.root
+                        .style('cursor','default')
+                        .attr('no_pointer_events',null);
+                    me.browser.setNoAnim(false);
+                    d3.select("body").on("mousemove", null).on("mouseup", null);
+                });
+               d3.event.preventDefault();
+           });
+
         this.DOM.belowAttribs = this.DOM.facetCategorical.append("div").attr("class","belowAttribs");
         this.DOM.belowAttribs.append("div").attr("class", "border_line");
         
@@ -5174,9 +5236,9 @@ var Summary_Categorical_functions = {
     /** -- */
     getWidth_CatChart: function(){
         if(!this.scrollBarShown()){
-            return this.panel.width_catChart+kshf.scrollWidth-5;
+            return this.panel.width_catBars+kshf.scrollWidth-5;
         }
-        return this.panel.width_catChart;
+        return this.panel.width_catBars;
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
@@ -5349,7 +5411,7 @@ var Summary_Categorical_functions = {
     refreshViz_Active: function(){
         if(!this.hasCategories() || this.collapsed) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
-        var width_Text = this.getWidth_Text();
+        var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
         this.DOM.aggr_Active.each(function(category){
             kshf.Util.setTransform(this,"scaleX("+(ratioMode?
                 ((category.aggregate_Active===0)?0:maxWidth):
@@ -5509,16 +5571,17 @@ var Summary_Categorical_functions = {
         tickDoms.exit().remove();
     },
     /** -- */
-    refreshLabelWidth: function(w){
+    refreshLabelWidth: function(){
         if(!this.hasCategories()) return;
         if(this.DOM.facetCategorical===undefined) return;
         var labelWidth = this.getWidth_Label();
         var barChartMinX = labelWidth + this.panel.width_catMeasureLabel;
 
+        this.DOM.chartCatLabelResize.style("left",(labelWidth+1)+"px");
         this.DOM.facetCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
         this.DOM.item_count_wrapper
-            .style("width",(this.panel.width_catMeasureLabel)+"px")
             .style("left",labelWidth+"px")
+            .style("width",this.panel.width_catMeasureLabel+"px")
             ;
         this.DOM.chartAxis_Measure.each(function(d){
             kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
@@ -6094,7 +6157,7 @@ var Summary_Categorical_functions = {
 
         // filler is used to insert the scroll bar. 
         // Items outside the view are not visible, something needs to expand the box
-        this.DOM.chartBackground.style("height",(this.getTotalAttribHeight())+"px");
+        this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
         
         var attribGroupScroll = me.DOM.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -7164,7 +7227,6 @@ var Summary_Interval_functions = {
         var me=this;
 
         this.DOM.intervalSlider = this.DOM.facetInterval.append("div").attr("class","intervalSlider")
-            .attr("anim",true)
             .style('margin-left',(this.width_vertAxisLabel)+"px");
 
         this.DOM.zoomControl = this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
@@ -7187,7 +7249,7 @@ var Summary_Interval_functions = {
         var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
             .on("mousedown", function(){
                 if(d3.event.which !== 1) return; // only respond to left-click
-                me.DOM.intervalSlider.attr("anim",false);
+                me.browser.setNoAnim(true);
                 var e=this.parentNode;
                 var initPos = me.valueScale.invert(d3.mouse(e)[0]);
                 d3.select("body").style('cursor','ew-resize')
@@ -7214,7 +7276,7 @@ var Summary_Interval_functions = {
                             }
                         },250);
                     }).on("mouseup", function(){
-                        me.DOM.intervalSlider.attr("anim",true);
+                        me.browser.setNoAnim(false);
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
@@ -7236,7 +7298,7 @@ var Summary_Interval_functions = {
                 this.tipsy.hide();
                 if(d3.event.which !== 1) return; // only respond to left-click
                 if(me.scaleType==='time') return; // time is not supported for now.
-                me.DOM.intervalSlider.attr("anim",false);
+                me.browser.setNoAnim(true);
                 var e=this.parentNode;
                 var initMin = me.summaryFilter.active.min;
                 var initMax = me.summaryFilter.active.max;
@@ -7276,7 +7338,7 @@ var Summary_Interval_functions = {
                             }
                         },200);
                     }).on("mouseup", function(){
-                        me.DOM.intervalSlider.attr("anim",true);
+                        me.browser.setNoAnim(false);
                         d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                     });
                 d3.event.preventDefault();
@@ -7286,7 +7348,7 @@ var Summary_Interval_functions = {
         var handle_cb = function (d, i) {
             var mee = this;
             if(d3.event.which !== 1) return; // only respond to left-click
-            me.DOM.intervalSlider.attr("anim",false);
+            me.browser.setNoAnim(true);
             var e=this.parentNode;
             d3.select("body").style('cursor','ew-resize')
                 .on("mousemove", function() {
@@ -7322,7 +7384,7 @@ var Summary_Interval_functions = {
                 }).on("mouseup", function(){
                     mee.dragging = false;
                     me.browser.pauseResultPreview = false;
-                    me.DOM.intervalSlider.attr("anim",true);
+                    me.browser.setNoAnim(false);
                     d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
                 });
             d3.event.preventDefault();

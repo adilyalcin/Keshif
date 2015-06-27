@@ -143,6 +143,7 @@ var browser_configs = {
         sets: "82 Ingredients",
         items: "5000 Recipes",
         attribs: "Region",
+        width: 400,
         credits: "Ahn, Yong-Yeol, et al. \"Flavor Network and the Principles of Food Pairing.\" "+
                 "<a href='http://www.nature.com/srep/2011/111215/srep00196/full/srep00196.html' target='_blank'>Scientific reports</a> 1 (2011)",
         browser: {
@@ -554,7 +555,7 @@ var browser_configs = {
             leftPanelLabelWidth: 120,
             source: {
                 url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
-                dirPath: theDirPath,
+                dirPath: '../demo/data/',
                 fileType: 'csv',
                 sheets: [ {name: "cs_faculty"} ]
             },
@@ -595,7 +596,7 @@ var browser_configs = {
             leftPanelLabelWidth: 250,
             source: {
                 url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
-                dirPath: theDirPath,
+                dirPath: '../demo/data/',
                 fileType: 'csv',
                 sheets: [ {name: "cs_faculty"} ]
             },
