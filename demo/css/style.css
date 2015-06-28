@@ -57,7 +57,7 @@ body {
   background-color: orangered;
 }
 .pageTitle {
-  margin-top: 10px;
+  padding-top: 10px;
   font-family: 'Montserrat', sans-serif;
   font-size: 1.8em;
   text-shadow: 2px 2px 0px lightgray;
@@ -66,8 +66,8 @@ body {
 .pageSubtitle {
   text-align: center;
   font-family: 'Montserrat', sans-serif;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 5px;
   font-size: 0.9em;
   font-weight: 300;
   line-height: 1.5em;
