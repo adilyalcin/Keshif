@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>NYC Civil Service Titles</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        leftPanelLabelWidth: 250,
+        source: {
+            gdocId: '1HdjPkjyb4Oth4P-cCvVHiCMVviIS_l551D9MVvSgrjQ',
+            sheets: [ {name:"NYC Energy Efficiency Projects"} ]
+        },
+        summaries: [
+            {title: "Status"},
+            {title: "Type"},
+            {title: "SubType"},
+            {title: "Acronym"},
+            {title: "Start-Date", layout: "bottom"},
+            {title: "End-Date", layout: "bottom", collapsed: true}
+        ],
+        itemDisplay: {
+            sortColWidth: 80,
+            sortingOpts: ["CO2e (MT) Calculated", "Start-Date"],
+            recordView: "Site Name"
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 890px;
+                height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            The City’s Long-Term Sustainability Plan, PlaNYC, calls for City government to reduce greenhouse gas emissions produced by municipal operations 30% by 2017. A large part of this effort is retrofitting municipal buildings to become more energy efficient. This dataset lists energy efficiency projects at City buildings that are complete or in progress. Projects are listed by address, building name, and agency, and the dataset includes the estimated reduction in tons of GHG emissions associated with the project.
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+    </body>
+</html>
