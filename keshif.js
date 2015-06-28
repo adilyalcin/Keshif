@@ -1330,6 +1330,8 @@ kshf.List.prototype = {
             me.sortRecords();
             me.insertRecords();
             me.setSortColumnWidth(50);
+            me.updateVisibleIndex();
+            me.updateItemVisibility(false,true);
             me.DOM.listItemGroup.style("display",null);
             me.DOM.listHeader_BottomRow.style("display",null);
 
