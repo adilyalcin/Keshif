@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>The 2014 Inc. 5000</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+$(document).ready( function(){
+    var simpleFormat = d3.format(".2s");
+	browser = new kshf.Browser({
+        domID: "#chart_div",
+        categoryTextWidth: 200,
+        itemName: "Companies",
+        source: {
+            url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
+            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+            fileType: 'json',
+            sheets: [{name:"inc5000_2014"}]
+        },
+        summaries: [
+            { title: "<i class='fa fa-suitcase'></i> Industry", attribMap: 'industry'},
+            { title: "State", attribMap: 'state_l'},
+            { title: "<i class='fa fa-map-marker'></i> Metro Area", attribMap: 'metro'},
+            { title: "Years on the List", attribMap: 'yrs_on_list', layout: "right"},
+
+            { title: "# of Workers", attribMap: 'workers', layout: "right"},
+            { title: "<i class='fa fa-line-chart'></i> Growth", attribMap: 'growth', layout: "right", unitName: "%"},
+            { title: "<i class='fa fa-money'></i> Revenue", attribMap: 'revenue', layout: "right", unitName: "$"},
+            
+        ],
+        itemDisplay: {
+            sortingOpts: [
+                {title: 'Growth', value: function(){ return this.growth;}, 
+                    label: function(){ return simpleFormat(this.growth); }, unitName: "%"},
+                {title: 'Workers', value: function(){ return this.workers;}},
+                {title: 'Revenue', value: function(){ return this.revenue;}},
+            ],
+            textSearch: "company",
+            showRank: true,
+            recordView: function(){
+                return "<div><span class='companyName'>"+this.company+"</span>"+
+                    //http://www.google.com/search?q=hellp&btnI
+                    "<a target='_blank' class='fa fa-external-link companyURL' "+
+                        "href='http://whttp://www.inc.com/profile/"+this.url+"'></a></div>"+
+            "<div class='companyInfo' style='float:right'>"+simpleFormat(this.growth)+"% <i class='fa fa-line-chart'></i></div>"+
+                    "<div class='companyInfo'><i class='fa fa-suitcase'></i>"+this.industry+"</div>"+
+            "<div class='companyInfo' style='float:right'>"+simpleFormat(this.revenue)+"$ <i class='fa fa-money'></i></div>"+
+                    "<div class='companyInfo'><i class='fa fa-map-marker'></i>"+this.metro+"</div>"+
+                    "<div class='companyInfo'><i class='fa fa-users'></i>"+this.workers+" workers</div>"+
+                    ""
+                    ;
+            }
+        }
+    });
+});
+</script>
+    <style>
+        #chart_div {
+            width:1100px;
+            height:650px;
+        }
+        .companyName{
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        .companyURL{
+            font-size: 0.8em;
+            display: inline-block;
+            vertical-align: top;
+            color: gray;
+            margin-left: 5px;
+        }
+        .companyURL:hover{
+            color: orangered;
+        }
+        .companyInfo{
+            font-size: 0.9em;
+            font-weight: 300;
+            display: block;
+            
+        }
+        .companyInfo .fa{
+            color: gray;
+            display: inline-block;
+            width: 18px;
+        }
+    </style>
+	</head>
+    <body>
+        <div class="pageTitle" align="center">The 2014 Inc. 5000</div>
+        <div class="pageSubtitle" align="center">The fastest-growing private companies in America.</div>
+        
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            The Inc. 5000 is Inc. Magazine’s annual list of the 5000 fastest growing private companies in the United States. <br>
+            The list is compiled by measuring each company's percentage revenue growth over a four-year period.
+            <span class="fa fa-info-circle"></span>
+            </div>
+    </body>
+</html>
