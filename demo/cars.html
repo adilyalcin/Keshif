@@ -19,7 +19,7 @@ google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
         barChartWidth: 100,
-        leftPanelLabelWidth: 130,
+        leftPanelLabelWidth: 150,
         rightPanelLabelWidth: 150,
         source: {
             gdocId: '1UPaqtGuoeGXcxXKSVh1IJ-i40gbTgGfb_jZo494PlXk',
@@ -39,7 +39,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Engine Displacement", unitName: "cu.\"", layout: 'right'
             },{ title: "Horsepower", layout: 'right'
             },{ title: "Weight", unitName: "lbs", layout: 'right'
-            },{ title: "Acceleration (0-60mph)", attribMap: "Acceleration", unitName: "sec"
+            },{ title: "Acceleration (0 to 60 mph)", attribMap: "Acceleration", unitName: "sec"
             },{ title: "Year", layout: "bottom", attribMap: function(){ return new Date(this.Year,1,1);}
             }
         ],
@@ -54,7 +54,7 @@ google.setOnLoadCallback(function(){
         </script>
         <style>
             #chart_div {
-                width: 920px;
+                width: 950px;
                 height: 670px;
             }
         </style>

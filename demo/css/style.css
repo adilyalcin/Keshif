@@ -92,6 +92,9 @@ body {
   color: black;
   font-weight: 500;
 }
+#infobox a:hover {
+  color: orangered;
+}
 #infobox .fa {
   color: gray;
 }

@@ -252,6 +252,7 @@ google.setOnLoadCallback(function(){
                     function(){return this["DRVGR2013.Graduation rate, total cohort"];}, 
                     unitName: "%" }
             ],
+            showRank: true,
             textSearch: "institution name",
             recordView: function(){
                 return "<a href='http://"+this["HD2013.Institution's internet website address"]
@@ -263,7 +264,7 @@ google.setOnLoadCallback(function(){
         </script>
 <style>
 #chart_div{
-    width: 1100px;
+    width: 1120px;
     height: 700px;
 }
 .listItem a{
@@ -283,12 +284,14 @@ google.setOnLoadCallback(function(){
             <span class="fa fa-info-circle"></span>
             Data from 
             <a href="https://nces.ed.gov/ipeds/datacenter/" target='_blank'>
-                Institute of Education Sciences, National Center of Education Statistics, U.S. Department of Education.</a>
-            Based on 2013 records.<br>
-            <b>Selected Institutions:</b>
+                The Integrated Postsecondary Education Data System (IPEDS), National Center of Education Statistics, U.S. Dep. of Education.</a><br>
+            <b>770 Selected Institutions:</b>
             Offering Doctorate Degree.
             Instituion size > 1000.
-            U.S. Only
+            U.S. Only.
+            Based on 2013 records.
+            <a href="https://docs.google.com/spreadsheets/d/1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM" target="_blank">
+                Data table</a>
             <span class="fa fa-info-circle"></span>
             </div>
     </body>
