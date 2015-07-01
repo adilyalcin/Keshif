@@ -15,8 +15,8 @@ modification, are permitted provided that the following conditions are met:
   this list of conditions and the following disclaimer in the documentation
   and/or other materials provided with the distribution.
 
-* Neither the name of the University of Maryland nor the names of its contributors 
-  may not be used to endorse or promote products derived from this software 
+* Neither the name of the University of Maryland nor the names of its contributors
+  may not be used to endorse or promote products derived from this software
   without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -54,7 +54,7 @@ var kshf = {
       sub.prototype.constructor = sub;
     },
     summaryCount: 0,
-    maxVisibleItems_Default: 100, 
+    maxVisibleItems_Default: 100,
     scrollWidth: 19,
     previewTimeoutMS: 250,
     dt: {},
@@ -66,7 +66,7 @@ var kshf = {
             ShowInfoCredits: "Show info &amp; credits",
             RemoveFilter: "Remove filter",
             RemoveAllFilters: "Remove all filters",
-            MinimizeSummary: "Minimize summary",
+            MinimizeSummary: "Close summary",
             OpenSummary: "Open summary",
             MaximizeSummary: "Maximize summary",
             RemoveSummary: "Remove summary",
@@ -377,20 +377,20 @@ Tipsy.prototype = {
         var title = this.getTitle();
         if(!title) return;
         var jq_tip = this.tip();
-        
+
         jq_tip.find('.tipsy-inner')['html'](title);
         jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
         jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
-        
+
         var pos = $.extend({}, this.jq_element.offset(), {
             width: this.jq_element[0].offsetWidth,
             height: this.jq_element[0].offsetHeight
         });
-        
+
         var actualWidth = jq_tip[0].offsetWidth,
             actualHeight = jq_tip[0].offsetHeight,
             gravity = maybeCall(this.options.gravity, this.jq_element[0]);
-        
+
         var tp;
         switch (gravity.charAt(0)) {
             case 'n':
@@ -408,7 +408,7 @@ Tipsy.prototype = {
         }
         tp.top+=this.options.offset_y;
         tp.left+=this.options.offset_x;
-        
+
         if (gravity.length == 2) {
             if (gravity.charAt(1) == 'w') {
                 tp.left = pos.left + pos.width / 2 - 15;
@@ -416,13 +416,13 @@ Tipsy.prototype = {
                 tp.left = pos.left + pos.width / 2 - actualWidth + 15;
             }
         }
-        
+
         jq_tip.css(tp).addClass('tipsy-' + gravity);
         jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
         if (this.options.className) {
             jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
         }
-        
+
         if (this.options.fade) {
             jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: this.options.opacity},200);
         } else {
@@ -471,13 +471,13 @@ kshf.Item = function(d, idIndex){
     //  0: not selected
     this.selected = 0;
     // Items which are mapped/related to this item
-    this.items = []; 
+    this.items = [];
 
     // By default, each item is aggregated as 1
     // You can modify this with a non-negative value
     // Note that the aggregation currently works by summation only.
     this.aggregate_Self = 1;
-    
+
     this.aggregate_Active = 0;  // Active aggregate value
     this.aggregate_Preview = 0; // Previewed aggregate value
     this.aggregate_Total = 0;   // Total aggregate value
@@ -536,17 +536,17 @@ kshf.Item.prototype = {
         this.inList = undefined;
         this.selected = 0; this.refreshFacetDOMSelected();
     },
-    set_NOT: function(l){ 
+    set_NOT: function(l){
         if(this.is_NOT()) return;
         this._insertToList(l);
-        this.selected =-1; this.refreshFacetDOMSelected(); 
+        this.selected =-1; this.refreshFacetDOMSelected();
     },
-    set_AND: function(l){ 
+    set_AND: function(l){
         if(this.is_AND()) return;
         this._insertToList(l);
         this.selected = 1; this.refreshFacetDOMSelected();
     },
-    set_OR: function(l){ 
+    set_OR: function(l){
         if(this.is_OR()) return;
         this._insertToList(l);
         this.selected = 2; this.refreshFacetDOMSelected();
@@ -586,7 +586,7 @@ kshf.Item.prototype = {
             me.isWanted=me.isWanted&&f;
             return me.isWanted;
         });
-        
+
         if(this.isWanted===true && oldWanted===false){
             // wanted now
             this.mappedDataCache.forEach(function(m){
@@ -605,7 +605,7 @@ kshf.Item.prototype = {
                                     if(m.h) { // interval
                                         if(m.b) m.b.aggregate_Active+=attrib.aggregate_Self;
                                     } else { // categorical
-                                        m.forEach(function(item){ 
+                                        m.forEach(function(item){
                                             item.aggregate_Active+=attrib.aggregate_Self;
                                         });
                                     }
@@ -632,7 +632,7 @@ kshf.Item.prototype = {
                                     if(m.h) { // interval
                                         if(m.b) m.b.aggregate_Active-=attrib.aggregate_Self;
                                     } else { // categorical
-                                        m.forEach(function(item){ 
+                                        m.forEach(function(item){
                                             item.aggregate_Active-=attrib.aggregate_Self;
                                         });
                                     }
@@ -698,7 +698,7 @@ kshf.Item.prototype = {
             }
         },this);
     },
-    /** 
+    /**
      * Called on mouse-over on a primary item type, then recursively on all summaries and their sub-summaries
      * Higlights all relevant UI parts to this UI item
      */
@@ -796,7 +796,7 @@ kshf.Filter.prototype = {
             if(parentFacet && parentFacet.hasCategories()){
                 if(item.isWanted)
                     item.set_OR(parentFacet.summaryFilter.selected_OR);
-                else 
+                else
                     item.set_NONE();
             }
         },this);
@@ -842,13 +842,15 @@ kshf.Filter.prototype = {
                 if(parentFacet && parentFacet.hasCategories()){
                     if(item.isWanted)
                         item.set_OR(parentFacet.summaryFilter.selected_OR);
-                    else 
+                    else
                         item.set_NONE();
                 }
             });
         }
 
         this._refreshFilterSummary();
+
+        if(this.onClear) this.onClear.call(this,this.parentSummary);
 
         if(forceUpdate!==false){
             if(hasEntityParent){
@@ -886,8 +888,6 @@ kshf.Filter.prototype = {
                 sendLog(kshf.LOG.FILTER_CLEAR,this.browser.getFilterState());
             }
         }
-
-        if(this.onClear) this.onClear.call(this,this.parentSummary);
     },
 
     /** Don't call this directly */
@@ -1010,40 +1010,34 @@ kshf.List = function(kshf_, config, root){
     this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
     this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
     this.linkText      = config.linkText      || "Related To";
-    
+
     this.visibleCb = config.visibleCb;
     this.detailCb  = config.detailCb;
 
     this.showRank = config.showRank || false;
 
     this.textSearchSummary = null; // no text search summary by default
-    
+
     if(config.textSearch){
         // Find the summary. If it is not there, create it
         if(typeof(config.textSearch)==="string"){
-            var summary = this.browser.summaries_by_name[config.textSearch];
-            if(summary){
-                this.textSearchSummary = summary;
-            }
+            this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
         } else {
             var title = config.textSearch.title;
             var value = config.textSearch.value;
             if(title!==undefined){
                 var summary = this.browser.summaries_by_name[config.textSearch];
                 if(summary){
-                    this.textSearchSummary = summary;
+                    this.setTextSearchSummary(summary);
                 } else {
                     if(typeof(value)==="function"){
-                        this.textSearchSummary = browser.createSummary(title,value,'categorical');
+                        this.setTextSearchSummary(browser.createSummary(title,value,'categorical'));
                     } else if(typeof(value)==="string"){
-                        this.textSearchSummary = browser.changeSummaryName(value,title);
+                        this.setTextSearchSummary(browser.changeSummaryName(value,title));
                     };
                 }
             }
         }
-    }
-    if(this.textSearchSummary!==null){
-        this.textSearchSummary.isTextSearch = true;
     }
 
     this.listDiv = root.select("div.listDiv")
@@ -1122,7 +1116,7 @@ kshf.List.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(d){ 
+            .on("click",function(d){
                 kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
             })
@@ -1132,7 +1126,7 @@ kshf.List.prototype = {
     initDOM_TopRow: function(){
         var me=this;
         this.DOM.listHeader_TopRow = this.DOM.listHeader.append("div").attr("class","topRow");
-        
+
         var resultInfo = this.DOM.listHeader_TopRow.append("span").attr("class","resultInfo editableTextContainer")
             .attr("edittitle",false);
 
@@ -1161,7 +1155,7 @@ kshf.List.prototype = {
             .attr("class","editTextButton fa")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ 
+                    gravity: 'w', title: function(){
                         var curState=this.parentNode.getAttribute("edittitle");
                         if(curState===null || curState==="false"){
                             return kshf.lang.cur.EditTitle;
@@ -1194,9 +1188,9 @@ kshf.List.prototype = {
                     me.browser.itemName = this.textContent;
                 }
             });
-        
+
         this.initDOM_GlobalTextSearch();
-        
+
         this.initDOM_ClearAllFilters();
 
         var rightBoxes = this.DOM.listHeader_TopRow.append("span").attr("class","rightBoxes");
@@ -1280,7 +1274,7 @@ kshf.List.prototype = {
                 this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ return "Adjust column width"; }});
                 this.moving = false;
             })
-            .on("mouseover",function(){ 
+            .on("mouseover",function(){
                 if(!this.moving) this.tipsy.show();
             })
             .on("mouseout",function(d,i){
@@ -1335,9 +1329,21 @@ kshf.List.prototype = {
             me.DOM.listItemGroup.style("display",null);
             me.DOM.listHeader_BottomRow.style("display",null);
 
+            if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
+
             me.browser.updateLayout();
         });
 
+    },
+    /** -- */
+    setTextSearchSummary: function(summary){
+        if(summary===undefined || summary===null) return;
+        this.textSearchSummary = summary;
+        this.textSearchSummary.isTextSearch = true;
+        if(this.DOM.mainTextSearch)
+            this.DOM.mainTextSearch
+                .attr("isActive",true)
+                .select("input").attr("placeholder", kshf.lang.cur.Search+": "+summary.summaryTitle);
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
@@ -1375,15 +1381,14 @@ kshf.List.prototype = {
                     var f = ! query.every(function(v_i){
                         var v = summaryFunc.call(item.data,item);
                         if(v===null || v===undefined) return true;
-                        return v.toLowerCase().indexOf(v_i)===-1;
+                        return (""+v).toLowerCase().indexOf(v_i)===-1;
                     });
                     item.setFilterCache(this.id,f);
                 },this);
             },
         });
 
-        this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch")
-            .attr("isActive",this.textSearchSummary!==null);
+        this.DOM.mainTextSearch = this.DOM.listHeader_TopRow.append("span").attr("class","mainTextSearch");
 
         var x= this.DOM.mainTextSearch.append("div").attr("class","dropZone_textSearch");
         x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
@@ -1395,16 +1400,11 @@ kshf.List.prototype = {
             this.style.backgroundColor = "";
         });
         $(x[0][0]).on("mouseup",function(event){
-            me.textSearchSummary = me.browser.movedSummary;
-            me.textSearchSummary.isTextSearch = true;
-            me.DOM.mainTextSearch.attr("isActive",true);
-            me.DOM.mainTextSearch.select("input").attr("placeholder",
-                kshf.lang.cur.Search+": "+me.browser.movedSummary.summaryTitle);
+            me.setTextSearchSummary(me.browser.movedSummary);
         });
 
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-search searchIcon");
         this.DOM.mainTextSearch.append("input").attr("class","mainTextSearch_input")
-            .attr("placeholder",kshf.lang.cur.Search+": "+(this.textSearchSummary?this.textSearchSummary.summaryTitle:""))
             //.attr("autofocus","true")
             .on("keydown",function(){
                 var x = this;
@@ -1425,6 +1425,9 @@ kshf.List.prototype = {
             });
         this.DOM.mainTextSearch.append("i").attr("class","fa fa-times-circle clearText")
             .on("click",function() { me.textFilter.clearFilter(); });
+
+        // Refreshes DOM elements
+        this.setTextSearchSummary(this.textSearchSummary);
     },
     /** -- */
     initDOM_SortSelect: function(){
@@ -1494,12 +1497,12 @@ kshf.List.prototype = {
         this.DOM.filterClearAll = this.DOM.listHeader_TopRow.append("span").attr("class","filterClearAll")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ return kshf.lang.cur.RemoveAllFilters; } 
+                    gravity: 'n', title: function(){ return kshf.lang.cur.RemoveAllFilters; }
                 });
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
             .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("click",function(){ 
+            .on("click",function(){
                 this.tipsy.hide();
                 me.browser.clearFilters_All();
             })
@@ -1569,19 +1572,26 @@ kshf.List.prototype = {
     /** -- */
     refreshRecordRank: function(){
         if(!this.showRank) return;
-        this.DOM.ranks.text(function(d){ 
+        this.DOM.ranks.text(function(d){
             if(d.visibleOrder<0) return "";
-            return d.visibleOrder+1; 
-        });  
+            return d.visibleOrder+1;
+        });
     },
     /** -- */
     refrestSortColumnLabels: function(){
         if(this.displayType!=="list") return;
         var labelFunc=this.sortingOpt_Active.sortLabel;
         var unitName =this.sortingOpt_Active.unitName;
+        var sortColformat = d3.format("2.2s");
+        if(this.sortingOpt_Active.hasTime){
+            sortColformat = d3.time.format("%Y");
+        }
+
         this.DOM.listSortColumn.html(function(d){
             var s=labelFunc.call(d.data);
             if(s===null || s===undefined) return "";
+            this.setAttribute("title",s);
+            if(typeof s!=="string") s = sortColformat(s);
             if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
             return s;
         });
@@ -1623,7 +1633,7 @@ kshf.List.prototype = {
     setSortingOpt_Active: function(index){
         if(index<0 || index>=this.sortingOpts.length) return;
         this.sortingOpt_Active = this.sortingOpts[index];
-        
+
         this.sortRecords();
         this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
             .data(this.browser.items, function(d){ return d.id(); })
@@ -1669,11 +1679,11 @@ kshf.List.prototype = {
             .each(function(d){ d.DOM.record = this; })
             .on("mouseenter",function(d,i){
                 d.highlightAll(true);
-                
+
                 d.items.forEach(function(item){
                     item.highlightAll(false);
                 });
-                
+
                 if(me.hasLinkedItems){
                     d.DOM.record.setAttribute("selectedForLink",true);
                     // update result previews
@@ -1694,7 +1704,7 @@ kshf.List.prototype = {
                     d.DOM.record.setAttribute("selectedForLink",false);
                     me.browser.clearResultPreviews();
                 }
-            });            
+            });
 
         if(this.hasLinkedItems){
             this.DOM.listItems.attr("selectedForLink","false")
@@ -1703,7 +1713,7 @@ kshf.List.prototype = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'e',
-                    title: function(){ 
+                    title: function(){
                         var v=(d.visibleOrder+1);
                         return kshf.Util.ordinal_suffix_of(v);
                     }
@@ -1793,7 +1803,7 @@ kshf.List.prototype = {
             ;
 
         this.DOM.itemToggleDetails.append("span").attr("class","item_details_toggle fa")
-            .on("click", function(d){ 
+            .on("click", function(d){
                 this.parentNode.tipsy.hide();
                 if(me.detailsToggle==="one" && me.displayType==='list'){
                     if(d.showDetails===true){
@@ -1828,7 +1838,7 @@ kshf.List.prototype = {
         this.DOM.showMore.style("bottom","-27px"); // hide panel
         if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
     },
-    /** Sort all items given the active sort option 
+    /** Sort all items given the active sort option
      *  List items are only sorted on list init and when sorting options change.
      *  They are not resorted on filtering! In other words, filtering does not affect item sorting.
      */
@@ -1843,7 +1853,7 @@ kshf.List.prototype = {
                 // Now, you don't need to re-order after filtering, which is a nice property to have.
                 var v_a = sortValueFunc.call(a.data,a);
                 var v_b = sortValueFunc.call(b.data,b);
-                
+
                 if(isNaN(v_a)) v_a = undefined;
                 if(isNaN(v_b)) v_b = undefined;
                 if(v_a===null) v_a = undefined;
@@ -1864,7 +1874,7 @@ kshf.List.prototype = {
     getSortFunc: function(sortValueFunc){
         // 0: string, 1: date, 2: others
         var sortValueFunction, same;
-        
+
         // find appropriate sortvalue type
         for(var k=0, same=0; true ; k++){
             if(same===3 || k===this.browser.items.length){
@@ -1876,10 +1886,10 @@ kshf.List.prototype = {
             switch(typeof f){
             case 'string': sortValueType_temp2 = kshf.Util.sortFunc_List_String; break;
             case 'number': sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
-            case 'object': 
-                if(f instanceof Date) 
-                    sortValueType_temp2 = kshf.Util.sortFunc_List_Date; 
-                else 
+            case 'object':
+                if(f instanceof Date)
+                    sortValueType_temp2 = kshf.Util.sortFunc_List_Date;
+                else
                     sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
                 break;
             default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
@@ -1931,20 +1941,20 @@ kshf.List.prototype = {
 
             if(isVisible && !isVisible_pre){
                 domItem.setAttribute("animSt","closed"); // start from closed state
-                setTimeout(function(){ 
+                setTimeout(function(){
                     domItem.style.display = '';
                     domItem.setAttribute("animSt","open");
                 },500);
-                setTimeout(function(){ 
+                setTimeout(function(){
                     domItem.setAttribute("animSt","visible");
                 },1100+item.visibleOrder*20);
             }
             if(!isVisible && isVisible_pre){
                 // not in view now, but in view before
-                setTimeout(function(){ 
+                setTimeout(function(){
                     domItem.setAttribute("animSt","open");
                 },-item.visibleOrder*20);
-                setTimeout(function(){ 
+                setTimeout(function(){
                     domItem.setAttribute("animSt","closed");
                 },500);
                 setTimeout(function(){
@@ -2056,7 +2066,7 @@ kshf.Panel.prototype = {
         var indexFrom = -1;
         this.summaries.forEach(function(s,i){ if(s===summary) indexFrom = i; });
         if(indexFrom===-1) return; // given summary is not within this panel
-        
+
         var toRemove=this.DOM.root.selectAll(".dropZone")[0][indexFrom];
         toRemove.parentNode.removeChild(toRemove);
         this.refreshDropZoneIndex();
@@ -2419,6 +2429,18 @@ kshf.Browser = function(options){
             me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
             me.insertAttributeList();
         });
+    xx.append("span").attr("class","hidePanel fa fa-times")
+        .each(function(){
+            this.tipsy = new Tipsy(this, {
+                gravity: "e",
+                title: function(){ return "Hide panel"; }
+            })
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+            me.showAttributes();
+        });
     this.DOM.attributePanel.append("div").attr("class","attributeList");
 
     var me = this;
@@ -2702,7 +2724,7 @@ kshf.Browser.prototype = {
         var x,y,z;
         var source_type="spreadsheet";
         var sourceURL=null, sourceSheet="";
-        
+
         var readyToLoad=function(){
             return sourceURL!==null && sourceSheet!=="";
         };
@@ -2770,7 +2792,7 @@ kshf.Browser.prototype = {
         x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){ 
+                        gravity: 's', title: function(){
                             if(source_type==="spreadsheet")
                                 return "The link to your Google Spreadsheet";
                             if(source_type==="folder")
@@ -2795,7 +2817,7 @@ kshf.Browser.prototype = {
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ 
+                        gravity: 's', title: function(){
                             var v;
                             if(source_type==="spreadsheet")
                                 v="The name of the data sheet in the spreadsheet.";
@@ -2840,7 +2862,7 @@ kshf.Browser.prototype = {
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                        gravity: 's', title: function(){ 
+                        gravity: 's', title: function(){
                             return "If column has multi-values<br>(ex: action+drama),<br>split values using seperator";
                         }
                     });
@@ -2857,7 +2879,7 @@ kshf.Browser.prototype = {
                     .each(function(summary){
                         this.tipsy = new Tipsy(this, {
                             //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
-                            gravity: 's', title: function(){ 
+                            gravity: 's', title: function(){
                                 return "Seperator";
                             }
                         });
@@ -2865,7 +2887,7 @@ kshf.Browser.prototype = {
                     .on("mouseenter",function(){ this.tipsy.show(); })
                     .on("mouseleave",function(){ this.tipsy.hide(); });;
                 sheetColumn_sep_wrapper.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
-        
+
 
         var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton")
             .html("Explore it with Keshif")
@@ -3122,7 +3144,7 @@ kshf.Browser.prototype = {
                         var item = new kshf.Item(itemData,'id');
                         dstTable_Id[v2] = item;
                         dstTable.push(item);
-                    }   
+                    }
                 });
             } else {
                 if(!dstTable_Id[mapping]){
@@ -3131,7 +3153,7 @@ kshf.Browser.prototype = {
                     var item = new kshf.Item(itemData,'id');
                     dstTable_Id[mapping] = item;
                     dstTable.push(item);
-                }   
+                }
             }
         });
 
@@ -3259,7 +3281,7 @@ kshf.Browser.prototype = {
             }
             if(facetDescr.description) summary.summaryDescription = facetDescr.description;
 
-            // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED 
+            // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED
             if(summary.type==='categorical'){
                 if(facetDescr.catTableName){
                     summary.setCatTable(facetDescr.catTableName);
@@ -3424,7 +3446,7 @@ kshf.Browser.prototype = {
             .each(function(summary){
                 summary.DOM.nugget = d3.select(this);
             })
-            .attr("title",function(summary){ 
+            .attr("title",function(summary){
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
             })
             .attr("state",function(summary){
@@ -3435,7 +3457,7 @@ kshf.Browser.prototype = {
             .attr("datatype",function(summary){
                 return summary.getDataType();
             })
-            .attr("aggr_initialized",function(summary){ 
+            .attr("aggr_initialized",function(summary){
                 return summary.aggr_initialized;
             })
             .style("display",function(summary){
@@ -3630,7 +3652,7 @@ kshf.Browser.prototype = {
         this.listDisplay.refreshTotalViz();
         this.listDisplay.refreshActiveItemCount();
     },
-    /** @arg resultChange: 
+    /** @arg resultChange:
      * - If positive, more results are shown
      * - If negative, fewer results are shown
      * - Else, no info is available. */
@@ -3695,7 +3717,7 @@ kshf.Browser.prototype = {
         this.comparedAggregate = aggregate;
         this.vizCompareActive = true;
         this.DOM.root.attr("previewcompare",true);
-        this.summaries.forEach(function(summary){ 
+        this.summaries.forEach(function(summary){
             if(summary.inBrowser()) {
                 summary.cachePreviewValue();
                 summary.refreshViz_Compare();
@@ -3735,7 +3757,7 @@ kshf.Browser.prototype = {
             if(window.devicePixelRatio!==1 && window.devicePixelRatio!==2){
                 var me=this;
                 setTimeout(function(){
-                    me.showWarning("Please reset your browser zoom level for the best experience.")    
+                    me.showWarning("Please reset your browser zoom level for the best experience.")
                 },1000);
             } else {
                 this.hideWarning();
@@ -3852,16 +3874,16 @@ kshf.Browser.prototype = {
             if(this.listDisplay.recordView){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
-                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight; 
+                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight;
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
 
         // The part where summary DOM is updated
-        this.summaries.forEach(function(summary){ 
+        this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.refreshHeight();
         });
- 
+
         if(this.listDisplay){
             var listDivTop = 0;
             // get height of header
@@ -3889,8 +3911,8 @@ kshf.Browser.prototype = {
             marginRight=2;
             widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
         }
-        this.panels.left.DOM.root.style("margin-right",marginLeft+"px")  
-        this.panels.right.DOM.root.style("margin-left",marginRight+"px")  
+        this.panels.left.DOM.root.style("margin-right",marginLeft+"px")
+        this.panels.right.DOM.root.style("margin-left",marginRight+"px")
         this.panels.middle.setTotalWidth(widthMiddlePanel);
         this.panels.middle.updateSummariesWidth();
         this.panels.bottom.updateSummariesWidth();
@@ -3986,7 +4008,7 @@ kshf.Summary_Base.prototype = {
         if(this.sortFunc){
             this.browser.listDisplay.refreshSortingOptions();
         }
-        if(this.DOM.nugget) 
+        if(this.DOM.nugget)
             this.DOM.nugget.attr("state",function(summary){
                 if(summary.summaryColumn===null) return "custom"; // calculated
                 if(summary.summaryTitle===summary.summaryColumn) return "exact";
@@ -4006,7 +4028,7 @@ kshf.Summary_Base.prototype = {
             if(!this.aggr_initialized) return str+=" uninitialized";
             if(this.hasTime) return "interval time";
             return "interval numeric";
-            // 
+            //
             if(this.hasFloat) return "floating";
             return "integer";
         }
@@ -4028,7 +4050,7 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     hasEntityParent: function(){
-        if(this.parentFacet===undefined) return false; 
+        if(this.parentFacet===undefined) return false;
         return this.parentFacet.hasCategories();
     },
     /** -- */
@@ -4272,7 +4294,7 @@ kshf.Summary_Base.prototype = {
             .attr("class","editTextButton fa")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ 
+                    gravity: 'w', title: function(){
                         var curState=this.parentNode.getAttribute("edittitle");
                         if(curState===null || curState==="false"){
                             return kshf.lang.cur.EditTitle;
@@ -4368,7 +4390,7 @@ kshf.Summary_Base.prototype = {
         this.DOM.chartAxis_Measure.append("span").attr("class","background")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: pos2, title: function(){ 
+                    gravity: pos2, title: function(){
                         return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
                             kshf.lang.cur.Width+
                             " <span class='fa fa-arrows-h'></span>";
@@ -4409,7 +4431,7 @@ kshf.Summary_Base.prototype = {
 kshf.Summary_Categorical = function(){};
 kshf.Summary_Categorical.prototype = new kshf.Summary_Base();
 var Summary_Categorical_functions = {
-    /** -- */ 
+    /** -- */
     initialize: function(browser,name,attribFunc){
         kshf.Summary_Base.prototype.initialize.call(this,browser,name,attribFunc);
         this.type='categorical';
@@ -4470,7 +4492,7 @@ var Summary_Categorical_functions = {
         nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
             .append("span").attr("class","nuggetBar")
                 .style("width",function(cat){ return totalWidth*(cat.items.length/maxAggregate_Total)+"px"; });
-        
+
         this.DOM.nugget.select(".nuggetInfo").html(
             "<span class='fa fa-tag"+(this.hasMultiValueItem?"s":"")+"'></span><br>"+
             this._cats.length+"<br>rows<br>");
@@ -4574,7 +4596,7 @@ var Summary_Categorical_functions = {
         },this);
 
         this.sortingOpt_Active = this.sortingOpts[0];
-        
+
         this.updateCatSorting(0,true,true);
         this.refreshSortOptions();
         this.refreshSortButton();
@@ -4654,13 +4676,13 @@ var Summary_Categorical_functions = {
                     // Note: no other filtering depends on NOT state.
                     // This is for ,multi-level filtering using not query
         /*            if(this.selected_NOT.length>0){
-                        if(!recordVal_s.every(function(item){ 
+                        if(!recordVal_s.every(function(item){
                             return !item.is_NOT() && item.isWanted;
                         })){
                             item.setFilterCache(filterId,false); return;
                         }
                     }*/
-                    
+
                     // If any of the record values are selected with NOT, the item will be removed
                     if(this.selected_NOT.length>0){
                         if(!recordVal_s.every(function(val){ return !val.is_NOT(); })){
@@ -4781,7 +4803,7 @@ var Summary_Categorical_functions = {
         // Init facet DOMs after all facets are added / data mappings are completed
         this.subFacets.forEach(function(summary){ summary.initDOM(); });
     },
-    /** -- 
+    /** --
      * Note: accesses summaryFilter, summaryFunc
      */
     mapToAggregates: function(){
@@ -4814,7 +4836,7 @@ var Summary_Categorical_functions = {
                 mapping = [mapping];
             }
             maxDegree = Math.max(maxDegree, mapping.length);
-            
+
             item.mappedDataCache[filterId] = [];
             mapping.forEach(function(a){
                 var m=targetTable_id[a];
@@ -4971,7 +4993,7 @@ var Summary_Categorical_functions = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(d){ 
+            .on("click",function(d){
                 this.tipsy.hide();
                 kshf.Util.scrollToPos_do(me.DOM.attribGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
@@ -5029,7 +5051,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.belowAttribs = this.DOM.facetCategorical.append("div").attr("class","belowAttribs");
         this.DOM.belowAttribs.append("div").attr("class", "border_line");
-        
+
         this.insertChartAxis_Measure(this.DOM.belowAttribs,'e','e');
 
         this.DOM.scroll_display_more = this.DOM.belowAttribs.append("div").attr("class","hasLabelWidth")
@@ -5062,7 +5084,7 @@ var Summary_Categorical_functions = {
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ 
+                    gravity: 'w', title: function(){
                         return me.dirtySort?kshf.lang.cur.Reorder:kshf.lang.cur.ReverseOrder;
                     }
                 })
@@ -5134,7 +5156,7 @@ var Summary_Categorical_functions = {
                                 attrib.set_OR(me.summaryFilter.selected_OR);
                             } else {
                                 // search in tooltiptext
-                                if(me.catTooltip && 
+                                if(me.catTooltip &&
                                     me.catTooltip.call(attrib.data).toLowerCase().indexOf(v)!==-1) {
                                         attrib.set_OR(me.summaryFilter.selected_OR);
                                 } else{
@@ -5143,7 +5165,7 @@ var Summary_Categorical_functions = {
                             }
                         });
                         if(me.summaryFilter.selectedCount_Total()===0){
-                            me.summaryFilter.clearFilter();                            
+                            me.summaryFilter.clearFilter();
                         } else {
                             me.summaryFilter.how = "All";
                             me.summaryFilter.addFilter(true);
@@ -5199,7 +5221,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     unselectAllAttribs: function(){
-        this._cats.forEach(function(cat){ 
+        this._cats.forEach(function(cat){
             if(cat.f_selected() && cat.DOM.facet) cat.DOM.facet.setAttribute("highlight",false);
             cat.set_NONE();
         });
@@ -5207,7 +5229,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     selectAllAttribsButton: function(){
-        this._cats.forEach(function(attrib){ 
+        this._cats.forEach(function(attrib){
             if(!attrib.selectedForLink) return;
             attrib.set_OR(this.summaryFilter.selected_OR);
         },this);
@@ -5283,13 +5305,13 @@ var Summary_Categorical_functions = {
         var c = Math.floor(this.attribHeight / this.heightRow_category);
         if(c<0) c=1;
         if(c>this.catCount_Visible) c=this.catCount_Visible;
-        if(this.catCount_Visible<=2){ 
+        if(this.catCount_Visible<=2){
             c = this.catCount_Visible;
         } else {
             c = Math.max(c,2);
         }
         this.catCount_InDisplay = c+1;
-        this.catCount_InDisplay = Math.min(this.catCount_InDisplay,this.catCount_Total);
+        this.catCount_InDisplay = Math.min(this.catCount_InDisplay,this.catCount_Visible);
 
         this.refreshScrollDisplayMore(this.cat_InDisplay_First+this.catCount_InDisplay);
 
@@ -5624,9 +5646,9 @@ var Summary_Categorical_functions = {
         this.heightRow_category = h;
 
         this.browser.setNoAnim(true);
-        
+
         this.browser.updateLayout();
-        
+
         this.DOM.cats.each(function(attrib){
             kshf.Util.setTransform(this,
                 "translate("+attrib.posX+"px,"+(me.heightRow_category*attrib.orderIndex)+"px)");
@@ -5704,7 +5726,7 @@ var Summary_Categorical_functions = {
             }
             attrib.set_NONE();
             if(this.summaryFilter.selected_OR.length===1 && this.summaryFilter.selected_AND.length===0){
-                this.summaryFilter.selected_OR.forEach(function(a){ 
+                this.summaryFilter.selected_OR.forEach(function(a){
                     a.set_NONE();
                     a.set_AND(this.summaryFilter.selected_AND);
                 },this);
@@ -5740,7 +5762,7 @@ var Summary_Categorical_functions = {
                 temp.forEach(function(a){ a.set_NONE(); });
             }
             if(this.summaryFilter.selected_OR.length===0 && this.summaryFilter.selected_AND.length===1){
-                this.summaryFilter.selected_AND.forEach(function(a){ 
+                this.summaryFilter.selected_AND.forEach(function(a){
                     a.set_NONE();
                     a.set_OR(this.summaryFilter.selected_OR);
                 },this);
@@ -5784,7 +5806,7 @@ var Summary_Categorical_functions = {
             var timeoutTime = kshf.previewTimeoutMS;
             if(this.browser.vizCompareActive) timeoutTime = 0;
 //            this.resultPreviewShowTimeout = setTimeout(function(){
-                if(!me.browser.pauseResultPreview && 
+                if(!me.browser.pauseResultPreview &&
                   (me.hasMultiValueItem || me.summaryFilter.selected_OR.length===0) &&
                   (!attrib.is_NOT()) ){
                     // calculate the preview
@@ -6026,7 +6048,7 @@ var Summary_Categorical_functions = {
 
         DOM_cats_new.append("span").attr("class", "item_count_wrapper")
             .append("span").attr("class","measureLabel");
-        
+
         var domBarGroup = DOM_cats_new.append("span").attr("class","aggr_Group");
         domBarGroup.append("span").attr("class", "aggr total");
         domBarGroup.append("span").attr("class", "aggr total_tip");
@@ -6039,12 +6061,12 @@ var Summary_Categorical_functions = {
             .on("click", cbAttribClick)
             .each(attribDrag)
             ;
-    
+
         DOM_cats_new.append("span").attr("class","compareButton fa")
             .each(function(category){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'w',
-                    title: function(){ 
+                    title: function(){
                         return (me.browser.comparedAggregate!==category)?
                             kshf.lang.cur.LockToCompare:kshf.lang.cur.Unlock;
                     }
@@ -6083,7 +6105,7 @@ var Summary_Categorical_functions = {
 
         // idCompareFunc can be based on integer or string comparison
         var idCompareFunc = function(a,b){return b-a;};
-        if(typeof(this._cats[0].id())==="string") 
+        if(typeof(this._cats[0].id())==="string")
             idCompareFunc = function(a,b){ return b.localeCompare(a); };
 
         var theSortFunc = function(a,b){
@@ -6124,12 +6146,12 @@ var Summary_Categorical_functions = {
         this._cats.forEach(function(attrib,i){
             attrib.isCulled_before = attrib.isCulled;
             // not visible if it is not within visible range...
-            if(attrib.orderIndex<me.cat_InDisplay_First) { 
+            if(attrib.orderIndex<me.cat_InDisplay_First) {
                 attrib.isCulled=true;
             }
             else if(attrib.orderIndex>me.cat_InDisplay_First+me.catCount_InDisplay) {
                 attrib.isCulled=true;
-            } else {            
+            } else {
                 attrib.isCulled=false;
             }
         });
@@ -6143,7 +6165,7 @@ var Summary_Categorical_functions = {
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
         }
-        
+
         var me = this;
         if(sortDelay===undefined) sortDelay = 1000;
         this.sortCategories();
@@ -6157,10 +6179,10 @@ var Summary_Categorical_functions = {
         if(this.panel.name==='right') xRemoveOffset *= -1; // disappear to the other edge
         if(this.cbFacetSort) this.cbFacetSort.call(this);
 
-        // filler is used to insert the scroll bar. 
+        // filler is used to insert the scroll bar.
         // Items outside the view are not visible, something needs to expand the box
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
-        
+
         var attribGroupScroll = me.DOM.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
         if(this.scrollTop_cache!==0) kshf.Util.scrollToPos_do(attribGroupScroll,0);
@@ -6317,7 +6339,7 @@ var Summary_Interval_functions = {
         var me=this;
         var filterId = this.summaryFilter.id;
         this.itemV = function(item){ return item.mappedDataCache[filterId].v; };
-        
+
         this.items.forEach(function(item){
             var v=this.summaryFunc.call(item.data,item);
             if(isNaN(v)) v=null;
@@ -6333,7 +6355,7 @@ var Summary_Interval_functions = {
                     }
                 }
             }
-            item.mappedDataCache[filterId] = { 
+            item.mappedDataCache[filterId] = {
                 v: v,
                 h: this,
             };
@@ -6351,7 +6373,7 @@ var Summary_Interval_functions = {
             function(a){ return me.itemV(a).getTime(); }:
             function(a){ return me.itemV(a); };
         this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
-        
+
         this.updateIntervalRangeMinMax();
 
         this.detectLogScale();
@@ -6467,7 +6489,7 @@ var Summary_Interval_functions = {
         if(this.DOM.nugget===undefined) return;
 
         var nuggetViz = this.DOM.nugget.select(".nuggetViz");
-        
+
         this.DOM.nugget
             .attr("aggr_initialized",this.aggr_initialized)
             .attr("datatype",this.getDataType());
@@ -6489,7 +6511,7 @@ var Summary_Interval_functions = {
                     return totalHeight*(aggr.length/maxAggregate_Total)+"px";
                 })
             ;
-        
+
         this.DOM.nugget.select(".nuggetInfo").html(
             "<span class='num_left'>"+this.intervalTickFormat(this.intervalRange.min)+"</span>"+
             "<span class='num_right'>"+this.intervalTickFormat(this.intervalRange.max)+"</span>");
@@ -6591,7 +6613,7 @@ var Summary_Interval_functions = {
         var me = this;
 
         this.insertRoot(beforeDOM);
-        
+
         this.insertHeader();
 
         this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
@@ -6670,7 +6692,7 @@ var Summary_Interval_functions = {
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
                         gravity: 's',
-                        title: function(){ 
+                        title: function(){
                             return "<span style='font-weight:300'>%"+qb[0]+" - %"+qb[1]+" Percentile: <span style='font-weight:500'>"+
                                 me.quantile_val[qb[0]]+" - "+me.quantile_val[qb[1]]+"</span></span>"
                             ;
@@ -6681,14 +6703,14 @@ var Summary_Interval_functions = {
                 .on("mouseout" ,function(){ this.tipsy.hide(); })
                 ;
         },this);
-        
+
         [10,20,30,40,50,60,70,80,90].forEach(function(q){
             this.DOM.quantile[q] = this.DOM.percentileGroup.append("span")
                 .attr("class","quantile q_pos q_"+q)
                 .each(function(){
                     this.tipsy = new Tipsy(this, {
                         gravity: 's',
-                        title: function(){ 
+                        title: function(){
                             return "Median: "+ me.quantile_val[q];
                         }
                     })
@@ -6883,7 +6905,7 @@ var Summary_Interval_functions = {
 
         return ticks;
     },
-    /** 
+    /**
       Uses
       - optimumTickWidth
       - this.intervalRang
@@ -6943,10 +6965,10 @@ var Summary_Interval_functions = {
         }
 
         var ticksChanged = (this.intervalTicks.length!==ticks.length) ||
-            this.intervalTicks[0]!==ticks[0] || 
+            this.intervalTicks[0]!==ticks[0] ||
             this.intervalTicks[this.intervalTicks.length-1] !== ticks[ticks.length-1]
             ;
-        
+
         if(ticksChanged){
             this.intervalTicks = ticks;
             var filterId = this.summaryFilter.id;
@@ -6979,7 +7001,7 @@ var Summary_Interval_functions = {
                     bin.y++;
                 },this);
             }
-            
+
             this.updateAggregate_Active();
             this.updateBarScale2Active();
 
@@ -7161,7 +7183,7 @@ var Summary_Interval_functions = {
 
                 me.summaryFilter.filteredBin=this;
                 me.summaryFilter.addFilter(true);
-                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_BIN, 
+                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_BIN,
                     {id:me.summaryFilter.id, info:me.summaryFilter.active.min+"x"+me.summaryFilter.active.max} );
             });
 
@@ -7215,6 +7237,12 @@ var Summary_Interval_functions = {
     },
     /** --- */
     roundFilterRange: function(){
+        // Make sure the range is within the visible limits:
+        this.summaryFilter.active.min = Math.max(
+            this.intervalTicks[0], this.summaryFilter.active.min);
+        this.summaryFilter.active.max = Math.min(
+            this.intervalTicks[this.intervalTicks.length-1], this.summaryFilter.active.max);
+
         if(this.scaleType==='time'){
             // TODO: Round to meaningful dates
             return;
@@ -7235,7 +7263,7 @@ var Summary_Interval_functions = {
             .attr("sign","plus")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ 
+                    gravity: 'w', title: function(){
                         return (this.getAttribute("sign")==="plus")?"Zoom into range":"Zoom out";
                     }
                 });
@@ -7270,8 +7298,8 @@ var Summary_Interval_functions = {
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
-                                    { id: me.summaryFilter.id, 
+                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
+                                    { id: me.summaryFilter.id,
                                       info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.m});
                             } else {
                                 me.summaryFilter.clearFilter();
@@ -7332,7 +7360,7 @@ var Summary_Interval_functions = {
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
+                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
                                     { id: me.summaryFilter.id,
                                       info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.max});
                             } else{
@@ -7375,7 +7403,7 @@ var Summary_Interval_functions = {
                     me.summaryFilter.filteredBin=this;
                     this.timer = setTimeout( function(){
                         if(me.isFiltered_min() || me.isFiltered_max()){
-                            if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE, 
+                            if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
                                 { id: me.summaryFilter.id,
                                   info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.max });
                             me.summaryFilter.addFilter(true);
@@ -7481,7 +7509,7 @@ var Summary_Interval_functions = {
         if(this.isEmpty || this.collapsed) return;
         var me=this;
         var width=this.getBarWidth();
-        
+
         var heightTotal = function(aggr){
             if(aggr.length===0) return 0;
             if(me.browser.ratioModeActive) return me.height_hist;
@@ -7576,7 +7604,7 @@ var Summary_Interval_functions = {
         if(this.scaleType==='time'){
             var durationTime=this.browser.noAnim?0:700;
             this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){ 
+                .x(function(aggr){
                     return me.valueScale(aggr.x)+width/2;
                 })
                 .y0(me.height_hist+2)
@@ -7584,18 +7612,18 @@ var Summary_Interval_functions = {
                     if(aggr.aggregate_Active===0) return me.height_hist+3;
                     return me.height_hist-heightActive(aggr);
                 });
-            
+
             this.DOM.lineTrend_Active
               .transition().duration(durationTime)
               .attr("d", this.timeSVGLine);
 
             this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
-                .attr("y2",function(aggr){ 
+                .attr("y2",function(aggr){
                     if(aggr.aggregate_Active===0) return me.height_hist+3;
                     return me.height_hist-heightActive(aggr);
                 })
-                .attr("x1",function(aggr){ 
+                .attr("x1",function(aggr){
                     return me.valueScale(aggr.x)+width/2;
                 })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
@@ -7616,17 +7644,17 @@ var Summary_Interval_functions = {
     refreshViz_Compare: function(){
         if(this.isEmpty || this.collapsed) return;
         if(!this.browser.vizCompareActive) return;
-        
+
         var me=this;
         var width = this.getBarWidth();
 
         var heightCompare = function(aggr){
             if(aggr.aggregate_Compare===0) return 0;
-            if(me.browser.ratioModeActive) 
+            if(me.browser.ratioModeActive)
                 return (aggr.aggregate_Compare/aggr.aggregate_Active)*me.height_hist;
             return me.chartScale_Measure(aggr.aggregate_Compare);
         };
-        
+
         if(!this.isFiltered() || this.scaleType==='step'){
             this.DOM.aggr_Compare.each(function(aggr){
                 kshf.Util.setTransform(this,
@@ -7673,7 +7701,7 @@ var Summary_Interval_functions = {
             if(this.browser.vizCompareActive){
                 durationTime=200;
             }
-            
+
             this.DOM.lineTrend_Compare
                 .transition()
                 .duration(durationTime)
@@ -7681,11 +7709,11 @@ var Summary_Interval_functions = {
 
             this.DOM.lineTrend_CompareLine.transition().duration(durationTime)
                 .attr("y1",function(aggr){ return me.height_hist+3; })
-                .attr("y2",function(aggr){ 
+                .attr("y2",function(aggr){
                     if(aggr.aggregate_Compare===0) return me.height_hist+3;
                     return me.height_hist-heightCompare(aggr);
                 })
-                .attr("x1",function(aggr){ 
+                .attr("x1",function(aggr){
                     return me.valueScale(aggr.x)+width/2+1;
                 })
                 .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2+1; });
@@ -7747,7 +7775,7 @@ var Summary_Interval_functions = {
         if(this.scaleType==='time'){
             var durationTime=200;
             this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){ 
+                .x(function(aggr){
                     return me.valueScale(aggr.x)+width/2;
                 })
                 .y0(me.height_hist+2)
@@ -7755,7 +7783,7 @@ var Summary_Interval_functions = {
                     if(aggr.aggregate_Preview===0) return me.height_hist+3;
                     return me.height_hist-getAggrHeight_Preview(aggr);
                 });
-            
+
             this.DOM.lineTrend_Preview
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
@@ -7788,13 +7816,13 @@ var Summary_Interval_functions = {
         if(this.scaleType==='time'){
             var durationTime=200;
             this.timeSVGLine = d3.svg.line()
-                .x(function(aggr){ 
+                .x(function(aggr){
                     return me.valueScale(aggr.x)+width/2;
                 })
                 .y(function(aggr){
                     return me.height_hist;
                 });
-            
+
             this.DOM.lineTrend_Preview
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
@@ -7881,7 +7909,7 @@ var Summary_Interval_functions = {
         var me=this;
 
         this.DOM.aggr_Group.attr("noitems",function(aggr){ return aggr.aggregate_Active===0; });
-        
+
         this.DOM.measureLabel.each(function(aggr){
             var p=aggr.aggregate_Preview;
             if(me.browser.vizPreviewActive){
@@ -7914,7 +7942,7 @@ var Summary_Interval_functions = {
     refreshIntervalSlider: function(){
         var minPos = this.valueScale(this.summaryFilter.active.min);
         var maxPos = this.valueScale(this.summaryFilter.active.max);
-        // Adjusting min/max position is important because if it is not adjusted, the 
+        // Adjusting min/max position is important because if it is not adjusted, the
         // tips of the filtering range may not appear at the bar limits, which looks distracting.
         if(this.summaryFilter.active.min===this.intervalRange.min){
             minPos = this.valueScale.range()[0];

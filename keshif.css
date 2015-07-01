@@ -1,4 +1,4 @@
-/********************************* 
+/*********************************
 kshf library
 
 Copyright (c) 20014-2015, University of Maryland
@@ -14,8 +14,8 @@ modification, are permitted provided that the following conditions are met:
   this list of conditions and the following disclaimer in the documentation
   and/or other materials provided with the distribution.
 
-* Neither the name of the University of Maryland nor the names of its contributors 
-  may not be used to endorse or promote products derived from this software 
+* Neither the name of the University of Maryland nor the names of its contributors
+  may not be used to endorse or promote products derived from this software
   without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -312,12 +312,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-top: 3px;
 }
 .kshf .attributePanel > .attributePanelHeader > .addAttrib {
+  display: none;
+  color: gray;
+  position: absolute;
+  left: 5px;
+  cursor: pointer;
+}
+.kshf .attributePanel > .attributePanelHeader > .addAttrib:hover {
+  color: orangered;
+}
+.kshf .attributePanel > .attributePanelHeader > .hidePanel {
   color: gray;
   position: absolute;
   right: 3px;
   cursor: pointer;
 }
-.kshf .attributePanel > .attributePanelHeader > .addAttrib:hover {
+.kshf .attributePanel > .attributePanelHeader > .hidePanel:hover {
   color: orangered;
 }
 .kshf .attributePanel > .attributeList {
@@ -1565,20 +1575,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl[showClear=true]:before {
   content: "\f057";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .catSortButton {
+  opacity: 0;
   position: absolute;
   bottom: 1px;
   font-size: 0.7em;
   text-align: right;
   padding-right: 2px;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton:hover {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .catSortButton:hover {
   color: #ff4500;
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .catSortButton:before {
   content: "\f161";
 }
-.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls .catSortButton[inverse='true']:before {
+.kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .catSortButton[inverse='true']:before {
   content: "\f160";
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .sortOptionSelectGroup {
@@ -1781,7 +1796,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     top: 4px;
                                     opacity: 0px;
 
-                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%, 
+                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
                                     linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
 
                                     background-position: top left, top left;
@@ -1899,6 +1914,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib[noitems=true] .measureLabel {
   display: none;
+}
+.kshf .kshfChart > .wrapper > .facetCategorical:hover > .facetControls > .catSortButton {
+  opacity: 1;
 }
 .kshf .kshfChart > .wrapper > .facetInterval {
   padding: 7px 11px 0px 6px;
@@ -2264,9 +2282,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   display: none;
   width: 2px;
-  background-color: #39b1bc;
+  border-left: dotted 2px #30b8c4;
   cursor: ew-resize;
   box-shadow: 0px 0px 2px white;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
+  border-left: solid 2px #30b8c4;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup {
   cursor: default;
@@ -2937,6 +2958,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: bottom;
   text-align: right;
   width: 15px;
+  padding-top: 2px;
 }
 .kshf .listHeader > .bottomRow > .headerLinkStateColumn {
   font-size: 1.1em;

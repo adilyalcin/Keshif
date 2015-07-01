@@ -1,6 +1,6 @@
 @import "lesshat";
 
-/********************************* 
+/*********************************
 kshf library
 
 Copyright (c) 20014-2015, University of Maryland
@@ -16,8 +16,8 @@ modification, are permitted provided that the following conditions are met:
   this list of conditions and the following disclaimer in the documentation
   and/or other materials provided with the distribution.
 
-* Neither the name of the University of Maryland nor the names of its contributors 
-  may not be used to endorse or promote products derived from this software 
+* Neither the name of the University of Maryland nor the names of its contributors
+  may not be used to endorse or promote products derived from this software
   without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -68,7 +68,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .transition(~'left 300ms ease-in-out');
     .box-sizing(border-box);
     *{
-        .box-sizing(border-box);  
+        .box-sizing(border-box);
     }
     &[noanim=false]{
         .aggr{
@@ -209,7 +209,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     span[showlock="true"]{
-        .compareButton{ 
+        .compareButton{
             pointer-events: all;
             opacity: 1;
         }
@@ -333,6 +333,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-shadow: 0px 1px lightgray;
             padding-top: 3px;
             > .addAttrib{
+                display: none;
+                color: gray;
+                position: absolute;
+                left: 5px;
+                cursor: pointer;
+                &:hover{
+                    color:orangered;
+                }
+            }
+            > .hidePanel{
                 color: gray;
                 position: absolute;
                 right: 3px;
@@ -395,7 +405,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &[aggr_initialized=false]{
                 > .attribNugget {
-                    > .nuggetInfo{ 
+                    > .nuggetInfo{
                         font-size: 2em;
                         text-align: center;
                         position: relative;
@@ -533,7 +543,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &:hover{
                     color: orangered;
                 }
-            }               
+            }
         }
         &[shown=true]{
             opacity: 1;
@@ -1041,7 +1051,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     .kshfChart[collapsed=true] {
-        > .headerGroup > .header_display_control{ 
+        > .headerGroup > .header_display_control{
             > .fa-collapse{
                 opacity: 1;
                 &:hover{
@@ -1395,15 +1405,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 padding: 0px 0px 0px 0px;
                                 //background-color: white;
                             }
-                            &::-webkit-input-placeholder { 
+                            &::-webkit-input-placeholder {
                                 font-weight: 500;
                                 color: #cb5454;
                                 text-align:right;
                             }
-                            &:focus::-webkit-input-placeholder { 
+                            &:focus::-webkit-input-placeholder {
                                 color: #F3CDCD;
                             }
-                            &:hover::-webkit-input-placeholder { 
+                            &:hover::-webkit-input-placeholder {
                                 color: #F3CDCD;
                             }
                         }
@@ -1433,12 +1443,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     } // attribTextSearch
 
-                    .catSortButton{
+                    > .catSortButton{
+                        opacity: 0;
                         position: absolute;
                         bottom: 1px;
                         font-size: 0.7em;
                         text-align: right;
                         padding-right: 2px;
+                        .transition(~'opacity 200ms linear');
                         &:hover{
                             color:orangered
                         }
@@ -1476,6 +1488,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
+
                 } // facetControls
 
                 .scrollToTop{
@@ -1494,11 +1507,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     border-radius: 10px;
                     padding: 1px 5px 0px 5px;
                     background-color: rgba(150,150,100,0.2);
-                    cursor: pointer; 
+                    cursor: pointer;
                     &:hover{
     //                    font-weight: 500;
                         box-shadow: 0px 0px 1px black;
-                    }   
+                    }
                     &::before{
                         content: '+ Add Filter with All';
                     }
@@ -1586,7 +1599,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             line-height: 18px;
                             pointer-events: none;
                             z-index: 21;
-                            
+
                             font-size: 0.8em;
                             font-weight: 300;
                             cursor: default;
@@ -1617,7 +1630,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             vertical-align: top;
                             line-height: 18px;
                             pointer-events: none;
-                            
+
                             font-size: 0.7em;
                             pointer-events: none;
 
@@ -1650,7 +1663,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     top: 4px;
                                     opacity: 0px;
 
-                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%, 
+                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
                                     linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
 
                                     background-position: top left, top left;
@@ -1694,7 +1707,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 &:hover { background-color: gray; }
                             }
                         }
-                        
+
                         &[activeItems='0'] {
                             .measureLabel{
                                 visibility: hidden;
@@ -1789,6 +1802,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     } // .attrib
                 } // .attribGroup
+
+                &:hover > .facetControls > .catSortButton{
+                    opacity: 1;
+                }
             }// facetCategorical
 
             > .facetInterval {
@@ -1883,7 +1900,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     height: 8px;
                                     opacity: 0;
 
-                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%, 
+                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
                                     linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
 
                                     background-position: top left, top left;
@@ -2135,9 +2152,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 position: absolute;
                                 display: none;
                                 width: 2px;
-                                background-color: rgb(57, 177, 188);
+                                border-left: dotted 2px #30b8c4;
                                 cursor: ew-resize;
                                 box-shadow: 0px 0px 2px white;
+                                &:hover{
+                                    border-left: solid 2px #30b8c4;
+                                }
                             }
                         }
                     }
@@ -2169,7 +2189,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 } // intervalSlider
 
             } // facetInterval
-        } // 
+        } //
 
         .subFacets {
             position:relative;
@@ -2205,7 +2225,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .attribGroup { display: none; }
                 > .belowAttribs { display: none; }
             }
-            > .wrapper .facetInterval{ 
+            > .wrapper .facetInterval{
                 > .histogram { display: none; }
                 > .intervalSlider { display: none; }
             }
@@ -2261,7 +2281,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[hasmultivalueitem=true]{
             > .wrapper > .facetCategorical > .attribGroup > .attrib {
-                &[selected="0"][highlight="selected"] .notButton{ 
+                &[selected="0"][highlight="selected"] .notButton{
                     display: inline;
                 }
             }
@@ -2286,7 +2306,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //            margin: -1px;
 //            border: solid 1px gray;
             > .headerGroup > .header_display_control > .fa{
-                opacity: 1; 
+                opacity: 1;
             }
             &[hasmultivalueitem=true] {
                 > .headerGroup .hasMultiMappings{
@@ -2309,7 +2329,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }// kshfChart
 
     .belowAttribs{
-        position:relative; 
+        position:relative;
         height: 18px;
         .border_line{
             opacity: 0.6;
@@ -2740,9 +2760,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 top: 0px;
                 height: 100%;
                 .transition(~'all 200ms ease-in-out');
-                
+
                 &.total{
-                    width: 100%;    
+                    width: 100%;
                 }
                 &.preview{
                     transform: inherit;
@@ -2818,9 +2838,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 vertical-align: bottom;
                 text-align: right;
                 width: 15px;
-//                    float: right;
-//                    height: 100%;
-//                    margin-bottom: -3px;
+                padding-top: 2px;
             }
 
             > .headerLinkStateColumn{
@@ -2902,11 +2920,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .chartClearFilterButton.summary{
                         pointer-events: none;
                     }
-                    &[ready=true]{ 
+                    &[ready=true]{
         //                opacity: 1;
                         max-width: 100%;
                     }
-                    &[ready=false]{ 
+                    &[ready=false]{
         //                opacity: 1;
                         max-width: 0px;
                         .chartClearFilterButton{
@@ -3040,7 +3058,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 1px;
             white-space: nowrap;
             .transition(~"background-color 100ms linear, opacity 300ms linear");
-            &:hover{ 
+            &:hover{
                 background-color: white;
                 box-shadow: none;
             }
@@ -3199,10 +3217,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin: 5px 0px 5px 0px;
         }
         &.features{
-            width:500px; 
+            width:500px;
             text-align:left;
-            border: solid 0px lightgray; 
-            box-shadow: 0px 0px 0px gray; 
+            border: solid 0px lightgray;
+            box-shadow: 0px 0px 0px gray;
             .credits_features {
                 margin-top: 4px;
                 padding-left: 20px;
@@ -3234,26 +3252,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @keyframes stretchdelay {.stretchdelay_do;}
 
 .stretchdelay_do () {
-    0%, 40%, 100% { 
+    0%, 40%, 100% {
       .transform(scaleY(0.4));
-    }  20% { 
+    }  20% {
       .transform(scaleY(0.8));
       background-color: rgb(250, 119, 70);
     }
 }
 
 
-.tipsy { 
-    font-size: 10px; 
-    position: absolute; 
+.tipsy {
+    font-size: 10px;
+    position: absolute;
     padding: 5px;
     z-index: 100000;
     pointer-events: none;
-    .tipsy-inner { 
+    .tipsy-inner {
         font-family: Helvetica, Arial, sans-serif;
         padding: 3px;
         font-size: 1.2em;
-        background-color: #000; 
+        background-color: #000;
         color: #FFF;
         max-width: 200px;
         text-align: center;
@@ -3327,4 +3345,3 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @-ms-keyframes shrink {.mixi-frames;}
 @-o-keyframes shrink {.mixi-frames;}
 @keyframes shrink {.mixi-frames;}
-
