@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Keshif Data Importing</title>
+		<title>Keshif Your Data</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -18,7 +18,18 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
+
+socialShare = false;
+noRibbon = true;
+
 google.setOnLoadCallback( function(){
+
+		resizeBrowser(280,50);
+		$(window).resize(function() {
+				resizeBrowser(280,50);
+				browser.updateLayout();
+		});
+
     browser = new kshf.Browser({
         domID: "#chart_div",
         showResizeCorner: true,

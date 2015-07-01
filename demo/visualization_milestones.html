@@ -194,8 +194,8 @@ function loadData(browser){
             })
         }
     });
-    
-    browser.loadCharts();   
+
+    browser.loadCharts();
 };
 
 google.setOnLoadCallback(function(){
@@ -219,26 +219,26 @@ google.setOnLoadCallback(function(){
             {   title: "Era",
                 attribMap: function(){
                     var year=this.Year;
-                    if(year<1600) return "Maps and diagrams <b>Pre-1600</b>";
-                    if(year<1700) return "Measurements &amp; theories <b>1600s</b>";
-                    if(year<1800) return "New graphic forms <b>1700s</b>";
-                    if(year<1850) return "Beginning of modern infographics <b>1800+</b>";
-                    if(year<1900) return "Golden Age of data graphics <b>1850+</b>";
-                    if(year<1950) return "Modern Dark Ages <b>1900+</b>";
-                    if(year<1975) return "Re-birth of visualization <b>1950+</b>";
-                    return "Computer as a new frontier <b>1975+</b>";
+                    if(year<1600) return 0;
+                    if(year<1700) return 1;
+                    if(year<1800) return 2;
+                    if(year<1850) return 3;
+                    if(year<1900) return 4;
+                    if(year<1950) return 5;
+                    if(year<1975) return 6;
+                    return 7;
                 },
                 sortingOpts: [{ value: "id" }],
                 catLabel: function(){
                     switch(this.id){
-                        case "Maps and diagrams <b>Pre-1600</b>": return 0;
-                        case "Measurements &amp; theories <b>1600s</b>": return 1;
-                        case "New graphic forms <b>1700s</b>": return 2;
-                        case "Beginning of modern infographics <b>1800+</b>": return 3;
-                        case "Golden Age of data graphics <b>1850+</b>": return 4;
-                        case "Modern Dark Ages <b>1900+</b>": return 5;
-                        case "Re-birth of visualization <b>1950+</b>": return 6;
-                        case "Computer as a new frontier <b>1975+</b>": return 7;
+                        case 0: return "Maps and diagrams <b>Pre-1600</b>";
+                        case 1: return "Measurements &amp; theories <b>1600s</b>";
+                        case 2: return "New graphic forms <b>1700s</b>";
+                        case 3: return "Beginning of modern infographics <b>1800+</b>";
+                        case 4: return "Golden Age of data graphics <b>1850+</b>";
+                        case 5: return "Modern Dark Ages <b>1900+</b>";
+                        case 6: return "Re-birth of visualization <b>1950+</b>";
+                        case 7: return "Computer as a new frontier <b>1975+</b>";
                     }
                 }
             },{ title: "Year", layout: "bottom", intervalScale: "linear", collapsed: true
@@ -253,6 +253,7 @@ google.setOnLoadCallback(function(){
         itemDisplay: {
             sortingOpts: {title: 'Year', inverse: true},
             maxVisibleItems_Default: 25,
+			displayType: 'grid',
             textSearch: "Title",
             recordView: function(){
                 var str="";
@@ -353,14 +354,14 @@ google.setOnLoadCallback(function(){
             <span class="fa fa-info-circle"></span>
             The dataset is originally curated and presented by Michael Friendly and Daniel J. Denis at their
             <a href="http://www.datavis.ca/milestones/index.php" target='_blank'>webpage</a> and various reports, 2001.<br>
-            
+
             <b>Data sources</b>: Keywords from the
             <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/milestone.pdf" target="_blank">original</a> report.
             Highlights from
             <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf" target="_blank">www.Infografe.com.br</a> report.<br>
             Main milestone data from <a href="http://datavis.ca/milestones/index.php?page=home" target="_blank">the index page</a> and enriched by additional data from
             <a href="http://datavis.ca/milestones/index.php?group=pre-1600" target="_blank">era listings</a>.<br>
-            This webpage includes minor modifications to the original data sources.<br>
+            The data used to create this webpage includes minor modifications to the original data sources.<br>
             </div>
 
     </body>

@@ -34,16 +34,16 @@ $(document).ready( function(){
             { title: "<i class='fa fa-suitcase'></i> Industry", attribMap: 'industry'},
             { title: "State", attribMap: 'state_l'},
             { title: "<i class='fa fa-map-marker'></i> Metro Area", attribMap: 'metro'},
-            { title: "Years on the List", attribMap: 'yrs_on_list', layout: "right"},
+            { title: "<i class='fa fa-clock-o'></i> Years on the List", attribMap: 'yrs_on_list', layout: "right"},
 
-            { title: "<i class='fa fa-clock-o'></i> # of Workers", attribMap: 'workers', layout: "right"},
+            { title: "# of Workers", attribMap: 'workers', layout: "right"},
             { title: "<i class='fa fa-line-chart'></i> Growth", attribMap: 'growth', layout: "right", unitName: "%"},
             { title: "<i class='fa fa-money'></i> Revenue", attribMap: 'revenue', layout: "right", unitName: "$"},
-            
+
         ],
         itemDisplay: {
             sortingOpts: [
-                {title: 'Growth', value: function(){ return this.growth;}, 
+                {title: 'Growth', value: function(){ return this.growth;},
                     label: function(){ return simpleFormat(this.growth); }, unitName: "%"},
                 {title: 'Workers', value: function(){ return this.workers;}},
                 {title: 'Revenue', value: function(){ return this.revenue;}},
@@ -90,7 +90,6 @@ $(document).ready( function(){
             font-size: 0.9em;
             font-weight: 300;
             display: block;
-            
         }
         .companyInfo .fa{
             color: gray;
@@ -102,7 +101,7 @@ $(document).ready( function(){
     <body>
         <div class="pageTitle" align="center">The 2014 Inc. 5000</div>
         <div class="pageSubtitle" align="center">The fastest-growing private companies in America.</div>
-        
+
         <div class="contents"><div id="chart_div"></div></div>
 
         <div id="infobox" align="center">
