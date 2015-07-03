@@ -49,7 +49,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_preview_compare: darkslategray; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
-@color_chart_background_highlight: rgba(194, 146, 124,0.2);
+@color_chart_background_highlight: rgba(211, 217, 197, 1);
 
 @color_query_and: #1D4870;
 @color_query_or:  #1C737A;
@@ -58,7 +58,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @color_listHeader_background: rgb(239, 234, 223);
 
-.kshf {
+.kshf{
 //    border: solid 1px lightgray;
 //    background-color: white;
 //    &:hover{ box-shadow: 0px 0px 4px gray; }
@@ -98,18 +98,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
-    &[no_pointer_events=true]{
-        pointer-events: none;
-        .kshfChart > .wrapper > .facetCategorical > .attribGroup {
-            > .attrib > .clickArea{
-                pointer-events: none;
-            }
-            > .chartCatLabelResize{
-                display: block;
-                border-style: solid !important;
-                border-color: lightgray !important;
-            }
-        }
+    .panel[catLabelDragging=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
+        display: block;
+        border-left: solid lightgray 2px;
     }
     &[attribsShown=true]{
         left: 120px;
@@ -142,17 +133,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .percentSign::after{
                 content: "%";
             }
+            > .tick > .text:after{
+                content: "%";
+            }
         }
     }
     &[showdropzone=true]{
         &:not([dropattrtype~="unique"]){
-            .panel[hassummaries="true"] > .dropZone{
+            .panel[hassummaries="true"] > .dropZone_between{
                 display: block;
             }
             .panel[hassummaries="false"] > .dropZone_panel{
                 display: block;
-                cursor: s-resize;
-                z-index: 100;
             }
         }
         &[dropattrtype~="interval"] .dropZone_resultSort{
@@ -552,53 +544,55 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .panel {
-        > .dropZone{
+        > .dropZone_between{
             .flex(1);
-            display: none;
-            background-color: rgb(240, 240, 240);
             border-radius: 10px;
             border-style: solid;
             border-color: gray;
             border-width: 2px;
-            cursor: s-resize;
-            z-index: 50;
             margin: 2px;
-            &:hover{ background-color: rgb(255, 188, 163); }
             &[readyToDrop="true"] {
                 background-color: rgb(255, 188, 163);
                 border-color: orangered;
             }
+            overflow: hidden;
+        }
+        > .dropZone_summary{
+            display: none;
+            background-color: rgb(235,239,243,1);
+            cursor: s-resize;
+            z-index: 50;
+            text-align: center;
+            position: relative;
+            &:hover{ background-color: rgb(255, 188, 163); }
+            > .dropIcon{
+                margin: 0px;
+                font-size: 2em;
+                color: #7E8A96;
+                text-shadow: 1px 1px 1px #B6BCC2;
+            }
         }
         > .dropZone_panel{
-            display: none;
-            background-color: rgba(200, 200, 200, 0.3);
             border-color: gray;
             border-style: solid;
             border-width: 0px;
             // border-radius: 10px; // Set depending on the pane;
-            z-index: 50;
             position: absolute;
-            &:hover{ background-color: rgb(255, 188, 163); }
         }
         .dropIcon{
-            margin: 0px auto;
-            position: relative;
-            display: block;
-            font-size: 1.3em;
             pointer-events: none;
-            text-align: center;
-            padding-left: 4px;
-            font-size: 0.8em;
-            &:after{
-                margin-left: 4px;
-                content: "Drop to summarize";
-            }
+            font-size: 2em;
+            margin: 0px;
+            font-size: 2em;
+            color: #7E8A96;
+            text-shadow: 1px 1px 1px #B6BCC2;
+            display: inline-block;
         }
-        .dropZone[readyToDrop=true] .dropIcon{
-            color: orangered;
-            &:after{
-                content: "Drop here";
-            }
+        .dropText{
+            margin-left: 4px;
+            font-size: 1.0em;
+            font-weight: 300;
+            display: inline-block;
         }
         &[hidebars=true] .kshf {
             .attrib .aggr_Group{ display:none; }
@@ -631,12 +625,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .flex-direction(column);
             width: 100%;
             > .dropZone_panel{
-                bottom: -30px;
-                height: 30px;
+                bottom: 0px;
+                height: 100px;
                 width: 100%;
-                border-radius: 0px 0px 40px 40px;
-                border-bottom-width: 2px;
-                border-top-width: 1px;
+                border-radius: 40px 40px 0px 0px;
+                border-bottom-width: 1px;
+                border-top-width: 2px;
+            }
+            > .dropZone_between{
+                > .dropIcon{
+                    display: inline-block;
+                }
+                > .dropText{
+                    display: inline-block;
+                    vertical-align: top
+                }
             }
         }
         &.panel_left{
@@ -647,20 +650,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
             > .dropZone_panel{
                 left: 0px;
-                top: 50px;
-                height: calc(~"100% - 50px");
-                width: 30px;
+                top: 0px;
+                height: 100%;
+                width: 175px;
                 border-radius: 0px 40px 40px 0px;
                 border-right-width: 2px;
                 border-left-width: 1px;
                 > .dropIcon{
-                    transform: rotate(-90deg);
-                    width: 200px;
-                    height: 20px;
-                    transform-origin: 0 0;
+                    margin-top: 150px;
+                    width: 160px;
                     top: 200px;
-                    text-align: left;
-                    left: 8px;
                 }
             }
             > .panelAdjustWidth{
@@ -675,20 +674,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
             > .dropZone_panel{
                 right: 0px;
-                top: 50px;
-                height: calc(~"100% - 50px");
-                width: 30px;
+                top: 0px;
+                height: 100%;
+                width: 175px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
                 border-right-width: 1px;
                 > .dropIcon{
-                    transform: rotate(-90deg);
-                    width: 200px;
-                    height: 20px;
-                    transform-origin: 0 0;
+                    margin-top: 150px;
+                    width: 160px;
                     top: 200px;
-                    text-align: left;
-                    left: 8px;
                 }
             }
             > .panelAdjustWidth{
@@ -702,8 +697,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             flex: 1;
             > .dropZone_panel{
                 bottom: 0px;
-                height: 30px;
-                width: 100%;
+                height: 100%;
+                width: calc(~"100% - 360px");
+                left: 180px;
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
                 border-bottom-width: 1px;
@@ -1167,22 +1163,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.7em;
             font-weight: 700;
             cursor: pointer;
+            line-height: 1em;
+            padding: 1px 3px;
             &:after{
                 content: '#';
             }
-            &:hover{
+            &[highlight=true]{
                 color: black;
-                background-color: @color_chart_background_highlight;
+                background-color: rgba(211, 217, 197, 1);
+                border: solid 1px rgb(153, 171, 146);
+                border-radius: 5px;
+                padding: 0px 2px;
             }
         }
-        > .background{
+        > .chartAxis_Measure_background{
             position: absolute;
             left: 0px;
             top: 0px;
             cursor: pointer;
             pointer-events: all;
-            &:hover{
-                background-color: @color_chart_background_highlight;
+            &[highlight=true]{
+                background-color: #E0E4D7;
+                border: solid 1px #B7CAAF;
+                border-radius: 5px;
             }
         }
     }
@@ -1216,7 +1219,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: block;
             font-weight: 700;
             cursor: default;
-            font-variant: small-caps;
+            //font-variant: small-caps;
             padding-top: 1px;
             padding-bottom: 1px;
             line-height: 1em;
@@ -1382,8 +1385,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: relative;
                         cursor: text;
                         > .attribTextSearchInput {
-                            display: block;
-                            width: 100%;
+                            display: inline-block;
+                            width: calc(~"100% - 13px");
                             height: 15px;
                             font-size: 0.7em;
                             font-weight: 700;
@@ -1408,7 +1411,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             &::-webkit-input-placeholder {
                                 font-weight: 500;
                                 color: #cb5454;
-                                text-align:right;
+                                text-align: right;
                             }
                             &:focus::-webkit-input-placeholder {
                                 color: #F3CDCD;
@@ -1418,13 +1421,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                         > .attribTextSearchControl{
-                            position: absolute;
-                            top: 2px;
-                            left: 1px;
+                            position: relative;
+                            top: -2px;
                             padding-left: 1px;
                             font-size: 0.7em;
                             pointer-events: none;
                             color: #cb5454;
+                            cursor: default;
                             // Search icon
                             &:before{
                                 content: "\f002";
@@ -1550,10 +1553,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         position: absolute;
                         top: 0px;
                         cursor: col-resize;
-                        height: 100%;
-                        border-width: 0px 0px 0px 2px;
-                        border-color: lightgray;
-                        border-style: dotted;
+                        border-left: dotted lightgray 2px;
                         z-index: 25;
                         width: 4px;
                         &:hover{ border-color: gray; }
@@ -1803,8 +1803,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     } // .attrib
                 } // .attribGroup
 
-                &:hover > .facetControls > .catSortButton{
-                    opacity: 1;
+                &:hover {
+                    > .facetControls > .catSortButton{
+                        opacity: 1;
+                    }
+                    .attribTextSearchInput::-webkit-input-placeholder{
+                        // color: #cb5454 !important;
+                    }
                 }
             }// facetCategorical
 
@@ -1942,10 +1947,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             width: 20px;
                             text-align: right;
                         }
-                        > .background{
-                            width: 20px;
+                        > .chartAxis_Measure_background{
+                            width: 21px;
                             height: calc(~"100% - 12px");
-                            top: -6px;
+                            top: 0px;
                         }
                         > .tick{
                             left: 21px;
@@ -2316,9 +2321,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[hasFacets=true]{
-            //border-top: double 3px #87868B;
-            //margin-bottom: 2px;
-//            padding-top: 3px;
             > .headerGroup {
                 .background-image(~"linear-gradient(right, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);");
                 .summaryTitle{
@@ -2338,8 +2340,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .percentSign{
                 right: 0px;
             }
-            > .background{
-                height: 15px;
+            > .chartAxis_Measure_background{
+                height: 12px;
             }
             > .tick{
                 > .text{
@@ -2360,11 +2362,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .measureLabel{
         color: @color_item_count;
     }
-    &[resultpreview="true"] .measureLabel{
-        color: orangered;
-    }
-
     &[resultpreview="true"]{
+        .measureLabel{
+            color: orangered;
+        }
+        .kshfChart:not([hasmultivalueitem="true"]):hover {
+            .attrib:not([highlight="selected"]) .measureLabel{
+                color: @color_item_count;;
+            }
+            .aggr_Group:not([highlight="selected"]) .measureLabel{
+                color: @color_item_count;;
+            }
+        }
         .lineTrend.preview{
             opacity: 1 !important;
         }
@@ -2396,6 +2405,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: hidden; // Don't remove!
         display: inline-block;
         .transition(~'margin-top 700ms ease-in-out');
+        > .dropZone_recordView{
+            position: relative;
+            display: none;
+            height: 200px;
+            z-index: 50;
+            background-color: #F4F3EE;
+            border-radius: 0px 0px 40px 40px;
+            border-style: solid;
+            border-width: 2px;
+            border-color: rgb(145, 142, 123);
+            text-align: center;
+            margin-bottom: 5px;
+            > .dropIcon{
+                margin: 10px 0px 0px 0px;
+                font-size: 2em;
+                color: #918E7B;
+                text-shadow: 1px 1px 1px #B8B6AB;
+            }
+            > .dropText{
+                pointer-events: none;
+                font-size: 1.1em;
+                display: block;
+                font-weight: 300;
+            }
+            &[readyToDrop=true]{
+                background-color: rgb(255, 188, 163);
+            }
+            &:hover{
+                background-color: rgb(255, 188, 163);
+            }
+        }
         > .listItemGroup{
             width: 100%;
             overflow-y: scroll;
@@ -2615,9 +2655,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        select.listSortOptionSelect{
-            bottom:0px;
-        }
         &[showRank=true]{
             .itemRank{
                 display: inline-block !important;
@@ -2705,14 +2742,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        &[detailsToggle="zoom"] {
+        &[detailsToggle="zoom"]{
             > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before{
                 content: "\f140";
             }
         }
 
         &[hasRecordView="true"]{
-            .configRow {
+            .configRow{
                 > .itemRank{
                     display: inline-block;
                 }
@@ -2720,7 +2757,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                 }
                 >.detailViewSetting{
-                    display: inline-block;
+                    //display: inline-block;
                 }
             }
         }
@@ -2745,8 +2782,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         border-style: solid;
         border-color: #dfd2a9;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+//        border-top-left-radius: 10px;
+//        border-top-right-radius: 10px;
         border-width: 0px 2px;
         // .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
         background-color: @color_listHeader_background;
@@ -2796,6 +2833,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                     cursor: default;
                     .user-select(none);
+                }
+                > .listSortOptionSelect{
+                    width: 100%;
+                    bottom:0px;
                 }
                 > .dropZone_resultSort{
                     display: none;
@@ -2858,21 +2899,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         font-family: sans-serif;
                     }
                     &:hover{ color: orangered; }
-                }
-
-                > .linkTitleText{
-/*                        font-size: 0.8em;
-                    font-variant: small-caps;
-                    font-weight: 300;
-                    cursor: default;*/
-                    display: block;
-                    font-size: 1.0em;
-                    font-weight: 700;
-                    cursor: default;
-                    font-variant: small-caps;
-                    pointer-events: all;
-                    height: 16px;
-                    margin-left: 2px;
                 }
             }
             > .filtercrumbs{
@@ -3013,35 +3039,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     font-size: 0.7em;
                 }
             }
-            > .recordView{
-                .flex(1);
-                position: relative;
-                .dropZone_recordView{
-                    display: none;
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    z-index: 50;
-                    background-color: rgba(234, 234, 234, 1);
-                    border-radius: 5px;
-                    border-style: solid;
-                    border-width: 2px;
-                    border-color: gray;
-                    text-align: center;
-                    > .dropZone_recordView_text{
-                        pointer-events: none;
-                        font-size: 0.7em;
-                        display: block;
-                        font-weight: 300;
-                    }
-                    &[readyToDrop=true]{
-                        background-color: rgb(255, 188, 163);
-                    }
-                    &:hover{
-                        background-color: rgb(255, 188, 163);
-                    }
-                }
-            }
         }// configRow
 
         .filterClearAll{
@@ -3179,11 +3176,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             } // mainTextSearch
 
             > .rightBoxes{
-                right: 0px;
-                top: -1px;
                 font-size: 1.3em;
                 color: #635d46;
-                text-align: right;
+                padding-right: 1px;
                 white-space: nowrap;
                 .fa{
                     cursor: pointer;
@@ -3203,7 +3198,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     text-decoration: none;
                     color: #635d46; // if dom type is a, it will show visited links in different color
                 }
-            }
+            } // rightBoxes
 
         } // topRow
     } // listHeader

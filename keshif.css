@@ -97,16 +97,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf[no_pointer_events=true] {
-  pointer-events: none;
-}
-.kshf[no_pointer_events=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .clickArea {
-  pointer-events: none;
-}
-.kshf[no_pointer_events=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
+.kshf .panel[catLabelDragging=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
   display: block;
-  border-style: solid !important;
-  border-color: lightgray !important;
+  border-left: solid lightgray 2px;
 }
 .kshf[attribsShown=true] {
   left: 120px;
@@ -143,13 +136,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone {
+.kshf[percentview=true] .chartAxis_Measure > .tick > .text:after {
+  content: "%";
+}
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between {
   display: block;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
-  cursor: s-resize;
-  z-index: 100;
 }
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
@@ -592,60 +586,59 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   top: 5px;
 }
-.kshf .panel > .dropZone {
+.kshf .panel > .dropZone_between {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  display: none;
-  background-color: #f0f0f0;
   border-radius: 10px;
   border-style: solid;
   border-color: gray;
   border-width: 2px;
-  cursor: s-resize;
-  z-index: 50;
   margin: 2px;
+  overflow: hidden;
 }
-.kshf .panel > .dropZone:hover {
-  background-color: #ffbca3;
-}
-.kshf .panel > .dropZone[readyToDrop="true"] {
+.kshf .panel > .dropZone_between[readyToDrop="true"] {
   background-color: #ffbca3;
   border-color: orangered;
 }
-.kshf .panel > .dropZone_panel {
+.kshf .panel > .dropZone_summary {
   display: none;
-  background-color: rgba(200, 200, 200, 0.3);
+  background-color: #ebeff3;
+  cursor: s-resize;
+  z-index: 50;
+  text-align: center;
+  position: relative;
+}
+.kshf .panel > .dropZone_summary:hover {
+  background-color: #ffbca3;
+}
+.kshf .panel > .dropZone_summary > .dropIcon {
+  margin: 0px;
+  font-size: 2em;
+  color: #7E8A96;
+  text-shadow: 1px 1px 1px #B6BCC2;
+}
+.kshf .panel > .dropZone_panel {
   border-color: gray;
   border-style: solid;
   border-width: 0px;
-  z-index: 50;
   position: absolute;
 }
-.kshf .panel > .dropZone_panel:hover {
-  background-color: #ffbca3;
-}
 .kshf .panel .dropIcon {
-  margin: 0px auto;
-  position: relative;
-  display: block;
-  font-size: 1.3em;
   pointer-events: none;
-  text-align: center;
-  padding-left: 4px;
-  font-size: 0.8em;
+  margin: 0px;
+  font-size: 2em;
+  color: #7E8A96;
+  text-shadow: 1px 1px 1px #B6BCC2;
+  display: inline-block;
 }
-.kshf .panel .dropIcon:after {
+.kshf .panel .dropText {
   margin-left: 4px;
-  content: "Drop to summarize";
-}
-.kshf .panel .dropZone[readyToDrop=true] .dropIcon {
-  color: orangered;
-}
-.kshf .panel .dropZone[readyToDrop=true] .dropIcon:after {
-  content: "Drop here";
+  font-size: 1.0em;
+  font-weight: 300;
+  display: inline-block;
 }
 .kshf .panel[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
@@ -695,12 +688,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
 }
 .kshf .panel.panel_bottom > .dropZone_panel {
-  bottom: -30px;
-  height: 30px;
+  bottom: 0px;
+  height: 100px;
   width: 100%;
-  border-radius: 0px 0px 40px 40px;
-  border-bottom-width: 2px;
-  border-top-width: 1px;
+  border-radius: 40px 40px 0px 0px;
+  border-bottom-width: 1px;
+  border-top-width: 2px;
+}
+.kshf .panel.panel_bottom > .dropZone_between > .dropIcon {
+  display: inline-block;
+}
+.kshf .panel.panel_bottom > .dropZone_between > .dropText {
+  display: inline-block;
+  vertical-align: top;
 }
 .kshf .panel.panel_left {
   display: -webkit-box;
@@ -721,21 +721,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_left > .dropZone_panel {
   left: 0px;
-  top: 50px;
-  height: calc(100% - 50px);
-  width: 30px;
+  top: 0px;
+  height: 100%;
+  width: 175px;
   border-radius: 0px 40px 40px 0px;
   border-right-width: 2px;
   border-left-width: 1px;
 }
 .kshf .panel.panel_left > .dropZone_panel > .dropIcon {
-  transform: rotate(-90deg);
-  width: 200px;
-  height: 20px;
-  transform-origin: 0 0;
+  margin-top: 150px;
+  width: 160px;
   top: 200px;
-  text-align: left;
-  left: 8px;
 }
 .kshf .panel.panel_left > .panelAdjustWidth {
   right: -2px;
@@ -759,21 +755,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_right > .dropZone_panel {
   right: 0px;
-  top: 50px;
-  height: calc(100% - 50px);
-  width: 30px;
+  top: 0px;
+  height: 100%;
+  width: 175px;
   border-radius: 40px 0px 0px 40px;
   border-left-width: 2px;
   border-right-width: 1px;
 }
 .kshf .panel.panel_right > .dropZone_panel > .dropIcon {
-  transform: rotate(-90deg);
-  width: 200px;
-  height: 20px;
-  transform-origin: 0 0;
+  margin-top: 150px;
+  width: 160px;
   top: 200px;
-  text-align: left;
-  left: 8px;
 }
 .kshf .panel.panel_right > .panelAdjustWidth {
   left: -2px;
@@ -796,8 +788,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_middle > .dropZone_panel {
   bottom: 0px;
-  height: 30px;
-  width: 100%;
+  height: 100%;
+  width: calc(100% - 360px);
+  left: 180px;
   border-radius: 40px 40px 0px 0px;
   border-top-width: 2px;
   border-bottom-width: 1px;
@@ -1280,23 +1273,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   font-weight: 700;
   cursor: pointer;
+  line-height: 1em;
+  padding: 1px 3px;
 }
 .kshf .chartAxis_Measure > .percentSign:after {
   content: '#';
 }
-.kshf .chartAxis_Measure > .percentSign:hover {
+.kshf .chartAxis_Measure > .percentSign[highlight=true] {
   color: black;
-  background-color: rgba(194, 146, 124, 0.2);
+  background-color: #d3d9c5;
+  border: solid 1px #99ab92;
+  border-radius: 5px;
+  padding: 0px 2px;
 }
-.kshf .chartAxis_Measure > .background {
+.kshf .chartAxis_Measure > .chartAxis_Measure_background {
   position: absolute;
   left: 0px;
   top: 0px;
   cursor: pointer;
   pointer-events: all;
 }
-.kshf .chartAxis_Measure > .background:hover {
-  background-color: rgba(194, 146, 124, 0.2);
+.kshf .chartAxis_Measure > .chartAxis_Measure_background[highlight=true] {
+  background-color: #E0E4D7;
+  border: solid 1px #B7CAAF;
+  border-radius: 5px;
 }
 .kshf .border_line {
   position: relative;
@@ -1330,7 +1330,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   font-weight: 700;
   cursor: default;
-  font-variant: small-caps;
   padding-top: 1px;
   padding-bottom: 1px;
   line-height: 1em;
@@ -1520,8 +1519,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: text;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput {
-  display: block;
-  width: 100%;
+  display: inline-block;
+  width: calc(100% - 13px);
   height: 15px;
   font-size: 0.7em;
   font-weight: 700;
@@ -1553,13 +1552,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #F3CDCD;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl {
-  position: absolute;
-  top: 2px;
-  left: 1px;
+  position: relative;
+  top: -2px;
   padding-left: 1px;
   font-size: 0.7em;
   pointer-events: none;
   color: #cb5454;
+  cursor: default;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl:before {
   content: "\f002";
@@ -1685,10 +1684,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   top: 0px;
   cursor: col-resize;
-  height: 100%;
-  border-width: 0px 0px 0px 2px;
-  border-color: lightgray;
-  border-style: dotted;
+  border-left: dotted lightgray 2px;
   z-index: 25;
   width: 4px;
 }
@@ -2057,10 +2053,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 20px;
   text-align: right;
 }
-.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .background {
-  width: 20px;
+.kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .chartAxis_Measure_background {
+  width: 21px;
   height: calc(100% - 12px);
-  top: -6px;
+  top: 0px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .chartAxis_Measure > .tick {
   left: 21px;
@@ -2413,8 +2409,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .belowAttribs > .chartAxis_Measure > .percentSign {
   right: 0px;
 }
-.kshf .belowAttribs > .chartAxis_Measure > .background {
-  height: 15px;
+.kshf .belowAttribs > .chartAxis_Measure > .chartAxis_Measure_background {
+  height: 12px;
 }
 .kshf .belowAttribs > .chartAxis_Measure > .tick > .text {
   width: 20px;
@@ -2438,6 +2434,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[resultpreview="true"] .measureLabel {
   color: orangered;
+}
+.kshf[resultpreview="true"] .kshfChart:not([hasmultivalueitem="true"]):hover .attrib:not([highlight="selected"]) .measureLabel {
+  color: #969da3;
+}
+.kshf[resultpreview="true"] .kshfChart:not([hasmultivalueitem="true"]):hover .aggr_Group:not([highlight="selected"]) .measureLabel {
+  color: #969da3;
 }
 .kshf[resultpreview="true"] .lineTrend.preview {
   opacity: 1 !important;
@@ -2481,6 +2483,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: margin-top 700ms ease-in-out;
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
+}
+.kshf .listDiv > .dropZone_recordView {
+  position: relative;
+  display: none;
+  height: 200px;
+  z-index: 50;
+  background-color: #F4F3EE;
+  border-radius: 0px 0px 40px 40px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #918e7b;
+  text-align: center;
+  margin-bottom: 5px;
+}
+.kshf .listDiv > .dropZone_recordView > .dropIcon {
+  margin: 10px 0px 0px 0px;
+  font-size: 2em;
+  color: #918E7B;
+  text-shadow: 1px 1px 1px #B8B6AB;
+}
+.kshf .listDiv > .dropZone_recordView > .dropText {
+  pointer-events: none;
+  font-size: 1.1em;
+  display: block;
+  font-weight: 300;
+}
+.kshf .listDiv > .dropZone_recordView[readyToDrop=true] {
+  background-color: #ffbca3;
+}
+.kshf .listDiv > .dropZone_recordView:hover {
+  background-color: #ffbca3;
 }
 .kshf .listDiv > .listItemGroup {
   width: 100%;
@@ -2711,9 +2744,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv > .showMore:hover span.MoreText {
   text-decoration: underline;
 }
-.kshf .listDiv select.listSortOptionSelect {
-  bottom: 0px;
-}
 .kshf .listDiv[showRank=true] .itemRank {
   display: inline-block !important;
 }
@@ -2821,9 +2851,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv[hasRecordView="true"] .configRow > .adjustSortColumnWidth {
   display: inline-block;
 }
-.kshf .listDiv[hasRecordView="true"] .configRow > .detailViewSetting {
-  display: inline-block;
-}
 .kshf .scrollToTop {
   display: inline-block;
   visibility: hidden;
@@ -2845,8 +2872,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   border-style: solid;
   border-color: #dfd2a9;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   border-width: 0px 2px;
   background-color: #efeadf;
 }
@@ -2916,6 +2941,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
+.kshf .listHeader > .bottomRow > .header_listSortColumn > .listSortOptionSelect {
+  width: 100%;
+  bottom: 0px;
+}
 .kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort {
   display: none;
   cursor: s-resize;
@@ -2978,20 +3007,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll:hover {
   color: orangered;
-}
-.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkTitleText {
-  /*                        font-size: 0.8em;
-                    font-variant: small-caps;
-                    font-weight: 300;
-                    cursor: default;*/
-  display: block;
-  font-size: 1.0em;
-  font-weight: 700;
-  cursor: default;
-  font-variant: small-caps;
-  pointer-events: all;
-  height: 16px;
-  margin-left: 2px;
 }
 .kshf .listHeader > .bottomRow > .filtercrumbs {
   -webkit-box-flex: 1;
@@ -3146,39 +3161,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader > .configRow > .detailViewSetting > select {
   font-size: 0.7em;
 }
-.kshf .listHeader > .configRow > .recordView {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  position: relative;
-}
-.kshf .listHeader > .configRow > .recordView .dropZone_recordView {
-  display: none;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 50;
-  background-color: #eaeaea;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: gray;
-  text-align: center;
-}
-.kshf .listHeader > .configRow > .recordView .dropZone_recordView > .dropZone_recordView_text {
-  pointer-events: none;
-  font-size: 0.7em;
-  display: block;
-  font-weight: 300;
-}
-.kshf .listHeader > .configRow > .recordView .dropZone_recordView[readyToDrop=true] {
-  background-color: #ffbca3;
-}
-.kshf .listHeader > .configRow > .recordView .dropZone_recordView:hover {
-  background-color: #ffbca3;
-}
 .kshf .listHeader .filterClearAll {
   opacity: 0;
   pointer-events: none;
@@ -3329,11 +3311,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .listHeader > .topRow > .rightBoxes {
-  right: 0px;
-  top: -1px;
   font-size: 1.3em;
   color: #635d46;
-  text-align: right;
+  padding-right: 1px;
   white-space: nowrap;
 }
 .kshf .listHeader > .topRow > .rightBoxes .fa {

@@ -86,7 +86,7 @@ var kshf = {
             Absolute: "Absolute",
             Percent: "Percent",
             Relative: "Relative",
-            Width: "Width",
+            Width: "Length",
             DragToFilter: "Drag to filter",
             And: "And",
             Or: "Or",
@@ -219,7 +219,7 @@ var kshf = {
             return b - a;
         },
         /** Given a list of columns which hold multiple IDs, breaks them into an array */
-        cellToArray: function(dt, columns, splitExpr, convertInt){
+        cellToArray: function(dt, columns, splitExpr){
             if(splitExpr===undefined){
                 splitExpr = /\b\s+/;
             }
@@ -239,12 +239,6 @@ var kshf = {
                     for(j=0; j<list2.length; j++){
                         list2[j] = list2[j].trim();
                         if(list2[j]!=="") list.push(list2[j]);
-                    }
-                    // convert to int - TODO: what if the IDs are string?
-                    if(convertInt!==false){
-                        for(j=0; j<list.length; j++){
-                            list[j] = parseInt(list[j],10);
-                        }
                     }
                     p[column] = list;
                 });
@@ -338,6 +332,9 @@ var kshf = {
             }
             return i + "th";
         },
+    },
+    style: {
+        color_chart_background_highlight: "rgb(194, 146, 124)"
     }
 };
 
@@ -1053,7 +1050,36 @@ kshf.List = function(kshf_, config, root){
         this.initDOM_ConfigRow();
         this.initDOM_BottomRow();
 
-    this.DOM.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
+    var zone=this.listDiv.append("div").attr("class","dropZone dropZone_recordView")
+        zone.append("div").attr("class","dropIcon fa fa-list-ul");
+        zone.append("div").attr("class","dropText").html("Drop to List "+this.browser.itemName);
+
+    $(zone[0][0]).on("mouseenter",function(event){
+        this.setAttribute("readyToDrop",true);
+    });
+    $(zone[0][0]).on("mouseleave",function(event){
+        this.setAttribute("readyToDrop",false);
+    });
+    $(zone[0][0]).on("mouseup",function(event){
+        var movedSummary = me.browser.movedSummary;
+        if(movedSummary===null || movedSummary===undefined) return;
+
+        me.recordView = movedSummary.summaryFunc;
+
+        me.sortRecords();
+        me.insertRecords();
+        me.setSortColumnWidth(50);
+        me.updateVisibleIndex();
+        me.updateItemVisibility(false,true);
+        me.DOM.listItemGroup.style("display",null);
+        me.DOM.listHeader_BottomRow.style("display",null);
+
+        if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
+
+        me.browser.updateLayout();
+    });
+
+    this.DOM.listItemGroup = this.listDiv.append("div").attr("class","listItemGroup")
         .style("display",this.recordView?"":"none")
         .on("scroll",function(d){
             // showMore display
@@ -1301,38 +1327,9 @@ kshf.List.prototype = {
         var y=this.DOM.listHeader_ConfigRow.append("span").attr("class","detailViewSetting");
         y.append("span").attr("class","detailViewSettingHeader").text("Details:");
         var x=y.append("select").on("change", function(){ me.setDetailsToggle(this.value); });
-            x.append("option").text("off");
-            x.append("option").text("one");
-            x.append("option").text("zoom");
-
-        var DOM_recordView = this.DOM.listHeader_ConfigRow.append("span").attr("class","recordView");
-        var zone=DOM_recordView.append("div").attr("class","dropZone_recordView")
-            zone.append("div").attr("class","dropZone_recordView_text").text("Record view...");
-
-        $(zone[0][0]).on("mouseenter",function(event){
-            this.setAttribute("readyToDrop",true);
-        });
-        $(zone[0][0]).on("mouseleave",function(event){
-            this.setAttribute("readyToDrop",false);
-        });
-        $(zone[0][0]).on("mouseup",function(event){
-            var movedSummary = me.browser.movedSummary;
-            if(movedSummary===null || movedSummary===undefined) return;
-
-            me.recordView = movedSummary.summaryFunc;
-
-            me.sortRecords();
-            me.insertRecords();
-            me.setSortColumnWidth(50);
-            me.updateVisibleIndex();
-            me.updateItemVisibility(false,true);
-            me.DOM.listItemGroup.style("display",null);
-            me.DOM.listHeader_BottomRow.style("display",null);
-
-            if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
-
-            me.browser.updateLayout();
-        });
+            x.append("option").attr("value","off").attr("selected",this.detailsToggle==="off"?true:null).text("off");
+            x.append("option").attr("value","one").attr("selected",this.detailsToggle==="one"?true:null).text("one");
+            x.append("option").attr("value","zoom").attr("selected",this.detailsToggle==="zoom"?true:null).text("zoom");
 
     },
     /** -- */
@@ -1430,6 +1427,21 @@ kshf.List.prototype = {
         this.setTextSearchSummary(this.textSearchSummary);
     },
     /** -- */
+    addSortingOption: function(summary){
+        // If the summary is already a sorting option, nothing else to do
+        if(this.sortingOpts.some(function(o){ return o===summary; })) return;
+
+        this.sortingOpts.push(summary);
+
+        summary.sortLabel   = summary.summaryFunc;
+        summary.sortInverse = false;
+        summary.sortFunc    = this.getSortFunc(summary.summaryFunc);
+
+        this.prepSortingOpts();
+        this.refreshSortingOptions();
+        if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
+    },
+    /** -- */
     initDOM_SortSelect: function(){
         var me=this;
 
@@ -1444,19 +1456,9 @@ kshf.List.prototype = {
             this.style.backgroundColor = "";
         });
         $(x[0][0]).on("mouseup",function(event){
-            var movedSummary = me.browser.movedSummary;
-            if(me.sortingOpts.some(function(o){ return o===movedSummary; })) return;
-            me.sortingOpts.push(movedSummary);
-            // PREP-PRE
-            movedSummary.sortLabel   = movedSummary.summaryFunc;
-            movedSummary.sortInverse = false;
-            movedSummary.sortFunc    = me.getSortFunc(movedSummary.summaryFunc);
-
-            me.prepSortingOpts();
-            me.setSortingOpt_Active(me.sortingOpts.length-1);
-            me.refreshSortingOptions();
-            me.DOM.listSortOptionSelect[0][0].selectedIndex = me.sortingOpts.length-1;
-            if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
+            me.addSortingOption(me.browser.movedSummary);
+            this.setSortingOpt_Active(this.sortingOpts.length-1);
+            this.DOM.listSortOptionSelect[0][0].selectedIndex = this.sortingOpts.length-1;
         });
 
         this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
@@ -1582,7 +1584,7 @@ kshf.List.prototype = {
         if(this.displayType!=="list") return;
         var labelFunc=this.sortingOpt_Active.sortLabel;
         var unitName =this.sortingOpt_Active.unitName;
-        var sortColformat = d3.format("2.2s");
+        var sortColformat = d3.format(".s");
         if(this.sortingOpt_Active.hasTime){
             sortColformat = d3.time.format("%Y");
         }
@@ -1635,7 +1637,7 @@ kshf.List.prototype = {
         this.sortingOpt_Active = this.sortingOpts[index];
 
         this.sortRecords();
-        this.DOM.listItems = this.DOM.listItemGroup.selectAll("div.listItem")
+        this.DOM.listItems = this.DOM.listItemGroup.selectAll(".listItem")
             .data(this.browser.items, function(d){ return d.id(); })
             .order();
 
@@ -2029,7 +2031,7 @@ kshf.Panel = function(options){
     this.DOM = {};
     this.DOM.root = options.parentDOM.append("div")
         .attr("class", "panel panel_"+options.name)
-        .attr("hasSummaries",this.name==='middle')
+        .attr("hasSummaries",false)
         ;
     this.initDOM_DropZone();
     this.initDOM_AdjustWidth();
@@ -2067,7 +2069,7 @@ kshf.Panel.prototype = {
         this.summaries.forEach(function(s,i){ if(s===summary) indexFrom = i; });
         if(indexFrom===-1) return; // given summary is not within this panel
 
-        var toRemove=this.DOM.root.selectAll(".dropZone")[0][indexFrom];
+        var toRemove=this.DOM.root.selectAll(".dropZone_between")[0][indexFrom];
         toRemove.parentNode.removeChild(toRemove);
         this.refreshDropZoneIndex();
 
@@ -2092,9 +2094,10 @@ kshf.Panel.prototype = {
         } else {
             zone = this.DOM.root.append("div");
         }
-        zone.attr("class","dropZone");
+        zone.attr("class","dropZone dropZone_summary dropZone_between");
 
         zone.append("div").attr("class","dropIcon fa fa-angle-double-down");
+        zone.append("div").attr("class","dropText").text("Drop to summarize");
 
         $(zone[0][0]).on("mouseenter",function(event){
             this.setAttribute("readyToDrop",true);
@@ -2124,8 +2127,9 @@ kshf.Panel.prototype = {
     /** -- */
     initDOM_DropZone: function(dom){
         var me=this;
-        this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone_panel");
+        this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone dropZone_summary dropZone_panel");
         this.DOM.dropZone_Panel.append("span").attr("class","dropIcon fa fa-angle-double-down");
+        this.DOM.dropZone_Panel.append("div").attr("class","dropText").text("Drop to summarize");
 
         // ********************************************
             var dom = this.DOM.dropZone_Panel[0][0];
@@ -2164,10 +2168,7 @@ kshf.Panel.prototype = {
                 if(d3.event.which !== 1) return; // only respond to left-click
                 var adjustDOM = this;
                 adjustDOM.setAttribute("dragging",true);
-                root
-                    .style('cursor','ew-resize')
-                    .attr('no_pointer_events',true)
-                ;
+                root.style('cursor','ew-resize');
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(document.body)[0];
                 var mouseDown_width = me.width_catBars;
@@ -2183,9 +2184,7 @@ kshf.Panel.prototype = {
                     // TODO: Adjust other panel widths
                 }).on("mouseup", function(){
                     adjustDOM.setAttribute("dragging",false);
-                    root
-                        .style('cursor','default')
-                        .attr('no_pointer_events',null);
+                    root.style('cursor','default');
                     me.browser.setNoAnim(false);
                     // unregister mouse-move callbacks
                     d3.select("body").on("mousemove", null).on("mouseup", null);
@@ -2199,7 +2198,7 @@ kshf.Panel.prototype = {
     },
     /** -- */
     refreshDropZoneIndex: function(){
-        this.DOM.root.selectAll(".dropZone").each(function(d,i){ this.__data__ = i; });
+        this.DOM.root.selectAll(".dropZone_between").each(function(d,i){ this.__data__ = i; });
     },
     /** -- */
     refreshAdjustWidth: function(){
@@ -2324,9 +2323,11 @@ kshf.Browser = function(options){
     this.ratioModeActive = false;
     this.percentModeActive = false;
 
+    this.previewedSelectionSummary = null;
+
     this.noAnim=false;
 
-    this.listDef = options.itemDisplay;
+    this.listDef = options.itemDisplay || {};
     if(options.list) this.listDef = options.list;
 
     this.domID = options.domID;
@@ -2338,6 +2339,8 @@ kshf.Browser = function(options){
     this.updateCb = options.updateCb;
     this.previewCb = options.previewCb;
     this.previewCompareCb = options.previewCompareCb;
+    this.preview_not = false;
+    this.preview_enabled = true;
     this.ratioModeCb = options.ratioModeCb;
 
     this.showDropZones = false;
@@ -2390,15 +2393,15 @@ kshf.Browser = function(options){
         parentDOM: this.DOM.panelsTop
     });
 
-    var asdasds=this.DOM.panelsTop.append("div").attr("class","middleColumn");
+    this.DOM.middleColumn = this.DOM.panelsTop.append("div").attr("class","middleColumn");
 
-    this.layoutList = asdasds.append("div").attr("class", "panel listDiv")
+    this.layoutList = this.DOM.middleColumn.append("div").attr("class", "panel listDiv")
 
     this.panels.middle = new kshf.Panel({
         width_catLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
         browser: this,
         name: 'middle',
-        parentDOM: asdasds
+        parentDOM: this.DOM.middleColumn
     });
     this.panels.right = new kshf.Panel({
         width_catLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
@@ -3328,9 +3331,8 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        if(this.listDef===undefined) this.listDef = {}
-
         this.listDisplay = new kshf.List(this,this.listDef, this.DOM.root);
+
         this.DOM.filtercrumbs = this.listDisplay.DOM.filtercrumbs;
 
         this.setItemName();
@@ -3404,6 +3406,12 @@ kshf.Browser.prototype = {
     prepareDropZones: function(summary){
         this.movedSummary = summary;
         this.showDropZones = true;
+        var shrink=0;
+        if(this.panels.left.summaries.length===0) shrink++;
+        if(this.panels.right.summaries.length===0) shrink++;
+        this.DOM.middleColumn.selectAll(".dropZone")
+            .style("width","calc(100% - "+(shrink*180)+"px)")
+            .style("left",(this.panels.left.summaries.length===0)?"180px":"0px");
         this.DOM.root.attr("showdropzone",true).attr("dropattrtype",summary.getDataType());
         this.DOM.attribDragBox.style("display","block").text(summary.summaryTitle);
         if(!summary.uniqueCategories()){
@@ -3512,8 +3520,6 @@ kshf.Browser.prototype = {
                     }
                 })
             })
-//            .on("mouseenter",function(){ this.tipsy.show(); })
-//            .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("mousedown",function(summary){
                 if(!summary.aggr_initialized){
                     // stop dragging event start
@@ -3524,9 +3530,6 @@ kshf.Browser.prototype = {
             .on("click",function(summary){
                 if(!summary.aggr_initialized){
                     summary.initializeAggregates();
-                    // refresh tipsy (it uses summary data)
-//                    this.tipsy.hide();
-//                    this.tipsy.show();
                 }
             });
 
@@ -3855,8 +3858,14 @@ kshf.Browser.prototype = {
         };
 
         var topPanelsHeight = divHeight_Total;
-        if(this.panels.bottom.summaries.length>0) topPanelsHeight-=bottomFacetsHeight;
+        if(this.panels.bottom.summaries.length>0) {
+            if(this.showDropZones) {
+                bottomFacetsHeight+=(1+this.panels.bottom.summaries.length)*36;
+            }
+            this.panels.bottom.DOM.root.style("height",bottomFacetsHeight+"px");
+        }
 
+        topPanelsHeight-=bottomFacetsHeight;
         this.DOM.panelsTop.style("height",topPanelsHeight+"px");
 
         // Left Panel
@@ -3893,7 +3902,7 @@ kshf.Browser.prototype = {
                 listDisplayHeight-=bottomFacetsHeight;
             }
             listDisplayHeight-=midPanelHeight;
-            if(this.showDropZones) listDisplayHeight=0;
+            if(this.showDropZones) listDisplayHeight="0";
             this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
@@ -4094,11 +4103,11 @@ kshf.Summary_Base.prototype = {
             },this);
             // inserting the summary to the same index as current one
             if(curIndex===index) return;
-            var toRemove=this.panel.DOM.root.selectAll(".dropZone")[0][curIndex];
+            var toRemove=this.panel.DOM.root.selectAll(".dropZone_between")[0][curIndex];
             toRemove.parentNode.removeChild(toRemove);
             this.panel.refreshDropZoneIndex();
         }
-        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone")[0][index];
+        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between")[0][index];
         if(this.DOM.root){
             this.DOM.root.style("display","");
             panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
@@ -4384,10 +4393,19 @@ kshf.Summary_Base.prototype = {
                     },
                 })
             })
-            .on("click",function(){ me.browser.setPercentMode(!me.browser.percentModeActive); })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(){ this.tipsy.hide(); });
-        this.DOM.chartAxis_Measure.append("span").attr("class","background")
+            .on("click",function(){
+                me.browser.setPercentMode(!me.browser.percentModeActive);
+                this.tipsy.hide();
+            })
+            .on("mouseover",function(){
+                me.browser.DOM.root.selectAll(".percentSign").attr("highlight",true);
+                this.tipsy.show();
+                })
+            .on("mouseout",function(){
+                me.browser.DOM.root.selectAll(".percentSign").attr("highlight",false);
+                this.tipsy.hide();
+            });
+        this.DOM.chartAxis_Measure.append("span").attr("class","chartAxis_Measure_background")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: pos2, title: function(){
@@ -4398,8 +4416,14 @@ kshf.Summary_Base.prototype = {
                 })
             })
             .on("click",function(){ me.browser.setRatioMode(!me.browser.ratioModeActive); })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(){ this.tipsy.hide(); });
+            .on("mouseover",function(){
+                me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",true);
+                this.tipsy.show();
+            })
+            .on("mouseout",function(){
+                me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",false);
+                this.tipsy.hide();
+            });
     },
     /** -- */
     setCollapsedAndLayout: function(hide){
@@ -5027,10 +5051,10 @@ var Summary_Categorical_functions = {
         this.DOM.chartCatLabelResize = this.DOM.attribGroup.append("span").attr("class","chartCatLabelResize")
             .on("mousedown", function (d, i) {
                 var resizeDOM = this;
-                resizeDOM.setAttribute("dragging",true);
-                me.browser.DOM.root
-                    .style('cursor','col-resize')
-                    .attr('no_pointer_events',true);
+                me.panel.DOM.root.attr("catLabelDragging",true);
+
+                me.browser.preview_enabled = false;
+                me.browser.DOM.root.style('cursor','col-resize');
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
                 var initWidth = me.panel.width_catLabel;
@@ -5039,10 +5063,9 @@ var Summary_Categorical_functions = {
                     var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
                     me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
                 }).on("mouseup", function(){
-                    resizeDOM.setAttribute("dragging",false);
-                    me.browser.DOM.root
-                        .style('cursor','default')
-                        .attr('no_pointer_events',null);
+                    me.panel.DOM.root.attr("catLabelDragging",false);
+                    me.browser.preview_enabled = true;
+                    me.browser.DOM.root.style('cursor','default');
                     me.browser.setNoAnim(false);
                     d3.select("body").on("mousemove", null).on("mouseup", null);
                 });
@@ -5134,6 +5157,9 @@ var Summary_Categorical_functions = {
     initDOM_CatTextSearch: function(){
         var me=this;
         this.DOM.attribTextSearch = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
+        this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
+            .attr("class","attribTextSearchControl fa")
+            .on("click",function() { me.summaryFilter.clearFilter(); });
         this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
             .attr("class","attribTextSearchInput")
             .attr("type","text")
@@ -5176,9 +5202,6 @@ var Summary_Categorical_functions = {
                 }, 750);
             })
             ;
-        this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
-            .attr("class","attribTextSearchControl fa")
-            .on("click",function() { me.summaryFilter.clearFilter(); });
     },
     /** returns the maximum active aggregate value per row in chart data */
     getMaxAggr_Active: function(){
@@ -5351,14 +5374,16 @@ var Summary_Categorical_functions = {
         if(this.DOM.facetCategorical){
             this.DOM.facetCategorical.style("width",this.getWidth()+"px");
             this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
-            this.DOM.chartAxis_Measure.select(".background")
-                .style("width",this.chartScale_Measure.range()[1]+"px");
+            this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background")
+                .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label())+"px");
             this.refreshViz_Axis();
         }
     },
     /** -- */
     refreshMeasureLabel: function(){
         if(!this.hasCategories()) return;
+        if(this.browser.previewedSelectionSummary===this && !this.hasMultiValueItem) return;
+
         var me=this;
 
         this.DOM.cats.attr("noitems",function(aggr){ return !me.isAttribSelectable(aggr); });
@@ -5655,6 +5680,7 @@ var Summary_Categorical_functions = {
             this.style.marginTop = ((me.heightRow_category-18)/2)+"px";
         });
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
+        this.DOM.chartCatLabelResize.style("height",this.getTotalAttribHeight()+"px");
 
         setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
@@ -5791,6 +5817,10 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribEnter: function(attrib){
+        if(this.preview_enabled===false) return;
+
+        this.browser.previewedSelectionSummary = this;
+
         var me=this;
 
         if(attrib.cliqueRow)
@@ -5828,6 +5858,10 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribLeave: function(attrib){
+        if(this.preview_enabled===false) return;
+
+        this.browser.previewedSelectionSummary = null;
+
         if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
             attrib.skipMouseOut = false;
             return;
@@ -6182,6 +6216,7 @@ var Summary_Categorical_functions = {
         // filler is used to insert the scroll bar.
         // Items outside the view are not visible, something needs to expand the box
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
+        this.DOM.chartCatLabelResize.style("height",this.getTotalAttribHeight()+"px");
 
         var attribGroupScroll = me.DOM.attribGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -6613,6 +6648,9 @@ var Summary_Interval_functions = {
         var me = this;
 
         this.insertRoot(beforeDOM);
+
+        this.DOM.root
+            .attr("hasMultiValueItem",false);
 
         this.insertHeader();
 
@@ -7114,7 +7152,9 @@ var Summary_Interval_functions = {
                 aggr.DOM.facet = this;
             })
             .on("mouseenter",function(aggr){
-                var thiss= this;
+                var thiss=this;
+
+                me.browser.previewedSelectionSummary = me;
 
                 if(!me.browser.pauseResultPreview){
                     var timeoutTime = kshf.previewTimeoutMS;
@@ -7138,6 +7178,8 @@ var Summary_Interval_functions = {
                 }
             })
             .on("mouseleave",function(aggr){
+                me.browser.previewedSelectionSummary = null;
+
                 if(resultPreviewLogTimeout){
                     clearTimeout(resultPreviewLogTimeout);
                 }
@@ -7333,30 +7375,42 @@ var Summary_Interval_functions = {
                 var initMin = me.summaryFilter.active.min;
                 var initMax = me.summaryFilter.active.max;
                 var initRange= initMax - initMin;
-                var initPos = me.valueScale.invert(d3.mouse(e)[0]);
+                var initPos = d3.mouse(e)[0];
 
                 d3.select("body").style('cursor','ew-resize')
                     .on("mousemove", function() {
-                        var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                        var targetDif = targetPos-initPos;
-                        me.summaryFilter.active.min = initMin+targetDif;
-                        me.summaryFilter.active.max = initMax+targetDif;
-                        if(me.summaryFilter.active.min<me.intervalRange.active.min){
-                            me.summaryFilter.active.min=me.intervalRange.active.min;
-                            me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
+                        if(me.scaleType==='log'){
+                            var targetDif = d3.mouse(e)[0]-initPos;
+                            me.summaryFilter.active.min =
+                                me.valueScale.invert(me.valueScale(initMin)+targetDif);
+                            me.summaryFilter.active.max =
+                                me.valueScale.invert(me.valueScale(initMax)+targetDif);
+
+                        } else {
+                            var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+                            var targetDif = targetPos-me.valueScale.invert(initPos);
+
+                            me.summaryFilter.active.min = initMin+targetDif;
+                            me.summaryFilter.active.max = initMax+targetDif;
+                            if(me.summaryFilter.active.min<me.intervalRange.active.min){
+                                me.summaryFilter.active.min=me.intervalRange.active.min;
+                                me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
+                            }
+                            if(me.summaryFilter.active.max>me.intervalRange.active.max){
+                                me.summaryFilter.active.max=me.intervalRange.active.max;
+                                me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
+                            }
                         }
-                        if(me.summaryFilter.active.max>me.intervalRange.active.max){
-                            me.summaryFilter.active.max=me.intervalRange.active.max;
-                            me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
-                        }
+
                         me.roundFilterRange();
                         me.refreshIntervalSlider();
+
                         // wait half second to update
                         if(this.timer){
                             clearTimeout(this.timer);
                             this.timer = null;
                         }
-                        me.summaryFilter.filteredBin=this;
+                        me.summaryFilter.filteredBin = this;
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
@@ -7907,6 +7961,7 @@ var Summary_Interval_functions = {
     /** -- */
     refreshMeasureLabel: function(){
         var me=this;
+        if(this.browser.previewedSelectionSummary===this) return;
 
         this.DOM.aggr_Group.attr("noitems",function(aggr){ return aggr.aggregate_Active===0; });
 
