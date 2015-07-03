@@ -32,54 +32,39 @@ google.setOnLoadCallback(function(){
         barChartWidth: 120,
         rightPanelLabelWidth: 90,
         source: {
-            gdocId: '1334P2h6UkTcIOXb5x85lpGToeAUVxHVSwB-9ta5cif0',
-            sheets: [ 
-                {name:"Publications"}, 
-                {name:"Domains"},
-                {name:"ResearchTopics"},
+            gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
+            sheets: [
+                {name:"Publications"},
+				{name:"Regulatory Domains", id:"Name"},
                 {name:"Authors"},
-                {name:"StudyDesigns"},
-                {name:"StudyTypes"},
-                {name:"Summarized"},
             ]
         },
         loadedCb: function(browser){
-            kshf.Util.cellToArray(kshf.dt.Publications, [
-                'Authors', 
-                'Regulatory Domains', 
-                'Research Topics',
-                'Study Design',
-                'Study Type',
-                'Summarized'
-            ]);
+			kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s+\+\s+/,false);
+            kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
         },
         readyCb: function(browser){
             $(".paperName").click(function(d){
                 browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
             });
-            browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
         },
         summaries: [
-            {   title: "Regulatory Domains", catTableName: "Domains",  catLabel: "Name", 
-                catTooltip: function(){ return "Info: "+this.Name; }
-            },{ title: "Research Topics", catTableName: "ResearchTopics", catLabel: "Name", catTooltip: "Description"
-            },{ title: "Study Design", catTableName: "StudyDesigns", catLabel: "Name",
+            {   title: "Regulatory Domains", catTableName: "Regulatory Domains",  catLabel: "Name",
+                catTooltip: "Description"
+            },{ title: "Research Topics", catTooltip: "Description"
+			},{ title: "Study Design",
                 description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental",
                 collapsed: false,
-            },{ title: "Study Type", catTableName: "StudyTypes", catLabel: "Name",
-                description: "Venue where study was published",
-                collapsed: false
+            },{ title: "Study Type", description: "Venue where study was published", collapsed: false
             },{ title: "Authors",
                 catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
-            },{ title: "Summarized by MCEP", attribMap: 'Summarized',
-                catTableName: "Summarized", catLabel: "mcep_summarized",
-                collapsed: true
+            },{ title: "Summarized by MCEP", collapsed: true
             },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear();}
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: { title: 'Date', label: function(){return this.Date.getFullYear();}, inverse: true},
+            sortingOpts: {title: 'Year'},
             textSearch: 'Title',
             detailsToggle: "one",
             autoExpandMore: true,
@@ -91,7 +76,7 @@ google.setOnLoadCallback(function(){
                 str+="<div class=''> <span>";
                 str+="<span class='paperName'>"+this.Title+"</span>";
                 if(this.url.trim()!==""){
-                    str+=" <a class='pubLink fa fa-external-link  externallink' target='_blank' href='"+this.url+"'>external</a>";
+                    str+=" <a class='pubLink fa fa-external-link  externallink' target='_blank' href='"+this.url+"'>link</a>";
                 }
                 str+="</div>";
 
@@ -109,53 +94,24 @@ google.setOnLoadCallback(function(){
                 // keywords for sujects
                 var cats = this['Regulatory Domains'];
                 if(cats.length>0){
-                    str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: ";
-                    for(j=0; j<cats.length; j++){
-                        str+=kshf.dt_id.Domains[cats[j]].data.Name;
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
+					str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: "+cats.join(", ")+"</div>";
                 }
                 // keywords for aspects
                 var cats = this['Research Topics'];
                 if(cats.length>0){
-                    str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: ";
-                    for(j=0; j<cats.length; j++){
-                        str+=kshf.dt_id.ResearchTopics[cats[j]].data.Name;
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
+                    str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: "+cats.join(", ")+"</div>";
                 }
                 // keywords for peer reviewed
-                var cats = this['Study Type'];
-                if(cats.length>0){
-                    str+="<div class=\"peer\"> <span class='header'>Study Type</span>: ";
-                    for(j=0; j<cats.length; j++){
-                        str+=kshf.dt_id.StudyTypes[cats[j]].data.Name;
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
-                }
-
+				str+="<div class=\"peer\"> <span class='header'>Study Type</span>: "+this['Study Type']+"</div>";
                 // keywords for study type
                 var cats = this['Study Design'];
                 if(cats.length>0){
-                    str+="<div class=\"study\"> <span class='header'>Study Design</span>: ";
-                    for(j=0; j<cats.length; j++){
-                        str+=kshf.dt_id.StudyDesigns[cats[j]].data.Name;
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
+					str+="<div class=\"study\"> <span class='header'>Study Design</span>: "+cats.join(", ")+"</div>";
                 }
                 // keywords for summarized
-                var cats = this.Summarized;
+                var cats = this['Summarized by MCEP'];
                 if(cats.length>0){
-                    str+="<div class=\"summar\"> <span class='header'>Summarized</span>: ";
-                    for(j=0; j<cats.length; j++){ 
-                        str+=kshf.dt_id.Summarized[cats[j]].data.mcep_summarized;
-                        if(j!==cats.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
+                    str+="<div class=\"summar\"> <span class='header'>Summarized</span>: "+cats+"</div>";
                 }
 
                 return str;

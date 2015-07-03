@@ -1,4 +1,4 @@
-var theDirPath = '../demo/data/set_'; 
+var theDirPath = '../demo/data/set_';
 var upsetSourceURL = 'http://vcg.github.io/upset/';
 
 var getRecordTypeLabel = function(){
@@ -44,9 +44,9 @@ var browser_configs = {
                 recordView: function(){
                     var characters="";
                     var str="<i class='fa fa-book'></i>"+
-                        " <span style='font-weight:300'>Vol.</span> "+this.Volume+
-                        " <span style='font-weight:300'>Book</span> "+this.Book+
-                        " <span style='font-weight:300'>Chap.</span> "+this.Chapter;
+                        " <span style='font-weight:300'>Vol. "+this.Volume+
+                        " Book "+this.Book+
+                        " Chap. "+this.Chapter+"</span>";
                     if(this.Characters && this.Characters.length>0){
                         this.Characters.forEach(function(c){
                             characters+=kshf.dt_id.Characters[c].data.Name+", ";
@@ -131,7 +131,7 @@ var browser_configs = {
                 sortColWidth: 45,
                 sortingOpts: 'Age',
                 displayType: 'grid',
-                recordView: function(){ 
+                recordView: function(){
                     return "<img class='simpson_head' src='img/simpsons/"+this.Name+".jpeg'>"+
                         "<span class='simpson_name'>"+this.Name+"</span>";
                 }
@@ -259,7 +259,7 @@ var browser_configs = {
                     }
 
                     browser.items = kshf.dt.Actors;
-                    browser.loadCharts(); 
+                    browser.loadCharts();
                 }
             },
             summaries: [{ title: "HBO Shows", layout: "left" }],
@@ -363,10 +363,10 @@ var browser_configs = {
             categoryTextWidth: 200,
             rightPanelLabelWidth: 100,
             itemName: "Papers",
-            source: { 
+            source: {
                 url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/acm_",
-                fileType:'csv', 
+                fileType:'csv',
                 sheets: [{name:"papers"},{name:"keywords"},{name:"ccs98"}]
             },
             summaries: [
@@ -406,7 +406,7 @@ var browser_configs = {
             source: {
                 url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/acm_",
-                fileType:'csv', 
+                fileType:'csv',
                 sheets:[{name:"papers"},{name:"keywords"},{name:"ccs98"}]
             },
             summaries: [
@@ -420,7 +420,7 @@ var browser_configs = {
                         });
                         return r;
                     },
-                    catLabel: function(){ 
+                    catLabel: function(){
                         //return kshf.Util.toProperCase(kshf.dt_id.keywords[this.id].data.label);
                         return kshf.dt_id.keywords[this.id].data.label;
                     },
@@ -440,7 +440,7 @@ var browser_configs = {
         browser: {
             leftPanelLabelWidth: 140,
             itemName: "Compounds",
-            source:{ 
+            source:{
                 callback: function(browser){
                     browser.primaryTableName = "Compounds";
 
@@ -477,7 +477,7 @@ var browser_configs = {
                     attribMap: function(){ return this[0]; },
                     sortingOpts: [
                         {   name: "# of Compounds"},
-                        {   name: "Name",  
+                        {   name: "Name",
                             func: function(a,b){
                                 a = a.data[1].split(' ');
                                 b = b.data[1].split(' ');
@@ -631,7 +631,7 @@ var browser_configs = {
         browser: {
             categoryTextWidth: 150,
             itemName: "Countries",
-            source: { 
+            source: {
                 url: "http://jmatchparser.sourceforge.net/",
                 callback: function(browser){
                     factBrowser = browser;
@@ -758,10 +758,10 @@ var browser_configs = {
         browser: {
             middlePanelLabelWidth: 200,
             itemName: "cpds vs protein fam",
-            source:{ 
-                url:upsetSourceURL, 
+            source:{
+                url:upsetSourceURL,
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/set_",
-                fileType:'txt', 
+                fileType:'txt',
                 sheets:[{name:"CpdsVsProteinFam", id:'cpd'}]
             },
             summaries: [
@@ -794,7 +794,7 @@ var browser_configs = {
         browser: {
             leftPanelLabelWidth: 110,
             itemName: "cpds vs protein table",
-            source:{ 
+            source:{
                 url:upsetSourceURL,
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/set_",
                 fileType:'txt',
@@ -1068,6 +1068,5 @@ function loadFactbook(facts, factBrowser){
     });
 
     factBrowser.items = kshf.dt[factBrowser.primaryTableName];
-    factBrowser.loadCharts();   
+    factBrowser.loadCharts();
 };
-

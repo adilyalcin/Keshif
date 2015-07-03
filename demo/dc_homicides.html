@@ -40,17 +40,17 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
         domID: "#chart_div",
         categoryTextWidth: 150,
-        source: { 
+        source: {
             url: "http://apps.washingtonpost.com/investigative/homicides/",
             callback: dataLoad
         },
         summaries: [
             {   title: "Age", attribMap: "age"
             },{ title: "Race", attribMap: "race"
-            },{ title: "Sex", attribMap: "sex", 
+            },{ title: "Sex", attribMap: "sex",
                 catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id);
             }
-            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', attribMap: "quadrant",  
+            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', attribMap: "quadrant",
                 catLabel: function(){
                     switch(this.id){
                         case "SE": return "South-East";
@@ -62,7 +62,7 @@ $(document).ready( function(){
             },{ title: "Neighborhood", layout: 'right',
                 attribMap: function(){ if(this.nbhd) return this.nbhd.subhood; }
             },{ title: "Status", layout: 'right',
-                attribMap: function(){ 
+                attribMap: function(){
                     var r=[];
                     r.push("Police Status: "+this.police_status.name);
                     if(this.jury_trial) r.push("Had jury trial");
@@ -93,7 +93,7 @@ $(document).ready( function(){
     </style>
 	</head>
     <body>
-        <div class="pageTitle" align="center">Homicides in the District (2000-2011)</div>
+        <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
         <div class="contents"><div id="chart_div"></div></div>
 
         <div id="infobox" align="center">
