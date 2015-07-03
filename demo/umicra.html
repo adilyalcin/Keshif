@@ -52,9 +52,8 @@ google.setOnLoadCallback(function(){
             {   title: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description"
             },{ title: "Research Topics"
             },{ title: "Study Design",
-                description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental",
-                collapsed: false,
-            },{ title: "Study Type", description: "Venue where study was published", collapsed: false
+                description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental"
+            },{ title: "Study Type", description: "Venue where study was published"
             },{ title: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
             },{ title: "Summarized by MCEP", collapsed: true
             },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); }
