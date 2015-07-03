@@ -1533,8 +1533,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput:focus {
-  outline-color: gray;
-  outline-width: 4px;
+  outline-color: #cb5454;
+  outline-width: 2px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput:hover {
   border: solid 1px #cb5454;
@@ -3274,7 +3274,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input:focus {
   outline-color: #cb5454;
-  outline-width: 1px;
+  outline-width: 2px;
 }
 .kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input:hover {
   border-width: 1px;
