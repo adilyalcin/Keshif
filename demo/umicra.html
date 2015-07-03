@@ -35,12 +35,12 @@ google.setOnLoadCallback(function(){
             gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
             sheets: [
                 {name:"Publications"},
-				{name:"Regulatory Domains", id:"Name"},
+				{name:"Regulatory Domains"},
                 {name:"Authors"},
             ]
         },
         loadedCb: function(browser){
-			kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s+\+\s+/,false);
+			kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
             kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
         },
         readyCb: function(browser){
@@ -49,25 +49,22 @@ google.setOnLoadCallback(function(){
             });
         },
         summaries: [
-            {   title: "Regulatory Domains", catTableName: "Regulatory Domains",  catLabel: "Name",
-                catTooltip: "Description"
-            },{ title: "Research Topics", catTooltip: "Description"
+            {   title: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description"
+            },{ title: "Research Topics"
 			},{ title: "Study Design",
                 description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental",
                 collapsed: false,
             },{ title: "Study Type", description: "Venue where study was published", collapsed: false
-            },{ title: "Authors",
-                catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
+            },{ title: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
             },{ title: "Summarized by MCEP", collapsed: true
-            },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear();}
+            },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); }
             }
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: {title: 'Year'},
+            sortingOpts: 'Year',
             textSearch: 'Title',
             detailsToggle: "one",
-            autoExpandMore: true,
             recordView: function(){
                 var j;
                 var str="";
