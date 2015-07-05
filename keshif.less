@@ -186,6 +186,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
             }
         }
+        &[dropattrtype~="unique"] .dropZone_recordView{
+            display: block !important;
+        }
         &[dropattrtype~="interval"] .dropZone_resultSort{
             display: block !important;
         }
@@ -195,10 +198,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .dropZone_textSearch{
                 display: block !important;
-            }
-            .dropZone_recordView{
-                display: block !important;
-            
             }
         }
     }
@@ -403,7 +402,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
-        .attributeName{
+        .nugget{
             display: block;
             font-size: 0.8em;
             padding: 2px;
@@ -451,7 +450,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &[aggr_initialized=false]{
-                > .attribNugget {
+                > .nuggetViz {
                     > .nuggetInfo{
                         font-size: 2em;
                         text-align: center;
@@ -460,7 +459,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             content: "\f110"; // spinner
                         }
                     }
-                    > .nuggetViz{
+                    > .nuggetChart{
                         display: none !important;
                     }
                     &:hover{
@@ -471,7 +470,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-            > .attribNugget{
+            > .nuggetViz{
                 .display(flex);
                 height: 30px;
                 background-color: rgba(255,255,255,0.8);
@@ -480,7 +479,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 60px;
                 border-radius: 5px;
                 border: solid 1px rgba(255,255,255,0.8);
-                > .nuggetViz{
+                > .nuggetChart{
                     .flex(1);
                     height: 30px;
                     margin-right: 3px;
@@ -495,14 +494,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{
                 background-color: #E8E0CE;
                 border-color: #B8B6B1;
-                > .attribNugget{
+                > .nuggetViz{
                     border-color: gray;
                 }
             }
             &[datatype~="interval"]{
-                > .attribNugget{
+                > .nuggetViz{
                     .flex-direction(column);
-                    > .nuggetViz{
+                    > .nuggetChart{
                         .display(flex);
                         .flex-direction(row);
                         > .nuggetBar{
@@ -510,7 +509,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 }
-                .nuggetViz{ .order(1); }
+                .nuggetChart{ .order(1); }
                 .nuggetInfo{ .order(2); max-height: 1em; }
             }
             &[datatype~='time']{
@@ -521,9 +520,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &[datatype~="categorical"]{
-                > .attribNugget{
+                > .nuggetViz{
                     .flex-direction(row);
-                    > .nuggetViz{
+                    > .nuggetChart{
                         .display(flex);
                         .flex-direction(column);
                     }
@@ -601,6 +600,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
+    > .pointerBlock{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: -10;
+        &[active]{
+            z-index: 700;
+        }
+    }
+
     .panel {
         > .dropZone_between_wrapper{
             display: none;
@@ -612,7 +623,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             //background-color: rgb(152, 157, 162);
             //height: 0px;
             width: calc(~"100% - 3px");
-            .transition(flex-grow 450ms ease-in-out, background-color 250ms linear);
+            .transition(flex-grow 450ms ease-in-out, background-color 250ms linear, width 500ms ease-in-out);
             > .dropZone_between{
                 overflow: hidden;
                 border-radius: 5px;
@@ -655,7 +666,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             z-index: 250;
             position: relative;
             cursor: default;
-            .transition(~"background-color 100ms linear");
+            .transition(~"background-color 100ms linear, width 300ms ease-in-out");
             &:hover{ background-color: rgb(255, 188, 163); }
             > .dropIcon{
                 margin: 0px;
@@ -751,7 +762,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-right-width: 2px;
                 > .dropIcon{
                     margin-top: 150px;
-                    width: 160px;
                     top: 200px;
                 }
             }
@@ -774,7 +784,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border-left-width: 2px;
                 > .dropIcon{
                     margin-top: 150px;
-                    width: 160px;
                     top: 200px;
                 }
             }
@@ -786,7 +795,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .display(flex);
             .flex-direction(column);
             position: relative;
-            flex: 1;
+            .flex(1);
             > .dropZone_panel{
                 bottom: 0px;
                 height: 100%;
@@ -1200,10 +1209,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.allFilter{
             display: inline-block;
             margin-left: 2px;
-            height: 17px;
+            height: 19px;
             vertical-align: top;
             border-width: 0px 0px 0px 1px;
-            line-height: 16px;
+            line-height: 19px;
         }
     }
 
@@ -2517,6 +2526,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow-y: scroll;
             overflow-x: hidden;
             position: relative;
+            display: block;
 
             background-color: white;
             // height is set dynamically by JavaScript
@@ -2829,8 +2839,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[hasRecordView="false"]{
             border-bottom: solid 2px white; // leave some spacing between this and middl-esummaries
+            > .listHeader > .bottomRow {
+                display: none;
+            }
         }
         &[hasRecordView="true"]{
+            > .listHeader > .bottomRow {
+                display: block;
+            }
             .configRow{
                 > .itemRank{
                     display: inline-block;
@@ -2847,7 +2863,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &:hover{
-            .listHeader > .bottomRow > .sortColumn{
+            > .listHeader > .bottomRow > .sortColumn{
                 opacity: 1;
                 pointer-events: all;
             }
@@ -2904,6 +2920,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             > .header_listSortColumn{
+                display: inline-block;
                 .align-self(flex-end);
                 white-space: nowrap;
                 text-align: right;

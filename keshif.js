@@ -986,13 +986,13 @@ kshf.List = function(kshf_, config, root){
 
     this.items = this.browser.items;
 
+    this.recordViewSummary = null;
     if(config.recordView!==undefined){
         if(typeof config.recordView === 'string'){
-            var x=config.recordView;
-            this.recordView = function(){ return this[x];};
+            this.setRecordViewSummary(this.browser.summaries_by_name[config.recordView]);
         }
         if(typeof config.recordView === 'function'){
-            this.recordView = config.recordView;
+            this.setRecordViewSummary(this.browser.createSummary('_RecordView_',config.recordView,'categorical'));
         }
     }
 
@@ -1066,7 +1066,6 @@ kshf.List = function(kshf_, config, root){
         this.initDOM_BottomRow();
 
     this.DOM.listItemGroup = this.listDiv.append("div").attr("class","listItemGroup")
-        .style("display",this.recordView?"":"none")
         .on("scroll",function(d){
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
                 if(me.autoExpandMore===false){
@@ -1091,10 +1090,9 @@ kshf.List = function(kshf_, config, root){
             var movedSummary = me.browser.movedSummary;
             if(movedSummary===null || movedSummary===undefined) return;
 
-            if(movedSummary.DOM.nugget)
-                movedSummary.DOM.nugget.style("display","none");
+            movedSummary.refreshNuggetDisplay();
 
-            me.recordView = movedSummary.summaryFunc;
+            me.setRecordViewSummary(movedSummary);
 
             me.sortRecords();
             me.insertRecords();
@@ -1125,7 +1123,7 @@ kshf.List = function(kshf_, config, root){
         this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
         this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
 
-    if(config.recordView){
+    if(this.recordViewSummary){
         this.sortRecords();
         this.insertRecords();
         this.setSortColumnWidth(config.sortColWidth || 50); // default: 50px;
@@ -1148,8 +1146,7 @@ kshf.List.prototype = {
     /** -- */
     initDOM_BottomRow: function(){
         var me=this;
-        this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow")
-            .style("display",this.recordView?"":"none");
+        this.DOM.listHeader_BottomRow = this.DOM.listHeader.append("div").attr("class","bottomRow");
         this.DOM.listHeader_BottomRow.append("div").attr("class","itemRank");
         this.initDOM_SortSelect();
         this.DOM.filtercrumbs = this.DOM.listHeader_BottomRow.append("span").attr("class","filtercrumbs");
@@ -1348,11 +1345,24 @@ kshf.List.prototype = {
             x.append("option").attr("value","off").attr("selected",this.detailsToggle==="off"?true:null).text("off");
             x.append("option").attr("value","one").attr("selected",this.detailsToggle==="one"?true:null).text("one");
             x.append("option").attr("value","zoom").attr("selected",this.detailsToggle==="zoom"?true:null).text("zoom");
-
+    },
+    /** -- */
+    setRecordViewSummary: function(summary){
+        if(summary===undefined || summary===null) return;
+        if(this.recordViewSummary===summary) return;
+        if(this.recordViewSummary ){
+            // Remove the summary from record view
+            this.recordViewSummary.isRecordView = false;
+            summary.refreshNuggetDisplay();
+        }
+        this.recordViewSummary = summary;
+        summary.isRecordView = true;
+        summary.refreshNuggetDisplay();
     },
     /** -- */
     setTextSearchSummary: function(summary){
         if(summary===undefined || summary===null) return;
+        if(this.textSearchSummary===summary) return;
         this.textSearchSummary = summary;
         this.textSearchSummary.isTextSearch = true;
         if(this.DOM.mainTextSearch)
@@ -1741,7 +1751,7 @@ kshf.List.prototype = {
         }
         this.insertItemToggleDetails();
         this.DOM.listItems_Content = this.DOM.listItems.append("div").attr("class","content")
-            .html(function(d){ return me.recordView.call(d.data,d); });
+            .html(function(d){ return me.recordViewSummary.summaryFunc.call(d.data,d); });
 
         if(this.hasLinkedItems){
             this.DOM.itemLinkStateColumn = this.DOM.listItems.append("span").attr("class","itemLinkStateColumn")
@@ -1985,7 +1995,7 @@ kshf.List.prototype = {
     },
     /** -- */
     updateAfterFilter_do:function(){
-        if(this.recordView===undefined) return;
+        if(this.recordViewSummary===null) return;
         this.updateVisibleIndex();
         this.updateItemVisibility(false);
     },
@@ -2145,9 +2155,11 @@ kshf.Panel.prototype = {
             .attr("readyToDrop",false)
             .on("mouseenter",function(event){
                 this.setAttribute("readyToDrop",true);
+                this.style.width = me.getWidth_Total()+"px";
             })
             .on("mouseleave",function(event){
                 this.setAttribute("readyToDrop",false);
+                this.style.width = null;
             })
             .on("mouseup",function(event){
                 // If this panel has summaries within, dropping makes no difference.
@@ -2184,7 +2196,7 @@ kshf.Panel.prototype = {
                 var adjustDOM = this;
                 adjustDOM.setAttribute("dragging",true);
                 root.style('cursor','ew-resize');
-                me.browser.preview_enabled = false;
+                me.browser.DOM.pointerBlock.attr("active","");
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(document.body)[0];
                 var mouseDown_width = me.width_catBars;
@@ -2201,7 +2213,7 @@ kshf.Panel.prototype = {
                 }).on("mouseup", function(){
                     adjustDOM.setAttribute("dragging",false);
                     root.style('cursor','default');
-                    me.browser.preview_enabled = true;
+                    me.browser.DOM.pointerBlock.attr("active",null);
                     me.browser.setNoAnim(false);
                     // unregister mouse-move callbacks
                     d3.select("body").on("mousemove", null).on("mouseup", null);
@@ -2365,7 +2377,6 @@ kshf.Browser = function(options){
     this.previewCb = options.previewCb;
     this.previewCompareCb = options.previewCompareCb;
     this.preview_not = false;
-    this.preview_enabled = true;
     this.ratioModeCb = options.ratioModeCb;
 
     this.showDropZones = false;
@@ -2400,6 +2411,8 @@ kshf.Browser = function(options){
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
     var rootDomNode = this.DOM.root[0][0];
     while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
+
+    this.DOM.pointerBlock = this.DOM.root.append("div").attr("class","pointerBlock");
 
     if(options.showResizeCorner) this.insertDOM_ResizeBrowser();
     this.insertDOM_Infobox();
@@ -2484,7 +2497,6 @@ kshf.Browser = function(options){
             var movedSummary = me.movedSummary;
             movedSummary.removeFromPanel();
             movedSummary.clearDOM();
-            movedSummary.DOM.nugget.style("display","block");
             movedSummary.browser.updateLayout();
             me.movedSummary = null;
         })
@@ -3489,15 +3501,16 @@ kshf.Browser.prototype = {
         var me=this;
         var x=this.DOM.attributeList;
 
-        var newAttributes = x.selectAll("div.attributeName")
+        var newAttributes = x.selectAll(".nugget")
             .data(this.summaries).enter();
 
         this.attribMoved = false;
 
         var newSummaries = newAttributes
-            .append("div").attr("class","attributeName editableTextContainer")
+            .append("div").attr("class","nugget editableTextContainer")
             .each(function(summary){
                 summary.DOM.nugget = d3.select(this);
+                summary.refreshNuggetDisplay();
             })
             .attr("title",function(summary){
                 if(summary.summaryColumn!==undefined) return summary.summaryColumn;
@@ -3512,9 +3525,6 @@ kshf.Browser.prototype = {
             })
             .attr("aggr_initialized",function(summary){
                 return summary.aggr_initialized;
-            })
-            .style("display",function(summary){
-                if(summary.panel!==undefined) return "none";
             })
             .on("mousedown",function(summary){
                 if(d3.event.which !== 1) return; // only respond to left-click
@@ -3555,7 +3565,7 @@ kshf.Browser.prototype = {
             })
             ;
 
-        var attribNugget = newSummaries.append("span").attr("class","attribNugget")
+        var nuggetViz = newSummaries.append("span").attr("class","nuggetViz")
             .each(function(summary){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'e', title: function(){
@@ -3579,8 +3589,8 @@ kshf.Browser.prototype = {
                 }
             });
 
-        attribNugget.append("span").attr("class","nuggetInfo fa");
-        var nuggetViz = attribNugget.append("span").attr("class","nuggetViz");
+        nuggetViz.append("span").attr("class","nuggetInfo fa");
+        var nuggetChart = nuggetViz.append("span").attr("class","nuggetChart");
         newSummaries.append("span").attr("class","summaryTitle editableText")
             .attr("contenteditable",false)
             .text(function(summary){ return summary.summaryTitle; })
@@ -3926,7 +3936,7 @@ kshf.Browser.prototype = {
         var midPanelHeight = 0;
         if(this.panels.middle.summaries.length>0){
             var panelHeight = topPanelsHeight;
-            if(this.listDisplay.recordView){
+            if(this.listDisplay.recordViewSummary){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
                 panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight;
@@ -4039,6 +4049,8 @@ kshf.Summary_Base.prototype = {
 
         this.subFacets = [];
 
+        this.isRecordView = false;
+
         // Only used when summary is inserted into browser
         this.collapsed_pre = false;
         this.collapsed = false;
@@ -4050,14 +4062,14 @@ kshf.Summary_Base.prototype = {
     /** -- */
     setSummaryName: function(name){
         this.summaryTitle = name;
-        if(this.DOM.summaryTitle_text)
+        if(this.DOM.summaryTitle_text){
             this.DOM.summaryTitle_text.text(this.summaryTitle);
-        if(this.DOM.nugget)
-            this.DOM.nugget.select(".summaryTitle").text(this.summaryTitle);
+        }
         this.summaryFilter._refreshFilterSummary();
         // This summary may be used for sorting options. Refresh the list
-        if(this.browser.listDisplay)
+        if(this.browser.listDisplay){
             this.browser.listDisplay.refreshSortingOptions();
+        }
         if(this.isTextSearch){
             this.browser.listDisplay.DOM.mainTextSearch.select("input")
                 .attr("placeholder",kshf.lang.cur.Search+": "+this.summaryTitle);
@@ -4065,12 +4077,14 @@ kshf.Summary_Base.prototype = {
         if(this.sortFunc){
             this.browser.listDisplay.refreshSortingOptions();
         }
-        if(this.DOM.nugget)
+        if(this.DOM.nugget){
+            this.DOM.nugget.select(".summaryTitle").text(this.summaryTitle);
             this.DOM.nugget.attr("state",function(summary){
                 if(summary.summaryColumn===null) return "custom"; // calculated
                 if(summary.summaryTitle===summary.summaryColumn) return "exact";
                 return "edited";
             });
+        }
     },
     /** -- */
     getDataType: function(){
@@ -4163,13 +4177,18 @@ kshf.Summary_Base.prototype = {
         }
         panel.addSummary(this,index);
         this.panel.refreshDropZoneIndex();
-        if(this.DOM.nugget) this.DOM.nugget.style("display","none");
+        this.refreshNuggetDisplay();
+    },
+    /** -- */
+    refreshNuggetDisplay: function(){
+        if(this.DOM.nugget===undefined) return;
+        this.DOM.nugget.style("display",(this.panel||this.isRecordView)?"none":null);
     },
     /** -- */
     removeFromPanel: function(){
         if(this.panel===undefined) return;
         this.panel.removeSummary(this);
-        if(this.DOM.nugget) this.DOM.nugget.style("display","");
+        this.refreshNuggetDisplay();
     },
     /** -- */
     insertRoot: function(beforeDOM){
@@ -4292,7 +4311,6 @@ kshf.Summary_Base.prototype = {
                 } else {
                     me.removeFromPanel();
                     me.clearDOM();
-                    me.DOM.nugget.style("display","block");
                     me.browser.updateLayout();
                 }
             })
@@ -4541,7 +4559,7 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshViz_Nugget: function(){
         if(this.DOM.nugget===undefined) return;
-        var nuggetViz = this.DOM.nugget.select(".nuggetViz");
+        var nuggetChart = this.DOM.nugget.select(".nuggetChart");
 
         this.DOM.nugget
             .attr("aggr_initialized",this.aggr_initialized)
@@ -4551,13 +4569,13 @@ var Summary_Categorical_functions = {
 
         if(this.uniqueCategories()){
             this.DOM.nugget.select(".nuggetInfo").html("<span class='fa fa-tag'></span><br>Unique");
-            nuggetViz.style("display",'none');
+            nuggetChart.style("display",'none');
             return;
         }
 
         var totalWidth= 25;
         var maxAggregate_Total = this.getMaxAggr_Total();
-        nuggetViz.selectAll(".nuggetBar").data(this._cats).enter()
+        nuggetChart.selectAll(".nuggetBar").data(this._cats).enter()
             .append("span").attr("class","nuggetBar")
                 .style("width",function(cat){ return totalWidth*(cat.items.length/maxAggregate_Total)+"px"; });
 
@@ -5097,7 +5115,7 @@ var Summary_Categorical_functions = {
                 var resizeDOM = this;
                 me.panel.DOM.root.attr("catLabelDragging",true);
 
-                me.browser.preview_enabled = false;
+                me.browser.DOM.pointerBlock.attr("active","");
                 me.browser.DOM.root.style('cursor','col-resize');
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
@@ -5108,7 +5126,7 @@ var Summary_Categorical_functions = {
                     me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
                 }).on("mouseup", function(){
                     me.panel.DOM.root.attr("catLabelDragging",false);
-                    me.browser.preview_enabled = true;
+                    me.browser.DOM.pointerBlock.attr("active",null);
                     me.browser.DOM.root.style('cursor','default');
                     me.browser.setNoAnim(false);
                     d3.select("body").on("mousemove", null).on("mouseup", null);
@@ -5861,8 +5879,6 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribEnter: function(attrib){
-        if(this.browser.preview_enabled===false) return;
-
         this.browser.previewedSelectionSummary = this;
 
         var me=this;
@@ -5902,8 +5918,6 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribLeave: function(attrib){
-        if(this.browser.preview_enabled===false) return;
-
         this.browser.previewedSelectionSummary = null;
 
         if(attrib.skipMouseOut !==undefined && attrib.skipMouseOut===true){
@@ -6567,7 +6581,7 @@ var Summary_Interval_functions = {
     refreshViz_Nugget: function(){
         if(this.DOM.nugget===undefined) return;
 
-        var nuggetViz = this.DOM.nugget.select(".nuggetViz");
+        var nuggetChart = this.DOM.nugget.select(".nuggetChart");
 
         this.DOM.nugget
             .attr("aggr_initialized",this.aggr_initialized)
@@ -6579,12 +6593,12 @@ var Summary_Interval_functions = {
 
         if(this.intervalRange.min===this.intervalRange.max){
             this.DOM.nugget.select(".nuggetInfo").html("only<br>"+this.intervalRange.min);
-            nuggetViz.style("display",'none');
+            nuggetChart.style("display",'none');
             return;
         }
 
         var totalHeight = 17;
-        nuggetViz.selectAll(".nuggetBar").data(this.histBins).enter()
+        nuggetChart.selectAll(".nuggetBar").data(this.histBins).enter()
                 .append("span").attr("class","nuggetBar")
                 .style("height",function(aggr){
                     return totalHeight*(aggr.length/maxAggregate_Total)+"px";
