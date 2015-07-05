@@ -335,6 +335,21 @@ var kshf = {
     },
     style: {
         color_chart_background_highlight: "rgb(194, 146, 124)"
+    },
+    fontLoaded: false,
+    loadFont: function(){
+        if(this.fontLoaded===true) return;
+        WebFontConfig = {
+            google: { families: [ 'Roboto:400,500,300,100,700:latin' ] }
+        };
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+            '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+        this.fontLoaded = true;
     }
 };
 
@@ -1050,52 +1065,55 @@ kshf.List = function(kshf_, config, root){
         this.initDOM_ConfigRow();
         this.initDOM_BottomRow();
 
-    var zone=this.listDiv.append("div").attr("class","dropZone dropZone_recordView")
-        zone.append("div").attr("class","dropIcon fa fa-list-ul");
-        zone.append("div").attr("class","dropText").html("Drop to List "+this.browser.itemName);
-
-    $(zone[0][0]).on("mouseenter",function(event){
-        this.setAttribute("readyToDrop",true);
-    });
-    $(zone[0][0]).on("mouseleave",function(event){
-        this.setAttribute("readyToDrop",false);
-    });
-    $(zone[0][0]).on("mouseup",function(event){
-        var movedSummary = me.browser.movedSummary;
-        if(movedSummary===null || movedSummary===undefined) return;
-
-        me.recordView = movedSummary.summaryFunc;
-
-        me.sortRecords();
-        me.insertRecords();
-        me.setSortColumnWidth(50);
-        me.updateVisibleIndex();
-        me.updateItemVisibility(false,true);
-        me.DOM.listItemGroup.style("display",null);
-        me.DOM.listHeader_BottomRow.style("display",null);
-
-        if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
-
-        me.browser.updateLayout();
-    });
-
     this.DOM.listItemGroup = this.listDiv.append("div").attr("class","listItemGroup")
         .style("display",this.recordView?"":"none")
         .on("scroll",function(d){
-            // showMore display
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
                 if(me.autoExpandMore===false){
-                    me.DOM.showMore.style("bottom","4px");
+                    me.DOM.showMore.attr("showMoreVisible",true);
                 } else {
                     me.showMore(); // automatically add more records
                 }
             } else{
-                me.DOM.showMore.style("bottom","-27px");
+                me.DOM.showMore.attr("showMoreVisible",false);
             }
             me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
         });
 
+    var zone=this.DOM.listItemGroup.append("div").attr("class","dropZone dropZone_recordView")
+        .on("mouseenter",function(event){
+            this.setAttribute("readyToDrop",true);
+        })
+        .on("mouseleave",function(event){
+            this.setAttribute("readyToDrop",false);
+        })
+        .on("mouseup",function(event){
+            var movedSummary = me.browser.movedSummary;
+            if(movedSummary===null || movedSummary===undefined) return;
+
+            if(movedSummary.DOM.nugget)
+                movedSummary.DOM.nugget.style("display","none");
+
+            me.recordView = movedSummary.summaryFunc;
+
+            me.sortRecords();
+            me.insertRecords();
+            me.setSortColumnWidth(50);
+            me.updateVisibleIndex();
+            me.updateItemVisibility(false,true);
+            me.DOM.listItemGroup.style("display",null);
+            me.DOM.listHeader_BottomRow.style("display",null);
+
+            if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
+
+            me.browser.updateLayout();
+        })
+        ;
+    zone.append("div").attr("class","dropIcon fa fa-list-ul");
+    zone.append("div").attr("class","dropText").html("Drop to List "+this.browser.itemName);
+
     this.DOM.showMore = this.listDiv.append("div").attr("class","showMore")
+        .attr("showMoreVisible",false)
         .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
         .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
         .on("click",function(){ me.showMore(); })
@@ -1447,19 +1465,20 @@ kshf.List.prototype = {
 
         this.DOM.header_listSortColumn = this.DOM.listHeader_BottomRow.append("div")
             .attr("class","header_listSortColumn");
-        var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort");
+        var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort")
+            .on("mouseenter",function(){
+                this.style.backgroundColor = "rgb(255, 188, 163)";
+            })
+            .on("mouseleave",function(event){
+                this.style.backgroundColor = "";
+            })
+            .on("mouseup",function(event){
+                me.addSortingOption(me.browser.movedSummary);
+                me.setSortingOpt_Active(me.sortingOpts.length-1);
+                me.DOM.listSortOptionSelect[0][0].selectedIndex = me.sortingOpts.length-1;
+            })
+            ;
         x.append("span").attr("class","dropZone_resultSort_text");
-        $(x[0][0]).on("mouseenter",function(event){
-            this.style.backgroundColor = "rgb(255, 188, 163)";
-        });
-        $(x[0][0]).on("mouseleave",function(event){
-            this.style.backgroundColor = "";
-        });
-        $(x[0][0]).on("mouseup",function(event){
-            me.addSortingOption(me.browser.movedSummary);
-            this.setSortingOpt_Active(this.sortingOpts.length-1);
-            this.DOM.listSortOptionSelect[0][0].selectedIndex = this.sortingOpts.length-1;
-        });
 
         this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
             .attr("class","listSortOptionSelect")
@@ -1568,7 +1587,7 @@ kshf.List.prototype = {
         var noneSelected=(this.browser.itemsWanted_Aggregrate_Total===0);
         this.DOM.listHeader_count
             .text(!noneSelected?this.browser.itemsWanted_Aggregrate_Total:"No")
-            .style("width",(noneSelected?"30":(this.browser.itemsWanted_Aggregrate_Total.toString().length*13+5))+"px")
+            .style("width",(noneSelected?"30":(this.browser.itemsWanted_Aggregrate_Total.toString().length*11+5))+"px")
             ;
     },
     /** -- */
@@ -1685,14 +1704,6 @@ kshf.List.prototype = {
                 d.items.forEach(function(item){
                     item.highlightAll(false);
                 });
-
-                if(me.hasLinkedItems){
-                    d.DOM.record.setAttribute("selectedForLink",true);
-                    // update result previews
-                    d.items.forEach(function(item){item.updatePreview();});
-                    me.browser.itemCount_Previewed = d.items.length;
-                    me.browser.refreshResultPreviews();
-                }
             })
             .on("mouseleave",function(d,i){
                 d3.select(this).attr("highlight","false");
@@ -1837,7 +1848,7 @@ kshf.List.prototype = {
     showMore: function(){
         this.maxVisibleItems *= 2;
         this.updateItemVisibility(true);
-        this.DOM.showMore.style("bottom","-27px"); // hide panel
+        this.DOM.showMore.attr("showMoreVisible",false);
         if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
     },
     /** Sort all items given the active sort option
@@ -1969,7 +1980,6 @@ kshf.List.prototype = {
         });
 
         var hiddenItemCount = this.browser.itemsWantedCount-visibleItemCount;
-        this.DOM.showMore.style("display",(hiddenItemCount===0)?"none":"block");
         this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
         this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
     },
@@ -2033,8 +2043,8 @@ kshf.Panel = function(options){
         .attr("class", "panel panel_"+options.name)
         .attr("hasSummaries",false)
         ;
-    this.initDOM_DropZone();
     this.initDOM_AdjustWidth();
+    this.initDOM_DropZone();
 };
 
 kshf.Panel.prototype = {
@@ -2069,16 +2079,16 @@ kshf.Panel.prototype = {
         this.summaries.forEach(function(s,i){ if(s===summary) indexFrom = i; });
         if(indexFrom===-1) return; // given summary is not within this panel
 
-        var toRemove=this.DOM.root.selectAll(".dropZone_between")[0][indexFrom];
+        var toRemove=this.DOM.root.selectAll(".dropZone_between_wrapper")[0][indexFrom];
         toRemove.parentNode.removeChild(toRemove);
-        this.refreshDropZoneIndex();
 
         this.summaries.splice(indexFrom,1);
         this.summaries.forEach(function(s,i){ s.panelOrder = i; });
+        this.refreshDropZoneIndex();
 
         if(this.summaries.length===0) {
             this.DOM.root//.attr("hasSummaries",false);
-                .attr("hasSummaries",this.name==='middle');
+                .attr("hasSummaries",false);
         } else {
             this.updateWidth_QueryPreview();
         }
@@ -2094,53 +2104,56 @@ kshf.Panel.prototype = {
         } else {
             zone = this.DOM.root.append("div");
         }
-        zone.attr("class","dropZone dropZone_summary dropZone_between");
+        zone.attr("class","dropZone_between_wrapper")
+            .on("mouseenter",function(){
+                this.setAttribute("hovered",true);
+                this.children[0].setAttribute("readyToDrop",true);
+            })
+            .on("mouseleave",function(){
+                this.setAttribute("hovered",false);
+                this.children[0].setAttribute("readyToDrop",false);
+            })
+            .on("mouseup",function(){
+                var movedSummary = me.browser.movedSummary;
+                if(movedSummary.panel){ // if the summary was in the panels already
+                    movedSummary.DOM.root[0][0].nextSibling.style.display = "";
+                    movedSummary.DOM.root[0][0].previousSibling.style.display = "";
+                }
 
-        zone.append("div").attr("class","dropIcon fa fa-angle-double-down");
-        zone.append("div").attr("class","dropText").text("Drop to summarize");
+                movedSummary.addToPanel(me,this.__data__);
 
-        $(zone[0][0]).on("mouseenter",function(event){
-            this.setAttribute("readyToDrop",true);
-        });
-        $(zone[0][0]).on("mouseleave",function(event){
-            this.setAttribute("readyToDrop",false);
-        });
-        $(zone[0][0]).on("mouseup",function(event){
-            var movedSummary = me.browser.movedSummary;
-            if(movedSummary.panel){ // if the summary was in the panels already
-                movedSummary.DOM.root[0][0].nextSibling.style.display = "";
-                movedSummary.DOM.root[0][0].previousSibling.style.display = "";
-            }
+                if(movedSummary.type=="categorical"){
+                    movedSummary.refreshLabelWidth();
+                    movedSummary.updateBarPreviewScale2Active();
+                }
+                movedSummary.refreshWidth();
 
-            movedSummary.addToPanel(me,this.__data__);
+                me.browser.updateLayout();
+            })
+            ;
 
-            if(movedSummary.type=="categorical"){
-                movedSummary.refreshLabelWidth();
-                movedSummary.updateBarPreviewScale2Active();
-            }
-            movedSummary.refreshWidth();
+        var zone2 = zone.append("div").attr("class","dropZone dropZone_summary dropZone_between");
+        zone2.append("div").attr("class","dropIcon fa fa-angle-double-down");
+        zone2.append("div").attr("class","dropText").text("Drop to summarize");
 
-            me.browser.updateLayout();
-        });
         this.refreshDropZoneIndex();
     },
     /** -- */
     initDOM_DropZone: function(dom){
         var me=this;
-        this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone dropZone_summary dropZone_panel");
-        this.DOM.dropZone_Panel.append("span").attr("class","dropIcon fa fa-angle-double-down");
-        this.DOM.dropZone_Panel.append("div").attr("class","dropText").text("Drop to summarize");
-
-        // ********************************************
-            var dom = this.DOM.dropZone_Panel[0][0];
-            $(dom).on("mouseenter",function(event){
-                this.style.backgroundColor = "rgb(255, 188, 163)";
-            });
-            $(dom).on("mouseleave",function(event){
-                this.style.backgroundColor = "";
-            });
-            $(dom).on("mouseup",function(event){
+        this.DOM.dropZone_Panel = this.DOM.root.append("div").attr("class","dropZone dropZone_summary dropZone_panel")
+            .attr("readyToDrop",false)
+            .on("mouseenter",function(event){
+                this.setAttribute("readyToDrop",true);
+            })
+            .on("mouseleave",function(event){
+                this.setAttribute("readyToDrop",false);
+            })
+            .on("mouseup",function(event){
+                // If this panel has summaries within, dropping makes no difference.
+                if(me.summaries.length!==0) return;
                 var movedSummary = me.browser.movedSummary;
+                if(movedSummary===undefined) return;
                 if(movedSummary.panel){ // if the summary was in the panels already
                     movedSummary.DOM.root[0][0].nextSibling.style.display = "";
                     movedSummary.DOM.root[0][0].previousSibling.style.display = "";
@@ -2152,8 +2165,10 @@ kshf.Panel.prototype = {
                 }
                 movedSummary.refreshWidth();
                 me.browser.updateLayout();
-            });
-        // ********************************************
+            })
+            ;
+        this.DOM.dropZone_Panel.append("span").attr("class","dropIcon fa fa-angle-double-down");
+        this.DOM.dropZone_Panel.append("div").attr("class","dropText").text("Drop to summarize");
 
         this.addDOM_DropZone();
     },
@@ -2169,6 +2184,7 @@ kshf.Panel.prototype = {
                 var adjustDOM = this;
                 adjustDOM.setAttribute("dragging",true);
                 root.style('cursor','ew-resize');
+                me.browser.preview_enabled = false;
                 me.browser.setNoAnim(true);
                 var mouseDown_x = d3.mouse(document.body)[0];
                 var mouseDown_width = me.width_catBars;
@@ -2185,6 +2201,7 @@ kshf.Panel.prototype = {
                 }).on("mouseup", function(){
                     adjustDOM.setAttribute("dragging",false);
                     root.style('cursor','default');
+                    me.browser.preview_enabled = true;
                     me.browser.setNoAnim(false);
                     // unregister mouse-move callbacks
                     d3.select("body").on("mousemove", null).on("mouseup", null);
@@ -2198,7 +2215,15 @@ kshf.Panel.prototype = {
     },
     /** -- */
     refreshDropZoneIndex: function(){
-        this.DOM.root.selectAll(".dropZone_between").each(function(d,i){ this.__data__ = i; });
+        var me = this;
+        this.DOM.root.selectAll(".dropZone_between_wrapper")
+            .attr("panel_index",function(d,i){ 
+                this.__data__ = i; 
+                if(i===0) return "first";
+                if(i===me.summaries.length) return "last";
+                return "middle";
+            })
+            ;
     },
     /** -- */
     refreshAdjustWidth: function(){
@@ -2416,7 +2441,7 @@ kshf.Browser = function(options){
         parentDOM: this.DOM.root
     });
 
-    this.DOM.attributePanel = this.DOM.root.append("div").attr("class","attributePanel");
+    this.DOM.attributePanel = this.DOM.root.append("div").attr("class","panel attributePanel");
     var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
     xx.append("span").text("Available attributes");
     xx.append("span").attr("class","addAttrib fa fa-plus")
@@ -2444,7 +2469,28 @@ kshf.Browser = function(options){
         .on("click",function(){
             me.showAttributes();
         });
-    this.DOM.attributePanel.append("div").attr("class","attributeList");
+
+    this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
+
+    this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
+        .attr("readyToDrop",false)
+        .on("mouseenter",function(event){
+            this.setAttribute("readyToDrop",true);
+        })
+        .on("mouseleave",function(event){
+            this.setAttribute("readyToDrop",false);
+        })
+        .on("mouseup",function(event){
+            var movedSummary = me.movedSummary;
+            movedSummary.removeFromPanel();
+            movedSummary.clearDOM();
+            movedSummary.DOM.nugget.style("display","block");
+            movedSummary.browser.updateLayout();
+            me.movedSummary = null;
+        })
+        ;
+    this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
+    this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
 
     var me = this;
 
@@ -2457,6 +2503,8 @@ kshf.Browser = function(options){
     } else {
         this.panel_infobox.attr("show","source");
     }
+
+    kshf.loadFont();
 };
 
 kshf.Browser.prototype = {
@@ -3403,7 +3451,7 @@ kshf.Browser.prototype = {
             .on("keydown",null);
     },
     /** -- */
-    prepareDropZones: function(summary){
+    prepareDropZones: function(summary,source){
         this.movedSummary = summary;
         this.showDropZones = true;
         var shrink=0;
@@ -3412,13 +3460,13 @@ kshf.Browser.prototype = {
         this.DOM.middleColumn.selectAll(".dropZone")
             .style("width","calc(100% - "+(shrink*180)+"px)")
             .style("left",(this.panels.left.summaries.length===0)?"180px":"0px");
-        this.DOM.root.attr("showdropzone",true).attr("dropattrtype",summary.getDataType());
+        this.DOM.root
+            .attr("showdropzone",true)
+            .attr("dropattrtype",summary.getDataType())
+            .attr("dropSource",source)
+            ;
         this.DOM.attribDragBox.style("display","block").text(summary.summaryTitle);
         if(!summary.uniqueCategories()){
-            this.summaries.forEach(function(summary){
-                if(summary.panel) summary.setCollapsed(true);
-            });
-            this.updateLayout_Height();
         }
     },
     /** -- */
@@ -3427,11 +3475,8 @@ kshf.Browser.prototype = {
         this.unregisterBodyCallbacks();
         this.DOM.root.attr("showdropzone",false);
         this.DOM.attribDragBox.style("display","none");
-        if(!this.movedSummary.uniqueCategories()){
-            this.summaries.forEach(function(summary){
-                if(summary.panel) summary.unrollCollapsed();
-            });
-            this.updateLayout_Height();
+        if(this.movedSummary && !this.movedSummary.uniqueCategories()){
+            // ?
         }
         this.movedSummary = undefined;
     },
@@ -3442,7 +3487,7 @@ kshf.Browser.prototype = {
     /** -- */
     insertAttributeList: function(){
         var me=this;
-        var x=this.DOM.attributePanel.select(".attributeList");
+        var x=this.DOM.attributeList;
 
         var newAttributes = x.selectAll("div.attributeName")
             .data(this.summaries).enter();
@@ -3476,8 +3521,8 @@ kshf.Browser.prototype = {
 
                 var _this = this;
                 me.attribMoved = false;
+                me.DOM.root.attr("drag_cursor","grabbing");
                 d3.select("body")
-                    .style('cursor','move')
                     .on("keydown", function(){
                         if(event.keyCode===27){ // ESP key
                             _this.style.opacity = null;
@@ -3487,18 +3532,19 @@ kshf.Browser.prototype = {
                     .on("mousemove", function(){
                         if(!me.attribMoved){
                             _this.style.opacity = 0.5;
-                            me.prepareDropZones(summary);
+                            me.prepareDropZones(summary,"attributePanel");
                             me.attribMoved = true;
                         }
                         var mousePos = d3.mouse(me.DOM.root[0][0]);
-                        var str="translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px)";
-                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],str);
+                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
+                            "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
                         if(!me.attribMoved) return;
                         _this.style.opacity = null;
+                        me.DOM.root.attr("drag_cursor",null);
                         me.clearDropZones();
                         d3.event.preventDefault();
                     });
@@ -3859,11 +3905,11 @@ kshf.Browser.prototype = {
 
         var topPanelsHeight = divHeight_Total;
         if(this.panels.bottom.summaries.length>0) {
-            if(this.showDropZones) {
+/*            if(this.showDropZones) {
                 bottomFacetsHeight+=(1+this.panels.bottom.summaries.length)*36;
-            }
-            this.panels.bottom.DOM.root.style("height",bottomFacetsHeight+"px");
+            }*/
         }
+        this.panels.bottom.DOM.root.style("height",bottomFacetsHeight+"px");
 
         topPanelsHeight-=bottomFacetsHeight;
         this.DOM.panelsTop.style("height",topPanelsHeight+"px");
@@ -3902,7 +3948,8 @@ kshf.Browser.prototype = {
                 listDisplayHeight-=bottomFacetsHeight;
             }
             listDisplayHeight-=midPanelHeight;
-            if(this.showDropZones) listDisplayHeight="0";
+            if(this.showDropZones && this.panels.middle.summaries.length===0) 
+                listDisplayHeight*=0.5;
             this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
@@ -3924,6 +3971,7 @@ kshf.Browser.prototype = {
         this.panels.right.DOM.root.style("margin-left",marginRight+"px")
         this.panels.middle.setTotalWidth(widthMiddlePanel);
         this.panels.middle.updateSummariesWidth();
+        this.panels.bottom.setTotalWidth(this.divWidth);
         this.panels.bottom.updateSummariesWidth();
     },
     /** -- */
@@ -4103,11 +4151,10 @@ kshf.Summary_Base.prototype = {
             },this);
             // inserting the summary to the same index as current one
             if(curIndex===index) return;
-            var toRemove=this.panel.DOM.root.selectAll(".dropZone_between")[0][curIndex];
+            var toRemove=this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][curIndex];
             toRemove.parentNode.removeChild(toRemove);
-            this.panel.refreshDropZoneIndex();
         }
-        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between")[0][index];
+        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][index];
         if(this.DOM.root){
             this.DOM.root.style("display","");
             panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
@@ -4115,6 +4162,7 @@ kshf.Summary_Base.prototype = {
             this.initDOM(beforeDOM);
         }
         panel.addSummary(this,index);
+        this.panel.refreshDropZoneIndex();
         if(this.DOM.nugget) this.DOM.nugget.style("display","none");
     },
     /** -- */
@@ -4144,6 +4192,8 @@ kshf.Summary_Base.prototype = {
                     return;
                 }
                 var _this = this;
+                var _this_nextSibling = _this.parentNode.nextSibling;
+                var _this_previousSibling = _this.parentNode.previousSibling;
                 var moved = false;
                 d3.select("body")
                     .style('cursor','move')
@@ -4155,35 +4205,37 @@ kshf.Summary_Base.prototype = {
                     })
                     .on("mousemove", function(){
                         if(!moved){
-                            _this.parentNode.nextSibling.style.display = "none";
-                            _this.parentNode.previousSibling.style.display = "none";
+                            _this_nextSibling.style.display = "none";
+                            _this_previousSibling.style.display = "none";
                             _this.parentNode.style.opacity = 0.5;
-                            me.browser.prepareDropZones(me);
+                            me.browser.prepareDropZones(me,"browser");
                             moved = true;
                         }
                         var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
                         kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
-                            "translate("+(mousePos[0]-100)+"px,"+(mousePos[1]+9)+"px)");
+                            "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
                         d3.event.stopPropagation();
                         d3.event.preventDefault();
                     })
                     .on("mouseup", function(){
                         // Mouse up on the body
                         me.browser.clearDropZones();
-                        _this.parentNode.style.opacity = null;
-                        _this.parentNode.nextSibling.style.display = "";
-                        _this.parentNode.previousSibling.style.display = "";
+                        if(me.panel!==undefined || true) {
+                            _this.parentNode.style.opacity = null;
+                            _this_nextSibling.style.display = "";
+                            _this_previousSibling.style.display = "";
+                        }
                         d3.event.preventDefault();
                     });
                 d3.event.preventDefault();
             })
             ;
 
-        this.DOM.headerGroup.append("div").attr("class","border_line");
+//        this.DOM.headerGroup.append("div").attr("class","border_line");
 
         var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
-        header_display_control.append("span").attr("class","fa fa-collapse")
+        header_display_control.append("span").attr("class","buttonSummaryCollapse fa fa-collapse")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
@@ -4201,7 +4253,7 @@ kshf.Summary_Base.prototype = {
                 me.setCollapsedAndLayout(!me.collapsed); // flip
             })
             ;
-        header_display_control.append("span").attr("class","expandButton fa fa-arrows-alt")
+        header_display_control.append("span").attr("class","buttonSummaryExpand fa fa-arrows-alt")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
@@ -4219,7 +4271,7 @@ kshf.Summary_Base.prototype = {
                 me.setCollapsedAndLayout(false); // uncollapse this one
             })
             ;
-        header_display_control.append("span").attr("class","fa fa-remove")
+        header_display_control.append("span").attr("class","buttonSummaryRemove fa fa-remove")
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
@@ -4246,9 +4298,8 @@ kshf.Summary_Base.prototype = {
             })
             ;
 
-        var topRow = this.DOM.headerGroup.append("span").style('position','relative');
-
-        this.DOM.summaryTitle = topRow.append("span").attr("class","summaryTitle editableTextContainer")
+        this.DOM.summaryTitle = this.DOM.headerGroup.append("span")
+            .attr("class","summaryTitle editableTextContainer")
             .attr("edittitle",false)
             .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); })
             ;
@@ -4357,14 +4408,7 @@ kshf.Summary_Base.prototype = {
                 me.DOM.root.attr("show_cliques",me.show_cliques);
             })
             ;
-        if(this.isLinked) {
-            this.DOM.facetIcons.append("span").attr("class", "isLinkedMark fa fa-check-square-o");
-        } else {
-//            if(this.parentFacet && this.parentFacet.hasCategories()){
-//                this.DOM.facetIcons.append("span").attr("class", "isLinkedMark fa fa-level-up");
-//            }
-        }
-        this.DOM.headerGroup.append("div").attr("class","border_line border_line_bottom");
+//        this.DOM.headerGroup.append("div").attr("class","border_line border_line_bottom");
 
         this.setSummaryDescription(this.summaryDescription);
     },
@@ -4373,7 +4417,7 @@ kshf.Summary_Base.prototype = {
         if(this.DOM.facetIcons===undefined) return;
         if(description===undefined) return;
         if(description===null) return;
-        this.DOM.facetIcons.append("span").attr("class","facetDescription fa fa-info-circle")
+        this.DOM.facetIcons.append("span").attr("class","summaryDescription fa fa-info-circle")
             .each(function(d){
                 this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return description;} });
             })
@@ -4445,7 +4489,7 @@ kshf.Summary_Base.prototype = {
                 this.clearViz_Preview();
                 this.refreshViz_All();
             } else {
-                this.DOM.headerGroup.select(".expandButton").style("display","none");
+                this.DOM.headerGroup.select(".buttonSummaryExpand").style("display","none");
             }
         }
         return this; // allow chaining
@@ -5341,7 +5385,7 @@ var Summary_Categorical_functions = {
         this.updateAttribCull();
         this.cullAttribs();
 
-        this.DOM.headerGroup.select(".expandButton").style("display",
+        this.DOM.headerGroup.select(".buttonSummaryExpand").style("display",
             (this.panel.getNumOfOpenSummaries()<=1||this.areAllCatsInDisplay())?
                 "none":
                 "inline-block"
@@ -5657,7 +5701,7 @@ var Summary_Categorical_functions = {
         // So far, should be pretty nice.
         if(!this.hasCategories()) return;
 
-        this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content()-2)+"px");
+        this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
         this.DOM.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
 
         var h=this.attribHeight;
@@ -5817,7 +5861,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribEnter: function(attrib){
-        if(this.preview_enabled===false) return;
+        if(this.browser.preview_enabled===false) return;
 
         this.browser.previewedSelectionSummary = this;
 
@@ -5841,7 +5885,7 @@ var Summary_Categorical_functions = {
                   (!attrib.is_NOT()) ){
                     // calculate the preview
                     attrib.items.forEach(function(item){item.updatePreview(me.parentFacet);},me);
-                    me.browser.itemCount_Previewed = attrib.items.length;
+                    me.browser.itemCount_Previewed = attrib.aggregate_Preview;
                     attrib.DOM.facet.setAttribute("showlock",true);
                     me.browser.refreshResultPreviews(attrib);
                     if(sendLog) {
@@ -5858,7 +5902,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cbAttribLeave: function(attrib){
-        if(this.preview_enabled===false) return;
+        if(this.browser.preview_enabled===false) return;
 
         this.browser.previewedSelectionSummary = null;
 
@@ -7161,7 +7205,7 @@ var Summary_Interval_functions = {
                     if(me.browser.vizCompareActive) timeoutTime = 0;
 //                    this.resultPreviewShowTimeout = setTimeout(function(){
                         aggr.forEach(function(item){item.updatePreview(me.parentFacet);});
-                        me.browser.itemCount_Previewed = aggr.length;
+                        me.browser.itemCount_Previewed = aggr.aggregate_Preview;
                         // Histograms cannot have sub-facets, so don't iterate over mappedDOMs...
                         thiss.setAttribute("highlight","selected");
                         thiss.setAttribute("showlock",true);

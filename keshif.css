@@ -33,6 +33,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf {
   position: relative;
   left: 0px;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  display: block;
   -webkit-transition: left 300ms ease-in-out;
   -moz-transition: left 300ms ease-in-out;
   -o-transition: left 300ms ease-in-out;
@@ -40,9 +43,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  font-family: Helvetica, Arial, sans-serif;
-  text-rendering: optimizeLegibility;
-  display: block;
 }
 .kshf * {
   -webkit-box-sizing: border-box;
@@ -97,6 +97,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
+.kshf[drag_cursor="grab"] {
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.kshf[drag_cursor="grabbing"] {
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
 .kshf .panel[catLabelDragging=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
   display: block;
   border-left: solid lightgray 2px;
@@ -104,7 +114,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] {
   left: 120px;
 }
-.kshf[attribsShown=true] .attributePanel {
+.kshf[attribsShown=true] > .attributePanel {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -118,11 +128,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[attribsShown=true] .kshfChart > .wrapper > .facetCategorical:hover > .attribGroup > .chartCatLabelResize {
+.kshf[attribsShown=true] .kshfChart:hover > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
   display: block;
 }
-.kshf[attribsShown=true] .panel > .panelAdjustWidth {
-  display: block;
+.kshf[attribsShown=true] .panelAdjustWidth {
+  display: block !important;
 }
 .kshf[attribsShown=true] .editableTextContainer > .editTextButton {
   display: inline-block;
@@ -130,8 +140,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .editableTextContainer:hover > .editTextButton {
   opacity: 1;
 }
-.kshf[attribsShown=true] .headerGroup > .header_display_control > .fa-remove {
-  display: inline-block;
+.kshf[attribsShown=true] .buttonSummaryRemove {
+  display: inline-block !important;
 }
 .kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
   content: "%";
@@ -139,14 +149,44 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between {
+.kshf[showdropzone=true] .kshfChart[collapsed=false] {
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
+  overflow: hidden;
+}
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between_wrapper {
   display: block;
+}
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #EEEEEE;
+  opacity: 0.3;
+  cursor: default;
+  border-width: 0px;
+  border-radius: 5px;
+}
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropIcon {
+  display: none;
+}
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropText {
+  display: none;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
 }
+.kshf[showdropzone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
+  display: block;
+}
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
+}
+.kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .listDiv > .listItemGroup > .listItem {
+  display: none !important;
 }
 .kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
   display: block !important;
@@ -263,7 +303,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   font-size: 0.8em;
   color: gray;
-  margin: 2px;
+  margin-left: 2px;
   vertical-align: top;
   cursor: pointer;
 }
@@ -279,7 +319,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .editableTextContainer[state='edited'] > .editTextButton {
   display: inline-block;
 }
-.kshf .attributePanel {
+.kshf > .attributePanel {
   display: none;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
@@ -294,7 +334,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   height: 100%;
 }
-.kshf .attributePanel > .attributePanelHeader {
+.kshf > .attributePanel > .attributePanelHeader {
   cursor: default;
   text-align: center;
   border-color: #dfd2a9;
@@ -305,34 +345,63 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-shadow: 0px 1px lightgray;
   padding-top: 3px;
 }
-.kshf .attributePanel > .attributePanelHeader > .addAttrib {
+.kshf > .attributePanel > .attributePanelHeader > .addAttrib {
   display: none;
   color: gray;
   position: absolute;
   left: 5px;
   cursor: pointer;
 }
-.kshf .attributePanel > .attributePanelHeader > .addAttrib:hover {
+.kshf > .attributePanel > .attributePanelHeader > .addAttrib:hover {
   color: orangered;
 }
-.kshf .attributePanel > .attributePanelHeader > .hidePanel {
+.kshf > .attributePanel > .attributePanelHeader > .hidePanel {
   color: gray;
   position: absolute;
   right: 3px;
   cursor: pointer;
 }
-.kshf .attributePanel > .attributePanelHeader > .hidePanel:hover {
+.kshf > .attributePanel > .attributePanelHeader > .hidePanel:hover {
   color: orangered;
 }
-.kshf .attributePanel > .attributeList {
+.kshf > .attributePanel > .attributeList {
   overflow: auto;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
-.kshf .attributePanel .attributeName {
+.kshf > .attributePanel > .attributeList > .dropZone_AttribList {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  -webkit-box-ordinal-group: 10;
+  -moz-box-ordinal-group: 10;
+  -ms-flex-order: 10;
+  -webkit-order: 10;
+  order: 10;
+  display: none;
+  border-radius: 10px;
+  border: solid 1px #d3dbe2;
+  box-shadow: 0px 0px 1px #bec8d1;
+  margin: 2px;
+}
+.kshf > .attributePanel .attributeName {
   display: block;
   font-size: 0.8em;
   padding: 2px;
@@ -341,28 +410,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 3px;
   background-color: #e8e8e8;
   border: solid 1px lightgray;
-  cursor: pointer;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-.kshf .attributePanel .attributeName > .summaryTitle {
+.kshf > .attributePanel .attributeName > .summaryTitle {
   display: inline;
   margin: 1px;
 }
-.kshf .attributePanel .attributeName > .editCodeButton {
+.kshf > .attributePanel .attributeName > .editCodeButton {
   display: none;
   font-size: 0.9em;
   color: black;
 }
-.kshf .attributePanel .attributeName > .editCodeButton:hover {
+.kshf > .attributePanel .attributeName > .editCodeButton:hover {
   color: black;
 }
-.kshf .attributePanel .attributeName > .summaryTypeIcon {
+.kshf > .attributePanel .attributeName > .summaryTypeIcon {
   float: right;
 }
-.kshf .attributePanel .attributeName .nuggetInfo {
+.kshf > .attributePanel .attributeName .nuggetInfo {
   display: inline-block;
   width: 100%;
   -webkit-box-flex: 1;
@@ -378,33 +449,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   text-align: center;
 }
-.kshf .attributePanel .attributeName .nuggetInfo > .num_left {
+.kshf > .attributePanel .attributeName .nuggetInfo > .num_left {
   float: left;
   margin-left: 2px;
 }
-.kshf .attributePanel .attributeName .nuggetInfo > .num_right {
+.kshf > .attributePanel .attributeName .nuggetInfo > .num_right {
   float: right;
   margin-right: 2px;
 }
-.kshf .attributePanel .attributeName .nuggetInfo > .fa {
+.kshf > .attributePanel .attributeName .nuggetInfo > .fa {
   color: gray;
 }
-.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo {
+.kshf > .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo {
   font-size: 2em;
   text-align: center;
   position: relative;
 }
-.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo:before {
+.kshf > .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetInfo:before {
   content: "\f110";
 }
-.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetViz {
+.kshf > .attributePanel .attributeName[aggr_initialized=false] > .attribNugget > .nuggetViz {
   display: none !important;
 }
-.kshf .attributePanel .attributeName[aggr_initialized=false] > .attribNugget:hover > .nuggetInfo {
+.kshf > .attributePanel .attributeName[aggr_initialized=false] > .attribNugget:hover > .nuggetInfo {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
-.kshf .attributePanel .attributeName > .attribNugget {
+.kshf > .attributePanel .attributeName > .attribNugget {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -418,7 +489,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 5px;
   border: solid 1px rgba(255, 255, 255, 0.8);
 }
-.kshf .attributePanel .attributeName > .attribNugget > .nuggetViz {
+.kshf > .attributePanel .attributeName > .attribNugget > .nuggetViz {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -428,7 +499,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 3px;
   margin-left: 3px;
 }
-.kshf .attributePanel .attributeName > .attribNugget > .nuggetViz > .nuggetBar {
+.kshf > .attributePanel .attributeName > .attribNugget > .nuggetViz > .nuggetBar {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -437,14 +508,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   background-color: #b8c7d2;
 }
-.kshf .attributePanel .attributeName:hover {
+.kshf > .attributePanel .attributeName:hover {
   background-color: #E8E0CE;
   border-color: #B8B6B1;
 }
-.kshf .attributePanel .attributeName:hover > .attribNugget {
+.kshf > .attributePanel .attributeName:hover > .attribNugget {
   border-color: gray;
 }
-.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget {
+.kshf > .attributePanel .attributeName[datatype~="interval"] > .attribNugget {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -453,7 +524,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz {
+.kshf > .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -467,19 +538,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.kshf .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz > .nuggetBar {
+.kshf > .attributePanel .attributeName[datatype~="interval"] > .attribNugget > .nuggetViz > .nuggetBar {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
 }
-.kshf .attributePanel .attributeName[datatype~="interval"] .nuggetViz {
+.kshf > .attributePanel .attributeName[datatype~="interval"] .nuggetViz {
   -webkit-box-ordinal-group: 1;
   -moz-box-ordinal-group: 1;
   -ms-flex-order: 1;
   -webkit-order: 1;
   order: 1;
 }
-.kshf .attributePanel .attributeName[datatype~="interval"] .nuggetInfo {
+.kshf > .attributePanel .attributeName[datatype~="interval"] .nuggetInfo {
   -webkit-box-ordinal-group: 2;
   -moz-box-ordinal-group: 2;
   -ms-flex-order: 2;
@@ -487,10 +558,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   order: 2;
   max-height: 1em;
 }
-.kshf .attributePanel .attributeName[datatype~='time'] .nuggetInfo:before {
+.kshf > .attributePanel .attributeName[datatype~='time'] .nuggetInfo:before {
   content: '\f017';
 }
-.kshf .attributePanel .attributeName[datatype~="categorical"] > .attribNugget {
+.kshf > .attributePanel .attributeName[datatype~="categorical"] > .attribNugget {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: horizontal;
@@ -499,7 +570,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.kshf .attributePanel .attributeName[datatype~="categorical"] > .attribNugget > .nuggetViz {
+.kshf > .attributePanel .attributeName[datatype~="categorical"] > .attribNugget > .nuggetViz {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -513,7 +584,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.kshf .attributePanel .attributeName[state='custom'] > .editCodeButton {
+.kshf > .attributePanel .attributeName[state='custom'] > .editCodeButton {
   display: inline-block;
 }
 .kshf .panels_Above {
@@ -534,15 +605,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   top: 0px;
   left: 0px;
+  min-height: 21px;
   width: 200px;
-  background-color: lightgray;
-  border-radius: 10px;
-  border: double 3px gray;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNDUsIDI0NSwgMjQ1KSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIyMCUiIHN0b3AtY29sb3I9InJnYigyNDEsIDI0MSwgMjQxKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI4MCUiIHN0b3AtY29sb3I9InJnYigyNDEsIDI0MSwgMjQxKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMjQ1LCAyNDUsIDI0NSkiIHN0b3Atb3BhY2l0eT0iMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);;
+  background-image: -moz-linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);;
+  background-image: -o-linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);;
+  background-image: linear-gradient(to left, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);;
+  border-radius: 3px;
+  border: solid 1px lightgray;
+  box-shadow: 1px 1px 2px gray;
   display: none;
-  z-index: 200;
+  z-index: 400;
   text-align: center;
   font-weight: 500;
-  font-size: 0.8em;
+  font-size: 0.9em;
   cursor: default;
   text-rendering: initial;
   pointer-events: none;
@@ -586,45 +663,80 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   top: 5px;
 }
-.kshf .panel > .dropZone_between {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  border-radius: 10px;
-  border-style: solid;
-  border-color: gray;
-  border-width: 2px;
-  margin: 2px;
+.kshf .panel > .dropZone_between_wrapper {
+  display: none;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  position: relative;
+  margin-top: 2px;
+  z-index: 340;
+  border-radius: 5px;
+  width: calc(100% - 3px);
+  -webkit-transition: flex-grow 450ms ease-in-out, background-color 250ms linear;
+  -moz-transition: flex-grow 450ms ease-in-out, background-color 250ms linear;
+  -o-transition: flex-grow 450ms ease-in-out, background-color 250ms linear;
+  transition: flex-grow 450ms ease-in-out, background-color 250ms linear;
+}
+.kshf .panel > .dropZone_between_wrapper > .dropZone_between {
+  border-radius: 5px;
+  border: solid 1px #adb4ba;
+  box-shadow: 1px 1px 1px #adb3b7;
+  position: relative;
+  height: 22px;
+  text-align: center;
   overflow: hidden;
 }
-.kshf .panel > .dropZone_between[readyToDrop="true"] {
+.kshf .panel > .dropZone_between_wrapper > .dropZone_between > .dropText {
+  vertical-align: top;
+  margin-top: 2px;
+}
+.kshf .panel > .dropZone_between_wrapper[hovered=true] {
+  -webkit-flex-grow: 4;
+  flex-grow: 4;
+  position: relative;
+  background-color: rgba(217, 224, 230, 0.7);
+}
+.kshf .panel > .dropZone_between_wrapper[hovered=true] > .dropZone_between > .dropIcon {
+  color: orangered;
+}
+.kshf .panel .dropZone {
+  background-color: rgba(217, 224, 230, 0.7);
+  text-align: center;
+}
+.kshf .panel .dropZone[readyToDrop=true] {
   background-color: #ffbca3;
   border-color: orangered;
-}
-.kshf .panel > .dropZone_summary {
-  display: none;
-  background-color: #ebeff3;
   cursor: s-resize;
-  z-index: 50;
-  text-align: center;
-  position: relative;
 }
-.kshf .panel > .dropZone_summary:hover {
+.kshf .panel .dropZone[readyToDrop=true] > .dropText {
+  display: inline-block;
+}
+.kshf .panel .dropZone_summary {
+  z-index: 250;
+  position: relative;
+  cursor: default;
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
+}
+.kshf .panel .dropZone_summary:hover {
   background-color: #ffbca3;
 }
-.kshf .panel > .dropZone_summary > .dropIcon {
+.kshf .panel .dropZone_summary > .dropIcon {
   margin: 0px;
-  font-size: 2em;
+  font-size: 1.5em;
+  font-weight: 700;
   color: #7E8A96;
   text-shadow: 1px 1px 1px #B6BCC2;
 }
 .kshf .panel > .dropZone_panel {
+  display: none;
   border-color: gray;
   border-style: solid;
   border-width: 0px;
   position: absolute;
+  z-index: 230;
 }
 .kshf .panel .dropIcon {
   pointer-events: none;
@@ -635,10 +747,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .panel .dropText {
+  display: none;
   margin-left: 4px;
   font-size: 1.0em;
   font-weight: 300;
-  display: inline-block;
 }
 .kshf .panel[hidebars=true] .kshf .attrib .aggr_Group {
   display: none;
@@ -686,19 +798,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
   width: 100%;
+  position: relative;
 }
 .kshf .panel.panel_bottom > .dropZone_panel {
   bottom: 0px;
-  height: 100px;
+  height: 30px;
   width: 100%;
-  border-radius: 40px 40px 0px 0px;
-  border-bottom-width: 1px;
+  border-radius: 30px 30px 0px 0px;
   border-top-width: 2px;
 }
-.kshf .panel.panel_bottom > .dropZone_between > .dropIcon {
+.kshf .panel.panel_bottom > .dropZone_between_wrapper > .dropZone_between > .dropIcon {
   display: inline-block;
 }
-.kshf .panel.panel_bottom > .dropZone_between > .dropText {
+.kshf .panel.panel_bottom > .dropZone_between_wrapper > .dropZone_between > .dropText {
   display: inline-block;
   vertical-align: top;
 }
@@ -726,7 +838,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 175px;
   border-radius: 0px 40px 40px 0px;
   border-right-width: 2px;
-  border-left-width: 1px;
 }
 .kshf .panel.panel_left > .dropZone_panel > .dropIcon {
   margin-top: 150px;
@@ -760,7 +871,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 175px;
   border-radius: 40px 0px 0px 40px;
   border-left-width: 2px;
-  border-right-width: 1px;
 }
 .kshf .panel.panel_right > .dropZone_panel > .dropIcon {
   margin-top: 150px;
@@ -793,7 +903,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 180px;
   border-radius: 40px 40px 0px 0px;
   border-top-width: 2px;
-  border-bottom-width: 1px;
 }
 .kshf .panel.panel_resize {
   position: absolute;
@@ -1170,11 +1279,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: linear-gradient(to right, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control > .fa-collapse {
-  opacity: 1;
-}
-.kshf .kshfChart[collapsed=true] > .headerGroup > .header_display_control > .fa-collapse::before {
-  content: "\f065";
+.kshf .kshfChart[collapsed=true] .buttonSummaryCollapse::before {
+  content: "\f065" !important;
 }
 .kshf .belowAttribs {
   direction: ltr;
@@ -1227,7 +1333,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .chartClearFilterButton.allFilter {
   display: inline-block;
   margin-left: 2px;
-  height: 16px;
+  height: 17px;
   vertical-align: top;
   border-width: 0px 0px 0px 1px;
   line-height: 16px;
@@ -1320,24 +1426,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   padding-top: 1px;
   border-radius: 3px;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwLjIiLz48c3RvcCBvZmZzZXQ9IjIwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAuNCIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC40Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC4yIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
-  background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
-  background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
-  background-image: linear-gradient(to left, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);;
+  box-shadow: 0px 0px 2px #9b9b9b;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwLjMiLz48c3RvcCBvZmZzZXQ9IjIwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAuNCIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC40Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC4zIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+  background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
+  background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
+  background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
+  background-image: linear-gradient(to left, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
+  z-index: 6;
 }
 .kshf .headerGroup .summaryTitle {
   display: block;
   font-weight: 700;
   cursor: default;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  line-height: 1em;
+  padding-top: 2px;
   text-rendering: initial;
   white-space: nowrap;
   text-align: center;
   margin: 0 auto;
-  min-height: 18px;
+  height: 20px;
   /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
@@ -1348,7 +1454,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: -4px;
+  font-size: 0.9em;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text:focus {
   background-color: white;
@@ -1377,11 +1483,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 3px;
 }
 .kshf .headerGroup .facetIcons {
-  font-size: 0.8em;
-  color: gray;
-  position: absolute;
-  right: 3px;
   top: 2px;
+  right: 2px;
+  position: absolute;
+  font-size: 0.9em;
+  color: gray;
 }
 .kshf .headerGroup .facetIcons .fa {
   cursor: pointer;
@@ -1393,14 +1499,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .facetIcons .hasMultiMappings {
   display: none;
 }
-.kshf .headerGroup .facetIcons .facetDescription {
+.kshf .headerGroup .facetIcons .summaryDescription {
   cursor: default;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
   position: absolute;
-  top: 2px;
-  z-index: 10;
+  font-size: 0.9em;
+  top: 3px;
+  left: 2px;
   -webkit-transition: color 250ms linear, opacity 100ms linear ;
   -moz-transition: color 250ms linear, opacity 100ms linear ;
   -o-transition: color 250ms linear, opacity 100ms linear ;
@@ -1410,11 +1517,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
   transform-origin: 50% 50%;
-  /*            > .fa-collapse:hover{
-                .animation(shrink 800ms);
-                .animation-iteration-count(infinite);
-                .animation-timing-function(ease-in);
-            }*/
 }
 .kshf .headerGroup > .header_display_control > .fa {
   display: inline-block;
@@ -1423,7 +1525,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
   cursor: pointer;
   margin-right: 2px;
-  font-size: 0.8em;
   width: 14px;
   height: 14px;
   width: 13px;
@@ -1432,19 +1533,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control > .fa:hover {
   color: #cb5454;
 }
-.kshf .headerGroup > .header_display_control > .fa-collapse::before {
+.kshf .headerGroup > .header_display_control > .buttonSummaryCollapse::before {
   content: "\f066";
 }
-.kshf .headerGroup > .header_display_control > .fa-remove {
+.kshf .headerGroup > .header_display_control > .buttonSummaryRemove {
   display: none;
 }
-.kshf .headerGroup > .header_display_control > .expandButton {
+.kshf .headerGroup > .header_display_control > .buttonSummaryExpand {
   display: none;
-}
-.kshf .headerGroup span.showFilterText {
-  display: inline-block;
-  float: left;
-  pointer-events: all;
 }
 .kshf .aggr {
   display: block;
@@ -1755,7 +1851,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   display: inline-block;
   vertical-align: top;
-  line-height: 18px;
+  line-height: 19px;
+  height: 18px;
   font-size: 0.7em;
   pointer-events: none;
   padding-right: 1px;
@@ -2027,6 +2124,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: 12px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .measureLabel {
+  top: 1px;
   display: block;
   position: relative;
   width: 100%;
@@ -2383,6 +2481,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[refreshSorting="true"] .catSortButton:before {
   content: "\f175" !important;
 }
+.kshf .kshfChart:hover > .headerGroup {
+  box-shadow: 1px 1px 2px #9b9b9b;
+}
 .kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
@@ -2483,45 +2584,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: margin-top 700ms ease-in-out;
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
+  border-style: solid;
+  border-color: #dfd2a9;
+  border-width: 0px 2px 2px 2px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
-.kshf .listDiv > .dropZone_recordView {
-  position: relative;
+.kshf .listDiv .dropZone_recordView {
   display: none;
-  height: 200px;
+  position: relative;
+  height: 100%;
   z-index: 50;
   background-color: #F4F3EE;
   border-radius: 0px 0px 40px 40px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 0px 0px 2px 0px;
   border-color: #918e7b;
   text-align: center;
   margin-bottom: 5px;
 }
-.kshf .listDiv > .dropZone_recordView > .dropIcon {
+.kshf .listDiv .dropZone_recordView > .dropIcon {
   margin: 10px 0px 0px 0px;
   font-size: 2em;
   color: #918E7B;
   text-shadow: 1px 1px 1px #B8B6AB;
 }
-.kshf .listDiv > .dropZone_recordView > .dropText {
-  pointer-events: none;
-  font-size: 1.1em;
-  display: block;
-  font-weight: 300;
-}
-.kshf .listDiv > .dropZone_recordView[readyToDrop=true] {
+.kshf .listDiv .dropZone_recordView:hover {
   background-color: #ffbca3;
 }
-.kshf .listDiv > .dropZone_recordView:hover {
+.kshf .listDiv .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
 }
 .kshf .listDiv > .listItemGroup {
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  border-style: solid;
-  border-color: #dfd2a9;
-  border-width: 0px 2px 2px 2px;
+  position: relative;
   background-color: white;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
@@ -2693,10 +2791,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f096";
 }
 .kshf .listDiv > .showMore {
+  display: block;
   cursor: pointer;
   border: solid 1px lightgray;
   border-radius: 9px;
-  padding: 0px;
   box-shadow: 2px 2px 2px #D8D8D8;
   font-weight: 300;
   font-size: 0.8em;
@@ -2743,6 +2841,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listDiv > .showMore:hover span.MoreText {
   text-decoration: underline;
+}
+.kshf .listDiv > .showMore[showMoreVisible=true] {
+  opacity: 1;
+  bottom: 4px;
+}
+.kshf .listDiv > .showMore[showMoreVisible=false] {
+  bottom: -27px;
+  opacity: 0;
 }
 .kshf .listDiv[showRank=true] .itemRank {
   display: inline-block !important;
@@ -2845,11 +2951,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listDiv[detailsToggle="zoom"] > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before {
   content: "\f140";
 }
+.kshf .listDiv[hasRecordView="false"] {
+  border-bottom: solid 2px white;
+}
 .kshf .listDiv[hasRecordView="true"] .configRow > .itemRank {
   display: inline-block;
 }
 .kshf .listDiv[hasRecordView="true"] .configRow > .adjustSortColumnWidth {
   display: inline-block;
+}
+.kshf .listDiv[hasRecordView="true"] > .dropZone_recordView {
+  position: absolute;
+}
+.kshf .listDiv:hover .listHeader > .bottomRow > .sortColumn {
+  opacity: 1;
+  pointer-events: all;
 }
 .kshf .scrollToTop {
   display: inline-block;
@@ -2866,13 +2982,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
 }
 .kshf .listHeader {
-  font-weight: bold;
-  color: black;
   font-size: 0.9em;
   position: relative;
-  border-style: solid;
-  border-color: #dfd2a9;
-  border-width: 0px 2px;
   background-color: #efeadf;
 }
 .kshf .listHeader .totalViz {
@@ -2940,6 +3051,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  pointer-events: none;
 }
 .kshf .listHeader > .bottomRow > .header_listSortColumn > .listSortOptionSelect {
   width: 100%;
@@ -2972,6 +3084,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #ffbca3;
 }
 .kshf .listHeader > .bottomRow > .sortColumn {
+  opacity: 0;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
@@ -2979,6 +3092,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   margin-bottom: 2px;
   vertical-align: bottom;
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
 }
 .kshf .listHeader > .bottomRow > .sortColumn > .sortButton {
   padding: 2px;
@@ -3164,11 +3281,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .listHeader .filterClearAll {
   opacity: 0;
   pointer-events: none;
-  -webkit-align-self: center;
-  -ms-flex-item-align: center;
-  align-self: center;
   right: 41px;
-  top: 0px;
   cursor: pointer;
   color: #252112;
   font-weight: 300;
@@ -3187,8 +3300,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .listHeader .filterClearAll .title {
   font-size: 0.8em;
-  padding-left: 1px;
-  vertical-align: middle;
 }
 .kshf .listHeader > .topRow {
   display: -webkit-box;
@@ -3209,10 +3320,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   white-space: nowrap;
   cursor: default;
-  font-size: 1.5em;
+  font-size: 1.3em;
   font-weight: 700;
   text-shadow: 1px 1px lightgray;
-  margin-bottom: -3px;
+  margin-bottom: -1px;
   z-index: 10;
 }
 .kshf .listHeader > .topRow > .resultInfo > .listHeader_count {
@@ -3311,7 +3422,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .listHeader > .topRow > .rightBoxes {
-  font-size: 1.3em;
+  font-size: 1.2em;
   color: #635d46;
   padding-right: 1px;
   white-space: nowrap;

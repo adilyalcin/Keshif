@@ -61,6 +61,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf{
     position: relative;
     left: 0px;
+
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    //font-family: Helvetica, Arial, sans-serif;
+    text-rendering: optimizeLegibility; // People say this has big performance drawbacks
+    display: block;
+
     .transition(~'left 300ms ease-in-out');
     .box-sizing(border-box);
     *{
@@ -94,25 +100,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
     }
+    &[drag_cursor="grab"]{
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+        cursor: grab;
+    }
+    &[drag_cursor="grabbing"]{
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+        cursor: grabbing;
+    }
     .panel[catLabelDragging=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
         display: block;
         border-left: solid lightgray 2px;
     }
     &[attribsShown=true]{
         left: 120px;
-        .attributePanel{
+        > .attributePanel{
             .display(flex);
         }
         .listHeader > .configRow{
             .display(flex);
         }
-        .kshfChart > .wrapper > .facetCategorical:hover > .attribGroup > .chartCatLabelResize{
+        .kshfChart:hover > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
             display: block;
         }
-        .panel > .panelAdjustWidth{
-            display: block;
-        }
-        .editableTextContainer{
+        .panelAdjustWidth{
+            display: block !important;
         }
         .editableTextContainer > .editTextButton{
             display: inline-block;
@@ -120,8 +134,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .editableTextContainer:hover > .editTextButton{
             opacity: 1; // Do not use display none-vs-inlineblock, because it changes layout
         }
-        .headerGroup > .header_display_control > .fa-remove{
-            display: inline-block;
+        .buttonSummaryRemove{
+            display: inline-block !important;
         }
     }
     &[percentview=true]{
@@ -135,22 +149,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[showdropzone=true]{
+        .kshfChart[collapsed=false]{
+            .flex(3);
+            overflow: hidden;
+        }
         &:not([dropattrtype~="unique"]){
-            .panel[hassummaries="true"] > .dropZone_between{
-                display: block;
+            .panel[hassummaries="true"] {
+                > .dropZone_between_wrapper{
+                    display: block;
+                }
+                > .dropZone_panel{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #EEEEEE;//#E9E9E9;
+                    opacity: 0.3;
+                    cursor: default;
+                    border-width: 0px;
+                    border-radius: 5px;
+                    > .dropIcon{
+                        display: none;
+                    }
+                    > .dropText{
+                        display: none;
+                    }
+                }
             }
-            .panel[hassummaries="false"] > .dropZone_panel{
+            .panel[hassummaries="false"] {
+                > .dropZone_panel{
+                    display: block;
+                }
+            }
+        }
+        &[dropSource="browser"]{
+            > .attributePanel > .attributeList > .dropZone_AttribList{
                 display: block;
             }
         }
         &[dropattrtype~="interval"] .dropZone_resultSort{
             display: block !important;
         }
-        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch{
-            display: block !important;
-        }
-        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_recordView{
-            display: block !important;
+        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
+            .listDiv > .listItemGroup > .listItem{
+                display: none !important; // So that scrolling is avoided
+            }
+            .dropZone_textSearch{
+                display: block !important;
+            }
+            .dropZone_recordView{
+                display: block !important;
+            
+            }
         }
     }
     &[ratiomode=true]{
@@ -236,10 +285,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    font-family: Helvetica, Arial, sans-serif;
-    text-rendering: optimizeLegibility; // People say this has big performance drawbacks
-    display: block;
-
     // Used only in breadcrumb display
     .AndOrNot{
         color: white;
@@ -280,8 +325,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
             opacity: 0;
             font-size: 0.8em;
-            color:gray;
-            margin: 2px;
+            color: gray;
+            margin-left: 2px;
             vertical-align: top;
             cursor: pointer;
             &:before{ content: '\f040'; }
@@ -300,7 +345,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
 
-    .attributePanel{
+    > .attributePanel{
         display: none;
         .flex-direction(column);
         position: absolute;
@@ -344,6 +389,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .attributeList{
             overflow: auto;
             .flex(1);
+            .display(flex);
+            .flex-direction(column);
+
+            > .dropZone_AttribList{
+                .flex(1);
+                .order(10);
+                display: none;
+                border-radius: 10px;
+                border: solid 1px rgb(211, 219, 226);
+                box-shadow: 0px 0px 1px rgb(190, 200, 209);
+                margin: 2px;
+            }
         }
 
         .attributeName{
@@ -355,7 +412,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-radius: 3px;
             background-color: rgb(232, 232, 232);
             border: solid 1px lightgray;
-            cursor: pointer;
+            cursor: -moz-grab;
+            cursor: -webkit-grab;
+            cursor: grab;
             .user-select(none);
             > .summaryTitle{
                 display: inline;
@@ -487,16 +546,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         top: 0px;
         left: 0px;
+        min-height: 21px;
         // height: 22px; // auto... (based on text within)
         width: 200px;
-        background-color: lightgray;
-        border-radius: 10px;
-        border: double 3px gray;
+        .background-image(~"linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);");
+        //background-color: lightgray;
+        border-radius: 3px;
+        border: solid 1px lightgray;
+        box-shadow: 1px 1px 2px gray;
         display: none;
-        z-index: 200;
+        z-index: 400;
         text-align: center;
         font-weight: 500;
-        font-size: 0.8em;
+        font-size: 0.9em;
         cursor: default;
         text-rendering: initial;
         pointer-events: none;
@@ -540,44 +602,80 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .panel {
-        > .dropZone_between{
-            .flex(1);
-            border-radius: 10px;
-            border-style: solid;
-            border-color: gray;
-            border-width: 2px;
-            margin: 2px;
-            &[readyToDrop="true"] {
-                background-color: rgb(255, 188, 163);
-                border-color: orangered;
-            }
-            overflow: hidden;
-        }
-        > .dropZone_summary{
+        > .dropZone_between_wrapper{
             display: none;
-            background-color: rgb(235,239,243,1);
-            cursor: s-resize;
-            z-index: 50;
-            text-align: center;
+            .flex-grow(1);
             position: relative;
+            margin-top: 2px;
+            z-index: 340;
+            border-radius: 5px;
+            //background-color: rgb(152, 157, 162);
+            //height: 0px;
+            width: calc(~"100% - 3px");
+            .transition(flex-grow 450ms ease-in-out, background-color 250ms linear);
+            > .dropZone_between{
+                overflow: hidden;
+                border-radius: 5px;
+                border: solid 1px rgb(173, 180, 186);
+                box-shadow: 1px 1px 1px rgb(173, 179, 183);
+                position: relative;
+                height: 22px;
+                text-align: center;
+                overflow: hidden;
+                > .dropText{
+                    vertical-align: top;
+                    margin-top: 2px;
+                }
+            }
+            &[hovered=true]{
+                .flex-grow(4);
+                position: relative;
+                background-color: rgba(217, 224, 230, 0.7);
+                > .dropZone_between{
+                    > .dropIcon{
+                        color: orangered;
+                    }
+                }
+            }
+        }
+        .dropZone{
+            background-color: rgba(217, 224, 230, 0.7);
+            text-align: center;
+            &[readyToDrop=true]{
+                background-color: rgb(255, 188, 163);
+                cursor: s-resize;
+                border-color: orangered;
+                cursor: s-resize;
+                > .dropText{
+                    display: inline-block;
+                }
+            }
+        }
+        .dropZone_summary{
+            z-index: 250;
+            position: relative;
+            cursor: default;
+            .transition(~"background-color 100ms linear");
             &:hover{ background-color: rgb(255, 188, 163); }
             > .dropIcon{
                 margin: 0px;
-                font-size: 2em;
+                font-size: 1.5em;
+                font-weight: 700;
                 color: #7E8A96;
                 text-shadow: 1px 1px 1px #B6BCC2;
             }
         }
         > .dropZone_panel{
+            display: none;
             border-color: gray;
             border-style: solid;
             border-width: 0px;
             // border-radius: 10px; // Set depending on the pane;
             position: absolute;
+            z-index: 230;
         }
         .dropIcon{
             pointer-events: none;
-            font-size: 2em;
             margin: 0px;
             font-size: 2em;
             color: #7E8A96;
@@ -585,10 +683,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: inline-block;
         }
         .dropText{
+            display: none;
             margin-left: 4px;
             font-size: 1.0em;
             font-weight: 300;
-            display: inline-block;
         }
         &[hidebars=true] .kshf {
             .attrib .aggr_Group{ display:none; }
@@ -620,21 +718,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .display(flex);
             .flex-direction(column);
             width: 100%;
+            position: relative;
             > .dropZone_panel{
                 bottom: 0px;
-                height: 100px;
+                height: 30px;
                 width: 100%;
-                border-radius: 40px 40px 0px 0px;
-                border-bottom-width: 1px;
+                border-radius: 30px 30px 0px 0px;
                 border-top-width: 2px;
             }
-            > .dropZone_between{
+            > .dropZone_between_wrapper > .dropZone_between{
                 > .dropIcon{
                     display: inline-block;
                 }
                 > .dropText{
                     display: inline-block;
-                    vertical-align: top
+                    vertical-align: top;
                 }
             }
         }
@@ -651,7 +749,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 175px;
                 border-radius: 0px 40px 40px 0px;
                 border-right-width: 2px;
-                border-left-width: 1px;
                 > .dropIcon{
                     margin-top: 150px;
                     width: 160px;
@@ -675,7 +772,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 width: 175px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
-                border-right-width: 1px;
                 > .dropIcon{
                     margin-top: 150px;
                     width: 160px;
@@ -698,7 +794,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 left: 180px;
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
-                border-bottom-width: 1px;
             }
         }
         &.panel_resize{
@@ -1043,15 +1138,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     .kshfChart[collapsed=true] {
-        > .headerGroup > .header_display_control{
-            > .fa-collapse{
-                opacity: 1;
-                &:hover{
-                    //.animation-direction(reverse);
-                }
-                &::before{ content: "\f065"; }
-            }
-        }
+        .buttonSummaryCollapse::before{ content: "\f065" !important; }
     }
     .belowAttribs{ direction: ltr; }
 
@@ -1113,7 +1200,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.allFilter{
             display: inline-block;
             margin-left: 2px;
-            height: 16px;
+            height: 17px;
             vertical-align: top;
             border-width: 0px 0px 0px 1px;
             line-height: 16px;
@@ -1206,24 +1293,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         text-align: center;
         padding-top: 1px;
-//        background-color: #E7E6E6;
         border-radius: 3px;
-//        border: solid 1px gray;
+        box-shadow: 0px 0px 2px rgb(155, 155, 155);
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
-        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.2) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.2) 100%);");
+        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
+        z-index: 6; // So that header shadow appears on top of the scrollbar / content below.
+
         .summaryTitle {
             display: block;
             font-weight: 700;
             cursor: default;
             //font-variant: small-caps;
-            padding-top: 1px;
-            padding-bottom: 1px;
-            line-height: 1em;
+            padding-top: 2px;
             text-rendering: initial;
             white-space: nowrap;
             text-align: center;
             margin: 0 auto;
-            min-height: 18px;
+            height: 20px;
+            //min-height: 18px;
             /*white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;*/
@@ -1233,7 +1320,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                margin-bottom: -4px;
+                font-size: 0.9em;
                 &:focus{
                     background-color: white;
                     box-shadow: 0 0 3px #2CABCF;
@@ -1263,11 +1350,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-right: 3px;
         }
         .facetIcons{
-            font-size: 0.8em;
-            color: gray;
-            position: absolute;
-            right: 3px;
             top: 2px;
+            right: 2px;
+            position: absolute;
+            font-size: 0.9em;
+            color: gray;
             .fa{
                 cursor: pointer;
                 margin-left: 2px;
@@ -1276,17 +1363,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .hasMultiMappings{
                 display: none;
             }
-            span.isLinkedMark{
-            }
-            .facetDescription{
+            .summaryDescription{
                 cursor: default;
             }
         }
         > .header_display_control{
             display: block;
             position: absolute;
-            top: 2px;
-            z-index: 10;
+            font-size: 0.9em;
+            top: 3px;
+            left: 2px;
             .transition(~'color 250ms linear, opacity 100ms linear ');
             .transform-origin(50% 50%);
             > .fa{
@@ -1296,32 +1382,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: black;
                 cursor: pointer;
                 margin-right: 2px;
-                font-size: 0.8em;
                 width: 14px;
                 height: 14px;
                 width: 13px;
                 height: 13px;
                 &:hover{ color:#cb5454; }
             }
-/*            > .fa-collapse:hover{
-                .animation(shrink 800ms);
-                .animation-iteration-count(infinite);
-                .animation-timing-function(ease-in);
-            }*/
-            > .fa-collapse{
+            > .buttonSummaryCollapse{
                 &::before{ content: "\f066"; }
             }
-            > .fa-remove{
+            > .buttonSummaryRemove{
                 display: none;
             }
-            > .expandButton{
+            > .buttonSummaryExpand{
                 display: none;
             }
-        }
-        span.showFilterText{
-            display: inline-block;
-            float: left;
-            pointer-events: all;
         }
     } // headerGroup
 
@@ -1623,7 +1698,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             position: absolute;
                             display: inline-block;
                             vertical-align: top;
-                            line-height: 18px;
+                            line-height: 19px;
+                            height: 18px;
                             pointer-events: none;
 
                             font-size: 0.7em;
@@ -1917,7 +1993,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                             > .measureLabel{
-                                // top: 1px;
+                                top: 1px;
                                 display: block;
                                 position: relative;
                                 width:100%;
@@ -2305,8 +2381,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{
 //            margin: -1px;
 //            border: solid 1px gray;
-            > .headerGroup > .header_display_control > .fa{
-                opacity: 1;
+            > .headerGroup {
+                box-shadow: 1px 1px 2px rgb(155, 155, 155);
+                > .header_display_control > .fa{
+                    opacity: 1;
+                }
             }
             &[hasmultivalueitem=true] {
                 > .headerGroup .hasMultiMappings{
@@ -2400,16 +2479,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: hidden; // Don't remove!
         display: inline-block;
         .transition(~'margin-top 700ms ease-in-out');
-        > .dropZone_recordView{
-            position: relative;
+        border-style: solid;
+        border-color: #dfd2a9;
+        border-width: 0px 2px 2px 2px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        //overflow: visible;
+
+        .dropZone_recordView{
             display: none;
-            height: 200px;
+            position: relative;
+            height: 100%;
             z-index: 50;
             background-color: #F4F3EE;
             border-radius: 0px 0px 40px 40px;
             border-style: solid;
-            border-width: 2px;
+            border-width: 0px 0px 2px 0px;
             border-color: rgb(145, 142, 123);
+
             text-align: center;
             margin-bottom: 5px;
             > .dropIcon{
@@ -2418,16 +2505,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: #918E7B;
                 text-shadow: 1px 1px 1px #B8B6AB;
             }
-            > .dropText{
-                pointer-events: none;
-                font-size: 1.1em;
-                display: block;
-                font-weight: 300;
-            }
-            &[readyToDrop=true]{
+            &:hover{
                 background-color: rgb(255, 188, 163);
             }
-            &:hover{
+            &[readyToDrop=true]{
                 background-color: rgb(255, 188, 163);
             }
         }
@@ -2435,9 +2516,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
-            border-style: solid;
-            border-color: rgb(223, 210, 169);
-            border-width: 0px 2px 2px 2px;
+            position: relative;
 
             background-color: white;
             // height is set dynamically by JavaScript
@@ -2602,11 +2681,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         } // listItemGroup
 
         > .showMore{
+            display: block;
             cursor: pointer;
             border: solid 1px lightgray;
             border-radius: 9px;
 
-            padding: 0px;
             box-shadow: 2px 2px 2px #D8D8D8;
             font-weight: 300;
             font-size: 0.8em;
@@ -2622,7 +2701,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
             > .MoreText{
-                display:inline-block;
+                display: inline-block;
                 vertical-align: top;
                 top: 2px;
                 position: relative;
@@ -2631,13 +2710,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 font-size: 0.9em;
                 top: 3px;
                 position: relative;
-                color:gray;
+                color: gray;
                 &.CountAbove{
-                    float:left;
+                    float: left;
                     margin-left: 3px;
                 }
                 &.CountBelow{
-                    float:right;
+                    float: right;
                     margin-right: 3px;
                 }
             }
@@ -2649,13 +2728,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     text-decoration: underline;
                 }
             }
+            &[showMoreVisible=true]{
+                opacity: 1;
+                bottom: 4px;
+            }
+            &[showMoreVisible=false]{
+                bottom: -27px;
+                opacity: 0;
+            }
         }
         &[showRank=true]{
             .itemRank{
                 display: inline-block !important;
-            }
-            > .listHeader > .configRow > .itemRank{
-                // color: orangered; // Does not look nice...
             }
             .adjustSortColumnWidth{
                 margin-left: 13px;
@@ -2743,6 +2827,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
+        &[hasRecordView="false"]{
+            border-bottom: solid 2px white; // leave some spacing between this and middl-esummaries
+        }
         &[hasRecordView="true"]{
             .configRow{
                 > .itemRank{
@@ -2754,6 +2841,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 >.detailViewSetting{
                     //display: inline-block;
                 }
+            }
+            > .dropZone_recordView{
+                position: absolute;
+            }
+        }
+        &:hover{
+            .listHeader > .bottomRow > .sortColumn{
+                opacity: 1;
+                pointer-events: all;
             }
         }
     } // div.listDiv
@@ -2771,16 +2867,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .listHeader{
-        font-weight: bold;
-        color: black;
         font-size: 0.9em;
         position: relative;
-        border-style: solid;
-        border-color: #dfd2a9;
-//        border-top-left-radius: 10px;
-//        border-top-right-radius: 10px;
-        border-width: 0px 2px;
-        // .background-image(~"linear-gradient(bottom, rgb(229, 222, 200) 0%, rgb(246, 243, 235) 80%)");
         background-color: @color_listHeader_background;
         .totalViz{
             height: 3px;
@@ -2828,6 +2916,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                     cursor: default;
                     .user-select(none);
+                    pointer-events: none;
                 }
                 > .listSortOptionSelect{
                     width: 100%;
@@ -2861,11 +2950,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             > .sortColumn {
+                opacity: 0;
                 .align-self(flex-end);
                 width: 17px;
                 font-size: 0.8em;
                 margin-bottom: 2px;
                 vertical-align: bottom;
+                .transition(opacity 250ms linear);
                 > .sortButton{
                     padding: 2px;
                 }
@@ -3039,9 +3130,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .filterClearAll{
             opacity: 0;
             pointer-events: none;
-            .align-self(center);
             right: 41px;
-            top: 0px;
             cursor: pointer;
             color: #252112;
             font-weight: 300;
@@ -3056,8 +3145,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .title{
                 font-size: 0.8em;
-                padding-left: 1px;
-                vertical-align: middle;
             }
         }
 
@@ -3069,15 +3156,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
                 white-space: nowrap;
                 cursor: default;
-                font-size: 1.5em;
+                font-size: 1.3em;
                 font-weight: 700;
                 text-shadow: 1px 1px lightgray;
-                margin-bottom: -3px;
+                margin-bottom: -1px;
                 z-index: 10;
                 > .listHeader_count{
                     display: inline-block;
                     text-align: right;
                     margin-right: 3px;
+                }
+                > .listHeader_itemName{
+                    //font-size: 0.9em;
                 }
             }
             > .mainTextSearch {
@@ -3171,7 +3261,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             } // mainTextSearch
 
             > .rightBoxes{
-                font-size: 1.3em;
+                font-size: 1.2em;
                 color: #635d46;
                 padding-right: 1px;
                 white-space: nowrap;
