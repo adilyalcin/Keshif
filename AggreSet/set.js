@@ -240,12 +240,18 @@ var Summary_Clique_functions = {
 				var background_dom = this.parentNode.parentNode.parentNode.parentNode;
 
 				background_dom.style.cursor = "all-scroll";
+				me.browser.DOM.pointerBlock.attr("active","");
+
 				var mouseInitPos = d3.mouse(background_dom);
 				var gridPan_x_init = me.gridPan_x;
 
 				// scroll the setlist summary too...
 				var scrollDom = me.setListSummary.DOM.attribGroup[0][0];
 				var initScrollPos = scrollDom.scrollTop;
+				var w=me.getWidth();
+				var h=me.getHeight();
+				var initT = me.setListSummary.scrollTop_cache;
+				var initR = Math.min(-initT-me.gridPan_x,0);
 
 				me.pausePanning = true;
 
@@ -256,15 +262,24 @@ var Summary_Clique_functions = {
 
 				    me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
 				    me.checkPan();
-				    me.refreshSVGViewBox();
+
+				    var t = initT-difY;
+				    t = Math.max(0,t);
+				    var r = initR-difX;
+				    r = Math.min(0,Math.max(r,-t));
+
+				    me.panSVGViewBox(w,h,t,r);
 
 				    scrollDom.scrollTop = Math.max(0,initScrollPos-difY);
+
 					d3.event.preventDefault();
 					d3.event.stopPropagation();
 				}).on("mouseup", function(){
 					me.pausePanning = false;
 					background_dom.style.cursor = "default";
 				    me.browser.DOM.root.on("mousemove", null).on("mouseup", null);
+				    me.browser.DOM.pointerBlock.attr("active",null);
+				    me.refreshLabel_Vert_Show();
 					d3.event.preventDefault();
 					d3.event.stopPropagation();
 				});
@@ -765,6 +780,11 @@ var Summary_Clique_functions = {
 			.style("left",(-w)+"px")
 
 		if(!this.pausePanning) this.refreshSVGViewBox();
+	},
+	/** -- */
+	panSVGViewBox: function(w,h,t,r){
+		this.DOM.cliqueSVG
+			.attr("viewBox",r+" "+t+" "+w+" "+h);
 	},
 	/** -- */
 	refreshSVGViewBox: function(){
