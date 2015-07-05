@@ -1403,7 +1403,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   cursor: pointer;
   line-height: 1em;
-  padding: 1px 3px;
+  padding: 0px 2px;
+  border: solid 1px rgba(153, 171, 146, 0);
+  border-radius: 5px;
+  background-color: rgba(211, 217, 197, 0);
+  -webkit-transition: background-color 250ms linear, border-color 250ms linear;
+  -moz-transition: background-color 250ms linear, border-color 250ms linear;
+  -o-transition: background-color 250ms linear, border-color 250ms linear;
+  transition: background-color 250ms linear, border-color 250ms linear;
 }
 .kshf .chartAxis_Measure > .percentSign:after {
   content: '#';
@@ -1412,8 +1419,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
   background-color: #d3d9c5;
   border: solid 1px #99ab92;
-  border-radius: 5px;
-  padding: 0px 2px;
 }
 .kshf .chartAxis_Measure > .chartAxis_Measure_background {
   position: absolute;
@@ -1421,11 +1426,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   cursor: pointer;
   pointer-events: all;
-}
-.kshf .chartAxis_Measure > .chartAxis_Measure_background[highlight=true] {
   background-color: #E0E4D7;
   border: solid 1px #B7CAAF;
   border-radius: 5px;
+  opacity: 0;
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
+}
+.kshf .chartAxis_Measure > .chartAxis_Measure_background[highlight=true] {
+  opacity: 1;
 }
 .kshf .border_line {
   position: relative;
