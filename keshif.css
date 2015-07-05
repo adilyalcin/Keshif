@@ -152,6 +152,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfChart[collapsed=false] {
   -webkit-flex-grow: 3;
   flex-grow: 3;
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
   overflow: hidden;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between_wrapper {
@@ -1294,7 +1299,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: linear-gradient(to right, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
 }
-.kshf .kshfChart[collapsed=true] .buttonSummaryCollapse::before {
+.kshf .kshfChart[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse {
+  opacity: 1;
+}
+.kshf .kshfChart[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse::before {
   content: "\f065" !important;
 }
 .kshf .belowAttribs {

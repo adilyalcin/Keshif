@@ -152,6 +152,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:not([dropattrtype~="unique"]){
             .kshfChart[collapsed=false]{
                 .flex-grow(3);
+                .flex(3);
                 overflow: hidden;
             }
             .panel[hassummaries="true"] {
@@ -1158,7 +1159,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     .kshfChart[collapsed=true] {
-        .buttonSummaryCollapse::before{ content: "\f065" !important; }
+        .headerGroup > .header_display_control > .fa.buttonSummaryCollapse{
+            opacity: 1;
+            &::before{ content: "\f065" !important; }
+        }
     }
     .belowAttribs{ direction: ltr; }
 
