@@ -1062,8 +1062,8 @@ kshf.List = function(kshf_, config, root){
     this.DOM.listHeader=this.listDiv.append("div").attr("class","listHeader");
         this.initDOM_TopRow();
         this.initDOM_TotalViz();
-        this.initDOM_ConfigRow();
         this.initDOM_BottomRow();
+        this.initDOM_ConfigRow();
 
     this.DOM.listItemGroup = this.listDiv.append("div").attr("class","listItemGroup")
         .on("scroll",function(d){
@@ -2050,8 +2050,9 @@ kshf.Panel = function(options){
 
     this.DOM = {};
     this.DOM.root = options.parentDOM.append("div")
-        .attr("class", "panel panel_"+options.name)
         .attr("hasSummaries",false)
+        .attr("class", "panel panel_"+options.name+
+            ((options.name==="left"||options.name==="right")?" panel_side":""))
         ;
     this.initDOM_AdjustWidth();
     this.initDOM_DropZone();
@@ -2144,7 +2145,7 @@ kshf.Panel.prototype = {
 
         var zone2 = zone.append("div").attr("class","dropZone dropZone_summary dropZone_between");
         zone2.append("div").attr("class","dropIcon fa fa-angle-double-down");
-        zone2.append("div").attr("class","dropText").text("Drop to summarize");
+        zone2.append("div").attr("class","dropText").text("Drop summary");
 
         this.refreshDropZoneIndex();
     },
@@ -2180,7 +2181,7 @@ kshf.Panel.prototype = {
             })
             ;
         this.DOM.dropZone_Panel.append("span").attr("class","dropIcon fa fa-angle-double-down");
-        this.DOM.dropZone_Panel.append("div").attr("class","dropText").text("Drop to summarize");
+        this.DOM.dropZone_Panel.append("div").attr("class","dropText").text("Drop summary");
 
         this.addDOM_DropZone();
     },
@@ -2957,7 +2958,7 @@ kshf.Browser.prototype = {
             .attr("disabled",true)
             .on("click",function(){
                 if(!readyToLoad()){
-                    alert("Please provide your data source link and sheet name.");
+                    alert("Please input your data source link and sheet name.");
                     return;
                 }
                 var sheetID   = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
@@ -3003,9 +3004,20 @@ kshf.Browser.prototype = {
 //        this.DOM.infobox_itemZoom_content.html(item.data.toString());
     },
     /** -- */
-    showAttributes: function(){
-        this.attribsShown = !this.attribsShown;
+    showAttributes: function(v){
+        if(v===undefined) v = !this.attribsShown; // if undefined, invert
+        this.attribsShown = v;
         this.DOM.root.attr("attribsShown",this.attribsShown);
+
+        var lastIndex = 0, me=this;
+        var initAttib = function(){
+            var start = Date.now();
+            me.summaries[lastIndex++].initializeAggregates();
+            var end = Date.now();
+            if(lastIndex!==me.summaries.length)
+                setTimeout(initAttib,end-start);
+        };
+        setTimeout(initAttib,150);
     },
     /** -- */
     showInfoBox: function(){
@@ -3466,12 +3478,6 @@ kshf.Browser.prototype = {
     prepareDropZones: function(summary,source){
         this.movedSummary = summary;
         this.showDropZones = true;
-        var shrink=0;
-        if(this.panels.left.summaries.length===0) shrink++;
-        if(this.panels.right.summaries.length===0) shrink++;
-        this.DOM.middleColumn.selectAll(".dropZone")
-            .style("width","calc(100% - "+(shrink*180)+"px)")
-            .style("left",(this.panels.left.summaries.length===0)?"180px":"0px");
         this.DOM.root
             .attr("showdropzone",true)
             .attr("dropattrtype",summary.getDataType())
@@ -3534,14 +3540,14 @@ kshf.Browser.prototype = {
                 me.DOM.root.attr("drag_cursor","grabbing");
                 d3.select("body")
                     .on("keydown", function(){
-                        if(event.keyCode===27){ // ESP key
-                            _this.style.opacity = null;
+                        if(event.keyCode===27){ // Escape key
+                            _this.removeAttribute("moved");
                             me.clearDropZones();
                         }
                     })
                     .on("mousemove", function(){
                         if(!me.attribMoved){
-                            _this.style.opacity = 0.5;
+                            _this.setAttribute("moved","");
                             me.prepareDropZones(summary,"attributePanel");
                             me.attribMoved = true;
                         }
@@ -3553,7 +3559,7 @@ kshf.Browser.prototype = {
                     })
                     .on("mouseup", function(){
                         if(!me.attribMoved) return;
-                        _this.style.opacity = null;
+                        _this.removeAttribute("moved");
                         me.DOM.root.attr("drag_cursor",null);
                         me.clearDropZones();
                         d3.event.preventDefault();
@@ -3939,7 +3945,7 @@ kshf.Browser.prototype = {
             if(this.listDisplay.recordViewSummary){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
-                panelHeight -= this.listDisplay.DOM.listHeader[0][0].offsetHeight;
+                panelHeight -= this.listDisplay.listDiv[0][0].offsetHeight;
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
@@ -3960,7 +3966,8 @@ kshf.Browser.prototype = {
             listDisplayHeight-=midPanelHeight;
             if(this.showDropZones && this.panels.middle.summaries.length===0) 
                 listDisplayHeight*=0.5;
-            this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
+            if(this.listDisplay.recordViewSummary!==null)
+                this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
     /** -- */
@@ -4182,7 +4189,19 @@ kshf.Summary_Base.prototype = {
     /** -- */
     refreshNuggetDisplay: function(){
         if(this.DOM.nugget===undefined) return;
-        this.DOM.nugget.style("display",(this.panel||this.isRecordView)?"none":null);
+        var me=this;
+        var nuggetHidden = (this.panel||this.isRecordView);
+        if(nuggetHidden){
+            this.DOM.nugget.attr('anim','disappear');
+            setTimeout(function(){
+                me.DOM.nugget.style("display","none");
+            },800);
+        } else {
+            this.DOM.nugget.style("display","block");
+            setTimeout(function(){
+                me.DOM.nugget.attr('anim','appear');
+            },300);
+        }
     },
     /** -- */
     removeFromPanel: function(){
@@ -4549,6 +4568,9 @@ var Summary_Categorical_functions = {
             this.catTableName = this.summaryTitle+"_h_"+this.id;
             this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
         }
+        if(kshf.dt[this.catTableName]===undefined){
+            return false; // Cannot initialize, table not defined.
+        }
         this.mapToAggregates();
         if(this.sortingOpts.length===0) this.setSortingOpts();
         if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
@@ -4613,7 +4635,7 @@ var Summary_Categorical_functions = {
     getHeight_Config: function(){
         var r=0;
         if(this.configRowCount!=0) r+=1; // bottom border : 1 px
-        if(this.showTextSearch) r+=15;
+        if(this.showTextSearch) r+=18;
         if(this.sortingOpts.length>1) r+=17;
         return r;
     },
@@ -5721,6 +5743,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
         this.DOM.attribGroup.style("height",this.attribHeight+"px"); // 1 is for borders...
+        this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
         var h=this.attribHeight;
         this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h+1)+"px").style("height",(h-2)+"px");
@@ -8082,6 +8105,8 @@ var Summary_Interval_functions = {
     refreshHeight: function(){
         this.DOM.histogram.style("height",(this.height_hist+this.height_hist_topGap)+"px")
         this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Wrapper())+"px");
+        this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
+
         var labelTranslate ="translateY("+this.height_hist+"px)";
         if(this.DOM.measureLabel)
             this.DOM.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });

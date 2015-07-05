@@ -149,11 +149,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[showdropzone=true]{
-        .kshfChart[collapsed=false]{
-            .flex(3);
-            overflow: hidden;
-        }
         &:not([dropattrtype~="unique"]){
+            .kshfChart[collapsed=false]{
+                .flex-grow(3);
+                overflow: hidden;
+            }
             .panel[hassummaries="true"] {
                 > .dropZone_between_wrapper{
                     display: block;
@@ -186,16 +186,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
             }
         }
-        &[dropattrtype~="unique"] .dropZone_recordView{
-            display: block !important;
+        &[dropattrtype~="unique"] {
+            .dropZone_recordView{
+                display: block !important;
+            }
+            .listDiv > .listItemGroup > .listItem{
+                display: none !important; // So that scrolling is avoided
+            }
         }
         &[dropattrtype~="interval"] .dropZone_resultSort{
             display: block !important;
         }
         &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
-            .listDiv > .listItemGroup > .listItem{
-                display: none !important; // So that scrolling is avoided
-            }
             .dropZone_textSearch{
                 display: block !important;
             }
@@ -404,10 +406,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         .nugget{
             display: block;
+            position: relative;
             font-size: 0.8em;
             padding: 2px;
             margin: 2px;
             min-height: 36px;
+            left: 0px;
             border-radius: 3px;
             background-color: rgb(232, 232, 232);
             border: solid 1px lightgray;
@@ -415,6 +419,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             cursor: -webkit-grab;
             cursor: grab;
             .user-select(none);
+            .transition(opacity 400ms linear, transform 400ms ease-in-out);
             > .summaryTitle{
                 display: inline;
                 margin: 1px;
@@ -532,6 +537,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .editCodeButton{
                     display: inline-block;
                 }
+            }
+            &[moved]{
+                opacity: 0.5 !important;
+            }
+            &[anim="disappear"]{
+                opacity: 0;
+                .transform(~'translateX(100px)');
+            }
+            &[anim="appear"]{
+                opacity: 1;
+                .transform(~'translateX(0px)');
             }
         }
     }
@@ -747,45 +763,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        &.panel_left{
+        &.panel_side{
             .display(flex);
             .flex-direction(column);
             vertical-align: top;
             position: relative;
             height: 100%;
             > .dropZone_panel{
-                left: 0px;
                 top: 0px;
                 height: 100%;
-                width: 175px;
-                border-radius: 0px 40px 40px 0px;
-                border-right-width: 2px;
+                width: 50px;
+                z-index: 231; // above the middle panel
                 > .dropIcon{
                     margin-top: 150px;
                     top: 200px;
                 }
+            }
+        }
+        &.panel_left{
+            > .dropZone_panel{
+                left: 0px;
+                border-radius: 0px 40px 40px 0px;
+                border-right-width: 2px;
             }
             > .panelAdjustWidth{
                 right: -2px;
             }
         }
         &.panel_right{
-            .display(flex);
-            .flex-direction(column);
-            vertical-align: top;
-            position: relative;
-            height: 100%;
             > .dropZone_panel{
                 right: 0px;
-                top: 0px;
-                height: 100%;
-                width: 175px;
                 border-radius: 40px 0px 0px 40px;
                 border-left-width: 2px;
-                > .dropIcon{
-                    margin-top: 150px;
-                    top: 200px;
-                }
             }
             > .panelAdjustWidth{
                 left: -2px;
@@ -794,13 +803,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.panel_middle{
             .display(flex);
             .flex-direction(column);
-            position: relative;
             .flex(1);
+            position: relative;
+            vertical-align: top;
+            position: relative;
             > .dropZone_panel{
                 bottom: 0px;
                 height: 100%;
-                width: calc(~"100% - 360px");
-                left: 180px;
+                width: 100%;
+                left: 0px;
                 border-radius: 40px 40px 0px 0px;
                 border-top-width: 2px;
             }
@@ -1440,17 +1451,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .kshfChart{
         display: block;
-        border-radius: 6px;
         position: relative;
-        // overflow: hidden; // Keep it this way! -- Why?
-
+        .transition(max-height 700ms ease-in-out);
         > .wrapper{
             position: relative;
             overflow: hidden;
             // so that absolute positioned elements will not overflow
-        }
-
-        > .wrapper{
             > .facetCategorical{
                 overflow: hidden;
                 > .facetControls{
@@ -1464,6 +1470,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         white-space:nowrap;
                         position: relative;
                         cursor: text;
+                        height: 18px;
                         > .attribTextSearchInput {
                             display: inline-block;
                             width: calc(~"100% - 13px");
@@ -2391,7 +2398,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //            margin: -1px;
 //            border: solid 1px gray;
             > .headerGroup {
-                box-shadow: 1px 1px 2px rgb(155, 155, 155);
+                box-shadow: 0px 0px 2px rgb(100, 100, 100);
                 > .header_display_control > .fa{
                     opacity: 1;
                 }
@@ -2478,6 +2485,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .flex-direction(column);
         .flex(1);
         position: relative;
+        overflow: hidden;
     }
 
     .listDiv{
@@ -2983,6 +2991,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 text-align: right;
                 width: 15px;
                 padding-top: 2px;
+                position: absolute;
+                right: 1px
             }
 
             > .headerLinkStateColumn{

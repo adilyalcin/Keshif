@@ -149,12 +149,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentview=true] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
-.kshf[showdropzone=true] .kshfChart[collapsed=false] {
-  -webkit-box-flex: 3;
-  -moz-box-flex: 3;
-  -webkit-flex: 3;
-  -ms-flex: 3;
-  flex: 3;
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfChart[collapsed=false] {
+  -webkit-flex-grow: 3;
+  flex-grow: 3;
   overflow: hidden;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between_wrapper {
@@ -185,11 +182,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showdropzone=true][dropattrtype~="unique"] .dropZone_recordView {
   display: block !important;
 }
+.kshf[showdropzone=true][dropattrtype~="unique"] .listDiv > .listItemGroup > .listItem {
+  display: none !important;
+}
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
-}
-.kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .listDiv > .listItemGroup > .listItem {
-  display: none !important;
 }
 .kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
   display: block !important;
@@ -403,10 +400,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf > .attributePanel .nugget {
   display: block;
+  position: relative;
   font-size: 0.8em;
   padding: 2px;
   margin: 2px;
   min-height: 36px;
+  left: 0px;
   border-radius: 3px;
   background-color: #e8e8e8;
   border: solid 1px lightgray;
@@ -417,6 +416,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-transition: opacity 400ms linear, -webkit-transform 400ms ease-in-out;
+  -moz-transition: opacity 400ms linear, -moz-transform 400ms ease-in-out;
+  -o-transition: opacity 400ms linear, -o-transform 400ms ease-in-out;
+  transition: opacity 400ms linear,-webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
 }
 .kshf > .attributePanel .nugget > .summaryTitle {
   display: inline;
@@ -586,6 +589,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf > .attributePanel .nugget[state='custom'] > .editCodeButton {
   display: inline-block;
+}
+.kshf > .attributePanel .nugget[moved] {
+  opacity: 0.5 !important;
+}
+.kshf > .attributePanel .nugget[anim="disappear"] {
+  opacity: 0;
+  -webkit-transform: translateX(100px);
+  -moz-transform: translateX(100px);
+  -o-transform: translateX(100px);
+  -ms-transform: translateX(100px);
+  transform: translateX(100px);
+}
+.kshf > .attributePanel .nugget[anim="appear"] {
+  opacity: 1;
+  -webkit-transform: translateX(0px);
+  -moz-transform: translateX(0px);
+  -o-transform: translateX(0px);
+  -ms-transform: translateX(0px);
+  transform: translateX(0px);
 }
 .kshf .panels_Above {
   display: -webkit-box;
@@ -825,7 +847,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   vertical-align: top;
 }
-.kshf .panel.panel_left {
+.kshf .panel.panel_side {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -842,49 +864,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 100%;
 }
-.kshf .panel.panel_left > .dropZone_panel {
-  left: 0px;
+.kshf .panel.panel_side > .dropZone_panel {
   top: 0px;
   height: 100%;
-  width: 175px;
-  border-radius: 0px 40px 40px 0px;
-  border-right-width: 2px;
+  width: 50px;
+  z-index: 231;
 }
-.kshf .panel.panel_left > .dropZone_panel > .dropIcon {
+.kshf .panel.panel_side > .dropZone_panel > .dropIcon {
   margin-top: 150px;
   top: 200px;
+}
+.kshf .panel.panel_left > .dropZone_panel {
+  left: 0px;
+  border-radius: 0px 40px 40px 0px;
+  border-right-width: 2px;
 }
 .kshf .panel.panel_left > .panelAdjustWidth {
   right: -2px;
 }
-.kshf .panel.panel_right {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: vertical;
-  -moz-box-orient: vertical;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  vertical-align: top;
-  position: relative;
-  height: 100%;
-}
 .kshf .panel.panel_right > .dropZone_panel {
   right: 0px;
-  top: 0px;
-  height: 100%;
-  width: 175px;
   border-radius: 40px 0px 0px 40px;
   border-left-width: 2px;
-}
-.kshf .panel.panel_right > .dropZone_panel > .dropIcon {
-  margin-top: 150px;
-  top: 200px;
 }
 .kshf .panel.panel_right > .panelAdjustWidth {
   left: -2px;
@@ -902,18 +903,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  position: relative;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  vertical-align: top;
+  position: relative;
 }
 .kshf .panel.panel_middle > .dropZone_panel {
   bottom: 0px;
   height: 100%;
-  width: calc(100% - 360px);
-  left: 180px;
+  width: 100%;
+  left: 0px;
   border-radius: 40px 40px 0px 0px;
   border-top-width: 2px;
 }
@@ -1599,8 +1601,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart {
   display: block;
-  border-radius: 6px;
   position: relative;
+  -webkit-transition: max-height 700ms ease-in-out;
+  -moz-transition: max-height 700ms ease-in-out;
+  -o-transition: max-height 700ms ease-in-out;
+  transition: max-height 700ms ease-in-out;
   /*        &:before{
             content:''; width:100%; height:100%;
             position:absolute; top:0; left:0;
@@ -1626,6 +1631,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   position: relative;
   cursor: text;
+  height: 18px;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchInput {
   display: inline-block;
@@ -2495,7 +2501,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f175" !important;
 }
 .kshf .kshfChart:hover > .headerGroup {
-  box-shadow: 1px 1px 2px #9b9b9b;
+  box-shadow: 0px 0px 2px #646464;
 }
 .kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
@@ -2587,6 +2593,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   position: relative;
+  overflow: hidden;
 }
 .kshf .listDiv {
   position: relative;
@@ -3126,6 +3133,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   width: 15px;
   padding-top: 2px;
+  position: absolute;
+  right: 1px;
 }
 .kshf .listHeader > .bottomRow > .headerLinkStateColumn {
   font-size: 1.1em;
