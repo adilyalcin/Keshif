@@ -41,13 +41,18 @@ google.setOnLoadCallback(function(){
             },{ title: "Weight", unitName: "lbs", layout: 'right'
             },{ title: "Acceleration", description: "0 to 60 mph", unitName: "sec"
             },{ title: "Year", layout: "bottom", attribMap: function(){ return new Date(this.Year,1,1);}
+            },{ title: "RecordView", layout: "none", 
+                attribMap: function(){ 
+                    // Adding the last ID part to make it unique per car
+                    return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>";
+                }
             }
         ],
         itemDisplay: {
             sortingOpts: ["MPG", "Weight", "Year"],
             sortColWidth: 60,
             textSearch: "Name",
-            recordView: "Name"
+            recordView: "RecordView"
         }
     });
 });

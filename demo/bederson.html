@@ -65,7 +65,7 @@ google.setOnLoadCallback(function() {
         },
         summaries: [
             {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
-            },{ title: "Coauthors",
+            },{ title: "Couthors",
                 attribMap: function(){
                     return this.Coauthors.filter(function(coAuth){
                         return coAuth!=="3" && coAuth!==3;
@@ -74,13 +74,20 @@ google.setOnLoadCallback(function() {
                 catTableName: "Authors",
                 catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
                 catTooltip: function(){ return this.first_names+" "+this.last_name; },
-                /*summaries: [
-                    {   title: "Type",
-                        attribMap: function(){ return this.author_type; },
-                        catTableName: "AuthorTypes",
-                        catLabel: "keyword"
-                    }
-                ]*/
+            },{ title: "Coauthor Types",
+                attribMap: function(){
+                    var types = [];
+                    this.Coauthors.filter(function(coAuth){
+                        return coAuth!=="3" && coAuth!==3;
+                    }).forEach(function(coAuth){
+                        var a=kshf.dt_id.Authors[coAuth];
+                        if(a) types.push(a.data.author_type);
+                    });
+
+                    return types;
+                },
+                catTableName: "AuthorTypes",
+                catLabel: "keyword"
             },{ title: "Publication Type", attribMap: "type",
                 catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; }
             },{ title: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true,
