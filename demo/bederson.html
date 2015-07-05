@@ -67,23 +67,20 @@ google.setOnLoadCallback(function() {
             {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
             },{ title: "Coauthors",
                 attribMap: function(){
-                    newAuthors = [];
-                    var authors = this.Coauthors;
-                    for(i=0 ; i<authors.length ; i++){
-                        if(authors[i]!==BEDERSON_ID) newAuthors.push(authors[i]);
-                    }
-                    return newAuthors;
+                    return this.Coauthors.filter(function(coAuth){
+                        return coAuth!=="3" && coAuth!==3;
+                    });
                 },
                 catTableName: "Authors",
                 catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
                 catTooltip: function(){ return this.first_names+" "+this.last_name; },
-                summaries: [
+                /*summaries: [
                     {   title: "Type",
                         attribMap: function(){ return this.author_type; },
                         catTableName: "AuthorTypes",
                         catLabel: "keyword"
                     }
-                ]
+                ]*/
             },{ title: "Publication Type", attribMap: "type",
                 catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; }
             },{ title: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true,
@@ -92,7 +89,7 @@ google.setOnLoadCallback(function() {
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: {title: 'Year', value: "Date", label: function(){ return this.Date.getFullYear();}, inverse:true },
+            sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
             textSearch: 'title',
             detailsToggle: "one",
             recordView: function(){
