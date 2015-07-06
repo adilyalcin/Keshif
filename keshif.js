@@ -1362,7 +1362,7 @@ kshf.List.prototype = {
     /** -- */
     setTextSearchSummary: function(summary){
         if(summary===undefined || summary===null) return;
-        if(this.textSearchSummary===summary) return;
+        //if(this.textSearchSummary===summary) return;
         this.textSearchSummary = summary;
         this.textSearchSummary.isTextSearch = true;
         if(this.DOM.mainTextSearch)
