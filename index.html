@@ -42,7 +42,12 @@ browser = new kshf.Browser({
         sheets: [ {name:"Demos"} ]
     },
     summaries: [
-        {   title: "Code Complexity", layout: 'right', collapsed: true,
+        {   title: "Keywords", layout: 'left',
+            attribMap: function(){ return this.Keywords.split(" + "); }
+        },{ title: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"
+        },{ title: "Data Source", layout: 'left', collapsed: true,
+            attribMap: function(){ return this.Source.split(" + "); }
+        },{ title: "Code Complexity", layout: 'right',
             description: "Relative code complexity of demo source",
             sortingOpts: [ {value: 'id'} ],
             catLabel: function(){
@@ -54,9 +59,7 @@ browser = new kshf.Browser({
                     case 5: return "Fully featured *****";
                 }
             }
-        },{ title: "Keywords", layout: 'right',
-            attribMap: function(){ return this.Keywords.split("+"); }
-        },{ title: "Summary Types",
+        },{ title: "Summary Types", layout: 'right',
             attribMap: function(){
                 var r = [];
                 if(this['Facets - Histogram']>0)
@@ -67,39 +70,32 @@ browser = new kshf.Browser({
                     r.push("Time <span class='fa fa-clock-o'></span>");
                 return r;
             }
-        },{ title: "Data Structure",
+/*        },{ title: "Data Structure",
             attribMap: function(){
                 var r = [];
                 if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
                 if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
                 return r;
-            }
-        },{ title: "Result Display",
+            }*/
+        },{ title: "Result Display", layout: "right",
             attribMap: function(){
                 var r = [];
-                if(this['Results-Details'])
-                    r.push("Detail View <span class='fa fa-bullseye'></span>");
                 if(this['Result Display']==="Grid")
                     r.push("Grid <span class='fa fa-th'></span>");
                 if(this['Result Display']==="List")
                     r.push("List <span class='fa fa-list'></span>");
                 return r;
             }
-        },{ title: "Other",
+/*        },{ title: "Other", layout: "right",
             attribMap: function(){
                 var r = [];
-                if(this['Right Column'])
-                    r.push("Right Panel");
                 if(this['Main Text Search'])
                     r.push("Main Text search <span class='fa fa-search'></span>");
                 if(this['Dynamic Sizing']>0)
                     r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
                 return r;
-            }
-        },{ title: "Data Source", layout: 'right',
-            attribMap: function(){ return this.Source.split("+"); }
-        },{ title: "# Items", showPercentile: true, layout: 'right', intervalScale: "log"
-        },{ title: "Creation Time", collapsed: false,
+            }*/
+        },{ title: "Created At", layout: "right", collapsed: false,
             attribMap: function(){ return this.Authored.getFullYear(); }
         }
     ],
@@ -122,9 +118,9 @@ browser = new kshf.Browser({
                 if(this['Linked']) str+="<span class='fa fa-chain'></span>";
                 if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
                 if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
-                if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
+                //if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
                 if(this['Has Time']) str+="<span class='fa fa-clock-o'></span>";
-                if(this['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
+                //if(this['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
                 if(this['Results-Details']) str+="<span class='fa fa-bullseye'></span>";
                 if(this['Result Display']==="Grid") str+="<span class='fa fa-th'></span>";
                 if(this['Result Display']==="List") str+="<span class='fa fa-list'></span>";
