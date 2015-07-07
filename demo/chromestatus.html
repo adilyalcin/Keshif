@@ -35,7 +35,7 @@ $(document).ready( function(){
             url: "http://www.chromestatus.com/features",
             dirPath: "./data/",
             fileType: 'json',
-            sheets: [{name:"chromefeatures"}]
+            sheets: "chromefeatures"
         },
         summaries: [
             {   title: "Milestone", attribMap: function(){ return this.meta["milestone_str"]; },

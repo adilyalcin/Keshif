@@ -57,7 +57,7 @@ google.setOnLoadCallback( function(){
         leftPanelLabelWidth: 150,
         source: {
             gdocId: '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
-            sheets: [ {name:"Spills"}, {name:"Notes"}, {name:"Districts"} ]
+            sheets: ["Spills", "Notes", "Districts"]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Spills, ['Cause'], ", ", false);

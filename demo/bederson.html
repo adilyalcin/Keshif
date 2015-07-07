@@ -45,14 +45,7 @@ google.setOnLoadCallback(function() {
         categoryTextWidth:185,
         source: {
             gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
-            sheets: [
-                {name: "Publications"},
-                {name: "Venues"},
-                {name: "Authors"},
-                {name: "Keywords"},
-                {name: "VenueTypes"},
-                {name: "AuthorTypes"}
-            ]
+            sheets: [ "Publications", "Venues", "Authors", "Keywords", "VenueTypes", "AuthorTypes" ]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);

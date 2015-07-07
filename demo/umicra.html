@@ -33,11 +33,7 @@ google.setOnLoadCallback(function(){
         rightPanelLabelWidth: 90,
         source: {
             gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
-            sheets: [
-                {name:"Publications"},
-				{name:"Regulatory Domains"},
-                {name:"Authors"},
-            ]
+            sheets: [ "Publications", "Regulatory Domains", "Authors"]
         },
         loadedCb: function(browser){
 			kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);

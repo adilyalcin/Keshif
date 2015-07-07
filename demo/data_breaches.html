@@ -35,7 +35,7 @@ google.setOnLoadCallback(function(){
         source: {
             url: "http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html",
             gdocId: '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
-            sheets: [{name:"Breaches"}]
+            sheets: "Breaches"
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);

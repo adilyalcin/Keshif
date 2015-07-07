@@ -39,11 +39,7 @@ google.setOnLoadCallback( function() {
         categoryTextWidth:150,
         source: {
             gdocId: '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
-            sheets: [ 
-                {name:"News"},
-                {name:"People"},
-                {name:"Topics", id:"Code"} 
-            ]
+            sheets: ["News" ,"People", {name:"Topics", id:"Code"}]
         },
         loadedCb: function(){
             newsCol = kshf.dt_ColNames.News;

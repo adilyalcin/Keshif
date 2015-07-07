@@ -3029,6 +3029,14 @@ kshf.Browser.prototype = {
         this.source = v;
         this.panel_infobox.attr("show","loading");
         if(this.source.sheets){
+            if(!Array.isArray(this.source.sheets)){
+                this.source.sheets = [this.source.sheets];
+            }
+            this.source.sheets.forEach(function(sheet, i){
+                if(typeof sheet === "string"){
+                    this.source.sheets[i] = {name: sheet};
+                }
+            }, this);
             this.source.loadedTableCount=0;
 
             this.DOM.status_text_sub_dynamic

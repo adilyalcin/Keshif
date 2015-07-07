@@ -367,12 +367,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
 }
 .kshf > .attributePanel > .attributeList {
-  overflow: auto;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -385,6 +379,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .kshf > .attributePanel > .attributeList > .dropZone_AttribList {
   -webkit-box-flex: 1;
@@ -659,6 +660,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
   text-align: center;
   z-index: 50;
+  pointer-events: none;
   -webkit-transition: opacity 500ms ease-in-out, top 500ms;
   -moz-transition: opacity 500ms ease-in-out, top 500ms;
   -o-transition: opacity 500ms ease-in-out, top 500ms;
@@ -689,17 +691,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf > .warningBox_wrapper[shown=true] {
   opacity: 1;
   top: 5px;
+  pointer-events: all;
 }
 .kshf > .pointerBlock {
-  position: absolute;
+  position: fixed;
   left: 0px;
   top: 0px;
   width: 100%;
   height: 100%;
   z-index: -10;
+  pointer-events: none;
 }
 .kshf > .pointerBlock[active] {
   z-index: 700;
+  pointer-events: all;
 }
 .kshf .panel > .dropZone_between_wrapper {
   display: none;
@@ -1662,7 +1667,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
   background-color: rgba(244, 244, 244, 0);
   pointer-events: all;
-  margin: 0px;
+  margin: 2px 0px 0px 0px;
   cursor: text;
   text-align: right;
 }
@@ -1687,7 +1692,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .facetControls > .attribTextSearch > .attribTextSearchControl {
   position: relative;
-  top: -2px;
+  top: 0px;
   padding-left: 1px;
   font-size: 0.7em;
   pointer-events: none;
@@ -1782,9 +1787,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.7em;
   line-height: 1.4em;
   vertical-align: top;
-  font-style: italic;
   cursor: pointer;
-  color: #919191;
+  color: #b4b4b4;
   opacity: 1;
   pointer-events: all;
   display: inline-block;
@@ -2612,7 +2616,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   position: relative;
-  overflow: hidden;
 }
 .kshf .listDiv {
   position: relative;

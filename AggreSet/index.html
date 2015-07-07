@@ -63,7 +63,7 @@ function loadDemo(config){
 					summary.setCollapsed(true);
 				}
 			},this);
-			browser.showAttributes(); // actually hides / revert state
+			browser.showAttributes(false);
 		} else {
 			d3.select("#credits_wrapper").style("display","block");
 			d3.select("#credits").html(config.credits);
@@ -130,7 +130,7 @@ $(document).ready( function(){
 
 	$("#YourData").click(function(){
 		loadDemo({
-			name:"YourData",
+			name: "YourData",
 			browser:{
 				leftPanelLabelWidth: 160,
 				rightPanelLabelWidth: 140,

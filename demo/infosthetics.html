@@ -33,7 +33,7 @@ $(document).ready( function(){
         rightPanelLabelWidth: 90,
         source: {
             gdocId: '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
-            sheets: [ {name:"Posts"}, {name:"Authors"} ]
+            sheets: ["Posts", "Authors"]
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
