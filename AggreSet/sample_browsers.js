@@ -21,7 +21,7 @@ var browser_configs = {
             itemName: "Les Misérables Chapters",
             source: {
                 gdocId: '1nMU5gL16rDXdDIDRs6bvTRMoUuhdd3vmeaVi2WVv0pE',
-                sheets: [ {name:"Chapters"},{name:"Characters"} ]
+                sheets: ["Chapters", "Characters"]
             },
             loadedCb: function(){
                 kshf.Util.cellToArray(kshf.dt.Chapters, ['Characters'], /,|;/g, false);
@@ -70,7 +70,7 @@ var browser_configs = {
             leftPanelLabelWidth: 140,
             rightPanelLabelWidth: 100,
             barChartWidth: 80,
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies_radialset"}] },
+            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "movies_radialset" },
             summaries: [
                 {   title: "Genres",
                     attribMap: function(){
@@ -111,7 +111,7 @@ var browser_configs = {
         browser: {
             leftPanelLabelWidth: 110,
             itemName: "Characters in the Simpsons",
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"simpsons"}] },
+            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "simpsons" },
             summaries: [
                 {   title: "Features",
                     attribMap: function(){
@@ -290,7 +290,7 @@ var browser_configs = {
             barChartWidth: 70,
             source: {
                 gdocId: '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
-                sheets: [ {name:"Breaches"} ]
+                sheets: "Breaches"
             },
             loadedCb: function(){
                 kshf.Util.cellToArray(kshf.dt.Breaches, ['Record Types'], ",", false);
@@ -324,7 +324,7 @@ var browser_configs = {
             itemName: "TED Talks",
             source: {
                 gdocId: '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
-                sheets: [ {name:"Talks"} ]
+                sheets: "Talks"
             },
             loadedCb: function(){
                 kshf.Util.cellToArray(kshf.dt.Talks, ['Feelings'],"+",false);
@@ -367,7 +367,7 @@ var browser_configs = {
                 url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/acm_",
                 fileType:'csv',
-                sheets: [{name:"papers"},{name:"keywords"},{name:"ccs98"}]
+                sheets: ["papers", "keywords", "ccs98"]
             },
             summaries: [
                 {   title: "Terms", layout: "middle",
@@ -407,7 +407,7 @@ var browser_configs = {
                 url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
                 dirPath: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/acm_",
                 fileType:'csv',
-                sheets:[{name:"papers"},{name:"keywords"},{name:"ccs98"}]
+                sheets:["papers", "keywords", "ccs98"]
             },
             summaries: [
                 {   title: "Keywords", layout: "middle",
@@ -557,7 +557,7 @@ var browser_configs = {
                 url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
                 dirPath: '../demo/data/',
                 fileType: 'csv',
-                sheets: [ {name: "cs_faculty"} ]
+                sheets: "cs_faculty"
             },
             summaries: [
                 {   title: "<i class='fa fa-globe'></i> Former Countries",
@@ -598,7 +598,7 @@ var browser_configs = {
                 url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
                 dirPath: '../demo/data/',
                 fileType: 'csv',
-                sheets: [ {name: "cs_faculty"} ]
+                sheets: "cs_faculty"
             },
             summaries: [
                 {   title: "<i class='fa fa-globe'></i> Universities Attanded",
@@ -727,7 +727,7 @@ var browser_configs = {
         browser: {
             leftPanelLabelWidth: 110,
             itemName: "Mutations",
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"gbm_mutated_top100"}] },
+            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "gbm_mutated_top100" },
             summaries: [
                 {   title: "Genes",
                     attribMap: function(d){
@@ -826,7 +826,7 @@ var browser_configs = {
             barChartWidth: 100,
             source: {
                 gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
-                sheets: [ {name: "Publications"}, {name: "Authors"}, {name: "AuthorTypes"} ]
+                sheets: ["Publications", "Authors", "AuthorTypes"]
             },
             loadedCb: function(){
                 kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
@@ -867,7 +867,7 @@ var browser_configs = {
             leftPanelLabelWidth: 100,
             rightPanelLabelWidth: 100,
             barChartWidth: 80,
-            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"movies"}] },
+            source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "movies" },
             summaries: [
                 {   title: "Genres",
                     attribMap: function(){
