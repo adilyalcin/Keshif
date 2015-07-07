@@ -75,11 +75,11 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Category", attribMap: "type",
+            {   title: "Category", value: "type",
                 catLabel: function(){ return getType(this.id)+" <span class='typeImg_"+this.id+"'></span>"; }
             },{ title: "Contributors",
-            },{ title: "Number of Related Posts", attribMap: function(){ return this.links.length; }//, showPercentile: true,
-            },{ title: "Related To", attribMap: "links", catTableName: "Posts", catLabel: "title"
+            },{ title: "Number of Related Posts", value: function(){ return this.links.length; }//, showPercentile: true,
+            },{ title: "Related To", value: "links", catTableName: "Posts", catLabel: "title"
             }
         ],
         itemDisplay: {

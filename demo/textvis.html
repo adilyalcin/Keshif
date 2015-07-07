@@ -66,7 +66,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Tasks: Analytics",
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="sentiment-analysis" ||
                             c==="text-summarization" ||
@@ -80,7 +80,7 @@ $(document).ready( function(){
                     });
                 }
             },{ title: "Tasks: Visualizations",
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="roi" ||
                             c==="classification" ||
@@ -92,19 +92,19 @@ $(document).ready( function(){
                     });
                 }
             },{ title: "Data: Sources", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="document" || c==="corpora" || c==="streams";
                     });
                 }
             },{ title: "Data: Properties", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="geospatial" || c==="time-series" || c==="networks";
                     });
                 }
             },{ title: "Domains",
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="social-media" ||
                             c==="communication" ||
@@ -116,13 +116,13 @@ $(document).ready( function(){
                     });
                 }
             },{ title: "Vis: Dimensionalities", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="1d" || c==="2d" || c==="3d";
                     });
                 }
             },{ title: "Vis: Representations", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="line-plot" ||
                             c==="pixel-area" ||
@@ -134,13 +134,13 @@ $(document).ready( function(){
                     });
                 }
             },{ title: "Vis: Alignments", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     return this.categories.filter(function(c){
                         return c==="radial" || c==="linear" || c==="metric";
                     });
                 }
             },{ title: "Year", layout: 'bottom', 
-                attribMap: function(){ return new Date(this.year,1,1); },
+                value: function(){ return new Date(this.year,1,1); },
             }
         ],
         itemDisplay: {

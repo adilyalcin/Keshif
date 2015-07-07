@@ -39,17 +39,17 @@ google.setOnLoadCallback(function(){
             },{ title: "Start Station", layout: 'left'
             },{ title: "End Station", layout: 'right'
             },{ title: "Total Duration", layout: 'bottom',
-                attribMap: function(){
+                value: function(){
                     return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
                 }, unitName: "min"
             },{ title: "Day of Month", layout: "bottom",
-                attribMap: function(){ return this["Start Time"].getDate(); },
+                value: function(){ return this["Start Time"].getDate(); },
             },{ title: "Day of Week", layout: "middle",
-                attribMap: function(){ return this["Start Time"].getDay(); },
-                sortingOpts: [ {value: "id"} ],
+                value: function(){ return this["Start Time"].getDay(); },
+                catSortBy: "id",
                 catLabel: function(){ return getDayNameFromNumber(this.id); }
             },{ title: "Trip Start Hour", layout: "bottom", collapsed: false,
-                attribMap: function(){ 
+                value: function(){ 
                     return this["Start Time"].getHours();
                 }, unitName: ":00"
             }

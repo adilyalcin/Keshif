@@ -36,7 +36,7 @@ $(document).ready( function(){
             // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
         },
         summaries: [
-            {   title: "City", attribMap: "city",
+            {   title: "City", value: "city",
                 catLabel: function(){
                     switch(this.id){
                         case 'ny': return "New York";
@@ -46,18 +46,18 @@ $(document).ready( function(){
                         case 'berlin': return "Berlin";
                     }
                 }
-            },{ title: "Sex", attribMap: "sex"
-            },{ title: "Age", attribMap: "age", showPercentile: true
-            },{ title: "Photo: Eyes Closed", attribMap: "eye_closed"
-            },{ title: "Photo: Mouth Open", attribMap: "mouth_open_wide", collapsed: true
-            },{ title: "Photo: Has Glasses", attribMap: "glasses"
+            },{ title: "Sex", value: "sex"
+            },{ title: "Age", value: "age", showPercentile: true
+            },{ title: "Photo: Eyes Closed", value: "eye_closed"
+            },{ title: "Photo: Mouth Open", value: "mouth_open_wide", collapsed: true
+            },{ title: "Photo: Has Glasses", value: "glasses"
             
-            },{ title: "Happyness", attribMap: "emotion_happy", layout: 'right', showPercentile: true
-            },{ title: "Calmness", attribMap: "emotion_calm", layout: 'right', type: 'interval', // TODO: Why need to define type?
-            },{ title: "Confusion", attribMap: "emotion_confused", layout: 'right', type: 'interval', // TODO: Why need to define type?
-            },{ title: "Sadness", attribMap: "emotion_sad", layout: 'right',
-            },{ title: "Anger", attribMap: "emotion_angry", collapsed: true, layout: 'right',
-            },{ title: "Disgust", attribMap: "emotion_disgust", collapsed: true, layout: 'right', type: 'interval'
+            },{ title: "Happyness", value: "emotion_happy", layout: 'right', showPercentile: true
+            },{ title: "Calmness", value: "emotion_calm", layout: 'right', type: 'interval', // TODO: Why need to define type?
+            },{ title: "Confusion", value: "emotion_confused", layout: 'right', type: 'interval', // TODO: Why need to define type?
+            },{ title: "Sadness", value: "emotion_sad", layout: 'right',
+            },{ title: "Anger", value: "emotion_angry", collapsed: true, layout: 'right',
+            },{ title: "Disgust", value: "emotion_disgust", collapsed: true, layout: 'right', type: 'interval'
             }
         ],
         itemDisplay: {

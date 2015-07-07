@@ -40,9 +40,9 @@ google.setOnLoadCallback(function(){
             {   title: "Categories"
             },{ title: "Credits", layout: 'right',
             },{ title: "Month", layout: 'right',
-                attribMap: function(){ if(this.Date) return this.Date.getMonth(); },
+                value: function(){ if(this.Date) return this.Date.getMonth(); },
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
-                sortingOpts: [{ value: "id" }],
+                catSortBy: "id",
             },{ title: "Date",  layout: 'bottom', 
             }
         ],

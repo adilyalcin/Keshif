@@ -35,12 +35,12 @@ $(document).ready( function() {
             sheets: "commencement-speeches"
         },
         summaries: [
-            {title: "Featured", attribMap: function(){ return this.featured!==""?"Featured":null}, layout: "right"},
-            {title: "University", attribMap: "school"},
+            {title: "Featured", value: function(){ return this.featured!==""?"Featured":null}, layout: "right"},
+            {title: "University", value: "school"},
             //{title: "img_source", collapsed: true},
-            {title: "Field", attribMap: "field", layout: "right"},
-            {title: "Tags", attribMap: "tags", layout: "right"},
-            {title: "Year", attribMap: "year", layout: "bottom", intervalScale: "linear", collapsed: true},
+            {title: "Field", value: "field", layout: "right"},
+            {title: "Tags", value: "tags", layout: "right"},
+            {title: "Year", value: "year", layout: "bottom", intervalScale: "linear", collapsed: true},
         ],
         itemDisplay: {
             sortColWidth: 70,

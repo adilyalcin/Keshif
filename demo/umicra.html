@@ -52,7 +52,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Study Type", description: "Venue where study was published"
             },{ title: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
             },{ title: "Summarized by MCEP", collapsed: true
-            },{ title: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); }
+            },{ title: "Year", layout: 'middle', value: function(){ return this.Date.getFullYear(); }
             }
         ],
         itemDisplay: {

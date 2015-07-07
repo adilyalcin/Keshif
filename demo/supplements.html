@@ -42,21 +42,21 @@ google.setOnLoadCallback(function(){
             kshf.Util.cellToArray(kshf.dt.apr_2011, ['condition', 'category'], /\b,\s+/, false);
         },
         summaries: [
-            {   title: "<i class='fa fa-heart'></i> Evidence", attribMap: "evidence",
+            {   title: "<i class='fa fa-heart'></i> Evidence", value: "evidence",
                 description: "Is there scientific evidence for its benefits on a specific health condition?"
             },{ title: "<i class='fa fa-eye'></i> Promising Results",
-                description: "Few studies but promising results", attribMap: "onetowatch",
+                description: "Few studies but promising results", value: "onetowatch",
                 catLabel: function(){ if(this.id==="OTW") return "Promising"; }
             },{ title: "<i class='fa fa-thumbs-up popularity_icon'></i> Popularity",
                 description: "Popularity based on Google search results",
-                attribMap: "popularity", intervalScale: "log",
-            },{ title: "<i class='fa fa-th-large type_icon'></i> Type", attribMap: "type",
+                value: "popularity", intervalScale: "log",
+            },{ title: "<i class='fa fa-th-large type_icon'></i> Type", value: "type",
                 description: "What type of substance is this?",
-            },{ title: "Health Categories", attribMap: "category",
+            },{ title: "Health Categories", value: "category",
                 description: "The type of condition", layout: 'right',
-            },{ title: "Health Conditions", attribMap: "condition",
+            },{ title: "Health Conditions", value: "condition",
                 description: "What condition does the supplement purport to affect?", layout: 'right',
-            },{ title: "Source", attribMap: "source", collapsed: true,
+            },{ title: "Source", value: "source", collapsed: true,
                 description: "The key study for grading the evidence", layout: 'right'
             }
         ],

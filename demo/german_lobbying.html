@@ -42,7 +42,7 @@ google.setOnLoadCallback(function(){
                 catTableName: "Politicians", catLabel: "Politician",
                 summaries: [{ title: "Department" }]
             },{ title: "Type", layout: 'right',
-                attribMap: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
+                value: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
                 catLabel: function(){ return this.id+" "+getIcon(this.id); }
             },{ title: "Organization", layout: 'right',
                 catTableName: "Organizations",

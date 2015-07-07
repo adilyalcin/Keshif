@@ -28,13 +28,11 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Characters",
-                    sortingOpts:[
-                        {name:"# of Occurances"},
+                    catSortBy: "# of Occurances",
         /*                {name:"Cluster", value: function(){ return kshf.dt_id.Characters[this.id].data[3];}} */
-                    ],
                     catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }
                 },{ title: "Volume", collapsed: true,
-                    sortingOpts: [{value: "id"}],
+                    catSortBy: "id",
                     catLabel: function(){ return "Volume "+this.id; }
                 }
             ],
@@ -73,7 +71,7 @@ var browser_configs = {
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "movies_radialset" },
             summaries: [
                 {   title: "Genres",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         for(var x in this){
                             if(x==="Name") continue;
@@ -86,9 +84,9 @@ var browser_configs = {
                         return r;
                     },
                     enableSetVis: true
-                },{ title: "Rating", attribMap: "AvgRating", layout: 'right'
-                },{ title: "Watched", attribMap: "Watches", layout: 'right', intervalScale: 'log'
-                },{ title: "Release Year", attribMap: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
+                },{ title: "Rating", value: "AvgRating", layout: 'right'
+                },{ title: "Watched", value: "Watches", layout: 'right', intervalScale: 'log'
+                },{ title: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
                 }
             ],
             itemDisplay: {
@@ -114,7 +112,7 @@ var browser_configs = {
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "simpsons" },
             summaries: [
                 {   title: "Features",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this.School===1) r.push("Goes to school");
                         if(this['Blue Hair']===1) r.push("Has blue hair");
@@ -371,7 +369,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Terms", layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         if(this.terms===undefined) return;
                         if(this.terms==="") return;
                         var r=[];
@@ -411,7 +409,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Keywords", layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         if(this.keywords===undefined) return;
                         if(this.keywords==="") return;
                         var r=[];
@@ -474,9 +472,9 @@ var browser_configs = {
             },
             summaries:[
                 {   title: "Samples",
-                    attribMap: function(){ return this[0]; },
-                    sortingOpts: [
-                        {   name: "# of Compounds"},
+                    value: function(){ return this[0]; },
+                    catSortBy: [
+                        "# of Compounds",
                         {   name: "Name",
                             func: function(a,b){
                                 a = a.data[1].split(' ');
@@ -491,7 +489,7 @@ var browser_configs = {
                     ]
                 },{ title: "Sharks",
                     description: "The compount appears with the shark if any sample taken from that shark includes that compound",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         this[0].forEach(function(sample){
                             r.push(sample.split(' ')[0]);
@@ -525,7 +523,7 @@ var browser_configs = {
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets:[{name:"socialgraph", id:"Name"}] },
             summaries:[
                 {   title: "Sets", layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this['Facebook']===1) r.push('Facebook');
                         if(this['Flickr']===1) r.push('Flickr');
@@ -562,7 +560,7 @@ var browser_configs = {
             summaries: [
                 {   title: "<i class='fa fa-globe'></i> Former Countries",
                     description: "For each CS faculty, lists the countries that s/he received her degrees from",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         a = this.Bachelors.split(" - ");
                         r.push(a[a.length-1].trim());
@@ -603,7 +601,7 @@ var browser_configs = {
             summaries: [
                 {   title: "<i class='fa fa-globe'></i> Universities Attanded",
                     description: "For each CS faculty, lists the countries that s/he received her degrees from",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this.Bachelors) r.push(this.Bachelors);
                         if(this.Masters) r.push(this.Masters);
@@ -701,7 +699,7 @@ var browser_configs = {
             summaries: [
                 {   title: "Votes",
                 },{ title: "Party",
-                    attribMap: function(){
+                    value: function(){
                         switch(this.Name.split(" ")[1].substr(1,1)){
                             case "D": return "Democrat";
                             case "R": return "Republican"
@@ -730,7 +728,7 @@ var browser_configs = {
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "gbm_mutated_top100" },
             summaries: [
                 {   title: "Genes",
-                    attribMap: function(d){
+                    value: function(d){
                         var r=[];
                         for(x in this){
                             if(x==="Identifier") continue;
@@ -766,7 +764,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Sets", layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this['']===1) r.push('');
                         if(this['Endogenous Protease Inhibitor']===1) r.push('Endogenous Protease Inhibitor');
@@ -802,7 +800,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Sets", layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         for(x in this){
                             if(x==="ALogP") continue;
@@ -833,7 +831,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Coauthors",
-                    attribMap: function(){
+                    value: function(){
                         var BEDERSON_ID = 3;
                         var authors = this.Coauthors;
                         // remove Ben Bederson's ID
@@ -870,7 +868,7 @@ var browser_configs = {
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "movies" },
             summaries: [
                 {   title: "Genres",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         for(var x in this){
                             if(x==="Name") continue;
@@ -883,9 +881,9 @@ var browser_configs = {
                         return r;
                     },
                     enableSetVis: true
-                },{ title: "Rating", attribMap: "AvgRating", layout: 'right'
-                //},{ title: "Watched", attribMap: "Watches", layout: 'right', intervalScale: 'log', collapsed: true
-                //},{ title: "Release Year", attribMap: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
+                },{ title: "Rating", value: "AvgRating", layout: 'right'
+                //},{ title: "Watched", value: "Watches", layout: 'right', intervalScale: 'log', collapsed: true
+                //},{ title: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
                 }
             ],
             itemDisplay: {

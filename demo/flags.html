@@ -63,7 +63,7 @@ $(document).ready( function(){
                     }
                 }
             },{ title: "Language",
-                attribMap: function(){ return (this.Language===9)?10:this.Language; },
+                value: function(){ return (this.Language===9)?10:this.Language; },
                 catLabel: function(){
                     switch(this.id){
                         case 1: return "English";
@@ -95,14 +95,14 @@ $(document).ready( function(){
                     }
                 }
             },{ title: "Flag Date", layout: 'left',
-                attribMap: function(){
+                value: function(){
                     if(this.Independence==="") return;
                     if(this.Independence===null) return;
                     if(this.Independence===undefined) return;
                     return new Date(moment(this.Independence,"MM/DD/YYYY"));
                 }
             },{ title: "Flag Color",  layout: 'right',
-                attribMap: function(){
+                value: function(){
                     var toRet = [];
                     if(this.Red) toRet.push("Red");
                     if(this.Green) toRet.push("Green");
@@ -114,7 +114,7 @@ $(document).ready( function(){
                     return toRet;
                 },
             },{ title: "Flag Shape", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     var toRet = [];
                     if(this.Circles) toRet.push("Circle");
                     if(this.Crosses) toRet.push("Crosses");
@@ -125,11 +125,11 @@ $(document).ready( function(){
                     if(this.Triangle) toRet.push("Triangle");
                     return toRet;
                 },
-            },{ title: "Number of Bars", attribMap: "Bars", layout: 'right'
+            },{ title: "Number of Bars", value: "Bars", layout: 'right'
             },{ title: "Number of Stripes", layout: 'right', unitName: "strp",
-                attribMap: function(){ if(this.Stripes!==0) return this.Stripes; }
+                value: function(){ if(this.Stripes!==0) return this.Stripes; }
             },{ title: "Other", collapsed: true, layout: 'right',
-                attribMap: function(){
+                value: function(){
                     var toRet = [];
                     if(this.Text!==0) toRet.push("Text");
                     if(this.Icon!==0) toRet.push("Icon");

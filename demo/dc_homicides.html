@@ -45,12 +45,12 @@ $(document).ready( function(){
             callback: dataLoad
         },
         summaries: [
-            {   title: "Age", attribMap: "age"
-            },{ title: "Race", attribMap: "race"
-            },{ title: "Sex", attribMap: "sex",
+            {   title: "Age", value: "age"
+            },{ title: "Race", value: "race"
+            },{ title: "Sex", value: "sex",
                 catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id);
             }
-            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', attribMap: "quadrant",
+            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', value: "quadrant",
                 catLabel: function(){
                     switch(this.id){
                         case "SE": return "South-East";
@@ -60,19 +60,19 @@ $(document).ready( function(){
                     }
                 }
             },{ title: "Neighborhood", layout: 'right',
-                attribMap: function(){ if(this.nbhd) return this.nbhd.subhood; }
+                value: function(){ if(this.nbhd) return this.nbhd.subhood; }
             },{ title: "Status", layout: 'right',
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     r.push("Police Status: "+this.police_status.name);
                     if(this.jury_trial) r.push("Had jury trial");
                     return r;
                 }
-            },{ title: "Cases with +2 victims", layout: 'right', attribMap: "ccn", minAggrValue:2, collapsed: true
-            },{ title: "Manner", attribMap: function(){ return this.manner.name; }
-            },{ title: "Motive", attribMap: function(){ return this.motive.name; }
+            },{ title: "Cases with +2 victims", layout: 'right', value: "ccn", minAggrValue:2, collapsed: true
+            },{ title: "Manner", value: function(){ return this.manner.name; }
+            },{ title: "Motive", value: function(){ return this.motive.name; }
             },{ title: "Incident Date", layout: "bottom",
-                attribMap: function(){ if(this.incident_date.getFullYear()>=2000) return this.incident_date; }
+                value: function(){ if(this.incident_date.getFullYear()>=2000) return this.incident_date; }
             }
         ],
         itemDisplay: {

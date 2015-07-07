@@ -66,11 +66,11 @@ google.setOnLoadCallback( function(){
             {   title: "Road Type", catTableName: "RoadType", catLabel: "name"
             },{ title: "Severity", catTableName: "Severity", catLabel: "name"
             },{ title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
-            },{ title: "Time of Day", attribMap: function(){ return this['Time of Day'].getHours(); },
+            },{ title: "Time of Day", value: function(){ return this['Time of Day'].getHours(); },
                 layout: "middle", unitName: ":00"
             },{ title: "# of Vehicles", layout: 'middle'
             },{ title: "Speed Limit", layout: 'middle', 
-                sortingOpts: [{ value: 'id' }],
+                catSortBy: "id",
                 catLabel: function(){ return this.id+"mph"}//, unitName: "mph"
             },{ title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right'
             },{ title: "Light Condition", catTableName: "LightCond", catLabel: "name"

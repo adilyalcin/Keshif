@@ -156,7 +156,7 @@ $(document).ready( function(){
             },{ title: "Subject", 
 //            },{ title: "Author", 
             },{ title: "Date", layout: 'middle', 
-                attribMap: function(){
+                value: function(){
                     if(this.Date===null) return;
                     var y= this.Date.getFullYear();
                     if(y<1990) return;

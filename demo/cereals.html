@@ -26,7 +26,7 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Brand",
-                sortingOpts: [{ func: function(a,b){ return a.id().localeCompare(b.id());} }]
+                catSortBy: { func: function(a,b){ return a.id().localeCompare(b.id());} } // String sorting!
             },{ title: "Type"
             },{ title: "Shelf Level",
                 catLabel: function(){
@@ -38,13 +38,13 @@ google.setOnLoadCallback(function(){
                 }
             },{ title: "Rating", layout: 'middle', showPercentile: true, description: "Reported by Consumer Reports"
             },{ title: "Calories", layout: 'right', showPercentile: true
-            },{ title: "Protein", attribMap: "Protein (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Fat", attribMap: "Fat (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Carb", attribMap: "Carbo (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Sugar", attribMap: "Sugar (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Sodium", attribMap: "Sodium (mg)", unitName: "gr", showPercentile: true,
-            },{ title: "Fiber", attribMap: "Fiber (gr)", unitName: "gr", showPercentile: true,
-            },{ title: "Potasium", attribMap: "Potassium (mg)", unitName: "mg", showPercentile: true,
+            },{ title: "Protein", value: "Protein (gr)", layout: 'right', unitName: "gr", showPercentile: true
+            },{ title: "Fat", value: "Fat (gr)", layout: 'right', unitName: "gr", showPercentile: true
+            },{ title: "Carb", value: "Carbo (gr)", layout: 'right', unitName: "gr", showPercentile: true
+            },{ title: "Sugar", value: "Sugar (gr)", layout: 'right', unitName: "gr", showPercentile: true
+            },{ title: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true,
+            },{ title: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true,
+            },{ title: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true,
 			},{ title: "Vitamins", layout: 'middle', showPercentile: true,  collapsed: true,
             }
         ],

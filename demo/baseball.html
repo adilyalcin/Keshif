@@ -49,29 +49,29 @@ $(document).ready(function() {
         summaries: [
             {   title: "Trans. Type",
                 catLabel: function(){ return kshf.dt_id.baseball_trantype[this.id].data.info; }
-            },{ title: "From: Team", attribMap: "From Team",
+            },{ title: "From: Team", value: "From Team",
                 catTableName: "baseball_teams", catLabel: "name",
             },{ title: "From: League",
                 catTableName: "baseball_leagues", catLabel: "name",
-                attribMap: function(){
+                value: function(){
                     var x = this['From Team'];
                     if(x==="") return null;
                     return kshf.dt_id.baseball_teams[x].data.league;
                 }
-            },{ title: "To: Team", attribMap: "To Team", layout: 'right',
+            },{ title: "To: Team", value: "To Team", layout: 'right',
                 catTableName: "baseball_teams", catLabel: "name",
             },{ title: "To: League", layout: 'right',
                 catTableName: "baseball_leagues", catLabel: "name",
-                attribMap: function(){
+                value: function(){
                     var x = this['To Team'];
                     if(x!=="") return kshf.dt_id.baseball_teams[x].data.league;
                 }
             },{ title: "Transaction Date", layout: "bottom",
-                attribMap: function(){ 
+                value: function(){ 
                     var dt = this['primary-date'];
                     if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
                 }
-            },{ title: "Player", attribMap: "player", layout: "middle", minAggrValue: 2
+            },{ title: "Player", value: "player", layout: "middle", minAggrValue: 2
             }
         ],
         itemDisplay: {

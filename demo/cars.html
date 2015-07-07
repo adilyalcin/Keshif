@@ -34,15 +34,15 @@ google.setOnLoadCallback(function(){
                         case 3: return "Japanese";
                     }
                 }
-            },{ title: "Cyclinders", sortingOpts: [{ value:"id"}]
+            },{ title: "Cyclinders", catSortBy: "id"
             },{ title: "MPG"
             },{ title: "Engine Displacement", unitName: "cu.\"", layout: 'right'
             },{ title: "Horsepower", layout: 'right'
             },{ title: "Weight", unitName: "lbs", layout: 'right'
             },{ title: "Acceleration", description: "0 to 60 mph", unitName: "sec"
-            },{ title: "Year", layout: "bottom", attribMap: function(){ return new Date(this.Year,1,1);}
+            },{ title: "Year", layout: "bottom", value: function(){ return new Date(this.Year,1,1);}
             },{ title: "RecordView", layout: "none", 
-                attribMap: function(){ 
+                value: function(){ 
                     // Adding the last ID part to make it unique per car
                     return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>";
                 }

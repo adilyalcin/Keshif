@@ -36,9 +36,7 @@ $(document).ready( function(){
             },{ title: "Access", collapsed: true
             },{ title: "Status"
             },{ title: "Released Year", layout: "middle", collapsed: true, 
-                attribMap: function(){
-                    return dateFormat.parse(this.released);
-                }
+                value: function(){ return dateFormat.parse(this.released); }
             }
         ],
         itemDisplay: {

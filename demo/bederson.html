@@ -59,7 +59,7 @@ google.setOnLoadCallback(function() {
         summaries: [
             {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
             },{ title: "Couthors",
-                attribMap: function(){
+                value: function(){
                     return this.Coauthors.filter(function(coAuth){
                         return coAuth!=="3" && coAuth!==3;
                     });
@@ -68,7 +68,7 @@ google.setOnLoadCallback(function() {
                 catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
                 catTooltip: function(){ return this.first_names+" "+this.last_name; },
             },{ title: "Coauthor Types",
-                attribMap: function(){
+                value: function(){
                     var types = [];
                     this.Coauthors.filter(function(coAuth){
                         return coAuth!=="3" && coAuth!==3;
@@ -81,7 +81,7 @@ google.setOnLoadCallback(function() {
                 },
                 catTableName: "AuthorTypes",
                 catLabel: "keyword"
-            },{ title: "Publication Type", attribMap: "type",
+            },{ title: "Publication Type", value: "type",
                 catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; }
             },{ title: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true,
             },{ title: "Date", layout: 'middle'

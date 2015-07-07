@@ -62,66 +62,66 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Type",
-                attribMap: function(){
+                value: function(){
                     var metadata = dt_metadata[this.id];
                     if(metadata) return metadata.data.Type;
                 }
             },{ title: "Genre",
-                attribMap: function(){
+                value: function(){
                     var metadata = dt_metadata[this.id];
                     if(metadata) return metadata.data.Genres;
                 }
             },{ title: "Features",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this['Public Domain']) r.push('Public Domain');
                     if(this['Featured']) r.push('Featured');
                     return r;
                 }
-            },{ title: "Number of Pages", attribMap: "Pages", collapsed: true,
+            },{ title: "Number of Pages", value: "Pages", collapsed: true,
             },{ title: "Rating",
-                attribMap: function(){ return getIndicesWithParent(this,71); },
+                value: function(){ return getIndicesWithParent(this,71); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true,
             },{ title: "Feeling",
-                attribMap: function(){ return getIndicesWithParent(this,5); },
+                value: function(){ return getIndicesWithParent(this,5); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Language",
-                attribMap: function(){ return getIndicesWithParent(this,3); },
+                value: function(){ return getIndicesWithParent(this,3); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Age",
-                attribMap: function(){ return getIndicesWithParent(this,83); },
+                value: function(){ return getIndicesWithParent(this,83); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Audience: Collection",
-                attribMap: function(){ return getIndicesWithParent(this,473); },
+                value: function(){ return getIndicesWithParent(this,473); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed:true
             },{ title: "Audience: Publication Date",
-                attribMap: function(){ return getIndicesWithParent(this,326); },
+                value: function(){ return getIndicesWithParent(this,326); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Appearance: Format", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,15); },
+                value: function(){ return getIndicesWithParent(this,15); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Appearance: Length", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,260); },
+                value: function(){ return getIndicesWithParent(this,260); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Appearance: Cover Color", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,4); },
+                value: function(){ return getIndicesWithParent(this,4); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Appearance: Shape", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,6); },
+                value: function(){ return getIndicesWithParent(this,6); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Content: Countries", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,359); },
+                value: function(){ return getIndicesWithParent(this,359); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Content: Characters", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,257); },
+                value: function(){ return getIndicesWithParent(this,257); },
                 catTableName: "Indices", catLabel: "Attribute",
             },{ title: "Content: Time Periods - When", layout: 'right',
-                attribMap: function(){ return getIndicesWithParent(this,287); },
+                value: function(){ return getIndicesWithParent(this,287); },
                 catTableName: "Indices", catLabel: "Attribute",
                 collapsed: true
             },{ title: "Date Added", layout: "bottom", collapsed: true

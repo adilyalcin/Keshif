@@ -61,9 +61,9 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Tag", attribMap: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1
-            },{ title: "Author", attribMap: function(){ return this[6]; }, collapsed: true,
-            },{ title: "Time", attribMap: function(){ return new Date(this[7]); }, layout: "bottom",
+            {   title: "Tag", value: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1
+            },{ title: "Author", value: function(){ return this[6]; }, collapsed: true,
+            },{ title: "Time", value: function(){ return new Date(this[7]); }, layout: "bottom",
             }
         ],
         itemDisplay: {

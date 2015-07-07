@@ -120,19 +120,19 @@ $(document).ready(function() {
             ]
         },*/
         summaries: [
-            {   title: "Capture Link Source", collapsed: true, attribMap: columns[7]
+            {   title: "Capture Link Source", collapsed: true, value: columns[7]
             },{ title: "Area of Interest",
                 description: "Which of the following best describes your area of interest?",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[8]]!==null && this[columns[9]]===null && this[columns[10]]===null) r.push(this[columns[8]]);
                     if(this[columns[9]]!==null) r.push("Other NaturalSci.: "+this[columns[9]]);
                     if(this[columns[10]]!==null) r.push("Other SocialSci.: "+this[columns[10]]);
                     return r;
                 }
-            },{ title: "Age", attribMap: columns[12],
+            },{ title: "Age", value: columns[12],
                 description: "What is your age?",
-                sortingOpts: [{ value: function(){
+                catSortBy: function(){
                     switch(this.id){
                         case "18 - 24": return 0;
                         case "25 - 34": return 1;
@@ -141,12 +141,12 @@ $(document).ready(function() {
                         case "55 - 64": return 4;
                         case "65 or over": return 5;
                     }
-                } }]
-            },{ title: "Continent", attribMap: columns[13], collapsed: true,
+                }
+            },{ title: "Continent", value: columns[13], collapsed: true,
                 description: "In which continent do you live?",
             },{ title: "Country",
                 description: "In which country do you live?",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[14]]!==null) r.push(this[columns[14]]);
                     if(this[columns[15]]!==null) r.push(this[columns[15]]);
@@ -158,7 +158,7 @@ $(document).ready(function() {
                 }
             },{ title: "Industry",
                 description: "Which category best describes your industry?",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[20]]!==null && this[columns[21]]===null) r.push(this[columns[20]]);
                     if(this[columns[21]]!==null) r.push("Other: "+this[columns[21]]);
@@ -166,21 +166,21 @@ $(document).ready(function() {
                 }
             },{ title: "Job Title",
                 description: "Which job title best applies to you?",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[22]]!==null && this[columns[23]]===null) r.push(this[columns[22]]);
                     if(this[columns[23]]!==null) r.push("Other: "+this[columns[23]]);
                     return r;
                 }
-            },{ title: "Research Webpage", attribMap: columns[24], collapsed: true, layout: 'right',
+            },{ title: "Research Webpage", value: columns[24], collapsed: true, layout: 'right',
                 description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?"
-            },{ title: "Self-Maintained R. Webpage", attribMap: columns[25], collapsed: true, layout: 'right',
+            },{ title: "Self-Maintained R. Webpage", value: columns[25], collapsed: true, layout: 'right',
                 description: "Do you personally edit/update this? (research webpage)"
-            },{ title: "Written online research posts", attribMap: columns[26], layout: 'right',
+            },{ title: "Written online research posts", value: columns[26], layout: 'right',
                 description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
             },{ title: "Social Network - Awareness", layout: 'right',
                 description: "\"I am aware of this site.\"",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[27]]!=="NotAware") r.push("Twitter");
                     if(this[columns[28]]!=="NotAware") r.push("Facebook");
@@ -203,7 +203,7 @@ $(document).ready(function() {
                 }
             },{ title: "Social Network - Regular Use", layout: 'right',
                 description: "\"I visit this site regularly.\"",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[27]]==="Aware,Regular") r.push("Twitter");
                     if(this[columns[28]]==="Aware,Regular") r.push("Facebook");
@@ -225,7 +225,7 @@ $(document).ready(function() {
                     return r;
                 }
             },{ title: "Comment Length",
-                attribMap: function(){ 
+                value: function(){ 
                     if(this[columns[11]]===null) return;
                     if(this[columns[11]].length===0) return;
                     return this[columns[11]].length; 
@@ -236,7 +236,7 @@ $(document).ready(function() {
             },{ title: "Information Publicly Shared",
                 description: "What professional information do you make publicly available online?",
                 layout: 'right',
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this[columns[44]]===1) r.push("Contact details");
                     if(this[columns[45]]===1) r.push("Areas of expertise");
@@ -253,16 +253,16 @@ $(document).ready(function() {
                 }
             },{ title: "\"... Profiles are useful\"", collapsed: true,
                 description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
-                layout: 'right', attribMap: columns[53], 
-                sortingOpts: [{ value: likertSort }]
+                layout: 'right', value: columns[53], 
+                catSortBy: likertSort
             },{ title: "\"... I need to promote more online\"", collapsed: true,
                 description: "\"I feel I should probably do more to promote my research using online networks\"",
-                layout: 'right', attribMap: columns[54], 
-                sortingOpts: [{ value: likertSort }]
-            },{ title: "\"... Profiles are not important\"", attribMap: columns[55], collapsed: true,
+                layout: 'right', value: columns[54], 
+                catSortBy: likertSort
+            },{ title: "\"... Profiles are not important\"", value: columns[55], collapsed: true,
                 description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
                 layout: 'right',
-                sortingOpts: [{ value: likertSort }]
+                catSortBy: likertSort
             }
         ],
         itemDisplay: {

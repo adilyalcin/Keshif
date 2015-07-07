@@ -35,13 +35,13 @@ $(document).ready( function() {
             sheets: "pitchfork_reviews"
         },
         summaries: [
-            {   title: "Highlights", attribMap: function(){ if(this.accolade!=="None") return this.accolade; }
-            },{ title: "Artist", attribMap: "artist", minAggrValue: 4
-            },{ title: "Label", attribMap: "label", minAggrValue: 3
+            {   title: "Highlights", value: function(){ if(this.accolade!=="None") return this.accolade; }
+            },{ title: "Artist", value: "artist", minAggrValue: 4
+            },{ title: "Label", value: "label", minAggrValue: 3
             },{ title: "Release Year",  layout: "bottom",
-                attribMap: function(){ return new Date(this.release_year,1,1);}
-            },{ title: "Score", attribMap:"score", layout:'right'
-            },{ title: "reviewer", attribMap: "reviewer", layout: "right"
+                value: function(){ return new Date(this.release_year,1,1);}
+            },{ title: "Score", value:"score", layout:'right'
+            },{ title: "reviewer", value: "reviewer", layout: "right"
             }
         ],
         itemDisplay: {

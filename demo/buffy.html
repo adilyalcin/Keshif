@@ -124,33 +124,33 @@ $(document).ready(function(){
         },
         summaries: [
             {   title: "Episode", layout: 'middle',
-                sortingOpts: [{ value: "ep_id" }],
+                catSortBy: "ep_id",
                 catTableName: "Episodes", catTooltip: "Synopsis",
                 catLabel: function(){ return this.Name+" <i>[Ep."+this.ep_id+"]</i>"; },
                 facets:[
                     {   title: "Dead Count (Total)", collapsed: true,
-                        attribMap: function(){ return this.bodycount.total; }
+                        value: function(){ return this.bodycount.total; }
                     },{ title: "Dead Count (Humans)", collapsed: true,
-                        attribMap: function(){ return this.bodycount.humans; }
+                        value: function(){ return this.bodycount.humans; }
                     },{ title: "Dead Count (Vampires)", collapsed: true,
-                        attribMap: function(){ return this.bodycount.vampires; }
+                        value: function(){ return this.bodycount.vampires; }
                     },{ title: "Dead Count (Demons)", collapsed: true,
-                        attribMap: function(){ return this.bodycount.demons; }, 
+                        value: function(){ return this.bodycount.demons; }, 
                     },{ title: "Dead Count (Animals)", collapsed: true,
-                        attribMap: function(){ return this.bodycount.animals; },
+                        value: function(){ return this.bodycount.animals; },
                     }
                 ]
             },{ title: "Location", layout: 'middle'
             },{ title: "Characters",
-                attribMap: "Appears",
+                value: "Appears",
                 catTableName: "Characters",
                 catLabel: function(){ 
                     return this.Name+"<img src='./img/buffy/"+this.char_id+".jpg' class='charImg'>";
                 },
                 facets: [
                     {   title: "Episodic Appearance", collapsed: true,
-                        sortingOpts: [{ value: "id" }],
-                        attribMap: function(){
+                        catSortBy: "id",
+                        value: function(){
                             if(this.episode===undefined) return 0; // --> Many 
                             return this.episode;
                         },
@@ -163,7 +163,7 @@ $(document).ready(function(){
                     }
                 ]
             },{ title: "Time (Minutes into the episode)", unitName: "min", layout: "bottom",
-                attribMap: function(){ return this.second/60; },
+                value: function(){ return this.second/60; },
             }
         ]
     });

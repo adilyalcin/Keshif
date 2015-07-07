@@ -97,11 +97,11 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title: "<i class='fa fa-globe'></i> National Cuisine", layout: "middle",
                 description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
-                attribMap: 'National Cuisine'
-            },{ title: "<i class='fa fa-spoon'></i> Food Types", attribMap: 'Food Types', layout: "middle"
+                value: 'National Cuisine'
+            },{ title: "<i class='fa fa-spoon'></i> Food Types", value: 'Food Types', layout: "middle"
             },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins", layout: 'right',
                 description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
-                attribMap: function(){
+                value: function(){
                     var r=this['Pathogens / Toxins'];
                     var a=[r];
                     if(r==undefined || r===null) return r;
@@ -109,10 +109,10 @@ google.setOnLoadCallback(function(){
                     return a;
                 }
             },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors",  layout: 'right',
-                attribMap: 'Contributing Factors'
+                value: 'Contributing Factors'
             },{ title: "<i class='fa fa-coffee'></i> Setting",  layout:'right',
                 description: "Dataset only includes details about outbreaks in restaurant settings",
-                attribMap: 'Setting'
+                value: 'Setting'
             }
         ],
     });

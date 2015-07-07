@@ -37,10 +37,10 @@ google.setOnLoadCallback(function(){
             },{ title: "Player"
             },{ title: "Injury",layout: 'right'
             },{ title: "Season", layout: 'right',
-                sortingOpts: [{ value: function(){ return parseInt(this.id.substr(0,4)); } }],
+                catSortBy: function(){ return parseInt(this.id.substr(0,4)); },
             },{ title: "Month", layout: 'right', collapsed: true,
-                attribMap: function(){ return this.Date.getMonth(); },
-                sortingOpts: [{ value: "id" }],
+                value: function(){ return this.Date.getMonth(); },
+                catSortBy: "id",
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
             },{ title: "Date", layout: 'bottom'
             }

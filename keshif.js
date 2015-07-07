@@ -3304,30 +3304,37 @@ kshf.Browser.prototype = {
         this.options.facets = this.options.facets || [];
 
         this.options.facets.forEach(function(facetDescr){
-            if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.sortingOpts){
+            if(facetDescr.sortingOpts){
+                facetDescr.catSortBy = facetDescr.sortingOpts
+            }
+            if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.catSortBy){
                 facetDescr.type="categorical";
             } else if(facetDescr.intervalScale || facetDescr.showPercentile || facetDescr.unitName ){
                 facetDescr.type="interval";
             }
 
+            if(facetDescr.attribMap){
+                facetDescr.value = facetDescr.attribMap;
+            }
+
             var summary = this.summaries_by_name[facetDescr.title];
             if(summary===undefined){
-                if(typeof(facetDescr.attribMap)==="string"){
-                    var summary = this.summaries_by_name[facetDescr.attribMap];
+                if(typeof(facetDescr.value)==="string"){
+                    var summary = this.summaries_by_name[facetDescr.value];
                     if(summary===undefined){
-                        summary = this.createSummary(facetDescr.attribMap);
+                        summary = this.createSummary(facetDescr.value);
                     }
-                    summary = this.changeSummaryName(facetDescr.attribMap,facetDescr.title);
-                } else if(typeof(facetDescr.attribMap)==="function"){
-                    summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
+                    summary = this.changeSummaryName(facetDescr.value,facetDescr.title);
+                } else if(typeof(facetDescr.value)==="function"){
+                    summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
                 } else{
                     return;
                 }
             } else {
-                if(facetDescr.attribMap){
+                if(facetDescr.value){
                     // Requesting a new summarywith the same name.
                     summary.destroy();
-                    summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
+                    summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
                 }
             }
 
@@ -3335,15 +3342,15 @@ kshf.Browser.prototype = {
                 facetDescr.type = facetDescr.type.toLowerCase();
                 if(facetDescr.type!==summary.type){
                     summary.destroy();
-                    if(facetDescr.attribMap===undefined){
-                        facetDescr.attribMap = facetDescr.title;
+                    if(facetDescr.value===undefined){
+                        facetDescr.value = facetDescr.title;
                     }
-                    if(typeof(facetDescr.attribMap)==="string"){
-                        summary = this.createSummary(facetDescr.attribMap,null,facetDescr.type);
-                        if(facetDescr.attribMap!==facetDescr.title)
-                            this.changeSummaryName(facetDescr.attribMap,facetDescr.title);
-                    } else if(typeof(facetDescr.attribMap)==="function"){
-                        summary = this.createSummary(facetDescr.title,facetDescr.attribMap,facetDescr.type);
+                    if(typeof(facetDescr.value)==="string"){
+                        summary = this.createSummary(facetDescr.value,null,facetDescr.type);
+                        if(facetDescr.value!==facetDescr.title)
+                            this.changeSummaryName(facetDescr.value,facetDescr.title);
+                    } else if(typeof(facetDescr.value)==="function"){
+                        summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
                     }
                     // TODO!
                     // summary.updateSummaryDataType();
@@ -3377,7 +3384,7 @@ kshf.Browser.prototype = {
                 }
                 summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
                 if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
-                if(facetDescr.sortingOpts!==undefined) summary.setSortingOpts(facetDescr.sortingOpts);
+                if(facetDescr.catSortBy!==undefined) summary.setSortingOpts(facetDescr.catSortBy);
 
                 if(facetDescr.layout!=="none"){
                     facetDescr.layout = facetDescr.layout || 'left';
@@ -4561,7 +4568,7 @@ var Summary_Categorical_functions = {
         this.minAggrValue=1;
         this.removeInactiveCats = true;
 
-        this.sortingOpts = []; // matAttribs somehow wants to see the array. Make it easy for now
+        this.catSortBy = [];
 
         this.isLinked = false; // TODO: document / update
 
@@ -4580,7 +4587,7 @@ var Summary_Categorical_functions = {
             return false; // Cannot initialize, table not defined.
         }
         this.mapToAggregates();
-        if(this.sortingOpts.length===0) this.setSortingOpts();
+        if(this.catSortBy.length===0) this.setSortingOpts();
         if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
 
         this.aggr_initialized = true;
@@ -4644,7 +4651,7 @@ var Summary_Categorical_functions = {
         var r=0;
         if(this.configRowCount!=0) r+=1; // bottom border : 1 px
         if(this.showTextSearch) r+=18;
-        if(this.sortingOpts.length>1) r+=17;
+        if(this.catSortBy.length>1) r+=17;
         return r;
     },
     /** -- */
@@ -4706,12 +4713,22 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     setSortingOpts: function(opts){
-        this.sortingOpts = opts || [{}];
-        this.sortingOpts.forEach(function(opt){
+        this.catSortBy = opts || {};
+        if(!Array.isArray(this.catSortBy)){
+            this.catSortBy = [this.catSortBy];
+        }
+
+        this.catSortBy.forEach(function(opt,i){
+            if(typeof opt==="string" || typeof opt==="function"){
+                this.catSortBy[i] = {value: opt};
+            }
+        },this);
+
+        this.catSortBy.forEach(function(opt){
             this.prepareSortingOption(opt);
         },this);
 
-        this.sortingOpt_Active = this.sortingOpts[0];
+        this.catSortBy_Active = this.catSortBy[0];
 
         this.updateCatSorting(0,true,true);
         this.refreshSortOptions();
@@ -4974,7 +4991,7 @@ var Summary_Categorical_functions = {
             // TODO: FIX!!!
             var facetDescr = {
                 title:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryTitle,
-                attribMap: function(d){
+                value: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;
                     return arr.length;
@@ -5014,7 +5031,7 @@ var Summary_Categorical_functions = {
             this.catBarScale = "scale_frequency";
         }
         if(this.catCount_Total<=4) {
-            this.sortingOpts.forEach(function(opt){ opt.no_resort=true; });
+            this.catSortBy.forEach(function(opt){ opt.no_resort=true; });
         }
         this.showTextSearch = this.catCount_Total>=20;
     },
@@ -5077,7 +5094,7 @@ var Summary_Categorical_functions = {
         if(this.showTextSearch){
             this.configRowCount++;
         }
-        if(this.sortingOpts.length>1) {
+        if(this.catSortBy.length>1) {
             this.configRowCount++;
         }
         if(this.configRowCount>0){
@@ -5192,7 +5209,7 @@ var Summary_Categorical_functions = {
                     me.dirtySort = false;
                     me.DOM.root.attr("refreshSorting",false);
                 } else{
-                    me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+                    me.catSortBy_Active.inverse = me.catSortBy_Active.inverse?false:true;
                     me.refreshSortButton();
                 }
                 me.updateCatSorting(0,true);
@@ -5215,7 +5232,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.optionSelect = x.append("select").attr("class","optionSelect")
             .on("change", function(){
-                me.sortingOpt_Active = me.sortingOpts[this.selectedIndex];
+                me.catSortBy_Active = me.catSortBy[this.selectedIndex];
                 me.refreshSortButton();
                 me.updateCatSorting(0,true);
                 if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
@@ -5227,9 +5244,9 @@ var Summary_Categorical_functions = {
     refreshSortButton: function(){
         if(this.DOM.catSortButton===undefined) return;
         this.DOM.catSortButton
-            //.style("display",(this.sortingOpt_Active.no_resort?"none":"inline-block"))
+            //.style("display",(this.catSortBy_Active.no_resort?"none":"inline-block"))
             .style("display","inline-block")
-            .attr("inverse",this.sortingOpt_Active.inverse);
+            .attr("inverse",this.catSortBy_Active.inverse);
     },
     /** -- */
     refreshSortOptions: function(){
@@ -5237,12 +5254,12 @@ var Summary_Categorical_functions = {
 
         this.refreshConfigRowCount();
 
-        this.DOM.optionSelect.style("display", (this.sortingOpts.length>1)?"block":"none" );
+        this.DOM.optionSelect.style("display", (this.catSortBy.length>1)?"block":"none" );
 
         this.DOM.optionSelect.selectAll(".sort_label").data([]).exit().remove(); // remove all existing options
 
         var x= this.DOM.optionSelect.selectAll(".sort_label")
-            .data(this.sortingOpts)
+            .data(this.catSortBy)
             .enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
     },
     /** -- */
@@ -6220,11 +6237,11 @@ var Summary_Categorical_functions = {
     /** -- */
     sortCategories: function(){
         var me = this;
-        var inverse = this.sortingOpt_Active.inverse;
-        var sortFunc = this.sortingOpt_Active.func;
-        var valueFunc = this.sortingOpt_Active.value;
+        var inverse = this.catSortBy_Active.inverse;
+        var sortFunc = this.catSortBy_Active.func;
+        var valueFunc = this.catSortBy_Active.value;
 
-        if(this.sortingOpt_Active.prep) this.sortingOpt_Active.prep.call(this);
+        if(this.catSortBy_Active.prep) this.catSortBy_Active.prep.call(this);
 
         // idCompareFunc can be based on integer or string comparison
         var idCompareFunc = function(a,b){return b-a;};
@@ -6249,7 +6266,7 @@ var Summary_Categorical_functions = {
             if(inverse) x=-x;
             return x;
         };
-        if(this.sortingOpt_Active.custom){
+        if(this.catSortBy_Active.custom){
             theSortFunc = function(a,b){
                 var v_a = valueFunc.call(a.data,a);
                 var v_b = valueFunc.call(b.data,b);
@@ -6284,7 +6301,7 @@ var Summary_Categorical_functions = {
         if(this._cats===undefined) return;
         if(this._cats.length===0) return;
         if(this.uniqueCategories()) return; // Nothing to sort...
-        if(this.sortingOpt_Active.no_resort===true && force!==true) return;
+        if(this.catSortBy_Active.no_resort===true && force!==true) return;
         if(this.removeInactiveCats){
             this.updateCatCount_Visible();
         }

@@ -160,88 +160,86 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Groups", collapsed: false,
-            },{ title: "Undergraduate enrollment", attribMap: "DRVEF2013.Undergraduate enrollment",
-            },{ title: "Graduate enrollment", attribMap: "DRVEF2013.Graduate enrollment",
+            },{ title: "Undergraduate enrollment", value: "DRVEF2013.Undergraduate enrollment",
+            },{ title: "Graduate enrollment", value: "DRVEF2013.Graduate enrollment",
             },{ title: "% Transfers",
-                attribMap: function(){
+                value: function(){
                     var transfer = this["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
                     var firstTime = this["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
                     return 100*transfer/(transfer+firstTime);
                 }, unitName: "%"//, intervalScale: "log"
-            },{ title: "Institution Type", attribMap: "HD2013.Sector of institution",
-                sortingOpts: [{
-                    value: function(){ 
-                        switch(this.id){
-                            case 'Public, 4-year or above': return 0;
-                            case 'Private not-for-profit, 4-year or above': return 1;
-                            case 'Private for-profit, 4-year or above': return 2;
-                        }
+            },{ title: "Institution Type", value: "HD2013.Sector of institution",
+                catSortBy: function(){ 
+                    switch(this.id){
+                        case 'Public, 4-year or above': return 0;
+                        case 'Private not-for-profit, 4-year or above': return 1;
+                        case 'Private for-profit, 4-year or above': return 2;
                     }
-                }],
-            },{ title: "State", attribMap: "HD2013.State abbreviation", layout: "middle", collapsed: true,
-            },{ title: "Geographic region", attribMap: "HD2013.Geographic region", layout: "middle", collapsed: true,
+                },
+            },{ title: "State", value: "HD2013.State abbreviation", layout: "middle", collapsed: true,
+            },{ title: "Geographic region", value: "HD2013.Geographic region", layout: "middle", collapsed: true,
             },{ title: "Degree of urbanization", layout: "middle", collapsed: true,
-                attribMap: "HD2013.Degree of urbanization (Urban-centric locale)"
+                value: "HD2013.Degree of urbanization (Urban-centric locale)"
             
             },{ title: "Carnegie Class. - Basic", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Basic"
+                value: "HD2013.Carnegie Classification 2010: Basic"
             },{ title: "Carnegie Class. - Size and Setting", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Size and Setting"
+                value: "HD2013.Carnegie Classification 2010: Size and Setting"
             },{ title: "Carnegie Class. - Undergrad. Instr. Prog.", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
+                value: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
             },{ title: "Carnegie Class. - Grad. Instr. Prog.", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
+                value: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
             },{/*
                 title: "Undergraduate Profile", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
+                value: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
             },{
                 title: "Enrollment Profile", collapsed: true,
-                attribMap: "HD2013.Carnegie Classification 2010: Enrollment Profile",
+                value: "HD2013.Carnegie Classification 2010: Enrollment Profile",
             },{ title: "Diversity", layout: 'right',
                 facets: [
                     {*/   title: "% American Indian / Alaska Native", collapsed: true, layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
+                        value: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
                         description: "Percent of total enrollment that are American Indian or Alaska Native",
                         unitName: "%"
                     },{ title: "% Asian", collapsed: true, layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are Asian",
+                        value: "DRVEF2013.Percent of total enrollment that are Asian",
                         description: "Percent of total enrollment that are Asian",
                         unitName: "%"
                     },{ title: "% Hispanic / Latino", collapsed: true, layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
+                        value: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
                         description: "Percent of total enrollment that are Hispanic/Latino",
                         unitName: "%"
                     },{ title: "% Nativa Hawaiian / Pac. Isl.", collapsed: true, layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
+                        value: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
                         description: "Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
                         unitName: "%"
                     },{ title: "% Nonresident Alien", collapsed: true, layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
+                        value: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
                         description: "Percent of total enrollment that are Nonresident Alien",
                         unitName: "%"
                     },{ title: "% White",
-                        attribMap: "DRVEF2013.Percent of total enrollment that are White",layout: 'right',
+                        value: "DRVEF2013.Percent of total enrollment that are White",layout: 'right',
                         description: "Percent of total enrollment that are White",
                         unitName: "%"
                     },{ title: "% Black / African American",layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are Black or African American",
+                        value: "DRVEF2013.Percent of total enrollment that are Black or African American",
                         description: "Percent of total enrollment that are Black or African American",
                         unitName: "%"
                     },{ title: "% Women",layout: 'right',
-                        attribMap: "DRVEF2013.Percent of total enrollment that are women",
+                        value: "DRVEF2013.Percent of total enrollment that are women",
                         description: "Percent of total enrollment that are women",
                         unitName: "%"
                     /*}
                 ]*/
 
             },{ title: "6-Year Grad Rate: % Total", layout: 'right',
-                attribMap: "DRVGR2013.Graduation rate, total cohort",
+                value: "DRVGR2013.Graduation rate, total cohort",
                 description: "Graduation rate, total cohort", unitName: "%"
             },{ title: "6-Year Grad Rate: % Men", layout: 'right', collapsed: true, unitName: "%",
-                attribMap: "DRVGR2013.Graduation rate, men",
+                value: "DRVGR2013.Graduation rate, men",
                 description: "Graduation rate, men"
             },{ title: "6-Year Grad Rate: % Women", layout: 'right', collapsed: true, unitName: "%",
-                attribMap: "DRVGR2013.Graduation rate, women",
+                value: "DRVGR2013.Graduation rate, women",
                 description: "Graduation rate, women"
             }
         ],

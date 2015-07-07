@@ -46,11 +46,12 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Hour", unitName: ": 00", layout: 'bottom',
-                attribMap: function(){ return this.downloadTime.hour(); },
+                value: function(){ return this.downloadTime.hour(); },
             },{ title: "Time", layout: 'bottom',
-                attribMap: function(){ return new Date(this.downloadTime);}
+                value: function(){ return new Date(this.downloadTime);}
             },{ title: "Day", layout: 'right',
-                attribMap: function(){ return this.downloadTime.day(); },
+                value: function(){ return this.downloadTime.day(); },
+                catSortBy: "id",
                 catLabel: function(){
                     switch(this.id){
                         case 0: return "Sunday";
@@ -61,15 +62,14 @@ $(document).ready( function(){
                         case 5: return "Friday";
                         case 6: return "Saturday";
                     }
-                },
-                sortingOpts: [{ value: 'id' }]
+                }
             },{ title: "Month", layout: 'middle',
-                attribMap: function(){ return this.downloadTime.month(); },
+                value: function(){ return this.downloadTime.month(); },
+                catSortBy: "id",
                 catLabel: function(){ return getMonthNameFromNumber(this.id); },
-                sortingOpts: [{ value: 'id' }]
             },{ title: "Year", layout: 'right',
-                attribMap: function(){ return this.downloadTime.year(); },
-                sortingOpts: [{ value: 'id' }] // makes a categorical facet
+                value: function(){ return this.downloadTime.year(); },
+                catSortBy: "id"
             }
         ]
     });

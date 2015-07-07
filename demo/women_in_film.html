@@ -39,9 +39,10 @@ google.setOnLoadCallback(function(){
                 ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],', ', false);
         },
         summaries: [
-            {   title: "Movie Passes Bechdel Test ?", attribMap: "Passes Bechdel Test?"
+            {   title: "Movie Passes Bechdel Test ?", 
+                value: "Passes Bechdel Test?"
             },{ title: "Bechdel Criterias",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this["Has at least two [named] women in it"]==="Pass")
                         r.push("Has at least two [named] women in it");

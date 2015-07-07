@@ -25,14 +25,14 @@ google.setOnLoadCallback(function(){
             sheets: "Passengers"
         },
         summaries: [
-            {   title: "Survived", attribMap: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; }
-            },{ title: "Class", attribMap: "pclass",
+            {   title: "Survived", value: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; }
+            },{ title: "Class", value: "pclass",
                 /* 1st-2nd-3rd => 1-2-3 */
-                sortingOpts: [{ value: function(){ return 1*this.id.substr(0,1); } }]
-            },{ title: "Sex", attribMap: "sex", catLabel: function(){ return this.id+" "+getIcon(this.id); },
-            },{ title: "Age", attribMap: "age", layout:'bottom', showPercentile: true
-            },{ title: "Embarked", attribMap: "embarked"
-            },{ title: "Room", attribMap: "room", collapsed: true
+                catSortBy: function(){ return 1*this.id.substr(0,1); }
+            },{ title: "Sex", value: "sex", catLabel: function(){ return this.id+" "+getIcon(this.id); },
+            },{ title: "Age", value: "age", layout:'bottom', showPercentile: true
+            },{ title: "Embarked", value: "embarked"
+            },{ title: "Room", value: "room", collapsed: true
             }
         ],
         itemDisplay: {

@@ -257,16 +257,16 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "General Category", attribMap: "GeneralCategory"
-            },{ title: "Comparison Category", attribMap: function(){ return this.ComparisonCategory.split("/"); } 
-            },{ title: "Data Type Compared", attribMap: "DataTypeCompared" 
-            },{ title: "Comparison Scale", attribMap: "ComparisonScale" 
+            {   title: "General Category", value: "GeneralCategory"
+            },{ title: "Comparison Category", value: function(){ return this.ComparisonCategory.split("/"); } 
+            },{ title: "Data Type Compared", value: "DataTypeCompared" 
+            },{ title: "Comparison Scale", value: "ComparisonScale" 
 //            },{ title: "CitedInPaper", layout: 'right'
 //            },{ title: "MentionedInPaper", layout: 'right'
-            },{ title: "Technique Used", attribMap: "TechniqueUsed", layout: 'right'
+            },{ title: "Technique Used", value: "TechniqueUsed", layout: 'right'
             },{ title: "Authors", layout: 'right',
             },{ title: "Venue", layout: 'right'
-            },{ title: "Categorized By", attribMap: "CategorizedBy", layout: 'right', collapsed: true,
+            },{ title: "Categorized By", value: "CategorizedBy", layout: 'right', collapsed: true,
                 catLabel: function(){
                     switch(this.id){
                         case 'DA'  : return "Danielle Albers";

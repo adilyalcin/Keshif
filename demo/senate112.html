@@ -27,8 +27,7 @@ google.setOnLoadCallback( function(){
         },
         summaries: [
             {   title: "Result"
-            },{ title: "Session", sortingOpts: [{ value: "id" }],
-                catLabel: function(){ return ((this.id===1)?"1st":"2nd")+" Session"; }
+            },{ title: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";}
             },{ title: "Yea's",
             },{ title: "Nay's",
             },{ title: "Bill",

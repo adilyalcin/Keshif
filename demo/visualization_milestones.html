@@ -217,7 +217,7 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Era",
-                attribMap: function(){
+                value: function(){
                     var year=this.Year;
                     if(year<1600) return 0;
                     if(year<1700) return 1;
@@ -228,7 +228,7 @@ google.setOnLoadCallback(function(){
                     if(year<1975) return 6;
                     return 7;
                 },
-                sortingOpts: [{ value: "id" }],
+                catSortBy: "id",
                 catLabel: function(){
                     switch(this.id){
                         case 0: return "Maps and diagrams <b>Pre-1600</b>";
@@ -245,7 +245,7 @@ google.setOnLoadCallback(function(){
             },{ title: "Highlights",
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
-            },{ title: "Main Category", attribMap: "Category"
+            },{ title: "Main Category", value: "Category"
             },{ title: "Keywords", layout: "right"
             },{ title: "Author"
             }

@@ -82,7 +82,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Data: Frame of Reference",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
@@ -90,7 +90,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Data: Number of Variables",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
@@ -98,7 +98,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Time: Arrangement",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
@@ -106,7 +106,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Time: Primitives",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
@@ -115,7 +115,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Vis: Mapping",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
@@ -124,7 +124,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Vis: Dimensionality",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
                         if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");

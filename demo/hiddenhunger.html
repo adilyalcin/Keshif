@@ -30,7 +30,7 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title:"Indicators", layout: "middle",
                 description: "",
-                attribMap:function(){
+                value:function(){
                     var r=[];
                     if(this.gender==="Male") {
                         if(this.underweight_m===1) r.push("Under-Weight");
@@ -45,28 +45,29 @@ google.setOnLoadCallback(function(){
                     return r;
                 }
             },
-            {title:"Region", attribMap: "region", layout: "left"},
-            {title:"Zone", attribMap: "zone", layout: "left", type: "categorical", collapsed: true},
-            {title:"Rural", attribMap: "rural", layout: "middle"},
-            {title:"Gender", attribMap: "gender"},
-            {title:"Household Head Gender", attribMap: "head_sex"},
-            {title:"Literate", attribMap: "literate", type: "categorical",description:"Completed education?"},
-            {title:"Highest Grade", attribMap: "highest_grade", type: "categorical",description:"Highest grade completed",
-                sortingOpts:[{value:"id"}], collapsed: true},
-            {title:"Age (Months)", attribMap: "agem", layout: "bottom"},
+            {title:"Region", value: "region", layout: "left"},
+            {title:"Zone", value: "zone", layout: "left", type: "categorical", collapsed: true},
+            {title:"Rural", value: "rural", layout: "middle"},
+            {title:"Gender", value: "gender"},
+            {title:"Household Head Gender", value: "head_sex"},
+            {title:"Literate", value: "literate", type: "categorical",description:"Completed education?"},
+            {title:"Highest Grade", value: "highest_grade", type: "categorical",
+                description: "Highest grade completed",
+                catSortBy: "id", collapsed: true},
+            {title:"Age (Months)", value: "agem", layout: "bottom"},
             {title:"Weight", 
-                attribMap: function(){
+                value: function(){
                     return Math.max(Math.min(this.weight,30),0);
                 },
                 layout: "middle", intervalScale: "linear", unitName: "kg"},
             {title:"Height", unitName: "cm",
-                attribMap: function(){
+                value: function(){
                     return Math.max(Math.min(this.height,120),50);
                 },
                 layout: "middle"},
-            {attribMap: "haz", title:"Length / height for age", layout:"right"},
-            {attribMap: "waz", title:"Weight for age", layout:"right"},
-            {attribMap: "whz", title:"Weight for length/height", layout:"right"}
+            {value: "haz", title:"Length / height for age", layout:"right"},
+            {value: "waz", title:"Weight for age", layout:"right"},
+            {value: "whz", title:"Weight for length/height", layout:"right"}
         ]
     });
 });
@@ -87,8 +88,8 @@ function showBrowsers(v){
                 sheets: "eth_nutrition"
             },
             summaries: [
-                {title:"Region", attribMap:"cq11"},
-                {title:"Is Rural?", attribMap: "ur",
+                {title:"Region", value:"cq11"},
+                {title:"Is Rural?", value: "ur",
                     catLabel: function(){
                         if(this.id===1) return "Not-Rural";
                         if(this.id===2) return "Rural";
@@ -98,15 +99,15 @@ function showBrowsers(v){
                     title: "Diversity (Using Shannon Index)",
                     description: 
                         "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual",
-                    attribMap: "simpson",
+                    value: "simpson",
                     layout: "middle"
                 },
 
-                {title: "Dietary Diversity Index ", attribMap:"ddi", layout: "middle"},
-                {title: "Household Dietary Diversity Score", attribMap:"hdds", layout: "middle",
+                {title: "Dietary Diversity Index ", value:"ddi", layout: "middle"},
+                {title: "Household Dietary Diversity Score", value:"hdds", layout: "middle",
                     description:"It categorizes every food item into 12 food groups and computes how many food groups were consumed by the household over the week preceding the interview."},
-                //{title: "Minimum Dietary Energy Requirement for HH (2005 standards)", attribMap:"mder", layout: "middle"},
-                {title: "Revealed Optimal Diversity index", attribMap:"rodi", layout: "middle"},
+                //{title: "Minimum Dietary Energy Requirement for HH (2005 standards)", value:"mder", layout: "middle"},
+                {title: "Revealed Optimal Diversity index", value:"rodi", layout: "middle"},
 
                 {title:"calcium_ae", layout: "right", unitName:"kcal"},
                 {title:"protein_ae", layout: "right", unitName:"g"},
@@ -129,22 +130,22 @@ function showBrowsers(v){
                 sheets: "mwi_anth"
             },
             summaries: [
-                {title:"Sex",attribMap:"sex"},
+                {title:"Sex",value:"sex"},
                 
-                {attribMap:"haz06", title:"Length/height-for-age Z-score", layout:"middle"},
-                {attribMap:"waz06", title:"Weight-for-age Z-score", layout:"middle"},
-                {attribMap:"whz06", title:"Weight-for-length/height Z-score", layout:"middle"},
-                {attribMap:"bmiz06", title:"BMI-for-age Z-score", layout:"middle"},
+                {value:"haz06", title:"Length/height-for-age Z-score", layout:"middle"},
+                {value:"waz06", title:"Weight-for-age Z-score", layout:"middle"},
+                {value:"whz06", title:"Weight-for-length/height Z-score", layout:"middle"},
+                {value:"bmiz06", title:"BMI-for-age Z-score", layout:"middle"},
 
-                {title: "Under-Weight", attribMap: function(){
+                {title: "Under-Weight", value: function(){
                     if(this.wa_s) return "Severely";
                     if(this.wa_m) return "Moderately";
                 }},
-                {title: "Stunted (Low Height for Age)", attribMap: function(){
+                {title: "Stunted (Low Height for Age)", value: function(){
                     if(this.ha_s) return "Severely";
                     if(this.ha_m) return "Moderately";
                 }},
-                {title: "Wasted (Low Weight for Height)", attribMap: function(){
+                {title: "Wasted (Low Weight for Height)", value: function(){
                     if(this.wh_s) return "Severely";
                     if(this.wh_m) return "Moderately";
                 }}
@@ -163,22 +164,22 @@ function showBrowsers(v){
                 sheets: "mwi_nutrition"
             },
             summaries: [
-                { title: "District", attribMap: "a1" },
-                { title: "EPA", attribMap: "a2" },
-                { title: "Section", attribMap: "a3" },
-                { title: "Village", attribMap: "a4", collapsed:true },
-                { title: "Household Size", attribMap: "hhsize", collapsed:true, layout:"bottom" },
-                { title: "Household Head - Average Age", attribMap: "hh_age", collapsed:true, layout:"bottom" },
-                { title: "Total wealth index", attribMap: "wealth", collapsed:true, layout:"bottom" },
+                { title: "District", value: "a1" },
+                { title: "EPA", value: "a2" },
+                { title: "Section", value: "a3" },
+                { title: "Village", value: "a4", collapsed:true },
+                { title: "Household Size", value: "hhsize", collapsed:true, layout:"bottom" },
+                { title: "Household Head - Average Age", value: "hh_age", collapsed:true, layout:"bottom" },
+                { title: "Total wealth index", value: "wealth", collapsed:true, layout:"bottom" },
                 
-                { title: "Can read and write?", attribMap: "b7", layout:"right"},
-                { title: "Primary activity", attribMap: "b8", layout:"right"},
-                { title: "Marital status", attribMap: "b10", layout:"right"},
-                { title: "Indiv. Highest Education Lvl", attribMap: "edu", layout:"right"},
+                { title: "Can read and write?", value: "b7", layout:"right"},
+                { title: "Primary activity", value: "b8", layout:"right"},
+                { title: "Marital status", value: "b10", layout:"right"},
+                { title: "Indiv. Highest Education Lvl", value: "edu", layout:"right"},
 
                 {   title: "Below Recommended", description: "Consumes less than the reccommended amount of ...",
                     layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this.def_kcal_rec_hh==="No") r.push("Calories");
                         if(this.def_prot_rec_hh==="No") r.push("Protein");
@@ -199,7 +200,7 @@ function showBrowsers(v){
                 },
                 {   title: "Below Required", description: "Consumes less than the required amount of ...",
                     layout: "middle",
-                    attribMap: function(){
+                    value: function(){
                         var r=[];
                         if(this.def_kcal_req_hh==="No") r.push("Calories");
                         if(this.def_prot_req_hh==="No") r.push("Protein");
@@ -218,7 +219,7 @@ function showBrowsers(v){
                         return r;
                     }
                 },{
-                    attribMap:"depend_ratio",title: "Dependency ratio", unitName: "%"
+                    value:"depend_ratio",title: "Dependency ratio", unitName: "%"
                 }
             ]
         });

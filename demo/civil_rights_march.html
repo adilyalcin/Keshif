@@ -40,7 +40,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "Tags",
-                attribMap: function(){
+                value: function(){
                     var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -56,7 +56,7 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "Tag Contributors",
-                attribMap: function(){
+                value: function(){
                     var contribs = this.publicContributions;
                     if(contribs===undefined) return;
                     var tags = contribs.tags;
@@ -72,12 +72,12 @@ $(document).ready( function(){
                     return r;
                 }
             },{ title: "contributors",
-            },{ title: "Types", attribMap: "typesOfArchivalMaterials"
+            },{ title: "Types", value: "typesOfArchivalMaterials"
             },{ title: "levelOfDescription", collapsed: true
-            },{ title: "Use Restrictions", attribMap: "useRestrictions", collapsed: true,
-            },{ title: "Access Restrictions", attribMap: "accessRestrictions", collapsed: true,
+            },{ title: "Use Restrictions", value: "useRestrictions", collapsed: true,
+            },{ title: "Access Restrictions", value: "accessRestrictions", collapsed: true,
 /*            },{ title: "Date", layout: "bottom",
-                attribMap: function(){
+                value: function(){
                     var pDate=this.productionDates;
                     if(pDate===undefined ||pDate.length!==1) return;
                     var m=moment(pDate[0],["M/DD/YYYY"]);

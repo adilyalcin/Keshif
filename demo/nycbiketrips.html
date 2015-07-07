@@ -52,15 +52,15 @@ google.setOnLoadCallback(function(){
             },{ title: "Station_End",   layout: 'middle', catLabel: function(){ return kshf.dt_id.Stations[this.id].data.Name; }, 
                 layout: 'right'
             },{ title: "Day of Week", layout: 'right', collapsed: true,
-                attribMap: function(){ return this.TimeStart.day(); },
-                sortingOpts: [ {value: "id"} ],
+                value: function(){ return this.TimeStart.day(); },
+                catSortBy: "id",
                 catLabel: function(){ return getDayNameFromNumber(this.id); }
             },{ title: "Hour of Day", layout: 'bottom', optimumTickWidth: 40, unitName: ": 00",
-                attribMap: function(){ return this.TimeStart.hour(); }
+                value: function(){ return this.TimeStart.hour(); }
             },{ title: "Duration", layout: 'bottom', intervalScale: "log", unitName: "min",
-                attribMap: function(){ return Math.round(this.Duration/60); }
+                value: function(){ return Math.round(this.Duration/60); }
             },{ title: "Birth Year", layout: 'bottom', collapsed: true,
-                attribMap: function(){ return new Date(this.BirthYear,1,1); }
+                value: function(){ return new Date(this.BirthYear,1,1); }
             }
         ]
     });

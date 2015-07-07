@@ -86,7 +86,7 @@ $(document).ready( function(){
             },{ title: "Representation",
             },{ title: "Alignment",
             },{ title: "Authors", collapsed: false
-            },{ title: "Year", attribMap: function(){ return new Date(this.Year,1,1); }, layout: "bottom",
+            },{ title: "Year", value: function(){ return new Date(this.Year,1,1); }, layout: "bottom",
             }
         ],
         itemDisplay: {

@@ -128,9 +128,9 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Date-Holiday", layout: "middle"
-            },{ title: "Day In Week", attribMap: "Date-Service Type", layout: "middle"
-            },{ title: "Entry Time Period", attribMap: "Ent Time Period", layout: "middle",
-                sortingOpts: [{value: function(){
+            },{ title: "Day In Week", value: "Date-Service Type", layout: "middle"
+            },{ title: "Entry Time Period", value: "Ent Time Period", layout: "middle",
+                catSortBy: function(){
                     switch(this.id){
                         case 'AM Peak': return 0;
                         case 'Midday': return 1;
@@ -138,17 +138,17 @@ google.setOnLoadCallback(function(){
                         case 'Evening': return 3;
                         case 'Late Night Peak': return 4;
                     }
-                }}]
+                }
             },{ title: "Station - From", layout: "left"
             },{ title: "Line - From", layout: "middle",
                 description: "The line information of the station-from. A station can be on multiple lines.",
-                attribMap: function(){ return stations[this["Station - From"]].line; }
+                value: function(){ return stations[this["Station - From"]].line; }
             },{ title: "Station - To", layout: "right"
             },{ title: "Line - To", layout: "middle",
                 description: "The line information of the station-to. A station can be on multiple lines.",
-                attribMap: function(){ return stations[this["Station - To"]].line; }
+                value: function(){ return stations[this["Station - To"]].line; }
             },{ title: "Average Travel Minutes", layout: "bottom",
-                attribMap: function(){ return this['Total Travel Minutes']/this['# Riders'];}
+                value: function(){ return this['Total Travel Minutes']/this['# Riders'];}
             }
         ]
     });

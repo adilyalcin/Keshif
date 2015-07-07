@@ -38,20 +38,20 @@ $(document).ready( function(){
             sheets: "chromefeatures"
         },
         summaries: [
-            {   title: "Milestone", attribMap: function(){ return this.meta["milestone_str"]; },
-                sortingOpts: [{ value: function(){ return mileSort(this.id); }, inverse: true}]
-            },{ title: "Category", attribMap: "category"
-            },{ title: "Implementation Status", attribMap: "impl_status_chrome"
-            },{ title: "Standardization", attribMap: function(){ return this.standardization.text; }
-            },{ title: "Visibility", attribMap: "visibility", layout: 'right'
-            },{ title: "Prefixed", attribMap: "prefixed", layout: 'right', collapsed: true,
-            },{ title: "Owner", attribMap: "owner", layout: 'right', collapsed: true,
-            },{ title: "Updated By", attribMap: "updated_by", layout: 'right', collapsed: true,
-            },{ title: "Firefox Status", attribMap: function(){ return this.ff_views.text;     }, layout: 'right'
-            },{ title: "IE Status"     , attribMap: function(){ return this.ie_views.text;     }, layout: 'right'
-            },{ title: "Safari Status" , attribMap: function(){ return this.safari_views.text; }, layout: 'right'
+            {   title: "Milestone", value: function(){ return this.meta["milestone_str"]; },
+                catSortBy: { value: function(){ return mileSort(this.id); }, inverse: true}
+            },{ title: "Category", value: "category"
+            },{ title: "Implementation Status", value: "impl_status_chrome"
+            },{ title: "Standardization", value: function(){ return this.standardization.text; }
+            },{ title: "Visibility", value: "visibility", layout: 'right'
+            },{ title: "Prefixed", value: "prefixed", layout: 'right', collapsed: true,
+            },{ title: "Owner", value: "owner", layout: 'right', collapsed: true,
+            },{ title: "Updated By", value: "updated_by", layout: 'right', collapsed: true,
+            },{ title: "Firefox Status", value: function(){ return this.ff_views.text;     }, layout: 'right'
+            },{ title: "IE Status"     , value: function(){ return this.ie_views.text;     }, layout: 'right'
+            },{ title: "Safari Status" , value: function(){ return this.safari_views.text; }, layout: 'right'
             },{ title: "Update Date", layout: 'bottom', collapsed: true,
-                attribMap: function(){ return new Date(moment(this.updated)); },
+                value: function(){ return new Date(moment(this.updated)); },
             }
         ],
         itemDisplay: {

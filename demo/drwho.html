@@ -33,11 +33,11 @@ google.setOnLoadCallback( function () {
         },
         summaries:[
             {   title: "Doctor actor"
-            },{ title: "Motivation", attribMap: 'Motivation (invasion earth, kill humans, etc)'
+            },{ title: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)'
             },{ title: "Story titles",
-            },{ title: "Total Stories", attribMap: function(){ return this['Story titles'].length; },
+            },{ title: "Total Stories", value: function(){ return this['Story titles'].length; },
             },{ title: "1st Appearance", layout: 'bottom',
-                attribMap: function(){ 
+                value: function(){ 
                     var y=this['Year first'];
                     if(y) return new Date(y,1,1);
                 }

@@ -44,7 +44,7 @@ $(document).ready( function(){
         },
         summaries: [
             {   title: "WHO?",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     switch(this.Sex){
                         case 'M': r.push("Men "+getIcon("M")); break;
@@ -57,13 +57,13 @@ $(document).ready( function(){
                     if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
                     return r;
                 }
-            },{ title: "Age at Death", attribMap: "Age"
-            },{ title: "Death Date", attribMap: function(){ 
+            },{ title: "Age at Death", value: "Age"
+            },{ title: "Death Date", value: function(){ 
                 var x=dateFormat.parse(this.Death);
                 if(x!==null) return new Date(x);
             }
             },{ title: "After Story is Published...",
-                attribMap: function(){ if(this.claimed) return "Claimed"; }
+                value: function(){ if(this.claimed) return "Claimed"; }
             }
         ],
         itemDisplay: {

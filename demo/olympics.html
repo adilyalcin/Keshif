@@ -38,32 +38,32 @@ google.setOnLoadCallback(function(){
             },{ title: "Country"
             },{ title: "Age", layout: 'bottom', intervalScale: 'linear'
             },{ title: "Total Medals", layout: 'right', layout: "none",
-                sortingOpts: [{value: "id"}],
-                attribMap: function(){
+                catSortBy: "id",
+                value: function(){
                     if(this["Total Medals"]>0) return this["Total Medals"];
                 },
                 catLabel: function(){ return getMedalIcons(this.id, 'total'); }
             },{ title: "Gold Medals", 
-                sortingOpts: [{value: "id"}],
-                attribMap: function(){
+                catSortBy: "id",
+                value: function(){
                     if(this["Gold Medals"]>0) return this["Gold Medals"];
                 },
                 layout: 'right',
                 catLabel: function(){ return getMedalIcons(this.id, 'gold'); }
             },{ title: "Silver Medals", layout: 'right',
-                sortingOpts: [{value: "id"}],
-                attribMap: function(){
+                catSortBy: "id",
+                value: function(){
                     if(this["Silver Medals"]>0) return this["Silver Medals"];
                 },
                 catLabel: function(){ return getMedalIcons(this.id, 'silver'); }
             },{ title: "Bronze Medals", layout: 'right',
-                sortingOpts: [{value: "id"}],
-                attribMap: function(){
+                catSortBy: "id",
+                value: function(){
                     if(this["Bronze Medals"]>0) return this["Bronze Medals"];
                 },
                 catLabel: function(){ return getMedalIcons(this.id, 'bronze'); }
             },{ title: "Year", layout: 'right',
-                sortingOpts: [{value: "id"}],
+                catSortBy: "id",
                 catLabel: function(){
                     return ((this.id%4===0)?"Winter ":"Summer ")+this.id;
                 }

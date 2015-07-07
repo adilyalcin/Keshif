@@ -55,8 +55,8 @@ $(document).ready( function(){
         itemName: "Locations",
         source: { callback: loadData },
         summaries: [
-            {   title: "Type", attribMap: "l_type"
-            },{ title: "Part of", attribMap: "parent_location_uuid", catTableName: "Locations", catLabel: "name",
+            {   title: "Type", value: "l_type"
+            },{ title: "Part of", value: "parent_location_uuid", catTableName: "Locations", catLabel: "name",
             }
         ],
         itemDisplay: {

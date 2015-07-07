@@ -35,14 +35,12 @@ $(document).ready( function() {
             });
         },
         summaries: [
-            //  weekday hour    published   language    dk5 material    count
-            {   title: "Location", attribMap: "location"
-            },{ title:"Day of Week", attribMap: "weekday", 
-                sortingOpts: [{value: function(){ return 1*this.id.substr(0,1);}}],
-            },{ title:"Hour", attribMap: "hour", layout: "bottom"
-            },{ title:"Language", attribMap:"language", layout: "middle"
-            },{ title:"Dk5", attribMap:"dk5", layout: "middle"
-            },{ title:"Material", attribMap:"material", layout: "middle"
+            {   title: "Location", value: "location"
+            },{ title:"Day of Week", value: "weekday", catSortBy: function(){ return 1*this.id.substr(0,1);}
+            },{ title:"Hour", value: "hour", layout: "bottom"
+            },{ title:"Language", value:"language", layout: "middle"
+            },{ title:"Dk5", value:"dk5", layout: "middle"
+            },{ title:"Material", value:"material", layout: "middle"
             }
         ]
     });

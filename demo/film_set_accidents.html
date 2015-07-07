@@ -40,8 +40,8 @@ $(document).ready( function(){
             {   title: "Injury type"
             },{ title: "Injury source"
             },{ title: "Company"
-            },{ title: "Injuries", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
-            },{ title: "Fatalities", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "right"
+            },{ title: "Injuries", catLabel: printPeopleIcons, catSortBy: "id", layout: "right"
+            },{ title: "Fatalities", catLabel: printPeopleIcons, catSortBy: "id", layout: "right"
             },{ title: "Fine", intervalScale: "log", unitName: "$", layout: "right"
             },{ title: "State", catLabel: function(){return getStateName(this.id);}, layout: "right", collapsed: true
             },{ title: "Date", layout: "bottom"

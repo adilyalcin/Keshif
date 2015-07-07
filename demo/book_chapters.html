@@ -32,7 +32,7 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Domain Properties",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
                     if(this['Shape & Space']===1) r.push('Shape & Space = 1.0');
@@ -43,19 +43,17 @@ google.setOnLoadCallback(function(){
                     if(this['Arrangement']===1) r.push('Arrangement = 1.0');
                     return r;
                 },
-                sortingOpts: [{
-                    value: function(){ 
-                        switch(this.id){
-                            case 'Number & Quantity = 1.0': return 1;
-                            case 'Shape & Space = 0.5': return 2;
-                            case 'Shape & Space = 1.0': return 3;
-                            case 'Function = 0.5': return 4;
-                            case 'Function = 1.0': return 5;
-                            case 'Chance & Data = 1.0': return 6;
-                            case 'Arrangement = 1.0': return 7;
-                        }
+                catSortBy: function(){ 
+                    switch(this.id){
+                        case 'Number & Quantity = 1.0': return 1;
+                        case 'Shape & Space = 0.5': return 2;
+                        case 'Shape & Space = 1.0': return 3;
+                        case 'Function = 0.5': return 4;
+                        case 'Function = 1.0': return 5;
+                        case 'Chance & Data = 1.0': return 6;
+                        case 'Arrangement = 1.0': return 7;
                     }
-                }]
+                }
             },{ title: "Modeling / Formulating"
             },{ title: "Manipulating / Transforming"
             },{ title: "Inferring / Drawing Conclusions"

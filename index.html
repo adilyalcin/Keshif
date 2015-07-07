@@ -43,13 +43,13 @@ browser = new kshf.Browser({
     },
     summaries: [
         {   title: "Keywords", layout: 'left',
-            attribMap: function(){ return this.Keywords.split(" + "); }
+            value: function(){ return this.Keywords.split(" + "); }
         },{ title: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"
         },{ title: "Data Source", layout: 'left', collapsed: true,
-            attribMap: function(){ return this.Source.split(" + "); }
+            value: function(){ return this.Source.split(" + "); }
         },{ title: "Code Complexity", layout: 'right',
             description: "Relative code complexity of demo source",
-            sortingOpts: [ {value: 'id'} ],
+            catSortBy: "id",
             catLabel: function(){
                 switch(this.id){
                     case 1: return "A breeze *";
@@ -60,7 +60,7 @@ browser = new kshf.Browser({
                 }
             }
         },{ title: "Summary Types", layout: 'right',
-            attribMap: function(){
+            value: function(){
                 var r = [];
                 if(this['Facets - Histogram']>0)
                     r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
@@ -71,14 +71,14 @@ browser = new kshf.Browser({
                 return r;
             }
 /*        },{ title: "Data Structure",
-            attribMap: function(){
+            value: function(){
                 var r = [];
                 if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
                 if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
                 return r;
             }*/
         },{ title: "Result Display", layout: "right",
-            attribMap: function(){
+            value: function(){
                 var r = [];
                 if(this['Result Display']==="Grid")
                     r.push("Grid <span class='fa fa-th'></span>");
@@ -87,7 +87,7 @@ browser = new kshf.Browser({
                 return r;
             }
 /*        },{ title: "Other", layout: "right",
-            attribMap: function(){
+            value: function(){
                 var r = [];
                 if(this['Main Text Search'])
                     r.push("Main Text search <span class='fa fa-search'></span>");
@@ -96,7 +96,7 @@ browser = new kshf.Browser({
                 return r;
             }*/
         },{ title: "Created At", layout: "right", collapsed: false,
-            attribMap: function(){ return this.Authored.getFullYear(); }
+            value: function(){ return this.Authored.getFullYear(); }
         }
     ],
     itemDisplay: {

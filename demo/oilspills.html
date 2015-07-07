@@ -72,17 +72,17 @@ google.setOnLoadCallback( function(){
             },{ title: "Refined Petroleum", collapsed: true, layout: "middle"
             },{ title: "Synthetic Base Fluid", collapsed: true, layout: "middle"
             },{ title: "Other Chemicals", collapsed: true, layout: "middle"
-            },{ title: "Source", attribMap: getSource
-            },{ title: "Material", attribMap: getMaterial
+            },{ title: "Source", value: getSource
+            },{ title: "Material", value: getMaterial
             },{ title: "Company", layout: 'right'
             },{ title: "District", catTableName: "Districts", catLabel: "Name", layout: 'left'
-            },{ title: "Water Depth", layout: 'right', attribMap: 'Water Depth (feet)',
+            },{ title: "Water Depth", layout: 'right', value: 'Water Depth (feet)',
                 intervalScale: 'log', unitName: 'ft'
             },{ title: "During Activity", collapsed: false
             },{ title: "Cause", layout: 'right'
-            },{ title: "Other Properties", attribMap: "Notes", layout: 'right', collapsed: true,
+            },{ title: "Other Properties", value: "Notes", layout: 'right', collapsed: true,
                 catTableName: "Notes", catLabel: "name"
-            },{ title: "Spill Date", layout: 'bottom', attribMap: getDate,
+            },{ title: "Spill Date", layout: 'bottom', value: getDate,
             }
         ],
         itemDisplay: {

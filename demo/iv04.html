@@ -117,22 +117,22 @@ $(document).ready( function(){
                 catLabel: function(){ return kshf.dt_id.Authors[this.id]; }
             },{ title: "Keywords", layout: 'right'
             },{ title: "# of Keywords", layout: 'right', collapsed: true,
-                attribMap: function(){ return this.Keywords.length; }
+                value: function(){ return this.Keywords.length; }
             },{ title: "Abstract", layout: 'right',
-                attribMap: function(){ if(this.Abstract) return "Has Abstract"; }
+                value: function(){ if(this.Abstract) return "Has Abstract"; }
             },{ title: "# References To (Within)", layout: 'right',
-                attribMap: function(){ return this.References_To.length; }, 
+                value: function(){ return this.References_To.length; }, 
                 intervalScale: 'log'
             },{ title: "# References Within (Total)", layout: 'right',  collapsed: true,
-                attribMap: function(){
+                value: function(){
                     return this.References_Internal.length+
                         this.References_External.length+
                         this.References_Other.length;
                 }
             },{ title: "# References Within (Internal)", layout: 'right', collapsed: true,
-                attribMap: function(){ return this.References_Internal.length; }
+                value: function(){ return this.References_Internal.length; }
             },{ title: "# References Within (External + Other)", layout: 'right', collapsed: true,
-                attribMap: function(){ return this.References_External.length+this.References_Other.length; }
+                value: function(){ return this.References_External.length+this.References_Other.length; }
             },{ title: "Date", layout: "bottom"
             }
         ],

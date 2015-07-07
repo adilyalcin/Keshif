@@ -35,18 +35,18 @@ google.setOnLoadCallback(function () {
         },
         summaries: [
             {   title: "Concepts",
-            },{ title: "Year", attribMap: "time", layout: "middle",
+            },{ title: "Year", value: "time", layout: "middle",
             },{ title: "Highlights",
-                attribMap: function(){ if(this.best) return "Best in Year"; }
+                value: function(){ if(this.best) return "Best in Year"; }
             },{ title: "Citations to",
                 // these are how the items are related.
                 // X is related to Y (set) => Each Y stores the items it has been mapped to.
                 // That number is shown on display
-                attribMap: "Citations",
+                value: "Citations",
                 // Using the main table name, this will enable linking through items
                 catTableName: "Publications",
                 collapsed: true
-            },{ title: "Total Citations", attribMap: "num", intervalScale: 'log'
+            },{ title: "Total Citations", value: "num", intervalScale: 'log'
             },{ title: "Authors", layout: 'right'
             }/*,{
 //              title: "Keywords",

@@ -41,8 +41,8 @@ var Summary_Clique_functions = {
 		this.setListSummary = setListSummary;
 
 		// Update sorting options of setListSummary (adding relatednesness metric...)
-		this.setListSummary.sortingOpts[0].name = this.browser.itemName+" #";
-		this.setListSummary.sortingOpts.push(
+		this.setListSummary.catSortBy[0].name = this.browser.itemName+" #";
+		this.setListSummary.catSortBy.push(
 			this.setListSummary.prepareSortingOption({
 				name: "Relatedness",
 				value: function(d){ return -d.MST.index; },

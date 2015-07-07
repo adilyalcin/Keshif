@@ -32,7 +32,7 @@ $(document).ready( function() {
         summaries: [
             {   title: "state", catLabel: function(d){ return getStateName(this.id); }
             },{ title: "Gear Category",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this['Armored Vehicle']>0) r.push('Received Armored Vehicles');
                     if(this['Casspir Armored Vehicle']>0) r.push('Received Armored Vehicles');
@@ -49,7 +49,7 @@ $(document).ready( function() {
                     return r;
                 }
             },{ title: "Gear",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this['Armored Vehicle']>0) r.push('Armored Vehicle');
                     if(this['Bayonet/Knife']>0) r.push('Bayonet/Knife');

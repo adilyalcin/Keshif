@@ -31,10 +31,7 @@ google.setOnLoadCallback(function(){
         summaries: [
             {   title: "State", layout: 'right'
             },{ title: "# Killed", 
-                attribMap: function(){ 
-                    if(this["# Killed"]===0) return;
-                    return this["# Killed"];
-                },
+                value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
                 catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "left"
             },{ title: "# Injured", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "left"
             },{ title: "Date", layout: "bottom"

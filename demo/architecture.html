@@ -57,7 +57,7 @@ $(document).ready( function(){
             {   title: "Architect"
             },{ title: "Style", layout: 'right'
             },{ title: "Year (Post 14th century)", layout: 'bottom',
-                attribMap: function(){ if(this.Year.getFullYear()>1500) return this.Year; }
+                value: function(){ if(this.Year.getFullYear()>1500) return this.Year; }
             }
         ],
         itemDisplay: {

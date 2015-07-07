@@ -34,7 +34,7 @@ $(document).ready( function(){
         summaries: [ 
             {   title: "Category", catTableName: "Categories", catLabel: "Category", layout: "middle"
             },{ title: "Date", layout:'middle',
-                attribMap: function(){
+                value: function(){
                     var r =new Date(Date.now());
                     r.setDate(r.getDate()-this.id*4);
                     return r;

@@ -96,7 +96,7 @@ $(document).ready( function(){
                 navigator.geolocation.getCurrentPosition(function(position) {
                     myLoc = position.coords;
                     var seriesSummary = browser.summaries_by_name.Location;
-                    seriesSummary.sortingOpt_Active = seriesSummary.sortingOpts[1];
+                    seriesSummary.sortingOpt_Active = seriesSummary.catSortBy[1];
                     seriesSummary.DOM.optionSelect[0][0].value = "Close to me";
                     seriesSummary.refreshSortButton();
                     seriesSummary.updateCatSorting(0,true);
@@ -110,44 +110,44 @@ $(document).ready( function(){
             browser.updateLayout();
         },
         summaries: [
-            {   title: "Movie", attribMap: "Movie", collapsed: true
+            {   title: "Movie", value: "Movie", collapsed: true
             },{ title: "Genres",
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Genre;
                 }
             },{ title: "Year",
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Year;
                 }
             },{ title: "Actors", collapsed: true,
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Actors.split(/\b,\s+/);
                 }
             },{ title: "Directors", collapsed: true,
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Director.split(/\b,\s+/);
                 }
             },{ title: "IMDb Rating",
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.imdbRating;
                 }
             },{ title: "MetaScore", collapsed: true,
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Metascore;
                 }
             },{ title: "Rated", collapsed: true,
-                attribMap: function(){
+                value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return movie.Rated;
                 }
             },{ title: "Location - State", layout: "right",
-                attribMap: function(){
+                value: function(){
                     var series = kshf.dt_id.Series[this.Series];
                     if(series===undefined) return;
                     switch(series.data.State){
@@ -156,10 +156,10 @@ $(document).ready( function(){
                         case "VA": return "Virginia";
                     }
                 }
-            },{ title: "Location", attribMap: "Series", layout: "right",
+            },{ title: "Location", value: "Series", layout: "right",
                 catTableName: "Series", catLabel: "Name",
-                sortingOpts: [
-                    {   name: "# of Screenings"},
+                catSortBy: [
+                    "# of Screenings",
                     {   name: "Close to me",  
                         value: function(){
                             return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
@@ -167,8 +167,8 @@ $(document).ready( function(){
                     }
                 ],
             },{ title: "Time: Day Of Week", layout: "right",
-                attribMap: function(){ return moment(this.Date).day();  },
-                sortingOpts: [{ value: "id" }],
+                value: function(){ return moment(this.Date).day();  },
+                catSortBy: "id",
                 catLabel: function(){
                     switch(this.id){
                         case 0: return "Sunday";

@@ -42,20 +42,20 @@ google.setOnLoadCallback(function(){
                 catTableName: "Keywords",
                 catLabel: "Task",
                 summaries: [
-                    {   title: "Categories", attribMap: "Category"
-                    },{ title: "Levels", attribMap: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
+                    {   title: "Categories", value: "Category"
+                    },{ title: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
                     }
                 ]
             },{ title: "Authors", layout: 'right', 
             },{ title: "Features", layout: 'right', 
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this.H==="*") r.push("Highlighted");
                     if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
                     return r;
                 }
             },{ title: "Venue", layout: 'right', 
-            },{ title: "Date", layout: 'bottom', attribMap: function(){return new Date(this.Year,1,1);}
+            },{ title: "Date", layout: 'bottom', value: function(){return new Date(this.Year,1,1);}
             }
         ],
         itemDisplay: {

@@ -86,9 +86,9 @@ google.setOnLoadCallback(function(){
             });
         },
         summaries: [
-            { title: "All Avg.", attribMap: "all_avg" },
-            { title: "Phase-1 Response Avg.", attribMap: "phase_1_avg", collapsed: true },
-            { title: "Phase-2 Response Avg.", attribMap: "phase_2_avg", collapsed: true },
+            { title: "All Avg.", value: "all_avg" },
+            { title: "Phase-1 Response Avg.", value: "phase_1_avg", collapsed: true },
+            { title: "Phase-2 Response Avg.", value: "phase_2_avg", collapsed: true },
             { title: "Complexity" },
             { title: "Colorfulness1" },
             { title: "Colorfulness2" },
@@ -143,36 +143,36 @@ function showBrowsers(v){
                 }
             },
             summaries: [
-                {title: "Phase-1 Responses", attribMap: 'Phase_1', layout: "middle"},
-                {title: "Phase-2 Responses", attribMap: 'Phase_2', layout: "middle"},
+                {title: "Phase-1 Responses", value: 'Phase_1', layout: "middle"},
+                {title: "Phase-2 Responses", value: 'Phase_2', layout: "middle"},
                 {
                     title: "Participant - Gender", layout: "middle", type: "categorical", catLabel: genderLabel,
-                    attribMap: function(){ return this.participant.data.Gender; }
+                    value: function(){ return this.participant.data.Gender; }
                 },{
                     title: "Participant - Education Level", layout: "middle", type: "categorical",
-                    attribMap: function(){ return this.participant.data['Education Level']; }
+                    value: function(){ return this.participant.data['Education Level']; }
                 },{
                     title: "Participant - Age", layout: "middle",
-                    attribMap: function(){ return this.participant.data['Age']; }
+                    value: function(){ return this.participant.data['Age']; }
                 },
 
-                {title: "Stimulus", attribMap: 'Stimulus ID', layout: "left", type: "categorical", collapsed: true},
+                {title: "Stimulus", value: 'Stimulus ID', layout: "left", type: "categorical", collapsed: true},
 
                 { 
                     title: "Complexity", 
-                    attribMap: function(){ return this.stimulus.data.Complexity; }
+                    value: function(){ return this.stimulus.data.Complexity; }
                 },{ 
                     title: "Colorfulness1", 
-                    attribMap: function(){ return this.stimulus.data.Colorfulness1; }
+                    value: function(){ return this.stimulus.data.Colorfulness1; }
                 },{ 
                     title: "Colorfulness2", 
-                    attribMap: function(){ return this.stimulus.data.Colorfulness2; }
+                    value: function(){ return this.stimulus.data.Colorfulness2; }
                 },{ 
                     title: "TextArea", 
-                    attribMap: function(){ return this.stimulus.data.TextArea; }
+                    value: function(){ return this.stimulus.data.TextArea; }
                 },{ 
                     title: "Saturation", 
-                    attribMap: function(){ return this.stimulus.data.Saturation; }
+                    value: function(){ return this.stimulus.data.Saturation; }
                 },
             ]
         });
