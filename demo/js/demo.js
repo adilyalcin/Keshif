@@ -5,6 +5,7 @@ var socialShare = true;
 // turn on rubbon by default
 var noRibbon = false;
 var showLogo = true;
+var githubButton = false;
 
 function resizeBrowser(minWidth, minHeight){
     if(minWidth) $('#chart_div').width($(window).width()-minWidth);
@@ -565,12 +566,15 @@ $(window).load(function(){
             .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
             .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span> ...");
 
-        d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-left")
-            .append("a").attr("href",githubDemoRoot+pageName).attr("target","_blank")
-            .attr("class","fork-ribbon").html(
-                "<span class='fa fa-code-fork fa-2x'></span> Fork me on "+
-                "<span class='fa fa-github fa-2x'></span>");
-        }
+        d3.select("body").append("span").attr("class",'forkongithub fork-bottom fork-left').html(
+            "<a class='fork-ribbon' href='"+githubDemoRoot+pageName+"' target='_blank'>"+
+                //'<span class="github-button" href="https://github.com/adilyalcin/keshif" data-icon="octicon-star" aria-label="Star adilyalcin/keshif on GitHub"></span>'+
+                "<span class='fa fa-star' style='font-size: 1.5em'></span>"+
+                " Open Source "+
+                "<span class='fa fa-github fa' style='font-size: 1.5em'></span>"+
+            "</a>"
+        );
+    }
 
     if(socialShare===true){
         var s = document.createElement("script");
@@ -607,6 +611,16 @@ $(window).load(function(){
             }
         });
     }
+
+    if(githubButton===true){
+        var s = document.createElement("script");
+        s.src = "https://buttons.github.io/buttons.js";
+        s.id  = "github-bjs";
+        s.async = "async";
+        $("body").append(s);
+    }
+
+
 
 });
 
