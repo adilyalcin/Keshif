@@ -91,8 +91,8 @@ var browser_configs = {
             ],
             itemDisplay: {
                 sortColWidth: 50,
-                detailsToggle: 'off',
-                sortingOpts: ['Rating', 'Watched'],
+                detailsToggle: "off",
+                sortingOpts: ["Rating", "Watched"],
                 recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
             }
         }

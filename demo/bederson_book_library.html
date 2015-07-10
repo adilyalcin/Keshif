@@ -149,11 +149,11 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortingOpts: [
-                'Rating',
-                { title: 'Date read', value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
+                "Rating",
+                { title: "Date read", value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
             ],
             textSearch: "Title",
-            displayType: 'grid',
+            displayType: "grid",
             recordView: function(){
                 return "<a target='_blank' href="+this.URL+" class='thumbnail'>"+
                     "<img class='thumbImg'></a><span class='subTitle'>"+this.Author+"</span>"+

@@ -48,8 +48,7 @@ $(document).ready( function(){
             {   title: "Age", value: "age"
             },{ title: "Race", value: "race"
             },{ title: "Sex", value: "sex",
-                catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id);
-            }
+                catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); }
             },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', value: "quadrant",
                 catLabel: function(){
                     switch(this.id){
@@ -71,8 +70,7 @@ $(document).ready( function(){
             },{ title: "Cases with +2 victims", layout: 'right', value: "ccn", minAggrValue:2, collapsed: true
             },{ title: "Manner", value: function(){ return this.manner.name; }
             },{ title: "Motive", value: function(){ return this.motive.name; }
-            },{ title: "Incident Date", layout: "bottom",
-                value: function(){ if(this.incident_date.getFullYear()>=2000) return this.incident_date; }
+            },{ title: "Incident Date", value: "incident_date", layout: "bottom",
             }
         ],
         itemDisplay: {

@@ -37,9 +37,9 @@ google.setOnLoadCallback(function(){
         ],
         itemDisplay: {
             sortColWidth: 45,
-            sortingOpts: {title: 'Position', inverse:true},
-            textSearch: { title: "Artist & Track", value: function(){return this['Artist(s)']+" "+this.Track; } },
-            recordView: function(){ return this['Artist(s)']+" - "+this.Track; }
+            sortingOpts: {title: "Position", inverse:true},
+            textSearch: { title: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
+            recordView: function(){ return this["Artist(s)"]+" - "+this.Track; }
         }
     });
 });

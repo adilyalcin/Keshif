@@ -25,6 +25,8 @@
 
     noRibbon = true;
 
+    showLogo = false;
+
 	var loadDemoBrowser = function(){
 		if(loaded) return;
 		loaded=true;
@@ -102,7 +104,7 @@ browser = new kshf.Browser({
     itemDisplay: {
         sortingOpts: [ 
             {title: 'Highlighted', value: "id", inverse: true},
-            {title: '# Items'},
+            "# Items",
             {title: 'Date', value: "Authored", inverse: true},
         ],
         displayType: 'grid',
