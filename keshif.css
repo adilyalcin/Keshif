@@ -435,6 +435,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   font-size: 0.9em;
   color: black;
+  cursor: pointer;
 }
 .kshf > .attributePanel .nugget > .editCodeButton:hover {
   color: black;

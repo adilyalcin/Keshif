@@ -3675,7 +3675,7 @@ kshf.Browser.prototype = {
         newSummaries.append("div").attr("class","fa fa-code editCodeButton")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        gravity: 'w', title: function(){ return "Edit Code"; }
+                        gravity: 'w', title: function(){ return "Edit Function"; }
                     });
                 })
                 .on("mouseenter",function(){ this.tipsy.show(); })
@@ -3685,7 +3685,7 @@ kshf.Browser.prototype = {
                     d3.event.preventDefault();
                 })
                 .on("click",function(summary){
-                    alert("TODO: Edit code");
+                    alert("TODO: Edit this:\n"+summary.getFuncString());
                     // stop dragging event start
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -4170,6 +4170,11 @@ kshf.Summary_Base.prototype = {
     /** -- */
     isFiltered: function(){
         return this.summaryFilter.isFiltered;
+    },
+    getFuncString: function(){
+        var str=this.summaryFunc.toString();
+        // replace the beginning, and the end
+        return str.replace(/function\s*\(\w*\)\s*{\s*/,"").replace(/}$/,"");
     },
     /** -- */
     addToPanel: function(panel, index){
