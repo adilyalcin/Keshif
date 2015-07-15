@@ -1,11 +1,6 @@
 var theDirPath = '../demo/data/set_';
 var upsetSourceURL = 'http://vcg.github.io/upset/';
 
-var getRecordTypeLabel = function(){
-    if(breachTypeInfo[this.id]) return breachTypeInfo[this.id];
-    return this.id;
-};
-
 var browser_configs = {
     lesMiserables: {
         title: "Les Miserables",
@@ -68,6 +63,7 @@ var browser_configs = {
             leftPanelLabelWidth: 140,
             rightPanelLabelWidth: 100,
             barChartWidth: 80,
+            itemName: "Movies",
             source:{ url:upsetSourceURL, dirPath:theDirPath, fileType:'csv', sheets: "movies_radialset" },
             summaries: [
                 {   title: "Genres",
@@ -266,8 +262,9 @@ var browser_configs = {
                 sortingOpts: [{ title: '# of Shows', value: function(){ return this['HBO Shows'].length; } }],
                 textSearch: "Name",
                 recordView: function(d){
-                    // resize d based on # of shows!
-                    d.DOM.record.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
+                    if(d.DOM.record)
+                        // resize d based on # of shows!
+                        d.DOM.record.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
                     return d.data.Name;
                 }
             }
@@ -913,6 +910,13 @@ var breachTypeInfo = {
     'PHO': 'Phone',
     '1 MILLAN DOLLAR': "1M $"
 };
+
+var getRecordTypeLabel = function(){
+    if(breachTypeInfo[this.id]) return breachTypeInfo[this.id];
+    return this.id;
+};
+
+
 function loadFactbook(facts, factBrowser){
     var tableName = "Countries";
     factBrowser.primaryTableName = tableName;
