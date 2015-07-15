@@ -59,13 +59,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_listHeader_background: rgb(239, 234, 223);
 
 .kshf{
+    .display(flex);
+    .flex-direction(column);
     position: relative;
     left: 0px;
 
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     //font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
-    display: block;
 
     .transition(~'left 300ms ease-in-out');
     .box-sizing(border-box);
@@ -119,11 +120,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .attributePanel{
             .display(flex);
         }
-        .listHeader > .configRow{
-            .display(flex);
-        }
         .kshfChart:hover > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
             display: block;
+        }
+        .recordDisplay .buttonRecordViewRemove{
+            visibility: visible;
+        }
+        .recordDisplay:hover > .listItemGroup > .dragWidthHandle{
+            display: block;
+        }
+        .recordDisplay--Header > .itemRank_control{
+            display: inline-block;
         }
         .panelAdjustWidth{
             display: block !important;
@@ -188,11 +195,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[dropattrtype~="unique"] {
+            .recordDisplay[hasRecordView="false"]{
+                .flex(1);
+                min-height: 50px;
+            }
             .dropZone_recordView{
                 display: block !important;
-            }
-            .listDiv > .listItemGroup > .listItem{
-                display: none !important; // So that scrolling is avoided
             }
         }
         &[dropattrtype~="interval"] .dropZone_resultSort{
@@ -220,7 +228,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
     &[isfiltered=true] {
-        .listHeader .filterClearAll{
+        .panel_Basic > .filterClearAll{
             opacity: 1;
             pointer-events: all;
         }
@@ -360,13 +368,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .attributePanelHeader{
             cursor: default;
             text-align: center;
-            border-color: rgb(223, 210, 169);
-            border-radius: 5px;
-            border-style: solid;
-            border-width: 1px 2px;
-            background-color: rgb(239, 234, 223);
+            border-radius: 3px;
+            background-color: #efeadf;
             text-shadow: 0px 1px lightgray;
             padding-top: 3px;
+            box-shadow: 0px 0px 2px #B0A47D;
             > .addAttrib{
                 display: none;
                 color: gray;
@@ -554,6 +560,166 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
+    .panel_Basic{
+        .display(flex);
+        .flex-direction(row);
+        position: relative;
+        background-color: rgb(239, 234, 223);
+        box-shadow: 0px 0px 2px #B8AF9A;
+        margin-bottom: 4px;
+        padding-bottom: 2px; // the totalViz bar
+        > .recordInfo{
+            vertical-align: top;
+            display: block;
+            white-space: nowrap;
+            cursor: default;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-shadow: 1px 1px lightgray;
+            margin-bottom: -1px;
+            z-index: 10;
+            > .activeRecordCount{
+                display: inline-block;
+                text-align: right;
+                margin-right: 3px;
+            }
+            > .recordName{ }
+        }
+        > .filtercrumbs{
+            .flex(1);
+            padding: 2px 5px;
+            font-size: 0.8em;
+            vertical-align: top;
+            > .filter-block{
+                display: inline-block;
+                position: relative;
+                cursor: pointer;
+                color: rgb(37, 33, 18);
+                font-weight: 300;
+                // border: 1px rgb(104, 91, 43) solid;
+                box-shadow: 1px 1px 1px rgb(78, 71, 43);
+                background-color: rgba(255,255,255,0.5);
+                margin-right: 5px;
+                padding-left: 2px;
+                max-width: 0px;
+                .transition(~"all 250ms linear");
+                > .sdsdsds{
+                    pointer-events: none;
+                    /*
+                    max-width: 300px;
+                    max-width: 300px;
+                    -o-text-overflow: ellipsis;
+                    text-overflow: ellipsis;*/
+                    display: block;
+                    // margin-right: 20px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    > .filterHeader{
+                        padding: 1px;
+                        font-size: 0.9em;
+                        font-weight: 700;
+                        &:after{
+                            content: ': ';
+                        }
+                    }
+                    > .filterDetails{
+                        padding:1px 0px 1px 0px;
+                        display: inline;
+                        margin-right: 15px;
+                    }
+                }
+                > .chartClearFilterButton.summary{
+                    pointer-events: none;
+                }
+                &[ready=true]{
+    //                opacity: 1;
+                    max-width: 100%;
+                }
+                &[ready=false]{
+    //                opacity: 1;
+                    max-width: 0px;
+                    .chartClearFilterButton{
+                        display:none;
+                    }
+                }
+                &:hover{
+                    background-color: rgba(255,255,255,1.0);
+                    .sdsdsds{
+                        text-decoration: line-through;
+                    }
+                    .chartClearFilterButton{
+                        background-color: #B6AF96;
+                        color: #635d46;
+                    }
+                }
+                b{ font-weight: 700; }
+                &[filtered=false]{ display: none; }
+            }
+        }
+        > .filterClearAll{
+            opacity: 0;
+            pointer-events: none;
+            right: 41px;
+            height: 1.3em;
+            cursor: pointer;
+            color: #252112;
+            font-weight: 300;
+            border: 1px #685b2b solid;
+            background-color: #E9E2CE;
+            padding-left: 1px;
+            white-space: nowrap;
+            .transition(~"background-color 100ms linear, opacity 300ms linear");
+            &:hover{
+                background-color: white;
+                box-shadow: none;
+            }
+            .title{
+                font-size: 0.8em;
+            }
+        }
+        > .rightBoxes{
+            font-size: 1.2em;
+            color: #635d46;
+            padding-right: 2px;
+            white-space: nowrap;
+            .fa{
+                cursor: pointer;
+                margin-left: 2px;
+                &:hover{ color: #cb5454; }
+            }
+            .showConfigButton{
+                display: none;
+                &:hover{
+                    animation: fa-spin 2s infinite linear;
+                    -webkit-animation: fa-spin 2s infinite linear;
+                }
+            }
+            .datasource{
+                display: none;
+                cursor: pointer;
+                text-decoration: none;
+                color: #635d46; // if dom type is a, it will show visited links in different color
+            }
+        } // rightBoxes
+        > .totalViz{
+            height: 3px;
+            margin-top: 1px;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            > .aggr{
+                cursor: default !important;
+                left: 0px;
+                top: 0px;
+                height: 100%;
+                .transition(~'all 200ms ease-in-out');
+                &.total{ width: 100%; }
+                &.preview{ transform: inherit; }
+            }
+        }
+    }
+
     .panels_Above{
         .display(flex);
         .flex-direction(row);
@@ -570,7 +736,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         //background-color: lightgray;
         border-radius: 3px;
         border: solid 1px lightgray;
-        box-shadow: 1px 1px 2px gray;
+        box-shadow: 5px 5px 20px gray;
         display: none;
         z-index: 400;
         text-align: center;
@@ -676,7 +842,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: center;
             &[readyToDrop=true]{
                 background-color: rgb(255, 188, 163);
-                cursor: s-resize;
                 border-color: orangered;
                 cursor: s-resize;
                 > .dropText{
@@ -860,7 +1025,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: white;
                 &:hover{ background-color: rgb(111, 111, 111); }
             }
-            // DONT MESS WITH THIS
             > .background{
                 width: 100%;
                 height: 100%;
@@ -869,7 +1033,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 opacity: 0.8;
                 position: absolute;
                 .transition(~'all 0.5s');
-                border-radius: 20px;
+                border-radius: 5px;
             }
             > .infobox_content{
                 display: none;
@@ -1323,6 +1487,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
+    .dragWidthHandle{
+        display: none;
+        position: absolute;
+        top: 0px;
+        cursor: col-resize;
+        border-left: dotted lightgray 2px;
+        width: 4px;
+        &:hover{ border-color: gray; }
+        &[dragging]{
+            display: block;
+            border-color: lightgray;
+            border-style: solid;
+            border-left-width: 2px;
+            border-right: none;
+            border-top: none;
+            border-bottom: none;
+        }
+    }
+
     .headerGroup{
         position: relative;
         text-align: center;
@@ -1649,14 +1832,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                     > .chartCatLabelResize{
                         display: none;
-                        position: absolute;
-                        top: 0px;
-                        cursor: col-resize;
-                        border-left: dotted lightgray 2px;
                         z-index: 25;
-                        width: 4px;
-                        &:hover{ border-color: gray; }
-                        &[dragging="true"]{ border-color: gray; }
                     }
 
                     > .attrib{
@@ -2500,27 +2676,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
     }
 
-    .listDiv{
-        // position: absolute; // exact position is calculated by keshif
-        // box-shadow: 2px 2px 2px rgb(150, 134, 73);
+    .recordDisplay{
         position: relative;
         top: 0px;
         overflow: hidden; // Don't remove!
-        display: inline-block;
-        .transition(~'margin-top 700ms ease-in-out');
-        border-style: solid;
-        border-color: #dfd2a9;
-        border-width: 0px 2px 2px 2px;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        //overflow: visible;
+        .display(flex);
+        .flex-direction(column);
+        .transition(margin-top 700ms ease-in-out);
 
-        .dropZone_recordView{
+        > .dropZone_recordView{
             display: none;
             position: relative;
             height: 100%;
+            width: 100%;
             z-index: 50;
-            background-color: #F4F3EE;
+            cursor: s-resize;
+            background-color: rgba(239, 236, 222, 1);
             border-radius: 0px 0px 40px 40px;
             border-style: solid;
             border-width: 0px 0px 2px 0px;
@@ -2546,11 +2717,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow-y: scroll;
             overflow-x: hidden;
             position: relative;
-            display: block;
 
             background-color: white;
             // height is set dynamically by JavaScript
             .transition(~'height 700ms ease-in-out');
+
+            > .dragWidthHandle{
+                z-index: 200;
+                height: 100%;
+            }
 
             > .listItem{
                 opacity: 1;
@@ -2561,8 +2736,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: relative;
                 .transition(~"opacity 500ms ease");
 
-                > .itemRank{
-                    display: none;
+                > .recordRank{
                     font-size: 0.6em;
                     color: gray;
                     font-weight: 300;
@@ -2602,7 +2776,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         font-weight:300;
                     }
                 }
-                > .itemToggleDetails{
+                > .recordToggleDetail{
                     display: none;
                     vertical-align: top;
                     width:18px; // includes the padding, using box model...
@@ -2615,65 +2789,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         &:hover{ color:black; }
                     }
                 }
-                > .itemLinkStateColumn{
-                    vertical-align: top;
-                    display: table-cell;
-    //                float: right;
-                    text-align: right;
-                    vertical-align: top;
-                    white-space: nowrap;
-                    padding-right: 2px;
-                    > .itemLinkIcon{
-                        font-size: 0.9em;
-                        display: none;
-                        cursor: pointer;
-                        margin-right: 2px;
-                    }
-                    > .measureLabel{
-                        font-size: 0.6em;
-                        vertical-align: middle;
-                    }
-                    > .itemSelectCheckbox{
-                        cursor: pointer;
-                        width: 14px;
-                        text-align: left;
-                        display: inline-block;
-                        font-size: 0.8em;
-                        padding-left: 2px;
-                        font: normal normal normal 14px/1 FontAwesome;
-                        text-rendering: auto;
-                        -webkit-font-smoothing: antialiased;
-                        -moz-osx-font-smoothing: grayscale;
-                        color: gray;
-                        &:hover {color: orangered;}
-                    }
-                }
 
-                &[animst=open]{
+                &[animst="open"]{
                     opacity: 0;
                 }
-                &[animst=closed]{
+                &[animst="closed"]{
                     max-height: 0px !important;
                     padding: 0px !important;
                     opacity: 0;
                 }
-                &[animst=visible]{
+                &[animst="visible"]{
                     display: block;
                 }
 
-                &[details=true]{
+                &[details="true"]{
                     max-height: none;
                     .item_details_toggle{
-                        display:inline-block;
+                        display: inline-block;
                         .rotate(180deg);
                     }
                     .item_details{
                         display:block;
                     }
                 }
-                &[details=false]{
+                &[details="false"]{
                     .item_details_toggle{
-                        display:inline-block;
+                        display: inline-block;
                     }
                     .item_details{
                         display:none;
@@ -2726,7 +2867,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: center;
             position:absolute;
             left: 4px;
-            //bottom: -25px;
             .transition(~"bottom 700ms ease 50ms");
             .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
@@ -2750,7 +2890,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     margin-right: 3px;
                 }
             }
-
             &:hover{
                 //background-color: darken(lightgray,0%);
                 box-shadow: 2px 2px 2px gray;
@@ -2767,16 +2906,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 opacity: 0;
             }
         }
-        &[showRank=true]{
-            .itemRank{
-                display: inline-block !important;
-            }
-            .adjustSortColumnWidth{
-                margin-left: 13px;
-            }
+        &[showRank=true]  {
+            .recordRank{ display: inline-block; }
+            .itemRank_control{ color: black; }
+        }
+        &[showRank=false] {
+            .recordRank{ display: none; }
+            .itemRank_control{ color: gray; }
         }
 
-        &[displaytype="grid"] {
+        &[displaytype="grid"][hasrecordview="true"] {
             > .listItemGroup {
                 .display(flex);
                 .flex-direction(row);
@@ -2786,14 +2925,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 > .listItem{
                     display: block;
                     .align-self(flex-start);
-                    > .itemRank{
+                    > .recordRank{
                         vertical-align: top;
                         margin-right: 2px;
                     }
                     > .content{
                         display: block;
                     }
-                    > .itemToggleDetails{
+                    > .recordToggleDetail{
                         display: block;
                         position: absolute;
                         z-index: 10;
@@ -2801,16 +2940,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
         }
-        &[displaytype="list"] {
-            > .listHeader > .configRow > .adjustSortColumnWidth >.handle{
-                display: block;
-            }
+        &[displaytype="list"][hasrecordview="true"] {
             > .listItemGroup{
                 > .listItem{
                     .display(flex);
                     .flex-direction(row);
                     width: 100%;
-                    > .listSortColumn{
+                    > .recordSortCol{
                         padding-right: 3px;
                         padding-top: 2px;
                         font-weight: 300;
@@ -2823,12 +2959,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         text-overflow: ellipsis;
                         overflow: hidden;
                     }
-                    > .itemRank{
+                    > .recordRank{
                         float: left;
                         margin-top: 4px;
                         width: 13px;
                     }
-                    > .itemToggleDetails{
+                    > .recordToggleDetail{
                         width: 18px;
                         text-align: center;
                     }
@@ -2837,13 +2973,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-            &[detailsToggle="zoom"] {
-                > .listItemGroup > .listItem > .itemToggleDetails{
+            &[detailsToggle="zoom"]{
+                > .listItemGroup > .listItem > .recordToggleDetail{
                     display: inline-block;
                 }
             }
-            &[detailsToggle="one"] {
-                > .listItemGroup > .listItem > .itemToggleDetails{
+            &[detailsToggle="one"]{
+                > .listItemGroup > .listItem > .recordToggleDetail{
                     display: inline-block;
                     > .item_details_toggle:before{
                         content: "\f078";
@@ -2852,43 +2988,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[detailsToggle="zoom"]{
-            > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before{
+            > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before{
                 content: "\f140";
             }
         }
 
         &[hasRecordView="false"]{
-            border-bottom: solid 2px white; // leave some spacing between this and middl-esummaries
-            > .listHeader > .bottomRow {
+            > .recordDisplay--Header{ 
+                display: none;
+            }
+            > .dropZone_recordView{ 
+                .flex(1);
+                position: absolute; 
+            }
+            > .listItemGroup{
                 display: none;
             }
         }
         &[hasRecordView="true"]{
-            > .listHeader > .bottomRow {
-                display: block;
+            box-shadow: 0px 0px 2px rgb(137, 113, 60);
+            margin: 0px 2px 2px 2px;
+            > .recordDisplay--Header{ 
+                .display(flex);
             }
-            .configRow{
-                > .itemRank{
-                    display: inline-block;
-                }
-                > .adjustSortColumnWidth{
-                    display: inline-block;
-                }
-                >.detailViewSetting{
-                    //display: inline-block;
-                }
-            }
-            > .dropZone_recordView{
-                position: absolute;
+            > .dropZone_recordView{ 
+                position: absolute; 
             }
         }
         &:hover{
-            > .listHeader > .bottomRow > .sortColumn{
+            > .recordDisplay--Header > .sortColumn{
                 opacity: 1;
                 pointer-events: all;
             }
         }
-    } // div.listDiv
+    } // .recordDisplay
 
     .scrollToTop{
         display:inline-block;
@@ -2902,430 +3035,199 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .listHeader{
+    .recordDisplay--Header{
         font-size: 0.9em;
         position: relative;
-        background-color: @color_listHeader_background;
-        .totalViz{
-            height: 3px;
-            margin-top: 1px;
-            position:relative;
-            > .aggr{
-                cursor: default !important;
-                left: 0px;
-                top: 0px;
-                height: 100%;
-                .transition(~'all 200ms ease-in-out');
-
-                &.total{
-                    width: 100%;
-                }
-                &.preview{
-                    transform: inherit;
-                }
+        background-color: #EBE5DF;
+        .flex-direction(row);
+        min-height: 18px;
+        > .itemRank_control{
+            display: none;
+            width: 13px;
+            text-align: right;
+            font-weight: 100;
+            font-size: 0.9em;
+            cursor: pointer;
+            &:before{
+                content: "\f102";
+            }
+            &:hover{
+                color: orangered;
             }
         }
-        > .bottomRow{
-            .display(flex);
-            .flex-direction(row);
-            min-height: 18px;
-            > .itemRank{
-                display: none;
-                width: 13px;
-                text-align: right;
-                font-weight: 100;
-                font-size: 0.9em;
-                &:before{
-                    content: "#";
-                }
-            }
-            > .header_listSortColumn{
-                display: inline-block;
-                .align-self(flex-end);
-                white-space: nowrap;
-                text-align: right;
-                padding-right: 1px;
-                position: relative;
-                > .sortColumnName{
-                    font-weight: 300;
-                    font-size: 0.9em;
-                    margin: 0px 0px 1px 3px;
-                    display: inline-block;
-                    cursor: default;
-                    .user-select(none);
-                    pointer-events: none;
-                }
-                > .listSortOptionSelect{
-                    width: 100%;
-                    bottom:0px;
-                }
-                > .dropZone_resultSort{
-                    display: none;
-                    cursor: s-resize;
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    z-index: 50;
-                    background-color: rgba(234, 234, 234, 1);
-                    border-radius: 5px;
-                    border-style: solid;
-                    border-width: 2px;
-                    border-color: gray;
-                    text-align: center;
-                    > .dropZone_resultSort_text{
-                        pointer-events: none;
-                        font-size: 0.8em;
-                        display: block;
-                        font-weight: 300;
-                        &:before{
-                            content: "Sort by";
-                        }
-                    }
-                    &:hover{
-                        background-color: rgb(255, 188, 163);
-                    }
-                }
-            }
-            > .sortColumn {
-                opacity: 0;
-                .align-self(flex-end);
-                width: 17px;
-                font-size: 0.8em;
-                margin-bottom: 2px;
-                vertical-align: bottom;
-                .transition(opacity 250ms linear);
-                > .sortButton{
-                    padding: 2px;
-                }
-            }
-            > .scrollToTop{
-                vertical-align: bottom;
-                text-align: right;
-                width: 15px;
-                padding-top: 2px;
-                position: absolute;
-                right: 1px
-            }
-
-            > .headerLinkStateColumn{
-                font-size: 1.1em;
-                text-align: right;
-                width: 85px;
-                > .linkAll{
-                    > .fa-link{
-                        cursor: pointer;
-                        font-size: 0.9em;
-                    }
-                    > .headerLinkColumnAllResults{
-                        cursor: pointer;
-                        margin-right: 2px;
-                        font-size: 0.8em;
-                        font-weight: 300;
-                        font-family: sans-serif;
-                    }
-                    &:hover{ color: orangered; }
-                }
-            }
-            > .filtercrumbs{
-                .flex(1);
-                font-size: 0.9em;
-                vertical-align: top;
-                > .filter-block{
-                    display: inline-block;
-                    position: relative;
-                    cursor: pointer;
-                    color: rgb(37, 33, 18);
-                    font-weight: 300;
-                    // border: 1px rgb(104, 91, 43) solid;
-                    box-shadow: 1px 1px 1px rgb(78, 71, 43);
-                    background-color: rgba(255,255,255,0.5);
-                    margin-right: 5px;
-                    padding-left: 2px;
-                    max-width: 0px;
-                    .transition(~"all 250ms linear");
-                    > .sdsdsds{
-                        pointer-events: none;
-                        /*
-                        max-width: 300px;
-                        max-width: 300px;
-                        -o-text-overflow: ellipsis;
-                        text-overflow: ellipsis;*/
-                        display: block;
-                        // margin-right: 20px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        > .filterHeader{
-                            padding: 1px;
-                            font-size: 0.9em;
-                            font-weight: 700;
-                            &:after{
-                                content: ': ';
-                            }
-                        }
-                        > .filterDetails{
-                            padding:1px 0px 1px 0px;
-                            display: inline;
-                            margin-right: 15px;
-                        }
-                    }
-                    > .chartClearFilterButton.summary{
-                        pointer-events: none;
-                    }
-                    &[ready=true]{
-        //                opacity: 1;
-                        max-width: 100%;
-                    }
-                    &[ready=false]{
-        //                opacity: 1;
-                        max-width: 0px;
-                        .chartClearFilterButton{
-                            display:none;
-                        }
-                    }
-                    &:hover{
-                        background-color: rgba(255,255,255,1.0);
-                        .sdsdsds{
-                            text-decoration: line-through;
-                        }
-                        .chartClearFilterButton{
-                            background-color: #B6AF96;
-                            color: #635d46;
-                        }
-                    }
-                    b{ font-weight: 700; }
-                    &[filtered=false]{ display: none; }
-                }
-            }
-        } // bottomRow
-
-        > .configRow{
+        > .removeSortOption_wrapper{
             display: none;
-            .flex-direction(row);
-            height: 18px;
+        }
+        .removeSortOption{
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            color:gray;
+            &:before{
+                content: "\f00d";
+            }
+            &:hover{
+                color: black;
+            }
+        }
+        > .header_listSortColumn{
+            display: inline-block;
+            .align-self(flex-end);
+            white-space: nowrap;
+            text-align: right;
+            padding-right: 1px;
             position: relative;
-            border-bottom: dotted 1px rgb(153, 147, 131);
-            background-color: rgb(229, 226, 218);
-            > .itemRank{
-                display: none;
-                position: absolute;
-                width: 13px;
-                text-align: right;
-                z-index: 10;
-                cursor: pointer;
-                color: gray;
+            > .sortColumnName{
+                font-weight: 300;
+                font-size: 0.9em;
+                margin: 0px 0px 1px 3px;
+                display: inline-block;
+                cursor: default;
                 .user-select(none);
-                > .fa:before{
-                    content: "\f102";
+                pointer-events: none;
+            }
+            > .listSortOptionSelect{
+                width: 100%;
+                bottom:0px;
+            }
+            > .dropZone_resultSort{
+                display: none;
+                cursor: s-resize;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                z-index: 50;
+                background-color: rgba(234, 234, 234, 1);
+                border-radius: 5px;
+                border-style: solid;
+                border-width: 2px;
+                border-color: gray;
+                text-align: center;
+                > .dropZone_resultSort_text{
+                    pointer-events: none;
+                    font-size: 0.8em;
+                    display: block;
+                    font-weight: 300;
+                    &:before{
+                        content: "Sort by";
+                    }
                 }
                 &:hover{
-                    color: black;
+                    background-color: rgb(255, 188, 163);
                 }
-            }
-            > .adjustSortColumnWidth{
-                display: none;
-                position: relative;
-                height: 100%;
-                text-align: center;
-                > .handle{
-                    display: none;
-                    position: absolute;
-                    right: 0px;
-                    cursor: ew-resize;
-                    top: 0px;
-                    height: 100%;
-                    width: 3px;
-                    border-left: solid 1px gray;
-                    border-right: solid 1px gray;
-                }
-                >.removeSortOption{
-                    cursor: pointer;
-                    width: 14px;
-                    height: 14px;
-                    display: inline-block;
-                    color:gray;
-                    &:before{
-                        content: "\f00d";
-                    }
-                    &:hover{
-                        color: black;
-                    }
-                }
-            }
-            >.detailViewSetting{
-                display: none;
-                vertical-align: top;
-                >.detailViewSettingHeader{
-                    font-size: 0.8em;
-                    font-weight: 300;
-                    margin-right: 2px;
-                    margin-left: 5px;
-                }
-                > select {
-                    font-size: 0.7em;
-                }
-            }
-        }// configRow
-
-        .filterClearAll{
-            opacity: 0;
-            pointer-events: none;
-            right: 41px;
-            cursor: pointer;
-            color: #252112;
-            font-weight: 300;
-            border: 1px #685b2b solid;
-            background-color: #E9E2CE;
-            padding-left: 1px;
-            white-space: nowrap;
-            .transition(~"background-color 100ms linear, opacity 300ms linear");
-            &:hover{
-                background-color: white;
-                box-shadow: none;
-            }
-            .title{
-                font-size: 0.8em;
             }
         }
-
-        > .topRow {
-            .display(flex);
-            .flex-direction(row);
-            > .resultInfo{
-                vertical-align: top;
-                display: block;
-                white-space: nowrap;
-                cursor: default;
-                font-size: 1.3em;
-                font-weight: 700;
-                text-shadow: 1px 1px lightgray;
-                margin-bottom: -1px;
-                z-index: 10;
-                > .listHeader_count{
-                    display: inline-block;
-                    text-align: right;
-                    margin-right: 3px;
+        > .sortColumn {
+            opacity: 0;
+            .align-self(flex-end);
+            width: 17px;
+            font-size: 0.8em;
+            margin-bottom: 2px;
+            vertical-align: bottom;
+            .transition(opacity 250ms linear);
+        }
+        > .buttonRecordViewRemove{
+            display: inline-block;
+            visibility: hidden;
+            &:hover{
+                cursor: pointer;
+                color: orangered;
+            }
+        }
+        > .scrollToTop{
+            padding-top: 2px;
+        }
+        > .recordTextSearch {
+            .flex(1);
+            .align-self(flex-end);
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: bottom;
+            position: relative;
+            height: 18px;
+            margin-left: 4px;
+            > .dropZone_textSearch{
+                display: none;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                z-index: 50;
+                background-color: rgba(234, 234, 234, 1);
+                border-radius: 5px;
+                border-style: solid;
+                border-width: 2px;
+                border-color: gray;
+                text-align: center;
+                > .dropZone_textSearch_text{
+                    pointer-events: none;
+                    font-size: 0.7em;
+                    display: block;
+                    font-weight: 300;
                 }
-                > .listHeader_itemName{
-                    //font-size: 0.9em;
+                &:hover{
+                    background-color: rgb(255, 188, 163);
                 }
             }
-            > .mainTextSearch {
-                .flex(1);
-                .align-self(flex-end);
-                white-space: nowrap;
-                display: inline-block;
-                vertical-align: bottom;
-                position: relative;
-                height: 18px;
-                margin-left: 4px;
-                > .dropZone_textSearch{
-                    display: none;
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    z-index: 50;
-                    background-color: rgba(234, 234, 234, 1);
-                    border-radius: 5px;
-                    border-style: solid;
-                    border-width: 2px;
-                    border-color: gray;
-                    text-align: center;
-                    > .dropZone_textSearch_text{
-                        pointer-events: none;
-                        font-size: 0.7em;
-                        display: block;
-                        font-weight: 300;
-                    }
-                    &:hover{
-                        background-color: rgb(255, 188, 163);
-                    }
+            > .mainTextSearch_input{
+                display: none;
+                font-size: 0.8em;
+                font-weight: 700;
+                color: #cb5454;
+                padding: 0px 2px;
+                background-color:rgba(255, 255, 255, 0);
+                pointer-events: all;
+                border-width:0px;
+                border-style: solid;
+                border-color: #cb5454;
+                margin: 1px;
+                width: calc(~"100% - 17px");
+                &:focus{
+                    outline-color: #cb5454;
+                    outline-width: 2px;
                 }
-                > .mainTextSearch_input{
-                    display: none;
-                    font-size: 0.8em;
-                    font-weight: 700;
+                &:hover{
+                    border-width: 1px;
+                    background-color: white;
+                    margin: 0px;
+                    //padding: 0px 1px;
+                    //margin: 0px 1px;
+    //                padding: 0px 0px 1px 0px;
+                }
+                &::-webkit-input-placeholder{
                     color: #cb5454;
-                    padding: 0px 2px;
-                    background-color:rgba(255, 255, 255, 0);
-                    pointer-events: all;
-                    border-width:0px;
-                    border-style: solid;
-                    border-color: #cb5454;
-                    margin: 1px;
-                    width: calc(~"100% - 17px");
-                    &:focus{
-                        outline-color: #cb5454;
-                        outline-width: 2px;
-                    }
-                    &:hover{
-                        border-width: 1px;
-                        background-color: white;
-                        margin: 0px;
-                        //padding: 0px 1px;
-                        //margin: 0px 1px;
-        //                padding: 0px 0px 1px 0px;
-                    }
-                    &::-webkit-input-placeholder{
-                        color: #cb5454;
-                        font-weight: 300;
-                    }
-                    &:focus::-webkit-input-placeholder{
-                        color: #F3CDCD;
-                    }
+                    font-weight: 300;
+                }
+                &:focus::-webkit-input-placeholder{
+                    color: #F3CDCD;
+                }
+            }
+            > .searchIcon{
+                display: none;
+                padding-left: 1px;
+                color: #cb5454;
+            }
+            > .clearText{
+                display: none;
+                position: absolute;
+                right: 4px;
+                top: 1px;
+                cursor: pointer;
+                color:gray;
+                &:hover{
+                    color: #cb5454;
+                }
+            }
+            &[isActive="true"]{
+                > .mainTextSearch_input{
+                    display: inline-block;
                 }
                 > .searchIcon{
-                    display: none;
-                    padding-left: 1px;
-                    color: #cb5454;
+                    display: inline-block;
                 }
-                > .clearText{
-                    display: none;
-                    position: absolute;
-                    right: 4px;
-                    top: 1px;
-                    cursor: pointer;
-                    color:gray;
-                    &:hover{
-                        color: #cb5454;
-                    }
-                }
-                &[isActive="true"]{
-                    > .mainTextSearch_input{
-                        display: inline-block;
-                    }
-                    > .searchIcon{
-                        display: inline-block;
-                    }
-                }
-            } // mainTextSearch
-
-            > .rightBoxes{
-                font-size: 1.2em;
-                color: #635d46;
-                padding-right: 1px;
-                white-space: nowrap;
-                .fa{
-                    cursor: pointer;
-                    margin-left: 2px;
-                    &:hover{ color: #cb5454; }
-                }
-                .showConfigButton{
-                    display: none;
-                    &:hover{
-                        animation: fa-spin 2s infinite linear;
-                        -webkit-animation: fa-spin 2s infinite linear;
-                    }
-                }
-                .datasource{
-                    display: none;
-                    cursor: pointer;
-                    text-decoration: none;
-                    color: #635d46; // if dom type is a, it will show visited links in different color
-                }
-            } // rightBoxes
-
-        } // topRow
-    } // listHeader
+            }
+        } // mainTextSearch
+    } // recordDisplay--Header
 
     .boxinbox{
         margin-top:10px;

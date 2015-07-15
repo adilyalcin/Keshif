@@ -31,11 +31,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
 .kshf {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   position: relative;
   left: 0px;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
-  display: block;
   -webkit-transition: left 300ms ease-in-out;
   -moz-transition: left 300ms ease-in-out;
   -o-transition: left 300ms ease-in-out;
@@ -121,15 +132,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[attribsShown=true] .listHeader > .configRow {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
 .kshf[attribsShown=true] .kshfChart:hover > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
   display: block;
+}
+.kshf[attribsShown=true] .recordDisplay .buttonRecordViewRemove {
+  visibility: visible;
+}
+.kshf[attribsShown=true] .recordDisplay:hover > .listItemGroup > .dragWidthHandle {
+  display: block;
+}
+.kshf[attribsShown=true] .recordDisplay--Header > .itemRank_control {
+  display: inline-block;
 }
 .kshf[attribsShown=true] .panelAdjustWidth {
   display: block !important;
@@ -184,11 +197,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showdropzone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
+.kshf[showdropzone=true][dropattrtype~="unique"] .recordDisplay[hasRecordView="false"] {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-height: 50px;
+}
 .kshf[showdropzone=true][dropattrtype~="unique"] .dropZone_recordView {
   display: block !important;
-}
-.kshf[showdropzone=true][dropattrtype~="unique"] .listDiv > .listItemGroup > .listItem {
-  display: none !important;
 }
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
@@ -205,7 +223,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[previewcompare="true"] .compareLine {
   opacity: 1 !important;
 }
-.kshf[isfiltered=true] .listHeader .filterClearAll {
+.kshf[isfiltered=true] .panel_Basic > .filterClearAll {
   opacity: 1;
   pointer-events: all;
 }
@@ -339,13 +357,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf > .attributePanel > .attributePanelHeader {
   cursor: default;
   text-align: center;
-  border-color: #dfd2a9;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 1px 2px;
+  border-radius: 3px;
   background-color: #efeadf;
   text-shadow: 0px 1px lightgray;
   padding-top: 3px;
+  box-shadow: 0px 0px 2px #B0A47D;
 }
 .kshf > .attributePanel > .attributePanelHeader > .addAttrib {
   display: none;
@@ -616,6 +632,193 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: translateX(0px);
   transform: translateX(0px);
 }
+.kshf .panel_Basic {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  position: relative;
+  background-color: #efeadf;
+  box-shadow: 0px 0px 2px #B8AF9A;
+  margin-bottom: 4px;
+  padding-bottom: 2px;
+}
+.kshf .panel_Basic > .recordInfo {
+  vertical-align: top;
+  display: block;
+  white-space: nowrap;
+  cursor: default;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-shadow: 1px 1px lightgray;
+  margin-bottom: -1px;
+  z-index: 10;
+}
+.kshf .panel_Basic > .recordInfo > .activeRecordCount {
+  display: inline-block;
+  text-align: right;
+  margin-right: 3px;
+}
+.kshf .panel_Basic > .filtercrumbs {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 2px 5px;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  color: #252112;
+  font-weight: 300;
+  box-shadow: 1px 1px 1px #4e472b;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-right: 5px;
+  padding-left: 2px;
+  max-width: 0px;
+  -webkit-transition: all 250ms linear;
+  -moz-transition: all 250ms linear;
+  -o-transition: all 250ms linear;
+  transition: all 250ms linear;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds {
+  pointer-events: none;
+  /*
+                    max-width: 300px;
+                    max-width: 300px;
+                    -o-text-overflow: ellipsis;
+                    text-overflow: ellipsis;*/
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
+  padding: 1px;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
+  content: ': ';
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails {
+  padding: 1px 0px 1px 0px;
+  display: inline;
+  margin-right: 15px;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
+  pointer-events: none;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block[ready=true] {
+  max-width: 100%;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block[ready=false] {
+  max-width: 0px;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
+  display: none;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block:hover {
+  background-color: #ffffff;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block:hover .sdsdsds {
+  text-decoration: line-through;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block:hover .chartClearFilterButton {
+  background-color: #B6AF96;
+  color: #635d46;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block b {
+  font-weight: 700;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block[filtered=false] {
+  display: none;
+}
+.kshf .panel_Basic > .filterClearAll {
+  opacity: 0;
+  pointer-events: none;
+  right: 41px;
+  height: 1.3em;
+  cursor: pointer;
+  color: #252112;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  background-color: #E9E2CE;
+  padding-left: 1px;
+  white-space: nowrap;
+  -webkit-transition: background-color 100ms linear, opacity 300ms linear;
+  -moz-transition: background-color 100ms linear, opacity 300ms linear;
+  -o-transition: background-color 100ms linear, opacity 300ms linear;
+  transition: background-color 100ms linear, opacity 300ms linear;
+}
+.kshf .panel_Basic > .filterClearAll:hover {
+  background-color: white;
+  box-shadow: none;
+}
+.kshf .panel_Basic > .filterClearAll .title {
+  font-size: 0.8em;
+}
+.kshf .panel_Basic > .rightBoxes {
+  font-size: 1.2em;
+  color: #635d46;
+  padding-right: 2px;
+  white-space: nowrap;
+}
+.kshf .panel_Basic > .rightBoxes .fa {
+  cursor: pointer;
+  margin-left: 2px;
+}
+.kshf .panel_Basic > .rightBoxes .fa:hover {
+  color: #cb5454;
+}
+.kshf .panel_Basic > .rightBoxes .showConfigButton {
+  display: none;
+}
+.kshf .panel_Basic > .rightBoxes .showConfigButton:hover {
+  animation: fa-spin 2s infinite linear;
+  -webkit-animation: fa-spin 2s infinite linear;
+}
+.kshf .panel_Basic > .rightBoxes .datasource {
+  display: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: #635d46;
+}
+.kshf .panel_Basic > .totalViz {
+  height: 3px;
+  margin-top: 1px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+}
+.kshf .panel_Basic > .totalViz > .aggr {
+  cursor: default !important;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  -webkit-transition: all 200ms ease-in-out;
+  -moz-transition: all 200ms ease-in-out;
+  -o-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+.kshf .panel_Basic > .totalViz > .aggr.total {
+  width: 100%;
+}
+.kshf .panel_Basic > .totalViz > .aggr.preview {
+  transform: inherit;
+}
 .kshf .panels_Above {
   display: -webkit-box;
   display: -moz-box;
@@ -643,7 +846,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);;
   border-radius: 3px;
   border: solid 1px lightgray;
-  box-shadow: 1px 1px 2px gray;
+  box-shadow: 5px 5px 20px gray;
   display: none;
   z-index: 400;
   text-align: center;
@@ -993,7 +1196,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
   transition: all 0.5s;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 .kshf .panel.panel_infobox > .infobox_content {
   display: none;
@@ -1461,6 +1664,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 1px;
   margin-bottom: 0px;
 }
+.kshf .dragWidthHandle {
+  display: none;
+  position: absolute;
+  top: 0px;
+  cursor: col-resize;
+  border-left: dotted lightgray 2px;
+  width: 4px;
+}
+.kshf .dragWidthHandle:hover {
+  border-color: gray;
+}
+.kshf .dragWidthHandle[dragging] {
+  display: block;
+  border-color: lightgray;
+  border-style: solid;
+  border-left-width: 2px;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+}
 .kshf .headerGroup {
   position: relative;
   text-align: center;
@@ -1820,18 +2043,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize {
   display: none;
-  position: absolute;
-  top: 0px;
-  cursor: col-resize;
-  border-left: dotted lightgray 2px;
   z-index: 25;
-  width: 4px;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize:hover {
-  border-color: gray;
-}
-.kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize[dragging="true"] {
-  border-color: gray;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib {
   display: block;
@@ -2618,27 +2830,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   position: relative;
 }
-.kshf .listDiv {
+.kshf .recordDisplay {
   position: relative;
   top: 0px;
   overflow: hidden;
-  display: inline-block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   -webkit-transition: margin-top 700ms ease-in-out;
   -moz-transition: margin-top 700ms ease-in-out;
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
-  border-style: solid;
-  border-color: #dfd2a9;
-  border-width: 0px 2px 2px 2px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
 }
-.kshf .listDiv .dropZone_recordView {
+.kshf .recordDisplay > .dropZone_recordView {
   display: none;
   position: relative;
   height: 100%;
+  width: 100%;
   z-index: 50;
-  background-color: #F4F3EE;
+  cursor: s-resize;
+  background-color: #efecde;
   border-radius: 0px 0px 40px 40px;
   border-style: solid;
   border-width: 0px 0px 2px 0px;
@@ -2646,31 +2866,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   margin-bottom: 5px;
 }
-.kshf .listDiv .dropZone_recordView > .dropIcon {
+.kshf .recordDisplay > .dropZone_recordView > .dropIcon {
   margin: 10px 0px 0px 0px;
   font-size: 2em;
   color: #918E7B;
   text-shadow: 1px 1px 1px #B8B6AB;
 }
-.kshf .listDiv .dropZone_recordView:hover {
+.kshf .recordDisplay > .dropZone_recordView:hover {
   background-color: #ffbca3;
 }
-.kshf .listDiv .dropZone_recordView[readyToDrop=true] {
+.kshf .recordDisplay > .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
 }
-.kshf .listDiv > .listItemGroup {
+.kshf .recordDisplay > .listItemGroup {
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   position: relative;
-  display: block;
   background-color: white;
   -webkit-transition: height 700ms ease-in-out;
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .listDiv > .listItemGroup > .listItem {
+.kshf .recordDisplay > .listItemGroup > .dragWidthHandle {
+  z-index: 200;
+  height: 100%;
+}
+.kshf .recordDisplay > .listItemGroup > .listItem {
   opacity: 1;
   cursor: default;
   overflow: hidden;
@@ -2682,53 +2905,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms ease;
   transition: opacity 500ms ease;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemRank {
-  display: none;
+.kshf .recordDisplay > .listItemGroup > .listItem > .recordRank {
   font-size: 0.6em;
   color: gray;
   font-weight: 300;
   font-style: italic;
   text-align: right;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content {
   vertical-align: top;
   border: solid 0px lightgray;
   position: relative;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content > .iteminfo {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo {
   float: none;
   clear: left;
   font-weight: normal;
   margin-bottom: 2px;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content > .iteminfo_0 {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_0 {
   font-size: 1.0em;
   color: black;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content > .iteminfo_1 {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_1 {
   font-size: 0.9em;
   color: #555555;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content > .iteminfo_2 {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_2 {
   font-size: 0.8em;
   color: #555555;
   font-style: italic;
   font-weight: 300;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .content > .iteminfo_3 {
+.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_3 {
   font-size: 0.8em;
   color: #a71f1f;
   font-style: italic;
   font-weight: 300;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemToggleDetails {
+.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail {
   display: none;
   vertical-align: top;
   width: 18px;
   cursor: pointer;
   font-weight: 700;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle {
+.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle {
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
@@ -2736,57 +2958,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   position: relative;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:hover {
+.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:hover {
   color: black;
 }
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn {
-  display: table-cell;
-  text-align: right;
-  vertical-align: top;
-  white-space: nowrap;
-  padding-right: 2px;
-}
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemLinkIcon {
-  font-size: 0.9em;
-  display: none;
-  cursor: pointer;
-  margin-right: 2px;
-}
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .measureLabel {
-  font-size: 0.6em;
-  vertical-align: middle;
-}
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemSelectCheckbox {
-  cursor: pointer;
-  width: 14px;
-  text-align: left;
-  display: inline-block;
-  font-size: 0.8em;
-  padding-left: 2px;
-  font: normal normal normal 14px/1 FontAwesome;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: gray;
-}
-.kshf .listDiv > .listItemGroup > .listItem > .itemLinkStateColumn > .itemSelectCheckbox:hover {
-  color: orangered;
-}
-.kshf .listDiv > .listItemGroup > .listItem[animst=open] {
+.kshf .recordDisplay > .listItemGroup > .listItem[animst="open"] {
   opacity: 0;
 }
-.kshf .listDiv > .listItemGroup > .listItem[animst=closed] {
+.kshf .recordDisplay > .listItemGroup > .listItem[animst="closed"] {
   max-height: 0px !important;
   padding: 0px !important;
   opacity: 0;
 }
-.kshf .listDiv > .listItemGroup > .listItem[animst=visible] {
+.kshf .recordDisplay > .listItemGroup > .listItem[animst="visible"] {
   display: block;
 }
-.kshf .listDiv > .listItemGroup > .listItem[details=true] {
+.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] {
   max-height: none;
 }
-.kshf .listDiv > .listItemGroup > .listItem[details=true] .item_details_toggle {
+.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] .item_details_toggle {
   display: inline-block;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
@@ -2794,47 +2983,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf .listDiv > .listItemGroup > .listItem[details=true] .item_details {
+.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] .item_details {
   display: block;
 }
-.kshf .listDiv > .listItemGroup > .listItem[details=false] .item_details_toggle {
+.kshf .recordDisplay > .listItemGroup > .listItem[details="false"] .item_details_toggle {
   display: inline-block;
 }
-.kshf .listDiv > .listItemGroup > .listItem[details=false] .item_details {
+.kshf .recordDisplay > .listItemGroup > .listItem[details="false"] .item_details {
   display: none;
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"] {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"] {
   box-shadow: inset 0px 0px 2px black;
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: #cc3700;
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
   color: orangered;
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight=true] {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight=true] {
   box-shadow: inset 0px 0px 5px #BBBBBB;
   background-color: #F8F8F8;
 }
-.kshf .listDiv > .listItemGroup > .listItem[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .recordDisplay > .listItemGroup > .listItem[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: gray;
 }
-.kshf .listDiv > .listItemGroup > .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .recordDisplay > .listItemGroup > .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f046";
 }
-.kshf .listDiv > .listItemGroup > .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .recordDisplay > .listItemGroup > .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f096";
 }
-.kshf .listDiv > .showMore {
+.kshf .recordDisplay > .showMore {
   display: block;
   cursor: pointer;
   border: solid 1px lightgray;
@@ -2853,54 +3042,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: bottom 700ms ease 50ms;
   transition: bottom 700ms ease 50ms;
 }
-.kshf .listDiv > .showMore lesshat-selector {
+.kshf .recordDisplay > .showMore lesshat-selector {
   -lh-property: 0; } 
 @-webkit-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
 @-moz-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
 @-o-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
 @keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;};
 }
-.kshf .listDiv > .showMore > .MoreText {
+.kshf .recordDisplay > .showMore > .MoreText {
   display: inline-block;
   vertical-align: top;
   top: 2px;
   position: relative;
 }
-.kshf .listDiv > .showMore > .Count {
+.kshf .recordDisplay > .showMore > .Count {
   font-size: 0.9em;
   top: 3px;
   position: relative;
   color: gray;
 }
-.kshf .listDiv > .showMore > .Count.CountAbove {
+.kshf .recordDisplay > .showMore > .Count.CountAbove {
   float: left;
   margin-left: 3px;
 }
-.kshf .listDiv > .showMore > .Count.CountBelow {
+.kshf .recordDisplay > .showMore > .Count.CountBelow {
   float: right;
   margin-right: 3px;
 }
-.kshf .listDiv > .showMore:hover {
+.kshf .recordDisplay > .showMore:hover {
   box-shadow: 2px 2px 2px gray;
 }
-.kshf .listDiv > .showMore:hover span.MoreText {
+.kshf .recordDisplay > .showMore:hover span.MoreText {
   text-decoration: underline;
 }
-.kshf .listDiv > .showMore[showMoreVisible=true] {
+.kshf .recordDisplay > .showMore[showMoreVisible=true] {
   opacity: 1;
   bottom: 4px;
 }
-.kshf .listDiv > .showMore[showMoreVisible=false] {
+.kshf .recordDisplay > .showMore[showMoreVisible=false] {
   bottom: -27px;
   opacity: 0;
 }
-.kshf .listDiv[showRank=true] .itemRank {
-  display: inline-block !important;
+.kshf .recordDisplay[showRank=true] .recordRank {
+  display: inline-block;
 }
-.kshf .listDiv[showRank=true] .adjustSortColumnWidth {
-  margin-left: 13px;
+.kshf .recordDisplay[showRank=true] .itemRank_control {
+  color: black;
 }
-.kshf .listDiv[displaytype="grid"] > .listItemGroup {
+.kshf .recordDisplay[showRank=false] .recordRank {
+  display: none;
+}
+.kshf .recordDisplay[showRank=false] .itemRank_control {
+  color: gray;
+}
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2919,28 +3114,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   justify-content: space-around;
   -webkit-justify-content: space-around;
 }
-.kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem {
   display: block;
   -webkit-align-self: flex-start;
   -ms-flex-item-align: start;
   align-self: flex-start;
 }
-.kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .itemRank {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .recordRank {
   vertical-align: top;
   margin-right: 2px;
 }
-.kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .content {
   display: block;
 }
-.kshf .listDiv[displaytype="grid"] > .listItemGroup > .listItem > .itemToggleDetails {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .recordToggleDetail {
   display: block;
   position: absolute;
   z-index: 10;
 }
-.kshf .listDiv[displaytype="list"] > .listHeader > .configRow > .adjustSortColumnWidth > .handle {
-  display: block;
-}
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2955,7 +3147,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: row;
   width: 100%;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .listSortColumn {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordSortCol {
   padding-right: 3px;
   padding-top: 2px;
   font-weight: 300;
@@ -2967,53 +3159,63 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemRank {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordRank {
   float: left;
   margin-top: 4px;
   width: 13px;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .itemToggleDetails {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordToggleDetail {
   width: 18px;
   text-align: center;
 }
-.kshf .listDiv[displaytype="list"] > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .content {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .listDiv[displaytype="list"][detailsToggle="zoom"] > .listItemGroup > .listItem > .itemToggleDetails {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="zoom"] > .listItemGroup > .listItem > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .listDiv[displaytype="list"][detailsToggle="one"] > .listItemGroup > .listItem > .itemToggleDetails {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .listItemGroup > .listItem > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .listDiv[displaytype="list"][detailsToggle="one"] > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before {
   content: "\f078";
 }
-.kshf .listDiv[detailsToggle="zoom"] > .listItemGroup > .listItem > .itemToggleDetails > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="zoom"] > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before {
   content: "\f140";
 }
-.kshf .listDiv[hasRecordView="false"] {
-  border-bottom: solid 2px white;
-}
-.kshf .listDiv[hasRecordView="false"] > .listHeader > .bottomRow {
+.kshf .recordDisplay[hasRecordView="false"] > .recordDisplay--Header {
   display: none;
 }
-.kshf .listDiv[hasRecordView="true"] > .listHeader > .bottomRow {
-  display: block;
-}
-.kshf .listDiv[hasRecordView="true"] .configRow > .itemRank {
-  display: inline-block;
-}
-.kshf .listDiv[hasRecordView="true"] .configRow > .adjustSortColumnWidth {
-  display: inline-block;
-}
-.kshf .listDiv[hasRecordView="true"] > .dropZone_recordView {
+.kshf .recordDisplay[hasRecordView="false"] > .dropZone_recordView {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   position: absolute;
 }
-.kshf .listDiv:hover > .listHeader > .bottomRow > .sortColumn {
+.kshf .recordDisplay[hasRecordView="false"] > .listItemGroup {
+  display: none;
+}
+.kshf .recordDisplay[hasRecordView="true"] {
+  box-shadow: 0px 0px 2px #89713c;
+  margin: 0px 2px 2px 2px;
+}
+.kshf .recordDisplay[hasRecordView="true"] > .recordDisplay--Header {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .recordDisplay[hasRecordView="true"] > .dropZone_recordView {
+  position: absolute;
+}
+.kshf .recordDisplay:hover > .recordDisplay--Header > .sortColumn {
   opacity: 1;
   pointer-events: all;
 }
@@ -3031,38 +3233,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .scrollToTop:hover {
   color: #cb5454;
 }
-.kshf .listHeader {
+.kshf .recordDisplay--Header {
   font-size: 0.9em;
   position: relative;
-  background-color: #efeadf;
-}
-.kshf .listHeader .totalViz {
-  height: 3px;
-  margin-top: 1px;
-  position: relative;
-}
-.kshf .listHeader .totalViz > .aggr {
-  cursor: default !important;
-  left: 0px;
-  top: 0px;
-  height: 100%;
-  -webkit-transition: all 200ms ease-in-out;
-  -moz-transition: all 200ms ease-in-out;
-  -o-transition: all 200ms ease-in-out;
-  transition: all 200ms ease-in-out;
-}
-.kshf .listHeader .totalViz > .aggr.total {
-  width: 100%;
-}
-.kshf .listHeader .totalViz > .aggr.preview {
-  transform: inherit;
-}
-.kshf .listHeader > .bottomRow {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  background-color: #EBE5DF;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: horizontal;
@@ -3072,17 +3246,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: row;
   min-height: 18px;
 }
-.kshf .listHeader > .bottomRow > .itemRank {
+.kshf .recordDisplay--Header > .itemRank_control {
   display: none;
   width: 13px;
   text-align: right;
   font-weight: 100;
   font-size: 0.9em;
+  cursor: pointer;
 }
-.kshf .listHeader > .bottomRow > .itemRank:before {
-  content: "#";
+.kshf .recordDisplay--Header > .itemRank_control:before {
+  content: "\f102";
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn {
+.kshf .recordDisplay--Header > .itemRank_control:hover {
+  color: orangered;
+}
+.kshf .recordDisplay--Header > .removeSortOption_wrapper {
+  display: none;
+}
+.kshf .recordDisplay--Header .removeSortOption {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  color: gray;
+}
+.kshf .recordDisplay--Header .removeSortOption:before {
+  content: "\f00d";
+}
+.kshf .recordDisplay--Header .removeSortOption:hover {
+  color: black;
+}
+.kshf .recordDisplay--Header > .header_listSortColumn {
   display: inline-block;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
@@ -3092,7 +3286,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-right: 1px;
   position: relative;
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .sortColumnName {
+.kshf .recordDisplay--Header > .header_listSortColumn > .sortColumnName {
   font-weight: 300;
   font-size: 0.9em;
   margin: 0px 0px 1px 3px;
@@ -3104,11 +3298,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   user-select: none;
   pointer-events: none;
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .listSortOptionSelect {
+.kshf .recordDisplay--Header > .header_listSortColumn > .listSortOptionSelect {
   width: 100%;
   bottom: 0px;
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort {
+.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort {
   display: none;
   cursor: s-resize;
   position: absolute;
@@ -3122,19 +3316,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: gray;
   text-align: center;
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text {
+.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text {
   pointer-events: none;
   font-size: 0.8em;
   display: block;
   font-weight: 300;
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text:before {
+.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text:before {
   content: "Sort by";
 }
-.kshf .listHeader > .bottomRow > .header_listSortColumn > .dropZone_resultSort:hover {
+.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort:hover {
   background-color: #ffbca3;
 }
-.kshf .listHeader > .bottomRow > .sortColumn {
+.kshf .recordDisplay--Header > .sortColumn {
   opacity: 0;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
@@ -3148,243 +3342,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 250ms linear;
   transition: opacity 250ms linear;
 }
-.kshf .listHeader > .bottomRow > .sortColumn > .sortButton {
-  padding: 2px;
+.kshf .recordDisplay--Header > .buttonRecordViewRemove {
+  display: inline-block;
+  visibility: hidden;
 }
-.kshf .listHeader > .bottomRow > .scrollToTop {
-  vertical-align: bottom;
-  text-align: right;
-  width: 15px;
-  padding-top: 2px;
-  position: absolute;
-  right: 1px;
-}
-.kshf .listHeader > .bottomRow > .headerLinkStateColumn {
-  font-size: 1.1em;
-  text-align: right;
-  width: 85px;
-}
-.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll > .fa-link {
+.kshf .recordDisplay--Header > .buttonRecordViewRemove:hover {
   cursor: pointer;
-  font-size: 0.9em;
-}
-.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll > .headerLinkColumnAllResults {
-  cursor: pointer;
-  margin-right: 2px;
-  font-size: 0.8em;
-  font-weight: 300;
-  font-family: sans-serif;
-}
-.kshf .listHeader > .bottomRow > .headerLinkStateColumn > .linkAll:hover {
   color: orangered;
 }
-.kshf .listHeader > .bottomRow > .filtercrumbs {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  font-size: 0.9em;
-  vertical-align: top;
+.kshf .recordDisplay--Header > .scrollToTop {
+  padding-top: 2px;
 }
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  color: #252112;
-  font-weight: 300;
-  box-shadow: 1px 1px 1px #4e472b;
-  background-color: rgba(255, 255, 255, 0.5);
-  margin-right: 5px;
-  padding-left: 2px;
-  max-width: 0px;
-  -webkit-transition: all 250ms linear;
-  -moz-transition: all 250ms linear;
-  -o-transition: all 250ms linear;
-  transition: all 250ms linear;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds {
-  pointer-events: none;
-  /*
-                        max-width: 300px;
-                        max-width: 300px;
-                        -o-text-overflow: ellipsis;
-                        text-overflow: ellipsis;*/
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
-  padding: 1px;
-  font-size: 0.9em;
-  font-weight: 700;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
-  content: ': ';
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails {
-  padding: 1px 0px 1px 0px;
-  display: inline;
-  margin-right: 15px;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
-  pointer-events: none;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=true] {
-  max-width: 100%;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] {
-  max-width: 0px;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[ready=false] .chartClearFilterButton {
-  display: none;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover {
-  background-color: #ffffff;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover .sdsdsds {
-  text-decoration: line-through;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block:hover .chartClearFilterButton {
-  background-color: #B6AF96;
-  color: #635d46;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block b {
-  font-weight: 700;
-}
-.kshf .listHeader > .bottomRow > .filtercrumbs > .filter-block[filtered=false] {
-  display: none;
-}
-.kshf .listHeader > .configRow {
-  display: none;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  height: 18px;
-  position: relative;
-  border-bottom: dotted 1px #999383;
-  background-color: #e5e2da;
-}
-.kshf .listHeader > .configRow > .itemRank {
-  display: none;
-  position: absolute;
-  width: 13px;
-  text-align: right;
-  z-index: 10;
-  cursor: pointer;
-  color: gray;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.kshf .listHeader > .configRow > .itemRank > .fa:before {
-  content: "\f102";
-}
-.kshf .listHeader > .configRow > .itemRank:hover {
-  color: black;
-}
-.kshf .listHeader > .configRow > .adjustSortColumnWidth {
-  display: none;
-  position: relative;
-  height: 100%;
-  text-align: center;
-}
-.kshf .listHeader > .configRow > .adjustSortColumnWidth > .handle {
-  display: none;
-  position: absolute;
-  right: 0px;
-  cursor: ew-resize;
-  top: 0px;
-  height: 100%;
-  width: 3px;
-  border-left: solid 1px gray;
-  border-right: solid 1px gray;
-}
-.kshf .listHeader > .configRow > .adjustSortColumnWidth > .removeSortOption {
-  cursor: pointer;
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  color: gray;
-}
-.kshf .listHeader > .configRow > .adjustSortColumnWidth > .removeSortOption:before {
-  content: "\f00d";
-}
-.kshf .listHeader > .configRow > .adjustSortColumnWidth > .removeSortOption:hover {
-  color: black;
-}
-.kshf .listHeader > .configRow > .detailViewSetting {
-  display: none;
-  vertical-align: top;
-}
-.kshf .listHeader > .configRow > .detailViewSetting > .detailViewSettingHeader {
-  font-size: 0.8em;
-  font-weight: 300;
-  margin-right: 2px;
-  margin-left: 5px;
-}
-.kshf .listHeader > .configRow > .detailViewSetting > select {
-  font-size: 0.7em;
-}
-.kshf .listHeader .filterClearAll {
-  opacity: 0;
-  pointer-events: none;
-  right: 41px;
-  cursor: pointer;
-  color: #252112;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  background-color: #E9E2CE;
-  padding-left: 1px;
-  white-space: nowrap;
-  -webkit-transition: background-color 100ms linear, opacity 300ms linear;
-  -moz-transition: background-color 100ms linear, opacity 300ms linear;
-  -o-transition: background-color 100ms linear, opacity 300ms linear;
-  transition: background-color 100ms linear, opacity 300ms linear;
-}
-.kshf .listHeader .filterClearAll:hover {
-  background-color: white;
-  box-shadow: none;
-}
-.kshf .listHeader .filterClearAll .title {
-  font-size: 0.8em;
-}
-.kshf .listHeader > .topRow {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-.kshf .listHeader > .topRow > .resultInfo {
-  vertical-align: top;
-  display: block;
-  white-space: nowrap;
-  cursor: default;
-  font-size: 1.3em;
-  font-weight: 700;
-  text-shadow: 1px 1px lightgray;
-  margin-bottom: -1px;
-  z-index: 10;
-}
-.kshf .listHeader > .topRow > .resultInfo > .listHeader_count {
-  display: inline-block;
-  text-align: right;
-  margin-right: 3px;
-}
-.kshf .listHeader > .topRow > .mainTextSearch {
+.kshf .recordDisplay--Header > .recordTextSearch {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -3400,7 +3369,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 18px;
   margin-left: 4px;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .dropZone_textSearch {
+.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch {
   display: none;
   position: absolute;
   height: 100%;
@@ -3413,16 +3382,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: gray;
   text-align: center;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .dropZone_textSearch > .dropZone_textSearch_text {
+.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch > .dropZone_textSearch_text {
   pointer-events: none;
   font-size: 0.7em;
   display: block;
   font-weight: 300;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .dropZone_textSearch:hover {
+.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch:hover {
   background-color: #ffbca3;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input {
+.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input {
   display: none;
   font-size: 0.8em;
   font-weight: 700;
@@ -3436,28 +3405,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 1px;
   width: calc(100% - 17px);
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input:focus {
+.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:focus {
   outline-color: #cb5454;
   outline-width: 2px;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input:hover {
+.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:hover {
   border-width: 1px;
   background-color: white;
   margin: 0px;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input::-webkit-input-placeholder {
+.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input::-webkit-input-placeholder {
   color: #cb5454;
   font-weight: 300;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .mainTextSearch_input:focus::-webkit-input-placeholder {
+.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .searchIcon {
+.kshf .recordDisplay--Header > .recordTextSearch > .searchIcon {
   display: none;
   padding-left: 1px;
   color: #cb5454;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .clearText {
+.kshf .recordDisplay--Header > .recordTextSearch > .clearText {
   display: none;
   position: absolute;
   right: 4px;
@@ -3465,40 +3434,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   color: gray;
 }
-.kshf .listHeader > .topRow > .mainTextSearch > .clearText:hover {
+.kshf .recordDisplay--Header > .recordTextSearch > .clearText:hover {
   color: #cb5454;
 }
-.kshf .listHeader > .topRow > .mainTextSearch[isActive="true"] > .mainTextSearch_input {
+.kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .mainTextSearch_input {
   display: inline-block;
 }
-.kshf .listHeader > .topRow > .mainTextSearch[isActive="true"] > .searchIcon {
+.kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .searchIcon {
   display: inline-block;
-}
-.kshf .listHeader > .topRow > .rightBoxes {
-  font-size: 1.2em;
-  color: #635d46;
-  padding-right: 1px;
-  white-space: nowrap;
-}
-.kshf .listHeader > .topRow > .rightBoxes .fa {
-  cursor: pointer;
-  margin-left: 2px;
-}
-.kshf .listHeader > .topRow > .rightBoxes .fa:hover {
-  color: #cb5454;
-}
-.kshf .listHeader > .topRow > .rightBoxes .showConfigButton {
-  display: none;
-}
-.kshf .listHeader > .topRow > .rightBoxes .showConfigButton:hover {
-  animation: fa-spin 2s infinite linear;
-  -webkit-animation: fa-spin 2s infinite linear;
-}
-.kshf .listHeader > .topRow > .rightBoxes .datasource {
-  display: none;
-  cursor: pointer;
-  text-decoration: none;
-  color: #635d46;
 }
 .kshf .boxinbox {
   margin-top: 10px;
