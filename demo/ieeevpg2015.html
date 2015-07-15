@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>IEEE VGTC VPG International Data-Visualization Contest</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        itemName: "Students",
+        barChartWidth: 120,
+        leftPanelLabelWidth: 100,
+        rightPanelLabelWidth: 210,
+        middlePanelLabelWidth: 210,
+        source: {
+            url: "http://vacommunity.org/ieeevpg/2015/index.html",
+//            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+ //           fileType: 'csv',
+            sheets: "student_flow_aggregated_file",
+            //dirPath: './data/',
+            dirPath: 'https://74e0909a2f25a27a12abbd2b23496ff961e96b2b.googledrive.com/host/0B7dZK5YPaSGLfkgwQmVKOUctUXBmTXpFWHpUUjYweUl6VC1ZS0NHQlJMMnZzZHNEOVpQcFk/',
+            fileType: 'csv',
+        },
+        loadedCb: function(){
+            kshf.dt.student_flow_aggregated_file.forEach(function(item){
+                item.aggregate_Self = item.data.count;
+                if(isNaN(item.aggregate_Self)){
+                    alert('sdsds');
+                }
+            });
+        },
+        summaries: [
+            {   title: "Gender"
+            },{ title: "Age Group", value: "actcat",
+                catSortBy: function(){
+                    switch(this.id){
+                        case '16-19' : return 0;
+                        case '20-23' : return 1;
+                        case '24-27' : return 2;
+                        case '28-32' : return 3;
+                        case '33-36' : return 4;
+                        default      : return 5;
+                    }
+                }
+            },{ title: "T1_Level2", layout: "middle"
+            },{ title: "T2_Level2", layout: "middle"
+            },{ title: "T3_Level2", layout: "middle"
+
+            },{ title: "T1_IMFIT", layout: "right"
+            },{ title: "T2_IMFIT", layout: "right"
+            },{ title: "T3_IMFIT", layout: "right"
+
+            },{ title: "YR1"
+            },{ title: "YR2"
+            },{ title: "Transfer", value: "transfer", catLabel: function(){ return this.transfer===1?"Yes":"No"; }
+            },{ title: "Highest Level", value: "HighestLevel2", layout: "right"
+            }
+        ]
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1000px;
+                height: 720px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Submission for <a href="http://vacommunity.org/ieeevpg/2015/index.html" target="_blank">
+                IEEE VGTC VPG International Data-Visualization Contest
+                </a>
+            <span class="fa fa-info-circle"></span>
+            </div>
+        
+    </body>
+</html>
