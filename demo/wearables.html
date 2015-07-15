@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Wearable Technologies</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+$(document).ready( function() {
+    resizeBrowser(300,60);
+    $(window).resize(function() {
+        resizeBrowser(300,60);
+        browser.updateLayout();
+    });
+
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 80,
+        leftPanelLabelWidth: 200,
+        rightPanelLabelWidth: 180,
+        itemName: "Wearable Technologies",
+        source: {
+            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+            fileType: 'csv',
+            sheets: {name: "wearables-crowdflower", id:"newID"}
+        },
+        summaries: [
+            {   title: "Price", value: function(){ return 1*this.Price.substr(1,10000); }, unitName: "$"
+            },{ title: "Body Location", value: "Body.Location"
+            },{ title: "Category"
+            },{ title: "Company Name", value: "Company.Name", layout: "right",
+            },{ title: "Company Country", value: "Company...Country", layout: "right"
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 40,
+            sortingOpts: 'Price',
+            displayType: 'grid',
+            textSearch: 'Name',
+            recordView: function(){
+                return "<a target='_blank' href='"+this.Link
+                    +"'><span class='thumbnail'><img class='thumbImg'></span></a><span class='title'>"+this.Name+"</span>";
+            },
+            visibleCb: function(d){
+                d3.select(d.DOM.record).select("img").attr("src",this.Image);
+            }
+        }
+    });
+});
+        </script>
+        <style>
+.listItem{
+    width: 150px;
+}
+.content{
+    padding: 3px;
+}
+.thumbnail{
+    height: 165px;
+}
+        </style>
+    </head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+
+        <div id="infobox" align="center">
+            <span class="fa fa-info-circle"></span>
+            Wearable technology database data by 
+            <a href="http://www.crowdflower.com/data-for-everyone" target='_blank'>CrowdFlower</a>
+            <span class="fa fa-info-circle"></span>
+            </div>
+
+
+    </body>
+</html>
