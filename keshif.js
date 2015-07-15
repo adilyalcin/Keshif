@@ -2512,8 +2512,10 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refreshTotalViz: function(){
-        this.DOM.totalViz_active .style("width",(100*this.itemsWantedCount/this.items.length)+"%");
-        this.DOM.totalViz_preview.style("width",(100*this.itemCount_Previewed/this.items.length)+"%");
+        this.DOM.totalViz_active .style("width",
+            (100*this.itemsWanted_Aggregrate_Total/this.itemsTotal_Aggregrate_Total)+"%");
+        this.DOM.totalViz_preview.style("width",
+            (100*this.itemCount_Previewed/this.itemsTotal_Aggregrate_Total)+"%");
     },
     /** --- */
     initDOM_ClearAllFilters: function(){
@@ -3109,12 +3111,6 @@ kshf.Browser.prototype = {
             this.itemName=this.primaryTableName;
         }
 
-        // Total
-        this.itemsTotal_Aggregrate_Total = 0;
-        this.items.forEach(function(item){
-            this.itemsTotal_Aggregrate_Total+=item.aggregate_Self;
-        },this);
-
         var me=this;
         this.panel_infobox.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
         this.panel_infobox.select("div.status_text .dynamic").text("");
@@ -3125,6 +3121,12 @@ kshf.Browser.prototype = {
         var me=this;
 
         if(this.loadedCb!==undefined) this.loadedCb.call(this);
+
+        // Total
+        this.itemsTotal_Aggregrate_Total = 0;
+        this.items.forEach(function(item){
+            this.itemsTotal_Aggregrate_Total+=item.aggregate_Self;
+        },this);
 
         // Create a summary for each existing column in the data
         for(var column in this.getPrimaryItems()[0].data){
@@ -5391,7 +5393,7 @@ var Summary_Categorical_functions = {
                         }
                         p = 100*p/attrib.aggregate_Active;
                     } else {
-                        p = 100*p/me.browser.itemsWantedCount;
+                        p = 100*p/me.browser.itemsWanted_Aggregrate_Total;
                     }
                     if(p<0) p=0;
                     this.textContent = p.toFixed(0)+"%";
@@ -7963,7 +7965,7 @@ var Summary_Interval_functions = {
                         return;
                     }
                 } else {
-                    p = 100*p/me.browser.itemsWantedCount;
+                    p = 100*p/me.browser.itemsWanted_Aggregrate_Total;
                 }
                 if(p<0) p=0;
                 this.textContent = p.toFixed(0)+"%";
