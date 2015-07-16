@@ -37,11 +37,11 @@ $(document).ready(function(){
         },
         loadedCb: function(){
             // If you downloaded using csv file, convert award amount field
-            kshf.dt.awards.forEach(function(d){
+            kshf.dt.nsfawards.forEach(function(d){
                 var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
                 d.data.AwardedAmountToDate = parseInt(v)/100;
             });
-            kshf.Util.cellToArray(kshf.dt.awards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
+            kshf.Util.cellToArray(kshf.dt.nsfawards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
         },
         summaries: [
             {   title: "Program", value: "Program(s)"
@@ -58,9 +58,6 @@ $(document).ready(function(){
             },{ title: "NSFDirectorate", collapsed: true
             },{ title: "ProgramManager", collapsed: true
             },{ title: "Awarded Amount", value: "AwardedAmountToDate", unitName: "$",
-/*            },{
-                title: "PrincipalInvestigator",
-                layout: 'right'*/
             },{ title: "Name", value: "Organization", layout: 'right',
             },{ title: "State", value: "OrganizationState", layout: 'right', collapsed: true,
                 catLabel: function(){ return getStateName(this.id); }
