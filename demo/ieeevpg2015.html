@@ -17,6 +17,14 @@
 
         <script type="text/javascript">
 
+function sortSkills(){
+    switch(this.id){
+        case 'Good' : return 0;
+        case 'Moderate' : return 1;
+        case 'Poor' : return 2;
+    }
+};
+
 google.setOnLoadCallback(function(){
     browser = new kshf.Browser({
         domID: "#chart_div",
@@ -59,9 +67,9 @@ google.setOnLoadCallback(function(){
             },{ title: "T2_Level2", layout: "middle"
             },{ title: "T3_Level2", layout: "middle"
 
-            },{ title: "T1_IMFIT", layout: "right"
-            },{ title: "T2_IMFIT", layout: "right"
-            },{ title: "T3_IMFIT", layout: "right"
+            },{ title: "T1_IMFIT", layout: "right", catSortBy: sortSkills
+            },{ title: "T2_IMFIT", layout: "right", catSortBy: sortSkills
+            },{ title: "T3_IMFIT", layout: "right", catSortBy: sortSkills
 
             },{ title: "YR1"
             },{ title: "YR2"
