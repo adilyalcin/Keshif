@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <list>
+	<item id="Lott2015" dim="2" rep="E" pos="R">
+		<name>CoVennTree</name>
+		<year>2015</year>
+		<authors>Steffen C. Lott, Bj%26ouml;rn Vo%26szlig;, Wolfgang R. Hess and Claudia Steglich</authors>
+		<url>http://journal.frontiersin.org/Journal/10.3389/fgene.2015.00043</url>
+		<title>CoVennTree: A new method for the comparative analysis of large datasets</title>
+		<publication>Frontiers in Genetics, 6(43)</publication>
+	</item>
+	<item id="Ghoniem2015" dim="2" rep="I" pos="A">
+		<name>Weighted Map</name>
+		<year>2015</year>
+		<authors>Mohammad Ghoniem, Ma%26euml;l Cornil, Bertjan Broeksema, Micka%26euml;l Stefas and Beno%26icirc;t Otjacques</authors>
+		<url>http://dx.doi.org/10.1117/12.2079420</url>
+		<title>Weighted Maps: Treemap visualization of geolocated quantitative data</title>
+		<publication>VDA'15: Proceedings of the Conference on Visualization and Data Analysis</publication>
+		<related>
+			<entry id="Ghoniem2014">
+				<year>2014</year>
+				<authors>Ghoniem, Cornil, Stefas, Otjacques</authors>
+				<url>http://www.researchgate.net/publication/265065341_Weighted_Maps_Location-Aware_Treemaps</url>
+				<title>Weighted Maps: location-aware Treemaps</title>
+			</entry>		
+		</related>
+	</item>
+	<item id="Toosi2014" dim="2" rep="E" pos="R">
+		<name>Circular Tree Drawing</name>
+		<year>2014</year>
+		<authors>Farshad Ghassemi Toosi and Nikola S. Nikolov</authors>
+		<url>http://link.springer.com/content/pdf/bbm%3A978-3-662-45803-7%2F1.pdf</url>
+		<title>Circular Tree Drawing by simulating network synchronisation dynamics and scaling</title>
+		<publication>GD'14: Proceedings of the International Symposium on Graph Drawing, pages 511-512</publication>
+	</item>
+	<item id="Rostami2014" dim="2" rep="E" pos="F">
+		<name>Curved Tree</name>
+		<year>2014</year>
+		<authors>M. Ali Rostami, Azin Azadi and H. Martin B%26uuml;cker</authors>
+		<url>http://link.springer.com/content/pdf/bbm%3A978-3-662-45803-7%2F1.pdf</url>
+		<title>A new approach to visualizing general trees using thickness-adjustable quadratic curves</title>
+		<publication>GD'14: Proceedings of the International Symposium on Graph Drawing, pages 525-526</publication>
+	</item>	
+	<item id="Duarte2014" dim="2" rep="I" pos="A">
+		<name>NMap</name>
+		<year>2014</year>
+		<authors>Felipe S.L.G. Duarte, Fabio Sikansi, Francisco M. Fatore, Samuel G. Fadel and Fernando V. Paulovich</authors>
+		<url>http://dx.doi.org/10.1109/TVCG.2014.2346276</url>
+		<title>Nmap: A novel neighborhood preservation space-filling algorithm</title>
+		<publication>IEEE Transactions on Visualization and Computer Graphics, 20(12), pages 2063-2071</publication>
+	</item>
+	<item id="Ploeg2014" dim="2" rep="E" pos="A">
+		<name>Non-layered Tidy Trees</name>
+		<year>2014</year>
+		<authors>Atze van der Ploeg</authors>
+		<url>http://dx.doi.org/10.1002/spe.2213</url>
+		<title>Drawing non-layered tidy trees in linear time</title>
+		<publication>Software: Practice and Experience, 44(12), pages 1467-1484</publication>
+	</item>
+	<item id="Armitage2014" dim="2" rep="I" pos="A">
+		<name>Columnar Tree Map</name>
+		<year>2014</year>
+		<authors>John Armitage</authors>
+		<url>http://www.freepatentsonline.com/8854371.html</url>
+		<title>Method and system for generating a Columnar Tree Map</title>
+		<publication>US Patent 8854371(B2), filed August 31, 2011, issued October 7, 2014</publication>
+	</item>
 	<item id="Wang2014" dim="2" rep="I" pos="R">
 		<name>Diamond Tree</name>
 		<year>2014</year>
@@ -40,13 +104,27 @@
 			</entry>
 		</related>
 	</item>
-	<item id="Ploeg2013" dim="2" rep="E" pos="A">
-		<name>Non-layered Tidy Trees</name>
-		<year>2013</year>
-		<authors>Atze van der Ploeg</authors>
-		<url>http://dx.doi.org/10.1002/spe.2213</url>
-		<title>Drawing non-layered tidy trees in linear time</title>
-		<publication>Software: Practice and Experience, to appear</publication>
+	<item id="Sallaberry2014" dim="2" rep="E" pos="F">
+		<name>ContactTree</name>
+		<year>2014</year>
+		<authors>Arnaud Sallaberry, Yang-Chih Fu, Hwai-Chung Ho and Kwan-Liu Ma</authors>
+		<url>http://arxiv.org/abs/1411.0052</url>
+		<title>ContactTrees: A technique for studying personal network data</title>
+		<publication>arXiv.org e-print service, arXiv:1411.0052 [cs.SI]</publication>
+		<related>
+			<entry id="Sallaberry2012a">
+				<year>2012</year>
+				<authors>Sallaberry, Fu, Ho, Ma</authors>
+				<url>http://www.cs.ucdavis.edu/research/tech-reports/2011/CSE-2012-24.pdf</url>
+				<title>ContactTrees: Ego-centered visualization of social relations</title>
+			</entry>	
+			<entry id="Sallaberry2012b">
+				<year>2012</year>
+				<authors>Sallaberry, Ma</authors>
+				<url>http://www.cse.ohio-state.edu/~raghu/teaching/CSE5544/Visweek2012/infovis/posters/sallaberry.pdf</url>
+				<title>Visualizing InfoVis researchers with ContactTrees</title>
+			</entry>		
+		</related>
 	</item>
 	<item id="Cao2013" dim="3" rep="I" pos="R">
 		<name>3D Carousel Tree</name>
@@ -80,15 +158,7 @@
 		<title>Gyrolayout: A hyperbolic level-of-detail tree layout</title>
 		<publication>Journal of Universal Computer Science, 19(1), pages 132-156</publication>
 	</item>
-	<item id="Armitage2013a" dim="2" rep="I" pos="A">
-		<name>Columnar Tree Map</name>
-		<year>2013</year>
-		<authors>John Armitage</authors>
-		<url>http://www.freepatentsonline.com/y2013/0050217.html</url>
-		<title>Method and system for generating a Columnar Tree Map</title>
-		<publication>US Patent Application 2013/0050217(A1), filed August 31, 2011, published February 28, 2013</publication>
-	</item>
-	<item id="Armitage2013b" dim="2" rep="I" pos="A">
+	<item id="Armitage2013" dim="2" rep="I" pos="A">
 		<name>Navigable Strip Chart</name>
 		<year>2013</year>
 		<authors>John Armitage</authors>
@@ -99,7 +169,7 @@
 	<item id="Schulz2013_1" dim="2" rep="I" pos="R">
 		<name>Nested Pietree</name>
 		<year>2013</year>
-		<authors>Hans-Jörg Schulz, Zabedul Akbar and Frank Maurer</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Zabedul Akbar and Frank Maurer</authors>
 		<url>http://dx.doi.org/10.1109/PacificVis.2013.6596149</url>
 		<title>A generative layout approach for rooted tree drawings</title>
 		<publication>PacificVis'13: Proceedings of the IEEE Pacific Visualization Symposium, pages 225-232</publication>
@@ -107,7 +177,7 @@
 	<item id="Schulz2013_2" dim="2" rep="I" pos="R">
 		<name>Cascaded Pietree</name>
 		<year>2013</year>
-		<authors>Hans-Jörg Schulz, Zabedul Akbar and Frank Maurer</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Zabedul Akbar and Frank Maurer</authors>
 		<url>http://dx.doi.org/10.1109/PacificVis.2013.6596149</url>
 		<title>A generative layout approach for rooted tree drawings</title>
 		<publication>PacificVis'13: Proceedings of the IEEE Pacific Visualization Symposium, pages 225-232</publication>
@@ -176,22 +246,6 @@
 			</entry>		
 		</related>
 	</item>
-	<item id="Sallaberry2012" dim="2" rep="E" pos="F">
-		<name>ContactTree</name>
-		<year>2012</year>
-		<authors>Arnaud Sallaberry, Yang-Chih Fu, Hwai-Chung Ho and Kwan-Liu Ma</authors>
-		<url>http://www.cs.ucdavis.edu/research/tech-reports/2011/CSE-2012-24.pdf</url>
-		<title>ContactTrees: Ego-centered visualization of social relations</title>
-		<publication>Technical Report, UC Davis</publication>
-		<related>
-			<entry id="Sallaberry2012a">
-				<year>2012</year>
-				<authors>Sallaberry, Ma</authors>
-				<url>http://www.cse.ohio-state.edu/~raghu/teaching/CSE5544/Visweek2012/infovis/posters/sallaberry.pdf</url>
-				<title>Visualizing InfoVis researchers with ContactTrees</title>
-			</entry>		
-		</related>
-	</item>
 	<item id="Liang2012" dim="2" rep="I" pos="A">
 		<name>Angular Treemap</name>
 		<year>2012</year>
@@ -256,6 +310,14 @@
 		<title posttext=", page 414">Generative design</title>
 		<publication>Princeton Architectural Press, 2012</publication>
 	</item>	
+	<item id="Kratt2011" dim="2" rep="I" pos="A">
+		<name>Street Layout</name>
+		<year>2011</year>
+		<authors>Julian Kratt, Hendrik Strobelt and Oliver Deussen</authors>
+		<url>http://dx.doi.org/10.2312/PE/VMV/VMV11/285-292</url>
+		<title>Improving stability and compactness in Street Layout visualizations</title>
+		<publication>VMV'11: Proceedings of the International Workshop on Vision, Modeling and Visualization, pages 285-292</publication>
+	</item>
 	<item id="Bocoup2011" dim="2" rep="E" pos="F">
 		<name>Career Tree</name>
 		<year>2011</year>
@@ -375,15 +437,15 @@
 	<item id="Buchin2011" dim="2" rep="I" pos="A">
 		<name>Adjacency-preserving Spatial Treemaps</name>
 		<year>2011</year>
-		<authors>Kevin Buchin, David Eppstein, Maarten Löffler, Martin Nöllenburg and Rodrigo I. Silveira</authors>
+		<authors>Kevin Buchin, David Eppstein, Maarten L%26ouml;ffler, Martin N%26ouml;llenburg and Rodrigo I. Silveira</authors>
 		<url>http://dx.doi.org/10.1007/978-3-642-22300-6_14</url>
 		<title>Adjacency-Preserving Spatial Treemaps</title>
 		<publication>WADS'11: Proceedings of the International Symposium on Algorithms and Data Structures, pages 159-170</publication>
 		<related>
 			<entry id="Buchin2011a">
 				<year>2011</year>
-				<authors>Buchin, Eppstein, Löffler, Nöllenburg, Silveira</authors>
-				<url>http://arxiv.org/abs/1105.0398v1</url>
+				<authors>Buchin, Eppstein, L%26ouml;ffler, N%26ouml;llenburg, Silveira</authors>
+				<url>http://arxiv.org/abs/1105.0398</url>
 				<title>Adjacency-preserving Spatial Treemaps</title>
 			</entry>
 		</related>
@@ -471,7 +533,7 @@
 	<item id="Schulz2011_1" dim="3" rep="I" pos="R">
 		<name>3D Sunburst (Wheel)</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -479,7 +541,7 @@
 	<item id="Schulz2011_2" dim="3" rep="I" pos="R">
 		<name>3D Polar Steptree</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -487,7 +549,7 @@
 	<item id="Schulz2011_3" dim="3" rep="I" pos="R">
 		<name>3D Sunburst (Sphere)</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -495,7 +557,7 @@
 	<item id="Schulz2011_4" dim="3" rep="I" pos="R">
 		<name>3D Polar Treemap (Sphere)</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -503,7 +565,7 @@
 	<item id="Schulz2011_5" dim="3" rep="I" pos="R">
 		<name>3D Polar Treemap (Cylinder)</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -511,7 +573,7 @@
 	<item id="Schulz2011_6" dim="3" rep="I" pos="A">
 		<name>Collector's Box Treemap</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -519,7 +581,7 @@
 	<item id="Schulz2011_7" dim="3" rep="I" pos="A">
 		<name>Hybrid Steptree/Treecube</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -527,7 +589,7 @@
 	<item id="Schulz2011_8" dim="3" rep="I" pos="A">
 		<name>Spiral Steptree</name>
 		<year>2011</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/TVCG.2010.79</url>
 		<title>The design space of implicit hierarchy visualization: A survey</title>
 		<publication>IEEE Transactions on Visualization and Computer Graphics, 17(4), pages 393-411</publication>
@@ -578,11 +640,11 @@
 		<title>Representing development history in software cities</title>
 		<publication>SOFTVIS'10: Proceedings of the International Symposium on Software Visualization, pages 193-202</publication>
 		<related>
-			<entry id="Steinbruckner2012">
-				<year>2012</year>
+			<entry id="Steinbruckner2013">
+				<year>2013</year>
 				<authors>Steinbr%26uuml;ckner, Lewerentz</authors>
 				<url>http://dx.doi.org/10.1177/1473871612438785</url>
-				<title posttext=", to appear">Understanding software evolution with software cities</title>
+				<title>Understanding software evolution with software cities</title>
 			</entry>
 		</related>
 	</item>
@@ -633,7 +695,7 @@
 	<item id="Duncan2010" dim="2" rep="E" pos="R">
 		<name>Lombardi-style Tree Drawing</name>
 		<year>2010</year>
-		<authors>Christian A. Duncan, David Eppstein, Michael T. Goodrich, Stephen G. Kobourov and Martin Nöllenburg</authors>
+		<authors>Christian A. Duncan, David Eppstein, Michael T. Goodrich, Stephen G. Kobourov and Martin N%26ouml;llenburg</authors>
 		<url>http://dx.doi.org/10.1007/978-3-642-18469-7_17</url>
 		<title>Drawing trees with perfect angular resolution and polynomial area</title>
 		<publication>GD'10: Proceedings of the International Symposium on Graph Drawing, pages 183-194</publication>
@@ -673,7 +735,7 @@
 	<item id="Hadlak2010" dim="2" rep="I" pos="R">
 		<name>Embedded Spatiotemporal Hierarchies</name>
 		<year>2010</year>
-		<authors>Steffen Hadlak, Christian Tominski, Hans-Jörg Schulz and Heidrun Schumann</authors>
+		<authors>Steffen Hadlak, Christian Tominski, Hans-J%26ouml;rg Schulz and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1080/13658816.2010.510840</url>
 		<title>Visualization of attributed hierarchical structures in a spatiotemporal context</title>
 		<publication>International Journal of Geographical Information Science, 24(10), pages 1497-1513</publication>
@@ -865,7 +927,7 @@
 	<item id="Liggesmeyer2009" dim="3" rep="I" pos="A">
 		<name>3D-Treemap</name>
 		<year>2009</year>
-		<authors>Peter Liggesmeyer, Jens Heidrich, J%26uuml;rgen M%26uuml;nch, Robert Kalcklösch, Henning Barthel and Dirk Zeckzer</authors>
+		<authors>Peter Liggesmeyer, Jens Heidrich, J%26uuml;rgen M%26uuml;nch, Robert Kalckl%26ouml;sch, Henning Barthel and Dirk Zeckzer</authors>
 		<url>http://dx.doi.org/10.1007/978-3-642-02574-7_94</url>
 		<title>Visualization of software and systems as support mechanism for integrated software project control</title>
 		<publication>Human-Computer Interaction. Novel Interaction Methods and Techniques: Proceedings of the HCI International, pages 846-855</publication>
@@ -905,7 +967,7 @@
 	<item id="Schulz2009" dim="2" rep="E" pos="R">
 		<name>Point-based Tree Visualization</name>
 		<year>2009</year>
-		<authors>Hans-Jörg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
+		<authors>Hans-J%26ouml;rg Schulz, Steffen Hadlak and Heidrun Schumann</authors>
 		<url>http://dx.doi.org/10.1109/PACIFICVIS.2009.4906841</url>
 		<title>Point-based tree representation: A new approach for large hierarchies</title>
 		<publication>PacificVis'09: Proceedings of the IEEE Pacific Visualization Symposium, pages 81-88</publication>
@@ -1514,9 +1576,9 @@
 		<name>Parent-centered Radial Layout</name>
 		<year>2006</year>
 		<authors>Andrew Pavlo, Christopher Homan and Jonathan Schull</authors>
-		<url>http://arxiv.org/abs/cs/0606007v1</url>
+		<url>http://arxiv.org/abs/cs/0606007</url>
 		<title>A parent-centered radial layout algorithm for interactive graph visualization and animation</title>
-		<publication>arXiv.org e-print service, arXiv:cs/0606007v1 [cs.HC]</publication>
+		<publication>arXiv.org e-print service, arXiv:cs/0606007 [cs.HC]</publication>
 	</item>
 	<item id="Eichhorn2006" dim="2" rep="I" pos="R">
 		<name>Eichhorn-Tree</name>
@@ -1726,7 +1788,7 @@
 			</entry>
 			<entry id="Hahn2014">
 				<year>2014</year>
-				<authors>Hahn, Tr%26uuml;mper, Moritz, Döllner</authors>
+				<authors>Hahn, Tr%26uuml;mper, Moritz, D%26ouml;llner</authors>
 				<url>http://www.hpi.uni-potsdam.de/doellner/publications/year/2014/2334/STMD2014.html</url>
 				<title>Visualization of varying hierarchies by stable layout of Voronoi Treemaps</title>
 			</entry>
@@ -1874,7 +1936,7 @@
 			</entry>
 			<entry id="Trapp2013">
 				<year>2013</year>
-				<authors>Trapp, Schmechel, Döllner</authors>
+				<authors>Trapp, Schmechel, D%26ouml;llner</authors>
 				<url>http://www.hpi.uni-potsdam.de/doellner/publications/year/2013/2193/TSD2013.html</url>
 				<title>Interactive rendering of complex 3D-Treemaps</title>
 			</entry>
@@ -2073,7 +2135,7 @@
 			<entry id="Beermann2005">
 				<year>2005</year>
 				<authors>Beermann, Munzner, Humphreys</authors>
-				<url>http://diglib.eg.org/EG/DL/WS/VisSym/EuroVis05/037-044.pdf</url>
+				<url>http://dx.doi.org/10.2312/VisSym/EuroVis05/037-044</url>
 				<title>Scalable, robust visualization of very large trees</title>
 			</entry>
 			<entry id="Slack2005">
@@ -2518,9 +2580,9 @@
 		<name>Squarified Treemap</name>
 		<year>2000</year>
 		<authors>Mark Bruls, Kees Huizing and Jarke van Wijk</authors>
-		<url>http://diglib.eg.org/EG/DL/WS/VisSym/VisSym00/033-042.pdf</url>
+		<url>http://dx.doi.org/10.2312/VisSym/VisSym00/033-042</url>
 		<title>Squarified Treemaps</title>
-		<publication>VisSym'00: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 33-42</publication>
+		<publication>Data Visualization'00: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 33-42</publication>
 		<related>
 			<entry id="Lin2008">
 				<year>2008</year>
@@ -2566,9 +2628,9 @@
 		<name>Skeletal Image</name>
 		<year>1999</year>
 		<authors>Ivan Herman, Scott Marshall, Guy Melancon, David J. Duke, Maylis Delest and Jean-Philippe Domenger</authors>
-		<url>http://diglib.eg.org/EG/DL/WS/VisSym99/Herman.pdf</url>
+		<url>http://dx.doi.org/10.1007/978-3-7091-6803-5_2</url>
 		<title>Skeletal images as visual cues in graph visualization</title>
-		<publication>VisSym'99: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 13-22</publication>
+		<publication>Data Visualization'99: Proceedings of the Joint Eurographics - IEEE TCVG Symposium on Visualization, pages 13-22</publication>
 		<related>
 			<entry id="Herman1999a">
 				<year>1999</year>
@@ -3225,6 +3287,14 @@
 				<title>Expansion of layouts of complete binary trees into grids</title>
 			</entry>
 		</related>
+	</item>	
+	<item id="Manning1988" dim="2" rep="E" pos="R">
+		<name>Maximally-symmetric Layout</name>
+		<year>1988</year>
+		<authors>Joseph Manning and Mikhail J. Atallah</authors>
+		<url>scans/Manning1988.pdf</url>
+		<title posttext=" (local copy, unavailable from publisher and author)">Fast detection and display of symmetry in trees</title>
+		<publication>Congressus Numerantium, 64, pages 159-169</publication>
 	</item>	
 	<item id="Youn1988" dim="2" rep="E" pos="A">
 		<name>Extended Grid Embedding</name>

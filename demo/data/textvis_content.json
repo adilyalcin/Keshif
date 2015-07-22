@@ -1398,7 +1398,296 @@
 		"reference": "Barış Serim, Thanh Tung Vuong, Tuukka Ruotsalo, Luana Micallef, and Giulio Jacucci. <i>mailVis: Visualizing Emailbox for Re-finding Emails</i>. IEEE VAST Conference Poster, 2014.",
 		"url": "http://kar.kent.ac.uk/42075/",
 		"categories": ["text-summarization", "overview", "classification", "navigation", "corpora", "time-series", "communication", "2d", "text", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Kucher2015",
+		"title": "uVSAT",
+		"year": 2015,
+		"authors": "Kostiantyn Kucher et al.",
+		"reference": "Kostiantyn Kucher, Teri Schamp-Bjerede, Andreas Kerren, Carita Paradis, and Magnus Sahlgren. <i>Visual analysis of online social media to open up the investigation of stance phenomena</i>. Information Visualization, 2015.",
+		"url": "http://dx.doi.org/10.1177/1473871615575079",
+		"categories": ["stance-analysis", "sentiment-analysis", "trend-analysis", "roi", "classification", "comparison", "overview", "navigation", "document", "corpora", "time-series", "social-media", "2d", "line-plot", "node-link", "clouds", "text", "glyph", "linear", "metric"]
+	},
+	
+	{
+		"id": "Burch2014",
+		"title": "RadCloud",
+		"year": 2014,
+		"authors": "Michael Burch et al.",
+		"reference": "Michael Burch, Steffen Lohmann1, Fabian Beck, Nils Rodriguez, Lorenzo Di Silvestro, and Daniel Weiskopf. <i>RadCloud: Visualizing Multiple Texts with Merged Word Clouds</i>. Proceedings of the 18th International Conference on Information Visualisation (IV), pp. 108-113, 2014.",
+		"url": "http://dx.doi.org/10.1109/IV.2014.72",
+		"categories": ["text-summarization", "overview", "classification", "corpora", "2d", "clouds", "text", "radial", "metric"]
+	},
+	
+	{
+		"id": "Kraft2013",
+		"title": "Geo and Temporal Association Creator",
+		"year": 2013,
+		"authors": "Thomas Kraft et al.",
+		"reference": "Thomas Kraft, Derek X. Wang, Jeffrey Delawder, Wenwen Dou, Li Yu, and William Ribarsky. <i>Less After-the-Fact: Investigative Visual Analysis of Events from Streaming Twitter</i>. Proceedings of IEEE Symposium on Large-Scale Data Analysis and Visualization (LDAV), pp. 95-103, 2013.",
+		"url": "http://dx.doi.org/10.1109/LDAV.2013.6675163",
+		"categories": ["text-summarization", "event-analysis", "trend-analysis", "relation-analysis", "roi", "overview", "monitoring", "navigation", "streams", "geospatial", "time-series", "social-media", "2d", "3d", "line-plot", "pixel-area", "maps", "text", "linear", "metric"]
+	},
+	
+	{
+		"id": "MacEachren2011",
+		"title": "SensePlace2",
+		"year": 2011,
+		"authors": "Alan M. MacEachren et al.",
+		"reference": "Alan M. MacEachren, Anuj Jaiswal, Anthony C. Robinson, Scott Pezanowski, Alexander Savelyev, Prasenjit Mitra, Xiao Zhang, and Justine Blanford. <i>SensePlace2: GeoTwitter analytics support for situational awareness</i>. Proceedings of IEEE Symposium on Visual Analytics Science and Technology (VAST), pp. 181-190, 2011.",
+		"url": "http://dx.doi.org/10.1109/VAST.2011.6102456",
+		"categories": ["text-summarization", "event-analysis", "trend-analysis", "roi", "monitoring", "overview", "navigation", "streams", "geospatial", "time-series", "social-media", "2d", "pixel-area", "maps", "text", "linear", "metric"]
+	},
+	
+	{
+		"id": "Guzman2013",
+		"title": "Software Development Projects Emotions Visualization",
+		"year": 2013,
+		"authors": "Emitza Guzman",
+		"reference": "Emitza Guzman. <i>Visualizing emotions in software development projects</i>. Proceedings of First IEEE Working Conference on Software Visualization (VISSOFT), pp. 1-4, 2013.",
+		"url": "http://dx.doi.org/10.1109/VISSOFT.2013.6650529",
+		"categories": ["sentiment-analysis", "text-summarization", "trend-analysis", "overview", "comparison", "navigation", "classification", "corpora", "time-series", "communication", "reviews", "2d", "clouds", "text", "linear"]
+	},
+	
+	{
+		"id": "Guzman2014",
+		"title": "FAVe",
+		"year": 2014,
+		"authors": "Emitza Guzman, Padma Bhuvanagiri, and Bernd Bruegge",
+		"reference": "Emitza Guzman, Padma Bhuvanagiri, and Bernd Bruegge. <i>FAVe: Visualizing User Feedback for Software Evolution</i>. Proceedings of Second IEEE Working Conference on Software Visualization (VISSOFT), pp. 167-171, 2014.",
+		"url": "http://dx.doi.org/10.1109/VISSOFT.2014.33",
+		"categories": ["sentiment-analysis", "text-summarization", "trend-analysis", "overview", "comparison", "navigation", "classification", "corpora", "time-series", "communication", "reviews", "2d", "clouds", "linear"]
+	},
+	
+	{
+		"id": "Chuang2012_2",
+		"title": "Termite",
+		"year": 2012,
+		"authors": "Jason Chuang, Christopher D. Manning, and Jeffrey Heer",
+		"reference": "Jason Chuang, Christopher D. Manning, and Jeffrey Heer. <i>Termite: Visualization Techniques for Assessing Textual Topic Models</i>. Proceedings of the International Working Conference on Advanced Visual Interfaces (AVI), pp. 74-77, 2012.",
+		"url": "http://dx.doi.org/10.1145/2254556.2254572",
+		"categories": ["text-summarization", "overview", "comparison", "navigation", "classification", "document", "corpora", "2d", "pixel-area", "text", "linear"]
+	},
+	
+	{
+		"id": "Wang2012",
+		"title": "I-SI",
+		"year": 2012,
+		"authors": "Xiaoyu Wang et al.",
+		"reference": "Xiaoyu Wang, Wenwen Dou, Zhiqiang Ma, Jeremy Villalobos, Yang Chen, Thomas Kraft, and William Ribarsky. <i>I-SI: Scalable Architecture for Analyzing Latent Topical-Level Information From Social Media Data</i>. Computer Graphics Forum, vol. 31, issue 3pt4, pp. 1275–1284, 2012.",
+		"url": "http://dx.doi.org/10.1111/j.1467-8659.2012.03120.x",
+		"categories": ["text-summarization", "event-analysis", "trend-analysis", "classification", "comparison", "overview", "monitoring", "corpora", "time-series", "social-media", "2d", "line-plot", "text", "linear"]
+	},
+	
+	{
+		"id": "Jankowska2012",
+		"title": "Relative N-Gram Signatures",
+		"year": 2012,
+		"authors": "Magdalena Jankowska, Vlado Kešelj, and Evangelos Milios",
+		"reference": "Magdalena Jankowska, Vlado Kešelj, and Evangelos Milios. <i>Relative N-gram signatures: Document visualization at the level of character N-grams</i>. Proceedings of IEEE Symposium on Visual Analytics Science and Technology (VAST), pp. 103-112, 2012.",
+		"url": "http://dx.doi.org/10.1109/VAST.2012.6400484",
+		"categories": ["text-summarization", "relation-analysis", "lexical-analysis", "classification", "overview", "comparison", "corpora", "literature", "2d", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Hearst1995",
+		"title": "TileBars",
+		"year": 1995,
+		"authors": "Marti A. Hearst",
+		"reference": "Marti A. Hearst. <i>TileBars: Visualization of Term Distribution Information in Full Text Information Access</i>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), pp. 59-66, 1995.",
+		"url": "http://dx.doi.org/10.1145/223904.223912",
+		"categories": ["text-summarization", "relation-analysis", "trend-analysis", "classification", "overview", "comparison", "navigation", "corpora", "document", "2d", "pixel-area", "text", "linear"]
+	},
+	
+	{
+		"id": "Hearst1997",
+		"title": "Cat-a-Cone",
+		"year": 1997,
+		"authors": "Marti A. Hearst and Chandu Karadi",
+		"reference": "Marti A. Hearst and Chandu Karadi. <i>Cat-a-Cone: An Interactive Interface for Specifying Searches and Viewing Retrieval Results Using a Large Category Hierarchy</i>. Proceedings of the Annual International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR), pp. 246-255, 1997.",
+		"url": "http://dx.doi.org/10.1145/258525.258582",
+		"categories": ["text-summarization", "relation-analysis", "classification", "overview", "comparison", "navigation", "corpora", "document", "2d", "3d", "node-link", "text", "radial"]
+	},
+	
+	{
+		"id": "Miller1998_1",
+		"title": "Multiresolution Levels Strip Chart",
+		"year": 1998,
+		"authors": "Nancy E. Miller et al.",
+		"reference": "Nancy E. Miller, Pak Chung Wong, Mary Brewster, and Harlan Foote. <i>TOPIC ISLANDS TM - a wavelet-based text visualization system</i>. Proceedings of IEEE Visualization '98, pp. 189-196, 1998.",
+		"url": "http://dx.doi.org/10.1109/VISUAL.1998.745302",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "roi", "navigation", "document", "2d", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Miller1998_2",
+		"title": "Multiresolution Levels Wave Chart",
+		"year": 1998,
+		"authors": "Nancy E. Miller et al.",
+		"reference": "Nancy E. Miller, Pak Chung Wong, Mary Brewster, and Harlan Foote. <i>TOPIC ISLANDS TM - a wavelet-based text visualization system</i>. Proceedings of IEEE Visualization '98, pp. 189-196, 1998.",
+		"url": "http://dx.doi.org/10.1109/VISUAL.1998.745302",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "roi", "document", "3d", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Miller1998_3",
+		"title": "Topic Islands",
+		"year": 1998,
+		"authors": "Nancy E. Miller et al.",
+		"reference": "Nancy E. Miller, Pak Chung Wong, Mary Brewster, and Harlan Foote. <i>TOPIC ISLANDS TM - a wavelet-based text visualization system</i>. Proceedings of IEEE Visualization '98, pp. 189-196, 1998.",
+		"url": "http://dx.doi.org/10.1109/VISUAL.1998.745302",
+		"categories": ["text-summarization", "trend-analysis", "overview", "comparison", "roi", "document", "3d", "pixel-area", "glyph", "linear"]
+	},
+	
+	{
+		"id": "Rohrer1998",
+		"title": "Concept Shapes",
+		"year": 1998,
+		"authors": "Randall M. Rohrer, David S. Ebert, and John L. Sibert",
+		"reference": "Randall M. Rohrer, David S. Ebert, and John L. Sibert. <i>The shape of Shakespeare: visualizing text using implicit surfaces</i>. Proceedings of IEEE Symposium on Information Visualization, pp. 121-129, 160, 1998.",
+		"url": "http://dx.doi.org/10.1109/INFVIS.1998.729568",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "document", "corpora", "literature", "3d", "pixel-area", "glyph", "metric"]
+	},
+	
+	{
+		"id": "Sebrechts1999",
+		"title": "NIRVE",
+		"year": 1999,
+		"authors": "Marc M. Sebrechts et al.",
+		"reference": "Marc M. Sebrechts, John V. Cugini, Sharon J. Laskowski, Joanna Vasilakis, and Michael S. Miller. <i>Visualization of Search Results: A Comparative Evaluation of Text, 2D, and 3D Interfaces</i>. Proceedings of the Annual International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR), pp. 3-10, 1999.",
+		"url": "http://dx.doi.org/10.1145/312624.312634",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "document", "corpora", "2d", "3d", "pixel-area", "glyph", "node-link", "text", "maps", "metric", "linear"]
+	},
+	
+	{
+		"id": "Liu2005",
+		"title": "Opinion Observer",
+		"year": 2005,
+		"authors": "Bing Liu, Minqing Hu, and Junsheng Cheng",
+		"reference": "Bing Liu, Minqing Hu, and Junsheng Cheng. <i>Opinion Observer: Analyzing and Comparing Opinions on the Web</i>. Proceedings of the International Conference on World Wide Web (WWW), pp. 342-351, 2005.",
+		"url": "http://dx.doi.org/10.1145/1060745.1060797",
+		"categories": ["sentiment-analysis", "classification", "overview", "comparison", "navigation", "corpora", "reviews", "2d", "pixel-area", "text", "linear"]
+	},
+	
+	{
+		"id": "Wright2006",
+		"title": "Sandbox",
+		"year": 2006,
+		"authors": "William Wright et al.",
+		"reference": "William Wright, David Schroh, Pascale Proulx, Alex Skaburskis, and Brian Cort. <i>The Sandbox for Analysis: Concepts and Methods</i>. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI), pp. 801-810, 2006.",
+		"url": "http://dx.doi.org/10.1145/1124772.1124890",
+		"categories": ["text-summarization", "relation-analysis", "overview", "classification", "comparison", "navigation", "corpora", "2d", "text", "node-link", "metric"]
+	},
+	
+	{
+		"id": "Gamon2008",
+		"title": "BLEWS",
+		"year": 2008,
+		"authors": "Michael Gamon et al.",
+		"reference": "Michael Gamon, Sumit Basu, Dmitriy Belenko, Danyel Fisher, Matthew Hurst, and Arnd Christian König. <i>BLEWS: Using Blogs to Provide Context for News Articles</i>. Proceedings of the International Conference on Weblogs and Social Media (ICWSM), pp. 60-67, 2008.",
+		"url": "http://www.aaai.org/Library/ICWSM/2008/icwsm08-015.php",
+		"categories": ["sentiment-analysis", "classification", "overview", "comparison", "navigation", "corpora", "social-media", "editorial-media", "2d", "pixel-area", "text", "linear"]
+	},
+	
+	{
+		"id": "Butt2014",
+		"title": "V1 declaratives visualization",
+		"year": 2014,
+		"authors": "Miriam Butt et al.",
+		"reference": "Miriam Butt, Tina Bögel, Kristina Kotcheva, Christin Schätzle, Christian Rohrdantz, Dominik Sacha, Nicole Dehe, and Daniel A. Keim. <i>V1 in Icelandic: A multifactorical visualization of historical data</i>. Proceedings of the LREC 2014 Workshop VisLR: Visualization as added value in the development, use and evaluation of Language Resources, pp. 33-40, 2014.",
+		"url": "http://webservices.eurac.edu/vislr.html",
+		"categories": ["lexical-analysis", "overview", "comparison", "navigation", "document", "corpora", "time-series", "literature", "2d", "glyph", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Mayer2014",
+		"title": "CLICS",
+		"year": 2014,
+		"authors": "Thomas Mayer et al.",
+		"reference": "Thomas Mayer, Johann-Mattis List, Anselm Terhalle, and Matthias Urban. <i>An Interactive Visualization of Crosslinguistic Colexification Patterns</i>. Proceedings of the LREC 2014 Workshop VisLR: Visualization as added value in the development, use and evaluation of Language Resources, pp. 1-8, 2014.",
+		"url": "http://webservices.eurac.edu/vislr.html",
+		"categories": ["lexical-analysis", "translation-analysis", "relation-analysis", "classification", "overview", "comparison", "navigation", "corpora", "networks", "geospatial", "literature", "2d", "text", "pixel-area", "node-link", "maps", "metric"]
+	},
+	
+	{
+		"id": "Theron2014",
+		"title": "dbo@ema",
+		"year": 2014,
+		"authors": "Roberto Theron and Eveline Wandl-Vogt",
+		"reference": "Roberto Theron and Eveline Wandl-Vogt. <i>The Fun of Exploration: How to Access a Non-Standard Language Corpus Visually</i>. Proceedings of the LREC 2014 Workshop VisLR: Visualization as added value in the development, use and evaluation of Language Resources, pp. 9-12, 2014.",
+		"url": "http://webservices.eurac.edu/vislr.html",
+		"categories": ["lexical-analysis", "relation-analysis", "overview", "comparison", "navigation", "corpora", "geospatial", "literature", "2d", "text", "line-plot", "glyph", "maps", "linear"]
+	},
+	
+	{
+		"id": "Gad2015",
+		"title": "ThemeDelta",
+		"year": 2015,
+		"authors": "Samah Gad et al.",
+		"reference": "Samah Gad, Waqas Javed, Sohaib Ghani, Niklas Elmqvist, Tom Ewing, Keith N. Hampton, and Naren Ramakrishnan. <i>ThemeDelta: Dynamic Segmentations over Temporal Topic Models</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 21, issue 5, pp. 672-685, 2015.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2014.2388208",
+		"categories": ["text-summarization", "trend-analysis", "relation-analysis", "overview", "classification", "comparison", "navigation", "corpora", "time-series", "literature", "social-media", "editorial-media", "2d", "text", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Kempter2014",
+		"title": "EmotionWatch",
+		"year": 2014,
+		"authors": "Renato Kempter et al.",
+		"reference": "Renato Kempter, Valentina Sintsova, Claudiu Musat, and Pearl Pu. <i>EmotionWatch: Visualizing Fine-Grained Emotions in Event-Related Tweets</i>. Proceedings of the International AAAI Conference on Weblogs and Social Media (ICWSM), pp. 236-245, 2014.",
+		"url": "http://www.aaai.org/ocs/index.php/ICWSM/ICWSM14/paper/view/8117",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "classification", "comparison", "navigation", "corpora", "time-series", "social-media", "2d", "text", "glyph", "line-plot", "pixel-area", "linear"]
+	},
+	
+	{
+		"id": "Wensel2008",
+		"title": "VIBES",
+		"year": 2008,
+		"authors": "April M. Wensel and Sara O. Sood",
+		"reference": "April M. Wensel and Sara O. Sood. <i>VIBES: Visualizing Changing Emotional States in Personal Stories</i>. Proceedings of the ACM International Workshop on Story Representation, Mechanism and Context (SRMC), pp. 49-56, 2008.",
+		"url": "http://dx.doi.org/10.1145/1462014.1462025",
+		"categories": ["sentiment-analysis", "text-summarization", "trend-analysis", "overview", "classification", "comparison", "corpora", "time-series", "social-media", "2d", "text", "glyph", "line-plot", "radial"]
+	},
+	
+	{
+		"id": "Miao2009",
+		"title": "AMAZING",
+		"year": 2009,
+		"authors": "Qingliang Miao, Qiudan Li, and Ruwei Dai",
+		"reference": "Qingliang Miao, Qiudan Li, and Ruwei Dai. <i>AMAZING: A sentiment mining and retrieval system</i>. Expert Systems with Applications, vol. 36, no. 3, pp. 7192-7198, 2009.",
+		"url": "http://dx.doi.org/10.1016/j.eswa.2008.09.035",
+		"categories": ["sentiment-analysis", "trend-analysis", "overview", "classification", "navigation", "corpora", "time-series", "reviews", "2d", "text", "glyph", "line-plot", "radial"]
+	},
+	
+	{
+		"id": "Diakopoulos2010",
+		"title": "Vox Civitas",
+		"year": 2010,
+		"authors": "Nicholas Diakopoulos, Mor Naaman, and Funda Kivran-Swaine",
+		"reference": "Nicholas Diakopoulos, Mor Naaman, and Funda Kivran-Swaine. <i></i>. Proceedings of IEEE Symposium on Visual Analytics Science and Technology (VAST), pp. 115-122, 2010.",
+		"url": "http://dx.doi.org/10.1109/VAST.2010.5652922",
+		"categories": ["sentiment-analysis", "text-summarization", "trend-analysis", "overview", "classification", "comparison", "navigation", "corpora", "time-series", "social-media", "2d", "text", "clouds", "line-plot", "linear"]
+	},
+	
+	{
+		"id": "Dork2010",
+		"title": "Visual Backchannel",
+		"year": 2010,
+		"authors": "Marian Dörk et al.",
+		"reference": "Marian Dörk, Daniel Gruen, Carey Williamson, and Sheelagh Carpendale. <i>A Visual Backchannel for Large-Scale Events</i>. IEEE Transactions on Visualization and Computer Graphics, vol. 16, no.6, pp. 1129-1138, 2010.",
+		"url": "http://dx.doi.org/10.1109/TVCG.2010.129",
+		"categories": ["text-summarization", "trend-analysis", "overview", "monitoring", "classification", "comparison", "navigation", "streams", "time-series", "social-media", "2d", "text", "line-plot", "glyph", "clouds", "linear", "radial"]
+	},
+	
+	{
+		"id": "Spangler2010",
+		"title": "SIMPLE",
+		"year": 2010,
+		"authors": "Scott Spangler et al.",
+		"reference": "Scott Spangler, Ying Chen, Jeffrey Kreulen, Stephen Boyer, Thomas Griffin, Alfredo Alba, Linda Kato, Ana Lelescu, and Su Yan. <i>SIMPLE: Interactive Analytics on Patent Data</i>. Proceedings of the IEEE International Conference on Data Mining Workshops (ICDMW), pp. 426-433, 2010.",
+		"url": "http://dx.doi.org/10.1109/ICDMW.2010.188",
+		"categories": ["relation-analysis", "overview", "navigation", "comparison", "corpora", "patents", "2d", "clouds", "text", "pixel-area", "metric"]
 	}
-
-
+	
 ]

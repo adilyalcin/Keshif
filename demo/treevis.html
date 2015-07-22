@@ -67,9 +67,9 @@ function loadData(browser){
 }
 
 $(document).ready( function(){
-    resizeBrowser(100,100);
+    resizeBrowser(100,80);
     $(window).resize(function() {
-        resizeBrowser(100,100);
+        resizeBrowser(100,80);
         browser.updateLayout();
     });
 
@@ -99,7 +99,7 @@ $(document).ready( function(){
             },
             visibleCb: function(d){
                 d3.select(d.DOM.record).select("img").attr("src",
-                    "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/thumbs100png/"+
+                    "http://www.cs.umd.edu/~yalcin/keshif_res/treevis/"+
                     this.id+".png");
             }
         }
@@ -114,7 +114,8 @@ $(document).ready( function(){
         padding: 3px;
     }
     .thumbnail{
-        height: 105px;
+        border-radius: 10px;
+        border: solid 1px lightgray;
     }
 </style>
     </head>
