@@ -97,14 +97,13 @@ $(document).ready( function(){
                     myLoc = position.coords;
                     var seriesSummary = browser.summaries_by_name.Location;
                     seriesSummary.sortingOpt_Active = seriesSummary.catSortBy[1];
-                    seriesSummary.DOM.optionSelect[0][0].value = "Close to me";
                     seriesSummary.refreshSortButton();
                     seriesSummary.updateCatSorting(0,true);
                 });
             }
 
             for(var i=0; i<5; i++){
-                browser.listDisplay.showListItemDetails(kshf.dt.Screenings[i]);
+                browser.listDisplay.setRecordDetails(kshf.dt.Screenings[i],true);
             }
             browser.summaries_by_name.Date.height_hist_max = 60;
             browser.updateLayout();
@@ -159,7 +158,7 @@ $(document).ready( function(){
             },{ title: "Location", value: "Series", layout: "right",
                 catTableName: "Series", catLabel: "Name",
                 catSortBy: [
-                    "# of Screenings",
+                    { name: "# of Screenings" },
                     {   name: "Close to me",  
                         value: function(){
                             return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
