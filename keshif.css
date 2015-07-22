@@ -144,8 +144,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .recordDisplay--Header > .itemRank_control {
   display: inline-block;
 }
-.kshf[attribsShown=true] .panelAdjustWidth {
-  display: block !important;
+.kshf[attribsShown=true] .panel:hover > .panelAdjustWidth {
+  display: block;
 }
 .kshf[attribsShown=true] .editableTextContainer > .editTextButton {
   display: inline-block;
@@ -673,7 +673,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  padding: 2px 5px;
+  padding: 4px 5px 0px 5px;
   font-size: 0.8em;
   vertical-align: top;
 }
@@ -706,7 +706,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader {
   padding: 1px;
-  font-size: 0.9em;
+  font-size: 1em;
   font-weight: 700;
 }
 .kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterHeader:after {
@@ -770,16 +770,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
 }
 .kshf .panel_Basic > .rightBoxes {
-  font-size: 1.2em;
+  font-size: 1.0em;
   color: #635d46;
   padding-right: 2px;
   white-space: nowrap;
 }
-.kshf .panel_Basic > .rightBoxes .fa {
+.kshf .panel_Basic > .rightBoxes > .fa {
   cursor: pointer;
-  margin-left: 2px;
+  margin-left: 4px;
 }
-.kshf .panel_Basic > .rightBoxes .fa:hover {
+.kshf .panel_Basic > .rightBoxes > .fa:hover {
   color: #cb5454;
 }
 .kshf .panel_Basic > .rightBoxes .showConfigButton {
@@ -791,7 +791,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .rightBoxes .datasource {
   display: none;
-  cursor: pointer;
   text-decoration: none;
   color: #635d46;
 }
@@ -1027,9 +1026,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: gray;
   border-style: dashed;
 }
-.kshf .panel > .panelAdjustWidth[dragging=true] {
+.kshf .panel > .panelAdjustWidth[dragging] {
   border-color: gray;
   border-style: dashed;
+  display: block;
 }
 .kshf .panel.panel_bottom {
   display: -webkit-box;
@@ -1863,6 +1863,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper {
   position: relative;
   overflow: hidden;
+  -webkit-transition: height 700ms ease-in-out;
+  -moz-transition: height 700ms ease-in-out;
+  -o-transition: height 700ms ease-in-out;
+  transition: height 700ms ease-in-out;
 }
 .kshf .kshfChart > .wrapper > .facetCategorical {
   overflow: hidden;

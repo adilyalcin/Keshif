@@ -23,7 +23,7 @@ var browser_configs = {
             },
             summaries: [
                 {   title: "Characters",
-                    catSortBy: "# of Occurances",
+                    catSortBy: {name: "# of Occurances"},
         /*                {name:"Cluster", value: function(){ return kshf.dt_id.Characters[this.id].data[3];}} */
                     catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }
                 },{ title: "Volume", collapsed: true,
@@ -37,14 +37,14 @@ var browser_configs = {
                 recordView: function(){
                     var characters="";
                     var str="<i class='fa fa-book'></i>"+
-                        " <span style='font-weight:300'>Vol. "+this.Volume+
-                        " Book "+this.Book+
-                        " Chap. "+this.Chapter+"</span>";
+                        " <span style='font-weight:400'>Vol. "+this.Volume+
+                        ", Book "+this.Book+
+                        ", Chapter "+this.Chapter+"</span>";
                     if(this.Characters && this.Characters.length>0){
                         this.Characters.forEach(function(c){
                             characters+=kshf.dt_id.Characters[c].data.Name+", ";
                         });
-                        str+="<br><i class='fa fa-users'></i> "+characters;
+                        str+="<div style='font-weight:200; font-size:0.9em'><i class='fa fa-users'></i> "+characters+"</div>";
                     }
                     return str;
                 }
@@ -68,28 +68,44 @@ var browser_configs = {
             summaries: [
                 {   title: "Genres",
                     value: function(){
-                        var r=[];
+                        var genres=[];
                         for(var x in this){
                             if(x==="Name") continue;
                             if(x==="ReleaseDate") continue;
                             if(x==="AvgRating") continue;
                             if(x==="Watches") continue;
                             if(x==="id") continue;
-                            if(this[x]==1) r.push(x);
+                            if(this[x]==1) genres.push(x);
                         }
-                        return r;
+                        return genres;
                     },
                     enableSetVis: true
                 },{ title: "Rating", value: "AvgRating", layout: 'right'
                 },{ title: "Watched", value: "Watches", layout: 'right', intervalScale: 'log'
-                },{ title: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
+                },{ title: "Release Year", layout: 'bottom', 
+                    value: function(){ 
+                        return this.ReleaseDate;
+                        return new Date(this.ReleaseDate,1,1); 
+                    }
                 }
             ],
             itemDisplay: {
                 sortColWidth: 50,
                 detailsToggle: "off",
                 sortingOpts: ["Rating", "Watched"],
-                recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
+                recordView: function(d){ 
+                    var genres=[];
+                    for(var x in this){
+                        if(x==="Name") continue;
+                        if(x==="ReleaseDate") continue;
+                        if(x==="AvgRating") continue;
+                        if(x==="Watches") continue;
+                        if(x==="id") continue;
+                        if(this[x]==1) genres.push(x);
+                    }
+                    return "<i class='fa fa-film'></i> "+this.Name+
+                        "<div style='font-weight:300; font-size: 0.8em;'>"+genres.join(", ")+"</div>";
+                }
             }
         }
     },
@@ -470,20 +486,6 @@ var browser_configs = {
             summaries:[
                 {   title: "Samples",
                     value: function(){ return this[0]; },
-                    catSortBy: [
-                        "# of Compounds",
-                        {   name: "Name",
-                            func: function(a,b){
-                                a = a.data[1].split(' ');
-                                b = b.data[1].split(' ');
-                                var shark_a = a[0];
-                                var shark_b = b[0];
-                                var name_comp = shark_a.localeCompare(shark_b);
-                                if(name_comp!==0) return name_comp;
-                                return parseInt(a[1]) - parseInt(b[1]);
-                            }
-                        }
-                    ]
                 },{ title: "Sharks",
                     description: "The compount appears with the shark if any sample taken from that shark includes that compound",
                     value: function(){

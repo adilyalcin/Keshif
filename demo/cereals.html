@@ -26,7 +26,8 @@ google.setOnLoadCallback(function(){
         },
         summaries: [
             {   title: "Brand",
-                catSortBy: { func: function(a,b){ return a.id().localeCompare(b.id());} } // String sorting!
+                // String sorting. Notice that we just specified that this returns ID.
+                catSortBy: "id"
             },{ title: "Type"
             },{ title: "Shelf Level",
                 catLabel: function(){

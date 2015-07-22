@@ -42,13 +42,15 @@ var Summary_Clique_functions = {
 
 		// Update sorting options of setListSummary (adding relatednesness metric...)
 		this.setListSummary.catSortBy[0].name = this.browser.itemName+" #";
-		this.setListSummary.catSortBy.push(
-			this.setListSummary.prepareSortingOption({
-				name: "Relatedness",
-				value: function(d){ return -d.MST.index; },
-				prep: function(){ me.updatePerceptualOrder(); }
-			})
-		);
+		this.setListSummary.insertSortingOption({
+			name: "Relatedness",
+			value: function(d){ 
+				return -d.MST.index;
+			},
+			prep: function(){ 
+				me.updatePerceptualOrder();
+			}
+		});
 		this.setListSummary.refreshSortOptions();
 		this.setListSummary.DOM.optionSelect.attr("dir","rtl"); // quick hack: right-align the sorting label
 
@@ -263,8 +265,10 @@ var Summary_Clique_functions = {
 				    me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
 				    me.checkPan();
 
+				    var maxHeight = me.setListSummary.heightRow_category*me.setListSummary._cats.length - h;
+
 				    var t = initT-difY;
-				    t = Math.max(0,t);
+				    t = Math.min(maxHeight,Math.max(0,t));
 				    var r = initR-difX;
 				    r = Math.min(0,Math.max(r,-t));
 
@@ -783,8 +787,7 @@ var Summary_Clique_functions = {
 	},
 	/** -- */
 	panSVGViewBox: function(w,h,t,r){
-		this.DOM.cliqueSVG
-			.attr("viewBox",r+" "+t+" "+w+" "+h);
+		this.DOM.cliqueSVG.attr("viewBox",r+" "+t+" "+w+" "+h);
 	},
 	/** -- */
 	refreshSVGViewBox: function(){

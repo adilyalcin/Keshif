@@ -132,8 +132,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .recordDisplay--Header > .itemRank_control{
             display: inline-block;
         }
-        .panelAdjustWidth{
-            display: block !important;
+        .panel:hover > .panelAdjustWidth{
+            display: block;
         }
         .editableTextContainer > .editTextButton{
             display: inline-block;
@@ -587,7 +587,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .filtercrumbs{
             .flex(1);
-            padding: 2px 5px;
+            padding: 4px 5px 0px 5px;
             font-size: 0.8em;
             vertical-align: top;
             > .filter-block{
@@ -616,7 +616,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     overflow: hidden;
                     > .filterHeader{
                         padding: 1px;
-                        font-size: 0.9em;
+                        font-size: 1em;
                         font-weight: 700;
                         &:after{
                             content: ': ';
@@ -678,13 +678,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .rightBoxes{
-            font-size: 1.2em;
+            font-size: 1.0em;
             color: #635d46;
             padding-right: 2px;
             white-space: nowrap;
-            .fa{
+            > .fa{
                 cursor: pointer;
-                margin-left: 2px;
+                margin-left: 4px;
                 &:hover{ color: #cb5454; }
             }
             .showConfigButton{
@@ -696,7 +696,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             .datasource{
                 display: none;
-                cursor: pointer;
                 text-decoration: none;
                 color: #635d46; // if dom type is a, it will show visited links in different color
             }
@@ -910,7 +909,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             z-index: 10;
             pointer-events: all;
             &:hover{ border-color: gray; border-style: dashed; }
-            &[dragging=true]{ border-color: gray; border-style: dashed; }
+            &[dragging]{ 
+                border-color: gray; 
+                border-style: dashed;
+                display: block;
+            }
         }
         &.panel_bottom{
             .display(flex);
@@ -1653,6 +1656,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .wrapper{
             position: relative;
             overflow: hidden;
+            .transition(height 700ms ease-in-out);
             // so that absolute positioned elements will not overflow
             > .facetCategorical{
                 overflow: hidden;

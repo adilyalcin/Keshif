@@ -64,6 +64,7 @@ var kshf = {
             ModifyBrowser: "Modify browser",
             OpenDataSource: "Open data source",
             ShowInfoCredits: "Show info &amp; credits",
+            ShowFullscreen: "Fullscreen",
             RemoveFilter: "Remove filter",
             RemoveAllFilters: "Remove all filters",
             MinimizeSummary: "Close summary",
@@ -99,6 +100,7 @@ var kshf = {
             ModifyBrowser: "Tarayıcıyı düzenle",
             OpenDataSource: "Veri kaynağını aç",
             ShowInfoCredits: "Bilgi",
+            ShowFullscreen: "Tam ekran",
             RemoveFilter: "Filtreyi kaldır",
             RemoveAllFilters: "Tüm filtreleri kaldır",
             MinimizeSummary: "Özeti ufalt",
@@ -1384,7 +1386,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshRecordRanks: function(d3_selection){
-        if(!this.showRank) return;
+        if(!this.showRank) return; // Do not refresh if not shown...
         d3_selection.text(function(d){
             if(d.visibleOrder<0) return "";
             return d.visibleOrder+1;
@@ -1430,6 +1432,9 @@ kshf.RecordDisplay.prototype = {
                     summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.title);
                 } else{
                     summary = this.browser.createSummary(sortOpt.title,sortOpt.value, "interval");
+                    if(sortOpt.unitName){
+                        summary.setUnitName(sortOpt.unitName);
+                    }
                 }
             }
 
@@ -1461,16 +1466,20 @@ kshf.RecordDisplay.prototype = {
     setSortColumnWidth: function(v){
         if(this.displayType!=='list') return;
         this.sortColWidth = Math.max(Math.min(v,110),30);
+        this.DOM.recordsSortCol.style("width",this.sortColWidth+"px")
+        this.refreshAdjustSortColumnWidth();
+    },
+    /** -- */
+    refreshAdjustSortColumnWidth: function(){
         this.DOM.adjustSortColumnWidth.style("left",
             (this.sortColWidth-2)+(this.showRank?13:0)+"px")
-        this.DOM.recordsSortCol.style("width",this.sortColWidth+"px")
     },
     /** -- */
     setShowRank: function(v){
-        if(this.showRank===v) return;
         this.showRank=v;
         this.DOM.root.attr('showRank',this.showRank);
         this.refreshRecordRanks(this.DOM.recordRanks);
+        this.refreshAdjustSortColumnWidth();
     },
     /** Insert items into the UI, called once on load */
     insertRecords: function(){
@@ -1543,6 +1552,7 @@ kshf.RecordDisplay.prototype = {
         this.DOM.listItems      = this.DOM.listItemGroup.selectAll(".listItem");
         this.DOM.recordsSortCol = this.DOM.listItemGroup.selectAll(".recordSortCol");
         this.DOM.recordsContent = this.DOM.listItemGroup.selectAll(".content");
+        this.DOM.recordRanks    = this.DOM.listItemGroup.selectAll(".recordRank");
     },
     /** -- */
     setRecordDetails: function(item, value){
@@ -2056,6 +2066,7 @@ kshf.Browser = function(options){
     this.vizCompareActive = false;
     this.ratioModeActive = false;
     this.percentModeActive = false;
+    this.isFullscreen = false;
 
     this.previewedSelectionSummary = null;
 
@@ -2477,7 +2488,7 @@ kshf.Browser.prototype = {
         // Attribute panel
         rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return kshf.lang.cur.ModifyBrowser; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ModifyBrowser; } });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
@@ -2487,7 +2498,7 @@ kshf.Browser.prototype = {
         this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
             .attr("target","_blank")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return kshf.lang.cur.OpenDataSource; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.OpenDataSource; } });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
@@ -2498,11 +2509,20 @@ kshf.Browser.prototype = {
         // Info & Credits
         rightBoxes.append("i").attr("class","fa fa-info-circle credits")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'n', title: function(){ return kshf.lang.cur.ShowInfoCredits; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ShowInfoCredits; } });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
             .on("click",function(){ me.showInfoBox();})
+            ;
+        // Info & Credits
+        rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
+            .each(function(d){
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ShowFullscreen; } });
+            })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout",function(d,i){ this.tipsy.hide(); })
+            .on("click",function(){ me.showFullscreen();})
             ;
 
         var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalViz");
@@ -2848,6 +2868,32 @@ kshf.Browser.prototype = {
                 setTimeout(initAttib,end-start);
         };
         setTimeout(initAttib,150);
+    },
+    /** -- */
+    showFullscreen: function(){
+        this.isFullscreen = this.isFullscreen?false:true;
+        var elem = browser.DOM.root[0][0];
+        if(this.isFullscreen){
+            if (elem.requestFullscreen) {
+              elem.requestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+              elem.msRequestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+              elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+              elem.webkitRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            }
+        }
     },
     /** -- */
     showInfoBox: function(){
@@ -4555,34 +4601,25 @@ var Summary_Categorical_functions = {
         return this.getMaxAggr_Total()===1;
     },
     /** -- */
+    insertSortingOption: function(opt){
+        this.catSortBy.push( this.prepareSortingOption(opt) );
+    },
+    /** -- */
     prepareSortingOption: function(opt){
-        opt.no_resort = opt.no_resort || (this.catCount_Total<=4);
-        opt.inverse = opt.inverse || false;
-        if(opt.func===undefined){
-            if(opt.value){
-                if(opt.name && opt.value===undefined){
-                    opt.value = opt.name;
-                }
-                if(typeof(opt.value)==="string"){
-                    var x = opt.value;
-                    opt.value = function(){ return this[x]; }
-                    opt.name = x;
-                }
-                opt.no_resort = true;
-                opt.custom = true;
-            } else {
-                opt.name = "# of Active";
-                // order by active (and if same, total) count
-                opt.func = function(a,b){
-                    var dif=b.aggregate_Active - a.aggregate_Active;
-                    if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
-                    return dif;
-                };
+        opt.inverse = opt.inverse || false; // Default is false
+        if(opt.value){
+            if(typeof(opt.value)==="string"){
+                opt.name = x;
+                var x = opt.value;
+                opt.value = function(){ return this[x]; }
+            } else if(typeof(opt.value)==="function"){
+                if(opt.name===undefined) opt.name = "custom"
             }
+            if(opt.no_resort===undefined) opt.no_resort = true;
         } else {
-            opt.no_resort = true;
-            if(opt.no_resort===undefined) opt.no_resort=true;
+            opt.name = opt.name || "# of Active";
         }
+        if(opt.no_resort===undefined) opt.no_resort = (this.catCount_Total<=4);
         return opt;
     },
     /** -- */
@@ -5165,9 +5202,11 @@ var Summary_Categorical_functions = {
                                 attrib.set_OR(me.summaryFilter.selected_OR);
                             } else {
                                 // search in tooltiptext
-                                if(me.catTooltip &&
-                                    me.catTooltip.call(attrib.data).toLowerCase().indexOf(v)!==-1) {
+                                if(me.catTooltip){
+                                    var tooltipText = me.catTooltip.call(attrib.data);
+                                    if(tooltipText && tooltipText.toLowerCase().indexOf(v)!==-1) {
                                         attrib.set_OR(me.summaryFilter.selected_OR);
+                                    }
                                 } else{
                                     attrib.set_NONE();
                                 }
@@ -5265,9 +5304,11 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     getWidth_CatChart: function(){
-        if(!this.scrollBarShown()){
+        // This will make the bar width extend over to the scroll area.
+        // Doesn't look better, the amount of space saved makes chart harder to read and breaks the regularly spaced flow.
+        /*if(!this.scrollBarShown()){
             return this.panel.width_catBars+kshf.scrollWidth-5;
-        }
+        }*/
         return this.panel.width_catBars;
     },
     /** -- */
@@ -5819,7 +5860,7 @@ var Summary_Categorical_functions = {
             if(this.browser.vizCompareActive) timeoutTime = 0;
 //            this.resultPreviewShowTimeout = setTimeout(function(){
                 if(!me.browser.pauseResultPreview &&
-                  (me.hasMultiValueItem || me.summaryFilter.selected_OR.length===0) &&
+                  (me.hasMultiValueItem || me.summaryFilter.selected_AND.length===0) &&
                   (!attrib.is_NOT()) ){
                     // calculate the preview
                     attrib.items.forEach(function(item){item.updatePreview(me.parentFacet);},me);
@@ -6112,41 +6153,57 @@ var Summary_Categorical_functions = {
     sortCategories: function(){
         var me = this;
         var inverse = this.catSortBy_Active.inverse;
-        var sortFunc = this.catSortBy_Active.func;
-        var valueFunc = this.catSortBy_Active.value;
-
+        // Prepare sorting callback
         if(this.catSortBy_Active.prep) this.catSortBy_Active.prep.call(this);
 
         // idCompareFunc can be based on integer or string comparison
-        var idCompareFunc = function(a,b){return b-a;};
+        var idCompareFunc = function(a,b){return b.id()-a.id();};
         if(typeof(this._cats[0].id())==="string")
-            idCompareFunc = function(a,b){ return b.localeCompare(a); };
+            idCompareFunc = function(a,b){return b.id().localeCompare(a.id());};
 
-        var theSortFunc = function(a,b){
-            // linked items...
-            if(a.selectedForLink && !b.selectedForLink) return -1;
-            if(b.selectedForLink && !a.selectedForLink) return 1;
+        var theSortFunc;
+        var sortV = this.catSortBy_Active.value;
+        // sortV can only be function. Just having the check for sanity
+        if(sortV && typeof sortV==="function"){
+            // valueCompareFunc can be based on integer or string comparison
+            var valueCompareFunc = function(a,b){return a-b;};
+            if(typeof(sortV.call(this._cats[0].data, this._cats[0]))==="string")
+                valueCompareFunc = function(a,b){return a.localeCompare(b);};
 
-            // selected on top of the list
-            if(!a.f_selected() &&  b.f_selected()) return  1;
-            if( a.f_selected() && !b.f_selected()) return -1;
+            // Of the value is a 2-parameter function, we'll expect that it defines a sorting order
+            if(sortV.length===2){
+                theSortFunc = sortV;
+            } else {
+                // The value is a custom value that returns an integer
+                theSortFunc = function(a,b){
+                    var x = valueCompareFunc(sortV.call(a.data,a),sortV.call(b.data,b));
+                    if(x===0) x=idCompareFunc(a,b);
+                    if(inverse) x=-x;
+                    return x;
+                };
+            }
+        } else {
+            var sortFunc = function(a,b){
+                var dif=b.aggregate_Active - a.aggregate_Active;
+                if(dif===0) { return b.aggregate_Total-a.aggregate_Total; }
+                return dif;
+            };
 
-            // put the items with zero active items to the end of list (may not be displayed)
-            if(a.aggregate_Active===0 && b.aggregate_Active!==0) return  1;
-            if(b.aggregate_Active===0 && a.aggregate_Active!==0) return -1;
-
-            var x=sortFunc(a,b);
-            if(x===0) x=idCompareFunc(a.id(),b.id());
-            if(inverse) x=-x;
-            return x;
-        };
-        if(this.catSortBy_Active.custom){
             theSortFunc = function(a,b){
-                var v_a = valueFunc.call(a.data,a);
-                var v_b = valueFunc.call(b.data,b);
-                // TODO: Currently, assuming the sorting function returns a numeric value.
-                var x = v_a - v_b;
-                if(x===0) x=idCompareFunc(a.id(),b.id());
+                // linked items...
+                if(a.selectedForLink && !b.selectedForLink) return -1;
+                if(b.selectedForLink && !a.selectedForLink) return 1;
+
+                // selected on top of the list
+                if(!a.f_selected() &&  b.f_selected()) return  1;
+                if( a.f_selected() && !b.f_selected()) return -1;
+
+                // put the items with zero active items to the end of list (may not be displayed)
+                if(a.aggregate_Active===0 && b.aggregate_Active!==0) return  1;
+                if(b.aggregate_Active===0 && a.aggregate_Active!==0) return -1;
+
+                var x=sortFunc(a,b);
+                if(x===0) x=idCompareFunc(a,b); // stable sorting. ID's would be string most probably.
                 if(inverse) x=-x;
                 return x;
             };
