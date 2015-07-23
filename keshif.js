@@ -3186,6 +3186,9 @@ kshf.Browser.prototype = {
         this.options.facets = this.options.facets || [];
 
         this.options.facets.forEach(function(facetDescr){
+            if(typeof facetDescr==="string"){
+                facetDescr = {title: facetDescr};
+            }
             if(facetDescr.sortingOpts){
                 facetDescr.catSortBy = facetDescr.sortingOpts
             }
@@ -3770,7 +3773,7 @@ kshf.Browser.prototype = {
         var me=this;
         var divHeight_Total = this.domHeight();
 
-        var panel_Basic_height = Math.max(parseInt(browser.DOM.panel_Basic.style("height")),24)+6;
+        var panel_Basic_height = Math.max(parseInt(this.DOM.panel_Basic.style("height")),24)+6;
 
         divHeight_Total-=panel_Basic_height;
 
