@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>USDA Food Satey Awards</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+google.setOnLoadCallback(function(){
+    browser = new kshf.Browser({
+        domID: "#chart_div",
+        barChartWidth: 90,
+        leftPanelLabelWidth: 150,
+        rightPanelLabelWidth: 200,
+        source: {
+            gdocId: '1XLyXuVv6-zM6yMWcDnhiTHimyC1sYtmfLM6JOjOB5vY',
+            sheets: {name: "Awards", id:"application_id"}
+        },
+        summaries: [
+          {	title: "Status", value: "project_status"},
+          {	title: "Sponsor Institution", value: "sponsor_institution"},
+          {	title: "Start Date", value: "start_date", layout: "bottom"},
+          {	title: "End Date", value: "end_date", layout: "bottom", collapsed: true},
+          {	title: "Funding Source", value: "funding_source"},
+          {	title: "Features", value: function(){
+          		var r=[];
+          		if(this.dementia) r.push("Dementia");
+          		if(this.hci) r.push("HCI");
+          		if(this.nano) r.push("Nano");
+          		return r;
+          	}
+          },
+          { title: "Ratio of Applied", value: function(){ return this.applied*100}, unitName: "%", layout: "right" },
+          { title: "Duration", unitName: "Years", layout: "right", 
+          	value: function(){
+          		var m_end = moment(this.end_date);
+          		var m_start = moment(this.start_date);
+          		return m_end.diff(m_start,'years');
+          	}
+          },
+          { title: "Organization", layout: "right", 
+          	value: function(){ return kshf.Util.toProperCase(this.organization);}},
+          { title: "Performing Department", layout: "right", collapsed: true,
+          	value: function(){ return kshf.Util.toProperCase(this.performing_dept);}},
+        ],
+        itemDisplay: {
+            sortColWidth: 55,
+            textSearch: "title",
+            recordView: function(){ 
+            	return kshf.Util.toProperCase(this.title) + " <a href='"+this.url+"' target='_blank'>info</a>";
+            }
+        }
+    });
+});
+        </script>
+        <style>
+            #chart_div {
+                width: 1100px;
+                height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+    	<div class="pageTitle" align="center">USDA Food Safety Awards</div>
+       <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
