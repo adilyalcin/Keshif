@@ -117,7 +117,7 @@ google.setOnLoadCallback( function() {
                 },
                 catTableName: "member_types", catLabel: "type",
             },{ title: "Project", catTableName: "projects", catLabel: "project",
-            },{ title: "Date", attribMap: function(){ return new Date(this.Date); }, layout: "middle",
+            },{ title: "Date", value: function(){ return new Date(this.Date); }, layout: "middle",
             }
         ],
         itemDisplay: {

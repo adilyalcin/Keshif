@@ -54,10 +54,10 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "<span class='fa fa-home'></span> # of Homes", attribMap: "homes"
-            },{ title: "<span class='fa fa-money'></span> Average Value", attribMap: "value"
+            {   title: "<span class='fa fa-home'></span> # of Homes", value: "homes"
+            },{ title: "<span class='fa fa-money'></span> Average Value", value: "value"
             },{ title: "Name Features",
-                attribMap: function(){
+                value: function(){
                     var r=[];
                     if(this.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
                     if(this.tree) r.push("Trees <span class='fa fa-tree featIcon'></span>");
@@ -66,7 +66,7 @@ $(document).ready( function(){
                     if(parseInt(this.text)) r.push("Numbered");
                     return r;
                 }
-            },{ title: "In # Counties", attribMap: "in_counties", collapsed: true
+            },{ title: "In # Counties", value: "in_counties", collapsed: true
             }
         ],
         itemDisplay: {
