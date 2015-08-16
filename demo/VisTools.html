@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Visualization Tools</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+        <script type="text/javascript">
+
+function getImageName(url){
+  var x=url.split("/");
+  return x[x.length-1];
+};
+
+// Use original ImageURL (from visualizaingdata)
+var imageDownloadScript = function(){
+  var src="";
+  kshf.dt["Visualization Tools"].forEach(function(r){
+  	if(r.data.ImageURL)
+    	src+= "curl -o "+getImageName(r.data.ImageURL)+" "+r.data.ImageURL+"\n";
+  });
+  return src;
+};
+function isOpenSource(d){
+	switch(d.OpenSource){
+		case null: return;
+		case undefined: return;
+		case "": return;
+		case "-": return;
+		case "N": return;
+		default: return "Yes";
+	}
+};
+
+$(document).ready( function(){
+	resizeBrowser(100,130);
+	$(window).resize(function() {
+	  resizeBrowser(100,130);
+	  browser.updateLayout();
+	});
+
+	browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 170,
+    source: {
+      gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
+      sheets: 'Visualization Tools'
+    },
+    loadedCb: function(browser){
+			kshf.Util.cellToArray(kshf.dt["Visualization Tools"], 
+				['Author','Cost','Programming','Tags','Data-Procs.'], /\s*\+\s*/,false);
+		},
+    summaries: [
+    	{ title: "Highlights", 
+    		value: function(){
+    			switch(this['★']){
+    				case "N": return;
+    				case "-": return;
+//    				case "Y": return "★★";
+//    				case "M": return "★";
+    				default: return this['★'];
+    			}
+    		},
+    		catSortBy: function(){ return 2-this.id.length; }
+    	},
+    	{	title: "Features",
+    		value: function(){
+    			var r=[];
+    			if(this.Charting==="Y") r.push("Charting");
+    			if(this.Color==="Y") r.push("Color Design");
+    			if(this.Spreadsheet==="Y") r.push("Spreadsheet <span class='fa fa-table'></span>");
+    			if(this.Statistical==="Y") r.push("Statistical");
+    			if(this.Scientific==="Y") r.push("Scientific <span class='fa fa-flask'></span>");
+    			if(this.Infographics==="Y") r.push("Infographics");
+    			if(this.Design==="Y") r.push("Design focused");
+    			switch(this["Web-based"]){
+    				case "Y": r.push("Web-based"); break;
+    				case "-": break;
+    				case "?": break;
+    				case "N": break;
+    				case null: break;
+    				case undefined: break;
+    				default: r.push("Web: "+this["Web-based"]); break;
+    			}
+    			return r;
+    		}
+    	},
+    	{ title: "Data Types",
+    		value: function(){
+    			var r=[];
+    			if(this["Data-\nGeo"]==="Y") r.push("Geographical <span class='fa fa-globe chart-icon'></span>");
+    			if(this["Data-\nMultivar."]==="Y") r.push("Multivariate <span class='fa fa-bar-chart chart-icon'></span>");
+    			if(this["Data-\nTime"]==="Y") r.push("Time <span class='fa fa-line-chart chart-icon'></span>");
+    			if(this["Data-\nNetwork"]==="Y") r.push("Network <span class='fa fa-share-alt chart-icon'></span>");
+    			if(this["Data-\nText"]==="Y") r.push("Text<span class='fa fa-file-text chart-icon'></span>");
+    			return r;
+    		}
+    	},
+    	{ title: "Data Processing", 
+    		value: function(){
+    			if(this["Data-Procs."]) 
+    				return this["Data-Procs."].filter(function(v){
+	    				return v!=="N" && v!=="-" && v!=="?";
+	    			});
+    		}
+    	},
+    	{ title: "Cost",
+    		description: "Free tools may be available only for non-commercial, educational or limited use.<br>Check each tool for details",
+    		value: function(){
+    			var r=[];
+    			switch(this.OpenSource){
+    				case null: break;
+    				case undefined: break;
+    				case "": break;
+    				case "-": break;
+    				case "N": break;
+    				default: r.push("Open-Sourced"); break;
+    			}
+    			if(this.Cost) {
+    				var v=this.Cost.filter(function(v){
+	    				return v!=="N" && v!=="-" && v!=="?";
+	    			});
+	    			r = r.concat(v);
+    			}
+    			return r;
+    		}
+    	},
+    	{ title: "Web-based ?",
+    		description: "Hosted on the web / accessible by web browsers",
+    		value: function(){
+    			
+    		}
+    	},
+    	{ title: "Active?", layout: "right",
+    		value: function(){
+    			if(this["Active?"]==="Y") return "Active";
+    		}
+    	},
+    	//{ title: "Design", collapsed: true, layout: "right" },
+    	{ title: "Tags", layout: "right" },
+    	{ title: "Author", collapsed: true },
+    	{ title: "Programming", layout: "right",
+    		value: function(){
+    			if(this.Programming) return this.Programming.filter(function(v){
+    				return v!=="N" && v!=="-" && v!=="?";
+    			});
+    		}
+    	},
+
+    ],
+    itemDisplay: {
+      sortingOpts: {
+      	title:'', 
+      	value: function(){
+      		if(this['★']===null) return this.id;
+      		if(this['★']===undefined) return this.id;
+      		if(this['★']==="N") return this.id;
+      		if(this['★']==='★★') return this.id+40000;
+      		if(this['★']==='★') return this.id+20000;
+      		return this.id;
+      	}
+      },
+      textSearch: "Title",
+      displayType: 'grid',
+      recordView: function(){
+        var str="<a target='_blank' href='"+this.URL+"' class='thumbnail'><img class='thumbImg'></a>";
+        if(this.Description)
+        	str+="<span><span class='fa fa-info toolIcon toolInfo'></span></span>"
+        str+="<span class='title'>"+this.Title+"</span>";
+        str+="<span class='item_details toolDescription'>";
+        	str+=this.Description
+        	str+="</span>"; // item_details
+        str+="<div class='toolIconList'>"
+	        str+="<a href='"+this.URL+"' target='_blank' title='Source Code'><span class='fa fa-home toolIcon'></span></a>"
+		      if(this.VideoURL){
+	        	str+="<a href='"+this.VideoURL+"' target='_blank' title='Video'><span class='fa fa-video-camera toolIcon'></span></a>"
+	        }
+		      if(this.DocURL){
+	        	str+="<a href='"+this.DocURL+"' target='_blank' title='Documentation'><span class='fa fa-book toolIcon'></span></a>"
+	        }
+  	      if(isOpenSource(this)){
+          	str+="<a href='"+this.OpenSource+"' target='_blank' title='Source Code'><span class='fa fa-code toolIcon'></span></a>"
+          }
+	        str+="</div>";
+
+        if(this['★']==="★"){
+       		str+="<span class='tool_highlight'>★</a>";
+        }
+				if(this['★']==="★★"){
+					str+="<span class='tool_highlight'>★★</a>";
+				}
+        return str;
+      },
+      visibleCb: function(d){
+      	var url="";
+      	if(this.ImageURL) url = "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+this.ImageURL;
+          d3.select(d.DOM.record).select("img").attr("src",url);
+        var _this = this;
+        d3.select(d.DOM.record).select(".toolInfo").on("click",function(){
+        	browser.listDisplay.setRecordDetails(d,!d.showDetails);
+        })
+      }
+    }
+  });
+});
+</script>
+<style>
+  .listItem{
+    width: 150px;
+  }
+  .content{
+    padding: 3px;
+  }
+  .chart-icon{
+  	width: 14px;
+  }
+  .content .tool_highlight{
+		position: absolute;
+		top: 2px;
+		right: 2px;
+		border-radius: 13px;
+		padding: 2px;
+		font-size: 0.75em;
+		font-weight: 700;
+		display: block;
+		text-align: center;
+		opacity: 1;
+		color: orangered;
+		text-shadow: 0px 0px 5px white;
+		background-color: rgba(205, 205, 205, 0.6);
+  }
+  .toolIcon.toolInfo{
+  	float: right;
+  }
+  .toolIconList > a > .toolIcon{
+  	color: gray;
+  	margin: 0px 2px;
+  }
+  .toolIconList > a:hover > .toolIcon{
+  	color: black;
+  	margin: 0px 2px;
+  }
+  .toolInfo{
+  	cursor: pointer;
+  	font-size: 0.9em;
+  }
+  .toolInfo:hover{
+  	color: orangered;
+  }
+  .toolDescription{
+  	font-size: 0.7em;
+  	font-weight: 300;
+  }
+  .toolIconList{
+  	margin-top: 1px;
+  	font-size: 0.9em;
+  }
+  .listSortOptionSelect{
+  	display: none;
+  }
+</style>
+	</head>
+  <body>
+    <div class="pageTitle" align="center">Data Visualization Tools</div>
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data is publicly at <a href="https://docs.google.com/spreadsheets/d/13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E/edit#gid=1230665440" target="_blank">Google Sheets</a>,
+      and is loosely based on <a href="http://www.visualisingdata.com/index.php/resources/"
+          target='_blank'>VisualisingData.com</a> resources.<br>
+      <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> Contact:  
+      	<a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a><br>
+      All rights for the technique images belong to their respective owners.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
+</html>
