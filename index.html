@@ -46,7 +46,7 @@ browser = new kshf.Browser({
     summaries: [
         {   title: "Keywords", layout: 'left',
             value: function(){ return this.Keywords.split(" + "); }
-        },{ title: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"
+        },{ title: "# of Records", value: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"
         },{ title: "Data Source", layout: 'left', collapsed: true,
             value: function(){ return this.Source.split(" + "); }
         },{ title: "Code Complexity", layout: 'right',
