@@ -39,7 +39,7 @@ $(document).ready(function(){
     // to see the data / functions it includes
 	browser = new kshf.Browser({
         domID: "#chart_div",
-        itemName: "Sewer Overflows",
+        itemName: "Sewer Overflows in Maryland, 2004-2016",
         categoryTextWidth: 200,
         showDataSource: true,
         source: { 
@@ -60,6 +60,7 @@ $(document).ready(function(){
             sortColWidth: 110,
             sortingOpts: [
                 { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
+                "Date",
                 { title: 'id', value: function(){ return this[0]; } }
             ],
             recordView: function(){
