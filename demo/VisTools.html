@@ -45,15 +45,29 @@ function isOpenSource(d){
 	}
 };
 
+function resizeBrowser(minWidth, minHeight){
+  if(minWidth) {
+    $('#vistools_div').width($(window).width()-minWidth);
+    $('#visbooks_div').width($(window).width()-minWidth);
+  }
+  if(minHeight) {
+    $('#vistools_div').height($(window).height()-minHeight);
+    $('#visbooks_div').height($(window).height()-minHeight);
+  }
+};
+
+var book_browser=null;
+
 $(document).ready( function(){
 	resizeBrowser(100,130);
-	$(window).resize(function() {
+	$(window).resize(function(){
 	  resizeBrowser(100,130);
-	  browser.updateLayout();
+	  tool_browser.updateLayout();
+    if(book_browser) book_browser.updateLayout();
 	});
 
-	browser = new kshf.Browser({
-    domID: "#chart_div",
+	tool_browser = new kshf.Browser({
+    domID: "#vistools_div",
     categoryTextWidth: 170,
     source: {
       gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
@@ -74,7 +88,7 @@ $(document).ready( function(){
     				default: return this['★'];
     			}
     		},
-    		catSortBy: function(){ return 2-this.id.length; }
+    		catSortBy: function(){ return 2-this.id.length; 	}
     	},
     	{	title: "Features",
     		value: function(){
@@ -168,6 +182,7 @@ $(document).ready( function(){
       		if(this['★']===null) return this.id;
       		if(this['★']===undefined) return this.id;
       		if(this['★']==="N") return this.id;
+          if(this['★']==='★★★') return this.id+60000;
       		if(this['★']==='★★') return this.id+40000;
       		if(this['★']==='★') return this.id+20000;
       		return this.id;
@@ -179,7 +194,7 @@ $(document).ready( function(){
         var str="<a target='_blank' href='"+this.URL+"' class='thumbnail'><img class='thumbImg'></a>";
         if(this.Description)
         	str+="<span><span class='fa fa-info toolIcon toolInfo'></span></span>"
-        str+="<span class='title'>"+this.Title+"</span>";
+        str+="<a target='_blank' href='"+this.URL+"' class='tool_title'>"+this.Title+"</a>";
         str+="<span class='item_details toolDescription'>";
         	str+=this.Description
         	str+="</span>"; // item_details
@@ -195,13 +210,11 @@ $(document).ready( function(){
           	str+="<a href='"+this.OpenSource+"' target='_blank' title='Source Code'><span class='fa fa-code toolIcon'></span></a>"
           }
 	        str+="</div>";
-
-        if(this['★']==="★"){
-       		str+="<span class='tool_highlight'>★</a>";
-        }
-				if(this['★']==="★★"){
-					str+="<span class='tool_highlight'>★★</a>";
-				}
+          switch(this['★']){
+            case "N": 
+            case "-": break;
+            default: str+="<span class='tool_highlight'>"+this['★']+"</a>";
+          }
         return str;
       },
       visibleCb: function(d){
@@ -210,15 +223,61 @@ $(document).ready( function(){
           d3.select(d.DOM.record).select("img").attr("src",url);
         var _this = this;
         d3.select(d.DOM.record).select(".toolInfo").on("click",function(){
-        	browser.listDisplay.setRecordDetails(d,!d.showDetails);
+        	tool_browser.listDisplay.setRecordDetails(d,!d.showDetails);
         })
       }
     }
   });
+
+  createBookBrowser = function(){
+    if(book_browser!==null) return;
+    book_browser = new kshf.Browser({
+      domID: "#visbooks_div",
+      categoryTextWidth: 170,
+      source: {
+        gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
+        sheets: 'Visualization Books'
+      },
+      loadedCb: function(browser){
+        kshf.Util.cellToArray(kshf.dt["Visualization Books"], ['Authors','Tags'], /\s*\+\s*/,false);
+      },
+      summaries: [
+        { title: "Highlights", value:"★"},
+        { title: "Authors"},
+        { title: "Publisher", collapsed: true},
+        { title: "Year" },
+      ],
+      itemDisplay: {
+        sortingOpts: ["Year", "id"],
+        textSearch: "Title",
+        displayType: 'list',
+        recordView: function(){
+          var str="";
+          str+="<span class='book_title'>"+this.Title+"</span>";
+          if(this["★"]) str+="<span class='book_stars'>"+this["★"]+"</span>";
+          str+="<br>";
+          str+="<span class='book_year'> ["+this.Year+"] </span>";
+          str+="<span class='book_authors'>"+this.Authors.join(" <span style='color:gray; font-size:0.9em'>&amp;</span> ")+"</span>";
+          if(this.Publisher) str+="<span class='book_publisher'> - © "+this.Publisher+"</span>";
+          return str;
+        }
+      }
+    });
+  }
+
+  $(".browser_select").click(function(){
+    var _show=this.getAttribute("show");
+    $("body").attr("show",_show);
+    if(_show==="books"){
+      createBookBrowser();
+    }
+    tool_browser.updateLayout();
+    book_browser.updateLayout();
+  });
 });
 </script>
 <style>
-  .listItem{
+  #vistools_div .listItem{
     width: 150px;
   }
   .content{
@@ -268,23 +327,86 @@ $(document).ready( function(){
   	margin-top: 1px;
   	font-size: 0.9em;
   }
-  .listSortOptionSelect{
+  #vistools_div .listSortOptionSelect{
   	display: none;
   }
+  .tool_title{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    text-align: left;
+    font-size: 0.9em;
+    font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    color: black;
+  }
+
+  .book_title{
+    font-weight: 600;
+  }
+  .book_year{
+    font-weight: 300;
+    font-size: 0.9em;
+  }
+  .book_stars{
+    color: orangered;
+    margin: 0px 5px;
+  }
+  .book_publisher {
+    font-size: 0.8em;
+    font-weight: 100;
+  }
+
+  .browser_select{
+    border: solid 1px lightgray;
+    border-radius: 10px;
+    padding: 0px 4px;
+    color: gray;
+    cursor: pointer;
+  }
+  .browser_select:hover{
+    color: orangered;
+  }
+  body[show="tools"] .browser_select[show="tools"]{
+    background-color: #EEEEEE;
+    color: black;
+    cursor: default;
+    pointer-events: none;
+  }
+  body[show="books"] .browser_select[show="books"]{
+    background-color: #EEEEEE;
+    color: black;
+    cursor: default;
+    pointer-events: none;
+  }
+  #vistools_div{ display: none; margin: 0 auto; }
+  #visbooks_div{ display: none; margin: 0 auto; }
+  body[show="tools"] #vistools_div{
+    display: block;
+  }
+  body[show="books"] #visbooks_div{
+    display: block;
+  }
+
 </style>
 	</head>
-  <body>
-    <div class="pageTitle" align="center">Data Visualization Tools</div>
-    <div class="contents"><div id="chart_div"></div></div>
+  <body show="tools">
+    <div class="pageTitle" align="center">Data-Visualization 
+      <span class="browser_select" show="tools">Tools</span> &amp; 
+      <span class="browser_select" show="books">Books</span>
+      </div>
+    <div class="contents">
+      <div id="vistools_div"></div>
+      <div id="visbooks_div"></div>
+      </div>
 
     <div id="infobox" align="center">
       <span class="fa fa-info-circle"></span>
-      Data is publicly at <a href="https://docs.google.com/spreadsheets/d/13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E/edit#gid=1230665440" target="_blank">Google Sheets</a>,
-      and is loosely based on <a href="http://www.visualisingdata.com/index.php/resources/"
-          target='_blank'>VisualisingData.com</a> resources.<br>
-      <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> Contact:  
+      Data is public at <a href="https://docs.google.com/spreadsheets/d/13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E/edit#gid=1230665440" target="_blank">Google Sheets</a>.
+      <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> For info, contact 
       	<a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a><br>
-      All rights for the technique images belong to their respective owners.
+      All rights for the images belong to their respective owners.
       <span class="fa fa-info-circle"></span>
       </div>
   </body>
