@@ -1118,8 +1118,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 }
-                &[selected_source_type="spreadsheet"] {
-                    .source_from[source_type="spreadsheet"]{
+                &[selected_source_type="GoogleSheet"] {
+                    .source_from[source_type="GoogleSheet"]{
                         background-color: #EEE;
                         color: black;
                         cursor: default;
@@ -1128,8 +1128,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         content: "Sheet";
                     }
                 }
-                &[selected_source_type="folder"] {
-                    .source_from[source_type="folder"]{
+                &[selected_source_type="Dropbox"] {
+                    .source_from[source_type="Dropbox"]{
+                        background-color: #EEE;
+                        color: black;
+                        cursor: default;
+                    }
+                    .tableHeader:before{
+                        content: "File";
+                    }
+                    > .sheetInfo .fileType_wrapper{
+                        display: inline-block;
+                    }
+                }
+                &[selected_source_type="GoogleDrive"] {
+                    .source_from[source_type="GoogleDrive"]{
                         background-color: #EEE;
                         color: black;
                         cursor: default;

@@ -2632,7 +2632,7 @@ kshf.Browser.prototype = {
     insertSourceBox: function(){
         var me=this;
         var x,y,z;
-        var source_type="spreadsheet";
+        var source_type="GoogleSheet";
         var sourceURL=null, sourceSheet="";
 
         var readyToLoad=function(){
@@ -2648,16 +2648,22 @@ kshf.Browser.prototype = {
 
         x = source_wrapper.append("div").attr("class","offpoofff");
 
-        x.append("span").attr("class","source_from").text("Google Spreadsheet").attr("source_type","spreadsheet");
-        x.append("span").attr("class","source_from").text("Google Drive Folder").attr("source_type","folder");
+        x.append("span").attr("class","source_from").text("Google Sheet").attr("source_type","GoogleSheet");
+        x.append("span").attr("class","source_from").text("Google Drive Folder").attr("source_type","GoogleDrive");
+        x.append("span").attr("class","source_from").text("Dropbox Folder").attr("source_type","Dropbox");
+        x.append("span").attr("class","source_from").text("Local File").attr("source_type","LocalFile");
 
         x.selectAll(".source_from").on("click",function(){
             source_type=this.getAttribute("source_type");
             me.DOM.infobox_source.attr("selected_source_type",source_type);
-            gdocLink.attr("placeholder",(source_type==="folder")?
-                'https://******.googledrive.com/host/**************/':
-                'https://docs.google.com/spreadsheets/d/**************'
-            );
+            var placeholder;
+            switch(source_type){
+                case "GoogleSheet": placeholder = 'https://docs.google.com/spreadsheets/d/**************'; break;
+                case "GoogleDrive": placeholder = 'https://******.googledrive.com/host/**************/'; break;
+                case "Dropbox": placeholder = "https://dl.dropboxusercontent.com/u/**************/";
+            }
+            
+            gdocLink.attr("placeholder",placeholder);
         });
 
         x = source_wrapper.append("div");
@@ -2668,7 +2674,7 @@ kshf.Browser.prototype = {
             .on("keyup",function(){
                 gdocLink_ready.style("opacity",this.value===""?"0":"1");
                 var input = this.value;
-                if(source_type==="spreadsheet"){
+                if(source_type==="GoogleSheet"){
                     var firstIndex = input.indexOf("docs.google.com/spreadsheets/d/");
                     if(firstIndex!==-1){
                         var input = input.substr(firstIndex+31); // focus after the base url
@@ -2684,7 +2690,7 @@ kshf.Browser.prototype = {
                         gdocLink_ready.attr("ready",false);
                     }
                 }
-                if(source_type==="folder"){
+                if(source_type==="GoogleDrive"){
                     var firstIndex = input.indexOf(".googledrive.com/host/");
                     if(firstIndex!==-1){
                         // Make sure last character is "/"
@@ -2696,6 +2702,21 @@ kshf.Browser.prototype = {
                         gdocLink_ready.attr("ready",false);
                     }
                 }
+                if(source_type==="Dropbox"){
+                    var firstIndex = input.indexOf("dl.dropboxusercontent.com/");
+                    if(firstIndex!==-1){
+                        // Make sure last character is "/"
+                        if(input[input.length-1]!=="/") input+="/";
+                        sourceURL = input;
+                        gdocLink_ready.attr("ready",true);
+                    } else{
+                        sourceURL = null;
+                        gdocLink_ready.attr("ready",false);
+                    }
+                }
+                if(source_type==="LocalFile"){
+                    // TODO
+                }
                 actionButton.attr("disabled",!readyToLoad());
             });
 
@@ -2703,10 +2724,14 @@ kshf.Browser.prototype = {
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
                         gravity: 's', title: function(){
-                            if(source_type==="spreadsheet")
-                                return "The link to your Google Spreadsheet";
-                            if(source_type==="folder")
+                            if(source_type==="GoogleSheet")
+                                return "The link to your Google Sheet";
+                            if(source_type==="GoogleDrive")
                                 return "The link to *hosted* Google Drive folder";
+                            if(source_type==="Dropbox")
+                                return "The link to your *Public* Dropbox folder";
+                            if(source_type==="LocalFile")
+                                return "Select your file or drag & drop into the field";
                         }
                     });
                 })
@@ -2729,9 +2754,11 @@ kshf.Browser.prototype = {
                         //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                         gravity: 's', title: function(){
                             var v;
-                            if(source_type==="spreadsheet")
-                                v="The name of the data sheet in the spreadsheet.";
-                            if(source_type==="folder")
+                            if(source_type==="GoogleSheet")
+                                v="The name of the data sheet in your Google Sheet.";
+                            if(source_type==="GoogleDrive")
+                                v="The file name in the folder.";
+                            if(source_type==="Dropbox")
                                 v="The file name in the folder.";
                             v+="<br>Also describes what each data row represents"
                             return v;
@@ -2823,13 +2850,27 @@ kshf.Browser.prototype = {
                     me.showAttributes();
                     if(readyCb_pre) readyCb_pre.call(this,this);
                 }
-                if(source_type==="spreadsheet"){
+                if(source_type==="GoogleSheet"){
                     me.loadSource({
                         gdocId: sourceURL,
                         sheets: [ {name:sourceSheet, id:sheetID} ]
                     });
                 }
-                if(source_type==="folder"){
+                if(source_type==="GoogleDrive"){
+                    me.loadSource({
+                        dirPath: sourceURL,
+                        fileType: DOMfileType[0][0].value,
+                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                    });
+                }
+                if(source_type==="Dropbox"){
+                    me.loadSource({
+                        dirPath: sourceURL,
+                        fileType: DOMfileType[0][0].value,
+                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                    });
+                }
+                if(source_type==="LocalFile"){
                     me.loadSource({
                         dirPath: sourceURL,
                         fileType: DOMfileType[0][0].value,
@@ -3054,7 +3095,7 @@ kshf.Browser.prototype = {
         var me=this;
         var fileName=this.source.dirPath+sheet.name+".json";
         $.ajax({
-            url: fileName,
+            url: fileName+"?dl=0",
             type: "GET",
             async: (this.source.callback===undefined)?true:false,
             dataType: "json",
