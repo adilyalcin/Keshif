@@ -16,48 +16,45 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 80,
-        categoryTextWidth: 200,
-        source: {
-            gdocId: '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
-            sheets: "Cereals"
-        },
-        summaries: [
-            {   title: "Brand",
-                // String sorting. Notice that we just specified that this returns ID.
-                catSortBy: "id"
-            },{ title: "Type"
-            },{ title: "Shelf Level",
-                catLabel: function(){
-                    switch(this.id){
-                        case 1: return "Bottom";
-                        case 2: return "Middle";
-                        case 3: return "Top";
-                    }
-                }
-            },{ title: "Rating", layout: 'middle', showPercentile: true, description: "Reported by Consumer Reports"
-            },{ title: "Calories", layout: 'right', showPercentile: true
-            },{ title: "Protein", value: "Protein (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Fat", value: "Fat (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Carb", value: "Carbo (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Sugar", value: "Sugar (gr)", layout: 'right', unitName: "gr", showPercentile: true
-            },{ title: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true,
-            },{ title: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true,
-            },{ title: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true,
-			},{ title: "Vitamins", layout: 'middle', showPercentile: true,  collapsed: true,
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: [
-                {title: 'Rating', label: function(){ return this.Rating.toPrecision(4)}},
-                {title: 'Calories'}
-            ],
-            textSearch: "Name",
-            recordView: "Name"
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 80,
+    categoryTextWidth: 200,
+    source: {
+        gdocId: '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
+        sheets: "Cereals"
+    },
+    summaries: [
+      { title: "Brand", catSortBy: "id" },
+      { title: "Type" },
+      { title: "Shelf Level",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Bottom";
+            case 2: return "Middle";
+            case 3: return "Top";
+          }
+        }},
+      { title: "Rating", layout: 'middle', showPercentile: true, description: "Reported by Consumer Reports" },
+      { title: "Calories", layout: 'right', showPercentile: true },
+      { title: "Protein", value: "Protein (gr)", layout: 'right', unitName: "gr", showPercentile: true },
+      { title: "Fat", value: "Fat (gr)", layout: 'right', unitName: "gr", showPercentile: true },
+      { title: "Carb", value: "Carbo (gr)", layout: 'right', unitName: "gr", showPercentile: true },
+      { title: "Sugar", value: "Sugar (gr)", layout: 'right', unitName: "gr", showPercentile: true },
+      { title: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true },
+      { title: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true },
+      { title: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
+      { title: "Vitamins", layout: 'middle', showPercentile: true,  collapsed: true, }
+    ],
+      itemDisplay: {
+      sortingOpts: [
+        { title: 'Rating', label: function(){ return this.Rating.toPrecision(4)} },
+        'Calories'
+      ],
+      textSearch: "Name",
+      recordView: "Name"
+    }
+  });
 });
         </script>
         <style>
