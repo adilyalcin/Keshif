@@ -3166,7 +3166,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordRank {
   float: left;
   margin-top: 4px;
-  width: 13px;
+  width: 15px;
+  padding-right: 2px;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordToggleDetail {
   width: 18px;

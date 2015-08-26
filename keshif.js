@@ -1472,7 +1472,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshAdjustSortColumnWidth: function(){
         this.DOM.adjustSortColumnWidth.style("left",
-            (this.sortColWidth-2)+(this.showRank?13:0)+"px")
+            (this.sortColWidth-2)+(this.showRank?15:0)+"px")
     },
     /** -- */
     setShowRank: function(v){
@@ -2163,7 +2163,7 @@ kshf.Browser = function(options){
 
     this.DOM.attributePanel = this.DOM.root.append("div").attr("class","panel attributePanel");
     var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
-    xx.append("span").text("Available attributes");
+    xx.append("span").text("Available Attributes");
     xx.append("span").attr("class","addAttrib fa fa-plus")
         .each(function(){
             this.tipsy = new Tipsy(this, {
@@ -2181,7 +2181,7 @@ kshf.Browser = function(options){
         .each(function(){
             this.tipsy = new Tipsy(this, {
                 gravity: "e",
-                title: function(){ return "Hide panel"; }
+                title: function(){ return "Close panel"; }
             })
         })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -2246,13 +2246,9 @@ kshf.Browser.prototype = {
         summary.removeFromPanel();
     },
     /** -- */
-    getPrimaryItems: function(){
-        return kshf.dt[this.primaryTableName];
-    },
-    /** -- */
     getAttribTypeFromFunc: function(attribFunc){
         var type = null;
-        this.getPrimaryItems().some(function(item,i){
+        this.items.some(function(item,i){
             var item=attribFunc.call(item.data,item);
             if(item===null) return false;
             if(item===undefined) return false;
@@ -3175,7 +3171,7 @@ kshf.Browser.prototype = {
         },this);
 
         // Create a summary for each existing column in the data
-        for(var column in this.getPrimaryItems()[0].data){
+        for(var column in this.items[0].data){
             if(typeof(column)==="string") this.createSummary(column);
         }
 
@@ -3609,6 +3605,11 @@ kshf.Browser.prototype = {
     /** -- */
     clearFilters_All: function(force){
         var me=this;
+        if(this.skipSortingFacet){
+            // you can now sort the last filtered summary, attention is no longer there.
+            this.skipSortingFacet.dirtySort = false;
+            this.skipSortingFacet.DOM.root.attr("refreshSorting",false);
+        }
         // clear all registered filters
         this.filters.forEach(function(filter){
             filter.clearFilter(false,false,false);
@@ -3982,9 +3983,10 @@ kshf.Summary_Base.prototype = {
         this.DOM = {};
         this.DOM.inited = false;
 
-        this.items = this.browser.getPrimaryItems();
+        this.items = this.browser.items;
         if(this.items===undefined||this.items===null||this.items.length===0){
-            alert("Fck");
+            alert("Error: Browser.items is not defined...");
+            return;
         }
 
         this.subFacets = [];
@@ -4083,6 +4085,9 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     uniqueCategories: function(){
+        if(this.browser && this.browser.items[0].idIndex===this.summaryTitle){
+            return true;
+        }
         return false;
     },
     /** -- */
@@ -4546,8 +4551,7 @@ var Summary_Categorical_functions = {
     /** -- */
     getHeight: function(){
         if(!this.hasCategories() || this.collapsed) return this.getHeight_Header();
-        // Note: I don't know why I need -2 to match real dom height.
-        return this.getHeight_Header() + this.getHeight_Content()-2;
+        return this.getHeight_Header() + this.getHeight_Content();
     },
     /** -- */
     getHeight_Header: function(){
@@ -6573,6 +6577,12 @@ var Summary_Interval_functions = {
 
         if(!this.aggr_initialized) return;
 
+        if(this.uniqueCategories()){
+            this.DOM.nugget.select(".nuggetInfo").html("<span class='fa fa-tag'></span><br>Unique");
+            nuggetChart.style("display",'none');
+            return;
+        }
+
         var maxAggregate_Total = this.getMaxAggr_Total();
 
         if(this.intervalRange.min===this.intervalRange.max){
@@ -6644,10 +6654,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getHeight_Header: function(){
-        if(this._height_header===undefined) {
-            this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
-        }
-        return this._height_header;
+        return this.DOM.headerGroup[0][0].offsetHeight;
     },
     /** -- */
     getHeight_Extra: function(){
@@ -7054,7 +7061,8 @@ var Summary_Interval_functions = {
             var filterId = this.summaryFilter.id;
 
             var itemV = function(item){
-                if(item.isWanted) return item.mappedDataCache[filterId].v;
+                // if(item.isWanted)  // Include all items - Aggregate also shows the "total" viz
+                    return item.mappedDataCache[filterId].v;
             };
             if(this.zoomed===false){
                 itemV = this.itemV;
@@ -7088,6 +7096,8 @@ var Summary_Interval_functions = {
             if(this.DOM.root){
                 this.insertVizDOM();
             }
+
+            if(this.showPercentile) this.updatePercentiles();
         }
         if(this.DOM.root){
             if(this.DOM.aggr_Group===undefined){
@@ -8107,7 +8117,7 @@ var Summary_Interval_functions = {
         this.updateAggregate_Active();
         this.refreshMeasureLabel();
         this.updateBarPreviewScale2Active();
-        if(this.showPercentile) this.updateQuantiles();
+        if(this.showPercentile) this.updatePercentiles();
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
@@ -8144,7 +8154,7 @@ var Summary_Interval_functions = {
         if(this.inBrowser()) this.DOM.selectedItemValue.style("display",null);
     },
     /** -- */
-    updateQuantiles: function(){
+    updatePercentiles: function(){
         var me=this;
         // get active values into an array
         // the items are already sorted by their numeric value, it's just a linear pass.
