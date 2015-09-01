@@ -305,6 +305,22 @@ $(document).ready( function(){
     tool_browser.updateLayout();
     book_browser.updateLayout();
   });
+
+  d3.select(".attributions")
+    .each(function(summary){
+        this.tipsy = new Tipsy(this, { gravity: 's', title: function(){
+          return "Part of this data is based on:<br></br>"+
+            "VisualisingData.com resources, by Andy Kirk (The main list of tools)<br><br>"+
+            "FlowingData.com - Data And Visualization Blogs Worth Following, by Nathan Yau<br><br>"+
+            "DavaVisualization.ch Selections<br><br>"+
+            "CMSC734 Book Resources, by B. Shneiderman<br><br>"+
+            "GoodReads Books on Data Visualization<br><br>"+
+            "FellInLoveWithData Data-Vis Beginners Toolkit 1"
+            ;
+        }})
+    })
+    .on("mouseenter",function(){ this.tipsy.show(); })
+    .on("mouseleave",function(){ this.tipsy.hide(); })
 });
 </script>
 <style>
@@ -435,6 +451,14 @@ $(document).ready( function(){
     display: block;
   }
 
+  .attributions{
+    border: solid 1px lightgray;
+    background-color: white;
+    border-radius: 5px;
+    padding: 0px 3px;
+    cursor: pointer;
+  }
+
 </style>
 	</head>
   <body show="tools">
@@ -453,6 +477,7 @@ $(document).ready( function(){
       <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> For info, contact 
       	<a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a><br>
       All rights for the images belong to their respective owners.
+      <span class="attributions">Attributions</span>
       <span class="fa fa-info-circle"></span>
       </div>
   </body>
