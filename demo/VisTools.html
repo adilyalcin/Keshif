@@ -80,8 +80,14 @@ $(document).ready( function(){
         // Set features array
         d.data.Features = [];
         if(d.data.Charting==="Y") d.data.Features.push("Charting");
-        if(d.data.Color==="Y") 
-          d.data.Features.push("<span class='catg_label'>Color Design</span> <span class='fa fa-eyedropper'></span>");
+        switch(d.data["Color"]){
+          case "-":
+          case "?":
+          case "N":
+          case null:
+          case undefined: break;
+          default: d.data.Features.push("Color"); break;
+        }
         if(d.data.Spreadsheet==="Y") 
           d.data.Features.push("<span class='catg_label'>Spreadsheet</span> <span class='fa fa-table'></span>");
         if(d.data.Statistical==="Y") 
@@ -310,12 +316,11 @@ $(document).ready( function(){
     .each(function(summary){
         this.tipsy = new Tipsy(this, { gravity: 's', title: function(){
           return "Part of this data is based on:<br></br>"+
-            "VisualisingData.com resources, by Andy Kirk (The main list of tools)<br><br>"+
-            "FlowingData.com - Data And Visualization Blogs Worth Following, by Nathan Yau<br><br>"+
+            "VisualisingData.com resources, by Andy Kirk (The seed list of tools)<br><br>"+
             "DavaVisualization.ch Selections<br><br>"+
             "CMSC734 Book Resources, by B. Shneiderman<br><br>"+
             "GoodReads Books on Data Visualization<br><br>"+
-            "FellInLoveWithData Data-Vis Beginners Toolkit 1"
+            "FellInLoveWithData Data-Vis Beginners Toolkit 1 & 2"
             ;
         }})
     })
